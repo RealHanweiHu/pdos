@@ -5,7 +5,15 @@ from typing import Annotated, Literal
 from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    AwareDatetime,
+    BaseModel,
+    ConfigDict,
+    Field,
+    field_validator,
+    model_serializer,
+    model_validator,
+)
 
 from pdos_next.schemas.verification.contracts import SourceRef
 
@@ -57,12 +65,29 @@ class ConfirmedPayload(Payload):
     confirmation_token: Annotated[str, Field(min_length=20, max_length=128)] | None = None
 
 
+class NpiTemplateRef(DTO):
+    manifest_sha256: str = Field(pattern=r"^[0-9a-f]{64}$")
+    project_type: Key
+    phase_id: Key
+    task_id: Key
+    phase_code: Key
+    phase_name: Key
+
+
 class TaskCreatePayload(Payload):
     title: Annotated[str, Field(min_length=1, max_length=200)]
     goal: Text
     outcomes: tuple[Outcome, ...] = Field(min_length=1)
     plan_task: VersionRef | None = None
+    npi_template: NpiTemplateRef | None = None
     g0_open_item: G0OpenItemRef | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize(self, handler):
+        value = handler(self)
+        if self.npi_template is None:
+            value.pop("npi_template", None)
+        return value
 
     @model_validator(mode="after")
     def has_direct_source(self):
@@ -228,6 +253,7 @@ class TaskSnapshot(DTO):
     goal: Text
     outcomes: tuple[Outcome, ...]
     plan_task: VersionRef | None = None
+    npi_template: NpiTemplateRef | None = None
     g0_open_item: G0OpenItemRef | None = None
     assignee_id: UUID | None = None
     recipient_id: UUID | None = None

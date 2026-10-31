@@ -1,0 +1,43 @@
+{
+  "synthetic": true,
+  "web_base": "http://127.0.0.1:51631",
+  "tenant_id": "8a2d343d-abc8-4621-94f9-eaafd2e1249d",
+  "principal_id": "4ae7498f-ac78-49c0-b2b0-cc23ad55faa3",
+  "category_id": "980d7e0a-3329-4d99-87c2-0e4e9ae370e1",
+  "product_id": "9b0afb6f-3968-42b1-897e-b81cd7b0dc5c",
+  "project_id": "5384165f-47ea-457a-8627-1ded7b7ddff4",
+  "binding_id": "b0859544-49df-42c2-9f61-60a1c369ceb5",
+  "binding_epoch": 1,
+  "run_id": "22df47d1-2b16-4a12-ba54-1d2773cfaf59",
+  "delivery_id": "2873f92c-ba78-4826-9d9f-79e6fed1c996",
+  "initial_delivery_state": "unknown",
+  "ui_rule_name": "浏览器：本人钉钉工作摘要",
+  "authorization_until": "2026-10-29T21:23:29.768648+00:00",
+  "baseline_counts": {
+    "artifact_versions": 2,
+    "agent_runs": 1,
+    "agent_tool_calls": 0,
+    "agent_validation_budgets": 0,
+    "tenant_skill_enablements": 0,
+    "dingtalk_messages": 0,
+    "dingtalk_deliveries": 0,
+    "dingtalk_summary_deliveries": 1,
+    "automation_rule_currents": 1,
+    "automation_rule_versions": 2,
+    "automation_service_grants": 1
+  },
+  "original_run_result_sha256": "b65374983c1b2456636913a07ece276ff5357f1d988ba27f8ca4a54eb86302c8",
+  "ui_paths": {
+    "settings": "/?area=settings&category=980d7e0a-3329-4d99-87c2-0e4e9ae370e1",
+    "original_run": "/dingtalk/runs/22df47d1-2b16-4a12-ba54-1d2773cfaf59?category=980d7e0a-3329-4d99-87c2-0e4e9ae370e1"
+  },
+  "required_ui": [
+    "new summary draft, select actual own binding",
+    "original preview and one T1 confirmation, refresh persisted choice",
+    "open original category-bound Run and structured summary",
+    "read original unknown status then lookup receipt to delivered"
+  ],
+  "transport": "official httpx.MockTransport only; no model/KMS network",
+  "api_base": "http://127.0.0.1:51660",
+  "server_bound": true
+}

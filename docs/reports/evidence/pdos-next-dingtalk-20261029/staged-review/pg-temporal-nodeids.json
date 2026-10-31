@@ -1,0 +1,15 @@
+[
+  "tests/dingtalk/test_channel_pg.py::test_verified_binding_nonce_consume_no_unbound_run_and_one_to_one",
+  "tests/dingtalk/test_channel_pg.py::test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26",
+  "tests/dingtalk/test_channel_pg.py::test_actual_revoke_cancels_fixed_run_and_blocks_completion_without_owner_impersonation[owner]",
+  "tests/dingtalk/test_channel_pg.py::test_actual_revoke_cancels_fixed_run_and_blocks_completion_without_owner_impersonation[administrator]",
+  "tests/dingtalk/test_channel_pg.py::test_maintenance_role_is_metadata_only_and_has_no_runtime_membership",
+  "tests/dingtalk/test_channel_temporal_pg.py::test_same_xiaopai_native_run_private_answer_group_share_and_lost_receipt",
+  "tests/dingtalk/test_official_pg.py::test_official_binding_ingress_and_pending_receipt_use_actual_native_rows",
+  "tests/dingtalk/test_official_pg.py::test_official_lost_send_response_remains_unknown_without_second_send",
+  "tests/dingtalk/test_official_temporal_pg.py::test_official_wire_uses_same_temporal_graph_and_current_private_delivery",
+  "tests/dingtalk/test_retention_pg.py::test_private_two_category_delivery_retains_each_actual_root_without_service_body_read",
+  "tests/dingtalk/test_retention_pg.py::test_pending_original_blocks_new_body_copy_but_existing_receipt_metadata_can_update[pending]",
+  "tests/dingtalk/test_retention_pg.py::test_pending_original_blocks_new_body_copy_but_existing_receipt_metadata_can_update[quarantined]",
+  "tests/dingtalk/test_retention_pg.py::test_delivery_footprint_is_immutable_and_lifecycle_helpers_are_not_runtime_read_ports"
+]

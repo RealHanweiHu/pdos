@@ -1,0 +1,198 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 277 items
+
+tests/enterprise_search/test_assistant_temporal_pg.py::test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference PASSED [  0%]
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model PASSED [  0%]
+tests/enterprise_search/test_citation_inheritance_temporal_pg.py::test_http_continuation_reissues_citation_and_replay_does_not_repeat_inference PASSED [  1%]
+tests/enterprise_search/test_comparison_temporal_pg.py::test_http_document_pair_reaches_verified_differences_and_idempotent_private_table PASSED [  1%]
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source PASSED [  1%]
+tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[failed] PASSED [  2%]
+tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[cancelled] PASSED [  2%]
+tests/enterprise_search/test_interrupted_citations_pg.py::test_archived_reader_never_accepts_extraction_or_a_different_scope PASSED [  2%]
+tests/enterprise_search/test_keyword.py::test_chinese_question_removes_function_words_but_keeps_domain_words_and_or PASSED [  3%]
+tests/enterprise_search/test_keyword.py::test_identifiers_are_independent_of_tokenization_and_dates_are_not_codes PASSED [  3%]
+tests/enterprise_search/test_keyword.py::test_long_lines_and_paragraphs_remain_exact_located_source_substrings PASSED [  3%]
+tests/enterprise_search/test_keyword.py::test_projection_workflow_is_sandboxable_without_business_or_provider_imports PASSED [  4%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body PASSED [  4%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet PASSED [  5%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root] PASSED [  5%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim] PASSED [  5%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs PASSED [  6%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_registered_snapshot_dependency_is_signed_without_original_text_and_cannot_be_retargeted PASSED [  6%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency PASSED [  6%]
+tests/enterprise_search/test_knowledge_dependencies_temporal_pg.py::test_http_knowledge_dependency_proof_survives_durable_continuation_and_replay PASSED [  7%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex PASSED [  7%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_changed_knowledge_dependency_obeys_current_fixed_version PASSED [  7%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_private_root_cannot_enter_shared_knowledge_or_search_metadata PASSED [  8%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_named_claim_withdrawal_removes_dependent_search_metadata_without_reindex PASSED [  8%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_knowledge_original_scan_proof_precedes_http_metadata PASSED [  9%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_registered_snapshot_dependency_remains_in_ordinary_current_authority[False] PASSED [  9%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_registered_snapshot_dependency_remains_in_ordinary_current_authority[True] PASSED [  9%]
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_knowledge_dependency_sql_count_is_batched_and_warm_latency_under_one_second PASSED [ 10%]
+tests/enterprise_search/test_originals_pg.py::test_uploaded_original_scan_epoch_and_current_configuration_are_rechecked PASSED [ 10%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[text] PASSED [ 10%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[locator] PASSED [ 11%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[chunk_hash] PASSED [ 11%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[term_counts] PASSED [ 11%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[title_counts] PASSED [ 12%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[token_count] PASSED [ 12%]
+tests/enterprise_search/test_recovery.py::test_idempotence_requires_actual_derived_fields_not_just_key_and_count[category_id] PASSED [ 12%]
+tests/enterprise_search/test_recovery.py::test_manifest_detects_mutation_duplicate_sources_and_cross_category_scope PASSED [ 13%]
+tests/enterprise_search/test_recovery.py::test_malformed_recovery_target_is_a_reported_input_error[source_id-bad] PASSED [ 13%]
+tests/enterprise_search/test_recovery.py::test_malformed_recovery_target_is_a_reported_input_error[source_revision-True] PASSED [ 14%]
+tests/enterprise_search/test_recovery.py::test_malformed_recovery_target_is_a_reported_input_error[content_hash-] PASSED [ 14%]
+tests/enterprise_search/test_recovery.py::test_malformed_recovery_target_is_a_reported_input_error[category_id-None] PASSED [ 14%]
+tests/enterprise_search/test_recovery.py::test_summary_never_calls_partial_or_unacknowledged_work_current PASSED [ 15%]
+tests/enterprise_search/test_recovery.py::test_workflow_retries_the_same_fixed_slice_then_continues_independent_work PASSED [ 15%]
+tests/enterprise_search/test_recovery.py::test_rebuild_sender_reuses_one_request_identity_without_source_body PASSED [ 15%]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables] PASSED [ 16%]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only] PASSED [ 16%]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only] PASSED [ 16%]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count] PASSED [ 17%]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df PASSED [ 17%]
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys PASSED [ 18%]
+tests/enterprise_search/test_recovery_pg.py::test_source_repair_preserves_other_sources_and_other_tenants_and_requires_actual_read PASSED [ 18%]
+tests/enterprise_search/test_recovery_pg.py::test_duplicate_projection_checks_actual_text_locator_and_postgresql_vectors PASSED [ 18%]
+tests/enterprise_search/test_recovery_pg.py::test_fixed_batch_reports_changed_and_revoked_sources_without_substituting_current_values PASSED [ 19%]
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants PASSED [ 19%]
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second FAILED [ 19%]
+
+=================================== FAILURES ===================================
+_ test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second _
+tests/enterprise_search/test_recovery_pg.py:650: in test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+    assert statistics.quantiles(durations[mode][1:], n=20)[18] < 1.0
+E   assert 1.0967964501585812 < 1.0
+----------------------------- Captured stdout call -----------------------------
+{"family_counts": {"artifact": 21, "knowledge": 6, "issue": 4, "capa": 1, "change": 6, "external_wait": 6, "supply": 6, "build": 4, "test_run": 4}, "context": {"tenant_id": "f0775873-8566-4258-b374-bf732ce8471a", "actor_id": "77dc4116-4877-426a-ad9f-a966aa88acd3", "requester_id": "77dc4116-4877-426a-ad9f-a966aa88acd3", "category_id": null}, "authority_batch_sizes": [9, 48], "warm_p95_seconds": {"search": 0.8491713675437496, "verify_nine": 0.38762621555943044, "verify_expanded": 1.0967964501585812}, "sql_counts": {"search": [5], "verify_nine": [4], "verify_expanded": [4]}}
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_temporal_pg.py: 3 warnings
+tests/enterprise_search/test_execution_records_pg.py: 3 warnings
+tests/enterprise_search/test_recovery_pg.py: 21 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py: 11 warnings
+tests/enterprise_search/test_knowledge_dependencies_temporal_pg.py: 1 warning
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py: 17 warnings
+tests/enterprise_search/test_recovery_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+  tests/enterprise_search/test_knowledge_dependencies_pg.py:244: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency(
+
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_knowledge_dependency_sql_count_is_batched_and_warm_latency_under_one_second
+  tests/enterprise_search/test_knowledge_retrieval_authority_pg.py:135: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_knowledge_dependency_sql_count_is_batched_and_warm_latency_under_one_second(
+
+tests/enterprise_search/test_recovery_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+  tests/enterprise_search/test_recovery_pg.py:209: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize("damage", ["all_tables", "chunks_only", "statistics_only", "same_count"])
+
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:534: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:543: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:686: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  tests/enterprise_search/test_recovery_pg.py:521: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/backend-candidate-5-remaining.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+=========== 1 failed, 54 passed, 144 warnings in 1056.30s (0:17:36) ============

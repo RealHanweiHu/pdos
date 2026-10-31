@@ -1,0 +1,32 @@
+{
+  "tsc": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "3b252a",
+      "wall_time_seconds": 0.000017875,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "eslint": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "1e65a1",
+      "wall_time_seconds": 0.000005791,
+      "exit_code": 0,
+      "original_token_count": 0,
+      "output": ""
+    }
+  },
+  "layout": {
+    "status": "fulfilled",
+    "value": {
+      "chunk_id": "cd2bfe",
+      "wall_time_seconds": 0.015841167,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "[]\n"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0839",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/verified-knowledge-53502-before-0839.dump",
+  "backup_bytes": 98435418,
+  "backup_sha256": "87a77f9b928eff1240e68da004decec28111587ef523c017c536b0f55f379ae0",
+  "operations": [
+    {
+      "direction": "downgrade",
+      "head": "s0_0838",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "source_resolver_exists": false,
+      "lifecycle_functions_exact": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0839",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "source_resolver_exists": true,
+      "lifecycle_functions_exact": true
+    }
+  ],
+  "preliminary_upgrade_passed": true,
+  "counts": {
+    "agent_runs": 4988,
+    "agent_tool_calls": 8833,
+    "agent_validation_budgets": 126,
+    "action_receipts": 47172,
+    "artifact_versions": 11259,
+    "enterprise_search_chunks": 2835,
+    "category_knowledge_entries": 451,
+    "knowledge_candidate_versions": 42,
+    "knowledge_rule_versions": 28,
+    "enterprise_embedding_calls": 31
+  },
+  "new_force_rls": {
+    "knowledge_answer_reviews": [
+      true,
+      true
+    ],
+    "knowledge_gap_submissions": [
+      true,
+      true
+    ],
+    "knowledge_gap_attributions": [
+      true,
+      true
+    ]
+  },
+  "source_resolver": {
+    "owner": "pdos_next_owner",
+    "prosecdef": true,
+    "proconfig": [
+      "search_path=pg_catalog, public, pg_temp"
+    ]
+  },
+  "runtime_source_resolver_execute": {
+    "pdos_next_app": false,
+    "pdos_agent": false,
+    "pdos_next_auth": false,
+    "pdos_next_dispatch": false
+  },
+  "triggers": {
+    "knowledge_answer_reviews": [
+      "category_lifecycle_clock",
+      "knowledge_assistant_atom",
+      "knowledge_assistant_immutable",
+      "lifecycle_reference"
+    ],
+    "knowledge_gap_submissions": [
+      "category_lifecycle_clock",
+      "knowledge_assistant_atom",
+      "knowledge_assistant_immutable",
+      "lifecycle_reference"
+    ],
+    "knowledge_gap_attributions": [
+      "knowledge_assistant_atom",
+      "knowledge_assistant_immutable"
+    ]
+  },
+  "real_provider_accessed": false
+}

@@ -1,0 +1,20 @@
+{
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "schema_head": "s0_0854",
+  "settings_applied": {
+    "session_preload_libraries": "auto_explain",
+    "auto_explain.log_min_duration": "-1",
+    "auto_explain.log_analyze": "on",
+    "auto_explain.log_buffers": "on",
+    "auto_explain.log_timing": "off",
+    "auto_explain.log_format": "json",
+    "auto_explain.log_parameter_max_length": "0"
+  },
+  "temporary_duration_set_grant": true,
+  "business_privileges_changed": false,
+  "rls_changed": false,
+  "restored": true,
+  "role_settings_match_baseline": true,
+  "duration_privilege_matches_baseline": true
+}

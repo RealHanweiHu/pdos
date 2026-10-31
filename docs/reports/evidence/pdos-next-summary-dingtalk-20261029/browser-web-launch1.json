@@ -1,0 +1,6 @@
+{
+  "pid": 11139,
+  "cwd": "/tmp/pdos-assistant-summary-final-build-20261029/pdos-next/web",
+  "web_base": "http://127.0.0.1:51631",
+  "api_base": "http://127.0.0.1:51660"
+}

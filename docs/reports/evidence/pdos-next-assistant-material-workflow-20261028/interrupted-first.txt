@@ -1,0 +1,83 @@
+F
+=================================== FAILURES ===================================
+_ test_metadata_outside_preview_survives_interruption_without_reviving_old_run[failed] _
+tests/enterprise_search/test_interrupted_citations_pg.py:31: in turn
+    raise DomainError("INVALID_PAYLOAD", "synthetic interruption after metadata")
+E   pdos_next.errors.DomainError: synthetic interruption after metadata
+
+During handling of the above exception, another exception occurred:
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   psycopg.errors.RaiseException: Invalid technical release
+E   CONTEXT:  PL/pgSQL function kernel_release_call(uuid,uuid,text,boolean,integer,text) line 6 at RAISE
+
+The above exception was the direct cause of the following exception:
+tests/enterprise_search/test_interrupted_citations_pg.py:61: in test_metadata_outside_preview_survives_interruption_without_reviving_old_run
+    execute(middle_owner, middle, middle_host)
+tests/enterprise_search/test_assistant_pg.py:162: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:725: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:287: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:119: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:260: in turn
+    self.store.release_call(
+pdos_next/agent_kernel/persistence.py:63: in release_call
+    return session.scalar(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2534: in scalar
+    return self._execute_internal(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2355: in _execute_internal
+    return conn.scalar(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1337: in scalar
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:551: in _execute_on_scalar
+    return self._execute_on_connection(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Invalid technical release
+E   CONTEXT:  PL/pgSQL function kernel_release_call(uuid,uuid,text,boolean,integer,text) line 6 at RAISE
+E   [SQL: SELECT kernel_release_call(%(run)s,%(call)s,%(reason)s,%(unknown)s,%(usage)s,%(request_id)s)]
+E   [SQL parameters hidden due to hide_parameters=True]
+E   (Background on this error at: https://sqlalche.me/e/21/f405)
+E   During task with name 'model' and id '81715eec-4eb4-78e4-4044-5674761254d0'
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[failed]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed in 18.63s

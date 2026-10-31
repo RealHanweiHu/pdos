@@ -1,0 +1,7 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0837",
+  "query_guard_exists": false,
+  "read_only": true
+}

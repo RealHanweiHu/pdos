@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="77.808" timestamp="2026-10-29T07:22:04.340582-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_work_followup_temporal_pg" name="test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state[setup0]" time="76.596"><failure message="AssertionError: assert ('unavailable' == 'pending'&#10;  &#10;  - pending&#10;  + unavailable)">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x116bc3290&gt;
+
+    def test_task_follows_real_answer_clarification_native_create_assign_and_fresh_work_state(
+        setup,
+        monkeypatch,
+    ):
+        project = create_g0_project(setup, visibility="category").project_id
+        source = register(setup, "Task original", "漏气：更换密封圈；请补齐测试资料。")
+        provider = TaskClient(source, missing=True)
+    
+        async def actual():
+            async with actual_runtime(setup, provider, monkeypatch) as runtime:
+                await enable(runtime)
+                parent, answer = await parent_answer(runtime, project)
+                provider.phase = "action"
+                request = payload(
+                    parent,
+                    answer,
+                    project,
+                    source,
+                    assignment={
+                        "assignee_id": str(setup.peer),
+                        "recipient_id": str(setup.human),
+                    },
+                )
+                before = totals(setup)
+                identity, handle = await start(runtime, request, complete=False)
+                event = await question_ready(runtime, identity)
+                assert event["questions"][0]["id"] == "outcome"
+                assert provider.arguments is None and totals(setup) == before
+                response = await runtime.http.get(
+                    runtime.path + f"/{identity}/candidates", headers=setup.headers
+                )
+                assert response.json()["items"] == []
+                answered = await runtime.http.post(
+                    runtime.path + f"/{identity}/answers",
+                    headers=setup.headers,
+                    json={
+                        "answers": {"outcome": "提供经核对的资料包"},
+                        "idempotency_key": str(uuid4()),
+                    },
+                )
+                assert answered.status_code == 202, answered.text
+                result = await asyncio.wait_for(handle.result(), 90)
+                assert result["status"] == "completed", result
+                pending = await candidate(runtime, identity)
+                assert pending["state"] == "pending" and pending["receipt"] is None
+                assert pending["command"]["operation"] == "work.task.create"
+                assert totals(setup) == before  # Candidate preparation is never T0 execution.
+                with tenant_session(
+                    setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
+                ) as session:
+                    run = session.get(AgentRun, identity)
+                    sid = run.session_id
+                    assert run.read_sources[0]["artifact_id"] == source["artifact_id"]
+                    frozen = session.get(AgentEvent, UUID(pending["event_id"]))
+                    assert frozen.body["type"] == "domain_candidate"
+                    assert frozen.body["source"]["skill"]["key"] == "work_management"
+                    enabled = session.scalar(
+                        select(TenantSkillEnablement).where(
+                            TenantSkillEnablement.tenant_id == setup.tenant,
+                            TenantSkillEnablement.skill_key == "work_management",
+                        )
+                    )
+                    assert enabled.enabled and not enabled.pilot and not enabled.review_case_refs
+                path = f"/v1/categories/{setup.category}/agent-sessions/{sid}/work-state"
+                state = await runtime.http.get(path, headers=setup.headers)
+                assert state.status_code == 200, state.text
+                before_state = state.json()
+                assert state_candidate(before_state, pending["event_id"])["state"] == "pending"
+                calls = provider.calls
+                root = f"/v1/categories/{setup.category}/products/{setup.product}"
+                inputs = await runtime.http.post(
+                    root + "/project-work/inputs", headers=setup.headers, json=pending["command"]
+                )
+                assert inputs.status_code == 200, inputs.text
+                assert totals(setup) == before
+                route = f"/v1/categories/{setup.category}/commands"
+                saved = await runtime.http.post(route, headers=setup.headers, json=pending["command"])
+                assert saved.status_code == 200, saved.text
+                receipt = saved.json()
+                replay = await runtime.http.post(route, headers=setup.headers, json=pending["command"])
+                assert replay.status_code == 200 and replay.json()["id"] == receipt["id"]
+                assert totals(setup) == (before[0] + 1, before[1])
+                adopted = await candidate(runtime, identity)
+                assert adopted["state"] == "adopted" and adopted["task"]["id"] == receipt["subject_id"]
+                fresh = await runtime.http.get(path, headers=setup.headers)
+                assert fresh.status_code == 200, fresh.text
+                summary = state_candidate(fresh.json(), pending["event_id"])
+                assert summary["state"] == "adopted" and summary["receipt_id"] == receipt["id"]
+                assert fresh.json()["revision"] == before_state["revision"]
+                assert all(key not in summary for key in ("payload", "command", "source_proof"))
+                workspace = await runtime.http.get(
+                    root + f"/project-work?project_id={project}", headers=setup.headers
+                )
+                current = workspace.json()
+                task = next(row for row in current["tasks"] if row["id"] == receipt["subject_id"])
+                assign = {
+                    "command_id": str(uuid4()),
+                    "idempotency_key": str(uuid4()),
+                    "operation": "work.task.assign",
+                    "category_id": str(setup.category),
+                    "product_id": str(setup.product),
+                    "expected_revision": current["product_revision"],
+                    "source_read_set": pending["command"]["source_read_set"],
+                    "payload": {
+                        "project_id": project,
+                        "task": {"id": task["id"], "revision": task["revision"]},
+                        "sources": task["sources"],
+                        "reason": "本人明确分派资料跟进",
+                        **request["work_followup_action"]["assignment"],
+                    },
+                }
+                preview = await runtime.http.post(
+                    route + "/preview", headers=setup.headers, json=assign
+                )
+                assert preview.status_code == 200, preview.text
+                assignment = await runtime.http.post(
+                    route, headers=setup.headers, json=preview.json()["command"]
+                )
+                assert assignment.status_code == 200, assignment.text
+                assert totals(setup) == (before[0] + 2, before[1])
+                assert (await candidate(runtime, identity))["task"]["state"] == "assigned"
+                assert provider.calls == calls
+                resumed = await runtime.http.post(runtime.path, headers=setup.headers, json=request)
+                assert resumed.status_code == 202 and resumed.json()["run_id"] == str(identity)
+    
+&gt;       asyncio.run(actual())
+
+tests/enterprise_search/test_work_followup_temporal_pg.py:397: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def actual():
+        async with actual_runtime(setup, provider, monkeypatch) as runtime:
+            await enable(runtime)
+            parent, answer = await parent_answer(runtime, project)
+            provider.phase = "action"
+            request = payload(
+                parent,
+                answer,
+                project,
+                source,
+                assignment={
+                    "assignee_id": str(setup.peer),
+                    "recipient_id": str(setup.human),
+                },
+            )
+            before = totals(setup)
+            identity, handle = await start(runtime, request, complete=False)
+            event = await question_ready(runtime, identity)
+            assert event["questions"][0]["id"] == "outcome"
+            assert provider.arguments is None and totals(setup) == before
+            response = await runtime.http.get(
+                runtime.path + f"/{identity}/candidates", headers=setup.headers
+            )
+            assert response.json()["items"] == []
+            answered = await runtime.http.post(
+                runtime.path + f"/{identity}/answers",
+                headers=setup.headers,
+                json={
+                    "answers": {"outcome": "提供经核对的资料包"},
+                    "idempotency_key": str(uuid4()),
+                },
+            )
+            assert answered.status_code == 202, answered.text
+            result = await asyncio.wait_for(handle.result(), 90)
+            assert result["status"] == "completed", result
+            pending = await candidate(runtime, identity)
+&gt;           assert pending["state"] == "pending" and pending["receipt"] is None
+E           AssertionError: assert ('unavailable' == 'pending'
+E             
+E             - pending
+E             + unavailable)
+
+tests/enterprise_search/test_work_followup_temporal_pg.py:316: AssertionError</failure></testcase></testsuite></testsuites>

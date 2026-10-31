@@ -1,0 +1,43 @@
+....................................................sssssss............. [ 25%]
+................................F....sss................................ [ 51%]
+........................................................................ [ 76%]
+................................................................F        [100%]
+=================================== FAILURES ===================================
+_ test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest _
+
+    def test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest():
+        catalog = SkillCatalog()
+>       assert len(catalog.index) == 17
+E       AssertionError: assert 18 == 17
+E        +  where 18 = len([{'key': 'build_execution', 'purpose': '在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业...gap_check', 'purpose': '检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。'}, ...])
+E        +    where [{'key': 'build_execution', 'purpose': '在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业...gap_check', 'purpose': '检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。'}, ...] = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x12a5a9310>.index
+
+tests/agent_kernel/test_context_projection.py:14: AssertionError
+___________________ test_source_catalog_validator_runs_clean ___________________
+
+    def test_source_catalog_validator_runs_clean():
+        """The derived catalogs still match the frozen v1.1 source they record."""
+        import subprocess
+        import sys
+    
+        root = CONTRACTS.parent
+        result = subprocess.run(
+            [sys.executable, str(root / "tools/validate_contracts.py")],
+            capture_output=True,
+            text=True,
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/validate_contracts.py", line 16, in <module>
+E             assert len(data["items"]) == count
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         AssertionError
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python', '/Users/huh...ine 16, in <module>\n    assert len(data["items"]) == count\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n').returncode
+
+tests/command_catalog/test_catalog.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_projection.py::test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest
+FAILED tests/command_catalog/test_catalog.py::test_source_catalog_validator_runs_clean
+2 failed, 269 passed, 10 skipped in 11.23s

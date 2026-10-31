@@ -1,0 +1,415 @@
+ M .gitignore
+ M README.md
+ M docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md
+ M docs/design/2026-10-08-pdos-next-design-confirmation.md
+ M docs/design/README.md
+ M docs/runbooks/pdos-next-tenant-model-runtime.md
+ M pdos-next/.env.example
+ M pdos-next/contracts/acceptance.json
+ M pdos-next/contracts/auxiliary-operations.json
+ M pdos-next/contracts/events.json
+ M pdos-next/contracts/openapi.json
+ M pdos-next/contracts/operations.json
+ M pdos-next/contracts/payloads.schema.json
+ M pdos-next/server/pdos_next/agent_kernel/activities.py
+ M pdos-next/server/pdos_next/agent_kernel/api.py
+ M pdos-next/server/pdos_next/agent_kernel/bootstrap.py
+ M pdos-next/server/pdos_next/agent_kernel/budget_management.py
+ M pdos-next/server/pdos_next/agent_kernel/category_candidate.py
+ M pdos-next/server/pdos_next/agent_kernel/command_usage.json
+ M pdos-next/server/pdos_next/agent_kernel/conversation.py
+ M pdos-next/server/pdos_next/agent_kernel/domain_candidates.py
+ M pdos-next/server/pdos_next/agent_kernel/domain_reads.py
+ M pdos-next/server/pdos_next/agent_kernel/gateway.py
+ M pdos-next/server/pdos_next/agent_kernel/graph.py
+ M pdos-next/server/pdos_next/agent_kernel/m3_object_reads.py
+ M pdos-next/server/pdos_next/agent_kernel/models.py
+ M pdos-next/server/pdos_next/agent_kernel/persistence.py
+ M pdos-next/server/pdos_next/agent_kernel/qualification_binding.py
+ M pdos-next/server/pdos_next/agent_kernel/registry.py
+ M pdos-next/server/pdos_next/agent_kernel/session_views.py
+ M pdos-next/server/pdos_next/agent_kernel/tools.py
+ M pdos-next/server/pdos_next/api.py
+ M pdos-next/server/pdos_next/command_handlers.py
+ M pdos-next/server/pdos_next/contracts.py
+ M pdos-next/server/pdos_next/domain/planning/scheduling.py
+ M pdos-next/server/pdos_next/domain/preproject/api.py
+ M pdos-next/server/pdos_next/domain/preproject/category_creation.py
+ M pdos-next/server/pdos_next/domain/preproject/category_schemas.py
+ M pdos-next/server/pdos_next/domain/preproject/category_service.py
+ M pdos-next/server/pdos_next/domain/preproject/provenance.py
+ M pdos-next/server/pdos_next/domain/preproject/schemas.py
+ M pdos-next/server/pdos_next/domain/preproject/service.py
+ M pdos-next/server/pdos_next/domain/projects/models.py
+ M pdos-next/server/pdos_next/domain/projects/schemas.py
+ M pdos-next/server/pdos_next/domain/projects/service.py
+ M pdos-next/server/pdos_next/domain/work_management/api.py
+ M pdos-next/server/pdos_next/domain/work_management/rules.py
+ M pdos-next/server/pdos_next/domain/work_management/schemas.py
+ M pdos-next/server/pdos_next/domain/work_management/service.py
+ M pdos-next/server/pdos_next/domain/work_management/views.py
+ M pdos-next/server/pdos_next/lifecycle_access.py
+ M pdos-next/server/pdos_next/lifecycle_catalog.py
+ M pdos-next/server/pdos_next/model_configuration/commands.py
+ M pdos-next/server/pdos_next/model_configuration/host.py
+ M pdos-next/server/pdos_next/model_configuration/kms.py
+ M pdos-next/server/pdos_next/model_configuration/local_kms.py
+ M pdos-next/server/pdos_next/model_configuration/runtime.py
+ M pdos-next/server/pdos_next/model_configuration/service.py
+ M pdos-next/server/pdos_next/models.py
+ M pdos-next/server/pdos_next/personal_views.py
+ M pdos-next/server/pdos_next/project_activity.py
+ M pdos-next/server/pdos_next/providers/agent_client.py
+ M pdos-next/server/pdos_next/providers/agent_wire.py
+ M pdos-next/server/pdos_next/providers/client.py
+ M pdos-next/server/pdos_next/providers/types.py
+ M pdos-next/server/pdos_next/schemas/model_configuration/dto.py
+ M pdos-next/server/pdos_next/schemas/planning/plan.py
+ M pdos-next/server/pdos_next/service.py
+ M pdos-next/server/pdos_next/skill_packages/build_execution.md
+ M pdos-next/server/pdos_next/skill_packages/change_control.md
+ M pdos-next/server/pdos_next/skill_packages/quality_issue.md
+ M pdos-next/server/pdos_next/skill_packages/test_verification.md
+ M pdos-next/server/tests/agent_kernel/test_category_adoption_transactions.py
+ M pdos-next/server/tests/agent_kernel/test_category_candidate.py
+ M pdos-next/server/tests/agent_kernel/test_category_candidate_transactions.py
+ M pdos-next/server/tests/agent_kernel/test_category_source_writeback_pg.py
+ M pdos-next/server/tests/agent_kernel/test_context_projection_entries.py
+ M pdos-next/server/tests/agent_kernel/test_domain_adapter_transactions.py
+ M pdos-next/server/tests/agent_kernel/test_gateway.py
+ M pdos-next/server/tests/agent_kernel/test_graph.py
+ M pdos-next/server/tests/agent_kernel/test_m3_object_reads.py
+ M pdos-next/server/tests/agent_kernel/test_m3_skill_contracts.py
+ M pdos-next/server/tests/agent_kernel/test_minimax_wire.py
+ M pdos-next/server/tests/agent_kernel/test_model_configuration_transactions.py
+ M pdos-next/server/tests/agent_kernel/test_run_continuation.py
+ M pdos-next/server/tests/agent_kernel/test_session_views.py
+ M pdos-next/server/tests/build_start/test_transactions.py
+ M pdos-next/server/tests/change_execution/approved_configuration_continuation_helpers.py
+ M pdos-next/server/tests/change_execution/test_approved_configuration_continuation_chain.py
+ M pdos-next/server/tests/change_execution/test_native_field_completion_chain.py
+ M pdos-next/server/tests/conftest.py
+ M pdos-next/server/tests/model_configuration/test_host_runtime.py
+ M pdos-next/server/tests/model_configuration/test_local_kms.py
+ M pdos-next/server/tests/preproject/test_review_fixes.py
+ M pdos-next/server/tests/products/test_definition_item_revert_pg.py
+ M pdos-next/server/tests/test_project_first_plan.py
+ M pdos-next/server/tests/ui/test_project_release_packages_projection_pg.py
+ M pdos-next/server/tests/verification_handoff/fixtures.py
+ M pdos-next/tools/acceptance_account.py
+ M pdos-next/web/design-qa.md
+ M pdos-next/web/next.config.ts
+ M pdos-next/web/src/app/api/[...path]/route.test.ts
+ M pdos-next/web/src/app/api/[...path]/route.ts
+ M pdos-next/web/src/app/api/project-work-route.test.mjs
+ M pdos-next/web/src/app/globals.css
+ M pdos-next/web/src/app/page.tsx
+ M pdos-next/web/src/app/plan/page.tsx
+ M pdos-next/web/src/components/app-shell-knowledge.test.mjs
+ M pdos-next/web/src/components/app-shell.module.css
+ M pdos-next/web/src/components/app-shell.tsx
+ M pdos-next/web/src/components/builds/build-change-completion.tsx
+ M pdos-next/web/src/components/builds/build-change-orders.test.mjs
+ M pdos-next/web/src/components/builds/build-change-orders.tsx
+ M pdos-next/web/src/components/builds/build-cost.tsx
+ M pdos-next/web/src/components/builds/build-execution.tsx
+ M pdos-next/web/src/components/builds/build-handoff.tsx
+ M pdos-next/web/src/components/builds/build-launch.tsx
+ M pdos-next/web/src/components/builds/build-quality-followup.tsx
+ M pdos-next/web/src/components/builds/build-quality-loop.tsx
+ M pdos-next/web/src/components/builds/build-results.tsx
+ M pdos-next/web/src/components/builds/build-start.tsx
+ M pdos-next/web/src/components/builds/build-supply.tsx
+ M pdos-next/web/src/components/builds/build-verification.tsx
+ M pdos-next/web/src/components/category-create/category-create-form.tsx
+ M pdos-next/web/src/components/category-create/components.test.mjs
+ M pdos-next/web/src/components/category-create/contracts.ts
+ M pdos-next/web/src/components/category-create/personal-xiaopai.tsx
+ M pdos-next/web/src/components/category-home.module.css
+ M pdos-next/web/src/components/category-home.test.mjs
+ M pdos-next/web/src/components/category-home.tsx
+ M pdos-next/web/src/components/category-workspace.tsx
+ M pdos-next/web/src/components/field/field-feedback.test.mjs
+ M pdos-next/web/src/components/field/field-feedback.tsx
+ M pdos-next/web/src/components/knowledge/knowledge-experience.tsx
+ M pdos-next/web/src/components/knowledge/knowledge-library.module.css
+ M pdos-next/web/src/components/knowledge/knowledge-library.test.mjs
+ M pdos-next/web/src/components/knowledge/knowledge-library.tsx
+ M pdos-next/web/src/components/manufacturing-preparation/manufacturing-preparation.tsx
+ M pdos-next/web/src/components/manufacturing-publication/manufacturing-publication.test.mjs
+ M pdos-next/web/src/components/manufacturing-publication/manufacturing-publication.tsx
+ M pdos-next/web/src/components/model_configuration/agent-budgets.tsx
+ M pdos-next/web/src/components/model_configuration/connected-settings.tsx
+ M pdos-next/web/src/components/model_configuration/contracts.ts
+ M pdos-next/web/src/components/model_configuration/render.test.mjs
+ M pdos-next/web/src/components/model_configuration/settings.tsx
+ M pdos-next/web/src/components/my-work-attention.module.css
+ M pdos-next/web/src/components/my-work-attention.test.mjs
+ M pdos-next/web/src/components/my-work-attention.tsx
+ M pdos-next/web/src/components/my-work-project-work.module.css
+ M pdos-next/web/src/components/my-work-project-work.test.mjs
+ M pdos-next/web/src/components/my-work-project-work.tsx
+ M pdos-next/web/src/components/my-work.module.css
+ M pdos-next/web/src/components/my-work.test.mjs
+ M pdos-next/web/src/components/my-work.tsx
+ M pdos-next/web/src/components/pai-conversation.module.css
+ M pdos-next/web/src/components/pai-conversation.tsx
+ M pdos-next/web/src/components/pai-rail.tsx
+ M pdos-next/web/src/components/pai/run-candidates.test.mjs
+ M pdos-next/web/src/components/pai/run-candidates.tsx
+ M pdos-next/web/src/components/pai/run-continuation.test.mjs
+ M pdos-next/web/src/components/pai/run-continuation.tsx
+ M pdos-next/web/src/components/pai/run-process.test.mjs
+ M pdos-next/web/src/components/pai/run-process.tsx
+ M pdos-next/web/src/components/pai/session-history.module.css
+ M pdos-next/web/src/components/pai/session-history.test.mjs
+ M pdos-next/web/src/components/pai/session-history.tsx
+ M pdos-next/web/src/components/preproject/proposal-document.module.css
+ M pdos-next/web/src/components/preproject/proposal-document.test.mjs
+ M pdos-next/web/src/components/preproject/proposal-document.tsx
+ M pdos-next/web/src/components/preproject/proposal-pai.tsx
+ M pdos-next/web/src/components/preproject/proposal-views.tsx
+ M pdos-next/web/src/components/product/product-definition.tsx
+ M pdos-next/web/src/components/product/verification-professional.tsx
+ M pdos-next/web/src/components/projects/external-waits.test.mjs
+ M pdos-next/web/src/components/projects/external-waits.tsx
+ M pdos-next/web/src/components/projects/project-activity.module.css
+ M pdos-next/web/src/components/projects/project-activity.tsx
+ M pdos-next/web/src/components/projects/project-build-summary.test.mjs
+ M pdos-next/web/src/components/projects/project-build-summary.tsx
+ M pdos-next/web/src/components/projects/project-cockpit.tsx
+ M pdos-next/web/src/components/projects/project-commitments.module.css
+ M pdos-next/web/src/components/projects/project-commitments.tsx
+ M pdos-next/web/src/components/projects/project-list.tsx
+ M pdos-next/web/src/components/projects/project-planning.test.mjs
+ M pdos-next/web/src/components/projects/project-planning.tsx
+ M pdos-next/web/src/components/projects/project-views.module.css
+ M pdos-next/web/src/components/projects/project-views.test.mjs
+ M pdos-next/web/src/components/projects/project-work.module.css
+ M pdos-next/web/src/components/projects/project-work.test.mjs
+ M pdos-next/web/src/components/projects/project-work.tsx
+ M pdos-next/web/src/components/projects/project-workspace.tsx
+ M pdos-next/web/src/components/proposals/proposal-list.tsx
+ M pdos-next/web/src/components/workspace-experience.tsx
+ M pdos-next/web/src/components/workspace.tsx
+ M pdos-next/web/src/components/xiaopai.test.mjs
+ M pdos-next/web/src/components/xiaopai.tsx
+ M pdos-next/web/src/lib/agent-budgets.ts
+ M pdos-next/web/src/lib/agent-skills.ts
+ M pdos-next/web/src/lib/build-change-orders-view.test.ts
+ M pdos-next/web/src/lib/build-change-orders-view.ts
+ M pdos-next/web/src/lib/domain-candidate.ts
+ M pdos-next/web/src/lib/global-navigation.test.ts
+ M pdos-next/web/src/lib/global-navigation.ts
+ M pdos-next/web/src/lib/knowledge-experience-native.test.ts
+ M pdos-next/web/src/lib/knowledge-experience.test.ts
+ M pdos-next/web/src/lib/knowledge-experience.ts
+ M pdos-next/web/src/lib/knowledge-library.ts
+ M pdos-next/web/src/lib/portfolio-reads.ts
+ M pdos-next/web/src/lib/project-plan-view.ts
+ M pdos-next/web/src/lib/project-presentation.ts
+ M pdos-next/web/src/lib/project-work.ts
+ M pdos-next/web/src/lib/run-continuation.test.ts
+ M pdos-next/web/src/lib/run-continuation.ts
+ M pdos-next/web/src/lib/run-process.ts
+ M pdos-next/web/src/lib/run-start-intent.test.mjs
+ M pdos-next/web/src/lib/run-start-intent.ts
+ M pdos-next/web/tsconfig.json
+ M tasks/ai-native-integrated-todo.md
+?? docs/design/2026-10-23-local-development-minimax-policy.md
+?? docs/design/2026-10-23-pdos-full-product-ui-candidate.md
+?? docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md
+?? docs/design/2026-10-28-slice-a-x1-implementation-handoff.md
+?? docs/design/2026-10-28-xiaopai-context-design.md
+?? "docs/design/README 3.md"
+?? docs/reports/2026-10-22-pdos-decision-sheet.md
+?? docs/reports/2026-10-22-pdos-design-optimization-review.md
+?? docs/reports/evidence/pdos-next-comprehensive-preview-20261022/
+?? docs/reports/evidence/pdos-next-design-review-20261022/
+?? docs/reports/evidence/pdos-next-domain-reads-20261022/
+?? docs/reports/evidence/pdos-next-local-preview-20261022/
+?? docs/reports/evidence/pdos-next-m3-20261022/
+?? docs/reports/evidence/pdos-next-m9-20261022/
+?? docs/reports/evidence/pdos-next-model-connections-ui-20261026/
+?? docs/reports/evidence/pdos-next-openai-compatible-20261026/
+?? docs/reports/evidence/pdos-next-pai-ui-lab-20261027/
+?? docs/reports/evidence/pdos-next-platform-ui-20261023/
+?? docs/reports/evidence/pdos-next-s1-20261022/candidate-baseline-failure.txt
+?? docs/reports/evidence/pdos-next-s1-20261022/candidate-feedback-tests.txt
+?? docs/reports/evidence/pdos-next-s1-20261022/candidate-preview.png
+?? docs/reports/evidence/pdos-next-s1-20261022/catalog-validation.txt
+?? docs/reports/evidence/pdos-next-s1-20261022/checkpoint-failed-run.json
+?? docs/reports/evidence/pdos-next-s1-20261022/closure.json
+?? docs/reports/evidence/pdos-next-s1-20261022/cockpit-visible.txt
+?? docs/reports/evidence/pdos-next-s1-20261022/cockpit.png
+?? docs/reports/evidence/pdos-next-s1-20261022/g0-decision-preview.png
+?? docs/reports/evidence/pdos-next-s1-20261022/g0-handoff.json
+?? docs/reports/evidence/pdos-next-s1-20261022/g0-submit-preview.png
+?? docs/reports/evidence/pdos-next-s1-20261022/human-adoption.json
+?? docs/reports/evidence/pdos-next-s1-20261022/invalid-candidate-model-calls.json
+?? docs/reports/evidence/pdos-next-s1-20261022/minimax-stream-diagnosis.json
+?? docs/reports/evidence/pdos-next-s1-20261022/minimax-wire-tests.txt
+?? docs/reports/evidence/pdos-next-s1-20261022/model-budget-evidence.json
+?? docs/reports/evidence/pdos-next-s1-20261022/model-original-unknown.json
+?? docs/reports/evidence/pdos-next-s1-20261022/pre-model-scope-failure.json
+?? docs/reports/evidence/pdos-next-s1-20261022/real-model-candidate.json
+?? docs/reports/evidence/pdos-next-s1-20261022/result.md
+?? docs/reports/evidence/pdos-next-s1-20261022/source-manifest.json
+?? docs/reports/evidence/pdos-next-s1-20261022/stream-failure-reconciliation.json
+?? docs/reports/evidence/pdos-next-s1-20261022/unknown-reconciliation.json
+?? docs/reports/evidence/pdos-next-s1-ui-options-20261022/
+?? docs/reports/evidence/pdos-next-slice-a-x1-20261028/
+?? docs/reports/evidence/pdos-next-ui-20261022/
+?? docs/reports/evidence/pdos-next-ui-comparison-20261026/
+?? pdos-next/server/migrations/schema_s0_0813.py
+?? pdos-next/server/migrations/schema_s0_0817.py
+?? pdos-next/server/migrations/schema_s0_0818.py
+?? pdos-next/server/migrations/schema_s0_0819.py
+?? pdos-next/server/migrations/schema_s0_0820.py
+?? pdos-next/server/migrations/schema_s0_0821.py
+?? pdos-next/server/migrations/schema_s0_0822.py
+?? pdos-next/server/migrations/schema_s0_0823.py
+?? pdos-next/server/migrations/schema_s0_0824.py
+?? pdos-next/server/migrations/versions/s0_0813_change_completion_deadline.py
+?? pdos-next/server/migrations/versions/s0_0814_development_minimax_budget.py
+?? pdos-next/server/migrations/versions/s0_0815_material_candidate_edits.py
+?? pdos-next/server/migrations/versions/s0_0816_category_candidate_edits.py
+?? pdos-next/server/migrations/versions/s0_0817_organization_inbox.py
+?? pdos-next/server/migrations/versions/s0_0818_project_sets.py
+?? pdos-next/server/migrations/versions/s0_0819_plan_revisions.py
+?? pdos-next/server/migrations/versions/s0_0820_project_governance.py
+?? pdos-next/server/migrations/versions/s0_0821_planning_capacity.py
+?? pdos-next/server/migrations/versions/s0_0822_planning_audience.py
+?? pdos-next/server/migrations/versions/s0_0823_session_bindings.py
+?? pdos-next/server/migrations/versions/s0_0824_work_products.py
+?? pdos-next/server/pdos_next/agent_kernel/development_budget.py
+?? pdos-next/server/pdos_next/agent_kernel/project_object_reads.py
+?? pdos-next/server/pdos_next/agent_kernel/requested_skills.py
+?? pdos-next/server/pdos_next/agent_kernel/session_bindings.py
+?? pdos-next/server/pdos_next/agent_kernel/work_products.py
+?? pdos-next/server/pdos_next/domain/preproject/category_metadata.py
+?? pdos-next/server/pdos_next/domain/preproject/material_candidate_edits.py
+?? pdos-next/server/pdos_next/domain/project_governance/
+?? pdos-next/server/pdos_next/domain/projects/api.py
+?? pdos-next/server/pdos_next/domain/projects/resources.py
+?? pdos-next/server/pdos_next/domain/work_management/templates.py
+?? pdos-next/server/pdos_next/inbox/
+?? pdos-next/server/pdos_next/model_configuration/connections.py
+?? pdos-next/server/pdos_next/project_sets/
+?? pdos-next/server/pdos_next/skill_packages/work_management.md
+?? pdos-next/server/tests/agent_kernel/test_development_budget_pg.py
+?? pdos-next/server/tests/agent_kernel/test_evidence_search_result.py
+?? pdos-next/server/tests/agent_kernel/test_material_candidate_edits_pg.py
+?? pdos-next/server/tests/agent_kernel/test_model_connections_pg.py
+?? pdos-next/server/tests/agent_kernel/test_openai_compatible.py
+?? pdos-next/server/tests/agent_kernel/test_project_object_reads.py
+?? pdos-next/server/tests/agent_kernel/test_project_object_reads_pg.py
+?? pdos-next/server/tests/agent_kernel/test_requested_skills_pg.py
+?? pdos-next/server/tests/agent_kernel/test_start_input.py
+?? pdos-next/server/tests/agent_kernel/test_work_products_pg.py
+?? pdos-next/server/tests/agent_kernel/test_work_skill_contracts.py
+?? pdos-next/server/tests/change_execution/test_completion_deadline_pg.py
+?? pdos-next/server/tests/change_execution/test_completion_fixture_window.py
+?? pdos-next/server/tests/confirmation_fixture.py
+?? pdos-next/server/tests/inbox/
+?? pdos-next/server/tests/model_configuration/test_connections.py
+?? pdos-next/server/tests/preproject/test_category_metadata.py
+?? pdos-next/server/tests/preproject/test_confirmation_recovery_pg.py
+?? pdos-next/server/tests/test_project_governance.py
+?? pdos-next/server/tests/test_project_plan_revision.py
+?? pdos-next/server/tests/work_management_pg/test_npi_templates.py
+?? pdos-next/tools/comprehensive_preview.py
+?? pdos-next/web/src/app/api/preview-session/
+?? pdos-next/web/src/app/api/route-pai-work-products.test.mjs
+?? pdos-next/web/src/app/preview/
+?? pdos-next/web/src/app/ui-lab/
+?? pdos-next/web/src/components/category-create/personal-run-materials.test.mjs
+?? pdos-next/web/src/components/category-create/personal-run-materials.tsx
+?? "pdos-next/web/src/components/category-create/personal-xiaopai 3.tsx"
+?? pdos-next/web/src/components/category-material-editor.module.css
+?? pdos-next/web/src/components/category-material-editor.test.mjs
+?? pdos-next/web/src/components/category-material-editor.tsx
+?? pdos-next/web/src/components/category-metadata-editor.tsx
+?? pdos-next/web/src/components/comprehensive-preview.tsx
+?? pdos-next/web/src/components/inbox-following.tsx
+?? pdos-next/web/src/components/inbox.module.css
+?? pdos-next/web/src/components/inbox.test.mjs
+?? pdos-next/web/src/components/inbox.tsx
+?? pdos-next/web/src/components/knowledge/knowledge-index.tsx
+?? pdos-next/web/src/components/model-workspace.tsx
+?? pdos-next/web/src/components/model_configuration/connection-editor.tsx
+?? pdos-next/web/src/components/my-work-continue.tsx
+?? pdos-next/web/src/components/my-work-list.module.css
+?? pdos-next/web/src/components/my-work-list.tsx
+?? pdos-next/web/src/components/organization.module.css
+?? pdos-next/web/src/components/pai/composer.tsx
+?? pdos-next/web/src/components/pai/context-picker.module.css
+?? pdos-next/web/src/components/pai/context-picker.tsx
+?? pdos-next/web/src/components/pai/conversation-history.tsx
+?? pdos-next/web/src/components/pai/material-workspace.tsx
+?? pdos-next/web/src/components/pai/proposal-workspace.module.css
+?? pdos-next/web/src/components/pai/proposal-workspace.test.mjs
+?? pdos-next/web/src/components/pai/proposal-workspace.tsx
+?? pdos-next/web/src/components/pai/run-progress.module.css
+?? pdos-next/web/src/components/pai/skill-picker.module.css
+?? pdos-next/web/src/components/pai/skill-picker.tsx
+?? pdos-next/web/src/components/pai/use-session-draft.test.mjs
+?? pdos-next/web/src/components/pai/use-session-draft.ts
+?? pdos-next/web/src/components/pai/use-work-products.test.mjs
+?? pdos-next/web/src/components/pai/use-work-products.ts
+?? pdos-next/web/src/components/pai/work-product-actions.tsx
+?? pdos-next/web/src/components/pai/work-product-editor.module.css
+?? pdos-next/web/src/components/pai/work-product-editor.test.mjs
+?? pdos-next/web/src/components/pai/work-product-editor.tsx
+?? pdos-next/web/src/components/plan/current-milestones.tsx
+?? pdos-next/web/src/components/platform-settings.module.css
+?? pdos-next/web/src/components/platform-settings.tsx
+?? pdos-next/web/src/components/preproject/proposal-item-table.tsx
+?? pdos-next/web/src/components/preproject/proposal-spec-editor.tsx
+?? pdos-next/web/src/components/preview-guide.tsx
+?? pdos-next/web/src/components/product-preview-entry.tsx
+?? pdos-next/web/src/components/projects/connected-project-planning.tsx
+?? pdos-next/web/src/components/projects/npi-task-picker.tsx
+?? pdos-next/web/src/components/projects/plan-task-editor.module.css
+?? pdos-next/web/src/components/projects/plan-task-editor.tsx
+?? pdos-next/web/src/components/projects/professional-target.tsx
+?? pdos-next/web/src/components/projects/project-coordination.tsx
+?? pdos-next/web/src/components/projects/project-directory-view.module.css
+?? pdos-next/web/src/components/projects/project-directory-view.tsx
+?? pdos-next/web/src/components/projects/project-files.module.css
+?? pdos-next/web/src/components/projects/project-files.tsx
+?? pdos-next/web/src/components/projects/project-governance.module.css
+?? pdos-next/web/src/components/projects/project-governance.test.mjs
+?? pdos-next/web/src/components/projects/project-governance.tsx
+?? pdos-next/web/src/components/projects/project-overview-builds.tsx
+?? pdos-next/web/src/components/projects/project-plan-alternatives.tsx
+?? pdos-next/web/src/components/projects/project-plan-compact.module.css
+?? pdos-next/web/src/components/projects/project-plan-resources.tsx
+?? pdos-next/web/src/components/projects/project-professional-records.test.mjs
+?? pdos-next/web/src/components/projects/project-professional-records.tsx
+?? pdos-next/web/src/components/projects/project-professional.module.css
+?? pdos-next/web/src/components/projects/project-professional.tsx
+?? pdos-next/web/src/components/projects/project-sets.tsx
+?? pdos-next/web/src/components/projects/work-source-picker.tsx
+?? pdos-next/web/src/components/proposals/proposal-list.module.css
+?? pdos-next/web/src/components/ui/detail-sheet.module.css
+?? pdos-next/web/src/components/ui/detail-sheet.tsx
+?? pdos-next/web/src/lib/category-materials.ts
+?? pdos-next/web/src/lib/current-progress.test.ts
+?? pdos-next/web/src/lib/current-progress.ts
+?? pdos-next/web/src/lib/inbox.ts
+?? pdos-next/web/src/lib/local-preview-server.ts
+?? pdos-next/web/src/lib/local-preview-types.ts
+?? pdos-next/web/src/lib/my-work-items.ts
+?? pdos-next/web/src/lib/pai-material-context.ts
+?? pdos-next/web/src/lib/plan-source.ts
+?? pdos-next/web/src/lib/professional-records.test.mjs
+?? pdos-next/web/src/lib/professional-records.ts
+?? pdos-next/web/src/lib/project-draft-recovery.ts
+?? pdos-next/web/src/lib/project-governance.ts
+?? pdos-next/web/src/lib/project-workspace-navigation.ts
+?? pdos-next/web/src/lib/proposal-candidate-editor.test.mjs
+?? pdos-next/web/src/lib/proposal-candidate-editor.ts
+?? pdos-next/web/src/lib/proposal-spec-editor.test.mjs
+?? pdos-next/web/src/lib/proposal-spec-editor.ts
+?? pdos-next/web/src/lib/work-products.ts

@@ -1,0 +1,84 @@
+[
+  {
+    "preload": [],
+    "tool_count": 61,
+    "tool_definition_tokens": 26916,
+    "output_schema_tokens": 462,
+    "window": 32000,
+    "window_configured": false,
+    "reserve": 6048,
+    "focus": 25952,
+    "segments": {
+      "system": 2850,
+      "tools": 27378,
+      "skills": 0,
+      "envelope": 18,
+      "history": 0,
+      "loop": 0
+    },
+    "estimated_total": 30246,
+    "admission_tokens": 34783,
+    "estimation_margin": 0.15,
+    "calibration_factor": 1.15,
+    "estimation_basis": "first_call_estimate",
+    "over_focus": true,
+    "fixed_over_half": true,
+    "fixed_admission_tokens": 34763
+  },
+  {
+    "preload": [
+      "public_research"
+    ],
+    "tool_count": 64,
+    "tool_definition_tokens": 28299,
+    "output_schema_tokens": 462,
+    "window": 32000,
+    "window_configured": false,
+    "reserve": 6048,
+    "focus": 25952,
+    "segments": {
+      "system": 2850,
+      "tools": 28761,
+      "skills": 3628,
+      "envelope": 18,
+      "history": 0,
+      "loop": 0
+    },
+    "estimated_total": 35257,
+    "admission_tokens": 40546,
+    "estimation_margin": 0.15,
+    "calibration_factor": 1.15,
+    "estimation_basis": "first_call_estimate",
+    "over_focus": true,
+    "fixed_over_half": true,
+    "fixed_admission_tokens": 40525
+  },
+  {
+    "preload": [
+      "proposal_drafting"
+    ],
+    "tool_count": 66,
+    "tool_definition_tokens": 29485,
+    "output_schema_tokens": 462,
+    "window": 32000,
+    "window_configured": false,
+    "reserve": 6048,
+    "focus": 25952,
+    "segments": {
+      "system": 2850,
+      "tools": 29947,
+      "skills": 3780,
+      "envelope": 18,
+      "history": 0,
+      "loop": 0
+    },
+    "estimated_total": 36595,
+    "admission_tokens": 42085,
+    "estimation_margin": 0.15,
+    "calibration_factor": 1.15,
+    "estimation_basis": "first_call_estimate",
+    "over_focus": true,
+    "fixed_over_half": true,
+    "fixed_admission_tokens": 42064
+  }
+]

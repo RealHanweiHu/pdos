@@ -1,0 +1,54 @@
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+____ test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_input] _____
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-436/test_sql_adoption_and_input_ki0')
+change = 'immutable_input'
+
+    @pytest.mark.parametrize("change", ["requester", "reserved", "immutable_input", "immutable_event"])
+    def test_sql_adoption_and_input_kinship_cannot_be_forged(setup, tmp_path, change):
+>       f = personal_fixture(setup, tmp_path, sources=False)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_adoption_transactions.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:226: in personal_fixture
+    f.candidate = f.bootstrap.prepare_candidate(f.scope, f.spec, f.arguments, f.key)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/bootstrap.py:351: in prepare_candidate
+    return prepare(session, scope, spec, arguments, intent_key, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/category_candidate.py:257: in prepare
+    value = _source(session, run, bootstrap, source, binding, arguments, intent_key, spec=spec)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/category_candidate.py:141: in _source
+    _deny()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'category_candidate_source_invalid'
+
+    def _deny(reason="category_candidate_source_invalid"):
+        error = DomainError(
+            "SOURCE_UNAVAILABLE", "新品类候选须来自当前授权的实际个人运行和可核对来源。",
+        )
+        error.detail["reason"] = reason
+>       raise error
+E       pdos_next.errors.DomainError: 新品类候选须来自当前授权的实际个人运行和可核对来源。
+
+pdos_next/agent_kernel/category_candidate.py:67: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[True]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 7 warnings
+tests/agent_kernel/test_context_projection_entries.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_adoption_transactions.py::test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_input]
+1 failed, 2 passed, 21 warnings in 30.83s

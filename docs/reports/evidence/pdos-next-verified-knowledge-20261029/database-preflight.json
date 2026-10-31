@@ -1,0 +1,18 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0838",
+  "functions": {
+    "m3_lifecycle_source_links(uuid,uuid,text,jsonb)": {
+      "exact_match": true,
+      "actual_sha256": "ab2b338d16c62c4e1b65ca3d75e95c13faa51464a82452f6cfcc6ae945f48ac2",
+      "expected_sha256": "ab2b338d16c62c4e1b65ca3d75e95c13faa51464a82452f6cfcc6ae945f48ac2"
+    },
+    "m3_lifecycle_nodes(uuid,uuid,uuid[])": {
+      "exact_match": true,
+      "actual_sha256": "ea933ae62cc455d332504dee5a4e92c6e0914eee3fe38dd92ecb99e66061877b",
+      "expected_sha256": "ea933ae62cc455d332504dee5a4e92c6e0914eee3fe38dd92ecb99e66061877b"
+    }
+  },
+  "read_only": true
+}

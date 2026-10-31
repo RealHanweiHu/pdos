@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="11.742" timestamp="2026-10-29T03:45:57.859587-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_embedding_query_boundaries_pg" name="test_inflight_query_never_releases_vector_or_double_charges_after_authority_loss[cancel]" time="6.811"><failure message="AttributeError: 'AgentToolCall' object has no attribute 'cost_reservation_micro_usd'. Did you mean: 'cost_reserved_micro_usd'?">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x13356a000&gt;
+boundary = 'cancel'
+
+    @pytest.mark.parametrize("boundary", ["cancel", "revoke"])
+    def test_inflight_query_never_releases_vector_or_double_charges_after_authority_loss(
+        setup,
+        monkeypatch,
+        boundary,
+    ):
+        f, runtime, provider, budget_id, parent_id = actual_query(setup, monkeypatch)
+        original = provider.embed
+    
+        def reply_after_loss(*args, **kwargs):
+            response = original(*args, **kwargs)
+            if boundary == "cancel":
+                with human_session(setup) as session:
+                    cancel_run(session, setup.ctx, f.scope.run_id)
+            else:
+                with Session(setup.admin) as session, session.begin():
+                    session.execute(
+                        delete(Grant).where(
+                            Grant.tenant_id == setup.tenant,
+                            Grant.category_id == setup.category,
+                            Grant.principal_id == setup.human,
+                        )
+                    )
+            return response
+    
+        monkeypatch.setattr(provider, "embed", reply_after_loss)
+        with registered_graph_context("xiaopai"), pytest.raises(DomainError) as error:
+            runtime.prepare(f.scope, parent_id, f.read_arguments)
+        assert error.value.code == ("CANCELLED_RUN" if boundary == "cancel" else "FORBIDDEN_SCOPE")
+        assert len(provider.calls) == 1
+        with Session(setup.admin) as session:
+            call = session.scalar(
+                select(AgentToolCall).where(
+                    AgentToolCall.run_id == f.scope.run_id,
+                    AgentToolCall.tool == TOOL,
+                )
+            )
+            assert call.state in {"failed", "unknown"} and call.result is None
+            budget = session.get(ValidationBudget, budget_id)
+            assert budget.calls == 1 and budget.held_micro_usd == 0 and budget.spent_micro_usd &gt; 0
+            before = (budget.calls, budget.spent_micro_usd, call.cost_charged_micro_usd)
+            call_id = call.id
+            if boundary == "cancel":
+                assert call.cost_state == "estimated_unknown"
+&gt;               assert call.cost_charged_micro_usd == call.cost_reservation_micro_usd
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               AttributeError: 'AgentToolCall' object has no attribute 'cost_reservation_micro_usd'. Did you mean: 'cost_reserved_micro_usd'?
+
+tests/enterprise_search/test_embedding_query_boundaries_pg.py:67: AttributeError</failure></testcase><testcase classname="tests.enterprise_search.test_embedding_query_boundaries_pg" name="test_inflight_query_never_releases_vector_or_double_charges_after_authority_loss[revoke]" time="4.360" /></testsuite></testsuites>

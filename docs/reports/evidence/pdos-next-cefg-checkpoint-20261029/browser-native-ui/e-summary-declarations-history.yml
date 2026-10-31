@@ -1,0 +1,174 @@
+- generic [ref=f5e1]:
+  - alert [ref=f5e4]
+  - generic [ref=f5e5]:
+    - link "跳到工作内容" [ref=f5e6] [cursor=pointer]:
+      - /url: "#workspace-content"
+    - complementary [ref=f5e7]:
+      - generic [ref=f5e8]:
+        - generic [aria-hidden] [ref=f5e9]: P
+        - generic [ref=f5e10]: PDOS
+        - button "收起侧栏" [ref=f5e11]
+      - button "搜索或跳转" [ref=f5e12] [cursor=pointer]:
+        - generic [ref=f5e16]: ⌘ K
+      - navigation "工作区导航" [ref=f5e17]:
+        - link "我的工作" [ref=f5e19] [cursor=pointer]:
+          - /url: "?area=work&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "收件箱" [ref=f5e24] [cursor=pointer]:
+          - /url: "?area=inbox&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "小Pai" [ref=f5e29] [cursor=pointer]:
+          - /url: "?area=pai"
+        - link "项目" [ref=f5e34] [cursor=pointer]:
+          - /url: "?area=projects&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "项目集" [ref=f5e39] [cursor=pointer]:
+          - /url: "?area=programs&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - link "知识" [ref=f5e44] [cursor=pointer]:
+          - /url: "?area=knowledge&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - generic "最近的在办项目" [ref=f5e48]:
+          - paragraph [ref=f5e49]: 常用项目
+          - link "浏览器本人摘要项目" [ref=f5e50] [cursor=pointer]:
+            - /url: "?area=cockpit&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6&project=f6a3778e-633a-40fb-9618-795303070b97"
+            - generic [aria-hidden] [ref=f5e51]: 浏览
+      - generic [ref=f5e53]:
+        - link "设置" [ref=f5e54] [cursor=pointer]:
+          - /url: "?area=settings&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+        - generic [ref=f5e58]:
+          - generic [aria-hidden] [ref=f5e59]: S
+          - generic [ref=f5e60]:
+            - paragraph [ref=f5e61]: Synthetic owner
+            - paragraph [ref=f5e62]: 本地合成环境
+    - generic [ref=f5e63]:
+      - banner [ref=f5e64]:
+        - generic [ref=f5e65]:
+          - generic [ref=f5e66]: 工作空间
+          - generic [ref=f5e69]: 设置
+        - generic [ref=f5e70]:
+          - button "切换明暗主题" [ref=f5e71]
+          - button "搜索对象" [ref=f5e73]
+      - main [ref=f5e74]:
+        - region "设置" [ref=f5e75]:
+          - generic [ref=f5e77]:
+            - heading "设置" [level=1] [ref=f5e78]
+            - paragraph [ref=f5e79]: 低频配置集中管理，日常工作保持简洁。
+          - navigation "设置视图" [ref=f5e80]:
+            - button "个人偏好" [ref=f5e81] [cursor=pointer]
+            - button "成员与范围" [ref=f5e82] [cursor=pointer]
+            - button "小Pai与模型" [pressed] [ref=f5e83] [cursor=pointer]
+            - button "集成与治理" [ref=f5e84] [cursor=pointer]
+          - generic [ref=f5e166]:
+            - text: 品类范围
+            - combobox "品类范围" [ref=f5e167]:
+              - option "汽车充气泵" [selected]
+          - generic [ref=f5e168]:
+            - navigation "小Pai设置" [ref=f5e169]:
+              - button "模型配置" [ref=f5e170] [cursor=pointer]
+              - button "技能与资格" [ref=f5e171] [cursor=pointer]
+              - button "预算与用量" [ref=f5e172] [cursor=pointer]
+              - button "自动化规则" [pressed] [ref=f5e173] [cursor=pointer]
+            - region "自动化规则" [ref=f5e297]:
+              - generic [ref=f5e298]:
+                - generic [ref=f5e299]:
+                  - heading "自动化规则" [level=2] [ref=f5e300]
+                  - paragraph [ref=f5e301]: 固定触发设置、目标、停止条件和预算；自动运行由实际服务授权办理。
+                - button "刷新规则" [ref=f5e302]
+              - paragraph [ref=f5e303]: 支持本人手动、定时、领域事件和相对里程碑。自动规则经本人一次确认激活并绑定服务授权，由服务身份执行，不冒用委托人的真人会话。外部来源、联网、MCP 和业务写入保持关闭；只读模型工作可能产生费用，实际授权、资格、协议与预算由服务器核对。
+              - generic [ref=f5e304]:
+                - paragraph [ref=f5e305]: 当前品类 e3534751-fd75-4f57-b1fc-077ba2ebb5c6 · 本人 2906155b-8f4c-44a4-89f8-ee8799ff4039 · 读取时点 2026-10-29T14:36:37.693766+00:00
+                - article [ref=f5e307]:
+                  - heading "浏览器零技能零钱包摘要" [level=3] [ref=f5e308]
+                  - paragraph [ref=f5e309]: 已启用 · 当前 v2 · 已受理 0 次
+                  - paragraph [ref=f5e310]: 规则 85a14a6f-14d6-470f-a8be-4e542b8113de最近受理 尚无记录
+                  - button "读取规则与运行历史" [ref=f5e311]
+                - button "新建规则草稿" [ref=f5e312]
+              - region "所选固定规则" [ref=f5e313]:
+                - heading "浏览器零技能零钱包摘要 · 已启用" [level=3] [ref=f5e314]
+                - paragraph [ref=f5e315]: 触发方式：定时
+                - region "实际服务授权" [ref=f5e316]:
+                  - heading "实际服务授权 · 活动" [level=4] [ref=f5e317]
+                  - paragraph [ref=f5e318]: 服务执行身份 e54eca18-ba88-4bc9-9eeb-3d8b2808579b委托人 2906155b-8f4c-44a4-89f8-ee8799ff4039固定版本 ffadab63-f51f-4117-8541-45ba9c0f4e93授权记录 b1adc45d-95d6-4255-822e-ecc12bd0df7a · 回执 85f1bef5-03ef-4ac7-8985-de83d962f2b0到期 原授权未另设截止
+                  - paragraph [ref=f5e319]: 委托人不是后台执行身份；范围、用途和预算受绑定的固定规则版本及当前服务授权约束。
+                - paragraph [ref=f5e320]: 已发布范围：当前品类 e3534751-fd75-4f57-b1fc-077ba2ebb5c6
+                - paragraph [ref=f5e321]: 草稿 尚无已发布 v2 · ffadab63-f51f-4117-8541-45ba9c0f4e93
+                - generic [ref=f5e322]:
+                  - button "编辑新草稿" [ref=f5e323]
+                  - button "预览暂停新运行" [ref=f5e324]
+                - group [ref=f5e325]:
+                  - generic "读取已发布的目标、服务范围和预算声明" [ref=f5e326]
+                  - generic [ref=f5e384]: "{ \"goal\": \"按本人当前可读范围整理变化、本人关系、具名下一步与原事项链接。\", \"name\": \"浏览器零技能零钱包摘要\", \"budget\": { \"call_limit\": 0, \"limit_micro_usd\": 0, \"input_token_limit\": 0, \"output_token_limit\": 0 }, \"purpose\": \"本人查看工作变化与下一步。\", \"max_runs\": 52, \"mcp_tools\": [], \"conditions\": { \"task_id\": null, \"only_states\": [], \"stop_states\": [ \"completed\" ] }, \"product_id\": null, \"skill_keys\": [], \"token_limit\": 1, \"trigger_kind\": \"schedule\", \"allow_network\": false, \"stop_condition\": \"本次摘要生成结束，或当前授权和来源不可读取时停止。\", \"trigger_config\": { \"calendar\": \"weekdays\", \"first_at\": \"2026-10-29T16:00:00Z\", \"expires_at\": null, \"interval_seconds\": null, \"original_timezone\": \"America/Los_Angeles\" }, \"cooldown_seconds\": 0, \"personal_summary\": { \"groups\": [ \"action\", \"waiting\", \"following\" ], \"max_items\": 100, \"category_ids\": [ \"e3534751-fd75-4f57-b1fc-077ba2ebb5c6\" ], \"excluded_kinds\": [], \"followed_project_ids\": [ \"f6a3778e-633a-40fb-9618-795303070b97\" ] }, \"max_cascade_depth\": 0, \"cross_object_write\": false, \"validation_budget_id\": null, \"external_sources_enabled\": false }"
+                  - paragraph [ref=f5e385]: 这是固定规则声明；不代表当前运行已经取得资格或额度。
+                - group [ref=f5e327]:
+                  - generic "规则版本与办理回执" [active] [ref=f5e328]
+                  - list [ref=f5e386]:
+                    - listitem [ref=f5e387]: activate · v2 · 办理人 2906155b-8f4c-44a4-89f8-ee8799ff40392026-10-29T14:35:55.808711+00:00 · 回执 85f1bef5-03ef-4ac7-8985-de83d962f2b0
+                    - listitem [ref=f5e388]: draft · v1 · 办理人 2906155b-8f4c-44a4-89f8-ee8799ff40392026-10-29T14:35:29.157314+00:00 · 回执 928f96ab-b6f2-4ddd-a850-48e0157021e2
+                - heading "触发来源与抑制原因" [level=4] [ref=f5e329]
+                - paragraph [ref=f5e330]: 尚无实际触发记录。
+                - heading "实际运行历史" [level=4] [ref=f5e331]
+                - paragraph [ref=f5e332]: 尚无已受理的运行记录。
+              - generic [ref=f5e333]:
+                - heading "保存此规则的新草稿" [level=3] [ref=f5e334]
+                - group [ref=f5e335]:
+                  - generic [ref=f5e336]:
+                    - text: 规则固定范围
+                    - textbox "规则固定范围" [ref=f5e337]: 当前品类 e3534751-fd75-4f57-b1fc-077ba2ebb5c6
+                  - generic [ref=f5e338]:
+                    - text: 规则工作
+                    - combobox "规则工作" [ref=f5e339]:
+                      - option "原只读自动化工作"
+                      - option "本人结构摘要（不调用模型）" [selected]
+                  - region "本人摘要订阅设置" [ref=f5e340]:
+                    - paragraph [ref=f5e341]: 摘要只供本人读取。模板与项目选择只收窄实际权限；每次生成仍核对本人当前权限，不会代他人订阅或发送给同事。
+                    - paragraph [ref=f5e342]: 品质条目按实际具名措施、有效品质职责或明确关注项目读取。CAPA 到期指原登记的有效性观察截止；措施完成期限未登记时保留未知。不同分组需要不同频率时，可分别保存摘要规则。
+                    - generic [ref=f5e343]:
+                      - paragraph [ref=f5e344]: 岗位建议尚未读取；当前选择由本人确定，不猜测岗位。
+                      - button "重新读取本人岗位建议" [ref=f5e345]
+                      - generic [ref=f5e346]:
+                        - text: 摘要模板
+                        - combobox "摘要模板" [ref=f5e347]:
+                          - option "本人自选分组与类型" [selected]
+                      - paragraph [ref=f5e348]: 预选不修改已有订阅。本人改选后仍按原规则保存草稿、预览与一次确认启用；岗位偏好不是专业资格或阅读权限。
+                    - generic [ref=f5e349]:
+                      - generic [ref=f5e350]:
+                        - text: 频率
+                        - combobox "频率" [ref=f5e351]:
+                          - option "每周一"
+                          - option "每个工作日（周一至周五）" [selected]
+                      - generic [ref=f5e352]:
+                        - text: 本地生成时间
+                        - textbox "本地生成时间" [ref=f5e353]: 09:00
+                    - generic [ref=f5e354]:
+                      - text: 时区
+                      - textbox "时区" [ref=f5e355]: America/Los_Angeles
+                    - paragraph [ref=f5e356]: 按该时区的本地日历重复，跳过周末。夏令时改变时仍保留所选本地时间；不存在的本地时点跳过，重复时点只生成一次。
+                    - paragraph [ref=f5e357]: 首次计划时点：2026-10-29T16:00:00.000Z
+                    - group "订阅分组" [ref=f5e358]:
+                      - generic [ref=f5e360]:
+                        - checkbox "需要我决定或处理的事" [checked] [ref=f5e361]
+                        - text: 需要我决定或处理的事
+                      - generic [ref=f5e362]:
+                        - checkbox "我在等待别人完成的事" [checked] [ref=f5e363]
+                        - text: 我在等待别人完成的事
+                      - generic [ref=f5e364]:
+                        - checkbox "我关注项目的新变化" [checked] [ref=f5e365]
+                        - text: 我关注项目的新变化
+                    - group "关注项目" [ref=f5e366]:
+                      - button "读取本人可见项目" [ref=f5e368]
+                    - group [ref=f5e369]:
+                      - generic "按条目类型退订" [ref=f5e370] [cursor=pointer]
+                    - generic [ref=f5e371]:
+                      - generic [ref=f5e372]:
+                        - text: 每次最多列出条目
+                        - spinbutton "每次最多列出条目" [ref=f5e373]: "100"
+                      - generic [ref=f5e374]:
+                        - text: 最多生成次数
+                        - spinbutton "最多生成次数" [ref=f5e375]: "52"
+                    - paragraph [ref=f5e376]: 启用后摘要出现在本人收件箱和原运行；不向外部渠道发送。无变化的事项折叠，未知日期与责任保留为未知，不自行评定健康度。
+                  - generic [ref=f5e377]:
+                    - text: 规则名称
+                    - textbox "规则名称" [ref=f5e378]: 浏览器零技能零钱包摘要
+                  - generic [ref=f5e379]:
+                    - text: 用途
+                    - textbox "用途" [ref=f5e380]: 本人查看工作变化与下一步。
+                  - group [ref=f5e381]:
+                    - generic "高级配置" [ref=f5e382] [cursor=pointer]
+                - button "预览摘要订阅" [ref=f5e383]
+    - button "打开小Pai工作栏" [ref=f5e162] [cursor=pointer]

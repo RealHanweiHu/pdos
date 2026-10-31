@@ -1,0 +1,8 @@
+{
+  "path": "pdos-next/server/tests/agent_kernel/test_project_discussion_history_pg.py",
+  "base_sha256": "57e0ba6b1c9266d8405bb8caa91cd0a4cc1e2058a7e4c89309163a98056b426d",
+  "sha256": "cd7e15f29117c02828ea33249f79126a69a33cbbe88164e92dca6fee639544a3",
+  "root_cause": "create_g0_project mutates caller setup.product; second legal project must use its own copied caller scope",
+  "production_or_existing_helper_changed": false,
+  "native_pg_rerun": false
+}

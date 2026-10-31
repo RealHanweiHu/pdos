@@ -1,0 +1,7 @@
+{
+  "input_count": 694,
+  "aggregate_sha256": "4866a111a71fcb4deed001921d7645438476816643d8f987e3ade280363d0f0c",
+  "all_applied_files_equal_to_built_snapshot": true,
+  "build_evidence": "/tmp/pdos-verification-ui-stage-20261029/evidence/build-result.json",
+  "stage_build_inputs": "/tmp/pdos-verification-ui-stage-20261029/build-inputs.json"
+}

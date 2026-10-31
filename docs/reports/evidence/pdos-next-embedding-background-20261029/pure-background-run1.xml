@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="0.987" timestamp="2026-10-29T03:18:40.129279-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="" name="tests.enterprise_search.test_embedding_schema_columns" time="0.000"><error message="collection failure">ImportError while importing test module '/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/tests/enterprise_search/test_embedding_schema_columns.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos-next/server/tests/enterprise_search/test_embedding_schema_columns.py:5: in &lt;module&gt;
+    from schema_audit import audit
+E   ModuleNotFoundError: No module named 'schema_audit'</error></testcase></testsuite></testsuites>

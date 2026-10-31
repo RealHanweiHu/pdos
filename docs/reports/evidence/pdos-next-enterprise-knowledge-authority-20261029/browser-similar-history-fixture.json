@@ -1,0 +1,73 @@
+{
+  "tenant": "f7458632-1a88-4bec-8b94-18f807f4c5fc",
+  "human": "d5cb0b5d-b32d-49b7-9a20-1db898b497e0",
+  "agent": "30ee17f8-dff9-4ab5-9b01-902f9ea3e631",
+  "category": "bc1c7661-849f-48cb-be7d-edc463e7a51e",
+  "product": "c668b5b9-2290-4330-871a-6f389b393b69",
+  "project": "663325cd-acd3-4cc9-ad3e-383b9511f12f",
+  "issue": "79b845fc-6a90-5f1f-b10e-a540866e11c7",
+  "version": "8d7cc2f5-708e-4562-b9f6-c8eda38e8a73",
+  "api": "/v1/categories/bc1c7661-849f-48cb-be7d-edc463e7a51e/products/c668b5b9-2290-4330-871a-6f389b393b69/quality-issues/79b845fc-6a90-5f1f-b10e-a540866e11c7/similar-history",
+  "anchor": {
+    "issue_id": "79b845fc-6a90-5f1f-b10e-a540866e11c7",
+    "version_id": "8d7cc2f5-708e-4562-b9f6-c8eda38e8a73",
+    "revision": 1,
+    "title": "D16-01 接口漏气历史线索",
+    "category_id": "bc1c7661-849f-48cb-be7d-edc463e7a51e",
+    "product_id": "c668b5b9-2290-4330-871a-6f389b393b69",
+    "project_id": "663325cd-acd3-4cc9-ad3e-383b9511f12f"
+  },
+  "card": {
+    "kind": "issue",
+    "title": "D16-02 接口漏气处理记录",
+    "object_id": "2573ab27-4bdc-5aea-bc47-238e6dcd3f37",
+    "source_id": "c7dfa3d2-cb85-43fc-a35b-dc5d8aeefee7",
+    "source_revision": 1,
+    "is_current": true,
+    "status": "open",
+    "category": "汽车充气泵",
+    "project": "Shared synthetic project",
+    "reason": "标题或记录词命中",
+    "root_cause": "未记录",
+    "containment": [
+      "未记录"
+    ],
+    "capa_actions": [
+      "未记录"
+    ],
+    "verification": "待复验：该固定记录未登记有效性决定",
+    "differences": [
+      {
+        "field": "型号",
+        "status": "same",
+        "current": "Shared synthetic project",
+        "candidate": "Shared synthetic project"
+      },
+      {
+        "field": "已读实际配置BOM料号（非故障件认定）",
+        "status": "same",
+        "current": "内部:SYN-c668b5b9-2290-4330-871a-6f389b393b69",
+        "candidate": "内部:SYN-c668b5b9-2290-4330-871a-6f389b393b69"
+      },
+      {
+        "field": "试制轮次编号/名称",
+        "status": "same",
+        "current": "Synthetic first prototype",
+        "candidate": "Synthetic first prototype"
+      },
+      {
+        "field": "项目当前阶段（非历史发生阶段）",
+        "status": "unknown",
+        "current": "未记录或未读取",
+        "candidate": "未记录或未读取"
+      }
+    ],
+    "can_prepare_merge": true,
+    "object_url": "/?area=cockpit&category=bc1c7661-849f-48cb-be7d-edc463e7a51e&product=c668b5b9-2290-4330-871a-6f389b393b69&project=663325cd-acd3-4cc9-ad3e-383b9511f12f&projectView=issues&panel=quality&build=eadd3bf6-a475-40a4-a61c-4fb43b519dcc&issue=2573ab27-4bdc-5aea-bc47-238e6dcd3f37",
+    "object_label": "查看当前问题"
+  },
+  "baseline_models": 0,
+  "baseline_receipts": 67,
+  "synthetic": true,
+  "credentials": "private temporary files only"
+}

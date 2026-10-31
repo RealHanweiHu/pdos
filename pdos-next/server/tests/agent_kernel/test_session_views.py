@@ -58,7 +58,7 @@ def test_run_projection_keeps_scope_and_parents_in_sql_without_loading_body():
         assert f"agent_runs.{column}" not in sql
     personal = str(select(views._sessions(context(False), None)))
     assert "agent_sessions.product_id IS NULL" in personal
-    assert "agent_sessions.proposal_id IS NULL" in personal
+    assert "agent_sessions.proposal_id) IS NULL" in personal
 
 
 def test_head_preserves_saved_goal_clock_and_revert_without_session_status():
@@ -85,6 +85,28 @@ def test_head_preserves_saved_goal_clock_and_revert_without_session_status():
         "reverted": True,
     }
     assert not {"title", "archived", "pinned", "session_status"} & head.keys()
+
+
+def test_project_filter_binds_actual_session_and_run_before_any_search_or_paging():
+    ctx, project = context(), uuid4()
+    sessions = views._sessions(ctx, None, project)
+    compiled = select(views._matched(views._runs(sessions), "original goal")).compile(
+        dialect=postgresql.dialect()
+    )
+    sql = str(compiled)
+    assert project in compiled.params.values()
+    assert "agent_sessions.project_id =" in sql
+    assert "EXISTS (SELECT projects.id" in sql
+    assert "agent_runs.project_id IS NOT DISTINCT FROM readable_sessions.project_id" in sql
+    assert "agent_sessions.owner_id =" in sql
+    assert "LIMIT" not in sql
+    assert "agent_runs.result" not in sql
+    assert views._scope(ctx, None) == {"category_id": str(ctx.category_id), "proposal_id": None}
+    assert views._scope(ctx, None, project)["project_id"] == str(project)
+    for model in (views.SessionPage, views.RunPage):
+        assert model(project_id=project).project_id == project
+        with pytest.raises(ValidationError):
+            model(project_id="not-a-project")
 
 
 def test_router_query_models_and_read_snapshot_are_wired_without_a_database(monkeypatch):

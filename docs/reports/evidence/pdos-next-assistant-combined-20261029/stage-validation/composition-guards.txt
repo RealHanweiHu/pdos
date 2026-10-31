@@ -1,0 +1,4 @@
+111 operations; no base conflicts.
+11 protected files preserve current live SHA; C10-known entries match.
+82 unique changed/additional delivery files; all changed Python ASTs parse.
+No unnumbered SQL installed; migration draft kept outside server/migrations.

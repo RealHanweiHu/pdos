@@ -1,0 +1,12 @@
+{
+  "args": [
+    "-m",
+    "alembic",
+    "downgrade",
+    "s0_0812"
+  ],
+  "exit": 0,
+  "output": "",
+  "head": "s0_0812",
+  "target": "127.0.0.1:64245/pdos_test"
+}

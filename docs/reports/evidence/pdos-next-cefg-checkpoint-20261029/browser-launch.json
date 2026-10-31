@@ -1,0 +1,6 @@
+{
+  "browser_dir": "/tmp/pdos-cef-browser-actual-20261029-v1",
+  "web_url": "http://127.0.0.1:50780",
+  "target": "127.0.0.1:53502/pdos_test",
+  "model": "offline only"
+}

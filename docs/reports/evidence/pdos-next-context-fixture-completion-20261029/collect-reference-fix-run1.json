@@ -1,0 +1,18 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "--collect-only",
+    "-q",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+    "tests/enterprise_search/test_eval_v0_source_context_pg.py"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-29T23:05:19.802600+00:00",
+  "finished_at": "2026-10-29T23:05:23.722543+00:00",
+  "exit_code": 0,
+  "stdout_log": "collect-reference-fix-run1.log",
+  "stdout_sha256": "8ef4ed5513a6042e2f2ddb862696b7918261aaad95db91b346b6c60b0268e004",
+  "scope": "pure tests, collection or static lint only; no native execution, DB, server, Temporal or real model"
+}

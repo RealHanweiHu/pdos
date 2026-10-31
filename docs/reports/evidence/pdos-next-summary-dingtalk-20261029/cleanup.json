@@ -1,0 +1,8 @@
+{
+  "own_web_pid": 11139,
+  "cwd_verified": true,
+  "sigterm": true,
+  "own_api_fixture_exit": 0,
+  "private_storage_removed": true,
+  "shared_db_and_temporal": "retained"
+}

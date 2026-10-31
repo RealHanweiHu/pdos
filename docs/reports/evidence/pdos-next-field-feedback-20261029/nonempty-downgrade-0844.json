@@ -1,0 +1,21 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "actual_alembic_downgrade_refused": true,
+  "history_head_function_unchanged": true,
+  "snapshot": {
+    "head": "s0_0844",
+    "counts": {
+      "agent_runs": 5122,
+      "agent_tool_calls": 9547,
+      "action_receipts": 48371,
+      "category_knowledge_entries": 475,
+      "knowledge_answer_reviews": 44,
+      "knowledge_gap_submissions": 11,
+      "field_feedback_versions": 38,
+      "field_response_records": 45,
+      "dingtalk_deliveries": 1
+    },
+    "function_sha256": "d45c25f043f689181bab66627d4524785b6475f1ed698568c923f9c888ac29bc"
+  }
+}

@@ -1,30 +1,13 @@
-import { readFile, stat } from "node:fs/promises";
-import path from "node:path";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { parsePlanProgress, planStatusLabels, planStatusOrder, type PlanItem, type PlanItemStatus, type PlanProgress } from "@/lib/plan-progress";
 import { PlanItemsTable } from "@/components/plan/plan-items-table";
+import { readPlanSource } from "@/lib/plan-source";
+import { parseCurrentProgress } from "@/lib/current-progress";
+import { CurrentMilestones } from "@/components/plan/current-milestones";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "计划执行进度 · PDOS" };
-
-const todoRelative = "tasks/ai-native-integrated-todo.md";
-
-function todoCandidates(): string[] {
-  const fromEnvironment = process.env.PDOS_TODO_FILE;
-  const cwd = process.cwd();
-  return [fromEnvironment, path.resolve(cwd, todoRelative), path.resolve(cwd, "..", "..", todoRelative), path.resolve(cwd, "..", todoRelative)].filter((candidate): candidate is string => Boolean(candidate));
-}
-
-async function readTodo(): Promise<{ markdown: string; updated: Date; source: string } | { failure: string }> {
-  for (const candidate of todoCandidates()) {
-    try {
-      const [markdown, info] = await Promise.all([readFile(candidate, "utf8"), stat(candidate)]);
-      return { markdown, updated: info.mtime, source: candidate };
-    } catch { /* Try the next known location of the single active checklist. */ }
-  }
-  return { failure: `未能读取 ${todoRelative}。本页直接读取仓库中的唯一活动清单，请确认从 pdos-next/web 启动，或用 PDOS_TODO_FILE 指定清单路径。` };
-}
 
 function StatusDot({ status }: { status: PlanItemStatus }) { return <span className="plan-dot" data-status={status} aria-hidden="true" />; }
 
@@ -130,7 +113,7 @@ function Loops({ plan }: { plan: PlanProgress }) {
 }
 
 export default async function PlanPage() {
-  const source = await readTodo();
+  const source = await readPlanSource();
   if ("failure" in source) {
     return <>
       <header className="workspace-public-header"><span className="font-semibold">PDOS</span><span className="subtle">计划执行进度</span></header>
@@ -140,7 +123,8 @@ export default async function PlanPage() {
     </>;
   }
   const plan = parsePlanProgress(source.markdown);
-  const updated = new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short" }).format(source.updated);
+  const current = parseCurrentProgress(source.markdown);
+  const updated = new Intl.DateTimeFormat("zh-CN", { dateStyle: "medium", timeStyle: "short", timeZone: "America/Los_Angeles" }).format(source.updated);
   const kpis: { label: string; value: number; status: PlanItemStatus | null }[] = [
     { label: "原条目总数", value: plan.counts.total, status: null },
     ...planStatusOrder.map((status) => ({ label: planStatusLabels[status], value: plan.counts[status], status })),
@@ -151,10 +135,15 @@ export default async function PlanPage() {
       <div className="workspace-page-heading">
         <div className="min-w-0">
           <h1>计划执行进度</h1>
-          <p>来源 tasks/ai-native-integrated-todo.md · 清单 v{plan.version} · 更新 {updated}。本页是唯一活动清单的只读投影，不写入清单、不构成第二份勾选或验收记录；计数不代表完成率。</p>
+          <p>清单 v{plan.version} · 更新 {updated}（洛杉矶时间）。本页直接读取当前队列；历史 N/P/Q 条目归档展示，不计入当前工程进度。</p>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5" aria-label="状态总览">
+      {process.env.PDOS_NEXT_LOCAL_SESSION && <Link className="mb-6 inline-block text-primary hover:underline" href="/preview">打开本地预览导览 →</Link>}
+      <CurrentMilestones progress={current}/>
+      <details className="mt-8 rounded-lg border border-border p-4">
+        <summary className="cursor-pointer font-semibold">原工程历史底账（已归档）</summary>
+        <p className="subtle my-4">以下内容仅用于追溯，旧“当前/下一步”和勾选状态不代表 pdos-next 的当前任务或验收结果。</p>
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-5" aria-label="历史状态总览">
         {kpis.map((kpi) => <div key={kpi.label} className="panel flex items-center gap-3 py-4">
           {kpi.status ? <StatusDot status={kpi.status} /> : <span className="plan-dot" aria-hidden="true" />}
           <div className="min-w-0"><p className="text-xl font-semibold">{kpi.value}</p><p className="subtle">{kpi.label}</p></div>
@@ -171,6 +160,7 @@ export default async function PlanPage() {
           <PlanItemsTable items={plan.items} />
         </section>
       </div>
+      </details>
       <p className="subtle mt-8">真实资格、人工出口与生产启用以原批准与授权为准；本页展示不授予任何权限。</p>
     </main>
   </>;

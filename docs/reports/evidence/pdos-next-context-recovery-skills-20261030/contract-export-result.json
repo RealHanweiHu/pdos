@@ -1,0 +1,15 @@
+{
+  "exit_code": 0,
+  "snapshot": "/private/tmp/pdos-recovery-contract-export-20261030/pdos-next",
+  "changed": [
+    "openapi.json"
+  ],
+  "database_connections_forbidden": true,
+  "real_model_calls": 0,
+  "generated_sha256": {
+    "operations.json": "0dac77457becaf9a52cc36deabfe5da67022a45b0db711ecc3ff762374f958c6",
+    "acceptance.json": "833d896ed00900efea684e11559588a808fa1eb4d8da4a76b17c05ade62e0252",
+    "openapi.json": "a5632fa9dfa03604c496640a38ad9eac377f7ee31f16400274d2d58cb77e9dc4",
+    "payloads.schema.json": "1c9638bb71ec9626faa2c96f75a56c0c28da7cf9b0fadcbed6875f51920c73e0"
+  }
+}

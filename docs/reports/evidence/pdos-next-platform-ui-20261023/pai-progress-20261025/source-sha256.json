@@ -1,0 +1,9 @@
+{
+  "pdos-next/web/src/lib/run-process.ts": "a202794b06f5f6ca266ac23fe1665d4f027140cfcc151cc5ab0c4f48c60b0c7a",
+  "pdos-next/web/src/components/pai/run-process.tsx": "3e8141a2363aeeaf1e8a622e97d26534db5f88584b2dd321c2931ed1db5206d0",
+  "pdos-next/web/src/components/pai/run-progress.module.css": "92d2c49a0665e28b4e148b6ad7036b2d9b35759765f6600a615ff8792f2bf3d7",
+  "pdos-next/web/src/components/pai/run-process.test.mjs": "a6f1c235faa1cdfa08088dc19f7cac92c1f3ac809fa5b90ced4e96e23b10a048",
+  "pdos-next/web/src/components/pai/conversation-history.tsx": "cff98783473088328359fd877610884257470c871f9789ca2a6c62d77960821f",
+  "pdos-next/web/src/components/xiaopai.tsx": "de55c60adc9450a58dfb8b8855feae80039d959d9c241d6e5cb3d0db29d09416",
+  "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "7187d0ab3969e5bdb31b3531f392f0648cd64a19cd9aaea7d8e5535d8e36ee20"
+}

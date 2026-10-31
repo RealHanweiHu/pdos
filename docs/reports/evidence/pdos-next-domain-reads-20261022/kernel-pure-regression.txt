@@ -1,0 +1,443 @@
+FF........F............................................................. [  4%]
+........................................................................ [  9%]
+........................................................................ [ 13%]
+........................................................................ [ 18%]
+........................................................................ [ 22%]
+........................................................................ [ 27%]
+........................................................................ [ 32%]
+........................................................................ [ 36%]
+................................................................. [ 40%]
+........................................................................ [ 45%]
+........................................................................ [ 49%]
+........................................................................ [ 54%]
+........................................................................ [ 59%]
+...........F............................................................ [ 63%]
+........................................................................ [ 68%]
+........................................................................ [ 72%]
+........................................................................ [ 77%]
+........................................................................ [ 81%]
+........................................................................ [ 86%]
+........................................................................ [ 91%]
+........................................................................ [ 95%]
+.....................................................................    [100%]
+=================================== FAILURES ===================================
+______ test_real_search_adapter_local_http_ignores_proxy_auth_environment ______
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x118d563c0>
+
+    def test_real_search_adapter_local_http_ignores_proxy_auth_environment(monkeypatch):
+        monkeypatch.setenv("HTTP_PROXY", "http://127.0.0.1:1/")
+        monkeypatch.setenv("ALL_PROXY", "http://127.0.0.1:1/")
+        monkeypatch.setenv("SEARCH_API_KEY", "must-not-leave-process")
+>       with local_http() as (address, requests):
+             ^^^^^^^^^^^^
+
+tests/agent_kernel/research/test_http_ports.py:70: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests/agent_kernel/research/test_http_ports.py:55: in local_http
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/socketserver.py:457: in __init__
+    self.server_bind()
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/http/server.py:136: in server_bind
+    socketserver.TCPServer.server_bind(self)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <http.server.ThreadingHTTPServer object at 0x118d56de0>
+
+    def server_bind(self):
+        """Called by constructor to bind the socket.
+    
+        May be overridden.
+    
+        """
+        if self.allow_reuse_address and hasattr(socket, "SO_REUSEADDR"):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # Since Linux 6.12.9, SO_REUSEPORT is not allowed
+        # on other address families than AF_INET/AF_INET6.
+        if (
+            self.allow_reuse_port and hasattr(socket, "SO_REUSEPORT")
+            and self.address_family in (socket.AF_INET, socket.AF_INET6)
+        ):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+>       self.socket.bind(self.server_address)
+E       PermissionError: [Errno 1] Operation not permitted
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/socketserver.py:478: PermissionError
+_ test_pinned_transport_real_http_wire_has_validated_ip_target_and_original_host _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x10fabe300>
+
+    def test_pinned_transport_real_http_wire_has_validated_ip_target_and_original_host(monkeypatch):
+        attempts = []
+        monkeypatch.setenv("HTTP_PROXY", "http://127.0.0.1:1/")
+>       with local_http() as (local_address, requests):
+             ^^^^^^^^^^^^
+
+tests/agent_kernel/research/test_http_ports.py:86: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+tests/agent_kernel/research/test_http_ports.py:55: in local_http
+    server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/socketserver.py:457: in __init__
+    self.server_bind()
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/http/server.py:136: in server_bind
+    socketserver.TCPServer.server_bind(self)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <http.server.ThreadingHTTPServer object at 0x10ecf99d0>
+
+    def server_bind(self):
+        """Called by constructor to bind the socket.
+    
+        May be overridden.
+    
+        """
+        if self.allow_reuse_address and hasattr(socket, "SO_REUSEADDR"):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        # Since Linux 6.12.9, SO_REUSEPORT is not allowed
+        # on other address families than AF_INET/AF_INET6.
+        if (
+            self.allow_reuse_port and hasattr(socket, "SO_REUSEPORT")
+            and self.address_family in (socket.AF_INET, socket.AF_INET6)
+        ):
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEPORT, 1)
+>       self.socket.bind(self.server_address)
+E       PermissionError: [Errno 1] Operation not permitted
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/socketserver.py:478: PermissionError
+_____ test_actual_synthetic_public_pdf_uses_fixed_image_isolated_container _____
+
+self = <pdos_next.security_runtime.parser.DockerParserRunner object at 0x10ac4d2b0>
+content = b'%PDF-1.3\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<<\n/Producer (pypdf)\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Count 1\n/Kids ...n0000000294 00000 n \n0000000364 00000 n \ntrailer\n<<\n/Size 7\n/Root 3 0 R\n/Info 1 0 R\n>>\nstartxref\n469\n%%EOF\n'
+media_type = 'application/pdf'
+limits = ParseLimits(max_input_bytes=2097152, max_text_chars=1000000, max_segments=100000, max_pdf_pages=1000, max_sheets=30, m...s=1000, max_zip_expanded_bytes=50000000, max_zip_ratio=100, timeout_seconds=20, cpu_seconds=10, memory_bytes=536870912)
+
+    async def parse_async(
+        self, content: bytes, *, media_type: str, limits: ParseLimits | None = None
+    ) -> ParseResult:
+        limits = limits or ParseLimits()
+        _validate(content, media_type, limits)
+        image = _image_id()
+        request = json.dumps(
+            {
+                "content": base64.b64encode(content).decode("ascii"),
+                "media_type": media_type,
+                "limits": asdict(limits),
+            },
+            ensure_ascii=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+        try:
+>           result = await run_container(
+                image=image,
+                entrypoint="python",
+                arguments=("-I", "-B", "/app/parser_worker.py"),
+                content=request,
+                timeout_seconds=limits.timeout_seconds,
+                stdout_maximum=limits.max_text_chars * 14 + limits.max_segments * 500 + 20_000,
+                user="65532:65532",
+                memory_bytes=limits.memory_bytes,
+                pids=16,
+                cpus=1,
+            )
+
+pdos_next/security_runtime/parser.py:187: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+image = 'sha256:9ef51694b875bcf60289cf4527cd88bcad6b6d6f04dbbf17479bc85e456b3ed1'
+entrypoint = 'python', arguments = ('-I', '-B', '/app/parser_worker.py')
+content = b'{"content":"JVBERi0xLjMKJeLjz9MKMSAwIG9iago8PAovUHJvZHVjZXIgKHB5cGRmKQo+PgplbmRvYmoKMiAwIG9iago8PAovVHlwZSAvUGFnZXMK..."max_zip_expanded_bytes":50000000,"max_zip_ratio":100,"timeout_seconds":20,"cpu_seconds":10,"memory_bytes":536870912}}'
+timeout_seconds = 20, stdout_maximum = 64020000, user = '65532:65532'
+memory_bytes = 536870912, pids = 16, cpus = 1
+
+    async def run_container(
+        *,
+        image: str,
+        entrypoint: str,
+        arguments: tuple[str, ...],
+        content: bytes,
+        timeout_seconds: float,
+        stdout_maximum: int,
+        user: str,
+        memory_bytes: int,
+        pids: int = 32,
+        cpus: int = 2,
+    ) -> DockerResult:
+        """Internal server-only runner. All callers supply fixed image/entrypoint/options.
+    
+        The deadline includes client startup, stdin transfer and both output streams.
+        On timeout/cancellation/overflow, force removal and process reaping occur before
+        the call returns. Cleanup has its own small bounded grace period; if the daemon
+        cannot confirm removal, fail closed with CLEANUP_UNCONFIRMED.
+        """
+        name = "pdos-evidence-" + uuid4().hex
+        process = None
+        tasks: list[asyncio.Task] = []
+        cancelled = False
+        try:
+            async with asyncio.timeout(timeout_seconds):
+                process = await asyncio.create_subprocess_exec(
+                    "docker",
+                    "run",
+                    "--name",
+                    name,
+                    "--pull",
+                    "never",
+                    "--network",
+                    "none",
+                    "--read-only",
+                    "--user",
+                    user,
+                    "--cap-drop",
+                    "ALL",
+                    "--security-opt",
+                    "no-new-privileges:true",
+                    "--pids-limit",
+                    str(pids),
+                    "--memory",
+                    str(memory_bytes),
+                    "--memory-swap",
+                    str(memory_bytes),
+                    "--cpus",
+                    str(cpus),
+                    "--ulimit",
+                    "nofile=64:64",
+                    "--ulimit",
+                    "core=0:0",
+                    "--tmpfs",
+                    "/tmp:rw,noexec,nosuid,nodev,size=33554432,mode=1777",
+                    "--workdir",
+                    "/tmp",
+                    "--interactive",
+                    "--entrypoint",
+                    entrypoint,
+                    image,
+                    *arguments,
+                    stdin=asyncio.subprocess.PIPE,
+                    stdout=asyncio.subprocess.PIPE,
+                    stderr=asyncio.subprocess.PIPE,
+                    env=_client_environment(),
+                    limit=65_536,
+                )
+                assert process.stdout is not None and process.stderr is not None
+                tasks = [
+                    asyncio.create_task(_send(process, content)),
+                    asyncio.create_task(_bounded_read(process.stdout, stdout_maximum)),
+                    asyncio.create_task(_bounded_read(process.stderr, 65_536)),
+                    asyncio.create_task(process.wait()),
+                ]
+                _, stdout, _, returncode = await asyncio.gather(*tasks)
+                return DockerResult(returncode, stdout)
+        except TimeoutError as exc:
+            raise DockerFailure("TIMEOUT") from exc
+        except OSError as exc:
+            raise DockerFailure("UNAVAILABLE") from exc
+        except asyncio.CancelledError:
+            cancelled = True
+            raise
+        finally:
+            for task in tasks:
+                if not task.done():
+                    task.cancel()
+            if tasks:
+                await asyncio.gather(*tasks, return_exceptions=True)
+            # Removing a finished container also ensures there is no retained input
+            # filesystem. Use no --rm race so successful removal is positively known.
+            if process is not None and process.returncode is None:
+                process.kill()
+            # Stop the host client before removing the container. Otherwise a run
+            # still starting could create/start the same name after the remove call.
+            discard = []
+            if process is not None:
+                for stream in (process.stdout, process.stderr):
+                    if stream is not None:
+                        discard.append(asyncio.create_task(_discard(stream)))
+            removed = await asyncio.shield(_remove_owned(name))
+            if process is not None:
+                try:
+                    async with asyncio.timeout(1):
+                        await process.wait()
+                        await asyncio.gather(*discard)
+                except TimeoutError as exc:
+                    raise DockerFailure("CLEANUP_UNCONFIRMED") from exc
+                finally:
+                    for task in discard:
+                        if not task.done():
+                            task.cancel()
+                    if discard:
+                        await asyncio.gather(*discard, return_exceptions=True)
+            if process is not None and not removed:
+                # Do not mask task cancellation, but never return successful bytes if
+                # daemon cleanup could not be verified.
+                if not cancelled:
+>                   raise DockerFailure("CLEANUP_UNCONFIRMED")
+E                   pdos_next.security_runtime.docker.DockerFailure: CLEANUP_UNCONFIRMED
+
+pdos_next/security_runtime/docker.py:222: DockerFailure
+
+The above exception was the direct cause of the following exception:
+
+self = <pdos_next.research.pdf.ContainerPDFAdapter object at 0x118844fe0>
+scope = RunScope(tenant_id=UUID('62a71388-a01d-4560-8191-3fc303bb2f4d'), requester_id=UUID('5d31d97a-b627-4c17-8d35-7276607431...egories=frozenset({'public'}), isolation='research', artifact_ids=frozenset(), trigger='conversation', project_id=None)
+content = b'%PDF-1.3\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<<\n/Producer (pypdf)\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Count 1\n/Kids ...n0000000294 00000 n \n0000000364 00000 n \ntrailer\n<<\n/Size 7\n/Root 3 0 R\n/Info 1 0 R\n>>\nstartxref\n469\n%%EOF\n'
+url = 'https://maker.example/specs.pdf'
+
+    async def __call__(self, scope, content: bytes, url: str) -> ParsedDocument:
+        if scope.isolation != "research":
+            raise ResearchError("isolated_subtask_only", "Public PDF requires a research child")
+        try:
+>           result = await self.runner.parse_async(
+                content, media_type="application/pdf", limits=self.limits
+            )
+
+pdos_next/research/pdf.py:28: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.security_runtime.parser.DockerParserRunner object at 0x10ac4d2b0>
+content = b'%PDF-1.3\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<<\n/Producer (pypdf)\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Count 1\n/Kids ...n0000000294 00000 n \n0000000364 00000 n \ntrailer\n<<\n/Size 7\n/Root 3 0 R\n/Info 1 0 R\n>>\nstartxref\n469\n%%EOF\n'
+media_type = 'application/pdf'
+limits = ParseLimits(max_input_bytes=2097152, max_text_chars=1000000, max_segments=100000, max_pdf_pages=1000, max_sheets=30, m...s=1000, max_zip_expanded_bytes=50000000, max_zip_ratio=100, timeout_seconds=20, cpu_seconds=10, memory_bytes=536870912)
+
+    async def parse_async(
+        self, content: bytes, *, media_type: str, limits: ParseLimits | None = None
+    ) -> ParseResult:
+        limits = limits or ParseLimits()
+        _validate(content, media_type, limits)
+        image = _image_id()
+        request = json.dumps(
+            {
+                "content": base64.b64encode(content).decode("ascii"),
+                "media_type": media_type,
+                "limits": asdict(limits),
+            },
+            ensure_ascii=True,
+            separators=(",", ":"),
+        ).encode("ascii")
+        try:
+            result = await run_container(
+                image=image,
+                entrypoint="python",
+                arguments=("-I", "-B", "/app/parser_worker.py"),
+                content=request,
+                timeout_seconds=limits.timeout_seconds,
+                stdout_maximum=limits.max_text_chars * 14 + limits.max_segments * 500 + 20_000,
+                user="65532:65532",
+                memory_bytes=limits.memory_bytes,
+                pids=16,
+                cpus=1,
+            )
+            if result.returncode in (125, 126, 127):
+                raise ParseFailure(
+                    "ISOLATION_UNAVAILABLE",
+                    "The local parser container could not start",
+                    retryable=True,
+                )
+            if result.returncode != 0:
+                raise ParseFailure(
+                    "RESOURCE_LIMIT", "Parser stopped before completing within its budget"
+                )
+            return _decode(result.stdout, content, media_type, limits)
+        except DockerFailure as exc:
+            if exc.code == "TIMEOUT":
+                raise ParseFailure(
+                    "PARSER_TIMEOUT", "Parser exceeded its time budget", retryable=True
+                ) from exc
+            if exc.code == "OUTPUT_LIMIT":
+                raise ParseFailure(
+                    "OUTPUT_LIMIT", "Parser response exceeds its output budget"
+                ) from exc
+>           raise ParseFailure(
+                "ISOLATION_UNAVAILABLE", "Parser isolation could not be confirmed", retryable=True
+            ) from exc
+E           pdos_next.evidence_processing.types.ParseFailure: Parser isolation could not be confirmed
+
+pdos_next/security_runtime/parser.py:219: ParseFailure
+
+The above exception was the direct cause of the following exception:
+
+    def test_actual_synthetic_public_pdf_uses_fixed_image_isolated_container():
+        content = synthetic_pdf()
+>       document = run(
+            ContainerPDFAdapter()(scope().child("research"), content, "https://maker.example/specs.pdf")
+        )
+
+tests/agent_kernel/research/test_pdf_and_coverage.py:45: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/research/test_research.py:31: in run
+    return asyncio.run(awaitable)
+           ^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.research.pdf.ContainerPDFAdapter object at 0x118844fe0>
+scope = RunScope(tenant_id=UUID('62a71388-a01d-4560-8191-3fc303bb2f4d'), requester_id=UUID('5d31d97a-b627-4c17-8d35-7276607431...egories=frozenset({'public'}), isolation='research', artifact_ids=frozenset(), trigger='conversation', project_id=None)
+content = b'%PDF-1.3\n%\xe2\xe3\xcf\xd3\n1 0 obj\n<<\n/Producer (pypdf)\n>>\nendobj\n2 0 obj\n<<\n/Type /Pages\n/Count 1\n/Kids ...n0000000294 00000 n \n0000000364 00000 n \ntrailer\n<<\n/Size 7\n/Root 3 0 R\n/Info 1 0 R\n>>\nstartxref\n469\n%%EOF\n'
+url = 'https://maker.example/specs.pdf'
+
+    async def __call__(self, scope, content: bytes, url: str) -> ParsedDocument:
+        if scope.isolation != "research":
+            raise ResearchError("isolated_subtask_only", "Public PDF requires a research child")
+        try:
+            result = await self.runner.parse_async(
+                content, media_type="application/pdf", limits=self.limits
+            )
+        except ParseFailure as exc:
+>           raise ResearchError(
+                "pdf_parse_failed",
+                exc.message,
+                provider="isolated-public-pdf",
+                service_code=exc.code,
+            ) from exc
+E           pdos_next.research.web.ResearchError: Parser isolation could not be confirmed
+
+pdos_next/research/pdf.py:32: ResearchError
+_________ test_project_skills_cover_the_registered_manufacturing_chain _________
+
+    def test_project_skills_cover_the_registered_manufacturing_chain():
+        """The S2–S5 write commands are reachable through a declared method, not by tool presence."""
+        catalog = SkillCatalog()
+        authorized = set()
+        for entry in catalog.index:
+            authorized |= catalog.configuration(entry["key"]).operations
+        families = ("build.", "npi.", "supply.", "cost.", "quality.", "test.", "verification.",
+                    "change.", "release.", "integration.", "engineering.")
+        registered = {
+            definition["name"] for definition in default_registry().definitions()
+            if definition["name"].startswith(families)
+        }
+>       assert registered and registered <= authorized
+E       AssertionError: assert ({'build.configuration.actual.record', 'build.create', 'build.engineering.authorize', 'build.lot.read', 'build.manufacturing.authorize', 'build.output.record', ...} and {'build.confi....record', ...} <= {'build.confi....record', ...}
+E         
+E         Extra items in the left set:
+E         'change.close'
+E         'change.verification.record'
+E         'change.effectivity.record')
+
+tests/agent_kernel/test_m3_skill_contracts.py:158: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_session_presentation.py::test_search_compiles_with_current_actual_parents_and_project_before_pagination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:122: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/research/test_http_ports.py::test_real_search_adapter_local_http_ignores_proxy_auth_environment
+FAILED tests/agent_kernel/research/test_http_ports.py::test_pinned_transport_real_http_wire_has_validated_ip_target_and_original_host
+FAILED tests/agent_kernel/research/test_pdf_and_coverage.py::test_actual_synthetic_public_pdf_uses_fixed_image_isolated_container
+FAILED tests/agent_kernel/test_m3_skill_contracts.py::test_project_skills_cover_the_registered_manufacturing_chain
+4 failed, 1570 passed, 435 deselected, 1 warning, 7 subtests passed in 117.61s (0:01:57)

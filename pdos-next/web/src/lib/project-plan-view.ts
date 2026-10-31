@@ -10,6 +10,7 @@ export type CalendarInput = {
 };
 export type PlanTaskInput = {
   key: string; title: string; discipline: Discipline; depends_on: string[];
+  not_before?: string | null;
   duration_min_minutes: number | null; duration_max_minutes: number | null; estimate_source: string | null;
 };
 export type ScheduleInput = { start: string; calendar: CalendarInput; tasks: PlanTaskInput[] };
@@ -22,23 +23,25 @@ export type PlanForecast = {
   algorithm_version: string; input_start: string; calendar_ref: CalendarRef; tasks: TaskForecast[];
   earliest_finish: string | null; latest_finish: string | null; warnings: string[];
 };
-export type PlanProposal = { id: string; revision: number; reason: string; input_snapshot: ScheduleInput; forecast: PlanForecast; project_revision: number };
+export type ResourceDemand = { task_key: string; resource_id: string; kind: "person" | "resource"; coordinator_id: string; purpose: string; units: number };
+export type PlanProposal = { id: string; revision: number; reason: string; input_snapshot: ScheduleInput; forecast: PlanForecast; project_revision: number; base_plan_id?: string | null; resource_demands?: ResourceDemand[] };
 export type Project = {
+  governance?: import("./project-governance").GovernanceSummary;
   id: string; name: string; purpose: string; scope: string; owner_id: string; visibility: "private" | "category" | "audience";
   revision: number; status: string; source_status: string; created_at: string;
   definition: { id: string; title: string; revision: number; status: string; source_status: string };
   required_source_read_set: SourceRead[]; proposals: PlanProposal[];
-  plan: { id: string; revision: number; status: string; forecast: PlanForecast } | null;
+  plan: { id: string; revision: number; status: string; forecast: PlanForecast; input_snapshot?: ScheduleInput; resource_demands?: ResourceDemand[] } | null;
   timeline: { baseline: null; forecast: PlanForecast | null; commitment: null; actual: null };
   work_packages: { id: string; discipline: Discipline }[];
-  tasks: { id: string; key: string; work_package_id: string; forecast: TaskForecast }[];
+  tasks: { id: string; key: string; lineage_ids?: string[]; work_package_id: string; forecast: TaskForecast }[];
 };
 export type ProjectList = { items: Project[]; has_more: boolean; unavailable_count: number };
 export type CreateProjectPayload = {
   name: string; purpose: string; scope: string; definition_id: string; expected_definition_revision: number;
   visibility: "private" | "category" | "audience"; confirmation_token?: string | null;
 };
-export type ProposePlanPayload = { project_id: string; expected_project_revision: number; schedule: ScheduleInput; reason: string };
+export type ProposePlanPayload = { project_id: string; expected_project_revision: number; base_plan_id?: string | null; resource_demands?: ResourceDemand[]; schedule: ScheduleInput; reason: string };
 export type ApplyPlanPayload = { project_id: string; proposal_id: string; expected_project_revision: number; confirmation_token?: string | null };
 export type ProjectCommand = {
   command_id: string; idempotency_key: string; operation: "project.create" | "work.plan.propose" | "work.plan.apply";
@@ -50,11 +53,13 @@ export type ProjectReview = {
   visibility?: "private" | "category" | "audience"; definition?: { id: string; title: string; revision: number; status: string };
   project_id?: string; project_revision?: number; proposal_id?: string; proposal_revision?: number;
   forecast?: PlanForecast; input_snapshot?: ScheduleInput; reason?: string;
+  resources?: import("@/components/projects/project-plan-resources").ResourceAnalysis;
 };
 export type PreparedProject = { command: ProjectCommand; review: ProjectReview; expires_at: string; confirmation_token: string };
-export type TaskDraft = { key: string; title: string; discipline: Discipline; depends_on: string[]; minimum: string; maximum: string; basis: string };
+export type TaskDraft = { key: string; title: string; discipline: Discipline; depends_on: string[]; minimum: string; maximum: string; basis: string; notBefore?: string };
 export type ProjectDraft = {
   name: string; purpose: string; scope: string; definitionId: string; visibility: "private" | "category" | "audience";
+  basePlanId?: string | null; resources?: ResourceDemand[];
   projectId: string; startUtc: string; timezone: string; calendarVersion: string; weekdays: number[];
   intervals: string; holidays: string; tasks: TaskDraft[]; reason: string;
 };
@@ -87,6 +92,8 @@ export function restoreProjectDraft(value: unknown, productId: string): LocalPro
   if (!stringFields(draft, ["name", "purpose", "scope", "definitionId", "projectId", "startUtc", "timezone", "calendarVersion", "intervals", "holidays", "reason"]) || !["private", "category", "audience"].includes(String(draft.visibility))) return null;
   if (!Array.isArray(draft.weekdays) || !draft.weekdays.every(day => Number.isInteger(day) && Number(day) >= 0 && Number(day) <= 6)) return null;
   if (!Array.isArray(draft.tasks) || draft.tasks.length > 500 || !draft.tasks.every(task => isRecord(task) && stringFields(task, ["key", "title", "minimum", "maximum", "basis"]) && ["engineering", "npi"].includes(String(task.discipline)) && Array.isArray(task.depends_on) && task.depends_on.every(key => typeof key === "string"))) return null;
+  if (draft.basePlanId != null && (typeof draft.basePlanId !== "string" || !/^[a-f0-9-]{36}$/i.test(draft.basePlanId))) return null;
+  if (draft.resources != null && (!Array.isArray(draft.resources) || !draft.resources.every(d => isRecord(d) && stringFields(d, ["task_key", "resource_id", "coordinator_id", "purpose"]) && ["person", "resource"].includes(String(d.kind)) && Number.isSafeInteger(d.units) && Number(d.units) >= 1))) return null;
   if (value.pending != null) {
     const pending = value.pending;
     if (!isRecord(pending) || !["preview", "execute"].includes(String(pending.stage)) || !isRecord(pending.command)) return null;
@@ -143,7 +150,7 @@ export function buildSchedule(draft: ProjectDraft): ScheduleInput {
     if ((minimum !== null || maximum !== null) && !task.basis.trim()) failure(`${task.title}已有工时估计，请填写估计依据。`);
     if (task.basis.length > 2000) failure(`${task.title}的估计依据不能超过 2000 字。`);
     if (task.depends_on.length > 100 || new Set(task.depends_on).size !== task.depends_on.length) failure(`${task.title}的前置任务重复或超过 100 项。`);
-    return { key: task.key, title: task.title.trim(), discipline: task.discipline, depends_on: [...task.depends_on], duration_min_minutes: minimum, duration_max_minutes: maximum, estimate_source: task.basis.trim() || null };
+    return { key: task.key, title: task.title.trim(), discipline: task.discipline, depends_on: [...task.depends_on], duration_min_minutes: minimum, duration_max_minutes: maximum, estimate_source: task.basis.trim() || null, ...(task.notBefore ? { not_before: new Date(`${task.notBefore}:00Z`).toISOString() } : {}) };
   });
   const keys = new Set(tasks.map(task => task.key));
   if (keys.size !== tasks.length) failure("任务标识不能重复。");
@@ -164,4 +171,11 @@ export function utcText(value: string | null): string {
 }
 export function durationText(minimum: number | null, maximum: number | null): string {
   return `${minimum === null ? "未知" : minimum} ～ ${maximum === null ? "未知" : maximum} 分钟`;
+}
+
+export function draftFromPlan(draft: ProjectDraft, project: Project): ProjectDraft {
+  const value = project.plan?.input_snapshot;
+  if (!value) return { ...draft, basePlanId: project.plan?.id ?? null };
+  const clock = (minute: number) => `${String(Math.floor(minute / 60)).padStart(2, "0")}:${String(minute % 60).padStart(2, "0")}`;
+  return { ...draft, projectId: project.id, basePlanId: project.plan!.id, reason: "", startUtc: value.start.slice(0, 16), timezone: value.calendar.timezone, calendarVersion: value.calendar.version, weekdays: value.calendar.working_weekdays, intervals: value.calendar.intervals.map(v => `${clock(v.start_minute)}-${clock(v.end_minute)}`).join("\n"), holidays: value.calendar.holidays.join("\n"), resources: project.plan?.resource_demands ?? [], tasks: value.tasks.map(t => ({ key: t.key, title: t.title, discipline: t.discipline, depends_on: t.depends_on, minimum: t.duration_min_minutes?.toString() ?? "", maximum: t.duration_max_minutes?.toString() ?? "", basis: t.estimate_source ?? "", notBefore: t.not_before?.slice(0, 16) ?? "" })) };
 }

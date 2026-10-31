@@ -1,0 +1,154 @@
+✔ static management transports preserve exact private scope, body and no-store without retries (142.955208ms)
+✖ list and presentation query allowlists reject duplicates, scope forgery and malformed paths before network (35.087584ms)
+✔ mutations require same origin, live auth and exact JSON body schema (72.574083ms)
+✔ 8 KiB bound measures real stream bytes even with missing or false content length, rejects invalid UTF8 (14.869958ms)
+✔ unknown POST transport is 503 outcome unknown; actual ACL, conflict and absent receipt statuses remain unchanged (55.029292ms)
+✔ all six isolated routes await real params and expose only their single exact method (19.538ms)
+✔ personal and category reads bind exact scope and never carry a mutation body (144.433583ms)
+✔ search literal characters are encoded and proposal scope stays category-bound (13.68825ms)
+✔ search length matches the API Unicode-character bound (6.43725ms)
+✔ unknown, repeated and malformed queries fail before network access (5.260167ms)
+✔ malformed route identity and all non-read methods never reach the API (4.010333ms)
+✔ missing identity or configuration fails closed before network access (9.229125ms)
+✔ domain rejection and unavailable transport keep the actual outcome without retry (33.386541ms)
+✔ all four static route modules expose only GET and await the real route parameters (9.307416ms)
+✔ an explicit category material request releases a previously focused run (10.578166ms)
+✔ knowledge reads all authorized categories without requiring product management (5.700458ms)
+✔ knowledge opens directly without choosing a category or guessing an inaccessible one (2.545208ms)
+✔ explicit legacy knowledge bench plus product retains CategoryArea without mounting the new entry (2.208125ms)
+✔ knowledge bench without a product still mounts the category library (4.214708ms)
+✔ category read failure mounts neither library nor legacy workbench and retry uses fresh data (11.312084ms)
+✔ document mode preserves document children and never mounts the library even with knowledge URL (4.22725ms)
+✔ work keeps its own real shell entry instead of the knowledge library (3.345292ms)
+✔ projects keeps its own real shell entry instead of the knowledge library (3.299542ms)
+✔ cockpit keeps its own real shell entry instead of the knowledge library (3.67775ms)
+✔ category navigation never widens the global authorized set and leaving knowledge removes it (17.330875ms)
+✔ shell refresh rebinds knowledge to the current identity and authorized categories (10.1075ms)
+✔ project timeline opens the formal plan tab and ordinary project navigation returns to tasks (12.616792ms)
+✔ starting a proposal is shown only with product management capability (3.415042ms)
+✔ issue history selection opens Pai with both exact versions and never starts a Run (8.838792ms)
+✔ history selection from another category or project cannot replace current Pai context (3.831541ms)
+✔ title-only history opens the latest run with one selection and read GET metadata without changing original goals or identities (34.67075ms)
+✔ server search includes historic matched_run; Unicode limit counts characters and old search replies stay hidden (5.741375ms)
+✔ permission denial invokes private cleanup; unavailable reads keep ordinary recovery (1.425042ms)
+✔ permission or protocol failure in Session runs hides the old goals; explicit 503 retains only verified list metadata (5.641458ms)
+✔ switching Session discards late work heads; accepted continuation refresh does not clear parent's newly read Run (9.278917ms)
+✔ explicit paging deduplicates changed snapshots; invalid cursor requires a fresh list and can be retried (33.232917ms)
+✔ API, principal and category changes hide previous private metadata during render and ignore late responses (3.616792ms)
+✔ missing principal resolves actual identity with GET before reading personal Sessions (1.49175ms)
+✔ rename, reset, pin, archive and restore use exact server revisions and reread Current; goals stay immutable (23.423042ms)
+✔ search and presentation management retain the current conversation; explicit selection changes it (14.29525ms)
+✔ unknown write survives same-identity refresh; read recovery never resubmits and explicit retry preserves exact original body (12.538583ms)
+✔ original receipt recovery is read-only and refreshes actual Current, even if Current has a newer name (7.163875ms)
+✔ 409 clears mutation pointer and only refreshes; failed scope reads hide cached rows (3.098ms)
+✖ refresh and identity transitions discard late mutation receipts, original request state and editor by the appropriate boundary (20.270708ms)
+✔ unknown original pointers cannot cross principal, category, proposal, project, transport or unmount (15.98125ms)
+✔ a late read recovery after refresh cannot apply its receipt or clear the retained original pointer (6.382125ms)
+✔ conversation history follows server-owned previous links in chronological display order, without writes (2.564ms)
+✔ conversation changes hide a late old chain and a revoked source clears already loaded messages (1.017625ms)
+✔ initial failure is an error; explicit refresh hides old content before response; empty success stays distinct (31.65475ms)
+✔ actual actor/requester, version, receipt and unknown occurrence remain separate; no fake run link (5.40425ms)
+✔ more failure preserves old page and retries exact cursor; successful page merges once (16.023292ms)
+✔ duplicate receipt or event and cursor/watermark mismatch never silently append (27.404584ms)
+✔ 403 while paging removes every private activity and cursor (2.196ms)
+✔ scope/principal/readVersion changes isolate late results and hide prior data (14.759917ms)
+✔ transport replacement cannot expose old response and never writes storage (1.757209ms)
+✔ mixed feed distinguishes private run event sequence and bound identity from domain receipt (2.741417ms)
+✔ null run receipts merge across pages while duplicate actual event fails and retries same cursor (7.042167ms)
+✔ managed list preserves revision-zero facts and actual project scope without enriching legacy DTOs (2.512583ms)
+✔ title-only search has no invented matched Run, server pin ordering precedes original chronology (0.527958ms)
+✔ DTO identity, shape, archive, metadata and cursor mismatches fail closed (1.075792ms)
+✔ search keeps the original historical match head and validates exact relationship (0.362875ms)
+✔ exact write and read-only recovery bind principal, scope, session, immutable revision and original request (1.187875ms)
+✔ invalid bodies never reach transport; reset is explicit null and transport status remains factual (0.540125ms)
+✔ real Session identity groups Run metadata without inventing a title, session status or authority (2.955833ms)
+✔ personal entry remains private and empty search becomes an unfiltered GET (0.293458ms)
+✔ search remains literal and preserves the actual matched Run independently of latest (0.43425ms)
+✔ Run and Session UUID search spellings are interpreted only by the server (0.497ms)
+✔ selected Session runs keep precise chronology and actual continuation links (0.376583ms)
+✔ pagination returns exact server anchors and permits neighbors outside the page (0.3695ms)
+✔ invalid identity, scope, selection or query cannot initiate a request (0.561958ms)
+✔ query length uses Unicode code points and never slices the user's literal query (0.318375ms)
+✔ list rejects wrong DTO version (0.127875ms)
+✔ list rejects different current principal (0.155292ms)
+✔ list rejects different envelope category (0.103666ms)
+✔ list rejects missing proposal filter echo (0.106292ms)
+✔ list rejects different proposal filter echo (0.100417ms)
+✔ list rejects different Session category (0.109042ms)
+✔ list rejects different Session proposal (0.098042ms)
+✔ list rejects invalid product identity (0.115833ms)
+✔ list rejects nonpositive Session revision (0.096125ms)
+✔ list rejects missing latest Run (0.111375ms)
+✔ list rejects missing Run state (0.121208ms)
+✔ list rejects unknown Run state (0.102875ms)
+✔ list rejects missing explicit error field (0.093625ms)
+✔ list rejects zero readable Run count (0.091292ms)
+✔ list rejects Run self continuation (0.096125ms)
+✔ list rejects duplicate Session (0.125667ms)
+✔ list rejects unexpected Run body (0.087917ms)
+✔ list rejects unexpected envelope body (0.062041ms)
+✔ list rejects invalid calendar timestamp (0.075542ms)
+✔ list rejects timestamp without timezone (0.064792ms)
+✔ list rejects unsearched matched Run (0.080625ms)
+✔ list rejects cursor not the final Session (0.080917ms)
+✔ a search response requires a known server explanation and consistent Run metadata (0.244167ms)
+✔ the reader accepts the server's Unicode goal match without duplicating database collation (0.145042ms)
+✔ Run page rejects different selected Session (0.098ms)
+✔ Run page rejects different detail principal (0.072375ms)
+✔ Run page rejects different detail category (0.07325ms)
+✔ Run page rejects different Session proposal (0.082ms)
+✔ Run page rejects duplicate Run (0.132791ms)
+✔ Run page rejects Run count smaller than returned page (0.094417ms)
+✔ Run page rejects missing conversation (0.087708ms)
+✔ Run page rejects different fixed previous Run (0.085291ms)
+✔ Run page rejects next Run points to itself (0.083375ms)
+✔ Run page rejects inconsistent visible reverse link (0.106834ms)
+✔ Run page rejects reversed precise time order (0.097833ms)
+✔ Run page rejects cursor not final returned Run (0.091375ms)
+✔ Run page rejects missing explicit reverted fact (0.077583ms)
+✔ Run page rejects source body mixed into metadata (0.085834ms)
+✔ page length, ordering and input anchor are never silently accepted or repaired (0.269333ms)
+✔ no filter permits distinct real proposal Sessions without rebinding them to the current page (0.081458ms)
+✔ failures propagate without old response fallback, retries, storage or Run reads (0.230417ms)
+ℹ tests 112
+ℹ suites 0
+ℹ pass 110
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1176.078959
+
+✖ failing tests:
+
+test at src/app/api/route-pai-session-presentation.test.mjs:42:1
+✖ list and presentation query allowlists reject duplicates, scope forgery and malformed paths before network (35.087584ms)
+  AssertionError [ERR_ASSERTION]: project_id=00000000-0000-4000-8000-000000000003
+  
+  200 !== 422
+  
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/app/api/route-pai-session-presentation.test.mjs:44:205)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 200,
+    expected: 422,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at src/components/pai/session-history.test.mjs:291:1
+✖ refresh and identity transitions discard late mutation receipts, original request state and editor by the appropriate boundary (20.270708ms)
+  AssertionError [ERR_ASSERTION]: 重命名
+      at click (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/session-history.test.mjs:101:79)
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/pai/session-history.test.mjs:298:9)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

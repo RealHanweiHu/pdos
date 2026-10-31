@@ -1,0 +1,848 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 9 items
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py .FF         [ 33%]
+tests/enterprise_search/test_verification_action_temporal_pg.py FFFFFF   [100%]
+
+=================================== FAILURES ===================================
+_ test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard _
+
+fut = <coroutine object WorkflowHandle.result at 0x15b16ce00>, timeout = 90
+
+    async def wait_for(fut, timeout):
+        """Wait for the single Future or coroutine to complete, with timeout.
+    
+        Coroutine will be wrapped in Task.
+    
+        Returns result of the Future or coroutine.  When a timeout occurs,
+        it cancels the task and raises TimeoutError.  To avoid the task
+        cancellation, wrap it in shield().
+    
+        If the wait is cancelled, the task is also cancelled.
+    
+        If the task suppresses the cancellation and returns a value instead,
+        that value is returned.
+    
+        This function is a coroutine.
+        """
+        # The special case for timeout <= 0 is for the following case:
+        #
+        # async def test_waitfor():
+        #     func_started = False
+        #
+        #     async def func():
+        #         nonlocal func_started
+        #         func_started = True
+        #
+        #     try:
+        #         await asyncio.wait_for(func(), 0)
+        #     except asyncio.TimeoutError:
+        #         assert not func_started
+        #     else:
+        #         assert False
+        #
+        # asyncio.run(test_waitfor())
+    
+    
+        if timeout is not None and timeout <= 0:
+            fut = ensure_future(fut)
+    
+            if fut.done():
+                return fut.result()
+    
+            await _cancel_and_wait(fut)
+            try:
+                return fut.result()
+            except exceptions.CancelledError as exc:
+                raise TimeoutError from exc
+    
+        async with timeouts.timeout(timeout):
+>           return await fut
+                   ^^^^^^^^^
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:520: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:228: in result
+    async for event in self._fetch_history_events_for_run(
+.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:1833: in __anext__
+    await self.fetch_next_page()
+.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:1790: in fetch_next_page
+    resp = await self._client.workflow_service.get_workflow_execution_history(
+.venv/lib/python3.12/site-packages/temporalio/bridge/services_generated.py:740: in get_workflow_execution_history
+    return await self._client._rpc_call(
+.venv/lib/python3.12/site-packages/temporalio/service.py:475: in _rpc_call
+    resp = await client.call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <temporalio.bridge.client.Client object at 0x169fd3320>
+service = 'workflow', rpc = 'get_workflow_execution_history'
+req = namespace: "pdos-next"
+execution {
+  workflow_id: "pdos-next:xiaopai:d3adab3a-99c4-4ac0-a183-04257cb237bb:a5759883-21e...002\020\007"
+wait_new_event: true
+history_event_filter_type: HISTORY_EVENT_FILTER_TYPE_CLOSE_EVENT
+skip_archival: true
+
+resp_type = <class 'temporalio.api.workflowservice.v1.request_response_pb2.GetWorkflowExecutionHistoryResponse'>
+retry = True, metadata = {}, timeout = None
+
+    async def call(
+        self,
+        *,
+        service: str,
+        rpc: str,
+        req: google.protobuf.message.Message,
+        resp_type: type[ProtoMessage],
+        retry: bool,
+        metadata: Mapping[str, str | bytes],
+        timeout: timedelta | None,
+    ) -> ProtoMessage:
+        """Make RPC call using SDK Core."""
+        # Prepare call
+        timeout_millis = round(timeout.total_seconds() * 1000) if timeout else None
+        call = RpcCall(rpc, req.SerializeToString(), retry, metadata, timeout_millis)
+    
+        # Do call (this throws an RPCError on failure)
+        if service == "workflow":
+            resp_fut = self._ref.call_workflow_service(call)
+        elif service == "operator":
+            resp_fut = self._ref.call_operator_service(call)
+        elif service == "cloud":
+            resp_fut = self._ref.call_cloud_service(call)
+        elif service == "test":
+            resp_fut = self._ref.call_test_service(call)
+        elif service == "health":
+            resp_fut = self._ref.call_health_service(call)
+        else:
+            raise ValueError(f"Unrecognized service {service}")
+    
+        # Convert response
+        resp = resp_type()
+>       resp.ParseFromString(await resp_fut)
+                             ^^^^^^^^^^^^^^
+E       asyncio.exceptions.CancelledError
+
+.venv/lib/python3.12/site-packages/temporalio/bridge/client.py:168: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+handoff_work = namespace(setup=<isolated synthetic test scope>, config={'source': '355862d0-8da6-4ced-b92c-280d3f2aa0b4', 'project': ...': 'd421c969-ca3a-40c1-bb74-8de6189417fa', 'expected_revision': 1, 'line': 2, 'quote': 'Synthetic limits 9.5 to 10.5'})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x169bbf980>
+
+    def test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard(
+        handoff_work,
+        monkeypatch,
+    ):
+        person, selection, public, execution = materials(handoff_work)
+        provider = LatePrivateClient(execution, handoff_work.scope.purpose)
+        provider.parent = ParentClient(public["artifact_id"])
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await parent_answer(runtime, selection)
+                private = register(
+                    person,
+                    "I14 child private context",
+                    "漏气：更换密封圈。SYNTHETIC_PRIVATE_ACTION_BODY",
+                    private=True,
+                )
+                provider.inject_source = private["artifact_id"]
+                provider.phase = "action"
+                before = totals(person)
+                identity, _handle = await start(
+                    runtime,
+                    action_payload(parent, answer, selection, execution),
+                    accepted_statuses=("completed", "partial"),
+                )
+                assert provider.injected_quote is not None
+                response = await runtime.http.get(
+                    runtime.path + f"/{identity}/candidates", headers=person.headers
+                )
+                assert response.status_code == 200 and response.json()["items"] == [], response.text
+                assert totals(person) == before
+                reasons = [
+                    value.get("error", {}).get("detail", {}).get("reason_key")
+                    for _names, messages in provider.messages
+                    for row, value in json_messages(messages)
+                    if row["role"] == "tool"
+                ]
+                assert "assistant_action_audience_widened" in reasons
+                reads, action = actual_run(person, identity)
+                assert private["artifact_id"] not in {ref["artifact_id"] for ref in reads}
+                assert action["citation_ids"] == answer["citation_ids"]
+                with Session(person.admin) as session:
+                    events = session.scalars(
+                        select(AgentEvent).where(
+                            AgentEvent.run_id == identity,
+                            AgentEvent.body["type"].astext == "verification_candidate",
+                        )
+                    ).all()
+                    assert events == []
+                    model = session.scalars(
+                        select(AgentToolCall).where(
+                            AgentToolCall.run_id == identity,
+                            AgentToolCall.tool == "model",
+                        )
+                    ).all()
+                    assert any(
+                        "SYNTHETIC_PRIVATE_ACTION_BODY" in json.dumps(row.result) for row in model
+                    )
+    
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py:319: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_action_footprint_temporal_pg.py:280: in actual
+    identity, _handle = await start(
+tests/enterprise_search/verification_action_harness.py:265: in start
+    result = await asyncio.wait_for(handle.result(), 90)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:519: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Timeout [expired]>
+exc_type = <class 'asyncio.exceptions.CancelledError'>
+exc_val = CancelledError(), exc_tb = <traceback object at 0x178183380>
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() <= self._cancelling and exc_type is exceptions.CancelledError:
+                # Since there are no new cancel requests, we're
+                # handling this.
+>               raise TimeoutError from exc_val
+E               TimeoutError
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/timeouts.py:115: TimeoutError
+_ test_private_native_target_preserves_explicit_citations_without_binding_uncited_context _
+
+private_action_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'a8fa94ae-be10-453e-8597-a52ca5cdbfe9', 'project': ...ind': 'qualification', 'series_id': '03e50daa-a41d-4cc3-93dd-f4845f430100'}}}, quality=<isolated synthetic test scope>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x17d5eecc0>
+
+    def test_private_native_target_preserves_explicit_citations_without_binding_uncited_context(
+        private_action_work,
+        monkeypatch,
+    ):
+        person, selection, public, execution = materials(private_action_work)
+        private = register(
+            person, "SYNTHETIC_PRIVATE_DISCUSSION_TITLE", "漏气：更换密封圈。", private=True
+        )
+        provider = VerificationClient(execution, private_action_work.scope.purpose)
+        provider.parent = ParentClient(public["artifact_id"])
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await parent_answer(runtime, selection)
+                provider.phase = "action"
+                identity, _handle = await start(
+                    runtime, action_payload(parent, answer, selection, execution)
+                )
+                pending = await candidate(runtime, identity)
+                assert pending["state"] == "pending"
+                before = totals(person)
+                adopted = await prepared(runtime, identity, pending)
+                assert totals(person) == (before[0] + 1, before[1])
+                reads, action = actual_run(person, identity)
+                assert private["artifact_id"] not in {ref["artifact_id"] for ref in reads}
+                assert action["citation_ids"] == answer["citation_ids"]
+                with Session(person.admin) as session:
+                    event = session.get(AgentEvent, UUID(pending["event_id"]))
+                    proof = event.body["source_proof"]
+                    assert [ref["citation_id"] for ref in proof["discussion_sources"]] == answer[
+                        "citation_ids"
+                    ]
+                    assert private["artifact_id"] not in json.dumps(proof["execution_references"])
+                    row = session.get(
+                        VerificationPreparation, UUID(adopted["preparation"]["preparation_id"])
+                    )
+                    assert row.visibility == "private" and row.owner_id == person.human
+    
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py:360: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_action_footprint_temporal_pg.py:340: in actual
+    pending = await candidate(runtime, identity)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x16d1222d0>, temporal=<temporalio.client._client.Client object at 0x17804...2043'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/e111d99d-ce9b-43b8-8103-d02bb94b2043/agent-runs')
+identity = UUID('a34a47f3-e9b8-403a-ae1b-6dbf4dc09f57')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"a34a47f3-e9b8-403a-ae1b-6dbf4dc09f57","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+_ test_actual_verification_chain_recovers_lost_responses_without_second_model __
+
+handoff_work = namespace(setup=<isolated synthetic test scope>, config={'source': '0b3317ec-dbab-49ae-9c4e-19e5b9ad077a', 'project': ...': '703c3786-c6a5-4226-82e4-ab70a63be9a3', 'expected_revision': 1, 'line': 2, 'quote': 'Synthetic limits 9.5 to 10.5'})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x15a28ec00>
+
+    def test_actual_verification_chain_recovers_lost_responses_without_second_model(
+        handoff_work, monkeypatch,
+    ):
+        work = handoff_work
+        person, selection, _discussion, execution = materials(work)
+        provider = VerificationClient(execution, work.scope.purpose)
+        before = totals(person)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await discussion(runtime, selection)
+                identity, pending = await continuation(runtime, parent, answer, selection)
+                calls = provider.calls
+                assert totals(person) == before
+                adopted = await prepared(runtime, identity, pending, lose=True)
+                assert totals(person) == (before[0] + 1, before[1])
+                value = await request_command(runtime, adopted)
+                runtime.transport.drop_command_id = value["command_id"]
+                with pytest.raises(httpx.ReadError, match="after commit"):
+                    await command(runtime, value)
+                assert totals(person) == (before[0] + 1, before[1] + 1)
+                saved = await command(runtime, value)
+                again = await command(runtime, value)
+                assert saved.status_code == again.status_code == 200, saved.text
+                assert saved.json()["id"] == again.json()["id"]
+                assert runtime.transport.lost == 2 and provider.calls == calls
+                assert totals(person) == (before[0] + 1, before[1] + 1)
+                with Session(person.admin) as session:
+                    row = session.get(FormalVerificationRequest, UUID(saved.json()["subject_id"]))
+                    assert row.preparation_id == UUID(adopted["preparation"]["preparation_id"])
+                    assert row.preparation_sha256 == adopted["preparation"]["preparation_sha256"]
+                    assert row.request_snapshot["status"] == "draft"
+                    assert not row.request_snapshot["samples"]
+                    assert not row.request_snapshot["acceptances"]
+                    assert row.request_snapshot["timeline"]["actual_start"] is None
+                    for receipt_id in (adopted["receipt"]["id"], saved.json()["id"]):
+                        receipt = session.get(Receipt, UUID(receipt_id))
+                        assert receipt.actor_id == receipt.requester_id == person.human
+                        assert receipt.agent_run_id is receipt.run_id is None
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_verification_action_temporal_pg.py:249: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:221: in actual
+    identity, pending = await continuation(runtime, parent, answer, selection)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:108: in continuation
+    row = await candidate(runtime, identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x16f75f860>, temporal=<temporalio.client._client.Client object at 0x16f72...b34c'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/29733670-80a7-4349-a91d-fd5190fbb34c/agent-runs')
+identity = UUID('33aaf165-0d1f-4a9a-823f-19bc4a6ac21d')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"33aaf165-0d1f-4a9a-823f-19bc4a6ac21d","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+_ test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three _
+
+handoff_work = namespace(setup=<isolated synthetic test scope>, config={'source': '601c1961-b774-481e-9d49-b25461c65f17', 'project': ...': '390e940c-c81d-46f4-9361-f17fc209da9e', 'expected_revision': 1, 'line': 2, 'quote': 'Synthetic limits 9.5 to 10.5'})
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x16ed057f0>
+
+    def test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three(
+        handoff_work, monkeypatch,
+    ):
+        work = handoff_work
+        person, selection, _discussion, execution = materials(work)
+        provider = VerificationClient(execution, work.scope.purpose, missing_count=True)
+        before = totals(person)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await discussion(runtime, selection)
+                await continuation(runtime, parent, answer, selection, missing=True)
+                assert provider.arguments["items"][0]["sample_count"] == 3
+                assert totals(person) == before  # Asking and preparing never save domain rows.
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_verification_action_temporal_pg.py:266: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:263: in actual
+    await continuation(runtime, parent, answer, selection, missing=True)
+tests/enterprise_search/test_verification_action_temporal_pg.py:108: in continuation
+    row = await candidate(runtime, identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x16f1c0e00>, temporal=<temporalio.client._client.Client object at 0x16ec0...710c'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/c60db103-5e18-4acf-8b44-7d31f379710c/agent-runs')
+identity = UUID('bbc4e9b2-15b9-4bdb-a2ca-c9224856f877')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"bbc4e9b2-15b9-4bdb-a2ca-c9224856f877","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+_ test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview] _
+
+private_action_work = namespace(setup=<isolated synthetic test scope>, config={'source': '91d6d968-fa45-4ca5-b30c-b00bc4376682', 'project': ...ind': 'qualification', 'series_id': '53fa4d2e-9417-4a5b-b9b1-d2ec78290d23'}}}, quality=<isolated synthetic test scope>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x179e335c0>
+damage = 'aux_permission', at = 'before_preview'
+
+    @pytest.mark.parametrize("damage,at", [
+        ("aux_permission", "before_preview"), ("aux_permission", "after_preview"),
+        ("execution_version", "after_preview"), ("aux_permission", "after_preparation"),
+    ])
+    def test_actual_authority_changes_block_native_adoption_at_each_boundary(
+        private_action_work, monkeypatch, damage, at,
+    ):
+        work = private_action_work
+        sources = restricted_materials(work)
+        person, selection, execution = sources.person, sources.selection, sources.execution
+        provider = VerificationClient(execution, work.scope.purpose)
+        before = totals(person)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await discussion(runtime, selection)
+                identity, pending = await continuation(runtime, parent, answer, selection)
+                value = deepcopy(pending["command"])
+                if at == "after_preview":
+                    preview = await command(runtime, value, preview=True)
+                    assert preview.status_code == 200, preview.text
+                    value = preview.json()["command"]
+                elif at == "after_preparation":
+                    adopted = await prepared(runtime, identity, pending)
+                    value = await request_command(runtime, adopted)
+                if damage == "execution_version":
+                    change_execution_revision(sources)
+                else:
+                    revoke_auxiliary(sources)
+                calls = provider.calls
+                unavailable = await candidate(runtime, identity)
+                assert unavailable["state"] == "unavailable" and unavailable["command"] is None
+                denied = await command(runtime, value, preview=at == "before_preview")
+                assert denied.status_code in {403, 409}, denied.text
+                assert totals(person) == (before[0] + (at == "after_preparation"), before[1])
+                assert provider.calls == calls
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_verification_action_temporal_pg.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:285: in actual
+    identity, pending = await continuation(runtime, parent, answer, selection)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:108: in continuation
+    row = await candidate(runtime, identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x17907ae10>, temporal=<temporalio.client._client.Client object at 0x17874...f166'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/da57688c-8671-4219-ac74-aa2b7b7af166/agent-runs')
+identity = UUID('05b5e45a-355d-42fe-b72c-b46d1c126d2c')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"05b5e45a-355d-42fe-b72c-b46d1c126d2c","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+_ test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview] _
+
+private_action_work = namespace(setup=<isolated synthetic test scope>, config={'source': '804ee3b5-b295-4e87-917c-ecfd54d02621', 'project': ...ind': 'qualification', 'series_id': '03b18b1d-7c99-4bfc-9263-c5f369353d3c'}}}, quality=<isolated synthetic test scope>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x17a6a76b0>
+damage = 'aux_permission', at = 'after_preview'
+
+    @pytest.mark.parametrize("damage,at", [
+        ("aux_permission", "before_preview"), ("aux_permission", "after_preview"),
+        ("execution_version", "after_preview"), ("aux_permission", "after_preparation"),
+    ])
+    def test_actual_authority_changes_block_native_adoption_at_each_boundary(
+        private_action_work, monkeypatch, damage, at,
+    ):
+        work = private_action_work
+        sources = restricted_materials(work)
+        person, selection, execution = sources.person, sources.selection, sources.execution
+        provider = VerificationClient(execution, work.scope.purpose)
+        before = totals(person)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await discussion(runtime, selection)
+                identity, pending = await continuation(runtime, parent, answer, selection)
+                value = deepcopy(pending["command"])
+                if at == "after_preview":
+                    preview = await command(runtime, value, preview=True)
+                    assert preview.status_code == 200, preview.text
+                    value = preview.json()["command"]
+                elif at == "after_preparation":
+                    adopted = await prepared(runtime, identity, pending)
+                    value = await request_command(runtime, adopted)
+                if damage == "execution_version":
+                    change_execution_revision(sources)
+                else:
+                    revoke_auxiliary(sources)
+                calls = provider.calls
+                unavailable = await candidate(runtime, identity)
+                assert unavailable["state"] == "unavailable" and unavailable["command"] is None
+                denied = await command(runtime, value, preview=at == "before_preview")
+                assert denied.status_code in {403, 409}, denied.text
+                assert totals(person) == (before[0] + (at == "after_preparation"), before[1])
+                assert provider.calls == calls
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_verification_action_temporal_pg.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:285: in actual
+    identity, pending = await continuation(runtime, parent, answer, selection)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:108: in continuation
+    row = await candidate(runtime, identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x1793b97f0>, temporal=<temporalio.client._client.Client object at 0x16eae...d84d'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/7dcf2c3d-c3ac-4ec8-99c6-90704d72d84d/agent-runs')
+identity = UUID('b8e661a4-e71a-43c8-8ae7-08f0af189131')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"b8e661a4-e71a-43c8-8ae7-08f0af189131","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+_ test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview] _
+
+private_action_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'd4e892a4-64a7-40fd-a4c2-38f51c23fe01', 'project': ...ind': 'qualification', 'series_id': '3fe9b45c-690e-4f36-b5cb-f16c89130d1f'}}}, quality=<isolated synthetic test scope>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x16ee69a30>
+damage = 'execution_version', at = 'after_preview'
+
+    @pytest.mark.parametrize("damage,at", [
+        ("aux_permission", "before_preview"), ("aux_permission", "after_preview"),
+        ("execution_version", "after_preview"), ("aux_permission", "after_preparation"),
+    ])
+    def test_actual_authority_changes_block_native_adoption_at_each_boundary(
+        private_action_work, monkeypatch, damage, at,
+    ):
+        work = private_action_work
+        sources = restricted_materials(work)
+        person, selection, execution = sources.person, sources.selection, sources.execution
+        provider = VerificationClient(execution, work.scope.purpose)
+        before = totals(person)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await discussion(runtime, selection)
+                identity, pending = await continuation(runtime, parent, answer, selection)
+                value = deepcopy(pending["command"])
+                if at == "after_preview":
+                    preview = await command(runtime, value, preview=True)
+                    assert preview.status_code == 200, preview.text
+                    value = preview.json()["command"]
+                elif at == "after_preparation":
+                    adopted = await prepared(runtime, identity, pending)
+                    value = await request_command(runtime, adopted)
+                if damage == "execution_version":
+                    change_execution_revision(sources)
+                else:
+                    revoke_auxiliary(sources)
+                calls = provider.calls
+                unavailable = await candidate(runtime, identity)
+                assert unavailable["state"] == "unavailable" and unavailable["command"] is None
+                denied = await command(runtime, value, preview=at == "before_preview")
+                assert denied.status_code in {403, 409}, denied.text
+                assert totals(person) == (before[0] + (at == "after_preparation"), before[1])
+                assert provider.calls == calls
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_verification_action_temporal_pg.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:285: in actual
+    identity, pending = await continuation(runtime, parent, answer, selection)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:108: in continuation
+    row = await candidate(runtime, identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x15abbb620>, temporal=<temporalio.client._client.Client object at 0x16e97...dee8'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/2d1b936b-2816-4a68-a0bb-3c51fe0adee8/agent-runs')
+identity = UUID('2ba43054-8ae0-4346-ba5c-91dcab97603c')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"2ba43054-8ae0-4346-ba5c-91dcab97603c","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+_ test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation] _
+
+private_action_work = namespace(setup=<isolated synthetic test scope>, config={'source': 'acad8e3a-7758-4825-9c14-bdc1a5929abe', 'project': ...ind': 'qualification', 'series_id': '445606f7-8ad3-4390-a75c-5ff99ff79ac5'}}}, quality=<isolated synthetic test scope>)
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x17b3e9790>
+damage = 'aux_permission', at = 'after_preparation'
+
+    @pytest.mark.parametrize("damage,at", [
+        ("aux_permission", "before_preview"), ("aux_permission", "after_preview"),
+        ("execution_version", "after_preview"), ("aux_permission", "after_preparation"),
+    ])
+    def test_actual_authority_changes_block_native_adoption_at_each_boundary(
+        private_action_work, monkeypatch, damage, at,
+    ):
+        work = private_action_work
+        sources = restricted_materials(work)
+        person, selection, execution = sources.person, sources.selection, sources.execution
+        provider = VerificationClient(execution, work.scope.purpose)
+        before = totals(person)
+    
+        async def actual():
+            async with actual_runtime(person, provider, monkeypatch) as runtime:
+                parent, answer = await discussion(runtime, selection)
+                identity, pending = await continuation(runtime, parent, answer, selection)
+                value = deepcopy(pending["command"])
+                if at == "after_preview":
+                    preview = await command(runtime, value, preview=True)
+                    assert preview.status_code == 200, preview.text
+                    value = preview.json()["command"]
+                elif at == "after_preparation":
+                    adopted = await prepared(runtime, identity, pending)
+                    value = await request_command(runtime, adopted)
+                if damage == "execution_version":
+                    change_execution_revision(sources)
+                else:
+                    revoke_auxiliary(sources)
+                calls = provider.calls
+                unavailable = await candidate(runtime, identity)
+                assert unavailable["state"] == "unavailable" and unavailable["command"] is None
+                denied = await command(runtime, value, preview=at == "before_preview")
+                assert denied.status_code in {403, 409}, denied.text
+                assert totals(person) == (before[0] + (at == "after_preparation"), before[1])
+                assert provider.calls == calls
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_verification_action_temporal_pg.py:305: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:285: in actual
+    identity, pending = await continuation(runtime, parent, answer, selection)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_action_temporal_pg.py:108: in continuation
+    row = await candidate(runtime, identity)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(http=<httpx.AsyncClient object at 0x178fa3230>, temporal=<temporalio.client._client.Client object at 0x16ec3...425a'), agent_run_id=None, agent_call_id=None)), path='/v1/categories/c1761673-9291-4ee0-8f0e-dd5f1bd5425a/agent-runs')
+identity = UUID('cb821a8b-cd05-4c6f-b270-e79d7ee8fa30')
+
+    async def candidate(runtime, identity):
+        response = await runtime.http.get(runtime.path + f"/{identity}/candidates",
+                                          headers=runtime.person.headers)
+        assert response.status_code == 200, response.text
+        rows = [row for row in response.json()["items"]
+                if row.get("kind") == "verification_preparation"]
+>       assert len(rows) == 1, response.text
+               ^^^^^^^^^^^^^^
+E       AssertionError: {"run_id":"cb821a8b-cd05-4c6f-b270-e79d7ee8fa30","items":[],"next_cursor":null}
+
+tests/enterprise_search/verification_action_harness.py:291: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_parent_uncited_private_context_is_denied_before_shared_action_run_is_created
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py: 9 warnings
+tests/enterprise_search/test_verification_action_temporal_pg.py: 18 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_parent_uncited_private_context_is_denied_before_shared_action_run_is_created
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_parent_uncited_private_context_is_denied_before_shared_action_run_is_created
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_parent_uncited_private_context_is_denied_before_shared_action_run_is_created
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_parent_uncited_private_context_is_denied_before_shared_action_run_is_created
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_parent_uncited_private_context_is_denied_before_shared_action_run_is_created
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-action-footprint-20261029/pg-run1.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_action_footprint_temporal_pg.py::test_child_new_private_context_cannot_become_a_shared_candidate_through_special_guard
+FAILED tests/enterprise_search/test_action_footprint_temporal_pg.py::test_private_native_target_preserves_explicit_citations_without_binding_uncited_context
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_verification_chain_recovers_lost_responses_without_second_model
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_missing_count_interrupts_real_graph_and_only_explicit_answer_becomes_three
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-before_preview]
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preview]
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[execution_version-after_preview]
+FAILED tests/enterprise_search/test_verification_action_temporal_pg.py::test_actual_authority_changes_block_native_adoption_at_each_boundary[aux_permission-after_preparation]
+============= 8 failed, 1 passed, 81 warnings in 675.34s (0:11:15) =============

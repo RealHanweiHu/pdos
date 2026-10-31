@@ -1,0 +1,50 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0850",
+  "checks": [
+    {
+      "revision": "0843",
+      "exact_retained_history_guard_rejected": true,
+      "sqlstate": "P0001",
+      "message": "G history must be retained; nonempty channel tables cannot be downgraded",
+      "rolled_back_head_counts_functions_policies_unchanged": true,
+      "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+    },
+    {
+      "revision": "0845",
+      "exact_retained_history_guard_rejected": true,
+      "sqlstate": "23514",
+      "message": "Field feedback knowledge history cannot lose native visibility",
+      "rolled_back_head_counts_functions_policies_unchanged": true,
+      "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+    },
+    {
+      "revision": "0849",
+      "exact_retained_history_guard_rejected": true,
+      "sqlstate": "23514",
+      "message": "Native role source history cannot lose native lifecycle roots",
+      "rolled_back_head_counts_functions_policies_unchanged": true,
+      "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+    },
+    {
+      "revision": "0850",
+      "exact_retained_history_guard_rejected": true,
+      "sqlstate": "23514",
+      "message": "Independent native project source history requires its retention closure",
+      "rolled_back_head_counts_functions_policies_unchanged": true,
+      "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+    }
+  ],
+  "counts": {
+    "agent_runs": 5206,
+    "agent_tool_calls": 9921,
+    "action_receipts": 50406,
+    "category_knowledge_entries": 499,
+    "knowledge_answer_reviews": 46,
+    "knowledge_gap_submissions": 12,
+    "dingtalk_deliveries": 26,
+    "enterprise_search_sources": 3384
+  },
+  "real_provider_calls": 0
+}

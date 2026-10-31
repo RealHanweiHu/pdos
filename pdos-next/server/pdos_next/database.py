@@ -2,15 +2,31 @@ import os
 from contextlib import contextmanager
 from uuid import UUID
 
-from sqlalchemy import create_engine, func, text
+from sqlalchemy import Select, create_engine, event, func, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
+
+
+def _semantic_custom_plan(cursor, statement, parameters, context):
+    query = context.invoked_statement
+    if (
+        isinstance(query, Select)
+        and query.get_execution_options().get("pdos_semantic_custom_plan") is True
+        and context.execution_options.get("pdos_semantic_custom_plan") is True
+    ):
+        # Preserve current RLS/authority estimates for these server-marked reads.
+        # Return True only after executing once; driver errors propagate unchanged.
+        cursor.execute(statement, parameters, prepare=False)
+        return True
+    return None
 
 
 def engine_for(url: str):
     if not url.startswith("postgresql+psycopg://"):
         raise RuntimeError("Explicit PostgreSQL psycopg URL required; no environment fallback")
-    return create_engine(url, pool_pre_ping=True, hide_parameters=True)
+    engine = create_engine(url, pool_pre_ping=True, hide_parameters=True)
+    event.listen(engine, "do_execute", _semantic_custom_plan)
+    return engine
 
 
 def configured_engines():
@@ -26,10 +42,12 @@ def tenant_session(
     requester_id=None,
     category_id=None,
     read_snapshot=False,
+    repeatable_read=False,
 ):
     with Session(engine) as session, session.begin():
-        if read_snapshot:
+        if read_snapshot or repeatable_read:
             session.connection(execution_options={"isolation_level": "REPEATABLE READ"})
+        if read_snapshot:
             session.execute(text("SET TRANSACTION READ ONLY"))
         session.info["read_snapshot"] = read_snapshot
         session.execute(

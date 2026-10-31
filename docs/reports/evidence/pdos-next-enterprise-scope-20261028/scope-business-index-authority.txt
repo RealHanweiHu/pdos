@@ -1,0 +1,60 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_actual_other_project_issue_uses_its_own_source_and_current_object_scope _
+tests/enterprise_search/test_scope_business_pg.py:44: in test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+    assert preflight["returned"] == 1, json.dumps(preflight)
+E   AssertionError: {"coverage": {"status": "current", "notice": null, "indexed_as_of": null}, "version": "enterprise-search/v1", "items": [], "returned": 0, "direct_returned": 0, "related_returned": 0, "related_truncated": false, "truncated": false, "as_of": "2026-10-29T02:28:06.424208+00:00", "scope": {"category_id": "89155905-6d89-4cc1-ab95-4ab680a7d26d", "product_id": "9b6b6caf-8bdd-4fd5-b79d-02fdd5b3999d", "project_id": "63f83e39-4041-4f3f-85d2-9edea5aae05e", "proposal_id": null}, "query_trace": {"terms": ["5c72", "671aea15", "8bdf", "8d81", "fec13ebb86ad"], "removed": [], "codes": ["FEC13EBB86AD"], "families": [], "tokenizer_version": "jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab", "code_rule_version": "enterprise-codes/v1"}, "ranking_version": "bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3", "groups": [{"id": "current", "label": "\u5f53\u524d\u9879\u76ee", "returned": 0, "truncated": false, "coverage": {"status": "current", "notice": null, "indexed_as_of": null}, "scope": {"category_id": "89155905-6d89-4cc1-ab95-4ab680a7d26d", "product_id": "9b6b6caf-8bdd-4fd5-b79d-02fdd5b3999d", "project_id": "63f83e39-4041-4f3f-85d2-9edea5aae05e", "proposal_id": null}}, {"id": "same_category", "label": "\u540c\u54c1\u7c7b\u5176\u4ed6\u9879\u76ee", "returned": 0, "truncated": false, "coverage": {"status": "current", "notice": null, "indexed_as_of": null}, "scope": {"category_id": "89155905-6d89-4cc1-ab95-4ab680a7d26d", "product_id": null, "project_id": null, "proposal_id": null}}], "scope_policy": {"version": "same-category-once-threshold3/v1", "scope": "same_category", "fallback_performed": true, "include_customer_private": false}}
+E   assert 0 == 1
+=============================== warnings summary ===============================
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+================== 1 failed, 18 warnings in 82.58s (0:01:22) ===================

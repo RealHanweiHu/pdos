@@ -169,16 +169,25 @@ export function orderPlanReading(plan: CommandPlan, audience: string[]): Effecti
 }
 export function orderError(value: unknown, reading = false): { status?: number; message: string } {
   const status = qualityRecord(value) && typeof value.status === "number" ? value.status : undefined;
+  if (reading && qualityRecord(value) && value.code === "SOURCE_UNAVAILABLE") return { status, message: "所选变更的原件来源或安全扫描当前不可用，请在文件中核对来源后刷新。已保存版本可在上方记录详情中查看；本次未保存或批准。" };
   return { status, message: reading ? "当前项目变更、政策或真实适用性材料读取失败，请刷新核对；本次读取未保存或批准。" : status === 401 || status === 403 ? "当前项目、原文或具名专业权限不可用。原请求已保留，请刷新当前权限与范围，再核对回执。" : "尚未取得确定回执；原请求继续保留，请核对回执，不重复办理。" };
 }
-export async function readOrderScope(api: OrderApi, productId: string, changeId: string, projectId: string, current: () => boolean, fixedChangeId = ""): Promise<{ changes: OrderChange[]; sources: DefinitionSource[]; context: OrderContext | null } | null> {
+export async function readOrderScope(api: OrderApi, productId: string, changeId: string, projectId: string, current: () => boolean, fixedChangeId = ""): Promise<{ changes: OrderChange[]; sources: DefinitionSource[]; context: OrderContext | null; contextUnavailable?: boolean } | null> {
   if (fixedChangeId && (fixedChangeId !== changeId || !uuid(fixedChangeId))) throw new Error("本次正式办理须保留原已选变更。");
   const parameters = new URLSearchParams(); if (projectId) parameters.set("project_id", projectId); if (fixedChangeId) parameters.set("change_id", fixedChangeId); const query = parameters.size ? `?${parameters}` : "";
   const values = await Promise.all([api<unknown>(`v1/products/${productId}/change-execution${query}`), api<{ sources: DefinitionSource[] }>(`v1/products/${productId}/workspace`)]);
   if (!current()) return null;
   const changes = normalizeOrderChanges(values[0], projectId);
   if (!Array.isArray(values[1].sources)) throw new Error("当前可读原文不完整。");
-  let context: OrderContext | null = null;
-  if (changeId && changes.some(row => row.change_id === changeId)) context = normalizeOrderContext(await api<unknown>(`v1/products/${productId}/change-execution/order-context?change_id=${encodeURIComponent(changeId)}`), changeId, projectId);
-  return current() ? { changes, sources: values[1].sources, context } : null;
+  let context: OrderContext | null = null, contextUnavailable = false;
+  if (changeId && changes.some(row => row.change_id === changeId)) {
+    try { context = normalizeOrderContext(await api<unknown>(`v1/products/${productId}/change-execution/order-context?change_id=${encodeURIComponent(changeId)}`), changeId, projectId); }
+    catch (failure) {
+      // Keep the readable index selectable when this fixed source is blocked.
+      // Authentication/scope errors still clear all private context in the caller.
+      if (qualityRecord(failure) && failure.status === 409 && failure.code === "SOURCE_UNAVAILABLE") contextUnavailable = true;
+      else throw failure;
+    }
+  }
+  return current() ? { changes, sources: values[1].sources, context, ...(contextUnavailable ? { contextUnavailable } : {}) } : null;
 }

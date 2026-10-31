@@ -1,0 +1,29 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "from": "s0_0844",
+  "allocated": "s0_0845",
+  "functions": {
+    "knowledge_answer_sources_visible(uuid,uuid,jsonb)": {
+      "owner": "pdos_next_owner",
+      "security_definer": false,
+      "acl": "{pdos_next_owner=X/pdos_next_owner,pdos_next_app=X/pdos_next_owner}",
+      "old_sha256": "aa77adc4857f512c4b1d0e5bb6d77e9e7faa126d703a60d2bf067510f9b27b43",
+      "new_sha256": "c2a95fb17d2f25af36bd525ccd72c25f2e0d29e68f9a64b2ba916e4142c89838"
+    },
+    "m3_lifecycle_source_links(uuid,uuid,text,jsonb)": {
+      "owner": "pdos_next_owner",
+      "security_definer": true,
+      "acl": "{pdos_next_owner=X/pdos_next_owner}",
+      "old_sha256": "733384741acc5653b91ae882bd29b4ade077229c153c68facbdad30e9ca20dc2",
+      "new_sha256": "dfa947ded55c754f6cd4c7b1f58401d04f52a106063ed3af5ae4c806e7824737"
+    }
+  },
+  "downgrade_knowledge_consumers": [
+    "category_knowledge_entries",
+    "knowledge_candidate_versions",
+    "knowledge_rule_versions",
+    "knowledge_answer_reviews",
+    "knowledge_gap_submissions"
+  ],
+  "real_provider_accessed": false
+}

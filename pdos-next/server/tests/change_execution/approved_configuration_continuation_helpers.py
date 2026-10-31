@@ -351,7 +351,11 @@ def create_new_build(work, engineering, manufacturing, *, cleanup):
         site=work.scope.site,
         window={
             "start": continuation.at - timedelta(minutes=1),
-            "finish": continuation.at + timedelta(minutes=20),
+            "finish": (
+                work.setup.test_authorization_until - timedelta(minutes=1)
+                if getattr(work.setup, "test_authorization_until", None)
+                else continuation.at + timedelta(minutes=20)
+            ),
             "original_timezone": "UTC",
         },
     )

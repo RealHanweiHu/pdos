@@ -1,0 +1,16 @@
+{
+  "clearDisablesItself": true,
+  "onlyMatchingResultsSelected": true,
+  "allMatchingSelectedDisablesAction": true,
+  "additiveAcrossSearchAndKeyboard": true,
+  "emptyResultsDisableSelectAll": true,
+  "clearIncludesHiddenSelections": true,
+  "clearPreservesSearch": true,
+  "existingOnlyResultsDisabled": true,
+  "allResultsSkipExisting": true,
+  "offlineDisablesBulk": true,
+  "deselectReenablesSelectAll": true,
+  "noAddedHeight": true,
+  "existingSpecsUnchanged": true,
+  "mobileOneRowNoOverflow": true
+}

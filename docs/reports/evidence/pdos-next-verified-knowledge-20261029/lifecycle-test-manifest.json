@@ -1,0 +1,56 @@
+{
+  "status": "frozen-draft-not-pg-executed",
+  "frozen_at": "2026-10-29T11:10:16.435827+00:00",
+  "stage_root": "/tmp/pdos-verified-knowledge-lifecycle-tests-20261029",
+  "workspace_root": "/Users/huhanwei/Desktop/ai-native-R&D-platform",
+  "files": [
+    {
+      "path": "pdos-next/server/tests/knowledge_pg/test_assistant_knowledge_lifecycle.py",
+      "operation": "add",
+      "base_exists": false,
+      "sha256": "1cac9d925f2a63fa2a6fce3e09595b157b50b9b65c82d1952ef254d5ad37633b"
+    }
+  ],
+  "supporting_files": [
+    {
+      "path": "README.md",
+      "sha256": "a09fec5eee2bf3fa556b4840c3f899303eac09627a54b680d4784de281354416",
+      "integrate": false
+    },
+    {
+      "path": "collection_guard.py",
+      "sha256": "95d8c8aa49e2fc30e04b79f1d79b98343a27ab57cd84964c91f4bb252a1051fc",
+      "integrate": false
+    }
+  ],
+  "read_input_sha256": {
+    "pdos-next/server/tests/conftest.py": "ff6e3534af7a621107bb08cbd016634dc15fe220c64b734eb3720faab6fa842e",
+    "pdos-next/server/tests/knowledge_pg/test_assistant_knowledge.py": "df889c3d9bca6a4103398e72d49f36f5ac8942c55082c760da15f362f5d68ea6",
+    "pdos-next/server/tests/enterprise_search/test_assistant_pg.py": "a806dc9d669fc427876b0f239938af0e4b530c1023f1b3919632793a70429686",
+    "pdos-next/server/tests/enterprise_search/test_business_sources_pg.py": "41a55488deffe8203b0b398fedc324a3b4b8149d3524fd2133f4a275edb781ac",
+    "pdos-next/server/tests/enterprise_search/test_knowledge_dependencies_pg.py": "05038c4d830b4f5ae967831afabca78ed1e524a89ebe2a838063be1976330637",
+    "pdos-next/server/tests/test_original_security.py": "9abe1600594c31589366165cf4e439e2a83f06961d6c9c16d7a124a4d58d1d3f",
+    "pdos-next/server/pdos_next/domain/knowledge/assistant_sources.py": "a3261f42deabdec52b2c6f9cd47f21486afd614e044bd635fd9e227a15a941d1",
+    "pdos-next/server/pdos_next/domain/knowledge/assistant_reviews.py": "9368ae951db83fe0103b4fcaac0bc261ffe36e32d67da8088e50627607093be5",
+    "pdos-next/server/pdos_next/domain/knowledge/assistant_gaps.py": "1284147e340c18c5584d9aaeb1d2618a23b4ec80c285569bd8e1659b1c31525c",
+    "pdos-next/server/pdos_next/domain/knowledge/assistant_acl.py": "be3bf2348973cfdd29c65e0516c4a5eaa12c29acd59e41ec383f1e10bc015de4",
+    "pdos-next/server/pdos_next/lifecycle_access.py": "424c1114d90d30c16e29954e4ac722682fea3fb87933a5e83e8b74ff1b28bb3a",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "f470501e6068fa748d31036ae1d06148559ac262ed12617bbb97abd8aad86171",
+    "pdos-next/server/migrations/schema_s0_0839.py": "c88aca6624f846aa213f4bb421b0c98818ee3d1a504249b4e7336ccd23fc52b4",
+    "pdos-next/server/migrations/versions/s0_0839_verified_knowledge.py": "4302c302a120e6000f46fa69b97262372caf8c0ed96ece611c4065f243689542"
+  },
+  "validation": {
+    "ruff": "passed",
+    "py_compile": "passed",
+    "collect_only": {
+      "passed": true,
+      "items": 5,
+      "native_fixture_dependencies_resolved": true,
+      "database_url_variables": "all removed"
+    },
+    "pg_executed": false,
+    "live_files_modified": false,
+    "model_embedding_or_egress_calls": 0
+  },
+  "migration_owned_by": "root"
+}

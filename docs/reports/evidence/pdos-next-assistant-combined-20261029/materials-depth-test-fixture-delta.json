@@ -1,0 +1,14 @@
+[
+  {
+    "path": "pdos-next/server/tests/agent_kernel/test_retrieval_feedback_pg.py",
+    "before_sha256": "9af54b82d2bddbc4b82818cab25702da432ecdade71b5c218be71e496c42d86b",
+    "after_sha256": "459424963b45d26b78e701e362c15193fb6a94604783e52e8c1b43ecb38d68f9",
+    "delta": "--- pdos-next/server/tests/agent_kernel/test_retrieval_feedback_pg.py\n+++ pdos-next/server/tests/agent_kernel/test_retrieval_feedback_pg.py\n@@ -142,8 +142,8 @@\n     else:\n         _ids, _client, (owner, run_scope, host, _adapter) = starting(\n             setup,\n-            \"\u538b\u529b 10 kPa\u3002UNCHANGED_RAW_ONLY\",\n-            \"\u538b\u529b 12 kPa\u3002UNCHANGED_RAW_ONLY\",\n+            \"\u538b\u529b 10 kPa\u3002\\n\\nUNCHANGED_RAW_ONLY\",\n+            \"\u538b\u529b 12 kPa\u3002\\n\\nUNCHANGED_RAW_ONLY\",\n         )\n     execute(owner, run_scope, host)\n     with owner.store.transaction(run_scope) as (session, run):\n"
+  },
+  {
+    "path": "pdos-next/server/tests/enterprise_search/test_assistant_depth_temporal_pg.py",
+    "before_sha256": "7289f6632cc3e2219297108ee4565135b81e36b6cd9437f2527d51a31c10ed8f",
+    "after_sha256": "947ebe86fc70e388a9aaa5af1e12a399a4719233c02b1d2876a8fae0037fd9b4",
+    "delta": "--- pdos-next/server/tests/enterprise_search/test_assistant_depth_temporal_pg.py\n+++ pdos-next/server/tests/enterprise_search/test_assistant_depth_temporal_pg.py\n@@ -97,7 +97,7 @@\n \n                 monkeypatch.setitem(adapters.read_resumes, tool, observe)\n             quick_payload = {\"goal\": \"\u4ee5\u524d\u6f0f\u6c14\u5982\u4f55\u5904\u7406\uff1f\", \"idempotency_key\": str(uuid4()),\n-                             \"product_id\": str(setup.product)}\n+                             }\n             quick_id, _handle = await start(runtime, quick_payload)\n             quick = await runtime.http.get(runtime.path + f\"/{quick_id}\", headers=setup.headers)\n             assert quick.status_code == 200, quick.text\n"
+  }
+]

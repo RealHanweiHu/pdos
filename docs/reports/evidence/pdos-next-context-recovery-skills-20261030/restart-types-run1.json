@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "node_modules/.bin/tsc",
+    "--noEmit"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web",
+  "started_at": "2026-10-30T09:39:51.433453+00:00",
+  "finished_at": "2026-10-30T09:40:13.245778+00:00",
+  "exit_code": 0,
+  "stdout_log": "restart-types-run1.log",
+  "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "scope": "pure/collection/static only; no DB/provider/browser"
+}

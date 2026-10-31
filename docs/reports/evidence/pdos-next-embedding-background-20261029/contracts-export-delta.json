@@ -1,0 +1,10 @@
+{
+  "pdos-next/contracts/payloads.schema.json": {
+    "before": "3511c2568f9a041a2252b10ebdfe5fc49a25c4779f8c05673aa4fe696de6329e",
+    "after": "efbd68aed9606f51e35745687c7cddaab4a0a419aebf37c1bbf206bcdea1c037"
+  },
+  "pdos-next/contracts/openapi.json": {
+    "before": "6f5bea2072b68a2b2100ec2c4a3795e54e93527d145f75e23b2a440ce750a7bf",
+    "after": "aa94c8c1d18595c64c681ed0d25ea2d8527c8fbd8eb727f9a6617c943c4b3cd3"
+  }
+}

@@ -1,0 +1,196 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 16 items
+
+tests/dingtalk/test_channel_pg.py::test_verified_binding_nonce_consume_no_unbound_run_and_one_to_one PASSED [  6%]
+tests/dingtalk/test_channel_pg.py::test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26 PASSED [ 12%]
+tests/dingtalk/test_channel_pg.py::test_actual_revoke_cancels_fixed_run_and_blocks_completion_without_owner_impersonation[owner] PASSED [ 18%]
+tests/dingtalk/test_channel_pg.py::test_actual_revoke_cancels_fixed_run_and_blocks_completion_without_owner_impersonation[administrator] PASSED [ 25%]
+tests/dingtalk/test_channel_pg.py::test_maintenance_role_is_metadata_only_and_has_no_runtime_membership PASSED [ 31%]
+tests/dingtalk/test_channel_temporal_pg.py::test_same_xiaopai_native_run_private_answer_group_share_and_lost_receipt FAILED [ 37%]
+
+=================================== FAILURES ===================================
+___ test_same_xiaopai_native_run_private_answer_group_share_and_lost_receipt ___
+
+setup = <isolated synthetic test scope>
+request = <FixtureRequest for <Function test_same_xiaopai_native_run_private_answer_group_share_and_lost_receipt>>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11e8f88f0>
+
+    @pytest.mark.skipif(
+        not os.environ.get("PDOS_TEMPORAL_ADDRESS")
+        or not os.environ.get("PDOS_CHECKPOINT_DATABASE_URL"),
+        reason="Explicit verified local Temporal and checkpoint required",
+    )
+    def test_same_xiaopai_native_run_private_answer_group_share_and_lost_receipt(
+        setup, request, monkeypatch
+    ):
+        endpoint = urlsplit("//" + os.environ["PDOS_TEMPORAL_ADDRESS"])
+        assert endpoint.hostname in {"127.0.0.1", "localhost", "::1"} and endpoint.port
+        # Configure actual native model metadata/secret binding with an offline provider.
+        management, ports, command = configured(setup)
+        command["payload"]["metadata"]["context_window_tokens"] = 200_000
+        saved, _prepared = submit(setup, management, command)
+        assert saved.status_code == 200, saved.text
+        work = request.getfixturevalue("channel")
+        index(setup, register(setup, "D16 气密记录", "漏气。更换密封圈。RAW_ONLY_CHILD_MARKER"))
+        bind(work)
+        bind(work, person=setup.peer, external_user="external-peer")
+        work.runtime.adapter.set_members(
+            work.app, "synthetic-group", ["external-owner", "external-peer"]
+        )
+        provider = SyntheticClient()
+        bootstrap = Bootstrap(
+            setup.engine, ports=replace(ports, provider_client=provider, preload=lambda _: ())
+        )
+        adapters = replace(
+            bootstrap.adapters(),
+            cost_required=False,
+            provider_for=lambda *_: "synthetic-assistant-no-egress",
+        )
+        checkpoint_url = os.environ["PDOS_CHECKPOINT_DATABASE_URL"]
+        bootstrap._assistant_adapter.graph = AssistantExtractGraph(
+            BoundHost(bootstrap.store, adapters),
+            bootstrap._assistant_adapter,
+            checkpointer_factory=lambda: PostgresSaver.from_conn_string(
+                verified_checkpoint_url(checkpoint_url)
+            ),
+        )
+        configure_agent_kernel(setup.engine, adapters)
+        admitted = incoming(work)
+        assert admitted.status_code == 202, admitted.text
+        run_id, message_id = (UUID(admitted.json()[name]) for name in ("run_id", "message_id"))
+        # Lose the actual answer transport response after the provider stores its receipt.
+        work.runtime.adapter.lose_after_send.add(delivery_key(message_id, "answer"))
+    
+        async def actual():
+            client = await Client.connect(
+                os.environ["PDOS_TEMPORAL_ADDRESS"], namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"]
+            )
+            native = TemporalPort(client, task_queue="dingtalk-offline-" + str(uuid4()))
+            kernel = KernelActivities(
+                setup.engine, checkpoint_url=checkpoint_url, technical_engine=setup.dispatch
+            )
+            delivery = ChannelActivities(setup.engine, setup.dispatch, native, runtime=work.runtime)
+            sender = ChannelSender(client, setup.dispatch, native, task_queue=native.task_queue)
+            with ThreadPoolExecutor(max_workers=4) as executor:
+                async with Worker(
+                    client,
+                    task_queue=native.task_queue,
+                    workflows=[XiaopaiWork, DingTalkCompletion],
+                    activities=[kernel.advance, kernel.reconcile, delivery.deliver, delivery.cancel],
+                    activity_executor=executor,
+                ):
+                    await sender.discover(setup.tenant)
+                    native_handle = client.get_workflow_handle(workflow_id(setup.tenant, run_id))
+                    outcome = await asyncio.wait_for(native_handle.result(), 65)
+                    assert outcome["status"] in {"completed", "partial"}, outcome
+                    completion = client.get_workflow_handle(
+                        f"pdos-next:dingtalk:{setup.tenant}:{message_id}:reply"
+                    )
+                    sent = await asyncio.wait_for(completion.result(), 95)
+                    assert sent["state"] == "delivered", sent
+                    assert work.runtime.adapter.send_count == 3  # ack, private answer, group notice
+                    assert work.runtime.adapter.lookup_count == 1  # no second answer send
+                    before = provider.calls
+                    assert before == 5
+                    preview = work.client.post(
+                        "/v1/personal/dingtalk/share/preview",
+                        headers=setup.headers,
+                        json={"run_id": str(run_id), "include_citations": True},
+                    )
+                    assert preview.status_code == 200, preview.text
+                    assert preview.json()["citations_included"]
+                    body = {
+                        "run_id": str(run_id),
+                        "include_citations": True,
+                        "preview_digest": preview.json()["preview_digest"],
+                        "request_key": str(uuid4()),
+                    }
+                    confirmed = work.client.post(
+                        "/v1/personal/dingtalk/share/confirm", headers=setup.headers, json=body
+                    )
+                    assert confirmed.status_code == 202, confirmed.text
+                    assert (
+                        work.client.post(
+                            "/v1/personal/dingtalk/share/confirm", headers=setup.headers, json=body
+                        ).json()["consent_id"]
+                        == confirmed.json()["consent_id"]
+                    )
+                    await sender.discover(setup.tenant)
+                    shared = client.get_workflow_handle(
+                        f"pdos-next:dingtalk:{setup.tenant}:{message_id}:{confirmed.json()['consent_id']}"
+                    )
+                    assert (await asyncio.wait_for(shared.result(), 20))["state"] == "delivered"
+                    assert provider.calls == before and work.runtime.adapter.send_count == 4
+                    history = str(await completion.fetch_history()) + str(await shared.fetch_history())
+                    for original in ["RAW_ONLY_CHILD_MARKER", "更换密封圈", "synthetic-fixture-only"]:
+                        assert original not in history
+            with Session(setup.admin) as session:
+                run = session.get(AgentRun, run_id)
+                assert run.writer_id == setup.agent and run.requester_id == setup.human
+                rows = list(session.scalars(select(Delivery).where(Delivery.message_id == message_id)))
+                assert len(rows) == 4 and all(r.state == "delivered" and r.attempts == 1 for r in rows)
+                assert all(r.p26["provider"] == "dingtalk" for r in rows)
+                private = next(r for r in rows if r.phase == "answer")
+                assert private.payload["target_kind"] == "direct" and "citations" not in private.payload
+                group = next(r for r in rows if r.phase == "share")
+                assert group.payload["citations"] and group.consent_id is not None
+    
+>       asyncio.run(actual())
+
+tests/dingtalk/test_channel_temporal_pg.py:154: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def actual():
+        client = await Client.connect(
+            os.environ["PDOS_TEMPORAL_ADDRESS"], namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"]
+        )
+        native = TemporalPort(client, task_queue="dingtalk-offline-" + str(uuid4()))
+        kernel = KernelActivities(
+            setup.engine, checkpoint_url=checkpoint_url, technical_engine=setup.dispatch
+        )
+        delivery = ChannelActivities(setup.engine, setup.dispatch, native, runtime=work.runtime)
+        sender = ChannelSender(client, setup.dispatch, native, task_queue=native.task_queue)
+        with ThreadPoolExecutor(max_workers=4) as executor:
+            async with Worker(
+                client,
+                task_queue=native.task_queue,
+                workflows=[XiaopaiWork, DingTalkCompletion],
+                activities=[kernel.advance, kernel.reconcile, delivery.deliver, delivery.cancel],
+                activity_executor=executor,
+            ):
+                await sender.discover(setup.tenant)
+                native_handle = client.get_workflow_handle(workflow_id(setup.tenant, run_id))
+                outcome = await asyncio.wait_for(native_handle.result(), 65)
+                assert outcome["status"] in {"completed", "partial"}, outcome
+                completion = client.get_workflow_handle(
+                    f"pdos-next:dingtalk:{setup.tenant}:{message_id}:reply"
+                )
+                sent = await asyncio.wait_for(completion.result(), 95)
+                assert sent["state"] == "delivered", sent
+                assert work.runtime.adapter.send_count == 3  # ack, private answer, group notice
+                assert work.runtime.adapter.lookup_count == 1  # no second answer send
+                before = provider.calls
+>               assert before == 5
+E               assert 0 == 5
+
+tests/dingtalk/test_channel_temporal_pg.py:110: AssertionError
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-dingtalk-20261029/pg-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/dingtalk/test_channel_temporal_pg.py::test_same_xiaopai_native_run_private_answer_group_share_and_lost_receipt
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+==================== 1 failed, 5 passed in 77.75s (0:01:17) ====================

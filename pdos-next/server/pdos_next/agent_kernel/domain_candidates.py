@@ -166,17 +166,37 @@ def read(session, ctx, run, *, after=0, page_size=50):
                 AgentEvent.tenant_id == ctx.tenant_id,
                 AgentEvent.run_id == run.id,
                 AgentEvent.sequence > after,
-                AgentEvent.body["type"].astext.in_(["domain_candidate", "snapshot_candidate"]),
+                AgentEvent.body["type"].astext.in_([
+                    "domain_candidate", "snapshot_candidate", "verification_candidate",
+                ]),
             )
             .order_by(AgentEvent.sequence)
             .limit(page_size + 1)
         )
     )
     page = rows[:page_size]
+    return {
+        "run_id": str(run.id),
+        "items": project_rows(session, ctx, run, page),
+        "next_cursor": page[-1].sequence if len(rows) > page_size else None,
+    }
+
+
+def project_rows(session, ctx, run, page):
+    """Share native current-state/receipt checks with readonly work-state metadata."""
+    require_access(session, ctx, run.product_id)
+    if run.requester_id != ctx.requester_id or run.category_id != ctx.category_id:
+        fail("FORBIDDEN_SCOPE", "candidate_run_mismatch", "候选不在本人当前运行范围。", 403)
+    if any(event.tenant_id != run.tenant_id or event.run_id != run.id
+           or event.body.get("type") not in {
+               "domain_candidate", "snapshot_candidate", "verification_candidate",
+           } for event in page):
+        fail("FORBIDDEN_SCOPE", "candidate_run_mismatch", "候选不在本人当前运行范围。", 403)
     identities = [
         UUID(event.body["candidate_id"])
         for event in page
         if event.body["type"] == "domain_candidate"
+        and event.body.get("kind") != "work_followup"
     ]
     candidates = {
         row.id: row
@@ -194,7 +214,8 @@ def read(session, ctx, run, *, after=0, page_size=50):
             if event.body["type"] == "snapshot_candidate"
             else _bound(event, candidates.get(UUID(event.body["candidate_id"])), run)
         )
-        for event in page
+        for event in page if event.body["type"] != "verification_candidate"
+        and event.body.get("kind") != "work_followup"
     }
     keys = {
         row.key: row
@@ -217,6 +238,16 @@ def read(session, ctx, run, *, after=0, page_size=50):
     }
     items = []
     for event in page:
+        if event.body.get("kind") == "work_followup":
+            from pdos_next.enterprise_search.work_followup_candidates import item as work_item
+
+            items.append(work_item(session, ctx, run, event))
+            continue
+        if event.body["type"] == "verification_candidate":
+            from pdos_next.enterprise_search.verification_candidate_views import item as view_item
+
+            items.append(view_item(session, ctx, run, event))
+            continue
         command = commands[event.id]
         item = {
             "event_id": str(event.id),
@@ -231,6 +262,17 @@ def read(session, ctx, run, *, after=0, page_size=50):
         if command:
             key = keys.get(command.idempotency_key)
             receipt = receipts.get(key.receipt_id) if key else None
+            if receipt is None and command.operation in {
+                "proposal.create",
+                "proposal.item.patch",
+                "category.knowledge.add",
+                "category.knowledge.withdraw",
+                "category.parameter.publish",
+            }:
+                from pdos_next.domain.preproject.material_candidate_edits import saved_receipt_id
+
+                saved_id = saved_receipt_id(session, UUID(event.body["candidate_id"]))
+                receipt = session.get(Receipt, saved_id) if saved_id else None
             if receipt and (
                 receipt.agent_run_id == run.id
                 and receipt.requester_id == ctx.requester_id
@@ -244,6 +286,21 @@ def read(session, ctx, run, *, after=0, page_size=50):
                 )
             ):
                 item.update(state="adopted", receipt=receipt_view(receipt))
+                material_kind = (
+                    "parameter"
+                    if command.operation == "category.parameter.publish"
+                    else command.payload.get("kind")
+                    if command.operation == "category.knowledge.add"
+                    else None
+                )
+                if material_kind in {"competitor", "voice", "parameter"}:
+                    item["material_binding"] = {
+                        "kind": material_kind,
+                        "digest": command.payload["candidate_digest"],
+                        "target": command.payload.get("parameter_id")
+                        or (command.payload.get("supersedes") or {}).get("lineage_id")
+                        or f"new:{material_kind}",
+                    }
             elif key is not None:
                 pass  # A hidden/changed receipt never becomes a fresh write opportunity.
             elif (
@@ -261,8 +318,4 @@ def read(session, ctx, run, *, after=0, page_size=50):
                 except DomainError:
                     pass
         items.append(item)
-    return {
-        "run_id": str(run.id),
-        "items": items,
-        "next_cursor": page[-1].sequence if len(rows) > page_size else None,
-    }
+    return items

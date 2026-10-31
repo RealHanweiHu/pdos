@@ -1,0 +1,66 @@
+"""DingTalk uses the native Xiaopai graph and retains immutable delivery provenance."""
+
+from alembic import op
+from migrations.candidates.dingtalk import (
+    BASE_DOWN_SQL,
+    BASE_SQL,
+    EMPTY_HISTORY_SQL,
+    TRANSFER_TABLES_SQL,
+)
+from migrations.candidates.dingtalk_lifecycle import (
+    LIFECYCLE_DOWN_SQL,
+    LIFECYCLE_UP_SQL,
+    NATIVE_FUNCTIONS,
+    PREVIOUS_FUNCTIONS,
+)
+from migrations.versions.s0_0778_native_pilot import ordinary_owner, require_functions
+from sqlalchemy import text
+
+revision = "s0_0843"
+down_revision = "s0_0842"
+branch_labels = depends_on = None
+
+
+def execute(statements):
+    for statement in statements:
+        op.get_bind().exec_driver_sql(statement, execution_options={"no_parameters": True})
+
+
+def administrative_migrator():
+    op.execute("SET LOCAL ROLE NONE")
+    # This protects the all-tenant nonempty-history check from FORCE RLS filtering.
+    # It is a minimum capability check; the actual migrator must also be allowed
+    # to manage existing policies and transfer the newly created objects.
+    role = op.get_bind().execute(
+        text("SELECT rolsuper,rolbypassrls,rolcreaterole FROM pg_roles WHERE rolname=current_user")
+    ).one()
+    if not (role[0] or (role[1] and role[2])):
+        raise RuntimeError("An explicitly authorized administrative migrator is required")
+
+
+def upgrade():
+    administrative_migrator()
+    if op.get_bind().scalar(text(
+        "SELECT EXISTS(SELECT 1 FROM pg_roles WHERE rolname='pdos_next_dingtalk_maintenance')"
+    )):
+        raise RuntimeError("Existing DingTalk maintainer role requires independent review")
+    ordinary_owner()
+    require_functions(op.get_bind(), PREVIOUS_FUNCTIONS)
+    op.execute("SET LOCAL ROLE NONE")
+    execute(BASE_SQL)
+    execute(TRANSFER_TABLES_SQL)
+    ordinary_owner()
+    execute(LIFECYCLE_UP_SQL)
+    op.execute("SET LOCAL ROLE NONE")
+
+
+def downgrade():
+    administrative_migrator()
+    # Locks survive role changes through this transaction. A nonempty table
+    # fails before any drop or shared-function replacement.
+    execute(EMPTY_HISTORY_SQL)
+    ordinary_owner()
+    require_functions(op.get_bind(), NATIVE_FUNCTIONS)
+    execute(LIFECYCLE_DOWN_SQL)
+    op.execute("SET LOCAL ROLE NONE")
+    execute(BASE_DOWN_SQL)

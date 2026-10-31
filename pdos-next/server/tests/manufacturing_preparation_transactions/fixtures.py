@@ -10,9 +10,6 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select
-from test_project_first_plan import cmd, post
-
 from pdos_next.database import tenant_session
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
@@ -39,6 +36,8 @@ from pdos_next.object_storage import LocalPrivateObjectStore
 from pdos_next.professional_import import import_professional_fact
 from pdos_next.safety import verify_test_target
 from pdos_next.service import digest
+from sqlalchemy import func, select
+from test_project_first_plan import cmd, post
 
 OPERATIONS = tuple(EVENTS)
 PARENT_MODELS = (
@@ -245,6 +244,7 @@ def bootstrap_authority(work):
                 select(ProfessionalFact).where(
                     ProfessionalFact.product_id == setup.product,
                     ProfessionalFact.subject_id == setup.human,
+                    ProfessionalFact.issuer_key == work.issuer.key,
                 )
             )
         )

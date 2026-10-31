@@ -1,0 +1,8 @@
+{
+  "first_attempt": "upgrade committed to isolated test DB, verification caught inherited search_path regression before any business test",
+  "failed_check": "function config changed from pg_catalog/public/pg_temp to public/pg_temp",
+  "old_test_function_sha256": "72817e53d3a93ed5be9a0ffd764d6b9a71b6bafd92c858c36d2edce2e30f5563",
+  "repaired_function_sha256": "f1e5d6c4805dac0d8a51858702ab9a0b68b215c4795834cfb88da5d014a15712",
+  "repair": "Only known unaccepted test-candidate function repaired after exact normalized-body match; no cache decisions or business rows changed",
+  "backup_preserved": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/context-contract-53502-before-0853.dump"
+}

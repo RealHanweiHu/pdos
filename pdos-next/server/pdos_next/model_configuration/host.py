@@ -18,6 +18,7 @@ from pdos_next.model_configuration.local_kms import LOCAL_ENDPOINT, LOCAL_REGION
 from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
 from pdos_next.providers.types import ProtocolKind
 from pdos_next.research.runtime import ResearchConfiguration
+from pdos_next.schemas.model_configuration import ModelMetadata
 from pdos_next.schemas.model_configuration.dto import ClosedDTO
 
 
@@ -72,10 +73,15 @@ class ModelHost(ClosedDTO):
     model_version: str
     provider: str = Field(min_length=1, max_length=160)
     pricing: Pricing
+    max_output_tokens: int = Field(default=2048, strict=True, ge=1, le=524288)
+    context_window_tokens: int | None = Field(default=None, strict=True, ge=1024, le=10_000_000)
+    development_unlimited_budget: bool = Field(default=False, strict=True)
 
     @model_validator(mode="after")
     def valid_route(self):
-        from pdos_next.schemas.model_configuration import ModelMetadata
+        from urllib.parse import urlsplit
+
+        from pdos_next.providers.types import output_limit_upper_bound
 
         ModelMetadata(
             protocol=self.protocol,
@@ -85,6 +91,13 @@ class ModelHost(ClosedDTO):
         )
         if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,159}", self.provider):
             raise ValueError("A registered public provider identity is required")
+        if self.max_output_tokens > output_limit_upper_bound(self.base_url, self.model):
+            raise ValueError("Output exceeds the registered provider boundary")
+        if self.development_unlimited_budget and (
+            self.provider != "minimax"
+            or urlsplit(self.base_url).hostname not in {"api.minimax.cn", "api.minimax.io"}
+        ):
+            raise ValueError("Development budget policy is only available for MiniMax")
         return self
 
     def key(self):
@@ -97,11 +110,39 @@ class ModelHost(ClosedDTO):
         )
 
 
+class ManagedConnection(ClosedDTO):
+    id: UUID
+    tenant_id: UUID
+    name: str = Field(min_length=1, max_length=120)
+    metadata: ModelMetadata
+    provider: str
+    secret: SecretSlot
+    pricing: Pricing | None = None
+    request_digest: str = Field(pattern=r"^[a-f0-9]{64}$")
+    created_by: UUID
+    created_at: datetime
+
+    @model_validator(mode="after")
+    def bound_connection(self):
+        if (
+            self.metadata.connection_id != self.id
+            or self.secret.tenant_id != self.tenant_id
+            or self.secret.protocol != self.metadata.protocol
+        ):
+            raise ValueError("Managed connection binding mismatch")
+        return self
+
+    @property
+    def development_unlimited_budget(self):
+        return False
+
+
 class HostConfiguration(ClosedDTO):
     format_version: Literal[1]
     kms: KmsLocation
     secrets: list[SecretSlot]
     models: list[ModelHost]
+    connections: list[ManagedConnection] = Field(default_factory=list)
     research: ResearchConfiguration | None = None
     mcp: McpConfiguration | None = None
 
@@ -109,11 +150,18 @@ class HostConfiguration(ClosedDTO):
     def unique_bindings(self):
         slots = [(slot.tenant_id, slot.protocol) for slot in self.secrets]
         models = [row.key() for row in self.models]
+        connections = [(row.tenant_id, row.id) for row in self.connections]
+        if len(set(connections)) != len(connections):
+            raise ValueError("Managed connections must be unique")
         if len(set(slots)) != len(slots) or len(set(models)) != len(models):
             raise ValueError("Tenant runtime bindings must be unique")
         if any(slot.secret_arn.split(":")[2] != self.kms.region for slot in self.secrets):
             raise ValueError("KMS secret and endpoint regions must match")
-        if self.mcp and any(slot.secret_arn.split(":")[2] != self.kms.region for slot in self.mcp.secrets):
+        if any(row.secret.secret_arn.split(":")[2] != self.kms.region for row in self.connections):
+            raise ValueError("Managed secret and endpoint regions must match")
+        if self.mcp and any(
+            slot.secret_arn.split(":")[2] != self.kms.region for slot in self.mcp.secrets
+        ):
             raise ValueError("MCP KMS secret and endpoint regions must match")
         return self
 
@@ -168,7 +216,9 @@ class TenantRuntime:
 
     def resolve(self, binding):
         config = self.configuration()
-        slot = self.slot(config, binding.tenant_id, binding.protocol)
+        slot = next((row for row in [*config.secrets, *(c.secret for c in config.connections)]
+            if (row.tenant_id, row.protocol, row.reference) == (
+                binding.tenant_id, binding.protocol, binding.reference)), None)
         if slot is None:
             return None
         kms = self.kms(config)
@@ -178,6 +228,8 @@ class TenantRuntime:
         return SecretMaterial(binding, kms.value(slot.secret_arn, version))
 
     def model(self, scope, route):
+        if getattr(route, "connection_id", None) is not None:
+            return self.connection(scope.tenant_id, route)
         key = (
             scope.tenant_id,
             route.protocol,
@@ -190,10 +242,30 @@ class TenantRuntime:
             raise DomainError("SOURCE_UNAVAILABLE", "当前模型未绑定租户服务商与价格卡。")
         return selected
 
+    def connection(self, tenant_id, route, *, config=None):
+        config = config or self.configuration()
+        selected = next((row for row in config.connections
+            if row.tenant_id == tenant_id and row.id == route.connection_id), None)
+        version = getattr(route, "model_version", None) or route.version
+        if selected is None or (
+            selected.metadata.protocol, selected.metadata.base_url.rstrip("/"),
+            selected.metadata.model, selected.metadata.model_version
+        ) != (route.protocol, route.base_url.rstrip("/"), route.model, version):
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型连接不属于本租户或配置已变化。")
+        return selected
+
+    def current_for(self, tenant_id, metadata):
+        config = self.configuration()
+        selected = self.connection(tenant_id, metadata, config=config)
+        version = self.kms(config).current_version(selected.secret.secret_arn)
+        return self.binding(config, selected.secret, version) if version else None
+
     def mcp_secret(self, tenant_id, reference):
         config = self.configuration()
-        slot = next((item for item in config.mcp.secrets
-                     if item.tenant_id == tenant_id and item.reference == reference), None) if config.mcp else None
+        slot = next((
+            item for item in config.mcp.secrets
+            if item.tenant_id == tenant_id and item.reference == reference
+        ), None) if config.mcp else None
         if slot is None:
             return None
         kms = self.kms(config)
@@ -203,8 +275,19 @@ class TenantRuntime:
     def provider_for(self, scope, route):
         return self.model(scope, route).provider
 
+    def output_limit_for(self, scope, route):
+        if getattr(route, "connection_id", None) is not None:
+            self.connection(scope.tenant_id, route)
+            return route.max_output_tokens
+        return self.model(scope, route).max_output_tokens
+
+    def development_budget_for(self, scope, route):
+        return self.model(scope, route).development_unlimited_budget
+
     def rate_card_for(self, scope, route):
         model = self.model(scope, route)
+        if model.pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "此服务商尚未填写已核对的价格与计费资料。")
         card = RateCard(
             provider=model.provider,
             model=route.model,
@@ -252,6 +335,8 @@ def runtime_ports(engine=None):
         secrets=host,
         provider_for=host.provider_for,
         rate_card_for=host.rate_card_for,
+        output_limit_for=host.output_limit_for,
+        development_budget_for=host.development_budget_for,
         **research,
         **mcp,
     )

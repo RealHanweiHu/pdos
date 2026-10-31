@@ -31,6 +31,7 @@ const reactShim = { ...React,
 /* eslint-enable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps */
 const modules = new Map();
 function load(filename) {
+  if (filename.endsWith(".css")) return { __esModule:true, default:new Proxy({}, {get:(_,key)=>String(key)}) };
   if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync);
   if (modules.has(filename)) return modules.get(filename).exports;
   const loaded = new Module(filename); modules.set(filename, loaded);
@@ -91,9 +92,8 @@ test("direct project hydration reads only that project and migrates only its mat
     assert.deepEqual(JSON.parse(entries.get(storageKey)), { draft, pending: null });
     const tree = component.render();
     assert.ok(elements(tree, e => e.type === "select" && e.props.value === project.id && e.props.disabled).length);
-    assert.ok(elements(tree, e => e.type === "input" && e.props.value === "原工程任务").length);
-    const back = elements(tree, e => e.type === "a" && e.props.children === "返回项目驾驶舱")[0];
-    assert.equal(new URLSearchParams(back.props.href).get("project"), project.id);
+    assert.ok(elements(tree, e => e.type?.name === "PlanTaskEditor" && e.props.draft.tasks[0].title === "原工程任务").length);
+    assert.equal(elements(tree, e => e.props?.id === `project-editor-pane-${product.id}`)[0].props.hidden, true);
   }, { projectId: project.id, categoryId: "synthetic-category" });
 });
 
@@ -106,7 +106,7 @@ test("other project input and unknown pending save remain in their old cache, ne
     assert.deepEqual(JSON.parse(entries.get(storageKey)), local);
     assert.equal(entries.has(planningStorageKey(principal, product.id, project.id)), false);
     assert.equal(elements(tree, e => e.props?.children === "按原请求重试").length, 0);
-    assert.equal(elements(tree, e => e.type === "input" && e.props.value === "原工程任务").length, 0);
+    assert.equal(elements(tree, e => e.type?.name === "PlanTaskEditor" && e.props.draft.tasks[0].title === "原工程任务").length, 0);
     assert.equal(calls.filter(call => call.body).length, 0);
   }, { projectId: project.id });
 });
@@ -183,7 +183,7 @@ test("retired cache hydration persists request removal, renders G0 guidance and 
     assert.equal(elements(tree, e => e.type === "input" && e.props.value === "历史创建名称").length, 0);
     assert.equal(elements(tree, e => e.type === "form").length, 1);
     assert.ok(elements(tree, e => e.type === "h4" && e.props.children === "G0 项目").length);
-    assert.ok(elements(tree, e => e.type === "input" && e.props.value === "原工程任务").length);
+    assert.ok(elements(tree, e => e.type?.name === "PlanTaskEditor" && e.props.draft.tasks[0].title === "原工程任务").length);
   });
 });
 test("retained first-plan request retries unchanged without rebuilding or replacing its draft", async () => {
@@ -200,7 +200,7 @@ test("existing G0 project can still save a first-plan proposal using pinned sour
     elements(component.render(), e => e.type === "form")[0].props.onSubmit({ preventDefault() {} }); await tick();
     const writes = calls.filter(call => call.body); assert.equal(writes.length, 1); assert.equal(writes[0].body.operation, "work.plan.propose");
     assert.deepEqual(writes[0].body.source_read_set, project.required_source_read_set);
-    assert.deepEqual(writes[0].body.payload, { project_id: project.id, expected_project_revision: project.revision, schedule: buildSchedule(draft), reason: draft.reason });
+    assert.deepEqual(writes[0].body.payload, { project_id: project.id, expected_project_revision: project.revision, base_plan_id: null, resource_demands: [], schedule: buildSchedule(draft), reason: draft.reason });
   });
 });
 test("first-plan apply still previews then executes the exact confirmed request", async () => {
@@ -215,8 +215,8 @@ test("first-plan apply still previews then executes the exact confirmed request"
       review: { operation: "work.plan.apply", name: project.name, effect: "应用首计划", forecast, input_snapshot: schedule } };
     return { id: "receipt", subject_type: "plan_revision", subject_id: "plan" };
   }, async component => {
-    elements(component.render(), e => e.props?.children === "核对并应用此首版计划")[0].props.onClick({ currentTarget: { focus() {} } }); await tick();
-    const confirmed = elements(component.render(), e => e.props?.children === "确认应用此首版计划")[0];
+    elements(component.render(), e => e.type?.name === "PlanAlternatives")[0].props.onApply(proposal, { focus() {} }); await tick();
+    const confirmed = elements(component.render(), e => e.props?.children === "确认应用此计划")[0];
     assert.ok(confirmed); confirmed.props.onClick(); await tick();
     const writes = calls.filter(call => call.body); assert.equal(writes.length, 2);
     assert.equal(writes[0].path, "v1/commands/preview"); assert.equal(writes[1].path, "v1/commands");
@@ -226,6 +226,17 @@ test("first-plan apply still previews then executes the exact confirmed request"
 });
 test("initial rendering exposes G0 route guidance without a project creation control or network write", () => {
   const output = renderToStaticMarkup(React.createElement(ProjectPlanning, { product, principalId: principal, api: () => { throw Error("No render IO"); }, onSaved() {} }));
-  assert.ok(output.includes("项目由立项提案的 G0 决定生成")); assert.ok(output.includes("准备首版计划候选"));
+  assert.ok(output.includes("编辑计划候选")); assert.ok(output.includes("准备计划候选"));
+  assert.match(output, /id="project-editor-pane-[^"]+" hidden/);
   assert.equal(output.includes("核对范围并建立项目"), false); assert.equal(output.includes("项目名称<input"), false);
+});
+
+test("a newly added task never reuses the key of a removed historical task", async()=>{
+  await mounted({draft,pending:null},async()=>({items:[project],has_more:false,unavailable_count:0}),async component=>{
+    const editor=elements(component.render(),e=>e.type?.name==="PlanTaskEditor")[0];
+    editor.props.onChange({...draft,tasks:[draft.tasks[0]]});
+    elements(component.render(),e=>e.props?.children?.some?.(c=>c==="新增任务"))[0].props.onClick();
+    const next=elements(component.render(),e=>e.type?.name==="PlanTaskEditor")[0].props.draft.tasks;
+    assert.equal(next.length,2);assert.notEqual(next[1].key,draft.tasks[1].key);assert.notEqual(next[1].key,draft.tasks[0].key);
+  });
 });

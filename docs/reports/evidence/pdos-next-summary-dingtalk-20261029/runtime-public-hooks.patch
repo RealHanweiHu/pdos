@@ -1,0 +1,126 @@
+--- a/pdos-next/server/pdos_next/workflows/worker.py
++++ b/pdos-next/server/pdos_next/workflows/worker.py
+@@ -5,11 +5,6 @@
+ import os
+ from concurrent.futures import ThreadPoolExecutor
+ from uuid import UUID
+-
+-from temporalio import activity
+-from temporalio.client import Client
+-from temporalio.exceptions import ApplicationError
+-from temporalio.worker import Worker
+ 
+ from pdos_next.database import configured_engines, tenant_session
+ from pdos_next.dispatch.outbox import dispatch_once
+@@ -25,6 +20,10 @@
+     UploadTerminal,
+ )
+ from pdos_next.workflows.transport import TemporalSender
++from temporalio import activity
++from temporalio.client import Client
++from temporalio.exceptions import ApplicationError
++from temporalio.worker import Worker
+ 
+ 
+ class Activities:
+@@ -207,8 +206,12 @@
+ 
+     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
+     from pdos_next.dingtalk.runtime import configure as configure_dingtalk
++    from pdos_next.dingtalk.summary_workflow import DingTalkSummaryDelivery, SummaryActivities
+     from pdos_next.dingtalk.workflow import ChannelActivities, ChannelSender, DingTalkCompletion
+ 
++    summary_channel_activities = SummaryActivities(
++        engine, dispatch_engine, runtime=dingtalk_runtime,
++    )
+     channel_activities = ChannelActivities(
+         engine, dispatch_engine, kernel_sender, runtime=dingtalk_runtime,
+     )
+@@ -244,6 +247,7 @@
+             workflows=[
+                 XiaopaiWork,
+                 DingTalkCompletion,
++                DingTalkSummaryDelivery,
+                 AutomationRuleWork,
+                 ParseOriginal,
+                 QueueOriginalSecurity,
+@@ -260,6 +264,7 @@
+                 kernel_activities.advance,
+                 channel_activities.deliver,
+                 channel_activities.cancel,
++                summary_channel_activities.deliver,
+                 activities.automation_rule_tick,
+                 kernel_activities.reconcile,
+                 activities.parse,
+--- a/pdos-next/web/src/app/api/[...path]/route.ts
++++ b/pdos-next/web/src/app/api/[...path]/route.ts
+@@ -215,6 +215,10 @@
+ async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
+   const { path: forwardPath } = await context.params;
+   const dingPath = forwardPath.join("/");
++  if (/^v1\/personal\/inbox\/summary-(?:channels|deliveries)(?:\/|$)/i.test(dingPath)) {
++    const { summaryChannelRequest } = await import("@/lib/summary-channel-proxy");
++    return summaryChannelRequest(request, dingPath);
++  }
+   if (dingPath === "v1/dingtalk/application" || dingPath.startsWith("v1/personal/dingtalk/")) {
+     const { dingtalkRequest } = await import("@/lib/dingtalk-proxy");
+     return dingtalkRequest(request, dingPath);
+--- a/pdos-next/web/src/components/app-shell.tsx
++++ b/pdos-next/web/src/components/app-shell.tsx
+@@ -35,7 +35,7 @@
+   return <div className="workspace-theme-options">{([{ value: "light", label: "亮色", Icon: Sun }, { value: "dark", label: "暗色", Icon: Moon }, { value: "system", label: "跟随系统", Icon: SidebarSimple }] as const).map(({ value, label, Icon }) => <Button key={value} variant="outline" aria-pressed={theme === value} onClick={() => apply(value)}><Icon/>{label}</Button>)}</div>;
+ }
+ 
+-export function AppShell({ children, documentPage, runPage, localPreview = false }: { children?: ReactNode; documentPage?: { categoryId: string }; runPage?: { runId: string }; localPreview?: boolean } = {}) {
++export function AppShell({ children, documentPage, runPage, localPreview = false }: { children?: ReactNode; documentPage?: { categoryId: string }; runPage?: { runId: string; categoryId?: string }; localPreview?: boolean } = {}) {
+   const runPageId = runPage?.runId ?? "";
+   const documentCategoryId = documentPage?.categoryId ?? "";
+   const documentMode = Boolean(documentCategoryId);
+@@ -47,12 +47,12 @@
+   const [navigationProjects, setNavigationProjects] = useState<NavigationProject[]>([]);
+   const [projectsError, setProjectsError] = useState("");
+   const [entryError, setEntryError] = useState("");
+-  const [location, setLocation] = useState<GlobalLocation>(runPageId ? { area: "pai", categoryId: "", projectId: "" } : defaultGlobalLocation);
++  const [location, setLocation] = useState<GlobalLocation>(runPageId ? { area: "pai", categoryId: runPage?.categoryId ?? "", projectId: "" } : defaultGlobalLocation);
+   const [collapsed, setCollapsed] = useState(false);
+   const [paiOpen, setPaiOpen] = useState(false);
+   const [presetSkillKeys, setPresetSkillKeys] = useState<string[]>([]);
+   const [paiContext, setPaiContext] = useState<PaiContext | null>(null);
+-  const [focusRun, setFocusRun] = useState<{ runId: string; categoryId: string } | null>(runPageId ? { runId: runPageId, categoryId: "" } : null);
++  const [focusRun, setFocusRun] = useState<{ runId: string; categoryId: string } | null>(runPageId ? { runId: runPageId, categoryId: runPage?.categoryId ?? "" } : null);
+   const updateMaterialContext = useCallback((context: PaiContext | null) => {
+     setPaiContext(context);
+     if (context?.material?.request) setFocusRun(null);
+--- a/pdos-next/web/src/app/dingtalk/runs/[runId]/page.tsx
++++ b/pdos-next/web/src/app/dingtalk/runs/[runId]/page.tsx
+@@ -2,8 +2,10 @@
+ import { AppShell } from "@/components/app-shell";
+ 
+ /** IDs only. The normal login and original personal Run/source READ run again. */
+-export default async function Page({ params }: { params: Promise<{ runId: string }> }) {
++export default async function Page({ params, searchParams }: { params: Promise<{ runId: string }>; searchParams?: Promise<{ category?: string | string[] }> }) {
+   const { runId } = await params;
+   if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(runId)) notFound();
+-  return <AppShell runPage={{ runId }} />;
++  const categoryId = (await searchParams)?.category;
++  if (categoryId !== undefined && (typeof categoryId !== "string" || !/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(categoryId))) notFound();
++  return <AppShell runPage={{ runId, ...(categoryId ? { categoryId } : {}) }} />;
+ }
+--- a/pdos-next/web/src/components/xiaopai.tsx
++++ b/pdos-next/web/src/components/xiaopai.tsx
+@@ -16,6 +16,7 @@
+ import { RunCandidates } from "@/components/pai/run-candidates";
+ import { WorkFollowupAction } from "@/components/pai/work-followup-action";
+ import { VerificationPreparationAction } from "@/components/pai/verification-preparation-action";
++import { PersonalSummaryRunResult } from "@/components/pai/personal-summary-result";
+ import { ResearchResult } from "@/components/pai/research-result";
+ import { restoreRunStart } from "@/lib/run-start-intent";
+ import { usePaiScroll, loadedSkillFacts, PaiCarry, PaiMessage, PaiUnfinished, PaiResponse, PaiReplyDetails, PaiGoal, PaiScope, PaiWelcome, PaiContextBar, PaiMobileWorkspaceSwitch } from "@/components/pai-conversation";
+@@ -301,6 +302,7 @@
+       <PaiMessage from="pai">
+       <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" presentation="conversation" onUnavailable={sourceUnavailable} />
+       {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
++      {!run.reverted && ["completed", "partial"].includes(run.status) && <PersonalSummaryRunResult output={run.result} principalId={principalId}/>}
+ 
+       <ResearchResult value={run.result?.result?.research} />
+       {projectId && run.project_id === projectId && !run.reconciliation && <VerificationPreparationAction key={`verification:${run.run_id}`} api={api} categoryId={categoryId} run={run} disabled={busy || !!pending || !!run.conversation?.next_run_id} additionalSources={continuationSources} initialBuildId={typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("build") ?? undefined : undefined} onUnavailable={sourceUnavailable} onStart={value => { void send(value); }}/>}

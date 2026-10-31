@@ -5,13 +5,12 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
-from sqlalchemy import select
-
 from pdos_next.domain.preproject.access import human, member
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
 from pdos_next.models import now
 from pdos_next.service import command_digest, digest
 from pdos_next.source_current import direct_source_basis
+from sqlalchemy import select
 
 from . import g0_sources, owner, rules
 from .constants import ASSIGN, COMMIT, CREATE, STATUS, TASK_OPERATIONS
@@ -77,6 +76,10 @@ def _merge_basis(*groups):
 
 
 def validate(s, ctx, command, product, payload):
+    if command.operation == CREATE and not ctx.agent_run_id:
+        from pdos_next.enterprise_search.work_followup_candidates import check_command
+
+        check_command(s, ctx, command)
     key = _cache_key(ctx, command)
     cached = s.info.get(key)
     if cached is not None and cached.transaction is s.get_transaction() and not cached.used:
@@ -110,6 +113,16 @@ def validate(s, ctx, command, product, payload):
             task_row.project_id == project.id, "任务不属于当前项目。", "FORBIDDEN_SCOPE", 403
         )
         owner.sources_current(s, ctx, product.id, task_row.source_basis)
+    if command.operation == CREATE and payload.npi_template is not None:
+        from .templates import validate as validate_template
+
+        validate_template(payload.npi_template)
+        rules.require(
+            payload.g0_open_item is None,
+            "NPI 模板和 G0 事项请分别建立任务。",
+            "VALIDATION_FAILED",
+            422,
+        )
     if command.operation == CREATE and payload.plan_task is not None:
         fixed = s.scalar(
             select(ProjectTask).where(

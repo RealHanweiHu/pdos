@@ -1,0 +1,11 @@
+{
+  "tests": [
+    "tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+    "tests/agent_kernel/test_owner_history_pg.py",
+    "-x",
+    "--tb=short"
+  ],
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "model_calls": 0
+}

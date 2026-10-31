@@ -1,0 +1,16 @@
+{
+  "argv": [
+    "node",
+    "--experimental-strip-types",
+    "--test",
+    "--test-name-pattern=\u9884\u7b97\u6062\u590d|\u540e\u7eed\u5de5\u4f5c|\u672c\u4eba\u8fd0\u884c\u53cd\u9988|\u8fd0\u884c\u8fc7\u7a0b|\u5c0fPai\u4e0e\u6a21\u578b\u914d\u7f6e",
+    "src/app/api/[...path]/route.test.ts"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web",
+  "started_at": "2026-10-30T09:40:43.933863+00:00",
+  "finished_at": "2026-10-30T09:40:44.031589+00:00",
+  "exit_code": 0,
+  "stdout_log": "restart-bff-run1.log",
+  "stdout_sha256": "d0a88a756af3d6475644a4236353cf6beb859dfd145a8a663b2a02ccdba64c87",
+  "scope": "pure/collection/static only; no DB/provider/browser"
+}

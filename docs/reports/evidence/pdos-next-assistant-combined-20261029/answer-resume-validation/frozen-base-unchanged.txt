@@ -1,0 +1,2 @@
+All 2661 combined frozen source/config input SHA values remain unchanged.
+Both edited source originals match base-manifest.json.

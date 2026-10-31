@@ -1,0 +1,20 @@
+[
+  {
+    "path": "pdos-next/server/tests/agent_kernel/test_context_corrections_pg.py",
+    "before_sha256": "ceb20b4882cd172ed690b6be516f8ec561d303658a5a1805cebd4a3a8bb9da94",
+    "after_sha256": "9c28def64a7b2b5bd935c3e9b9451122699e9ffd4f5c40e63495685e7c29f85d",
+    "patch": "--- \n+++ \n@@ -24,6 +24,7 @@\n     KernelStore(setup.engine).finish(\n         scope(setup, identity, personal=personal),\n         {\n+            \"status\": \"completed\",\n             \"summary\": \"\u5408\u6210\u6848\u4f8b\u6838\u5bf9\u7ed3\u679c\uff0c\u538b\u529b\u5355\u4f4d\u672a\u77e5\u3002\",\n             \"unfinished\": [],\n             \"questions\": [],\n"
+  },
+  {
+    "path": "pdos-next/server/tests/enterprise_search/test_assistant_depth_integration.py",
+    "before_sha256": "aa6f0b8ea049ef86bfd84f2947c5a449a9f3836c4a706a80fd4c67407d145ba1",
+    "after_sha256": "e9e7ffcf224e011d97d764bfd68e79dcb103b583433798862e5557a070f6ec5c",
+    "patch": "--- \n+++ \n@@ -189,7 +189,7 @@\n     row = SimpleNamespace(id=uuid4(), tenant_id=tenant, requester_id=human, category_id=category,\n                           session_id=effective.session_id, state=\"queued\", versions={},\n                           continued_from_id=parent.id if parent else None)\n-    scalars = iter([None, None])\n+    scalars = iter([None] * (3 if parent_present else 2))\n     events, dispatched = [], []\n     session = SimpleNamespace(execute=lambda *_args, **_kwargs: None,\n                               scalar=lambda *_args: next(scalars), add=events.append)\n"
+  },
+  {
+    "path": "pdos-next/server/tests/agent_kernel/test_work_state_pg.py",
+    "before_sha256": "dbe1d8e6e269f13342d411fc30e61b87f5ffb385c7ef4f38f8bd01c2133ba99b",
+    "after_sha256": "ff5fee7d72e5ac71c96a2a349b1869561819da2fc37c4e579dd9fe3bb50a65b3",
+    "patch": "--- \n+++ \n@@ -217,7 +217,7 @@\n     assert hidden[\"unfinished\"] == []\n     with pytest.raises(DomainError) as error:\n         host.check_conversation(scope(setup, child))\n-    assert error.value.reason == \"CONVERSATION_HISTORY_REVOKED\"\n+    assert error.value.reason == \"SOURCE_UNAVAILABLE\"\n \n \n def test_reusing_session_id_does_not_send_unbound_sources_from_other_runs(setup):\n"
+  }
+]

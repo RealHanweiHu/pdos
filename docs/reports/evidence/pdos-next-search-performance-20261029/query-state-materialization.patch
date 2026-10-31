@@ -1,0 +1,37 @@
+--- a/pdos-next/server/pdos_next/enterprise_search/query.py
++++ b/pdos-next/server/pdos_next/enterprise_search/query.py
+@@ -14,12 +14,13 @@
+ 
+ from .models import SearchChunk, SearchCorpus, SearchSource, SearchTerm
+ from .presence import source_families
++from .readable_sources import readable
+ from .relations import decorate, graph_for, related_page
+ from .safety import safe_originals
+ from .schemas import SearchInput as SearchInput
+ from .sources import dependency_originals, identity_keys, prepare_read, retrieval_catalog
++from .tokenizer import CHUNKER, CODE_RULE, RANKING, analyze, or_query, version
+ from .verified_knowledge import priority as knowledge_priority
+-from .tokenizer import CHUNKER, CODE_RULE, RANKING, analyze, or_query, version
+ 
+ 
+ def _narrow(session, ctx, data):
+@@ -81,7 +82,7 @@
+     families, as_of = source_families(session, ctx, data.source_types, family_scope)
+     if not families:
+         return _response(session, data, scope, parsed, [], as_of=as_of)
+-    c, state, corpus = SearchChunk, SearchSource, SearchCorpus
++    c, state, corpus = SearchChunk, readable(SearchSource), SearchCorpus
+     channels = []
+     if parsed["terms"]:
+         channels.append(c.terms.op("@@")(func.to_tsquery("simple", or_query(parsed["terms"]))))
+@@ -310,7 +311,9 @@
+             func.row_number()
+             .over(
+                 partition_by=(c.source_type, c.source_id),
+-                order_by=(exact.desc(), code_hit.desc(), review_priority.desc(), score.desc(), c.id),
++                order_by=(
++                    exact.desc(), code_hit.desc(), review_priority.desc(), score.desc(), c.id,
++                ),
+             )
+             .label("source_rank"),
+         )

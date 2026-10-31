@@ -1,0 +1,14 @@
+{
+  "compared": 685,
+  "changes": {
+    "workspace": [
+      "src/components/pai/use-work-products.test.mjs",
+      "src/lib/work-products.ts"
+    ],
+    "built_snapshot": []
+  },
+  "excluded_generated": [
+    "next-env.d.ts"
+  ],
+  "pending_work_product_entry_fix": true
+}

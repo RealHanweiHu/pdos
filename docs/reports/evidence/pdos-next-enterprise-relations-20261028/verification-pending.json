@@ -1,0 +1,38 @@
+{
+  "status": "checkpoint_verified",
+  "head": "s0_0830",
+  "database": "127.0.0.1:53502/pdos_test",
+  "new_migration": false,
+  "real_models": false,
+  "embedding": false,
+  "goal_complete": false,
+  "pending": [
+    "Continue remaining approved designs per task_plan; real model/embedding remain disabled"
+  ],
+  "completed_evidence": {
+    "native_related_performance": "native-related-combined.txt and native-related-performance.json (p95 0.982586s; 5 SQL; synthetic only)",
+    "frontend": "frontend-tests.txt 83 passed, frontend-build.txt, frontend-eslint-final.txt and 661 input recheck",
+    "browser": "browser-result.json (5 component SSR screenshots; not authenticated full product navigation)"
+  },
+  "live_processes": [],
+  "test_files": 49,
+  "expected_cases": 388,
+  "source_inputs": 233,
+  "initial_regression": {
+    "log": "database-initial-interrupted.txt",
+    "result": "270 passed before deliberate SIGINT after independent 4.52s relation latency failure; not a complete run"
+  },
+  "performance_failure": "native-related-performance-initial.json",
+  "optimization": "One materialized authoritative read for primary and related sources; cheap combined original dependencies; full final RLS/hash/scan authority retained",
+  "latest_performance_failure": "native-related-performance-light-dependencies.json (p95 1.456649s; retained preceding failure)",
+  "native_related_performance": {
+    "evidence": "native-related-performance.json",
+    "p95_seconds": 0.9825860313663725,
+    "queries_per_request": [
+      5
+    ],
+    "passed": true
+  },
+  "final_result": "verification-result.json",
+  "report": "result.md"
+}

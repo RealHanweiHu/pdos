@@ -3,35 +3,50 @@
 import asyncio
 import json
 from dataclasses import dataclass
+from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, Query, Request
 from fastapi.responses import StreamingResponse
 from pydantic import Field
-from sqlalchemy import and_, or_, select, text
+from sqlalchemy import select, text
 from sqlalchemy.orm import load_only
 
 from pdos_next.contracts import SourceRead
 from pdos_next.database import tenant_session
+from pdos_next.enterprise_search.verification_actions import VerificationAction
+from pdos_next.enterprise_search.work_followup_actions import WorkFollowupAction
 from pdos_next.errors import DomainError
 from pdos_next.schema_base import StrictModel
 from pdos_next.service import digest, require_access
 
-from .models import AgentEvent, AgentRun
+from .models import AgentEvent, AgentRun, AgentSession
 from .persistence import cancel_run, create_run, record_answers, run_revert_status
+from .requested_skills import RequestedSkill
 from .run_feedback import FeedbackInput
 from .run_reconciliation import ReconcileInput
+from .search_preferences import SearchPreferences
 
 
 class StartInput(StrictModel):
-    goal: str = Field(min_length=3, max_length=8000)
+    goal: str = Field(min_length=1, max_length=8000)
     idempotency_key: str = Field(min_length=8, max_length=160)
     session_id: UUID | None = None
     continue_from_run_id: UUID | None = None
+    restart_from_run_id: UUID | None = None
     product_id: UUID | None = None
     proposal_id: UUID | None = None
     project_id: UUID | None = None
     sources: list[SourceRead] = Field(default_factory=list)
+    requested_skills: list[RequestedSkill] = Field(default_factory=list, max_length=8)
+    excluded_continued_skills: list[Annotated[str, Field(min_length=1, max_length=160)]] = Field(
+        default_factory=list, max_length=2,
+    )
+    search_preferences: SearchPreferences | None = None
+    verification_action: VerificationAction | None = None
+    work_followup_action: WorkFollowupAction | None = None
+    lookup_depth: Literal["deep"] | None = None
+    context_revision: int | None = Field(default=None, ge=1, strict=True)
 
 
 class AnswerInput(StrictModel):
@@ -114,22 +129,62 @@ def router(engine, *, context_dependency, ports: ApiPorts):
 
     result.include_router(upload_router(transaction=transaction, context_dependency=run_dependency))
 
+    from .work_products import router as work_product_router
+
+    result.include_router(
+        work_product_router(transaction=transaction, context_dependency=run_dependency)
+    )
+
+    from pdos_next.enterprise_search.api import router as enterprise_search_router
+
+    from .work_state import router as work_state_router
+
+    result.include_router(
+        enterprise_search_router(transaction=transaction, context_dependency=run_dependency,
+                                 engine=engine)
+    )
+
+    result.include_router(
+        work_state_router(transaction=transaction, context_dependency=run_dependency)
+    )
+
+    @result.get("/v1/personal/agent-skills")
+    def personal_skills(ctx=run_dependency):
+        from .requested_skills import reading
+
+        with transaction(ctx, read_snapshot=True) as session:
+            return reading(session, ctx)
+
     @result.post("/v1/categories/{category_id}/agent-runs", status_code=202)
     @result.post("/v1/personal/agent-runs", status_code=202)
     async def start(data: StartInput, ctx=run_dependency):
+        if data.verification_action is not None and data.work_followup_action is not None:
+            raise DomainError("INVALID_PAYLOAD", "一次续接只准备一个明确的行动。", 422)
         request_digest = digest(
             {
                 "category_id": ctx.category_id,
-                "request": data.model_dump(exclude={"idempotency_key"} | (
-                    {"project_id"} if data.project_id is None else set()
-                )),
+                "request": data.model_dump(
+                    exclude={"idempotency_key"}
+                    | ({"project_id"} if data.project_id is None else set())
+                    | ({"requested_skills"} if not data.requested_skills else set())
+                    | ({"search_preferences"} if data.search_preferences is None else set())
+                    | ({"verification_action"} if data.verification_action is None else set())
+                    | ({"work_followup_action"} if data.work_followup_action is None else set())
+                    | ({"lookup_depth"} if data.lookup_depth is None else set())
+                    | ({"context_revision"} if data.context_revision is None else set())
+                    | ({"restart_from_run_id"} if data.restart_from_run_id is None else set())
+                    | ({"excluded_continued_skills"}
+                       if not data.excluded_continued_skills else set())
+                ),
             }
         )
+        requested_for_event = data.requested_skills
         # This host callback binds proposal audience/source taint, not a boolean from the client.
         with transaction(ctx) as s:
             lock_key = f"xiaopai-start:{ctx.tenant_id}:{ctx.requester_id}:{data.idempotency_key}"
-            s.execute(text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"),
-                      {"key": lock_key})
+            s.execute(
+                text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"), {"key": lock_key}
+            )
             row = s.scalar(
                 select(AgentRun).where(
                     AgentRun.requester_id == ctx.requester_id,
@@ -144,8 +199,44 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 visible_run(s, ctx, row)
             else:
                 from .conversation import merge_binding, prepare
-                effective, parent = prepare(s, ctx, data)
-                binding = merge_binding(ports.binding_for(s, ctx, effective), parent)
+
+                restart = None
+                if data.restart_from_run_id is not None:
+                    from .context_restart import prepare as prepare_restart
+
+                    effective, restart = prepare_restart(s, ctx, data)
+                    parent = None
+                else:
+                    effective, parent = prepare(s, ctx, data)
+                from pdos_next.enterprise_search.assistant_depth import starting_profile
+
+                depth_profile = starting_profile(data.lookup_depth, parent)
+                from .requested_skills import validate as validate_skills
+
+                validate_skills(s, ctx, data.requested_skills)
+                from pdos_next.enterprise_search.verification_actions import prepare_start
+
+                effective, action, requested_for_event = prepare_start(
+                    s, ctx, effective, parent, data.verification_action,
+                )
+                work_action = None
+                if data.work_followup_action is not None:
+                    from pdos_next.enterprise_search.work_followup_actions import prepare_start
+
+                    effective, work_action, requested_for_event = prepare_start(
+                        s, ctx, effective, parent, data.work_followup_action,
+                    )
+                from .requested_skills import validate_start
+
+                merged_skills = validate_start(
+                    s, ctx, requested_for_event, parent=restart.parent if restart else parent,
+                    excluded=data.excluded_continued_skills,
+                )
+                if restart is not None:
+                    requested_for_event = merged_skills
+                binding = merge_binding(
+                    ports.binding_for(s, ctx, effective), restart.parent if restart else parent,
+                )
                 row = create_run(
                     s,
                     ctx,
@@ -166,17 +257,55 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     validation_budget_id=getattr(binding, "validation_budget_id", None),
                     request_digest=request_digest,
                 )
+                row.versions = {**row.versions, "assistant_depth": depth_profile}
+                if action is not None:
+                    row.versions = {**row.versions, "verification_action": action}
+                if work_action is not None:
+                    row.versions = {**row.versions, "work_followup_action": work_action}
+                from .search_preferences import configure_start
+
+                configure_start(s, ctx, row, data.search_preferences)
+                from .context_corrections import configure_start as configure_context_start
+
+                configure_context_start(s, ctx, row, data, effective, parent)
+                if restart is not None:
+                    from .context_restart import install
+
+                    install(s, row, restart)
             ref = reference(row, ctx)
-            value = {"run_id": str(row.id), "session_id": str(row.session_id), "status": row.state,
-                     "continued_from_id": (
-                         str(row.continued_from_id) if row.continued_from_id else None)}
+            value = {
+                "run_id": str(row.id),
+                "session_id": str(row.session_id),
+                "status": row.state,
+                "continued_from_id": (
+                    str(row.continued_from_id) if row.continued_from_id else None
+                ),
+                **({"restarted_from_id": row.versions["work_state_restart"]["source_run_id"]}
+                   if "work_state_restart" in row.versions else {}),
+            }
             if not s.scalar(select(AgentEvent.id).where(AgentEvent.run_id == row.id)):
                 s.add(
                     AgentEvent(
                         tenant_id=ctx.tenant_id,
                         run_id=row.id,
                         sequence=1,
-                        body={"type": "accepted", "status": "queued"},
+                        body={
+                            "type": "accepted",
+                            "status": "queued",
+                            **(
+                                {
+                                    "requested_skills": [
+                                        item.model_dump(mode="json")
+                                        for item in requested_for_event
+                                    ]
+                                }
+                                if requested_for_event
+                                else {}
+                            ),
+                            **({"excluded_continued_skills": data.excluded_continued_skills}
+                               if data.excluded_continued_skills
+                               and data.restart_from_run_id is None else {}),
+                        },
                     )
                 )
         # A crash here leaves a stable queued Run. Repeating the same request starts the same
@@ -196,11 +325,38 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}")
     @result.get("/v1/personal/agent-runs/{run_id}")
     def read(run_id: UUID, ctx=run_dependency):
+        from pdos_next.enterprise_search.assistant_answer import stored_answer
+
         from .conversation import links
         from .process_view import read_process
         from .run_reconciliation import completed_record
+        from .session_bindings import current_proposal_id
+
         with transaction(ctx, read_snapshot=True) as s:
-            row = visible_run(s, ctx, s.get(AgentRun, run_id))
+            actual = s.get(AgentRun, run_id)
+            if actual is None:
+                from .owner_history import goals, hidden_detail
+
+                recorded = goals(s, ctx, run_id=run_id)
+                if recorded:
+                    return hidden_detail(recorded[0])
+            row = visible_run(s, ctx, actual)
+            from pdos_next.personal_summary_runtime import checked_result
+
+            answer = checked_result(s, ctx, row)
+            if answer is None:
+                answer = stored_answer(s, row)
+            from .project_current_context import checked_result as checked_project_result
+
+            answer = checked_project_result(s, ctx, row, answer)
+            conversation = s.get(AgentSession, row.session_id)
+            if conversation is None:
+                raise DomainError("FORBIDDEN_SCOPE", "原会话不在当前可读范围。", 403)
+            session_proposal_id = current_proposal_id(s, conversation)
+            if session_proposal_id is not None and session_proposal_id != row.proposal_id:
+                from pdos_next.domain.preproject.access import proposal
+
+                proposal(s, ctx, session_proposal_id)
             return {
                 "run_id": str(row.id),
                 "goal": row.goal,
@@ -208,9 +364,10 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 "conversation": links(s, row),
                 "product_id": str(row.product_id) if row.product_id else None,
                 "proposal_id": str(row.proposal_id) if row.proposal_id else None,
+                "session_proposal_id": str(session_proposal_id) if session_proposal_id else None,
                 "project_id": str(row.project_id) if row.project_id else None,
                 "status": row.state,
-                "result": row.result,
+                "result": answer,
                 "error_code": row.error_code,
                 "reconciliation": completed_record(s, row),
                 "process": read_process(s, row),
@@ -221,67 +378,154 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/process")
     @result.get("/v1/personal/agent-runs/{run_id}/process")
     def process(
-        run_id: UUID, before: int | None = Query(default=None, ge=1),
-        source_cursor: UUID | None = None, receipt_cursor: UUID | None = None,
-        page_size: int = Query(default=25, ge=1, le=100), ctx=run_dependency,
+        run_id: UUID,
+        before: int | None = Query(default=None, ge=1),
+        source_cursor: UUID | None = None,
+        receipt_cursor: UUID | None = None,
+        page_size: int = Query(default=25, ge=1, le=100),
+        ctx=run_dependency,
     ):
         from .process_view import read_process
+
         with transaction(ctx, read_snapshot=True) as session:
-            row = session.scalar(select(AgentRun).where(AgentRun.id == run_id).options(load_only(
-                AgentRun.id, AgentRun.tenant_id, AgentRun.category_id, AgentRun.proposal_id,
-                AgentRun.product_id, AgentRun.project_id,
-                AgentRun.requester_id, AgentRun.state, AgentRun.error_code, AgentRun.created_at,
-                AgentRun.reverted_at, AgentRun.read_sources, raiseload=True,
-            )))
-            return read_process(session, visible_run(session, ctx, row),
-                                before=before, page_size=page_size,
-                                source_cursor=source_cursor, receipt_cursor=receipt_cursor)
+            row = session.scalar(
+                select(AgentRun)
+                .where(AgentRun.id == run_id)
+                .options(
+                    load_only(
+                        AgentRun.id,
+                        AgentRun.tenant_id,
+                        AgentRun.category_id,
+                        AgentRun.proposal_id,
+                        AgentRun.product_id,
+                        AgentRun.project_id,
+                        AgentRun.requester_id,
+                        # Receipt visibility also validates fixed service-run bindings.
+                        AgentRun.trigger,
+                        AgentRun.writer_id,
+                        AgentRun.intent_digest,
+                        AgentRun.goal,
+                        AgentRun.validation_budget_id,
+                        AgentRun.token_limit,
+                        AgentRun.state,
+                        AgentRun.error_code,
+                        AgentRun.created_at,
+                        AgentRun.reverted_at,
+                        AgentRun.read_sources,
+                        raiseload=True,
+                    )
+                )
+            )
+            return read_process(
+                session,
+                visible_run(session, ctx, row),
+                before=before,
+                page_size=page_size,
+                source_cursor=source_cursor,
+                receipt_cursor=receipt_cursor,
+            )
 
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/continuation")
     @result.get("/v1/personal/agent-runs/{run_id}/continuation")
     def continuation(run_id: UUID, ctx=run_dependency):
         from .run_reconciliation import owner
+
         with transaction(ctx, read_snapshot=True) as session:
-            row = session.scalar(select(AgentRun).where(AgentRun.id == run_id).options(load_only(
-                AgentRun.id, AgentRun.tenant_id, AgentRun.category_id, AgentRun.proposal_id,
-                AgentRun.product_id, AgentRun.project_id,
-                AgentRun.requester_id, AgentRun.state, AgentRun.reverted_at, raiseload=True,
-            )))
+            row = session.scalar(
+                select(AgentRun)
+                .where(AgentRun.id == run_id)
+                .options(
+                    load_only(
+                        AgentRun.id,
+                        AgentRun.tenant_id,
+                        AgentRun.category_id,
+                        AgentRun.proposal_id,
+                        AgentRun.product_id,
+                        AgentRun.project_id,
+                        AgentRun.requester_id,
+                        AgentRun.state,
+                        AgentRun.reverted_at,
+                        AgentRun.session_id,
+                        AgentRun.versions,
+                        raiseload=True,
+                    )
+                )
+            )
             owner(session, ctx, visible_run(session, ctx, row))
-            child = session.execute(select(AgentRun.id, AgentRun.goal, AgentRun.intent_key).where(
-                AgentRun.continued_from_id == row.id)).one_or_none()
-            return {"run_id": str(row.id), "owner_id": str(row.requester_id),
-                    "can_continue": not row.reverted_at and row.state in {
-                        "completed", "partial", "failed", "cancelled"} and child is None,
-                    "existing": {"run_id": str(child.id), "goal": child.goal,
-                                 "idempotency_key": child.intent_key} if child else None}
+            from .context_restart import recovery_view
+            from .requested_skills import recent
+            child = session.execute(
+                select(AgentRun.id, AgentRun.goal, AgentRun.intent_key).where(
+                    AgentRun.continued_from_id == row.id
+                )
+            ).one_or_none()
+            return {
+                "run_id": str(row.id),
+                "owner_id": str(row.requester_id),
+                "continued_skills": [
+                    item.model_dump(mode="json") for item in recent(session, row.id)
+                ],
+                "context_restart": recovery_view(session, row),
+                "can_continue": not row.reverted_at
+                and row.state in {"completed", "partial", "failed", "cancelled"}
+                and child is None,
+                "existing": {
+                    "run_id": str(child.id),
+                    "goal": child.goal,
+                    "idempotency_key": child.intent_key,
+                }
+                if child
+                else None,
+            }
 
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/reconciliation")
     @result.get("/v1/personal/agent-runs/{run_id}/reconciliation")
     def inspect_reconciliation(
-        run_id: UUID, call_cursor: UUID | None = None, receipt_cursor: UUID | None = None,
-        page_size: int = Query(default=50, ge=1, le=100), ctx=run_dependency,
+        run_id: UUID,
+        call_cursor: UUID | None = None,
+        receipt_cursor: UUID | None = None,
+        page_size: int = Query(default=50, ge=1, le=100),
+        ctx=run_dependency,
     ):
         from .run_reconciliation import inspect
+
         with transaction(ctx) as session:
             row = visible_run(session, ctx, session.get(AgentRun, run_id))
-            return inspect(session, ctx, row, call_cursor=call_cursor,
-                           receipt_cursor=receipt_cursor, page_size=page_size)
+            return inspect(
+                session,
+                ctx,
+                row,
+                call_cursor=call_cursor,
+                receipt_cursor=receipt_cursor,
+                page_size=page_size,
+            )
 
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/feedback")
     @result.get("/v1/personal/agent-runs/{run_id}/feedback")
-    def feedback(run_id: UUID, before: int | None = Query(default=None, ge=1),
-                 page_size: int = Query(default=25, ge=1, le=100),
-                 request_key: UUID | None = None, ctx=run_dependency):
+    def feedback(
+        run_id: UUID,
+        before: int | None = Query(default=None, ge=1),
+        page_size: int = Query(default=25, ge=1, le=100),
+        request_key: UUID | None = None,
+        ctx=run_dependency,
+    ):
         from .run_feedback import lookup, read
+
         with transaction(ctx, read_snapshot=True) as session:
-            return read(session, ctx, visible_run(session, ctx, lookup(session, run_id)),
-                        before=before, page_size=page_size, request_key=request_key)
+            return read(
+                session,
+                ctx,
+                visible_run(session, ctx, lookup(session, run_id)),
+                before=before,
+                page_size=page_size,
+                request_key=request_key,
+            )
 
     @result.post("/v1/categories/{category_id}/agent-runs/{run_id}/feedback")
     @result.post("/v1/personal/agent-runs/{run_id}/feedback")
     def save_feedback(run_id: UUID, data: FeedbackInput, ctx=run_dependency):
         from .run_feedback import lookup, record
+
         with transaction(ctx) as session:
             row = lookup(session, run_id, lock=True)
             return record(session, ctx, visible_run(session, ctx, row), data)
@@ -290,6 +534,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
     @result.post("/v1/personal/agent-runs/{run_id}/reconciliation")
     async def finalize_reconciliation(run_id: UUID, data: ReconcileInput, ctx=run_dependency):
         from .run_reconciliation import finalize
+
         value = finalize(engine, ctx, run_id, expected_cancel_epoch=data.expected_cancel_epoch)
         if value["reconciliation"] is not None:
             with transaction(ctx) as session:
@@ -309,83 +554,55 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         project_id: UUID | None = None,
         ctx=run_dependency,
     ):
-        from pdos_next.domain.preproject.models import Proposal
+        from .session_views import _after, _anchor, _head, _human, _runs, _sessions
 
-        with transaction(ctx) as s:
-            if proposal_id is not None:
-                from pdos_next.domain.preproject.access import proposal
-
-                if ctx.category_id is None:
-                    raise DomainError("FORBIDDEN_SCOPE", "个人入口不能读取提案运行。", 403)
-                proposal(s, ctx, proposal_id)
-            query = select(AgentRun).where(
-                AgentRun.requester_id == ctx.requester_id,
-                AgentRun.category_id == ctx.category_id,
-                or_(
-                    AgentRun.proposal_id.is_(None),
-                    AgentRun.proposal_id.in_(select(Proposal.id)),
-                ),
-            )
-            if proposal_id is not None:
-                query = query.where(AgentRun.proposal_id == proposal_id)
-            if project_id is not None:
-                from pdos_next.domain.projects.models import Project
-
-                project = s.get(Project, project_id)
-                if (
-                    project is None or project.tenant_id != ctx.tenant_id
-                    or project.category_id != ctx.category_id
-                ):
-                    raise DomainError("FORBIDDEN_SCOPE", "项目不在当前可读范围。", 403)
-                query = query.where(AgentRun.project_id == project_id)
+        with transaction(ctx, read_snapshot=True) as s:
+            _human(s, ctx, proposal_id, project_id)
+            heads = _runs(_sessions(ctx, proposal_id, project_id))
+            query = select(heads)
             if cursor is not None:
-                anchor = s.get(AgentRun, cursor)
-                if (
-                    anchor is None
-                    or anchor.requester_id != ctx.requester_id
-                    or proposal_id is not None
-                    and anchor.proposal_id != proposal_id
-                    or project_id is not None
-                    and anchor.project_id != project_id
-                ):
-                    raise DomainError("FORBIDDEN_SCOPE", "运行历史游标不在当前可读范围。", 403)
-                visible_run(s, ctx, anchor)
-                query = query.where(
-                    or_(
-                        AgentRun.created_at < anchor.created_at,
-                        and_(AgentRun.created_at == anchor.created_at, AgentRun.id < anchor.id),
-                    )
-                )
+                anchor = _anchor(s, select(
+                    heads.c.created_at, heads.c.run_id.label("identity"),
+                ).where(heads.c.run_id == cursor))
+                query = _after(query, heads.c.created_at, heads.c.run_id, anchor)
             limit = min(max(page_size, 1), 200)
-            rows = list(
-                s.scalars(
-                    query.order_by(AgentRun.created_at.desc(), AgentRun.id.desc()).limit(limit + 1)
-                )
-            )
+            rows = s.execute(query.order_by(
+                heads.c.created_at.desc(), heads.c.run_id.desc(),
+            ).limit(limit + 1)).mappings().all()
             page = rows[:limit]
+            readable = {row.id: row for row in s.scalars(select(AgentRun).where(
+                AgentRun.id.in_([row["run_id"] for row in page if row["status"] != "hidden"]),
+            ))} if page else {}
+            items = []
+            for head in page:
+                if head["status"] == "hidden":
+                    items.append({**_head(head),
+                        "product_id": str(head["product_id"]) if head["product_id"] else None,
+                        "proposal_id": None,
+                        "project_id": str(head["project_id"]) if head["project_id"] else None})
+                    continue
+                row = readable[head["run_id"]]
+                items.append({
+                    "run_id": str(row.id), "goal": row.goal,
+                    "product_id": str(row.product_id) if row.product_id else None,
+                    "proposal_id": str(row.proposal_id) if row.proposal_id else None,
+                    "project_id": str(row.project_id) if row.project_id else None,
+                    "status": row.state, "error_code": row.error_code,
+                    "created_at": row.created_at.isoformat(), **run_revert_status(row),
+                })
             return {
-                "items": [
-                    {
-                        "run_id": str(row.id),
-                        "goal": row.goal,
-                        "product_id": str(row.product_id) if row.product_id else None,
-                        "proposal_id": str(row.proposal_id) if row.proposal_id else None,
-                        "project_id": str(row.project_id) if row.project_id else None,
-                        "status": row.state,
-                        "error_code": row.error_code,
-                        "created_at": row.created_at.isoformat(),
-                        **run_revert_status(row),
-                    }
-                    for row in page
-                ],
-                "next_cursor": str(page[-1].id) if len(rows) > limit else None,
+                "items": items,
+                "next_cursor": str(page[-1]["run_id"]) if len(rows) > limit else None,
             }
 
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/events")
     @result.get("/v1/personal/agent-runs/{run_id}/events")
     def events(run_id: UUID, after: int = 0, page_size: int = 50, ctx=run_dependency):
-        with transaction(ctx) as s:
+        from pdos_next.enterprise_search.assistant_answer import checked_sources
+
+        with transaction(ctx, read_snapshot=True) as s:
             row = visible_run(s, ctx, s.get(AgentRun, run_id))
+            checked_sources(s, row)
             rows = s.scalars(
                 select(AgentEvent)
                 .where(AgentEvent.run_id == row.id, AgentEvent.sequence > after)

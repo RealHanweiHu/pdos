@@ -1,0 +1,16 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "change_id": "143586e9-fd65-5825-96b9-6db145b16dbc",
+  "status": "implementing",
+  "revision": 9,
+  "completion_counts": {
+    "change.effectivity.record": 1
+  },
+  "coverage_valid_until": "2026-10-22T17:24:34.601528+00:00",
+  "failed_at": "2026-10-22T17:01:09.208252+00:00",
+  "publication_temporal_stamp_reproduced": true,
+  "temporal_stamp_changed_by_failure": true,
+  "qualification_intervals_ending_between_publication_and_failure": 28,
+  "memberships_ending_between_publication_and_failure": 0,
+  "failed_chain_not_counted_passed": true
+}

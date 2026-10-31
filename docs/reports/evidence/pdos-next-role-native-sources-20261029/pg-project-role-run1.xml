@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="71.440" timestamp="2026-10-29T07:18:51.462754-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_project_current_context_pg" name="test_actual_current_project_context_has_named_status_native_unknown_gate_and_no_lookup_claim" time="17.114" /><testcase classname="tests.agent_kernel.test_project_current_context_pg" name="test_actual_native_update_requires_fresh_current_context_but_history_is_preserved" time="18.398" /><testcase classname="tests.agent_kernel.test_project_current_context_temporal_pg" name="test_actual_project_native_context_runs_main_graph_and_retains_history_after_update" time="19.538" /><testcase classname="tests.enterprise_search.test_project_status_sources_pg" name="test_named_status_keeps_history_current_and_fixed_native_answer" time="9.143"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for function assistant_source_lifecycle_links&#10;[SQL: SELECT public.assistant_source_lifecycle_links(%(assistant_source_lifecycle_links_2)s::UUID, %(assistant_source_lifecycle_links_3)s::UUID, %(param_1)s::JSONB) AS assistant_source_lifecycle_links_1]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x126941910&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x11764d4c0&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x126b7caa0&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x1331dbe60&gt;
+parameters = [{'assistant_source_lifecycle_links_2': UUID('6ab82574-5a5a-4e7e-a730-c592e5df09bc'), 'assistant_source_lifecycle_link...: UUID('fcee01fc-6b9c-4332-84af-ff0bdf0b5003'), 'param_1': Jsonb([{'source_type': 'project_status',  ... (249 chars))}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=53502 user=pdos_next_app database=pdos_test) at 0x124a393d0&gt;
+query = 'SELECT public.assistant_source_lifecycle_links(%(assistant_source_lifecycle_links_2)s::UUID, %(assistant_source_lifecycle_links_3)s::UUID, %(param_1)s::JSONB) AS assistant_source_lifecycle_links_1'
+params = {'assistant_source_lifecycle_links_2': UUID('6ab82574-5a5a-4e7e-a730-c592e5df09bc'), 'assistant_source_lifecycle_links_3': UUID('fcee01fc-6b9c-4332-84af-ff0bdf0b5003'), 'param_1': Jsonb([{'source_type': 'project_status',  ... (249 chars))}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.InsufficientPrivilege: permission denied for function assistant_source_lifecycle_links
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: InsufficientPrivilege
+
+The above exception was the direct cause of the following exception:
+
+work = namespace(setup=&lt;isolated synthetic test scope&gt;, project_id=UUID('60d3d956-1ae3-42a6-9e9e-a76c3835e1b7'), original_id=...unction parse_original at 0x1122eeb60&gt;), client=&lt;starlette.testclient.TestClient object at 0x12696e300&gt;), task_id=None)
+
+    def test_named_status_keeps_history_current_and_fixed_native_answer(work):
+        person = work.setup
+        first = work_flow.execute(
+            work,
+            work_flow.STATUS,
+            work_flow.payload(
+                work,
+                fact_summary="Synthetic status: waiting for drawing",
+                next_steps="Obtain drawing",
+                task_refs=[],
+            ),
+        )[1]
+        assert apply_event(person, first["id"])["processed"] == 1
+        second = work_flow.execute(
+            work,
+            work_flow.STATUS,
+            work_flow.payload(
+                work,
+                fact_summary="Synthetic status: drawing now recorded",
+                next_steps="Check fit evidence",
+                task_refs=[],
+            ),
+        )[1]
+        assert apply_event(person, second["id"])["processed"] == 2
+        assert apply_event(person, second["id"])["changed"] == 0
+        by_id = {str(row["source_id"]): row for row in records(person)}
+        assert not by_id[first["subject_id"]]["is_current"]
+        row = by_id[second["subject_id"]]
+        assert row["is_current"] and row["nature"] == "structured"
+        assert row["project_id"] == work.project_id
+        assert row["structured"]["facts"]["continuation_permission"] == "not_evaluated"
+&gt;       assert_native_proof_ports(person, row, parents=[work.source["id"]])
+
+tests/enterprise_search/test_project_status_sources_pg.py:63: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/role_native_source_harness.py:45: in assert_native_proof_ports
+    links = session.scalar(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2534: in scalar
+    return self._execute_internal(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:2355: in _execute_internal
+    return conn.scalar(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1337: in scalar
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:551: in _execute_on_scalar
+    return self._execute_on_connection(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=53502 user=pdos_next_app database=pdos_test) at 0x124a393d0&gt;
+query = 'SELECT public.assistant_source_lifecycle_links(%(assistant_source_lifecycle_links_2)s::UUID, %(assistant_source_lifecycle_links_3)s::UUID, %(param_1)s::JSONB) AS assistant_source_lifecycle_links_1'
+params = {'assistant_source_lifecycle_links_2': UUID('6ab82574-5a5a-4e7e-a730-c592e5df09bc'), 'assistant_source_lifecycle_links_3': UUID('fcee01fc-6b9c-4332-84af-ff0bdf0b5003'), 'param_1': Jsonb([{'source_type': 'project_status',  ... (249 chars))}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.InsufficientPrivilege) permission denied for function assistant_source_lifecycle_links
+E           [SQL: SELECT public.assistant_source_lifecycle_links(%(assistant_source_lifecycle_links_2)s::UUID, %(assistant_source_lifecycle_links_3)s::UUID, %(param_1)s::JSONB) AS assistant_source_lifecycle_links_1]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,231 @@
+..F........FF..FF                                                        [100%]
+=================================== FAILURES ===================================
+_ test_actual_search_or_material_citation_preserves_real_origin_and_ranking[materials] _
+tests/agent_kernel/test_retrieval_feedback_pg.py:148: in test_actual_search_or_material_citation_preserves_real_origin_and_ranking
+    execute(owner, run_scope, host)
+tests/enterprise_search/test_assistant_pg.py:181: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:833: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:325: in model
+    response = (model_step if callable(model_step) else ports.model)(
+pdos_next/agent_kernel/host.py:155: in model_step
+    turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:333: in turn
+    raise DomainError(
+E   pdos_next.errors.DomainError: 原模型调用需对账。
+E   During task with name 'model' and id 'a8285952-9447-7ac2-9c8d-23698f09ae23'
+_ test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result _
+tests/automations_pg/test_personal_summary_pg.py:158: in test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+    assert session.scalar(select(Project.id).where(Project.id == work.project_id)) is None
+E   AssertionError: assert UUID('8acd9144-3703-4a52-8ede-7030497fc0b8') is None
+E    +  where UUID('8acd9144-3703-4a52-8ede-7030497fc0b8') = scalar(<sqlalchemy.sql.selectable.Select object at 0x132e13e00>)
+E    +    where scalar = <sqlalchemy.orm.session.Session object at 0x137862ea0>.scalar
+E    +    and   <sqlalchemy.sql.selectable.Select object at 0x132e13e00> = where(<sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x1109bc720> == UUID('8acd9144-3703-4a52-8ede-7030497fc0b8'))
+E    +      where where = <sqlalchemy.sql.selectable.Select object at 0x124bb58e0>.where
+E    +        where <sqlalchemy.sql.selectable.Select object at 0x124bb58e0> = select(<sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x1109bc720>)
+E    +          where <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x1109bc720> = Project.id
+E    +      and   <sqlalchemy.orm.attributes.InstrumentedAttribute object at 0x1109bc720> = Project.id
+E    +      and   UUID('8acd9144-3703-4a52-8ede-7030497fc0b8') = namespace(setup=<isolated synthetic test scope>, project_id=UUID('8acd9144-3703-4a52-8ede-7030497fc0b8'), original_id=...unction parse_original at 0x112a60d60>), client=<starlette.testclient.TestClient object at 0x136be23c0>), task_id=None).project_id
+_____________ test_actual_owner_revocation_hides_persisted_summary _____________
+tests/automations_pg/test_personal_summary_pg.py:218: in test_actual_owner_revocation_hides_persisted_summary
+    checked(summary_work, envelope)
+tests/automations_pg/test_personal_summary_pg.py:112: in checked
+    return personal_summary_runtime.checked_result(session, setup.ctx, run)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/personal_summary_runtime.py:281: in checked_result
+    value = run.result
+            ^^^^^^^^^^
+E   AttributeError: 'NoneType' object has no attribute 'result'
+_ test_public_fast_then_deep_same_session_uses_actual_claim_limits_and_idempotent_replay _
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:228: in result
+    async for event in self._fetch_history_events_for_run(
+.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:1833: in __anext__
+    await self.fetch_next_page()
+.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:1790: in fetch_next_page
+    resp = await self._client.workflow_service.get_workflow_execution_history(
+.venv/lib/python3.12/site-packages/temporalio/bridge/services_generated.py:740: in get_workflow_execution_history
+    return await self._client._rpc_call(
+.venv/lib/python3.12/site-packages/temporalio/service.py:475: in _rpc_call
+    resp = await client.call(
+.venv/lib/python3.12/site-packages/temporalio/bridge/client.py:168: in call
+    resp.ParseFromString(await resp_fut)
+                         ^^^^^^^^^^^^^^
+E   asyncio.exceptions.CancelledError
+
+The above exception was the direct cause of the following exception:
+tests/enterprise_search/test_assistant_depth_temporal_pg.py:139: in test_public_fast_then_deep_same_session_uses_actual_claim_limits_and_idempotent_replay
+    asyncio.run(scenario())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_depth_temporal_pg.py:101: in scenario
+    quick_id, _handle = await start(runtime, quick_payload)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/verification_action_harness.py:265: in start
+    result = await asyncio.wait_for(handle.result(), 90)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:519: in wait_for
+    async with timeouts.timeout(timeout):
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/timeouts.py:115: in __aexit__
+    raise TimeoutError from exc_val
+E   TimeoutError
+_ test_actual_http_temporal_32k_cleanup_preserves_ledger_then_worker_resume_does_not_regrow _
+tests/enterprise_search/verification_action_harness.py:278: in wait
+    return next(row["event"] for row in data["items"]
+E   StopIteration
+
+The above exception was the direct cause of the following exception:
+tests/agent_kernel/test_context_x3_temporal_pg.py:239: in test_actual_http_temporal_32k_cleanup_preserves_ledger_then_worker_resume_does_not_regrow
+    asyncio.run(scenario())
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/agent_kernel/test_context_x3_temporal_pg.py:140: in scenario
+    event = await question_ready(runtime, identity)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/verification_action_harness.py:282: in question_ready
+    return await asyncio.wait_for(wait(), 90)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+E   RuntimeError: coroutine raised StopIteration
+=============================== warnings summary ===============================
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/automations_pg/test_personal_summary_pg.py: 18 warnings
+tests/automations_pg/test_personal_summary_temporal_pg.py: 6 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:176: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+tests/automations_pg/test_personal_summary_pg.py::test_actual_cancelled_summary_run_cannot_append_result
+tests/automations_pg/test_personal_summary_temporal_pg.py::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:201: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_retrieval_feedback_pg.py::test_actual_search_or_material_citation_preserves_real_origin_and_ranking[materials]
+FAILED tests/automations_pg/test_personal_summary_pg.py::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result
+FAILED tests/automations_pg/test_personal_summary_pg.py::test_actual_owner_revocation_hides_persisted_summary
+FAILED tests/enterprise_search/test_assistant_depth_temporal_pg.py::test_public_fast_then_deep_same_session_uses_actual_claim_limits_and_idempotent_replay
+FAILED tests/agent_kernel/test_context_x3_temporal_pg.py::test_actual_http_temporal_32k_cleanup_preserves_ledger_then_worker_resume_does_not_regrow
+5 failed, 12 passed, 88 warnings in 204.88s (0:03:24)

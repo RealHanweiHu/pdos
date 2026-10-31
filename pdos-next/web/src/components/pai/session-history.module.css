@@ -12,3 +12,35 @@
 .runRecord{min-width:0}.identifiers{font-size:10px;line-height:1.6;color:var(--muted-foreground);overflow-wrap:anywhere}.identifiers summary{cursor:pointer;padding:3px 0}.identifiers p{margin:4px 0}
 
 .tabs,.actions{display:flex;flex-wrap:wrap;gap:4px;min-width:0}.tabs{border-bottom:1px solid var(--border);padding-bottom:6px}.sessionRecord{min-width:0}.actions{margin-top:3px}.actions button{font-size:10px}.editor,.recovery{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--border);border-radius:8px;min-width:0}.editor label{display:flex;flex-direction:column;gap:5px;font-size:11px}.editor input{width:100%;min-width:0;padding:7px 8px;border:1px solid var(--border);border-radius:8px;background:var(--background);color:var(--foreground)}.editor input:focus-visible{outline:2px solid var(--ring);outline-offset:2px}.recovery p{margin:0;overflow-wrap:anywhere;line-height:1.6}
+
+.sessionRecord { position: relative; }
+.session { min-height: 34px; padding: 7px 30px 7px 8px; gap: 0; border: 0; border-radius: 6px; }
+.session strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.session[aria-pressed=true] { background: var(--surface-2); }
+.sessionMenu { position: absolute; top: 4px; right: 3px; }
+.sessionMenu > summary { display: grid; place-items: center; width: 26px; height: 26px; list-style: none; cursor: pointer; color: var(--text-subtle); border-radius: 4px; }
+.sessionMenu > summary::-webkit-details-marker { display: none; }
+.sessionMenu > summary:hover { background: var(--muted); }
+.sessionMenu > .actions { position: absolute; top: 28px; right: 0; z-index: 10; display: grid; min-width: 120px; padding: 5px; border: 1px solid var(--border); border-radius: 6px; background: var(--surface); box-shadow: var(--shadow); }
+.sessionMenu .actions button { justify-content: flex-start; font-size: 11px; }
+.sessionRecord:has(.editor) { padding-bottom: 8px; }
+.search { padding: 6px 8px; background: transparent; }
+.run { padding: 7px 8px; border: 0; border-radius: 6px; }
+.run strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.run > .meta, .run > time { display: none; }
+@media (pointer: coarse) { .session { min-height: 44px; } .sessionMenu > summary { width: 36px; height: 36px; } .session { padding-right: 40px; } }
+
+.history { position:relative; gap:2px; }
+.search { margin:0 7px 8px; padding:4px 0; height:30px; border:0; border-radius:0; }
+.search input { margin:0; font-size:12px; }
+.tabs { gap:14px; margin:5px 7px 12px; padding:0 26px 0 0; border:0; }
+.tabs > button { height:30px; padding:0; border:0; border-radius:0; background:transparent; color:var(--text-subtle); font-size:11px; font-weight:400; }
+.tabs > button[aria-pressed=true] { color:var(--foreground); }
+.heading { position:absolute; top:39px; right:0; }
+.heading > button { width:26px; height:30px; padding:0; color:var(--text-subtle); }
+.hint { padding:18px 7px; font-size:12px; color:var(--text-subtle); }
+.editor .hint,.runs .hint { padding:0; font-size:10px; }
+.session { height:34px; }
+.sessionMenu { opacity:0; }
+.sessionRecord:hover .sessionMenu,.sessionRecord:focus-within .sessionMenu,.sessionMenu[open] { opacity:1; }
+@media(pointer:coarse) { .sessionMenu { opacity:1; } }

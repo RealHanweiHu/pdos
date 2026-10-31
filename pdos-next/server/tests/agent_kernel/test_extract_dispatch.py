@@ -100,7 +100,9 @@ def test_child_reads_pages_and_returns_only_citation_verified_rows():
     class TurnDriven(ExtractHost):
         def model(self, bound, **kwargs):
             assert bound.isolation == "extract"
-            assert {tool["name"] for tool in kwargs["tools"]} == {"evidence.artifact.read"}
+            assert {tool["name"] for tool in kwargs["tools"]} == {
+                "evidence.artifact.read", "result.read",
+            }
             initial = json.loads(kwargs["messages"][0]["content"])
             assert initial["context"]["extraction_task"]["total_lines"] == 5
             if not hasattr(self, "read_done"):

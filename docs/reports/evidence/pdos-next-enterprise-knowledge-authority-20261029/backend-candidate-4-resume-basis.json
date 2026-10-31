@@ -1,0 +1,17 @@
+{
+  "production_source_unchanged": true,
+  "only_delta": [
+    "pdos-next/server/tests/enterprise_search/test_assistant_temporal_pg.py"
+  ],
+  "delta_scope": "one assignment inside the not-yet-passed Temporal helper; no import/module-level behavior changes",
+  "prefix_files": 39,
+  "prefix_passed": 527,
+  "prefix_evidence": "backend-candidate-3-final.xml",
+  "remaining_files": 48,
+  "remaining_starts_at": "tests/enterprise_search/test_assistant_temporal_pg.py",
+  "no_earlier_test_imports_helper": true,
+  "synthetic_window": 200000,
+  "production_unknown_window": 32000,
+  "production_focus_cap": 64000,
+  "production_budget_rules_unchanged": true
+}

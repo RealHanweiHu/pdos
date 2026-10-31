@@ -1,0 +1,17 @@
+{
+  "state": "cancelled",
+  "error_code": "CANCELLED_RUN",
+  "tenant_id": "06249bd9-d58e-4947-aca9-eb5695774595",
+  "message_id": "df345527-107c-46e6-b7a5-17dcfd8cc577",
+  "binding_id": "4c8b4aed-405c-4dc4-b220-020ecef51669",
+  "application_id": "7b79e8cb-8686-4448-b24a-3579aadc0d09",
+  "service_principal_id": "ca3e149d-26e2-40d5-b85f-f6b1a5af67a3",
+  "dingtalk_account_bindings": {
+    "normal_visible": true,
+    "for_update_visible": false
+  },
+  "dingtalk_applications": {
+    "normal_visible": true,
+    "for_update_visible": false
+  }
+}

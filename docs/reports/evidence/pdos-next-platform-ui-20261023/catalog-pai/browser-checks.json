@@ -1,0 +1,122 @@
+[
+  {
+    "name": "竞品候选带入汽车品类且解析名称来源",
+    "pass": true
+  },
+  {
+    "name": "确认前不保存",
+    "pass": true
+  },
+  {
+    "name": "竞品保存后回到竞品库",
+    "pass": true
+  },
+  {
+    "name": "小Pai来源保留为AI草稿",
+    "pass": true
+  },
+  {
+    "name": "修订候选保留原版供对照",
+    "pass": true
+  },
+  {
+    "name": "竞品修订保存新内容",
+    "pass": true
+  },
+  {
+    "name": "用户声音新增保存主题与样本量",
+    "pass": true
+  },
+  {
+    "name": "从记录面板转小Pai保留未保存输入",
+    "pass": true
+  },
+  {
+    "name": "用户声音维护保存修订",
+    "pass": true
+  },
+  {
+    "name": "切换标签后的悬浮小Pai使用当前规格字典上下文",
+    "pass": true
+  },
+  {
+    "name": "参数新增保存并保持未知专业条件",
+    "pass": true
+  },
+  {
+    "name": "参数修订保留稳定键且只读",
+    "pass": true
+  },
+  {
+    "name": "原记录已更新时拒绝过期候选",
+    "pass": true
+  },
+  {
+    "name": "拒绝旧候选后仍保留人工v3",
+    "pass": true
+  },
+  {
+    "name": "重新带入当前版本后参数修订为v4",
+    "pass": true
+  },
+  {
+    "name": "旧提案仍引用PAR-08 v2",
+    "pass": true
+  },
+  {
+    "name": "小Pai撤回后从有效列表移除",
+    "pass": true
+  },
+  {
+    "name": "恢复追加新版本并重新显示记录",
+    "pass": true
+  },
+  {
+    "name": "运行后切换品类不改变候选原范围",
+    "pass": true
+  },
+  {
+    "name": "跨页确认写回原品类",
+    "pass": true
+  },
+  {
+    "name": "其他品类未混入新记录",
+    "pass": true
+  },
+  {
+    "name": "缺少来源时不能保存",
+    "pass": true
+  },
+  {
+    "name": "对话继续补充资料并替换旧候选",
+    "pass": true
+  },
+  {
+    "name": "离线禁止确认资料候选",
+    "pass": true
+  },
+  {
+    "name": "390px候选无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "取消候选不更改资料",
+    "pass": true
+  },
+  {
+    "name": "390px列表保留紧凑工具栏且无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "无产品管理权限不能生成可保存的资料候选",
+    "pass": true
+  },
+  {
+    "name": "明确提到另一记录时停止，避免套用绑定对象",
+    "pass": true
+  },
+  {
+    "name": "补充来源中的竞品字样不改变参数候选类型",
+    "pass": true
+  }
+]

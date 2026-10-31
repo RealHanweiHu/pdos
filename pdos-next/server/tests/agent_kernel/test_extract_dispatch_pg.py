@@ -12,6 +12,7 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
 from pdos_next.agent_kernel.bootstrap import Bootstrap
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
 from pdos_next.agent_kernel.domain_reads import DomainReads
 from pdos_next.agent_kernel.extract_adapter import ExtractReadAdapter
 from pdos_next.agent_kernel.extract_graph import ExtractGraph
@@ -198,7 +199,7 @@ def fixture(
 
     def callback(kwargs):
         tools = {tool["name"] for tool in kwargs["tools"]}
-        if tools == {"evidence.artifact.read"}:
+        if tools == {"evidence.artifact.read", "result.read"}:
             messages = kwargs["messages"]
             task_context = json.loads(messages[0]["content"])["context"]["extraction_task"]
             artifact_id = task_context["artifact_version_id"]
@@ -274,7 +275,9 @@ def fixture(
             scope,
             system="frozen synthetic main prefix",
             messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
-            tools=owner.registry.definitions(),
+            tools=disclosure(
+                owner.registry, operations=binding_operations(owner.catalog, bindings),
+            ),
             output_schema={"type": "object"},
             loaded_skills=bindings,
         )
@@ -415,7 +418,7 @@ def test_extract_rows_require_actual_reads(work, security_work):
 
     def skipping(kwargs):
         tools = {tool["name"] for tool in kwargs["tools"]}
-        if tools == {"evidence.artifact.read"}:
+        if tools == {"evidence.artifact.read", "result.read"}:
             calls.append(("child-skip", None))
             return ModelTurn(
                 structured={

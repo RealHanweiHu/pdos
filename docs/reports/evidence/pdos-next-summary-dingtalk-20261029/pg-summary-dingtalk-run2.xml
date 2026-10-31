@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="16.786" timestamp="2026-10-29T10:16:44.205453-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.dingtalk.test_summary_delivery_pg" name="test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend" time="15.922"><failure message="AssertionError: assert ('具名登记' in '本人的工作摘要\n读取时点：2026-10-29T17:16:59.959761+00:00\n\n我关注项目的新变化 · 本人私有摘要项目\n变化：本次首次列入摘要，以下是当前登记记录。\n与我有关：这是你显式选择关注的项目。\n下一步：等待原记录中具名办理；不自行判定健康度。\n责任人：未单独登记\n继续：https://pdos.synthetic.invalid/?area=cockpit&amp;category=77446663-6177-4651-8840-bf4ddfa1f73d&amp;project=86c05f0c-0eb7-43c8-973d-e71222ef6ec3')">summary_channel = namespace(setup=&lt;isolated synthetic test scope&gt;, work=namespace(work=namespace(setup=&lt;isolated synthetic test scope&gt;, ...ies object at 0x139b9a930&gt;, service=&lt;pdos_next.dingtalk.summary_delivery.SummaryDeliveryService object at 0x139b9be30&gt;)
+
+    def test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend(summary_channel):
+        work = summary_channel
+        meta = complete(work)
+        before = len(work.wire.calls)
+        sent = work.service.deliver(work.reference)
+        assert sent["state"] == "unknown" and sent["attempts"] == 1
+        assert body_sends(work) == 1
+        revoked = work.channel.client.post(
+            "/v1/personal/dingtalk/bindings/revoke",
+            headers=work.setup.headers,
+            json={
+                "binding_id": work.binding["binding_id"],
+                "expected_epoch": work.binding["epoch"],
+                "reason": "Native local receipt recovery",
+                "request_key": str(uuid4()),
+            },
+        )
+        assert revoked.status_code == 200, revoked.text
+        # A fresh service does lookup only using its original durable provider receipt.
+        restarted = SummaryDeliveryService(
+            work.setup.engine, work.setup.dispatch, runtime=work.wire.runtime
+        )
+        restored = restarted.reconcile(meta, UUID(sent["delivery_id"]))
+        assert restored["state"] == "delivered" and body_sends(work) == 1
+        receipts = work.channel.client.get(
+            "/v1/personal/inbox/summary-deliveries", headers=work.setup.headers
+        )
+        assert receipts.status_code == 200 and len(receipts.json()["items"]) == 1
+        with Session(work.setup.admin) as s:
+            row = s.get(SummaryDelivery, UUID(sent["delivery_id"]))
+            assert row.run_id == UUID(work.envelope["subject_id"])
+            assert row.p26["provider"] == "dingtalk" and row.attempts == 1
+            assert UUID(work.work.receipt["subject_id"]) in row.source_ids
+&gt;           assert "具名登记" in row.payload["text"] and row.payload["target_kind"] == "direct"
+E           AssertionError: assert ('具名登记' in '本人的工作摘要\n读取时点：2026-10-29T17:16:59.959761+00:00\n\n我关注项目的新变化 · 本人私有摘要项目\n变化：本次首次列入摘要，以下是当前登记记录。\n与我有关：这是你显式选择关注的项目。\n下一步：等待原记录中具名办理；不自行判定健康度。\n责任人：未单独登记\n继续：https://pdos.synthetic.invalid/?area=cockpit&amp;category=77446663-6177-4651-8840-bf4ddfa1f73d&amp;project=86c05f0c-0eb7-43c8-973d-e71222ef6ec3')
+
+tests/dingtalk/test_summary_delivery_pg.py:170: AssertionError</failure></testcase></testsuite></testsuites>

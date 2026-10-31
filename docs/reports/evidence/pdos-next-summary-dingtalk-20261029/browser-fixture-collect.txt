@@ -1,0 +1,3 @@
+browser_fixture.py::test_summary_dingtalk_browser[setup0]
+
+1 test collected in 2.31s

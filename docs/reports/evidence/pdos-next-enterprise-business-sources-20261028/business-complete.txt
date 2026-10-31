@@ -1,0 +1,492 @@
+.F..............F.......                                                 [100%]
+=================================== FAILURES ===================================
+______ test_native_wait_current_history_and_external_reply_are_separated _______
+
+work = namespace(setup=<isolated synthetic test scope>, project_id=UUID('48140c68-cdfa-4549-b335-6afe6525cada'), original_id=...unction parse_original at 0x120e1e980>), client=<starlette.testclient.TestClient object at 0x16a107fe0>), task_id=None)
+
+    def test_native_wait_current_history_and_external_reply_are_separated(work):
+        _command, receipt = wait_execute(work, create_record())
+        setup = work.setup
+        first = UUID(receipt["subject_id"])
+        identity = receipt["result"]["wait_id"]
+        assert apply_event(setup, receipt["id"])["processed"] == 1
+        found = native_search(setup, identity, ["external_wait"])
+        assert found["items"][0]["source_id"] == str(first)
+        _command, updated = wait_execute(
+            work,
+            {
+                "action": "reply",
+                "at": now().isoformat(),
+                "original_timezone": "UTC",
+                "status": "received",
+                "text": "RAW_EXTERNAL_REPLY_DO_NOT_SEND",
+            },
+            wait={"id": identity, "revision": 1},
+        )
+        assert apply_event(setup, updated["id"])["processed"] == 1
+        current = native_search(setup, identity, ["external_wait"])
+        assert current["returned"] == 1 and current["items"][0]["source_revision"] == 2
+        history = native_search(setup, identity, ["external_wait"], include_history=True)
+        assert history["returned"] == 2
+        with native_session(setup) as session:
+            prepare_read(session, ["external_wait"])
+            rows = (
+                session.execute(select_sources(source_type="external_wait", include_body=True))
+                .mappings()
+                .all()
+            )
+            assert all("RAW_EXTERNAL_REPLY_DO_NOT_SEND" not in row["body"] for row in rows)
+            latest = next(row for row in rows if row["source_revision"] == 2)
+            assert latest["structured"]["facts"]["reply"]["status"] == "received"
+        client = NativeClient(identity, ["external_wait"])
+        owner, scope, host, _adapter = fixture(setup, client)
+>       output = execute(owner, scope, host)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_business_wait_supply_pg.py:80: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_pg.py:155: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:284: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:119: in model
+    return self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x16dd9dd00>
+scope = RunScope(tenant_id=UUID('ded83dd7-5273-4ba3-b627-1f3bf20405ee'), requester_id=UUID('31479a1a-97a2-4969-80dc-e30554cb39...rnal'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+system = 'You are 小Pai, the single PDOS assistant.\nConverse naturally in the user\'s language. For greetings or general discus...ey": "work_management", "purpose": "按真实项目和原件起草任务、计划、外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "以前漏气怎么处理？", "context": {"goal": "以前漏气怎么处理？", "sources": [], "work_state": {"ve... "partial": false, "execution_ref": {"call_id": "ee897745-e03e-4bfa-8cca-091ca7867e13", "read_kind": "ordinary/v1"}}'}]
+tools = [{'name': 'ai.skill.qualify', 'description': '记录 T0 资格依据。产生 ai.skill_qualified。只能准备具名决定材料，不取得执行身份。', 'parameters': {'$...sessment_id', 'expected_assessment_revision', 'expected_assessment_sha256', 'action', 'sources', 'reason'], ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = <function BoundHost.model.<locals>.<lambda> at 0x16be8f920>
+loaded_skills = ()
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        if self.context_guard is not None:
+            self.context_guard(scope)
+        source_categories = self.data_categories_for(scope) if self.data_categories_for else None
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            if prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示前缀不能静默替换。")
+            # The disclosure may grow when a skill loads, and only that way: the
+            # chain keeps every earlier, narrower list verifiable (see .disclosure).
+            chain = record_disclosure(
+                run.versions,
+                scope.isolation,
+                [item["name"] for item in tools],
+                digest(tools),
+            )
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+                CHAIN_KEY: chain,
+                **({"budget_policy": route.budget_policy}
+                   if route.budget_policy != "enforced" else {}),
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, data_categories=source_categories)
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit))
+        from .context_budget import budget_for, segments
+    
+        context_budget = {**budget_for(route), **segments(system, tools, messages)}
+        context_budget["over_focus"] = context_budget["estimated_total"] > context_budget["focus"]
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+            **({"budget_policy": route.budget_policy} if route.budget_policy != "enforced" else {}),
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+                continuation=saved.get("continuation"),
+            )
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            # Revocation/rotation after reservation still prevents sending the old scope.
+            self.store.current(scope)
+            latest = self.route_for(scope)
+            if (
+                latest is None
+                or latest.digest != route.digest
+                or self.provider_for(scope, latest) != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "模型配置已变化。")
+            check(self.store, scope)
+            if self.context_guard is not None:
+                self.context_guard(scope)
+            checked_categories = (
+                self.data_categories_for(scope) if self.data_categories_for else None
+            )
+            with self.store.transaction(scope) as (session, _):
+                checked = egress(session, scope, provider_key, data_categories=checked_categories)
+                if checked.data_categories != decision.data_categories:
+                    raise DomainError("SOURCE_STALE", "本次发送的资料类别已变化，请重新核对。")
+            if pricing:
+                latest_price = self.rate_card_for(scope, latest)
+                if latest_price is None or latest_price.snapshot() != pricing.snapshot():
+                    raise DomainError("VERSION_CONFLICT", "价格卡已变化。")
+                latest_price.validate(provider_key, latest)
+            dispatch_started = True
+            result = self.client.turn(
+                route,
+                system=system,
+                messages=messages,
+                tools=tools,
+                output_schema=output_schema,
+                emit=emit,
+                cancelled=lambda: self._cancelled(scope),
+            )
+        except ProviderError as error:
+            usage = error.usage
+            unknown = error.unknown or bool(
+                usage
+                and (
+                    usage.input_tokens > input_upper
+                    or usage.output_tokens > route.max_output_tokens
+                )
+            )
+            charged = usage.input_tokens + usage.output_tokens if usage else 0
+            cancellation_code = None
+            if error.code == "MODEL_CANCELLED":
+                # The native transport also closes on revoked ACL/budget. Only the
+                # actual persisted cancel epoch/state can call this a cancelled Run.
+                try:
+                    self.store.current(scope)
+                except DomainError as current_error:
+                    cancellation_code = current_error.code
+                else:
+                    cancellation_code = (
+                        "EXTERNAL_OUTCOME_UNKNOWN" if unknown else "SOURCE_UNAVAILABLE"
+                    )
+            code = (
+                cancellation_code
+                if error.code == "MODEL_CANCELLED"
+                else (
+                    "EXTERNAL_OUTCOME_UNKNOWN"
+                    if unknown
+                    else "RATE_LIMITED"
+                    if error.code == "PROVIDER_RATE_LIMITED"
+                    else "SOURCE_UNAVAILABLE"
+                )
+            )
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0 if unknown else charged,
+                unknown=unknown,
+                error=code,
+                request_id=error.request_id,
+                cost_usage=CostUsage(usage.input_tokens, usage.output_tokens, pricing.actual(usage))
+                if pricing and usage and not unknown
+                else CostUsage(0, 0, pricing.actual(ProviderUsage(0, 0)))
+                if pricing and not unknown
+                else None,
+            )
+            raise DomainError(
+                code,
+                "模型调用未形成可用结果，请查看原调用回执。",
+                detail={"provider_reason": error.code, "call_id": str(call_id)},
+            ) from None
+        except DomainError as error:
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0,
+                unknown=dispatch_started,
+                error=error.code,
+                request_id=error.detail.get("provider_request_id"),
+            )
+            raise
+        except Exception:
+            self.store.release_call(scope, call_id, unknown=True, error="EXTERNAL_OUTCOME_UNKNOWN")
+>           raise DomainError(
+                "EXTERNAL_OUTCOME_UNKNOWN", "原模型调用需对账。", detail={"call_id": str(call_id)}
+            ) from None
+E           pdos_next.errors.DomainError: 原模型调用需对账。
+E           During task with name 'model' and id '424731df-8c0b-fb69-9b37-648fa83cb8f0'
+
+pdos_next/agent_kernel/gateway.py:271: DomainError
+_ test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state _
+
+setup = <isolated synthetic test scope>
+
+    def test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state(setup):
+        response = post(
+            setup,
+            request(
+                setup,
+                "category.knowledge.add",
+                {
+                    "kind": "boundary",
+                    "content": {"definition": "漏气时核对密封圈，已登记内部边界。"},
+                },
+            ),
+        )
+        assert response.status_code == 200, response.text
+        from pdos_next.domain.preproject.category_models import KnowledgeEntry
+        from pdos_next.enterprise_search.indexing import project
+        from tests.enterprise_search.test_retrieval_pg import session_for
+    
+        with session_for(setup) as session:
+            row = session.scalar(
+                select(KnowledgeEntry).where(
+                    KnowledgeEntry.lineage_id == UUID(response.json()["subject_id"]),
+                )
+            )
+            project(session, setup.ctx, "knowledge", row.id)
+        client = SyntheticClient()
+        owner, scope, host, _adapter = fixture(setup, client)
+>       output = execute(owner, scope, host)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_assistant_pg.py:259: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_assistant_pg.py:155: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:486: in tools
+    answers[call.id] = call_tool(index, call)
+                       ^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:421: in call_tool
+    result = ports.read(
+pdos_next/agent_kernel/host.py:139: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:189: in read_callback
+    result = computed if engine is not None else callback(scope, arguments)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:141: in <lambda>
+    callback=lambda bound, args: resume(bound, args, intent_key=intent_key),
+                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_adapter.py:123: in search
+    actual, missing = current(session, provisional)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/enterprise_search/assistant_sources.py:41: in current
+    + [query.c.structured["source_refs"].label("source_refs")]
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:1598: in operate
+    return op(self.comparator, *other, **kwargs)  # type: ignore[no-any-return]  # noqa: E501
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/operators.py:823: in __getitem__
+    return self.operate(getitem, index)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/type_api.py:267: in operate
+    return op_fn(self.expr, op, *other, **addtl_kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:242: in _getitem_impl
+    _unsupported_impl(expr, op, other, **kw)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+expr = <sqlalchemy.sql.elements.ColumnClause at 0x16b7dd1f0; structured>
+op = <built-in function getitem>, arg = ('source_refs',), kw = {}
+
+    def _unsupported_impl(
+        expr: ColumnElement[Any], op: OperatorType, *arg: Any, **kw: Any
+    ) -> NoReturn:
+>       raise NotImplementedError(
+            "Operator '%s' is not supported on this expression" % op.__name__
+        )
+E       NotImplementedError: Operator 'getitem' is not supported on this expression
+E       During task with name 'tools' and id '8b05b2cf-7ba5-5586-ba27-66307fd8df4d'
+
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/default_comparator.py:248: NotImplementedError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated
+FAILED tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+2 failed, 22 passed, 34 warnings in 245.22s (0:04:05)

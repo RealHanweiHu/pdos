@@ -1,0 +1,9 @@
+{
+  "executed": false,
+  "nodeids": [
+    "tests/agent_kernel/test_work_state_candidates_pg.py::test_domain_current_receipt_changes_readonly_projection_not_run_frozen_snapshot",
+    "tests/agent_kernel/test_work_state_candidates_pg.py::test_snapshot_receipt_is_projected_from_native_ledger_after_work_volume_loss",
+    "tests/agent_kernel/test_work_state_candidates_pg.py::test_personal_category_requires_actual_receipt_and_current_created_category_grant",
+    "tests/agent_kernel/test_work_state_candidates_temporal_pg.py::test_actual_main_graph_verification_candidate_is_carried_without_a_second_model"
+  ]
+}

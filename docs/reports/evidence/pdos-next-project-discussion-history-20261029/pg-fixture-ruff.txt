@@ -1,0 +1,12 @@
+E501 Line too long (101 > 100)
+  --> tests/agent_kernel/test_project_discussion_history_pg.py:30:101
+   |
+28 |     )
+29 |     unrelated = _real_run(
+30 |         other_setup, project=other_project.project_id, goal="Other project must not match this view",
+   |                                                                                                     ^
+31 |     )
+32 |     assert str(setup.product) == work["project"].product_id
+   |
+
+Found 1 error.

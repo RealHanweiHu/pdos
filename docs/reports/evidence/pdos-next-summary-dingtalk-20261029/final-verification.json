@@ -1,0 +1,28 @@
+{
+  "final_frontend_input_count": 757,
+  "all_final_frontend_hashes_match": true,
+  "all_final_scope_source_hashes_match": true,
+  "docs": 8,
+  "local_links_checked": 121,
+  "xml_case_counts": {
+    "pdos-next-summary-dingtalk-20261029/pg-summary-dingtalk-run3.xml": 6,
+    "pdos-next-summary-dingtalk-20261029/pg-browser-run1.xml": 1,
+    "pdos-next-summary-dingtalk-20261029/pure-summary-root-import-final.xml": 7,
+    "pdos-next-summary-dingtalk-20261029/pure-lifecycle-final.xml": 42,
+    "pdos-next-similar-history-completion-20261029/pg-completion-run1.xml": 12,
+    "pdos-next-project-discussion-history-20261029/pg-run2.xml": 1
+  },
+  "docs_sha256": {
+    "pdos-next-two-designs-20261028/local-acceptance-20261029.md": "f54d551bb4eeb67f16af14618010a5437bfac02bdef2e745c35857ad599a6837",
+    "pdos-next-two-designs-20261028/task_plan.md": "73481f2f8284905095b602095768bc695ef858dd5946bf857827ec9a82ac6d03",
+    "pdos-next-summary-dingtalk-20261029/result.md": "20f6c53dd3b4a24a6fd0db7d5e63770b4dcb0576dc40abd4c64a95b5ab112fba",
+    "pdos-next-summary-dingtalk-20261029/browser-final.md": "7f8bbd198b60958c607f7904d324008d2c9c76c09c0f38ff791c49d5aec7f29f",
+    "pdos-next-project-discussion-history-20261029/result.md": "4101e73db3823cca4fda002e93b1b490cadd833c9b31d1c48271368ddf051051",
+    "pdos-next-project-discussion-history-20261029/browser-final.md": "b46915206f46a85c40974a62e24e3a5d59252cbeb2d5b61879a45388fd8e01d8",
+    "pdos-next-similar-history-completion-20261029/result.md": "fc80a1e8cf98f6254559ee2f1b4bf527964462f46443f593853adea894dbbba7",
+    "pdos-next-similar-history-completion-20261029/browser-final.md": "1541a3336944e89eea0b9167ddc901cf426544be0b444c854bb33b038d606a49"
+  },
+  "actual_browser_native_finish": true,
+  "source_head": "s0_0852",
+  "true_model_or_provider_used": false
+}

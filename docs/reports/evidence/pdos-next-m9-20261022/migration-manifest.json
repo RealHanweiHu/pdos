@@ -1,0 +1,5 @@
+{
+  "pdos-next/server/migrations/versions/s0_0813_change_completion_deadline.py": "4fb52160e636f99104f442a56b7b2442ec819597e7c5d150e56138a5df47b05e",
+  "pdos-next/server/migrations/schema_s0_0813.py": "ecbe16aca73f323891a9f53ef5d8c91d0b659b57d900dac628e051f99ed239b0",
+  "pdos-next/server/tests/change_execution/test_completion_deadline_pg.py": "6d9d4af20c657da75592f629de55c928b011b06f1df4e0b61d008ebfc813bd0a"
+}

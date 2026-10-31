@@ -1,0 +1,9 @@
+{
+  "signature": "enterprise_index_source_clear(text,uuid,uuid,text,uuid[])",
+  "owner": "pdos_enterprise_index_maintainer",
+  "acl": "{pdos_enterprise_index_maintainer=X/pdos_enterprise_index_maintainer,pdos_next_app=X/pdos_enterprise_index_maintainer}",
+  "old_sha256": "7f8c487b8ab4d38d663a0577671fa02118032cf723b23cbcae85df437bd41866",
+  "new_sha256": "0a079909092a2d82f6d1f96b908c639971166b0364ecc2a2d2ff7faf302e7f41",
+  "only_change": "field_feedback added to existing closed type list",
+  "new_runtime_grants": false
+}

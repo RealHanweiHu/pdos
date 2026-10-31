@@ -1,0 +1,17 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "--collect-only",
+    "-q",
+    "tests/agent_kernel/test_context_restart_pg.py"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-30T09:39:51.433453+00:00",
+  "finished_at": "2026-10-30T09:39:56.084367+00:00",
+  "exit_code": 0,
+  "stdout_log": "restart-native-collect-run1.log",
+  "stdout_sha256": "eac0a7a047b8a40d0d523219202d747e4427568adb5ef02da7d8641dfd48d31a",
+  "scope": "pure/collection/static only; no DB/provider/browser"
+}

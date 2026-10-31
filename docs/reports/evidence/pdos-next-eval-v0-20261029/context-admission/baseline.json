@@ -1,0 +1,2741 @@
+{
+  "version": "xiaopai-context-admission-lower-bound/v1",
+  "synthetic": true,
+  "trusted_root": false,
+  "scope": "Production fit_messages on fixed production prefix plus current question only",
+  "limits": [
+    "Scenario transcripts are raw replay material, not trusted provider inputs.",
+    "Tool-role prose establishes no READ, citation, receipt, revocation or candidate fact.",
+    "Question-only envelopes are unsigned lower-bound probes; none are sent to a provider.",
+    "No history/state projection, ACL recheck, skill preload or native binding ran.",
+    "Lower-bound admission is not a full-case pass, provider support or model quality."
+  ],
+  "production_fixed_prefix": {
+    "source": "AgentKernel(None, default_registry()).system; disclosure(main, ())",
+    "loaded_skills": [],
+    "tool_count": 61,
+    "system_sha256": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+    "tool_definitions_sha256": "82f3c51787e641bc5675b855176705e5be0791ba91616f1cb6bbc642a0ab2dcc",
+    "output_schema_sha256": "96edee73b127e50aaac5fe9f61239a65f3007f5863369cacd2f839796bf9737d",
+    "system_estimated_tokens": 2850,
+    "tools_and_output_schema_estimated_tokens": 27644,
+    "fixed_admission_tokens": 35069,
+    "calibration": "first_call_estimate_with_production_15_percent_margin"
+  },
+  "profiles": [
+    {
+      "focus": 8192,
+      "window": 14240,
+      "max_output_tokens": 2048
+    },
+    {
+      "focus": 16384,
+      "window": 22432,
+      "max_output_tokens": 2048
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "max_output_tokens": 2048
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "max_output_tokens": 2048
+    }
+  ],
+  "provider_calls": 0,
+  "database_operations": 0,
+  "cases": [
+    {
+      "case_id": "CTX-01",
+      "scenario_raw_input": {
+        "characters": 41104,
+        "utf8_bytes": 103678,
+        "current_estimator_tokens": 33682,
+        "sha256": "685970ad2297d853771ee6a94d2128e4ff62cc841f35ce6d21e3e8eb8744d45e",
+        "messages": 61,
+        "tool_role_scenario_records": 0,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": true
+      },
+      "question_only_messages_sha256": "eaccca0125222197e2d8fac4d11421492a7b19c83f4f9b698a4b591fe2568262",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 77,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30571,
+            "admission_tokens": 35157,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35157,
+              "after_tokens": 35157,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 71
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 77
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 77,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30571,
+            "admission_tokens": 35157,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35157,
+              "after_tokens": 35157,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 71
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 77
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 77,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30571,
+            "admission_tokens": 35157,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 77,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30571,
+            "admission_tokens": 35157,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-02",
+      "scenario_raw_input": {
+        "characters": 625,
+        "utf8_bytes": 1313,
+        "current_estimator_tokens": 410,
+        "sha256": "d26c2e7ada4fd43e2b4867f6356c1bc2d4fb39a227b09265741948585566df6f",
+        "messages": 7,
+        "tool_role_scenario_records": 2,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "8fce13223735dd9bb2a0a1ee564260cdf9410c78c875355e45df593bbb17646b",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35110,
+              "after_tokens": 35110,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 29
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 36
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35110,
+              "after_tokens": 35110,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 29
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 36
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-03",
+      "scenario_raw_input": {
+        "characters": 529,
+        "utf8_bytes": 891,
+        "current_estimator_tokens": 268,
+        "sha256": "348849caba3f17b0d44dd89d30a431222599c2e7284fb5d05637894f9aa0033d",
+        "messages": 7,
+        "tool_role_scenario_records": 2,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "56c996c6e537d08e00f739e70538d7be140119a0e8ea78338de6719fd87e317f",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35115,
+              "after_tokens": 35115,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 33
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 40
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35115,
+              "after_tokens": 35115,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 33
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 40
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-04",
+      "scenario_raw_input": {
+        "characters": 603,
+        "utf8_bytes": 1243,
+        "current_estimator_tokens": 385,
+        "sha256": "1513270c9d96c6aa80d188a12f95c8d8b504256253d12210833f8e385486f3f7",
+        "messages": 8,
+        "tool_role_scenario_records": 2,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "1deeda6078376d9de7f4d08d425fdd7a57386d8ca5983d9795ee68308aaedd3d",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 24,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30518,
+            "admission_tokens": 35096,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35096,
+              "after_tokens": 35096,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 17
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 24
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 24,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30518,
+            "admission_tokens": 35096,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35096,
+              "after_tokens": 35096,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 17
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 24
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 24,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30518,
+            "admission_tokens": 35096,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 24,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30518,
+            "admission_tokens": 35096,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-05",
+      "scenario_raw_input": {
+        "characters": 528,
+        "utf8_bytes": 932,
+        "current_estimator_tokens": 280,
+        "sha256": "0a276abf1c8db792614716910b1335e5fa90873588c4db56010dfe241331ed3b",
+        "messages": 7,
+        "tool_role_scenario_records": 2,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "2d02f748f875e72ecfd93c7036903631d1d283a8e1c5497dca1c7349e347205f",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 39,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30533,
+            "admission_tokens": 35113,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35113,
+              "after_tokens": 35113,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 32
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 39
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 39,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30533,
+            "admission_tokens": 35113,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35113,
+              "after_tokens": 35113,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 32
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 39
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 39,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30533,
+            "admission_tokens": 35113,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 39,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30533,
+            "admission_tokens": 35113,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-06",
+      "scenario_raw_input": {
+        "characters": 563,
+        "utf8_bytes": 1131,
+        "current_estimator_tokens": 350,
+        "sha256": "cd913d52c276e8b035c2bcb47ddc4b5cf8c5b0a91fdb7b290967a0a09a76bd74",
+        "messages": 7,
+        "tool_role_scenario_records": 2,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "b22d5aaa41dc14b8b69ec6e465090a166c64a2aef36dd625007f40d4d907dd72",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 26,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30520,
+            "admission_tokens": 35098,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35098,
+              "after_tokens": 35098,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 19
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 26
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 26,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30520,
+            "admission_tokens": 35098,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35098,
+              "after_tokens": 35098,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 19
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 26
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 26,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30520,
+            "admission_tokens": 35098,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 26,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30520,
+            "admission_tokens": 35098,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-07",
+      "scenario_raw_input": {
+        "characters": 516,
+        "utf8_bytes": 932,
+        "current_estimator_tokens": 278,
+        "sha256": "46ee5d4dd26bb8d9e49c0ad09edf4f87804c3823647800d9d058267f5fa37864",
+        "messages": 7,
+        "tool_role_scenario_records": 3,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "3c6bf82359b60fdfeadadded70735322e8c533e65ff5b1b17704e58d4c3ee2e5",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35115,
+              "after_tokens": 35115,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 33
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 40
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35115,
+              "after_tokens": 35115,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 33
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 40
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 40,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30534,
+            "admission_tokens": 35115,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-08",
+      "scenario_raw_input": {
+        "characters": 611,
+        "utf8_bytes": 1211,
+        "current_estimator_tokens": 374,
+        "sha256": "0e279c6e929899b41a7e1a1bd599e28f155febed711cf8a2983e3836a38222bf",
+        "messages": 7,
+        "tool_role_scenario_records": 3,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "421abfa3ead80c3eb8468756b4693706d68eb0a70050d8cdff6a93799f17b47d",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 41,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30535,
+            "admission_tokens": 35116,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35116,
+              "after_tokens": 35116,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 34
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 41
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 41,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30535,
+            "admission_tokens": 35116,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35116,
+              "after_tokens": 35116,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 34
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 41
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 41,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30535,
+            "admission_tokens": 35116,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 41,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30535,
+            "admission_tokens": 35116,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-09",
+      "scenario_raw_input": {
+        "characters": 1227,
+        "utf8_bytes": 1595,
+        "current_estimator_tokens": 445,
+        "sha256": "d0e6df169b63360824d3512f493b6c455c0b4a0047975625df2ff661ae399690",
+        "messages": 7,
+        "tool_role_scenario_records": 3,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "575785b5b6aa929024e9aa943ec7ba20a6fe38579d6ee8896b9dc9ff81c68442",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35110,
+              "after_tokens": 35110,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 30
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 36
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35110,
+              "after_tokens": 35110,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 30
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 36
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 36,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30530,
+            "admission_tokens": 35110,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-10",
+      "scenario_raw_input": {
+        "characters": 3101,
+        "utf8_bytes": 7941,
+        "current_estimator_tokens": 2591,
+        "sha256": "bae36f6dd0415fd527810b186d6e67cdcd4cf1a7b11fe4386979fa60c9c00ca4",
+        "messages": 5,
+        "tool_role_scenario_records": 1,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "c65c692159f52a6f3a70db72c21dff9a4ffbf1e90c0443b825206d225f309d41",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 47,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30541,
+            "admission_tokens": 35123,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35123,
+              "after_tokens": 35123,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 40
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 47
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 47,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30541,
+            "admission_tokens": 35123,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35123,
+              "after_tokens": 35123,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 40
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 47
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 47,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30541,
+            "admission_tokens": 35123,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 47,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30541,
+            "admission_tokens": 35123,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-11",
+      "scenario_raw_input": {
+        "characters": 766,
+        "utf8_bytes": 1538,
+        "current_estimator_tokens": 475,
+        "sha256": "d456dd564eb5201ab8463cd1dd162139290f984a12634694ade3bbfe05740587",
+        "messages": 8,
+        "tool_role_scenario_records": 3,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": null
+      },
+      "question_only_messages_sha256": "44e33e633e7f2371c179b7b567a643d4085c8fefe5b91fab1efa476386e208d2",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 50,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30544,
+            "admission_tokens": 35126,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35126,
+              "after_tokens": 35126,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 43
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 50
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 50,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30544,
+            "admission_tokens": 35126,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35126,
+              "after_tokens": 35126,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 43
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 50
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 50,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30544,
+            "admission_tokens": 35126,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 50,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30544,
+            "admission_tokens": 35126,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    },
+    {
+      "case_id": "CTX-12",
+      "scenario_raw_input": {
+        "characters": 39046,
+        "utf8_bytes": 92580,
+        "current_estimator_tokens": 29836,
+        "sha256": "0860f6adb9f89277fc1d6fb2f2c0b50776605bd208fd0f2b3df507e178671876",
+        "messages": 22,
+        "tool_role_scenario_records": 8,
+        "expanded_input_matches": true,
+        "recorded_long_input_measurement_matches": true
+      },
+      "question_only_messages_sha256": "8dca4538c188ac72c10fe3cf49a2fd33a4f0943fb2ff30a415ac60167756834a",
+      "profiles": {
+        "8192": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 14240,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 8192,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 73,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30567,
+            "admission_tokens": 35153,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 1639,
+              "before_tokens": 35153,
+              "after_tokens": 35153,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 66
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 73
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "16384": {
+          "status": "CONTEXT_INCOMPLETE",
+          "reason_key": "fixed_context_exceeds_window",
+          "context_budget": {
+            "window": 22432,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 16384,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 73,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30567,
+            "admission_tokens": 35153,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": true,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": true,
+              "applied": false,
+              "minimum_tokens": 3277,
+              "before_tokens": 35153,
+              "after_tokens": 35153,
+              "saved_tokens": 0,
+              "candidate_saved_tokens": 0,
+              "eligible_results": 0,
+              "protected_results": 0,
+              "retained_latest_results": 0,
+              "replaced_results": 0,
+              "cache_invalidation_from_message": null,
+              "reason": "no_controlled_compactor"
+            }
+          },
+          "missing": [
+            {
+              "field": "system",
+              "estimated_tokens": 2850
+            },
+            {
+              "field": "tool_definitions",
+              "estimated_tokens": 27182
+            },
+            {
+              "field": "output_schema",
+              "estimated_tokens": 462
+            },
+            {
+              "field": "current_question",
+              "estimated_tokens": 66
+            },
+            {
+              "field": "skill_body[0]",
+              "estimated_tokens": 73
+            }
+          ],
+          "recovery": {
+            "action": "configure_model_context_window",
+            "new_run_required": true
+          }
+        },
+        "48000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 54048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 48000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 73,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30567,
+            "admission_tokens": 35153,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": true,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        },
+        "64000": {
+          "status": "admitted_lower_bound_only",
+          "reason_key": "within_focus",
+          "context_budget": {
+            "window": 70048,
+            "window_configured": true,
+            "reserve": 6048,
+            "focus": 64000,
+            "segments": {
+              "system": 2850,
+              "tools": 27644,
+              "skills": 0,
+              "envelope": 73,
+              "history": 0,
+              "loop": 0
+            },
+            "estimated_total": 30567,
+            "admission_tokens": 35153,
+            "estimation_margin": 0.15,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "over_focus": false,
+            "fixed_over_half": false,
+            "fixed_admission_tokens": 35069,
+            "reductions": [],
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "reason": "within_focus"
+            }
+          }
+        }
+      },
+      "native_provider_input_status": "blocked_missing_native_fixture_bindings",
+      "native_replay_admission": null,
+      "full_completion": null,
+      "task_score": null,
+      "model_quality": "not_run",
+      "actual_input_tokens": null,
+      "actual_output_tokens": null
+    }
+  ],
+  "inputs": {
+    "questions_sha256": "494fdf3d14d76f2586a093c8af6c9af6aa6b5c0fd8e56a3aace06d48bd22d69a",
+    "expanded_inputs_sha256": "c5e9c56b87bbaa2736c7f0ae97e2212b99e89e3606aa3402cb20b1bf13f92cd8",
+    "production_source_sha256": {
+      "context_budget.py": "1224b8b123e57f596423a49127084ae5eaa948945cefa40f0e7b4274a5de9cfb",
+      "context_runtime.py": "7dedcdb32a84e8e1f3d360362fa487945f93266fed62f0208c15c184af7dc3c8",
+      "graph.py": "97cbefbd07c75e84ba70a7a9e3df42052ac69b7398a2a4cfabac576f04840e02",
+      "disclosure.py": "a9e47e6cc6109cfee055c8d0c985761926d593c709f1252e8f17dbff1f94b089",
+      "tools.py": "e162c650f4519e48f2a078c73393556cc2372bd6af4703571e3ff83ec1be836f",
+      "registry.py": "d9a4ee6ac6d926ca42625d6bb0a672feeab98e035d542524016ba43bc35c7c05",
+      "types.py": "f5df9b54756a4bd4aa0307168ab51739c486cdfb9e1bf2602452a8972d3bd78e",
+      "skills.py": "e90634d80361cd87de284a1bc0a6027303baf33f15673a16681102f2aadbcd68"
+    }
+  }
+}

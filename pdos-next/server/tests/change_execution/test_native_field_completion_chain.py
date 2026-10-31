@@ -9,8 +9,10 @@ No Issue/CAPA, fabricated business rows, renewed credentials or external model.
 # ruff: noqa: F811 -- actual upstream fixture tree
 from contextlib import ExitStack
 from datetime import timedelta
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
+import pytest
 from build_start.test_transactions import import_authority
 from sqlalchemy import func, select
 from test_project_first_plan import accepted, post
@@ -56,6 +58,15 @@ from .test_field_approved_continuation_chain import (
 
 def completion_people(work):
     """Actual operation/purpose grants before any retained Change signer snapshots."""
+    # This full business chain outlives the opening Build fixture's 40-minute
+    # qualification. Declare a separate finite synthetic window before signing;
+    # never renew an already retained signer or relax a live deadline guard.
+    window = getattr(getattr(work, "setup", None), "test_authorization_window", None)
+    valid_from = now() - timedelta(minutes=1)
+    valid_until = (
+        getattr(getattr(work, "setup", None), "test_authorization_until", None)
+        or now() + (window or timedelta(hours=2))
+    )
     for person, operations in (
         (work.quality, ("change.effectivity.record", "change.verification.record", "change.close")),
         (work.independent_reviewer, ("change.verification.record", "change.close")),
@@ -67,13 +78,17 @@ def completion_people(work):
                 kind,
                 subject_id=str(person.human),
                 operations=list(operations),
+                valid_from=valid_from.isoformat(),
+                valid_until=valid_until.isoformat(),
                 external_id=f"synthetic-native-completion-{work.build_id}-{person.human}-{kind}",
             )
 
 
-def completion_counts(work):
-    values = helper.counts(work)
-    with helper.session(work) as stored:
+def completion_counts(work, caller=None):
+    caller = caller or work.quality
+    acting = SimpleNamespace(**{**vars(work), "quality": caller})
+    values = helper.counts(acting)
+    with helper.session(work, caller) as stored:
         values[ChangeCompletionRecord.__tablename__] = stored.scalar(
             select(func.count()).select_from(ChangeCompletionRecord)
         )
@@ -81,14 +96,16 @@ def completion_counts(work):
 
 
 def context(work, caller, change_id):
-    before = completion_counts(work)
+    before = completion_counts(work, caller)
     response = caller.client.get(
         endpoint(work) + "/completion-context",
         headers=caller.headers,
         params={"change_id": change_id},
     )
     assert response.status_code == 200, response.text
-    assert completion_counts(work) == before, "Context read must not write any business/common row"
+    assert completion_counts(work, caller) == before, (
+        "Context read cannot write business/common rows"
+    )
     value = response.json()
     assert value["change_id"] == change_id and value["project_id"] == work.config["project"]
     return value
@@ -146,19 +163,21 @@ def completion_group(work, caller, receipt, operation, tier):
 
 
 def apply_completion(work, caller, operation, payload, tier):
-    before = completion_counts(work)
+    before = completion_counts(work, caller)
     response = caller.client.post(
         endpoint(work) + "/completion-material",
         headers=caller.headers,
         json={"operation": operation, "payload": payload},
     )
     assert response.status_code == 200, response.text
-    assert completion_counts(work) == before, "Material preparation cannot create an atom or proof"
+    assert completion_counts(work, caller) == before, (
+        "Material preparation cannot create atom/proof"
+    )
     value = response.json()
     assert value["allowed"] and value["command"]["operation"] == operation
     receipt, command = accepted(caller, value["command"])
     atom = completion_group(work, caller, receipt, operation, tier)
-    after = completion_counts(work)
+    after = completion_counts(work, caller)
     assert (
         after[ChangeCompletionRecord.__tablename__]
         == before[ChangeCompletionRecord.__tablename__] + 1
@@ -169,7 +188,7 @@ def apply_completion(work, caller, operation, payload, tier):
     # is replayed. No second capture/key or extra proof is manufactured.
     replay = post(caller, command)
     assert replay.status_code == 200 and replay.json()["id"] == receipt["id"], replay.text
-    assert completion_counts(work) == after
+    assert completion_counts(work, caller) == after
     return receipt, command, atom
 
 
@@ -304,6 +323,7 @@ def complete_native_change(work, change_id, items, continued, tested):
     )
 
 
+@pytest.mark.parametrize("setup", [{"test_authorization_hours": 4}], indirect=True)
 def test_native_field_adoption_independent_verification_and_named_close(quality_work, monkeypatch):
     work = quality_work
     helper.declare_people(work)
@@ -329,7 +349,7 @@ def test_native_field_adoption_independent_verification_and_named_close(quality_
     response = post(work.quality, created)
     assert response.status_code == 200, response.text
     change_id = inputs["change_id"]
-    until = now() + timedelta(hours=1)
+    until = work.setup.test_authorization_until or now() + timedelta(hours=1)
     scope, policy, items = policy_and_field_items(work, change_id, feedback, report, until)
     # The named selection fixes the old Build before any formal plan/approval.
     old_build = Ref(kind="build", id=UUID(str(work.build_id)), revision=1)

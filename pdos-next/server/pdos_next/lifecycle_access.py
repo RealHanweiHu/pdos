@@ -51,6 +51,13 @@ NON_CONSUMING = frozenset(
         "model_budget_reservations",
         "confirmations",
         "inbox_deliveries",
+        # Human messages, read/follow flags and directory grouping do not adopt
+        # originals. Their opaque object IDs never establish source references.
+        "inbox_conversations",
+        "inbox_messages",
+        "inbox_states",
+        "project_set_versions",
+        "project_set_links",
         "products",
         "upload_attempts",
         "lifecycle_objects",
@@ -63,6 +70,33 @@ NON_CONSUMING = frozenset(
         # The Run's server-bound read_sources consume originals. Model replies,
         # input answers and tool arguments are untrusted technical records.
         "agent_sessions",
+        "agent_session_bindings",
+        "agent_work_products",
+        "agent_work_states",
+        # Personal settings and private page feedback never adopt source material.
+        "personal_preferences",
+        "similar_history_feedback",
+        # Attribution holds only its shared submission identity and reason.
+        "knowledge_gap_attributions",
+        # Identity/configuration and delivery decisions contain no source body.
+        # The actual Delivery body copy is deliberately consuming.
+        "dingtalk_applications",
+        "dingtalk_binding_nonces",
+        "dingtalk_account_bindings",
+        "dingtalk_messages",
+        "dingtalk_share_consents",
+        "enterprise_search_chunks",
+        "enterprise_search_sources",
+        "enterprise_search_corpus",
+        "enterprise_search_terms",
+        # Independent configuration/cost records and rebuildable embeddings use
+        # current authoritative source reads; they never adopt business facts.
+        "enterprise_embedding_profile_heads",
+        "enterprise_embedding_profiles",
+        "enterprise_embedding_budgets",
+        "enterprise_embedding_batches",
+        "enterprise_embedding_calls",
+        "enterprise_chunk_embeddings",
         "agent_session_presentations",
         "agent_tool_calls",
         "agent_run_events",
@@ -254,8 +288,12 @@ def schema_covered(s):
     required = {
         (
             name,
-            "lifecycle_reference",
-            "kernel_source_reference_gate"
+            "summary_identity" if name == "dingtalk_summary_deliveries" else "lifecycle_reference",
+            "dingtalk_summary_identity_guard"
+            if name == "dingtalk_summary_deliveries"
+            else "dingtalk_lifecycle_reference_gate"
+            if name == "dingtalk_deliveries"
+            else "kernel_source_reference_gate"
             if name == "agent_runs"
             else "m3_lifecycle_reference_gate"
             if name in M3_GUARDED
@@ -268,7 +306,11 @@ def schema_covered(s):
         (
             name,
             "category_lifecycle_clock",
-            "kernel_source_reference_clock"
+            "dingtalk_summary_reference_clock"
+            if name == "dingtalk_summary_deliveries"
+            else "dingtalk_lifecycle_reference_clock"
+            if name == "dingtalk_deliveries"
+            else "kernel_source_reference_clock"
             if name == "agent_runs"
             else "m3_lifecycle_reference_clock"
             if name in M3_GUARDED

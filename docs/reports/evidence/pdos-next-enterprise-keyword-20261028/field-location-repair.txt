@@ -1,0 +1,39 @@
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+4 passed, 11 warnings in 34.96s

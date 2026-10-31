@@ -1,0 +1,13 @@
+{
+  "scope": "0853 canonical predecessor repair only; no database operations by subagent",
+  "pure_passed": 30,
+  "real_model_calls": 0,
+  "files": {
+    "pdos-next/server/migrations/schema_s0_0853.py": "a3b31a4d114781b7d59bdca792faf84454e8c4d670b97ef62acec4a06a41c062",
+    "pdos-next/server/migrations/versions/s0_0853_agreement_prompt_cache.py": "f94bdb93347c1efc264bc187f026365dcec2e62a12d46fa6d1e3ca2135c2ee1f",
+    "pdos-next/server/tests/agent_kernel/test_prompt_cache_migration.py": "1e55197dc1409d480ed5194a34f654b107678b415cc529258e9e37f4b2cef065",
+    "docs/reports/evidence/pdos-next-context-contract-completion-20261029/cache-policy/predecessor-function-from-backup.sql": "cce6efd17f49593bed4f86ce861121fdefd2242d55918e4bf2050658ca40fc29",
+    "docs/reports/evidence/pdos-next-context-contract-completion-20261029/cache-policy/predecessor-function-canonical.json": "565c1fedcd8635ce0423b50843edb2c04a822984029d6415970d5baa5ce2b7ee",
+    "docs/reports/evidence/pdos-next-context-contract-completion-20261029/cache-policy/pure-migration-repair-run2.xml": "24667f7dd51c6d4ee1a5dabf2bbcb55e5e215694902fa8a5c0c558a64ad56b41"
+  }
+}

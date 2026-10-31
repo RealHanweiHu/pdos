@@ -1,0 +1,5 @@
+{
+  "pdos-next/server/pdos_next/enterprise_search/sources.py": "16e6eeec2d9a84829656adde41de1f745d2f61a0db99eb458903ba2b799aadd2",
+  "pdos-next/server/tests/enterprise_search/test_source_cte_identifiers.py": "744b286097c1dad29c98f048fdac748da3eedd9d785ca6d26e90058cdcfa24a0",
+  "pdos-next/server/tests/enterprise_search/test_embedding_canonical_provider_pg.py": "133b4cfaed044c255b6621d5c31879470c4d32e3a9f4e6c675cb8f62357caa73"
+}

@@ -1,0 +1,10 @@
+{
+  "web_session": 62074,
+  "web_port": 58266,
+  "api_fixture_session": 87757,
+  "api_port": 58265,
+  "browser": "pdos-resume-20261029",
+  "browser_pid": 32553,
+  "build": "/tmp/pdos-assistant-combined-build-20261029/pdos-next/web/.next",
+  "scope": "synthetic provider with bounded deliberate resume latency; no business command"
+}

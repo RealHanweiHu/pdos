@@ -1,0 +1,515 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&product=ac902601-dffe-47a6-a875-5572675c31de&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare".
+1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&product=ac902601-dffe-47a6-a875-5572675c31de&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare
+	2 container
+		3 container
+			4 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+				5 image
+			6 button Open issues overlay
+				7 text 4
+				8 text Issue
+			9 button Collapse issues badge
+				10 image
+		11 link Description: 跳到工作内容, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&product=ac902601-dffe-47a6-a875-5572675c31de&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare#workspace-content
+		12 text PDOS
+		13 button 收起侧栏
+			14 image
+		15 button (collapsed) Description: 新建：选择办理入口, Help: 新建, Secondary Actions: Expand
+			16 text 新建
+		17 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			18 text ⌘K
+		19 container 工作区导航
+			20 text 日常
+			21 link Description: 我的工作, Value: localhost:57859/?area=work&category=0b1261de-e54b-4520-bd59-45764f4c56f3
+			22 link Description: 项目, Value: localhost:57859/?area=projects&category=0b1261de-e54b-4520-bd59-45764f4c56f3
+			23 container 最近的在办项目
+				24 link Description: Shared synthetic project 阶段尚未提供, Help: Shared synthetic project · 阶段尚未提供, Value: localhost:57859/?area=cockpit&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4
+			25 link Description: 组合与资源, Value: localhost:57859/?area=programs&category=0b1261de-e54b-4520-bd59-45764f4c56f3
+			26 link Description: 知识, Value: localhost:57859/?area=knowledge&category=0b1261de-e54b-4520-bd59-45764f4c56f3
+		27 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: localhost:57859/plan
+		28 link Description: 设置, Value: localhost:57859/?area=settings&category=0b1261de-e54b-4520-bd59-45764f4c56f3
+		29 button 切换明暗主题
+		30 text Synthetic owner
+		31 text 本地合成环境
+		32 link Description: 项目, Value: localhost:57859/?area=projects
+		33 text Shared synthetic project
+		34 link Description: 综合预览 · 换场景 / 身份, Value: localhost:57859/preview
+		35 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			36 image
+		37 container workspace-content
+			38 container 品类工作台区
+				39 link Description: 型号, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=products&view=overview&product=ac902601-dffe-47a6-a875-5572675c31de
+				40 link Description: 项目, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=overview&product=ac902601-dffe-47a6-a875-5572675c31de
+				41 link Description: 知识, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=knowledge&view=sources&product=ac902601-dffe-47a6-a875-5572675c31de
+				42 link Description: 设置, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=settings&view=preferences&product=ac902601-dffe-47a6-a875-5572675c31de
+				43 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				44 pop up button (collapsed, settable) Description: 当前型号, Value: Shared synthetic project, Secondary Actions: Expand
+					45 menu
+						46 Synthetic product
+						47 (selected) Shared synthetic project
+			48 container 项目视图
+				49 link Description: 现在, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=overview&product=ac902601-dffe-47a6-a875-5572675c31de
+				50 link Description: 工作与计划, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=plan&product=ac902601-dffe-47a6-a875-5572675c31de
+				51 link Description: 试制, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare&product=ac902601-dffe-47a6-a875-5572675c31de
+				52 link Description: 测试与交接, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=verification&task=prepare&product=ac902601-dffe-47a6-a875-5572675c31de
+				53 link Description: 问题与变更, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=issues&product=ac902601-dffe-47a6-a875-5572675c31de
+				54 link Description: 现场与客户反馈, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=field&product=ac902601-dffe-47a6-a875-5572675c31de
+				55 link Description: 评审与交付 尚未接入, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=reviews&product=ac902601-dffe-47a6-a875-5572675c31de
+				56 link Description: 资料, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=files&product=ac902601-dffe-47a6-a875-5572675c31de
+			57 container
+				58 heading 试制, Value: 1
+					59 text 试制
+				60 text 当前范围：Shared synthetic project
+				61 container 当前办理步骤
+					62 link Description: 配置与准备, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare&product=ac902601-dffe-47a6-a875-5572675c31de
+					63 link Description: 物料齐套, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=supply&product=ac902601-dffe-47a6-a875-5572675c31de
+					64 link Description: 成本, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=cost&product=ac902601-dffe-47a6-a875-5572675c31de
+					65 link Description: 开工条件, Value: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=start&product=ac902601-dffe-47a6-a875-5572675c31de
+					66 link Description: 实际产出, Value: …
+				67 container 工程制造配置与Build准备
+					68 container
+						69 text 固定双配置，准备有明确目的的实物验证
+						70 heading 配置与 Build 准备, Value: 2
+							71 text 配置与 Build 准备
+						72 button 刷新配置与轮次
+							73 image
+							74 text 刷新配置与轮次
+					75 container
+						76 button (expanded) 本次配置的原文依据 · 0 条, Secondary Actions: Collapse
+							77 text 本次配置的原文依据 · 
+							78 text 0
+							79 text  条
+						80 container
+							81 text 当前资料
+							82 pop up button (collapsed, settable) 当前资料, Value: 选择资料, Secondary Actions: Expand
+								83 menu
+									84 (disabled) 选择资料
+									85 (disabled) Shared synthetic scope source · 品类共享
+									86 (disabled) Synthetic event · 品类共享
+									87 (disabled) Synthetic event · 品类共享
+									88 (disabled) Synthetic event · 品类共享
+									89 (disabled) Synthetic actual method dossier · 品类共享
+									90 (disabled) Synthetic event · 品类共享
+									91 (disabled) Synthetic event · 品类共享
+									92 (disabled) Synthetic event · 品类共享
+									93 (disabled) Synthetic event · 品类共享
+									94 (disabled) Synthetic exact measurement JSONL · 品类共享
+									95 (disabled) Synthetic exact measurement JSONL · 品类共享
+									96 (disabled) Synthetic event · 品类共享
+									97 (disabled) Synthetic event · 品类共享
+									98 (disabled) Synthetic fixed manufacturing publication originals · 品类共享
+									99 (disabled) Synthetic publication personnel qualification basis · 品类共享
+									100 (disabled) Synthetic scoped risk policy · 品类共享
+									101 (disabled) Synthetic Pilot line relation original · 品类共享
+									102 (disabled) Synthetic exact fixed Pilot statistics declaration · 品类共享
+									103 (disabled) Synthetic Pilot browser partial exact original values · 品类共享
+									104 (disabled) Synthetic Pilot browser complete exact original values · 品类共享
+						105 container
+							106 text 精确摘录 · 第  1  行
+							107 text entry area (settable) 精确摘录 · 第 1 行
+						108 button (disabled) 加入本次依据
+							109 image
+							110 text 加入本次依据
+						111 text 从前版、定义与配置继承的原文仍完整固定；这里补充本轮依据。私人依据不会扩大受众。
+					112 button (collapsed) 1 · BOM 物料版本, Secondary Actions: Expand
+						113 text 1 · BOM 物料版本
+					114 button (collapsed) 2 · 工程配置, Secondary Actions: Expand
+						115 text 2 · 工程配置
+					116 button (collapsed) 3 · 制造配置与工序, Secondary Actions: Expand
+						117 text 3 · 制造配置与工序
+					118 container
+						119 heading 4 · 计划本轮 Build, Value: 3
+							120 text 4 · 计划本轮 Build
+						121 text 一次有明确用途、双配置、数量、验证目标和实物处置的活动。保存计划后再计算准备缺项。
+						122 container
+							123 text 所属项目
+							124 pop up button (disabled, collapsed, settable) 所属项目, Value: Shared synthetic project · 固定定义 v1, Secondary Actions: Expand
+								125 menu
+									126 (disabled) 选择已建立的研发项目
+									127 (disabled) Shared synthetic project · 固定定义 v1
+							128 text 计划工程配置
+							129 pop up button (collapsed, settable) 计划工程配置, Value: 选择与项目固定定义一致的配置, Secondary Actions: Expand
+								130 menu
+									131 (selected) 选择与项目固定定义一致的配置
+									132 Shared engineering fixed draft · v1
+							133 text 计划制造配置
+							134 pop up button (collapsed, settable) 计划制造配置, Value: 选择明确采用上述工程版的制造配置, Secondary Actions: Expand
+								135 menu
+									136 (selected) 选择明确采用上述工程版的制造配置
+							137 text 仅当前项目负责人可建立本轮计划。本轮固定该项目的定义 v 1 ，不自动采用“最新”配置。整轮受众由关联对象最窄范围决定。 轮次名称
+							138 text field (settable) 轮次名称
+							139 text 轮次类型
+							140 pop up button (collapsed, settable) 轮次类型, Value: 原型验证, Secondary Actions: Expand
+								141 menu
+									142 (selected) 原型验证
+									143 试模 / 工装试验
+									144 试产验证
+							145 text 本轮用途
+							146 text entry area (settable) 本轮用途, Value: Verify preparation
+							147 text 计划数量
+							148 text field (settable) 计划数量
+							149 text 单位
+							150 text field (settable) 单位, Value: 件
+							151 text 计划开始（UTC，未知可空）
+							152 date field (settable) 计划开始（UTC，未知可空）
+								153 container
+									154 stepper
+									155 stepper
+									156 stepper
+									157 stepper
+									158 stepper
+									159 stepper
+								160 pop up button Show local date and time picker Show local date and time picker
+							161 text 计划结束（UTC，未知可空）
+							162 date field (settable) 计划结束（UTC，未知可空）
+								163 container
+									164 stepper
+									165 stepper
+									166 stepper
+									167 stepper
+									168 stepper
+									169 stepper
+								170 pop up button Show local date and time picker Show local date and time picker
+							171 text 本轮验证目标
+							172 text entry area (settable) 本轮验证目标
+							173 text 样件、剩余物料与异常品的处置要求
+							174 text entry area (settable) 样件、剩余物料与异常品的处置要求
+							175 text 前一轮 Build
+							176 pop up button (collapsed, settable) 前一轮 Build, Value: 本项目首轮 / 无前轮关系, Secondary Actions: Expand
+								177 menu
+									178 (selected) 本项目首轮 / 无前轮关系
+									179 Synthetic native Pilot continuation · 试产验证
+									180 Synthetic first prototype · 原型验证
+							181 button 查看本轮计划范围…
+								182 image
+								183 text 查看本轮计划范围…
+					184 container
+						185 heading 已保存 Build 与准备缺项 · 2 轮, Value: 3
+							186 text 已保存 Build 与准备缺项 ·  2  轮
+						187 heading Synthetic native Pilot continuation, Value: 4
+							188 text Synthetic native Pilot continuation
+						189 container
+							190 text Shared synthetic project  ·  试产验证  · 固定计划 · 执行状态见开工办理 ·  品类授权成员
+						191 text Verify preparation
+						192 definition list
+							193 container 固定工程配置
+								194 text 固定工程配置
+							195 container
+								196 text Shared engineering fixed draft  · v 1
+							197 container 固定制造配置
+								198 text 固定制造配置
+							199 container
+								200 text Shared manufacturing fixed draft  · v 1
+							201 container 计划数量
+								202 text 计划数量
+							203 container
+								204 text 2 ea
+							205 container 计划时间（UTC）
+								206 text 计划时间（UTC）
+							207 container
+								208 text 开始未知  ～  结束未知
+							209 container 验证目标
+								210 text 验证目标
+							211 text Verify motor and housing fit
+							212 container 实物处置要求
+								213 text 实物处置要求
+							214 text Retain synthetic samples for review
+							215 container 前一轮
+								216 text 前一轮
+							217 text Synthetic first prototype
+						218 container
+							219 text 尚未计算准备缺项。 计划配置已经固定，尚未获得本轮开工授权。
+						220 text 当前仅核对本轮固定配置。后续资源或供应变化需要独立快照路径，尚未启用。
+						221 button 计算并保存准备缺项
+							222 image
+							223 text 计算并保存准备缺项
+						224 button (collapsed) 查看本轮固定配置, Secondary Actions: Expand
+							225 text 查看本轮固定配置
+						226 heading Synthetic first prototype, Value: 4
+							227 text Synthetic first prototype
+						228 container
+							229 text Shared synthetic project  ·  原型验证  · 固定计划 · 执行状态见开工办理 ·  品类授权成员
+						230 text Verify preparation
+						231 definition list
+							232 container 固定工程配置
+								233 text 固定工程配置
+							234 container
+								235 text Shared engineering fixed draft  · v 1
+							236 container 固定制造配置
+								237 text 固定制造配置
+							238 container
+								239 text Shared manufacturing fixed draft  · v 1
+							240 container 计划数量
+								241 text 计划数量
+							242 container
+								243 text 10 ea
+							244 container 计划时间（UTC）
+								245 text 计划时间（UTC）
+							246 container
+								247 text 开始未知  ～  结束未知
+							248 container 验证目标
+								249 text 验证目标
+							250 text Verify motor and housing fit
+							251 container 实物处置要求
+								252 text 实物处置要求
+							253 text Retain synthetic samples for review
+						254 container Synthetic first prototype准备缺项
+							255 image
+							256 text 准备仍有未知或阻塞，尚不能据此开工
+							257 container
+								258 text 此次结果固定于  2026-10-17 21:17 UTC 。同一固定输入保留原计算结果，不重复生成新快照。未记录真实供应、资源、品质方法或专业放行的事实继续保留未知。
+							259 container
+								260 text 固定版本与来源  ·  已明确 本次计算绑定固定版本；来源有效不代表工程或制造已放行。 下一步： 核对来源有效性并选定适用版本，再按新的固定快照计算。 固定依据： 本轮计划 v1；工程配置 v1；BOM v1；制造配置 v1
+							261 container
+								262 text 物料需求量  ·  已明确 已按本轮数量、固定 BOM 和加损比例计算需求；没有推定库存或到货。 下一步： 补齐适用 BOM、正数计划数量、单位和明确加损比例，解决版本或行标识冲突。 固定依据： 本轮计划 v1；工程配置 v1；BOM v1
+							263 container
+								264 text 供应与齐套  ·  未知，待补充 尚无权威供应池及完整占用记录；承诺、在途和需求量都不能证明已齐套。 下一步： 接入有来源的实际可用量、质量限制和跨 Build 占用，再计算齐套。 固定依据： 本轮计划 v1；BOM v1
+							265 container
+								266 text 工装、设备与人员资源  ·  未知，待补充 工序记录不能证明工装验收、设备校准、岗位资格和本轮时段可用。 下一步： 核对适用工装设备的验收与校准、人员资格及真实资源预约。 固定依据： 本轮计划 v1；制造配置 v1
+							267 container
+								268 text 品质方法与验证准备  ·  未知，待补充 尚无具名确认的方法、判据、验证范围及品质接收条件。 下一步： 由品质确认适用规程、判据、样件和资料要求，保留未覆盖范围。 固定依据： 本轮计划 v1；工程配置 v1；制造配置 v1
+							269 container
+								270 text 工程适用性与正式放行  ·  未知，待补充 固定工程草稿不代表本轮用途已获工程批准。 下一步： 按本轮用途核对适用工程决定、偏差和必需证据。 固定依据： 工程配置 v1；BOM v1
+							271 container
+								272 text 制造适用性与正式放行  ·  未知，待补充 制造工序草稿不代表工艺、资源和质量条件已获制造放行。 下一步： 按本轮用途核对制造基线、资格、控制要求与具名决定。 固定依据： 制造配置 v1
+							273 button (collapsed) 本轮物料需求 · 1 行, Secondary Actions: Expand
+								274 text 本轮物料需求 · 
+								275 text 1
+								276 text  行
+						277 text 当前仅核对本轮固定配置。后续资源或供应变化需要独立快照路径，尚未启用。
+						278 button 核对并读取已有结果
+							279 image
+							280 text 核对并读取已有结果
+						281 button (collapsed) 查看本轮固定配置, Secondary Actions: Expand
+							282 text 查看本轮固定配置
+					283 button (collapsed) 可见配置与版本记录, Secondary Actions: Expand
+						284 text 可见配置与版本记录
+				285 container
+					286 heading 制造准备资料, Value: 2
+						287 image
+						288 text 制造准备资料
+					289 button 重试读取当前事实
+						290 image
+						291 text 重试读取当前事实
+					292 text 为固定制造配置保留作业指导书、控制计划和整版制造基线草稿。填写或保存不构成发布、工装验收、试产准入或正式放行。
+				293 container
+					294 heading 选择真实项目与固定制造配置, Value: 3
+						295 text 选择真实项目与固定制造配置
+					296 text 当前可读项目
+					297 pop up button (collapsed, settable) 当前可读项目, Value: 明确选择项目, Secondary Actions: Expand
+						298 menu
+							299 (disabled) 明确选择项目
+							300 (disabled) Shared synthetic project · v1
+					301 text 本项目定义对应的固定制造配置
+					302 pop up button (disabled, collapsed, settable) 本项目定义对应的固定制造配置, Value: 明确选择固定配置, Secondary Actions: Expand
+						303 menu
+							304 (disabled) 明确选择固定配置
+				305 container 制造基线正式发布
+					306 heading 制造基线发布, Value: 2
+						307 image
+						308 text 制造基线发布
+					309 text 固定本轮工艺和资料，由有权本人核对并具名发布。
+					310 button 刷新发布资料
+						311 image
+						312 text 刷新发布资料
+					313 container
+						314 text 项目
+						315 pop up button (disabled, collapsed, settable) 项目, Value: Shared synthetic project, Secondary Actions: Expand
+							316 menu
+								317 (disabled) 请选择项目
+								318 (disabled) Shared synthetic project
+					319 container
+						320 text 固定制造基线
+						321 pop up button (collapsed, settable) 固定制造基线, Value: 请选择已保存的基线, Secondary Actions: Expand
+							322 menu
+								323 (disabled) 请选择已保存的基线
+								324 (disabled) Synthetic manufacturing_baseline documentation · v1
+					325 container
+						326 text 本次发布说明
+						327 text entry area (settable) 本次发布说明
+					328 text 本入口沿用所选基线的固定用途、地点和来源。尚未声明的资源要求、包装及反应计划保留为缺项，发布时会一并显示。
+					329 button (disabled) 核对具名发布
+					330 heading 已发布的固定版本, Value: 3
+						331 text 已发布的固定版本
+					332 text 固定发布 v 1  ·  当前版  ·  依据待重核
+					333 button 从此版续接
+					334 button 回读固定内容
+				335 container 试产与原始观察
+					336 container
+						337 heading 试产与原始观察, Value: 2
+							338 image
+							339 text 试产与原始观察
+						340 text 固定实际批次，保存原始观察及后续修正。工厂资格未知、启动未授权、制造放行未作出。
+						341 button 刷新试产资料
+							342 image
+							343 text 刷新试产资料
+					344 button 新建试产准备
+						345 image
+						346 text 新建试产准备
+					347 container
+						348 text 已保存试产
+						349 pop up button (collapsed, settable) 已保存试产, Value: 选择已有试产读取或续记, Secondary Actions: Expand
+							350 menu
+								351 (disabled) 选择已有试产读取或续记
+								352 (disabled) 试产 1 · SYN-LOT-ae440695-cc69-46d9-8acb-a04213894f61 · 当前 v3
+					353 container 本次试产准备
+						354 text 本次试产准备
+						355 container
+							356 text 真实已登记批次
+							357 pop up button (disabled, collapsed, settable) 真实已登记批次, Value: 选择本项目实际产出批次, Secondary Actions: Expand
+								358 menu
+									359 (disabled) 选择本项目实际产出批次
+									360 (disabled) Synthetic native Pilot continuation · SYN-LOT-ae440695-cc69-46d9-8acb-a04213894f61 · 2ea
+									361 (disabled) Synthetic first prototype · SYN-LOT-5303845e-1a91-4ac4-a22f-7e0aaf532d43 · 2ea
+						362 container
+							363 text 实际制造工艺对应的发布版
+							364 pop up button (disabled, collapsed, settable) 实际制造工艺对应的发布版, Value: 尚未选择，保留缺项, Secondary Actions: Expand
+								365 menu
+									366 (disabled) 尚未选择，保留缺项
+						367 container
+							368 text 固定产线引用
+							369 pop up button (disabled, collapsed, settable) 固定产线引用, Value: 未知，待真实Owner核对, Secondary Actions: Expand
+								370 menu
+									371 (disabled) 未知，待真实Owner核对
+						372 container
+							373 text 可见范围
+							374 pop up button (disabled, collapsed, settable) 可见范围, Value: 本人私有, Secondary Actions: Expand
+								375 menu
+									376 (disabled) 本人私有
+									377 (disabled) 品类共享
+						378 text 固定发布的产线适用声明不代表资源验收通过。未接通的人员、设备、物料及准备度明确保留未知。
+					379 container 选择真实已登记原文完整行
+						380 text 选择真实已登记原文完整行
+						381 container
+							382 text 有效原文
+							383 pop up button (collapsed, settable) 有效原文, Value: 请选择当前可读资料, Secondary Actions: Expand
+								384 menu
+									385 (disabled) 请选择当前可读资料
+									386 (disabled) Shared synthetic scope source · v1
+									387 (disabled) Synthetic event · v1
+									388 (disabled) Synthetic event · v1
+									389 (disabled) Synthetic event · v1
+									390 (disabled) Synthetic actual method dossier · v1
+									391 (disabled) Synthetic event · v1
+									392 (disabled) Synthetic event · v1
+									393 (disabled) Synthetic event · v1
+									394 (disabled) Synthetic event · v1
+									395 (disabled) Synthetic event · v1
+									396 (disabled) Synthetic event · v1
+									397 (disabled) Synthetic publication personnel qualification basis · v1
+									398 (disabled) Synthetic scoped risk policy · v1
+									399 (disabled) Synthetic Pilot line relation original · v1
+									400 (disabled) Synthetic Pilot browser partial exact original values · v1
+									401 (disabled) Synthetic Pilot browser complete exact original values · v1
+						402 container
+							403 text 完整行
+							404 stepper (settable, integer) 完整行, Value: 1
+						405 button (disabled) 采用本行作为准备依据
+						406 button (disabled) 采用本行统计声明
+						407 button (collapsed) 需要准备的原件结构, Secondary Actions: Expand
+							408 text 需要准备的原件结构
+					409 button (disabled) 核对并预览本次保存
+				410 container 固定发布包与分别决定
+					411 container
+						412 heading 固定发布包与分别决定, Value: 2
+							413 image
+							414 text 固定发布包与分别决定
+						415 text 固定资料与用途，分别办理工程、制造决定；客户承认、外部接收和实际生效继续保留独立事实。
+						416 button 刷新发布包
+							417 image
+							418 text 刷新发布包
+					419 button 新建固定包草稿
+						420 image
+						421 text 新建固定包草稿
+					422 container
+						423 text 已保存固定包
+						424 pop up button (collapsed, settable) 已保存固定包, Value: 选择一份固定包按需回读, Secondary Actions: Expand
+							425 menu
+								426 (selected) 选择一份固定包按需回读
+					427 container 本次明确办理
+						428 text 本次明确办理
+						429 container
+							430 text 办理内容
+							431 pop up button (collapsed, settable) 办理内容, Value: 保存固定包（不作放行决定）, Secondary Actions: Expand
+								432 menu
+									433 (selected) 保存固定包（不作放行决定）
+									434 (disabled) 工程具名决定
+									435 (disabled) 制造具名决定
+						436 container
+							437 text 高级材料 JSON
+							438 text entry area (settable) 高级材料 JSON
+						439 button (collapsed) 材料填写说明, Secondary Actions: Expand
+							440 text 材料填写说明
+					441 button (disabled) 读取并核对本次材料
+				442 container 具名例外决定与撤回
+					443 container
+						444 heading 具名例外决定与撤回, Value: 2
+							445 text 具名例外决定与撤回
+						446 text 固定政策、双配置和检查范围，由本人一次确认；小Pai不能代签。
+						447 button 刷新例外
+							448 image
+							449 text 刷新例外
+					450 button 新建例外草稿
+						451 image
+						452 text 新建例外草稿
+					453 container
+						454 text 已保存例外决定
+						455 pop up button (collapsed, settable) 已保存例外决定, Value: 明确选择一项实际记录, Secondary Actions: Expand
+							456 menu
+								457 (selected) 明确选择一项实际记录
+					458 container 本次明确办理
+						459 text 本次明确办理
+						460 container
+							461 text 办理内容
+							462 pop up button (collapsed, settable) 办理内容, Value: 本人具名例外决定, Secondary Actions: Expand
+								463 menu
+									464 (selected) 本人具名例外决定
+									465 (disabled) 本人撤回所选原例外
+						466 container
+							467 text 实际已保存发布包
+							468 pop up button (collapsed, settable) 实际已保存发布包, Value: 明确选择固定发布包, Secondary Actions: Expand
+								469 menu
+									470 (selected) 明确选择固定发布包
+						471 container
+							472 text 高级材料 JSON
+							473 text entry area (settable) 高级材料 JSON
+						474 button (collapsed) 材料填写说明, Secondary Actions: Expand
+							475 text 材料填写说明
+					476 button (disabled) 读取并核对本次材料
+				477 container 外部交付与对账
+					478 container
+						479 heading 外部交付与对账, Value: 2
+							480 text 外部交付与对账
+						481 text 固定发送包、具名授权及原意图；发送、接收和实际生效保留各自记录。
+						482 button 刷新移交
+							483 image
+							484 text 刷新移交
+					485 button 新建移交授权草稿
+						486 image
+						487 text 新建移交授权草稿
+					488 container
+						489 text 已保存移交
+						490 pop up button (collapsed, settable) 已保存移交, Value: 选择一项实际移交, Secondary Actions: Expand
+							491 menu
+								492 (selected) 选择一项实际移交
+					493 container 本次明确办理
+						494 text 本次明确办理
+						495 container
+							496 text 办理内容
+							497 pop up button (collapsed, settable) 办理内容, Value: 具名授权固定发送包, Secondary Actions: Expand
+								498 menu
+									499 (selected) 具名授权固定发送包
+									500 (disabled) 登记可信原回执／对账
+						501 container
+							502 text 实际已保存发布包
+							503 pop up button (collapsed, settable) 实际已保存发布包, Value: 明确选择发布包, Secondary Actions: Expand
+								504 menu
+									505 (selected) 明确选择发布包
+						506 container
+							507 text 高级材料 JSON
+							508 text entry area (settable) 高级材料 JSON
+						509 button (collapsed) 材料填写说明, Secondary Actions: Expand
+							510 text 材料填写说明
+					511 button (disabled) 读取并核对本次材料
+		512 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=category&category=0b1261de-e54b-4520-bd59-45764f4c56f3&product=ac902601-dffe-47a6-a875-5572675c31de&project=096c8f49-5136-47fc-8d60-a773c70ad9f4&bench=projects&view=builds&task=prepare

@@ -47,7 +47,8 @@ def content(payload):
     return {
         key: value
         for key, value in data.items()
-        if key not in {"confirmation_token", "prepared_by_run_id", "candidate_digest"}
+        if key
+        not in {"confirmation_token", "prepared_by_run_id", "candidate_digest", "human_edits"}
     }
 
 
@@ -73,8 +74,28 @@ def prepare_candidate(s, scope, operation, arguments, source, *, catalog, regist
         route=actual_route,
         prepare_only=True,
     )
-    payload = PAYLOADS[operation].model_validate(arguments)
-    if payload.prepared_by_run_id or payload.candidate_digest or payload.confirmation_token:
+    try:
+        payload = PAYLOADS[operation].model_validate(arguments)
+    except ValidationError as error:
+        # Model arguments are untrusted. Return bounded field diagnostics to the
+        # graph so it can correct them, without echoing values or validator context.
+        fail(
+            "VALIDATION_FAILED",
+            "candidate_payload_invalid",
+            "候选字段不符合工具定义，请修正后重新起草；新增条目的 item_id 应省略或为 null。",
+            fields=[
+                {"path": list(item["loc"]), "type": item["type"]}
+                for item in error.errors(
+                    include_url=False, include_context=False, include_input=False
+                )[:10]
+            ],
+        )
+    if (
+        payload.prepared_by_run_id
+        or payload.candidate_digest
+        or payload.confirmation_token
+        or getattr(payload, "human_edits", None) is not None
+    ):
         fail("FORBIDDEN_SCOPE", "server_candidate_binding", "候选身份与摘要由服务器绑定。", 403)
     product_patch = operation in {"product.definition.item.patch", "platform.link.create"}
     if operation == "platform.link.create" and payload.product_id != scope.product_id:
@@ -182,6 +203,11 @@ def _t0(s, ctx, command, payload):
 
 
 def writing_path(s, ctx, command, payload):
+    if getattr(payload, "human_edits", None) is not None:
+        from .material_candidate_edits import effective
+
+        human(s, ctx)
+        effective(payload)
     if ctx.agent_run_id:
         return _t0(s, ctx, command, payload)
     human(s, ctx)
@@ -224,6 +250,32 @@ def writing_path(s, ctx, command, payload):
     writer = s.get(Principal, run.writer_id)
     if not writer or not writer.active or writer.kind != "agent":
         fail("FORBIDDEN_SCOPE", "candidate_writer_invalid", "原候选署名不可用。", 403)
+    if command.operation in {
+        "category.knowledge.add",
+        "category.knowledge.withdraw",
+        "category.parameter.publish",
+    }:
+        from .material_candidate_edits import saved_receipt_id
+
+        if saved_receipt_id(s, candidate.id):
+            fail(
+                "VERSION_CONFLICT",
+                "candidate_already_saved",
+                "此候选已保存，请继续编辑已保存资料。",
+            )
+    if command.operation in {"proposal.create", "proposal.item.patch"}:
+        from pdos_next.models import Receipt
+
+        if s.scalar(
+            select(Receipt.id).where(
+                Receipt.result["prepared_candidate_id"].astext == str(candidate.id)
+            )
+        ):
+            fail(
+                "VERSION_CONFLICT",
+                "candidate_already_saved",
+                "此候选已保存，请继续编辑已保存提案。",
+            )
     return {
         "origin": "ai_draft",
         "writer_id": run.writer_id,

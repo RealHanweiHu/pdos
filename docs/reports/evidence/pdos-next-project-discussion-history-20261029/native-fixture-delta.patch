@@ -1,0 +1,30 @@
+--- a/pdos-next/server/tests/agent_kernel/test_project_discussion_history_pg.py
++++ b/pdos-next/server/tests/agent_kernel/test_project_discussion_history_pg.py
+@@ -1,4 +1,6 @@
+ """Actual owned project discussion GETs; only root runs the isolated PostgreSQL case."""
++
++from copy import copy
+ 
+ from tests.agent_kernel.test_session_presentation_pg import (
+     _base,
+@@ -17,13 +19,18 @@
+     work = _fixture(setup)
+     project = work["project"].project_id
+     later = _real_run(setup, project=project, goal="Owned selected project second discussion")
++    # G0 updates its caller's product binding. Keep the original project's
++    # fixture scope intact for its later exact audience/lifecycle reduction.
++    other_setup = copy(setup)
+     other_project = create_g0_project(
+-        setup, visibility="category", name="Other readable discussion project",
++        other_setup, visibility="category", name="Other readable discussion project",
+         purpose="Separate same-category project history without model execution",
+     )
+     unrelated = _real_run(
+-        setup, project=other_project.project_id, goal="Other project must not match this view",
++        other_setup, project=other_project.project_id,
++        goal="Other project must not match this view",
+     )
++    assert str(setup.product) == work["project"].product_id
+     before = counts(setup)
+     listing = _ok(_list(setup, project_id=project))
+     owned = {work["category"]["session_id"], later["session_id"]}

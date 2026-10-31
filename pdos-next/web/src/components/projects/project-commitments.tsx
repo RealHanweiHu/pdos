@@ -76,7 +76,7 @@ function ScopedProjectCommitments({ api, categoryId, productId, projectId, princ
       <p className={styles.summary}>已读取当前版本人工任务承诺 {data.commitments.length} 条。接收人不同的记录分别保留。</p>
       {data.commitments.length === 0 ? <p className={styles.notice}>当前可读范围内尚无当前版本人工任务承诺。</p> : <div className={styles.list}>{shown.map(item => <CommitmentRow key={item.commitment.id} value={item.commitment} projection={item.projection} view={data.view} />)}</div>}
       {data.commitments.length > 3 && <Button type="button" size="xs" variant="ghost" className={styles.expand} aria-expanded={expanded} onClick={() => setExpanded(value => !value)}>{expanded ? "收起承诺记录" : `展开其余 ${data.commitments.length - 3} 条当前记录`}</Button>}
-      <p className={styles.foot}>履行只按本条固定承诺的具名核对记录展示；任务完成状态不替代履行结论。尚未具名核对不代表事实未完成。测试开测、供应与外部等其他承诺尚未汇入此面板。</p>
+      <details className={styles.readTime}><summary>承诺与履行口径</summary><p className={styles.foot}>履行只按本条固定承诺的具名核对记录展示；任务完成状态不替代履行结论。尚未具名核对不代表事实未完成。测试开测、供应与外部等其他承诺尚未汇入此面板。</p></details>
       <details className={styles.readTime}><summary>本次读取时点</summary><p>任务与承诺读集：<time dateTime={data.view.as_of}>{data.view.as_of}</time></p><p>履行读集：<time dateTime={data.fulfillment.as_of}>{data.fulfillment.as_of}</time></p></details>
     </>}
   </section>;

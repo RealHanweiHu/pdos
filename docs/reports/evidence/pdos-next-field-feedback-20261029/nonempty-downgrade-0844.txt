@@ -1,0 +1,66 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.CheckViolation: Field feedback source history cannot lose native lifecycle roots
+CONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/__main__.py", line 4, in <module>
+    main(prog="alembic")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1039, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1029, in main
+    self.run_cmd(cfg, options)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 963, in run_cmd
+    fn(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/command.py", line 534, in downgrade
+    script.run_env()
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/script/base.py", line 550, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 114, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 132, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/env.py", line 19, in <module>
+    context.run_migrations()
+  File "<string>", line 8, in run_migrations
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/environment.py", line 970, in run_migrations
+    self.get_context().run_migrations(**kw)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 616, in run_migrations
+    step.migration_fn(**kw)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/versions/s0_0844_field_feedback_sources.py", line 32, in downgrade
+    execute(EMPTY_HISTORY_SQL)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/versions/s0_0844_field_feedback_sources.py", line 20, in execute
+    op.get_bind().exec_driver_sql(sql, execution_options={"no_parameters": True})
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1755, in exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1822, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1962, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2332, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.IntegrityError: (psycopg.errors.CheckViolation) Field feedback source history cannot lose native lifecycle roots
+CONTEXT:  PL/pgSQL function inline_code_block line 1 at RAISE
+[SQL: DO $field_history$ BEGIN IF EXISTS(SELECT 1 FROM public.category_knowledge_entries WHERE jsonb_path_exists(coalesce(answer_sources,'[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")') UNION ALL SELECT 1 FROM public.knowledge_candidate_versions WHERE jsonb_path_exists(coalesce(source_basis->'answer_sources','[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")') UNION ALL SELECT 1 FROM public.knowledge_rule_versions WHERE jsonb_path_exists(coalesce(source_basis->'answer_sources','[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")') UNION ALL SELECT 1 FROM public.knowledge_answer_reviews WHERE jsonb_path_exists(coalesce(source_proof,'[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")') UNION ALL SELECT 1 FROM public.knowledge_gap_submissions WHERE jsonb_path_exists(coalesce(source_proof,'[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")') UNION ALL SELECT 1 FROM public.dingtalk_deliveries WHERE jsonb_path_exists(coalesce(source_dependencies,'[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")')) OR EXISTS(SELECT 1 FROM public.agent_tool_calls WHERE tool IN ('assistant.search','assistant.materials.read','assistant.citations.read') AND jsonb_path_exists(coalesce(result->'items','[]'::jsonb),'$[*] ? (@.source_type == "field_feedback")')) THEN RAISE EXCEPTION 'Field feedback source history cannot lose native lifecycle roots' USING ERRCODE='23514'; END IF; END $field_history$]
+(Background on this error at: https://sqlalche.me/e/21/gkpj)

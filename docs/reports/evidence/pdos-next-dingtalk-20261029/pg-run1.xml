@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="4.893" timestamp="2026-10-29T05:21:33.779593-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.dingtalk.test_channel_pg" name="test_verified_binding_nonce_consume_no_unbound_run_and_one_to_one" time="2.613" /><testcase classname="tests.dingtalk.test_channel_pg" name="test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26" time="1.461"><failure message="AssertionError: assert ('cancelled' == 'unknown'&#10;  &#10;  - unknown&#10;  + cancelled)">channel = namespace(setup=&lt;isolated synthetic test scope&gt;, app=&lt;pdos_next.dingtalk.models.Application object at 0x130979970&gt;, ru...estclient.TestClient object at 0x1308baa20&gt;, service=&lt;pdos_next.dingtalk.runtime.ChannelService object at 0x130a2a210&gt;)
+
+    def test_native_ack_and_unknown_delivery_recover_by_lookup_with_durable_p26(channel):
+        setup = channel.setup
+        bind(channel)
+        result = incoming(channel)
+        assert result.status_code == 202, result.text
+        ref = DeliveryReference(
+            tenant_id=setup.tenant, message_id=UUID(result.json()["message_id"]), phase="received"
+        )
+        key = delivery_key(ref.message_id, "received")
+        channel.runtime.adapter.lose_after_send.add(key)
+        first = channel.service.deliver(ref)
+&gt;       assert first["state"] == "unknown" and first["attempts"] == 1
+E       AssertionError: assert ('cancelled' == 'unknown'
+E         
+E         - unknown
+E         + cancelled)
+
+tests/dingtalk/test_channel_pg.py:181: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,9 @@
+{
+  "pdos-next/web/src/app/ui-lab/platform/proposal-parameter-picker.tsx": "78aa3eac5ff2a82b8ee9dce54887a06bf4a3f5629b262addfc01e4773352124d",
+  "pdos-next/web/src/app/ui-lab/platform/proposal-sections.tsx": "02c5ae5c11e8dcaf6a58a1bd532d81d3a626b64b5054a6201cd27fa15e6780ff",
+  "pdos-next/web/src/app/ui-lab/platform/proposal-sections.module.css": "d7f27c136b368102f9da30eb30b9d1fa5f6c735a00451a5f69d614178160adf6",
+  "pdos-next/web/src/app/ui-lab/platform/proposal-pai-preview.tsx": "900c8fb15c3604541978c2aede27e4f1fa96c87692495e7d42ee84089c89ef35",
+  "pdos-next/web/src/app/ui-lab/platform/proposal-pai-draft.ts": "1ff78399c03651adf4a6d24ea636731fd104eab34c9f910f575f404ba19b0723",
+  "pdos-next/web/src/app/ui-lab/platform/pai-preview.tsx": "19da5b665825c58e49e5482076c35d1d63dff8c50d4f0783491382960c13d308",
+  "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "4a63108c65ed4ec04caebc814c9980b106635643734e5b83b2f3c54b61c6c63a"
+}

@@ -1,0 +1,121 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity FAILED [ 50%]
+
+=================================== FAILURES ===================================
+_ test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity _
+
+publication_case = namespace(setup=<isolated synthetic test scope>, config={'source': '119d8592-88cc-471d-a104-201157db1b94', 'project': ...930-554fe11e44f3', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+
+    def test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity(
+        publication_case,
+    ):
+        work, person = publication_case, publication_case.setup
+        publication.import_authority(work, person.human)
+        publication.save_drafts(work)
+        first = work.documents["work_instruction"]
+        for kind in ("work_instruction", "control_plan"):
+            assert apply_event(person, work.draft_receipts[kind]["id"])["processed"] == 1
+        command, _review = publication.prepare_publication(work, publication.publication_payload(work))
+        response = publication.post(person, command)
+        assert response.status_code == 200, response.text
+        receipt = response.json()
+        assert apply_event(person, receipt["id"])["processed"] == 2
+        with publication.session(work) as session:
+            links = list(
+                session.scalars(
+                    select(ManufacturingPublicationDocument).where(
+                        ManufacturingPublicationDocument.publication_id == UUID(receipt["subject_id"]),
+                    )
+                )
+            )
+            fixed = next(row for row in links if row.document_kind == "work_instruction")
+            identity, revision = fixed.id, fixed.publication_revision
+        replacement, replacement_receipt, next_draft = save(
+            work,
+>           preparation.inputs(
+                work,
+                "work_instruction",
+                preparation.payload(
+                    work,
+                    "work_instruction",
+                    previous=first,
+                    revision=2,
+                ),
+            ),
+        )
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py:65: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+work = namespace(setup=<isolated synthetic test scope>, config={'source': '119d8592-88cc-471d-a104-201157db1b94', 'project': ...930-554fe11e44f3', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+kind = 'work_instruction'
+body = {'project_id': '377a1b1a-1134-4ea4-a82b-b8c727a20fad', 'process': {'id': '2482ef77-21cb-432d-9d73-0ffb0e723867', 'revi...': 1}, 'title': 'Synthetic work_instruction documentation', 'previous_id': '1743a252-928a-4cc4-aa55-dae0c659f5db', ...}
+
+    def inputs(work, kind, body):
+        setup = work.setup
+        command = cmd(setup, f"npi.{kind}.record", deepcopy(body))
+        before = deepcopy(command)
+        response = setup.client.post(
+            f"/v1/categories/{setup.category}/products/{setup.product}/manufacturing-preparations/inputs",
+            headers=setup.headers,
+            json=command,
+        )
+>       assert response.status_code == 200, response.text
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: {"code":"FORBIDDEN_SCOPE","message":"续版不能改变原owner、受众、用途或制造工序系列。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+
+tests/manufacturing_preparation_transactions/fixtures.py:346: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py:975: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-role-native-sources-20261029/pg-role-run3.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+======================= 1 failed, 13 warnings in 47.50s ========================

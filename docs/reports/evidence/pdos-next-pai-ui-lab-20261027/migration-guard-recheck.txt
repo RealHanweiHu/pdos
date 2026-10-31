@@ -1,0 +1,4 @@
+isolated: port=53502 database=pdos_test guard project checks present
+isolated: immutable project UPDATE rejected and rolled back
+isolated: session/project mismatched INSERT rejected and rolled back
+preview: port=57358 database=pdos_test guard project checks present

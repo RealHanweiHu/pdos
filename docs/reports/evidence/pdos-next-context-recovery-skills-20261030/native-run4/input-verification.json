@@ -1,0 +1,8 @@
+{
+  "verified_at_utc": "2026-10-30T10:06:00.470358+00:00",
+  "inputs": 153,
+  "changed": [],
+  "native_run": "native-run4",
+  "passed": 56,
+  "failed": 0
+}

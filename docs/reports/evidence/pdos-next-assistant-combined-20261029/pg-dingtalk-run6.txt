@@ -1,0 +1,19 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 8 items
+
+tests/dingtalk/test_retention_pg.py::test_private_two_category_delivery_retains_each_actual_root_without_service_body_read PASSED [ 12%]
+tests/dingtalk/test_retention_pg.py::test_pending_original_blocks_new_body_copy_but_existing_receipt_metadata_can_update[pending] PASSED [ 25%]
+tests/dingtalk/test_retention_pg.py::test_pending_original_blocks_new_body_copy_but_existing_receipt_metadata_can_update[quarantined] PASSED [ 37%]
+tests/dingtalk/test_retention_pg.py::test_delivery_footprint_is_immutable_and_lifecycle_helpers_are_not_runtime_read_ports PASSED [ 50%]
+tests/dingtalk/test_fence_pg.py::test_real_transport_row_fence_serializes_human_revoke_or_config_change[self_revoke] PASSED [ 62%]
+tests/dingtalk/test_fence_pg.py::test_real_transport_row_fence_serializes_human_revoke_or_config_change[admin_disable] PASSED [ 75%]
+tests/dingtalk/test_fence_pg.py::test_service_helper_is_fixed_scope_only_and_runtime_update_rls_stays_closed PASSED [ 87%]
+tests/dingtalk/test_service_loss_pg.py::test_actual_service_loss_after_reserve_and_app_lock_wait_cancels_without_second_send PASSED [100%]
+
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-dingtalk-20261029/pg-run6.xml -
+============================== 8 passed in 27.38s ==============================

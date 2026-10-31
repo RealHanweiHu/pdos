@@ -14,7 +14,7 @@ const react = { ...React, useState(initial) { if (!hooks) return React.useState(
 /* eslint-enable react-hooks/rules-of-hooks, react-hooks/exhaustive-deps */
 // Existing workbench is substituted only to inspect explicit mounting and exact
 // parent props; its command behavior remains covered by its own actual tests.
-function ExistingWorkbench(props) { return React.createElement("section", { "aria-label": "既有知识工作台替身", "data-product": props.product.id, "data-revision": props.product.revision, "data-project": props.projectId === null ? "null" : props.projectId, "data-category": props.categoryId, "data-principal": props.principalId }, React.createElement("button", { onClick: props.onSaved }, "测试原工作台已保存")); }
+function ExistingWorkbench(props) { return React.createElement("section", { "aria-label": "既有知识工作台替身", "data-product": props.product?.id ?? "category", "data-revision": props.product?.revision ?? props.categoryRevision, "data-project": props.projectId === null ? "null" : props.projectId, "data-category": props.categoryId, "data-principal": props.principalId }, React.createElement("button", { onClick: props.onSaved }, "测试原工作台已保存")); }
 const modules = new Map();
 function load(filename) { if (filename.endsWith(".css")) return { __esModule: true, default: new Proxy({}, { get: (_, key) => String(key) }) }; if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync); if (modules.has(filename)) return modules.get(filename).exports; const loaded = new Module(filename); modules.set(filename, loaded); loaded.require = name => name === "react" ? react : name === "./knowledge-experience" && path.dirname(filename) === directory ? { KnowledgeExperience: ExistingWorkbench } : name.startsWith("@/") ? load(path.join(webRoot, "src", name.slice(2))) : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name); loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename); return loaded.exports; }
 const { KnowledgeLibrary, KnowledgeCandidateReading, KnowledgeRuleReading } = load(path.join(directory, "knowledge-library.tsx"));
@@ -49,7 +49,19 @@ const hasBody = env => /aria-label="经验候选正文|aria-label="固定配置�
 const hasManager = env => /既有知识工作台替身/.test(env.html());
 
 test("category candidates are the default and product options never select the first model", async t => {
-  const env = environment(t); assert.equal(env.calls.length, 2); assert.ok(env.calls.some(call => call.route === `v1/categories/${scope.categoryId}/products`)); assert.ok(env.calls.some(call => call.route === `v1/categories/${scope.categoryId}/experience`)); await ready(env); assert.equal(env.calls.length, 2); assert.match(env.html(), /品类候选（不选型号）/); assert.match(env.html(), /候选原题10/); assert.equal(hasBody(env), false); assert.equal(hasManager(env), false); assert.equal(button(env, "记录 / 发布办理"), undefined); assert.ok(env.calls.every(call => call.body === undefined));
+  const env = environment(t); assert.equal(env.calls.length, 2); assert.ok(env.calls.some(call => call.route === `v1/categories/${scope.categoryId}/products`)); assert.ok(env.calls.some(call => call.route === `v1/categories/${scope.categoryId}/experience`)); await ready(env); assert.equal(env.calls.length, 2); assert.match(env.html(), /品类共享经验/); assert.match(env.html(), /候选原题10/); assert.equal(hasBody(env), false); assert.equal(hasManager(env), false); assert.ok(button(env, "记录 / 发布办理")); assert.ok(env.calls.every(call => call.body === undefined));
+});
+
+test("category editing explicitly mounts a nil-product form with the actual category revision", async t => {
+  const env = environment(t); await ready(env);
+  await click(env, "记录 / 发布办理");
+  const manager = elements(env.tree(), node => node.props?.["aria-label"] === "既有知识工作台替身")[0];
+  assert.equal(manager.props["data-product"], "category");
+  assert.equal(manager.props["data-revision"], 3);
+  assert.equal(manager.props["data-project"], "null");
+  assert.equal(env.calls.length, 2);
+  assert.ok(env.calls.every(call => call.body === undefined));
+  await click(env, "返回知识目录"); assert.equal(hasManager(env), false);
 });
 
 test("only an explicit visible model reads model knowledge and the full selected record expands without another GET", async t => {
@@ -57,7 +69,7 @@ test("only an explicit visible model reads model knowledge and the full selected
 });
 
 test("query and type filters apply only to returned rows, clear details and never issue global search", async t => {
-  const env = environment(t); await ready(env); await chooseModel(env); await click(env, `展开候选 ${id(10)} v2`); await change(env, "知识类型", "rule"); assert.equal(hasBody(env), false); assert.doesNotMatch(env.html(), /候选原题10/); assert.match(env.html(), /筛选显示 1 条/); await change(env, "查询本次知识", "不存在的本页内容"); assert.match(env.html(), /本次返回内容没有匹配项/); assert.doesNotMatch(env.html(), /全局没有|本品类没有规则/); assert.equal(env.calls.length, 3); await change(env, "查询本次知识", "原固定用途"); assert.match(env.html(), /固定规则原题40/);
+  const env = environment(t); await ready(env); await chooseModel(env); await click(env, `展开候选 ${id(10)} v2`); await click(env, "已发布"); assert.equal(hasBody(env), false); assert.doesNotMatch(env.html(), /候选原题10/); assert.match(env.html(), /筛选显示 1 条/); await change(env, "查询本次知识", "不存在的本页内容"); assert.match(env.html(), /本次返回内容没有匹配项/); assert.doesNotMatch(env.html(), /全局没有|本品类没有规则/); assert.equal(env.calls.length, 3); await change(env, "查询本次知识", "原固定用途"); assert.match(env.html(), /固定规则原题40/);
 });
 
 test("server usability and all original applicability decisions remain independent, including current plus not_applicable", async t => {
@@ -103,7 +115,7 @@ test("returning to the same model creates a fresh selection and rejects earlier 
 
 test("identity, category, readVersion and refresh transitions hide selected details and manager synchronously", async t => {
   const env = environment(t); await ready(env);
-  for (const next of [{ principalId: id(71) }, { categoryId: id(72), categoryName: "另一实际品类名" }, { readVersion: 1 }]) { await chooseModel(env); await click(env, "记录 / 发布办理"); env.setProps(next); assert.equal(hasManager(env), false); assert.equal(hasBody(env), false); assert.doesNotMatch(env.html(), /固定规则原题40/); await ready(env); assert.equal(button(env, "记录 / 发布办理"), undefined); }
+  for (const next of [{ principalId: id(71) }, { categoryId: id(72), categoryName: "另一实际品类名" }, { readVersion: 1 }]) { await chooseModel(env); await click(env, "记录 / 发布办理"); env.setProps(next); assert.equal(hasManager(env), false); assert.equal(hasBody(env), false); assert.doesNotMatch(env.html(), /固定规则原题40/); await ready(env); assert.ok(button(env, "记录 / 发布办理")); }
   await chooseModel(env); await click(env, `展开候选 ${id(10)} v2`); await click(env, "刷新知识资料"); assert.equal(hasBody(env), false); assert.equal(hasManager(env), false);
 });
 
@@ -112,5 +124,5 @@ test("layout disposal prevents late options and knowledge outcomes from reviving
 });
 
 test("read-only catalog has no write form or storage side effects, and empty evidence remains bounded", async t => {
-  const env = environment(t); await ready(env, { ...categoryView(), candidates: [] }); assert.match(env.html(), /本次读集没有返回候选或规则/); assert.doesNotMatch(env.html(), /<form|<textarea|<pre|token|\bT[012]\b|本人确认正式发布/); assert.ok(env.calls.every(call => call.body === undefined)); await click(env, "刷新知识资料"); env.reject(env.pending("/products"), Object.assign(Error("型号列表权限拒绝"), { status: 403 })); env.respond(env.pending(), categoryView()); await env.flush(); assert.match(env.html(), /可读型号暂不可读：型号列表权限拒绝/); assert.equal(button(env, "记录 / 发布办理"), undefined); assert.equal(hasManager(env), false);
+  const env = environment(t); await ready(env, { ...categoryView(), candidates: [] }); assert.match(env.html(), /本次读集没有返回候选或规则/); assert.doesNotMatch(env.html(), /<form|<textarea|<pre|token|\bT[012]\b|本人确认正式发布/); assert.ok(env.calls.every(call => call.body === undefined)); await click(env, "刷新知识资料"); env.reject(env.pending("/products"), Object.assign(Error("型号列表权限拒绝"), { status: 403 })); env.respond(env.pending(), categoryView()); await env.flush(); assert.match(env.html(), /可读型号暂不可读：型号列表权限拒绝/); assert.ok(button(env, "记录 / 发布办理")); assert.equal(hasManager(env), false);
 });

@@ -1,0 +1,320 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_projection_retries_after_worker_restart_without_model_or_raw_temporal_payload _
+
+    async def actual():
+        client = await Client.connect(address, namespace=namespace)
+        assert await client.service_client.check_health()
+        queue, references = "enterprise-projection-" + str(uuid4()), []
+        projection = ProjectionSender(client, task_queue=queue)
+    
+        class RecordingSender:
+            async def event(self, event):
+                references.append(event)
+                return await projection.event(event)
+    
+        sender = TemporalSender(client, projection_sender=RecordingSender())
+        result = await dispatch_once(setup.dispatch, setup.tenant, sender)
+        assert result == {"delivered": 1, "unknown": 0}
+        reference = references[0]
+        workflow_id = f"pdos-enterprise-projection:{setup.tenant}:{reference.event_id}"
+        handle = client.get_workflow_handle(workflow_id)
+        with Session(setup.admin) as session:
+            delivery = session.scalar(
+                select(Inbox).where(Inbox.event_id == UUID(reference.event_id))
+            )
+            assert delivery.workflow_id == workflow_id and delivery.status == "received"
+            assert session.get(Outbox, UUID(reference.event_id)).delivered_at
+        activities = Activities(setup.engine, None, None)
+        executor = ThreadPoolExecutor(max_workers=2)
+    
+        def worker():
+            return Worker(
+                client,
+                task_queue=queue,
+                workflows=[EnterpriseProjection],
+                activities=[activities.enterprise_projection],
+                activity_executor=executor,
+                graceful_shutdown_timeout=timedelta(0),
+            )
+    
+        def unavailable(*_args, **_kwargs):
+            raise DomainError("SOURCE_UNAVAILABLE", "Synthetic retry only")
+    
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(indexing, "chunks", unavailable)
+                async with worker(), asyncio.timeout(15):
+                    while True:
+                        history = await handle.fetch_history()
+                        if any(
+                            event.HasField("activity_task_failed_event_attributes")
+                            for event in history.events
+                        ):
+                            break
+>                       await asyncio.sleep(0.05)
+
+tests/enterprise_search/test_temporal_pg.py:93: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+delay = 0.05, result = None
+
+    async def sleep(delay, result=None):
+        """Coroutine that completes after a given time (in seconds)."""
+        if delay <= 0:
+            await __sleep0()
+            return result
+    
+        loop = events.get_running_loop()
+        future = loop.create_future()
+        h = loop.call_later(delay,
+                            futures._set_result_unless_cancelled,
+                            future, result)
+        try:
+>           return await future
+                   ^^^^^^^^^^^^
+E           asyncio.exceptions.CancelledError
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:665: CancelledError
+
+The above exception was the direct cause of the following exception:
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11b9c2ab0>
+
+    @pytest.mark.skipif(
+        not os.environ.get("PDOS_TEMPORAL_ADDRESS") or not os.environ.get("PDOS_TEMPORAL_NAMESPACE"),
+        reason="Explicit local Temporal address and namespace required",
+    )
+    def test_projection_retries_after_worker_restart_without_model_or_raw_temporal_payload(
+        setup, monkeypatch
+    ):
+        address, namespace = os.environ["PDOS_TEMPORAL_ADDRESS"], os.environ["PDOS_TEMPORAL_NAMESPACE"]
+        endpoint = urlsplit("//" + address)
+        assert endpoint.hostname in {"127.0.0.1", "localhost", "::1"} and endpoint.port
+        assert namespace.strip()
+        identity = register(setup, "D16-01 气密恢复", "漏气复验，NO_RAW_TEMPORAL_BODY。")
+    
+        async def actual():
+            client = await Client.connect(address, namespace=namespace)
+            assert await client.service_client.check_health()
+            queue, references = "enterprise-projection-" + str(uuid4()), []
+            projection = ProjectionSender(client, task_queue=queue)
+    
+            class RecordingSender:
+                async def event(self, event):
+                    references.append(event)
+                    return await projection.event(event)
+    
+            sender = TemporalSender(client, projection_sender=RecordingSender())
+            result = await dispatch_once(setup.dispatch, setup.tenant, sender)
+            assert result == {"delivered": 1, "unknown": 0}
+            reference = references[0]
+            workflow_id = f"pdos-enterprise-projection:{setup.tenant}:{reference.event_id}"
+            handle = client.get_workflow_handle(workflow_id)
+            with Session(setup.admin) as session:
+                delivery = session.scalar(
+                    select(Inbox).where(Inbox.event_id == UUID(reference.event_id))
+                )
+                assert delivery.workflow_id == workflow_id and delivery.status == "received"
+                assert session.get(Outbox, UUID(reference.event_id)).delivered_at
+            activities = Activities(setup.engine, None, None)
+            executor = ThreadPoolExecutor(max_workers=2)
+    
+            def worker():
+                return Worker(
+                    client,
+                    task_queue=queue,
+                    workflows=[EnterpriseProjection],
+                    activities=[activities.enterprise_projection],
+                    activity_executor=executor,
+                    graceful_shutdown_timeout=timedelta(0),
+                )
+    
+            def unavailable(*_args, **_kwargs):
+                raise DomainError("SOURCE_UNAVAILABLE", "Synthetic retry only")
+    
+            try:
+                with monkeypatch.context() as patch:
+                    patch.setattr(indexing, "chunks", unavailable)
+                    async with worker(), asyncio.timeout(15):
+                        while True:
+                            history = await handle.fetch_history()
+                            if any(
+                                event.HasField("activity_task_failed_event_attributes")
+                                for event in history.events
+                            ):
+                                break
+                            await asyncio.sleep(0.05)
+                with session_for(setup) as session:
+                    state = session.scalar(
+                        select(SearchSource).where(SearchSource.source_id == identity)
+                    )
+                    assert state.status == "failed" and state.last_error == "SOURCE_UNAVAILABLE"
+                async with worker(), asyncio.timeout(25):
+                    assert await handle.result() == {"processed": 1, "changed": 1}
+                assert await sender(reference) == workflow_id
+                assert await client.get_workflow_handle(workflow_id).result() == {
+                    "processed": 1,
+                    "changed": 1,
+                }
+                assert query(setup, "D16-01漏气")["returned"] == 1
+                history = await handle.fetch_history()
+                assert "NO_RAW_TEMPORAL_BODY" not in str(history.events)
+                assert "text" not in asdict(reference)
+                with Session(setup.admin) as session:
+                    assert (
+                        session.scalar(
+                            select(func.count())
+                            .select_from(AgentRun)
+                            .where(AgentRun.tenant_id == setup.tenant)
+                        )
+                        == 0
+                    )
+                    assert (
+                        session.scalar(
+                            select(func.count())
+                            .select_from(AgentToolCall)
+                            .where(AgentToolCall.tenant_id == setup.tenant)
+                        )
+                        == 0
+                    )
+                    assert (
+                        session.scalar(
+                            select(func.count())
+                            .select_from(SearchSource)
+                            .where(SearchSource.tenant_id == setup.tenant)
+                        )
+                        == 1
+                    )
+            finally:
+                executor.shutdown(wait=True)
+    
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_temporal_pg.py:138: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/enterprise_search/test_temporal_pg.py:85: in actual
+    async with worker(), asyncio.timeout(15):
+                         ^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <Timeout [expired]>
+exc_type = <class 'asyncio.exceptions.CancelledError'>
+exc_val = CancelledError(), exc_tb = <traceback object at 0x11ba73180>
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException],
+        exc_tb: Optional[TracebackType],
+    ) -> Optional[bool]:
+        assert self._state in (_State.ENTERED, _State.EXPIRING)
+    
+        if self._timeout_handler is not None:
+            self._timeout_handler.cancel()
+            self._timeout_handler = None
+    
+        if self._state is _State.EXPIRING:
+            self._state = _State.EXPIRED
+    
+            if self._task.uncancel() <= self._cancelling and exc_type is exceptions.CancelledError:
+                # Since there are no new cancel requests, we're
+                # handling this.
+>               raise TimeoutError from exc_val
+E               TimeoutError
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/timeouts.py:115: TimeoutError
+------------------------------ Captured log call -------------------------------
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '1', 'activity_type': 'project_enterprise_source', 'attempt': 1, 'namespace': 'pdos-next', 'task_queue': 'enterprise-projection-1c8320eb-44ac-42de-9a67-fe9b0e92ee3a', 'workflow_id': 'pdos-enterprise-projection:ac7c0ae8-72c9-4cfb-a93d-ee6aa848bf27:90eedf3f-79d5-4cf2-a1d0-0c9cf98ad59a', 'workflow_run_id': '01a183d7-31fe-7733-8d45-09f932aa7857', 'workflow_type': 'EnterpriseProjection'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/workflows/worker.py", line 41, in enterprise_projection
+    raise ApplicationError("Enterprise projection unavailable", type=error.code,
+temporalio.exceptions.ApplicationError: SOURCE_UNAVAILABLE: Enterprise projection unavailable
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '1', 'activity_type': 'project_enterprise_source', 'attempt': 2, 'namespace': 'pdos-next', 'task_queue': 'enterprise-projection-1c8320eb-44ac-42de-9a67-fe9b0e92ee3a', 'workflow_id': 'pdos-enterprise-projection:ac7c0ae8-72c9-4cfb-a93d-ee6aa848bf27:90eedf3f-79d5-4cf2-a1d0-0c9cf98ad59a', 'workflow_run_id': '01a183d7-31fe-7733-8d45-09f932aa7857', 'workflow_type': 'EnterpriseProjection'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/workflows/worker.py", line 41, in enterprise_projection
+    raise ApplicationError("Enterprise projection unavailable", type=error.code,
+temporalio.exceptions.ApplicationError: SOURCE_UNAVAILABLE: Enterprise projection unavailable
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '1', 'activity_type': 'project_enterprise_source', 'attempt': 3, 'namespace': 'pdos-next', 'task_queue': 'enterprise-projection-1c8320eb-44ac-42de-9a67-fe9b0e92ee3a', 'workflow_id': 'pdos-enterprise-projection:ac7c0ae8-72c9-4cfb-a93d-ee6aa848bf27:90eedf3f-79d5-4cf2-a1d0-0c9cf98ad59a', 'workflow_run_id': '01a183d7-31fe-7733-8d45-09f932aa7857', 'workflow_type': 'EnterpriseProjection'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/workflows/worker.py", line 41, in enterprise_projection
+    raise ApplicationError("Enterprise projection unavailable", type=error.code,
+temporalio.exceptions.ApplicationError: SOURCE_UNAVAILABLE: Enterprise projection unavailable
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '1', 'activity_type': 'project_enterprise_source', 'attempt': 4, 'namespace': 'pdos-next', 'task_queue': 'enterprise-projection-1c8320eb-44ac-42de-9a67-fe9b0e92ee3a', 'workflow_id': 'pdos-enterprise-projection:ac7c0ae8-72c9-4cfb-a93d-ee6aa848bf27:90eedf3f-79d5-4cf2-a1d0-0c9cf98ad59a', 'workflow_run_id': '01a183d7-31fe-7733-8d45-09f932aa7857', 'workflow_type': 'EnterpriseProjection'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 884, in execute_activity
+    return await loop.run_in_executor(input.executor, func, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 951, in _execute_sync_activity
+    return fn(*args)
+           ^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/workflows/worker.py", line 41, in enterprise_projection
+    raise ApplicationError("Enterprise projection unavailable", type=error.code,
+temporalio.exceptions.ApplicationError: SOURCE_UNAVAILABLE: Enterprise projection unavailable
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_temporal_pg.py::test_projection_retries_after_worker_restart_without_model_or_raw_temporal_payload
+1 failed in 18.44s

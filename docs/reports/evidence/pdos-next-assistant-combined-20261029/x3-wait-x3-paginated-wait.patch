@@ -1,0 +1,184 @@
+--- a/pdos-next/server/tests/agent_kernel/context_x3_temporal_harness.py
++++ b/pdos-next/server/tests/agent_kernel/context_x3_temporal_harness.py
+@@ -4,6 +4,7 @@
+ The capacity decorator first executes the real RLS reader on every call/recheck.
+ """
+ 
++import asyncio
+ import json
+ import os
+ from collections import Counter
+@@ -19,7 +20,6 @@
+ from langgraph.checkpoint.postgres import PostgresSaver
+ from temporalio.client import Client
+ from temporalio.worker import Worker
+-from tests.agent_kernel.context_x3_capacity import capacity_result, registry
+ 
+ from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
+ from pdos_next.agent_kernel.bootstrap import Bootstrap
+@@ -34,6 +34,7 @@
+ from pdos_next.service import receipt_view
+ from pdos_next.workflows.checkpoints import verified_checkpoint_url
+ from pdos_next.workflows.xiaopai import XiaopaiWork
++from tests.agent_kernel.context_x3_capacity import capacity_result, registry
+ from tests.agent_kernel.test_model_configuration_transactions import configured, submit
+ from tests.enterprise_search.test_assistant_pg import SyntheticClient
+ 
+@@ -46,6 +47,51 @@
+             continue
+         if isinstance(value, dict):
+             yield message, value
++
++
++async def question_ready(runtime, identity, *, question_id='context_resume'):
++    """Drain the real ascending event pages, then require the persisted wait.
++
++    Run status is current, while events(after=0) is only its oldest first page.
++    A long run can already be waiting with needs_input after sequence 50.
++    Conversely, graph emits needs_input before the Activity commits waiting_input.
++    Neither event alone nor status alone proves the durable clarification wait.
++    """
++    async def wait():
++        cursor, pending, recent_types = 0, None, []
++        while True:
++            response = await runtime.http.get(runtime.path + f'/{identity}/events',
++                headers=runtime.person.headers, params={'after': cursor, 'page_size': 50})
++            assert response.status_code == 200, response.text
++            data = response.json()
++            items, status = data['items'], data['status']
++            diagnostic = {'status': status, 'after': cursor,
++                          'next_cursor': data['next_cursor'], 'recent_types': recent_types[-8:]}
++            assert status not in {'failed', 'partial', 'completed', 'cancelled'}, diagnostic
++            sequences = [row['sequence'] for row in items]
++            assert sequences == sorted(set(sequences)), diagnostic
++            assert all(type(number) is int and number > cursor for number in sequences), diagnostic
++            expected_cursor = sequences[-1] if sequences else cursor
++            assert data['next_cursor'] == expected_cursor, diagnostic
++            for row in items:
++                event = row['event']
++                recent_types.append(event['type'])
++                if event['type'] == 'needs_input':
++                    ids = [question['id'] for question in event['questions']]
++                    pending = event if question_id in ids else None
++                elif event['type'] == 'model_unavailable':
++                    pending = None
++            cursor = expected_cursor
++            if len(items) == 50:
++                continue  # More committed events may exist; do not reread page one.
++            if status == 'waiting_input' and pending is not None:
++                return pending
++            if status == 'waiting_input':
++                raise AssertionError({**diagnostic, 'after': cursor,
++                    'recent_types': recent_types[-8:],
++                    'reason': 'durable wait has no matching clarification event'})
++            await asyncio.sleep(.2)
++    return await asyncio.wait_for(wait(), 90)
+ 
+ 
+ class LongRunClient:
+--- a/pdos-next/server/tests/agent_kernel/test_context_x3_temporal_pg.py
++++ b/pdos-next/server/tests/agent_kernel/test_context_x3_temporal_pg.py
+@@ -13,17 +13,22 @@
+ 
+ import pytest
+ from langgraph.checkpoint.postgres import PostgresSaver
++from sqlalchemy import select
++
+ from pdos_next.agent_kernel.context_runtime import protected_result
+-from sqlalchemy import select
+-from tests.agent_kernel.context_x3_capacity import CAPACITY_TOKENS
+-from tests.agent_kernel.context_x3_temporal_harness import LongRunClient, actual_runtime, values
+-
+ from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
+ from pdos_next.agent_kernel.session_checkpoints import main_checkpoint_config
+ from pdos_next.database import tenant_session
+ from pdos_next.service import digest
++from tests.agent_kernel.context_x3_capacity import CAPACITY_TOKENS
++from tests.agent_kernel.context_x3_temporal_harness import (
++    LongRunClient,
++    actual_runtime,
++    question_ready,
++    values,
++)
+ from tests.enterprise_search.test_retrieval_pg import index
+-from tests.enterprise_search.verification_action_harness import question_ready, start
++from tests.enterprise_search.verification_action_harness import start
+ from tests.preproject.test_g0 import post, request
+ 
+ pytestmark = pytest.mark.skipif(
+--- /dev/null
++++ b/pdos-next/server/tests/agent_kernel/test_context_x3_wait.py
+@@ -0,0 +1,73 @@
++"""Event API pagination/state ordering regressions; no Store or database involved."""
++
++import asyncio
++from types import SimpleNamespace
++
++import pytest
++
++from tests.agent_kernel.context_x3_temporal_harness import question_ready
++
++
++def event(number, kind='context_observed'):
++    body = {'type': kind}
++    if kind == 'needs_input':
++        body['questions'] = [{'id': 'context_resume'}]
++    return {'sequence': number, 'event': body}
++
++
++def runtime(pages):
++    class Http:
++        def __init__(self):
++            self.requests = []
++
++        async def get(self, path, *, headers, params):
++            self.requests.append((path, headers, params.copy()))
++            assert pages, 'Do not poll page one or silently hide a failed durable wait'
++            page = pages.pop(0)
++            return SimpleNamespace(status_code=200, text='synthetic event page', json=lambda: page)
++
++    return SimpleNamespace(http=Http(), path='/existing/agent-runs',
++                           person=SimpleNamespace(headers={'Authorization': 'Bearer synthetic'}))
++
++
++def test_current_wait_status_with_clarification_after_first_50_events_uses_real_cursor():
++    expected = event(58, 'needs_input')
++    ports = runtime([
++        {'status': 'waiting_input', 'items': [event(n) for n in range(1, 51)], 'next_cursor': 50},
++        {'status': 'waiting_input', 'items': [*[event(n) for n in range(51, 58)], expected],
++         'next_cursor': 58},
++    ])
++    assert asyncio.run(question_ready(ports, 'run')) == expected['event']
++    assert [request[2]['after'] for request in ports.http.requests] == [0, 50]
++
++
++def test_graph_event_can_precede_activity_committing_wait_state():
++    expected = event(1, 'needs_input')
++    ports = runtime([
++        {'status': 'running', 'items': [expected], 'next_cursor': 1},
++        {'status': 'waiting_input', 'items': [], 'next_cursor': 1},
++    ])
++    assert asyncio.run(question_ready(ports, 'run')) == expected['event']
++    assert [request[2]['after'] for request in ports.http.requests] == [0, 1]
++
++
++def test_real_model_unavailable_wait_is_an_explicit_failure_not_a_clarification():
++    ports = runtime([{'status': 'waiting_input', 'items': [event(1, 'model_unavailable')],
++                      'next_cursor': 1}])
++    with pytest.raises(AssertionError, match='model_unavailable'):
++        asyncio.run(question_ready(ports, 'run'))
++    assert len(ports.http.requests) == 1
++
++
++@pytest.mark.parametrize('status', ['failed', 'partial', 'completed', 'cancelled'])
++def test_terminal_run_does_not_reuse_a_historical_question(status):
++    ports = runtime([{'status': status, 'items': [event(1, 'needs_input')], 'next_cursor': 1}])
++    with pytest.raises(AssertionError, match=status):
++        asyncio.run(question_ready(ports, 'run'))
++
++
++def test_invalid_cursor_cannot_create_a_successful_wait():
++    ports = runtime([{'status': 'waiting_input', 'items': [event(1, 'needs_input')],
++                      'next_cursor': 0}])
++    with pytest.raises(AssertionError):
++        asyncio.run(question_ready(ports, 'run'))

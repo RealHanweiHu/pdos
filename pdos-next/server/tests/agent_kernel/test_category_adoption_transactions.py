@@ -25,6 +25,7 @@ from pdos_next.service import digest
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from pdos_next.workflows.transport import TemporalSender
 from tests.agent_kernel.test_category_candidate_transactions import adopted, personal_fixture
+from tests.confirmation_fixture import confirmation_clock  # noqa: F401
 
 
 def test_adoption_resolves_without_agent_grant_and_dispatches_same_reference(setup, tmp_path):
@@ -157,6 +158,7 @@ def test_category_wait_survives_postgres_checkpoint_and_new_host(setup, tmp_path
 
 
 @pytest.mark.parametrize("change", ["requester", "reserved", "immutable_input", "immutable_event"])
+@pytest.mark.usefixtures("confirmation_clock")
 def test_sql_adoption_and_input_kinship_cannot_be_forged(setup, tmp_path, change):
     f = personal_fixture(setup, tmp_path, sources=False)
     if change in {"requester", "reserved"}:

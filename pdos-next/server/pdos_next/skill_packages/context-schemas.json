@@ -219,6 +219,15 @@
           "items": {
             "$ref": "#/$defs/research_memory"
           }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
         }
       },
       "required": [
@@ -459,6 +468,9 @@
         },
         "visibility": {
           "type": "string"
+        },
+        "current_facts": {
+          "$ref": "#/$defs/project_current_facts"
         }
       },
       "required": [
@@ -468,6 +480,1491 @@
         "visibility"
       ],
       "additionalProperties": false
+    },
+    "work_state": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "root_goal": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "run_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "run_id",
+                "text"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "current_goal": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "run_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "run_id",
+                "text"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "run_id",
+              "text"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "focus_objects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "run_id": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "version",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "completed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "receipt_id": {
+                "type": "string"
+              },
+              "operation": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "receipt_id",
+              "operation",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "completed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "event_id": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "category",
+                  "domain",
+                  "snapshot",
+                  "verification_preparation"
+                ]
+              },
+              "operation": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "state": {
+                "type": "string",
+                "enum": [
+                  "adopted",
+                  "cancelled",
+                  "pending",
+                  "unavailable"
+                ]
+              },
+              "receipt_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            },
+            "required": [
+              "event_id",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "unfinished": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "version",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "citation_directory": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "const": "assistant.citations.read"
+            },
+            "has_more": {
+              "type": "boolean"
+            },
+            "next_cursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "tool",
+            "has_more",
+            "next_cursor"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "estimated_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "context_incomplete": {
+          "type": "boolean"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "search_preferences": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "enum": [
+                "current",
+                "same_category"
+              ]
+            },
+            "include_customer_private": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "scope",
+            "include_customer_private"
+          ],
+          "additionalProperties": false
+        },
+        "search_context": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "personal",
+                "category",
+                "project",
+                "proposal"
+              ]
+            },
+            "label": {
+              "type": "string"
+            },
+            "scoped": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "label",
+            "scoped"
+          ],
+          "additionalProperties": false
+        },
+        "context_selection": {
+          "additionalProperties": false,
+          "properties": {
+            "version": {
+              "const": 1,
+              "default": 1,
+              "title": "Version",
+              "type": "integer"
+            },
+            "status": {
+              "enum": [
+                "available",
+                "unavailable"
+              ],
+              "title": "Status",
+              "type": "string"
+            },
+            "focus": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/context_correction_SelectedSource"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "version_mode": {
+              "enum": [
+                "any",
+                "current",
+                "fixed"
+              ],
+              "title": "Version Mode",
+              "type": "string"
+            },
+            "versions": {
+              "items": {
+                "$ref": "#/$defs/context_correction_SelectedSource"
+              },
+              "title": "Versions",
+              "type": "array"
+            },
+            "sources": {
+              "anyOf": [
+                {
+                  "items": {
+                    "$ref": "#/$defs/context_correction_SelectedSource"
+                  },
+                  "minItems": 1,
+                  "type": "array"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Sources"
+            }
+          },
+          "required": [
+            "status",
+            "focus",
+            "version_mode",
+            "versions",
+            "sources"
+          ],
+          "title": "ContextSelection",
+          "type": "object"
+        }
+      },
+      "required": [
+        "version",
+        "revision",
+        "session_id",
+        "root_goal",
+        "current_goal",
+        "constraints",
+        "exclusions",
+        "focus_objects",
+        "completed",
+        "completed_count",
+        "candidates",
+        "unfinished",
+        "questions",
+        "skills",
+        "citations",
+        "notes",
+        "estimated_tokens",
+        "context_incomplete",
+        "missing"
+      ],
+      "additionalProperties": false
+    },
+    "context_correction_SelectedSource": {
+      "additionalProperties": false,
+      "properties": {
+        "source_type": {
+          "enum": [
+            "artifact",
+            "knowledge",
+            "issue",
+            "capa",
+            "change",
+            "external_wait",
+            "supply",
+            "build",
+            "test_run"
+          ],
+          "title": "Source Type",
+          "type": "string"
+        },
+        "source_id": {
+          "format": "uuid",
+          "title": "Source Id",
+          "type": "string"
+        },
+        "object_id": {
+          "format": "uuid",
+          "title": "Object Id",
+          "type": "string"
+        },
+        "source_revision": {
+          "minimum": 1,
+          "title": "Source Revision",
+          "type": "integer"
+        },
+        "content_hash": {
+          "pattern": "^[a-f0-9]{64}$",
+          "title": "Content Hash",
+          "type": "string"
+        },
+        "category_id": {
+          "format": "uuid",
+          "title": "Category Id",
+          "type": "string"
+        },
+        "product_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Product Id"
+        },
+        "project_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Project Id"
+        },
+        "proposal_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proposal Id"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "private": {
+          "title": "Private",
+          "type": "boolean"
+        },
+        "customer_original": {
+          "title": "Customer Original",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "source_type",
+        "source_id",
+        "object_id",
+        "source_revision",
+        "content_hash",
+        "category_id",
+        "title",
+        "private",
+        "customer_original"
+      ],
+      "title": "SelectedSource",
+      "type": "object"
+    },
+    "project_current_Commitment": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/project_current_Link"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "promisor_id": {
+          "title": "Promisor Id",
+          "type": "string"
+        },
+        "recipient_id": {
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "promised_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Promised At"
+        },
+        "fulfilled": {
+          "title": "Fulfilled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reference",
+        "task_id",
+        "promisor_id",
+        "recipient_id",
+        "fulfilled"
+      ],
+      "title": "Commitment",
+      "type": "object"
+    },
+    "project_current_Gate": {
+      "additionalProperties": false,
+      "properties": {
+        "stage_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stage Id"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "release": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Link"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "review_current": {
+          "default": false,
+          "title": "Review Current",
+          "type": "boolean"
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/project_current_GateCheck"
+          },
+          "title": "Checks",
+          "type": "array"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "Gate",
+      "type": "object"
+    },
+    "project_current_GateCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        },
+        "blocked": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Blocked",
+          "type": "array"
+        },
+        "unknown": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown",
+          "type": "array"
+        },
+        "rule_checks": {
+          "items": {
+            "$ref": "#/$defs/project_current_RuleCheck"
+          },
+          "title": "Rule Checks",
+          "type": "array"
+        },
+        "decisions": {
+          "items": {
+            "$ref": "#/$defs/project_current_Link"
+          },
+          "title": "Decisions",
+          "type": "array"
+        },
+        "conditions": {
+          "items": {
+            "$ref": "#/$defs/project_current_Link"
+          },
+          "title": "Conditions",
+          "type": "array"
+        }
+      },
+      "required": [
+        "key",
+        "label",
+        "state",
+        "detail"
+      ],
+      "title": "GateCheck",
+      "type": "object"
+    },
+    "project_current_Governance": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Link"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "current_stage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Stage"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "stages": {
+          "items": {
+            "$ref": "#/$defs/project_current_Stage"
+          },
+          "title": "Stages",
+          "type": "array"
+        },
+        "gate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Gate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "next_gate": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Gate"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "timeline": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Timeline"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "completed": {
+          "default": false,
+          "title": "Completed",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "Governance",
+      "type": "object"
+    },
+    "project_current_Link": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        },
+        "receipt_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Receipt Id"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "url"
+      ],
+      "title": "Link",
+      "type": "object"
+    },
+    "project_current_NamedStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Link"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "actor_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actor Id"
+        },
+        "actor_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actor Name"
+        },
+        "recorded_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recorded At"
+        },
+        "fact_summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Fact Summary"
+        },
+        "next_steps": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Next Steps"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "NamedStatus",
+      "type": "object"
+    },
+    "project_current_OpenItem": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/project_current_Link"
+        },
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "owner_id": {
+          "title": "Owner Id",
+          "type": "string"
+        },
+        "due_date": {
+          "title": "Due Date",
+          "type": "string"
+        },
+        "record_status": {
+          "title": "Record Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "reference",
+        "kind",
+        "title",
+        "owner_id",
+        "due_date",
+        "record_status"
+      ],
+      "title": "OpenItem",
+      "type": "object"
+    },
+    "project_current_Plan": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Link"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "record_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Record Status"
+        },
+        "earliest_finish": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Earliest Finish"
+        },
+        "latest_finish": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Finish"
+        }
+      },
+      "required": [
+        "state"
+      ],
+      "title": "Plan",
+      "type": "object"
+    },
+    "project_current_RuleCheck": {
+      "additionalProperties": false,
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "state": {
+          "title": "State",
+          "type": "string"
+        },
+        "detail": {
+          "title": "Detail",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "state",
+        "detail"
+      ],
+      "title": "RuleCheck",
+      "type": "object"
+    },
+    "project_current_Stage": {
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Status"
+        }
+      },
+      "required": [
+        "id",
+        "key",
+        "name"
+      ],
+      "title": "Stage",
+      "type": "object"
+    },
+    "project_current_Timeline": {
+      "additionalProperties": false,
+      "properties": {
+        "task_key": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Task Key"
+        },
+        "baseline": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Times"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "forecast": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Times"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "actual": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Actual"
+        }
+      },
+      "title": "Timeline",
+      "type": "object"
+    },
+    "project_current_Times": {
+      "additionalProperties": false,
+      "properties": {
+        "earliest_finish": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Earliest Finish"
+        },
+        "latest_finish": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Finish"
+        }
+      },
+      "title": "Times",
+      "type": "object"
+    },
+    "project_current_facts": {
+      "additionalProperties": false,
+      "properties": {
+        "version": {
+          "default": "project-current-facts/v2",
+          "title": "Version",
+          "type": "string"
+        },
+        "as_of": {
+          "title": "As Of",
+          "type": "string"
+        },
+        "project_revision": {
+          "title": "Project Revision",
+          "type": "integer"
+        },
+        "named_status": {
+          "$ref": "#/$defs/project_current_NamedStatus"
+        },
+        "plan": {
+          "$ref": "#/$defs/project_current_Plan"
+        },
+        "governance": {
+          "$ref": "#/$defs/project_current_Governance"
+        },
+        "open_items": {
+          "items": {
+            "$ref": "#/$defs/project_current_OpenItem"
+          },
+          "title": "Open Items",
+          "type": "array"
+        },
+        "open_items_has_more": {
+          "default": false,
+          "title": "Open Items Has More",
+          "type": "boolean"
+        },
+        "commitments": {
+          "items": {
+            "$ref": "#/$defs/project_current_Commitment"
+          },
+          "title": "Commitments",
+          "type": "array"
+        },
+        "commitments_has_more": {
+          "default": false,
+          "title": "Commitments Has More",
+          "type": "boolean"
+        },
+        "references": {
+          "items": {
+            "$ref": "#/$defs/project_current_Link"
+          },
+          "title": "References",
+          "type": "array"
+        },
+        "complete": {
+          "default": true,
+          "title": "Complete",
+          "type": "boolean"
+        },
+        "missing": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Missing",
+          "type": "array"
+        },
+        "tasks": {
+          "items": {
+            "$ref": "#/$defs/project_current_Task"
+          },
+          "title": "Tasks",
+          "type": "array"
+        },
+        "tasks_has_more": {
+          "default": false,
+          "title": "Tasks Has More",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "as_of",
+        "project_revision",
+        "named_status",
+        "plan",
+        "governance"
+      ],
+      "title": "CurrentFacts",
+      "type": "object"
+    },
+    "project_current_Reference": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "title": "Kind",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "revision": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Revision"
+        },
+        "receipt_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Receipt Id"
+        },
+        "url": {
+          "title": "Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "id",
+        "url"
+      ],
+      "title": "Reference",
+      "type": "object"
+    },
+    "project_current_Task": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/project_current_Reference"
+        },
+        "task_id": {
+          "title": "Task Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "record_status": {
+          "title": "Record Status",
+          "type": "string"
+        },
+        "assignee_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assignee Id"
+        },
+        "assignee_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Assignee Name"
+        },
+        "plan": {
+          "$ref": "#/$defs/project_current_TaskPlan"
+        },
+        "commitments": {
+          "items": {
+            "$ref": "#/$defs/project_current_TaskCommitment"
+          },
+          "title": "Commitments",
+          "type": "array"
+        },
+        "commitments_has_more": {
+          "default": false,
+          "title": "Commitments Has More",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "reference",
+        "task_id",
+        "title",
+        "record_status"
+      ],
+      "title": "Task",
+      "type": "object"
+    },
+    "project_current_TaskCommitment": {
+      "additionalProperties": false,
+      "properties": {
+        "reference": {
+          "$ref": "#/$defs/project_current_Reference"
+        },
+        "series_id": {
+          "title": "Series Id",
+          "type": "string"
+        },
+        "task_revision": {
+          "title": "Task Revision",
+          "type": "integer"
+        },
+        "promisor_id": {
+          "title": "Promisor Id",
+          "type": "string"
+        },
+        "recipient_id": {
+          "title": "Recipient Id",
+          "type": "string"
+        },
+        "promised_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Promised At"
+        }
+      },
+      "required": [
+        "reference",
+        "series_id",
+        "task_revision",
+        "promisor_id",
+        "recipient_id"
+      ],
+      "title": "TaskCommitment",
+      "type": "object"
+    },
+    "project_current_TaskPlan": {
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "default": "not_linked",
+          "title": "State",
+          "type": "string"
+        },
+        "task_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "plan_reference": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/project_current_Reference"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "earliest_finish": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Earliest Finish"
+        },
+        "latest_finish": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Latest Finish"
+        },
+        "date_nature": {
+          "default": "forecast",
+          "title": "Date Nature",
+          "type": "string"
+        },
+        "unknown_reasons": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Unknown Reasons",
+          "type": "array"
+        }
+      },
+      "title": "TaskPlan",
+      "type": "object"
     }
   },
   "profiles": {
@@ -494,6 +1991,9 @@
         },
         "project": {
           "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
         }
       },
       "required": [
@@ -525,6 +2025,9 @@
         },
         "project": {
           "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
         }
       },
       "required": [
@@ -556,6 +2059,9 @@
         },
         "project": {
           "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
         }
       },
       "required": [
@@ -590,6 +2096,9 @@
         },
         "project": {
           "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
         }
       },
       "required": [

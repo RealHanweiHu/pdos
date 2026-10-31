@@ -1,0 +1,215 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 128 items
+
+tests/preproject/test_lifecycle_guard_repair_pg.py::test_restored_guards_are_enabled_and_keep_original_before_after_timing PASSED [  0%]
+tests/preproject/test_lifecycle_guard_repair_pg.py::test_disabled_restored_guard_denies_coverage_and_rollback_restores_it PASSED [  1%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_catalog_matches_actual_columns_without_consuming_transport PASSED [  2%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_inbox_grouping_are_metadata_and_governance_still_requires_both_source_guards PASSED [  3%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposals] PASSED [  3%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_items] PASSED [  4%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_item_versions] PASSED [  5%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_revisions] PASSED [  6%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_sources] PASSED [  7%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_submissions] PASSED [  7%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_decisions] PASSED [  8%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-project_open_items] PASSED [  9%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_entries] PASSED [ 10%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_current] PASSED [ 10%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-product_target_segments] PASSED [ 11%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_versions] PASSED [ 12%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_current] PASSED [ 13%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-promotion_proofs] PASSED [ 14%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-evidence_links] PASSED [ 14%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-claim_withdrawals] PASSED [ 15%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposals] PASSED [ 16%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_items] PASSED [ 17%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_item_versions] PASSED [ 17%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_revisions] PASSED [ 18%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_sources] PASSED [ 19%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_submissions] PASSED [ 20%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_decisions] PASSED [ 21%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-project_open_items] PASSED [ 21%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_entries] PASSED [ 22%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_current] PASSED [ 23%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-product_target_segments] PASSED [ 24%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_versions] PASSED [ 25%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_current] PASSED [ 25%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-promotion_proofs] PASSED [ 26%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-evidence_links] PASSED [ 27%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-claim_withdrawals] PASSED [ 28%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_unknown_columns_tables_and_wrong_guard_implementation_fail_closed PASSED [ 28%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_migration_has_source_free_fast_path_and_exact_predecessor_down PASSED [ 29%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute PASSED [ 30%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[artifact] PASSED [ 31%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[original] PASSED [ 32%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[claim] PASSED [ 32%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[knowledge] PASSED [ 33%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[definition] PASSED [ 34%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_arbitrary_content_relation_keys_are_not_source_edges[section] PASSED [ 35%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_arbitrary_content_relation_keys_are_not_source_edges[option] PASSED [ 35%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_arbitrary_content_relation_keys_are_not_source_edges[risk] PASSED [ 36%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[commercial] PASSED [ 37%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[competitor] PASSED [ 38%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[voice] PASSED [ 39%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[frozen_link] PASSED [ 39%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[False-False] PASSED [ 40%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[False-True] PASSED [ 41%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[True-False] PASSED [ 42%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[True-True] PASSED [ 42%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_public_m3_source_adoption_is_counted PASSED [ 43%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original PASSED [ 44%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head PASSED [ 45%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_source_free_item_never_invokes_history_node_queries PASSED [ 46%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry] PASSED [ 46%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[definition_spec] PASSED [ 47%]
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility PASSED [ 48%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body0] PASSED [ 49%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body1] PASSED [ 50%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body2] PASSED [ 50%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body3] PASSED [ 51%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body4] PASSED [ 52%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body5] PASSED [ 53%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body6] PASSED [ 53%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body7] PASSED [ 54%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body8] PASSED [ 55%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body9] PASSED [ 56%]
+tests/test_personal_preferences.py::test_settings_reject_authority_learning_unknown_fields_and_unbounded_values[body10] PASSED [ 57%]
+tests/test_personal_preferences.py::test_explicit_values_are_normalized_and_clearable_without_inferred_role PASSED [ 57%]
+tests/test_personal_preferences.py::test_context_keeps_explicit_values_and_only_current_authorized_navigation PASSED [ 58%]
+tests/test_personal_preferences.py::test_personal_api_service_rejects_agent_run_or_borrowed_scope_before_reading PASSED [ 59%]
+tests/test_personal_preferences.py::test_frozen_navigation_recheck_uses_only_identities_and_current_authorization[True] PASSED [ 60%]
+tests/test_personal_preferences.py::test_frozen_navigation_recheck_uses_only_identities_and_current_authorization[False] PASSED [ 60%]
+tests/test_personal_preferences_pg.py::test_actual_defaults_save_replay_conflict_clear_and_private_accounts PASSED [ 61%]
+tests/test_personal_preferences_pg.py::test_actual_navigation_options_favorites_and_revoked_authorization PASSED [ 62%]
+tests/test_personal_preferences_pg.py::test_actual_controlled_host_reads_only_requester_preferences_and_cannot_write PASSED [ 63%]
+tests/test_personal_preferences_pg.py::test_actual_agent_database_role_has_no_direct_table_privilege[SELECT * FROM public.personal_preferences] PASSED [ 64%]
+tests/test_personal_preferences_pg.py::test_actual_agent_database_role_has_no_direct_table_privilege[UPDATE public.personal_preferences SET revision=revision+1] PASSED [ 64%]
+tests/test_personal_preferences_pg.py::test_actual_agent_database_role_has_no_direct_table_privilege[INSERT INTO public.personal_preferences SELECT * FROM public.personal_preferences] PASSED [ 65%]
+tests/test_personal_preferences_pg.py::test_actual_agent_database_role_has_no_direct_table_privilege[DELETE FROM public.personal_preferences] PASSED [ 66%]
+tests/test_personal_preferences_pg.py::test_actual_sql_rls_cannot_borrow_other_person_and_guard_rejects_identity_revision PASSED [ 67%]
+tests/test_personal_preferences_pg.py::test_actual_api_rejects_forged_or_invalid_fields[invalid0] PASSED [ 67%]
+tests/test_personal_preferences_pg.py::test_actual_api_rejects_forged_or_invalid_fields[invalid1] PASSED [ 68%]
+tests/test_personal_preferences_pg.py::test_actual_api_rejects_forged_or_invalid_fields[invalid2] PASSED [ 69%]
+tests/test_personal_preferences_pg.py::test_actual_api_rejects_forged_or_invalid_fields[invalid3] PASSED [ 70%]
+tests/test_personal_preferences_pg.py::test_actual_downgrade_preserves_existing_account_settings PASSED [ 71%]
+tests/test_personal_preferences_pg.py::test_actual_frozen_recheck_allows_setting_edits_and_blocks_revoked_navigation PASSED [ 71%]
+tests/test_project_governance.py::test_adopt_review_decide_and_next_stage_not_block_current PASSED [ 72%]
+tests/test_project_governance.py::test_unknown_gate_cannot_be_approved_and_peer_cannot_adopt PASSED [ 73%]
+tests/test_project_governance.py::test_fixed_health_priority PASSED      [ 74%]
+tests/test_project_governance.py::test_baseline_binding_and_directory_share_facts PASSED [ 75%]
+tests/test_project_governance.py::test_governance_ledger_is_immutable_and_agent_has_no_write PASSED [ 75%]
+tests/test_scoped_dispatch.py::test_dispatcher_claims_only_bound_tenant_metadata_and_preserves_scope PASSED [ 76%]
+tests/test_scoped_dispatch.py::test_application_cannot_use_dispatcher_and_dispatcher_cannot_read_business PASSED [ 77%]
+tests/test_supply_execution.py::test_capture_retry_keeps_fixed_identity_time_and_never_applies_stock PASSED [ 78%]
+tests/test_supply_execution.py::test_capture_retry_still_checks_current_authority_and_fresh_revision[grant] PASSED [ 78%]
+tests/test_supply_execution.py::test_capture_retry_still_checks_current_authority_and_fresh_revision[source] PASSED [ 79%]
+tests/test_supply_execution.py::test_capture_retry_still_checks_current_authority_and_fresh_revision[product_revision] PASSED [ 80%]
+tests/test_supply_execution.py::test_private_build_and_source_are_not_visible_or_capturable_to_other_identities[peer] PASSED [ 81%]
+tests/test_supply_execution.py::test_private_build_and_source_are_not_visible_or_capturable_to_other_identities[other_human] PASSED [ 82%]
+tests/test_supply_execution.py::test_capture_cannot_move_a_fixed_build_to_another_granted_product PASSED [ 82%]
+tests/test_supply_execution.py::test_snapshot_uses_one_common_confirmation_and_one_atomic_receipt PASSED [ 83%]
+tests/test_supply_execution.py::test_snapshot_confirmation_does_not_cover_changed_command_scope[reason] PASSED [ 84%]
+tests/test_supply_execution.py::test_snapshot_confirmation_does_not_cover_changed_command_scope[source_reads] PASSED [ 85%]
+tests/test_supply_execution.py::test_snapshot_confirmation_does_not_cover_changed_command_scope[actor] PASSED [ 85%]
+tests/test_supply_execution.py::test_capture_has_no_material_deadline_but_confirmation_still_expires PASSED [ 86%]
+tests/test_supply_execution.py::test_saved_snapshot_replays_but_new_decision_requires_current_sources[build] PASSED [ 87%]
+tests/test_supply_execution.py::test_saved_snapshot_replays_but_new_decision_requires_current_sources[supply] PASSED [ 88%]
+tests/test_supply_execution.py::test_parallel_successors_do_not_overwrite_history_or_advance_pointer_twice PASSED [ 89%]
+tests/test_supply_execution.py::test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start FAILED [ 89%]
+
+=================================== FAILURES ===================================
+______ test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start ______
+tests/test_supply_execution.py:495: in test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start
+    assert post(setup, {**command, "operation": "release.manufacturing.approve"}).status_code == 403
+E   AssertionError: assert 422 == 403
+E    +  where 422 = <Response [422 Unprocessable Content]>.status_code
+E    +    where <Response [422 Unprocessable Content]> = post(<isolated synthetic test scope>, {'category_id': 'b452a14f-59bb-43c9-a430-7593e3ee24aa', 'command_id': '8dc9150d-2b98-4c9e-9dec-39d3b6a33614', 'idempotency_key': 'bf926dda-22ff-4db1-b937-5c73e35c4f25', 'operation': 'release.manufacturing.approve', ...})
+=============================== warnings summary ===============================
+tests/preproject/test_m3_lifecycle_catalog.py: 5 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_personal_preferences_pg.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/test_supply_execution.py: 16 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py: 30 warnings
+tests/project_risk_pg/test_chain.py: 6 warnings
+tests/test_personal_preferences_pg.py: 3 warnings
+tests/test_project_governance.py: 12 warnings
+tests/test_supply_execution.py: 48 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_personal_preferences_pg.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/test_supply_execution.py: 16 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:535: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_personal_preferences_pg.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/test_supply_execution.py: 16 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_personal_preferences_pg.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/test_supply_execution.py: 16 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_personal_preferences_pg.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/test_supply_execution.py: 16 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_personal_preferences_pg.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/test_supply_execution.py: 16 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/work_management/service.py:385: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/project_risk/service.py:205: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-knowledge-authority-20261029/backend-candidate-9-remaining.xml -
+=========================== short test summary info ============================
+FAILED tests/test_supply_execution.py::test_canonical_kit_is_t0_and_unknown_supply_never_authorizes_start
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+=========== 1 failed, 114 passed, 251 warnings in 209.38s (0:03:29) ============

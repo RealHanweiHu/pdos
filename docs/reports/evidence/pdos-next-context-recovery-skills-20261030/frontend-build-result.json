@@ -1,0 +1,10 @@
+{
+  "exit_code": 0,
+  "seconds": 46.84,
+  "frozen_inputs": 758,
+  "changed_inputs": [],
+  "snapshot": "/private/tmp/pdos-context-recovery-build-20261030/pdos-next/web",
+  "real_model_calls": 0,
+  "network": false,
+  "font_override": "/private/tmp/pdos_scope_cached_google_fonts_v2.cjs"
+}

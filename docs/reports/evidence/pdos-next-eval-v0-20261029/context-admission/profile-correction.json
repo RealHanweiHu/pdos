@@ -1,0 +1,33 @@
+{
+  "reason": "Correct unusable context evaluation focus profiles using measured full production prefix; no question/fact/answer-label changes.",
+  "before_sha256": "494fdf3d14d76f2586a093c8af6c9af6aa6b5c0fd8e56a3aace06d48bd22d69a",
+  "after_sha256": "00eca8db6bfdd0f2e3cbb1a7bb6ea8f1f246ab8741e40c149d7880be6ac7812b",
+  "profiles_before": [
+    {
+      "name": "F-small",
+      "context_window_tokens": 14240,
+      "f_budget_tokens": 8192
+    },
+    {
+      "name": "F-large",
+      "context_window_tokens": 22432,
+      "f_budget_tokens": 16384
+    }
+  ],
+  "profiles_after": [
+    {
+      "name": "F-small",
+      "context_window_tokens": 54048,
+      "f_budget_tokens": 48000
+    },
+    {
+      "name": "F-large",
+      "context_window_tokens": 70048,
+      "f_budget_tokens": 64000
+    }
+  ],
+  "all_turns_facts_constraints_final_prompts_and_behavior_labels_unchanged": true,
+  "replay_expansions_and_hashes_unchanged": true,
+  "source_snapshot": "questions.snapshot.json",
+  "quality_runs": 0
+}

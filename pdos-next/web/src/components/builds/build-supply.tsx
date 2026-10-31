@@ -1,7 +1,10 @@
 "use client";
+import { restoreProjectBuildDraft } from "@/lib/project-draft-recovery";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, Calculator, ClipboardText, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
+import { projectBuildsPath } from "@/lib/project-build-scope";
 import { Button } from "@/components/ui/button";
 import { CoverageShortages, SupplySnapshotHistory } from "@/components/supply_cost";
 import { originalLocation } from "@/lib/original-location";
@@ -10,7 +13,7 @@ import { decimalText, plainReference, referenceKey, sourceLines, type Definition
 import { utcText } from "@/lib/project-plan-view";
 import { blankSupplyDraft, blankSupplyRow, checkPrepared, createCaptureInput, draftFromCapture, emptySupply, isObject, kitDisplay, kitPayload, materialsFromBuild, restoreSupply, snapshotCanCompute, snapshotDisplay, supplyKindNames, supplyNames, supplySubjects, type PreparedSupply, type SupplyApi, type SupplyCapture, type SupplyCommand, type SupplyDraft, type SupplyList, type SupplyLocal, type SupplyPreview, type SupplyRowDraft, type SupplyWaiting } from "@/lib/build-supply-view";
 
-type Props = { product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: SupplyApi; onSaved: () => void | Promise<void> };
+type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: SupplyApi; onSaved: () => void | Promise<void> };
 type Receipt = { id: string; subject_id: string; subject_type: string };
 const labels: Record<string, string> = {
   snapshot: "本次整版供给快照", proposed_snapshot: "本次整版供给快照", capture: "未应用来源记录", input_snapshot: "固定来源输入", records: "整版来源记录", record_kind: "记录类别", record_id: "稳定外部记录标识", material_id: "固定物料", quantity: "来源数量", unit: "来源单位", sources: "精确原文依据", source_system: "来源系统", pool_id: "外部物理池标识", supplier_id: "外部供方标识", expected_at: "原来源预计到达时间", received_at: "实际到货发生时间", commitment_id: "已有承诺关联", quality: "原来源质量状态", availability: "原来源可用状态", note: "来源说明", reason: "整版记录原因", scope_complete: "供给及占用范围完整", build_id: "固定 Build", build_revision: "固定 Build 版本", revision: "快照版本", previous_snapshot_id: "固定前版快照", previous_revision: "固定前版版本", captured_at: "来源捕获时点", expires_at: "来源记录有效期", state: "来源有效状态", status: "记录状态", visibility: "可见范围", version: "固定来源版本", source_id: "固定来源", ref: "固定来源", source: "固定来源", pools: "当前物理池记录", reservations: "全部占用记录", commitments: "已有供方承诺", in_transit: "在途记录", receipts: "实际到货记录", restrictions: "质量或可用限制", key: "固定物理池身份", stage: "供给阶段", affected_quantity: "限制涉及数量", basis: "固定 Build 与工程依据", binding: "固定依据", basis_binding: "固定依据", build: "固定 Build", bom: "固定 BOM", engineering_configuration: "固定工程配置", manufacturing_configuration: "固定制造配置", product_unit: "计划成品单位", before: "前版", after: "本版", changes: "前后差异", reconciliation: "与前版对账", deltas: "来源差异", freshness: "当前依据状态", freshness_reasons: "需重核事项", record_key: "对应来源记录", field: "差异字段", difference: "服务器核对差值", warnings: "待核对事项", effect: "此次保存的影响",
@@ -35,10 +38,10 @@ function Value({ value, field, sources, identities }: { value: unknown; field?: 
   return null;
 }
 
-export function BuildSupply(props: Props) { return <SupplyPanel key={`${props.principalId}:${props.product.id}`} {...props}/>; }
+export function BuildSupply(props: Props) { return <SupplyPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
 
-function SupplyPanel({ product, principalId, api, onSaved }: Props) {
-  const storageKey = `pdos-next:build-supply:${principalId}:${product.id}`;
+function SupplyPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
+  const storageKey = `pdos-next:build-supply:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`;
   const [local, setLocal] = useState<SupplyLocal>({ buildId: "", drafts: {}, prepared: {}, pending: null });
   const localRef = useRef(local), alive = useRef(true), lock = useRef(false), dialog = useRef<HTMLDialogElement>(null), trigger = useRef<HTMLElement | null>(null);
   const [builds, setBuilds] = useState<Build[]>([]), [data, setData] = useState<SupplyList>(emptySupply), [sources, setSources] = useState<DefinitionSource[]>([]);
@@ -69,15 +72,15 @@ function SupplyPanel({ product, principalId, api, onSaved }: Props) {
   function makeCommand(operation: SupplyCommand["operation"], payload: SupplyCommand["payload"], sourceReadSet: SupplyCommand["source_read_set"], revision = product.revision): SupplyCommand { return { command_id: crypto.randomUUID(), idempotency_key: crypto.randomUUID(), product_id: product.id, expected_revision: revision, operation, source_read_set: sourceReadSet.map(read => ({ ...read })), payload }; }
 
   const refresh = useCallback(async () => {
-    const results = await Promise.allSettled([api<BuildList>(`v1/products/${product.id}/builds`), api<SupplyList>(`v1/products/${product.id}/supply`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
+    const results = await Promise.allSettled([api<BuildList>(projectBuildsPath(product.id, projectId)), api<SupplyList>(`v1/products/${product.id}/supply`), api<{ sources: DefinitionSource[] }>(`v1/products/${product.id}/workspace`)]);
     if (!alive.current) return;
     const failures: string[] = [];
     const built = results[0]; if (built.status === "fulfilled") setBuilds(built.value.items); else { setBuilds([]); failures.push(built.reason?.message ?? "固定 Build 暂时无法读取。"); }
     const supplied = results[1]; if (supplied.status === "fulfilled") setData(supplied.value); else { setData(emptySupply); failures.push(supplied.reason?.message ?? "供给快照暂时无法读取。"); }
     const workspace = results[2]; if (workspace.status === "fulfilled") setSources(workspace.value.sources); else { setSources([]); failures.push(workspace.reason?.message ?? "原文依据暂时无法读取。"); }
     setLoading(false); setReadFailed(failures.length > 0); if (failures.length) throw new Error(failures.join(" "));
-  }, [api, product.id]);
-  useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (alive.current) return refresh(); }).catch(failure => { if (alive.current) setError(failure.message); }); void Promise.resolve().then(() => { if (!alive.current) return; try { const saved = restoreSupply(JSON.parse(localStorage.getItem(storageKey) ?? "null"), product.id); if (saved) { localRef.current = saved; setLocal(saved); } } catch { /* No valid local recovery. */ } setReady(true); }); return () => { alive.current = false; }; }, [refresh, storageKey, product.id]);
+  }, [api, product.id, projectId]);
+  useEffect(() => { alive.current = true; void Promise.resolve().then(() => { if (alive.current) return refresh(); }).catch(failure => { if (alive.current) setError(failure.message); }); void Promise.resolve().then(async () => { if (!alive.current) return; try { const saved = await restoreProjectBuildDraft(localStorage, storageKey, `pdos-next:build-supply:${principalId}:${product.id}`, value => restoreSupply(value, product.id), api, product.id, projectId, () => alive.current); if (!alive.current) return; if (saved) { localRef.current = saved; setLocal(saved); } setReady(true); } catch { if (alive.current) { setReady(false); setError("本机旧草稿或原请求尚未恢复，已暂停新办理。请保留浏览器记录并重新加载页面核对。"); } } }); return () => { alive.current = false; }; }, [refresh, storageKey, product.id, principalId, projectId, api]);
   useEffect(() => { if (preview) dialog.current?.showModal(); }, [preview]);
 
   async function commandRequest(wait: Extract<SupplyWaiting, { command: SupplyCommand }>) {
@@ -123,6 +126,7 @@ function SupplyPanel({ product, principalId, api, onSaved }: Props) {
   function compute(element: HTMLElement) { attempt(() => { if (!build || !snapshot || !current || !snapshotCanCompute(snapshot, build, principalId)) throw new Error("当前来源需重核或尚无本人可计算的固定快照。"); void perform({ stage: "execute", command: makeCommand("supply.kit.compute", kitPayload(build, snapshot, current), snapshot.required_source_read_set) }, element); }); }
   function changeRow(index: number, changes: Partial<SupplyRowDraft>) { edit({ ...draft, records: draft.records.map((row, position) => position === index ? { ...row, ...changes } : row) }); }
 
+  useProfessionalSelection("build", builds.map(r=>r.id), local.buildId, !editable || loading, id=>update(v=>({...v,buildId:id,drafts:{...v.drafts,...(!v.drafts[id]?{[id]:blankSupplyDraft()}:{})}})));
   return <section className="min-w-0 space-y-5 [&_*]:min-w-0 [&_dd]:[overflow-wrap:anywhere] [&_p]:[overflow-wrap:anywhere]" aria-label="固定Build供应与齐套">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">整版来源记录、固定供给快照与确定性齐套计算</p><h2 className="mt-1 text-lg font-semibold">供应来源与齐套缺项</h2></div><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新来源与结果</Button></header>
     {error && <p role="alert" className="rounded-lg border border-destructive p-3 text-destructive [overflow-wrap:anywhere]">{error}</p>}{notice && <p role="status" className="rounded-lg border border-border p-3 [overflow-wrap:anywhere]">{notice}</p>}

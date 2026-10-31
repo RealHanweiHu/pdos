@@ -1,0 +1,11 @@
+✔ work-state reads and explicit human edits preserve scoped endpoints (132.1835ms)
+✔ work state rejects extra scope and non-supported methods before forwarding (54.226042ms)
+✔ context options are ordinary read-only metadata with closed, encoded selectors (37.120334ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 487.318542

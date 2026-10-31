@@ -17,10 +17,37 @@ const page = (items = [row()]) => ({ version: "agent-conversation-list/v1", prin
 const request = (action = "rename") => ({ sessionId: id(100), body: { action, expected_revision: 0, request_key: id(900), ...(action === "rename" ? { title: "自定义名称" } : {}) } });
 const receipt = req => ({ version: "agent-session-presentation/v1", principal_id: id(1), scope: page().scope, session: { session_id: req.sessionId, ...row().scope }, presentation: { ...saved({ title: req.body.title ?? null, pinned: req.body.action === "pin", archived: req.body.action === "archive" }), action: req.body.action, request_key: req.body.request_key } });
 
+test("project list selector is sent and checked against both envelope and each actual Session", async () => {
+ const selected = { ...scope, projectId: id(4) }, raw = page(), calls = [];
+ raw.scope.project_id = id(4);
+ await readConversations(async path => { calls.push(path); return raw; }, selected);
+ assert.equal(new URLSearchParams(calls[0].split("?")[1]).get("project_id"), id(4));
+ for (const mutate of [value => value.scope.project_id = id(5), value => value.items[0].scope.project_id = id(5)]) {
+  const bad = clone(raw); mutate(bad); await assert.rejects(readConversations(async () => bad, selected));
+ }
+ const req = request(), original = receipt(req), writeCalls = [];
+ await writePresentation(async (...args) => { writeCalls.push(args); return original; }, selected, req);
+ assert.ok(!writeCalls[0][0].includes("project_id"), "original write scope and request identity remain unchanged");
+ original.session.project_id = id(5);
+ await assert.rejects(writePresentation(async () => original, selected, req), error => error.status === 503);
+});
+
 test("managed list preserves revision-zero facts and actual project scope without enriching legacy DTOs", async () => {
  const original = page(), calls = []; const value = await readConversations(async (...args) => { calls.push(args); return original; }, scope);
  assert.equal(value, original); assert.deepEqual(clone(value.items[0].presentation), zero()); assert.equal(value.items[0].scope.project_id, id(4));
  assert.equal(calls[0][0], `v1/categories/${id(2)}/agent-conversations?view=active&page_size=20&proposal_id=${id(3)}`); assert.equal(calls[0].length, 1);
+});
+test("managed conversation preserves hidden goals and the real work-state timestamp only", async () => {
+ const original = page(); const head = original.items[0].latest_run;
+ Object.assign(head, { status: "hidden", history_hidden: true, created_at: null, recorded_at: stamp, reverted: null,
+  hidden_message: "原回答已隐藏，保留你的原话。" });
+ const value = await readConversations(async () => original, scope);
+ assert.equal(value.items[0].latest_run.goal, "不可改写原目标");
+ assert.equal(value.items[0].latest_run.created_at, null);
+ for (const mutate of [x => x.created_at = stamp, x => x.reverted = false, x => x.recorded_at = "invalid", x => x.versions = {}]) {
+  const bad = clone(original); mutate(bad.items[0].latest_run);
+  await assert.rejects(readConversations(async () => bad, scope));
+ }
 });
 test("title-only search has no invented matched Run, server pin ordering precedes original chronology", async () => {
  const p = page([row(50, saved({ title: "名称命中", pinned: true })), row(100)]); const value = await readConversations(async () => p, scope);

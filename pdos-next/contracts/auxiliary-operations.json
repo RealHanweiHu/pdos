@@ -728,6 +728,79 @@
       ],
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice"
+    },
+    {
+      "operation": "work.stage.adopt",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "stage.adopted",
+      "purpose": "项目负责人选择适用阶段路径，已有阶段历史不能被替换。",
+      "canonical_policy_preserved": [
+        "work.baseline.approve:T2",
+        "release.engineering.approve:T2",
+        "release.manufacturing.approve:T2"
+      ]
+    },
+    {
+      "operation": "work.stage.review.submit",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "stage.review_submitted",
+      "purpose": "项目负责人固定当前阶段出口、来源与专业发布包，提交阶段评审。",
+      "canonical_policy_preserved": [
+        "work.baseline.approve:T2",
+        "release.engineering.approve:T2",
+        "release.manufacturing.approve:T2"
+      ]
+    },
+    {
+      "operation": "work.stage.decide",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": "stage.decided",
+      "purpose": "本人核对固定阶段评审后批准推进或退回；不替代专业签核。",
+      "canonical_policy_preserved": [
+        "work.baseline.approve:T2",
+        "release.engineering.approve:T2",
+        "release.manufacturing.approve:T2"
+      ]
+    },
+    {
+      "operation": "work.stage.milestone.bind",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "stage.milestone_bound",
+      "purpose": "Bind an actual plan task key to an adopted future/current stage; preserve baselines and commitments.",
+      "canonical_policy_preserved": [
+        "work.plan.apply:T1",
+        "work.baseline.approve:T2"
+      ]
+    },
+    {
+      "operation": "embedding.profile.save",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "embedding.profile_saved",
+      "purpose": "Current tenant administrator confirms an independent embedding profile, explicit data categories and indexing budget; saving itself makes no provider call. Stopping preserves keyword retrieval and cost history.",
+      "canonical_policy_preserved": [
+        "provider.agreement.register:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "RAG v0.4 §7.8, §9.5, §12; approved P30"
+    },
+    {
+      "operation": "embedding.call.reconcile",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "embedding.call_reconciled",
+      "purpose": "Current tenant administrator reconciles the original unknown background embedding cost from explicit evidence; never reissues the provider request or restores an unknown result.",
+      "canonical_policy_preserved": [
+        "ai.model_call.reconcile:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "RAG v0.4 §12; separate tenant indexing accounting"
     }
   ]
 }

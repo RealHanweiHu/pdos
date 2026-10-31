@@ -1,0 +1,463 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> migrations/versions/s0_0852_summary_dingtalk.py:3:1
+   |
+ 1 |   """Keep deterministic own-summary channel copies bound to the original approved Run."""
+ 2 |
+ 3 | / from alembic import op
+ 4 | | from migrations.schema_s0_0852 import (
+ 5 | |     BASE_SQL,
+ 6 | |     DOWN_SQL,
+ 7 | |     LIFECYCLE_UP_SQL,
+ 8 | |     NATIVE_FUNCTIONS,
+ 9 | |     PREVIOUS_FUNCTIONS,
+10 | | )
+11 | | from migrations.versions.s0_0778_native_pilot import require_functions
+12 | | from migrations.versions.s0_0843_dingtalk import administrative_migrator
+   | |________________________________________________________________________^
+13 |
+14 |   revision = "s0_0852"
+   |
+help: Organize imports
+  |
+3 | from alembic import op
+4 +
+5 | from migrations.schema_s0_0852 import (
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/dingtalk/summary_delivery.py:3:1
+   |
+ 1 |   """Durable private summary delivery, derived only from the original admitted Run."""
+ 2 |
+ 3 | / from contextlib import contextmanager
+ 4 | | from dataclasses import asdict
+ 5 | | from types import SimpleNamespace
+ 6 | | from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
+ 7 | |
+ 8 | | from pdos_next.agent_kernel.bootstrap import Bootstrap
+ 9 | | from pdos_next.agent_kernel.models import AgentRun
+10 | | from pdos_next.agent_kernel.policy import egress
+11 | | from pdos_next.clock import now
+12 | | from pdos_next.database import tenant_session
+13 | | from pdos_next.domain.automations.service_models import AutomationServiceAttempt as Attempt
+14 | | from pdos_next.errors import DomainError
+15 | | from pdos_next.models import Principal
+16 | | from pdos_next.personal_summary_runtime import _bound, _check_sources
+17 | | from pdos_next.personal_summary_schemas import Summary
+18 | | from pdos_next.schema_base import StrictModel
+19 | | from pdos_next.service import Context, digest, require_access
+20 | | from pydantic import Field
+21 | | from sqlalchemy import select, text
+22 | |
+23 | | from .accounts import credential
+24 | | from .models import Application
+25 | | from .projection import run_link
+26 | | from .runtime import ChannelService, configured
+27 | | from .summary_models import SummaryDelivery
+   | |___________________________________________^
+help: Organize imports
+   |
+7  |
+8  + from pydantic import Field
+9  + from sqlalchemy import select, text
+10 +
+11 | from pdos_next.agent_kernel.bootstrap import Bootstrap
+--------------------------------------------------------------------------------
+22 | from pdos_next.service import Context, digest, require_access
+   - from pydantic import Field
+   - from sqlalchemy import select, text
+23 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/dingtalk/summary_models.py:3:1
+   |
+ 1 |   """Outbound copies of real deterministic summary Runs; no inbound Message is fabricated."""
+ 2 |
+ 3 | / from datetime import datetime
+ 4 | | from uuid import UUID
+ 5 | |
+ 6 | | from pdos_next.models import Base, Row
+ 7 | | from sqlalchemy import CheckConstraint, DateTime, Integer, String, UniqueConstraint
+ 8 | | from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+ 9 | | from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+10 | | from sqlalchemy.orm import Mapped, mapped_column
+11 | |
+12 | | from .models import link
+   | |________________________^
+help: Organize imports
+   |
+5  |
+   - from pdos_next.models import Base, Row
+6  | from sqlalchemy import CheckConstraint, DateTime, Integer, String, UniqueConstraint
+--------------------------------------------------------------------------------
+10 |
+11 + from pdos_next.models import Base, Row
+12 +
+13 | from .models import link
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/dingtalk/summary_workflow.py:32:9
+   |
+30 |       @activity.defn(name="deliver_dingtalk_summary")
+31 |       def deliver(self, reference):
+32 | /         from langgraph.graph import END, START, StateGraph
+33 | |         from pdos_agent_runtime.graph import registered_graph_context
+34 | |         from pdos_next.errors import DomainError
+35 | |
+36 | |         from .summary_delivery import SummaryDeliveryService
+   | |____________________________________________________________^
+37 |
+38 |           ref = SummaryReference.model_validate(reference)
+   |
+help: Organize imports
+   |
+33 |         from pdos_agent_runtime.graph import registered_graph_context
+34 +
+35 |         from pdos_next.errors import DomainError
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/dingtalk/summary_workflow.py:56:9
+   |
+55 |       async def discover(self, tenant_id):
+56 | /         from pdos_next.database import tenant_session
+57 | |         from sqlalchemy import text
+   | |___________________________________^
+58 |
+59 |           with tenant_session(self.metadata_engine, tenant_id) as session:
+   |
+help: Organize imports
+   |
+55 |     async def discover(self, tenant_id):
+   -         from pdos_next.database import tenant_session
+56 |         from sqlalchemy import text
+57 |
+58 +         from pdos_next.database import tenant_session
+59 +
+60 |         with tenant_session(self.metadata_engine, tenant_id) as session:
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/dingtalk/workflow.py:66:9
+   |
+64 |       @activity.defn(name="deliver_dingtalk_completion")
+65 |       def deliver(self, reference):
+66 | /         from uuid import UUID
+67 | |
+68 | |         from pdos_next.errors import DomainError
+69 | |         from sqlalchemy.exc import DBAPIError
+70 | |
+71 | |         from .graph import execute
+72 | |         from .runtime import ChannelService
+   | |___________________________________________^
+73 |
+74 |           service = ChannelService(self.engine, self.metadata_engine, runtime=self.runtime)
+   |
+help: Organize imports
+   |
+67 |
+   -         from pdos_next.errors import DomainError
+68 |         from sqlalchemy.exc import DBAPIError
+69 |
+70 +         from pdos_next.errors import DomainError
+71 +
+72 |         from .graph import execute
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+   --> pdos_next/dingtalk/workflow.py:112:9
+    |
+111 |       async def discover(self, tenant_id):
+112 | /         from pdos_next.database import tenant_session
+113 | |         from sqlalchemy import text
+    | |___________________________________^
+114 |
+115 |           with tenant_session(self.metadata_engine, tenant_id) as session:
+    |
+help: Organize imports
+    |
+111 |     async def discover(self, tenant_id):
+    -         from pdos_next.database import tenant_session
+112 |         from sqlalchemy import text
+113 |
+114 +         from pdos_next.database import tenant_session
+115 +
+116 |         with tenant_session(self.metadata_engine, tenant_id) as session:
+    |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/domain/automations/service.py:3:1
+   |
+ 1 |   """Human rule configuration uses the same confirmation and receipt transaction as other work."""
+ 2 |
+ 3 | / from copy import deepcopy
+ 4 | | from dataclasses import dataclass
+ 5 | | from hashlib import sha256
+ 6 | | from uuid import uuid4
+ 7 | |
+ 8 | | from pdos_next.agent_kernel.models import TenantSkillEnablement, ValidationBudget
+ 9 | | from pdos_next.agent_kernel.skills import SkillCatalog
+10 | | from pdos_next.domain.preproject.access import human
+11 | | from pdos_next.errors import DomainError
+12 | | from pdos_next.models import now
+13 | | from pdos_next.request_proof import command_inputs_once
+14 | | from pdos_next.service import EVENTS, command_digest, digest, require_access
+15 | | from sqlalchemy import select
+16 | |
+17 | | from .models import AutomationRuleCurrent as Current
+18 | | from .models import AutomationRuleVersion as Version
+19 | | from .schemas import AutomationSpec
+   | |___________________________________^
+20 |
+21 |   DRAFT = "ai.automation.draft.save"
+   |
+help: Organize imports
+   |
+7  |
+8  + from sqlalchemy import select
+9  +
+10 | from pdos_next.agent_kernel.models import TenantSkillEnablement, ValidationBudget
+--------------------------------------------------------------------------------
+16 | from pdos_next.service import EVENTS, command_digest, digest, require_access
+   - from sqlalchemy import select
+17 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> pdos_next/personal_summary_channels.py:3:1
+  |
+1 |   """A subscriber chooses only their verified binding, in the existing rule T1."""
+2 |
+3 | / from pdos_next.dingtalk.accounts import human
+4 | | from pdos_next.dingtalk.models import Application, Binding
+5 | | from pdos_next.errors import DomainError
+6 | | from pdos_next.models import Principal
+7 | | from sqlalchemy import select
+  | |_____________________________^
+help: Organize imports
+  |
+2 |
+3 + from sqlalchemy import select
+4 +
+5 | from pdos_next.dingtalk.accounts import human
+6 | from pdos_next.dingtalk.models import Application, Binding
+7 | from pdos_next.errors import DomainError
+8 | from pdos_next.models import Principal
+  - from sqlalchemy import select
+9 |
+  |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/personal_summary_delivery.py:3:1
+   |
+ 1 |   """Own completed-summary feed derived from Runs; no message or notification writes."""
+ 2 |
+ 3 | / from typing import Annotated
+ 4 | | from uuid import UUID
+ 5 | |
+ 6 | | from fastapi import Query
+ 7 | | from pdos_next.agent_kernel.models import AgentRun
+ 8 | | from pdos_next.database import tenant_session
+ 9 | | from pdos_next.domain.automations.models import AutomationRuleVersion as Version
+10 | | from pdos_next.domain.automations.service_models import AutomationServiceAttempt as Attempt
+11 | | from pdos_next.domain.automations.service_models import AutomationServiceGrant as Grant
+12 | | from pdos_next.errors import DomainError
+13 | | from pdos_next.models import Category, Principal, Receipt
+14 | | from pdos_next.personal_views import _personal
+15 | | from pdos_next.schema_base import StrictModel
+16 | | from pdos_next.service import Context
+17 | | from pydantic import Field
+18 | | from sqlalchemy import and_, func, or_, select
+   | |______________________________________________^
+help: Organize imports
+   |
+6  | from fastapi import Query
+7  + from pydantic import Field
+8  + from sqlalchemy import and_, func, or_, select
+9  +
+10 | from pdos_next.agent_kernel.models import AgentRun
+--------------------------------------------------------------------------------
+19 | from pdos_next.service import Context
+   - from pydantic import Field
+   - from sqlalchemy import and_, func, or_, select
+20 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+ --> pdos_next/personal_summary_schemas.py:3:1
+  |
+1 |   """Finite server summary DTOs; selection narrows reads and never grants access."""
+2 |
+3 | / from typing import Annotated, Any, Literal
+4 | | from uuid import UUID
+5 | |
+6 | | from pdos_next.schema_base import StrictModel
+7 | | from pydantic import AwareDatetime, ConfigDict, Field, model_serializer, model_validator
+  | |________________________________________________________________________________________^
+8 |
+9 |   Group = Literal["action", "waiting", "following"]
+  |
+help: Organize imports
+   |
+5  |
+   - from pdos_next.schema_base import StrictModel
+6  | from pydantic import AwareDatetime, ConfigDict, Field, model_serializer, model_validator
+7  |
+8  + from pdos_next.schema_base import StrictModel
+9  +
+10 | Group = Literal["action", "waiting", "following"]
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos_next/workflows/worker.py:3:1
+   |
+ 1 |   """Local durable activities; domain truth is reread on every activity attempt."""
+ 2 |
+ 3 | / import asyncio
+ 4 | | import logging
+ 5 | | import os
+ 6 | | from concurrent.futures import ThreadPoolExecutor
+ 7 | | from uuid import UUID
+ 8 | |
+ 9 | | from pdos_next.database import configured_engines, tenant_session
+10 | | from pdos_next.dispatch.outbox import dispatch_once
+11 | | from pdos_next.errors import DomainError
+12 | | from pdos_next.original_security import configure, queue_uploaded, scan_requested
+13 | | from pdos_next.original_store import OriginalStore
+14 | | from pdos_next.originals import parse_uploaded
+15 | | from pdos_next.workflows.definitions import (
+16 | |     OriginalLifecycle,
+17 | |     ParseOriginal,
+18 | |     QueueOriginalSecurity,
+19 | |     SecureOriginal,
+20 | |     UploadTerminal,
+21 | | )
+22 | | from pdos_next.workflows.transport import TemporalSender
+23 | | from temporalio import activity
+24 | | from temporalio.client import Client
+25 | | from temporalio.exceptions import ApplicationError
+26 | | from temporalio.worker import Worker
+   | |____________________________________^
+help: Organize imports
+   |
+8  |
+9  + from temporalio import activity
+10 + from temporalio.client import Client
+11 + from temporalio.exceptions import ApplicationError
+12 + from temporalio.worker import Worker
+13 +
+14 | from pdos_next.database import configured_engines, tenant_session
+--------------------------------------------------------------------------------
+27 | from pdos_next.workflows.transport import TemporalSender
+   - from temporalio import activity
+   - from temporalio.client import Client
+   - from temporalio.exceptions import ApplicationError
+   - from temporalio.worker import Worker
+28 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/dingtalk/test_summary_delivery.py:3:1
+   |
+ 1 |   """No provider/network/DB: real DTO, graph, official protocol and durable lookup semantics."""
+ 2 |
+ 3 | / from contextlib import contextmanager
+ 4 | | from datetime import UTC, datetime
+ 5 | | from types import SimpleNamespace as NS
+ 6 | | from uuid import UUID, uuid4
+ 7 | |
+ 8 | | import httpx
+ 9 | | import pytest
+10 | | from pdos_next import models as native_models  # noqa: F401 -- initialize native metadata first
+11 | | from pdos_next.dingtalk.accounts import credential
+12 | | from pdos_next.dingtalk.official import OfficialAdapter
+13 | | from pdos_next.dingtalk.ports import ChannelRuntime
+14 | | from pdos_next.dingtalk.runtime import ChannelService
+15 | | from pdos_next.dingtalk.summary_delivery import SummaryDeliveryService, compose, source_ids
+16 | | from pdos_next.dingtalk.summary_models import SummaryDelivery
+17 | | from pdos_next.dingtalk.synthetic import SyntheticKms
+18 | | from pdos_next.personal_summary_schemas import Selection, Summary
+19 | | from pdos_next.service import digest
+20 | | from sqlalchemy.dialects import postgresql
+21 | | from sqlalchemy.schema import CreateTable
+   | |_________________________________________^
+help: Organize imports
+   |
+9  | import pytest
+10 + from sqlalchemy.dialects import postgresql
+11 + from sqlalchemy.schema import CreateTable
+12 +
+13 | from pdos_next import models as native_models  # noqa: F401 -- initialize native metadata first
+--------------------------------------------------------------------------------
+22 | from pdos_next.service import digest
+   - from sqlalchemy.dialects import postgresql
+   - from sqlalchemy.schema import CreateTable
+23 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> tests/dingtalk/test_summary_delivery_pg.py:8:1
+   |
+ 6 |   # ruff: noqa: F401 -- the native business fixture dependency tree is intentionally re-exported
+ 7 |
+ 8 | / import asyncio
+ 9 | | import os
+10 | | from concurrent.futures import ThreadPoolExecutor
+11 | | from datetime import timedelta
+12 | | from types import SimpleNamespace as NS
+13 | | from uuid import UUID, uuid4
+14 | |
+15 | | import pytest
+16 | | from pdos_next.agent_kernel.activities import KernelActivities
+17 | | from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
+18 | | from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
+19 | | from pdos_next.dingtalk.models import Delivery, Message
+20 | | from pdos_next.dingtalk.summary_delivery import SummaryDeliveryService
+21 | | from pdos_next.dingtalk.summary_models import SummaryDelivery
+22 | | from pdos_next.dingtalk.summary_workflow import (
+23 | |     DingTalkSummaryDelivery,
+24 | |     SummaryActivities,
+25 | |     SummarySender,
+26 | | )
+27 | | from pdos_next.domain.automations import service_runtime
+28 | | from pdos_next.domain.automations.schemas import ZERO_MODEL_BUDGET
+29 | | from pdos_next.domain.automations.service_models import AutomationServiceAttempt
+30 | | from pdos_next.models import Grant, now
+31 | | from pdos_next.workflows.xiaopai import XiaopaiWork
+32 | | from sqlalchemy import func, select, update
+33 | | from sqlalchemy.orm import Session
+34 | | from temporalio.client import Client
+35 | | from temporalio.worker import Worker
+36 | | from tests.automations_pg.test_personal_summary_pg import (
+37 | |     original_security_work,
+38 | |     work_case,
+39 | | )
+40 | | from tests.automations_pg.test_personal_summary_pg import (
+41 | |     summary_work as summary_work,
+42 | | )
+43 | | from tests.automations_pg.test_service_automation_pg import _activate
+44 | | from tests.dingtalk.test_channel_pg import channel as channel
+45 | | from tests.dingtalk.test_official_pg import bind_official, protocol
+   | |___________________________________________________________________^
+help: Organize imports
+   |
+15 | import pytest
+16 + from sqlalchemy import func, select, update
+17 + from sqlalchemy.orm import Session
+18 + from temporalio.client import Client
+19 + from temporalio.worker import Worker
+20 +
+21 | from pdos_next.agent_kernel.activities import KernelActivities
+--------------------------------------------------------------------------------
+36 | from pdos_next.workflows.xiaopai import XiaopaiWork
+   - from sqlalchemy import func, select, update
+   - from sqlalchemy.orm import Session
+   - from temporalio.client import Client
+   - from temporalio.worker import Worker
+37 | from tests.automations_pg.test_personal_summary_pg import (
+   |
+
+Found 14 errors.
+[*] 14 fixable with the `--fix` option.

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="12" time="16.494" timestamp="2026-10-29T12:04:03.679028-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_prompt_cache_policy_pg" name="test_named_cache_choice_is_tenant_wide_and_replays_without_changing_old_requests[None]" time="2.646" /><testcase classname="tests.agent_kernel.test_prompt_cache_policy_pg" name="test_named_cache_choice_is_tenant_wide_and_replays_without_changing_old_requests[False]" time="1.580" /><testcase classname="tests.agent_kernel.test_prompt_cache_policy_pg" name="test_named_cache_choice_is_tenant_wide_and_replays_without_changing_old_requests[True]" time="1.503" /><testcase classname="tests.agent_kernel.test_prompt_cache_policy_pg" name="test_cache_column_and_named_receipt_must_match_in_the_native_atom" time="1.236" /><testcase classname="tests.agent_kernel.test_anthropic_context_count_pg" name="test_actual_count_ledger_is_metadata_only_zero_usage_and_model_replay_is_exactly_once" time="2.130" /><testcase classname="tests.agent_kernel.test_management_api" name="test_admin_registers_and_member_reads_current_head_and_receipt_atom" time="1.144"><failure message="Failed: DID NOT RAISE DomainError">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_admin_registers_and_member_reads_current_head_and_receipt_atom(setup):
+        data = agreement(setup)
+        read = setup.client.get(path(setup), headers=setup.headers)
+        assert read.status_code == 200 and read.json()["can_edit"] is False
+        assert send(setup, data).json()["code"] == "NAMED_DECISION_REQUIRED"
+        promote(setup)
+        saved = send(setup, data)
+        assert saved.status_code == 200, saved.text
+        receipt = saved.json()
+        assert receipt["result"]["tier"] == "T2"
+        assert receipt["writer_id"] == str(setup.human) and receipt["agent_run_id"] is None
+        assert send(setup, data).json() == receipt
+        with Session(setup.admin) as session:
+            for model in (Receipt, Audit, Outbox):
+                column = model.id if model is Receipt else model.receipt_id
+                assert (
+                    session.scalar(
+                        select(func.count()).select_from(model).where(column == UUID(receipt["id"]))
+                    )
+                    == 1
+                )
+        peer_headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
+        read = setup.client.get(path(setup), headers=peer_headers).json()
+        assert read["can_edit"] is False and read["items"][0]["registered_by_name"] == "Synthetic owner"
+        second = data.model_copy(
+            update={"expected_revision": 1, "active": False, "idempotency_key": str(uuid4())}
+        )
+        assert send(setup, second).status_code == 200
+        current = setup.client.get(path(setup), headers=setup.headers).json()
+        assert len(current["items"]) == 1 and current["items"][0]["status"] == "inactive"
+        assert current["items"][0]["revision"] == 2 and current["can_edit"] is True
+        store, bound = run(setup, private_context=True, data_categories=("customer_original",))
+        from pdos_next.agent_kernel.policy import egress
+        from pdos_next.errors import DomainError
+    
+&gt;       with store.transaction(bound) as (session, _), pytest.raises(DomainError):
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE DomainError
+
+tests/agent_kernel/test_management_api.py:69: Failed</failure></testcase><testcase classname="tests.agent_kernel.test_management_api" name="test_recovery_is_read_only_exact_and_survives_admin_revocation" time="0.883" /><testcase classname="tests.agent_kernel.test_management_api" name="test_expired_original_replays_without_new_revision_but_new_registration_rejects" time="0.784" /><testcase classname="tests.agent_kernel.test_management_api" name="test_conflicting_heads_and_invalid_scope_never_add_registration" time="1.050" /><testcase classname="tests.agent_kernel.test_management_api" name="test_parallel_first_registration_serializes_head_and_exact_replay[False]" time="0.693" /><testcase classname="tests.agent_kernel.test_management_api" name="test_parallel_first_registration_serializes_head_and_exact_replay[True]" time="1.274" /><testcase classname="tests.agent_kernel.test_management_api" name="test_latest_provider_paging_and_exact_filter" time="1.197" /></testsuite></testsuites>

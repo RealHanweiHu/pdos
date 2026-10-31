@@ -5,9 +5,21 @@ export interface ModelMetadata {
   model: string;
   model_version: string;
   max_output_tokens: number;
+  context_window_tokens?: number | null;
   openai_output_parameter: "max_tokens" | "max_completion_tokens";
+  openai_response_mode?: "auto" | "tools" | "json_schema" | "json_object" | "text";
+  streaming?: boolean;
+  connection_id?: string | null;
   timeout_seconds: number;
   response_bytes: number;
+}
+export interface ModelConnection {
+  id: string | null;
+  name: string;
+  metadata: ModelMetadata;
+  provider: string;
+  credential_display: string;
+  pricing_configured: boolean;
 }
 export interface SaveConfiguration {
   expected_revision: number;
@@ -72,6 +84,7 @@ export function validateRequest(request: SaveConfiguration): string | null {
   if (!Number.isInteger(request.expected_revision) || request.expected_revision < 0) return "配置版本无效，请刷新。";
   if (!m.model.trim() || !m.model_version.trim() || !m.base_url.trim()) return "请填写端点、模型和模型版本。";
   if (!Number.isInteger(m.max_output_tokens) || m.max_output_tokens < 1 || m.max_output_tokens > 32768) return "输出上限须为 1–32768 的整数。";
+  if (m.context_window_tokens != null && (!Number.isInteger(m.context_window_tokens) || m.context_window_tokens < 1024 || m.context_window_tokens > 10000000)) return "上下文窗口须为 1024–10,000,000 的整数，或留空。";
   if (!Number.isFinite(m.timeout_seconds) || m.timeout_seconds < 1 || m.timeout_seconds > 90) return "超时须在 1–90 秒内。";
   if (!Number.isInteger(m.response_bytes) || m.response_bytes < 1024 || m.response_bytes > 2097152) return "响应上限须在 1024–2097152 字节内。";
   return null; // Endpoint policy, tenant, permissions and eligibility are checked on server.

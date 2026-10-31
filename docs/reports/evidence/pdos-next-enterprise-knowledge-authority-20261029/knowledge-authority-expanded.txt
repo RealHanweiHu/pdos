@@ -1,0 +1,11 @@
+........                                                                 [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py: 17 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_knowledge_dependency_sql_count_is_batched_and_warm_latency_under_one_second
+  tests/enterprise_search/test_knowledge_retrieval_authority_pg.py:134: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+8 passed, 18 warnings in 30.19s

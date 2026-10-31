@@ -1,0 +1,80 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置" [active]:
+    - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 设置
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - region "设置":
+    - heading "设置" [level=1]
+    - paragraph: 低频配置集中管理，日常工作保持简洁。
+    - navigation "设置视图":
+      - button "个人偏好" [pressed]
+      - button "成员与范围"
+      - button "小Pai与模型"
+      - button "集成与治理"
+    - heading "界面外观" [level=2]
+    - paragraph: 主题
+    - paragraph: 选择适合当前工作环境的显示方式
+    - button "亮色" [pressed]:
+      - text: 亮色
+    - button "暗色":
+      - text: 暗色
+    - button "跟随系统":
+      - text: 跟随系统
+    - paragraph: 侧栏
+    - paragraph: 按当前用户记住展开或收起状态
+    - button "收起侧栏":
+      - text: 收起侧栏
+    - paragraph: 小Pai 工作栏
+    - paragraph: 按当前用户记住右侧工作栏开关
+    - button "打开小Pai 工作栏":
+      - text: 打开小Pai 工作栏
+- button "打开小Pai工作栏":

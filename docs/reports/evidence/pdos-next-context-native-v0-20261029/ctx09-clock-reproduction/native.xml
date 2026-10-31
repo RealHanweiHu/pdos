@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="18.036" timestamp="2026-10-29T12:51:17.046807-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_handle_candidate_pg" name="test_ctx09_native_handle_page2_then_same_handle_page3_failure[F48000]" time="16.979"><failure message="pdos_next.errors.DomainError: 模型调用未形成可用结果。&#10;During task with name 'model' and id '2e55e2c0-b5b7-15a7-759f-5d5c946d3247'">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x10e1238c0&gt;
+focus = 48000
+record_property = &lt;function record_property.&lt;locals&gt;.append_property at 0x10e0d7ec0&gt;
+
+    @pytest.mark.parametrize("focus", [48_000, 64_000], ids=["F48000", "F64000"])
+    def test_ctx09_native_handle_page2_then_same_handle_page3_failure(
+        setup, monkeypatch, focus, record_property,
+    ):
+        destination = observation_path("CTX-09", focus)
+        question = case("CTX-09")
+        project = create_g0_project(setup, visibility="category").project_id
+        # Only the six disclosed scenario entries exist in this source. Repeated
+        # known text creates three JSON fragments, not invented entries 7..9.
+        known = "条目1 Q-301 已登记；条目2 Q-302 待确认；条目3 Q-303 已登记；" + (
+            "条目4 Q-304 已登记；条目5 Q-305 已登记；条目6 Q-306 待确认。"
+        )
+        registered = post(setup, request(setup, "category.knowledge.add", {
+            "kind": "boundary", "content": {"definition": known + "；已披露条目过程说明" * 1000},
+        }))
+        assert registered.status_code == 200, registered.text
+        provider = ScriptedProvider("CTX-09")
+        with native_runtime(setup, provider, focus) as runtime:
+            original = runtime.host.continue_result
+            rechecks = []
+    
+            def fail_page3(bound, data, *, original_reader=None):
+                if data.page != 3:
+                    return original(bound, data, original_reader=original_reader)
+    
+                def unavailable(*args, **kwargs):
+                    # First do the real original registered READ/source check. The
+                    # injected availability failure happens before page 3 is built.
+                    value = runtime.host.read(*args, **kwargs)
+                    rechecks.append({"handle": data.handle, "page": data.page,
+                                     "original_call_id": value["execution_ref"]["call_id"]})
+                    raise DomainError("SOURCE_UNAVAILABLE", "离线夹具受控续读不可用。")
+    
+                return original(bound, data, original_reader=unavailable)
+    
+            monkeypatch.setattr(runtime.host, "continue_result", fail_page3)
+&gt;           scope, state = advance(runtime, {
+                "goal": question["turns"][0]["content"] + "\n" + question["final_prompt"],
+                "product_id": str(setup.product), "project_id": str(project),
+            })
+
+tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:244: in advance
+    state = AgentKernel(runtime.host, runtime.owner.registry).execute(
+pdos_next/agent_kernel/graph.py:833: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:325: in model
+    response = (model_step if callable(model_step) else ports.model)(
+pdos_next/agent_kernel/host.py:162: in model_step
+    turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;pdos_next.agent_kernel.gateway.AgentGateway object at 0x10ed800b0&gt;
+scope = RunScope(tenant_id=UUID('3f197840-6e78-4dd9-b1c6-6b9a30695536'), requester_id=UUID('a92aa27a-bfc2-4f41-a226-252aefacef...frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=UUID('bd452c89-de5e-4673-adc0-8083b6c9cdaf'))
+system = 'You are 小Pai, the single PDOS assistant.\nConverse naturally in the user\'s language. For greetings or general discus..."work_management", "purpose": "按真实项目和原件起草任务、计划、阶段办理与外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "查合成验收目录的全部9个条目，确认有没有标识Q-307；不要只看首页。\\n最终能否确认完整目录没有Q-307？请说明已看范围、缺页和下一步。", "con...tent': '{"error": {"code": "SOURCE_STALE", "message": "读取结果已变化，请使用新的运行重新读取。", "detail": {"reason": "SOURCE_STALE"}}}'}]
+tools = [{'name': 'ai.skill.qualify', 'description': '记录 T0 资格依据。产生 ai.skill_qualified。只能准备具名决定材料，不取得执行身份。', 'parameters': {'$....}], 'default': None, 'title': 'Product Id'}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = &lt;function BoundHost.model_step.&lt;locals&gt;.&lt;lambda&gt; at 0x1100e9260&gt;
+loaded_skills = ()
+
+    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        from pdos_next.domain.automations.runtime import guard_tool
+    
+        guard_tool(self.store, scope, "model")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        if self.context_guard is not None:
+            self.context_guard(scope)
+        source_categories = self.data_categories_for(scope) if self.data_categories_for else None
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        from pdos_next.service import digest
+    
+        from .context_budget import fit_messages
+    
+        calibration = self.context_baseline(
+            scope, route, digest([
+                system, messages, tools, output_schema, route.digest, scope.isolation,
+            ]),
+        )
+    
+        try:
+            if self.context_admitter is not None:
+                messages, context_budget = self.context_admitter(
+                    scope, route=route, system=system, tools=tools, messages=messages,
+                    output_schema=output_schema, loaded_skills=loaded_skills,
+                    calibration=calibration,
+                )
+            else:
+                messages, context_budget = fit_messages(
+                    route, system, tools, messages, output_schema,
+                    calibration=calibration,
+                )
+        except DomainError as error:
+            if error.reason == "CONTEXT_INCOMPLETE":
+                self.store.emit(scope, {"type": "context_incomplete", **error.detail})
+            raise
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        replay_only = False
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            if prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示前缀不能静默替换。")
+            # The disclosure may grow when a skill loads, and only that way: the
+            # chain keeps every earlier, narrower list verifiable (see .disclosure).
+            chain = record_disclosure(
+                run.versions,
+                scope.isolation,
+                [item["name"] for item in tools],
+                digest(tools),
+            )
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+                CHAIN_KEY: chain,
+                **({"budget_policy": route.budget_policy}
+                   if route.budget_policy != "enforced" else {}),
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, data_categories=source_categories)
+            cache_allowed = getattr(decision, "prompt_cache_allowed", False) is True
+            if route.protocol == "anthropic-native":
+                # True is the historical wire default, preserving existing keys.
+                if not cache_allowed:
+                    request["prompt_cache_allowed"] = False
+                if prior_model is not None:
+                    from sqlalchemy import case, select
+    
+                    from .models import AgentToolCall
+    
+                    alternate = dict(request)
+                    if cache_allowed:
+                        alternate["prompt_cache_allowed"] = False
+                    else:
+                        alternate.pop("prompt_cache_allowed")
+                    current_key, alternate_key = ("model:" + digest(value)
+                                                  for value in (request, alternate))
+                    existing_key = session.scalar(select(AgentToolCall.call_key).where(
+                        AgentToolCall.run_id == scope.run_id, AgentToolCall.tool == "model",
+                        AgentToolCall.call_key.in_([current_key, alternate_key]),
+                    ).order_by(case((AgentToolCall.call_key == current_key, 0), else_=1))
+                        .limit(1).with_for_update())
+                    if existing_key == alternate_key:
+                        # Only the original claim may restore a completed result or
+                        # reject an unknown/started one; no new outbound dispatch.
+                        request, replay_only = alternate, True
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit),
+                            prompt_cache_allowed=cache_allowed)
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+            **({"budget_policy": route.budget_policy} if route.budget_policy != "enforced" else {}),
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            if saved.get("context_budget"):
+                self.observe_context(
+                    scope, route, saved["context_budget"], ProviderUsage(**saved["usage"]),
+                    only_if_missing=True,
+                )
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+                continuation=saved.get("continuation"),
+            )
+        if replay_only:
+            self.store.release_call(scope, call_id, error="VERSION_CONFLICT", usage=0)
+            raise DomainError("VERSION_CONFLICT", "原模型调用已变化，不能重新发送。")
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            self._recheck_dispatch(scope, route, provider_key, decision, pricing)
+            if (route.protocol == "anthropic-native"
+                    and context_budget["admission_tokens"] * 10 &gt;= context_budget["focus"] * 9):
+                count, count_call_id = self._count_context(
+                    scope, route, request, binding, decision, pricing,
+                )
+                context_budget = {
+                    **context_budget, "provider_counted_input_tokens": count.input_tokens,
+                    "provider_count_call_id": str(count_call_id),
+                }
+                # Count is preflight metadata, never a generation usage/calibration.
+                if count.input_tokens &gt; context_budget["focus"]:
+                    from .context_budget import required_items
+    
+                    detail = {"reason_key": "provider_count_exceeds_focus",
+                              "context_budget": context_budget,
+                              "missing": required_items(system, tools, messages, output_schema)}
+                    self.store.emit(scope, {"type": "context_incomplete", **detail})
+                    raise DomainError(
+                        "CONTEXT_INCOMPLETE", "服务商预先计量超过当前上下文预算，请缩小范围。",
+                        detail=detail, recovery={"action": "reduce_required_context"},
+                    )
+                self._recheck_dispatch(scope, route, provider_key, decision, pricing)
+            dispatch_started = True
+            with prompt_cache_policy(cache_allowed):
+                result = self.client.turn(
+                    route,
+                    system=system,
+                    messages=messages,
+                    tools=tools,
+                    output_schema=output_schema,
+                    emit=emit,
+                    cancelled=lambda: self._cancelled(scope),
+                )
+        except ProviderError as error:
+            usage = error.usage
+            unknown = error.unknown or bool(
+                usage
+                and (
+                    usage.input_tokens &gt; input_upper
+                    or usage.output_tokens &gt; route.max_output_tokens
+                )
+            )
+            charged = usage.input_tokens + usage.output_tokens if usage else 0
+            cancellation_code = None
+            if error.code == "MODEL_CANCELLED":
+                # The native transport also closes on revoked ACL/budget. Only the
+                # actual persisted cancel epoch/state can call this a cancelled Run.
+                try:
+                    self.store.current(scope)
+                except DomainError as current_error:
+                    cancellation_code = current_error.code
+                else:
+                    cancellation_code = (
+                        "EXTERNAL_OUTCOME_UNKNOWN" if unknown else "SOURCE_UNAVAILABLE"
+                    )
+            code = (
+                cancellation_code
+                if error.code == "MODEL_CANCELLED"
+                else (
+                    "EXTERNAL_OUTCOME_UNKNOWN"
+                    if unknown
+                    else "RATE_LIMITED"
+                    if error.code == "PROVIDER_RATE_LIMITED"
+                    else "SOURCE_UNAVAILABLE"
+                )
+            )
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0 if unknown else charged,
+                unknown=unknown,
+                error=code,
+                request_id=error.request_id,
+                cost_usage=CostUsage(usage.input_tokens, usage.output_tokens, pricing.actual(usage))
+                if pricing and usage and not unknown
+                else CostUsage(0, 0, pricing.actual(ProviderUsage(0, 0)))
+                if pricing and not unknown
+                else None,
+            )
+            raise DomainError(
+                code,
+                "模型调用未形成可用结果，请查看原调用回执。",
+                detail={"provider_reason": error.code, "call_id": str(call_id)},
+            ) from None
+        except DomainError as error:
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0,
+                unknown=dispatch_started,
+                error=error.code,
+                request_id=error.detail.get("provider_request_id"),
+            )
+            raise
+        except Exception:
+            code = "EXTERNAL_OUTCOME_UNKNOWN" if dispatch_started else "SOURCE_UNAVAILABLE"
+            self.store.release_call(scope, call_id, unknown=dispatch_started, error=code)
+&gt;           raise DomainError(
+                code, "模型调用未形成可用结果。", detail={"call_id": str(call_id)}
+            ) from None
+E           pdos_next.errors.DomainError: 模型调用未形成可用结果。
+E           During task with name 'model' and id '2e55e2c0-b5b7-15a7-759f-5d5c946d3247'
+
+pdos_next/agent_kernel/gateway.py:368: DomainError</failure></testcase></testsuite></testsuites>

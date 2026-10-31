@@ -1,0 +1,71 @@
+{
+  "category_id": "b24a8a71-981e-49cc-a32c-496641be611d",
+  "proposal_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+  "decision": {
+    "id": "56e194e7-de92-4f53-901c-97f001dc1cab",
+    "outcome": "approved",
+    "receipt_id": "325a1235-1a21-4b29-92e4-833dd8976497",
+    "signer": {
+      "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+      "name": "胡汉伟 · 本地演示"
+    },
+    "decided_at": "2026-10-22T12:54:55.862988+00:00",
+    "rationale": "批准以本合成提案开展 S1 最小闭环演示；选择便携款方案，噪声指标和测试工况仍未知，转入项目任务继续核对，不据此作量产或市场结论。"
+  },
+  "identity": {
+    "kind": "new_product",
+    "product": {
+      "id": "6a921dbe-5876-4aef-a878-313d16407478",
+      "name": "便携充气泵 · S1 演示型号"
+    },
+    "variant": null
+  },
+  "definition": {
+    "id": "3eee398b-f286-4ef7-9ac5-dacc13adb809",
+    "title": "便携充气泵 · S1 演示型号",
+    "product_id": "6a921dbe-5876-4aef-a878-313d16407478",
+    "variant_id": null,
+    "revision": 1,
+    "sealed": true,
+    "status": "draft"
+  },
+  "project": {
+    "id": "f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+    "name": "便携充气泵 · S1 演示项目",
+    "owner": {
+      "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+      "name": "胡汉伟 · 本地演示"
+    },
+    "product_id": "6a921dbe-5876-4aef-a878-313d16407478",
+    "definition_id": "3eee398b-f286-4ef7-9ac5-dacc13adb809",
+    "definition_revision": 1
+  },
+  "open_items": [
+    {
+      "id": "1f306bc6-933d-4163-b2d9-ac64c03a7af0",
+      "project_id": "f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+      "g0_decision_id": "56e194e7-de92-4f53-901c-97f001dc1cab",
+      "kind": "task",
+      "title": "噪声",
+      "owner": {
+        "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+        "name": "胡汉伟 · 本地演示"
+      },
+      "due_date": "2026-11-20",
+      "status": "assigned"
+    },
+    {
+      "id": "503265cc-22ce-4eca-8d18-2f58dfbcfcd5",
+      "project_id": "f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+      "g0_decision_id": "56e194e7-de92-4f53-901c-97f001dc1cab",
+      "kind": "task",
+      "title": "噪声条件待确定",
+      "owner": {
+        "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+        "name": "胡汉伟 · 本地演示"
+      },
+      "due_date": "2026-11-20",
+      "status": "assigned"
+    }
+  ]
+}

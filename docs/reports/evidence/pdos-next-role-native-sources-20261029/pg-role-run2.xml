@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="58.375" timestamp="2026-10-29T07:21:37.794366-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_project_status_sources_pg" name="test_named_status_keeps_history_current_and_fixed_native_answer" time="27.864" /><testcase classname="tests.enterprise_search.test_manufacturing_document_sources_pg" name="test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity" time="29.495"><failure message="assert 0 == 1">publication_case = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '9d344789-a510-42cb-8b2f-371bd4be07a3', 'project': ...a0e-7908efb07694', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+
+    def test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity(
+        publication_case,
+    ):
+        work, person = publication_case, publication_case.setup
+        publication.import_authority(work, person.human)
+        publication.save_drafts(work)
+        first = work.documents["work_instruction"]
+        for kind in ("work_instruction", "control_plan"):
+&gt;           assert apply_event(person, work.draft_receipts[kind]["id"])["processed"] == 1
+E           assert 0 == 1
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py:47: AssertionError</failure></testcase></testsuite></testsuites>

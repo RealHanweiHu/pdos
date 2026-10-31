@@ -1,0 +1,19 @@
+{
+  "own_browser_closed": true,
+  "own_holding_pty_stopped": true,
+  "verified_owned_api_and_web_pids_stopped": [
+    96378,
+    641
+  ],
+  "private_credential_files_removed": [
+    "/tmp/pdos-parallel-browser-20261029/actor.json",
+    "/tmp/pdos-parallel-browser-20261029/storage.json",
+    "/tmp/pdos-final-designs-browser-20261029/similar-history-actor.json",
+    "/tmp/pdos-final-designs-browser-20261029/similar-history-storage.json",
+    "/tmp/pdos-final-designs-browser-20261029/task-result-actor.json",
+    "/tmp/pdos-final-designs-browser-20261029/task-result-storage.json"
+  ],
+  "shared_database_preserved": true,
+  "shared_temporal_preserved": true,
+  "builds_screenshots_evidence_preserved": true
+}

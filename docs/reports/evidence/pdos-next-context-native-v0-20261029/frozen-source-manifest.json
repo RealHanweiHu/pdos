@@ -1,0 +1,15 @@
+{
+  "pdos-next/server/pdos_next/agent_kernel/domain_reads.py": "d8e91e7547bf6902c8f9a856380c7b1035ba66cf0e4ffc3086531500d810c72a",
+  "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "bb71ac4b48425625bb97b20a11385ebdec4728e5c3a333fbfa414ad4c27855e2",
+  "pdos-next/server/tests/agent_kernel/test_domain_read_clock_replay.py": "3129d16bee4ab1e20731eac873e24c5a4dee6150ad119571fa45c3e2e5716bca",
+  "pdos-next/server/tests/agent_kernel/test_domain_read_clock_replay_pg.py": "7e4b8fed45c388d5700874dfa9c5232382cf65984da09c0feed080b21ace422c",
+  "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py": "074f545634ce1e4a39e4f7b2ff5e93e8ca5aff02fe5389f538d99e7fea514502",
+  "pdos-next/server/tests/agent_kernel/eval_v0_history_state_support.py": "e53e1bb74f934c062e261ab4f8373c434a958b8e415c7b9e88b24bf1c322db4c",
+  "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py": "11640fde8c8313b3efff519a13b52a6e77ccebb5a5bca76da2911fac55ffea8e",
+  "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py": "b98231558bd1413cfcb93e9f8a0443eef83d2e70dd4e4f86daa07f3115084189",
+  "pdos-next/server/tests/agent_kernel/test_work_state_candidate_context_schema.py": "eaa02ec8d50aaf67d6fba6af8576a68e21af937f6b7d3081231b505a01f8dc6a",
+  "pdos-next/tools/xiaopai_context_native_baseline.py": "68408ec226be3f0f1996b3bf1e757adefd9a4af75f654bdc7e58ba2b29e75001",
+  "pdos-next/tools/tests/test_xiaopai_context_native_baseline.py": "f920f3fc2e6c6ae5d2d2d82b6071bff1228994546c27ad6dc62d75364b5d0ec9",
+  "pdos-next/server/pdos_next/skill_packages/context-schemas.json": "6801a2fe69c3b06f3e0f539220f7173aa2c0fc6466d6650affd1a3b9d6b4e342",
+  "docs/evaluations/xiaopai-v0/context-questions.json": "00eca8db6bfdd0f2e3cbb1a7bb6ea8f1f246ab8741e40c149d7880be6ac7812b"
+}

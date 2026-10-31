@@ -1,0 +1,212 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 知识
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Approved revision fixture
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Ap
+  - heading "Approved revision fixture" [level=1]
+  - button "阶段待确认":
+    - text: 阶段待确认
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览" [active] [selected]
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "概览":
+    - region "需要推进":
+      - heading "需要推进 0 项任务 / 风险" [level=2]:
+        - text: 需要推进
+        - generic: 0 项任务 / 风险
+      - paragraph: 当前没有未结任务或风险。
+      - paragraph: 接收、验证与待决定事项按专业工作中的实际记录办理。
+    - region "项目动态":
+      - heading "项目动态" [level=2]
+      - button "刷新动态":
+        - text: 刷新动态
+      - list:
+        - generic "Synthetic owner 受控发布政策已登记 10/18 15:52":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控发布政策已登记
+          - time: 10/18 15:52
+        - generic "Synthetic owner 外部结果回执已记录 10/18 15:52":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 外部结果回执已记录
+          - time: 10/18 15:52
+        - generic "Synthetic owner 外部结果回执已记录 10/18 15:52":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 外部结果回执已记录
+          - time: 10/18 15:52
+        - generic "Synthetic owner 外部结果回执已记录 10/18 15:52":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 外部结果回执已记录
+          - time: 10/18 15:52
+        - generic "Synthetic owner 外部结果回执已记录 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 外部结果回执已记录
+          - time: 10/18 15:51
+        - generic "Synthetic owner 外部结果回执已记录 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 外部结果回执已记录
+          - time: 10/18 15:51
+        - generic "Synthetic owner 外部结果回执已记录 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 外部结果回执已记录
+          - time: 10/18 15:51
+        - generic "Synthetic owner 固定外部移交授权已保存 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 固定外部移交授权已保存
+          - time: 10/18 15:51
+        - generic "Synthetic peer 制造放行决定已保存 10/18 15:51":
+          - generic: S
+          - generic: Synthetic peer
+          - generic: 制造放行决定已保存
+          - time: 10/18 15:51
+        - generic "Synthetic owner 工程放行决定已保存 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 工程放行决定已保存
+          - time: 10/18 15:51
+        - generic "Synthetic owner 固定发布包已保存 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 固定发布包已保存
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控发布政策已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控发布政策已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控专业事实已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控专业事实已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控专业事实已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控专业事实已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控专业事实已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控专业事实已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控专业事实已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控专业事实已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控专业事实已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控专业事实已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 受控专业事实已登记 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 受控专业事实已登记
+          - time: 10/18 15:51
+        - generic "Synthetic owner 制造发布决定已保存 10/18 15:51":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 制造发布决定已保存
+          - time: 10/18 15:51
+        - generic "Synthetic owner 制造准备基线已保存 10/18 15:50":
+          - generic: S
+          - generic: Synthetic owner
+          - generic: 制造准备基线已保存
+          - time: 10/18 15:50
+      - button "加载更多动态"
+      - generic "记录范围与读取时点"
+    - region "试制轮次":
+      - heading "试制轮次" [level=2]:
+        - text: 试制轮次
+      - text: 试制轮次
+      - combobox "试制轮次":
+        - option "尚无可读轮次" [selected]
+      - paragraph: 按已保存轮次查看固定配置、计划数量与验证目标。
+      - link "查看本项目 Builds":
+        - /url: /?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&product=f45ccec6-58a5-4331-8ce6-cc70b72931ed&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd&projectView=builds&panel=summary
+        - text: 查看本项目 Builds
+    - region "项目关键承诺":
+      - heading "关键承诺" [level=2]:
+        - text: 关键承诺
+      - button "刷新承诺"
+      - paragraph: 已读取当前版本人工任务承诺 0 条。接收人不同的记录分别保留。
+      - paragraph: 当前可读范围内尚无当前版本人工任务承诺。
+      - generic "承诺与履行口径"
+      - generic "本次读取时点"
+    - generic: S
+    - button "写状态更新"
+    - region "计划与四时间":
+      - heading "计划与四时间 尚无计划" [level=2]:
+        - text: 计划与四时间
+        - generic: 尚无计划
+      - generic: 基线
+      - generic: 未知
+      - generic: 预测
+      - generic: 未知 — 未知
+      - generic: 承诺
+      - generic: 未知
+      - generic: 实际
+      - generic: 未知
+      - paragraph: 预测为计划完成范围，尚未关联门禁里程碑。
+      - button "进入工作与计划":
+        - text: 进入工作与计划
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

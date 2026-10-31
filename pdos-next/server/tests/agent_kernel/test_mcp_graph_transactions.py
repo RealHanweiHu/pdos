@@ -48,7 +48,7 @@ class ScriptedModel:
 
     def turn(self, _route, **request):
         tools = {item["name"] for item in request["tools"]}
-        child = tools == {"mcp.result.read"}
+        child = tools == {"mcp.result.read", "result.read"}
         self.calls.append((child, request))
         outputs = [
             json.loads(message["content"])

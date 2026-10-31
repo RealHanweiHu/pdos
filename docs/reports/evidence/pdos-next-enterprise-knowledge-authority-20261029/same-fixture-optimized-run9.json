@@ -1,0 +1,234 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "context": {
+    "tenant_id": "9627b2fb-d72c-4958-b38b-b15e53d66896",
+    "actor_id": "bb67cec9-b3b3-4c2a-9627-50bf8dd9c8c6",
+    "requester_id": "bb67cec9-b3b3-4c2a-9627-50bf8dd9c8c6",
+    "category_id": null
+  },
+  "family_counts": {
+    "artifact": 21,
+    "knowledge": 6,
+    "issue": 4,
+    "capa": 1,
+    "change": 6,
+    "external_wait": 6,
+    "supply": 6,
+    "build": 4,
+    "test_run": 4
+  },
+  "raw_sql_response_equal": true,
+  "authority_batch_sizes": [
+    9,
+    48
+  ],
+  "durations": {
+    "search": [
+      1.0096635409863666,
+      0.740124624921009,
+      0.6435049579013139,
+      0.7317758329445496,
+      0.6131327080074698,
+      0.6251729589421302,
+      0.71242641704157,
+      0.7158587090671062,
+      0.6206591670634225,
+      0.5738385419826955,
+      0.5273032080149278,
+      0.6548280840506777
+    ],
+    "verify_nine": [
+      0.472857957938686,
+      0.2926122909411788,
+      0.28358170797582716,
+      0.28839649993460625,
+      0.284192124963738,
+      0.291567291948013,
+      0.3161132090026513,
+      0.2748227920383215,
+      0.2671943330205977,
+      0.28339808399323374,
+      0.27901854109950364,
+      0.24647841695696115
+    ],
+    "verify_expanded": [
+      0.3574032079195604,
+      0.30195033294148743,
+      0.2943803749512881,
+      0.3124145839828998,
+      0.2982929580612108,
+      0.553247332922183,
+      0.3207551250234246,
+      0.27549604105297476,
+      0.27541104203555733,
+      0.2992717500310391,
+      0.291916084010154,
+      0.28417791693937033
+    ]
+  },
+  "sql_counts": {
+    "search": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "verify_nine": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "verify_expanded": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "first_statement_seconds": [
+    {
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 25,
+      "seconds": 0.0022618749644607306
+    },
+    {
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 205,
+      "seconds": 0.0009030000073835254
+    },
+    {
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0008532919455319643
+    },
+    {
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.04227233398705721
+    },
+    {
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.4386312090791762
+    },
+    {
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.019982167053967714
+    },
+    {
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3569102910114452
+    },
+    {
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.004334583994932473
+    },
+    {
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0009389580227434635
+    },
+    {
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009636660106480122
+    },
+    {
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160703,
+      "seconds": 0.25239116710145026
+    },
+    {
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.021422583027742803
+    },
+    {
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.0187661669915542
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0022345409961417317
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0010025830706581473
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009455000981688499
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 162299,
+      "seconds": 0.23341420909855515
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.02480266708880663
+    },
+    {
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.01865395810455084
+    }
+  ],
+  "warm_p95_seconds": {
+    "search": 0.7434641417115927,
+    "verify_nine": 0.32551357622724025,
+    "verify_expanded": 0.6462442160816864
+  }
+}

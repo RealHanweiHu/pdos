@@ -1,0 +1,10 @@
+Working directory: pdos-next/server
+
+$ .venv/bin/python -m pytest tests/enterprise_search/test_relations.py tests/enterprise_search/test_keyword.py -q
+.........                                                                [100%]
+9 passed in 1.03s
+
+$ .venv/bin/python -m ruff check pdos_next/enterprise_search/readable_sources.py pdos_next/enterprise_search/relations.py pdos_next/enterprise_search/business_sources.py pdos_next/enterprise_search/business_execution_sources.py tests/enterprise_search/test_relations.py
+All checks passed!
+
+These are local pure checks only. No database, provider or network was accessed.

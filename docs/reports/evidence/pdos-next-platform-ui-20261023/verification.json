@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-23",
+  "eslint_exit": 0,
+  "preview_typescript_exit": 0,
+  "full_typescript_exit": 0,
+  "http": 200,
+  "detector_runs": 1,
+  "detector_findings": 0,
+  "browser_screens": 17,
+  "view_states_per_size": 45,
+  "sizes": [
+    [
+      1280,
+      720
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "business_writes": 0,
+  "model_calls": 0,
+  "production_replacement": false,
+  "source_sha256": {
+    "pdos-next/web/src/app/ui-lab/platform/design-data.ts": "5ac634963ca278b207d7a7948f94f2620bdc23262c314013974e8fd9216bf0b2",
+    "pdos-next/web/src/app/ui-lab/platform/platform.module.css": "8690e8d78e3d13f710bf372146365d35c080ea2c7ccc395138a147347a00c651",
+    "pdos-next/web/src/app/ui-lab/platform/DESIGN.md": "6d54c64ba4419f4ad1c05258c63d1bb2330287ea0eac1c4f3282ed7c0f3c7c15",
+    "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "76c30d5ed9f48f4f72dc97ece83181cff6f317c8cfc2ebf0e08aca9351b3285e",
+    "pdos-next/web/src/app/ui-lab/platform/page.tsx": "def4c3ffc6020a2439f19e55b36dca6ead205726acd2126815d5e105f9727b07"
+  }
+}

@@ -49,6 +49,7 @@ def declared_contract(declaration, contracts):
 
 
 def combine_contracts(catalog, skills):
+    from pdos_next.personal_preferences import CONTEXT_SCHEMA
     schemas = [skill.metadata["context_schema"] for skill in skills] or [
         declared_contract({"$ref": "context-schemas.json#/profiles/navigation"}, catalog.contexts)
     ]
@@ -61,6 +62,16 @@ def combine_contracts(catalog, skills):
                 raise DomainError("VERSION_CONFLICT", "已加载方法的资料字段合同冲突。")
             properties[key] = value
         required.update(schema.get("required", ()))
+    from pdos_next.enterprise_search.verification_actions import CONTEXT_SCHEMA as ACTION_SCHEMA
+
+    properties["personal_preferences"] = deepcopy(CONTEXT_SCHEMA)
+    properties["verification_action"] = deepcopy(ACTION_SCHEMA)
+    from pdos_next.enterprise_search.work_followup_actions import CONTEXT_SCHEMA as WORK_SCHEMA
+
+    properties["work_followup_action"] = deepcopy(WORK_SCHEMA)
+    from pdos_next.enterprise_search.assistant_depth import CONTEXT_SCHEMA as DEPTH_SCHEMA
+
+    properties["assistant_depth"] = deepcopy(DEPTH_SCHEMA)
     return {"type": "object", "properties": properties, "required": sorted(required),
             "additionalProperties": False, "$defs": schemas[0]["$defs"]}
 
@@ -164,7 +175,8 @@ def check_messages(store, scope, messages, bindings):
                           and message.get("tool_call_id") in loading):
             try:
                 envelope = json.loads(message["content"])
-                envelopes.append((envelope["context_ref"], envelope["context"]))
+                envelopes.append((envelope["context_ref"], envelope["context"],
+                                  envelope.get("omitted_fields", [])))
             except (ValueError, TypeError, KeyError):
                 # A failed skill.load is an error result, never a new context envelope.
                 if index == 0:
@@ -174,9 +186,10 @@ def check_messages(store, scope, messages, bindings):
     with store.transaction(scope) as (_, run):
         saved = {value["event_id"]: value
                  for value in run.versions.get("context_snapshots", {}).values()}
-        for reference, value in envelopes:
+        for reference, value, omitted_fields in envelopes:
             entry = saved.get(reference)
-            if entry is None or entry["content_digest"] != digest(value) or any(
+            if (entry is None or entry["content_digest"] != digest(value)
+                    or omitted_fields != [item["field"] for item in entry["omitted"]]) or any(
                 any(loaded.get(skill["key"], {}).get(key) != skill[key]
                     for key in ("key", "version", "digest")) for skill in entry["skills"]
             ):

@@ -1,0 +1,18 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "from": "s0_0849",
+  "policy": {
+    "polname": "kernel_source_audience",
+    "polpermissive": false,
+    "polcmd": "r",
+    "roles": [
+      "pdos_agent",
+      "pdos_next_app",
+      "pdos_next_auth",
+      "pdos_next_dispatch"
+    ],
+    "qual": "kernel_read_set_visible(tenant_id, category_id, read_sources)",
+    "withcheck": null
+  },
+  "existing_history_covered_by_old_helper": true
+}

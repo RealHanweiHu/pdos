@@ -12,6 +12,7 @@ from pdos_next.models import Category, Grant, Principal
 from pdos_next.service import Context, digest, require_access
 
 from .models import AgentEvent, AgentRun, AgentSession, AgentToolCall, ValidationBudget
+from .session_bindings import current_proposal_id
 from .types import RunScope
 
 
@@ -20,7 +21,7 @@ class KernelStore:
         self.engine = engine
 
     @contextmanager
-    def composition_lock(self, scope, call_key):
+    def composition_lock(self, scope, call_key, *, wait=False):
         """Fence the resumable read orchestrator across processes, without a long transaction."""
         key = int(
             digest(["research-composition", scope.tenant_id, scope.run_id, call_key])[:16], 16
@@ -29,7 +30,9 @@ class KernelStore:
             key -= 2**64
         self.current(scope)
         with self.engine.connect().execution_options(isolation_level="AUTOCOMMIT") as connection:
-            if not connection.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
+            if wait:
+                connection.execute(text("SELECT pg_advisory_lock(:key)"), {"key": key})
+            elif not connection.scalar(text("SELECT pg_try_advisory_lock(:key)"), {"key": key}):
                 raise RuntimeError("Research composition is already advancing in another process")
             try:
                 yield
@@ -113,6 +116,9 @@ class KernelStore:
             yield session, run
 
     def authority(self, session, scope):
+        from pdos_next.dingtalk.guards import run_guard
+
+        run_guard(session, session.get(AgentRun, scope.run_id))
         if scope.trigger == "automation_service":
             from pdos_next.domain.automations.service_runtime import run_binding
 
@@ -248,6 +254,7 @@ class KernelStore:
         cost_lease=None,
         execution_binding=None,
         resume_started=False,
+        budget_policy="enforced",
     ):
         try:
             return self._claim(
@@ -259,6 +266,7 @@ class KernelStore:
                 cost_lease=cost_lease,
                 execution_binding=execution_binding,
                 resume_started=resume_started,
+                budget_policy=budget_policy,
             )
         except DomainError as error:
             if error.code == "EXTERNAL_OUTCOME_UNKNOWN" and error.detail.get("call_id"):
@@ -283,11 +291,14 @@ class KernelStore:
         cost_lease=None,
         execution_binding=None,
         resume_started=False,
+        budget_policy="enforced",
     ):
         fingerprint = digest([tool, payload])
         binding = execution_binding or {"kind": "unbound"}
         resumable_read = (
-            tool in {"research.fanout", "mcp.tools.list", "mcp.read"}
+            tool in {"research.fanout", "mcp.tools.list", "mcp.read",
+                     "assistant.search", "assistant.extract", "assistant.citations.read",
+                     "assistant.materials.read", "assistant.compare"}
             and binding.get("kind") == "read"
             and binding.get("read_kind") == "ordinary/v1"
             and binding.get("isolation") == "main"
@@ -303,11 +314,29 @@ class KernelStore:
             and reservation == 0
             and cost_lease is None
         )
-        if resume_started and not (resumable_read or resumable_mcp):
+        resumable_result = (
+            tool == "result.read" and binding.get("kind") == "read"
+            and binding.get("read_kind") == "ordinary/v1"
+            and binding.get("isolation") == scope.isolation
+            and reservation == 0 and cost_lease is None
+        )
+        if resume_started and not (resumable_read or resumable_mcp or resumable_result):
             raise DomainError("FORBIDDEN_SCOPE", "只有已绑定的只读编排可接续原调用。")
         if binding.get("kind") == "domain_t0":
             raise DomainError("FORBIDDEN_SCOPE", "T0 调用须在领域事务内领取。")
         with self.transaction(scope, lock=True) as (session, run):
+            unlimited = budget_policy == "development_unlimited"
+            if budget_policy not in {"enforced", "development_unlimited"} or (
+                unlimited and (tool != "model" or cost_lease is None
+                               or cost_lease[3].get("provider") != "minimax")
+            ):
+                raise DomainError(
+                    "FORBIDDEN_SCOPE", "开发期限额策略缺少实际 MiniMax 费用绑定。", 403
+                )
+            if unlimited:
+                from .development_budget import require_local_test_database
+
+                require_local_test_database(session)
             if resume_started and resumable_mcp:
                 try:
                     parent = session.get(AgentToolCall, UUID(binding["parent_read_call_id"]))
@@ -356,7 +385,9 @@ class KernelStore:
                     "原调用须按回执对账，不能盲目重发。",
                     detail={"call_id": str(call.id)},
                 )
-            if reservation < 0 or run.held_tokens + run.used_tokens + reservation > run.token_limit:
+            if reservation < 0 or not unlimited and (
+                run.held_tokens + run.used_tokens + reservation > run.token_limit
+            ):
                 raise DomainError("RATE_LIMITED", "运行预算不足。")
             if run.trigger in {"automation_manual", "automation_service"}:
                 from pdos_next.domain.automations.runtime import reserve
@@ -387,7 +418,7 @@ class KernelStore:
                         detail={"reason_key": "budget_inactive"},
                     )
                 cost, inp, outp, pricing = cost_lease
-                if (
+                if not unlimited and (
                     budget.calls + 1 > budget.call_limit
                     or budget.held_micro_usd + budget.spent_micro_usd + cost
                     > budget.limit_micro_usd
@@ -397,11 +428,14 @@ class KernelStore:
                     > budget.output_token_limit
                 ):
                     raise DomainError("RATE_LIMITED", "验证的费用、次数或 token 总额已达上限。")
+                if unlimited:
+                    budget.development_unlimited = True
                 budget.calls += 1
                 budget.held_micro_usd += cost
                 budget.held_input_tokens += inp
                 budget.held_output_tokens += outp
-                call.cost_pricing = pricing
+                call.cost_pricing = {**pricing, **({"budget_policy": budget_policy}
+                                                 if unlimited else {})}
                 call.cost_state = "reserved"
                 call.cost_reserved_micro_usd = cost
                 call.input_token_reservation = inp
@@ -501,6 +535,9 @@ class KernelStore:
     def finish(self, scope, result):
         with self.transaction(scope, lock=True) as (session, run):
             previous_state = run.state
+            from .work_state import record_finish
+
+            result = record_finish(session, run, result)
             run.result, run.state = (
                 result,
                 "partial" if result["status"] == "partial" else "completed",
@@ -615,7 +652,7 @@ def create_run(
             or conversation.owner_id != ctx.requester_id
             or conversation.category_id != ctx.category_id
             or conversation.product_id != product_id
-            or conversation.proposal_id != proposal_id
+            or current_proposal_id(session, conversation) != proposal_id
             or getattr(conversation, "project_id", None) != project_id
         ):
             raise DomainError("FORBIDDEN_SCOPE", "会话范围不一致。")
@@ -633,6 +670,24 @@ def create_run(
     # Taint is supplied by the trusted host source read-set, never by model arguments.
     from .session_checkpoints import LAYOUT_KEY, SESSION_LAYOUT
 
+    project_metadata, project_facts = None, None
+    if project_id is not None:
+        from .project_object_reads import bind_project_metadata
+
+        project_metadata = bind_project_metadata(
+            session, ctx, actual_project, require_access(session, ctx, product_id)
+        )
+        private_context = private_context or project_metadata["private_objects"]
+        data_categories = tuple(sorted(set(data_categories) | {"internal"}))
+        from .project_current_context import bind as bind_project_facts
+
+        project_facts = bind_project_facts(session, ctx, actual_project)
+        private_context = private_context or project_facts["private_context"]
+        data_categories = tuple(sorted(
+            set(data_categories) | set(project_facts["data_categories"]),
+        ))
+        # Native context dependencies classify and recheck this Run independently.
+        # Only the existing Human/proposal binding supplies explicit read_sources.
     run = AgentRun(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -656,6 +711,8 @@ def create_run(
         versions={
             LAYOUT_KEY: SESSION_LAYOUT,
             **({"proposal_context": outbound_context} if outbound_context is not None else {}),
+            **({"project_metadata_context": project_metadata} if project_metadata else {}),
+            **({"project_current_context": project_facts} if project_facts else {}),
         },
         validation_budget_id=validation_budget_id,
     )
@@ -689,6 +746,9 @@ def cancel_run(session, ctx, run_id):
             call.reserved_tokens, call.state, call.error_code = 0, "unknown", "CANCELLED_RUN"
         run.held_tokens, run.state = 0, "cancelled"
         run.cancel_epoch += 1
+        from .work_state import record_finish
+
+        record_finish(session, run, run.result or {})
         from .process_view import record_state
 
         record_state(session, run)

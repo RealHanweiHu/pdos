@@ -1,0 +1,25 @@
+{
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/pai/run-continuation.tsx",
+      "base_sha256": "5d488eb50b4b035b14f22ed7cd3029866813bf194b1a2cfd1f93d8eba9a9b0d6",
+      "sha256": "feefa3533d7e7362ca379e3f8b7a04758c8d8bcd6080a06041eb8f15888326bf"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-state-carry.tsx",
+      "base_sha256": "27e687d06b3c68226c9116a6b9f5c217e597935b591446663659e1421fa35c67",
+      "sha256": "f785618b2f5a6d7fcab537423d4171d9e671aab06bf5984587cc829f1b104ebe"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-continuation.test.mjs",
+      "base_sha256": "b7284f862581bbddab9b4b54ef6d028b469726ad687a4b568568ef34e793a3db",
+      "sha256": "4529a79f744df791ed0ea98a2bc66665714339b9558b3c64381a0aca84ec4cf2"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-state-carry.test.mjs",
+      "base_sha256": "46ee6fb3f3c360f5a8273aa5b24fb85129e9ebab12aa74eab8925076296615f1",
+      "sha256": "f2667e12bffcf0e14ec06896031ed385104fc8568b2652ef97cf776be5be77b9"
+    }
+  ],
+  "reason": "Actual browser: WorkStateCarry read at accepted Run startup remained revision2 after Run completed. Reread when Run becomes terminal; ignore late startup read; no write or extra continuation."
+}

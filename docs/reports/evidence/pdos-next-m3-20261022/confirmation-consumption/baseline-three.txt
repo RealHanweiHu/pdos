@@ -1,0 +1,147 @@
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+____ test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_input] _____
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-435/test_sql_adoption_and_input_ki0')
+change = 'immutable_input'
+
+    @pytest.mark.parametrize("change", ["requester", "reserved", "immutable_input", "immutable_event"])
+    def test_sql_adoption_and_input_kinship_cannot_be_forged(setup, tmp_path, change):
+>       f = personal_fixture(setup, tmp_path, sources=False)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_adoption_transactions.py:161: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_candidate_transactions.py:214: in personal_fixture
+    f.model_id, _ = f.store.claim(
+pdos_next/agent_kernel/persistence.py:253: in claim
+    return self._claim(
+pdos_next/agent_kernel/persistence.py:310: in _claim
+    with self.transaction(scope, lock=True) as (session, run):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:137: in __enter__
+    return next(self.gen)
+           ^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.persistence.KernelStore object at 0x117976720>
+scope = RunScope(tenant_id=UUID('f0405b58-e6bc-4152-988f-2052d10825ce'), requester_id=UUID('a872cac5-6805-424a-9650-7dbc0f70a5..._categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation', project_id=None)
+lock = True
+
+    @contextmanager
+    def transaction(self, scope, *, lock=False):
+        with tenant_session(
+            self.engine,
+            scope.tenant_id,
+            actor_id=scope.writer_id,
+            requester_id=scope.requester_id,
+            category_id=scope.category_id,
+        ) as session:
+            run = session.scalar(
+                select(AgentRun).where(AgentRun.id == scope.run_id).with_for_update()
+                if lock
+                else select(AgentRun).where(AgentRun.id == scope.run_id)
+            )
+            if (
+                not run
+                or run.tenant_id != scope.tenant_id
+                or run.requester_id != scope.requester_id
+                or run.writer_id != scope.writer_id
+                or run.category_id != scope.category_id
+                or run.product_id != scope.product_id
+                or run.proposal_id != scope.proposal_id
+                or getattr(run, "project_id", None) != getattr(scope, "project_id", None)
+                or run.session_id != scope.session_id
+                or run.trigger != scope.trigger
+                or run.private_context != scope.private_context
+                or frozenset(run.data_categories) != scope.data_categories
+                or tuple(run.customer_identities) != scope.customer_identities
+            ):
+>               raise DomainError("FORBIDDEN_SCOPE", "运行与服务器范围不一致。")
+E               pdos_next.errors.DomainError: 运行与服务器范围不一致。
+
+pdos_next/agent_kernel/persistence.py:103: DomainError
+___ test_category_run_records_adopts_reads_and_replays_product_source[True] ____
+
+work = <isolated synthetic test scope>, human = True
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_category_run_records_adopts_reads_and_replays_product_source(work, human):
+        f = bound(work, human=human)
+        original = current(f)
+>       record, _ = prepared(f, "evidence.claim.record", claim_args(f))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_category_source_writeback_pg.py:192: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_category_source_writeback_pg.py:168: in prepared
+    candidate = f.owner.prepare_candidate(f.scope, f.registry.get(tool), args, intent)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/bootstrap.py:355: in prepare_candidate
+    return prepare(session, scope, spec, arguments, intent_key, self)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/claim_candidate.py:60: in prepare
+    verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x158ddcf20>
+scope = RunScope(tenant_id=UUID('e37012d6-18d0-4fce-bdbe-adf39cffe704'), requester_id=UUID('a390cfc3-3a8b-4b3d-a04d-709a25da47...ategories=frozenset({'internal'}), isolation='main', artifact_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x1593c2a20>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前..., tier='T0', operation_key='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1')
+arguments = {'source': {'kind': 'artifact', 'id': '2bb3af91-46e4-438a-9a3a-db84d0b87d86', 'version': 1, 'line': 1, ...}, 'nature': 'extracted', 'content': {'text': 'Synthetic only'}}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.2-draft', digest='635b22238d54a957c30fa0568ba68be21...'2b662727-0188-453c-b7cd-1956f1fda622')), model_call_id=UUID('e9c943d1-d8f4-4c89-be0b-ba128a987a1d'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x158b0cbf0>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x158c60410>
+route = ProviderRoute(protocol='openai-compatible', base_url='https://synthetic-provider.test/v1', model='synthetic-model', ve...enai_output_parameter='max_completion_tokens', timeout_seconds=30.0, response_bytes=1048576, configuration_digest=None)
+prepare_only = True
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:290: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[True]
+tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 6 warnings
+tests/agent_kernel/test_context_projection_entries.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_category_adoption_transactions.py::test_sql_adoption_and_input_kinship_cannot_be_forged[immutable_input]
+FAILED tests/agent_kernel/test_category_source_writeback_pg.py::test_category_run_records_adopts_reads_and_replays_product_source[True]
+2 failed, 1 passed, 20 warnings in 24.66s

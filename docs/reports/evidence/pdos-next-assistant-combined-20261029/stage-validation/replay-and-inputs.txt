@@ -1,0 +1,6 @@
+112 precise operations, 0 actual base conflicts.
+Independent replay and final unified patch both match all 83 delivered file SHA-256.
+572 first-pass successful cases retain the same production inputs; only the six-case test namespace was fixed.
+2661 final source/config inputs (excludes generated caches); 714 web inputs.
+C1 original 780/781 hashes retained; the only superseded test is exact approved negative-fixture output; both negative-fixture deliveries preserved.
+47 new + 36 modified files; all undeclared inputs unchanged.

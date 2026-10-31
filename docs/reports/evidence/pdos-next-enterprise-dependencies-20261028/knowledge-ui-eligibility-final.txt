@@ -1,0 +1,28 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 16 items
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body PASSED [  6%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet FAILED [ 12%]
+
+=================================== FAILURES ===================================
+_ test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet _
+tests/enterprise_search/test_knowledge_dependencies_pg.py:141: in test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet
+    card = response.json()["result"]["result"]["assistant"]["sources"][0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   IndexError: list index out of range
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-dependencies-20261028/knowledge-ui-focused.junit.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_knowledge_dependencies_pg.py::test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+=================== 1 failed, 1 passed, 1 warning in 17.23s ====================

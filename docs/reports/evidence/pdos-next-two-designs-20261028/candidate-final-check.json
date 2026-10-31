@@ -1,0 +1,10 @@
+{
+  "candidate": "work-state-final-boundary",
+  "source_files_verified": 29,
+  "changed_after_verification": [],
+  "diff_check_exit": 0,
+  "real_model_calls": 0,
+  "database_tests": 90,
+  "pure_tests": 65,
+  "frontend_tests": 19
+}

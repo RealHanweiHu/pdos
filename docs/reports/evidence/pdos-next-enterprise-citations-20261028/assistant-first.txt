@@ -1,0 +1,124 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_ test_actual_search_citation_isolated_extract_and_server_answer_are_replayable _
+
+setup = <isolated synthetic test scope>
+
+    def test_actual_search_citation_isolated_extract_and_server_answer_are_replayable(setup):
+        identity = register(
+            setup, "D16 气密记录", "接口漏气。措施：更换密封圈。\nRAW_ONLY_CHILD_MARKER\n"
+        )
+        index(setup, identity)
+        client = SyntheticClient()
+        owner, scope, host, adapter = fixture(setup, client)
+        output = execute(owner, scope, host)
+        assert output["status"] == "completed", output
+>       answer = output["result"]["assistant"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'assistant'
+
+tests/enterprise_search/test_assistant_pg.py:171: KeyError
+_ test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state _
+
+setup = <isolated synthetic test scope>
+
+    def test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state(setup):
+        response = post(
+            setup,
+            request(
+                setup,
+                "category.knowledge.add",
+                {
+                    "kind": "boundary",
+                    "content": {"definition": "漏气时核对密封圈，已登记内部边界。"},
+                },
+            ),
+        )
+        assert response.status_code == 200, response.text
+        from pdos_next.domain.preproject.category_models import KnowledgeEntry
+        from pdos_next.enterprise_search.indexing import project
+        from tests.enterprise_search.test_retrieval_pg import session_for
+    
+        with session_for(setup) as session:
+            row = session.scalar(
+                select(KnowledgeEntry).where(
+                    KnowledgeEntry.lineage_id == UUID(response.json()["subject_id"]),
+                )
+            )
+            project(session, setup.ctx, "knowledge", row.id)
+        client = SyntheticClient()
+        owner, scope, host, _adapter = fixture(setup, client)
+        output = execute(owner, scope, host)
+        assert output["status"] == "completed", output
+>       assert output["result"]["assistant"]["lookup"] == "cited"
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'assistant'
+
+tests/enterprise_search/test_assistant_pg.py:233: KeyError
+_______ test_final_source_withdrawal_removes_quotes_and_dependent_prose ________
+
+setup = <isolated synthetic test scope>
+
+    def test_final_source_withdrawal_removes_quotes_and_dependent_prose(setup):
+        identity = register(setup, "漏气记录", "措施：更换密封圈。RAW_ONLY_CHILD_MARKER")
+        index(setup, identity)
+    
+        def withdraw():
+            with Session(setup.admin) as session, session.begin():
+                session.get(Artifact, identity).status = "withdrawn"
+    
+        client = SyntheticClient(after_extract=withdraw)
+        owner, scope, host, _adapter = fixture(setup, client)
+        output = execute(owner, scope, host)
+>       assert output["status"] == "partial", output
+E       AssertionError: {'status': 'completed', 'summary': '参考固定记录：更换密封圈。', 'result': {}, 'questions': [], ...}
+E       assert 'completed' == 'partial'
+E         
+E         - partial
+E         + completed
+
+tests/enterprise_search/test_assistant_pg.py:249: AssertionError
+_________ test_forged_citation_cannot_become_a_verified_company_source _________
+
+setup = <isolated synthetic test scope>
+
+    def test_forged_citation_cannot_become_a_verified_company_source(setup):
+        index(setup, register(setup, "漏气记录", "措施：更换密封圈。RAW_ONLY_CHILD_MARKER"))
+        client = SyntheticClient(forged=True)
+        owner, scope, host, _adapter = fixture(setup, client)
+        output = execute(owner, scope, host)
+>       assert output["status"] == "partial", output
+E       AssertionError: {'status': 'completed', 'summary': '参考固定记录：更换密封圈。', 'result': {}, 'questions': [], ...}
+E       assert 'completed' == 'partial'
+E         
+E         - partial
+E         + completed
+
+tests/enterprise_search/test_assistant_pg.py:259: AssertionError
+_____________ test_actual_no_match_is_not_mislabeled_as_no_lookup ______________
+
+setup = <isolated synthetic test scope>
+
+    def test_actual_no_match_is_not_mislabeled_as_no_lookup(setup):
+        client = SyntheticClient()
+        owner, scope, host, _adapter = fixture(setup, client)
+        output = execute(owner, scope, host)
+        assert output["status"] == "completed", output
+>       answer = output["result"]["assistant"]
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'assistant'
+
+tests/enterprise_search/test_assistant_pg.py:269: KeyError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_assistant_pg.py::test_actual_search_citation_isolated_extract_and_server_answer_are_replayable
+FAILED tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+FAILED tests/enterprise_search/test_assistant_pg.py::test_final_source_withdrawal_removes_quotes_and_dependent_prose
+FAILED tests/enterprise_search/test_assistant_pg.py::test_forged_citation_cannot_become_a_verified_company_source
+FAILED tests/enterprise_search/test_assistant_pg.py::test_actual_no_match_is_not_mislabeled_as_no_lookup
+5 failed, 1 warning in 18.47s

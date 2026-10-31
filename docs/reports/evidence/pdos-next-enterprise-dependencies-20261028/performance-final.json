@@ -1,0 +1,38 @@
+{
+  "evidence": "database-final.junit.xml",
+  "results": [
+    {
+      "case": "tests.enterprise_search.test_retrieval_pg::test_query_count_is_constant_and_local_warm_latency_below_one_second",
+      "properties": {
+        "keyword_warm_p95_seconds": "0.06730269781546667",
+        "keyword_queries_per_request": "3",
+        "keyword_source_count": "8",
+        "keyword_samples": "12"
+      },
+      "passed": true
+    },
+    {
+      "case": "tests.enterprise_search.test_scope_pg::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice",
+      "properties": {
+        "scope_warm_p95_seconds": "0.17508369149873032",
+        "scope_queries_per_request": "[12]",
+        "scope_samples": "12",
+        "scope_returned_sources": "2"
+      },
+      "passed": true
+    },
+    {
+      "case": "tests.enterprise_search.test_knowledge_dependencies_pg::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency",
+      "properties": {
+        "knowledge_dependency_warm_p95_seconds": "0.04022030174965039",
+        "knowledge_dependency_queries_per_request": "[3]",
+        "knowledge_dependency_sources": "6",
+        "knowledge_dependency_samples": "12"
+      },
+      "passed": true
+    }
+  ],
+  "threshold_unchanged": true,
+  "historical_failure_preserved": "../pdos-next-citation-inheritance-20261028/verification-result.json",
+  "historical_outlier_root_cause": "unestablished; a later passing run does not explain or erase the earlier outlier"
+}

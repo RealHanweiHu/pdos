@@ -1,0 +1,1 @@
+model.configuration.save schema matches the actual SavePayload; new options remain optional.

@@ -31,7 +31,8 @@ def example(key, contract):
 def test_skill_declares_actual_native_wire_schema(key):
     current = skill(key)
     assert current.metadata["output_schema"] == WireAgentOutput.model_json_schema()
-    assert current.version == ("0.2.3-draft" if key == "proposal_drafting" else "0.2.2-draft")
+    expected = {"proposal_drafting": "0.2.3-draft", "public_research": "0.2.3-draft"}
+    assert current.version == expected.get(key, "0.2.2-draft")
     registry = default_registry()
     for operation in current.metadata["allowed_operations"]:
         assert registry.get(operation["tool"]).tier == operation["tier"]
@@ -107,6 +108,7 @@ def test_claim_withdraw_example_is_actual_t1_without_confirmation_fabrication():
 
 
 PROJECT_SKILLS = (
+    "work_management",
     "build_execution",
     "quality_issue",
     "test_verification",
@@ -149,7 +151,7 @@ def test_project_skills_cover_the_registered_manufacturing_chain():
     authorized = set()
     for entry in catalog.index:
         authorized |= catalog.configuration(entry["key"]).operations
-    families = ("build.", "npi.", "supply.", "cost.", "quality.", "test.", "verification.",
+    families = ("work.", "build.", "npi.", "supply.", "cost.", "quality.", "test.", "verification.",
                 "change.", "release.", "integration.", "engineering.")
     registered = {
         definition["name"] for definition in default_registry().definitions()

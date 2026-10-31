@@ -1,0 +1,102 @@
+{
+  "version": "context-native-observation/v1",
+  "case_id": "CTX-04",
+  "f_budget_tokens": 64000,
+  "native_binding_status": "partial",
+  "status": "native_control_checks_passed",
+  "scripted_provider": true,
+  "real_model_calls": 0,
+  "provider_dispatches": 2,
+  "context_budget": [
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 712,
+        "envelope": 1346
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32552,
+      "fixed_over_half": false,
+      "admission_tokens": 37435,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 64000,
+      "window": 70048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 184,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 712,
+        "envelope": 1346
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32736,
+      "fixed_over_half": false,
+      "admission_tokens": 37647,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    }
+  ],
+  "bindings": {
+    "session_id": "ea035f22-f27e-4c98-8526-dd8239d3443c",
+    "current_project_id": "e2832d2a-4cc8-41e9-8290-4854bc991c76",
+    "excluded_neighbor_project_id": "f6758cea-7100-4f1a-be39-621036c6f8b2",
+    "task_ids": [
+      "76eff5b0-d555-435a-9457-030fd406ce41",
+      "f3e1a90b-6ad5-4e7f-917e-eeb7ec4ce54a"
+    ],
+    "native_receipt_ids": [
+      "c76ce552-829f-46e2-8e71-f63be21a23d7",
+      "12703c9d-0cb6-46a3-8a8c-de4ab8cee49b",
+      "286a653c-2733-4224-b969-d3259deafd0f"
+    ],
+    "assignee_alias": {
+      "周柯": "62c9a4cd-52cc-4e2d-b720-f50433cf9de3"
+    },
+    "document_source_id": "51b8fc63-1bf9-4e2c-9680-82131c911f71",
+    "final_run_id": "394af4cf-dc15-4afa-8527-2de7a9e2a091"
+  },
+  "model_quality_score": null,
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "binding_limitations": [
+    "2026-11-08及其建议性质来自明确选择的不可变原生资料；未构造PlanTask日期，不能声称此字段已成为当前WorkTask/已接受承诺。",
+    "周柯为题内别名，实际负责人绑定当前合成人员ID；不对姓名语义评分。"
+  ],
+  "usage_basis": "unmeasured_scripted_zero_only"
+}

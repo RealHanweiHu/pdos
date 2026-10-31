@@ -42,9 +42,8 @@ def fixture(isolation="main", *, compute=False):
     )
     registry = ToolRegistry([spec])
     values = asdict(scope)
-    for key in ("isolation", "artifact_ids", "trigger"):
-        values.pop(key)
     values["id"] = values.pop("run_id")
+    values = {key: value for key, value in values.items() if key in AgentRun.__table__.columns}
     values["data_categories"] = list(values["data_categories"])
     values["customer_identities"] = list(values["customer_identities"])
     run = AgentRun(

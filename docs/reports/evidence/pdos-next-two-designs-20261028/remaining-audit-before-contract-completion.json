@@ -1,0 +1,69 @@
+{
+  "objective": "完成这两个设计",
+  "goal_status": "active",
+  "audited_at_utc": "2026-10-29T17:38:54.731095+00:00",
+  "previous_goal_turn": "no_progress: same missing reviewed suite and prohibited real calls",
+  "this_goal_turn": "progress: authored 52 candidate cases, native keyword baseline, full identifier fix and targeted regression passed",
+  "consecutive_blocked_goal_turns_since_local_completion": 0,
+  "current_user_constraint": "暂时不调用真实模型；真实embedding和渠道调用保持关闭",
+  "requirements": [
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:810",
+      "requirement": "Human-maintained and reviewed question set v0 with expected source/object per question",
+      "state": "Candidate v0 authored and offline keyword baseline completed; human review not recorded",
+      "blocks": "B keyword recall@5/10, C same-set comparison",
+      "safe_next_action": "Run model-free recall after receiving human-reviewed suite path"
+    },
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:857",
+      "requirement": "30–50 real role questions with expected sources and human review; role evidence and correction cost",
+      "state": "awaiting human materials and review"
+    },
+    {
+      "source": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md:849",
+      "requirement": "Same-set genuine recall and answer-quality benefit before default hybrid enablement",
+      "state": "awaiting reviewed suite and resumption of real model/embedding calls"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:258",
+      "requirement": "Human-maintained context evaluation covering replay, distractors, identifiers and cross-turn constraints; compare correctness under two F budgets",
+      "state": "awaiting human suite and real-model quality runs"
+    },
+    {
+      "source": "docs/design/2026-10-28-xiaopai-context-design.md:208",
+      "requirement": "Actual cache usage/hit measurements for OpenAI-compatible route",
+      "state": "deferred by current no-real-model instruction"
+    }
+  ],
+  "available_candidate_evidence": {
+    "path": "docs/pilots/measurement-v1/golden-candidates.json",
+    "sha256": "08cf60d6dfbb787b1a4bbf4d92443228ffc16a156ee12ce2b044289614deb4f5",
+    "version": "1.0.0-draft.1",
+    "status": "candidate_index_not_trusted_suite",
+    "not_substituted_for_required_suite": true
+  },
+  "source_sha256": {
+    "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md": "10d6d43aef243e4d7c84a5178d4b92cac4d3f402d1d52f8e2b1a67a9d9b6a330",
+    "docs/design/2026-10-28-xiaopai-context-design.md": "df9c0948e04556a6da84a4c3c7dafae7422236960479d283aef4a131fa93a28e"
+  },
+  "question": {
+    "pending": "Resolved: user delegated authoring and candidate set delivered",
+    "asked_once_during_this_turn": true,
+    "repeated": false
+  },
+  "actions_this_turn": "Read-only requirement and candidate-metadata inspection; no source, DB, golden-case or model changes",
+  "resumption": "Human-reviewed v0 enables independent offline recall. Real model and embedding evaluations remain deferred until user changes the current restriction.",
+  "latest_revalidation_utc": "2026-10-29T17:40:21.023747+00:00",
+  "blocked_threshold_met": false,
+  "blocked_at_utc": "2026-10-29T17:40:43.363319+00:00",
+  "fresh_blocked_audit_required_on_user_resume": true,
+  "prior_blocked_cycle": {
+    "consecutive_turns": 3,
+    "blocked_at_utc": "2026-10-29T17:40:43.363319+00:00",
+    "condition": "No reviewed question set provided; real calls disabled"
+  },
+  "current_user_authorization": "你帮我制作就好了",
+  "resumed_at_utc": "2026-10-29T18:26:55.104773+00:00",
+  "candidate_question_set": "docs/evaluations/xiaopai-v0/README.md",
+  "remaining_conditions": "Human review/real role evidence and real model/embedding quality experiments; current no-real-model instruction remains"
+}

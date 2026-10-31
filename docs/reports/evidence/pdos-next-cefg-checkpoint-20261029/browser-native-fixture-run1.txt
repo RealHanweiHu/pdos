@@ -1,0 +1,60 @@
+C_E_F_BROWSER_READY /tmp/pdos-cef-browser-actual-20261029-v1/ready.json API=http://127.0.0.1:50795
+C_E_F_WEB_VERIFIED http://127.0.0.1:50780
+C_E_F_BROWSER_FINISHED /tmp/pdos-cef-browser-actual-20261029-v1/result.json
+.
+=============================== warnings summary ===============================
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:122: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/inbox/service.py:243: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(InboxState.kind, InboxState.target_id)
+
+browser_fixture.py::test_browser_cef[setup0]
+browser_fixture.py::test_browser_cef[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:252: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 20 warnings in 1103.61s (0:18:23)

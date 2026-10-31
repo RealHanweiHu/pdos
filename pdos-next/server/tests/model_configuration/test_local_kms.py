@@ -19,8 +19,12 @@ def backend(items):
 
 def test_current_version_never_reads_the_secret_value_and_value_checks_version():
     service = ARN[len("acs:kms:local:0:secret/") :]
-    kms = backend({service: "synthetic-secret", service + ".version": "3"})
+    items = {service: "synthetic-secret", service + ".version": "3"}
+    calls = []
+    kms = LocalKeychainKms(LOCAL_REGION, LOCAL_ENDPOINT,
+        client=lambda name: (calls.append(name), items.get(name))[1])
     assert kms.current_version(ARN) == "3"
+    assert calls == [service + ".version"]
     assert kms.value(ARN, "3").get_secret_value() == "synthetic-secret"
     with pytest.raises(DomainError):
         kms.value(ARN, "2")

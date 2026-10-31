@@ -1,0 +1,36 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0834",
+  "unknown_tables": {
+    "personal_preferences": [
+      "owner_id",
+      "revision",
+      "body",
+      "updated_at",
+      "id",
+      "tenant_id",
+      "created_at"
+    ],
+    "similar_history_feedback": [
+      "category_id",
+      "product_id",
+      "project_id",
+      "owner_id",
+      "issue_id",
+      "issue_version_id",
+      "issue_revision",
+      "candidate_kind",
+      "candidate_source_id",
+      "candidate_revision",
+      "ranking_version",
+      "action",
+      "request_key",
+      "request_sha256",
+      "id",
+      "tenant_id",
+      "created_at"
+    ]
+  },
+  "missing_tables": [],
+  "column_deltas": {}
+}

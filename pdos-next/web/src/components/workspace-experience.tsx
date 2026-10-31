@@ -1,4 +1,5 @@
 "use client";
+import { ProfessionalTargetContext } from "@/components/projects/professional-target";
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type MouseEvent, type ReactNode } from "react";
 import { useTheme } from "next-themes";
@@ -19,6 +20,7 @@ export type ExperienceData = {
 type Props = {
   categoryId: string;
   projectId?: string;
+  embeddedPanel?: string;
   auth: "loading" | "signed_out" | "ready"; session: { name: string; principal_id: string } | null;
   products: ExperienceProduct[]; productId: string; data: ExperienceData | null;
   locked: boolean; onProductChange: (id: string) => void; onCreateProduct: () => void;
@@ -36,10 +38,11 @@ const entryIcons: Record<string, Icon> = {
 /** Visit on demand, then retain the mounted editor and its unsaved input while switching views. */
 export function WorkspacePanel({ name, children }: { name: string; children: ReactNode }) {
   const active = useContext(PanelContext) === name;
+  const target = useContext(ProfessionalTargetContext);
   const [visited, setVisited] = useState(active);
   if (active && !visited) setVisited(true);
   if (!active && !visited) return null;
-  return <div hidden={!active} className="workspace-panel" data-workspace-panel={name}>{children}</div>;
+  return <div hidden={!active} className="workspace-panel" data-workspace-panel={name}><ProfessionalTargetContext.Provider value={active ? target : null}>{children}</ProfessionalTargetContext.Provider></div>;
 }
 
 type PlannedDescription = { summary: string; items: string[]; next: [WorkspaceArea, string, string?]; action: string };
@@ -55,7 +58,7 @@ function ThemeOptions() {
 }
 
 /** 品类工作台（内嵌于全局外壳）：区段页签 + 面板内容，不再自带侧栏与顶栏。 */
-export function WorkspaceExperience({ categoryId, projectId = "", auth, session, products, productId, data, locked, onProductChange, onCreateProduct, api, children }: Props) {
+export function WorkspaceExperience({ categoryId, projectId = "", embeddedPanel, auth, session, products, productId, data, locked, onProductChange, onCreateProduct, api, children }: Props) {
   const [location, setLocation] = useState(defaultWorkspaceLocation);
   const [query, setQuery] = useState("");
   const searchDialog = useRef<HTMLDialogElement>(null);
@@ -68,6 +71,7 @@ export function WorkspaceExperience({ categoryId, projectId = "", auth, session,
   const entry = workspaceEntry(location);
 
   useEffect(() => {
+    if (embeddedPanel !== undefined) return;
     const read = () => {
       const next = resolveWorkspaceLocation(window.location.search);
       setLocation(next);
@@ -76,28 +80,29 @@ export function WorkspaceExperience({ categoryId, projectId = "", auth, session,
     read();
     window.addEventListener("popstate", read);
     return () => window.removeEventListener("popstate", read);
-  }, [products, locked, onProductChange]);
+  }, [products, locked, onProductChange, embeddedPanel]);
 
   useEffect(() => {
+    if (embeddedPanel !== undefined) return;
     const frame = requestAnimationFrame(() => {
       for (const selector of [".workspace-tabs", ".workspace-task-nav"]) {
         document.querySelector(`${selector} [aria-current="page"]`)?.scrollIntoView({ block: "nearest", inline: "nearest" });
       }
     });
     return () => cancelAnimationFrame(frame);
-  }, [auth, location.area, location.section, location.task]);
+  }, [auth, location.area, location.section, location.task, embeddedPanel]);
 
   useEffect(() => {
-    if (!productId || auth !== "ready") return;
+    if (embeddedPanel !== undefined || !productId || auth !== "ready") return;
     const next = { ...resolveWorkspaceLocation(window.location.search), productId };
     window.history.replaceState(null, "", workspaceHref(next, window.location.search));
-  }, [productId, auth]);
+  }, [productId, auth, embeddedPanel]);
 
   const openSearch = useCallback((trigger: HTMLElement | null) => {
     searchTrigger.current = trigger; setQuery(""); searchDialog.current?.showModal();
   }, []);
   useEffect(() => {
-    if (auth !== "ready") return;
+    if (embeddedPanel !== undefined || auth !== "ready") return;
     const handler = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.shiftKey && !event.altKey && !event.isComposing && event.key.toLowerCase() === "k") {
         // A business confirmation owns focus until the user resolves it.
@@ -107,7 +112,7 @@ export function WorkspaceExperience({ categoryId, projectId = "", auth, session,
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [auth, openSearch]);
+  }, [auth, openSearch, embeddedPanel]);
 
   function closeSearch() { searchDialog.current?.close(); searchTrigger.current?.focus(); }
   function navigate(area: WorkspaceArea, view = workspaceSections[area][0].id, task = "", selectedProduct = productId) {
@@ -134,6 +139,8 @@ export function WorkspaceExperience({ categoryId, projectId = "", auth, session,
   const matchedEntries = searchEntries.filter(item => item.label.toLowerCase().includes(query.trim().toLowerCase()));
   const matchedProducts = products.filter(item => query.trim() && item.name.toLowerCase().includes(query.trim().toLowerCase()));
   const planned = plannedDescriptions[entry.id];
+
+  if (embeddedPanel !== undefined) return <PanelContext value={embeddedPanel}>{children}</PanelContext>;
 
   if (auth !== "ready") return <main className="mx-auto max-w-5xl px-4 py-8 sm:px-8">{children}</main>;
 

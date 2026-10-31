@@ -1,0 +1,66 @@
+✔ work-state reads and explicit human edits preserve scoped endpoints (345.516291ms)
+✔ work state rejects extra scope and non-supported methods before forwarding (77.250125ms)
+✔ context options are ordinary read-only metadata with closed, encoded selectors (48.156291ms)
+✔ before deep starts the UI names the actual scope, sources and longer effort without inventing an ETA (6.626625ms)
+✔ deep click delegates one native deep continuation with no extra confirmation (6.875042ms)
+✔ exclusion waits for current state and actual feedback identity before collapsing (2.318792ms)
+✔ a later restored exclusion is read back and never re-collapsed from an old replay response (0.911625ms)
+✔ source cards collapse with original quotes and anchors intact and restore from current props (1.740417ms)
+✔ native journal preserves deep after a lost response, replays exact body and opens actual next Run (5.178584ms)
+✔ reload restores deep journal and an already accepted continuation opens with zero repost (1.495709ms)
+✔ native deep actions strip picker titles and preserve fixed selected versions (2.463125ms)
+✔ personal deep follows its actual native endpoint and journal without copying project scope (2.813792ms)
+✔ SSR is a small explicit chooser and never reads, corrects or starts automatically (7.922833ms)
+✔ a readable single choice is displayed, fixed, saved, reread and natively continued once (12.106583ms)
+✔ lost correction response retries the original Human key and does not start early (26.57225ms)
+✔ a later Human clear wins over an older replay and no continuation is posted (34.998041ms)
+✔ continuation 401 clears page draft, original request and storage (22.619917ms)
+✔ continuation 403 clears page draft, original request and storage (6.341167ms)
+✔ an unknown continuation keeps and replays the original material snapshot (10.441125ms)
+✔ chat composer reads eligibility without sending, then continues the exact original run (14.051458ms)
+✔ chat composer includes fixed source refs without SourcePicker display metadata (3.8145ms)
+✔ a running conversation leaves a single disabled composer and makes no continuation call (2.4145ms)
+✔ chat composer permission failure removes the draft without a write (21.449875ms)
+✔ chat composer stays usable after development effect cleanup and replay (16.142916ms)
+✔ chat composer opens an existing continuation without sending again (25.169542ms)
+✔ running composer swaps send for an accessible non-submit stop control (6.281792ms)
+✔ terminal runs do not offer stop even with a stale handler (1.652125ms)
+✖ picker opens with GET only, distinguishes Artifact/original versions and copies the selected fixed version (10.683209ms)
+✔ unavailable source explains the server reason and stays unselectable; text registration needs no upload (2.71325ms)
+✔ refresh or read failure clears selected versions and old names instead of silently following Current (3.0545ms)
+✔ scope and API switches hide old source names immediately and a late page cannot restore them (1.295375ms)
+✔ catalog paging remains explicit, deduplicates repeated heads and hides the catalog on cursor failure (16.290916ms)
+✔ Run bindings read actual scope and fixed refs, current null never falls back to selected title (1.279333ms)
+✔ Run binding refresh failure hides prior source names and only non503 notifies parent scope failure (1.469542ms)
+✔ Run binding identity/protocol mismatch is rejected, with no stale fixed source details (0.5985ms)
+✔ opening reads only and explicit removal keeps the original key after a lost reply (85.81325ms)
+✔ permission loss hides carried text and prevents stale UI responses crossing sessions (61.57925ms)
+✔ carried citation shows its fixed version and explicit exclusion uses the server citation ID (6.984458ms)
+✔ explicit scope edits preserve the same full choice and request key after a lost reply (60.51575ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 38
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 917.009291
+
+✖ failing tests:
+
+test at src/components/pai/source-picker.test.mjs:107:1
+✖ picker opens with GET only, distinguishes Artifact/original versions and copies the selected fixed version (10.683209ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /只随下次新工作发送固定版本/. Input:
+  
+  '已登记来源1真实已登记附件 · v3选择已登记来源刷新来源所选资料会限定下次回答的检索范围；可在回答下解除资料条件。当前品类的可读登记资料；关联型号后可选择该型号资料。此处不上传新文件。真实已登记附件固定版本 v3 · 已登记附件 · 可选择已加载 1 项登记来源'
+  
+      at TestContext.<anonymous> (file:///private/tmp/pdos-explicit-context-corrections-stage-20261029/pdos-next/web/src/components/pai/source-picker.test.mjs:117:50)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '已登记来源1真实已登记附件 · v3选择已登记来源刷新来源所选资料会限定下次回答的检索范围；可在回答下解除资料条件。当前品类的可读登记资料；关联型号后可选择该型号资料。此处不上传新文件。真实已登记附件固定版本 v3 · 已登记附件 · 可选择已加载 1 项登记来源',
+    expected: /只随下次新工作发送固定版本/,
+    operator: 'match',
+    diff: 'simple'
+  }

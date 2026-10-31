@@ -1,0 +1,15 @@
+[
+  {
+    "id": "76d6f45c-9562-4444-b70b-cebd3e1ca594",
+    "tool": "model",
+    "state": "failed",
+    "error_code": "SOURCE_UNAVAILABLE",
+    "provider_request_id": "072a0b888cf201710218709526f5faf7",
+    "cost_state": "actual",
+    "cost_reserved_micro_usd": 0,
+    "cost_charged_micro_usd": 13846,
+    "actual_input_tokens": 36036,
+    "actual_output_tokens": 2048,
+    "result": null
+  }
+]

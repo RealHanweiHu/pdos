@@ -1,0 +1,27 @@
+✔ work-product list and detail reads preserve the exact session and method (192.660292ms)
+✔ from-run and revisions use POST without a query and preserve the body (74.210875ms)
+✔ invalid queries and methods fail before any upstream call (42.994583ms)
+✔ missing identity or configuration fails closed (66.079209ms)
+✔ work-state reads and explicit human edits preserve scoped endpoints (206.816542ms)
+✔ work state rejects extra scope and non-supported methods before forwarding (59.415ms)
+✔ continuation 401 clears page draft, original request and storage (16.097375ms)
+✔ continuation 403 clears page draft, original request and storage (6.651542ms)
+✔ an unknown continuation keeps and replays the original material snapshot (55.704125ms)
+✔ chat composer reads eligibility without sending, then continues the exact original run (18.919ms)
+✔ chat composer includes explicitly selected additional fixed sources (4.069042ms)
+✔ a running conversation leaves a single disabled composer and makes no continuation call (2.149625ms)
+✔ chat composer permission failure removes the draft without a write (1.938333ms)
+✔ chat composer stays usable after development effect cleanup and replay (1.944041ms)
+✔ chat composer opens an existing continuation without sending again (1.577083ms)
+✔ running composer swaps send for an accessible non-submit stop control (2.322875ms)
+✔ terminal runs do not offer stop even with a stale handler (2.691334ms)
+✔ opening reads only and explicit removal keeps the original key after a lost reply (21.745709ms)
+✔ permission loss hides carried text and prevents stale UI responses crossing sessions (53.960958ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 712.209459

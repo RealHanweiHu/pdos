@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="13" time="15.360" timestamp="2026-10-28T21:35:42.234503-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.test_personal_preferences_pg" name="test_actual_defaults_save_replay_conflict_clear_and_private_accounts" time="2.357" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_navigation_options_favorites_and_revoked_authorization" time="5.773" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_controlled_host_reads_only_requester_preferences_and_cannot_write" time="0.729" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_agent_database_role_has_no_direct_table_privilege[SELECT * FROM personal_preferences]" time="0.547"><failure message="AssertionError: assert '42P01' == '42501'&#10;  &#10;  - 42501&#10;  ?   ^&#10;  + 42P01&#10;  ?   ^">tests/test_personal_preferences_pg.py:153: in test_actual_agent_database_role_has_no_direct_table_privilege
+    assert rejected.value.orig.sqlstate == "42501"
+E   AssertionError: assert '42P01' == '42501'
+E     
+E     - 42501
+E     ?   ^
+E     + 42P01
+E     ?   ^</failure></testcase><testcase classname="tests.test_personal_preferences_pg" name="test_actual_agent_database_role_has_no_direct_table_privilege[UPDATE personal_preferences SET revision=revision+1]" time="0.547"><failure message="AssertionError: assert '42P01' == '42501'&#10;  &#10;  - 42501&#10;  ?   ^&#10;  + 42P01&#10;  ?   ^">tests/test_personal_preferences_pg.py:153: in test_actual_agent_database_role_has_no_direct_table_privilege
+    assert rejected.value.orig.sqlstate == "42501"
+E   AssertionError: assert '42P01' == '42501'
+E     
+E     - 42501
+E     ?   ^
+E     + 42P01
+E     ?   ^</failure></testcase><testcase classname="tests.test_personal_preferences_pg" name="test_actual_agent_database_role_has_no_direct_table_privilege[INSERT INTO personal_preferences SELECT * FROM personal_preferences]" time="0.693"><failure message="AssertionError: assert '42P01' == '42501'&#10;  &#10;  - 42501&#10;  ?   ^&#10;  + 42P01&#10;  ?   ^">tests/test_personal_preferences_pg.py:153: in test_actual_agent_database_role_has_no_direct_table_privilege
+    assert rejected.value.orig.sqlstate == "42501"
+E   AssertionError: assert '42P01' == '42501'
+E     
+E     - 42501
+E     ?   ^
+E     + 42P01
+E     ?   ^</failure></testcase><testcase classname="tests.test_personal_preferences_pg" name="test_actual_agent_database_role_has_no_direct_table_privilege[DELETE FROM personal_preferences]" time="0.557"><failure message="AssertionError: assert '42P01' == '42501'&#10;  &#10;  - 42501&#10;  ?   ^&#10;  + 42P01&#10;  ?   ^">tests/test_personal_preferences_pg.py:153: in test_actual_agent_database_role_has_no_direct_table_privilege
+    assert rejected.value.orig.sqlstate == "42501"
+E   AssertionError: assert '42P01' == '42501'
+E     
+E     - 42501
+E     ?   ^
+E     + 42P01
+E     ?   ^</failure></testcase><testcase classname="tests.test_personal_preferences_pg" name="test_actual_sql_rls_cannot_borrow_other_person_and_guard_rejects_identity_revision" time="0.629" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_api_rejects_forged_or_invalid_fields[invalid0]" time="0.564" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_api_rejects_forged_or_invalid_fields[invalid1]" time="0.734" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_api_rejects_forged_or_invalid_fields[invalid2]" time="0.565" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_api_rejects_forged_or_invalid_fields[invalid3]" time="0.564" /><testcase classname="tests.test_personal_preferences_pg" name="test_actual_downgrade_preserves_existing_account_settings" time="0.609" /></testsuite></testsuites>

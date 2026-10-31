@@ -1,0 +1,1779 @@
+{
+ "merged": [
+  {
+   "id": "F01",
+   "theme": "value_delivery",
+   "title": "S1 出口改为一条真实的充气泵立项链，通过前暂停 S3–S5 横向扩张",
+   "type": "risk",
+   "area": "范围与建设顺序（S0–S5 / 验收场景）",
+   "current_state": "v1.1 §09.6（:1472-1487）把真实模型接入列为 S1 交付，§10（:1521）禁止先建空页面。acceptance.json 的 63 个场景全部 definition_only，附录 B（:1714）写“当前均未执行”。S1 检查点 1648 通过、24 失败，中途停止（checkpoint.md:5）。真实模型只做过 2 次网关探针。10-17 一天内连续提交 S2–S5 首批功能；S2–S5 的技能包没有任何租户启用（清单:31、86）。",
+   "problem": "S2–S5 的技能、94 条工具授权和资格链都建立在没经过真实模型和真人检验的 S1 工具面上。MiniMax-M3 一旦选错工具，S1–S5 都要返工。PM 至今不能用真实账号走完“充气泵研究→G0→建项目”。",
+   "proposal": "最小可用版本是“S1 真实出口包”：用户本人加 1 名同事（P24 第二真人）用汽车充气泵种子品类，经注册图跑通“公开研究 8–12 款→提案→gap_check→G0→建项目”；acceptance.json 每个场景补 operations/checks/last_run，S1 的 22 个场景逐一执行。出口前 S3–S5 只修缺陷，S2 冻结。目标：22/22 已执行、通过率 ≥90%；注册图真实运行 ≥10 次（含取消、worker 重启各 1 次）；拿到路径 A 的用时和操作次数基线。评测集见 F08。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1472-1487,1521,1714",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md P13 L519-524、P21 L576-583",
+    "pdos-next/contracts/acceptance.json",
+    "docs/reports/evidence/pdos-next-s1-20261017/local-candidate/checkpoint.md:5",
+    "tasks/ai-native-integrated-todo.md:18,31,86"
+   ],
+   "frozen_conflict": "与 P21（S3–S5 前置满足后自动续工）和 P13（S2 提前恢复）冲突。值得重新决定，因为 P21 只按合成联验判定前置，而 §09.6 要求的真实模型接入从未满足。与 K9 不冲突：第二真人是 P24 本已要求的评审人。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "architecture_delivery"
+   ],
+   "roles": [
+    "产品经理",
+    "G0 评审人",
+    "用户本人"
+   ],
+   "competitor_refs": [
+    "阿维塔（飞书项目 aily）：嵌入审签流程后累计调用 6 万多次，客户宣称（https://inabr.com/news/22580）",
+    "Gartner：2027 年底前超过 40% 的 agentic AI 项目将被取消（https://www.gartner.com/en/newsroom/press-releases/2025-06-25-gartner-predicts-over-40-percent-of-agentic-ai-projects-will-be-canceled-by-end-of-2027）"
+   ],
+   "ai_native_angle": "先在一个品类上拿到工具选择、轮次和草稿保留率的数据，再把技能包复制到 S2–S5。"
+  },
+  {
+   "id": "F02",
+   "theme": "value_delivery",
+   "title": "试点组织与度量为空：没有种子用户方案和基线，§09.5 指标与 DC-11 北极星从未采集",
+   "type": "missing_feature",
+   "area": "试点组织与度量",
+   "current_state": "§09.5（v1.1:1463-1470）有四类业务指标，§06.12（:1088-1096）要求记录净减负，DC-11 §10（:76-78）的北极星是“AI 替你完成 X 项、你处理 Y 项例外”。代码中这些采集均为 0；run_feedback 六类反馈只采集不消费。开工约 2.5 个月，真人试用为 0；P24 第二真人人选未提供（清单:88）。",
+   "problem": "即使登录和部署落地，没有种子用户、可比基线和每周复盘，三周后仍回答不了“比 Excel 加钉钉省了多少、AI 草稿留下多少”，也凑不齐 C8 要的本人审阅案例。",
+   "proposal": "三周试点方案。前置清单：F38 登录与成员、F07 本人预算、F39 常驻环境、F06 人工建提案入口、第二位真人 PM、F18 在途项目登记。种子用户 5 人：本人（PM）、第二 PM、项目负责人、品质、采购/NPI。范围是汽车充气泵 1 个新品提案加 1 个在途 DVT 项目。基线取上一款同类项目的问卷和钉钉记录。指标全部从回执计算，不加埋点表：主动操作数、首个原件到“可提交/已建单”的时长、AI 草稿 7 天保留率、确认数、撤回率、例外数，以及 DC-11 §10 周度指标。每周 15 分钟复盘。目标：真人 ≥2，真实 G0 ≥1，连续 4 周有值，反馈修复中位数 ≤3 天。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1088-1096,1463-1470",
+    "docs/design/2026-09-20-ai-direct-write-tier-policy.md:76-78",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md:605-610",
+    "pdos-next/server/pdos_next/agent_kernel/run_feedback.py",
+    "tasks/ai-native-integrated-todo.md:88"
+   ],
+   "frozen_conflict": "与 K9（暂无真实用户）有张力：本条主张在 S1 出口就引入 2 名内部真人，理由是 P24 已要求第二真人，§09.5 指标和 C8 资格都离不开真人。只在用户决定启动试点时适用。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "S",
+   "confidence": "medium",
+   "source_lenses": [
+    "architecture_delivery",
+    "adoption_integration"
+   ],
+   "roles": [
+    "产品经理",
+    "G0 评审人",
+    "项目负责人",
+    "品质/测试",
+    "采购/NPI",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "Asana 2025 调查：只有 19% 的组织跟踪 agent 错误（https://www.unleash.ai/artificial-intelligence/asana-64-of-employees-believe-ai-agents-are-unreliable-calling-for-more-training-clarity-and-guardrails）",
+    "CIMdata：31% 的 PLM 用户没看到 AI 的可量化收益（https://www.engineering.com/ai-in-plm-near-term-expectations-and-challenges/）"
+   ],
+   "ai_native_angle": "草稿保留率和例外数是 DC-11 北极星的真实版本，也是 T0 资格从合成案例走向真实抽检的数据来源。"
+  },
+  {
+   "id": "F03",
+   "theme": "value_delivery",
+   "title": "前端兑现门槛：项目工作区仍是占位，闭环关闭时必须能在项目内办理",
+   "type": "optimization",
+   "area": "前后端投入与信息架构",
+   "current_state": "§09.7 DoD 第一条是“实际UI可办理”（v1.1:1489-1495）。project-workspace.tsx:55-70 的阶段与门禁是占位，健康度“未知”，问题与变更只有链接，资料“尚未汇入”；“办理”经 workspace-navigation.ts 跳回品类工作台（约 20 个面板）；组合与资源整页占位（app-shell.tsx:236）。后端 19.1 万行、前端约 2.5 万行；最近 60 次提交 web 只占新增行 1.5%。",
+   "problem": "用户说“主体是项目管理”，可项目负责人打开 EVT 项目看不到阶段、门禁和健康度，办理 Build/测试要跳回“品类→型号”。后端合成联验是通的，用户感受是“没有这个功能”。",
+   "proposal": "DoD 改成可检查项：闭环关闭时，项目工作区内必须有办理入口（不跳回品类工作台），并附一段真人操作录屏。前端顺序：阶段模板合同加阶段条（B5，见 F12）→P17 健康度投影（见 F16）→Build/测试/问题面板挂到项目标签→删除品类工作台项目区。占位清零前，后端除读模型外不新增命令。目标：占位标签 ≥4→0，web 新增行占比 ≥30%（4 周滚动），导航体系 2 套→1 套。",
+   "internal_refs": [
+    "pdos-next/web/src/components/projects/project-workspace.tsx:55-70",
+    "pdos-next/web/src/lib/workspace-navigation.ts",
+    "pdos-next/web/src/components/app-shell.tsx:236",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1489-1495"
+   ],
+   "frozen_conflict": "不冲突 P15/P17/P22：阶段条按模板、健康度纯规则、看板不拖拽、不显示百分比都保持。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "architecture_delivery"
+   ],
+   "roles": [
+    "项目负责人",
+    "品质/测试",
+    "NPI协调",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "华为云 CodeArts Req：内置 IPD 模板，阶段与基线评审为骨架（https://support.huaweicloud.com/productdesc-projectman/projectman_07_3001.html）"
+   ],
+   "ai_native_angle": "面板迁到项目标签后，小Pai 才能按当前页面对象预载技能，不再让用户粘贴 UUID。"
+  },
+  {
+   "id": "F04",
+   "theme": "ai_experience",
+   "title": "“AI 先干”落不了地：T0 资格只认 6 个草稿动作、没有升级通路，T1“一次确认”被做成逐条弹窗",
+   "type": "risk",
+   "area": "分级落地（T0 资格 / ConfirmationBatch）",
+   "current_state": "资格侧：qualification_binding.py:41-59 的 DRAFT_OPERATIONS 只有 6 个，技能的全部 T0 写入都在其中才适用；policy.py:71-100 只走试点资格，确认率/撤回率统计为 0；S2–S5 的 T0 写入（quality.issue.create 等）都不是草稿类，资格按整个技能“全有或全无”；tool_identity（:32-38）对整份 ToolSpec 取指纹，schema 一改资格就失效。确认侧：§02.11、§05.6 和 DC-11 §3 定义了 ConfirmationBatch 整批确认，代码 0 命中；run-candidates.tsx:134-178 逐条 preview 加弹窗，xiaopai.tsx:218-219 逐条登记事实，预览 10 分钟过期（service.py:802）。",
+   "problem": "DVT 噪声超标 3 台，Issue 建单本是 DC-11 §8 的 T0 范例，现在只能逐条确认。一份 OEM 规格书抽出约 30 条 Claim 加 15 条补丁，PM 要点 90 多次、开 45 个弹窗，离开 10 分钟还得重来。契约频繁重生成（60 次提交约 3.3 万行），审完的 10 例资格也会反复作废。",
+   "proposal": "①整批确认（最小可用）：后端按 Run 批量预览，按依赖分原子组，沿用 confirmation_token；前端改成清单，verify 全过的组默认勾选，存疑组置顶不勾并写原因，只留一个“确认所选 N 组”；版本冲突只重现变化的组。暂时只能整包时，界面明说“整包确认”。②资格按操作授予（qualified_operations）。③T1 试运行统计：用候选事件加 run_feedback，按“租户×技能×操作×模型版本”计算原样采纳、改后采纳、放弃、撤回率并在资格页展示，由管理员具名 ai.skill.qualify，不自动授予。④技能或工具摘要变化时，用 F08 的资格集回放，只把有差异的案例交人复审。先做 quality.issue.create 和 work.external_wait.record。保持 AI 永不取得 T2。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/agent_kernel/qualification_binding.py:32-59",
+    "pdos-next/server/pdos_next/agent_kernel/policy.py:71-100",
+    "pdos-next/server/pdos_next/agent_kernel/skill_qualification.py:130-290",
+    "pdos-next/web/src/components/pai/run-candidates.tsx:134-178",
+    "pdos-next/web/src/components/xiaopai.tsx:218-219",
+    "pdos-next/server/pdos_next/service.py:802",
+    "docs/design/2026-09-20-ai-direct-write-tier-policy.md §3 §6 §8",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §02.11 §05.6 §06.12"
+   ],
+   "frozen_conflict": "按操作授予和 T1 真实试用是 v1.1 §06.12 原文，整批确认是 §02.11/§05.6 已定。但 u4 §4.1 记载：DC-11 §6 原文“T0 需 T1 试运行确认率 ≥0.9”曾因无用户期资格死锁被 C8 取代。用 ≥0.9 阈值让非草稿类升级，需用户重新确认阈值与依据；把 C8“本人审阅 10–20 例”扩到非草稿类会改变 C8，本建议不要求这样做。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "competitor"
+   ],
+   "roles": [
+    "产品经理",
+    "品质/测试",
+    "项目负责人",
+    "租户管理员"
+   ],
+   "competitor_refs": [
+    "Linear Triage Intelligence：可按属性设为显示、自动应用或隐藏（https://linear.app/docs/triage-intelligence）",
+    "Linear AIG：Agent 不能被问责，人对委派的工作负责（https://linear.app/developers/aig）",
+    "IoT Analytics：只有 13% 的人高度信任 AI 做零件选型（https://iot-analytics.com/the-ai-trust-gap-in-design-and-engineering-software/）"
+   ],
+   "ai_native_angle": "资格是“AI 先干”的闸门，整批确认决定 T1 成本配不配得上“人只看例外”。"
+  },
+  {
+   "id": "F05",
+   "theme": "ai_experience",
+   "title": "项目侧小Pai 看不见也办不了：没有项目对象读取工具和按页预载，也没有“说情况/建任务/登记对方回复”的跟进技能",
+   "type": "missing_feature",
+   "area": "项目侧上下文与日常跟进",
+   "current_state": "tools.py:5-20 的 READS 只有品类、提案、平台、证据、会话等 13 个，没有项目、Build、样件、Issue、TestRun、任务、外部等待；context-schemas.json 的 $defs.project 只有 4 个字段；bootstrap.py:453-466 对项目运行预载返回 ()；技能的 preload_when 在代码里没有消费方。17 个技能包都没有授权 work.task.create、work.external_wait.record、work.commitment.accept，supply.commitment.record 未实现（清单 L31①②）。设计：§05.5 的“说情况”先建外部承诺候选；§01.6 和 §06.3.3 要求按页带范围和技能；附录 A 中这些命令“AI 可起草”。",
+   "problem": "项目负责人说“电机厂说样品电流偏大，下周三重送，EVT2 要挪”，小Pai 读不到外部等待和 Build，也无权登记，只能回一段文字。品质在 TestRun 页问“这 5 台用的哪批电机”，只能被要求粘贴 UUID。执行期最高频的三件事在小Pai 这里全是空白。",
+   "proposal": "①只读工具（由服务器按 Run 绑定范围）：project.summary.read（阶段位置、下一门禁、P17 规则结果、14 天内到期的承诺与外部等待、最新状态更新）、build.read、issue.read、test.run.read、work.tasks.read、commitments.read；项目摘要由代码预聚合，追加在上下文末尾（不可协商项 4）。②preload_when 改成服务器可判定的页面/对象/事件条件：项目页→project_followup，Build 页→build_execution，TestRun/Issue 页→test_verification+quality_issue，变更页→change_control。③新增技能 project_followup：work.external_wait.record（新建、回复、对方声称承诺）、work.task.create、work.commitment.accept（只准备）、风险线索起草。无资格时出 T1 候选进整批确认（F04）。本轮消息作为“本人陈述”来源（F13）。“声称”与“实到”分开，承诺和预测不改（I08）。上面那句话产出三组候选：外部等待、风险、复测任务。最小可用版本：project.read、外部等待、建任务三个工具，加项目页默认预载。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/agent_kernel/tools.py:5-20",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py:453-511",
+    "pdos-next/server/pdos_next/skill_packages/context-schemas.json $defs.project",
+    "pdos-next/server/pdos_next/skill_packages/",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §01.6 L217、§05.5 L829-835、§06.3.3、§06.7、附录A L1649-1657",
+    "tasks/ai-native-integrated-todo.md L31"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "ai_native"
+   ],
+   "roles": [
+    "项目负责人",
+    "采购/供应",
+    "模具/工程",
+    "品质/测试",
+    "生产/NPI"
+   ],
+   "competitor_refs": [
+    "ONES Assistant：感知当前页面和筛选，结果回写为系统对象（https://ones.cn/blog/features-updates/ones-assistant-end-to-end-rd-management-ai）",
+    "Linear Agent：在 Slack/Teams 中被 @，可创建、更新 issue（https://linear.app/docs/agents-in-linear）",
+    "企业微信 5.0.9：“记录面聊”生成纪要和待办（https://www.yzwb.net/news/kj/202606/t20260625_365880.html）"
+   ],
+   "ai_native_angle": "打开就带上相关技能和对象，一句话完成登记、关联和影响提示；四时间仍由确定性引擎维护。"
+  },
+  {
+   "id": "F06",
+   "theme": "ai_experience",
+   "title": "小Pai 会话不像对话、失败说不清：3 秒轮询、运行孤立、结果是 JSON/UUID；失能不预告、错误只给码，模型不可用时没有手动建提案入口",
+   "type": "optimization",
+   "area": "对话体验与失败恢复",
+   "current_state": "用户要求“就像 claude、chatgpt 一样”（清单 L53）；§06.9 要求 SSE，B13/B14/B16 规定范围可见、@对象、复制/重跑，§05.10 和 B17 规定失败/撤回受限要讲清楚，AT-45 要求失能时人工可用。实现：xiaopai.tsx:130-136 每 3 秒轮询，api.py:444-483 的 SSE 未接入且不推回复文本；线程只渲染单个运行（:203-229），继续会另起运行；:207/:217 显示 run_id 和原始 JSON；@对象只有“关联当前型号”；没有重跑/复制。api.py:453,468,800 把 model_available 硬编码为 False；:212 只显示“执行未完成·{error_code}”；:228 撤回预览只给计数；proposal.create 只在 domain-candidate.ts:2 的候选采用里出现。",
+   "problem": "PM 问“对比 5 款 150 PSI 无线泵充气时间”，要等整次运行结束才见文字，追问就新开运行、前文消失，引用 Build 要粘 UUID。MiniMax 欠费或 429 时，运行受理后才失败，不知有没有部分写入；撤回时也看不到哪几条因已被 G0 引用而没撤。当天连提案都建不了。",
+   "proposal": "①前端接 SSE，替代轮询，最终回复增量渲染（provider 已支持 streaming）。②会话按 previous/next_run_id 连续渲染。③结果卡片：写入对象和版本、待确认 N 组（进 F04 整批确认）、单条或整次撤回；UUID 和 JSON 收进“技术详情”。④@对象复用 personal_search，选中即进入 ContextSnapshot（B14）；/技能 只决定预载、不扩权（B13）。⑤消息级复制和重跑（B16）。⑥输入区显示服务器判定的可用性；不可用时直接给“手动建品类/新建空白提案（T1，与候选同一条 proposal.create）”。⑦错误按 error_catalog 16 类映射成“已完成/未发生/你可以”三段，partial 列出已落库回执；整次撤回逐条列出跳过项和理由（B17）。不做自动换模型（§06.9）。",
+   "internal_refs": [
+    "pdos-next/web/src/components/xiaopai.tsx:130-136,203-245",
+    "pdos-next/server/pdos_next/agent_kernel/api.py:444-483",
+    "pdos-next/server/pdos_next/api.py:448-468,800",
+    "pdos-next/web/src/lib/run-process.ts:34",
+    "pdos-next/web/src/lib/domain-candidate.ts:2",
+    "pdos-next/server/pdos_next/error_catalog.py",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §01.7 L235、§05.10、§05.12.4 B13/B14/B16/B17、§06.9、AT-45"
+   ],
+   "frozen_conflict": "主体落实已定的 B13/B14/B16/B17 和 §06.9。用户 10-18 提出的“只问不写”会话模式（M2 修订 §5）尚未定案，另行确认；/技能 是用户显式选择、服务器校验，不等于已排除的 tool search。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "role_day"
+   ],
+   "roles": [
+    "产品经理",
+    "项目负责人",
+    "品质/测试",
+    "工程师",
+    "采购/SQE"
+   ],
+   "competitor_refs": [
+    "Linear AIG：立即确认收到、展示状态、允许检查推理与动作（https://linear.app/developers/aig）",
+    "ClickUp Super Agents：可在评论中 @、可私聊（https://clickup.com/blog/super-agents-launch/）"
+   ],
+   "ai_native_angle": "流式、连续上下文、点名对象是对话式 Agent 的基本手感；信任来自失败时说得清楚。"
+  },
+  {
+   "id": "F07",
+   "theme": "ai_experience",
+   "title": "AI 费用不可见、不可分：预算只能由管理员建给自己，非管理员调不动模型；按美元计价，没有运行费用、用量汇总和阈值告警",
+   "type": "risk",
+   "area": "成本与用量治理",
+   "current_state": "budget_management.py:54-58,96-100,155-163 规定预算只属于本人，且只能由租户管理员创建；bootstrap.py:203-213 只找本人预算；没有预算时 persistence.py:380-381 报错。Limits 是一个租户钱包（:20-25）。价格卡只允许 USD（pricing.py:27,43；host.py:59），MiniMax 的人民币价按 6.69274 折算；agent-budgets.tsx:10,115 显示 token 和 USD。process_view.py:131-160 只给耗时。没有按用户/技能/规则汇总，也没有告警。设计：§05.3（:805-807）和 §07.10 要求显示费用，B18 只禁止显示 token。",
+   "problem": "品质让小Pai 起草问题单会直接失败，除非把每人都设成管理员。老板看到的是微美元和 token，跟 MiniMax 发票对不上。一条每周竞品跟踪规则单次就有 7 次调用、840 微美元，配几条就可能悄悄耗光钱包，全员小Pai 同时停摆。",
+   "proposal": "①两级预算：管理员设租户总池，再给他人分配个人额度（可按岗位模板批量，如每人每月 ¥50）；规则用规则额度；做成既有预算对象的子分配，不新增 MAX_ 常量（C6）；AT-60 取消释放不变。②价格卡支持 CNY 原币，界面只显示人民币，token 收进技术详情（B18）。③运行详情显示“本次费用 ¥x·模型·用时”。④管理员“AI 用量”视图：按人、技能、规则、品类汇总费用、次数，以及成功/撤回/放弃率。⑤到 80%/100% 时，本人和管理员各收一条聚合注意项；超额默认关闭，不自动换模型（§06.9）。最小可用版本：①②③。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/agent_kernel/budget_management.py:20-25,54-58,96-100,155-163",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py:203-228",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py:375-386",
+    "pdos-next/server/pdos_next/agent_kernel/pricing.py:27,43,62-89",
+    "pdos-next/server/pdos_next/agent_kernel/process_view.py:131-160",
+    "pdos-next/config/minimax-cn-m3.draft.json:26-34",
+    "pdos-next/web/src/components/model_configuration/agent-budgets.tsx:10,102-116",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:805-807,1072-1086,1222"
+   ],
+   "frozen_conflict": "无冲突。C6 否决新增业务硬上限，本建议的上限是既有预算对象的子分配。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "competitor",
+    "adoption_integration"
+   ],
+   "roles": [
+    "租户管理员",
+    "管理层",
+    "品质/测试",
+    "工程师",
+    "采购"
+   ],
+   "competitor_refs": [
+    "Notion Custom Agents：80%/100% 告警，可按成员或 agent 设限（https://www.notion.com/help/custom-agent-pricing）",
+    "Linear：AI credit 用量浏览器，可按工作区、用户、Loop 设限（https://linear.app/changelog）",
+    "Atlassian Rovo：超额计费默认开启（反例）（https://www.atlassian.com/licensing/rovo）"
+   ],
+   "ai_native_angle": "每人一份可见、可控的人民币额度，是“所有岗位都用小Pai”的成本前提。"
+  },
+  {
+   "id": "F08",
+   "theme": "ai_experience",
+   "title": "真实模型从未跑完注册图：没有评测集和跑批器，工具面过大（每次可见 45–62 个、81–131 KB），描述是模板字符串",
+   "type": "risk",
+   "area": "评测、golden case 与工具面",
+   "current_state": "§06.12 要求按维度评测并定期跑真实模型，§09.4 要求调试集、评测集、真实试用分开；evaluation-rubric.md §5.4/§7 只覆盖 12 个 S1 技能，evaluation_suite 指向的文件不在技能目录，pdos-next 里没有案例包和跑批器；run_feedback 没有消费方。M2 修订 §2–§4 实测：主循环 137 个工具、291,811 B，按技能下发后仍可见 45–62 个，其中 22 个 T2 准备类强制可见；待决事项①可把零技能基线压到 9.2%。工具描述是模板（tools.py:88“读取或计算 {name}”，registry.py:213-216“办理 {operation}”），部分是占位 schema。真实 M3 只冒烟过一次。",
+   "problem": "品质在 Build 页说“3 台充到 150 PSI 不停机，帮我登记”，M3 要在 62 个只写着“办理 X”的工具里猜。能否把 12V/10A、150 PSI 放对参数，能否把“噪音测试距离未知”留成未知，现在完全不知道。资格页做好了却没案例可审（F04 卡住）；首次真实运行若误选率高，S2–S5 都要返工。",
+   "proposal": "①资格集：按 rubric §5.4 建充气泵/打气筒各 ≥40% 的案例，参考要点由用户签名，作为可信根只读，跑批器不得写入（不可协商项 5）。②补 S2–S5 的 rubric：quality_issue（去重、ai_hypothesis）、test_verification（单位工况）、project_followup（声称与实到分开、逐句有来源）。③回放跑批器：每晚用真实 MiniMax 跑资格集和调试集，输出维度得分、严重错误、工具误选率、轮次、时延、费用；摘要变化时自动做前后对比（供 F04）。④run_feedback 汇总成调试集候选，经用户确认才入调试集。⑤工具预算写进 CI：单次可见 ≤25 个、≤40 KB；描述由 operations.json 和 Pydantic 字段生成（用途、何时不用、示例）；占位 schema 和未实现/无 UI/无授权的命令不进注册表。⑥请用户就 M2 待决事项①作决定。最小可用版本：rfq_extraction、quality_issue 各 10 例，proposal_drafting/public_research 选择评测，加首份真实注册图基线。目标：READ/T0 首选正确率 ≥95%，schema 一次通过率 ≥95%，越权尝试 0 次。",
+   "internal_refs": [
+    "docs/design/skills-draft/evaluation-rubric.md §5.4 §6 §7",
+    "docs/design/2026-10-17-m2-tool-surface-decision.md 修订 §1-§6",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py:83-95",
+    "pdos-next/server/pdos_next/agent_kernel/registry.py:205-225",
+    "pdos-next/server/pdos_next/agent_kernel/run_feedback.py",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §06.9 L1061-1070、§06.12、§09.4",
+    "AGENTS.md 不可协商项 5"
+   ],
+   "frozen_conflict": "不提 tool search（M2 方案 D 已排除），也不提 A 窄入口；全部在“服务器决定可见范围”前提下。第⑥项是 M2 待决事项①，属于能力变更，需要决策记录。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "architecture_delivery"
+   ],
+   "roles": [
+    "租户管理员",
+    "产品经理（案例审阅人）",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "RAG-MCP 论文：工具全量暴露时选择准确率 13.62%，筛选后 43.13%（https://arxiv.org/abs/2505.03275）",
+    "Salesforce CRMArena-Pro：多轮业务任务成功率约 35%（https://arxiv.org/abs/2505.18878）"
+   ],
+   "ai_native_angle": "同一套案例既是选择准确度评测，也是 §06.12 资格审阅材料，一份数据两种用途。"
+  },
+  {
+   "id": "F09",
+   "theme": "ai_experience",
+   "title": "研发记忆查不到：⌘K 只搜四类对象名称，没有全文索引；小Pai 读不到已发布规则和历史问题，也没有个人偏好",
+   "type": "missing_feature",
+   "area": "检索与记忆",
+   "current_state": "personal_search.py:24-28 只按名称/ID 查品类、项目、型号、提案；domain_reads.py:315-329 的 evidence.search 只在本次运行绑定的来源里按标题子串匹配；READS 里没有规则、Issue、样件读取；tsvector/pg_trgm/embedding 为 0；个人偏好无表无代码；domain/knowledge/ 有候选→发布人工链，但没有技能包含 knowledge.candidate.create。设计：§06.8 五层记忆，§07.7 混合检索（精确 ID→全文/向量→重排→引用验证），B19 规定 ⌘K 按编号精确检索。",
+   "problem": "DVT 噪声超标，结构想查“去年自行车泵的气缸噪声怎么解决的”，搜不到，小Pai 也读不到。品质输 SN-0012 查不到这台样机。上一代已发布规则“O 型圈 −20 ℃ 漏气改用 FKM”不会在新项目里提醒。品质每次都要重复交代“1 m、A 计权、表格输出”。",
+   "proposal": "①⌘K 扩展到 Build/Lot/样件编号、Issue/变更/CAPA、TestRun、外部等待、知识规则，先按 RLS 过滤（B19 范围内）。②内部全文索引：PostgreSQL tsvector 加三元组，中文分词复用原工程 jieba（确认稿 §5.1 A 类），覆盖 Issue、CAPA、变更、经验规则、状态更新，检索前按品类授权和受众过滤。③读取工具 issue.search、knowledge.rules.search、sample.locate，结果附规则版本和适用范围；quality_issue/change_control 建单时带出同品类相似历史，只读、带引用。④G0 建项目和建 Build 时，由代码附上同品类已发布规则作为“注意事项”。⑤Issue 关闭后，小Pai 起草 knowledge.candidate.create（T0 草稿），发布仍是 T2。⑥我的偏好：用户明说“以后都按 X”时生成候选，本人确认后保存（有来源、作用域、有效期，可撤回），追加在上下文末尾，不静默学习。向量后置。最小可用版本：①+issue.search+knowledge.rules.search。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/personal_search.py:24-28",
+    "pdos-next/server/pdos_next/agent_kernel/domain_reads.py:315-329",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py:5-20",
+    "pdos-next/server/pdos_next/agent_kernel/conversation.py",
+    "pdos-next/server/pdos_next/domain/knowledge/",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §06.8 L1049-1060、§07.7 L1194-1202、§04.15、B19",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md §5.1 L318-320"
+   ],
+   "frozen_conflict": "无硬冲突。确认稿 L246 和 §07.7“第一闭环不建本地全文索引”针对公开研究；本条只索引内部已发布规则和已关闭问题，且已不在第一闭环。偏好页是否补进 §05.3 页面表，由用户定。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "ai_native"
+   ],
+   "roles": [
+    "结构/硬件/固件工程师",
+    "品质/测试",
+    "产品经理",
+    "项目负责人"
+   ],
+   "competitor_refs": [
+    "华天 PLM“华小天”：约 50 万份文档知识库，页码级回溯（https://www.hoteamsoft.com/news-2050）",
+    "CoLab ReviewAI：评审时带出历史意见（https://www.electronicsworld.co.uk/?p=37868）",
+    "Microsoft Copilot Memory：用户可管理已保存的记忆（https://mc.merill.net/message/MC1158329）"
+   ],
+   "ai_native_angle": "把“去问人”变成“系统先给”，每条记忆都有来源、可撤回。"
+  },
+  {
+   "id": "F10",
+   "theme": "ai_experience",
+   "title": "把“刻意不做”和“规则给结论”写进技能与校验：不出 AI 健康分、不自动发布或外发、不把声称日期当承诺",
+   "type": "risk",
+   "area": "反噪音与信任护栏",
+   "current_state": "已定规则散在决策记录里：P17 健康度纯规则，P18 不得自动发布，§03.7 准备度不是分数，B3/B6/B18，DC-11 §7，§06.9 不自动换模型，K7。§06.6.3（:1037）要求片段必须是快照子串，§07.7（:1200）规定向量相似不能决定覆盖或等价，review_pain_clustering 的比例由代码算。17 个技能包没有统一的禁止事项段；verify 节点不拦截评分字段；rubric 负向变体不含“输出风险分”“声称已发布”这类诱惑项。",
+   "problem": "PM 会提“给项目打个 AI 风险分”“周报到点自动发给 OEM”，模型也可能在 gap_check 里自己写“整体风险：中”。门禁评审会被模型分数左右，或者冒出没人负责的 workslop。竞品方向是飞书 AI 风险评级、monday Risk Analyzer，以及 Oracle 只按附件文件名判合规。",
+   "proposal": "①每个技能包的“使用原则”加统一禁止事项：不出健康度、风险分、准备度分数或百分比；不自动发布或外发；不把对方声称的日期写成承诺或预测；风险只能作为“风险线索候选”交给 work.risk.followup.record（T1）。②verify 增加确定性拦截：出现评分类字段或“已发布/已发送”断言即拒绝。③rubric 负向变体加入这些诱惑项。④新增能力（F31 预审、F22 合规、F27 跨 Run、F15 简报排序）都按“规则给结论、AI 给线索并标 ai_hypothesis”分栏；第三方 AI 摘要只作 imported 推断来源。⑤产品层明确不做：自建录音转写、第二模型审查、无来源记忆、超额默认开启、自动顺延承诺。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md P17 P18",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:328-329,551,1037,1200、§05.12 B3/B6/B18",
+    "docs/design/2026-09-20-ai-direct-write-tier-policy.md §7",
+    "docs/design/skills-draft/evaluation-rubric.md §3 §5.1",
+    "pdos-next/server/pdos_next/skill_packages/gap_check.md"
+   ],
+   "frozen_conflict": "无冲突。本条是 P17、P18、B3/B6/B18、DC-11 §7、K7 的执行护栏，不重开已否决方案。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "S",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "competitor"
+   ],
+   "roles": [
+    "产品经理",
+    "项目负责人",
+    "品质/测试",
+    "认证负责人",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "飞书项目：AI 风险评级预警（与 P17 冲突，反例）（https://www.feishu.cn/content/article/7603309198601538781）",
+    "Oracle Product Readiness Workspace：按附件文件名判合规（反例）（https://docs.oracle.com/en/cloud/saas/readiness/scm/26b/plm26b/26B-plm-wn-f44464.htm）",
+    "卖家精灵 AI 评论分析 2.0：证据抽屉回查原话、披露样本上限（https://www.sellersprite.com/cn/v3/knowledge/article/sellersprite-ai-review-analysis-2-0）"
+   ],
+   "ai_native_angle": "AI 干可逆的苦活、人保留判断；护栏要落在技能和校验里，而不只在决策记录中。"
+  },
+  {
+   "id": "F11",
+   "theme": "ai_proactive_capture",
+   "title": "后台委托不可用：AutomationRule 禁写、禁网，具名导入事件被当成外部来源抑制，规则要手填 UUID；做对的问法也存不下来",
+   "type": "missing_feature",
+   "area": "AutomationRule 与可复用做法",
+   "current_state": "§06.4 规定逐项开关（联网、MCP、外部来源默认关闭、跨对象写默认关闭），§06.5 把“来源明确的 Issue 自动建单”列为 T0。实现：automations/schemas.py:110-145 把 allow_network、cross_object_write、external_sources_enabled 固定为 Literal[False]，mcp_tools 上限 0；execution.py:68-69 拒绝自动化运行的任何领域命令；activities.py:96-102 追加禁令；service_runtime.py:234-287 把具名 T1 的 test.results.import、evidence.original.upload 也归为 external_input 抑制。ai.automation.draft.save 的 executor 是 named_human，不在任何技能里；automation-rules.tsx:18-20,129 要求填 ISO 时点、秒数、任务 UUID、token 上限。§06.3.4（:988）写“先在对话中做对，再保存为个人技能”，而 §06.3.2 与 C7 规定技能包随代码发布，代码里没有个人技能（清单:23）。",
+   "problem": "“测试导入后失败即按配置去重建 Issue 候选”“试模前 3 天查齐套”“每周一跟踪 5 款竞品价格、变动才提醒”，三个 v1.1 明文支持的例子一条都配不出来。品质主管摸索出的“DVT 报告复核”问法也没法存成团队做法，每次都要重新交代。",
+   "proposal": "①落实 §06.4 逐项开关：cross_object_write 只开放“在触发对象的直接关联下新建”（如 TestRun→Issue），仍走注册图和档位，无资格时出 T1 候选汇总到“要我决定”；allow_network 只对 public_research 的只读 research.* 开放。②修正事件分类：具名一次确认的导入算 domain_command 来源，原件内容仍走隔离子任务；邮件/IM/连接器建立的对象仍默认关闭。③把 ai.automation.draft.save 授权给技能：用户说“每周一 9 点看 AP-200 齐套”，小Pai 填触发、范围、技能、预算、冷却（T0 草稿），用户按 ai.automation.activate（T1）启用；表单只用业务语言。附 5 个 NPI 模板：试模前齐套、承诺到期前 2 天起草跟催（外发 T2）、测试失败建 Issue 去重、预测滑期列受影响承诺、ECR 批准后列受影响 BOM/SOP。④“我的做法”请用户在两种定义中选。A（推荐）：保存的指令模板，绑定已有技能 key、范围类型和输出偏好，用“/”调用，不带新工具授权、不参与 T0 资格，管理员可共享到品类，稳定后由维护者转为正式技能包。B：租户级技能包入库（改变 C7）。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/domain/automations/schemas.py:100-145",
+    "pdos-next/server/pdos_next/agent_kernel/execution.py:68-69",
+    "pdos-next/server/pdos_next/agent_kernel/activities.py:96-102",
+    "pdos-next/server/pdos_next/domain/automations/service_runtime.py:234-287",
+    "pdos-next/contracts/auxiliary-operations.json ai.automation.draft.save",
+    "pdos-next/web/src/components/automation-rules.tsx:18-20,129",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §06.3.2 L972-976、§06.3.4 L988、§06.4、§06.5",
+    "tasks/ai-native-integrated-todo.md:23"
+   ],
+   "frozen_conflict": "①–③不冲突：现在把具名导入事件归为外部来源是“加严”，违反不可协商项 7，恢复 v1.1 口径即可。④与 C7（技能包随代码发布，库里只存启用与资格）以及 §06.3.2/§06.3.4 的张力有关：A 不改 C7，B 要改 C7。值得用户决定，因为“保存为个人技能”是 v1.1 自己的承诺，却没有可实施的定义。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "competitor"
+   ],
+   "roles": [
+    "品质/测试",
+    "项目负责人",
+    "产品经理",
+    "采购/SQE",
+    "租户管理员"
+   ],
+   "competitor_refs": [
+    "Linear Loops：用自然语言描述，定时或事件触发，每次运行可回看并追加指示（https://linear.app/changelog/2026-07-20-introducing-loops）",
+    "飞书 aily（阿维塔）：约 2.5 小时搭出变更评审 Agent（https://inabr.com/news/22580）",
+    "Asana AI Studio：无代码 AI 规则（https://help.asana.com/s/article/ai-studio-pricing）"
+   ],
+   "ai_native_angle": "后台委托要能产出可撤回的业务结果，而且一句话就能建好；做对一次就能沉淀复用。"
+  },
+  {
+   "id": "F12",
+   "theme": "ai_proactive_capture",
+   "title": "捕捉入口太窄、上传后还要人工再录：只收 TXT/MD/PDF/XLSX，不收 Word、邮件、照片、语音，上传不进入工作，没有统一导入链",
+   "type": "missing_feature",
+   "area": "原件捕捉与统一导入",
+   "current_state": "§07.6（v1.1:1188-1192）承诺支持 DOCX、PPTX、邮件，OCR 保留区域和不确定性；§07.2（:1145）规定 python-docx 只装在隔离解析环境；§05.9 有拍照上传，转写只作候选。实现：originals.py:31-36、parsers.py:13、upload_views.py:69 只收 4 种；没有文字层的 PDF 只标 needs_ocr（parsers.py:243-248）；解析容器只有 openpyxl。file-upload.tsx:130-152 写明“上传不启动工作…只用手选的资料”，提案页上传落到型号/品类根下“需另行挂接”。抽取行结构只有 rfq_requirement 和 user_voice（extract_schemas.py:190-194）；ConfirmationBatch 未实现。可复用：原工程 office_documents.py、email_attachment_parts.py（确认稿 §5.1 B 类）、field_recognition_worker.py。",
+   "problem": "OEM 规格书是 Word 加邮件，客户改动来自微信截图，实验室报告是盖章扫描件，售后“气嘴漏气”是照片。PM 得先转成 PDF、截图转文字、上传、刷新、手选，再自己比对；资料最后只是存着，用时还要在表单里再敲一遍，正是“比 Excel 还累”。",
+   "proposal": "统一“导入”入口，页面和小Pai 走同一条命令链：上传→隔离解析（补 DOCX、EML 含附件拆分、图片/扫描件 OCR，保留区域和置信度，复用原工程 B 类代码）→选目标行结构（作为技能包 row_schemas 声明）→小Pai 抽取→确定性校验单位、映射、重复行→整批确认（F04），只单列存疑行→写入时标 origin=imported、“导入，未复核”，每行回链到单元格或页码。拖入小Pai 输入区即进入本次携带清单（B14）；提案页上传直接挂到当前私有提案。图片作为原件版本登记（供 F13、F26 使用）。移动 Web 录音转写只作候选，先用于品质接收和现场异常。BOM 与测试两类导入见 F33、F27。最小可用版本：DOCX+EML、拖入即携带、提案页直挂。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/originals.py:31-36",
+    "pdos-next/server/pdos_next/evidence_processing/parsers.py:13,235-250",
+    "pdos-next/server/pdos_next/agent_kernel/upload_views.py:69",
+    "pdos-next/web/src/components/pai/file-upload.tsx:130-152",
+    "pdos-next/server/pdos_next/agent_kernel/extract_schemas.py:190-194",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:878-880,1145,1188-1192、§05.5、§05.9",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md §5.1 L328",
+    "server/app/domain/office_documents.py",
+    "server/app/domain/email_attachment_parts.py",
+    "server/app/domain/field_recognition_worker.py"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "ai_native",
+    "role_day",
+    "adoption_integration"
+   ],
+   "roles": [
+    "产品经理",
+    "品质/测试",
+    "采购/SQE",
+    "售后/现场",
+    "项目负责人"
+   ],
+   "competitor_refs": [
+    "Aras InnovatorEdge：Requirements Ingestion 把 PDF/Excel/Word 转成结构化需求并查重（https://aras.com/en/blog/introducing-the-first-generation-of-agents-built-on-aras-innovator-edge-ai）",
+    "V2EX：“工具最后都会退回 Excel”（https://www.v2ex.com/t/1226030）"
+   ],
+   "ai_native_angle": "AI-native 的第一步是捕捉而不是录入；导入时的本人审阅也是积累 C8 资格案例最自然的来源。"
+  },
+  {
+   "id": "F13",
+   "theme": "ai_proactive_capture",
+   "title": "钉钉触达为零：注意项推不到人，群里的事实进不来；也没有卡片确认、“转给小Pai”、听记纪要和对外只读 MCP",
+   "type": "missing_feature",
+   "area": "钉钉通知、卡片、转发与对外 MCP",
+   "current_state": "代码中 dingtalk/钉钉/notification/webhook 为 0；我的工作的“通知”只显示小Pai 运行（my-work.tsx:178-185）。external_wait/rules.py:204-268 已能算出“对方声称承诺已过”，但只在只读队列里显示。Outbox/Inbox（models.py:510-525,674-686）可以挂消费者。MCP 只有入站、只支持 Streamable HTTP+Bearer（mcp_transport.py:1-35），AutomationRule 的 mcp_tools 上限为 0；没有对外 MCP Server。设计：§07.1（:1122,1134）、§07.9（:1216）写了钉钉入口和身份通知，§06.6.2 规定外部写入的档位，§06.4 规定外部来源默认关闭，但 §09.6 没有排期，确认稿 §5.1（L331）定为“暂缓”。DC-13（:209）曾批准转发入口三条边界。可复用：原工程 dingtalk_outbox.py（1342 行）、dingtalk_cards.py、dingtalk_callbacks.py。",
+   "problem": "采购登记“电芯厂 10/24 到货”，过期后系统判定已逾期，但没人收到提醒。模具厂在群里说“T1 推迟到下周三”、DVT 会上口头定“外观先放行、性能复测”，都进不了 PDOS，四时间和准备度规则只能空转。员工在钉钉 AI 助理里也查不到“这批样件的测试结论”。",
+   "proposal": "分四步。①只读推送：经 Outbox 消费者，把注意项变化（被指派、要我接收、对方承诺已过、被退回）按人每 2 小时聚合成一张工作通知卡，深链回原对象表单，同一事项只更新同一张卡；管理员对连接器授权一次，消息只含标题、原因、到期，不含客户原件。②卡片一次确认：只承载已实现的低风险 T1（登记对方回复、承接任务、确认承诺履行、整批接收），服务端用钉钉身份找到 Principal，重核授权、expected_revision 和有效期；T2 只给“去 PDOS 办理”。③转给小Pai：用户主动转发或单聊 @，转发人即 requester；原文进隔离只读子任务，候选回到我的工作；经管理员准入的钉钉 MCP 只读拉取已结束会议的听记纪要，口头决定只生成“待具名决定”。不监听群聊，不在钉钉另建待办真值。④S5 之后评估只读 PDOS MCP Server（5–8 个读工具：我的工作、项目现在、测试/认证结论、Build 状态、对象查找），用钉钉身份 OAuth，ACL 与页面相同，不提供写工具，返回内容不含原件正文，管理员可按品类关闭。最小可用版本：①（复用原工程 A 类代码）。身份登录见 F38。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/domain/external_wait/rules.py:204-268",
+    "pdos-next/web/src/components/my-work.tsx:178-185",
+    "pdos-next/server/pdos_next/models.py:47-56,510-525,674-686",
+    "pdos-next/server/pdos_next/agent_kernel/mcp_transport.py:1-35",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:996,1021-1031,1122,1134,1216,1305-1321,1477-1485",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md:331",
+    "docs/design/2026-09-28-pdos-design-direction-integration.md:209",
+    "server/app/integrations/dingtalk_outbox.py",
+    "server/app/integrations/dingtalk_cards.py"
+   ],
+   "frozen_conflict": "与确认稿 §5.1（L331）钉钉“暂缓”冲突，§09.6 也没有排期；“暂缓”不是否决。值得重新决定，因为承诺、外部等待和注意项都依赖有人被提醒，而推送通道为零；原工程有可复用实现，DC-13 批准过转发边界；转交人即 requester，不触碰 §06.4“外部来源默认关闭”。原工程合同（2026-09-10:29，已归档）曾把“会议深度转写拉取”列为范围外，听记导入需一并确认。对外 MCP Server 在 v1.1 没有条文，属于扩大对外暴露面（不可协商项 7）；它不是第二个 Agent，与 K7 不冲突。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "ai_native",
+    "competitor",
+    "adoption_integration"
+   ],
+   "roles": [
+    "全部岗位",
+    "项目负责人",
+    "采购/供应",
+    "品质/测试",
+    "生产/NPI",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "阿维塔×飞书项目：独立 AI 工具峰值只有几百次访问，嵌入审签后累计调用 6 万多次（客户宣称）（https://inabr.com/news/22580）",
+    "AI 钉钉 2.0：聊天、AI 听记、AI 表格、文档、通讯录已完成 MCP 改造（https://www.36kr.com/p/3728259637607553）",
+    "Linear Asks：在 Slack 或邮件里把请求变成 Triage 条目（https://linear.app/docs/linear-asks）",
+    "Propel：生产级 MCP，在现有权限下供 Claude/ChatGPT 查询产品记录（https://itbrief.co.uk/story/propel-launches-production-mcp-for-ai-driven-plm-integration）"
+   ],
+   "ai_native_angle": "钉钉既是小Pai 收信息的入口，也是送结果的出口：转发一条就是一次委派，卡片上完成一次确认；模型不可用时提醒照发。"
+  },
+  {
+   "id": "F14",
+   "theme": "project_execution",
+   "title": "NPI 主骨架没有办理入口：阶段模板、阶段评审、冻结点授权（开模/长交期）和 G1 都无命令，CEHub 交付指南定为直接复用却未接入",
+   "type": "missing_feature",
+   "area": "项目计划与阶段门禁（EVT→DVT→PVT→MP）",
+   "current_state": "设计：§03.2（v1.1:493-499）定义 StageInstance 与按入口区分的模板，§03.9（:574-580）定义 FreezePoint（结构冻结、开模授权、长交期采购、认证样机冻结），§03.13（:610-614）是模板体系，§03.14（:627）写“规格冻结→定义转需求→G1”，§05.3（:784）的主动作是“发起阶段评审”。但附录 A（:1618-1710）没有阶段评审、门禁决定、冻结点授权命令；work.baseline.approve 和 product.definition.publish 都是 not_implemented。代码：StageInstance/FreezePoint/stage_template 为 0；project-workspace.tsx:57,64 显示“阶段记录待接入”。资产：assets/cehub/deliverable-guide-manifest.json 有 6 类项目、P1–P7、约 40 个 Gate、325 类交付、687 条 checkItems，确认稿 C13（:323）和复用计划（:53）定为 A 类直接消费，代码和 v1.1 正文都没引用。",
+   "problem": "外壳/气缸开模（每套几万元）、电芯长交期下单、CE/UN38.3 样机冻结，这些最贵的不可逆投入在 PDOS 里没有“谁、何时、按什么依据授权”。EVT/DVT/PVT 评审只能回到 Excel 和钉钉审批。P17 健康度、B4 时间轴、B5 阶段条都没有数据来源，老板也没有“等我批的钱”（28 万开模、5 万电芯备料）。用户 10-16 已说“NPI 阶段体现不足”。",
+   "proposal": "在 §03.2/§03.9/§03.13 内细化。①把 CEHub 清单映射成 3 个版本化模板：自主新品（npd）、派生（derivative）、OEM/ODM（jdm/obt），阶段为 EVT/DVT/PVT/MP。CEHub P1 立项评审对应 G0，不再重复；P2 Kickoff 对应 G1。checkItems 按 §03.7 写成出口规则（applicable_if/required_evidence/waivable），清单存在不等于自动通过。obt 顺带承接转厂/外协试产。②附录 A 补三条命令：stage.review.submit（T1，固定评审包）、stage.gate.decide（T2，绑定规则结果版本）、freeze.point.authorize（T2，写明冻结对象、版本、金额或数量、下游消费）；实现 work.baseline.approve。③G0 建项目时按入口选模板；模板更新时在途项目只生成差异。④冻结点授权进入管理层“要我决定”（F16）。示例：DVT 出口要求“62133-2 报告覆盖当前电芯批次”“T1 尺寸全检通过”；开模冻结点记录“外壳模 2 腔、8.6 万元、依据结构冻结 v3”。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:493-499,574-580,610-614,627,784,1618-1710",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md:323",
+    "docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md:53",
+    "assets/cehub/deliverable-guide-manifest.json",
+    "pdos-next/contracts/operations.json",
+    "pdos-next/web/src/components/projects/project-workspace.tsx:57,64"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process",
+    "role_day"
+   ],
+   "roles": [
+    "项目负责人",
+    "NPI协调",
+    "管理层",
+    "工程/模具",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "华为云 CodeArts Req：IPD 系统设备类模板，含基线与变更评审（https://support.huaweicloud.com/productdesc-projectman/projectman_07_3001.html）",
+    "Oracle Product Readiness Workspace：输出“什么在阻塞上市准备”（https://docs.oracle.com/en/cloud/saas/readiness/scm/26b/plm26b/26B-plm-wn-f44464.htm）",
+    "飞书项目：AI 节点嵌入 IPD 审签（https://m.tech.china.com/redian/2026/0423/042026_1853950.html）"
+   ],
+   "ai_native_angle": "小Pai 按模板读规则结果，装好评审包并列出缺证据项（T0）；人只作具名门禁决定（T2）。"
+  },
+  {
+   "id": "F15",
+   "theme": "project_execution",
+   "title": "日常动作一律强制“已登记原件精确引用+办理理由”：说一句、接个电话都进不了系统，这是 S5 合同对 v1.1 的加严",
+   "type": "risk",
+   "area": "任务、承诺、外部等待、状态更新的录入",
+   "current_state": "work_management/schemas.py:44-53 要求 sources 且只能是 artifact，reason 必填；:62-71 任务没有原件就拒；:113 承诺、:181 状态更新至少 1 条原件。external_wait/schemas.py:139-151 每个动作都要原件和理由，而 Entry 本身有 time_basis: human_recorded|source_claim（:160-167）。SourceRef（verification/contracts.py:35-39）连 domain 引用也被工作命令拒绝。前端 project-work.tsx:127“实际来源引用（高级 JSON，必填）”，project-work.ts:54、external-waits.tsx:124 同样要求。原件不收截图和照片。v1.1 §03.4–§03.6（L524-549）、附录 A（L1649-1657）、P18 都没有这条要求，§05.5 只要求“有来源、区分声称与实到”；它来自 S5 合同（2026-10-18…contract.md:5）。",
+   "problem": "站会上一句“老王今天跟模厂确认 T1 日期”，要建成任务得先存 .txt、找行号、往 JSON 框里粘 {id,revision,position}，再写理由；承接、开始时还要各写一次。采购接到“样品周五到”的电话，或者供应商发来微信截图，都登记不了。结果大家在钉钉说完就算了，任务、承诺和四时间规则拿不到数据，也违背 §05.11“不重复录入”。",
+   "proposal": "①新增来源类型“本人陈述”：记录人、时点、原话，time_basis=human_recorded；task.create/assign/accept/start、commitment.accept、external_wait 各动作、status_update.create 都接受它，原件改为可选附证据；在小Pai 里说的话，以该轮消息（带 Run 回执）作为来源。②reason 只在退回、拒绝、转交、撤回、替代承诺时必填。③去掉所有“高级 JSON”框，改成“从资料选择/附图片”（图片登记见 F12）。④保留“声称 vs 实到”：本人记录的对方承诺标“对方声称（本人记录）”，不推定已送达。最小可用版本：task.create、external_wait.record（新建/回复/承诺）、status_update.create 三条接受本人陈述，去掉 JSON 输入，同时修订 S5 合同第 5 行与 v1.1 对齐。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/domain/work_management/schemas.py:44-71,113,181",
+    "pdos-next/server/pdos_next/domain/external_wait/schemas.py:139-167",
+    "pdos-next/server/pdos_next/schemas/verification/contracts.py:35-39",
+    "pdos-next/web/src/components/projects/project-work.tsx:127",
+    "pdos-next/web/src/lib/project-work.ts:54-60",
+    "pdos-next/web/src/components/projects/external-waits.tsx:124",
+    "docs/design/2026-10-18-pdos-next-s5-project-work-contract.md:5",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §03.4-03.6、§05.5 L833、§05.11 L880、附录A L1649-1657"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day"
+   ],
+   "roles": [
+    "项目负责人",
+    "采购/供应",
+    "结构/硬件/固件工程师",
+    "品质/测试",
+    "模具/工程"
+   ],
+   "competitor_refs": [
+    "Linear Asks：在 Slack 里用表情或 @ 就能把请求变成 issue（https://linear.app/docs/linear-asks）",
+    "人人都是产品经理《干了八年 PLM 咨询》：工程师嘴上答应上传，实际不做（https://www.woshipm.com/share/6438542.html）"
+   ],
+   "ai_native_angle": "在小Pai 里说一句就是可追溯来源；AI 把日期和数量抽成候选，人确认一次即可。"
+  },
+  {
+   "id": "F16",
+   "theme": "project_execution",
+   "title": "老板周一什么也看不到：阶段、健康度、下一门禁全是“未知/待提供”，组合页是占位，没有每周经营简报",
+   "type": "missing_feature",
+   "area": "管理层组合视图",
+   "current_state": "project-list.tsx 的阶段列显示“待提供”，健康度“未知”（“尚未取得门禁规则结果”）；project-workspace.tsx:55-57 同样。app-shell.tsx:236 的组合与资源“尚未接入”，global-navigation.ts:10 标 planned。“要我决定”只有 G0 和风险（personal_attention_decisions.py:60）。设计：§01.5（L211）管理层负责组合与决定，§05.3（L803）组合页展示跨项目冲突，P17 健康度纯规则、算不全留空，B4 只暴露冲突。原工程 DC-12 Q11 每日摘要，v1.1 未承接。",
+   "problem": "老板周一 9 点开会前想知道哪些项目卡住、卡在谁、哪家客户样品要逾期、哪几笔钱等他批，PDOS 给的是一列“未知”。他继续在钉钉群里挨个问 PM，PM 继续手写周报，试点很难坚持下去。",
+   "proposal": "不引入 AI 健康分（P17）。①先用已有事实算出能算的档位：“有阻塞”（阻塞型外部等待过检查点、Build 齐套硬缺口）、“有风险”（承诺超期未履行、高风险 Issue 未关）、“待批准”（G0、变更、放行待具名决定）；其余留空，每档可下钻到规则 id。②每周经营简报由代码聚合，无模型也能出：每个项目一行，含最新具名状态更新（P18）、规则档位、对外承诺（客户样品、认证送样）到期情况、待管理层决定事项；周一 08:30 经钉钉推送（F13），网页作为“组合与资源”的第一个只读读集。③冻结点授权命令见 F14，落地后进入管理层“要我决定”。最小可用版本：①+②，只读。",
+   "internal_refs": [
+    "pdos-next/web/src/components/projects/project-list.tsx",
+    "pdos-next/web/src/components/projects/project-workspace.tsx:55-57",
+    "pdos-next/web/src/components/app-shell.tsx:236",
+    "pdos-next/web/src/lib/global-navigation.ts:10",
+    "pdos-next/server/pdos_next/personal_attention_decisions.py:60",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §01.5 L211、§05.3 L803、§05.12 B4",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md P17 L548-554"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day"
+   ],
+   "roles": [
+    "管理层",
+    "项目负责人"
+   ],
+   "competitor_refs": [
+    "Linear Pulse：早 7 点前推送个人每日或每周更新摘要（https://linear.app/changelog/2025-04-16-pulse）",
+    "Glean：预置每日“需要关注什么”的主动 agent（https://thelettertwo.com/2026/02/17/glean-assistant-proactive-ai-coworker/）"
+   ],
+   "ai_native_angle": "简报由代码预聚合、规则判定；只有老板追问“为什么延期”时，小Pai 才基于回执作答。"
+  },
+  {
+   "id": "F17",
+   "theme": "project_execution",
+   "title": "“我的工作”不能就地分诊：一屏 11 个只读区块和两套任务，卡片只会跳转；“要我决定”缺变更/放行/CAPA 和小Pai 待确认候选，也没有 AI 例外、值班摘要和每日排序",
+   "type": "optimization",
+   "area": "我的工作·个人分诊",
+   "current_state": "my-work.tsx:120-200 依次是注意项、风险、S5 项目任务、来自 openItems 的“我的任务”（portfolio-reads.ts:80，第二套来源）、只显示运行动态的“通知”（:180）、承诺、开测承诺（直接显示短 ID）、快捷访问。卡片唯一动作是跳转：my-work-attention.tsx:37，my-work-promises.tsx:77“进入后仍需选择上述 Build、请求与 Run”，:83“外部等待与其他通用承诺仍未接入”。S5 注意项合同写明变更、发布、专业接收、CAPA 都没推成待办；“要我决定”只有 G0 和风险。只有 waiting_input 的运行算“需查看”（:93），留有待确认候选的已完成运行不进任何队列；personal_attention*.py 九个文件没有 AI 维度。设计：§05.2（L770-776）只显示真实可执行动作并聚合提醒，§01.7（L233）就地办理，DC-11 §5.2–3 例外队列、§11.4 值班摘要。",
+   "problem": "品质看到“要我接收：EVT2 上壳样件”，要经 5–6 次跳转才看到表单；“我的任务/我的项目任务/开测承诺”三处像任务，不知先办哪个。结构被指定为“换无刷电机 ECR”的审批人，“要我决定”里没有。采购让小Pai 登记的外部等待候选一关侧栏就没人提醒，10/28 前的齐套判断一直是错的。",
+   "proposal": "保持 P19 语义，不新增分组。①深链到“对象+表单”：卡片带精确 ID 和目标表单，打开即预选。②就地主动作只放已实现的 T1：承接任务、登记开始、承诺履行核对、整批接收、登记外部回复；T2 只给定位（同 B19）。③“要我决定”补齐 §05.3 的决定类：变更选择/批准、CAPA 根因、工程/制造放行、测试处置；再加“小Pai 起草”来源，每个运行聚合一条（“等你确认 N 组，最早 X 分钟后过期”），直达整批确认（F04）；“要我验证”补 CAPA 有效性复核。全部是只读投影。④AI 例外从运行事件派生并聚合到原对象：verify 拒绝、来源冲突、资格暂停、同规则连续失败 ≥2、预算耗尽。⑤顶部放代码预聚合的每日简报（无模型也能出，满足 AT-45）：今天到期的承诺、新注意项、超期外部等待、阻塞下游最多的事项，按到期时间和被阻塞下游数排序，不用 AI 分数；通知栏加值班摘要卡（“过去 24 小时小Pai 完成 X 项可撤回·等你确认 Y 组·失败 Z 次”），不计待办数。⑥G0 待办接续成任务后只在“我的项目任务”出现，开测承诺并入“我作出的承诺”，通知加入被指派/被退回/对方回复/Build 开工。最小可用版本：①+变更与放行两类决定+小Pai 候选聚合+开测承诺并组。",
+   "internal_refs": [
+    "pdos-next/web/src/components/my-work.tsx:15-35,93,120-200",
+    "pdos-next/web/src/components/my-work-attention.tsx:37",
+    "pdos-next/web/src/components/my-work-promises.tsx:77,83",
+    "pdos-next/web/src/lib/portfolio-reads.ts:80",
+    "pdos-next/server/pdos_next/personal_attention_decisions.py:60",
+    "pdos-next/server/pdos_next/personal_attention_project_risk.py:41",
+    "docs/design/2026-10-18-pdos-next-s5-attention-contract.md",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §01.7 L233、§02.11、§05.2 L770-776、§05.3 L782",
+    "docs/design/2026-09-20-ai-direct-write-tier-policy.md §5 §10 §11.4"
+   ],
+   "frozen_conflict": "不冲突 P19：小Pai 待确认候选并入“要我决定”并加来源标记，值班摘要放在通知流，不新增第六组；排序依据是到期时间和被阻塞下游数，不是 AI 分数（P17）。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "ai_native",
+    "competitor"
+   ],
+   "roles": [
+    "品质/测试",
+    "结构/硬件/固件工程师",
+    "项目负责人",
+    "生产/NPI",
+    "采购/供应"
+   ],
+   "competitor_refs": [
+    "Linear Priority inbox：分开“需要你处理的”和“可以等的”（https://linear.app/changelog/2026-09-03-priority-inbox）",
+    "Linear Triage Intelligence：悬停可见建议理由（https://linear.app/docs/triage-intelligence）"
+   ],
+   "ai_native_angle": "卡片直接写“已为你核对 X 项，剩 Y 项需你判断”；“人管例外”需要一个一定存在、默认为空的例外入口。"
+  },
+  {
+   "id": "F18",
+   "theme": "project_execution",
+   "title": "周报和会后跟进全靠手写：状态更新表单只有两个空框，没有技能授权；会议行动项只能逐条手建",
+   "type": "missing_feature",
+   "area": "状态更新与会议跟进",
+   "current_state": "project-work.tsx 约 L124 起的周报表单只有“本期事实/下一步”两个空框和必填原件 JSON，不预填本周事实。work.status_update.create 不在任何技能包里，而附录 A（L1657）写“AI 可起草，一次确认后由具名人发布”。会议在代码中为 0；S5 合同（:5）只支持从会议原件逐条建任务。§09.6（L1485）S5 列了“会议/周报”但没有细则；DC-11 §8 第 1、4 项是会议纪要草稿和周报初稿。P18 规定 T1、不得自动发布、日期不进四时间、“下一步”不自动建任务。",
+   "problem": "DVT 期间 PM 每周五要给老板和 OEM 各发一版进度（Build 产出、测试通过失败、未关问题、模具和电芯交期），这些事实都已在 PDOS，却要逐页去抄。周一例会和 DVT 评审定下的 8–15 条行动，会后要一条条建任务、填原件，实际上通常就不建了。",
+   "proposal": "遵守 P18。①“起草本周更新”：代码预聚合本周事实清单（任务提交/验收、承诺到期/错过、外部等待回复/逾期、Build 开工/产出、TestRun 通过/失败、Issue 新建/关闭、变更批准），按 §06.7 追加上下文末尾；在 project_followup（F05）里授权 work.status_update.create，小Pai 起草，每句可点开对应回执，无来源的句子由代码拦下；人改完一次确认发布。模型不可用时只出事实清单（AT-45）。②定时起草（可选）：AutomationRule 每周五 15:00 为本人项目起草一条，放进“要我决定”待确认，不发布、不重复新建；依赖 F11 放开“规则产出 T1 候选”。③会议：上传纪要（txt/md/pdf/docx，以后经 F13 听记只读获取），小Pai 抽取任务、外部等待、“待具名决定”候选，每条定位到段落，整批确认；口头决定不形成 Decision（§03.10）。④个人周报草稿可复制到钉钉日志，复制是本人动作，不算外发。OEM 客户版外发涉及 T2 和 S4 固定包，另作决策（导出见 F35）。最小可用版本：①含无模型降级。",
+   "internal_refs": [
+    "pdos-next/web/src/components/projects/project-work.tsx:124-127",
+    "pdos-next/server/pdos_next/domain/work_management/schemas.py:180-190",
+    "docs/design/2026-10-18-pdos-next-s5-project-work-contract.md:5",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md 附录A L1657、§06.7、§09.6 L1485",
+    "docs/design/2026-09-20-ai-direct-write-tier-policy.md:62-70",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md P18 L556-561"
+   ],
+   "frozen_conflict": "最小可用版本完全在 P18 之内。定时起草可能碰到 P18“状态更新不产生注意项”：本建议理解为已发布的更新不产生注意项，待确认草稿只作为 T1 候选汇总，这一解释需用户确认。DC-11 §8 第 4 项“周报初稿 T0”已被 P18 取代，不恢复。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "ai_native",
+    "competitor"
+   ],
+   "roles": [
+    "项目负责人",
+    "产品经理",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "Asana Smart status：选时间范围起草，人编辑后发布（https://help.asana.com/s/article/smart-status）",
+    "飞书项目：AI 周报定期推送，会议纪要提取待办（https://www.feishu.cn/content/article/7603309198601538781）",
+    "workslop 研究：40% 的人上月收到过低质 AI 产出（https://www.axios.com/2025/09/24/ai-workslop-workplace-efficiency-study）"
+   ],
+   "ai_native_angle": "周报只引用本周回执、逐句可溯源，这是防 workslop 的关键；口头决定不会被当成正式决定。"
+  },
+  {
+   "id": "F19",
+   "theme": "project_execution",
+   "title": "在途项目进不来：项目只随 G0 建立，试点开通时手上的 DVT 项目只能补造假立项",
+   "type": "missing_feature",
+   "area": "存量/在途项目登记",
+   "current_state": "projects/service.py:161-162 规定没有 G0 决定就报“项目只随实际 G0 批准建立”；operations.json 中 project.create 是 g0_atomic_materialization_only；P2 的过渡入口已收紧，代码中为 0。v1.1 §01.4（:189-190）规定 G0 批准后才建项目；附录 B 没有存量导入场景；vNext 盲区 G1 注明“在途项目历史导入未写”。",
+   "problem": "试点开通当天已有 3–5 个在途项目（一款车充在 DVT，一个 OEM 打气筒在等客户承认）。要纳管只能补写假提案、让第二 PM 补做“G0 批准”，正是 v1.1 反对的虚假记录，会让 G0 数据失真；不纳管，试点就得等几个月新项目。",
+   "proposal": "一次性“存量项目登记”入口，仅限租户管理员或品类负责人，T2 具名办理。登记项目名、型号（可新建外壳）、按模板选当前阶段位置（EVT/DVT/PVT）、负责人、可选的历史立项依据原件（OA 审批单、纪要）。回执和项目页标“存量登记，非 G0 立项”，不生成 ProposalDecision 和“定义 v1”，定义经导入向导标“导入，未复核”；之后一律按正常规则办理。租户级开关，只在试点开通期打开。小Pai 可从原 Excel 进度表和钉钉纪要起草任务、承诺、外部等待候选，整批确认。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/domain/projects/service.py:141-175",
+    "pdos-next/contracts/operations.json project.create",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md:418-421,605-610",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:179-197"
+   ],
+   "frozen_conflict": "与 K2/A22（唯一关卡是具名 G0）、v1.1 §01.4“G0 批准后建项目”、P2（G0 验收后收紧）冲突。值得重新决定，因为这些规则是为新项目防止“虚拟项目”而设，而在途项目本身就是真实开发；补造 G0 会产生虚假批准记录，带标记、限时开关的存量登记更符合“不伪造”的本意。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "adoption_integration"
+   ],
+   "roles": [
+    "租户管理员",
+    "品类负责人",
+    "项目负责人",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "飞书项目：阿维塔约 2500 名研发把既有 IPD 流程整体搬上来（客户宣称）（https://inabr.com/news/22580）",
+    "上海宇昔：卡住企业的是老数据，PLM 上线会把混乱固化（https://www.yx-win.com/h-nd-321.html?m871pageno=3）"
+   ],
+   "ai_native_angle": "小Pai 半小时内把在途项目的任务和承诺候选起草好；登记本身仍是人的 T2 决定。"
+  },
+  {
+   "id": "F20",
+   "theme": "product_definition_preproject",
+   "title": "客户改版没有差异对比：v1→v2 要人工逐页对读，结果也转不成提案修订或变更请求候选",
+   "type": "missing_feature",
+   "area": "客户输入与变更（立项前和项目内）",
+   "current_state": "§02.3（L318）规定客户原件不可变，原件按 artifact_id+revision 版本化（models.py:173-182）。rfq_extraction.md:105,114 只用一句话提到“增量抽取、标出变化”，output_schema（:12-40）没有变化字段；artifact_refs 只取本私有提案的原件（:10），G0 后项目内的客户改版没有入口。计算工具里没有原件版本差异（tools.py:24-31），difflib 只出现在去标识模块。change_control.md:29 把客户要求列为变更来源，但根对象 Kind（change_control/contracts.py:12-40）只收内部对象。",
+   "problem": "OEM 在 DVT 中途发来规格书 v2：噪声 ≤75 改 ≤70 dB(A)@1m，显示精度 ±2 改 ±1 psi，新增彩盒 1.2 m 跌落，附录表把 USB-C 改成必须支持 PD。现在只能人工对读再手动建变更；漏一条就是一轮按错规格做的 Build，或者客户拒收。",
+   "proposal": "不新增领域对象。①确定性工具 calc.artifact_revision_diff：隔离环境内对同一 artifact 两个 revision 做段落、表格行、单元格三级差异，只输出定位和新旧原文，不经模型。②rfq_extraction 输出加 revision_changes[]：旧 Claim、新 Citation、change_kind（added/removed/value_changed/condition_changed/modality_changed）、受影响条目；模型只做解释、参数映射，并标出“should→must”这类口径变化。③立项前落为 proposal.item.patch（T0 草稿，不覆盖人工值）和待决问题（T1）；G0 后落为 change.request.create（T0），根对象是受影响的 SpecItem，来源是新原件版本，显式影响由 change.impact.compute 给出，AI 线索分栏。T1 分组确认。最小可用版本：XLSX 单元格与 PDF 文本层两种差异，加提案内路径；项目内路径等 change_control 有读取端口后上线。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:318",
+    "pdos-next/server/pdos_next/skill_packages/rfq_extraction.md:10,12-40,105,114",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py:24-31",
+    "pdos-next/server/pdos_next/models.py:173-182",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:12-40",
+    "pdos-next/server/pdos_next/skill_packages/change_control.md:29"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "competitor",
+    "role_day"
+   ],
+   "roles": [
+    "产品经理",
+    "项目负责人",
+    "结构/硬件工程师",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "PTC Arena：AI File Comparison 识别规格、图纸等文件修订差异（https://www.digitalengineering247.com/article/ai-engine-for-arena-plm-and-quality-management-boosts-automation/plm）",
+    "Aras InnovatorEdge：BOM Assistant 比较 Rev A/B，Requirements Ingestion 与已有需求查重（https://aras.com/en/blog/introducing-the-first-generation-of-agents-built-on-aras-innovator-edge-ai）"
+   ],
+   "ai_native_angle": "客户一发新版，小Pai 就整理好改了什么、影响哪几条规格、哪些测试可能失效，人只判断接不接受。"
+  },
+  {
+   "id": "F21",
+   "theme": "product_definition_preproject",
+   "title": "立项和设计冻结不查专利与外观侵权：跨境电商被投诉下架的风险没进 G0 风险项和冻结条件",
+   "type": "risk",
+   "area": "G0 提案风险与 ID/结构冻结",
+   "current_state": "G0 评审“值不值得做…还有什么不确定”（v1.1:621），提案风险段（:349）没有 IP 类目；patent/FTO 在 v1.1 和确认稿中都是 0，只有 opportunity_scoring.md:75 把专利列为硬性风险的例子。CEHub NPD 概念阶段有“专利检索与规避分析”交付。",
+   "problem": "充气泵、打气筒外观和结构高度同质化，竞品在美欧申请了大量外观专利，亚马逊因外观专利投诉被下架甚至 TRO 冻结账户很常见。G0 不查、ID 冻结前不复核，往往开模、备货之后才收到投诉，模具和库存全部损失。",
+   "proposal": "不新建对象，遵守 C3。①技能包 ip_screening：经受控公开研究检索公开专利库（只开本轮结果，§06.6.3），产出“相似外观/结构专利清单+推断风险等级+需律师确认事项”，以 T0 草稿写入提案风险段、署 AI 名，引用片段可在快照中核对（AT-56）。②风险段加 IP 类目；G0 时可以是“未知”，但须按 P11 逐条安排负责人和期限。③ID/结构冻结点（F14）加规则：目标市场 IP 风险已由具名人员复核或标“不适用”。④FTO 结论由法务或 PM 具名，AI 不出结论。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:349,576,621,1033-1039",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md:502-510",
+    "pdos-next/server/pdos_next/skill_packages/opportunity_scoring.md:75",
+    "assets/cehub/deliverable-guide-manifest.json"
+   ],
+   "frozen_conflict": "不违反 K2/A22（不在立项前加关卡）和 C3（不建研究对象）：只是提案的一个风险条目、一个技能包和一条项目内冻结规则。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "S",
+   "confidence": "medium",
+   "source_lenses": [
+    "business_process"
+   ],
+   "roles": [
+    "产品经理",
+    "ID/CMF",
+    "法务（外部）"
+   ],
+   "competitor_refs": [],
+   "ai_native_angle": "检索比对大量公开专利图片和权利要求，正是 AI 先干、人管例外的典型场景。"
+  },
+  {
+   "id": "F22",
+   "theme": "compliance_certification",
+   "title": "认证合规没有型号级对象：缺“变体×市场×渠道”的认证评估、零件材料声明、证书有效期和变更后重判",
+   "type": "missing_feature",
+   "area": "认证与合规（DVT 送样→报告/证书→持续销售）",
+   "current_state": "v1.1 只有品类层法规目录（:330；category_schemas.py:101-111 的 RegulationContent），提案里的认证段只是文本（:346；preproject/schemas.py:126 certification_regions），§02.1 模块表（:276-288）没有认证对象，附录 A 没有认证命令。种子 D2/D3/D7 和 auto-tire-inflator.json 规定适用性由认证负责人按“型号/变体及配置、销售地区、客户/渠道、销售时间、法规版本”判定，三种状态分开；auto-tire-inflator.md:167-204 列了 RoHS、REACH PAH（软管、气嘴 8 种 PAH ≤1 mg/kg）、Prop 65、2023/1542、UN38.3。零件/配置层 rohs/svhc/pfas/certificate 为 0；派生基线 certification 固定返回 unknown（baseline_blocks.py:27、baseline.py:699），而 derivative_diff 等三个技能都声明要读认证；变更影响面 Facet（change_control/contracts.py:42-51）没有认证适用性。法规类变更项无人能批的问题见 F38。",
+   "problem": "一款锂电充气泵卖欧美日要管十多份报告（CE-EMC/RED、GPSR、2023/1542、RoHS/REACH PAH、FCC、PSE、UN38.3、62133-2），每份对应特定样品、BOM/固件、实验室和有效期。换电芯后 UN38.3 还覆不覆盖、哪个 SKU 报告快到期，PDOS 都答不出，只能回到 Excel 台账。亚马逊只认资质实验室报告，旧报告可能失效，但没人会收到提醒；派生入口承诺的“起草认证差异”（v1.1:187）读不到任何认证事实。",
+   "proposal": "①型号级 ComplianceAssessment，以品类为范围根，范围是“变体+配置版本+市场+渠道”；每行引用品类法规条目版本，分别记录 source/applicability/compliance 三态，适用结论由认证负责人具名（T2）。②报告与证书用 ArtifactVersion 加 ApplicabilityAssessment（§02.10）表达：报告号、实验室、标准版本、覆盖配置（BOM、固件、电芯批次）、有效期。③供方检测报告和符合性声明用新行结构 compliance_declaration（物质、限值、实测、标准、实验室、报告号、有效期）隔离抽取，登记为 Claim 挂到 Part（不做全物质 FMD）。④变更影响增加 compliance_evidence 节点，电芯/电机/充电 IC 变更时按显式依赖列出受影响报告，按 §03.12 重判。⑤AutomationRule：证书到期前 60–90 天、配置变更导致不再覆盖、法规过渡日（如机械法规 2027-01-20）生成注意项。⑥“渠道合规资料包”导出见 F35，市场放行见 F23。小Pai 从实验室 PDF 抽要素并比对配置（T0），适用与否只由认证负责人判。最小可用版本：③+⑤（到期与变更失效提醒）加①的骨架。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:187,276-288,330,346,423-427,594,644",
+    "docs/design/category-seeds/README.md#cd-confirmed",
+    "docs/design/category-seeds/auto-tire-inflator.md:167-204,234",
+    "pdos-next/server/pdos_next/domain/preproject/category_schemas.py:101-111",
+    "pdos-next/server/pdos_next/domain/preproject/baseline_blocks.py:27",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:42-51",
+    "pdos-next/server/pdos_next/skill_packages/derivative_diff.md"
+   ],
+   "frozen_conflict": "与种子 D 系列（法规目录不是合规矩阵、适用性由认证负责人判）不冲突：品类目录不升级为矩阵，型号级评估由具名认证负责人作出。新增型号级对象和认证命令超出 v1.1 §02.1 模块表，需要决策记录。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process",
+    "competitor"
+   ],
+   "roles": [
+    "认证负责人",
+    "品质/测试",
+    "产品经理",
+    "硬件/PCBA",
+    "采购/供应"
+   ],
+   "competitor_refs": [
+    "Siemens Teamcenter 2606：合规模块覆盖 REACH/RoHS/PFAS，可批量处理供应商声明（https://blogs.sw.siemens.com/teamcenter/teamcenter-2606/）",
+    "Oracle Product Regulatory & Compliance Advisor：按挂载法规文档检查物料属性（https://docs.oracle.com/en/cloud/saas/readiness/scm/25c/plm25c/25C-plm-wn-f38633.htm）",
+    "亚马逊全球开店：便携充气泵需 UN38.3、MSDS、CE/UKCA/FCC、GPSR 欧盟负责人（https://gs.amazon.cn/zhishi/article-260205-3）"
+   ],
+   "ai_native_angle": "AI 负责读报告、抽要素、比对配置；“是否覆盖”由规则和认证负责人给出，符合 DC-11 与 I06。"
+  },
+  {
+   "id": "F23",
+   "theme": "compliance_certification",
+   "title": "上市交付物没有受控链：“市场/认证适用性”放行无命令，对外宣称参数不核对实测，包装/说明书/标签及多语言版本不受控",
+   "type": "missing_feature",
+   "area": "上市准备与放行（PVT→首单→电商上架）",
+   "current_state": "§03.11（v1.1:594）定义了“市场/认证适用性”放行，§04.14 发布含“适用地区”（:743），但附录 A 只有工程/制造放行和客户承认，没有市场放行；生命周期表止于“爬坡与维护”（:167），提案只有 launch_window 文本。竞品库区分实测/宣传/推断（:328），我方没有“对外宣称值”对象；listing/ASIN 为 0。包装：只在字段级提到“包装标识”（:383,409,659），代码只有 packaging_label_basis 和 PACKAGING_LABEL_UNKNOWN（manufacturing_baseline/schemas.py:180、rules.py:130-131）；engineering.configuration.create 只接受 mechanical/electronic/firmware 引用（configurations/schemas.py:101-108）；变更节点类型没有 artwork/label/manual。§05.11（:882）要求原文与译文分开保留。CEHub DVT/PVT 有包装验证、标签说明书合规 checkItem。",
+   "problem": "工厂已制造放行，但上架还要 UN38.3 概要、SDS、电池规格书、CE DoC、GPSR 负责人。详情页写“35 秒打满、150 PSI、2000mAh”，若实测 fill_time_full 是 48 秒或 Wh 标注与报告不一致，轻则差评退货，重则下架。电芯从 2000 改 2500mAh 或新增日本市场，说明书、铭牌、彩盒都要改并重新打样，变更影响图却列不出这些物料，常见后果是旧 Wh 标签被海关或平台拦截、德语说明书漏警示。",
+   "proposal": "边界：listing、主图、A+、广告、库存留在电商和 ERP 工具，不建 GTM 对象。①附录 A 增加 release.market.approve（T2，认证负责人或 PM 具名），范围“变体×市场×渠道”，依据 F22 的评估结果和固定 ReleasePackage。②ReleasePackage 增加用途“市场/渠道资料包”：对外宣称参数清单（每条引用 SpecItem 版本、实测 TestRun 和口径）、认证与运输文件清单、标签和说明书版本。③确定性硬阻塞：宣称值优于实测下限或无实测依据；Wh/容量标注与电池参数不一致。④配置增加受控外部引用类型 artwork（彩盒、标签、铭牌、说明书）：语言、适用变体×市场、文件版本+hash、打样承认状态（具名，按客户要求 T1/T2）；设计源文件留在设计工具。⑤变更节点类型加 artwork：battery_energy_wh、charge_input、max_pressure 或认证标志变化时按显式依赖关联。⑥制造基线把 PACKAGING_LABEL_UNKNOWN 细化为“本变体×市场 artwork 已固定且已承认”。小Pai 起草卖点表并挂证据，比对运营的 listing 草稿和标签 PDF 标注值（T0），译文只作派生。资料包交付由 T2 外发或人工下载（F35）。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:167,192,328,383,409,594,640,659,743,882,1687-1691",
+    "pdos-next/server/pdos_next/domain/preproject/schemas.py:126",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/schemas.py:180",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/rules.py:130-131",
+    "pdos-next/server/pdos_next/domain/configurations/schemas.py:101-121",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:12-41",
+    "assets/cehub/deliverable-guide-manifest.json"
+   ],
+   "frozen_conflict": "与 CRM 边界（v1.1:192）和“不替代 ERP/MES/PLM”不冲突：只做资料包和放行，不做 listing 或销售对象。但“上市资料包是否属于 PDOS 范围”此前未决（u1 §4.C），且新增放行命令需用户确认。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "business_process"
+   ],
+   "roles": [
+    "产品经理",
+    "认证负责人",
+    "电商运营",
+    "ID/CMF",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "Propel：PLM+QMS+PIM 打通产品、质量与市场内容（https://www.cimdata.com/zh/industry-summary-articles/item/28608-propel-software-accelerates-adoption-of-agentic-ai-for-plm-qms-pim-with-early-customers-using-live-data）",
+    "PTC Arena AI Engine：AI File Comparison 识别文件版本差异（https://www.digitalengineering247.com/article/ai-engine-for-arena-plm-and-quality-management-boosts-automation/plm）",
+    "亚马逊全球开店合规汇总：带锂电产品的上架文件链（https://gs.amazon.cn/zhishi/article-260205-3）"
+   ],
+   "ai_native_angle": "AI 逐条给卖点挂证据并标出夸大宣称和标注不一致，结论由人作出。"
+  },
+  {
+   "id": "F24",
+   "theme": "supply_cost",
+   "title": "关键件来源、替代料与供方变更（PCN/EOL）没有闭环：缺制造商料号/AML，供方变更不会让已签核的认证和测试失效",
+   "type": "risk",
+   "area": "供应链质量（定点→DVT 承认→量产 PCN/EOL）",
+   "current_state": "§02.1 有 SupplierReference（v1.1:284）但无状态契约；§02.5 要求 BOM 记替代关系（:373）；§04.10（:717）不允许按参数相近直接替料；§02.10（:425）要求旧测试用于新电机须评估适用性；§01.2 把供应变化列为变更输入（:165）。PCN 在全文为 0，G29 EOL/PCN“未明确”。代码：Part 只有三种料号和设计引用，无制造商、MPN、承认状态、生命周期（configurations/schemas.py:38-56、models.py:41-47）；BOM 行无替代组；供方只是文本 supplier_id（supply_execution/schemas.py:20）；变更根对象和 Facet 没有 supplier/pcn（change_control/contracts.py:12-51）；supply.alternate.approve、supply.commitment.record 未实现；采购无专业角色（F38）。CEHub 有安全件供应商资质、电芯二供策略等交付。",
+   "problem": "电芯厂换隔膜、电机厂铜线改铝线、MCU 停产要求 LTB，这些通知只在采购的邮箱和微信里，PDOS 中的 UN38.3/62133、DVT 寿命测试和客户承认仍显示有效。据报道安克 2025 年移动电源召回就起因于电芯供应商擅自变更材料；OEM 常要求关键件变更提前 90 天通知并重新承认。",
+   "proposal": "边界：供应商主数据、准入、PO 留在 ERP/SRM，不做供应商门户（D34）。①Part 增加“已承认来源”：制造商、MPN、供方外部 ID、认可状态（首选/替代/禁用）、生命周期（量产/NRND/EOL/未知）、承认书 ArtifactVersion、适用配置；critical/CTQ 件必填，来源是供方资料或 ERP 引用，不双写。②变更来源增加 supplier_notice/supplier_change（PCN、EOL/LTB、产地变更），节点类型加 supplier_part_source；按显式依赖链（来源→Part→配置→TestRun/ComplianceAssessment/客户承认）把证据标“待重判”（§03.12），并起草来料复核 VerificationRequest（T0）；where-used 依赖 F33。③接受 PCN、批准替代料（supply.alternate.approve）都是 T2；替代料推荐只出候选，经 AlternateQualification 验证。小Pai 从供方邮件/PDF 抽 PCN 要素（变更内容、生效日、旧料库存、样品时间）作 T0 草稿，显式依赖与 ai_hypothesis 分栏，不判断接受与否。最小可用版本：人工登记 PCN→where-used 影响清单→受影响测试标“待重判”。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:165,284,373,425,600-608,717,755",
+    "pdos-next/server/pdos_next/domain/configurations/schemas.py:38-56",
+    "pdos-next/server/pdos_next/domain/configurations/models.py:41-47",
+    "pdos-next/server/pdos_next/domain/supply_execution/schemas.py:20",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:12-51",
+    "pdos-next/contracts/operations.json",
+    "assets/cehub/deliverable-guide-manifest.json"
+   ],
+   "frozen_conflict": "不含供应商门户，不冲突 D34；但需用户确认 PDOS 与 ERP/SRM 在“已承认来源”上的权威边界（§02.13）。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process",
+    "competitor"
+   ],
+   "roles": [
+    "采购/SQE",
+    "品质/测试",
+    "认证负责人",
+    "硬件/PCBA",
+    "结构工程师"
+   ],
+   "competitor_refs": [
+    "Oracle Component Replacement Assistant：识别被替换元件、推荐替代并生成变更单（https://docs.oracle.com/en/cloud/saas/fusion-ai/aiafl/ai-scm.html）",
+    "Cofactr：替代料逐条接受或拒绝（https://support.cofactr.com/articles/9453337607-choosing-an-alternate-and-why-it-makes-purchasing-easier）",
+    "安克移动电源召回报道，起因据称是电芯供应商擅自变更材料（https://www.taiwannews.com.tw/en/news/6141706）"
+   ],
+   "ai_native_angle": "PCN 往往是一封非结构化邮件，适合 AI 抽取和初判；证据失效靠显式依赖传播，而不是让 AI 猜。"
+  },
+  {
+   "id": "F25",
+   "theme": "supply_cost",
+   "title": "采购追交期没有落点：供方承诺命令未实现，供应快照要填系统字段，交期过了没人知道",
+   "type": "missing_feature",
+   "area": "供应、齐套与交期跟踪",
+   "current_state": "supply.commitment.record（附录 A L1692，T0）和 supply.alternate.approve 未实现。build-supply.tsx 的快照表单有 18 项，包括“真实外部物理池标识”“实际到货时间（UTC，必须已知）”。ExternalWait 能承接交期，但每个动作要原件（F15）；要判定“对方承诺已过”，还得先登记有效送达并采用日历，否则是 calendar_unknown、升级 unknown（external_wait/rules.py:221-258）；也没有推送。采购没有专业角色和技能包。§04.10（L713-719）规定“供方承诺到货不等于已齐套”。",
+   "problem": "EVT2 开工前一周要确认 200 套电芯、电机、PCBA、气管、外壳、包材，各家在微信上报日期，有的分批。“对方说 10/24 到”挂不到 BOM 行上；10/24 没到也没提醒，PM 周五才发现缺电芯，Build 只好推迟。",
+   "proposal": "①实现 supply.commitment.record：挂在“Build×BOM 行”（MaterialDemand）上，记供方、数量、日期（对方声称、本人记录）、分批和来源（本人陈述或截图），与在途、实到分开。②每个 Build 一张齐套看板：BOM 行×需求/承诺/实到/质量限制，数值来自 supply.kit.compute，未知显示未知。③外部等待默认用项目计划日历，下次检查默认“承诺日+1 个工作日”，让“已过期”算得出来，再经 F13 推送给采购和 PM。④小Pai 把粘贴的供应商回复（Excel 或聊天）按 BOM 行转成承诺候选，T1 整批确认（依赖 F05）；开工前 3 天由 AutomationRule 聚合缺口注意项。⑤之后接 ERP 只读（F36），未连接显示“未连接”，不显示 0。最小可用版本：①+②。",
+   "internal_refs": [
+    "pdos-next/contracts/operations.json supply.commitment.record",
+    "pdos-next/web/src/components/builds/build-supply.tsx",
+    "pdos-next/server/pdos_next/domain/supply_execution/schemas.py:20",
+    "pdos-next/server/pdos_next/domain/external_wait/rules.py:221-258",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §01.5 L209、§03.6 L543-549、§04.10 L713-719、附录A L1692"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day"
+   ],
+   "roles": [
+    "采购/供应",
+    "项目负责人",
+    "生产/NPI"
+   ],
+   "competitor_refs": [
+    "Propel：AML/AVL 内嵌 BOM，带准时交付与实时库存（https://www.propelsoftware.com/solutions/use-case/bom-management）",
+    "Linear Loops：目标日期变化时更新计划并通知相关人（https://linear.app/changelog/2026-07-20-introducing-loops）"
+   ],
+   "ai_native_angle": "各种格式的供方回复按 BOM 行转成承诺候选，后台规则只把缺口推给人。"
+  },
+  {
+   "id": "F26",
+   "theme": "supply_cost",
+   "title": "成本链断开：G0 目标成本不随项目流转，估算看不到与目标的差距和变更成本差；报价无法抽取比价，开模、认证等 NRE 没有投入台账",
+   "type": "missing_feature",
+   "area": "目标成本、报价与 NRE",
+   "current_state": "提案有目标售价、成本、数量（v1.1:346）；§04.10（:719）规定 CostEstimate 由确定性引擎算、不替代财务；§05.8（:859）有目标成本桥图；§03.9（:578）冻结点写金额；变更影响结果没有成本（:739）；G0 不批预算（清单:39）；G27 NRE“未明确”。G0 物化只把 target_price 写进型号（materialize.py:95-110、products/service.py:72-90），目标成本和数量不进定义或项目；target_cost 和桥图为 0。CostEstimate 支持 material/process/nre（cost_execution/schemas.py:26-29,93）但不与目标比较。PriceInput（:24-41）有 stage=quote、币种、含税、MOQ、有效期，却没有供方、交期、模穴、模具寿命；没有报价行结构（extract_schemas.py:190-194），cost.inputs.record 只能手填（build_execution.md:46）；没有多家报价对比工具（tools.py:24-31）。",
+   "problem": "立项目标 BOM 68 元（售价 39.99 美元），EVT 估算 74 元，DVT 换无刷电机到 81 元，没人看得到“差 13 元，主要来自电机和电芯”；变更评审看不到每台 +2.3 元。比 3 家模厂、2 家电机厂、2 家电芯厂，报价有 Excel、PDF、微信截图，币种和含税口径各不相同，估算常用拍出来的数。开模 42 万、认证 8 万、样机 3 万散在采购和财务表里，管理层判断 DVT 是否继续没有依据。",
+   "proposal": "不建预算或财务对象，实绩留在 ERP，不建 PO。①G0 物化时把目标成本和数量写入定义 v1 的成本约束（:312 本已包含），改目标走 T1 修订并留原因。②CostEstimate 投影出相对目标的差距，按 BOM 行、工艺、NRE 分解，即落在项目内的桥图。③变更影响加成本差：新旧配置各跑一次 cost.estimate.compute。④NRE 用 kind=nre 行加冻结点授权金额（F14），形成“已授权一次性投入清单”，只记授权和报价来源。⑤报价：新行结构 supplier_quote v1（供方、零件或模具、阶梯价、币种、含税运、MOQ、交期、有效期、模穴、模具寿命、付款与 NRE、Citation），技能 supplier_quote_extraction 隔离抽取，产出 cost.inputs.record 的 T1 候选；PriceInput 补 supplier_ref 和 lead_time。⑥calc.quote_compare 按同一口径归一（汇率按 RateInput 固定时点），阶梯价展开到目标量，缺项显示未知。向供应商发 RFQ 属 T2，本期不做；客户侧报价留在 CRM。最小可用版本：①②，加模具和电机报价对比。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:284,312,346,578,719,739,859",
+    "pdos-next/server/pdos_next/domain/preproject/materialize.py:95-110",
+    "pdos-next/server/pdos_next/domain/products/service.py:72-90",
+    "pdos-next/server/pdos_next/domain/cost_execution/schemas.py:24-41,93",
+    "pdos-next/server/pdos_next/engines/supply_cost/costs.py",
+    "pdos-next/server/pdos_next/skill_packages/build_execution.md:46",
+    "tasks/ai-native-integrated-todo.md:39"
+   ],
+   "frozen_conflict": "与“G0 不批预算”（清单:39）和 v1.1:719 一致：不在 G0 增加预算批准，金额授权放在项目内冻结点。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process",
+    "competitor"
+   ],
+   "roles": [
+    "产品经理",
+    "项目负责人",
+    "采购/供应",
+    "管理层",
+    "结构/硬件工程师"
+   ],
+   "competitor_refs": [
+    "LightSource：把格式不一的报价归一，授标由人决定（https://lightsource.ai/llm-info）",
+    "Propel：多级成本汇总，设计和报价阶段即可看实时毛利（https://www.propelsoftware.com/solutions/use-case/bom-management）",
+    "Oracle Design-to-Source Workspace：模拟成本与交期的取舍（https://blogs.oracle.com/scm/meet-the-agentic-ai-design-to-source-workspace-for-plm-from-cad-to-confident-sourcing-decisions）"
+   ],
+   "ai_native_angle": "小Pai 抽报价、解释成本差来源并提降本候选，比价和差距由代码计算。"
+  },
+  {
+   "id": "F27",
+   "theme": "manufacturing_quality",
+   "title": "验证计划不连规格：测试项不绑参数版本，没有可靠性/环境/运输测试库，没有需求到验证的覆盖，“定义转需求”无命令",
+   "type": "missing_feature",
+   "area": "产品定义→DVT 验证计划（DVP&R）",
+   "current_state": "v1.1:331,340 要求测试模板与定义条目引用同一参数版本；§03.14（:627）写了“定义转需求”但无命令；Requirement 只在名单里（:278），附录 A 无对应命令；覆盖矩阵只是 §05.8 的视图（:853）；可靠性只是结构专业接口（:641）。TestItem（verification/contracts.py:122-135）的 feature/criterion 是自由文本，没有 parameter_id/version、类别、时长或循环数；DefinitionRevision.requirements 只是 JSONB 列表（products/models.py:34）；品类测试模板只作种子原料（category_seed.py:38）。汽车泵种子 31 项全是性能工况项，样本量“待专家确认”，没有电机寿命、电池循环、高低温、湿热、振动、运输包装、气管耐久。",
+   "problem": "充气泵 DVT 的大头是可靠性：电机开 5 停 10 循环 500 次、300 次循环容量保持、−20/60 ℃、1 m 跌落、运输振动、气管 5000 次弯折。这些只能在 Excel DVP 里排期；PDOS 说不清“150 PSI、≤75 dB 有没有测试覆盖”，旧测试复用到新电机（AT-10）也无法按参数判断，G1 计划缺验证工作量依据。",
+   "proposal": "落实 v1.1:331/340 和 §03.14。①TestItem 增加 parameter_ref（参数 ID+版本，可空）和 category（performance/reliability/safety/regulatory_pre/transport）；可靠性项带样本量、时长或循环数和判据来源。②实现“定义转需求”：规格冻结时由确定性引擎生成验证要求；覆盖矩阵投影为 SpecItem×TestItem×最新有效 TestRun/ApplicabilityAssessment，“未覆盖”和“按旧证据复用待评估”分开。③品类模板补可靠性、环境、运输骨架（expert_pending），企业内控标准沉淀为品类知识。④72 小时老化、500 次循环等长时测试用 Reservation 占台架并进入预测（§03.5）。test_verification 加“DVP 起草”模式：按定义和模板生成候选（T0），无判据标未知、不补造标准。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:278,331,340,627,641,853",
+    "pdos-next/server/pdos_next/schemas/verification/contracts.py:122-135",
+    "pdos-next/server/pdos_next/domain/products/models.py:34",
+    "pdos-next/server/pdos_next/domain/preproject/category_seed.py:38",
+    "docs/design/category-seeds/auto-tire-inflator.json"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process",
+    "competitor"
+   ],
+   "roles": [
+    "品质/测试",
+    "产品经理",
+    "技术/结构/硬件",
+    "项目负责人"
+   ],
+   "competitor_refs": [
+    "PTC Codebeamer AI：Test Case Assistant 从需求生成测试用例（https://www.cimdata.com/en/industry-summary-articles/item/29186-ptc-delivers-new-ai-functionality-for-software-driven-product-development-with-new-alm-releases）",
+    "Siemens Teamcenter 2606：MBSE Copilot 推荐测试用例并跟踪覆盖（https://blogs.sw.siemens.com/teamcenter/teamcenter-2606/）"
+   ],
+   "ai_native_angle": "AI 起草 DVP 候选，覆盖与适用性由确定性引擎给出。"
+  },
+  {
+   "id": "F28",
+   "theme": "manufacturing_quality",
+   "title": "测试结果进不来、也分析不了：只收手写 JSONL（每行带执行人 UUID），台架 Excel 和实验室 PDF 无法导入；处置只能整 Run 一次，没有跨批次/模穴视图",
+   "type": "risk",
+   "area": "测试运行·结果录入与处置",
+   "current_state": "measurement_evidence/verifier.py:1,33-44 只接受不可变 UTF-8 JSONL，每行要 raw_value、unit、conditions、equipment、calibration、executor_id、observed_timezone 等；schemas.py:21,40 只收 pdos-measurement-jsonl-v1。build-results.tsx 写明“本页不输入读数”。extract_schemas.py:190-194 没有测试读数行结构，test_verification 声明了 evidence.extract 也会被 extract_service.py:80-93 拒绝。结果导入要逐行指派样件×测试项（verification_results/schemas.py:12-35）；DispositionPayload（:87）是整 Run 一次结论（附录 A test.disposition.decide T2）；trend/跨 Run 为 0；样件已记录来源批次和模穴（v1.1:397）。设计：§07.6 原件含 XLSX，DC-11 §8 第 5 项“测试报告导入高置信行 T1 整批确认”，vNext D36 首选“Excel 报告+AI 读取”。可复用：原工程 test_report_workbook.py（307 行，公司“测试记录/样机编号/测试项目”版式适配器）。",
+   "problem": "DVT 10 台×种子 31 项，台架导出 Excel，噪声读数在纸上，EMC 和 UN38.3 是实验室 PDF，品质得手写 JSONL 才能导入，不会有人这么做，S2/S3 的“失败→问题→变更→复验”拿不到数据。4 轮 60 台后想知道“噪声超标是否集中在 B 模穴或第 2 批电机”，只能导到 Excel 透视；12 项里 2 项超差，也只能写一段整体结论。",
+   "proposal": "①确定性 XLSX/CSV 导入：按品类测试模板保存列映射（样件号、测试项、读数、单位），设备/方法/工况/校准默认取 TestPlan 和资源，执行人默认本人，时区默认浏览器；服务器生成规范 JSONL 派生件并绑定原 xlsx 单元格，复用 test_report_workbook 版式。②注册 test_reading 行结构，test_verification 可从实验室 PDF 抽读数预填 CaptureInput，T1 整批确认，单位/工况不一致、置信低的行单列。③DispositionPayload 增加逐条处置（可忽略附理由/建问题/复测），整体仍是一次 T2；“建问题”走 quality.issue.create（T0）并按 §06.4（:997）去重。④确定性透视视图：同一参数版本×多 Run×Lot×模穴×配置；AI 只在 quality_issue 给可证伪的关联假设（ai_hypothesis）。判定始终由规则给出。参数绑定见 F27。最小可用版本：一个品类一个模板的 xlsx 导入，加④。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/domain/measurement_evidence/verifier.py:1,33-44",
+    "pdos-next/server/pdos_next/domain/measurement_evidence/schemas.py:21,40",
+    "pdos-next/web/src/components/builds/build-results.tsx",
+    "pdos-next/server/pdos_next/domain/verification_results/schemas.py:12-35,87",
+    "pdos-next/server/pdos_next/agent_kernel/extract_schemas.py:190-194",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:397,997,1192,1673",
+    "docs/design/2026-08-25-vnext-decision-conflict-improvement-register.md:31",
+    "server/app/domain/test_report_workbook.py"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "competitor",
+    "adoption_integration"
+   ],
+   "roles": [
+    "品质/测试",
+    "生产/NPI",
+    "结构/硬件工程师"
+   ],
+   "competitor_refs": [
+    "Nominal：把检查清单应用到测试 Run，每条违规由人选“可忽略”或“需处理”（https://docs.nominal.io/python/checklists/data-review）",
+    "Instrumental：关联单元级图像、测试和测量值排出可能根因（https://instrumental.com/accelerate-your-npi-programs/）"
+   ],
+   "ai_native_angle": "AI 把 PDF 转成读数候选，引擎做换算、判定和跨批次透视，人只看存疑行和例外。"
+  },
+  {
+   "id": "F29",
+   "theme": "manufacturing_quality",
+   "title": "交样接收太重：每个“样件×测试项”都要写原因、手填 IANA 时区，不能拍照、扫码或用手机办理",
+   "type": "optimization",
+   "area": "Build 交样与品质接收",
+   "current_state": "build-handoff.tsx 要填“发生时点（含时区偏移）”“原始 IANA 时区”，每对样件×测试项都有必填“本对核对原因”，另有实物核对原因和总体原因，共 19 个输入项。不能传图片（originals.py:31-36；file-upload.tsx:143、original-files.tsx:90）；二维码为 0；⌘K 搜不到样件 SN（personal_search.py:24-28）。§04.7（L687-693）只要求退回和部分接收写原因与下一责任人；§05.9（L864-870）要求移动优先、拍照上传、二维码作定位入口。",
+   "problem": "生产把 20 台 DVT 样机送到实验室门口，品质用手机核对时发现 2 台外壳划伤，却要回到电脑前输入“Asia/Shanghai”、写 20×8=160 段原因，照片还传不上。实际会先在钉钉拍照说一声，过几天补录或不录，§04.7 的十个交接时间点全部失真。",
+   "proposal": "①默认值：时点默认“现在”，时区取浏览器或工厂日历，可展开修改；“整批接收”一键套用，只有例外行（缺件、外观不良、配置不符）填原因和下一责任人。②拍照：图片作为原件登记（F12），记录拍摄时间和上传人，挂到样件或缺项；OCR/视觉只出候选。③手机页（钉钉 H5 或移动 Web）：扫样件标签二维码或短码直达样件及其预期配置，点“接收/缺项/拍照”；二维码只定位，不做借还（§05.9、D37）。④⌘K 按样件号、Build 号精确查找（F09）。小Pai 先核对交样包与验证请求的差异，品质只确认例外。最小可用版本：①+②。",
+   "internal_refs": [
+    "pdos-next/web/src/components/builds/build-handoff.tsx",
+    "pdos-next/server/pdos_next/originals.py:31-36",
+    "pdos-next/server/pdos_next/personal_search.py:24-28",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md §04.7 L687-693、§05.9 L864-870、§05.11 L880",
+    "docs/design/2026-08-25-vnext-decision-conflict-improvement-register.md:32"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day"
+   ],
+   "roles": [
+    "品质/测试",
+    "生产/NPI"
+   ],
+   "competitor_refs": [
+    "钉钉 AI 表格 Agent：已接入钉钉群，用于工厂巡检反馈（https://www.qbitai.com/2026/03/383349.html）",
+    "Linear iOS：手机上 Triage（https://linear.app/changelog）"
+   ],
+   "ai_native_angle": "小Pai 先核对数量、模穴、配置，有照片时起草缺项描述候选。"
+  },
+  {
+   "id": "F30",
+   "theme": "manufacturing_quality",
+   "title": "模具和试模只有设计没有实现：开模后的 T0/T1 试模、修模、模具验收仍在模厂微信群和 Excel",
+   "type": "missing_feature",
+   "area": "模具与试模（结构冻结→开模→T0/T1/T2→验收）",
+   "current_state": "§04.5（v1.1:671-677）定义 Tooling（零件、版本、供方、模穴、进度、验收、生命周期）和 ToolTrial（目的、试次、材料、参数、样件/模穴、问题、整改、承认），§04.6（:679-685）试模前品质准备，附录 A 有 npi.tooltrial.create（:1679）。ORM 无 Tooling 表；handlers.py:26 有映射但原生注册只覆盖 pilot（native_schemas.py:27-28），operations.json 标 not_implemented；npi.fixture.accept 未实现；派生基线 tooling 固定 unknown（baseline_blocks.py:28）；manufacturing_baseline/rules.py:171“模具真实验收与适用性尚未接通”；没有模具类技能包。",
+   "problem": "一台充气泵要 4–10 套模（上下壳、气缸、活塞、表头罩、按键、接头），开模费和 35–45 天周期决定 EVT 能否按期。T0 缩水、T1 尺寸超差、修模再试是最常见的进度风险，但模厂承诺挂不到模具上，试模样件标不了模穴，试模前验证请求找不到对应模具和试次；PM 只能在群里问“上壳 T2 什么时候”，派生时也答不出哪些模沿用、哪些要改。",
+   "proposal": "实现 §04.5，不扩大范围。①Tooling：零件、模厂外部 ID、模穴数、材料、版本、状态（设计/加工/试模/已验收/封存）；节点日期用四时间，模厂承诺作为外部等待的对方承诺。②npi.tooltrial.create：trial_round（与 AI 档位分开，v1.1:677）、模具版本、材料、参数、按模穴产出 SampleUnit，问题直接转 Issue，修模作为下一轮原因，自动关联试模前 VerificationRequest（复用 S2 链路）。③模具验收是工程具名 T2；制造基线只引用已验收版本，未验收即硬阻塞（同 AT-17）。④派生基线 tooling 读 Tooling，让 derivative_diff 输出“沿用/改模/新开”。⑤技能 tooling_followup：从模厂周报或试模报告（Excel/PDF/照片）抽节点承诺、延期、问题，T1 整批确认、整改去重；延期只改预测不改承诺（I08）。开模授权冻结点见 F14。最小可用版本：①+②，并让模具状态进入 Build 准备度。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:576,671-685,1679-1680",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/handlers.py:26",
+    "pdos-next/server/pdos_next/domain/manufacturing_trials/native_schemas.py:27-28",
+    "pdos-next/server/pdos_next/domain/preproject/baseline_blocks.py:28",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/rules.py:171",
+    "pdos-next/contracts/operations.json"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process",
+    "role_day"
+   ],
+   "roles": [
+    "工程/模具",
+    "结构工程师",
+    "品质/测试",
+    "项目负责人",
+    "采购/供应"
+   ],
+   "competitor_refs": [
+    "Fictiv：报价前自动做注塑 DFM（拔模、壁厚、倒扣）（https://mmt.mydigitalpublication.com/july-2025/page-10）",
+    "CoLab 4.0 AutoReview 2.0：注塑件 3D 可制造性检查，TTI/RYOBI 参与过 beta（https://www.colabsoftware.com/post/colab-launches-4-0-built-for-human-decision-makers-in-an-ai-first-world）"
+   ],
+   "ai_native_angle": "一句“模厂说下周三才能 T1”就登记成有来源的外部承诺，延期影响由确定性排程计算。"
+  },
+  {
+   "id": "F31",
+   "theme": "manufacturing_quality",
+   "title": "OEM/ODM 客户送样、签样承认和封样（限度样）未实现，客户承认无法与内部放行分开",
+   "type": "missing_feature",
+   "area": "客户样品与承认（EVT/DVT 送样→签样→PVT 封样→客户放行）",
+   "current_state": "§04.12（v1.1:727-731）规定 CustomerSampleDelivery 绑定样件、配置、资料版本、用途、外发授权和回执，客户反馈分意见/变更要求/条件承认/正式承认，系统要显示承认覆盖什么。附录 A 有 customer.sample.send、customer.acceptance.record（T2，:1690-1691），场景 AT-26/28。两条命令 not_implemented；customer_sample 只是变更节点类型（change_control/contracts.py:33）；field_feedback 的 conditional_acceptance 只是“声称”（schemas.py:38-45）。CEHub OBT/JDM 有“首件确认（客户签样）”“MP 准备（客户放行）”，PVT 有“限度样本”；§08.8（:1343-1347）规定连接器收到的客户批准先存为声称。",
+   "problem": "OEM 车品客户通常要 EVT 5 台、DVT 10 台加报告、PVT 封样 3 台。客户只签了外观、性能还要复测，却被记成“已承认”，就可能误放量产；量产后客户投诉“与封样不一致”，又找不到封样对应的配置。现在全靠邮件附件和样品间标签。",
+   "proposal": "实现 §04.12。①customer.sample.send：固定 SampleUnit、实际配置、资料包版本、用途、收件方；客户只用 GoodJob 外部 ID 引用（:192，见 F36）；外发为 T2，物流单号作回执。②customer.acceptance.record：客户签样单或邮件存为原件，具名录入承认范围（外观/尺寸/性能/包装/认证）、条件、有效期，未覆盖项在界面上显式列出；客户签字或电子签原件就是证据，本期不集成第三方电子签。③SampleUnit 增加用途“封样/限度样”：冻结配置、存放位置、保留期，作为制造基线检验标准的引用；变更影响到封样时提示“需重新封样”。小Pai 从客户邮件抽承认范围和条件（T0）、对照送样配置标未覆盖项、起草送样资料清单。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:192,397,727-731,1343-1347,1690-1691",
+    "pdos-next/contracts/operations.json",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:33",
+    "pdos-next/server/pdos_next/domain/field_feedback/schemas.py:38-45",
+    "assets/cehub/deliverable-guide-manifest.json"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process"
+   ],
+   "roles": [
+    "项目负责人",
+    "品质/测试",
+    "生产",
+    "产品经理"
+   ],
+   "competitor_refs": [
+    "Aras InnovatorEdge：Requirements Ingestion 把客户 PDF/Excel/Word 转成结构化需求（https://aras.com/en/blog/introducing-the-first-generation-of-agents-built-on-aras-innovator-edge-ai）"
+   ],
+   "ai_native_angle": "AI 抽取并对照承认范围，外发和承认记录仍由具名人员按 T2 办理。"
+  },
+  {
+   "id": "F32",
+   "theme": "manufacturing_quality",
+   "title": "量产后工程变更缺断点和库存/在制处置，ERP 还没生效变更就能关闭",
+   "type": "missing_feature",
+   "area": "量产 ECN→断点→ERP/MES 生效",
+   "current_state": "§04.13 列出“库存/在制品处置、生产切换”（v1.1:739），§02.1 有 EffectivityPlan（:283），§04.14 要求发送、接收、实际生效分开（:745-747），§02.13 规定 ERP 拥有库存和物料生效（:449）；但没有断点类型、处置选项和“生效→关闭”规则。change.effectivity.record 只记开发 Build 是否采用新配置，change_build_adoption.py:25 明写不代表库存、在制或 ERP 切换；影响维度 supply_inventory_wip、production_switch（change_control/contracts.py:42-51）没有数据来源；ERP 连接器为 0。CEHub MP 有“ECN 记录”交付。",
+   "problem": "量产中电机从 A 厂切到 B 厂、每台降本 1.2 元：要定断点（批次/日期/序列号/旧料用完），决定 3000 个旧电机、800 台在制品怎么处置，通知工厂和电商（新旧混发会让差评无法追溯），并在 ERP 生效。PDOS 记不了断点和处置，ERP 未生效也能关闭，售后反馈也分不清断点前后。",
+   "proposal": "细化 §04.13/§04.14。①EffectivityPlan 增加断点类型和各类库存的处置选项（用完/返工/报废/转备件）；数量金额取自 ERP 只读快照（F36，或人工导入并标 as_of）；处置是 T2，由制造和品质具名，涉及金额时并入冻结点授权（F14）。②关闭规则：涉及量产的变更，必须有 ExternalHandoff 的 ERP/MES“实际生效”回执或具名受控人工证据才能 closed。③Field 反馈可引用断点，自动判断在断点前还是后（F34）。小Pai 用 where-used（F33）和 ERP 快照起草处置方案对比（金额和工时由引擎算），起草给工厂和电商的切换通知，外发为 T2。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:283,449,739,745-747",
+    "pdos-next/server/pdos_next/change_build_adoption.py:25",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:42-51",
+    "pdos-next/contracts/auxiliary-operations.json"
+   ],
+   "frozen_conflict": "不违反“不替代 ERP/MES”（不可协商项 5、v1.1:449）：库存数字只读引用，PDOS 不记库存交易。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process"
+   ],
+   "roles": [
+    "工程/模具",
+    "NPI协调",
+    "生产",
+    "采购/供应",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "金蝶 AI PLM：变更影响覆盖在途、在制、在库等 10+ 类 ERP 数据（https://www.kingdee.com/products/galaxy_plm.html）",
+    "Propel：Agent 读 BOM、where-used、库存，找出受影响物料并算成本（https://www.propelsoftware.com/solutions/use-case/bom-management）"
+   ],
+   "ai_native_angle": "AI 起草方案对比和切换通知，金额由确定性计算，外发与处置由人决定。"
+  },
+  {
+   "id": "F33",
+   "theme": "manufacturing_quality",
+   "title": "锂电和压力类安全关键特性（CTQ）没有贯通链：安全 FMEA→规格/测试→控制计划/产线 100% 终检",
+   "type": "risk",
+   "area": "设计风险分析→制造控制",
+   "current_state": "§02.1 列了 FailureMode（v1.1:283）但附录 A 无命令；§04.4 规定 Operation 含关键特性（:665），DFMEA/PFMEA“按风险/客户要求选用”（:669）；控制计划只有辅助操作 npi.control_plan.record。failure_mode 为 0；ProcessOperation 只有 acceptance_criterion 文本（configurations/schemas.py:118-130）；BOM 行只有 critical: bool（:56）。CEHub 设计阶段有“安全FMEA与危害分析”“保护电路设计评审”，DVT/PVT 有“PFMEA/CTQ控制计划”“EOL 100%测试项目清单”。",
+   "problem": "召回级风险集中在少数特性：过充/过放/短路保护、自动停机压力偏差、过温保护、气管爆破压力。若 CTQ 散在 FMEA Excel、测试报告和产线 SOP 里，电机或保护板一改版，就没人能证明“过压阈值仍有测试覆盖、产线仍 100% 检测”。",
+   "proposal": "不建通用 FMEA 表单，尊重 :669 的按需原则。①品类规则：锂电/压力类模板把“安全 FMEA”设为 DVT 进入条件（§03.7，applicable_if 为含锂电或最高压力超阈值），具名人员可标不适用并写理由。②FailureMode 只记安全相关条目，CTQ 标记输出到 SpecItem（auto_stop_deviation、过温点）和 BOM 行，critical 升级为带理由的 CTQ 引用。③确定性覆盖规则：每个 CTQ 至少 1 条 TestItem（F27），并在制造基线有控制方式（100% 终检/抽检/来料检），缺一项即制造放行硬阻塞。④触及 CTQ 的变更自动要求品质参与。小Pai 依据同品类历史 Issue 和已发布规则起草 FMEA 候选行（T0，ai_hypothesis），严重度和采纳由工程与品质具名。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:283,551-564,665,669",
+    "pdos-next/server/pdos_next/domain/configurations/schemas.py:56,118-130",
+    "pdos-next/contracts/auxiliary-operations.json",
+    "assets/cehub/deliverable-guide-manifest.json"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "business_process"
+   ],
+   "roles": [
+    "硬件/PCBA",
+    "品质/测试",
+    "工艺/NPI",
+    "生产"
+   ],
+   "competitor_refs": [
+    "Siemens Teamcenter Quality 2606：Copilot 在 FMEA、5 Why 中给出预填建议（https://blogs.sw.siemens.com/teamcenter/whats-new-teamcenter-quality-2606/）",
+    "Instrumental：关联图像、测试、过程数据排出根因，接入 Teamcenter Quality（https://news.siemens.com/ja-jp/instrumental-teamcenter-quality-partner）"
+   ],
+   "ai_native_angle": "AI 起草 FMEA 候选，覆盖完整性由规则校验。"
+  },
+  {
+   "id": "F34",
+   "theme": "manufacturing_quality",
+   "title": "固件只是一个外部引用：没有发布记录、与 PCBA/传感器的兼容规则，也没有烧录程序和压力标定参数的版本",
+   "type": "missing_feature",
+   "area": "固件与产线程序",
+   "current_state": "§04.1（v1.1:643）规定固件管理“制品与源码引用、功能/参数、兼容性、刷写与回退”，§02.6（:381）配置含固件，AT-09 覆盖测试中途改固件，OTA/烧录在设计中为 0。EngineeringConfigurationCreatePayload 只有一个 firmware 外部引用（configurations/schemas.py:101-108），Build 比较有固件引用（build_execution/comparison.py:124），变更节点类型无 firmware，制造基线无烧录或标定字段。CEHub EVT 有软硬件联调，PVT 有“治具与测试程序”。",
+   "problem": "数显泵的预设压力、自动停机、低电保护都靠 MCU 固件，压力传感器每台都要标定零点和斜率。常见事故：PVT 烧的是 0.7.3，测试报告基于 0.7.1；换传感器型号后老固件读数偏 2 PSI；产线测试程序没跟着升级。固件工程师发 v1.3 改了自动停机阈值，只能填“外部编号/版本”。",
+   "proposal": "细化 :643、§02.6、§04.3。①固件发布作为 ArtifactVersion（Git tag 或 CI 制品+hash），附兼容声明（PCBA 版本、传感器/显示型号、bootloader）；确定性规则校验配置组合，冲突即 Build 授权硬阻塞。②制造基线增加烧录程序与校验和、产线测试程序版本、标定方法与参数版本；PilotRun 记实际烧录版本。③变更节点类型加 firmware，升级时自动列出受影响 TestRun（按 §02.10 重判）和认证（无线款 RED/FCC）。④OTA 暂不建，带蓝牙/App 的变体出现时按 F22 的 RED 条目评估。小Pai 解析发布说明、列出受影响参数并起草回归测试候选（T0）。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:381,643,659,1728",
+    "pdos-next/server/pdos_next/domain/configurations/schemas.py:101-108",
+    "pdos-next/server/pdos_next/domain/build_execution/comparison.py:124",
+    "pdos-next/server/pdos_next/schemas/change_control/contracts.py:12-41",
+    "pdos-next/server/pdos_next/domain/manufacturing_baseline/schemas.py"
+   ],
+   "frozen_conflict": "不违反“不替代 CAD/EDA/Git”（v1.1:449,647）：源码和构建留在 Git/CI，PDOS 只固定版本和兼容事实。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "business_process",
+    "role_day"
+   ],
+   "roles": [
+    "硬件/固件工程师",
+    "品质/测试",
+    "工艺/NPI",
+    "生产"
+   ],
+   "competitor_refs": [
+    "PTC Codebeamer 3.2：与 Windchill 的数字线程和流基线，覆盖软硬件配套追溯（https://www.cimdata.com/en/industry-summary-articles/item/29186-ptc-delivers-new-ai-functionality-for-software-driven-product-development-with-new-alm-releases）"
+   ],
+   "ai_native_angle": "AI 读发布说明并起草回归测试，兼容判定由规则给出。"
+  },
+  {
+   "id": "F35",
+   "theme": "manufacturing_quality",
+   "title": "提交与评审前没有分层预审：gap_check 只覆盖提案，BOM、变更单、放行包、交样包和设计/DFM 都没有“规则检查卡+AI 观察”",
+   "type": "optimization",
+   "area": "评审、变更与试模前准备",
+   "current_state": "gap_check.md:4,8,22 的目标只允许 proposal|definition。BOM 修订（engineering.bom.revise T1）、变更批准（change.order.approve T2）、放行包（release.package.assemble T0，v1.1:1687）提交前都没有预审技能或卡片。17 个技能包没有设计评审/DFM 类；§04.4（:669）允许按风险选用 DFM，§04.6（:681）要求试模发起时带图纸/特征。确定性基础已有：build.readiness.compute、§03.7 规则（:551）、§03.9“自动准备冻结包和识别未解决项”（:580）。企业规范可发布为 DesignRule（knowledge/models.py:126-287），但小Pai 读不到（F09）；运行反馈分类已有（run_feedback.py）。",
+   "problem": "问题常到开模授权或 ECO 会上才暴露：硅胶密封圈没写单位，关键电芯没挂 UN38.3，换电机没列受影响 SOP，交样包说明书是旧版；外壳/气缸的拔模、壁厚、倒扣到 T0 才发现。老员工的教训（“气缸壁厚低于 1.8 mm 高压会开裂”）留在 8D 里，新项目不会被提醒。",
+   "proposal": "不新增对象和关卡。①gap_check 0.3：target.kind 增加 bom_revision、change_order、release_package、customer_sample_package。②新技能 design_precheck（只读）：工程配置与 BOM、已发布 DesignRule、同品类已关闭 Issue/CAPA 摘要、图纸 PDF 文本层与技术要求（新行结构 drawing_note），检查图纸标注与规格条目一致（材料、螺纹、IP 等级、表面工艺）、是否符合企业规则、有无相似历史问题；不做 CAD 几何分析。③输出分两栏：rule_findings（规则 id+版本，blocks/needs_disposition）和 ai_observations（固定 ai_hypothesis，只提示不阻断）。工程师逐条处置，采纳的转 work.task.create（T0），不采纳写理由并记入 run_feedback，不采纳率进入评测。④企业必查项沿用 DesignRule 发布（T2），不做“上传 PDF 自动生成规则”。⑤预审结果作为对象页默认卡片放在提交按钮旁，不加强制表单（:669）、不改变 T2 决定。最小可用版本：BOM 修订和变更单两种，≤10 条规则（缺单位、缺料号映射、关键件无证据、变更未列 SOP/控制计划、引用漂移），加历史问题推送。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/skill_packages/gap_check.md:4,8,22",
+    "pdos-next/server/pdos_next/skill_packages/change_control.md:47",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:551,580,669,681,1687",
+    "pdos-next/server/pdos_next/domain/knowledge/models.py:126-287",
+    "pdos-next/server/pdos_next/agent_kernel/run_feedback.py"
+   ],
+   "frozen_conflict": "",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "competitor"
+   ],
+   "roles": [
+    "结构/硬件工程师",
+    "模具/工程",
+    "NPI协调",
+    "品质/测试",
+    "项目负责人"
+   ],
+   "competitor_refs": [
+    "OpenBOM BOM Review：确定性检查卡加 AI BOM Health 卡，AI 发现只作提示（https://www.openbom.com/blog/plm-and-bom-management/ai-bom-health-check-card-bom-review）",
+    "Oracle Change Order Auditor（26B）：按规则 PDF 审核变更单，只发报告（https://docs.oracle.com/en/cloud/saas/readiness/scm/26b/plm26b/26B-plm-wn-f43270.htm）",
+    "CoLab AutoReview：按团队标准和历史评审意见检查图纸（https://www.colabsoftware.com/post/colab-launches-4-0-built-for-human-decision-makers-in-an-ai-first-world）"
+   ],
+   "ai_native_angle": "提交前由规则和 AI 先挑出例外，评审人只看例外；处置结果回流成经验候选。"
+  },
+  {
+   "id": "F36",
+   "theme": "post_launch_feedback",
+   "title": "上市后差评、退货和 RMA 只能逐条登记：没有批量导入、固定分类、按批次/配置的比率趋势，路径 F 也没有验收场景",
+   "type": "missing_feature",
+   "area": "售后反馈→CAPA→下一代定义",
+   "current_state": "§04.15 要求 Field 反馈关联产品、批次、配置，定位不了就保持未知（v1.1:753）；“评论与退货”只作为立项前输入（:160,329）；路径 F（:1443-1447）在附录 B 没有场景；vNext 曾写“入口含 RMA/field failure”（清单:936）。field.feedback.create 每次一条且要精确原件（field_feedback/schemas.py:16-25），channel 只有 field/customer（:38），没有分类表、出货分母和比率；review_pain_clustering 只服务立项前。",
+   "problem": "自主品牌在 Amazon、天猫每月数百条差评和退货原因（“压力不准”“两次就充不进电”“气嘴漏气”），客服还有 RMA 失效分析，逐条建不现实。品质看不到“批次 2410 起漏气退货率从 0.8% 升到 3.1%”，要等运营在群里喊；下一代立项也拿不到真实失效数据。",
+   "proposal": "细化 §04.15，用 §06.4 AutomationRule。①channel 增加 ecommerce_review/return/rma/service，支持批量导入平台 CSV 或卖家工具导出，走隔离抽取，每批记录站点、时间窗、样本上限。②品类级、版本化固定失效分类表，沿用 review_pain_clustering 的 existing_labels；AI 只能归入已有类或提议新类，新类须具名发布。③比率由确定性规则算：退货/RMA 数÷出货数（出货数从 ERP 或渠道只读导入），按变体、批次/断点（F32）、配置分组，样本不足显示未知。④超阈值或周环比突增时建 quality.issue.create 草稿（按 AT-23 去重）或给品质注意项。⑤为路径 F 补验收场景（批量导入、无法定位保持未知、比率口径）。⑥型号反馈经去标识回流到下一代提案（I22）。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:160,329,751-753,990-998,1443-1447",
+    "pdos-next/server/pdos_next/domain/field_feedback/schemas.py:16-45",
+    "pdos-next/server/pdos_next/skill_packages/review_pain_clustering.md",
+    "tasks/ai-native-integrated-todo.md:936"
+   ],
+   "frozen_conflict": "与 P17 不冲突：比率和阈值是确定性规则，AI 只做归类，不产生健康分或风险分。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "business_process"
+   ],
+   "roles": [
+    "品质/测试",
+    "电商运营/客服",
+    "产品经理"
+   ],
+   "competitor_refs": [
+    "Amazon Customer Review Insights：按正负主题分桶，给出对星级的影响和趋势（https://sell.amazon.com/blog/customer-review-insights）",
+    "SellerLabs：AI 归类退货原因必须固定类目，否则数字无法累计（https://www.sellerlabs.com/knowledge-base/ai-for-return-reason-analysis-find-whats-killing-your-margins/）"
+   ],
+   "ai_native_angle": "AI 负责大批量归类和挑代表原文，比率与阈值由引擎计算，人只处理超阈值例外。"
+  },
+  {
+   "id": "F37",
+   "theme": "integration_data",
+   "title": "BOM 进不来也对不上：只能逐行手录，没有 Excel 导入和版本差异；零件身份按型号隔离，导入无处查重，where-used 无法反查",
+   "type": "risk",
+   "area": "工程配置·BOM 与零件主数据",
+   "current_state": "build-preparation.tsx 的 BOM 逐行表单整页 49 个输入；engineering.bom.revise 为 T1，lines min_length=1（operations.json:201；configurations/schemas.py:91-92）；没有 BOM 抽取行结构（extract_schemas.py:190-194）。PartIdentity 带 product_id，唯一约束 (tenant, product, id)，只有 draft 状态（configurations/models.py:18-47），erp_number 无唯一和查重；不给 part_id 就新建零件（service.py:663-680），BomLine 没有替代组和适用变体（models.py:83-94）；where_used 为 0。§02.5（:373,377）要求三套编号、替代关系和 Part 身份，§02.2（:298）允许 Excel 导入标“导入，未复核”。",
+   "problem": "结构把上壳改 PC+ABS、硬件换一颗 MOS 管，ERP 里的 Excel 已改好，PDOS 却要 100 多行重敲，所以 BOM 不会及时进来，Build 双配置、变更影响、齐套都基于过期版本。几十个型号共用同一颗 18650 电芯、同款气嘴和表头，每录一次就多一个“新零件”，一物多码对不上 ERP；电芯供应商一改材料，系统答不出哪些型号和在途 Build 用了它。",
+   "proposal": "A（v1.1 内，先做）：①新增 bom_line v1 行结构（层级、位号、名称、三种料号、制造商与型号、数量、单位、备注、Citation），技能 bom_import（或 change_control 子流程）；ERP 导出 Excel/CSV 用确定性列映射，供应商或 ODM 的 PDF/xlsx 经隔离抽取，生成 engineering.bom.revise 的 T1 候选，标“导入，未复核”，自动与上一版比对（增删、用量、料号变化），整批确认，存疑行单列。②确定性匹配：先按 erp_number/internal_number 精确匹配，再按规范化名称加关键规格给“疑似同料”候选，由人选复用或新建，AI 不自动合并。③where-used 只读投影（零件→BOM 修订→配置→Build/样件），供 change.impact.compute（F24、F32）和人工查询。B（需决策）：零件身份上移到品类内共享；跨品类共用件（同一颗电芯）挂 Platform 还是租户级主数据，由用户定。例：上传“AP-200 BOM.xlsx”62 行，识别 58 行，4 行料号未映射单列，一次确认生成 BOM v1 草稿。最小可用版本：A 的①②在单型号内实现，同一 ERP 料号出现在多个型号时提示。",
+   "internal_refs": [
+    "pdos-next/web/src/components/builds/build-preparation.tsx",
+    "pdos-next/contracts/operations.json:201",
+    "pdos-next/server/pdos_next/domain/configurations/models.py:18-47,83-94",
+    "pdos-next/server/pdos_next/domain/configurations/service.py:663-680",
+    "pdos-next/server/pdos_next/domain/configurations/schemas.py:39-62,91-92",
+    "pdos-next/server/pdos_next/agent_kernel/extract_schemas.py:190-194",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:298,373,377"
+   ],
+   "frozen_conflict": "C1/I21（品类是权限根）：零件库上移到品类内不冲突；跨品类共享需要重新决定范围根。值得用户决定，因为电芯、电机、PCBA 恰好在两个首批品类间复用，按型号或按品类隔离都会继续一物多码。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "L",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "competitor",
+    "adoption_integration"
+   ],
+   "roles": [
+    "结构/硬件/固件工程师",
+    "采购/供应",
+    "NPI协调",
+    "品质/测试"
+   ],
+   "competitor_refs": [
+    "PTC Windchill AI Parts Rationalization：识别相似零件、阻止新增重复（https://www.digitalengineering247.com/article/ptc-launches-windchill-ai-parts-rationalization-capabilities）",
+    "Aras BOM Assistant：把表格、PDF、供应商 BOM 映射到标准结构并比较 Rev A/B（https://aras.com/en/blog/introducing-the-first-generation-of-agents-built-on-aras-innovator-edge-ai）"
+   ],
+   "ai_native_angle": "老 BOM 拖进来，小Pai 抽取、匹配、标疑似重复，人只在“复用还是新建”上选。"
+  },
+  {
+   "id": "F38",
+   "theme": "identity_admin_deploy",
+   "title": "真人进不来也授不了权：只有本机合成登录，没有钉钉身份、邀请和离职交接；成员授权、专业签发资格无界面，认证/采购专业无法授予",
+   "type": "risk",
+   "area": "身份、组织与管理后台",
+   "current_state": "local-session/route.ts:5-10 只放行 localhost，令牌取自环境变量；后端只有 GET /v1/session（api.py:458）；Principal 只有 name/kind/active（models.py:47-56），无钉钉 unionId 或部门；租户和账号靠 acceptance_account.py:100-135 命令行创建，TenantAdministrator 没有生产创建入口。category.member.grant（operations.json:646，T2）前端无入口；专业资格只能由可信宿主导入（professional_import.py:1，“never registered as a public command”），每条绑定 product_id 和 project_id（professional_authority/schemas.py:32-50），新项目要逐人重导；角色只有 engineering/quality/manufacturing/knowledge（:40），而变更审批允许 regulatory/customer（change_order_store.py:131-132；change_control/contracts.py:11），change_selection_service.py:221-226 要求专业在本人角色内，法规类和客户类审批项没人能批。§02.12（:445）要求离职/委托有作用域，代码为 0。设计：§07.1（:1122）、§07.9（:1216）、§08.2（:1263-1267）；§08.6（:1305-1321）没有身份 API；§01.5（:199-213）规定兼任不扩权。可复用：原工程 dingtalk_oauth.py（370 行，显式绑定、免密登录）。",
+   "problem": "50 人的充气泵公司试点，PM、结构、硬件、固件、品质、采购每人都要开发者在命令行建账号、授品类、导资格，开第二个项目再导一遍，P24 的第二评审人也登不上。DVT 换无刷电机的 ECR 影响 CE-EMC，需要认证专业批准，却没有可授予的角色，ECR 一直卡住。员工在钉钉被停用后，他的 Grant、任务、承诺、待验证样件和 G0 评审都没人接手。",
+   "proposal": "①钉钉企业内部应用扫码/免登 OAuth：复用 dingtalk_oauth 的 state 加显式绑定，按 pdos-next 命令回执重写；Principal 增加 external_identity（provider、corp_id、union_id）并唯一约束；首次登录只建“待授权”主体，不自动授品类。②邀请链接兜底（一次性、7 天，供钉钉未开通或外聘人员）。③通讯录只读同步只做两件事：显示姓名部门；停用时 active=false、access_epoch+1、会话立即失效，并生成“责任交接”注意项，列出未结任务、承诺、待接收/待验证和 G0 评审，按 §02.12 具名移交。④首个租户管理员用部署时的一次性引导令牌创建。⑤设置下增加“成员与权限”页（管理员和品类负责人）：成员列表、按品类授 Grant（沿用 T2 接口，可一次具名决定多行、逐行回执）。⑥专业资格登记命令（T2）：“品类（可收窄到项目）×人×专业×有效期”，记录依据原件，operations 用模板集合，撤销后按 §03.12 标待复核。⑦岗位模板只做预填（选“品质工程师”预勾品类读写、待登记 quality 资格、推荐预载技能），逐项仍按原档位决定、不扩权。⑧角色补 regulatory（认证负责人）和 procurement/supply；customer 不作内部专业，变更里的客户项改由客户承认（F31）承接。最小可用版本：①②+⑤⑥+regulatory 角色。",
+   "internal_refs": [
+    "pdos-next/web/src/app/api/local-session/route.ts:5-10",
+    "pdos-next/server/pdos_next/api.py:458",
+    "pdos-next/server/pdos_next/models.py:47-70",
+    "pdos-next/tools/acceptance_account.py:100-135",
+    "pdos-next/contracts/operations.json:646",
+    "pdos-next/server/pdos_next/professional_import.py:1",
+    "pdos-next/server/pdos_next/domain/professional_authority/schemas.py:32-50",
+    "pdos-next/server/pdos_next/change_selection_service.py:221-226",
+    "pdos-next/server/pdos_next/change_order_store.py:131-132",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:199-213,445,604,1122,1216,1263-1267,1305-1321",
+    "server/app/integrations/dingtalk_oauth.py"
+   ],
+   "frozen_conflict": "确认稿 §5.1（L331）“钉钉暂缓”讨论的是 MCP 连接器，登录属于身份提供方，§07.9 本就列了“钉钉身份”，但解除暂缓需用户确认。新增专业资格公开命令（可信导入原本有意不作为公开命令）、regulatory/procurement 角色（§01.5 职责表没有认证负责人）、T2 批量授予，都超出 v1.1 现有文字，需决策记录。不放宽 P24。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "role_day",
+    "adoption_integration",
+    "business_process"
+   ],
+   "roles": [
+    "租户管理员",
+    "品类负责人",
+    "项目负责人",
+    "认证负责人",
+    "采购",
+    "G0 评审人",
+    "全部岗位"
+   ],
+   "competitor_refs": [
+    "钉钉 OAuth2 扫码登录第三方网站（https://developer.aliyun.com/article/792876）",
+    "OpenBOM：只读用户不限且免费，降低开通门槛（https://www.openbom.com/pricing）",
+    "Linear：issue 只能分配给人，管理员按团队授权 Agent（https://linear.app/docs/agents-in-linear）"
+   ],
+   "ai_native_angle": "钉钉身份到 Principal 的绑定是“服务器从 Run 绑定权限”的根；资格事实是 T2 准备工具判断“谁能签”的唯一依据，岗位模板还决定预载哪些技能包。"
+  },
+  {
+   "id": "F39",
+   "theme": "identity_admin_deploy",
+   "title": "没有常驻试点环境，也没有可交付的部署形态：每轮验收后环境被销毁，Temporal+LangGraph 的生产形态未定",
+   "type": "risk",
+   "area": "部署、备份恢复与数据不出境",
+   "current_state": "pdos-next 只有 evidence-parser 的 Dockerfile，没有 API/Web/Worker 镜像和 compose；对象存储只有本地目录（object_storage/adapters.py:56-61）；README 写明真实部署、OSS、OCR “按对应交付及批准办理”。每个闭环新建临时环境再收尾。§07.3（v1.1:1149-1158）要求 Temporal 和检查点用独立库/凭据，§07.11 要求恢复演练。拉 temporalio/auto-setup:1.29.1 因 auth.docker.io 不可达失败，只能退回 SQLite 开发服务，且不算正式验收（清单 10-18 段）；生产形态未定（单Agent稿 R6/B3a），检查点无保留期（R7）。另需 SearXNG、隔离解析、对象存储、KMS，合计 ≥8 个进程/容器。",
+   "problem": "第二评审人、品质、采购要连续三周试用，需要持续在线、内网可达、数据在境内的环境，现在每轮清空，C8 案例和 §09.5 指标无法积累，钉钉回调也没有固定域名。中小企业没有专职运维，各组件分开备份可能导致运行永远停在 running 或重复外发；国内拉不到 Docker Hub 镜像，首次部署就卡住。",
+   "proposal": "不更换 K6，不引入 Kubernetes。“试点一体化形态”（部署和资源需用户逐项授权，并就 B3a 拍板）：①1 台 ECS（或公司内网服务器）用 docker compose 运行 Next.js、FastAPI、worker（同一镜像不同入口）、Temporal 纯 Server 镜像、SearXNG、解析容器。②1 个 RDS PostgreSQL 实例内建 3 个库（pdos；temporal+visibility；checkpoint），各自角色和凭据，沿用 §07.5 非所有者连接。③对象存储补阿里云 OSS 私有桶，KMS 用阿里云；镜像同步到 ACR 并发布离线导入包。④一条命令 pdos-ops backup|restore|health 覆盖三库与 OSS，恢复后自动核对“配置→测试→决定→交接”链并验证不重复外发；每周恢复演练。⑤检查点和作业终态后 30 天清理（R7）。⑥技术健康页显示 Temporal 积压、Outbox 落后、模型失能；演练 Temporal 停机时领域命令仍能提交（AT-45）。⑦私有化交付只需把 KMS 换本地密钥服务、OSS 换 MinIO。目标：空 ECS 到首次登录 ≤60 分钟；RTO ≤4 小时、RPO ≤15 分钟（待用户确认）。",
+   "internal_refs": [
+    "pdos-next/containers/evidence-parser/Dockerfile",
+    "pdos-next/server/pdos_next/object_storage/adapters.py:56-61",
+    "pdos-next/README.md",
+    "pdos-next/tools/workflow_environment.py",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1117-1158,1228-1243",
+    "docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md §12 R6 R7、§13 B3a",
+    "tasks/ai-native-integrated-todo.md:66,86,88"
+   ],
+   "frozen_conflict": "不改 K6 和不可协商项 6，不引入 Kubernetes（v1.1:1147）。生产 Temporal 形态是单Agent稿 B3a 待定事项；ECS、RDS、OSS、域名和部署属于 AGENTS.md 必须保留的批准边界。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "architecture_delivery",
+    "adoption_integration"
+   ],
+   "roles": [
+    "租户管理员/IT",
+    "用户本人",
+    "全部试点用户"
+   ],
+   "competitor_refs": [
+    "Temporal 官方博客：auto-setup 只用于起步，生产改用 Server 镜像（https://temporal.io/blog/auto-setup）",
+    "中国信通院《大模型一体机应用研究报告（2025）》：敏感数据企业倾向本地化部署（https://www.caict.ac.cn/kxyj/qwfb/ztbg/202510/P020251031405764520571.pdf）",
+    "ONES：支持私有部署和企业自有模型（https://ones.cn/products/ai）"
+   ],
+   "ai_native_angle": "“转后台同一 Run”“Worker 重启续跑”这些承诺全靠 Temporal，部署形态稳了才能演练和复核。"
+  },
+  {
+   "id": "F40",
+   "theme": "identity_admin_deploy",
+   "title": "模型服务商只能一协议一把钥，客户原件无法路由到内网模型；出站去向对用户不可见，接入境外模型后客户原件默认就能外发",
+   "type": "risk",
+   "area": "多服务商、私有模型与数据出站",
+   "current_state": "host.py:106-113 要求密钥槽按 (tenant, protocol) 唯一，同一租户不能同时挂 MiniMax 和 Qwen；服务商、价格卡、KMS 引用写在服务器 JSON（minimax-cn-m3.draft.json），设置页只编辑一份 metadata；types.py:94-104 只允许 localhost 用 http。policy.py:25-58 的 egress() 无有效协议就放行，回执只记服务商和资料类别；bootstrap.py:214-218 给带原件的运行加 customer_original；process_view.py:1 写明不输出服务商信息，前端没有出站字样；“境内/境外”属性为 0。设计：§06.9（:1063-1068）按能力、敏感度、出站许可选模型；P26 第 5 条把多服务商自助配置定为后续方向；资格按模型版本绑定（:1092）；AT-57 仍是旧措辞。",
+   "problem": "公司要的是：公开研究用 MiniMax，带 OEM 图纸的 RFQ 只交给自家 VPC 或内网 GPU 上的 Qwen，以后再试 ChatGPT。现在既配不了两个国内服务商，也不能按资料类别分流。一旦接入境外服务商，按现行规则没有协议的新服务商默认就能收到客户图纸和客户名，客户合同的保密条款和个人信息出境合规都有风险，而用户连“这次发给了谁”都看不到（数据泄露顾虑 57.81%）。",
+   "proposal": "作为 P26 后续方向的形态细化，开工需排期。①服务商目录：名称、协议、端点、模型版本、所在地（境内/境外）、是否私有部署、原币价格卡；密钥槽改为 (tenant, provider) 唯一并进 KMS，不录明文，管理员 T1 增删。②路由规则按“技能包×资料类别”由服务器判定（rfq_extraction 遇 customer_original 走内网 Qwen，public_research 走 MiniMax），无规则用默认，模型不能自选；改路由时提示需重审的技能。③内网 http 只对管理员登记的私网段放行，或要求内网 CA https，防 SSRF。④可见：运行详情和过程面板加一行“本次出站：MiniMax（境内）·资料类别：公开资料、客户原件”，品类负责人可查近 30 天汇总。⑤默认值：标为“境外”的服务商默认不接收 customer_original 和客户身份两类资料，管理员可具名放开（T2，留回执）；境内服务商维持 P26。最小可用版本：④。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/model_configuration/host.py:43-120",
+    "pdos-next/config/minimax-cn-m3.draft.json",
+    "pdos-next/server/pdos_next/providers/types.py:85-109",
+    "pdos-next/server/pdos_next/agent_kernel/policy.py:25-58",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py:214-218",
+    "pdos-next/server/pdos_next/agent_kernel/process_view.py:1",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1061-1070,1088-1096,1168-1182",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md:618-628"
+   ],
+   "frozen_conflict": "P26 第 5 条把多服务商定为后续独立建设项，①–③只细化形态。⑤对境外服务商加默认拦截，与 P26（协议可选、未登记不阻断、取消查询词拦截）部分冲突，属于加严（不可协商项 7）。值得重新决定：P26 的前提是只有自有/合成资料、只有 MiniMax，进入真实 OEM 资料或落地多服务商后前提不再成立；本建议只收窄“境外×客户原件”的默认值，不恢复签约前置。④只增加可见性，不冲突。",
+   "needs_decision_record": true,
+   "impact": "medium",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "adoption_integration"
+   ],
+   "roles": [
+    "租户管理员",
+    "产品经理（OEM/ODM）",
+    "品类负责人",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "腾讯 TAPD：工作总结基于私有化部署的混元（https://cloud.tencent.com/developer/article/2677220）",
+    "新京报《中国企业家人工智能应用调研报告（2025）》：商业数据泄露顾虑 57.81%（https://m.bjnews.com.cn/detail/1753782186129556.html）",
+    "Notion：管理员可限定成员或 agent 可用的模型（https://www.notion.com/help/custom-agent-pricing）"
+   ],
+   "ai_native_angle": "“哪类资料交给哪个模型”成为服务器侧确定性策略，并在界面上用一行字可见，是 AI 可追溯最便宜的卖点。"
+  },
+  {
+   "id": "F41",
+   "theme": "integration_data",
+   "title": "数据流不出去：没有 Excel/PDF 导出、客户周报和认证资料包，用户会回到 Excel 维护第二份",
+   "type": "missing_feature",
+   "area": "导出、客户报告与资料包",
+   "current_state": "后端没有 xlsx/docx/pdf 生成代码，唯一下载是原件下载（api.py:1483-1526）；前端没有“导出”。外部移交只生成固定包清单和回执（external_handoff/schemas.py:29-95）；customer.sample.send/acceptance.record 未实现。§08.8（:1343-1347）规定 AI 不得充当客户签名。G15/G16 客户格式导出、电子签名“未明确”。可复用：原工程 exports/definition_documents.py（377 行，render(snapshot, format, receipt) 带回执），不在复用清单。",
+   "problem": "OEM 每周要进度表、交样要规格书和测试汇总，跨境上架要按“市场×渠道”整理资料包，老板开会要 Excel 项目清单。PDOS 拿不出，大家回到 Excel 再维护一份，系统很快成孤岛；导不出数据也让中小企业担心被锁定。",
+   "proposal": "不新增对象，补确定性导出（不用 LLM，READ 档，按受众过滤，每次记审计回执，页脚带对象版本和回执号，AI 起草内容保留标记）。①列表 xlsx：项目列表、我的任务与承诺、外部等待、测试结果汇总、BOM 版本对比。②文档 docx/pdf：型号定义和规格书（复用 definition_documents）；具名状态更新（P18）汇编的客户周报草稿。③资料包 zip：按“市场×渠道”从放行包或原件清单挑文件并附清单（服务 F22/F23）。下载给本人不算外发，交客户仍走 S4 固定包+T2。电子签名：PDOS 具名决定作内部电子记录，客户承认以客户签字原件为证据（F31），本期不集成第三方电子签。",
+   "internal_refs": [
+    "pdos-next/server/pdos_next/api.py:1483-1526",
+    "pdos-next/server/pdos_next/domain/external_handoff/schemas.py:29-95",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:727-747,1176,1343-1347",
+    "server/app/exports/definition_documents.py:1-12,197-210"
+   ],
+   "frozen_conflict": "不冲突：P18 只禁止 AI 自动发布，导出后由人发送；§07.5 受众检查保留；OEM 客户版外发需与 S4 固定包对齐。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "adoption_integration"
+   ],
+   "roles": [
+    "产品经理",
+    "项目负责人",
+    "认证负责人",
+    "管理层",
+    "电商运营"
+   ],
+   "competitor_refs": [
+    "亚马逊全球开店：带锂电便携充气泵的上架文件清单（https://gs.amazon.cn/zhishi/article-260205-3）",
+    "Oracle Change Order Auditor：邮件发出三份报告（https://docs.oracle.com/en/cloud/saas/readiness/scm/26b/plm26b/26B-plm-wn-f43270.htm）"
+   ],
+   "ai_native_angle": "导出是确定性的；小Pai 的价值在于逐句可溯源地起草周报正文，并检查资料包按目标市场还缺什么。"
+  },
+  {
+   "id": "F42",
+   "theme": "integration_data",
+   "title": "外部业务系统事实缺位：ERP 的库存、在途、单价只能手填快照，GoodJob 的客户/商机只是一段自由文本客户名",
+   "type": "missing_feature",
+   "area": "金蝶/用友 ERP 与 GoodJob CRM 只读引用",
+   "current_state": "ERP：supply.snapshot.record 手工 T1（build-supply.tsx 写明不改库存余额），供方只是文本 supplier_id，cost.inputs.record 手工，change_build_adoption.py:25 不代表 ERP 切换；§02.13（:447-451）ERP 拥有库存与核算，§07.9（:1216）未连接时用明确人工引用或导入；执行计划 M7“生态”已从队列消失。CRM：ProposalCreate.customer_identities 是 list[str] 自由文本（preproject/schemas.py:190），标准品匹配只给 confirm_full_scope_then_crm（standard_match.py:193）；§02.1 列了 IntegrationMapping（:288），代码中为 0；口径是“CRM 只预留外部引用 ID”（D17）。",
+   "problem": "量产前换电机，PM 要先知道“在库 3000、在途 PO 5000、最近单价 ¥18.6”才能定断点估报废；DVT 齐套也要真实库存，现在靠采购从金蝶导 Excel 手填，一过时齐套就失真。OEM 客户 A 的商机在 GoodJob 有编号，到 PDOS 只剩一段名字，“A 公司”“A Corp”两种写法会让客户私有资料受众收窄和去标识核对出错。",
+   "proposal": "①ERP 导出导入模板（不需 API）：金蝶/用友的物料、即时库存、未结 PO、最近采购价 Excel，经 F12 导入链生成 supply.snapshot/cost.inputs 的 T1 整批候选，记“来源：ERP 导出”和导出时间，超期显示“已过期”。②ERP 只读连接器（管理员准入 MCP，READ）：按料号查库存、在途、价格，作为外部引用版本写入快照，不写回 ERP；未连接或失败一律“未知”。变更影响据此确定性计算“受影响库存/在途金额”（F32）。③CRM 外部引用作为 IntegrationMapping 首个实现：提案和客户变体记 system=goodjob、客户编号、商机编号，T1 手填或从 CRM 导出选择；customer_identities 由引用派生，出站分类和去标识都用它；提案页显示商机只读链接。GoodJob 是否有开放接口待核实，有则再只读查商机阶段。PDOS 不写 CRM、不建漏斗。小Pai 负责“导出表→料号映射”的一物多码对齐，数值交给引擎。",
+   "internal_refs": [
+    "pdos-next/web/src/components/builds/build-supply.tsx",
+    "pdos-next/server/pdos_next/change_build_adoption.py:25",
+    "pdos-next/server/pdos_next/domain/supply_execution/schemas.py:20",
+    "pdos-next/server/pdos_next/domain/preproject/schemas.py:182-194",
+    "pdos-next/server/pdos_next/domain/preproject/standard_match.py:193",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:186-192,288,447-451,713-719,1021-1031,1212-1218",
+    "docs/design/2026-10-07-xiaopai-product-execution-plan.md:24-33"
+   ],
+   "frozen_conflict": "不冲突：保留外部系统边界（只读、不双写）和 CRM 边界（只预留外部引用、不建漏斗）。连接真实 ERP 属于外部网络与真实业务数据访问，需用户另行授权。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "adoption_integration"
+   ],
+   "roles": [
+    "采购/供应",
+    "产品经理（OEM/ODM）",
+    "NPI协调",
+    "销售（CRM 侧）",
+    "管理层"
+   ],
+   "competitor_refs": [
+    "金蝶 AI PLM：物料/BOM 自动同步 ERP，变更影响覆盖在途、在制、在库（https://www.kingdee.com/products/galaxy_plm.html）",
+    "Linear：Intercom/Zendesk/Gong 代理把客户对话转成带原文摘录的 issue（https://linear.app/changelog/2025-12-11-linear-agent-for-intercom-zendesk-gong）"
+   ],
+   "ai_native_angle": "客户范围由服务器从 CRM 引用推导，不让模型从正文猜客户名（不可协商项 2）。"
+  },
+  {
+   "id": "F43",
+   "theme": "architecture_simplification",
+   "title": "交付状态不可信：整仓自 S0 后从未全绿、证据占新增行 58%、271 个文件未提交且多会话同树施工，清单和契约与代码漂移",
+   "type": "risk",
+   "area": "验证仪式、提交纪律与状态管理",
+   "current_state": "AGENTS.md 要求低风险展示不加镜像测试、每闭环一个简短状态；v1.1 §09.7（:1489-1495）禁止拼接历史零散通过，§00.4（:131）禁止契约与正文冲突时静默选择。docs/reports/evidence/ 488 MB、10,780 个文件，200 份 result.md 平均 10.3 KB；tools/ 145 项中 134 个一次性脚本；最近 60 次提交中证据占新增行 58%、web 1.5%、契约改动 3.3 万行（openapi.json 843 KB、payloads 574 KB）。整仓：S1 检查点 24 失败，agent_kernel 181 失败，b07e548 时 140 失败且 419 个 DB 用例未运行。git：82 个已修改、189 个未跟踪；公共文件本应由主会话串行改（S0 计划 §4.1）；M2 号段被 S1–S5 共用；预览库应用了未提交迁移 0789/0790。漂移：provider.agreement.register 标未实现但已实现（management.py:51-153），my_work.query 同理；/health 硬编码 model_available=False、slice 仍是 wave1（api.py:448-466）；lifecycle_catalog.py 4,929 行手工镜像已漂移 13 张表；清单当前队列第 18 行 30,873 字符，M4/M5/M7 从队列消失；/plan 在产品路由里读清单。",
+   "problem": "没人能回答“今天这个提交能不能部署给同事试用”，也回答不了“充气泵 PM 今天能用什么”。任何“通过”都对应不到可复现版本；P21 自动续工靠清单判断前置，多会话会在漂移状态上续工，直接影响建设顺序决策。",
+   "proposal": "①公共合同测试一次实现、参数化：按命令登记表枚举幂等重放和“响应丢失后刷新得同一回执”；每个迁移自动 upgrade/downgrade/空库重建；亮暗和 320px 用截图基线，只跑改动组件。②证据只留一页 result.md（候选哈希、覆盖、失败、缺口）加 manifest.json，原始日志移到 ~/pdos-evidence-archive/；一次性脚本移入 tools/archive/，保留 ≤15 个通用工具。③每晚在已提交 HEAD 上跑整仓回归（显式 TEST_DATABASE_URL），失败修到 0 或进入带负责人和期限的隔离清单。④每个施工会话独立 worktree 和分支，主会话串行合并；一个闭环一次提交，日终未提交 ≤20；迁移按“日期+会话前缀”命名或合并时重编号；库只允许应用已提交迁移。⑤tools/capability_matrix.py 从登记表、handler、BFF、技能授权、验收记录生成 status/capabilities.json（命令×已实现×有 UI×有技能×验收×真实模型×真人用过）；CI 检查 operations.json 与 handler 一致、COVERED_COLUMNS 从 ORM 生成、/health 读真实配置、契约重生成无差异（标 linguist-generated）。⑥当前队列每里程碑一行三栏（可用/阻塞/下一步）≤300 字，区块 ≤15 KB；冻结稿后续改动走 v1.2 changelog；/plan 只在开发环境启用。",
+   "internal_refs": [
+    "AGENTS.md「当前执行节奏」",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:131,1489-1495",
+    "docs/reports/evidence/",
+    "pdos-next/tools/",
+    "docs/design/2026-10-08-pdos-next-s0-refactoring-plan.md §4.1",
+    "pdos-next/server/pdos_next/api.py:448-466",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py",
+    "pdos-next/server/pdos_next/agent_kernel/management.py:51-153",
+    "pdos-next/contracts/operations.json",
+    "pdos-next/web/src/app/plan/page.tsx",
+    "tasks/ai-native-integrated-todo.md:13-33,63,84,86",
+    "docs/design/2026-10-17-m2-tool-surface-decision.md 修订 §6"
+   ],
+   "frozen_conflict": "不冲突：迁移单调规则（不可协商项 3）保留；号段是 S0 计划的施工规则、现实中已被突破，需要更新；与 AGENTS.md“默认主会话执行、并行仅限显式授权”一致。",
+   "needs_decision_record": false,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "high",
+   "source_lenses": [
+    "architecture_delivery"
+   ],
+   "roles": [
+    "实施会话",
+    "用户本人"
+   ],
+   "competitor_refs": [],
+   "ai_native_angle": "公共合同测试和每晚回归是 T0 资格持续抽检的底座；能力矩阵也应决定哪些命令进工具注册表（F08），小Pai 回答“我能做什么”时以它为准。"
+  },
+  {
+   "id": "F44",
+   "theme": "architecture_simplification",
+   "title": "形式化收敛：同一守卫在 plpgsql 和 Python 各写一遍，S0 冻结后 9 天新增 83 个迁移",
+   "type": "optimization",
+   "area": "守卫放置与可维护性",
+   "current_state": "§08.11（v1.1:1387）要求同类守卫只实现一次；§07.4–§07.5（:1160-1182）要求外键、唯一、版本、只追加和 RLS；C6 要求收敛过度形式化。migrations/schema_s0_*.py 共 88 个、57,665 行，约 640 处 CREATE FUNCTION、222 处 CREATE TRIGGER；P20 的会话改名、置顶、归档只是便利功能，schema_s0_0811.py:9-93 却有约 70 行 plpgsql 守卫，session_presentation.py:245-342 又校验一遍所有人和 expected_revision。SQLAlchemy 替身层另有 140 项失败（清单:33）。",
+   "problem": "每改一条规则要同时改 ORM、plpgsql、Python 和替身，迁移数量暴涨；真实用户来了以后，调一个“额定压力”条目的校验就要写一次触发器迁移，与“无真实数据期间快速迭代”背道而驰。",
+   "proposal": "写一页“守卫放置规则”（工程规则，不改设计）：数据库只放以 category_id 为首键的 RLS、外键/唯一/枚举 CHECK、回执/决定/原件版本/审计的只追加触发器；修订链、所有人一致、状态转移、业务时限只放领域服务，由领域测试覆盖。从下一个迁移开始执行；S5 和界面便利类表在下次改动时回收触发器。目标：新迁移平均 plpgsql 函数 ≤1、业务性触发器 0；迁移增速 ≤3 个/周；会话改名的实现从 2 层降为 1 层；替身层失败 140→0。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1160-1182,1387",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md C5 C6",
+    "pdos-next/server/migrations/schema_s0_0811.py:9-93",
+    "pdos-next/server/pdos_next/agent_kernel/session_presentation.py:245-342",
+    "pdos-next/server/migrations/",
+    "tasks/ai-native-integrated-todo.md:33"
+   ],
+   "frozen_conflict": "不违反 v1.1：§07.4/§07.5 要求的外键、唯一、RLS、只追加都保留。用户在 C5 否决过“新代码遵守、旧代码动到再改”，那次针对一致性规则；本条只涉及守卫放在哪一层，同样采用“触碰即回收”；若用户要求一次性回收存量，需另评工作量。",
+   "needs_decision_record": false,
+   "impact": "medium",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "architecture_delivery"
+   ],
+   "roles": [
+    "实施会话"
+   ],
+   "competitor_refs": [],
+   "ai_native_angle": "规则集中后，工具 schema、校验错误和可解释的 detail 从同一处生成，模型撞上难解释 plpgsql 异常的情况会减少。"
+  },
+  {
+   "id": "F45",
+   "theme": "architecture_simplification",
+   "title": "性能没有可执行预算：AI 运行时延和费用无基线、worker 并发固定 4；交互命令 SQL 偏多，P12 的后台化也没落实",
+   "type": "risk",
+   "area": "AI 运行时延与交互命令性能",
+   "current_state": "AI 运行：P3 与 §07.11（v1.1:1234）只覆盖交互命令；研究时延目标是单Agent稿 D6 待定，原工程“多轮研究超过 5 分钟”；M5“速度与体验”已从队列消失。上限 12 轮、40 次工具调用（graph.py:137-138），Activity 10 分钟重试 3 次，worker 线程池固定 4（worker.py:161）；预算预留按字节×1+4,096 并按最贵单价（pricing.py:62-89）；OpenAI 兼容分支无缓存断点；唯一真实样本单轮 456 token、4.8 秒。交互命令：§08.11（:1387）要求记录计时和 SQL 次数；P12 要求 coverage_publication 改为“受理+后台工作 ID”，仍是 p95 4.09 s/242 SQL；提案上下文受理 2,066 ms/34 SQL；幂等重放 1,254 ms/11 SQL（按 §08.11 应直接返回）；私有基线读取 1,128 ms/78 SQL；S0 做过 32×30 采样，多会话抢 CPU 使计时不入账。",
+   "problem": "PM 让小Pai 对比 10 款车载泵，每轮带 80–130 KB 工具定义，12 轮可能要数分钟；周一 5 人同时起草状态更新就会排队；工具字节还放大预算预留，钱包被过早占满。打开项目或提案一次读 60–80 条 SQL 已超 1 秒，10 人试点会更慢。采样仪式成本高、受负载干扰被整体暂停，结果既不测也不修。",
+   "proposal": "①请用户就 D6 拍板，建议：首个可见进展 ≤2 秒；草稿类运行 p50 ≤30 秒、p95 ≤90 秒；公开研究 8–12 款 p95 ≤5 分钟，超出转后台。②每次运行记录轮数、每轮 token、工具定义字节、缓存命中、模型/工具时延和费用（界面只显示金额，F07）；实测 MiniMax 缓存；worker 并发改为配置项；用实际 token 回填校准预留系数（目标预留/实际 ≤3 倍）。SSE 接入见 F06。③用 F08 的评测集在真实 M3 上跑 N≥30 次得出基线。④交互命令用确定性 SQL 次数预算：测试夹具用 SQLAlchemy 事件钩子统计 top-30 命令，写进 perf-budget.json，超出即失败，不恢复 P13 暂停的采样；只在冻结候选上每命令做 10 个样本计时。⑤落实 P12：coverage_publication 受理后返回工作 ID；幂等重放走按 intent_digest 读回执的快路径（≤3 SQL、≤200 ms）；读取类合并 N+1。初始预算：读取 ≤20 SQL，T1/提交 ≤40 SQL，同步部分 >3 秒的命令为 0。",
+   "internal_refs": [
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md:1061-1070,1220-1234,1373-1387",
+    "docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md:575-585",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md P3、P12 L512-517、P13 L519-524",
+    "pdos-next/server/pdos_next/agent_kernel/graph.py:137-138",
+    "pdos-next/server/pdos_next/workflows/worker.py:161",
+    "pdos-next/server/pdos_next/agent_kernel/pricing.py:62-89",
+    "pdos-next/tools/s0_performance.py",
+    "tasks/ai-native-integrated-todo.md:16,18,86"
+   ],
+   "frozen_conflict": "不冲突 P3（只覆盖交互命令）和 P13（本条不恢复采样、不宣称通过；SQL 次数是 §08.11 既有要求，coverage_publication 后台化是 P12 已定）。SQL 预算是测试层工程预算，不是业务上限（C6）。AI 研究时延目标属于 D6 待定事项，需用户拍板。",
+   "needs_decision_record": true,
+   "impact": "high",
+   "effort": "M",
+   "confidence": "medium",
+   "source_lenses": [
+    "architecture_delivery"
+   ],
+   "roles": [
+    "产品经理",
+    "项目负责人",
+    "租户管理员",
+    "实施会话"
+   ],
+   "competitor_refs": [
+    "Linear Triage Intelligence：后台分诊建议需 1–4 分钟，用户接受以延迟换质量（https://linear.app/docs/triage-intelligence）",
+    "Notion Custom Agents：按 credits 计费，第三方反馈成本难预测（https://www.notion.com/help/custom-agent-pricing）"
+   ],
+   "ai_native_angle": "轮数、工具字节、缓存命中和费用成为每次运行的事实，才能在工具面（F08）和多服务商（F40）之间有据取舍。"
+  }
+ ],
+ "dropped": [
+  "说明：未丢弃任何条目；下列条目已并入其他发现，原因均为与主条目属同一问题",
+  "T1“一次确认”被做成逐条弹窗→并入 F04（与 T0 资格同属“AI 先干落不了地”）",
+  "保持：写入分级与具名决定、一次确认做轻→并入 F04（其实施内容就是 ConfirmationBatch）",
+  "项目侧小Pai 看不见项目（读取工具/上下文/预载）→并入 F05",
+  "最高频的一句话登记和状态更新没有技能→①②并入 F05，③并入 F18",
+  "项目页小Pai 做不了说情况、建任务、登记对方回复→并入 F05",
+  "失能和失败对用户不透明→并入 F06（同属小Pai 会话面）；手动建提案入口一并收入",
+  "PM 接客户需求（Word/邮件/截图、拖入即绑定、修订对比、手动建提案）→①②并入 F12，③并入 F20，④并入 F06",
+  "成本看不见也分不开、AI 用量与费用按人民币治理、预算只能管理员给自己建→三条合并为 F07",
+  "评测和 golden case 没有落地、给工具面设预算并做选择准确度评测→合并为 F08",
+  "找资料靠问人（⌘K/全文/读取工具）、记忆只有会话一层→合并为 F09",
+  "保持：结论由确定性规则和可核验引用给出→并入 F10（护栏）",
+  "零代码沉淀“我的做法”、一句话建自动化规则→并入 F11",
+  "捕捉入口太窄（A 层格式/拖入/语音）→并入 F12；B 层钉钉并入 F13",
+  "数据进入只到“上传原件”（统一导入）→通用导入链并入 F12，BOM 示例并入 F37，测试记录示例并入 F28",
+  "钉钉登录、提醒推送、“转给小Pai”和手机入口→推送/卡片/转发并入 F13，身份并入 F38，手机接收页并入 F29",
+  "在钉钉里办理与被调用（含只读 PDOS MCP Server）→身份并入 F38，其余并入 F13",
+  "钉钉触达缺失（推送、卡片、转发、听记）→并入 F13",
+  "PDOS 不能被外部助手调用（对外只读 MCP 服务端）→并入 F13 第④步（低影响，排在 S5 之后）",
+  "老板周一什么也看不到→①②作为 F16 主体，③冻结点命令并入 F14",
+  "每日简报与“今天必须”排序、状态更新定时起草→①并入 F17，②并入 F18",
+  "待确认候选和 AI 例外不进我的工作、无值班摘要→并入 F17；DC-11 §10 周度指标并入 F02",
+  "模具工程师没有工作面→并入 F30（与“模具和试模轮次只有设计”同一问题）；开模授权冻结点并入 F14",
+  "替代料、EOL 与供方变更（PCN）闭环→与“关键件供方承认和 PCN”合并为 F24",
+  "零件/材料级合规与认证证书生命周期→与“认证合规没有对象承载”合并为 F22；regulatory 角色并入 F38，资料包导出并入 F41",
+  "包装、说明书、铭牌标签及其多语言版本→与“市场/认证适用性放行与宣称参数”合并为 F23",
+  "供应商报价抽取与确定性比价→与“目标成本在 G0 就断了”合并为 F26",
+  "测试数据只能手写 JSONL、测试 Run 逐条处置与跨 Run 关联视图→合并为 F28；TestItem 参数绑定归入 F27",
+  "设计评审与 DFM 第一遍自查→与“提交前分层预审”合并为 F35",
+  "工程师改版 BOM 和固件只能逐行录入→BOM 部分与“零件主数据底座”合并为 F37，固件部分并入 F34",
+  "权限与上手、真人进不来、管理后台缺失→三条合并为 F38",
+  "试点上线路径（常驻环境、企业登录、两名真人、指标）→指标与种子用户并入 F02，环境并入 F39，登录与成员页并入 F38",
+  "没有常驻试点环境/私有化交付、Temporal+LangGraph 试点部署形态→合并为 F39",
+  "多服务商与私有模型、出站情况不可见→合并为 F40（同属“客户原件去哪个模型”）",
+  "ERP 只读事实缺位、GoodJob CRM 没有引用→合并为 F42",
+  "验证仪式按风险分层、并发施工与提交纪律、状态与契约改由代码生成能力矩阵→合并为 F43",
+  "AI 运行端到端时延与费用基线、交互命令 SQL 次数预算→合并为 F45；前端 SSE 接入归 F06，运行费用显示归 F07"
+ ]
+}

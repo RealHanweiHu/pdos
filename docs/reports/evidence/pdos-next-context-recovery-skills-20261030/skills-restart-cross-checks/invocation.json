@@ -1,0 +1,47 @@
+{
+  "recorded_at_utc": "2026-10-30T09:52:33.385928+00:00",
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "database_env_removed": true,
+  "db_operations": 0,
+  "model_calls": 0,
+  "embedding_calls": 0,
+  "checks": {
+    "ruff": {
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos_next/agent_kernel/requested_skills.py",
+        "tests/agent_kernel/test_requested_skills.py",
+        "tests/agent_kernel/test_requested_skills_pg.py",
+        "tests/agent_kernel/test_continued_skills_pg.py",
+        "tests/agent_kernel/test_conversation_memory.py"
+      ],
+      "exit_code": 0
+    },
+    "pg-collect-only": {
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "--collect-only",
+        "-q",
+        "tests/agent_kernel/test_requested_skills_pg.py",
+        "tests/agent_kernel/test_continued_skills_pg.py"
+      ],
+      "exit_code": 0
+    },
+    "pure": {
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/agent_kernel/test_requested_skills.py",
+        "tests/agent_kernel/test_conversation_memory.py",
+        "-q",
+        "--tb=short",
+        "--junitxml=/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-context-recovery-skills-20261030/skills-restart-cross-checks/pure.xml"
+      ],
+      "exit_code": 0
+    }
+  }
+}

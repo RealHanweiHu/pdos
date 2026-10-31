@@ -1,0 +1,8 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "role": "pdos_next_app",
+  "synthetic_tenant": "eb2aca06-83e8-45a2-b222-963eab46daca",
+  "actual_function_executed": true,
+  "empty_derived_corpus_correct": true,
+  "source_body_reads": false
+}

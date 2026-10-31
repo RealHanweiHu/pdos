@@ -264,7 +264,8 @@ def test_network_guard_prevents_adapter_invocation_for_actual_registered_names(c
     host.adapters = SimpleNamespace(read_tools={tool: callback})
     host.read_callback = Mock(side_effect=AssertionError("No read reservation for denied tool"))
     with pytest.raises(DomainError) as error:
-        host.read(SimpleNamespace(trigger=runtime.TRIGGER), SimpleNamespace(name=tool), {}, "call")
+        host.read(SimpleNamespace(trigger=runtime.TRIGGER, isolation="main"),
+                  SimpleNamespace(name=tool), {}, "call")
     assert error.value.code == "FORBIDDEN_SCOPE"
     callback.assert_not_called()
     host.read_callback.assert_not_called()

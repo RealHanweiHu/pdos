@@ -1,0 +1,44 @@
+{
+  "scope": "Only CTX-04 and CTX-11 at two F budgets, not a new full 24-cell candidate",
+  "tests_passed": 4,
+  "observations": [
+    {
+      "case_id": "CTX-04",
+      "f_budget_tokens": 48000,
+      "native_binding_status": "bound",
+      "status": "native_control_checks_passed",
+      "provider_dispatches": 2,
+      "real_model_calls": 0,
+      "model_quality_score": null
+    },
+    {
+      "case_id": "CTX-04",
+      "f_budget_tokens": 64000,
+      "native_binding_status": "bound",
+      "status": "native_control_checks_passed",
+      "provider_dispatches": 2,
+      "real_model_calls": 0,
+      "model_quality_score": null
+    },
+    {
+      "case_id": "CTX-11",
+      "f_budget_tokens": 48000,
+      "native_binding_status": "not_executable",
+      "status": "context_admission_blocked",
+      "provider_dispatches": 5,
+      "real_model_calls": 0,
+      "model_quality_score": null
+    },
+    {
+      "case_id": "CTX-11",
+      "f_budget_tokens": 64000,
+      "native_binding_status": "bound",
+      "status": "native_mechanics_passed_model_quality_not_scored",
+      "provider_dispatches": 17,
+      "real_model_calls": 0,
+      "model_quality_score": null
+    }
+  ],
+  "project_inputs_unchanged": true,
+  "hashed_project_inputs": 120
+}

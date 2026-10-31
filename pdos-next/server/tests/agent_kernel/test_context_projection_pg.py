@@ -13,6 +13,7 @@ from sqlalchemy.orm import Session
 from pdos_next.agent_kernel.bindings import SkillBinding
 from pdos_next.agent_kernel.bootstrap import Bootstrap
 from pdos_next.agent_kernel.context_projection import check_messages
+from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
 from pdos_next.agent_kernel.graph import AgentKernel
 from pdos_next.agent_kernel.host import BoundHost
 from pdos_next.agent_kernel.management import register_agreement
@@ -85,7 +86,7 @@ def test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_chec
     )
     assert response.status_code == 200
     steps = [step for step in response.json()["steps"] if step["kind"] == "context_projected"]
-    assert len(steps) == 2 and steps[-1]["context_fields"][-1] == "sources"
+    assert len(steps) == 2 and steps[-1]["context_fields"] == sorted(expanded["context"])
     assert "Synthetic context target" not in response.text
 
 
@@ -106,6 +107,14 @@ def test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_
             scope, "Synthetic production projection", bindings=(binding,),
         )
         assert "PRIVATE OMITTED BODY" not in str(projected)
+        assert projected["omitted_fields"] == ["/category/unplanned_field"]
+        check_messages(owner.store, scope,
+                       [{"role": "user", "content": json.dumps(projected)}], (binding,))
+        tampered = {**projected, "omitted_fields": []}
+        with pytest.raises(DomainError) as changed:
+            check_messages(owner.store, scope,
+                           [{"role": "user", "content": json.dumps(tampered)}], (binding,))
+        assert changed.value.code == "SOURCE_STALE"
     else:
         with pytest.raises(DomainError) as failure:
             host.skill_context(scope, "Synthetic strict projection", bindings=(binding,))
@@ -160,6 +169,19 @@ def test_registered_graph_progressively_adds_context_and_replay_never_calls_prov
     )
     assert result["output"]["status"] == "completed" and len(client.requests) == 2
     assert client.requests[0]["system"] == client.requests[1]["system"]
-    assert client.requests[0]["tools"] == client.requests[1]["tools"]
+    registry = default_registry()
+    research = owner.catalog.configuration("public_research")
+    drafting = owner.catalog.configuration("proposal_drafting")
+    assert client.requests[0]["tools"] == disclosure(
+        registry, "main", skill_operations([research]),
+    )
+    assert client.requests[1]["tools"] == disclosure(
+        registry, "main", skill_operations([research, drafting]),
+    )
+    before = {tool["name"]: tool for tool in client.requests[0]["tools"]}
+    after = {tool["name"]: tool for tool in client.requests[1]["tools"]}
+    assert before.keys() < after.keys()
+    assert all(after[name] == definition for name, definition in before.items())
+    assert "proposal.item.patch" not in before and "proposal.item.patch" in after
     repeated = AgentKernel(host, default_registry()).execute(scope, checkpointer=saver)
     assert repeated["output"] == result["output"] and len(client.requests) == 2

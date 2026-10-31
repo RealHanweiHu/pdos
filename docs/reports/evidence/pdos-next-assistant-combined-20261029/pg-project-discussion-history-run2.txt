@@ -1,0 +1,64 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+tests/agent_kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:98: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-project-discussion-history-20261029/pg-run2.xml -
+======================= 1 passed, 26 warnings in 15.07s ========================

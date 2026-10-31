@@ -1,0 +1,73 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类" [active]:
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - generic: 品类
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - heading "品类" [level=1]
+  - paragraph: 从共享依据出发，管理型号与产品方向。
+  - button "新建品类":
+    - text: 新建品类
+  - generic: 1 个品类
+  - searchbox "搜索品类"
+  - generic: 品类
+  - generic: 主要场景
+  - generic: 负责人
+  - generic: 型号
+  - generic: 我的草稿
+  - button "汽车充气泵 隔离合成品类 Synthetic owner 2 1":
+    - strong:
+      - text: 汽车充气泵
+    - generic: 隔离合成品类
+    - generic: Synthetic owner
+    - generic: "2"
+    - generic: "1"
+- button "打开小Pai工作栏":

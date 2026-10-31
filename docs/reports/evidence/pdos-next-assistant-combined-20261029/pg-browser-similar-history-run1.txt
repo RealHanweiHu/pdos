@@ -1,0 +1,67 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/pdos-similar-history-browser-20261029
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+../../../../../../tmp/pdos-similar-history-browser-20261029/browser_fixture.py::test_browser_similar_history[setup0] SIMILAR_HISTORY_BROWSER_READY /tmp/pdos-similar-history-browser-20261029/actual1/ready-public.json API=http://127.0.0.1:63343
+SIMILAR_HISTORY_WEB_VERIFIED http://127.0.0.1:63199
+SIMILAR_HISTORY_BROWSER_FINISHED /tmp/pdos-similar-history-browser-20261029/actual1/result.json
+PASSED
+
+=============================== warnings summary ===============================
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:98: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+browser_fixture.py::test_browser_similar_history[setup0]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/similar_history_context.py:47: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    ).distinct(GovernanceEvent.project_id).order_by(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-similar-history-completion-20261029/pg-browser-run1.xml -
+================= 1 passed, 24 warnings in 1934.19s (0:32:14) ==================

@@ -33,7 +33,7 @@ const react = { ...React,
   },
 };
 const child = name => Object.defineProperty(function ChildEntry(props) { return React.createElement("div", { "data-entry": name }, props.children); }, "displayName", { value: name });
-const entries = Object.fromEntries(["Button", "ConnectedAutomationRules", "MyWork", "ProjectList", "ProjectCockpit", "CategoryArea", "KnowledgeLibrary", "PaiRail", "ObjectSearch"].map(name => [name, child(name)]));
+const entries = Object.fromEntries(["Button", "ConnectedAutomationRules", "MyWork", "ProjectList", "ProjectCockpit", "CategoryArea", "KnowledgeIndex", "PaiRail", "ObjectSearch"].map(name => [name, child(name)]));
 const browserApi = (...args) => currentEnvironment.api(...args);
 const childModules = {
   "@/components/ui/button": { Button: entries.Button },
@@ -42,7 +42,7 @@ const childModules = {
   "@/components/projects/project-list": { ProjectList: entries.ProjectList },
   "@/components/projects/project-cockpit": { ProjectCockpit: entries.ProjectCockpit },
   "@/components/category-workspace": { CategoryArea: entries.CategoryArea },
-  "@/components/knowledge/knowledge-library": { KnowledgeLibrary: entries.KnowledgeLibrary },
+  "@/components/knowledge/knowledge-index": { KnowledgeIndex: entries.KnowledgeIndex },
   "@/components/pai-rail": { PaiRail: entries.PaiRail },
   "@/components/object-search": { ObjectSearch: entries.ObjectSearch },
 };
@@ -118,62 +118,105 @@ function environment(t, search, overrides = {}, initialProps = {}) {
     async setProps(next) { props = { ...props, ...next }; render(); await this.flush(); },
   };
 }
-function library(env) { const nodes = env.nodes("KnowledgeLibrary"); assert.equal(nodes.length, 1); return nodes[0]; }
-function onlyEntry(env, name) { assert.equal(env.nodes(name).length, 1); assert.equal(env.nodes("KnowledgeLibrary").length, 0); }
+function library(env) { const nodes = env.nodes("KnowledgeIndex"); assert.equal(nodes.length, 1); return nodes[0]; }
+function onlyEntry(env, name) { assert.equal(env.nodes(name).length, 1); assert.equal(env.nodes("KnowledgeIndex").length, 0); }
 
-test("valid category without PM capability mounts the real KnowledgeLibrary entry with nil-product defaults", async t => {
+test("an explicit category material request releases a previously focused run", async t => {
+  const env = environment(t, `?area=work&category=${id(1)}`, { categories: [category(1, true)] });
+  await env.flush();
+  env.nodes("MyWork")[0].props.onOpenRun(id(90), id(1));
+  await env.flush();
+  assert.ok(env.nodes("PaiRail")[0].props.focusRun);
+  await env.navigate(`?area=category&category=${id(1)}`);
+  env.nodes("CategoryArea")[0].props.onPaiContext({categoryId:id(1),productId:"",sources:[],material:{kind:"voice",title:"用户声音",request:{id:"new-material-request",prompt:"整理用户声音"}}});
+  await env.flush();
+  assert.equal(env.nodes("PaiRail")[0].props.focusRun, null);
+  assert.equal(env.nodes("PaiRail")[0].props.paiContext.material.request.prompt, "整理用户声音");
+});
+
+test("knowledge reads all authorized categories without requiring product management", async t => {
   const env = environment(t, `?area=knowledge&category=${id(1)}`); await env.flush(); const entry = library(env);
-  assert.deepEqual(env.location(), { area: "knowledge", categoryId: id(1), projectId: "" });
-  assert.equal(entry.key, `${id(4)}:${id(1)}`); assert.equal(entry.props.categoryId, id(1)); assert.equal(entry.props.categoryName, "可读品类 1");
-  assert.equal(entry.props.principalId, id(4)); assert.equal(entry.props.api, browserApi); assert.equal(Object.hasOwn(entry.props, "productId"), false);
-  assert.equal(env.nodes("CategoryArea").length, 0); assert.deepEqual(env.calls.map(call => call.route), ["v1/session", "v1/categories", "v1/personal/projects?page_size=6"]);
+  assert.deepEqual(entry.props.categories.map(c => c.id), [id(1),id(2)]);
+  assert.equal(entry.props.principalId,id(4)); assert.equal(entry.props.api,browserApi);
+  assert.equal(env.nodes("CategoryArea").length,0);
 });
-test("knowledge does not require product-management capabilities to have been supplied", async t => {
-  const env = environment(t, `?area=knowledge&category=${id(1)}`, { categories: [{ id: id(1), name: "普通可读品类", purpose: "原用途" }] });
-  await env.flush(); assert.equal(library(env).props.categoryName, "普通可读品类");
-});
-test("unselected category stays on its picker and only an explicit selection mounts the library", async t => {
-  const env = environment(t, "?area=knowledge"); await env.flush();
-  assert.equal(env.nodes("KnowledgeLibrary").length, 0); assert.equal(env.nodes("CategoryArea").length, 0);
-  assert.ok(text(env.content()).includes("可读品类 1")); assert.ok(text(env.content()).includes("可读品类 2"));
-  await env.click(node => node.type === "button" && text(node).includes("可读品类 2"));
-  assert.equal(library(env).props.categoryId, id(2)); assert.equal(env.calls.length, 3);
-});
-test("a category absent from the readable list does not mount a guessed library", async t => {
-  const env = environment(t, `?area=knowledge&category=${id(99)}`); await env.flush(); assert.equal(env.nodes("KnowledgeLibrary").length, 0);
-  assert.ok(text(env.content()).includes("可读品类 1"));
+test("knowledge opens directly without choosing a category or guessing an inaccessible one", async t => {
+  const env = environment(t,"?area=knowledge"); await env.flush();
+  assert.deepEqual(library(env).props.categories.map(c => c.id),[id(1),id(2)]);
+  await env.navigate(`?area=knowledge&category=${id(99)}`);
+  assert.equal(library(env).props.categories.some(c => c.id === id(99)),false);
 });
 test("explicit legacy knowledge bench plus product retains CategoryArea without mounting the new entry", async t => {
   const env = environment(t, `?area=knowledge&category=${id(1)}&bench=knowledge&product=${id(20)}&view=sources`); await env.flush();
   onlyEntry(env, "CategoryArea"); const entry = env.nodes("CategoryArea")[0]; assert.equal(entry.props.area, "knowledge"); assert.equal(entry.props.categoryId, id(1)); assert.equal(entry.props.categories.length, 2);
 });
 test("knowledge bench without a product still mounts the category library", async t => {
-  const env = environment(t, `?area=knowledge&category=${id(1)}&bench=knowledge&view=sources`); await env.flush(); assert.equal(library(env).props.categoryId, id(1));
+  const env = environment(t, `?area=knowledge&category=${id(1)}&bench=knowledge&view=sources`); await env.flush(); assert.equal(library(env).props.categories[0].id, id(1));
 });
 test("category read failure mounts neither library nor legacy workbench and retry uses fresh data", async t => {
   const env = environment(t, `?area=knowledge&category=${id(1)}`, { categoryError: new Error("category read unavailable") }); await env.flush();
-  assert.equal(env.nodes("KnowledgeLibrary").length, 0); assert.equal(env.nodes("CategoryArea").length, 0); assert.ok(text(env.content()).includes("category read unavailable"));
+  assert.equal(env.nodes("KnowledgeIndex").length, 0); assert.equal(env.nodes("CategoryArea").length, 0); assert.ok(text(env.content()).includes("category read unavailable"));
   env.state.categoryError = null; await env.click(node => node.type === entries.Button && text(node) === "重新读取");
-  assert.equal(library(env).props.categoryId, id(1)); assert.equal(env.calls.length, 6);
+  assert.equal(library(env).props.categories[0].id, id(1)); assert.equal(env.calls.length, 6);
 });
 test("document mode preserves document children and never mounts the library even with knowledge URL", async t => {
   const document = React.createElement("section", { "data-document": "actual-child" }, "已选文档正文");
   const env = environment(t, `?area=knowledge&category=${id(1)}`, {}, { documentPage: { categoryId: id(1) }, children: document }); await env.flush();
-  assert.equal(env.nodes("KnowledgeLibrary").length, 0); assert.equal(env.nodes("CategoryArea").length, 0); assert.equal(env.content().props.children, document);
+  assert.equal(env.nodes("KnowledgeIndex").length, 0); assert.equal(env.nodes("CategoryArea").length, 0); assert.equal(env.content().props.children, document);
 });
 for (const [area, entry] of [["work", "MyWork"], ["projects", "ProjectList"], ["cockpit", "ProjectCockpit"]]) test(`${area} keeps its own real shell entry instead of the knowledge library`, async t => {
   const env = environment(t, `?area=${area}&category=${id(1)}${area === "cockpit" ? `&project=${id(30)}` : ""}`); await env.flush(); onlyEntry(env, entry);
 });
-test("category route change replaces the keyed principal/category binding and leaving knowledge removes it", async t => {
-  const env = environment(t, `?area=knowledge&category=${id(1)}`); await env.flush(); const old = library(env);
-  await env.navigate(`?area=knowledge&category=${id(2)}`); const next = library(env);
-  assert.notEqual(next.key, old.key); assert.equal(next.props.categoryId, id(2)); assert.equal(next.props.categoryName, "可读品类 2"); assert.equal(next.props.principalId, id(4));
-  await env.navigate("?area=work"); onlyEntry(env, "MyWork"); assert.equal(env.calls.length, 3);
+test("category navigation never widens the global authorized set and leaving knowledge removes it", async t => {
+  const env = environment(t, `?area=knowledge&category=${id(1)}`); await env.flush();
+  await env.navigate(`?area=knowledge&category=${id(2)}`);
+  assert.deepEqual(library(env).props.categories.map(c => c.id),[id(1),id(2)]);
+  await env.navigate("?area=work"); onlyEntry(env,"MyWork");
 });
-test("an actual shell refresh replaces identity/category props and keyed library with the current session", async t => {
-  const env = environment(t, `?area=knowledge&category=${id(1)}`, { categories: [{ id: id(1), name: "原品类名", purpose: "原用途" }] }); await env.flush(); const old = library(env);
-  env.state.who = { name: "刷新后本人", principal_id: id(44) }; env.state.categories = [{ id: id(1), name: "刷新后品类名", purpose: "原用途", capabilities: { product_management: false } }];
+test("shell refresh rebinds knowledge to the current identity and authorized categories", async t => {
+  const env = environment(t,`?area=knowledge&category=${id(1)}`, { categories: [{ id:id(1),name:"原品类",purpose:"原用途" }] }); await env.flush(); const old = library(env);
+  env.state.who = { name: "刷新后本人", principal_id: id(44) };
+  env.state.categories = [{ id:id(2),name:"仅剩品类",purpose:"原用途" }];
   await env.click(node => node.props["aria-label"] === "重新读取品类权限"); const fresh = library(env);
-  assert.notEqual(fresh.key, old.key); assert.equal(fresh.key, `${id(44)}:${id(1)}`); assert.equal(fresh.props.principalId, id(44)); assert.equal(fresh.props.categoryName, "刷新后品类名");
-  assert.equal(env.calls.length, 6); assert.equal(env.calls.some(call => call.route.includes("/products")), false);
+  assert.notEqual(fresh.key,old.key); assert.equal(fresh.props.principalId,id(44));
+  assert.deepEqual(fresh.props.categories.map(c => c.id),[id(2)]);
+});
+
+test("project timeline opens the formal plan tab and ordinary project navigation returns to tasks", async t => {
+  const env = environment(t, "?area=projects"); await env.flush();
+  env.nodes("ProjectList")[0].props.onOpenPlan(id(1), id(30)); await env.flush();
+  assert.equal(env.location().projectId, id(30));
+  assert.equal(env.nodes("ProjectCockpit")[0].props.initialView, "plan");
+  env.nodes("ProjectCockpit")[0].props.onOpenOverview(); await env.flush();
+  env.nodes("ProjectList")[0].props.onOpenProject(id(1), id(30)); await env.flush();
+  assert.equal(env.nodes("ProjectCockpit")[0].props.initialView, "tasks");
+});
+
+test("starting a proposal is shown only with product management capability", async t => {
+  const env = environment(t, "?area=projects", { categories: [category(1, false)] }); await env.flush();
+  assert.equal(env.nodes("ProjectList")[0].props.onStartProposal, undefined);
+});
+
+test("issue history selection opens Pai with both exact versions and never starts a Run", async t => {
+  const env = environment(t, `?area=cockpit&category=${id(1)}&project=${id(30)}`); await env.flush();
+  const { SimilarHistoryPaiContext } = load(path.join(directory, "similar-history-pai.tsx"));
+  const provider = env.tree(); assert.equal(provider.type, SimilarHistoryPaiContext.Provider);
+  const anchor = { category_id: id(1), product_id: id(20), project_id: id(30), issue_id: id(40), version_id: id(41), revision: 2, title: "当前问题" };
+  const candidate = { kind: "issue", object_id: id(50), source_id: id(51), source_revision: 3, title: "历史问题" };
+  provider.props.value({ anchor, candidate }); await env.flush();
+  const rail = env.nodes("PaiRail")[0]; assert.equal(rail.props.open, true); assert.equal(rail.props.focusRun, null);
+  assert.equal(rail.props.paiContext.categoryId, id(1)); assert.equal(rail.props.paiContext.productId, id(20)); assert.equal(rail.props.paiContext.projectId, id(30));
+  assert.deepEqual(rail.props.paiContext.sources, []); assert.equal(rail.props.paiContext.material.draft.selection_kind, "unverified_object_metadata");
+  assert.deepEqual(rail.props.paiContext.material.draft.current, { kind: "issue", object_id: id(40), version_id: id(41), revision: 2 });
+  assert.deepEqual(rail.props.paiContext.material.draft.candidate, { kind: "issue", object_id: id(50), version_id: id(51), revision: 3 });
+  for (const value of [id(40), id(41), id(50), id(51)]) assert.ok(!rail.props.paiContext.material.request.prompt.includes(value));
+  assert.equal(rail.key, rail.props.paiContext.material.request.id);
+});
+
+test("history selection from another category or project cannot replace current Pai context", async t => {
+  const env = environment(t, `?area=cockpit&category=${id(1)}&project=${id(30)}`); await env.flush();
+  for (const [category_id, project_id] of [[id(2), id(30)], [id(1), id(31)]]) {
+    env.tree().props.value({ anchor: { category_id, project_id, product_id: id(20), issue_id: id(40), version_id: id(41), revision: 2, title: "其他范围" }, candidate: { kind: "issue", object_id: id(50), source_id: id(51), source_revision: 3, title: "历史问题" } });
+    await env.flush(); assert.equal(env.nodes("PaiRail")[0].props.paiContext, null);
+  }
 });

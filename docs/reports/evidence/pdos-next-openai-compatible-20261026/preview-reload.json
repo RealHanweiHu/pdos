@@ -1,0 +1,21 @@
+{
+  "port": 57358,
+  "head": "s0_0822",
+  "database": "pdos_test",
+  "migrations": false,
+  "model_configuration_changed": false,
+  "new_model_calls": 0,
+  "processes": [
+    {
+      "action": "worker",
+      "previous_pid": 67381,
+      "pid": 86499
+    },
+    {
+      "action": "api",
+      "previous_pid": 46587,
+      "pid": 86633
+    }
+  ],
+  "health_status": 200
+}

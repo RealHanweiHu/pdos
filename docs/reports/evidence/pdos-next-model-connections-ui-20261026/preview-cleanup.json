@@ -1,0 +1,10 @@
+{
+  "preview_database_port": 57358,
+  "model": "MiniMax-M3",
+  "configuration_revision": 3,
+  "original_credential_binding_preserved": true,
+  "synthetic_profile_removed": true,
+  "synthetic_keychain_items_removed": true,
+  "new_model_calls_since_test_profile_creation": 0,
+  "configuration_history_retained": true
+}

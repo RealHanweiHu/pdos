@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="95.040" timestamp="2026-10-29T06:15:24.942129-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]" time="93.999"><failure message="assert 3 == 0">all_sources = namespace(person=namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine(postgresql+psyc... None, 'object_id': UUID('701f28be-f78d-55f9-ac67-49251f6fff78'), 'original_ids': [], 'read_basis_status': 'current'}])
+damage = 'all_tables'
+record_property = &lt;function record_property.&lt;locals&gt;.append_property at 0x16aaa8720&gt;
+
+    @pytest.mark.parametrize("damage", ["all_tables", "chunks_only", "statistics_only", "same_count"])
+    def test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes(
+        all_sources,
+        damage,
+        record_property,
+    ):
+        person = all_sources.person
+        ctx = replace(person.ctx, category_id=None)
+        original_facts = digest(authority(person))
+        initial = indexing.rebuild(person.engine, ctx)
+&gt;       assert initial["failed"] == 0
+E       assert 3 == 0
+
+tests/enterprise_search/test_recovery_pg.py:223: AssertionError</failure></testcase></testsuite></testsuites>

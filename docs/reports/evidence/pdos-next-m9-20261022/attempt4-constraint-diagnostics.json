@@ -1,0 +1,8 @@
+{
+  "constraint_errors": [
+    {
+      "table": "confirmations",
+      "constraint": "ck_confirmations_decision_deadline"
+    }
+  ]
+}

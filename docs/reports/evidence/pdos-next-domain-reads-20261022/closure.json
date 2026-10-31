@@ -1,0 +1,23 @@
+{
+  "source_manifest_verified": true,
+  "source_file_count": 10,
+  "database": {
+    "name": "pdos_test",
+    "port": 64245,
+    "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+    "head": "s0_0812",
+    "schema_changes": false
+  },
+  "results": {
+    "new_pure": 61,
+    "kernel_first_pass": 1570,
+    "kernel_environment_recheck": 3,
+    "kernel_existing_unfixed": 1,
+    "final_pg": 2,
+    "context_entry_pg": 3
+  },
+  "model_calls": 0,
+  "push": false,
+  "qualification_granted": false,
+  "phase_acceptance": false
+}

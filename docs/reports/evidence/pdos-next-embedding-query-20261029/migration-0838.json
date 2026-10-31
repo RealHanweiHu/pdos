@@ -1,0 +1,54 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0838",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/embedding-query-53502-before-0838.dump",
+  "backup_bytes": 98357766,
+  "backup_sha256": "680431cd2409be8c049343b8c251f117894148758d04f43ce0485f2de8b43982",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0838",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "query_guard_exists": true
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0837",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "query_guard_exists": false
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0838",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "query_guard_exists": true
+    }
+  ],
+  "counts": {
+    "agent_runs": 4976,
+    "agent_tool_calls": 8785,
+    "agent_validation_budgets": 114,
+    "action_receipts": 47146,
+    "artifact_versions": 11246,
+    "enterprise_search_chunks": 2833,
+    "enterprise_embedding_profiles": 35,
+    "enterprise_embedding_calls": 30,
+    "enterprise_chunk_embeddings": 24
+  },
+  "tool_call_force_rls": [
+    true,
+    true
+  ],
+  "guard_function": {
+    "owner": "pdos_next_owner",
+    "prosecdef": true,
+    "proconfig": [
+      "search_path=pg_catalog, public, pg_temp"
+    ]
+  },
+  "real_provider_accessed": false
+}

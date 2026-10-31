@@ -1,0 +1,964 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "format_version": 1,
+  "$defs": {
+    "source": {
+      "type": "object",
+      "properties": {
+        "artifact_id": {
+          "type": "string"
+        },
+        "expected_revision": {
+          "type": "integer"
+        },
+        "product_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "artifact_id",
+        "expected_revision"
+      ],
+      "additionalProperties": false
+    },
+    "category": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "purpose": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "purpose"
+      ],
+      "additionalProperties": false
+    },
+    "product": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "visibility": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "revision",
+        "visibility"
+      ],
+      "additionalProperties": false
+    },
+    "item": {
+      "type": "object",
+      "properties": {
+        "item_id": {
+          "type": "string"
+        },
+        "version": {
+          "type": "integer"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "content": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "origin": {
+          "type": "string"
+        },
+        "writer_id": {
+          "type": "string"
+        },
+        "run_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "confirmed_by": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "human_value": {
+          "type": "boolean"
+        },
+        "removed": {
+          "type": "boolean"
+        },
+        "evidence_links": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "claim_states": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        }
+      },
+      "required": [
+        "item_id",
+        "version",
+        "kind",
+        "content",
+        "source_refs",
+        "origin",
+        "human_value",
+        "removed"
+      ],
+      "additionalProperties": false
+    },
+    "research_memory": {
+      "type": "object",
+      "properties": {
+        "job_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "snapshots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "row_count": {
+          "type": "integer"
+        },
+        "ledger": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "coverage": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "failures": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        }
+      },
+      "required": [
+        "job_id",
+        "status",
+        "snapshots",
+        "row_count"
+      ],
+      "additionalProperties": false
+    },
+    "outcome": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "summary": {
+          "type": "string"
+        },
+        "unfinished": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "research": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/research_memory"
+          }
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "truncated": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "summary",
+        "unfinished",
+        "research"
+      ],
+      "additionalProperties": false
+    },
+    "memory_turn": {
+      "type": "object",
+      "properties": {
+        "run_id": {
+          "type": "string"
+        },
+        "goal": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "historical_outcome": {
+          "$ref": "#/$defs/outcome"
+        },
+        "outcome_state": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "original_record": {
+          "type": "object",
+          "properties": {
+            "run_id": {
+              "type": "string"
+            },
+            "session_id": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "session_id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "run_id",
+        "goal",
+        "status",
+        "historical_outcome",
+        "outcome_state",
+        "sources",
+        "original_record"
+      ],
+      "additionalProperties": false
+    },
+    "conversation": {
+      "type": "object",
+      "properties": {
+        "session_id": {
+          "type": "string"
+        },
+        "root_goal": {
+          "type": "string"
+        },
+        "root_run_id": {
+          "type": "string"
+        },
+        "turns": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/memory_turn"
+          }
+        },
+        "next_before": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "fact_policy": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "session_id",
+        "root_goal",
+        "root_run_id",
+        "turns",
+        "next_before",
+        "fact_policy"
+      ],
+      "additionalProperties": false
+    },
+    "proposal": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "category_id": {
+          "type": "string"
+        },
+        "owner_id": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "visibility": {
+          "type": "string"
+        },
+        "title": {
+          "type": "string"
+        },
+        "brief": {
+          "type": "string"
+        },
+        "entry_kind": {
+          "type": "string"
+        },
+        "target_kind": {
+          "type": "string"
+        },
+        "baseline_product_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "baseline_definition_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "baseline_definition_revision": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "private_source_count": {
+          "type": "integer"
+        },
+        "context_hint": {
+          "type": "boolean"
+        },
+        "context_changes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/item"
+          }
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "context_refs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+          }
+        },
+        "maturity": {
+          "type": "object",
+          "additionalProperties": true,
+          "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+        },
+        "submission": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true,
+          "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+        },
+        "decision": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "additionalProperties": true,
+          "description": "Exact authorized domain payload; its own domain schema and source guards remain authoritative."
+        }
+      },
+      "required": [
+        "id",
+        "category_id",
+        "owner_id",
+        "revision",
+        "status",
+        "visibility",
+        "title",
+        "brief",
+        "entry_kind",
+        "target_kind",
+        "items",
+        "source_refs",
+        "context_refs",
+        "maturity"
+      ],
+      "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer"
+        },
+        "visibility": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "revision",
+        "visibility"
+      ],
+      "additionalProperties": false
+    },
+    "work_state": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "session_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "root_goal": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "run_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "run_id",
+                "text"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "current_goal": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "run_id": {
+                  "type": "string"
+                },
+                "text": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "run_id",
+                "text"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "constraints": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              },
+              "text": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "run_id",
+              "text"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "exclusions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "kind": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "kind",
+              "reason"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "focus_objects": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string"
+              },
+              "id": {
+                "type": "string"
+              },
+              "version": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              },
+              "run_id": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "kind",
+              "id",
+              "version",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "completed": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "receipt_id": {
+                "type": "string"
+              },
+              "operation": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "receipt_id",
+              "operation",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "completed_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "candidates": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "event_id": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "event_id",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "unfinished": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "questions": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "version": {
+                "type": "string"
+              },
+              "run_id": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "key",
+              "version",
+              "run_id"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "citations": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "citation_directory": {
+          "type": "object",
+          "properties": {
+            "tool": {
+              "const": "assistant.citations.read"
+            },
+            "has_more": {
+              "type": "boolean"
+            },
+            "next_cursor": {
+              "type": [
+                "string",
+                "null"
+              ]
+            }
+          },
+          "required": [
+            "tool",
+            "has_more",
+            "next_cursor"
+          ],
+          "additionalProperties": false
+        },
+        "notes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "estimated_tokens": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "context_incomplete": {
+          "type": "boolean"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "search_preferences": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "enum": [
+                "current",
+                "same_category"
+              ]
+            },
+            "include_customer_private": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "scope",
+            "include_customer_private"
+          ],
+          "additionalProperties": false
+        },
+        "search_context": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "personal",
+                "category",
+                "project",
+                "proposal"
+              ]
+            },
+            "label": {
+              "type": "string"
+            },
+            "scoped": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "label",
+            "scoped"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "version",
+        "revision",
+        "session_id",
+        "root_goal",
+        "current_goal",
+        "constraints",
+        "exclusions",
+        "focus_objects",
+        "completed",
+        "completed_count",
+        "candidates",
+        "unfinished",
+        "questions",
+        "skills",
+        "citations",
+        "notes",
+        "estimated_tokens",
+        "context_incomplete",
+        "missing"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "profiles": {
+    "navigation": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/category"
+        },
+        "product": {
+          "$ref": "#/$defs/product"
+        },
+        "conversation": {
+          "$ref": "#/$defs/conversation"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
+        }
+      },
+      "required": [
+        "goal",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
+    "category": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/category"
+        },
+        "product": {
+          "$ref": "#/$defs/product"
+        },
+        "conversation": {
+          "$ref": "#/$defs/conversation"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
+        }
+      },
+      "required": [
+        "goal",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
+    "project": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/category"
+        },
+        "product": {
+          "$ref": "#/$defs/product"
+        },
+        "conversation": {
+          "$ref": "#/$defs/conversation"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
+        }
+      },
+      "required": [
+        "goal",
+        "sources"
+      ],
+      "additionalProperties": false
+    },
+    "proposal": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string"
+        },
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/source"
+          }
+        },
+        "category": {
+          "$ref": "#/$defs/category"
+        },
+        "product": {
+          "$ref": "#/$defs/product"
+        },
+        "conversation": {
+          "$ref": "#/$defs/conversation"
+        },
+        "proposal": {
+          "$ref": "#/$defs/proposal"
+        },
+        "project": {
+          "$ref": "#/$defs/project"
+        },
+        "work_state": {
+          "$ref": "#/$defs/work_state"
+        }
+      },
+      "required": [
+        "goal",
+        "sources"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

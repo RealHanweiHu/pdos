@@ -1,0 +1,224 @@
+...............................FF                                        [100%]
+=================================== FAILURES ===================================
+_ test_resume_after_expiry_preserves_unconsumed_proof_and_recovers_same_request[new_product] _
+
+work = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-438/test_resume_after_expiry_prese1')
+entry = 'new_product'
+
+    @pytest.mark.parametrize("entry", ["category_candidate", "new_product", "derivative"])
+    def test_resume_after_expiry_preserves_unconsumed_proof_and_recovers_same_request(
+        work, tmp_path, entry
+    ):
+        at = [now()]
+        with using_clock(lambda: at[0]):
+            if entry == "category_candidate":
+                f = personal_fixture(work, tmp_path, sources=False)
+                data = deepcopy(f.candidate["payload"])
+                data["deidentified_confirmed"] = True
+    
+                def preview(value):
+                    response = work.client.post(
+                        "/v1/categories/preview", headers=work.headers, json=value
+                    )
+                    assert response.status_code == 200, response.text
+                    return {**value, "confirmation_token": response.json()["confirmation_token"]}
+    
+                def commit(value):
+                    return work.client.post("/v1/categories", headers=work.headers, json=value)
+    
+                model = CategoryCreationConfirmation
+    
+                def token_from(value):
+                    return value["confirmation_token"]
+            else:
+                args = (
+                    payload(work)
+                    if entry == "new_product"
+                    else derivative_payload(work, synthetic_parent(work), "new_variant")
+                )
+                data = request(work, "proposal.create", args)
+    
+                def preview(value):
+                    response = post(work, value, preview=True)
+                    assert response.status_code == 200, response.text
+                    return response.json()["command"]
+    
+                def commit(value):
+                    return post(work, value)
+    
+                model = Confirmation
+    
+                def token_from(value):
+                    return value["payload"]["confirmation_token"]
+    
+            original = preview(data)
+            token = token_from(original)
+            before = counts(work)
+            # Deterministic equivalent of a host pause crossing the real 10-minute TTL.
+            at[0] += timedelta(minutes=15)
+            refused = commit(original)
+            assert refused.status_code == 409, refused.text
+            assert refused.json()["code"] == "CONFIRMATION_REQUIRED"
+            assert refused.json()["detail"]["reason"] == (
+                "preview_required" if entry == "category_candidate" else "CONFIRMATION_REQUIRED"
+            )
+            assert not proof(work, model, token) and counts(work) == before
+            # A fresh human preview is necessary; do not extend or consume the expired proof.
+            refreshed = preview(original)
+            new_token = token_from(refreshed)
+            assert new_token != token
+            accepted = commit(refreshed)
+            assert accepted.status_code in (200, 201), accepted.text
+            receipt = accepted.json()
+            assert proof(work, model, new_token) and not proof(work, model, token)
+            after = counts(work)
+            # Lost success can be reconciled with the original request/key even though
+            # its old proof expired; this is receipt recovery, not a second execution.
+            replay = commit(original)
+>           assert replay.status_code in (200, 201), replay.text
+E           AssertionError: {"code":"DUPLICATE_INTENT_CONFLICT","message":"相同请求编号对应了不同内容。","detail":{"reason":"DUPLICATE_INTENT_CONFLICT"}}
+E           assert 409 in (200, 201)
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/preproject/test_confirmation_recovery_pg.py:120: AssertionError
+_ test_resume_after_expiry_preserves_unconsumed_proof_and_recovers_same_request[derivative] _
+
+work = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-438/test_resume_after_expiry_prese2')
+entry = 'derivative'
+
+    @pytest.mark.parametrize("entry", ["category_candidate", "new_product", "derivative"])
+    def test_resume_after_expiry_preserves_unconsumed_proof_and_recovers_same_request(
+        work, tmp_path, entry
+    ):
+        at = [now()]
+        with using_clock(lambda: at[0]):
+            if entry == "category_candidate":
+                f = personal_fixture(work, tmp_path, sources=False)
+                data = deepcopy(f.candidate["payload"])
+                data["deidentified_confirmed"] = True
+    
+                def preview(value):
+                    response = work.client.post(
+                        "/v1/categories/preview", headers=work.headers, json=value
+                    )
+                    assert response.status_code == 200, response.text
+                    return {**value, "confirmation_token": response.json()["confirmation_token"]}
+    
+                def commit(value):
+                    return work.client.post("/v1/categories", headers=work.headers, json=value)
+    
+                model = CategoryCreationConfirmation
+    
+                def token_from(value):
+                    return value["confirmation_token"]
+            else:
+                args = (
+                    payload(work)
+                    if entry == "new_product"
+                    else derivative_payload(work, synthetic_parent(work), "new_variant")
+                )
+                data = request(work, "proposal.create", args)
+    
+                def preview(value):
+                    response = post(work, value, preview=True)
+                    assert response.status_code == 200, response.text
+                    return response.json()["command"]
+    
+                def commit(value):
+                    return post(work, value)
+    
+                model = Confirmation
+    
+                def token_from(value):
+                    return value["payload"]["confirmation_token"]
+    
+            original = preview(data)
+            token = token_from(original)
+            before = counts(work)
+            # Deterministic equivalent of a host pause crossing the real 10-minute TTL.
+            at[0] += timedelta(minutes=15)
+            refused = commit(original)
+            assert refused.status_code == 409, refused.text
+            assert refused.json()["code"] == "CONFIRMATION_REQUIRED"
+            assert refused.json()["detail"]["reason"] == (
+                "preview_required" if entry == "category_candidate" else "CONFIRMATION_REQUIRED"
+            )
+            assert not proof(work, model, token) and counts(work) == before
+            # A fresh human preview is necessary; do not extend or consume the expired proof.
+            refreshed = preview(original)
+            new_token = token_from(refreshed)
+            assert new_token != token
+            accepted = commit(refreshed)
+            assert accepted.status_code in (200, 201), accepted.text
+            receipt = accepted.json()
+            assert proof(work, model, new_token) and not proof(work, model, token)
+            after = counts(work)
+            # Lost success can be reconciled with the original request/key even though
+            # its old proof expired; this is receipt recovery, not a second execution.
+            replay = commit(original)
+>           assert replay.status_code in (200, 201), replay.text
+E           AssertionError: {"code":"DUPLICATE_INTENT_CONFLICT","message":"相同请求编号对应了不同内容。","detail":{"reason":"DUPLICATE_INTENT_CONFLICT"}}
+E           assert 409 in (200, 201)
+E            +  where 409 = <Response [409 Conflict]>.status_code
+
+tests/preproject/test_confirmation_recovery_pg.py:120: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:517: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:526: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/agent_kernel/test_category_adoption_transactions.py::test_adoption_resolves_without_agent_grant_and_dispatches_same_reference
+tests/agent_kernel/test_category_adoption_transactions.py::test_terminal_candidate_not_signalled_and_receipt_authority_loss_rejects_recovery
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_actual_t1_sources_signature_and_replay
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit0]
+tests/agent_kernel/test_category_candidate_transactions.py::test_personal_candidate_whole_groups_may_be_omitted[omit1]
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+tests/agent_kernel/test_category_candidate_transactions.py::test_category_transaction_failure_rolls_back_every_fact_and_confirmation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:554: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([snapshot])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 5 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:577: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 5 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:604: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_adoption_transactions.py: 4 warnings
+tests/agent_kernel/test_category_candidate_transactions.py: 7 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:663: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 10 warnings
+tests/agent_kernel/test_context_projection_entries.py: 3 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 2 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_category_source_writeback_pg.py: 63 warnings
+tests/agent_kernel/test_context_projection_entries.py: 24 warnings
+tests/preproject/test_confirmation_recovery_pg.py: 18 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/preproject/test_confirmation_recovery_pg.py::test_resume_after_expiry_preserves_unconsumed_proof_and_recovers_same_request[new_product]
+FAILED tests/preproject/test_confirmation_recovery_pg.py::test_resume_after_expiry_preserves_unconsumed_proof_and_recovers_same_request[derivative]
+2 failed, 31 passed, 1 deselected, 183 warnings in 111.65s (0:01:51)

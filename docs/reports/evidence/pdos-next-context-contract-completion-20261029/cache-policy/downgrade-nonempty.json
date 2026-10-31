@@ -1,0 +1,8 @@
+{
+  "target": "53502/pdos_test",
+  "named_decisions": 8,
+  "downgrade": "rejected",
+  "head": "s0_0853",
+  "function_and_record_count_unchanged": true,
+  "transaction_rolled_back": true
+}

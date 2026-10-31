@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="15" time="248.583" timestamp="2026-10-29T04:23:07.899823-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_answer_native_category_receipt_replay_reopen_and_manual_review_revision" time="16.377" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_private_answer_cannot_enter_shared_category_without_native_deidentification" time="11.233" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_answer_candidate_uses_real_native_named_publication_and_becomes_retrievable" time="27.054" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_gap_is_explicit_atomic_replayed_and_weekly_omits_questioner_and_private_comment" time="9.536" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_answer_reviews]" time="0.873" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_gap_submissions]" time="0.532" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_agent_has_no_direct_fact_select_or_append[knowledge_gap_attributions]" time="0.522" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge" name="test_withdrawn_actual_dependency_hides_new_knowledge_in_every_original_read_path" time="10.266" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_native_uploaded_original_is_retained_by_both_f_facts_and_not_attribution" time="14.415" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_actual_app_append_fences_both_f_tables_before_deferred_atoms[pending]" time="13.414" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_actual_app_append_fences_both_f_tables_before_deferred_atoms[quarantined]" time="16.128" /><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_reused_review_proofs_allow_current_peer_reads_without_private_run_or_rls_recursion" time="18.565"><failure message="sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Withdrawn source version is terminal; a new source needs a new identity&#10;CONTEXT:  PL/pgSQL function protect_retained_artifact_state() line 4 at RAISE&#10;[SQL: UPDATE artifact_versions SET status=%(status)s::VARCHAR WHERE artifact_versions.id = %(artifact_versions_id)s::UUID]&#10;[SQL parameters hidden due to hide_parameters=True]&#10;(Background on this error at: https://sqlalche.me/e/21/f405)">self = &lt;sqlalchemy.engine.base.Connection object at 0x14536b4d0&gt;
+dialect = &lt;sqlalchemy.dialects.postgresql.psycopg.PGDialect_psycopg object at 0x1133a6a20&gt;
+context = &lt;sqlalchemy.dialects.postgresql.psycopg.PGExecutionContext_psycopg object at 0x146d36ae0&gt;
+statement = &lt;sqlalchemy.dialects.postgresql.psycopg.PGCompiler_psycopg object at 0x144e7a930&gt;
+parameters = [{'status': 'active', 'artifact_versions_id': UUID('7bb3bcb9-0d0f-4a65-b9df-9b1aa4a9b989')}]
+
+    def _exec_single_context(
+        self,
+        dialect: Dialect,
+        context: ExecutionContext,
+        statement: Union[str, Compiled],
+        parameters: Optional[_AnyMultiExecuteParams],
+    ) -&gt; CursorResult[Unpack[TupleAny]]:
+        """continue the _execute_context() method for a single DBAPI
+        cursor.execute() or cursor.executemany() call.
+    
+        """
+        if dialect.bind_typing is BindTyping.SETINPUTSIZES:
+            generic_setinputsizes = context._prepare_set_input_sizes()
+    
+            if generic_setinputsizes:
+                try:
+                    dialect.do_set_input_sizes(
+                        context.cursor, generic_setinputsizes, context
+                    )
+                except BaseException as e:
+                    self._handle_dbapi_exception(
+                        e, str(statement), parameters, None, context
+                    )
+    
+        cursor, str_statement, parameters = (
+            context.cursor,
+            context.statement,
+            context.parameters,
+        )
+    
+        effective_parameters: Optional[_AnyExecuteParams]
+    
+        if not context.executemany:
+            effective_parameters = parameters[0]
+        else:
+            effective_parameters = parameters
+    
+        evt_handled: bool = False
+        try:
+            if self._has_events or self.engine._has_events:
+                for fn in self.dispatch.before_cursor_execute:
+                    str_statement, effective_parameters = fn(
+                        self,
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                        context.executemany,
+                    )
+    
+            if self._echo:
+                self._log_info(str_statement)
+    
+                stats = context._get_cache_stats()
+    
+                if not self.engine.hide_parameters:
+                    self._log_info(
+                        "[%s] %r",
+                        stats,
+                        sql_util._repr_params(
+                            effective_parameters,
+                            batches=10,
+                            ismulti=context.executemany,
+                        ),
+                    )
+                else:
+                    self._log_info(
+                        "[%s] [SQL parameters hidden due to "
+                        "hide_parameters=True]",
+                        stats,
+                    )
+            if context.execute_style is ExecuteStyle.EXECUTEMANY:
+                effective_parameters = cast(
+                    "_CoreMultiExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_executemany:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_executemany(
+                        cursor,
+                        str_statement,
+                        effective_parameters,
+                        context,
+                    )
+            elif not effective_parameters and context.no_parameters:
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute_no_params:
+                        if fn(cursor, str_statement, context):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+                    self.dialect.do_execute_no_params(
+                        cursor, str_statement, context
+                    )
+            else:
+                effective_parameters = cast(
+                    "_CoreSingleExecuteParams", effective_parameters
+                )
+                if self.dialect._has_events:
+                    for fn in self.dialect.dispatch.do_execute:
+                        if fn(
+                            cursor,
+                            str_statement,
+                            effective_parameters,
+                            context,
+                        ):
+                            evt_handled = True
+                            break
+                if not evt_handled:
+&gt;                   self.dialect.do_execute(
+                        cursor, str_statement, effective_parameters, context
+                    )
+
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=53502 user=postgres database=pdos_test) at 0x1453acd10&gt;
+query = 'UPDATE artifact_versions SET status=%(status)s::VARCHAR WHERE artifact_versions.id = %(artifact_versions_id)s::UUID'
+params = {'status': 'active', 'artifact_versions_id': UUID('7bb3bcb9-0d0f-4a65-b9df-9b1aa4a9b989')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           psycopg.errors.RaiseException: Withdrawn source version is terminal; a new source needs a new identity
+E           CONTEXT:  PL/pgSQL function protect_retained_artifact_state() line 4 at RAISE
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: RaiseException
+
+The above exception was the direct cause of the following exception:
+
+setup = &lt;isolated synthetic test scope&gt;
+
+    def test_reused_review_proofs_allow_current_peer_reads_without_private_run_or_rls_recursion(
+        setup,
+    ):
+        source, first_run, client = answer(setup)
+        response = submit(setup, from_seed(seed(setup, first_run)))
+        assert response.status_code == 200, response.text
+        first = UUID(response.json()["result"]["entry_id"])
+        with scoped(setup) as session:
+            project_source(session, setup.ctx, "knowledge", first)
+        reader = KnowledgeClient()
+        owner, scope, host, _ = fixture(
+            setup,
+            reader,
+            read_sources=({"artifact_id": str(source), "expected_revision": 1},),
+        )
+        output = execute(owner, scope, host)
+        assert output["status"] == "completed", output
+        assert {
+            item["source_type"] for item in output["result"]["assistant"]["sources"]
+        } == {
+            "knowledge",
+        }
+        response = submit(setup, from_seed(seed(setup, scope.run_id)))
+        assert response.status_code == 200, response.text
+        second = UUID(response.json()["result"]["entry_id"])
+        with scoped(setup) as session:
+            project_source(session, setup.ctx, "knowledge", second)
+            proof = session.scalar(
+                select(KnowledgeAnswerReview.source_proof).where(
+                    KnowledgeAnswerReview.subject_id == second
+                )
+            )
+            assert [(ref["source_type"], ref["source_id"]) for ref in proof] == [
+                ("artifact", str(source)),
+            ]
+    
+        def visible(person, *, tenant=None):
+            with scoped(setup, person=person, tenant=tenant) as session:
+                session.execute(text("SET LOCAL statement_timeout='8s'"))
+                # The shared subject/review must not make its owner's private Run visible.
+                if person != setup.human:
+                    assert session.get(AgentRun, scope.run_id) is None
+                subjects = set(
+                    session.scalars(
+                        select(KnowledgeEntry.id).where(
+                            KnowledgeEntry.id.in_([first, second])
+                        )
+                    )
+                )
+                reviews = set(
+                    session.scalars(
+                        select(KnowledgeAnswerReview.subject_id).where(
+                            KnowledgeAnswerReview.subject_id.in_([first, second])
+                        )
+                    )
+                )
+                assert subjects == reviews
+                return subjects
+    
+        assert visible(setup.peer) == {first, second}
+        assert visible(setup.other_human, tenant=setup.other_tenant) == set()
+        assert (
+            query(
+                setup,
+                "更换密封圈",
+                actor=setup.peer,
+                personal=True,
+                source_types=["knowledge"],
+            )["returned"]
+            == 2
+        )
+        # Existing isolated synthetic withdrawal/authorization fault injection.
+        # No fixed content, version or proof is rewritten, and no index rebuild occurs.
+        with scoped(setup, admin=True) as session:
+            session.get(Artifact, source).status = "withdrawn"
+        assert visible(setup.peer) == set()
+        assert visible(setup.human) == set()
+        assert (
+            query(
+                setup,
+                "更换密封圈",
+                actor=setup.peer,
+                personal=True,
+                source_types=["knowledge"],
+            )["returned"]
+            == 0
+        )
+&gt;       with scoped(setup, admin=True) as session:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/knowledge_pg/test_assistant_knowledge_lifecycle.py:396: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/contextlib.py:144: in __exit__
+    next(self.gen)
+pdos_next/database.py:31: in tenant_session
+    with Session(engine) as session, session.begin():
+                                     ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit&gt;:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1330: in commit
+    self._prepare_impl()
+&lt;sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction._prepare_impl&gt;:2: in _prepare_impl
+    return target(fn, self)
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1304: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+&lt;sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush&gt;:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:84: in _save_obj
+    _emit_update_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:916: in _emit_update_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;psycopg.Cursor [closed] [IDLE] (host=127.0.0.1 port=53502 user=postgres database=pdos_test) at 0x1453acd10&gt;
+query = 'UPDATE artifact_versions SET status=%(status)s::VARCHAR WHERE artifact_versions.id = %(artifact_versions_id)s::UUID'
+params = {'status': 'active', 'artifact_versions_id': UUID('7bb3bcb9-0d0f-4a65-b9df-9b1aa4a9b989')}
+prepare = None, binary = None
+
+    def execute(
+        self,
+        query: Query,
+        params: Params | None = None,
+        *,
+        prepare: bool | None = None,
+        binary: bool | None = None,
+    ) -&gt; Self:
+        """
+        Execute a query or command to the database.
+        """
+        try:
+            with self._conn.lock:
+                self._conn.wait(
+                    self._execute_gen(query, params, prepare=prepare, binary=binary)
+                )
+        except e._NO_TRACEBACK as ex:
+&gt;           raise ex.with_traceback(None)
+E           sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) Withdrawn source version is terminal; a new source needs a new identity
+E           CONTEXT:  PL/pgSQL function protect_retained_artifact_state() line 4 at RAISE
+E           [SQL: UPDATE artifact_versions SET status=%(status)s::VARCHAR WHERE artifact_versions.id = %(artifact_versions_id)s::UUID]
+E           [SQL parameters hidden due to hide_parameters=True]
+E           (Background on this error at: https://sqlalche.me/e/21/f405)
+
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: ProgrammingError</failure></testcase><testcase classname="tests.knowledge_pg.test_assistant_knowledge_lifecycle" name="test_native_issue_and_capa_answer_proofs_resolve_real_uploaded_roots" time="96.909" /><testcase classname="tests.agent_kernel.test_run_feedback" name="test_private_feedback_does_not_enter_process_or_model_projected_context" time="2.028" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_actual_search_citation_isolated_extract_and_server_answer_are_replayable" time="8.058" /></testsuite></testsuites>

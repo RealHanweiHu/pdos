@@ -1,6 +1,6 @@
 ---
 key: test_verification
-version: 0.1.0-draft
+version: 0.1.1-draft
 purpose: 办理验证准备与试模后交接：形成验证请求与方法可用性、提出与承诺时段、逐项记录交样/接收/退回、计划并开始测试 Run、导入实测结果并交确定性工具判定，为专业复核与处置准备具名决定材料；接收、承诺与结论本身由各方本人作出。
 input_schema:
   type: object
@@ -15,7 +15,7 @@ output_schema:
   type: object
   required: [bound_objects, prepared, coverage, unknowns]
   properties:
-    bound_objects: {type: array, items: {object_type: string, id: string, revision: integer, basis: "page|trigger|user_message"}}
+    bound_objects: {type: array, items: {object_type: string, id: string, revision: integer, basis: "page|trigger|user_message|domain_read"}}
     prepared: {type: array, items: {operation: string, tier: string, payload_summary: string, sources: "Citation[]"}}
     handoff_events: {type: array, items: {event: "request_created|sample_ready|documents_complete|offered|accepted|promised_start|actual_start|preliminary_result|final_result|disposed", at: string, timezone: string, actor: string, basis: string}, description: "各事件分别记录，缺的留空不补"}
     coverage: {type: object, description: "本次覆盖的测试项/模穴/样件与未完成项"}
@@ -30,6 +30,10 @@ context_requirements:
   - 设备、工装与人员资格的可用性依据（如页面已给出）
 allowed_operations:
   - {tool: conversation.history, tier: READ}
+  - {tool: build.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.lot.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.sample.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: test.run.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
   - {tool: evidence.search, tier: READ, note: "已登记的方法文件、校准记录、原始结果"}
   - {tool: evidence.extract, tier: READ, note: "从已登记原件定位读数位置"}
   - {tool: product.baseline.read, tier: READ, note: "判据、关键特性与认证要求"}
@@ -56,7 +60,7 @@ evidence_policy: |
   计划方法与实际方法、暂定时段与已接受交样、承诺与预测、初步结果与最终结果，一律分别记录。
   原始执行时间不可被迟到的报告改写；原时区与日历引用保留。
 failure_policy: |
-  缺 request/run 的精确版本：只提问该项，其余只读工作继续；不猜测版本号。
+  缺 run 精确版本先用 test.run.read 核对；缺请求当前版本只提问该项，其余只读工作继续；不猜测版本号。
   资料不齐：只阻断受其影响的验证项，其他并行准备继续，覆盖范围显式记录。
   部分结果：按测试项/模穴/样件写明覆盖与未完成项，不以部分结果充当最终结论。
   判定工具不可用：只给读数与判据清单，结论写"待计算"。
@@ -78,7 +82,7 @@ preload_when:
 
 ## 工具
 
-1. 固定对象：`request_ref`、`run_ref`、`build_ref`、`sample_refs` 只能来自页面、触发对象或用户消息。本技能没有请求/Run/样件的领域读取端口，缺 id 或版本就提问。
+1. 固定对象：`request_ref`、`run_ref`、`build_ref`、`sample_refs` 来自页面、触发对象、用户消息或领域读取。用 `build.read`、`build.lot.read`、`build.sample.read`、`test.run.read` 读取当前项目精确 id 与 revision；测试 Run 选择参数为 `test_run_id`，返回 `id` 是测试对象，不是小Pai运行。请求读取仍须页面给出或核对 Run 的固定请求引用，固定请求版本不当作请求最新版。
 2. 准备：`verification.preparation.record`（T1）固定图纸/特征、判据、数量与模穴、材料、规程、设备、预期时点与返回形式 → `verification.request.create`（T0）按该记录与摘要建立请求。
 3. 方法与时段：`verification.method.prepare` / `verification.actual_method.prepare`（T1）分别评估计划与实际方法；`verification.schedule.propose`（T0）给暂定时段，`verification.schedule.promise`（T1）才是对接收者的承诺。
 4. 交接：`verification.handoff.offer` → `accept`（可部分）→ 必要时 `return`（写原因与下一责任人）。
@@ -120,3 +124,5 @@ preload_when:
 **输出要求**：
 - reply 第一句给交接或测试的当前位置（例如"已按该请求准备交样，两项资料缺失只影响 B 项"——示意）。
 - 交接事件表按已发生的事件列出，未发生的留空；覆盖、时间事实、未知与阻塞各一列表。
+
+读取边界：`build.read`、`build.lot.read`、`build.sample.read`、`quality.issue.read`、`test.run.read` 返回 `structural_metadata/v1`，只读记录身份、当前指针和固定关系；`basis_status=not_assessed`。不从记录状态、存在的样件身份或计划摘要推断已就绪、未消耗、依据仍有效、专业批准或可执行；来源与当前适用性由领域命令重新核对。私有元数据须已由服务器在受理本运行时绑定当前项目和内部资料类别，当前 RLS 逐次重验；旧运行缺绑定时发起新运行。无 id 时分页读取 `next_cursor`，多对象匹配时由用户明确目标，不取第一条代替选择。

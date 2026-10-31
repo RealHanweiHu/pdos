@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-26",
+  "backend_pure_tests": 164,
+  "postgres_api_tests": 6,
+  "frontend_tests": 7,
+  "total_tests": 177,
+  "ruff_exit_code": 0,
+  "eslint_exit_code": 0,
+  "source_typecheck_exit_code": 0,
+  "normal_typecheck": "blocked by pre-existing duplicate .next/types/* 2.ts declarations",
+  "source_typecheck_command": "pnpm exec tsc --noEmit --project /tmp/pdos-openai-typecheck.json",
+  "source_typecheck_config": {
+    "extends": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/tsconfig.json",
+    "compilerOptions": {
+      "incremental": false
+    },
+    "exclude": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/.next/types/* 2.ts"
+    ]
+  },
+  "database_migrations": 0,
+  "new_real_model_calls": 0,
+  "new_real_provider_validation": false,
+  "full_build_run": false,
+  "browser_matrix_run": false,
+  "old_configuration_preserved": true,
+  "preview_reloaded": true,
+  "scoped_diff_check_exit_code": 0
+}

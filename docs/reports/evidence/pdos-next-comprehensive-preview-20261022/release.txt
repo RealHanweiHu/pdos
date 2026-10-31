@@ -1,0 +1,188 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:57859/?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+~						411 container
++							412 text Verify preparation  ·  已记录接收
++						413 text 适用依据需重核，历史授权与回执保留
++						414 definition list
++							415 container 固定发布包
++								416 text 固定发布包
++							417 container
++								418 text f3880b4e-e87e-4b31-9c11-b795176bb29e  · v 1
++							419 container 固定工程决定
++								420 text 固定工程决定
++							421 container
++								422 text adda12c5-1269-4797-bf1c-266f4a4ba57b  · v 1
++							423 container 固定制造决定
++								424 text 固定制造决定
++							425 container
++								426 text a6ceda7a-51c4-48cf-9a84-b474ca29acdc  · v 1
++							427 container 固定产品定义
++								428 text 固定产品定义
++							429 container
++								430 text c7b666d0-fea5-4741-b7ec-a4c3dc761f77  · v 1
++							431 container 固定工程配置
++								432 text 固定工程配置
++							433 container
++								434 text febaeab9-d98c-49cb-aa9a-190fc89435c8  · v 1
++							435 container 固定制造配置
++								436 text 固定制造配置
++							437 container
++								438 text d85fa672-d748-4b28-ae28-e6e3f915ff4a  · v 1
++							439 container 目标外部系统
++								440 text 目标外部系统
++							441 text synthetic-local-erp
++							442 container 固定收件方标识
++								443 text 固定收件方标识
++							444 text synthetic-receiver-2053d8e3-3f53-4355-8638-ebe4ce65d0bd
++							445 container 固定外部编号
++								446 text 固定外部编号
++							447 text synthetic-handoff-7c41d413-6867-4190-aec8-d05592008dbc
++						448 definition list
++							449 container 数量原值
++								450 text 数量原值
++							451 text 未知 / 未覆盖
++							452 container 单位
++								453 text 单位
++							454 text 未知 / 未覆盖
++							455 container 场地
++								456 text 场地
++							457 text SYN-INTERNAL-LAB
++							458 container 批次
++								459 text 批次
++							460 text 明确为空，不代表全部
++							461 container 产线
++								462 text 产线
++							463 text 明确为空，不代表全部
++							464 container 地区
++								465 text 地区
++							466 content list
++								467 text CN
++								468 text DE
++						469 button (collapsed) 固定文件清单（1 项）, Secondary Actions: Expand
++							470 text 固定文件清单（
++							471 text 1
++							472 text  项）
++						473 button (collapsed) 固定编号与版本映射（1 项）, Secondary Actions: Expand
++							474 text 固定编号与版本映射（
++							475 text 1
++							476 text  项）
++						477 button (collapsed) 授权、原意图与固定指纹, Secondary Actions: Expand
++							478 text 授权、原意图与固定指纹
++						479 container 发送服务器阶段
++							480 heading 发送, Value: 4
++								481 text 发送
++							482 text 本范围记录成功
++							483 heading 服务器已覆盖范围, Value: 5
++								484 text 服务器已覆盖范围
++							485 definition list
++								486 container 数量原值
++									487 text 数量原值
++								488 text 未知 / 未覆盖
++								489 container 单位
++									490 text 单位
++								491 text 未知 / 未覆盖
++								492 container 场地
++									493 text 场地
++								494 text SYN-INTERNAL-LAB
++								495 container 批次
++									496 text 批次
++								497 text 明确为空，不代表全部
++								498 container 产线
++									499 text 产线
++								500 text 明确为空，不代表全部
++								501 container 地区
++									502 text 地区
++								503 content list
++									504 text CN
++									505 text DE
++							506 button (collapsed) 本阶段当前原回执引用, Secondary Actions: Expand
++								507 text 本阶段当前原回执引用
++						508 container 接收服务器阶段
++							509 heading 接收, Value: 4
++								510 text 接收
++							511 text 本范围记录成功
++							512 heading 服务器已覆盖范围, Value: 5
++								513 text 服务器已覆盖范围
++							514 definition list
++								515 container 数量原值
++									516 text 数量原值
++								517 text 未知 / 未覆盖
++								518 container 单位
++									519 text 单位
++								520 text 未知 / 未覆盖
++								521 container 场地
++									522 text 场地
++								523 text SYN-INTERNAL-LAB
++								524 container 批次
++									525 text 批次
++								526 text 明确为空，不代表全部
++								527 container 产线
++									528 text 产线
++								529 text 明确为空，不代表全部
++								530 container 地区
++									531 text 地区
++								532 content list
++									533 text CN
++							534 definition list
++								535 container 数量原值
++									536 text 数量原值
++								537 text 未知 / 未覆盖
++								538 container 单位
++									539 text 单位
++								540 text 未知 / 未覆盖
++								541 container 场地
++									542 text 场地
++								543 text SYN-INTERNAL-LAB
++								544 container 批次
++									545 text 批次
++								546 text 明确为空，不代表全部
++								547 container 产线
++									548 text 产线
++								549 text 明确为空，不代表全部
++								550 container 地区
++									551 text 地区
++								552 content list
++									553 text CN
++									554 text DE
++							555 button (collapsed) 本阶段当前原回执引用, Secondary Actions: Expand
++								556 text 本阶段当前原回执引用
++						557 container 实际生效服务器阶段
++							558 heading 实际生效, Value: 4
++								559 text 实际生效
++							560 text 事实冲突
++							561 heading 服务器已覆盖范围, Value: 5
++								562 text 服务器已覆盖范围
++							563 definition list
++								564 container 数量原值
++									565 text 数量原值
++								566 text 未知 / 未覆盖
++								567 container 单位
++									568 text 单位
++								569 text 未知 / 未覆盖
++								570 container 场地
++									571 text 场地
++								572 text SYN-INTERNAL-LAB
++								573 container 批次
++									574 text 批次
++								575 text 明确为空，不代表全部
++								576 container 产线
++									577 text 产线
++								578 text 明确为空，不代表全部
++								579 container 地区
++									580 text 地区
++								581 content list
++									582 text CN
++									583 text DE
++							584 button (collapsed) 本阶段当前原回执引用, Secondary Actions: Expand
++								585 text 本阶段当前原回执引用
++							586 content list
++								587 container
++									588 text 回执文件指纹与授权不一致 MANIFEST_MISMATCH
++						589 text 服务器记录阶段事实冲突，不能据此认定完整交付。
++						590 container 原回执历史
++							591 heading 原回执历史, Value: 4
++								592 text 原回执历史
++							593 container
++								594 text 本水位服务器已登记  6  条；原回执按各自发生、收到、范围及对账关系保留。
++							595 button 展开原回执历史
+The focused UI element is 155 checkbox Description: 读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857, Value: 1

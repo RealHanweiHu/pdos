@@ -1,4 +1,5 @@
 "use client";
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, Cube, GitDiff, Plus, Trash, WarningCircle } from "@phosphor-icons/react";
@@ -130,6 +131,7 @@ function ExecutionPanel({ product, principalId, api, onSaved, projectId = "" }: 
   function changeSample(index: number, patch: Partial<SampleDraft>) { edit({ ...draft, samples: draft.samples.map((sample, position) => position === index ? { ...sample, ...patch } : sample) }); }
   function difference(path: string, patch: Partial<ExecutionDraft["differences"][string]>) { const current = draft.differences[path] ?? { reason: "", references: [] }; edit({ ...draft, differences: { ...draft.differences, [path]: { ...current, ...patch } } }); }
 
+  useProfessionalSelection("build", builds.map(r=>r.id), local.selectedBuildId, !editable || loading, id=>{remember({...local,selectedBuildId:id,drafts:{...local.drafts,...(!local.drafts[id]?{[id]:blankExecution()}:{})}});setComparison(null);setSourceId("");setQuote("");});
   return <section className="min-w-0 space-y-5" aria-label="实际配置产出与样件">
     <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">记录外部已发生的观察，保持计划与实际各自独立</p><h2 className="mt-1 text-lg font-semibold">实际配置、产出与样件</h2></div><Button variant="outline" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新观察记录</Button></header>
     {error && <p role="alert" className="rounded-lg border border-destructive p-3 text-destructive [overflow-wrap:anywhere]">{error}</p>}{notice && <p role="status" className="rounded-lg border border-border p-3 [overflow-wrap:anywhere]">{notice}</p>}

@@ -1,0 +1,68 @@
+{
+  "authenticated": true,
+  "verified_at_utc": "2026-10-29T03:57:28.620145+00:00",
+  "app": "actual production frontend and actual isolated RLS API; inference dispatch disabled",
+  "updated_notice_visible": true,
+  "explicit_original_fixed_snippet_opened": true,
+  "original_primary_body_never_replaced": true,
+  "root_withdrawal_reopened_session_hides_answer_quotes_and_snippet": true,
+  "withdrawn_alert": "这次回答依赖的资料已不可读取，原内容已隐藏。",
+  "model_calls_unchanged": true,
+  "business_receipts_unchanged": true,
+  "original_run_still_completed_and_personal": true,
+  "viewports": [
+    {
+      "width": 1280,
+      "height": 900,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "document_width": 1280
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "themes": [
+        "light",
+        "dark"
+      ],
+      "document_width": 390
+    },
+    {
+      "width": 320,
+      "height": 740,
+      "themes": [
+        "dark"
+      ],
+      "document_width": 320
+    }
+  ],
+  "keyboard": {
+    "tab_and_shift_tab_reach_fixed_snippet": true,
+    "focused_tag": "PRE",
+    "focused_label": "当前可读的固定资料片段"
+  },
+  "fonts_loaded": true,
+  "images": [
+    "output/playwright/updated-knowledge-desktop-light.png",
+    "output/playwright/updated-knowledge-desktop-dark.png",
+    "output/playwright/updated-knowledge-mobile-light.png",
+    "output/playwright/updated-knowledge-mobile-dark.png",
+    "output/playwright/updated-knowledge-narrow-dark.png",
+    "output/playwright/withdrawn-knowledge-desktop-dark.png"
+  ],
+  "snapshots": [
+    "output/playwright/page-2026-10-29T03-40-15-876Z.yml",
+    "output/playwright/page-2026-10-29T03-46-54-537Z.yml",
+    "output/playwright/page-2026-10-29T03-47-12-200Z.yml",
+    "output/playwright/page-2026-10-29T03-50-39-896Z.yml"
+  ],
+  "real_models": false,
+  "embedding": false,
+  "initial_failure": "Generic updated citation UI hid the still authorized fixed KnowledgeEntry body; final source eligibility and explicit original snippet control fixed it.",
+  "notes": [
+    "Source withdrawal is an administrative fixture change in this dedicated synthetic tenant, not a production business command.",
+    "Initial unauthenticated requests and the expected withdrawn-source HTTP 403 produced console resource errors."
+  ]
+}

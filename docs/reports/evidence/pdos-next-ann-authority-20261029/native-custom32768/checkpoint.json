@@ -1,0 +1,117 @@
+{
+  "at_utc": "2026-10-29T22:34:53.389940+00:00",
+  "status": "natural_hnsw_observed_with_mixed_final_plans_and_low_synthetic_recall",
+  "raw_status_preserved": "ANN_not_exercised",
+  "raw_status_meaning": "existing all-low-queries-final-HNSW criterion was not met; not evidence of zero HNSW use",
+  "local_authority_and_source_pool_mechanism": "verified",
+  "formal_quality_or_speed_benefit": "not_passed",
+  "pure_passed": 101,
+  "native_batch_passed": 5,
+  "native_distinct_tests": 1,
+  "native_controls": 12,
+  "captures_matched": 24,
+  "actual_nearest_plans": 39,
+  "iterative_stage_plans": 27,
+  "iterative_stage_hnsw": 23,
+  "any_stage_hnsw_queries": 12,
+  "final_stage_hnsw_queries": 8,
+  "final_hnsw_only_mean_recall_at_5": 0.25,
+  "final_hnsw_only_mean_recall_at_10": 0.15,
+  "all_final_plans_mean_recall_at_5": 0.5,
+  "all_final_plans_mean_recall_at_10": 0.43333333333333335,
+  "prepared_matching_nearest_statements": 0,
+  "driver_prepare_threshold": 5,
+  "non_target_prepared_statement_range": [
+    17,
+    25
+  ],
+  "prepared_counter_scope": "nearest only; eligible probe is marked in production but not independently counted here",
+  "authority_checks": "passed_for_both_production_strategies",
+  "shortfall_queries": 0,
+  "frozen_inputs_unchanged": 92,
+  "previous_project_frozen_inputs_unchanged": 120,
+  "observer_restored": true,
+  "native_t1_profile_disabled": true,
+  "remaining_profile_vectors": 0,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "default_search": "keyword; no hybrid enablement",
+  "semantic_quality": "not_scored; these are synthetic geometry source-agreement values",
+  "phases": [
+    {
+      "phase": "owner_all",
+      "authorized_sources": 512,
+      "authorized_chunks": 32768,
+      "queries": 4,
+      "mean_source_recall_at_5": 0.85,
+      "mean_source_recall_at_10": 0.675,
+      "any_hnsw_queries": 4,
+      "final_hnsw_queries": 2,
+      "shortfalls": 0,
+      "observed_strategy_walltime": {
+        "exact": {
+          "samples": 4,
+          "min_seconds": 9.317119500017725,
+          "median_seconds": 9.50493627099786,
+          "max_seconds": 10.026471792021766
+        },
+        "iterative": {
+          "samples": 4,
+          "min_seconds": 8.987154457950965,
+          "median_seconds": 21.127977124997415,
+          "max_seconds": 26.40841358306352
+        }
+      }
+    },
+    {
+      "phase": "peer_public32_plus_audience32",
+      "authorized_sources": 64,
+      "authorized_chunks": 4096,
+      "queries": 4,
+      "mean_source_recall_at_5": 0.35,
+      "mean_source_recall_at_10": 0.325,
+      "any_hnsw_queries": 4,
+      "final_hnsw_queries": 3,
+      "shortfalls": 0,
+      "observed_strategy_walltime": {
+        "exact": {
+          "samples": 4,
+          "min_seconds": 3.12457737501245,
+          "median_seconds": 3.217342562507838,
+          "max_seconds": 3.393635291955434
+        },
+        "iterative": {
+          "samples": 4,
+          "min_seconds": 6.2644632500596344,
+          "median_seconds": 6.383794291468803,
+          "max_seconds": 9.706811625044793
+        }
+      }
+    },
+    {
+      "phase": "peer_after_audience16_revoked",
+      "authorized_sources": 48,
+      "authorized_chunks": 3072,
+      "queries": 4,
+      "mean_source_recall_at_5": 0.3,
+      "mean_source_recall_at_10": 0.3,
+      "any_hnsw_queries": 4,
+      "final_hnsw_queries": 3,
+      "shortfalls": 0,
+      "observed_strategy_walltime": {
+        "exact": {
+          "samples": 4,
+          "min_seconds": 2.902254707994871,
+          "median_seconds": 2.940195311966818,
+          "max_seconds": 3.018140917061828
+        },
+        "iterative": {
+          "samples": 4,
+          "min_seconds": 5.625161333009601,
+          "median_seconds": 5.886849791917484,
+          "max_seconds": 8.622516833012924
+        }
+      }
+    }
+  ]
+}

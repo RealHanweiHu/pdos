@@ -15,6 +15,8 @@ from pdos_next.agent_kernel.persistence import KernelStore
 from pdos_next.database import tenant_session
 from pdos_next.errors import DomainError
 from pdos_next.models import Grant
+from pdos_next.service import digest
+from tests.preproject.test_g0 import post, request
 
 
 def path(setup, *, personal=False):
@@ -30,11 +32,13 @@ def start(setup, *, personal=False, **body):
     return UUID(response.json()["run_id"]), response.json()
 
 
-def finish(setup, identity, *, status="completed"):
+def finish(
+    setup, identity, *, status="completed", summary="合成结果：已核对第一项，压力工况仍未知。"
+):
     with Session(setup.admin) as session, session.begin():
         row = session.get(AgentRun, identity)
         row.state = status
-        row.result = {"summary": "合成结果：已核对第一项，压力工况仍未知。",
+        row.result = {"summary": summary,
                       "unfinished": ["核对适用工况"], "result": {"not_memory": "原始结果不复制"}}
 
 
@@ -54,7 +58,13 @@ def test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
         old, new = session.get(AgentRun, parent), session.get(AgentRun, child)
         assert old.state == "completed" and new.state == "queued"
         assert new.continued_from_id == parent
-        assert new.versions == {"checkpoint_layout": "session-run-ns/v1"}
+        assert new.versions == {
+            "checkpoint_layout": "session-run-ns/v1",
+            "assistant_depth": {"version": 1, "mode": "quick", "parent_run_id": str(parent)},
+            "requested_context_selection": None,
+            "requested_context_selection_digest": digest(None),
+            "context_selection_start_revision": 0,
+        }
         assert new.session_id == old.session_id and new.requester_id == old.requester_id
         assert new.held_tokens == new.used_tokens == 0
     host = Bootstrap(setup.engine)
@@ -109,14 +119,45 @@ def test_followup_refuses_scope_changes_peer_and_unfinished_parent(setup):
     assert setup.client.post(path(setup), headers=setup.headers, json=body).status_code == 409
     finish(setup, parent)
     for extra in [{"product_id": str(setup.product)}, {"proposal_id": str(uuid4())},
-                  {"session_id": str(uuid4())}, {"sources": [{"artifact_id": str(uuid4()),
-                                                            "expected_revision": 1}]}]:
+                  {"session_id": str(uuid4())}]:
         assert setup.client.post(path(setup), headers=setup.headers,
                                  json={**body, **extra}).status_code == 422
     headers = {"Authorization": f"Bearer {setup.tokens[setup.peer]}"}
     assert setup.client.post(path(setup), headers=headers, json=body).status_code == 403
     assert setup.client.post(path(setup, personal=True), headers=setup.headers,
                              json=body).status_code == 403
+
+
+def synthetic_artifact(setup, title):
+    response = post(setup, request(setup, "evidence.artifact.register", {
+        "title": title, "source_label": "续接合成来源",
+        "content": "续聊需要保留的真实固定原文", "visibility": "private",
+    }))
+    assert response.status_code == 200, response.text
+    return response.json()["subject_id"]
+
+
+def test_followup_appends_current_sources_without_replacing_original_versions(setup):
+    original = synthetic_artifact(setup, "原固定来源")
+    additional = synthetic_artifact(setup, "续聊新增来源")
+    parent, _ = start(setup, sources=[{"artifact_id": original, "expected_revision": 1}])
+    finish(setup, parent)
+    child, _ = start(setup, continue_from_run_id=str(parent),
+                     sources=[{"artifact_id": additional, "expected_revision": 1}])
+    with Session(setup.admin) as session:
+        row = session.get(AgentRun, child)
+        assert row.proposal_id is None
+        assert {ref["artifact_id"] for ref in row.read_sources} == {original, additional}
+        assert all(ref["expected_revision"] == 1 for ref in row.read_sources)
+    other_parent, _ = start(setup, sources=[{"artifact_id": original, "expected_revision": 1}])
+    finish(setup, other_parent)
+    conflict = setup.client.post(path(setup), headers=setup.headers, json={
+        "goal": "试图替换原固定版本", "idempotency_key": str(uuid4()),
+        "continue_from_run_id": str(other_parent),
+        "sources": [{"artifact_id": original, "expected_revision": 2}],
+    })
+    assert conflict.status_code == 409, conflict.text
+    assert conflict.json()["code"] == "VERSION_CONFLICT"
 
 
 def test_private_personal_continuation_is_same_session_without_category_authority(setup):
@@ -195,8 +236,9 @@ def test_revoking_parent_scope_hides_memory_before_model_egress(setup):
         grant = session.scalar(select(Grant).where(Grant.category_id == setup.category,
                                                   Grant.principal_id == setup.human))
         session.delete(grant)
-    with pytest.raises(DomainError):
+    with pytest.raises(DomainError) as failure:
         host.check_conversation(bound)
+    assert failure.value.reason == "CONVERSATION_HISTORY_REVOKED"
 
 
 def test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model(setup):
@@ -245,27 +287,112 @@ def test_registered_graph_receives_persisted_task_memory_and_replay_does_not_cal
     api.close()
 
 
-def test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it(setup):
-    from tests.agent_kernel.test_read_proof_transactions import read, read_fixture
+def test_cached_read_summary_keeps_frozen_view_and_next_history_observes_metadata_update(setup):
+    from pdos_next.models import Artifact
 
-    f = read_fixture(setup)
-    read(f)
-    finish(setup, f.scope.run_id)
-    child, _ = start(setup, continue_from_run_id=str(f.scope.run_id))
-    host = Bootstrap(setup.engine)
+    identity = synthetic_artifact(setup, "历史metadata更新，不重放读工具")
+    parent, _ = start(setup, sources=[{"artifact_id": identity, "expected_revision": 1}])
+    finish(setup, parent)
+    child, _ = start(setup, continue_from_run_id=str(parent))
+    host, bound = Bootstrap(setup.engine), scope(setup, child)
     host.adapters()
-    bound = scope(setup, child)
     context = host.project_context(bound, "继续")
-    assert context["conversation"]["turns"][0]["outcome_state"] == "historical_cache"
-    with Session(setup.admin) as session:
-        assert session.get(AgentRun, child).read_sources == session.get(
-            AgentRun, f.scope.run_id).read_sources
-    host._history_readers["calc.cost_subtotal"] = lambda *_: {"changed": True}
-    with pytest.raises(DomainError) as failure:
-        host.check_conversation(bound)
-    assert failure.value.code == "SOURCE_STALE"
+    assert context["conversation"]["turns"][0]["outcome_state"] == "current"
+    with Session(setup.admin) as session, session.begin():
+        source = session.get(Artifact, UUID(identity))
+        source.revision += 1  # Existing supported synthetic version drift; body/hash unchanged.
+    host._history_readers["calc.cost_subtotal"] = lambda *_: pytest.fail("old reader replayed")
+    host.check_conversation(bound)
+    assert host.project_context(bound, "继续")["conversation"] == context["conversation"]
     with tenant_session(setup.engine, setup.tenant, actor_id=setup.human,
                         requester_id=setup.human, category_id=setup.category) as session:
-        value = memory(session, session.get(AgentRun, child), readers={})
-        assert value["turns"][0]["historical_outcome"] is None
-        assert value["turns"][0]["outcome_state"] == "rebuild_from_sources"
+        changed = memory(session, session.get(AgentRun, child), readers={})
+        assert changed["turns"][0]["outcome_state"] == "updated"
+        assert "资料已更新" in str(changed["turns"][0]["historical_outcome"]["notes"])
+        assert changed["turns"][0]["historical_outcome"]["summary"] == context[
+            "conversation"]["turns"][0]["historical_outcome"]["summary"]
+
+
+def test_newly_revoked_actual_private_source_hides_answer_and_stops_frozen_history(setup):
+    from pdos_next.models import ObjectAudience
+
+    registered = post(setup, request(setup, "evidence.artifact.register", {
+        "title": "别人按受众共享的历史资料", "content": "只用于授权撤回验证。",
+        "source_label": "合成当前受众", "visibility": "audience",
+    }), actor=setup.peer)
+    assert registered.status_code == 200, registered.text
+    identity = UUID(registered.json()["subject_id"])
+    with Session(setup.admin) as session, session.begin():
+        audience = ObjectAudience(tenant_id=setup.tenant, category_id=setup.category,
+            object_type="artifact_versions", subject_id=identity, owner_id=setup.peer,
+            principal_id=setup.human)
+        session.add(audience)
+        session.flush()
+        audience_id = audience.id
+    parent, _ = start(setup, sources=[{"artifact_id": str(identity), "expected_revision": 1}])
+    # Production completion persists the source-independent user goal in the
+    # append-only work state; bypassing it with the old admin finish helper
+    # cannot exercise the owner's post-revocation history projection.
+    Bootstrap(setup.engine).store.finish(scope(setup, parent), {
+        "status": "completed", "summary": "合成结果：已核对第一项，压力工况仍未知。",
+        "result": {}, "questions": [], "unfinished": ["核对适用工况"],
+    })
+    child, _ = start(setup, continue_from_run_id=str(parent))
+    host, bound = Bootstrap(setup.engine), scope(setup, child)
+    host.adapters()
+    frozen = host.project_context(bound, "继续")
+    assert frozen["conversation"]["turns"][0]["historical_outcome"] is not None
+    with Session(setup.admin) as session, session.begin():
+        session.delete(session.get(ObjectAudience, audience_id))
+    with pytest.raises(DomainError) as failure:
+        host.check_conversation(bound)
+    assert failure.value.reason == "CONVERSATION_HISTORY_REVOKED"
+    # The explicit-source audience hides the whole Run from normal RLS. Only
+    # the authenticated owner's source-independent goal projection is readable;
+    # it must not recover the old result, events, or a usable execution scope.
+    response = setup.client.get(path(setup) + f"/{parent}", headers=setup.headers)
+    assert response.status_code == 200, response.text
+    value = response.json()
+    assert value["history_hidden"] and value["status"] == "hidden"
+    assert value["result"] is None and value["versions"] == {}
+    assert value["goal"] == frozen["conversation"]["turns"][0]["goal"]
+    assert "合成结果：" not in response.text
+
+
+def test_prepared_candidate_turn_keeps_answer(setup):
+    from pdos_next.agent_kernel.models import AgentToolCall
+    from pdos_next.service import digest
+
+    parent, _ = start(setup)
+    with Session(setup.admin) as session, session.begin():
+        session.add(AgentToolCall(
+            tenant_id=setup.tenant, run_id=parent,
+            call_key="synthetic-prepared-candidate", tool="work.task.assign",
+            input_digest=digest({}), execution_binding={"kind": "unbound"},
+            state="completed", result={"candidate": True},
+        ))
+    finish(setup, parent)
+    child, _ = start(setup, continue_from_run_id=str(parent))
+    value = Bootstrap(setup.engine).project_context(scope(setup, child), "继续")
+    outcome = value["conversation"]["turns"][0]["historical_outcome"]
+    assert "合成结果" in outcome["summary"]
+    assert "准备过候选" in str(outcome["notes"])
+
+
+def test_thirty_turn_history_stays_bounded_and_full_history_is_available(setup):
+    import json
+
+    from pdos_next.agent_kernel.context_budget import estimate_tokens
+
+    previous, _ = start(setup)
+    for _ in range(30):
+        finish(setup, previous, summary="长" * 1000)
+        previous, _ = start(setup, continue_from_run_id=str(previous))
+    host = Bootstrap(setup.engine)
+    bound = scope(setup, previous)
+    history = host.project_context(bound, "继续")["conversation"]
+    assert estimate_tokens(json.dumps(history, ensure_ascii=False)) <= 4000
+    assert all(t["historical_outcome"]["truncated"] for t in history["turns"])
+    assert all(len(t["historical_outcome"]["summary"]) <= 60 for t in history["turns"][3:])
+    full = host.conversation_history(bound, {"page_size": 10})
+    assert all(t["historical_outcome"]["summary"] == "长" * 1000 for t in full["turns"])

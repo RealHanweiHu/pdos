@@ -1,0 +1,309 @@
+{
+  "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+  "status": "partial",
+  "result": {
+    "result": {
+      "saved": false,
+      "skill": "proposal_drafting",
+      "state": "candidate",
+      "receipt": {
+        "event_id": "5c19896e-aa3c-43e8-a919-1c4940a1c588",
+        "command_id": "5a7933ef-3a37-5c6f-a983-8bcc8c72a480",
+        "write_tier": "T1",
+        "requires_human": true,
+        "candidate_digest": "ad4b98995ed1b556f584a83393dac98c6dc009c22049de996fa0ffe78a4381bf",
+        "prepared_by_run_id": "a2067183-bd63-4981-ac30-aecd91269ece"
+      },
+      "category": {
+        "id": "b24a8a71-981e-49cc-a32c-496641be611d",
+        "name": "汽车充气泵"
+      },
+      "unknowns": [
+        "场景描述仅来自提案 brief 与人工决定，无外部证据引用",
+        "噪声条件与测试工况未知（已存在的 open 问题 4be6adcb… 仍 open）"
+      ],
+      "candidate": {
+        "key": "target_customer_market_channel",
+        "kind": "section",
+        "text": "目标用户为家庭车主，使用场景集中在日常停车与短途出行前后。车主在小区或路边停好车后会顺手查看轮胎状态，察觉胎压偏低时就在车旁用便携充气泵应急补气；短途出行前也常重复这一检查。压力显示已选定，可作为是否需要补气的直接依据。噪声条件与测试工况仍未知，本节不含实测或研究结论。",
+        "item_id": null,
+        "source_refs": [
+          {
+            "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+            "type": "human",
+            "version": 1,
+            "statement": "具名产品决定"
+          }
+        ],
+        "base_version": null,
+        "char_count_approx": 114
+      },
+      "pre_check": {
+        "read": "proposal.items.read kinds=section → 现有仅 worth_it(人工)，target_customer_market_channel 不存在，无重复条目"
+      },
+      "proposal_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+      "conflicts_with_human": [],
+      "instructions_honored": {
+        "item_id_omitted": true,
+        "web_research_used": false,
+        "no_empty_string_ids": true,
+        "base_version_omitted": true,
+        "no_human_item_modified": true,
+        "sources_only_from_context": true,
+        "no_numbers_or_research_facts_invented": true
+      },
+      "unchanged_human_items": [
+        {
+          "key": "worth_it",
+          "item_id": "0bd7fcfa-31e7-4828-8f7b-700502ed88fc"
+        },
+        {
+          "kind": "option",
+          "item_id": "a1a6c87a-1ad5-42b1-b55c-f30bb3e58e57"
+        },
+        {
+          "kind": "option",
+          "item_id": "63101e5c-3466-4079-9a70-53310fc317b5"
+        },
+        {
+          "key": "noise",
+          "item_id": "7efe4ed5-0fe8-422b-9b15-9bdeeef26881"
+        },
+        {
+          "key": "display",
+          "item_id": "316057ac-7e59-412f-823e-06794d261ebe"
+        },
+        {
+          "kind": "question",
+          "item_id": "4be6adcb-e20d-480e-8cc6-6c2b62e5c893"
+        }
+      ],
+      "touched_existing_items": []
+    },
+    "status": "partial",
+    "summary": "已起草 target_customer_market_channel 说明章节并备好一次待你确认的候选（未保存）。\n\ncompleted:\n1. 只用提案上下文已有资料起草新章节 key=target_customer_market_channel，约 110 字，描述家庭车主在日常停车/短途出行前后查看轮胎并就地应急补气的场景。\n2. 新条目 op=upsert，item_id 与 base_version 均未填写（服务器回显为 null），无空字符串。\n3. 未改动任何人工条目：worth_it、两个 option、noise/display 两条 spec、噪声问题均未触碰，conflicts_with_human 为空。\n4. 正文不含数值、销量、价格或研究结论；仅写“压力显示已选定”（据提案 brief 与 display 条目）与“噪声条件与测试工况未知”。\n5. source_refs 只原样引用上下文已存在的 human 引用（69f1c732…@1，statement=“具名产品决定”），未编造任何来源；上下文中除该引用外无其他可引用来源。\n\n尚未保存：proposal.item.patch 返回 state=candidate（command_id=5a7933ef-3a37-5c6f-a983-8bcc8c72a480，event_id=5c19896e-aa3c-43e8-a919-1c4940a1c588，candidate_digest=ad4b9899…），需你本人在确认框一次确认后才写入提案；我未声称已生效。\n\nunfinished:\n- 候选章节的保存（等本人确认）。\n- 章节所述场景目前只来自提案 brief 与人工决定，没有外部证据；如需可核来源，需要另行授权研究与证据登记。",
+    "questions": [],
+    "unfinished": [
+      "候选 section target_customer_market_channel 尚未保存：proposal.item.patch 只产出 T1 候选（state=candidate），需提案负责人本人在确认框一次确认后才写入。",
+      "本节场景陈述当前只有提案 brief 与人工决定作依据，未登记可核 Claim；如需外部证据须另行授权研究与 evidence.link.create。"
+    ]
+  },
+  "error": null,
+  "process": {
+    "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+    "status": "partial",
+    "reverted": false,
+    "error_code": null,
+    "started_at": "2026-10-22T12:36:49.614229+00:00",
+    "observed_at": "2026-10-22T12:38:13.155108+00:00",
+    "last_recorded_at": "2026-10-22T12:37:32.998544+00:00",
+    "ended_at": "2026-10-22T12:37:32.998544+00:00",
+    "elapsed_seconds": 43.384315,
+    "call_counts": {
+      "total": 4,
+      "completed": 4,
+      "pending": 0,
+      "failed": 0
+    },
+    "source_count": 0,
+    "sources": [],
+    "next_source_cursor": null,
+    "business_receipt_count": 0,
+    "receipts": [],
+    "next_receipt_cursor": null,
+    "steps": [
+      {
+        "id": "6b53b28b-50d1-452e-9481-b38ff7b1844b",
+        "sequence": 1,
+        "at": "2026-10-22T12:36:49.626942+00:00",
+        "kind": "accepted",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "abe67702-da58-40cd-a070-95cc68e625ee",
+        "sequence": 2,
+        "at": "2026-10-22T12:36:50.122750+00:00",
+        "kind": "skill_loaded",
+        "tool": null,
+        "skill": "proposal_drafting",
+        "version": "0.2.3-draft",
+        "status": null
+      },
+      {
+        "id": "420aa419-f028-4076-8825-26903598b6e0",
+        "sequence": 3,
+        "at": "2026-10-22T12:36:50.165816+00:00",
+        "kind": "skill_loaded",
+        "tool": null,
+        "skill": "gap_check",
+        "version": "0.2.1-draft",
+        "status": null
+      },
+      {
+        "id": "49bd8140-ea57-448e-bc52-77dc112b5fe9",
+        "sequence": 4,
+        "at": "2026-10-22T12:36:50.323548+00:00",
+        "kind": "context_projected",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": "projected",
+        "context_fields": [
+          "category",
+          "goal",
+          "proposal",
+          "sources"
+        ],
+        "context_omitted": [],
+        "context_issues": []
+      },
+      {
+        "id": "f4d6f5e8-ed62-4f40-83c1-e7d9656997bc",
+        "sequence": 5,
+        "at": "2026-10-22T12:36:50.447993+00:00",
+        "kind": "model_started",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "cf5867ba-eb64-450b-a678-27c77895a119",
+        "sequence": 7,
+        "at": "2026-10-22T12:37:07.249303+00:00",
+        "kind": "tool_started",
+        "tool": "proposal.items.read",
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "48551f0f-6907-42c5-8737-3d1aef324cc3",
+        "sequence": 8,
+        "at": "2026-10-22T12:37:07.817375+00:00",
+        "kind": "tool_finished",
+        "tool": "proposal.items.read",
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "3c8e16f5-d589-4251-abde-ca0b67244c7b",
+        "sequence": 9,
+        "at": "2026-10-22T12:37:07.923603+00:00",
+        "kind": "model_started",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "053d286c-4c7d-4765-8e0e-8300fcb9e4c4",
+        "sequence": 11,
+        "at": "2026-10-22T12:37:18.756829+00:00",
+        "kind": "tool_started",
+        "tool": "proposal.item.patch",
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "2465941d-5ecc-412e-9315-56b78c397aa9",
+        "sequence": 13,
+        "at": "2026-10-22T12:37:19.822256+00:00",
+        "kind": "tool_finished",
+        "tool": "proposal.item.patch",
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "14ad58db-12e0-4d58-b45c-e042e19e879a",
+        "sequence": 14,
+        "at": "2026-10-22T12:37:19.922517+00:00",
+        "kind": "model_started",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": null
+      },
+      {
+        "id": "a0582628-cde3-4519-95b9-85d3e29ecc5e",
+        "sequence": 16,
+        "at": "2026-10-22T12:37:32.976289+00:00",
+        "kind": "run_state",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": "partial"
+      },
+      {
+        "id": "7b014e73-cd4c-40d3-b9dd-6c3f78d5368a",
+        "sequence": 17,
+        "at": "2026-10-22T12:37:32.998544+00:00",
+        "kind": "finished",
+        "tool": null,
+        "skill": null,
+        "version": null,
+        "status": "partial"
+      }
+    ],
+    "next_before": null
+  },
+  "candidates": {
+    "run_id": "a2067183-bd63-4981-ac30-aecd91269ece",
+    "items": [
+      {
+        "event_id": "5c19896e-aa3c-43e8-a919-1c4940a1c588",
+        "sequence": 12,
+        "operation": "proposal.item.patch",
+        "command_id": "5a7933ef-3a37-5c6f-a983-8bcc8c72a480",
+        "idempotency_key": "agent:a2067183-bd63-4981-ac30-aecd91269ece:model:5f27347a-0309-40a6-92dd-698919544307:0",
+        "state": "pending",
+        "command": {
+          "command_id": "5a7933ef-3a37-5c6f-a983-8bcc8c72a480",
+          "idempotency_key": "agent:a2067183-bd63-4981-ac30-aecd91269ece:model:5f27347a-0309-40a6-92dd-698919544307:0",
+          "operation": "proposal.item.patch",
+          "category_id": "b24a8a71-981e-49cc-a32c-496641be611d",
+          "product_id": null,
+          "expected_revision": 1,
+          "source_read_set": [],
+          "payload": {
+            "ops": [
+              {
+                "op": "upsert",
+                "kind": "section",
+                "content": {
+                  "key": "target_customer_market_channel",
+                  "text": "目标用户为家庭车主，使用场景集中在日常停车与短途出行前后。车主在小区或路边停好车后会顺手查看轮胎状态，察觉胎压偏低时就在车旁用便携充气泵应急补气；短途出行前也常重复这一检查。压力显示已选定，可作为是否需要补气的直接依据。噪声条件与测试工况仍未知，本节不含实测或研究结论。"
+                },
+                "item_id": null,
+                "source_refs": [
+                  {
+                    "id": "69f1c732-2201-4c0f-a064-41bc207f8363",
+                    "line": null,
+                    "type": "human",
+                    "quote": null,
+                    "version": 1,
+                    "statement": "具名产品决定"
+                  }
+                ],
+                "base_version": null
+              }
+            ],
+            "proposal_id": "3c1cd7aa-a6a4-4fe9-b432-021f491d7a2d",
+            "source_refs": [],
+            "candidate_digest": "ad4b98995ed1b556f584a83393dac98c6dc009c22049de996fa0ffe78a4381bf",
+            "confirmation_token": null,
+            "prepared_by_run_id": "a2067183-bd63-4981-ac30-aecd91269ece"
+          }
+        },
+        "receipt": null
+      }
+    ],
+    "next_cursor": null
+  }
+}

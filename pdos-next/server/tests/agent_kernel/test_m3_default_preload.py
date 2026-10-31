@@ -81,9 +81,9 @@ def fixture(*, category=True, proposal=False, status="draft", reviewer=False):
     return NS(owner=owner, scope=scope, session=session, run=run, proposal=row)
 
 
-def test_personal_entry_preloads_category_framing_without_business_scope():
+def test_personal_entry_has_no_default_business_skill():
     f = fixture(category=False)
-    assert f.owner.default_preload(f.scope) == ("category_framing",)
+    assert f.owner.default_preload(f.scope) == ()
     assert f.owner.store.checked == [f.scope]
     assert f.session.reads == []
 

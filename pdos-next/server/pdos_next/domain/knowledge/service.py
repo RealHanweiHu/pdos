@@ -49,6 +49,7 @@ class Validated:
     nature: str | None = None
     confirmation_id: object = None
     used: bool = False
+    knowledge_review: dict | None = None
 
 
 def _target_content(s, ctx, pid, value):
@@ -231,6 +232,19 @@ def validate(s, ctx, command, product, payload):
         body = rules.rule_body(
             payload, identity, revision, candidate, assessment_id, assessment, nature
         )
+    from .assistant_reviews import prepare as prepare_review
+    from .assistant_sources import review_for
+
+    review_parent = (
+        review_for(s, "candidate", candidate.id)
+        if candidate
+        else (review_for(s, "candidate", prior.id) if prior else None)
+    )
+    review_metadata = prepare_review(
+        s, ctx, payload, shared=visibility == "category", previous=review_parent
+    )
+    if review_metadata:
+        private |= review_metadata["private"]
     rules.require(
         not private or visibility == "private",
         "私有或指定受众的内容不能扩大为品类共享知识。",
@@ -241,6 +255,8 @@ def validate(s, ctx, command, product, payload):
         "artifacts": rules.merge_artifacts(artifacts, result_artifacts),
         "result_receipts": result_metadata,
     }
+    if review_metadata:
+        basis["answer_sources"] = deepcopy(review_metadata["source_proof"])
     if professional is not None:
         basis.update(
             {
@@ -283,6 +299,7 @@ def validate(s, ctx, command, product, payload):
         assessment_id,
         nature,
     )
+    value.knowledge_review = review_metadata
     s.info[key] = value
     return value
 
@@ -426,6 +443,18 @@ def apply_validated(s, ctx, command, product, payload, value):
         )
     else:
         value.pointer.version_id, value.pointer.revision = row.id, row.revision
+    from .assistant_reviews import append as append_review
+
+    append_review(
+        s,
+        ctx,
+        command,
+        "candidate" if command.operation == CANDIDATE_OP else "rule",
+        row.id,
+        row.receipt_id,
+        value.knowledge_review,
+        verified=command.operation == RULE_OP,
+    )
     row.prepared_receipt_id, row._knowledge_phase = row.receipt_id, value
     return row, kind, row.visibility
 

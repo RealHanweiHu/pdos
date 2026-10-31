@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_reusing_session_id_does_not_send_unbound_sources_from_other_runs _____
+tests/agent_kernel/test_work_state_pg.py:235: in test_reusing_session_id_does_not_send_unbound_sources_from_other_runs
+    assert state["search_preferences"] == preference
+                                          ^^^^^^^^^^
+E   NameError: name 'preference' is not defined
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_work_state_pg.py::test_reusing_session_id_does_not_send_unbound_sources_from_other_runs

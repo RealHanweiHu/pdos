@@ -1,0 +1,16 @@
+{
+  "pdos-next/web/src/components/projects/project-work.tsx": "e74bd2ed55ac9cb5fb1b723c9b7df0899d80ac5349733229252c4267930e19f3",
+  "pdos-next/web/src/components/projects/project-work.module.css": "ab9dd558a4cdf512e5e9e20329a5bfb04a789888df4c72ba23a77e00581c34a6",
+  "pdos-next/web/src/components/projects/project-work.test.mjs": "72dbf17b77cfef72e249d2e8b37c84b4d6ced5cb088ea080c3bdc2d0081cda26",
+  "pdos-next/web/src/components/category-home.tsx": "ff6b05d3620feae8aa9c216f8813fa0bca3a151986461479727562405162b6bc",
+  "pdos-next/web/src/components/category-workspace.tsx": "aab74865d496c321ee9b79b78e54a4fa04238f84732bec0e6ec987dc293a0c51",
+  "pdos-next/web/src/components/category-material-editor.tsx": "1689d40be68e41c16b6df429ca567f5329211d97edfc218b53d8e40f69c87ae8",
+  "pdos-next/web/src/components/category-material-editor.module.css": "eec8639fb01efdc91b82cd5848f5cdc8f21b53885f92a69dfa5f349eb913d529",
+  "pdos-next/web/src/components/category-material-editor.test.mjs": "190e42834b8cb3325f43f5a0c7a6d8c265a60ab7464c03116a050e1f37ffc27c",
+  "pdos-next/web/src/components/pai-rail.tsx": "412e38e9db7dce6f160809f7beb868ffd32d7aed1b59c6d2eaa42ab2a0263b33",
+  "pdos-next/web/src/components/xiaopai.tsx": "d3bc29f2e5a3cfb13e5e0c524b1bc1d5ad67574e620988a3f38f7e71d9e815be",
+  "pdos-next/web/src/components/pai/run-continuation.tsx": "1bc61c0bf00bf1c3a7e2ac54fc7b64aec65879568948338558b09f2aa2e67a4d",
+  "pdos-next/web/src/components/pai/run-continuation.test.mjs": "b03f66ee022124dad5ae03a187b579016a51a48d13ef758d5630a72a3df84858",
+  "pdos-next/web/src/lib/category-materials.ts": "2ad37c7273b35c453563260d2c28c9a7678ddbf78a27e99556a782fd1458f0a5",
+  "pdos-next/web/src/lib/pai-material-context.ts": "3f5e959a1dabf8362976f29ac64def12e25fdfc1ce2e2182e8b8659b354f6628"
+}

@@ -1,0 +1,6 @@
+{
+  "path": "pdos-next/server/tests/automations/test_runtime.py",
+  "before_sha256": "d9e772cc07b650ba68e892360315fb136d84da8e1992bf34d5f6a51832d24dab",
+  "after_sha256": "1f2b038892e83c46a383f9abb2dfadc51b27bdcee82c05bcf35425fa22c2032e",
+  "reason": "Existing six-case fake now includes real RunScope.isolation; production unchanged."
+}

@@ -1,12 +1,17 @@
-export type ContinuationRequest = { goal: string; idempotency_key: string; continue_from_run_id: string };
+import { validSearchPreferences, type SearchPreferences } from "./search-preferences";
+import { validContinuedSkillExclusions, validSkillSelections } from "./continued-skills";
+import type { RequestedSkill } from "./run-start-intent";
+export type ContinuationSource = { artifact_id: string; expected_revision: number };
+export type ContinuationRequest = { goal: string; idempotency_key: string; continue_from_run_id: string; sources?: ContinuationSource[]; search_preferences?: SearchPreferences; lookup_depth?: "deep"; context_revision?: number; requested_skills?: RequestedSkill[]; excluded_continued_skills?: string[] };
 export type PendingContinuation = { root: string; owner_id: string; request: ContinuationRequest };
-export type ContinuationReading = { run_id: string; owner_id: string; can_continue: boolean; existing: {run_id:string;goal:string;idempotency_key:string}|null };
+export type ContinuationReading = { run_id: string; owner_id: string; can_continue: boolean; continued_skills?: RequestedSkill[]; context_restart?: { expected_revision: number; existing?: {run_id: string; session_id: string} | null } | null; existing: {run_id:string;goal:string;idempotency_key:string}|null };
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const record = (value:unknown):value is Record<string,unknown> => !!value && typeof value === "object" && !Array.isArray(value);
+const validSources = (value:unknown) => value === undefined || Array.isArray(value) && value.every(source => record(source) && Object.keys(source).length === 2 && uuid.test(String(source.artifact_id)) && typeof source.expected_revision === "number" && Number.isSafeInteger(source.expected_revision) && source.expected_revision > 0) && new Set(value.map(source => source.artifact_id)).size === value.length;
 export function restoreContinuation(value:unknown,root:string,ownerId:string,runId:string):PendingContinuation|null {
   if(!record(value)||Object.keys(value).some(key=>!["root","owner_id","request"].includes(key))||value.root!==root||value.owner_id!==ownerId||!record(value.request))return null;
   const request=value.request;
-  if(Object.keys(request).some(key=>!["goal","idempotency_key","continue_from_run_id"].includes(key))||request.continue_from_run_id!==runId||typeof request.idempotency_key!=="string"||!uuid.test(request.idempotency_key)||typeof request.goal!=="string"||request.goal.trim().length<3||request.goal.length>8000)return null;
+  if(Object.keys(request).some(key=>!["goal","idempotency_key","continue_from_run_id","sources","search_preferences","lookup_depth","context_revision","requested_skills","excluded_continued_skills"].includes(key))||request.continue_from_run_id!==runId||typeof request.idempotency_key!=="string"||!uuid.test(request.idempotency_key)||typeof request.goal!=="string"||request.goal.trim().length<1||request.goal.length>8000||!validSources(request.sources)||request.search_preferences!==undefined&&!validSearchPreferences(request.search_preferences)||request.lookup_depth!==undefined&&request.lookup_depth!=="deep"||request.context_revision!==undefined&&(!Number.isSafeInteger(request.context_revision)||Number(request.context_revision)<1)||request.requested_skills!==undefined&&!validSkillSelections(request.requested_skills)||request.excluded_continued_skills!==undefined&&!validContinuedSkillExclusions(request.excluded_continued_skills))return null;
   return value as PendingContinuation;
 }
 export function matchesContinuation(request:ContinuationRequest,value:ContinuationReading):boolean {

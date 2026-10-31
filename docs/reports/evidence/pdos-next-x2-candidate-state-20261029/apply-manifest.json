@@ -1,0 +1,137 @@
+{
+  "version": 1,
+  "frozen": true,
+  "migration": null,
+  "scope": "Stage only; no live/DB/Temporal/build/model/embedding/outbound operation",
+  "kind": "x2-candidate-current-metadata-core",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/work_state.py",
+      "mode": "modify",
+      "base_sha256": "c8201b2ac51fb8b5d8f9f37666d72389dd435e119f11bde11d84dcf6d5d51808",
+      "staged_sha256": "0acd17d7f0820c9e5180b2d179aa9bde27b4f1470fe50df9821c7b136cb8da0e",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/pdos_next/agent_kernel/work_state.py",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/work_state.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "062a467d99f873df7feb08115ffe6ad42a0bbdda9c7563c581d224341d990130",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/domain_candidates.py",
+      "mode": "modify",
+      "base_sha256": "2704b41dc96912928a48a385cd30989c53cc9b218bf2b3409527a298e034d01e",
+      "staged_sha256": "600f1948b2e4cd134a2d9060c79b2f462cc0f934ccff2200cc9cccd66c73c663",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/pdos_next/agent_kernel/domain_candidates.py",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/domain_candidates.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/category_candidate.py",
+      "mode": "modify",
+      "base_sha256": "ae022c30ec893a2e09e7f54e0086b24ebfcbe2383fd581ed1d5e67e029bcca01",
+      "staged_sha256": "451b24b358f4899d7c9da9e1123890b111e08e946898bffd9118bdb4dccaa532",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/pdos_next/agent_kernel/category_candidate.py",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/category_candidate.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/category_adoption.py",
+      "mode": "modify",
+      "base_sha256": "7282b0eb3a3d747d3f4f47a668f822222b96872432e2422b82889bbfa1678ba0",
+      "staged_sha256": "86bcc0e7f527fd33b031e35a431b4b2c43bcd03367558302790c1c1cca02f73d",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/pdos_next/agent_kernel/category_adoption.py",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/category_adoption.py"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-state-carry.tsx",
+      "mode": "modify",
+      "base_sha256": "f785618b2f5a6d7fcab537423d4171d9e671aab06bf5984587cc829f1b104ebe",
+      "staged_sha256": "e3f8d547ba389ae6d40cd684b159533ab4d63248bbd08ca9caa63bc16dd79aa8",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/web/src/components/pai/work-state-carry.tsx",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/web/src/components/pai/work-state-carry.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-state-carry.test.mjs",
+      "mode": "modify",
+      "base_sha256": "f2667e12bffcf0e14ec06896031ed385104fc8568b2652ef97cf776be5be77b9",
+      "staged_sha256": "c9c411004de80167cd2079854d22bb586f940120a1d3ddfbffaf8e5e6895ad60",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/web/src/components/pai/work-state-carry.test.mjs",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/web/src/components/pai/work-state-carry.test.mjs"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_work_state_candidates.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "dc1ed7da64983dbad7d4a5a2a288dc83f4b65838497353ff18d372ff3e75a362",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/tests/agent_kernel/test_work_state_candidates.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_work_state_candidates_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "b22b45d3c3545ca118eef8cdb7e5bbe0865b51fdc736977d620472ae0549bd02",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/tests/agent_kernel/test_work_state_candidates_pg.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_work_state_candidates_temporal_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "a1d7bbc7aafdef0fc0b7c1319d2ca9cf6e6286d21de7307dcbb660ae48f5ddeb",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/tests/agent_kernel/test_work_state_candidates_temporal_pg.py",
+      "base_path": null
+    }
+  ],
+  "shared_source_files": [
+    "pdos-next/server/pdos_next/agent_kernel/work_state.py",
+    "pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py",
+    "pdos-next/server/pdos_next/agent_kernel/domain_candidates.py",
+    "pdos-next/server/pdos_next/agent_kernel/category_candidate.py",
+    "pdos-next/server/pdos_next/agent_kernel/category_adoption.py",
+    "pdos-next/web/src/components/pai/work-state-carry.tsx"
+  ],
+  "patch": {
+    "path": "x2-candidate-state.patch",
+    "sha256": "bcf981603b544812c06461394b633f1af8337468fd19a34a6ff5c5215fc1eb20"
+  },
+  "validation": {
+    "pure": "162 unique, segmented: 95 unaffected native candidate/constraint tests from backend-targeted; 53 final adoption fixture cases from native-adoption-metadata-final2; 14 new metadata cases from metadata-final. Final2 only failed three new tests for .code versus .reason assertion; all three corrected and passed.",
+    "frontend": "8 passed; frontend-final.txt",
+    "typescript": "tsc --noEmit --incremental false passed; tsc.txt",
+    "eslint": "work-state-carry.tsx passed; eslint.txt",
+    "ruff": "9 changed Python files passed; ruff-final2.txt",
+    "pg_temporal": "4 collected only, never executed; pg-temporal-nodeids.json",
+    "replay": "Core then independent fixture patch applied to exact-base scratch; all 11 final SHA matched"
+  },
+  "limitations": [
+    "Actual ordinary-role PG/Temporal and browser checks remain for root.",
+    "This closes only the approved X2 candidate metadata gap; no claim of formal real-model quality acceptance or all X2 focus capabilities."
+  ],
+  "public_api_file_changes": false,
+  "public_work_state_candidates_shape": [
+    "event_id",
+    "run_id",
+    "kind",
+    "operation",
+    "state",
+    "receipt_id"
+  ],
+  "review_artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "84952cd1979a0e89c60ff6296e1c1481e72abaa193a7c4cf350801a7ad3b36fa"
+    },
+    {
+      "path": "pg-temporal-nodeids.json",
+      "sha256": "f1c0c9b66ae0ea8fabdb5b056be95dc6fb2e4a2566c48e82075427dc6015cc73"
+    },
+    {
+      "path": "evidence/replay.json",
+      "sha256": "d940ff70c2f83fe3d5a2a0dac12c3081e4d12842f53514f9dc6b5aa200282655"
+    }
+  ]
+}

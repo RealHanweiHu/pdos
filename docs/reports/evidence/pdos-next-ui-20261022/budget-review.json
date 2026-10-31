@@ -1,0 +1,21 @@
+{
+  "operation": "ai.budget.configure",
+  "tier": "T1",
+  "state": "superseded_by_explicit_user_development_policy",
+  "limits": {
+    "limit_micro_usd": 250000,
+    "input_token_limit": 500000,
+    "output_token_limit": 8192,
+    "call_limit": 1
+  },
+  "previous_budget": "7f1cd65a-64da-43f0-a4ac-289bc6509194",
+  "previous_usage_preserved": true,
+  "proposed_host_max_output_tokens": 8192,
+  "model_scope": "personal, self-created synthetic UI text only",
+  "run_policy": "one new registered Temporal/LangGraph run, no retry, no business save",
+  "real_calls_made_by_preview": 0,
+  "allocation_executed": false,
+  "host_configuration_changed": true,
+  "review_received": true,
+  "approval": "User: development MiniMax has no platform ceiling, fee or call limit"
+}

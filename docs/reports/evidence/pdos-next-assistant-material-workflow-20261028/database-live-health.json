@@ -1,0 +1,18 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "connection_states": [
+    {
+      "state": "active",
+      "wait_event_type": null,
+      "wait_event": null,
+      "connections": 1
+    },
+    {
+      "state": "idle",
+      "wait_event_type": "Client",
+      "wait_event": "ClientRead",
+      "connections": 9
+    }
+  ],
+  "blocked_sessions": 0
+}

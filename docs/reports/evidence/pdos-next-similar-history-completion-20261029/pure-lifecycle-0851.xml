@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="38" skipped="0" tests="40" time="0.564" timestamp="2026-10-29T09:01:44.793998-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_frozen_catalog_matches_actual_columns_without_consuming_transport" time="0.001"><failure message="AssertionError: assert {'category_id...vent_id', ...} == {'category_id...vent_id', ...}&#10;  &#10;  Extra items in the right set:&#10;  'original_ids'&#10;  Use -v to get more diff">def test_frozen_catalog_matches_actual_columns_without_consuming_transport():
+        assert set(COVERED_COLUMNS) == set(models.Base.metadata.tables)
+        for name, table in models.Base.metadata.tables.items():
+&gt;           assert set(COVERED_COLUMNS[name]) == set(table.columns.keys())
+E           AssertionError: assert {'category_id...vent_id', ...} == {'category_id...vent_id', ...}
+E             
+E             Extra items in the right set:
+E             'original_ids'
+E             Use -v to get more diff
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:26: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_inbox_grouping_are_metadata_and_governance_still_requires_both_source_guards" time="0.002"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fad0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fad0&gt; = Catalog()">def test_inbox_grouping_are_metadata_and_governance_still_requires_both_source_guards():
+        assert {
+            "inbox_conversations", "inbox_messages", "inbox_states",
+            "project_set_versions", "project_set_links",
+            "personal_preferences", "similar_history_feedback",
+        } &lt;= NON_CONSUMING
+        assert "project_governance_events" in GUARDED
+        assert "project_governance_events" not in NON_CONSUMING
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fad0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fad0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:44: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposals]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e4e0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e4e0&gt; = Catalog()">table = 'proposals', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e4e0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e4e0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_items]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fa10&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fa10&gt; = Catalog()">table = 'proposal_items', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fa10&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11793fa10&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_item_versions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ec30&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ec30&gt; = Catalog()">table = 'proposal_item_versions', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ec30&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ec30&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_revisions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f230&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f230&gt; = Catalog()">table = 'proposal_revisions', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f230&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f230&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_sources]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f770&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f770&gt; = Catalog()">table = 'proposal_sources', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f770&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f770&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_submissions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799fe00&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799fe00&gt; = Catalog()">table = 'proposal_submissions', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799fe00&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799fe00&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_decisions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f620&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f620&gt; = Catalog()">table = 'proposal_decisions', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f620&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f620&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-project_open_items]" time="0.059"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ca70&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ca70&gt; = Catalog()">table = 'project_open_items', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ca70&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ca70&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_entries]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d8890&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d8890&gt; = Catalog()">table = 'category_knowledge_entries', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d8890&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d8890&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_current]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d82f0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d82f0&gt; = Catalog()">table = 'category_knowledge_current', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d82f0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159d82f0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-product_target_segments]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597cbc0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597cbc0&gt; = Catalog()">table = 'product_target_segments', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597cbc0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597cbc0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_versions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597d100&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597d100&gt; = Catalog()">table = 'parameter_versions', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597d100&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597d100&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_current]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c350&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c350&gt; = Catalog()">table = 'parameter_current', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c350&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c350&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-promotion_proofs]" time="0.002"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt; = Catalog()">table = 'promotion_proofs', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-evidence_links]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c1d0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c1d0&gt; = Catalog()">table = 'evidence_links', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c1d0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597c1d0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-claim_withdrawals]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fce0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fce0&gt; = Catalog()">table = 'claim_withdrawals', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fce0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fce0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-knowledge_answer_reviews]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fa10&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fa10&gt; = Catalog()">table = 'knowledge_answer_reviews', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fa10&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597fa10&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-knowledge_gap_submissions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt; = Catalog()">table = 'knowledge_gap_submissions', trigger = 'lifecycle_reference'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11597dfa0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposals]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b00e0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b00e0&gt; = Catalog()">table = 'proposals', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b00e0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b00e0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_items]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b0fe0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b0fe0&gt; = Catalog()">table = 'proposal_items', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b0fe0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b0fe0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_item_versions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b1be0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b1be0&gt; = Catalog()">table = 'proposal_item_versions', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b1be0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b1be0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_revisions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b2f90&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b2f90&gt; = Catalog()">table = 'proposal_revisions', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b2f90&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x1159b2f90&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_sources]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e9f0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e9f0&gt; = Catalog()">table = 'proposal_sources', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e9f0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799e9f0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_submissions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt; = Catalog()">table = 'proposal_submissions', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_decisions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ea80&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ea80&gt; = Catalog()">table = 'proposal_decisions', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ea80&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799ea80&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-project_open_items]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt; = Catalog()">table = 'project_open_items', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f860&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_entries]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14440&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14440&gt; = Catalog()">table = 'category_knowledge_entries', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14440&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14440&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_current]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f470&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f470&gt; = Catalog()">table = 'category_knowledge_current', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f470&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x11799f470&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-product_target_segments]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a166f0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a166f0&gt; = Catalog()">table = 'product_target_segments', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a166f0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a166f0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_versions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a15340&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a15340&gt; = Catalog()">table = 'parameter_versions', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a15340&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a15340&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_current]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14fe0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14fe0&gt; = Catalog()">table = 'parameter_current', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14fe0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14fe0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-promotion_proofs]" time="0.002"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a16450&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a16450&gt; = Catalog()">table = 'promotion_proofs', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a16450&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a16450&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-evidence_links]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17650&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17650&gt; = Catalog()">table = 'evidence_links', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17650&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17650&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-claim_withdrawals]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17920&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17920&gt; = Catalog()">table = 'claim_withdrawals', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17920&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17920&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-knowledge_answer_reviews]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17710&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17710&gt; = Catalog()">table = 'knowledge_answer_reviews', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17710&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a17710&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-knowledge_gap_submissions]" time="0.001"><failure message="assert False&#10; +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14bc0&gt;)&#10; +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14bc0&gt; = Catalog()">table = 'knowledge_gap_submissions', trigger = 'category_lifecycle_clock'
+
+    @pytest.mark.parametrize("table", M3_GUARDED)
+    @pytest.mark.parametrize("trigger", ["lifecycle_reference", "category_lifecycle_clock"])
+    def test_each_actual_m3_guard_is_required_for_coverage(table, trigger):
+&gt;       assert schema_covered(Catalog())
+E       assert False
+E        +  where False = schema_covered(&lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14bc0&gt;)
+E        +    where &lt;test_m3_lifecycle_catalog.Catalog object at 0x117a14bc0&gt; = Catalog()
+
+pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py:111: AssertionError</failure></testcase><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_unknown_columns_tables_and_wrong_guard_implementation_fail_closed" time="0.003" /><testcase classname="tests.preproject.test_m3_lifecycle_catalog" name="test_frozen_migration_has_source_free_fast_path_and_exact_predecessor_down" time="0.000" /></testsuite></testsuites>

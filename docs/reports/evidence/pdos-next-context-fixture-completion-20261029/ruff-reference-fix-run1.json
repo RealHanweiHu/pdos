@@ -1,0 +1,15 @@
+{
+  "argv": [
+    ".venv/bin/ruff",
+    "check",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+    "tests/agent_kernel/eval_v0_ctx09_directory_support.py"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-29T23:05:19.802607+00:00",
+  "finished_at": "2026-10-29T23:05:19.879594+00:00",
+  "exit_code": 0,
+  "stdout_log": "ruff-reference-fix-run1.log",
+  "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+  "scope": "pure tests, collection or static lint only; no native execution, DB, server, Temporal or real model"
+}

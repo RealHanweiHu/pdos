@@ -1,0 +1,12 @@
+{
+  "scope": "Local preview guide and current progress projection only",
+  "files": {
+    "pdos-next/web/src/app/preview/page.tsx": "9e8d37e5f34f4cedb25da37e40c1b494b0ae2c70d5c042ace803c604b69f4153",
+    "pdos-next/web/src/app/plan/page.tsx": "ca3a510d7008bc5a8f2c3d7caafabb7d7aad52da5c03abedbf0dfa1de32e05be",
+    "pdos-next/web/src/components/preview-guide.tsx": "d632c14d8079b867862654f6788b75656bf45e5efdcd95339252b887966e0384",
+    "pdos-next/web/src/components/plan/current-milestones.tsx": "f711e35f50a377ea74f1d6474e486d8f67bf828070857a1593be621b8c5ffd42",
+    "pdos-next/web/src/lib/current-progress.ts": "b2b7447cf72c166d2320844264b4b46870f52a549c96719006c18dcfb4cd864a",
+    "pdos-next/web/src/lib/current-progress.test.ts": "1c26973b02b93d7b28d4838c4b41899509cb3d8cb172c85b97160d0e85ba6d36",
+    "pdos-next/web/src/lib/plan-source.ts": "61b0add076b5bba84bfbdfc84bf9562c9e1fc0573a3cf00048747bddc1394652"
+  }
+}

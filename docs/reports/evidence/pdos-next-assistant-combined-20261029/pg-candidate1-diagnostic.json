@@ -1,0 +1,695 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "runs": [
+    {
+      "id": "889e4985-e76e-47fc-805d-20729ed394ea",
+      "state": "waiting_input",
+      "error_code": null,
+      "created_at": "2026-10-29 08:37:10.815677+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [
+        {
+          "id": "b709201c-5eb9-4b27-9a95-107be277bb1a",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:7de171d028c4630f3d7bd477d26cbc2fe65fe828a94271b682b72868679f3e9a"
+        },
+        {
+          "id": "95ea12c4-56f6-4084-b76e-19ce20fd2aa4",
+          "tool": "category.read",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:b709201c-5eb9-4b27-9a95-107be277bb1a:0"
+        },
+        {
+          "id": "b8cd9ec5-e7d2-46a9-928d-6c778a49ae96",
+          "tool": "category.parameters.list",
+          "state": "failed",
+          "error_code": "SOURCE_UNAVAILABLE",
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:b709201c-5eb9-4b27-9a95-107be277bb1a:2"
+        },
+        {
+          "id": "af185f26-5586-44d3-941f-4e132f2628c1",
+          "tool": "assistant.search",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:b709201c-5eb9-4b27-9a95-107be277bb1a:1"
+        },
+        {
+          "id": "ec271891-8e0e-471c-98c8-235e746e9388",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:7a0d791b654ce78fc7ca74616de71749c70390f209b0e2d407ac77b4fac08a6c"
+        },
+        {
+          "id": "921f9ea4-ccb3-4146-95db-9950e57275f3",
+          "tool": "assistant.extract",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:ec271891-8e0e-471c-98c8-235e746e9388:0"
+        },
+        {
+          "id": "7d79dea0-fbf1-4890-935c-2c06dd246b7b",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:ef7e395247182c09461643dd33e8e384f45f67e769bcb51f2733cd90388d9bd8"
+        },
+        {
+          "id": "6f53401c-4b6f-423c-b532-e7ea575e44ef",
+          "tool": "assistant.passage.read",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:7d79dea0-fbf1-4890-935c-2c06dd246b7b:0"
+        },
+        {
+          "id": "28859f4e-c894-4847-afeb-745f84263da8",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:1c1ad078e1603245add74397969caeac9d729724013185959a88680a74efaed2"
+        },
+        {
+          "id": "9eef1029-303d-4d3b-a54d-69bdeb14843e",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:fde24d7fe962deded72c9c0866a4ff087e2167b43bb8449896852e537227f178"
+        },
+        {
+          "id": "c92304c1-72f8-494d-b3c5-e37c1e9ae54b",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:9eef1029-303d-4d3b-a54d-69bdeb14843e:1"
+        },
+        {
+          "id": "3605916b-beff-4b44-a03d-d6d459f34c3f",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:9eef1029-303d-4d3b-a54d-69bdeb14843e:2"
+        },
+        {
+          "id": "2b96c5ff-0185-42b3-84f8-896133244287",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:9eef1029-303d-4d3b-a54d-69bdeb14843e:0"
+        },
+        {
+          "id": "25002024-0116-4a77-86b9-c6997c19c5cd",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:772e37cb4ebac16942d85801fced9b27642eef1d2b83c6251a676fb5940349b2"
+        },
+        {
+          "id": "dc14044e-eccc-41de-a304-356a9ebda358",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:25002024-0116-4a77-86b9-c6997c19c5cd:0"
+        },
+        {
+          "id": "d894e8fb-157a-4570-9be5-5ce823767197",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:25002024-0116-4a77-86b9-c6997c19c5cd:1"
+        },
+        {
+          "id": "02f7b2dc-19a8-4df7-96ee-ee1a0651cdd2",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:25002024-0116-4a77-86b9-c6997c19c5cd:2"
+        },
+        {
+          "id": "b8deb28f-6000-4996-aebd-180b5c999659",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:6eea17c8cefa93c642984539c74719880ffe8a0f8dec0dca772cbe352f72ebbb"
+        },
+        {
+          "id": "6bdf83de-7255-497a-a64e-4ad90b3b6b76",
+          "tool": "result.read",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:b8deb28f-6000-4996-aebd-180b5c999659:0"
+        },
+        {
+          "id": "c63f96e0-2af9-431c-873a-3310672326ad",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:c20d3723d17fe5dd175e18f489b2a8765608a7a1fbfa98b078b4e949a43f75c8"
+        },
+        {
+          "id": "27fff96b-70c5-483d-b07e-5c8c3a27d735",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:c63f96e0-2af9-431c-873a-3310672326ad:0"
+        },
+        {
+          "id": "46f0f59a-e1e8-4179-9d90-56f39ab3cad6",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:c63f96e0-2af9-431c-873a-3310672326ad:1"
+        },
+        {
+          "id": "8281fb81-9a22-4cee-8122-5f9f57913216",
+          "tool": "category.parameters.list",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:889e4985-e76e-47fc-805d-20729ed394ea:model:c63f96e0-2af9-431c-873a-3310672326ad:2"
+        },
+        {
+          "id": "68b399b7-e4d1-40a6-aae4-dac2ed364219",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:b6b7be3d8baf4badfc6bf41b29fb043472e73484a426902af632b4fc28aa850e"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 58,
+          "type": "needs_input",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 57,
+          "type": "context_observed",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 56,
+          "type": "egress_checked",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 55,
+          "type": "model_started",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 54,
+          "type": "tool_finished",
+          "code": null,
+          "error_code": null,
+          "tool": "category.parameters.list"
+        },
+        {
+          "sequence": 53,
+          "type": "tool_finished",
+          "code": null,
+          "error_code": null,
+          "tool": "category.parameters.list"
+        },
+        {
+          "sequence": 52,
+          "type": "tool_finished",
+          "code": null,
+          "error_code": null,
+          "tool": "category.parameters.list"
+        },
+        {
+          "sequence": 51,
+          "type": "tool_started",
+          "code": null,
+          "error_code": null,
+          "tool": "category.parameters.list"
+        },
+        {
+          "sequence": 50,
+          "type": "tool_started",
+          "code": null,
+          "error_code": null,
+          "tool": "category.parameters.list"
+        },
+        {
+          "sequence": 49,
+          "type": "tool_started",
+          "code": null,
+          "error_code": null,
+          "tool": "category.parameters.list"
+        },
+        {
+          "sequence": 48,
+          "type": "context_observed",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 47,
+          "type": "egress_checked",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "37c923de-50d1-4c53-a5ab-6a54b1bd391c",
+      "state": "waiting_input",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "created_at": "2026-10-29 08:35:37.525181+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [
+        {
+          "id": "f0f57116-8c37-4fc2-891e-f173cbf8031f",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:6596a3db365fba1f6d9a68c75bcceecc06c7f37459163d6a9751acc758546748"
+        },
+        {
+          "id": "891f67f3-575b-415d-bd29-224b3b3b5c2d",
+          "tool": "assistant.search",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "agent:37c923de-50d1-4c53-a5ab-6a54b1bd391c:model:f0f57116-8c37-4fc2-891e-f173cbf8031f:0"
+        },
+        {
+          "id": "8a9c6494-48cf-472b-a413-dacdbf40f8ac",
+          "tool": "model",
+          "state": "unknown",
+          "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+          "call_key": "model:8b2c75c8b0cb66de1c998d489db35996cac4b5ac398e9ac9aa0941079d854402"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 12,
+          "type": "reconciliation_required",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 11,
+          "type": "run_state",
+          "code": null,
+          "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+          "tool": null
+        },
+        {
+          "sequence": 10,
+          "type": "context_observed",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 9,
+          "type": "egress_checked",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 8,
+          "type": "model_started",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 7,
+          "type": "tool_finished",
+          "code": null,
+          "error_code": null,
+          "tool": "assistant.search"
+        },
+        {
+          "sequence": 6,
+          "type": "tool_started",
+          "code": null,
+          "error_code": null,
+          "tool": "assistant.search"
+        },
+        {
+          "sequence": 5,
+          "type": "context_observed",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 4,
+          "type": "egress_checked",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 3,
+          "type": "model_started",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 2,
+          "type": "context_projected",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "a3092765-2565-4774-99e7-f395fd323369",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:35:31.195633+00:00",
+      "depth": null,
+      "calls": [],
+      "events": [
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "e0de112c-2bdc-4990-976a-f7379e1113f3",
+      "state": "cancelled",
+      "error_code": null,
+      "created_at": "2026-10-29 08:35:20.560970+00:00",
+      "depth": null,
+      "calls": [],
+      "events": [
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "5537b47b-b1f9-4b26-bff1-94dbef864877",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:35:08.980134+00:00",
+      "depth": null,
+      "calls": [],
+      "events": [
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "a7d46dfa-1747-4890-8b67-704203fa043e",
+      "state": "queued",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:57.320973+00:00",
+      "depth": null,
+      "calls": [],
+      "events": [
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "74266a85-3377-4b4a-9232-75398bf93a1c",
+      "state": "queued",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:41.032973+00:00",
+      "depth": null,
+      "calls": [
+        {
+          "id": "e1f983d5-7c0b-4da6-a64d-65da7ba5377c",
+          "tool": "model",
+          "state": "completed",
+          "error_code": null,
+          "call_key": "model:8db08afd22e189e2ecdbf4a9bf16319ef5c9e9a5f6ae2706f48dd80591c0cd37"
+        }
+      ],
+      "events": [
+        {
+          "sequence": 2,
+          "type": "context_observed",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "egress_checked",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "369b8367-1227-4290-97b8-d8f2d9dbbcdb",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:39.789634+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [],
+      "events": [
+        {
+          "sequence": 3,
+          "type": "retrieval_feedback",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "23d22be0-94b4-4e56-89cb-eb69b8c88dd3",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:37.287892+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [],
+      "events": [
+        {
+          "sequence": 3,
+          "type": "retrieval_feedback",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "049c4c45-a525-4187-a811-a50573853d72",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:35.183520+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [],
+      "events": [
+        {
+          "sequence": 3,
+          "type": "retrieval_feedback",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "25003ce2-31cd-41bf-85bd-b2e0bafeeffa",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:32.977191+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [],
+      "events": [
+        {
+          "sequence": 4,
+          "type": "retrieval_feedback",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 3,
+          "type": "synthetic_feedback_concurrency",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    },
+    {
+      "id": "fa79aae5-2b69-41c3-ab70-a8da933a671d",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-10-29 08:34:30.758594+00:00",
+      "depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "calls": [],
+      "events": [
+        {
+          "sequence": 3,
+          "type": "retrieval_feedback",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 2,
+          "type": "run_state",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        },
+        {
+          "sequence": 1,
+          "type": "accepted",
+          "code": null,
+          "error_code": null,
+          "tool": null
+        }
+      ]
+    }
+  ]
+}

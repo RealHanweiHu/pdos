@@ -8,7 +8,7 @@ import {
 } from "./knowledge-experience-native";
 
 const id = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
-const scope: KnowledgeScope = { categoryId: id(1), productId: id(2), projectId: "", principalId: id(3) };
+const scope = { categoryId: id(1), productId: id(2), projectId: "", principalId: id(3) } satisfies KnowledgeScope;
 function context(): KnowledgeNativeContext {
   return {
     scope: { category_id: scope.categoryId, product_id: scope.productId, project_id: null, principal_id: scope.principalId },

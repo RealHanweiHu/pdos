@@ -1,0 +1,109 @@
+{
+  "tests/enterprise_search/test_assistant_depth.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/enterprise_search/test_assistant_exclusions.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/enterprise_search/test_assistant_depth_integration.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/enterprise_search/test_scope_policy.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/enterprise_search/test_verification_actions.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/enterprise_search/test_verification_candidate_views.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_verification_kernel.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_bound_read_host.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_context_projection.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_context_budget.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_result_continuation.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_graph.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/enterprise_search/test_verification_adoption.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_context_admission.py": [
+    "depth-integration-and-X3-frozen-runners"
+  ],
+  "tests/agent_kernel/test_context_runtime.py": [
+    "depth-integration-and-X3-frozen-runners",
+    "observability-frozen-runner"
+  ],
+  "tests/agent_kernel/test_context_observability.py": [
+    "depth-integration-and-X3-frozen-runners",
+    "observability-frozen-runner"
+  ],
+  "tests/agent_kernel/test_context_process_metrics.py": [
+    "observability-frozen-runner"
+  ],
+  "tests/agent_kernel/test_context_admission_observation.py": [
+    "observability-frozen-runner"
+  ],
+  "tests/agent_kernel/test_retrieval_feedback.py": [
+    "retrieval-feedback-frozen-pure-selection"
+  ],
+  "tests/agent_kernel/test_work_state.py": [
+    "retrieval-feedback-frozen-pure-selection"
+  ],
+  "tests/test_personal_summary.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/test_personal_summary_runtime.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/test_personal_summary_delivery.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_automation_workflow.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_fulfillment_sources.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_rules.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_runtime.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_service_commands_sql.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_service_storage.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_service_transport.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_storage_schema.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_summary_calendar.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_trigger_sources.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/automations/test_trigger_time.py": [
+    "personal-summary-frozen-pure-selection"
+  ],
+  "tests/enterprise_search/test_action_sources.py": [
+    "verification-source-guard-compatibility"
+  ]
+}

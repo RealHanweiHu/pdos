@@ -1,0 +1,15 @@
+{
+  "user_authorized_candidate_authoring": true,
+  "golden_root_modified": false,
+  "corpus_unchanged_across_runs": true,
+  "only_negative_scope_labels_changed": [
+    "ENG-07",
+    "QUA-07",
+    "PRD-07",
+    "PUR-07"
+  ],
+  "positive_cases_prompts_labels_and_order_unchanged": true,
+  "technical_source_label_review": "Independent Sol xhigh agent read frozen corpus/questions, no retrieval outputs; positive facts, full identifiers and private-source mappings consistent.",
+  "human_review": "not_recorded",
+  "model_answer_quality": "not_run"
+}

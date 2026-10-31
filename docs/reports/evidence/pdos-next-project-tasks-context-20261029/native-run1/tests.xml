@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="7" time="120.657" timestamp="2026-10-29T14:13:32.076313-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_actual_current_task_plan_unknown_and_peer_receipt_match_owner_guards" time="20.464"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 202&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">tasks = namespace(setup=&lt;isolated synthetic test scope&gt;, project_id=UUID('4c80ee02-278b-4bf1-b10b-49de21206f93'), original_id=...ef92a8a7b6'), humidity_id=UUID('7c184705-ebf4-44f1-9c24-1ced0c04effa'), plan_id='194f2276-8bb6-493c-a61a-0082cf277680')
+
+    def test_actual_current_task_plan_unknown_and_peer_receipt_match_owner_guards(tasks):
+        work, setup = tasks, tasks.setup
+        flow.execute(work, flow.ACCEPT, flow.payload(work, task=flow.task(work, "assigned")),
+                     actor=setup.peer)
+        _, commitment = flow.execute(work, flow.COMMIT, flow.payload(
+            work, task=flow.task(work, "accepted"), recipient_id=str(setup.human),
+            outcome_keys=["review"], promised_at="2026-11-10T02:00:00Z",
+            original_timezone="Asia/Shanghai", calendar_id=None, replaces=None,
+        ), actor=setup.peer)
+        current, statements = measured(work)
+        tasks_by_id = {task.task_id: task for task in current[0]}
+        pressure, humidity = tasks_by_id[str(work.pressure_id)], tasks_by_id[str(work.humidity_id)]
+        assert pressure.record_status == "accepted" and pressure.assignee_id == str(setup.peer)
+        assert pressure.plan.latest_finish == "2026-11-08T02:00:00Z"
+        assert pressure.plan.date_nature == "forecast" and pressure.plan.state == "available"
+        assert pressure.commitments[0].reference.receipt_id == commitment["id"]
+        assert pressure.commitments[0].promised_at.startswith("2026-11-10")
+        assert humidity.assignee_id is None and humidity.plan.latest_finish is None
+        assert humidity.plan.unknown_reasons and humidity.commitments == []
+        assert not current[6] and {row["artifact_id"] for row in current[3]} == {work.source["id"]}
+        assert all(sum(marker in sql for sql in statements) == 1 for marker in (
+            "project_work_task_heads", "project_work_commitment_heads", "project_work_receipt_groups"))
+        with flow.scoped(work) as session:
+            for ref in current[2]:
+                if ref["kind"] == "work_task":
+                    row = session.get(WorkTaskVersion, UUID(ref["id"]))
+                    owner.retained(session, setup.ctx, setup.product, row)
+                    owner.sources_current(session, setup.ctx, setup.product, row.source_basis)
+&gt;       _, _, actual = project_facts(work)
+                       ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_project_work_task_context_pg.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_work_task_context_pg.py:95: in project_facts
+    identity, _ = api_start(setup, product_id=str(setup.product), project_id=str(work.project_id),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, personal = False
+body = {'product_id': '3bb670eb-0e9b-4e76-865b-abcd6472c6fa', 'project_id': '4c80ee02-278b-4bf1-b10b-49de21206f93', 'goal': '按当前项目权威任务核对负责人、预测与承诺。'}
+
+    def start(setup, *, personal=False, **body):
+        response = setup.client.post(path(setup, personal=personal), headers=setup.headers, json={
+            "goal": "先核对汽车充气泵，保留压力单位未知，不建立虚拟项目。",
+            "idempotency_key": str(uuid4()), **body,
+        })
+&gt;       assert response.status_code == 202, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 202
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_run_continuation.py:31: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_actual_metadata_query_count_does_not_grow_with_task_count" time="12.164" /><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_native_task_version_update_preserves_old_answer_and_refreshes_current_facts" time="11.774"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 202&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">tasks = namespace(setup=&lt;isolated synthetic test scope&gt;, project_id=UUID('80d7d4b4-d3ac-490a-87d2-b8dde155ecbd'), original_id=...ecd128c0da'), humidity_id=UUID('b3be1407-32ed-4477-aa86-efcce2e1ad10'), plan_id='f4f4ae07-fdff-48a0-90f3-9bb5fb207e4b')
+
+    def test_native_task_version_update_preserves_old_answer_and_refreshes_current_facts(tasks):
+        work, setup = tasks, tasks.setup
+&gt;       scope, bootstrap, current = project_facts(work)
+                                    ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_project_work_task_context_pg.py:168: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_work_task_context_pg.py:95: in project_facts
+    identity, _ = api_start(setup, product_id=str(setup.product), project_id=str(work.project_id),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, personal = False
+body = {'product_id': '666461b5-e839-4491-945e-a0693fd7313e', 'project_id': '80d7d4b4-d3ac-490a-87d2-b8dde155ecbd', 'goal': '按当前项目权威任务核对负责人、预测与承诺。'}
+
+    def start(setup, *, personal=False, **body):
+        response = setup.client.post(path(setup, personal=personal), headers=setup.headers, json={
+            "goal": "先核对汽车充气泵，保留压力单位未知，不建立虚拟项目。",
+            "idempotency_key": str(uuid4()), **body,
+        })
+&gt;       assert response.status_code == 202, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 202
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_run_continuation.py:31: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_actual_source_withdrawal_blocks_frozen_context_and_canonical_source_guard" time="11.933"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 202&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">tasks = namespace(setup=&lt;isolated synthetic test scope&gt;, project_id=UUID('59a288c9-cb70-452c-8f65-c972eed516f5'), original_id=...5a6e5597f9'), humidity_id=UUID('65c4685f-a716-407b-bfed-42c96d1ac910'), plan_id='d3e1cfec-e448-4b99-b64c-338b00fe2782')
+
+    def test_actual_source_withdrawal_blocks_frozen_context_and_canonical_source_guard(tasks):
+        work, setup = tasks, tasks.setup
+&gt;       scope, bootstrap, _ = project_facts(work)
+                              ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_project_work_task_context_pg.py:198: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_work_task_context_pg.py:95: in project_facts
+    identity, _ = api_start(setup, product_id=str(setup.product), project_id=str(work.project_id),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, personal = False
+body = {'product_id': '0dc9d07f-e369-4cf9-9444-5d44b836889f', 'project_id': '59a288c9-cb70-452c-8f65-c972eed516f5', 'goal': '按当前项目权威任务核对负责人、预测与承诺。'}
+
+    def start(setup, *, personal=False, **body):
+        response = setup.client.post(path(setup, personal=personal), headers=setup.headers, json={
+            "goal": "先核对汽车充气泵，保留压力单位未知，不建立虚拟项目。",
+            "idempotency_key": str(uuid4()), **body,
+        })
+&gt;       assert response.status_code == 202, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 202
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_run_continuation.py:31: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_actual_ordinary_work_fact_tampering_is_rejected_without_changing_projection" time="11.339" /><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_scope_grant_loss_cannot_reveal_task_context" time="11.695"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 202&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">tasks = namespace(setup=&lt;isolated synthetic test scope&gt;, project_id=UUID('425b42c0-443b-46bb-bca1-38224699afd7'), original_id=...0eee69a1b1'), humidity_id=UUID('a80ecef9-f291-485a-9f79-bd8171aa73ad'), plan_id='d7fd9f18-805a-4777-bf7d-53429454abce')
+
+    def test_scope_grant_loss_cannot_reveal_task_context(tasks):
+        work, setup = tasks, tasks.setup
+&gt;       scope, bootstrap, _ = project_facts(work)
+                              ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_project_work_task_context_pg.py:230: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_work_task_context_pg.py:95: in project_facts
+    identity, _ = api_start(setup, product_id=str(setup.product), project_id=str(work.project_id),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, personal = False
+body = {'product_id': 'a87cbd1d-02a4-4889-9fd1-a4818ba6d46b', 'project_id': '425b42c0-443b-46bb-bca1-38224699afd7', 'goal': '按当前项目权威任务核对负责人、预测与承诺。'}
+
+    def start(setup, *, personal=False, **body):
+        response = setup.client.post(path(setup, personal=personal), headers=setup.headers, json={
+            "goal": "先核对汽车充气泵，保留压力单位未知，不建立虚拟项目。",
+            "idempotency_key": str(uuid4()), **body,
+        })
+&gt;       assert response.status_code == 202, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 202
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_run_continuation.py:31: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_project_work_task_context_pg" name="test_neighbor_project_native_task_does_not_enter_selected_project" time="14.899"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 202&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code">tasks = namespace(setup=&lt;isolated synthetic test scope&gt;, project_id=UUID('d258d254-1cce-4cb7-81db-40723521b560'), original_id=...e7b18efa2a'), humidity_id=UUID('33af689b-aac2-4fa8-a3b5-9bf7874ad036'), plan_id='1ae397cc-a2c3-41a4-a739-55d9d7de6d24')
+
+    def test_neighbor_project_native_task_does_not_enter_selected_project(tasks):
+        from hashlib import sha256
+        from types import SimpleNamespace
+    
+        work = tasks
+        neighbor_setup = copy(work.setup)
+        neighbor = create_g0_project(neighbor_setup, visibility="category", name="相邻P9合成项目")
+        text = "相邻项目独有记录，不作为所选P8的事实。"
+        registered = post(neighbor_setup, cmd(neighbor_setup, "evidence.artifact.register", {
+            "title": "NEIGHBOR_SOURCE_ONLY", "content": text, "source_label": "Synthetic fixture",
+            "visibility": "category",
+        }))
+        assert registered.status_code == 200, registered.text
+        other = SimpleNamespace(setup=neighbor_setup, project_id=UUID(neighbor.project_id), source={
+            "kind": "artifact", "id": registered.json()["subject_id"], "revision": 1,
+            "position": "line:1;quote_sha256:" + sha256(text.encode()).hexdigest(),
+        })
+        neighbor_task, _ = create_task(other, "NEIGHBOR_TASK_ONLY")
+&gt;       _, _, actual = project_facts(work)
+                       ^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_project_work_task_context_pg.py:260: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_work_task_context_pg.py:95: in project_facts
+    identity, _ = api_start(setup, product_id=str(setup.product), project_id=str(work.project_id),
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+setup = &lt;isolated synthetic test scope&gt;, personal = False
+body = {'product_id': '0252df01-2e8b-4c4f-adfd-45d6145160fe', 'project_id': 'd258d254-1cce-4cb7-81db-40723521b560', 'goal': '按当前项目权威任务核对负责人、预测与承诺。'}
+
+    def start(setup, *, personal=False, **body):
+        response = setup.client.post(path(setup, personal=personal), headers=setup.headers, json={
+            "goal": "先核对汽车充气泵，保留压力单位未知，不建立虚拟项目。",
+            "idempotency_key": str(uuid4()), **body,
+        })
+&gt;       assert response.status_code == 202, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 202
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/agent_kernel/test_run_continuation.py:31: AssertionError</failure></testcase><testcase time="10.554" /></testsuite></testsuites>

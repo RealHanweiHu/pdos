@@ -1,0 +1,7 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head_after_final_tests": "s0_0829",
+  "exact_read_guard_preserved": true,
+  "database_not_created_or_cleaned_this_checkpoint": true
+}

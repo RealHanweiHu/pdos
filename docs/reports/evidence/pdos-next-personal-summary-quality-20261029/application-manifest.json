@@ -1,0 +1,167 @@
+{
+  "stage": "/tmp/pdos-personal-summary-quality-stage-20261029",
+  "authority": "Current live summary implementation; stage-only, no DB/model/outbound/build/migration/live edits. Apply listed files only.",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary.py",
+      "kind": "modified",
+      "base_sha256": "9db9b12716075419533d77cb58710d2dc84ae2a6037ccc527324cc6807ec40be",
+      "final_sha256": "5b0fab390489d0af0f602e5c0258ac01f3b126ab7dcecad4a8a33c4372fb98da",
+      "bytes": 23530,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_runtime.py",
+      "kind": "modified",
+      "base_sha256": "b18d2ec7fca14b5c53cd27c1fc37bdca2abcb2cba037685fd6e7269260b65e03",
+      "final_sha256": "80bd3bea8f00e43ca0113c49a51da26077852dc7c9ed17779949adbed2cd8600",
+      "bytes": 13844,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_delivery.py",
+      "kind": "modified",
+      "base_sha256": "47871d3bc15e98c9ab2d9bdda616b3c82f293e647e336e92e18c1de5dec0d1a6",
+      "final_sha256": "07ffeb1802ded509467fa3ca34122dd3c22133f7c892f677fe0e1174ccd7e396",
+      "bytes": 6469,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary.py",
+      "kind": "modified",
+      "base_sha256": "a61fb08379bbfce8ed56d53a0567ec6879f0d2768536b62f128cfddab13b011e",
+      "final_sha256": "5fc764d073a0949f631277b5bc5de2e93becb4d7600914a849215f2708a9714a",
+      "bytes": 13624,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/lib/personal-summary.ts",
+      "kind": "modified",
+      "base_sha256": "1fba0a64c6caa95bac2a696f52fa897e0e7b31d468c32eb1643644d4c94bfe9f",
+      "final_sha256": "0167b10c67a616cfc020ee3cf3680f8d7274bc83944ca458cb9d404f4d3464be",
+      "bytes": 13851,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/lib/personal-summary.test.mjs",
+      "kind": "modified",
+      "base_sha256": "621698cfd84a98e24ffbe6de9c4f22490ea9b7637f7e70c22f83b7f3cbd23a4a",
+      "final_sha256": "1d214d1c35d670f69e09ba21d052ffbfa5b0f6d392ec496eb787fd22fe65efe9",
+      "bytes": 7839,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary-settings.tsx",
+      "kind": "modified",
+      "base_sha256": "76c3d413a6dd124667464e475c583adbf9789d5eed8431f8ecc13b2235486172",
+      "final_sha256": "9d910d3867c3deade252f34868ee0d122f3f3077252f2954a1c819d32f34ba71",
+      "bytes": 8339,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/components/automation-rules.tsx",
+      "kind": "modified",
+      "base_sha256": "bef11cad31daf4c7da5dcdecde71d9d9e8c3c1403428dd75e81756516fe459de",
+      "final_sha256": "17d8d42791c5a9968c58784ec9327763c9ba29773725fcad0d6f2e93b8647ed3",
+      "bytes": 32846,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/components/automation-rules.test.mjs",
+      "kind": "modified",
+      "base_sha256": "4e113ddd033ebc9b6428e91ed0d74d93958c7745c0826467d084405cb91d1430",
+      "final_sha256": "6fca2cc280a8ef1f25021d7be69e4274e073c37639703637cbb4db2aa10bc169",
+      "bytes": 26673,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/personal-summary-result.tsx",
+      "kind": "modified",
+      "base_sha256": "a1f0131ecef70d704dbb6ca619d53644c58d6a207234d476224cd5de5dc6b3c2",
+      "final_sha256": "30da975ea815adf84604b7d5ca28ec3b1c2f944007cc2cef6e460c8709242ebc",
+      "bytes": 9749,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary.test.mjs",
+      "kind": "modified",
+      "base_sha256": "735186fb32639e7668cfe1f74bae4f0244f3b8613199a1dfd8ff9fa093a4fdcb",
+      "final_sha256": "103e95362696e9661d10c54a46a958750574b77adcca3e42e87234f36533503a",
+      "bytes": 6993,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/personal-summary-route.test.mjs",
+      "kind": "modified",
+      "base_sha256": "dd2ea768cd00948dfd3e01ae7e44036c496190e8dc37ff84b8740ea2b0ef5c8e",
+      "final_sha256": "585184c3e187019368deb11ba2b4adfa200f2e07ea6029bdcfe08c2af1c2b78c",
+      "bytes": 4581,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "kind": "modified",
+      "base_sha256": "b330534a457e1015267219b58364dad9e0d6a352e6a79a5b2eb9d95ae9560471",
+      "final_sha256": "514223abfb2a08b19a85c6c74aa7feb741df9770fe43769f6f521e1e2d8b6987",
+      "bytes": 82857,
+      "phase": "bff-hook"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_quality.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "3c61071f39f3f1c386b4c364fd7729a9c500bb29bcd08317b19aebcb45f59f90",
+      "bytes": 9332,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_templates.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "9877ec5c55472357d4e4d95f65e81a95e78fa80d3f2b1a6789f6f4387c275755",
+      "bytes": 6820,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary_quality.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "3ebdc4070abfc4ea43b15b952e55761671915445650e42670d256644e37cc926",
+      "bytes": 12704,
+      "phase": "summary-quality"
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_personal_summary_quality_pg.py",
+      "kind": "new",
+      "base_sha256": null,
+      "final_sha256": "738c7f4dee324ad8a890bfceb8ba395206624d331300157e395d4ff7c7f68f76",
+      "bytes": 6746,
+      "phase": "summary-quality"
+    }
+  ],
+  "modified": 13,
+  "new": 4,
+  "conflicts_with_live_at_freeze": [],
+  "patches": {
+    "summary-quality.patch": "aeaa63c2ff437265c4707db4e95906ed93091d717c9621aa6df6aac83299cc2d",
+    "bff-summary-options.patch": "8f0c88e10438933ec65f24aa52ce229c67936ca000eb1209173c556518ce2d2e"
+  },
+  "checks": {
+    "backend_pure": "84 passed; DB/Temporal env removed; new tests also forbid Engine connection",
+    "frontend": "61 passed in six targeted files",
+    "ruff": "8 files passed",
+    "eslint": "9 files; zero warnings",
+    "typescript": "tsc --noEmit --incremental false passed; no build",
+    "pg": "2 native PG cases collected only; not executed",
+    "patch": "both exact-base patches checked, applied in scratch, all final SHA reverified"
+  },
+  "input_count": 2639,
+  "validation_inputs_sha256": "21e5aad425bee7a7bdf3926c33fa5e9a812cf056da0297d6f9384268e37459bd",
+  "remaining": [
+    "Root applies/tests actual ordinary PG Issue/CAPA and role facts; source PG drafts do not by themselves prove Automation/Temporal admission.",
+    "Browser checks of default/template change, date wording and native T1 rule activation remain.",
+    "Product/project approaching-gate dedicated entries require authoritative registered gate clock; current template only uses existing available facts.",
+    "No real DingTalk/outbound delivery added."
+  ],
+  "bff_rebase": "Only the summary-options hook was rebased from 5491753... to current live b330534...; context-options changes retained."
+}

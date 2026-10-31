@@ -16,6 +16,7 @@ from uuid import UUID
 
 from pydantic import ValidationError
 
+from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
 from pdos_next.models import Product
 from pdos_next.service import digest
@@ -79,15 +80,60 @@ def _historical_read(session, scope, call_id, read_kind, *, deny):
     check_run_binding(run, scope, for_write=False)
     if run.state not in {"queued", "running", "waiting_input", "completed", "partial"}:
         deny("run_inactive")
+    return _completed_read(session, run, scope, call_id, read_kind, deny=deny)
+
+
+def archived_citation_read(session, scope, call_id, *, deny):
+    """Only provenance for reissuing search metadata, never an execution/write proof.
+
+    Cancellation prevents all new work in that Run. Its sealed completed reads
+    can still identify sources for a new Run, which reauthorizes and extracts
+    them afresh. Business/compute/extraction proof consumers retain the strict
+    _historical_read entry point.
+    """
+    run = session.get(AgentRun, scope.run_id)
+    if run is None or scope != scope_for_run(run) or run.reverted_at:
+        deny("archive_scope_invalid")
+    if run.state not in {"failed", "cancelled"}:
+        actual, call, binding, arguments = _historical_read(
+            session, scope, call_id, "ordinary/v1", deny=deny
+        )
+    else:
+        original_epoch = run.cancel_epoch - int(run.state == "cancelled")
+        if original_epoch < 0:
+            deny("archive_epoch_invalid")
+        actual, call, binding, arguments = _completed_read(
+            session, run, scope, call_id, "ordinary/v1", deny=deny, epoch=original_epoch
+        )
+    if (
+        call.tool not in {
+            "assistant.search", "assistant.materials.read", "assistant.citations.read",
+            "conversation.history",
+        }
+        or binding.isolation != "main"
+    ):
+        deny("archive_tool_invalid")
+    return actual, call, binding, arguments
+
+
+def _completed_read(session, run, scope, call_id, read_kind, *, deny, epoch=None):
     # Both original principals must still have category access. The current RLS
     # transaction may be Human T1, so do not impersonate its old Agent actor when
-    # checking a model: KernelStore's product branch requires that actor context.
-    KernelStore(None).authority(session, replace(scope, product_id=None))
+    # checking product/project rows: those branches require that actor context.
+    # Check their exact stored binding under the actual reader's ordinary RLS below.
+    KernelStore(None).authority(session, replace(scope, product_id=None, project_id=None))
     if run.product_id is not None:
         product = session.get(Product, run.product_id)
         if (
             not product or product.tenant_id != run.tenant_id
             or product.category_id != run.category_id
+        ):
+            deny("scope_mismatch")
+    if run.project_id is not None:
+        project = session.get(Project, run.project_id)
+        if (
+            not project or project.tenant_id != run.tenant_id
+            or project.category_id != run.category_id or project.product_id != run.product_id
         ):
             deny("scope_mismatch")
     call = session.get(AgentToolCall, call_id)
@@ -110,12 +156,14 @@ def _historical_read(session, scope, call_id, read_kind, *, deny):
         deny("binding_invalid")
     for field in (
         "tenant_id", "category_id", "session_id", "requester_id", "writer_id",
-        "product_id", "proposal_id", "cancel_epoch", "private_context",
+        "product_id", "proposal_id", "private_context",
     ):
         if getattr(binding, field) != getattr(run, field):
             deny("scope_mismatch")
     if (
-        binding.run_id != run.id or binding.data_categories != tuple(sorted(run.data_categories))
+        binding.cancel_epoch != (run.cancel_epoch if epoch is None else epoch)
+        or binding.run_id != run.id
+        or binding.data_categories != tuple(sorted(run.data_categories))
         or binding.customer_identities != tuple(run.customer_identities)
     ):
         deny("scope_mismatch")

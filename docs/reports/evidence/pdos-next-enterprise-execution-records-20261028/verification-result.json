@@ -1,0 +1,22 @@
+{
+  "candidate": "fixed-execution-history-basis-and-source-family-pruning",
+  "verified_at_utc": "2026-10-28T22:35:25.947510+00:00",
+  "test_files": 40,
+  "passed": 356,
+  "failed": 0,
+  "errors": 0,
+  "skipped": 0,
+  "warnings": 242,
+  "duration_seconds": 881.624,
+  "database_target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0829",
+  "source_inputs": 208,
+  "changed": [],
+  "frontend_sources_unchanged": 660,
+  "frontend_baseline": "../pdos-next-enterprise-business-sources-20261028/result.md",
+  "real_models": false,
+  "embedding": false,
+  "goal_complete": false,
+  "log": "database-final.txt",
+  "junit": "database-final.junit.xml"
+}

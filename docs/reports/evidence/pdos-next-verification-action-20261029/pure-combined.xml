@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="4" failures="0" skipped="0" tests="4" time="1.257" timestamp="2026-10-28T23:40:37.652044-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="" name="" time="0.000"><error message="collection failure">ImportError while importing test module '/private/tmp/pdos-verification-combined-20261029/server/tests/enterprise_search/test_verification_adoption.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_adoption.py:12: in &lt;module&gt;
+    from pdos_next.enterprise_search import verification_adoption as adoption
+E   ImportError: cannot import name 'verification_adoption' from 'pdos_next.enterprise_search' (/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/pdos_next/enterprise_search/__init__.py)</error><error message="collection failure">ImportError while importing test module '/private/tmp/pdos-verification-combined-20261029/server/tests/enterprise_search/test_verification_actions.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_actions.py:20: in &lt;module&gt;
+    from pdos_next.enterprise_search import verification_actions as actions
+E   ImportError: cannot import name 'verification_actions' from 'pdos_next.enterprise_search' (/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/pdos_next/enterprise_search/__init__.py)</error><error message="collection failure">ImportError while importing test module '/private/tmp/pdos-verification-combined-20261029/server/tests/enterprise_search/test_verification_candidate_views.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_verification_candidate_views.py:10: in &lt;module&gt;
+    from pdos_next.enterprise_search import verification_candidate_views as views
+E   ImportError: cannot import name 'verification_candidate_views' from 'pdos_next.enterprise_search' (/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/pdos_next/enterprise_search/__init__.py)</error><error message="collection failure">ImportError while importing test module '/private/tmp/pdos-verification-combined-20261029/server/tests/agent_kernel/test_verification_kernel.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_verification_kernel.py:17: in &lt;module&gt;
+    from pdos_next.enterprise_search import verification_kernel
+E   ImportError: cannot import name 'verification_kernel' from 'pdos_next.enterprise_search' (/Users/huhanwei/Desktop/ai-native-R&amp;D-platform/pdos-next/server/pdos_next/enterprise_search/__init__.py)</error></testcase></testsuite></testsuites>

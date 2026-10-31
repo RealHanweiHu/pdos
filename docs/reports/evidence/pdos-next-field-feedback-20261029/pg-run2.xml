@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="6" time="160.389" timestamp="2026-10-29T05:55:17.475119-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_field_feedback_sources_pg" name="test_native_unlocated_intake_outbox_and_isolated_raw_text_keep_unknown_identity[False]" time="18.641" /><testcase classname="tests.enterprise_search.test_field_feedback_sources_pg" name="test_native_unlocated_intake_outbox_and_isolated_raw_text_keep_unknown_identity[True]" time="12.785" /><testcase classname="tests.enterprise_search.test_field_feedback_sources_pg" name="test_native_locate_response_fixed_versions_relations_and_current_destination" time="20.737" /><testcase classname="tests.enterprise_search.test_field_feedback_sources_pg" name="test_response_retains_parent_original_basis_after_direct_reads_change_and_revocation" time="18.486" /><testcase classname="tests.enterprise_search.test_field_feedback_sources_pg" name="test_response_inherits_real_uploaded_parent_customer_class_and_current_scan_gate" time="12.652" /><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]" time="76.196"><error message="failed on setup with &quot;AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code&quot;">change_work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '68726cf9-cc38-4628-ade7-209f27206637', 'project': ...: None}]}, issue_id=UUID('ecc01f51-422b-5544-bc82-c4e85c013803'), capa_id=UUID('28ad38e9-97e9-4586-87aa-11c414a7e5a6'))
+
+    @pytest.fixture
+    def all_sources(change_work):
+        work = change_work
+        quality = work.quality
+        person = SimpleNamespace(
+            **{
+                **vars(quality),
+                "tokens": {
+                    **quality.tokens,
+                    quality.human: quality.headers["Authorization"].removeprefix("Bearer "),
+                },
+            }
+        )
+        created(work)
+        register(person, "Synthetic recovery artifact", "Synthetic recovery source evidence.")
+&gt;       add_knowledge(person)
+
+tests/enterprise_search/test_recovery_pg.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+person = namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine(postgresql+psycopg://postgres:**...e, cancel_epoch=None, category_id=UUID('361b1c07-8297-40da-b55d-c58fe7935c8f'), agent_run_id=None, agent_call_id=None))
+index_ = 0
+
+    def add_knowledge(person, index_=0):
+        response = post(
+            person,
+            request(
+                person,
+                "category.knowledge.add",
+                {
+                    "kind": "boundary",
+                    "content": {"definition": f"Synthetic recovery knowledge {index_}"},
+                },
+            ),
+        )
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/enterprise_search/test_recovery_pg.py:67: AssertionError</error></testcase></testsuite></testsuites>

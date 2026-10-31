@@ -1,0 +1,9 @@
+{
+  "initial_checks": "skill-tests.txt",
+  "final_checks": "skill-tests-final.txt",
+  "final_result": "76 passed",
+  "changed_since_initial_manifest": [
+    "pdos-next/server/tests/agent_kernel/test_m3_skill_contracts.py"
+  ],
+  "current_manifest": "skill-manifest.json"
+}

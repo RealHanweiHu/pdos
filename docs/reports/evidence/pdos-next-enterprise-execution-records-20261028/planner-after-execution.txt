@@ -1,0 +1,8 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_business_profile_pg.py::test_native_source_planner_cost_and_warm_latency_without_jit
+  tests/enterprise_search/test_business_profile_pg.py:12: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_native_source_planner_cost_and_warm_latency_without_jit(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 1 warning in 3.32s

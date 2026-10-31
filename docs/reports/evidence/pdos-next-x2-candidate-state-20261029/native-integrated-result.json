@@ -1,0 +1,68 @@
+{
+  "tests": [
+    {
+      "name": "test_native_locator_link_admits_only_its_current_authorized_original[none]",
+      "class": "tests.agent_kernel.test_proposal_link_projection_pg",
+      "passed": true
+    },
+    {
+      "name": "test_native_locator_link_admits_only_its_current_authorized_original[new_scan]",
+      "class": "tests.agent_kernel.test_proposal_link_projection_pg",
+      "passed": true
+    },
+    {
+      "name": "test_native_locator_link_admits_only_its_current_authorized_original[withdraw_original]",
+      "class": "tests.agent_kernel.test_proposal_link_projection_pg",
+      "passed": true
+    },
+    {
+      "name": "test_native_locator_link_admits_only_its_current_authorized_original[expire_writer]",
+      "class": "tests.agent_kernel.test_proposal_link_projection_pg",
+      "passed": true
+    },
+    {
+      "name": "test_three_private_entries_have_actual_bound_context_and_readable_items[customer_request]",
+      "class": "tests.agent_kernel.test_proposal_context_pg",
+      "passed": true
+    },
+    {
+      "name": "test_three_private_entries_have_actual_bound_context_and_readable_items[new_product]",
+      "class": "tests.agent_kernel.test_proposal_context_pg",
+      "passed": true
+    },
+    {
+      "name": "test_three_private_entries_have_actual_bound_context_and_readable_items[derivative]",
+      "class": "tests.agent_kernel.test_proposal_context_pg",
+      "passed": true
+    },
+    {
+      "name": "test_domain_current_receipt_changes_readonly_projection_not_run_frozen_snapshot",
+      "class": "tests.agent_kernel.test_work_state_candidates_pg",
+      "passed": true
+    },
+    {
+      "name": "test_snapshot_receipt_is_projected_from_native_ledger_after_work_volume_loss",
+      "class": "tests.agent_kernel.test_work_state_candidates_pg",
+      "passed": true
+    },
+    {
+      "name": "test_personal_category_requires_actual_receipt_and_current_created_category_grant",
+      "class": "tests.agent_kernel.test_work_state_candidates_pg",
+      "passed": true
+    },
+    {
+      "name": "test_actual_main_graph_verification_candidate_is_carried_without_a_second_model",
+      "class": "tests.agent_kernel.test_work_state_candidates_temporal_pg",
+      "passed": true
+    }
+  ],
+  "unique_passed": 11,
+  "groups": {
+    "new_evidence_link": 4,
+    "existing_three_private_entries": 3,
+    "x2_native_candidates": 3,
+    "x2_actual_temporal": 1
+  },
+  "real_model_or_embedding": false,
+  "raw_log": "../pdos-next-assistant-combined-20261029/pg-evidence-x2-candidate-run1.txt"
+}

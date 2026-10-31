@@ -1,0 +1,338 @@
+{
+  "version": "context-native-observation/v1",
+  "case_id": "CTX-05",
+  "f_budget_tokens": 48000,
+  "native_binding_status": "bound",
+  "status": "native_control_checks_passed",
+  "scripted_provider": true,
+  "real_model_calls": 0,
+  "provider_dispatches": 3,
+  "context_budget": [
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 445,
+        "envelope": 1001
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 31940,
+      "fixed_over_half": true,
+      "admission_tokens": 36731,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 567,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 445,
+        "envelope": 1001
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32507,
+      "fixed_over_half": true,
+      "admission_tokens": 37384,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 871,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 445,
+        "envelope": 1001
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 32811,
+      "fixed_over_half": true,
+      "admission_tokens": 37733,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    }
+  ],
+  "bindings": {
+    "source_family": "knowledge",
+    "old_focus": {
+      "source_type": "knowledge",
+      "source_id": "8081e845-4954-4966-b374-5366caf1af12",
+      "lineage_id": "87bc5754-932e-4eb1-863b-277a4c61f9a1",
+      "version": 1,
+      "artifact_id": "5651befd-9557-47be-b558-491937c99828",
+      "artifact_revision": 1,
+      "receipt_id": "23074eae-84bc-47e2-979a-ba82f83007f2",
+      "definition": "A-17 v1；空载噪声78 dB。"
+    },
+    "new_focus": {
+      "source_type": "knowledge",
+      "source_id": "4263be7c-a7e6-41d4-8ffa-99e7727c3d4a",
+      "lineage_id": "339faf9a-67fe-4701-9560-af96121e6cd3",
+      "version": 2,
+      "artifact_id": "6d1b14f5-c9ff-453a-accd-2511ef131a97",
+      "artifact_revision": 1,
+      "receipt_id": "efc07d75-9027-4805-b58f-0f94029e124f",
+      "definition": "A-71，版本2，空载噪声82 dB。"
+    },
+    "state_before": {
+      "version": "agent-work-state/v1",
+      "revision": 2,
+      "session_id": "952af653-502b-4645-9f08-48fa0be4bf27",
+      "skills": [],
+      "citations": [],
+      "completed": [],
+      "questions": [],
+      "root_goal": {
+        "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+        "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+      },
+      "candidates": [],
+      "exclusions": [],
+      "unfinished": [],
+      "constraints": [
+        {
+          "id": "c4f7342f-2541-58a6-af38-d41d574d8ec0",
+          "text": "噪声上限仍用80 dB",
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+        },
+        {
+          "id": "ffd1ed5d-9e82-5324-bc4d-1988e5b09d46",
+          "text": "不要写通过结论",
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+        }
+      ],
+      "current_goal": {
+        "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+        "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+      },
+      "focus_objects": [
+        {
+          "id": "657e708b-fa79-41e8-9925-7b69ed1a1f76",
+          "kind": "category",
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9",
+          "version": 1
+        },
+        {
+          "kind": "source",
+          "id": "87bc5754-932e-4eb1-863b-277a4c61f9a1",
+          "version": 1,
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9",
+          "title": "品类知识 · boundary"
+        }
+      ],
+      "completed_count": 0,
+      "search_preferences": {
+        "scope": "same_category",
+        "include_customer_private": false
+      },
+      "context_selection": {
+        "version": 1,
+        "status": "available",
+        "focus": {
+          "source_type": "knowledge",
+          "source_id": "8081e845-4954-4966-b374-5366caf1af12",
+          "object_id": "87bc5754-932e-4eb1-863b-277a4c61f9a1",
+          "source_revision": 1,
+          "content_hash": "c761c991cd41f982a63004f6ceeffded0ffde4b02555d55e039af2665dd1569c",
+          "category_id": "657e708b-fa79-41e8-9925-7b69ed1a1f76",
+          "product_id": null,
+          "project_id": null,
+          "proposal_id": null,
+          "title": "品类知识 · boundary",
+          "private": false,
+          "customer_original": false
+        },
+        "version_mode": "fixed",
+        "versions": [
+          {
+            "source_type": "knowledge",
+            "source_id": "8081e845-4954-4966-b374-5366caf1af12",
+            "object_id": "87bc5754-932e-4eb1-863b-277a4c61f9a1",
+            "source_revision": 1,
+            "content_hash": "c761c991cd41f982a63004f6ceeffded0ffde4b02555d55e039af2665dd1569c",
+            "category_id": "657e708b-fa79-41e8-9925-7b69ed1a1f76",
+            "product_id": null,
+            "project_id": null,
+            "proposal_id": null,
+            "title": "品类知识 · boundary",
+            "private": false,
+            "customer_original": false
+          }
+        ],
+        "sources": null
+      },
+      "citation_directory": {
+        "tool": "assistant.citations.read",
+        "has_more": false,
+        "next_cursor": null
+      },
+      "search_context": {
+        "kind": "category",
+        "label": "当前品类的可读资料",
+        "scoped": false
+      },
+      "notes": [],
+      "estimated_tokens": 617,
+      "context_incomplete": false,
+      "missing": []
+    },
+    "state_after": {
+      "version": "agent-work-state/v1",
+      "revision": 3,
+      "session_id": "952af653-502b-4645-9f08-48fa0be4bf27",
+      "skills": [],
+      "citations": [],
+      "completed": [],
+      "questions": [],
+      "root_goal": {
+        "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+        "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+      },
+      "candidates": [],
+      "exclusions": [],
+      "unfinished": [],
+      "constraints": [
+        {
+          "id": "c4f7342f-2541-58a6-af38-d41d574d8ec0",
+          "text": "噪声上限仍用80 dB",
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+        },
+        {
+          "id": "ffd1ed5d-9e82-5324-bc4d-1988e5b09d46",
+          "text": "不要写通过结论",
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+        }
+      ],
+      "current_goal": {
+        "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+        "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9"
+      },
+      "focus_objects": [
+        {
+          "id": "657e708b-fa79-41e8-9925-7b69ed1a1f76",
+          "kind": "category",
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9",
+          "version": 1
+        },
+        {
+          "kind": "source",
+          "id": "339faf9a-67fe-4701-9560-af96121e6cd3",
+          "version": 2,
+          "run_id": "df9be5f1-8ffa-49c2-9369-aacb403caff9",
+          "title": "品类知识 · boundary"
+        }
+      ],
+      "completed_count": 0,
+      "context_selection": {
+        "version": 1,
+        "status": "available",
+        "focus": {
+          "source_type": "knowledge",
+          "source_id": "4263be7c-a7e6-41d4-8ffa-99e7727c3d4a",
+          "object_id": "339faf9a-67fe-4701-9560-af96121e6cd3",
+          "source_revision": 2,
+          "content_hash": "1514152e4b0ce7ae79410ea11d88bdd1cbde01d7308c4fb43d7d8fc1e1a76bb3",
+          "category_id": "657e708b-fa79-41e8-9925-7b69ed1a1f76",
+          "product_id": null,
+          "project_id": null,
+          "proposal_id": null,
+          "title": "品类知识 · boundary",
+          "private": false,
+          "customer_original": false
+        },
+        "version_mode": "fixed",
+        "versions": [
+          {
+            "source_type": "knowledge",
+            "source_id": "4263be7c-a7e6-41d4-8ffa-99e7727c3d4a",
+            "object_id": "339faf9a-67fe-4701-9560-af96121e6cd3",
+            "source_revision": 2,
+            "content_hash": "1514152e4b0ce7ae79410ea11d88bdd1cbde01d7308c4fb43d7d8fc1e1a76bb3",
+            "category_id": "657e708b-fa79-41e8-9925-7b69ed1a1f76",
+            "product_id": null,
+            "project_id": null,
+            "proposal_id": null,
+            "title": "品类知识 · boundary",
+            "private": false,
+            "customer_original": false
+          }
+        ],
+        "sources": null
+      },
+      "search_preferences": {
+        "scope": "same_category",
+        "include_customer_private": false
+      },
+      "citation_directory": {
+        "tool": "assistant.citations.read",
+        "has_more": false,
+        "next_cursor": null
+      },
+      "search_context": {
+        "kind": "category",
+        "label": "当前品类的可读资料",
+        "scoped": false
+      },
+      "notes": [],
+      "estimated_tokens": 617,
+      "context_incomplete": false,
+      "missing": []
+    },
+    "final_run_id": "63b0af6c-738f-46a8-9cc2-510f322867b3"
+  },
+  "model_quality_score": null,
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "binding_limitations": [],
+  "usage_basis": "unmeasured_scripted_zero_only"
+}

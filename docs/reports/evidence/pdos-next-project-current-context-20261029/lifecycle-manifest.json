@@ -1,0 +1,70 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "files": [
+    {
+      "path": "pdos-next/server/migrations/candidates/project_native_footprint_lifecycle.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "aee1d60e8b4b12b2ed9aea75573a340a5e59e497194995d61fa25d77e80f4cdc",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/migrations/candidates/project_native_footprint_lifecycle.py"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_sql.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "8c14496945a8932f8eeae7c13106e3472d5cdc4efbf5d67f7e9f5417b702091b",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_sql.py"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "operation": "new",
+      "old_sha256": null,
+      "new_sha256": "96b702b66591d336eb7ce7a5ec92c081b359810715cffa0d4a55777493e8e654",
+      "staged_path": "/tmp/pdos-project-footprint-binding-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py"
+    }
+  ],
+  "apply_only_listed_files": true,
+  "role": "unnumbered lifecycle candidate; root pins actual catalog and creates wrapper at actual head",
+  "documents": [
+    {
+      "path": "/tmp/pdos-project-footprint-binding-stage-20261029/supplemental/previous-functions.json",
+      "sha256": "99d0db6aa9d749e3404a5ea25d3b9a71dafd3960c835a29cac80cb18d5a64974"
+    },
+    {
+      "path": "/tmp/pdos-project-footprint-binding-stage-20261029/supplemental/previous-prosrc.json",
+      "sha256": "b5fb8212d36129ed4270b534edc23fbadec8e9a6c23aba1f38412b8763b84a9e"
+    },
+    {
+      "path": "/tmp/pdos-project-footprint-binding-stage-20261029/supplemental/native-functions.json",
+      "sha256": "aff6443b84a2a1950bd42f45ad6da083c32b37d5af30844b9b07adade56b56c7"
+    },
+    {
+      "path": "/tmp/pdos-project-footprint-binding-stage-20261029/supplemental/up.draft.sql",
+      "sha256": "142d5113168fc67e5729cdd77d659a095db8cbb51796466d3986f051b8852f6f"
+    },
+    {
+      "path": "/tmp/pdos-project-footprint-binding-stage-20261029/supplemental/down-history-guard.draft.sql",
+      "sha256": "117136404197861c68426714087ec75749d3fd3eb73ca617fbdd70c3b721bd2a"
+    },
+    {
+      "path": "/tmp/pdos-project-footprint-binding-stage-20261029/supplemental/down.draft.sql",
+      "sha256": "8463383ad56a89b6170547f5eb005361d65fb9673aab6bbe640d8f7a041102a6"
+    }
+  ],
+  "functions": [
+    "kernel_lifecycle_links(text,jsonb)",
+    "kernel_source_reference_gate()",
+    "kernel_source_reference_clock()"
+  ],
+  "predecessor": "0718 links/clock exact prosrc + 0761 exact gate. Current m3 graph delegates to this existing helper. No schemahead or migration applied.",
+  "validation": {
+    "pure": "2 passed",
+    "ruff": "3 files passed",
+    "actual_pg": "1 collected only; not executed"
+  },
+  "runtime_manifest_sha256": "a2df97bcd0205e6e530d0380c52273b35bbd82fc7fbd26ab030760d2b16714a7",
+  "wrapper": "Before upgrade/downgrade serialize agent_runs writes with SHARE ROW EXCLUSIVE table lock. Root verifies actual old prosrc/owner/ACL and freezes actual pg_get_functiondef. CREATE OR REPLACE preserves existing owners/ACL; no role/grant/policy changes. Downgrade guard runs with verified all-tenant admin visibility before restoring old functions.",
+  "downgrade": "Reject only native fixed identity/revision/product not covered by explicit read_sources. Old B records with full explicit coverage allow up/down/up; no new marker.",
+  "unchanged": "No m3 graph, SourceType, typed resolver, business fact, runtime UPDATE policy or existing history rewrite."
+}

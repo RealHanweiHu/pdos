@@ -1,0 +1,664 @@
+{
+  "run_id": "09a4cd67-3b34-408a-997c-aef7864e6e23",
+  "tenant_id": "db2f2770-f3f8-4e9c-8bcf-1cab01f29c71",
+  "state": "partial",
+  "error_code": null,
+  "result": {
+    "result": {
+      "actions": [],
+      "missing": [
+        {
+          "field": "system",
+          "estimated_tokens": 2850
+        },
+        {
+          "field": "tool_definitions",
+          "estimated_tokens": 36907
+        },
+        {
+          "field": "output_schema",
+          "estimated_tokens": 462
+        },
+        {
+          "field": "current_question",
+          "estimated_tokens": 49
+        },
+        {
+          "field": "work_state.root_goal",
+          "estimated_tokens": 39
+        },
+        {
+          "field": "work_state.current_goal",
+          "estimated_tokens": 64
+        },
+        {
+          "field": "work_state.focus_objects",
+          "estimated_tokens": 99
+        },
+        {
+          "field": "work_state.citations",
+          "estimated_tokens": 82
+        },
+        {
+          "field": "sources",
+          "estimated_tokens": 34
+        },
+        {
+          "field": "context.category",
+          "estimated_tokens": 30
+        },
+        {
+          "field": "context.product",
+          "estimated_tokens": 30
+        },
+        {
+          "field": "context.project",
+          "estimated_tokens": 392
+        },
+        {
+          "field": "context.personal_preferences",
+          "estimated_tokens": 68
+        },
+        {
+          "field": "context.work_followup_action",
+          "estimated_tokens": 206
+        },
+        {
+          "field": "context.assistant_depth",
+          "estimated_tokens": 123
+        },
+        {
+          "field": "work_state.version",
+          "estimated_tokens": 5
+        },
+        {
+          "field": "work_state.revision",
+          "estimated_tokens": 1
+        },
+        {
+          "field": "work_state.session_id",
+          "estimated_tokens": 9
+        },
+        {
+          "field": "work_state.completed_count",
+          "estimated_tokens": 1
+        },
+        {
+          "field": "work_state.context_selection",
+          "estimated_tokens": 146
+        },
+        {
+          "field": "work_state.search_preferences",
+          "estimated_tokens": 16
+        },
+        {
+          "field": "work_state.citation_directory",
+          "estimated_tokens": 19
+        },
+        {
+          "field": "work_state.search_context",
+          "estimated_tokens": 18
+        },
+        {
+          "field": "work_state.estimated_tokens",
+          "estimated_tokens": 1
+        },
+        {
+          "field": "work_state.context_incomplete",
+          "estimated_tokens": 2
+        },
+        {
+          "field": "skill_body[0]",
+          "estimated_tokens": 1970
+        },
+        {
+          "field": "skill_body[1]",
+          "estimated_tokens": 1450
+        },
+        {
+          "field": "conversation.root_goal",
+          "estimated_tokens": 24
+        },
+        {
+          "field": "conversation.turns[0].goal",
+          "estimated_tokens": 24
+        },
+        {
+          "field": "conversation.turns[0].historical_outcome",
+          "estimated_tokens": 41
+        }
+      ],
+      "recovery": {
+        "action": "reduce_required_context",
+        "new_run_required": false
+      },
+      "context_budget": {
+        "focus": 48000,
+        "window": 54048,
+        "cleanup": {
+          "reason": "no_eligible_results",
+          "applied": false,
+          "triggered": true,
+          "after_tokens": 50185,
+          "saved_tokens": 0,
+          "before_tokens": 50185,
+          "minimum_tokens": 9600,
+          "eligible_results": 0,
+          "replaced_results": 0,
+          "protected_results": 0,
+          "candidate_saved_tokens": 0,
+          "retained_latest_results": 0,
+          "cache_invalidation_from_message": null
+        },
+        "reserve": 6048,
+        "segments": {
+          "loop": 0,
+          "tools": 37369,
+          "skills": 1450,
+          "system": 2850,
+          "history": 322,
+          "envelope": 1648
+        },
+        "over_focus": true,
+        "reductions": [],
+        "estimated_total": 43639,
+        "fixed_over_half": true,
+        "admission_tokens": 50185,
+        "estimation_basis": "first_call_estimate",
+        "estimation_margin": 0.15,
+        "window_configured": true,
+        "calibration_factor": 1.15,
+        "fixed_admission_tokens": 47920
+      },
+      "context_incomplete": true
+    },
+    "status": "partial",
+    "summary": "context_incomplete：必需上下文超过当前模型预算，请缩小范围、清理本次携带或开新会话。",
+    "questions": [],
+    "unfinished": [
+      "system",
+      "tool_definitions",
+      "output_schema",
+      "current_question",
+      "work_state.root_goal",
+      "work_state.current_goal",
+      "work_state.focus_objects",
+      "work_state.citations",
+      "sources",
+      "context.category",
+      "context.product",
+      "context.project",
+      "context.personal_preferences",
+      "context.work_followup_action",
+      "context.assistant_depth",
+      "work_state.version",
+      "work_state.revision",
+      "work_state.session_id",
+      "work_state.completed_count",
+      "work_state.context_selection",
+      "work_state.search_preferences",
+      "work_state.citation_directory",
+      "work_state.search_context",
+      "work_state.estimated_tokens",
+      "work_state.context_incomplete",
+      "skill_body[0]",
+      "skill_body[1]",
+      "conversation.root_goal",
+      "conversation.turns[0].goal",
+      "conversation.turns[0].historical_outcome"
+    ]
+  },
+  "events": [
+    {
+      "sequence": 1,
+      "body": {
+        "type": "accepted",
+        "status": "queued",
+        "requested_skills": [
+          {
+            "key": "work_management",
+            "digest": "597ec05d1299db2a319d66e38c4aa27cf14b63468cf6599bd2a135220e681572",
+            "version": "0.1.1-draft"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 2,
+      "body": {
+        "key": "work_management",
+        "type": "skill_loaded",
+        "digest": "597ec05d1299db2a319d66e38c4aa27cf14b63468cf6599bd2a135220e681572",
+        "version": "0.1.1-draft",
+        "isolation": "main"
+      }
+    },
+    {
+      "sequence": 3,
+      "body": {
+        "type": "context_projected",
+        "fields": [
+          "assistant_depth",
+          "category",
+          "conversation",
+          "goal",
+          "personal_preferences",
+          "product",
+          "project",
+          "sources",
+          "work_followup_action",
+          "work_state"
+        ],
+        "issues": [],
+        "skills": [
+          {
+            "key": "work_management",
+            "digest": "597ec05d1299db2a319d66e38c4aa27cf14b63468cf6599bd2a135220e681572",
+            "version": "0.1.1-draft",
+            "load_event_id": "c35873fb-fffa-4e01-b140-63e536dbac35"
+          }
+        ],
+        "status": "projected",
+        "omitted": [],
+        "schema_digest": "07f9373d72130c02ac4cb88ae31cbaa4bfd1aaba8a5dff8429b925bd36994c41",
+        "content_digest": "03c6432165a3a1d7a7406003baa5c33007c448e0f758cc22d3d9c1d5aebe487b"
+      }
+    },
+    {
+      "sequence": 4,
+      "body": {
+        "turn": 1,
+        "type": "model_started"
+      }
+    },
+    {
+      "sequence": 5,
+      "body": {
+        "type": "context_admission_observed",
+        "focus": 48000,
+        "window": 54048,
+        "cleanup": {
+          "reason": "no_eligible_results",
+          "applied": false,
+          "triggered": true,
+          "after_tokens": 50185,
+          "saved_tokens": 0,
+          "before_tokens": 50185,
+          "minimum_tokens": 9600,
+          "eligible_results": 0,
+          "replaced_results": 0,
+          "protected_results": 0,
+          "candidate_saved_tokens": 0,
+          "retained_latest_results": 0,
+          "cache_invalidation_from_message": null
+        },
+        "history": {
+          "kept": 1,
+          "hidden": 0,
+          "carried": 1,
+          "updated": 0,
+          "truncated": 0,
+          "directories": 0,
+          "unclassified": 0
+        },
+        "missing": [
+          {
+            "field": "system",
+            "estimated_tokens": 2850
+          },
+          {
+            "field": "tool_definitions",
+            "estimated_tokens": 36907
+          },
+          {
+            "field": "output_schema",
+            "estimated_tokens": 462
+          },
+          {
+            "field": "current_question",
+            "estimated_tokens": 49
+          },
+          {
+            "field": "work_state.root_goal",
+            "estimated_tokens": 39
+          },
+          {
+            "field": "work_state.current_goal",
+            "estimated_tokens": 64
+          },
+          {
+            "field": "work_state.focus_objects",
+            "estimated_tokens": 99
+          },
+          {
+            "field": "work_state.citations",
+            "estimated_tokens": 82
+          },
+          {
+            "field": "sources",
+            "estimated_tokens": 34
+          },
+          {
+            "field": "context.category",
+            "estimated_tokens": 30
+          },
+          {
+            "field": "context.product",
+            "estimated_tokens": 30
+          },
+          {
+            "field": "context.project",
+            "estimated_tokens": 392
+          },
+          {
+            "field": "context.personal_preferences",
+            "estimated_tokens": 68
+          },
+          {
+            "field": "context.work_followup_action",
+            "estimated_tokens": 206
+          },
+          {
+            "field": "context.assistant_depth",
+            "estimated_tokens": 123
+          },
+          {
+            "field": "work_state.version",
+            "estimated_tokens": 5
+          },
+          {
+            "field": "work_state.revision",
+            "estimated_tokens": 1
+          },
+          {
+            "field": "work_state.session_id",
+            "estimated_tokens": 9
+          },
+          {
+            "field": "work_state.completed_count",
+            "estimated_tokens": 1
+          },
+          {
+            "field": "work_state.context_selection",
+            "estimated_tokens": 146
+          },
+          {
+            "field": "work_state.search_preferences",
+            "estimated_tokens": 16
+          },
+          {
+            "field": "work_state.citation_directory",
+            "estimated_tokens": 19
+          },
+          {
+            "field": "work_state.search_context",
+            "estimated_tokens": 18
+          },
+          {
+            "field": "work_state.estimated_tokens",
+            "estimated_tokens": 1
+          },
+          {
+            "field": "work_state.context_incomplete",
+            "estimated_tokens": 2
+          },
+          {
+            "field": "skill_body[0]",
+            "estimated_tokens": 1970
+          },
+          {
+            "field": "skill_body[1]",
+            "estimated_tokens": 1450
+          },
+          {
+            "field": "conversation.root_goal",
+            "estimated_tokens": 24
+          },
+          {
+            "field": "conversation.turns[0].goal",
+            "estimated_tokens": 24
+          },
+          {
+            "field": "conversation.turns[0].historical_outcome",
+            "estimated_tokens": 41
+          }
+        ],
+        "reserve": 6048,
+        "segments": {
+          "loop": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "tools": {
+            "actual_tokens": null,
+            "estimated_tokens": 37369
+          },
+          "skills": {
+            "actual_tokens": null,
+            "estimated_tokens": 1450
+          },
+          "system": {
+            "actual_tokens": null,
+            "estimated_tokens": 2850
+          },
+          "history": {
+            "actual_tokens": null,
+            "estimated_tokens": 322
+          },
+          "envelope": {
+            "actual_tokens": null,
+            "estimated_tokens": 1648
+          }
+        },
+        "warnings": [
+          "context_incomplete",
+          "fixed_over_half_focus"
+        ],
+        "isolation": "main",
+        "reductions": [],
+        "work_state": {
+          "revision": 1,
+          "item_counts": {
+            "citations": 1,
+            "completed": 0,
+            "questions": 0,
+            "candidates": 0,
+            "exclusions": 0,
+            "unfinished": 0,
+            "constraints": 0,
+            "focus_objects": 3
+          },
+          "context_incomplete": false
+        },
+        "fixed_over_half": true,
+        "admission_tokens": 50185,
+        "context_incomplete": true,
+        "estimated_input_tokens": 43639
+      }
+    },
+    {
+      "sequence": 6,
+      "body": {
+        "type": "context_incomplete",
+        "reason": "CONTEXT_INCOMPLETE",
+        "missing": [
+          {
+            "field": "system",
+            "estimated_tokens": 2850
+          },
+          {
+            "field": "tool_definitions",
+            "estimated_tokens": 36907
+          },
+          {
+            "field": "output_schema",
+            "estimated_tokens": 462
+          },
+          {
+            "field": "current_question",
+            "estimated_tokens": 49
+          },
+          {
+            "field": "work_state.root_goal",
+            "estimated_tokens": 39
+          },
+          {
+            "field": "work_state.current_goal",
+            "estimated_tokens": 64
+          },
+          {
+            "field": "work_state.focus_objects",
+            "estimated_tokens": 99
+          },
+          {
+            "field": "work_state.citations",
+            "estimated_tokens": 82
+          },
+          {
+            "field": "sources",
+            "estimated_tokens": 34
+          },
+          {
+            "field": "context.category",
+            "estimated_tokens": 30
+          },
+          {
+            "field": "context.product",
+            "estimated_tokens": 30
+          },
+          {
+            "field": "context.project",
+            "estimated_tokens": 392
+          },
+          {
+            "field": "context.personal_preferences",
+            "estimated_tokens": 68
+          },
+          {
+            "field": "context.work_followup_action",
+            "estimated_tokens": 206
+          },
+          {
+            "field": "context.assistant_depth",
+            "estimated_tokens": 123
+          },
+          {
+            "field": "work_state.version",
+            "estimated_tokens": 5
+          },
+          {
+            "field": "work_state.revision",
+            "estimated_tokens": 1
+          },
+          {
+            "field": "work_state.session_id",
+            "estimated_tokens": 9
+          },
+          {
+            "field": "work_state.completed_count",
+            "estimated_tokens": 1
+          },
+          {
+            "field": "work_state.context_selection",
+            "estimated_tokens": 146
+          },
+          {
+            "field": "work_state.search_preferences",
+            "estimated_tokens": 16
+          },
+          {
+            "field": "work_state.citation_directory",
+            "estimated_tokens": 19
+          },
+          {
+            "field": "work_state.search_context",
+            "estimated_tokens": 18
+          },
+          {
+            "field": "work_state.estimated_tokens",
+            "estimated_tokens": 1
+          },
+          {
+            "field": "work_state.context_incomplete",
+            "estimated_tokens": 2
+          },
+          {
+            "field": "skill_body[0]",
+            "estimated_tokens": 1970
+          },
+          {
+            "field": "skill_body[1]",
+            "estimated_tokens": 1450
+          },
+          {
+            "field": "conversation.root_goal",
+            "estimated_tokens": 24
+          },
+          {
+            "field": "conversation.turns[0].goal",
+            "estimated_tokens": 24
+          },
+          {
+            "field": "conversation.turns[0].historical_outcome",
+            "estimated_tokens": 41
+          }
+        ],
+        "reason_key": "required_context_exceeds_window",
+        "context_budget": {
+          "focus": 48000,
+          "window": 54048,
+          "cleanup": {
+            "reason": "no_eligible_results",
+            "applied": false,
+            "triggered": true,
+            "after_tokens": 50185,
+            "saved_tokens": 0,
+            "before_tokens": 50185,
+            "minimum_tokens": 9600,
+            "eligible_results": 0,
+            "replaced_results": 0,
+            "protected_results": 0,
+            "candidate_saved_tokens": 0,
+            "retained_latest_results": 0,
+            "cache_invalidation_from_message": null
+          },
+          "reserve": 6048,
+          "segments": {
+            "loop": 0,
+            "tools": 37369,
+            "skills": 1450,
+            "system": 2850,
+            "history": 322,
+            "envelope": 1648
+          },
+          "over_focus": true,
+          "reductions": [],
+          "estimated_total": 43639,
+          "fixed_over_half": true,
+          "admission_tokens": 50185,
+          "estimation_basis": "first_call_estimate",
+          "estimation_margin": 0.15,
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "fixed_admission_tokens": 47920
+        }
+      }
+    },
+    {
+      "sequence": 7,
+      "body": {
+        "type": "run_state",
+        "status": "partial",
+        "error_code": null
+      }
+    },
+    {
+      "sequence": 8,
+      "body": {
+        "type": "finished",
+        "status": "partial"
+      }
+    }
+  ],
+  "calls": []
+}

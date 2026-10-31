@@ -1,0 +1,4 @@
+{'revision': 1, 'origin': 'ai_draft', 'title': '你好'}
+{'revision': 2, 'origin': 'human', 'title': '合成验证：修订标题'}
+{'revision': 3, 'origin': 'human', 'title': '合成验证：另一窗口已保存'}
+conflict reload appended no extra revision

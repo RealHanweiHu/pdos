@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="23.479" timestamp="2026-10-29T12:49:24.087022-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_eval_v0_source_context_pg" name="test_eval_v0_native_source_context_admission[48000-CTX-02]" time="22.547"><failure message="TypeError: Object of type function is not JSON serializable">setup = &lt;isolated synthetic test scope&gt;, case_id = 'CTX-02', focus = 48000
+
+    @pytest.mark.parametrize("case_id", CASE_IDS)
+    @pytest.mark.parametrize("focus", [48000, 64000])
+    @pytest.mark.skipif(not explicit_target(), reason="Root must bind guarded isolated 53502/pdos_test")
+    def test_eval_v0_native_source_context_admission(setup, case_id, focus):
+        case = cases()[case_id]
+        sources, audience = register_sources(setup, case)
+        personal = case_id in {"CTX-03", "CTX-08"}
+        search = {"CTX-03": "V-017 V-071", "CTX-08": "银汀 R4"}.get(case_id)
+        cited = {sources["S8-A"]["artifact_id"]} if case_id == "CTX-08" else None
+        seed = ScriptedSourceProvider(
+            sources,
+            search=search,
+            cite=cited,
+            extract=case_id != "CTX-12",
+            private_summary=case_id == "CTX-08",
+        )
+        user_goals = [turn["content"] for turn in case["turns"] if turn["role"] == "user"]
+        goal = "\n".join(user_goals[:-1] or user_goals)
+        owner, scope, prior, _response = run_native(
+            setup, seed, focus, goal, sources=() if personal else sources.values(), personal=personal
+        )
+&gt;       first = observation(owner, scope, seed, phase="native_history")
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_eval_v0_source_context_pg.py:497: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_eval_v0_source_context_pg.py:418: in observation
+    json.dumps(
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/__init__.py:238: in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/encoder.py:200: in encode
+    chunks = self.iterencode(o, _one_shot=True)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/encoder.py:258: in iterencode
+    return _iterencode(o, 0)
+           ^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;json.encoder.JSONEncoder object at 0x146d207d0&gt;
+o = &lt;function BoundHost.model_step.&lt;locals&gt;.&lt;lambda&gt; at 0x146d9f380&gt;
+
+    def default(self, o):
+        """Implement this method in a subclass such that it returns
+        a serializable object for ``o``, or calls the base implementation
+        (to raise a ``TypeError``).
+    
+        For example, to support arbitrary iterators, you could
+        implement default like this::
+    
+            def default(self, o):
+                try:
+                    iterable = iter(o)
+                except TypeError:
+                    pass
+                else:
+                    return list(iterable)
+                # Let the base class default method raise the TypeError
+                return super().default(o)
+    
+        """
+&gt;       raise TypeError(f'Object of type {o.__class__.__name__} '
+                        f'is not JSON serializable')
+E       TypeError: Object of type function is not JSON serializable
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/json/encoder.py:180: TypeError</failure></testcase></testsuite></testsuites>

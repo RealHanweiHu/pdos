@@ -1,0 +1,157 @@
+{
+  "scope": "RAG 11.12 owned project discussion history",
+  "live_applied": true,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/session_presentation.py",
+      "change": "modified",
+      "base_sha256": "7be7ce6f05d4b00ae47a9c60b9c9df686bf4673f354b3924bdbbb90b4047603f",
+      "sha256": "f987544e93e4aa61e3c946cf6af69be085bfc145a18642b6cbc51cf0942df5d6",
+      "final_sha256": "f987544e93e4aa61e3c946cf6af69be085bfc145a18642b6cbc51cf0942df5d6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/session_views.py",
+      "change": "modified",
+      "base_sha256": "0a791cd97c67325935df234b4b3e19b47d3b082669b4f53c8e00a1603adebb5f",
+      "sha256": "c5eaa0c78319bde5c1fe7742ce5922944fea2ffb1832018662841d4c0168ad5b",
+      "final_sha256": "c5eaa0c78319bde5c1fe7742ce5922944fea2ffb1832018662841d4c0168ad5b"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_session_presentation.py",
+      "change": "modified",
+      "base_sha256": "3abb22195dd084329b22c165ebfdacae18617a313ae84551e2c44a7a69eeecf4",
+      "sha256": "7ef4d80781d0f901c7afc91a9892c146fe410121742ca9469551fadc04cd4f31",
+      "final_sha256": "7ef4d80781d0f901c7afc91a9892c146fe410121742ca9469551fadc04cd4f31"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_session_views.py",
+      "change": "modified",
+      "base_sha256": "93a2a29b86921b3af941b73417c9b98227bbc30674a39b7268203a99ab5ff223",
+      "sha256": "0f76464a86fe26e76c5d0400b4fce8efd1bafdad639cf80babeb553a2e72de86",
+      "final_sha256": "0f76464a86fe26e76c5d0400b4fce8efd1bafdad639cf80babeb553a2e72de86"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/route-pai-session-presentation.test.mjs",
+      "change": "modified",
+      "base_sha256": "6594c2ed5152460d8ed04659b81addffc6ef25cf5a52719bb78c4097d1eae169",
+      "sha256": "5e8e2930f7a9803c89cff147d8408302865dae77c1a5c1e46499b4eb51b7f169",
+      "final_sha256": "5e8e2930f7a9803c89cff147d8408302865dae77c1a5c1e46499b4eb51b7f169"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/route-pai-sessions.test.mjs",
+      "change": "modified",
+      "base_sha256": "797f136b6c6dcc439c4468f96a962bdfe071c38c8175f360a8fae20c236c4dce",
+      "sha256": "e78dac2ff77afce87b44f80c5bdcd85f25dfebcf94debaac4f2554ae19167c3c",
+      "final_sha256": "e78dac2ff77afce87b44f80c5bdcd85f25dfebcf94debaac4f2554ae19167c3c"
+    },
+    {
+      "path": "pdos-next/web/src/components/app-shell.tsx",
+      "change": "modified",
+      "base_sha256": "f7d052254e29dd6b25b3907e28edcfbaecce2edf96cbb0c2829e1b8be75efa26",
+      "sha256": "06bea97b4be43588eef3ac78fe1352e551b198eb7bf34880fce34c63c705c40c",
+      "final_sha256": "06bea97b4be43588eef3ac78fe1352e551b198eb7bf34880fce34c63c705c40c"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/session-history.test.mjs",
+      "change": "modified",
+      "base_sha256": "077136a2c901dc9b79db051f7012fba7cdc1cab6b6cf22d71d12737fb8f16f2c",
+      "sha256": "ebd8988c20263a58616df5b4a7c0d860500430f93484b41b61048e21b34d6cf4",
+      "final_sha256": "ebd8988c20263a58616df5b4a7c0d860500430f93484b41b61048e21b34d6cf4"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/session-history.tsx",
+      "change": "modified",
+      "base_sha256": "9f589d133c0ee4450bf3db5aa513c78cacd5c02b5fbf2a2d72bca87ed576c926",
+      "sha256": "3c2697c262d425ded4f136ddd6343c238ce8c3058c7d55133257a92c0d8c5b87",
+      "final_sha256": "3c2697c262d425ded4f136ddd6343c238ce8c3058c7d55133257a92c0d8c5b87"
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-activity.test.mjs",
+      "change": "modified",
+      "base_sha256": "e26ca983e52a323b45dd9b4f46ac0292087351de67522283e121dc5538877fe8",
+      "sha256": "0f10dbd85c503337619d1cf6092bbf1742b8740f6526bff62e09d0908094d56c",
+      "final_sha256": "0f10dbd85c503337619d1cf6092bbf1742b8740f6526bff62e09d0908094d56c"
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-activity.tsx",
+      "change": "modified",
+      "base_sha256": "760732749b4871d763d5da58552a66e31e5f8b00208997b87d6f9f5b82464d24",
+      "sha256": "44928746a6a9afe9f642906eca43fb4f60241ccc176b4ad51f13f185dbac09b7",
+      "final_sha256": "44928746a6a9afe9f642906eca43fb4f60241ccc176b4ad51f13f185dbac09b7"
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-cockpit.tsx",
+      "change": "modified",
+      "base_sha256": "480fff51cec991801b2feccac1e3b30869321fb62857acb5878282228c776627",
+      "sha256": "65011e67182515a8aa6c16143ef00516d9a5c4b026b1bf17991dd18e21a2d3ba",
+      "final_sha256": "65011e67182515a8aa6c16143ef00516d9a5c4b026b1bf17991dd18e21a2d3ba"
+    },
+    {
+      "path": "pdos-next/web/src/components/projects/project-workspace.tsx",
+      "change": "modified",
+      "base_sha256": "ad300ada94f8a6efc3323cec6a9c0f396051d1acf0702326d92e3da1e8b9292f",
+      "sha256": "3f90edb2806fb3f2074aa60211825a22334457600cca80c4133941c979d5e8bb",
+      "final_sha256": "3f90edb2806fb3f2074aa60211825a22334457600cca80c4133941c979d5e8bb"
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-session-presentation-proxy.ts",
+      "change": "modified",
+      "base_sha256": "b7a08dfc8fc32803d8d608a387ad96ca24afb492f64cbe46a68ca8b4cb4ede1c",
+      "sha256": "0175329cd6ae15f1ba00f65ccf62b30285656fb23214c028a7e9b9ff3391c12e",
+      "final_sha256": "0175329cd6ae15f1ba00f65ccf62b30285656fb23214c028a7e9b9ff3391c12e"
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-session-presentation.test.mjs",
+      "change": "modified",
+      "base_sha256": "790745690355c6b531e698557e5ea5b47641f8757c863b13813bed4f8f4237ea",
+      "sha256": "9cf82b78d306a538dcadc2ac48ad2e1437ac36fe0103cea0b7baa8d842d5867f",
+      "final_sha256": "9cf82b78d306a538dcadc2ac48ad2e1437ac36fe0103cea0b7baa8d842d5867f"
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-session-presentation.ts",
+      "change": "modified",
+      "base_sha256": "b8ff894bc9f39fcec213348366c993c7d1e1623d677d9997a63e9cc7c0dc23f9",
+      "sha256": "5197e9fccd6c21cb2a5c276443865650ed7a3cfffc60a35b623c0763fc5e77fb",
+      "final_sha256": "5197e9fccd6c21cb2a5c276443865650ed7a3cfffc60a35b623c0763fc5e77fb"
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-sessions-proxy.ts",
+      "change": "modified",
+      "base_sha256": "5758f978f451981a92ea201ff65e0f7a5ba0830026b4b370b7a9eb1cbd4b0bd1",
+      "sha256": "4b0f10ef0f6e160da0d4b88ded640b7112e6ffd80895cc6058315447ec3b7ae6",
+      "final_sha256": "4b0f10ef0f6e160da0d4b88ded640b7112e6ffd80895cc6058315447ec3b7ae6"
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-sessions.test.mjs",
+      "change": "modified",
+      "base_sha256": "6c3b7ead14f65410fee1f5244a84ed41452f81a13fcdf992620ce3dc677da165",
+      "sha256": "04becf9762bcf1da5e1d65d7f290e220f23f0b295f053fa1296ba65d4add5426",
+      "final_sha256": "04becf9762bcf1da5e1d65d7f290e220f23f0b295f053fa1296ba65d4add5426"
+    },
+    {
+      "path": "pdos-next/web/src/lib/pai-sessions.ts",
+      "change": "modified",
+      "base_sha256": "d2e907edac089970b4a608500554f328afa38d36e91037cc82af62612dce7a36",
+      "sha256": "c71a825233ecfaeb7dd9d741e6df69236c0137e8ae383fea19b8933ccd49632e",
+      "final_sha256": "c71a825233ecfaeb7dd9d741e6df69236c0137e8ae383fea19b8933ccd49632e"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_discussion_history_pg.py",
+      "change": "added",
+      "base_sha256": null,
+      "sha256": "57e0ba6b1c9266d8405bb8caa91cd0a4cc1e2058a7e4c89309163a98056b426d",
+      "final_sha256": "cd7e15f29117c02828ea33249f79126a69a33cbbe88164e92dca6fee639544a3"
+    }
+  ],
+  "checks": {
+    "backend_pure": 32,
+    "frontend_unique_segmented": 118,
+    "typecheck_exit": 0,
+    "ruff_files": 5,
+    "eslint_production_files": 9
+  },
+  "native_pg_executed": true,
+  "native_result": "pg-run2.xml",
+  "earlier_fixture_failure": "pg-run1.xml",
+  "fixture_delta": "native-fixture-delta.json"
+}

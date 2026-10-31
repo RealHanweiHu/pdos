@@ -1,0 +1,20 @@
+E501 Line too long (107 > 100)
+   --> pdos_next/agent_kernel/work_state.py:688:101
+    |
+686 |     @result.get("/v1/personal/agent-sessions/{session_id}/work-state/context-options")
+687 |     @result.get("/v1/categories/{category_id}/agent-sessions/{session_id}/work-state/context-options")
+688 |     def context_options(session_id: UUID, request: Request, query: str = Query(default="", max_length=120),
+    |                                                                                                     ^^^^^^^
+689 |                         object_id: UUID | None = None, ctx=context_dependency):
+690 |         from .context_corrections import options
+    |
+
+E501 Line too long (107 > 100)
+  --> tests/agent_kernel/test_context_correction_start.py:83:101
+   |
+81 |     result = asyncio.run(endpoint(data, ctx=ctx))
+82 |     assert result["run_id"] == str(run.id) and dispatched == [run.id] and len(reads) == 1
+83 |     assert len(effective.sources) == 2 and len(run.versions["requested_context_selection"]["sources"]) == 1
+   |                                                                                                     ^^^^^^^
+
+Found 2 errors.

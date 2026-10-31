@@ -1,0 +1,22 @@
+{
+  "goal": "完成日常助手/RAG v0.4 与上下文 v0.2",
+  "status": "checkpoint_passed_full_goal_incomplete",
+  "process_session": null,
+  "log": "database-final.txt",
+  "junit": "/tmp/pdos-execution-final-20261028.xml",
+  "scope": "fixed Build execution / TestRun result-action records, native compatibility and unchanged warm p95 limit",
+  "database": "53502/pdos_test",
+  "head": "s0_0829",
+  "real_models": false,
+  "pending": "No pending process for this candidate. Continue full goal from the sole active queue.",
+  "targeted_result": {
+    "passed": 23,
+    "failed": 0,
+    "skipped": 0,
+    "log": "execution-updated.txt"
+  },
+  "phase": "frozen 40-file final regression",
+  "expected_cases": 356,
+  "source_manifest": "source-manifest.json",
+  "result": "verification-result.json"
+}

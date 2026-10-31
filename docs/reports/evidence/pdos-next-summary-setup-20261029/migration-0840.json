@@ -1,0 +1,50 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0840",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/summary-setup-53502-before-0840.dump",
+  "backup_bytes": 99185347,
+  "backup_sha256": "31ebbd53c78c35953bb752d817cca280f5864962183719dace5707f11df862e9",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0840",
+      "existing_counts_unchanged": true,
+      "exact_function_definitions": true,
+      "existing_function_acl_unchanged": true
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0839",
+      "existing_counts_unchanged": true,
+      "exact_function_definitions": true,
+      "existing_function_acl_unchanged": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0840",
+      "existing_counts_unchanged": true,
+      "exact_function_definitions": true,
+      "existing_function_acl_unchanged": true
+    }
+  ],
+  "counts": {
+    "automation_rule_versions": 68,
+    "automation_service_grants": 34,
+    "automation_service_attempts": 33,
+    "automation_trigger_occurrences": 0,
+    "agent_runs": 5015,
+    "agent_tool_calls": 8960,
+    "agent_validation_budgets": 126,
+    "action_receipts": 47392,
+    "knowledge_answer_reviews": 11,
+    "knowledge_gap_submissions": 1
+  },
+  "new_guard_runtime_execute": {
+    "pdos_next_app": false,
+    "pdos_agent": false,
+    "pdos_next_auth": false,
+    "pdos_next_dispatch": false
+  },
+  "real_provider_accessed": false
+}

@@ -1,0 +1,87 @@
+Browser tab: 7, Title: "PDOS · 研发工作区", URL: "http://127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960&projectView=builds&panel=launch&build=f09bd1b3-1ef0-4cc9-9def-ee1e428ebfae&request=4e188e7d-477e-4338-ba79-40ff8af1dc97&run=5544b072-867e-42a5-ae4f-38b56e12b5a0".
+0 AXWebArea PDOS · 研发工作区, URL: 127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960&projectView=builds&panel=launch&build=f09bd1b3-1ef0-4cc9-9def-ee1e428ebfae&request=4e188e7d-477e-4338-ba79-40ff8af1dc97&run=5544b072-867e-42a5-ae4f-38b56e12b5a0
+	1 container
+		2 text PDOS · 研发工作区
+		3 link Description: 跳到工作内容, Value: 127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960&projectView=builds&panel=launch&build=f09bd1b3-1ef0-4cc9-9def-ee1e428ebfae&request=4e188e7d-477e-4338-ba79-40ff8af1dc97&run=5544b072-867e-42a5-ae4f-38b56e12b5a0#workspace-content
+		4 text PDOS
+		5 button 收起侧栏
+			6 image
+		7 button Description: 搜索或跳转, Help: 搜索或跳转（⌘K / Ctrl K）
+			8 text 搜索或跳转
+			9 text ⌘ K
+		10 container 工作区导航
+			11 link Description: 我的工作, Value: 127.0.0.1:57861/?area=work&category=7fcc114e-186a-4372-8f51-c6e5d37b2085
+			12 link Description: 收件箱, Value: 127.0.0.1:57861/?area=inbox&category=7fcc114e-186a-4372-8f51-c6e5d37b2085
+			13 link Description: 小Pai, Value: 127.0.0.1:57861/?area=pai
+			14 link Description: 项目, Value: 127.0.0.1:57861/?area=projects&category=7fcc114e-186a-4372-8f51-c6e5d37b2085
+			15 link Description: 项目集, Value: 127.0.0.1:57861/?area=programs&category=7fcc114e-186a-4372-8f51-c6e5d37b2085
+			16 link Description: 知识, Value: 127.0.0.1:57861/?area=knowledge&category=7fcc114e-186a-4372-8f51-c6e5d37b2085
+			17 container 最近的在办项目
+				18 text 常用项目
+				19 link Description: Shared synthetic project, Value: 127.0.0.1:57861/?area=cockpit&category=7fcc114e-186a-4372-8f51-c6e5d37b2085&project=8f8b24bb-fffd-488e-8cf4-c64042253960
+		20 link Description: 设置, Value: 127.0.0.1:57861/?area=settings&category=7fcc114e-186a-4372-8f51-c6e5d37b2085
+		21 text Synthetic owner
+		22 text 本地合成环境
+		23 text 工作空间
+		24 link Description: 项目, Value: 127.0.0.1:57861/?area=projects
+		25 text Shared synthetic project
+		26 button 切换明暗主题
+			27 image
+		28 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			29 image
+		30 container workspace-content
+			31 container
+				32 button 返回项目列表
+				33 heading Shared synthetic project, Value: 1
+					34 text Shared synthetic project
+				35 button 阶段待确认
+					36 text 阶段待确认
+					37 image
+				38 text 负责人  Synthetic owner（本人）
+			39 tab group 项目工作区视图
+				40 tab (selectable, settable, boolean) 概览, Value: 0, ID: project-tab-now
+				41 tab (selectable, settable, boolean) 任务, Value: 0, ID: project-tab-tasks
+				42 tab (selectable, settable, boolean) 计划, Value: 0, ID: project-tab-plan
+				43 tab (selectable, settable, boolean) 文件, Value: 0, ID: project-tab-docs
+			44 container
+				45 button (collapsed) Description: 更多项目视图, Help: 更多, ID: project-tab-more, Secondary Actions: Expand
+					46 text 更多
+					47 image
+			48 container Description: 更多项目视图, ID: project-panel-builds
+				49 container 试制与验证
+					50 container
+						51 heading 试制与验证, Value: 2
+							52 text 试制与验证
+						53 text 从试制轮次到实物、交接与验证，逐项记录实际进展。
+					54 container 试制与验证视图
+						55 checkbox 试制轮次, Value: 0
+						56 checkbox 开工条件, Value: 0
+						57 checkbox 实际产出, Value: 0
+						58 checkbox 验证准备, Value: 0
+						59 checkbox 请求与方法, Value: 0
+						60 checkbox 交样与接收, Value: 0
+						61 checkbox 承诺与开测, Value: 1
+						62 checkbox 结果与处置, Value: 0
+						63 checkbox 试产, Value: 0
+					84 container 专业记录
+						85 container
+							86 text 试制轮次
+							87 pop up button (disabled, collapsed, settable) Description: 专业记录试制轮次, Value: 正在核对指定轮次…, Secondary Actions: Expand
+								88 menu
+									89 (disabled) 选择本项目轮次
+									90 (disabled) 正在核对指定轮次…
+						91 container
+							92 text 查找记录
+							93 search text field (settable) 查找专业记录
+						94 checkbox (settable, integer) Description: 包含历史版本, Value: 0
+						95 button 刷新专业记录
+							96 image
+						97 text 正在读取本项目轮次…
+					78 button (collapsed) 维护记录与专业办理, Secondary Actions: Expand
+						79 text 维护记录与专业办理
+						80 image
+			81 button (collapsed) 项目资料与更多操作, Secondary Actions: Expand
+				82 text 项目资料与更多操作
+		83 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 61 checkbox 承诺与开测, Value: 1

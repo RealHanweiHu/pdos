@@ -19,7 +19,7 @@ export type SkillReceipt = { id: string; operation: string; category_id: string;
   result: { skill_key: string; enabled: boolean; qualification_changed: boolean } };
 
 const titles: Record<string, string> = { category_framing: "品类边界澄清", competitor_comparison: "竞品比较", derivative_diff: "派生差异分析", gap_check: "资料查漏", jtbd: "用户任务分析", opportunity_scoring: "机会评估", option_comparison: "方案比较", price_band: "价格带分析", proposal_drafting: "立项提案起草", public_research: "公开研究", review_pain_clustering: "用户痛点归类", rfq_extraction: "客户要求抽取" };
-export function skillTitle(key: string) { return titles[key] ?? key; }
+export function skillTitle(key: string) { return ({ build_execution: "试制与制造准备", quality_issue: "质量问题与整改", test_verification: "测试与验证", change_control: "变更控制", release_handover: "发布与交接", work_management: "项目行动与承诺", ...titles } as Record<string, string>)[key] ?? key; }
 export function skillPendingKey(principalId: string, categoryId: string) { return `pdos-skill-toggle:v1:${principalId}:${categoryId}`; }
 
 export function parseSkillPending(raw: string, categoryId: string): SkillCommand {

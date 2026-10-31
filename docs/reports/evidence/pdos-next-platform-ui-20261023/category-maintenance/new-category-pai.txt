@@ -1,0 +1,180 @@
+Browser tab: 8, Title: "PDOS · 完整体验设计", URL: "http://localhost:57859/ui-lab/platform?view=category&role=product".
+0 AXWebArea PDOS · 完整体验设计, URL: localhost:57859/ui-lab/platform?view=category&role=product
+	1 text PDOS 完整体验
+	27 text 设计预览 · 全部内容为合成示例
+	2 container
+		3 text 预览身份
+		4 pop up button (collapsed, settable) Description: 预览身份, Value: 产品经理, Secondary Actions: Expand
+			5 menu
+				6 (selected) 产品经理
+				7 项目负责人
+				8 研发工程师
+				9 品质 / 测试
+				10 制造工程 / NPI
+				11 生产执行
+				12 采购 / 供应
+				13 管理者
+				14 外部协作者
+	15 pop up button (collapsed, settable) Description: 预览状态, Value: 正常, Secondary Actions: Expand
+		16 menu
+			17 (selected) 正常
+			18 空态
+			19 读取失败
+			20 离线
+			21 版本冲突
+			22 权限失效
+	23 button 设计说明
+	24 checkbox 窄屏, Value: 0
+	25 button 切换明暗主题
+		26 image
+	28 container
+		29 text P
+		30 text PDOS
+		31 button 折叠侧栏
+			32 image
+		33 button 搜索或跳转
+			34 image
+			35 text 搜索或跳转
+			36 text ⌘ K
+		37 container 主导航
+			38 button 我的工作 2, Help: 我的工作
+				39 image
+				40 text 我的工作
+				41 text 2
+			42 button 收件箱 3, Help: 收件箱
+				43 image
+				44 text 收件箱
+				45 text 3
+			46 button 小Pai
+				47 image
+				48 text 小Pai
+			49 button 项目
+				50 image
+				51 text 项目
+			52 button 项目集
+				53 image
+				54 text 项目集
+			55 button 知识
+				56 image
+				57 text 知识
+		58 text 产品管理
+		59 button 品类
+			60 image
+			61 text 品类
+		62 button 立项提案
+			63 image
+			64 text 立项提案
+		65 text 常用项目
+		66 button P1 便携充气泵 P1, Help: 便携充气泵 P1
+			67 text P1
+			68 text 便携充气泵 P1
+		69 button S2 桨板泵 S2 派生, Help: 桨板泵 S2 派生
+			70 text S2
+			71 text 桨板泵 S2 派生
+		72 button 设置
+			73 image
+			74 text 设置
+		75 text 林
+		76 text 林悦
+		77 text 产品经理
+		78 container
+			79 text 工作空间
+			80 image
+			81 text 品类
+			82 button 搜索
+				83 image
+		84 container platform-main
+			160 button 全部品类
+				161 image
+				162 text 全部品类
+			163 container
+				164 heading 自行车充气泵, Value: 1
+					165 text 自行车充气泵
+				166 text 骑行前检查胎压与途中应急补气  · 负责人 林悦
+				167 button 查看提案
+				168 button 准备立项提案
+			169 container 品类内容
+				170 checkbox 共享知识, Value: 0
+				171 checkbox 竞品库, Value: 0
+				172 checkbox 用户声音, Value: 1
+				173 checkbox 规格字典, Value: 0
+				174 checkbox 型号, Value: 0
+				175 checkbox 品类矩阵, Value: 0
+			176 text 1  条
+			177 checkbox (settable, integer) Description: 显示已撤回, Value: 0
+			178 image
+			179 text field (settable) 搜索用户声音
+			180 button 新增用户声音
+				181 image
+				182 text 新增
+				183 text 用户声音
+			184 table
+				185 row
+					186 cell
+						187 text 主题
+					188 cell
+						189 text 用户与场景
+					190 cell
+						191 text 渠道
+					192 cell
+						193 text 样本量
+					194 cell
+						195 text 分类
+				196 row
+					197 cell
+						198 button 携行重量与快速接气
+					199 cell
+						200 text 公路骑行者 / 途中应急
+					201 cell
+						202 text 用户访谈
+					203 cell
+						204 text 6 份
+					205 cell
+						206 text 使用体验
+			207 text 共享区只记录公开或已去标识内容；保留样本量与出处，不把个别反馈当作普遍结论。
+		208 container 小Pai页内面板
+			209 container
+				210 button 查看会话列表
+					211 image
+				212 text 小Pai
+				213 button 新建对话
+					214 image
+				215 button (collapsed) Description: 会话更多操作, Secondary Actions: Expand
+					216 image
+				217 button 展开小Pai工作区
+					218 image
+				219 button 关闭小Pai
+					220 image
+			221 button (collapsed) 自行车充气泵, Secondary Actions: Expand
+				222 image
+				223 text 自行车充气泵
+				224 image
+			225 image
+			226 heading 有什么想一起解决的？, Value: 1
+				227 text 有什么想一起解决的？
+			228 text 从一个问题、一个想法，或一份资料开始。
+			229 button 帮我梳理一个想法
+				230 text 帮我梳理一个想法
+				231 image
+			232 button 起草一份工作方案
+				233 text 起草一份工作方案
+				234 image
+			235 button 比较两个方案
+				236 text 比较两个方案
+				237 image
+			238 container
+				239 text entry area (settable) 发消息给小Pai
+				240 button 添加附件
+					241 image
+				242 button (collapsed) 自动选择技能, Secondary Actions: Expand
+					243 image
+					244 text 自动选择技能
+					245 image
+				246 button (disabled) 发送消息
+					247 image
+			248 text Enter 发送 · Shift Enter 换行
+		157 container
+			158 text 设计原型 · 本地交互，不写入业务或调用模型
+			159 button 查看完整覆盖
+
+The focused UI element is 239 text entry area (settable) 发消息给小Pai

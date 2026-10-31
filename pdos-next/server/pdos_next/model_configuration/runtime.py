@@ -53,7 +53,8 @@ class RuntimeConfiguration:
             fail("MODEL_CONFIGURATION_CHANGED")
         if not head.enabled:
             fail("MODEL_DISABLED")
-        current = current_secret(self.secrets, query.tenant_id, head.metadata.protocol)
+        current = current_secret(
+            self.secrets, query.tenant_id, head.metadata.protocol, head.metadata)
         if secret_digest(current) != secret_digest(head.secret):
             fail("MODEL_SECRET_CHANGED")
         if current is None or not current.available:

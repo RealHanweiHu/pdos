@@ -1,0 +1,79 @@
+[
+  {
+    "check": "Proposal draft opens in dedicated editor, preserves manual title after follow-up; no inline form",
+    "pass": true
+  },
+  {
+    "check": "Close/reopen preserves edits",
+    "pass": true
+  },
+  {
+    "check": "History shows only one title row at 34px, ellipsis and full title tooltip",
+    "details": [
+      {
+        "ellipsis": "ellipsis",
+        "height": 34,
+        "subtitles": 0,
+        "text": "帮我起草一份立项提案；提案入口：自主新品",
+        "title": "帮我起草一份立项提案；提案入口：自主新品"
+      }
+    ],
+    "pass": true
+  },
+  {
+    "check": "390px editor/chat toggle preserves values without horizontal overflow",
+    "pass": true
+  },
+  {
+    "check": "Conflict state keeps candidate but disables editing and save",
+    "pass": true
+  },
+  {
+    "check": "Proposal saves private draft from independent editor, keeps manually edited audience",
+    "pass": true
+  },
+  {
+    "check": "Competitor opens in separate editor with category context; no transcript form",
+    "pass": true
+  },
+  {
+    "check": "Competitor confirmation writes preview record and returns to its category",
+    "pass": true
+  },
+  {
+    "check": "Voice draft opens as separate editor with no inline fields",
+    "pass": true
+  },
+  {
+    "check": "Parameter draft opens in dedicated editor, no inline form",
+    "pass": true
+  },
+  {
+    "check": "Cancel closes editor and keeps cancellation receipt in conversation",
+    "pass": true
+  },
+  {
+    "check": "Category draft uses large editor and editable name/scene",
+    "pass": true
+  },
+  {
+    "check": "Category confirmation creates preview category with original scene",
+    "pass": true
+  },
+  {
+    "check": "Five conversations stay compact with only single-line titles",
+    "pass": true
+  },
+  {
+    "check": "Title search still filters conversation history",
+    "pass": true
+  },
+  {
+    "check": "Switching conversation does not leak another draft editor",
+    "pass": true
+  },
+  {
+    "check": "Active draft becomes a compact link beside editor; Return to edit focuses document heading",
+    "pass": true
+  }
+]

@@ -1,0 +1,17 @@
+{
+  "pdos-next/server/pdos_next/domain/knowledge/api.py": "e118262b0570a7a2fcfd51cbf7d6675d9ee7ec316be0d70554b8381299fa9ecc",
+  "pdos-next/server/pdos_next/domain/knowledge/assistant_gaps.py": "09c4af948e7e3f378b11aab81cceb880ac55545b4b3a3cafced2bb6c4199c7f3",
+  "pdos-next/server/pdos_next/domain/knowledge/assistant_sources.py": "0a8af9906b74ba1a21251c950c6212492b3f7e0bd3f1fa5a276cfb9f39fd645c",
+  "pdos-next/server/pdos_next/domain/knowledge/assistant_storage.py": "fbe6cc0fe5293d61bc285a17cd241eb7a2ea4038a7b61b044f1351961c489e09",
+  "pdos-next/server/pdos_next/domain/knowledge/assistant_views.py": "fc130bf16083e4b41fc235f8f34484ed4fdd8712b4efee9cea37898e59153383",
+  "pdos-next/server/tests/knowledge/test_assistant_personal_targets.py": "17b37b0ff15fdd84768a23b1fc06678f1cae789abddce7e263bf0efb28d7c855",
+  "pdos-next/server/tests/knowledge_pg/test_assistant_personal_targets.py": "1541da957b04548a12326191a220824ca5b0a954a6f11ba43980617793c6a329",
+  "pdos-next/web/src/app/api/[...path]/route.ts": "101f3c58fc7c7424580b62d4207c9eb428472473a1e8a3575d0f9843a9655037",
+  "pdos-next/web/src/app/api/verified-knowledge-route.test.mjs": "65e97a50d525feb6df71a552c96e9eef18e6571455e6a02718188d36d8977fc0",
+  "pdos-next/web/src/components/knowledge/answer-knowledge.test.mjs": "57ffc352c7b44126bbb7e781524a7a9cab0904fc33711b0faaee57991fb7048e",
+  "pdos-next/web/src/components/knowledge/answer-knowledge.tsx": "8840ecea00ea5a878d2e62276d2040e7b5af2cefd82a5544ad266373ac59fd1a",
+  "pdos-next/web/src/components/pai/run-continuation.tsx": "285edba94151d6f8209897cf8d38e041887d215a9f1177798463f73753360fa6",
+  "pdos-next/web/src/lib/knowledge-share.ts": "5af5a81e36c09093ea1fe7925f3d385208c263a400d31225e0469d505a182b4b",
+  "pdos-next/server/migrations/schema_s0_0841.py": "b968d334fc3dc5a37293fd59ad3e03da33f69724c530316fb8fdc11d9cbda0cd",
+  "pdos-next/server/migrations/versions/s0_0841_personal_knowledge_targets.py": "39780ac7fc456bd9bb7a67029ffe02982ad7e7e852e4b484201507e094153bbe"
+}

@@ -1,0 +1,25 @@
+{
+  "synthetic": true,
+  "web_base": "http://127.0.0.1:50780",
+  "api_base": "http://127.0.0.1:50795",
+  "tenant_id": "101f6e73-062a-454c-af68-b252f3d1c078",
+  "principal_id": "2906155b-8f4c-44a4-89f8-ee8799ff4039",
+  "agent_id": "e54eca18-ba88-4bc9-9eeb-3d8b2808579b",
+  "category_id": "e3534751-fd75-4f57-b1fc-077ba2ebb5c6",
+  "product_id": "aa6b394b-4e03-44c1-b62c-d978fcc4158b",
+  "project_id": "f6a3778e-633a-40fb-9618-795303070b97",
+  "personal_run_id": "2797c883-220f-4999-a34c-c60b09d98d63",
+  "personal_session_id": "fd7585d9-03a3-41ed-921a-472775187b04",
+  "source_id": "49e2a764-a60c-4f72-ac62-ef8e3d81bb80",
+  "authorization_until": "2026-10-29T18:20:23.333168+00:00",
+  "initial_model_wallets": 0,
+  "initial_enabled_skills": 0,
+  "seed_synthetic_model_calls": 5,
+  "real_provider_calls": 0,
+  "ui_paths": {
+    "settings": "/?area=settings&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6",
+    "personal_pai": "/?area=pai",
+    "knowledge": "/?area=knowledge&category=e3534751-fd75-4f57-b1fc-077ba2ebb5c6"
+  },
+  "server_bound": true
+}

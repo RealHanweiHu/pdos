@@ -1,0 +1,23 @@
+{
+  "component_tests": 282,
+  "library_tests": 234,
+  "manufacturing_contracts": 50,
+  "change_contracts": 24,
+  "last_change_component_subset": 5,
+  "activity_tests": 29,
+  "activity_pg_tests_included": 3,
+  "lint_errors": 0,
+  "lint_existing_warnings": 1,
+  "build": "passed with actual cached Geist fonts",
+  "browser_widths": [
+    1280,
+    390,
+    320
+  ],
+  "preview_database": "verified pdos-comprehensive-c351c0ca 127.0.0.1:57358/pdos_test",
+  "test_database": "verified pdos-next-test-20261002-f9048729 127.0.0.1:64245/pdos_test",
+  "final_candidate_source_match": true,
+  "ruff": "passed",
+  "diff_check": "passed",
+  "preview_api_pid": 46587
+}

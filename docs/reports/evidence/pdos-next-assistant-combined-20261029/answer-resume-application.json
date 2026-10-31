@@ -1,0 +1,42 @@
+{
+  "status": "frozen",
+  "base": "Frozen /tmp/pdos-assistant-combined-next-20261029; unchanged",
+  "files": [
+    {
+      "path": "pdos-next/web/src/components/xiaopai.tsx",
+      "base_path": "/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/xiaopai.tsx",
+      "base_sha256": "153623c68f1abbdff6af8245b91c99f7d4f3a5595f05da11848445d791392660",
+      "staged_sha256": "a7880446195e12a8ad89bd4df419fffebd2a94c29612f6b4a3a5a631d69a551e"
+    },
+    {
+      "path": "pdos-next/web/src/components/category-create/personal-xiaopai.tsx",
+      "base_path": "/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/category-create/personal-xiaopai.tsx",
+      "base_sha256": "3034fff1a6ce1bf4e26c92d05d050ac7dab4738e3bb0784e27c5143f580db645",
+      "staged_sha256": "7e4fb82613870fff5d7adf289adef448ccefc05300f578cc8d981110b27d61f7"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/use-answer-resume.ts",
+      "base_path": null,
+      "base_sha256": null,
+      "staged_sha256": "a8a689e796c5f2ad7ebb184a912f83f11b2674444672764ecd9107cf944c5a02"
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-resume.test.mjs",
+      "base_path": null,
+      "base_sha256": null,
+      "staged_sha256": "757292fba80af6cbf8ab71ebaaa149253cda51feeb77edef0089ca2ebc6b1fa7"
+    }
+  ],
+  "patch_sha256": "2d44157e5594de29a5aaf1fe959b1c7c2bac9177e486f6b76d80582a0ffbfe06",
+  "no_live_edits": true,
+  "no_database_or_model_or_build": true,
+  "validation": {
+    "targeted_regressions": 12,
+    "affected_tests_passed": 82,
+    "typecheck": "passed",
+    "eslint": "4 files zero warnings",
+    "patch": "dry-run, apply and four SHA matches",
+    "combined_frozen_input_shas": "all 2661 unchanged",
+    "actual_browser_or_backend_execution": "not performed"
+  }
+}

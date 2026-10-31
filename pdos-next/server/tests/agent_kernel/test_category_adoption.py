@@ -1,7 +1,7 @@
 """Ordinary storage doubles exercise actual adoption records, authority and transport."""
 
 import asyncio
-from contextlib import contextmanager
+from contextlib import contextmanager, nullcontext
 from copy import deepcopy
 from dataclasses import asdict
 from datetime import UTC, datetime, timedelta
@@ -9,6 +9,8 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from sqlalchemy import select
+from sqlalchemy.sql.elements import TextClause
 
 from pdos_next.agent_kernel import activities
 from pdos_next.agent_kernel import category_adoption as adoption
@@ -17,6 +19,7 @@ from pdos_next.agent_kernel.models import AgentEvent, AgentRun
 from pdos_next.agent_kernel.persistence import record_answers
 from pdos_next.agent_kernel.temporal_port import workflow_id
 from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent_kernel.work_state_models import AgentWorkState
 from pdos_next.dispatch import outbox
 from pdos_next.errors import DomainError
 from pdos_next.models import Category, Principal, Receipt
@@ -31,6 +34,7 @@ class MemorySession:
         self.transaction = object()
         self.grant = NS(can_write=True, expires_at=None, access_epoch=1)
         self.adopted = []
+        self.no_autoflush = nullcontext()
 
     def put(self, cls, row):
         self.rows[cls, row.id] = row
@@ -46,9 +50,32 @@ class MemorySession:
         return self.transaction
 
     def scalar(self, query):
-        assert "max(" in str(query)
-        return max((r.sequence for (cls, _) , r in self.rows.items()
-                    if cls is AgentEvent), default=0)
+        if "max(" in str(query):
+            params = query.compile().params
+            assert "run_id_1" in params
+            assert all(key in {"run_id_1", "tenant_id_1"}
+                       or key.startswith("coalesce_") and value == 0
+                       for key, value in params.items())
+            return max((row.sequence for (cls, _), row in self.rows.items()
+                        if cls is AgentEvent and row.tenant_id == self.scope.tenant_id
+                        and row.run_id == params["run_id_1"]), default=0)
+        if query.column_descriptions[0]["entity"] is AgentWorkState:
+            params = query.compile().params
+            assert set(params) in ({"run_id_1"}, {"session_id_1", "param_1"})
+            rows = [row for (cls, _), row in self.rows.items() if cls is AgentWorkState
+                    and row.tenant_id == self.scope.tenant_id
+                    and (row.run_id == params["run_id_1"] if "run_id_1" in params
+                         else row.session_id == params["session_id_1"])]
+            return max(rows, key=lambda row: row.revision) if rows else None
+        # requested_skills.preload reads this actual Run's first event, without
+        # creating one. This partial-ledger fixture normally has no seed event.
+        assert query.column_descriptions[0]["entity"] is AgentEvent
+        params = query.compile().params
+        assert set(params) == {"run_id_1", "sequence_1"}
+        return next((row for (cls, _), row in self.rows.items()
+                     if cls is AgentEvent and row.tenant_id == self.scope.tenant_id
+                     and row.run_id == params["run_id_1"]
+                     and row.sequence == params["sequence_1"]), None)
 
     def scalars(self, query):
         # Mirror the ordinary query's tenant/run/type/input_ref filters, not proof logic.
@@ -59,13 +86,48 @@ class MemorySession:
                 and r.body.get("input_ref") in identities]
         return NS(all=lambda: rows)
 
-    def execute(self, query):
-        assert query.column_descriptions[0]["entity"] is Principal
-        actor = self.info["scope"][1]
-        # Only the actual Human has a grant; the personal Agent has none.
-        principal = self.get(Principal, actor)
-        rows = [(principal, self.grant)] if actor == self.scope.requester_id and self.grant else []
+    def execute(self, query, parameters=None):
+        if isinstance(query, TextClause):
+            assert str(query) == "SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"
+            assert parameters == {
+                "key": f"work-state:{self.scope.tenant_id}:{self.scope.session_id}",
+            }
+            return NS(all=lambda: [])
+        descriptions = query.column_descriptions
+        model, params = descriptions[0]["entity"], query.compile().params
+        if model is Principal:
+            actor = self.info["scope"][1]
+            # Only the actual Human has a grant; the personal Agent has none.
+            principal = self.get(Principal, actor)
+            rows = [(principal, self.grant)] \
+                if actor == self.scope.requester_id and self.grant else []
+        elif model is AgentRun:
+            assert [item["name"] for item in descriptions] == ["id", "goal"]
+            assert set(params) == {"session_id_1", "requester_id_1", "trigger_1"}
+            rows = [NS(id=row.id, goal=row.goal) for (cls, _), row in self.rows.items()
+                    if cls is AgentRun and row.tenant_id == self.scope.tenant_id
+                    and row.session_id == params["session_id_1"]
+                    and row.requester_id == params["requester_id_1"]
+                    and row.trigger == params["trigger_1"]]
+        elif model is Receipt:
+            assert [item["name"] for item in descriptions] == ["id", "operation"]
+            assert set(params) == {"agent_run_id_1"}
+            rows = [NS(id=row.id, operation=row.operation) for (cls, _), row in self.rows.items()
+                    if cls is Receipt and row.tenant_id == self.scope.tenant_id
+                    and row.agent_run_id == params["agent_run_id_1"]]
+        else:
+            assert model is AgentEvent
+            assert [item["name"] for item in descriptions] == ["id", "body"]
+            assert set(params) == {"run_id_1", "body_1", "param_1"} and params["body_1"] == "type"
+            events = [row for (cls, _), row in self.rows.items()
+                      if cls is AgentEvent and row.tenant_id == self.scope.tenant_id
+                      and row.run_id == params["run_id_1"]
+                      and row.body.get("type") in params["param_1"]]
+            rows = [(row.id, row.body) for row in sorted(events, key=lambda row: row.sequence)]
         return NS(all=lambda: rows)
+
+    def flush(self):
+        pass  # add/add_all already materialize this fixture's actual in-memory records.
 
     def add_all(self, rows):
         for row in rows:
@@ -92,8 +154,10 @@ def ledger(monkeypatch):
     session.info = {"scope": (scope.tenant_id, scope.requester_id, scope.requester_id, None)}
     fields = asdict(scope)
     fields["id"] = fields.pop("run_id")
-    run = session.put(AgentRun, NS(**fields, state="waiting_input", reverted_at=None,
-                                   goal="Synthetic category", error_code=None))
+    run = session.put(AgentRun, NS(
+        **fields, state="waiting_input", reverted_at=None, goal="Synthetic category",
+        error_code=None, continued_from_id=None, result=None, versions={}, read_sources=[],
+    ))
     for identity, kind in ((scope.requester_id, "human"), (scope.writer_id, "agent")):
         session.put(Principal, NS(id=identity, tenant_id=scope.tenant_id, kind=kind,
                                   active=True, access_epoch=1))
@@ -353,6 +417,13 @@ def test_activity_delivers_proof_and_never_reopens_terminal_run(ledger, monkeypa
     assert failed["status"] == "failed" and failed["error_code"] == "FORBIDDEN_SCOPE"
     assert len(captured) == 1 and f.run.state == "failed"
     assert f.run.error_code == "FORBIDDEN_SCOPE"
+    memory = [row for (cls, _), row in f.s.rows.items() if cls is AgentWorkState]
+    assert len(memory) == 1 and memory[0].revision == 1
+    assert memory[0].body["root_goal"] == {"run_id": str(f.run.id), "text": f.run.goal}
+    assert memory[0].body["candidates"] == [{
+        "event_id": str(f.candidate.id), "run_id": str(f.run.id),
+    }]
+    assert memory[0].body["completed"] == []  # Human category receipt is not an Agent receipt.
     assert [row.body for row in f.s.adopted if row.body.get("type") == "run_state"] == [{
         "type": "run_state", "status": "failed", "error_code": "FORBIDDEN_SCOPE",
     }]
@@ -402,3 +473,20 @@ def test_repeated_resolve_keeps_the_same_committed_input_and_receipt(ledger):
     assert first.envelope() == second.envelope()
     assert first.input_ref == str(ledger.entry.id)
     assert len(ledger.s.adopted) == 1
+
+
+def test_memory_seed_read_returns_only_the_actual_requested_run_and_sequence(ledger):
+    f = ledger
+    query = select(AgentEvent).where(AgentEvent.run_id == f.run.id, AgentEvent.sequence == 1)
+    assert f.s.scalar(query) is None
+    seed = f.s.put(AgentEvent, NS(
+        id=uuid4(), tenant_id=f.scope.tenant_id, run_id=f.run.id, sequence=1,
+        body={"requested_skills": []},
+    ))
+    assert f.s.scalar(query) is seed
+    assert f.s.scalar(select(AgentEvent).where(
+        AgentEvent.run_id == uuid4(), AgentEvent.sequence == 1,
+    )) is None
+    assert f.s.scalar(select(AgentEvent).where(
+        AgentEvent.run_id == f.run.id, AgentEvent.sequence == 99,
+    )) is None

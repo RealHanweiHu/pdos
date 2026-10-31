@@ -1,0 +1,33 @@
+{
+  "at_utc": "2026-10-29T20:43:27.366681+00:00",
+  "pure_passed": 174,
+  "native_distinct_passed": 41,
+  "native_candidate_test_passed": 34,
+  "native_candidate_observations": 24,
+  "native_regressions_passed": 17,
+  "original_six_regressions_passed": 6,
+  "bindings": {
+    "bound": 18,
+    "partial": 5,
+    "not_executable": 1
+  },
+  "input_bytes_unchanged": true,
+  "hashed_inputs": 856,
+  "real_model_calls": 0,
+  "quality_status": "not_scored",
+  "scripted_control_dispatches": 325,
+  "model_quality_score": null,
+  "test_target": {
+    "host": "127.0.0.1",
+    "port": 53502,
+    "database": "pdos_test",
+    "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+    "schema_head": "s0_0853"
+  },
+  "uncompleted": [
+    "human review of candidate suite and real role scenarios",
+    "partial native scenario alignment for project date and business-item pagination",
+    "real model and embedding quality, cache usage, latency and cost",
+    "human pilot and formal acceptance"
+  ]
+}

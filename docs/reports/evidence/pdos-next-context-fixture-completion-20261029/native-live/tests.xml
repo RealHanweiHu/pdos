@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="10.116" timestamp="2026-10-29T16:02:59.166077-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_handle_candidate_pg" name="test_ctx09_native_handle_page2_then_same_handle_page3_failure[F48000]" time="8.952"><failure message="AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;此来源类型不能进入共享知识。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;private_source_in_shared&quot;}}">tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:437: in test_ctx09_native_handle_page2_then_same_handle_page3_failure
+    directory = native_directory(setup, question)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/eval_v0_ctx09_directory_support.py:67: in native_directory
+    receipt = add({"kind": "boundary", "regions": [DIRECTORY_REGION], "content": content,
+tests/agent_kernel/eval_v0_ctx09_directory_support.py:38: in add
+    assert response.status_code == 200, response.text
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: {"code":"VALIDATION_FAILED","message":"此来源类型不能进入共享知识。","detail":{"reason":"private_source_in_shared"}}</failure></testcase></testsuite></testsuites>

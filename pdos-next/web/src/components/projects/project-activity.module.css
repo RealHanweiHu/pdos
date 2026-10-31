@@ -24,3 +24,21 @@
 .notice { padding: 1rem; background: var(--muted); border: 1px solid var(--border); border-radius: 8px; font-size: .875rem; overflow-wrap: anywhere; }
 .error { color: var(--destructive); font-size: .875rem; overflow-wrap: anywhere; }
 @media (max-width: 540px) { .item { padding: .8rem; } .facts { grid-template-columns: 1fr; gap: .2rem; } .facts dd { margin-bottom: .35rem; } .heading { align-items: flex-start; } }
+.compact { gap: 6px; }
+.compact .heading h2 { font-size: 13px; }
+.compact .list { gap: 0; }
+.compact .notice { padding: 12px 0; background: transparent; border: 0; font-size: 12px; }
+.compactItem { min-width: 0; border-bottom: 1px solid var(--border); }
+.compactSummary { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto; align-items: center; min-height: 42px; gap: 8px; padding: 6px 0; cursor: pointer; list-style: none; font-size: 12px; }
+.compactSummary::-webkit-details-marker { display: none; }
+.compactSummary:hover { background: var(--muted); }
+.compactSummary:focus-visible, .readDetails summary:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
+.actorMark { display: grid; place-items: center; width: 22px; height: 22px; border: 1px solid var(--border); border-radius: 50%; background: var(--muted); font-size: 10px; color: var(--muted-foreground); }
+.compactText { min-width: 0; display: flex; flex-wrap: wrap; column-gap: 8px; line-height: 1.5; overflow-wrap: anywhere; }
+.actorName { color: var(--muted-foreground); max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.compactSummary time { color: var(--muted-foreground); font-size: 11px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.expanded { display: grid; gap: 10px; padding: 4px 0 14px 30px; }
+.readDetails { color: var(--muted-foreground); font-size: 11px; overflow-wrap: anywhere; }
+.readDetails summary { cursor: pointer; padding: 7px 0; }
+.readDetails p { margin-top: 4px; }
+@media (max-width: 540px) { .compactSummary { min-height: 44px; grid-template-columns: 22px minmax(0, 1fr); } .compactSummary time { grid-column: 2; margin-top: -5px; padding-bottom: 2px; } .expanded { padding-left: 0; } }

@@ -1,0 +1,130 @@
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/app/api/[...path]/route.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/app/api/personal-summary-route.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/automation-rules.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/automation-rules.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/category-create/personal-xiaopai.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/inbox.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/my-work-attention.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai-conversation.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-corrections.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-corrections.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-followup-actions.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-followup-actions.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-sources.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-task-result.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/answer-task-result.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/context-metrics.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/personal-summary-result.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/run-continuation.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/run-continuation.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/run-process-interactions.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/run-process.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/run-process.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/pai/work-state-carry.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/personal-summary-events.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/personal-summary-inbox.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/personal-summary-settings.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/personal-summary.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/components/xiaopai.tsx
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/answer-corrections.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/answer-corrections.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/answer-followup.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/answer-followup.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/automation-rules.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/automation-rules.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/personal-summary.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/personal-summary.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/run-context-metrics.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/run-context-metrics.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/run-continuation.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/run-process.ts
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/run-start-intent.test.mjs
+  0:0  warning  File ignored because outside of base path
+
+/tmp/pdos-assistant-combined-next-20261029/pdos-next/web/src/lib/run-start-intent.ts
+  0:0  warning  File ignored because outside of base path
+
+✖ 42 problems (0 errors, 42 warnings)
+
+ESLint found too many warnings (maximum: 0).

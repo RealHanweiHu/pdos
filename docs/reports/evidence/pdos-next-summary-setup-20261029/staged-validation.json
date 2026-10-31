@@ -1,0 +1,113 @@
+[
+  {
+    "name": "backend-pure",
+    "exit_code": 0,
+    "seconds": 13.41,
+    "command": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-c",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+      "-o",
+      "pythonpath=/tmp/pdos-summary-setup-stage-20261029/verify/server",
+      "-o",
+      "cache_dir=/tmp/pdos-summary-setup-stage-20261029/pytest-cache",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/tests/automations/test_summary_setup.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/tests/automations/test_summary_setup_sql.py",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/automations/test_rules.py",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/automations/test_runtime.py",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/test_personal_summary_runtime.py",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/agent_kernel/test_bound_read_host.py"
+    ],
+    "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform"
+  },
+  {
+    "name": "postgres-collect-only",
+    "exit_code": 0,
+    "seconds": 4.626,
+    "command": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+      "-m",
+      "pytest",
+      "-q",
+      "-c",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pyproject.toml",
+      "-o",
+      "pythonpath=/tmp/pdos-summary-setup-stage-20261029/verify/server",
+      "-o",
+      "cache_dir=/tmp/pdos-summary-setup-stage-20261029/pytest-cache",
+      "--collect-only",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/tests/automations_pg/test_summary_setup_pg.py"
+    ],
+    "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform"
+  },
+  {
+    "name": "frontend",
+    "exit_code": 0,
+    "seconds": 0.939,
+    "command": [
+      "node",
+      "--test",
+      "src/components/automation-rules.test.mjs",
+      "src/lib/automation-rules.test.mjs",
+      "src/components/personal-summary.test.mjs",
+      "src/lib/personal-summary.test.mjs"
+    ],
+    "cwd": "/tmp/pdos-summary-setup-stage-20261029/verify/web"
+  },
+  {
+    "name": "typescript",
+    "exit_code": 0,
+    "seconds": 19.123,
+    "command": [
+      "node",
+      "node_modules/typescript/bin/tsc",
+      "--noEmit",
+      "--incremental",
+      "false",
+      "--project",
+      "tsconfig.json"
+    ],
+    "cwd": "/tmp/pdos-summary-setup-stage-20261029/verify/web"
+  },
+  {
+    "name": "eslint",
+    "exit_code": 0,
+    "seconds": 3.021,
+    "command": [
+      "node",
+      "node_modules/eslint/bin/eslint.js",
+      "src/components/automation-rules.tsx",
+      "src/components/personal-summary-settings.tsx",
+      "src/lib/automation-rules.ts",
+      "src/components/automation-rules.test.mjs",
+      "src/lib/automation-rules.test.mjs"
+    ],
+    "cwd": "/tmp/pdos-summary-setup-stage-20261029/verify/web"
+  },
+  {
+    "name": "ruff",
+    "exit_code": 0,
+    "seconds": 0.019,
+    "command": [
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+      "check",
+      "--config",
+      "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/ruff.toml",
+      "--cache-dir",
+      "/tmp/pdos-summary-setup-stage-20261029/ruff-cache",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/pdos_next/domain/automations/schemas.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/pdos_next/domain/automations/service.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/pdos_next/domain/automations/runtime.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/pdos_next/agent_kernel/gateway.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/tests/automations/test_summary_setup.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/tests/automations/test_summary_setup_sql.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/tests/automations_pg/test_summary_setup_pg.py",
+      "/tmp/pdos-summary-setup-stage-20261029/tree/pdos-next/server/migrations/schema_summary_walletless.py",
+      "/tmp/pdos-summary-setup-stage-20261029/sql/alembic_wrapper.py"
+    ],
+    "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform"
+  }
+]

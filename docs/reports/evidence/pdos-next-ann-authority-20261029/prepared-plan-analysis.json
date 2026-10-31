@@ -1,0 +1,25 @@
+{
+  "state": "production per-Select unprepared semantic execution implemented and pure verified; final native matrix in progress",
+  "observed_candidate": "native-auto8192",
+  "backend_pid": 31716,
+  "iterative_transition_execution": 11,
+  "exact_transition_execution": 11,
+  "iterative_normalized_sql_sha256_prefix": "a079",
+  "natural_preparation_threshold": 5,
+  "prepared_generic_counters_available": false,
+  "generic_transition_cause": "strong inference from exact transition point and plan shape, not directly measured counter",
+  "observations": {
+    "before": "owner iterative executions 1-10: sequential vector path, total cost about6573-6579, about407633 shared hits",
+    "after": "iterative execution11: PK path and about11979417 shared hits; later peer retained PK. exact also changed independently at execution11."
+  },
+  "structural_defect": "dimensions is a bind parameter while each HNSW partial index requires a fixed dimensions predicate; generic plans cannot prove that predicate for all parameter values",
+  "planned_patch": "Resolved by server-marked nearest/eligible Select calling psycopg prepare=False; all parameter bindings preserved; dimension-literal draft not applied",
+  "remaining_limit": "Natural cost choice can still be HNSW or Seq Scan; actual final timings and recall must be read from the new frozen candidate",
+  "primary_sources": {
+    "partial_index": "https://www.postgresql.org/docs/16/indexes-partial.html",
+    "prepare": "https://www.postgresql.org/docs/16/sql-prepare.html",
+    "typed_postcompile": "https://docs.sqlalchemy.org/en/20/core/sqlelement.html#sqlalchemy.sql.expression.literal"
+  },
+  "final_candidate_inputs": "frozen-custom32768-inputs.json",
+  "pure_passed": 101
+}

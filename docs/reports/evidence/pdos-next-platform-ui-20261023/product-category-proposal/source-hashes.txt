@@ -1,0 +1,7 @@
+87272e6425b38ae1827f4f72459e9b691988ae6501ba691ec672e16301cb265d  pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx
+bf066edb6f50aeeae5c04dca0781ee2d1c9b744c25f4b3a4c8810446842e71bf  pdos-next/web/src/app/ui-lab/platform/platform.module.css
+8a9e149a5d1ca7804f6783628f324968f100866c7c9df3edf627c2929a84be03  pdos-next/web/src/app/ui-lab/platform/design-data.ts
+47af607243fc9adc4348df183cad14c95ddb228aedacd5d6f503028d9cb7c80b  pdos-next/web/src/app/ui-lab/platform/page.tsx
+063a7bc4a65f6d8260018cbd4e9f69c95b225a2c50ada7aee15bc3cd32f56bd1  pdos-next/web/src/app/ui-lab/platform/product-preview.tsx
+9b891ec2215efa62884cd188a9d162ff978f7f3710d4e7d0b740e368693c407c  pdos-next/web/src/app/ui-lab/platform/product-preview-state.ts
+23686f4e5fce63a5dca65bbfc1782e42b3ee0d7c79057e35d80d1f969ce8839b  pdos-next/web/src/app/ui-lab/platform/product-preview.module.css

@@ -1,0 +1,21 @@
+{
+  "base_head": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "scope": "new test file only; no production patches",
+  "files": [
+    {
+      "source": "new/pdos-next/server/tests/agent_kernel/test_context_x3_full_disclosure.py",
+      "target": "pdos-next/server/tests/agent_kernel/test_context_x3_full_disclosure.py",
+      "operation": "create",
+      "base_sha256": null,
+      "sha256": "fe0064d7f93e18369067f3d19c069f15fc1e63a2ce69e53a0a6f3f69987e2d84"
+    }
+  ],
+  "validation": {
+    "pure": "4 passed",
+    "ruff": "passed",
+    "DB": false,
+    "network": false,
+    "real_provider": false
+  },
+  "dependency_fingerprints": "sizing.json source_sha256"
+}

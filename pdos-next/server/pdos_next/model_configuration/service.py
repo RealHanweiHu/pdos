@@ -59,7 +59,7 @@ class ConfigurationVersion:
                 "tenant": str(self.tenant_id),
                 "id": str(self.id),
                 "revision": self.revision,
-                "metadata": self.metadata.model_dump(mode="json"),
+                "metadata": self.metadata.binding_metadata(),
                 "enabled": self.enabled,
                 "secret": secret_digest(self.secret),
             }
@@ -91,11 +91,19 @@ def secret_digest(binding: SecretBinding | None) -> str | None:
     )
 
 
-def current_secret(port: SecretPort | None, tenant: UUID, protocol: str) -> SecretBinding | None:
+def current_secret(
+    port: SecretPort | None, tenant: UUID, protocol: str, metadata=None
+) -> SecretBinding | None:
     if port is None:
         fail("MODEL_SECRET_INTERFACE_MISSING")
     try:
-        value = port.current(tenant, protocol)
+        if metadata is not None and getattr(metadata, "connection_id", None) is not None:
+            selector = getattr(port, "current_for", None)
+            if selector is None:
+                fail("MODEL_SECRET_SCOPE_MISMATCH", 403)
+            value = selector(tenant, metadata)
+        else:
+            value = port.current(tenant, protocol)
     except Exception:
         fail("MODEL_SECRET_UNAVAILABLE")
     if value is not None and (
@@ -184,7 +192,8 @@ class ConfigurationService:
         head = self._head(context.tenant_id)
         if (head.revision if head else 0) != payload.expected_revision:
             fail("MODEL_CONFIGURATION_STALE")
-        secret = current_secret(self.secrets, context.tenant_id, payload.metadata.protocol)
+        secret = current_secret(
+            self.secrets, context.tenant_id, payload.metadata.protocol, payload.metadata)
         version = ConfigurationVersion(
             tenant_id=context.tenant_id,
             id=uuid5(
@@ -195,7 +204,7 @@ class ConfigurationService:
                         "tenant": str(context.tenant_id),
                         "expected_revision": payload.expected_revision,
                         "previous": head.binding_digest if head else None,
-                        "metadata": payload.metadata.model_dump(mode="json"),
+                        "metadata": payload.metadata.binding_metadata(),
                         "enabled": payload.enabled,
                         "secret": secret_digest(secret),
                     }
@@ -262,7 +271,8 @@ class ConfigurationService:
             or plan.version.revision != plan.expected_revision + 1
         ):
             fail("MODEL_CONFIGURATION_STALE")
-        secret = current_secret(self.secrets, context.tenant_id, plan.version.metadata.protocol)
+        secret = current_secret(
+            self.secrets, context.tenant_id, plan.version.metadata.protocol, plan.version.metadata)
         if secret != plan.version.secret:
             fail("MODEL_SECRET_CHANGED")
         self.store.append(plan.version, expected_revision=plan.expected_revision)
@@ -274,7 +284,8 @@ class ConfigurationService:
         if head is None:
             return None
         try:
-            secret = current_secret(self.secrets, context.tenant_id, head.metadata.protocol)
+            secret = current_secret(
+                self.secrets, context.tenant_id, head.metadata.protocol, head.metadata)
             if secret_digest(secret) != secret_digest(head.secret):
                 state, display = "changed", "需重新绑定"
             elif secret is None or not secret.available:

@@ -1,0 +1,224 @@
+--- a/pdos-next/server/pdos_next/enterprise_search/query.py
++++ b/pdos-next/server/pdos_next/enterprise_search/query.py
+@@ -18,6 +18,7 @@
+ from .safety import safe_originals
+ from .schemas import SearchInput as SearchInput
+ from .sources import dependency_originals, identity_keys, prepare_read, retrieval_catalog
++from .verified_knowledge import priority as knowledge_priority
+ from .tokenizer import CHUNKER, CODE_RULE, RANKING, analyze, or_query, version
+ 
+ 
+@@ -281,6 +282,7 @@
+         )
+     )
+     score = score * freshness
++    review_priority = knowledge_priority(s.c.structured, s.c.source_type)
+     ranked = (
+         select(
+             c.id.label("chunk_id"),
+@@ -300,13 +302,15 @@
+             s.c.customer_original,
+             s.c.is_current,
+             s.c.read_basis_status,
++            review_priority.label("knowledge_priority"),
++            s.c.structured["knowledge_review"].label("knowledge_review"),
+             exact.label("exact_match"),
+             code_hit.label("code_hit"),
+             score.label("score"),
+             func.row_number()
+             .over(
+                 partition_by=(c.source_type, c.source_id),
+-                order_by=(exact.desc(), code_hit.desc(), score.desc(), c.id),
++                order_by=(exact.desc(), code_hit.desc(), review_priority.desc(), score.desc(), c.id),
+             )
+             .label("source_rank"),
+         )
+@@ -321,6 +325,7 @@
+         .order_by(
+             ranked.c.exact_match.desc(),
+             ranked.c.code_hit.desc(),
++            ranked.c.knowledge_priority.desc(),
+             ranked.c.score.desc(),
+             ranked.c.source_id,
+             ranked.c.chunk_id,
+@@ -331,6 +336,7 @@
+     ordering = (
+         page.c.exact_match.desc(),
+         page.c.code_hit.desc(),
++        page.c.knowledge_priority.desc(),
+         page.c.score.desc(),
+         page.c.source_id,
+         page.c.chunk_id,
+@@ -436,6 +442,8 @@
+                 )
+             }
+         )
++        if row.get("knowledge_review") is not None:
++            items[-1]["knowledge_review"] = row["knowledge_review"]
+         items[-1]["rank"] = rank
+         items[-1]["channel"] = (
+             "exact_id"
+@@ -472,5 +480,5 @@
+                 "code_rule_version",
+             )
+         },
+-        "ranking_version": RANKING,
++        "ranking_version": RANKING + "+review/v1",
+     }
+--- a/pdos-next/server/pdos_next/enterprise_search/events.py
++++ b/pdos-next/server/pdos_next/enterprise_search/events.py
+@@ -23,6 +23,7 @@
+ EVENTS = business_events.EVENTS | frozenset(
+     {
+         "artifact.registered",
++        "knowledge.rule_published",
+         "category.knowledge_added",
+         "category.knowledge_withdrawn",
+         "category.knowledge_promoted",
+@@ -134,6 +135,13 @@
+             targets = business_events.targets(session, event, receipt)
+         elif event.type == "artifact.registered":
+             targets = [("artifact", event.subject_id)]
++        elif event.type == "knowledge.rule_published":
++            from pdos_next.domain.knowledge.models import DesignRuleVersion
++
++            rule_ids = select(DesignRuleVersion.rule_id).where(DesignRuleVersion.receipt_id == receipt.id)
++            targets = [("knowledge", identity) for identity in session.scalars(
++                select(DesignRuleVersion.id).where(DesignRuleVersion.rule_id.in_(rule_ids))
++            )]
+         elif event.type.startswith("category.knowledge_"):
+             lineage = select(KnowledgeEntry.lineage_id).where(
+                 or_(
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_sources.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_sources.py
+@@ -43,7 +43,8 @@
+         list(sources.c)
+         if with_body
+         else [column for column in sources.c if column.key not in {"body", "structured"}]
+-        + [sources.c.structured["source_refs"].label("source_refs")]
++        + [sources.c.structured["source_refs"].label("source_refs"),
++           sources.c.structured["knowledge_review"].label("knowledge_review")]
+     )
+     return select(*fields, func.transaction_timestamp().label("as_of")).where(
+         tuple_(sources.c.source_type, sources.c.source_id).in_(
+@@ -139,6 +140,7 @@
+         else {}
+     )
+     original_ids = {row["original_id"] for row in by_key.values() if row["original_id"]}
++    original_ids |= {identity for row in by_key.values() for identity in row.get("original_ids", [])}
+     original_ids |= {root.original_id for root in fixed_roots if root.original_id}
+     safe = safe_originals(session, original_ids)
+     originals = (
+@@ -179,6 +181,7 @@
+             not row
+             or str(row["category_id"]) != item["category_id"]
+             or (row["original_id"] is not None and row["original_id"] not in safe)
++            or set(row.get("original_ids", [])) - safe
+         ):
+             missing[cid] = "source_unavailable"
+             continue
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_answer.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_answer.py
+@@ -59,6 +59,9 @@
+                 if current_source:
+                     source["read_basis_status"] = current_source["read_basis_status"]
+                     source["fixed_body_available"] = current_source["fixed_body_available"]
++                    review = current_source.get("knowledge_review") or (current_source.get("structured") or {}).get("knowledge_review")
++                    if review:
++                        source["knowledge_review"] = review
+         if isinstance(answer, dict) and any(row.get("updated") for row in actual.values()):
+             answer["notice"] = "资料已更新；这条历史回答保留原版本，当前事实请重新查询。"
+             for source in answer.get("sources", []):
+@@ -166,6 +169,7 @@
+                         "nature",
+                     )
+                 },
++                **({"knowledge_review": source["knowledge_review"]} if source.get("knowledge_review") else {}),
+                 "title": source["title"],
+                 "object_id": item.get("object_id", item["source_id"]),
+                 **destinations.get(cid, {}),
+--- a/pdos-next/server/pdos_next/enterprise_search/action_sources.py
++++ b/pdos-next/server/pdos_next/enterprise_search/action_sources.py
+@@ -28,7 +28,7 @@
+ 
+ SOURCE_TABLES = {
+     "artifact": "artifact_versions",
+-    "knowledge": "category_knowledge_entries",
++    "knowledge": ("category_knowledge_entries", "knowledge_rule_versions"),
+     "issue": "quality_issue_versions",
+     "capa": "quality_issue_versions",
+     "change": "change_request_versions",
+--- a/pdos-next/server/pdos_next/models.py
++++ b/pdos-next/server/pdos_next/models.py
+@@ -1189,3 +1189,6 @@
+ import pdos_next.enterprise_search.similar_history_models  # noqa: E402,F401
+ 
+ import pdos_next.enterprise_search.embedding_models  # noqa: E402,F401
++
++# Knowledge review/provenance uses real native versions, not another knowledge body.
++import pdos_next.domain.knowledge.assistant_models  # noqa: E402,F401
+--- a/pdos-next/web/src/components/pai/run-continuation.tsx
++++ b/pdos-next/web/src/components/pai/run-continuation.tsx
+@@ -6,6 +6,7 @@
+ import { ArrowClockwise, Folder, Sparkle } from "@phosphor-icons/react";
+ import { PaiComposer } from "./composer";
+ import { WorkStateCarry } from "./work-state-carry";
++import { AnswerKnowledgeActions } from "../knowledge/answer-knowledge";
+ import { AnswerFollowupActions } from "./answer-followup-actions";
+ import type { CorrectionWorkState } from "@/lib/answer-corrections";
+ import type { AnswerExclusions } from "@/lib/answer-followup";
+@@ -41,6 +42,7 @@
+   additionalSources = [],
+   sourceTools,
+   principalId,
++  categoryId,
+   onUnavailable,
+   onStop,
+   presentation = "details",
+@@ -60,6 +62,7 @@
+   additionalSources?: ContinuationSource[];
+   sourceTools?: ReactNode;
+   principalId?: string;
++  categoryId?: string;
+   onUnavailable?: () => void;
+   onStop?: () => void;
+   api: Api;
+@@ -265,6 +268,7 @@
+     return <div className={styles.chatContinuation}>
+       {error && <p role="alert" className={styles.composerError}>{error}</p>}
+       {notice && <p role="status" className={styles.composerHint}>{notice}</p>}
++      {answerActions && categoryId && principalId && ["completed", "partial"].includes(run.status) && !run.reverted && <AnswerKnowledgeActions key={`knowledge:${run.run_id}`} api={api} categoryId={categoryId} principalId={principalId} runId={run.run_id} runRoot={root} disabled={disabled || busy || !!pending}/>}
+       {answerActions && correctionState && canSend && !pending && <AnswerFollowupActions key={`answer-actions:${run.run_id}`} api={api} context={{ root, run, workState: correctionState }} disabled={disabled || busy} additionalSources={additionalSources.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision }))} onContinue={body => send(body, true)} onState={state => { setCorrectionState(state); setCarryRefresh(value => value + 1); }} onSnapshot={onAnswerExclusions} onUnavailable={onUnavailable}/> }
+       {pending && !busy && !reading?.existing && <div className={styles.composerRecovery}><p>发送结果待核对，原消息已保留。</p><Button size="sm" variant="outline" disabled={disabled} onClick={() => void send()}>核对并重试原请求</Button></div>}
+       {reading?.existing ? <div className={styles.composerRecovery}><p>这段对话已有后续消息。</p><Button size="sm" variant="outline" disabled={busy || disabled} onClick={() => void onOpen(reading.existing!.run_id).catch(failure => setError(failure.message))}>打开已保存的后续工作</Button></div> :
+--- a/pdos-next/web/src/components/xiaopai.tsx
++++ b/pdos-next/web/src/components/xiaopai.tsx
+@@ -329,7 +329,7 @@
+     </div>}
+         </div>
+         <div className={styles.composer}>
+-          {run && <div className={styles.continuation}><RunContinuation onStop={active ? () => { void send({ path: `v1/agent-runs/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} contextControl={contextControl} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root="v1/agent-runs" run={run} additionalSources={continuationSources} sourceTools={<details className={styles.attachments}><summary aria-label="添加附件" title="添加附件"><Paperclip size={14} aria-hidden="true"/></summary><div><FileUpload api={api} scope={runSourceScope} disabled={busy || !!pending} /><SourcePicker key={`continuation-sources:${sourceReadVersion}`} api={api} scope={runSourceScope} value={selected} onChange={setSelected} disabled={busy || !!pending} /></div></details>} contextText={pageMaterial} contextLabel={currentMaterial && !materialDenied ? `${currentMaterial.title}${currentMaterial.version ? ` · v${currentMaterial.version}` : ""}` : undefined} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async id => { await readRun(id); setHistoryVersion(value => value + 1); }} /></div>}
++          {run && <div className={styles.continuation}><RunContinuation categoryId={categoryId} onStop={active ? () => { void send({ path: `v1/agent-runs/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} contextControl={contextControl} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root="v1/agent-runs" run={run} additionalSources={continuationSources} sourceTools={<details className={styles.attachments}><summary aria-label="添加附件" title="添加附件"><Paperclip size={14} aria-hidden="true"/></summary><div><FileUpload api={api} scope={runSourceScope} disabled={busy || !!pending} /><SourcePicker key={`continuation-sources:${sourceReadVersion}`} api={api} scope={runSourceScope} value={selected} onChange={setSelected} disabled={busy || !!pending} /></div></details>} contextText={pageMaterial} contextLabel={currentMaterial && !materialDenied ? `${currentMaterial.title}${currentMaterial.version ? ` · v${currentMaterial.version}` : ""}` : undefined} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async id => { await readRun(id); setHistoryVersion(value => value + 1); }} /></div>}
+           {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => {
+               let submittedGoal: string; try { submittedGoal = withMaterialContext(goal, pageMaterial); } catch (failure) { setError((failure as Error).message); return; }
+               void send({ path: "v1/agent-runs", body: { goal: submittedGoal, idempotency_key: crypto.randomUUID(), product_id: sourceScope.productId, ...(proposalId ? { proposal_id: proposalId } : {}), ...(projectId ? { project_id: projectId } : {}), ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(projectId || proposalId ? { search_preferences: searchPreferences } : {}), sources: selectedSources.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision })) } });
+--- a/pdos-next/web/src/components/pai/answer-sources.tsx
++++ b/pdos-next/web/src/components/pai/answer-sources.tsx
+@@ -6,7 +6,7 @@
+ import { AnswerTaskResult } from "./answer-task-result";
+ import styles from "../pai-conversation.module.css";
+ 
+-type Source = { citation_id: string; title: string; quote: string; source_revision: number; currentness?: string; read_basis_status?: string; fixed_body_available?: boolean; locator?: Record<string, unknown>; url?: string; object_url?: string; object_label?: string; relation?: unknown; group?: string; group_label?: string };
++type Source = { knowledge_review?: { state: string; label: string; review_due_at: string; applicability_scope: string }; citation_id: string; title: string; quote: string; source_revision: number; currentness?: string; read_basis_status?: string; fixed_body_available?: boolean; locator?: Record<string, unknown>; url?: string; object_url?: string; object_label?: string; relation?: unknown; group?: string; group_label?: string };
+ type Answer = { lookup?: string; notice?: string | null; sources?: unknown; unknowns?: unknown; comparison?: unknown; task_result?: unknown };
+ const uuid = /^[a-f0-9-]{36}$/i;
+ const sourcePath = /^\/api\/v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}(?:\?change_id=[a-f0-9]{64})?$/i;
+@@ -85,7 +85,7 @@
+   const relation = object(source.relation) && typeof source.relation.type === "string" && Object.hasOwn(relations, source.relation.type) ? relations[source.relation.type] : null;
+   if (unavailable) return <li id={anchorId} role="status" className={styles.lookupNote}>这条资料当前不可读取，请重新查询。</li>;
+   const content = <>
+-    <p><strong>{source.title}</strong><span>v{source.source_revision} · {location(source.locator)}{updated ? " · 资料已更新" : source.currentness === "history" ? " · 历史版本" : ""}</span></p>
++    <p><strong>{source.title}</strong><span>v{source.source_revision} · {location(source.locator)}{source.knowledge_review?.state === "needs_review" ? " · 待复核" : ""}{updated ? " · 资料已更新" : source.currentness === "history" ? " · 历史版本" : ""}</span></p>
+     {(source.group === "current" || source.group === "same_category") && <p className={styles.lookupNote}>{source.group === "same_category" ? "同品类其他项目" : source.group_label === "当前提案" ? "当前提案" : "当前项目"}</p>}
+     {relation && <p className={styles.lookupNote}>显式关联 · {relation}</p>}
+     {source.quote && <blockquote>{source.quote}</blockquote>}

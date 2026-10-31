@@ -1,0 +1,690 @@
+{
+  "status": "applied",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/activities.py",
+      "base_sha256": "bc6a277994eada6cadddfea058cb6d283f511e6ba7041fb602b626a1e3417b54",
+      "combined_sha256": "a5a96b787ca2b2cfcff4e9a72ec0234b76c0b9d32bad04c03598bfb63196a26e",
+      "layers": [
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+      "base_sha256": "0a17edc5146df45dff665327c04959dfede412b3936cc0e8ef0f9840235550a4",
+      "combined_sha256": "2a7f4ed6a2f62adbe6d75bc4e2a7360be8d9ece9759962910a236db641d64c47",
+      "layers": [
+        "depth-integration",
+        "root-approved-summary-history-hook"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_budget.py",
+      "base_sha256": "ddf17c5b37682bae82d8a087df16d336c917f3208cbb62c4a2a72f91e6fda190",
+      "combined_sha256": "1224b8b123e57f596423a49127084ae5eaa948945cefa40f0e7b4274a5de9cfb",
+      "layers": [
+        "x3"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_observability.py",
+      "base_sha256": null,
+      "combined_sha256": "efb62dc629c9b49f6fc60b09f1fb6156615ce19c2832a7fd07d1ab2a708ab120",
+      "layers": [
+        "x3",
+        "observability"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_projection.py",
+      "base_sha256": "3cb1f5e7d2e255cce6a1c8100beea884d21984a88d0a5ba3cfa04806bfcc7118",
+      "combined_sha256": "0db55048f3d11c537c830a9741942950429d87316e146c6aa3bf2447b762f00f",
+      "layers": [
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_runtime.py",
+      "base_sha256": null,
+      "combined_sha256": "b38674743e12432f8dd80faccceb766236bc051fbf96bedcffcbfb73bfd8d4eb",
+      "layers": [
+        "x3"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "base_sha256": "ef294d38634827e24088c7203a45a9cc0d2b5747a03dc9a7fed3255fa6e02946",
+      "combined_sha256": "97cbefbd07c75e84ba70a7a9e3df42052ac69b7398a2a4cfabac576f04840e02",
+      "layers": [
+        "x3"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "base_sha256": "c89a0bac5612a64def1211c53992dd8b5f08a77c53214af73e9d9880355b1151",
+      "combined_sha256": "6a8c20bdf51d0bcb129ffaf7aa659bf032189007ed928b53348e47af5b4babb2",
+      "layers": [
+        "depth-integration",
+        "x3"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/process_view.py",
+      "base_sha256": "5389340c8c64a636bc8254423ff960ee9c08e7abe143f25e5ef8fafb1e4bc488",
+      "combined_sha256": "d0eaf36362264a3d7cf527950ab2046df3952fbea745d7343c74c9b2a59c4a03",
+      "layers": [
+        "observability"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/retrieval_feedback.py",
+      "base_sha256": null,
+      "combined_sha256": "2eb16156fd5e1ce510d3423d311716ced602c3780d815758693478b5b6c7ee75",
+      "layers": [
+        "feedback"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/work_state.py",
+      "base_sha256": "ce6b06c68418042b57b02f7c9a75ac96664c7d10d89fe07d407762520de27473",
+      "combined_sha256": "69f1e253f40c333c1f6ca6acb4593eda720b4f4f5472cb5d0147ae6c18e46694",
+      "layers": [
+        "feedback"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/schemas.py",
+      "base_sha256": "7b57c660046dad0625ecc172eb645236d2d14b101f7da94d7489d4ec0c0a893f",
+      "combined_sha256": "07b411679c1c0b02112820850e786734673ea14f235969e7c1101876ff724e9d",
+      "layers": [
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/service_runtime.py",
+      "base_sha256": "5c1fbfa6ffc41915bfa386fb890882cf044c35644eb5554c894e5af91d021dd3",
+      "combined_sha256": "df8405d45919e6d8301e3f3128eab687fb1959471d3c8ecb6b0f2247f69bcdd0",
+      "layers": [
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/automations/trigger_time.py",
+      "base_sha256": "37afb2f257864214ec07bf54b99b91fe46d36a32abeddbb5cd40a60d3d1c70ab",
+      "combined_sha256": "9a5a944da26c4e30326db349c4a0a2be9b6f001195ef3fbb45e0deabdeae68c9",
+      "layers": [
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_depth.py",
+      "base_sha256": null,
+      "combined_sha256": "82a09ddac3633087def09d974e8c8bd1ff649c5141e09cc2acd3a67b0e30e28f",
+      "layers": [
+        "depth-first",
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_exclusions.py",
+      "base_sha256": null,
+      "combined_sha256": "dd31df1bb691df49f27ef898b4ca53c18dcf0805ffb9c93d56e9972326467382",
+      "layers": [
+        "depth-first",
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+      "base_sha256": "6719a3ba63fafbe2e52cef1c0b1f96496a82a90ee8a04031f89fbbd6893e9c83",
+      "combined_sha256": "35ca2b3eb9b8dfa66e3c08711c77b96837e3e522ff3b87a7c71d911a6830f240",
+      "layers": [
+        "depth-first",
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/inbox/api.py",
+      "base_sha256": "c479a235d1591695a6494eee624b58335c06fc933d206307e2096c73b6e7e8b8",
+      "combined_sha256": "bf4b6afe624a7c63bc8192da2687aa9e1b02eb730459e7d0f0ab1b4b27380ebf",
+      "layers": [
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary.py",
+      "base_sha256": null,
+      "combined_sha256": "9db9b12716075419533d77cb58710d2dc84ae2a6037ccc527324cc6807ec40be",
+      "layers": [
+        "summary-foundation",
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_delivery.py",
+      "base_sha256": null,
+      "combined_sha256": "47871d3bc15e98c9ab2d9bdda616b3c82f293e647e336e92e18c1de5dec0d1a6",
+      "layers": [
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_graph.py",
+      "base_sha256": null,
+      "combined_sha256": "fb43811c2daf441f12d3d6ee70d38ea3b729b137b2970b0da39d4be3f64b42f1",
+      "layers": [
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_runtime.py",
+      "base_sha256": null,
+      "combined_sha256": "b18d2ec7fca14b5c53cd27c1fc37bdca2abcb2cba037685fd6e7269260b65e03",
+      "layers": [
+        "summary-integration",
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/pdos_next/personal_summary_schemas.py",
+      "base_sha256": null,
+      "combined_sha256": "19056b7472d6479087603f71bd01e4ca9197f0e3a7268c5cb097b5bbd71eadb6",
+      "layers": [
+        "summary-foundation",
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_admission_observation.py",
+      "base_sha256": null,
+      "combined_sha256": "47a747691cb31c8a65ed24365d1e3b9bd32f701aa2306424d40a273bf0fa7082",
+      "layers": [
+        "observability"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_observability.py",
+      "base_sha256": null,
+      "combined_sha256": "e2597c4fa93bf76e188409c31f2585c64eaf680952841d47a2b3cf19cc0c3b00",
+      "layers": [
+        "x3",
+        "observability"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_process_metrics.py",
+      "base_sha256": null,
+      "combined_sha256": "1dc346b3397b49975ad7ef537fa21b8709dbaad5bc70b9c0fedd7fa21fcd3f57",
+      "layers": [
+        "observability"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_process_metrics_pg.py",
+      "base_sha256": null,
+      "combined_sha256": "cd2cc4dbeab0f2aade650dd7a6dcfea47acf2b57b141e867d4e81561b707ab86",
+      "layers": [
+        "observability"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_runtime.py",
+      "base_sha256": null,
+      "combined_sha256": "8ec7fc62774dafcb94ab7d77b5429956e5109abf731b23cdbb6a955048b9d9e7",
+      "layers": [
+        "x3"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_retrieval_feedback.py",
+      "base_sha256": null,
+      "combined_sha256": "6ad8b8f520e95ecd6dc7441e6fc34d87a8a06bcba83d8e8d7a2415c8eef9f671",
+      "layers": [
+        "feedback"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_retrieval_feedback_pg.py",
+      "base_sha256": null,
+      "combined_sha256": "9af54b82d2bddbc4b82818cab25702da432ecdade71b5c218be71e496c42d86b",
+      "layers": [
+        "feedback",
+        "feedback-policy"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_runtime.py",
+      "base_sha256": "d9e772cc07b650ba68e892360315fb136d84da8e1992bf34d5f6a51832d24dab",
+      "combined_sha256": "1f2b038892e83c46a383f9abb2dfadc51b27bdcee82c05bcf35425fa22c2032e",
+      "layers": [
+        "root-approved-compatibility-test-scope"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/automations/test_summary_calendar.py",
+      "base_sha256": null,
+      "combined_sha256": "fa8c1fa99c4a9c4dabd2981cf0ac651c318c571a61b98a9acb652e023c469f0d",
+      "layers": [
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_personal_summary_pg.py",
+      "base_sha256": null,
+      "combined_sha256": "cb646e2aa2158e037f497f5957650f9bdd3b9d98f7738802a9137aa4518da2fd",
+      "layers": [
+        "summary-integration",
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/automations_pg/test_personal_summary_temporal_pg.py",
+      "base_sha256": null,
+      "combined_sha256": "fd11fd9050eb67e39d2696fe39f13057d2220cee4ffc6ea9c20c17f559a848f2",
+      "layers": [
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_assistant_depth.py",
+      "base_sha256": null,
+      "combined_sha256": "9e423a08380e6f36ba5d5380f0ab331707371a7287b84616dc75eedceea5f80e",
+      "layers": [
+        "depth-first",
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_assistant_depth_integration.py",
+      "base_sha256": null,
+      "combined_sha256": "aa6f0b8ea049ef86bfd84f2947c5a449a9f3836c4a706a80fd4c67407d145ba1",
+      "layers": [
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_assistant_depth_temporal_pg.py",
+      "base_sha256": null,
+      "combined_sha256": "7289f6632cc3e2219297108ee4565135b81e36b6cd9437f2527d51a31c10ed8f",
+      "layers": [
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_assistant_exclusions.py",
+      "base_sha256": null,
+      "combined_sha256": "65bc640c66e7dc08f47f61ac58afcdba16300bc91d4d3af3a971cbf6cd04a134",
+      "layers": [
+        "depth-first",
+        "depth-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary.py",
+      "base_sha256": null,
+      "combined_sha256": "a61fb08379bbfce8ed56d53a0567ec6879f0d2768536b62f128cfddab13b011e",
+      "layers": [
+        "summary-foundation",
+        "summary-integration"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary_delivery.py",
+      "base_sha256": null,
+      "combined_sha256": "ff256bec47b312f94d7f04176a4a9297efcc7f7d45410112a6da4d0e89862bbe",
+      "layers": [
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/server/tests/test_personal_summary_runtime.py",
+      "base_sha256": null,
+      "combined_sha256": "90ce7fd26c7961f9293f3d9f22edaeae8df0431562333e84455fed56b9fc54ce",
+      "layers": [
+        "summary-integration",
+        "summary-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "base_sha256": "93627a6c431b1916eb6c64db9af4a0a387cc6fb513fda045f411fb1f39015818",
+      "combined_sha256": "5491753de598a08ffe87f6c630b41a6961034b48020d12281b2707ee2c3ff416",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/app/api/personal-summary-route.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "dd2ea768cd00948dfd3e01ae7e44036c496190e8dc37ff84b8740ea2b0ef5c8e",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/automation-rules.test.mjs",
+      "base_sha256": "aab2590045dd336292265cdd694bfbacd40dd2afd0bc33ba3b31fc387c8ce868",
+      "combined_sha256": "4e113ddd033ebc9b6428e91ed0d74d93958c7745c0826467d084405cb91d1430",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/automation-rules.tsx",
+      "base_sha256": "17d5b4b90a074c2a130297033faba54d743b272a99fe187f9ae094fa4c0e8b4f",
+      "combined_sha256": "bef11cad31daf4c7da5dcdecde71d9d9e8c3c1403428dd75e81756516fe459de",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/category-create/personal-xiaopai.tsx",
+      "base_sha256": "1b9bf9a80550546ad8038d60b5816999368eae2e3522639b4617764f767e4e66",
+      "combined_sha256": "3034fff1a6ce1bf4e26c92d05d050ac7dab4738e3bb0784e27c5143f580db645",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/inbox.tsx",
+      "base_sha256": "3b51cb9c7aaceb1fd5fc9a991275e100b81e40ee33764319893ae4d44f7831ba",
+      "combined_sha256": "d071f19f6a54d3eb1da79c70ac41b92ffd7bc07dd36f18571529179eee691535",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/my-work-attention.tsx",
+      "base_sha256": "464f829e3230fa0687f4b515cd6baa1b3d10e912ae2194dd4c4db239ea4291ce",
+      "combined_sha256": "b68b4ae039dce37ea35c37e8b70aa486d5ee55b7bbc42b407d59ffd798f4ce59",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai-conversation.tsx",
+      "base_sha256": "872205eb62d1e7a8ee2150ec0d20741bbaabd961ff11c41ffa8f65d2f9cb8795",
+      "combined_sha256": "857beed9e1917af579b19da97f2a2c6439ab4b00c4f5cd79099520ba32d55cfb",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-corrections.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "5c2474feec43376f8cc289750a73ea4e3692311b13e36984b6eea3dd411a1a7a",
+      "layers": [
+        "corrections-new"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-corrections.tsx",
+      "base_sha256": null,
+      "combined_sha256": "cb9134a6f04e1e667b7b3cf15dc261d18d53244bb0cd842b5bae635075f40779",
+      "layers": [
+        "corrections-new"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-followup-actions.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "2719f546b2bedd66171101b59a80e8c7fa2582de10e3062f33e3e07f2ad3f481",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-followup-actions.tsx",
+      "base_sha256": null,
+      "combined_sha256": "860a03afa0ca1684114e98255149eea2e4c452451cad71eb528c373189bde559",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-sources.tsx",
+      "base_sha256": "a6ab2155ae4e9085634d90020302623ed43a621b7f21c8de6bf823284c404a25",
+      "combined_sha256": "af24804e8d827d15f42a6998a7e7caab591df7ad50964333a8f1fa0e33142836",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-task-result.test.mjs",
+      "base_sha256": "3a907bf28bf03f25af5a920e66f66fc7a628e0480b99e1def5e51df28ef33479",
+      "combined_sha256": "8402ebdf70e2dde56ce4d7ffb86b861837e99d9f0ccaea76f9a889a8b6156af3",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/answer-task-result.tsx",
+      "base_sha256": "1fbf4701e85c1d24f003450772d36f2e16babfbb7eebacc4025d7d18be7dbf93",
+      "combined_sha256": "004f2507aa8ff94f1a51887b5e7b5c0ef578fb0280169f1632929a227bd94e05",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/context-metrics.tsx",
+      "base_sha256": null,
+      "combined_sha256": "5c3efbf7c2e4f772ae387fd807c9bd5b3d8dc1eee8dd8c4ecaed16b093d29018",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/personal-summary-result.tsx",
+      "base_sha256": null,
+      "combined_sha256": "a1f0131ecef70d704dbb6ca619d53644c58d6a207234d476224cd5de5dc6b3c2",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-continuation.test.mjs",
+      "base_sha256": "e2f2fbd7becdfce657f3c70ba1b737b909e9aef7a3e858163557490875f91607",
+      "combined_sha256": "b7284f862581bbddab9b4b54ef6d028b469726ad687a4b568568ef34e793a3db",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-continuation.tsx",
+      "base_sha256": "91a520f9cfae750ff0d19039e28c3a680a21e4e9f04684f8f0c52259edcc6884",
+      "combined_sha256": "5d488eb50b4b035b14f22ed7cd3029866813bf194b1a2cfd1f93d8eba9a9b0d6",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-process-interactions.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "5712d593d05b95abf7e0814fd78d25121d42b4782b6f4426ccd8e8918418f0e3",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-process.test.mjs",
+      "base_sha256": "a6f1c235faa1cdfa08088dc19f7cac92c1f3ac809fa5b90ced4e96e23b10a048",
+      "combined_sha256": "5923899880112ae7b831e6118a07902341afb29de35bf73198762d45144b02ba",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/run-process.tsx",
+      "base_sha256": "3e8141a2363aeeaf1e8a622e97d26534db5f88584b2dd321c2931ed1db5206d0",
+      "combined_sha256": "0d151cc127d5fab5f42fed3284b05447a4201dafb2715db02f2442197af9460b",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/pai/work-state-carry.tsx",
+      "base_sha256": "bbf6b0d6aa0b917cf1913942ad37b0186cf5ebf0013a6e7b944c635d7c973071",
+      "combined_sha256": "889df3644ea4e19d5c83bc074087faa85e1c108a5914c23b9810864773802614",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary-events.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "9259500b054da3e69a9ac120417b2ad662a4d756071ea3b1e96da58f2c1fb6ae",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary-inbox.tsx",
+      "base_sha256": null,
+      "combined_sha256": "42b1f978149d36d953f33d4e83045f71bd6c8edab89a46b62e681173796b3ab7",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary-settings.tsx",
+      "base_sha256": null,
+      "combined_sha256": "76c3d413a6dd124667464e475c583adbf9789d5eed8431f8ecc13b2235486172",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/personal-summary.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "735186fb32639e7668cfe1f74bae4f0244f3b8613199a1dfd8ff9fa093a4fdcb",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/components/xiaopai.tsx",
+      "base_sha256": "0e7e3f3c4fd3cf81b3b0a2f12ce0bfbd45ad89ffc3635df217c53c2dc0719698",
+      "combined_sha256": "153623c68f1abbdff6af8245b91c99f7d4f3a5595f05da11848445d791392660",
+      "layers": [
+        "verification-ui",
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/answer-corrections.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "4c1edbc132af9855212d5c8217d31bd948be904ee7a03ca8aa234e87e67c0f40",
+      "layers": [
+        "corrections-new"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/answer-corrections.ts",
+      "base_sha256": null,
+      "combined_sha256": "9048fa21c8d870069c2d3aa6563f2f2f8aec41f7e4130e39bc155fd4d966c4ac",
+      "layers": [
+        "corrections-new"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/answer-followup.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "0de10e7a58ecce2312726600157239e2a759460af05f76de90aa3a9a5025949a",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/answer-followup.ts",
+      "base_sha256": null,
+      "combined_sha256": "ad4f2544ebcda34fd1c072891c54927d1fe74c307fa5ee4a29d11a9c2f7d0bf4",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/automation-rules.test.mjs",
+      "base_sha256": "7e0582e148605b085e8beedacdfcf5beaf2cb4eb11bb4cc19eb3f0cd35d22bc2",
+      "combined_sha256": "b6a5682be289c839b9f9b12524f8f85b1addec2c55cfd3f8277c952299d8d910",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/automation-rules.ts",
+      "base_sha256": "0f68ab87d7ba61a36723614132454a300a8176c436af2f9430094fb548f90a60",
+      "combined_sha256": "68f4c4f7c8bec5b7bd05d48e247f6407aa84463c9c7577b666a2fd883e5d1a9e",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/personal-summary.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "621698cfd84a98e24ffbe6de9c4f22490ea9b7637f7e70c22f83b7f3cbd23a4a",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/personal-summary.ts",
+      "base_sha256": null,
+      "combined_sha256": "1fba0a64c6caa95bac2a696f52fa897e0e7b31d468c32eb1643644d4c94bfe9f",
+      "layers": [
+        "summary-ui-frontend"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-context-metrics.test.mjs",
+      "base_sha256": null,
+      "combined_sha256": "db05c9e47923d1fb6ea757511070bb2fc7e0fc4c5aff6dd8c8fabd8eb7a52a77",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-context-metrics.ts",
+      "base_sha256": null,
+      "combined_sha256": "b58fb7a96b3f085093d95bb606d1a9e28d09bdb476d927535e40b7fe8962fb0e",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-continuation.ts",
+      "base_sha256": "f3c6f58237d9ee322fe94a9adc1c581c543b062fca666f73de5de6d0d3d77db9",
+      "combined_sha256": "0c5d1daf3b30cb3ea99d860aabfa6cbcf2fea67dea306ee635f6c01d60002298",
+      "layers": [
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-process.ts",
+      "base_sha256": "a202794b06f5f6ca266ac23fe1665d4f027140cfcc151cc5ab0c4f48c60b0c7a",
+      "combined_sha256": "44053146ea0c9e3b8d44b550f4925a386e6635c3fa2cd6858667ddd00fc093e7",
+      "layers": [
+        "observability-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.test.mjs",
+      "base_sha256": "fb2f04042630b0e2a118d2c1b00578733ab2987bd8a4191f042bf36ff5bd6cf2",
+      "combined_sha256": "6d11e667c1f19172a3536da62cbb09fde6d19d4bc4b7a14d467b4c06b1664c9f",
+      "layers": [
+        "verification-ui",
+        "corrections-ui"
+      ]
+    },
+    {
+      "path": "pdos-next/web/src/lib/run-start-intent.ts",
+      "base_sha256": "8af5f75da7c522a62808be7e0a74be035a188135c3a0c89c0afcf786678d588a",
+      "combined_sha256": "4346cddbe5ceafc83fc5a6fae3c422c7e38118ccaaf008795a622a1b5fd9f07b",
+      "layers": [
+        "verification-ui",
+        "corrections-ui"
+      ]
+    }
+  ],
+  "source_stage": "/tmp/pdos-assistant-combined-next-20261029",
+  "scope": "83 declared files; no migration draft installation"
+}

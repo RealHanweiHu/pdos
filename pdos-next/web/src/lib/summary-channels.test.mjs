@@ -1,0 +1,13 @@
+import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
+import Module, { createRequire } from "node:module";
+import path from "node:path";
+import test from "node:test";
+import { fileURLToPath } from "node:url";
+const dir = path.dirname(fileURLToPath(import.meta.url)), dep = createRequire(path.join(dir, "../../package.json")), ts = dep("typescript");
+function load(name) { const filename = path.join(dir, name), loaded = new Module(filename); loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, filename); return loaded.exports; }
+const { readSummaryChannels, readSummaryReceipts, reconcileSummaryReceipt } = load("summary-channels.ts"), { parseSummarySelection } = load("personal-summary.ts");
+const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
+test("old choices omit the new default and explicit binding never adds identity fields", () => { const old = parseSummarySelection({}); assert.equal("dingtalk_binding_id" in old, false); assert.deepEqual(parseSummarySelection({ dingtalk_binding_id: null }), old); assert.equal(parseSummarySelection({ dingtalk_binding_id: id(2) }).dingtalk_binding_id, id(2)); assert.throws(() => parseSummarySelection({ dingtalk_binding_id: "other", target_id: "peer" })); });
+test("binding options are current own metadata GET and reject another principal", async () => { const calls = [], value = { version: "personal-summary-channels/v1", principal_id: id(1), configured: true, bindings: [{ binding_id: id(2), epoch: 1, application_id: id(3), application_revision: 2 }] }; const api = async (...args) => { calls.push(args); return value; }; assert.equal((await readSummaryChannels(api, id(1))).bindings[0].binding_id, id(2)); assert.deepEqual(calls, [["v1/personal/inbox/summary-channels"]]); await assert.rejects(readSummaryChannels(api, id(9))); });
+test("unknown receipt continuation sends only original receipt ID and empty lookup body", async () => { const row = { delivery_id: id(4), run_id: id(5), state: "unknown", attempts: 1, error_code: "EXTERNAL_OUTCOME_UNKNOWN" }, calls = []; const api = async (...args) => { calls.push(args); return args[0].endsWith("reconcile") ? { ...row, state: "delivered", error_code: null } : { principal_id: id(1), items: [row] }; }; assert.equal((await readSummaryReceipts(api, id(1)))[0].state, "unknown"); assert.equal((await reconcileSummaryReceipt(api, id(4))).state, "delivered"); assert.deepEqual(calls[1], [`v1/personal/inbox/summary-deliveries/${id(4)}/reconcile`, {}]); assert.equal(calls.filter(c => c[0].includes("send")).length, 0); await assert.rejects(reconcileSummaryReceipt(api, "bad")); });

@@ -1,0 +1,10 @@
+{
+  "web_pid": 24640,
+  "web_session": 88554,
+  "host": "127.0.0.1",
+  "port": 58262,
+  "build": "/tmp/pdos-verification-ui-stage-20261029/pdos-next/web/.next",
+  "api_port": 58261,
+  "api_fixture_session": 3429,
+  "inference": "synthetic provider only; no real model"
+}

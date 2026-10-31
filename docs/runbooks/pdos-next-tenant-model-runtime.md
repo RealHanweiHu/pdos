@@ -2,17 +2,51 @@
 
 默认 API 和 Worker 通过同一份服务器元数据文件取得租户凭据引用、服务商身份和价格卡。模型密钥保存在阿里云 KMS 通用凭据中，文件只保存引用。此接线实现冻结 v1.1 §06、§07.5；不会授予模型资格、签约批准或 T2 执行权。
 
+按[确认稿 P28](../design/2026-10-08-pdos-next-design-confirmation.md#p28-基础模型开放-openai-兼容-api-接入用户-2026-10-26)，基础 LLM 可接入任意提供 OpenAI 兼容 Chat Completions API 的服务商或自建网关，不限 MiniMax，也不按品牌维护白名单。配置入口为「设置 → 小Pai → 模型配置」：协议选择 `openai-compatible`，填写服务商的基础 URL（不含 `/chat/completions`）、模型 ID 与实际版本；请求向该 URL 追加 `/chat/completions`，使用服务器绑定的 Bearer API key。公共端点使用 HTTPS，本机服务可使用 localhost/127.0.0.1/::1 的 HTTP 地址。
+
+不同接口的扩展能力可在同一入口选择：
+
+| 设置 | 选择依据 |
+|---|---|
+| `openai_output_parameter` | 按接口文档选 `max_tokens` 或 `max_completion_tokens`。 |
+| `openai_response_mode: tools` | 新配置默认。通过原生工具调用返回结构化结果，无须 `response_format` / 严格 JSON Schema 扩展；MiniMax 官方端点继续使用原专属适配。 |
+| `openai_response_mode: json_schema` | 接口支持严格 JSON Schema 时使用。 |
+| `openai_response_mode: json_object` | 接口仅支持 JSON 对象模式时使用；具体 schema 追加在上下文末尾。 |
+| `openai_response_mode: text` | 接口不支持 `response_format` 时使用；要求模型按上下文末尾的 schema 返回 JSON 文本，仍由运行图检查结构。 |
+| `openai_response_mode: auto` | 已有配置的默认值，保持原 MiniMax 专属适配或普通 JSON Schema 路径及原绑定。 |
+| `streaming: false` | 接口不支持流式响应或流式用量时使用；请求不发送 `stream_options`，从完整响应核对实际用量。默认 `true`。 |
+
+业务工具仍通过原生 `tool_calls` 执行；仅有文本生成能力的模型不能据此宣称具备工具办理能力。各模式继续检查实际 token 用量、最终结果 schema 与权限；缺用量按结果未知保守记账，不自动改模式重发。响应方式、端点或版本变更进入路由/资格绑定，新旧调用不能串用续接记录。
+
 ## 配置与启用顺序
 
+### 从页面添加与切换（P29）
+
+在「设置 → 小Pai与模型 → 模型配置」点击「添加服务商」，填写 **API Key、Base URL 和模型名称**，可另填显示名称。保存后连接出现在列表中，Key 只显示 `••••`。模型版本默认沿用模型名称；高级接口选项中可调整协议、响应格式、输出参数、流式开关和 token 上限。
+
+点击某份已保存连接的「切换使用」，在列表下方核对实际地址与模型，点击「确认保存并使用」。刷新后从服务器恢复当前选择。原连接和 Key 都会保留，可再次切换；各连接使用各自的密钥，不因为同属 OpenAI 兼容协议而混用。
+
+服务器已登记同一端点的，保持原服务商政策身份；精确同一模型/版本的可沿用原价格卡。其他连接可展开「价格与计量（USD）」填写全部实际单价、出处和文本计费上界，并明确核对；页面此次核对有效期为 30 天。未填写仍可保存连接和确认切换，实际调用前继续要求有效计量、预算及适用资格。保存或切换不发出模型请求。
+
+API Key 只在专用密码字段中提交，页面不读取原值，也不写入 localStorage/sessionStorage。保存结果未知时保留同一请求在页面内存中，点击「核对原保存请求」；不要另建请求盲目重发。刷新后先查看已保存列表，成功的连接无需再次输入 Key。关闭页面会清除未完成的密钥输入。
+
+服务器需已有 `PDOS_TENANT_RUNTIME_CONFIG` 及可用的安全存储配置：本地沿用 macOS Keychain；云环境沿用 KMS，并需具备 `kms:CreateSecret`、`kms:DescribeSecret`、现有读取权限及适用的 `kms:GenerateDataKey` 权限，见 [CreateSecret 官方说明](https://help.aliyun.com/en/kms/key-management-service/developer-reference/api-kms-2016-01-20-createsecret)。本实现不自行建立云账号、授权或密钥主资源。非秘密连接元数据在原配置文件的 `connections` 中，通过文件锁和原子替换保存，目录须允许 API 进程安全写入，API 与 Worker 继续共读同一文件。
+
+### 服务器初始配置
+
 1. 为 API、Worker 设置相同的 `PDOS_TENANT_RUNTIME_CONFIG` **绝对路径**。参考 [元数据示例](../../pdos-next/config/tenant-runtime.example.json)，在服务器私有目录保存实际文件，通过原子替换更新。未设置时维持 AI 未配置状态；不存在、格式错误、超过 2 MiB 或相对路径均显示配置不可用。显式注入的测试端口优先于默认宿主。
-2. 使用已获授权的 KMS 通用文本凭据。`secret_arn` 必须是完整的账号/地域 ARN；同一文件的凭据地域必须与 `kms.region` 一致。`reference` 是管理员分配并保持稳定的 UUID，每个“租户 × 协议”只有一个当前槽位。值仅包含服务商要求的 API key，不包含 JSON 包装。不要把密钥粘贴进元数据、模型配置页面、源码、日志或本手册。
+2. 使用已获授权的 KMS 通用文本凭据。`secret_arn` 必须是完整的账号/地域 ARN；同一文件的凭据地域必须与 `kms.region` 一致。`reference` 是管理员分配并保持稳定的 UUID，原服务器配置每个“租户 × 协议”一个默认槽位，页面新增连接各有独立引用。值仅包含服务商要求的 API key，不包含 JSON 包装。密钥只可在专用 API Key 输入框提交；不要粘贴进普通元数据、源码、日志或本手册。
 3. 为进程提供阿里云官方凭据链支持的访问身份。部署在 ECS 时可使用实例 RAM 角色，授予所需凭据的 `kms:ListSecretVersionIds`、`kms:GetSecretValue` 权限；跨账号访问还需相应资源授权。SDK 默认凭据链也可消费已获授权的开发身份。该文件不保存云 AccessKey，也不自行创建角色、授权或云资源。参考 [官方凭据链](https://help.aliyun.com/en/sdk/developer-reference/v2-manage-python-access-credentials)。
 4. `kms.endpoint` 支持与地域精确对应的共享公网 `kms.<region>.aliyuncs.com` 或共享 VPC `kms-vpc.<region>.aliyuncs.com`，均通过 HTTPS。专属实例网关和自定义 CA 尚未接入，不要填入此示例冒充支持。部署应按实际网络选取地址，见 [官方客户端初始化说明](https://www.alibabacloud.com/help/en/kms/key-management-service/developer-reference/initialize-the-client-1)。
 5. 在 `models` 为每个实际“租户 × 协议 × base_url × model × model_version”登记唯一记录。`provider` 必须与应用中实际服务商数据协议的标识完全一致；它与模型版本是不同概念。OpenAI 兼容与 Anthropic 原生协议均由既有网关实现。
 6. 价格卡填入当前已核对的 USD 单价、来源、带时区的核对/失效时间，以及该模型已核对的文本 token/计费上界。输入、输出、缓存读取、缓存创建和按次费用分别计量；`covers_all_fees`、`output_cap_covers_all_billing` 只能在实际核对后设为 true。示例故意过期且未覆盖费用，复制示例不会获得模型调用能力。单价变更按每次调用保存价格快照，历史费用不回写。
-7. 租户管理员通过既有模型配置入口预览并一次确认保存协议、地址、模型和版本，绑定当时的凭据版本；只改服务器文件不会自动完成该确认。另需按现行流程登记适用数据类别的有效服务商协议、启用技能、建立实际预算并完成适用资格审阅。配置文件中的名称和费率不是资格或签约材料。
+7. 租户管理员通过既有模型配置入口预览并一次确认保存协议、地址、模型、版本和接口选项，绑定当时的凭据版本；只改服务器文件不会自动完成该确认。另需按现行流程启用技能、建立实际预算并完成适用资格审阅。服务商协议为可选治理工具，已登记当前有效协议的按数据类别限制执行。配置文件中的名称和费率不是资格或签约材料。
 
 同一文件可含多个租户和两种协议；服务器只从已鉴权的 Run 范围选择租户，不接收模型传入的租户或服务商身份。API 与 Worker 进程都需要对应的文件和云身份。管理接口只返回脱敏状态，不返回 KMS ARN、引用或密钥。
+
+每条 `models` 记录可设置 `max_output_tokens`，省略时保持 2048；普通路由接受 1–32768 的整数，官方 MiniMax M3 路由支持至 524288（[服务商参数](https://platform.minimax.cn/docs/api-reference/text-chat-openai)）。该值由服务器按完整租户/模型键选择，进入路由摘要及调用前的预算预留，不能由模型参数覆盖。更改后旧路由摘要失效，已计费用保持原记录。API 与 Worker 应使用同一文件的同一配置。
+
+按用户批准的[本地开发 MiniMax 策略](../design/2026-10-23-local-development-minimax-policy.md)，指定模型记录可显式设置 `development_unlimited_budget: true`。仅已核对的独立本地 `pdos_test` 接受；新旧预算的额度数字和历史保留，实际费用、尝试次数及 token 继续记账，当前 MiniMax 开发调用不应用这些额度，停用活动记录仍停止后续调用。此配置默认关闭，不适用于其他模型或生产，也不授予资格。升级至 `s0_0814` 后才能记录超出旧额度的开发用量；已有开发使用记录时迁移拒绝回退。
 
 ## 本人模型预算
 

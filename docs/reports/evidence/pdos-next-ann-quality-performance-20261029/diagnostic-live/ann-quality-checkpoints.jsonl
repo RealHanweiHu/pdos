@@ -1,0 +1,122 @@
+{"at": "2026-10-29T22:49:43.627442+00:00", "stage": "seed_started", "vector_count": 32768}
+{"at": "2026-10-29T22:57:32.700926+00:00", "sources": 512, "stage": "seed_completed", "vectors": 32768}
+{"actor": "531df785-659b-40b7-a841-6bd2136fe3d1", "at": "2026-10-29T22:57:33.562954+00:00", "materialized": false, "stage": "ab_read_started"}
+{"actor": "531df785-659b-40b7-a841-6bd2136fe3d1", "at": "2026-10-29T22:57:52.589738+00:00", "materialized": false, "stage": "ab_read_completed"}
+{"actor": "531df785-659b-40b7-a841-6bd2136fe3d1", "at": "2026-10-29T22:57:52.589979+00:00", "materialized": true, "stage": "ab_read_started"}
+{"actor": "531df785-659b-40b7-a841-6bd2136fe3d1", "at": "2026-10-29T22:57:58.157058+00:00", "materialized": true, "stage": "ab_read_completed"}
+{"actor": "4ab0b247-4ebc-45b8-958b-d74812c2e198", "at": "2026-10-29T22:57:58.177365+00:00", "materialized": true, "stage": "ab_read_started"}
+{"actor": "4ab0b247-4ebc-45b8-958b-d74812c2e198", "at": "2026-10-29T22:58:00.143389+00:00", "materialized": true, "stage": "ab_read_completed"}
+{"actor": "4ab0b247-4ebc-45b8-958b-d74812c2e198", "at": "2026-10-29T22:58:00.143508+00:00", "materialized": false, "stage": "ab_read_started"}
+{"actor": "4ab0b247-4ebc-45b8-958b-d74812c2e198", "at": "2026-10-29T22:58:07.074179+00:00", "materialized": false, "stage": "ab_read_completed"}
+{"at": "2026-10-29T22:58:09.163630+00:00", "phase": "owner_all", "query_number": 0, "stage": "exact_started"}
+{"at": "2026-10-29T22:58:12.361337+00:00", "config": "strict40", "phase": "owner_all", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:18.272476+00:00", "config": "strict40", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:18.273575+00:00", "config": "strict128", "phase": "owner_all", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:24.318148+00:00", "config": "strict128", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:24.318272+00:00", "config": "relaxed40", "phase": "owner_all", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:30.244717+00:00", "config": "relaxed40", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:30.244965+00:00", "config": "relaxed128", "phase": "owner_all", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:36.247900+00:00", "config": "relaxed128", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:36.248232+00:00", "phase": "owner_all", "query_number": 1, "stage": "exact_started"}
+{"at": "2026-10-29T22:58:39.489532+00:00", "config": "strict40", "phase": "owner_all", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:45.368922+00:00", "config": "strict40", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:45.369223+00:00", "config": "strict128", "phase": "owner_all", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:51.484262+00:00", "config": "strict128", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:51.484379+00:00", "config": "relaxed40", "phase": "owner_all", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T22:58:57.593966+00:00", "config": "relaxed40", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:58:57.594101+00:00", "config": "relaxed128", "phase": "owner_all", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:01.643837+00:00", "config": "relaxed128", "phase": "owner_all", "physical_path": "HNSW", "query_number": 1, "recall_at_10": 0.2, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:01.645935+00:00", "phase": "owner_all", "query_number": 2, "stage": "exact_started"}
+{"at": "2026-10-29T22:59:04.966473+00:00", "config": "strict40", "phase": "owner_all", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:08.907721+00:00", "config": "strict40", "phase": "owner_all", "physical_path": "HNSW", "query_number": 2, "recall_at_10": 0.3, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:08.907839+00:00", "config": "strict128", "phase": "owner_all", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:12.890283+00:00", "config": "strict128", "phase": "owner_all", "physical_path": "HNSW", "query_number": 2, "recall_at_10": 0.3, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:12.890389+00:00", "config": "relaxed40", "phase": "owner_all", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:16.811407+00:00", "config": "relaxed40", "phase": "owner_all", "physical_path": "HNSW", "query_number": 2, "recall_at_10": 0.5, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:16.811535+00:00", "config": "relaxed128", "phase": "owner_all", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:20.716886+00:00", "config": "relaxed128", "phase": "owner_all", "physical_path": "HNSW", "query_number": 2, "recall_at_10": 0.5, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:20.717009+00:00", "phase": "owner_all", "query_number": 3, "stage": "exact_started"}
+{"at": "2026-10-29T22:59:24.283761+00:00", "config": "strict40", "phase": "owner_all", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:30.395319+00:00", "config": "strict40", "phase": "owner_all", "physical_path": "non_ANN", "query_number": 3, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:30.395440+00:00", "config": "strict128", "phase": "owner_all", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:32.945972+00:00", "config": "strict128", "phase": "owner_all", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.2, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:32.946089+00:00", "config": "relaxed40", "phase": "owner_all", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:36.826709+00:00", "config": "relaxed40", "phase": "owner_all", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.3, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:36.826814+00:00", "config": "relaxed128", "phase": "owner_all", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:40.742156+00:00", "config": "relaxed128", "phase": "owner_all", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.3, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:40.747758+00:00", "phase": "owner_all", "stage": "phase_completed"}
+{"at": "2026-10-29T22:59:41.520909+00:00", "phase": "peer_before_revoke", "query_number": 0, "stage": "exact_started"}
+{"at": "2026-10-29T22:59:42.841316+00:00", "config": "strict40", "phase": "peer_before_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:44.528127+00:00", "config": "strict40", "phase": "peer_before_revoke", "physical_path": "HNSW", "query_number": 0, "recall_at_10": 0.2, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:44.528438+00:00", "config": "strict128", "phase": "peer_before_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:46.199759+00:00", "config": "strict128", "phase": "peer_before_revoke", "physical_path": "HNSW", "query_number": 0, "recall_at_10": 0.2, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:46.199884+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:49.079214+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:49.079344+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:51.864304+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:51.864410+00:00", "phase": "peer_before_revoke", "query_number": 1, "stage": "exact_started"}
+{"at": "2026-10-29T22:59:53.239123+00:00", "config": "strict40", "phase": "peer_before_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:56.294591+00:00", "config": "strict40", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:56.294714+00:00", "config": "strict128", "phase": "peer_before_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T22:59:59.071715+00:00", "config": "strict128", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T22:59:59.071842+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:01.767404+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:01.767514+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:04.605410+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:04.605534+00:00", "phase": "peer_before_revoke", "query_number": 2, "stage": "exact_started"}
+{"at": "2026-10-29T23:00:05.989984+00:00", "config": "strict40", "phase": "peer_before_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:07.749950+00:00", "config": "strict40", "phase": "peer_before_revoke", "physical_path": "HNSW", "query_number": 2, "recall_at_10": 0.4, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:07.750053+00:00", "config": "strict128", "phase": "peer_before_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:10.478799+00:00", "config": "strict128", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:10.479398+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:13.155350+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:13.155460+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:15.889219+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:15.889351+00:00", "phase": "peer_before_revoke", "query_number": 3, "stage": "exact_started"}
+{"at": "2026-10-29T23:00:17.245226+00:00", "config": "strict40", "phase": "peer_before_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:19.065428+00:00", "config": "strict40", "phase": "peer_before_revoke", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:19.065557+00:00", "config": "strict128", "phase": "peer_before_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:22.011899+00:00", "config": "strict128", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 3, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:22.013013+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:24.961410+00:00", "config": "relaxed40", "phase": "peer_before_revoke", "physical_path": "non_ANN", "query_number": 3, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:24.961814+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:26.790024+00:00", "config": "relaxed128", "phase": "peer_before_revoke", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.5, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:26.792613+00:00", "phase": "peer_before_revoke", "stage": "phase_completed"}
+{"at": "2026-10-29T23:00:28.438118+00:00", "phase": "peer_after_revoke", "query_number": 0, "stage": "exact_started"}
+{"at": "2026-10-29T23:00:29.787430+00:00", "config": "strict40", "phase": "peer_after_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:31.487850+00:00", "config": "strict40", "phase": "peer_after_revoke", "physical_path": "HNSW", "query_number": 0, "recall_at_10": 0.2, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:31.488057+00:00", "config": "strict128", "phase": "peer_after_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:33.290608+00:00", "config": "strict128", "phase": "peer_after_revoke", "physical_path": "HNSW", "query_number": 0, "recall_at_10": 0.2, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:33.290733+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:36.160370+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:36.160507+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "query_number": 0, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:38.952894+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 0, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:38.953010+00:00", "phase": "peer_after_revoke", "query_number": 1, "stage": "exact_started"}
+{"at": "2026-10-29T23:00:40.295286+00:00", "config": "strict40", "phase": "peer_after_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:43.108424+00:00", "config": "strict40", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:43.108537+00:00", "config": "strict128", "phase": "peer_after_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:46.022907+00:00", "config": "strict128", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:46.023033+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:48.915510+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:48.915632+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "query_number": 1, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:51.684059+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 1, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:51.684177+00:00", "phase": "peer_after_revoke", "query_number": 2, "stage": "exact_started"}
+{"at": "2026-10-29T23:00:53.116938+00:00", "config": "strict40", "phase": "peer_after_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:56.177034+00:00", "config": "strict40", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:56.177162+00:00", "config": "strict128", "phase": "peer_after_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:00:58.975109+00:00", "config": "strict128", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:00:58.975224+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:01:01.822271+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:01:01.822553+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "query_number": 2, "stage": "iterative_started"}
+{"at": "2026-10-29T23:01:04.871420+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 2, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:01:04.871543+00:00", "phase": "peer_after_revoke", "query_number": 3, "stage": "exact_started"}
+{"at": "2026-10-29T23:01:06.371149+00:00", "config": "strict40", "phase": "peer_after_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:01:08.321500+00:00", "config": "strict40", "phase": "peer_after_revoke", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:01:08.321606+00:00", "config": "strict128", "phase": "peer_after_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:01:10.310597+00:00", "config": "strict128", "phase": "peer_after_revoke", "physical_path": "HNSW", "query_number": 3, "recall_at_10": 0.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:01:10.310733+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:01:13.329612+00:00", "config": "relaxed40", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 3, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:01:13.329727+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "query_number": 3, "stage": "iterative_started"}
+{"at": "2026-10-29T23:01:16.313670+00:00", "config": "relaxed128", "phase": "peer_after_revoke", "physical_path": "non_ANN", "query_number": 3, "recall_at_10": 1.0, "stage": "iterative_completed"}
+{"at": "2026-10-29T23:01:16.315912+00:00", "phase": "peer_after_revoke", "stage": "phase_completed"}
+{"at": "2026-10-29T23:01:19.132154+00:00", "stage": "finished", "status": "diagnostic_control_checks_passed"}

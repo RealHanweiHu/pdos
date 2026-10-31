@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="7" skipped="0" tests="28" time="71.962" timestamp="2026-10-29T02:00:29.362521-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_context_corrections_pg" name="test_private_source_selection_replay_sql_limit_clear_and_deleted_constraint" time="5.421"><failure message="KeyError: 'status'">tests/agent_kernel/test_context_corrections_pg.py:97: in test_private_source_selection_replay_sql_limit_clear_and_deleted_constraint
+    finish(setup, parent)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'</failure></testcase><testcase classname="tests.agent_kernel.test_context_corrections_pg" name="test_context_options_are_owner_only_and_made_up_artifact_history_is_rejected" time="2.198"><failure message="KeyError: 'status'">tests/agent_kernel/test_context_corrections_pg.py:209: in test_context_options_are_owner_only_and_made_up_artifact_history_is_rejected
+    finish(setup, parent)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'</failure></testcase><testcase classname="tests.agent_kernel.test_personal_context_pins_pg" name="test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope" time="4.155"><failure message="KeyError: 'status'">tests/agent_kernel/test_personal_context_pins_pg.py:115: in test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope
+    actual = pin_personal(setup, [first, second])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:32: in pin_personal
+    finish(setup, parent, personal=True)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'</failure></testcase><testcase classname="tests.agent_kernel.test_personal_context_pins_pg" name="test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[content]" time="2.759"><failure message="KeyError: 'status'">tests/agent_kernel/test_personal_context_pins_pg.py:141: in test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes
+    actual = pin_personal(setup, [identity])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:32: in pin_personal
+    finish(setup, parent, personal=True)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'</failure></testcase><testcase classname="tests.agent_kernel.test_personal_context_pins_pg" name="test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[scan]" time="2.301"><failure message="KeyError: 'status'">tests/agent_kernel/test_personal_context_pins_pg.py:141: in test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes
+    actual = pin_personal(setup, [identity])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:32: in pin_personal
+    finish(setup, parent, personal=True)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'</failure></testcase><testcase classname="tests.agent_kernel.test_run_continuation" name="test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority" time="0.956"><failure message="AssertionError: assert {'assistant_d...sion': 0, ...} == {'checkpoint_...on-run-ns/v1'}&#10;  &#10;  Omitting 1 identical items, use -vv to show&#10;  Left contains 4 more items:&#10;  {'assistant_depth': {'mode': 'quick',&#10;                       'parent_run_id': '1f6ee6ad-23b9-4dbe-a369-0581be884c66',&#10;                       'version': 1},&#10;   'context_selection_start_revision': 0,...&#10;  &#10;  ...Full output truncated (3 lines hidden), use '-vv' to show">tests/agent_kernel/test_run_continuation.py:60: in test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
+    assert new.versions == {"checkpoint_layout": "session-run-ns/v1"}
+E   AssertionError: assert {'assistant_d...sion': 0, ...} == {'checkpoint_...on-run-ns/v1'}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Left contains 4 more items:
+E     {'assistant_depth': {'mode': 'quick',
+E                          'parent_run_id': '1f6ee6ad-23b9-4dbe-a369-0581be884c66',
+E                          'version': 1},
+E      'context_selection_start_revision': 0,...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show</failure></testcase><testcase classname="tests.agent_kernel.test_run_continuation" name="test_same_original_followup_is_serialized_and_recovers_without_current_binding" time="0.937" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_followup_refuses_scope_changes_peer_and_unfinished_parent" time="0.864" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_followup_appends_current_sources_without_replacing_original_versions" time="3.275" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_private_personal_continuation_is_same_session_without_category_authority" time="1.514" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_full_memory_pagination_retains_root_constraints_and_is_not_recent_raw_chat" time="1.242" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_append_failure_rolls_back_new_turn_and_keeps_original_result" time="0.800" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_sql_continuation_cannot_rebind_existing_turn" time="0.993" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_revoking_parent_scope_hides_memory_before_model_egress" time="1.505" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model" time="2.972" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it" time="3.824" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_newly_revoked_turn_hides_answer_and_stops_frozen_history" time="3.104" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_prepared_candidate_turn_keeps_answer" time="1.374" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_thirty_turn_history_stays_bounded_and_full_history_is_available" time="5.312" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_first_turn_constraint_remains_at_turn_fifteen_and_proposals_need_verbatim_proof" time="9.706" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_human_removal_is_versioned_replayable_frozen_and_not_resurrected" time="2.689" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_state_edit_cas_peer_scope_and_append_only" time="1.246" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_finish_replay_and_failure_roll_back_state_with_terminal_result" time="1.616" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress" time="3.588"><failure message="AssertionError: assert 'SOURCE_UNAVAILABLE' == 'CONVERSATION_HISTORY_REVOKED'&#10;  &#10;  - CONVERSATION_HISTORY_REVOKED&#10;  + SOURCE_UNAVAILABLE">tests/agent_kernel/test_work_state_pg.py:220: in test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress
+    assert error.value.reason == "CONVERSATION_HISTORY_REVOKED"
+E   AssertionError: assert 'SOURCE_UNAVAILABLE' == 'CONVERSATION_HISTORY_REVOKED'
+E     
+E     - CONVERSATION_HISTORY_REVOKED
+E     + SOURCE_UNAVAILABLE</failure></testcase><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_reusing_session_id_does_not_send_unbound_sources_from_other_runs" time="1.828" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_no_output_terminal_keeps_unfinished_work_and_fixed_focus_versions[cancelled]" time="1.729" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_no_output_terminal_keeps_unfinished_work_and_fixed_focus_versions[failed]" time="1.781" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_page_attachment_stays_material_and_is_not_a_goal_or_constraint" time="1.325" /></testsuite></testsuites>

@@ -6,9 +6,11 @@ import { runInNewContext } from "node:vm";
 
 const require = createRequire(import.meta.url), ts = require("typescript");
 const compiledModule = { exports: {} };
+const verification = { exports: {} };
+runInNewContext(ts.transpileModule(readFileSync(new URL("./verification-action.ts", import.meta.url), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, { module: verification, exports: verification.exports });
 runInNewContext(ts.transpileModule(readFileSync(new URL("./domain-candidate.ts", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
-}).outputText, { module: compiledModule, exports: compiledModule.exports });
+}).outputText, { module: compiledModule, exports: compiledModule.exports, require: name => { assert.equal(name, "./verification-action"); return verification.exports; } });
 const { boundCandidateCommand, sameCandidateCommand, matchesPendingCandidate } = compiledModule.exports;
 const category = "11111111-1111-4111-8111-111111111111";
 const run = "22222222-2222-4222-8222-222222222222";
@@ -17,6 +19,15 @@ const command = () => ({
   command_id: run, idempotency_key: "actual-server-model-intent", expected_revision: 1,
   source_read_set: [], payload: { prepared_by_run_id: run, candidate_digest: "a".repeat(64),
     compatibility: null, platform_version: null, confirmation_token: null },
+});
+
+test("native preparation kind binds the ordinary command without pretending to be a CONTENT candidate", () => {
+  const event = "33333333-3333-4333-8333-333333333333";
+  const value = { ...command(), operation: "verification.preparation.record", payload: { request_id: run, build_id: category, expected_build_revision: 1, expected_request_revision: 0, title: "复验准备", purpose: "改善复验", items: [{ sample_count: 6 }], sources: [] } };
+  assert.equal(boundCandidateCommand(value, category, run, event), false);
+  assert.equal(boundCandidateCommand(value, category, run, event, "verification_preparation"), true);
+  for (const patch of [{ prepared_by_run_id: run }, { candidate_digest: "a".repeat(64) }, { prepared_event_id: event }]) assert.equal(boundCandidateCommand({ ...value, payload: { ...value.payload, ...patch } }, category, run, event, "verification_preparation"), false);
+  assert.equal(sameCandidateCommand(value, { ...value, payload: { ...value.payload, confirmation_token: "native-preview-token" } }), true);
 });
 
 test("only an actual scoped domain candidate can be restored for confirmation", () => {

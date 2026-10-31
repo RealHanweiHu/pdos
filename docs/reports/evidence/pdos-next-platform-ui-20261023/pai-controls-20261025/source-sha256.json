@@ -1,0 +1,12 @@
+{
+  "pdos-next/web/src/components/pai/run-continuation.tsx": "0a10b93e7045fb5cf4f9a70dce54b24dcb579620f4c9248b776dbe15f1a310ee",
+  "pdos-next/web/src/components/pai-conversation.tsx": "c53328d2fb2fe747ff50b6c2ca4c4fc68d5ef52ec2e8523d9426a24184c6dd6c",
+  "pdos-next/web/src/components/pai-conversation.module.css": "9b9bf9bcc0e56d5242b916e6c746530a8a1d67e494f9dcdf971b8c926b29ebfd",
+  "pdos-next/web/src/components/xiaopai.tsx": "34bcedddd30bb87b63aa30e9bbe323763ac34ce8c373edc865c5c2ab9dd8ca93",
+  "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "f67ca14996ab118bdcaa86a39690231392d0035dd4f680d2d05cbefb6bb4d234",
+  "pdos-next/web/src/components/xiaopai.test.mjs": "c27034d8258299935ee65af53fb8a2e43547394291f519b6be138944e0f5759b",
+  "pdos-next/web/src/components/category-create/components.test.mjs": "0e1af46894ce348c745c9a42a9d4da72ee27ed255a5a2884358c5eea26020fad",
+  "pdos-next/web/src/components/pai/run-continuation.test.mjs": "f93dd2e5a3120e56b7696cf21ab4137781808e96db5d1209fc88031fd17ec64a",
+  "pdos-next/web/src/app/ui-lab/pai-controls/page.tsx": "09908ecec26c795dd8bf2479d96e0d48b31109c1123d32f0db48611d9f5e6cd2",
+  "pdos-next/web/src/app/ui-lab/pai-controls/preview.tsx": "32829636f6b36f66f57c720f48cf078f53b45c54339acabb6071006b57c6c9bc"
+}

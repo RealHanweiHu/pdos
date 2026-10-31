@@ -125,33 +125,79 @@ def source_binding(source, tenant_id, category_id, product_id, project_id=None):
     return conditions
 
 
-def receipt_binding(source):
+def receipt_binding(source, receipt=Receipt):
     model = source.model
     identity = source.subject_id if source.subject_id is not None else model.id
     revision = source.subject_revision if source.subject_revision is not None else model.revision
     conditions = [
-        Receipt.tenant_id == model.tenant_id,
-        Receipt.category_id == model.category_id,
-        Receipt.subject_type == source.subject_kind,
-        Receipt.subject_id == identity,
-        Receipt.operation.in_(source.operations),
+        receipt.tenant_id == model.tenant_id,
+        receipt.category_id == model.category_id,
+        receipt.subject_type == source.subject_kind,
+        receipt.subject_id == identity,
+        receipt.operation.in_(source.operations),
     ]
     # G0 has an actual receipt_id and a receipt-owned revision, not a Decision revision.
     if not isinstance(revision.type, NullType):
-        conditions.append(Receipt.subject_revision == revision)
+        conditions.append(receipt.subject_revision == revision)
     if hasattr(model, "receipt_id"):
-        conditions.append(Receipt.id == model.receipt_id)
+        conditions.append(receipt.id == model.receipt_id)
     else:
-        conditions.append(Receipt.product_id == model.product_id)
+        conditions.append(receipt.product_id == model.product_id)
     if hasattr(model, "actor_id"):
-        conditions.append(Receipt.actor_id == model.actor_id)
+        conditions.append(receipt.actor_id == model.actor_id)
     if hasattr(model, "operation"):
-        conditions.append(Receipt.operation == model.operation)
+        conditions.append(receipt.operation == model.operation)
     return conditions
 
 
 def activity_records(ctx, product_id, project_id):
     """Never select whole documents, command bodies, source bodies or Run conversations."""
+    # The same RLS-protected receipt/outbox metadata is used by every domain
+    # branch. Materialize it once per read snapshot instead of repeating those
+    # expensive authorization scans for every source. Domain/project predicates
+    # below still determine which facts may appear; no payload columns are read.
+    receipt_columns = (
+        "id",
+        "tenant_id",
+        "category_id",
+        "product_id",
+        "created_at",
+        "operation",
+        "subject_type",
+        "subject_id",
+        "subject_revision",
+        "actor_id",
+        "requester_id",
+        "agent_run_id",
+        "run_id",
+        "command_id",
+    )
+    outbox_columns = (
+        "id",
+        "tenant_id",
+        "category_id",
+        "receipt_id",
+        "subject_id",
+        "subject_revision",
+        "actor_id",
+        "schema_version",
+        "type",
+        "correlation_id",
+    )
+    receipt = aliased(
+        Receipt,
+        select(*(getattr(Receipt, key) for key in receipt_columns))
+        .where(Receipt.tenant_id == ctx.tenant_id, Receipt.category_id == ctx.category_id)
+        .cte("activity_receipts")
+        .prefix_with("MATERIALIZED"),
+    )
+    outbox = aliased(
+        Outbox,
+        select(*(getattr(Outbox, key) for key in outbox_columns))
+        .where(Outbox.tenant_id == ctx.tenant_id, Outbox.category_id == ctx.category_id)
+        .cte("activity_outbox")
+        .prefix_with("MATERIALIZED"),
+    )
     branches = []
     for source in SOURCES:
         actor, requester = aliased(Principal), aliased(Principal)
@@ -160,23 +206,23 @@ def activity_records(ctx, product_id, project_id):
         def expression(key, type_, columns=columns):
             return cast(columns[key], type_) if key in columns else cast(literal(None), type_)
 
-        expected_event = case(*[(Receipt.operation == op, EVENTS[op]) for op in source.operations])
+        expected_event = case(*[(receipt.operation == op, EVENTS[op]) for op in source.operations])
         branch = (
             select(
-                Outbox.id.label("id"),
-                Receipt.created_at.label("recorded_at"),
-                Receipt.id.label("receipt_id"),
-                Receipt.operation.label("operation"),
-                Outbox.type.label("event_type"),
-                Receipt.subject_type.label("subject_kind"),
-                Receipt.subject_id.label("subject_id"),
-                Receipt.subject_revision.label("subject_revision"),
-                Receipt.actor_id.label("actor_id"),
+                outbox.id.label("id"),
+                receipt.created_at.label("recorded_at"),
+                receipt.id.label("receipt_id"),
+                receipt.operation.label("operation"),
+                outbox.type.label("event_type"),
+                receipt.subject_type.label("subject_kind"),
+                receipt.subject_id.label("subject_id"),
+                receipt.subject_revision.label("subject_revision"),
+                receipt.actor_id.label("actor_id"),
                 actor.name.label("actor_name"),
                 actor.kind.label("actor_kind"),
-                Receipt.requester_id.label("requester_id"),
+                receipt.requester_id.label("requester_id"),
                 requester.name.label("requester_name"),
-                Receipt.agent_run_id.label("run_id"),
+                receipt.agent_run_id.label("run_id"),
                 expression("title", String).label("title"),
                 expression("summary", String).label("summary"),
                 expression("next_steps", String).label("next_steps"),
@@ -190,29 +236,29 @@ def activity_records(ctx, product_id, project_id):
                 cast(literal(None), String).label("status"),
             )
             .select_from(source.model)
-            .join(Receipt, and_(*receipt_binding(source)))
+            .join(receipt, and_(*receipt_binding(source, receipt)))
             .join(
-                Outbox,
+                outbox,
                 and_(
-                    Outbox.tenant_id == Receipt.tenant_id,
-                    Outbox.category_id == Receipt.category_id,
-                    Outbox.receipt_id == Receipt.id,
-                    Outbox.subject_id == Receipt.subject_id,
-                    Outbox.subject_revision == Receipt.subject_revision,
-                    Outbox.actor_id == Receipt.actor_id,
-                    Outbox.schema_version == 1,
-                    Outbox.type == expected_event,
-                    Outbox.correlation_id
-                    == func.coalesce(Receipt.agent_run_id, Receipt.run_id, Receipt.command_id),
+                    outbox.tenant_id == receipt.tenant_id,
+                    outbox.category_id == receipt.category_id,
+                    outbox.receipt_id == receipt.id,
+                    outbox.subject_id == receipt.subject_id,
+                    outbox.subject_revision == receipt.subject_revision,
+                    outbox.actor_id == receipt.actor_id,
+                    outbox.schema_version == 1,
+                    outbox.type == expected_event,
+                    outbox.correlation_id
+                    == func.coalesce(receipt.agent_run_id, receipt.run_id, receipt.command_id),
                 ),
             )
             .outerjoin(
-                actor, and_(actor.tenant_id == Receipt.tenant_id, actor.id == Receipt.actor_id)
+                actor, and_(actor.tenant_id == receipt.tenant_id, actor.id == receipt.actor_id)
             )
             .outerjoin(
                 requester,
                 and_(
-                    requester.tenant_id == Receipt.tenant_id, requester.id == Receipt.requester_id
+                    requester.tenant_id == receipt.tenant_id, requester.id == receipt.requester_id
                 ),
             )
             .where(*source_binding(source, ctx.tenant_id, ctx.category_id, product_id, project_id))
@@ -227,7 +273,7 @@ def activity_records(ctx, product_id, project_id):
         select(
             AgentEvent.id,
             AgentEvent.created_at.label("recorded_at"),
-            cast(literal(None), Receipt.id.type).label("receipt_id"),
+            cast(literal(None), receipt.id.type).label("receipt_id"),
             literal("agent.run.record").label("operation"),
             (literal("agent.run.") + kind).label("event_type"),
             literal("agent_run").label("subject_kind"),

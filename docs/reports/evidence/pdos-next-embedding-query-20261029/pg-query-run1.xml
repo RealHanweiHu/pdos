@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="7" time="28.066" timestamp="2026-10-29T03:41:52.621655-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_embedding_query_pg" name="test_completed_query_lease_recovers_from_real_ledger_without_provider_or_key" time="7.096" /><testcase classname="tests.enterprise_search.test_embedding_query_pg" name="test_query_sql_refuses_forged_binding_and_rolls_back_the_real_wallet[parent_input_digest-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]" time="4.207" /><testcase classname="tests.enterprise_search.test_embedding_query_pg" name="test_query_sql_refuses_forged_binding_and_rolls_back_the_real_wallet[query_digest-ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff]" time="3.726" /><testcase classname="tests.enterprise_search.test_embedding_query_pg" name="test_query_sql_refuses_forged_binding_and_rolls_back_the_real_wallet[cancel_epoch-2]" time="3.681" /><testcase classname="tests.enterprise_search.test_embedding_query_pg" name="test_query_sql_refuses_forged_binding_and_rolls_back_the_real_wallet[extra_authority-model-provided]" time="2.474" /><testcase classname="tests.enterprise_search.test_embedding_query_pg" name="test_query_sql_refuses_forged_binding_and_rolls_back_the_real_wallet[kind-unbound]" time="3.040" /><testcase classname="tests.enterprise_search.test_embedding_query_temporal_pg" name="test_actual_run_query_embedding_is_read_derived_accounted_once_and_not_page_triggered" time="1.812"><failure message="AssertionError: assert [{'chunk_id':...28fdf0', ...}] == []&#10;  &#10;  Left contains one more item: {'chunk_id': '0415333a-93d8-5e91-9a50-7fb4faa043bd', 'source_type': 'artifact', 'source_id': '92146e50-f6e1-4a78-9bdf-1e5bac28fdf0', 'object_id': '92146e50-f6e1-4a78-9bdf-1e5bac28fdf0', ...}&#10;  Use -v to get more diff">setup = &lt;isolated synthetic test scope&gt;
+monkeypatch = &lt;_pytest.monkeypatch.MonkeyPatch object at 0x162cfff50&gt;
+
+    def test_actual_run_query_embedding_is_read_derived_accounted_once_and_not_page_triggered(
+        setup, monkeypatch
+    ):
+        source_id = register(setup, "气密合成记录", "漏气。更换密封圈。RAW_ONLY_CHILD_MARKER")
+        index(setup, source_id)
+&gt;       assert query(setup, QUERY)["items"] == []
+E       AssertionError: assert [{'chunk_id':...28fdf0', ...}] == []
+E         
+E         Left contains one more item: {'chunk_id': '0415333a-93d8-5e91-9a50-7fb4faa043bd', 'source_type': 'artifact', 'source_id': '92146e50-f6e1-4a78-9bdf-1e5bac28fdf0', 'object_id': '92146e50-f6e1-4a78-9bdf-1e5bac28fdf0', ...}
+E         Use -v to get more diff
+
+tests/enterprise_search/test_embedding_query_temporal_pg.py:80: AssertionError</failure></testcase></testsuite></testsuites>

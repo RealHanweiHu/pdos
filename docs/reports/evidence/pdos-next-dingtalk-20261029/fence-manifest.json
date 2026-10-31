@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "frozen": true,
+  "base_actual_revision": "s0_0843",
+  "numbered_migration": null,
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/guards.py",
+      "mode": "modify",
+      "base_sha256": "776b6e3f931e56d3b180d38aa0f40a5c46a547f42fec05182b4048e42142bf94",
+      "staged_sha256": "c2d137103c477c7db405f06a3e85008f8aea20f4ba7182091eac48b59745ead2",
+      "staged_path": "/tmp/pdos-dingtalk-fence-stage-20261029/pdos-next/server/pdos_next/dingtalk/guards.py",
+      "base_path": "/tmp/pdos-dingtalk-fence-stage-20261029/base/pdos-next/server/pdos_next/dingtalk/guards.py"
+    },
+    {
+      "path": "pdos-next/server/migrations/candidates/dingtalk_fence.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "f0be64deb71da3b265199568770bae567f22d7fe8282d095b34d753ce3825aa0",
+      "staged_path": "/tmp/pdos-dingtalk-fence-stage-20261029/pdos-next/server/migrations/candidates/dingtalk_fence.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_fence.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "2b3a15b0e643bd51085ac6dd8481739c9d1829c728d453ff5cb1e5bee434e930",
+      "staged_path": "/tmp/pdos-dingtalk-fence-stage-20261029/pdos-next/server/tests/dingtalk/test_fence.py",
+      "base_path": null
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_fence_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "d3a4a752b5103174ff5cd8ebd9c5761da41353738a4fa3937575ea6184238653",
+      "staged_path": "/tmp/pdos-dingtalk-fence-stage-20261029/pdos-next/server/tests/dingtalk/test_fence_pg.py",
+      "base_path": null
+    }
+  ],
+  "review_artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "2cf21a1f325f3e79b8cd2f8faa7e955a6d19c95c9cf2c66f606737fdf333f529"
+    },
+    {
+      "path": "up.draft.sql",
+      "sha256": "057145153f685787ca6fcd73471c48d215f8a23bf9e9afd8d441b115daa026de"
+    },
+    {
+      "path": "down.draft.sql",
+      "sha256": "90b7a6f5e8362c8829665f4b3889e7017e608563397bcfaf054debc970dbc311"
+    },
+    {
+      "path": "pg-temporal-nodeids.json",
+      "sha256": "78e6afa3f94a3fd55a740ebbdedb6ffd72943ea466a4abb6e50d3c65dab53fec"
+    },
+    {
+      "path": "fence.patch",
+      "sha256": "0c3cd0829302bb3dfd4bcb0e31b3818c3700b35ef92d8f2e299529052bba4a53"
+    },
+    {
+      "path": "evidence/pure.txt",
+      "sha256": "8b28a8c8c77db2fb44dad0aa663effd3672bc1197b2376cd6ff12bb10c8a7528"
+    },
+    {
+      "path": "evidence/pg-collect.txt",
+      "sha256": "6e445e9872afbcc3cdcf26812c44ee464e4d41948baa6d2026cdcd7b4bed0628"
+    },
+    {
+      "path": "evidence/replay.json",
+      "sha256": "fd93342236c5dcaf70bb3950494fa08a36141666bb99566a0de742b5e1495865"
+    },
+    {
+      "path": "evidence/validation.json",
+      "sha256": "a9207d46952f2960d299f8931753445d3379e7c3ef974d540a7fe2dafc5484db"
+    },
+    {
+      "path": "evidence/upstream-843-rls-diagnostic.json",
+      "sha256": "b1aa8aedbb19333f55e3154904d55de1eb19b10bf95baaada3c239e672d8ced5"
+    }
+  ],
+  "table_or_policy_changes": false,
+  "new_helper": "public.dingtalk_lock_message_binding(uuid,uuid)",
+  "new_maintenance_privileges": [
+    "UPDATE(id) on dingtalk_applications",
+    "UPDATE(id) on dingtalk_account_bindings"
+  ],
+  "post_alter_owner_internal_execute": true,
+  "apply_instruction": "Only four listed files; root installs unnumbered SQL as actual next revision after head check. Preserve843 and current data."
+}

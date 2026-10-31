@@ -1,0 +1,112 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+____ test_five_registered_reads_current_pointers_replay_and_revoked_access _____
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '101d2be5-d6b8-46da-af89-58874a841cc8', 'project': ...f2-9eab-a19d07afb173'}}}, policy_issuer=<pdos_next.domain.quality_execution.policy.PolicyIssuer object at 0x134a009a0>)
+
+    def test_five_registered_reads_current_pointers_replay_and_revoked_access(quality_work):
+        work = quality_work
+        first, _ = create_issue(work)
+        before = counts(work)
+        issue_id = first["result"]["issue_id"]
+        readers = {}
+        for tool, arguments in {
+            "build.read": {"build_id": work.build_id},
+            "build.lot.read": {"build_id": work.build_id},
+            "build.sample.read": {"build_id": work.build_id, "page_size": 1},
+            "quality.issue.read": {"issue_id": issue_id},
+            "test.run.read": {"test_run_id": str(work.failure_run.id)},
+        }.items():
+            f = readers[tool] = reader(work, tool, arguments)
+>           value = f.invoke()
+                    ^^^^^^^^^^
+
+tests/agent_kernel/test_project_object_reads_pg.py:131: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_object_reads_pg.py:91: in <lambda>
+    f.invoke = lambda: f.host.read(scope, f.spec, arguments, f.key, source=f.source)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:137: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:181: in read_callback
+    result = computed if engine is not None else callback(scope, arguments)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.project_object_reads.ProjectObjectReads object at 0x1353dfb00>
+scope = RunScope(tenant_id=UUID('633d78ba-899c-432b-ada7-61865e0ce06d'), requester_id=UUID('40ee466e-0bdb-4671-8c93-c1979f610c...tion='main', artifact_ids=frozenset(), trigger='conversation', project_id=UUID('dc3b2220-5eab-4036-b836-a474455e7193'))
+arguments = {'issue_id': '7290b7d1-21d1-5eb1-8418-321486cec8e1'}
+name = 'quality.issue.read'
+
+    def call(self, scope, arguments, *, name):
+        payload = SCHEMAS[name].model_validate(arguments)
+        if (
+            scope.category_id is None
+            or scope.product_id is None
+            or scope.project_id is None
+            or scope.isolation != "main"
+        ):
+            raise DomainError("FORBIDDEN_SCOPE", "领域读取须绑定当前项目、型号和品类。", 403)
+        with tenant_session(
+            self.store.engine,
+            scope.tenant_id,
+            actor_id=scope.writer_id,
+            requester_id=scope.requester_id,
+            category_id=scope.category_id,
+            read_snapshot=True,
+        ) as session:
+            run = session.get(AgentRun, scope.run_id)
+            check_run_binding(run, scope, for_write=False)
+            self.store.authority(session, scope)
+            ctx = self.commands.context(scope)
+            project = require_run_project(session, ctx, run)
+            product = require_access(session, ctx, scope.product_id)
+            # Only these server-classified structural fields are returned. The
+            # gateway rechecks the actual provider agreement before every send.
+            if "internal" not in run.data_categories:
+                raise DomainError("FORBIDDEN_SCOPE", "本运行未绑定内部业务资料出站类别。", 403)
+            private = project.visibility != "category" or product.visibility != "category"
+            if private and not run.private_context:
+                raise DomainError("FORBIDDEN_SCOPE", "私有项目资料未绑定本次运行。", 403)
+            query, selector = _query(scope, payload, name, private=private and run.private_context)
+            rows = list(session.scalars(query))
+            if selector is not None and not rows:
+>               raise DomainError("FORBIDDEN_SCOPE", "对象不在本次运行的可读出站范围。", 403)
+E               pdos_next.errors.DomainError: 对象不在本次运行的可读出站范围。
+
+pdos_next/agent_kernel/project_object_reads.py:238: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+1 failed, 1 passed, 9 warnings in 81.95s (0:01:21)

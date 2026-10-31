@@ -1,0 +1,13 @@
+{
+  "tests": [
+    "tests/agent_kernel/test_eval_v0_history_state_pg.py",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+    "-k",
+    "CTX-04 or ctx11",
+    "-x",
+    "--tb=short"
+  ],
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "model_calls": 0
+}

@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "files": [
+    "pdos-next/server/pdos_next/enterprise_search/embedding_sources.py",
+    "pdos-next/server/pdos_next/enterprise_search/embedding_hybrid.py",
+    "pdos-next/server/tests/enterprise_search/test_embedding_source_materialization.py"
+  ],
+  "scope": "Python syntax; SQLAlchemy bindings compiled by pure tests",
+  "static_type_checker": "not_configured",
+  "database_executed": false
+}

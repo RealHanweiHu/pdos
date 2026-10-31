@@ -4,11 +4,9 @@ An acceptance account is a real login for walking附录 B 的验收场景 by han
 Principal, a category Grant and a LoginSession token. It is environment-scoped
 and synthetic.
 
-It is NOT the pilot's independent G0 reviewer (设计确认稿 P24). P24 requires a
-second real natural person for a real G0 decision; an account held by the same
-person is one person wearing two hats and must not be recorded as independent
-review. Use this account to exercise screens, commands and negative paths, and
-say so plainly in any evidence it produces.
+P27 (2026-10-22) permits the owner to review G0 in an active pilot tenant.
+This synthetic login still cannot prove the real person reviewed or accepted
+a particular proposal: preserve that distinction in all acceptance evidence.
 
 Usage (from pdos-next/):
     tools/acceptance_account.py create [--state FILE] [--name NAME] [--days N]
@@ -204,7 +202,10 @@ def create(args):
         "product_manager": args.product_manager,
         "expires_at": expires.isoformat(),
         "schema_head": head,
-        "purpose": "manual acceptance walkthrough only; not an independent G0 reviewer (P24)",
+        "purpose": (
+            "manual synthetic acceptance walkthrough; "
+            "personal G0 review requires actual user action (P27)"
+        ),
     }
     state.setdefault("acceptance_tokens", {})[args.name] = token
     Path(args.state).write_text(json.dumps(state, ensure_ascii=False, indent=2) + "\n")
@@ -215,7 +216,7 @@ def create(args):
     print(f"  grant       can_write=True product_manager={args.product_manager}")
     print(f"  expires     {expires.isoformat()}")
     print(f"  token       stored in {args.state} under acceptance_tokens.{args.name}")
-    print("Not an independent G0 reviewer: 设计确认稿 P24 needs a second real person.")
+    print("P27 allows pilot owner review; this login alone does not prove personal acceptance.")
 
 
 def renew(args):

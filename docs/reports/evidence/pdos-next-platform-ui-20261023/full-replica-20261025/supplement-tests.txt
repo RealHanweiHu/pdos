@@ -1,0 +1,22 @@
+(node:1232) Warning: `--localstorage-file` was provided without a valid path
+(Use `node --trace-warnings ...` to show where the warning was created)
+✔ task periods keep overdue visible, use calendar weeks, and never invent a due date (1.120084ms)
+✔ one responsibility list combines real tasks, risks and paused conversations with exact navigation (21.362375ms)
+✔ recent project history remains private and is filtered against current authorized reads (6.055958ms)
+✔ failed and partial reads expose uncertainty without erasing independently available work (4.052084ms)
+✔ principal changes synchronously hide every previous private row before effects run (7.418167ms)
+✔ commitments share one list while test-start recipient gaps and original times stay visible (3.365167ms)
+✔ a test-start read failure does not erase tasks or paused conversations (1.7265ms)
+✔ task attention deduplicates the same task, never its independent commitment or a similarly named task (0.493583ms)
+✔ list filters only local records, preserves scope navigation and offers all outstanding pages (2.797417ms)
+✔ candidate revisions retain sealed original, source versions, numeric precision and question grouping (1.903375ms)
+✔ patch candidates keep domain versions and existing removals, and newly added rows do not leak local ids (1.143083ms)
+✔ bulk document edits are one version-bound batch and refuse protected responsibility changes (0.236458ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 564.513958

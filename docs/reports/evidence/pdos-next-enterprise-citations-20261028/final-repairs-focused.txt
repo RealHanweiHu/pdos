@@ -1,0 +1,207 @@
+........................FF....                                           [100%]
+=================================== FAILURES ===================================
+____ test_actual_graph_passes_server_model_provenance_into_bound_host[True] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x110dc39b0>
+ledger = True
+
+    @pytest.mark.parametrize("ledger", [True, False])
+    def test_actual_graph_passes_server_model_provenance_into_bound_host(monkeypatch, ledger):
+        f = make_host()
+        final = {"status": "completed", "summary": "Synthetic result", "result": {}}
+        turns = iter([
+            ModelTurn(
+                calls=(ToolCall(id="provider-label", name=f.spec.name, arguments=f.arguments),),
+                ledger_call_id=f.model.id if ledger else None,
+            ),
+            ModelTurn(structured=final),
+        ])
+        context_ref = str(uuid4())
+        f.run.versions["context_snapshots"] = {"synthetic-read-host": {
+            "event_id": context_ref, "content_digest": digest({}), "skills": [],
+        }}
+        monkeypatch.setattr(f.host, "skill_context", lambda *_, **__: {
+            "context": {}, "context_ref": context_ref,
+        })
+        monkeypatch.setattr(f.host.gateway, "turn", lambda *_, **__: next(turns))
+        monkeypatch.setattr(f.host, "emit", lambda *_: uuid4())
+        monkeypatch.setattr(f.host, "finish", lambda *_: None)
+        monkeypatch.setattr(f.host, "verify", lambda _, result, __: result)
+>       state = AgentKernel(f.host, f.host.adapters.tool_registry).execute(
+            f.scope, goal="Synthetic read",
+        )
+
+tests/agent_kernel/test_bound_read_host.py:293: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:284: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:118: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <test_bound_read_host.MemoryStore object at 0x110d49f70>
+scope = RunScope(tenant_id=UUID('8525d7b5-a296-49b1-a655-504b99f74939'), requester_id=UUID('7d0cc4e9-d2a7-44b8-9eb3-b0b62ee6d8...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+messages = [{'role': 'user', 'content': '{"goal": "Synthetic read", "context": {}, "context_ref": "f1c055bb-757a-41a6-bbe5-8836175e41cf"}'}]
+bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"],
+                                      envelope.get("omitted_fields", [])))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+                        raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+        with store.transaction(scope) as (_, run):
+            saved = {value["event_id"]: value
+                     for value in run.versions.get("context_snapshots", {}).values()}
+            for reference, value, omitted_fields in envelopes:
+                entry = saved.get(reference)
+                if (entry is None or entry["content_digest"] != digest(value)
+>                       or omitted_fields != [item["field"] for item in entry["omitted"]]) or any(
+                                                                        ^^^^^^^^^^^^^^^^
+                    any(loaded.get(skill["key"], {}).get(key) != skill[key]
+                        for key in ("key", "version", "digest")) for skill in entry["skills"]
+                ):
+E               KeyError: 'omitted'
+E               During task with name 'model' and id '672b6faa-67da-e0fa-19d0-3f0b687f30e1'
+
+pdos_next/agent_kernel/context_projection.py:181: KeyError
+___ test_actual_graph_passes_server_model_provenance_into_bound_host[False] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x110d4a480>
+ledger = False
+
+    @pytest.mark.parametrize("ledger", [True, False])
+    def test_actual_graph_passes_server_model_provenance_into_bound_host(monkeypatch, ledger):
+        f = make_host()
+        final = {"status": "completed", "summary": "Synthetic result", "result": {}}
+        turns = iter([
+            ModelTurn(
+                calls=(ToolCall(id="provider-label", name=f.spec.name, arguments=f.arguments),),
+                ledger_call_id=f.model.id if ledger else None,
+            ),
+            ModelTurn(structured=final),
+        ])
+        context_ref = str(uuid4())
+        f.run.versions["context_snapshots"] = {"synthetic-read-host": {
+            "event_id": context_ref, "content_digest": digest({}), "skills": [],
+        }}
+        monkeypatch.setattr(f.host, "skill_context", lambda *_, **__: {
+            "context": {}, "context_ref": context_ref,
+        })
+        monkeypatch.setattr(f.host.gateway, "turn", lambda *_, **__: next(turns))
+        monkeypatch.setattr(f.host, "emit", lambda *_: uuid4())
+        monkeypatch.setattr(f.host, "finish", lambda *_: None)
+        monkeypatch.setattr(f.host, "verify", lambda _, result, __: result)
+>       state = AgentKernel(f.host, f.host.adapters.tool_registry).execute(
+            f.scope, goal="Synthetic read",
+        )
+
+tests/agent_kernel/test_bound_read_host.py:293: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/graph.py:722: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:284: in model
+    turn = ports.model(
+pdos_next/agent_kernel/host.py:118: in model
+    check_messages(self.store, scope, kwargs["messages"], kwargs.get("loaded_skills", ()))
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+store = <test_bound_read_host.MemoryStore object at 0x10f90ae10>
+scope = RunScope(tenant_id=UUID('d847eac4-f634-480c-a303-3c77f93cf469'), requester_id=UUID('3a6473dd-5de2-4853-9cc6-f74e49ac04...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+messages = [{'role': 'user', 'content': '{"goal": "Synthetic read", "context": {}, "context_ref": "b4d226a1-419f-40f5-afd6-6947ff4464fc"}'}]
+bindings = ()
+
+    def check_messages(store, scope, messages, bindings):
+        """Verify server context envelopes without interpreting model or raw tool text."""
+        loaded = {binding.key: binding.model_dump(mode="json") for binding in bindings}
+        envelopes, loading = [], set()
+        for index, message in enumerate(messages):
+            if message.get("role") == "assistant":
+                loading.update(call["id"] for call in message.get("tool_calls", [])
+                               if call.get("name") == "skill.load")
+            if index == 0 or (message.get("role") == "tool"
+                              and message.get("tool_call_id") in loading):
+                try:
+                    envelope = json.loads(message["content"])
+                    envelopes.append((envelope["context_ref"], envelope["context"],
+                                      envelope.get("omitted_fields", [])))
+                except (ValueError, TypeError, KeyError):
+                    # A failed skill.load is an error result, never a new context envelope.
+                    if index == 0:
+                        raise DomainError(
+                            "VERSION_CONFLICT", "原上下文缺少当前字段合同快照。",
+                        ) from None
+        with store.transaction(scope) as (_, run):
+            saved = {value["event_id"]: value
+                     for value in run.versions.get("context_snapshots", {}).values()}
+            for reference, value, omitted_fields in envelopes:
+                entry = saved.get(reference)
+                if (entry is None or entry["content_digest"] != digest(value)
+>                       or omitted_fields != [item["field"] for item in entry["omitted"]]) or any(
+                                                                        ^^^^^^^^^^^^^^^^
+                    any(loaded.get(skill["key"], {}).get(key) != skill[key]
+                        for key in ("key", "version", "digest")) for skill in entry["skills"]
+                ):
+E               KeyError: 'omitted'
+E               During task with name 'model' and id 'f33856f2-5e18-fab5-5887-c1fc76dc29c8'
+
+pdos_next/agent_kernel/context_projection.py:181: KeyError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_graph_passes_server_model_provenance_into_bound_host[True]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_graph_passes_server_model_provenance_into_bound_host[False]
+2 failed, 28 passed, 2 warnings in 33.06s

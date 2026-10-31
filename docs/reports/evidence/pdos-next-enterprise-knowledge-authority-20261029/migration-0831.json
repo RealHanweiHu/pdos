@@ -1,0 +1,61 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0831",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/personal-preferences-53502-before-0831.dump",
+  "backup_bytes": 84727400,
+  "operations": [
+    {
+      "operation": "downgrade",
+      "target": "s0_0830",
+      "exit": 0,
+      "business_counts_unchanged": true
+    },
+    {
+      "operation": "upgrade",
+      "target": "s0_0831",
+      "exit": 0,
+      "business_counts_unchanged": true
+    }
+  ],
+  "compared_tables": [
+    "action_receipts",
+    "agent_runs",
+    "artifact_versions",
+    "category_knowledge_entries",
+    "enterprise_search_chunks"
+  ],
+  "columns_match_orm": true,
+  "rls": true,
+  "force_rls": true,
+  "owner": "pdos_next_owner",
+  "privileges": {
+    "pdos_next_app": {
+      "SELECT": true,
+      "INSERT": true,
+      "UPDATE": true,
+      "DELETE": false
+    },
+    "pdos_agent": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "pdos_next_auth": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false
+    },
+    "pdos_next_dispatch": {
+      "SELECT": false,
+      "INSERT": false,
+      "UPDATE": false,
+      "DELETE": false
+    }
+  },
+  "env_fallback": false,
+  "new_database": false,
+  "verifier_correction": "Compare ORM and actual types compiled for the PostgreSQL dialect; initial migration up/down/up completed before generic-type comparison assertion"
+}

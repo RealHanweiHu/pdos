@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="46" time="250.451" timestamp="2026-10-29T12:10:30.368587-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_conversation_acl_pg" name="test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke" time="6.688"><failure message="AssertionError: {'run_id': '9550c4b3-7ea8-40af-9158-4c1c1dcf06ad', 'goal': '只依据这些资料继续核对。', 'messages': [{'role': 'user', 'content': '{...，主模型与业务批准规则不变。&quot;]}}, &quot;context_ref&quot;: &quot;bf9f17a3-31d8-4402-be0a-a5c2a071caa6&quot;, &quot;omitted_fields&quot;: []}'}], 'loaded': [], ...}&#10;assert 'partial' == 'completed'&#10;  &#10;  - completed&#10;  + partial">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke(setup):
+        first = synthetic_artifact(setup, "本人私有资料第一品类")
+        other_category, second = uuid4(), uuid4()
+        content = "本人另一品类私有资料。"
+        with Session(setup.admin) as session, session.begin():
+            session.add(Category(id=other_category, tenant_id=setup.tenant, owner_id=setup.peer,
+                                 name="ACL合成只读品类", purpose="实际跨品类权限验证"))
+            session.flush()
+            session.add(Grant(tenant_id=setup.tenant, category_id=other_category,
+                              principal_id=setup.human, can_write=False))
+            session.add(Artifact(id=second, tenant_id=setup.tenant, category_id=other_category,
+                product_id=None, owner_id=setup.human, title="本人第二品类私有来源",
+                source_label="合成", content=content,
+                content_hash=hashlib.sha256(content.encode()).hexdigest(),
+                visibility="private", revision=1, status="active"))
+        actual = pin_personal(setup, [first, second])
+        provider = MaterialsProvider([first, second])
+        owner = Bootstrap(setup.engine, ports=RuntimePorts(
+            provider_client=provider, preload=lambda _: ()))
+        owner.route_for = lambda _: replace(configured_route(), context_window_tokens=200_000)
+        owner.provider_for = lambda *_: "synthetic-assistant-no-egress"
+        host = BoundHost(owner.store, replace(owner.adapters(), cost_required=False))
+        output = AgentKernel(host, owner.registry).execute(actual, goal="只依据这些资料继续核对。")
+&gt;       assert output["output"]["status"] == "completed", output
+E       AssertionError: {'run_id': '9550c4b3-7ea8-40af-9158-4c1c1dcf06ad', 'goal': '只依据这些资料继续核对。', 'messages': [{'role': 'user', 'content': '{...，主模型与业务批准规则不变。"]}}, "context_ref": "bf9f17a3-31d8-4402-be0a-a5c2a071caa6", "omitted_fields": []}'}], 'loaded': [], ...}
+E       assert 'partial' == 'completed'
+E         
+E         - completed
+E         + partial
+
+tests/agent_kernel/test_conversation_acl_pg.py:72: AssertionError</failure></testcase><testcase classname="tests.agent_kernel.test_run_continuation" name="test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority" time="1.871" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_same_original_followup_is_serialized_and_recovers_without_current_binding" time="1.208" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_followup_refuses_scope_changes_peer_and_unfinished_parent" time="0.942" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_followup_appends_current_sources_without_replacing_original_versions" time="2.959" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_private_personal_continuation_is_same_session_without_category_authority" time="1.603" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_full_memory_pagination_retains_root_constraints_and_is_not_recent_raw_chat" time="1.362" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_append_failure_rolls_back_new_turn_and_keeps_original_result" time="0.955" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_sql_continuation_cannot_rebind_existing_turn" time="1.014" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_revoking_parent_scope_hides_memory_before_model_egress" time="1.499" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model" time="3.240" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_cached_read_summary_keeps_frozen_view_and_next_history_observes_metadata_update" time="2.980" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_newly_revoked_actual_private_source_hides_answer_and_stops_frozen_history" time="2.593"><failure message="AttributeError: 'NoneType' object has no attribute 'continued_from_id'">setup = &lt;isolated synthetic test scope&gt;
+
+    def test_newly_revoked_actual_private_source_hides_answer_and_stops_frozen_history(setup):
+        from pdos_next.models import ObjectAudience
+    
+        registered = post(setup, request(setup, "evidence.artifact.register", {
+            "title": "别人按受众共享的历史资料", "content": "只用于授权撤回验证。",
+            "source_label": "合成当前受众", "visibility": "audience",
+        }), actor=setup.peer)
+        assert registered.status_code == 200, registered.text
+        identity = UUID(registered.json()["subject_id"])
+        with Session(setup.admin) as session, session.begin():
+            audience = ObjectAudience(tenant_id=setup.tenant, category_id=setup.category,
+                object_type="artifact_versions", subject_id=identity, owner_id=setup.peer,
+                principal_id=setup.human)
+            session.add(audience)
+            session.flush()
+            audience_id = audience.id
+        parent, _ = start(setup, sources=[{"artifact_id": str(identity), "expected_revision": 1}])
+        finish(setup, parent)
+        child, _ = start(setup, continue_from_run_id=str(parent))
+        host, bound = Bootstrap(setup.engine), scope(setup, child)
+        host.adapters()
+        frozen = host.project_context(bound, "继续")
+        assert frozen["conversation"]["turns"][0]["historical_outcome"] is not None
+        with Session(setup.admin) as session, session.begin():
+            session.delete(session.get(ObjectAudience, audience_id))
+        with pytest.raises(DomainError) as failure:
+            host.check_conversation(bound)
+        assert failure.value.reason == "CONVERSATION_HISTORY_REVOKED"
+        with tenant_session(setup.engine, setup.tenant, actor_id=setup.human,
+                            requester_id=setup.human, category_id=setup.category) as session:
+&gt;           value = memory(session, session.get(AgentRun, child), readers={})
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_run_continuation.py:346: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/conversation.py:239: in memory
+    rows = lineage(session, run)
+           ^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = &lt;sqlalchemy.orm.session.Session object at 0x14796d580&gt;, run = None
+
+    def lineage(session, run):
+        """One recursive metadata query; ordinary RLS must resolve every ancestor."""
+&gt;       if run.continued_from_id is None:
+           ^^^^^^^^^^^^^^^^^^^^^
+E       AttributeError: 'NoneType' object has no attribute 'continued_from_id'
+
+pdos_next/agent_kernel/conversation.py:122: AttributeError</failure></testcase><testcase classname="tests.agent_kernel.test_run_continuation" name="test_prepared_candidate_turn_keeps_answer" time="1.968" /><testcase classname="tests.agent_kernel.test_run_continuation" name="test_thirty_turn_history_stays_bounded_and_full_history_is_available" time="5.005" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_first_turn_constraint_remains_at_turn_fifteen_and_proposals_need_verbatim_proof" time="9.478" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_human_removal_is_versioned_replayable_frozen_and_not_resurrected" time="2.969" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_state_edit_cas_peer_scope_and_append_only" time="1.406" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_finish_replay_and_failure_roll_back_state_with_terminal_result" time="1.978" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress" time="3.395" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_reusing_session_id_does_not_send_unbound_sources_from_other_runs" time="2.947" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_no_output_terminal_keeps_unfinished_work_and_fixed_focus_versions[cancelled]" time="1.826" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_no_output_terminal_keeps_unfinished_work_and_fixed_focus_versions[failed]" time="2.112" /><testcase classname="tests.agent_kernel.test_work_state_pg" name="test_page_attachment_stays_material_and_is_not_a_goal_or_constraint" time="1.243" /><testcase classname="tests.agent_kernel.test_project_current_context_pg" name="test_actual_current_project_context_has_named_status_native_unknown_gate_and_no_lookup_claim" time="11.806" /><testcase classname="tests.agent_kernel.test_project_current_context_pg" name="test_native_project_footprint_does_not_expand_d3_explicit_evidence_search[False]" time="9.526" /><testcase classname="tests.agent_kernel.test_project_current_context_pg" name="test_native_project_footprint_does_not_expand_d3_explicit_evidence_search[True]" time="9.122" /><testcase classname="tests.agent_kernel.test_project_current_context_pg" name="test_actual_native_update_requires_fresh_current_context_but_history_is_preserved" time="15.695" /><testcase classname="tests.agent_kernel.test_project_current_context_temporal_pg" name="test_actual_project_native_context_runs_main_graph_and_retains_history_after_update" time="17.309" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_actual_search_citation_isolated_extract_and_server_answer_are_replayable" time="8.555" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state" time="9.000" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_final_source_withdrawal_removes_quotes_and_dependent_prose" time="7.189" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_forged_citation_cannot_become_a_verified_company_source" time="7.754" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_actual_no_match_is_not_mislabeled_as_no_lookup" time="3.106" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_saved_answer_and_carried_history_recheck_sources_without_inference[updated]" time="8.715" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_saved_answer_and_carried_history_recheck_sources_without_inference[withdrawn]" time="8.330" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_saved_answer_and_carried_history_recheck_sources_without_inference[revoked]" time="8.834" /><testcase classname="tests.enterprise_search.test_assistant_pg" name="test_history_page_outside_frozen_recent_turns_retains_source_revocation_guard" time="24.005" /><testcase classname="tests.enterprise_search.test_assistant_temporal_pg" name="test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference" time="10.853" /><testcase classname="tests.agent_kernel.test_result_continuation_pg" name="test_real_long_source_page_replay_rechecks_withdrawal_and_isolation" time="3.587" /><testcase classname="tests.agent_kernel.test_result_continuation_pg" name="test_context_incomplete_has_zero_model_ledger_and_zero_reserved_budget" time="0.784" /><testcase classname="tests.agent_kernel.test_result_continuation_pg" name="test_reduced_context_keeps_omitted_fields_and_run_frozen_preferences" time="2.901" /><testcase classname="tests.agent_kernel.test_result_continuation_pg" name="test_actual_extract_child_reads_fragments_before_returning_verified_rows" time="5.039" /><testcase classname="tests.agent_kernel.test_work_state_candidates_pg" name="test_domain_current_receipt_changes_readonly_projection_not_run_frozen_snapshot" time="6.276" /><testcase classname="tests.agent_kernel.test_work_state_candidates_pg" name="test_snapshot_receipt_is_projected_from_native_ledger_after_work_volume_loss" time="3.974" /><testcase classname="tests.agent_kernel.test_work_state_candidates_pg" name="test_personal_category_requires_actual_receipt_and_current_created_category_grant" time="3.511" /></testsuite></testsuites>

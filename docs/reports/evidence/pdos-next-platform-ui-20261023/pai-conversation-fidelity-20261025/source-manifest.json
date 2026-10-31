@@ -1,0 +1,20 @@
+{
+  "pdos-next/server/pdos_next/agent_kernel/domain_reads.py": "b7bbe2a6d5f2a76c6b61629daced14f514361a6540f59cfcbbe423b7f718d4c9",
+  "pdos-next/server/pdos_next/agent_kernel/graph.py": "28605ea6e92b95c898f87d6eedcb114b9581c09befa21bdadcb60876dc9ed926",
+  "pdos-next/server/pdos_next/agent_kernel/m3_object_reads.py": "2b677c15472eb77ad0d84568e08621c0700269a075b6bb8113b6706936e239eb",
+  "pdos-next/server/tests/agent_kernel/test_evidence_search_result.py": "a442da284c20b2356d1fdae50f53ca934bc502a76291e856c2cdb3f8f071de46",
+  "pdos-next/server/tests/agent_kernel/test_m3_object_reads.py": "8719d8ff8e7413b0c78d1352076ff2ae58c3ea387f98bc48a2783091b9f8ed39",
+  "pdos-next/web/src/components/category-create/components.test.mjs": "da00a3dc4f05433c88c3b42718b59cb6271349a86304d9065051ea76e7a97500",
+  "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "93bca15f0d6a9fd55f4c4fda54d26e8a90309fede18304233cced75670f74da0",
+  "pdos-next/web/src/components/pai-conversation.module.css": "60ee0398099b5b9bbc90c19bf8814d50f427f327c8f25704ebdcbd3289bbd328",
+  "pdos-next/web/src/components/pai-conversation.tsx": "f470c633ad89c6488b57ecc904c211ac5c0ae5896e4ec81a9989939505e8ffa2",
+  "pdos-next/web/src/components/pai/conversation-history.tsx": "9bb76940e028a616b64424488698ce7d1bb6251e47d07c9883b859927c0e6c1c",
+  "pdos-next/web/src/components/pai/proposal-workspace.tsx": "22b83aa0331d2ae452b642f1231d9ea7a8058bd22cabf5c875253b6d3890a865",
+  "pdos-next/web/src/components/pai/run-candidates.test.mjs": "10f86180afee9926e6df772922a26cc4042fede2aa0a6e372a92eddd8a277eff",
+  "pdos-next/web/src/components/pai/run-candidates.tsx": "9eef5064ffa7d6eb5a9730eac52e874beeece68f9514ed182e4b0b5988b7bd9a",
+  "pdos-next/web/src/components/pai/run-continuation.tsx": "3e12636b822f55d84f66243de0c820da18df1ba8d7e5f2f3af8682e100a920bf",
+  "pdos-next/web/src/components/pai/session-history.test.mjs": "be083cfd3b660ad4e3294b1311d58bc095c7a38511a3f9ee45c4c4ef3f78a104",
+  "pdos-next/web/src/components/pai/session-history.tsx": "8694b4a3957db985437ab699e20fa880f27ef8ee280189d5f734fbd604901cc3",
+  "pdos-next/web/src/components/xiaopai.test.mjs": "dee30f36ede33f43b59d3df297911a88deb7aa007eb25c1003346b94c3faa297",
+  "pdos-next/web/src/components/xiaopai.tsx": "791dd9378d2ff5841eedd759ee1ff5e7dd24a6f51962778a1d6b9bded45b17de"
+}

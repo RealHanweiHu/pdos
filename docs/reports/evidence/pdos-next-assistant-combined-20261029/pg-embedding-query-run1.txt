@@ -1,0 +1,22 @@
+......F                                                                  [100%]
+=================================== FAILURES ===================================
+_ test_actual_run_query_embedding_is_read_derived_accounted_once_and_not_page_triggered _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x162cfff50>
+
+    def test_actual_run_query_embedding_is_read_derived_accounted_once_and_not_page_triggered(
+        setup, monkeypatch
+    ):
+        source_id = register(setup, "气密合成记录", "漏气。更换密封圈。RAW_ONLY_CHILD_MARKER")
+        index(setup, source_id)
+>       assert query(setup, QUERY)["items"] == []
+E       AssertionError: assert [{'chunk_id':...28fdf0', ...}] == []
+E         
+E         Left contains one more item: {'chunk_id': '0415333a-93d8-5e91-9a50-7fb4faa043bd', 'source_type': 'artifact', 'source_id': '92146e50-f6e1-4a78-9bdf-1e5bac28fdf0', 'object_id': '92146e50-f6e1-4a78-9bdf-1e5bac28fdf0', ...}
+E         Use -v to get more diff
+
+tests/enterprise_search/test_embedding_query_temporal_pg.py:80: AssertionError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_embedding_query_temporal_pg.py::test_actual_run_query_embedding_is_read_derived_accounted_once_and_not_page_triggered
+1 failed, 6 passed in 28.08s

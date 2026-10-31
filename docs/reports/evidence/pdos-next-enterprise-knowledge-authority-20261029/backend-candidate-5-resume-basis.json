@@ -1,0 +1,18 @@
+{
+  "production_source_unchanged": true,
+  "only_delta": [
+    "pdos-next/server/tests/enterprise_search/test_assistant_temporal_pg.py"
+  ],
+  "delta": "test helper follows each bounded fixed-source page and checks hash/revision/CID/contiguity and full quote; no production changes",
+  "previous_prefix": 527,
+  "candidate4_passed": 36,
+  "affected_previously_passed_rerun": [
+    "tests/enterprise_search/test_assistant_temporal_pg.py::test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference",
+    "tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model",
+    "tests/enterprise_search/test_citation_inheritance_temporal_pg.py::test_http_continuation_reissues_citation_and_replay_does_not_repeat_inference",
+    "tests/enterprise_search/test_comparison_temporal_pg.py::test_http_document_pair_reaches_verified_differences_and_idempotent_private_table"
+  ],
+  "preserved_previous_passed": 559,
+  "original_selection_total": 836,
+  "remaining_expected": 277
+}

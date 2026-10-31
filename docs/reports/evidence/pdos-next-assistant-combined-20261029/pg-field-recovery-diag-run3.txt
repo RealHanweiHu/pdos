@@ -1,0 +1,98 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 1 item
+
+tests/enterprise_search/test_recovery_pg.py E
+
+==================================== ERRORS ====================================
+_ ERROR at setup of test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables] _
+
+change_work = namespace(setup=<isolated synthetic test scope>, config={'source': '6f38dc79-b60a-4cd8-9dc7-c3957adb77f1', 'project': ...: None}]}, issue_id=UUID('0c445114-6061-54fa-9140-0e02e277ecbb'), capa_id=UUID('0901a013-d5d2-4312-a41d-1c206af1b1d3'))
+
+    @pytest.fixture
+    def all_sources(change_work):
+        work = change_work
+        quality = work.quality
+        person = SimpleNamespace(
+            **{
+                **vars(quality),
+                "tokens": {
+                    **quality.tokens,
+                    quality.human: quality.headers["Authorization"].removeprefix("Bearer "),
+                },
+            }
+        )
+        created(work)
+        register(person, "Synthetic recovery artifact", "Synthetic recovery source evidence.")
+>       add_knowledge(person)
+
+tests/enterprise_search/test_recovery_pg.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+person = namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine([PRIVATE_DSN] cancel_epoch=None, category_id=UUID('e99a707e-28a4-4c8d-8263-d2f4c5281ef6'), agent_run_id=None, agent_call_id=None))
+index_ = 0
+
+    def add_knowledge(person, index_=0):
+        response = post(
+            person,
+            request(
+                person,
+                "category.knowledge.add",
+                {
+                    "kind": "boundary",
+                    "content": {"definition": f"Synthetic recovery knowledge {index_}"},
+                },
+            ),
+        )
+>       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+
+tests/enterprise_search/test_recovery_pg.py:67: AssertionError
+---------------------------- Captured stdout setup -----------------------------
+ACTUAL_NATIVE_DATABASE_ERROR {"sqlstate": "23514", "constraint": null, "message": "Fixed assistant source dependencies must be an array", "context": "PL/pgSQL function assistant_source_lifecycle_links(uuid,uuid,jsonb) line 6 at RAISE\nPL/pgSQL function m3_lifecycle_source_links(uuid,uuid,text,jsonb) line 347 at assignment\nPL/pgSQL function m3_lifecycle_roots(uuid,uuid,text,jsonb) line 4 at assignment\nPL/pgSQL function m3_lifecycle_reference_clock() line 14 at assignment"}
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-field-feedback-20261029/pg-diagnostic-run3.xml -
+=========================== short test summary info ============================
+ERROR tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+=================== 10 warnings, 1 error in 78.04s (0:01:18) ===================

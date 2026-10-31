@@ -1,8 +1,10 @@
 """Public action history from persisted metadata, never provider text or tool arguments."""
 
+import math
+import re
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, literal, select
 
 from pdos_next.clock import now
 from pdos_next.errors import DomainError
@@ -14,6 +16,8 @@ KINDS = (
     "accepted",
     "skill_loaded",
     "context_projected",
+    "context_observed",
+    "context_admission_observed",
     "model_started",
     "tool_started",
     "tool_finished",
@@ -25,6 +29,114 @@ KINDS = (
     "finished",
 )
 TERMINAL = {"completed", "partial", "cancelled", "failed"}
+
+METRIC_KINDS = ("context_observed", "context_admission_observed")
+WARNINGS = frozenset({"fixed_over_half_focus", "context_incomplete",
+                      "cleanup_more_than_twice", "persistent_estimation_error"})
+SEGMENTS = ("system", "tools", "skills", "envelope", "history", "loop")
+WORK_ITEMS = ("constraints", "exclusions", "focus_objects", "completed", "candidates",
+              "unfinished", "questions", "citations")
+PATH = re.compile(
+    r"(?:system|tool_definitions|output_schema|current_question|sources|"
+    r"(?:work_state|context|conversation|proposal)\.[A-Za-z0-9_.\[\]/-]{1,180}|"
+    r"(?:messages|skill_body|human_or_verification_message)\[\d+\])\Z"
+)
+METRIC_SHAPE = {
+    "window": "count", "window_configured": "bool", "reserve": "count", "focus": "count",
+    "segments": {key: {"estimated_tokens": "count", "actual_tokens": "count"}
+                 for key in SEGMENTS},
+    "estimated_input_tokens": "count", "admission_tokens": "count", "fixed_over_half": "bool",
+    "actual_input_tokens": "count", "actual_output_tokens": "count",
+    "estimation_error_ratio": "number", "estimation_error_streak": "count",
+    "calibration_factor": "number",
+    "estimation_basis": frozenset({"previous_actual_input", "first_call_estimate"}),
+    "cache": {"read_tokens": "count", "creation_tokens": "count", "read_hit_ratio": "ratio",
+              "input_includes_cache": "bool", "reporting": frozenset({
+                  "positive_usage_reported", "zero_or_unreported",
+              }), "status": frozenset({"not_recorded_for_failed_call"})},
+    "cleanup": {"triggered": "bool", "applied": "bool", "minimum_tokens": "count",
+                "before_tokens": "count", "after_tokens": "count", "saved_tokens": "count",
+                "candidate_saved_tokens": "number", "eligible_results": "count",
+                "protected_results": "count", "retained_latest_results": "count",
+                "replaced_results": "count", "cache_invalidation_from_message": "count",
+                "reason": frozenset({"within_focus", "no_eligible_results",
+                    "no_controlled_compactor", "minimum_reached", "insufficient_eligible_tokens",
+                    "legacy_call"})},
+    "cleanup_count": "count",
+    "history": {key: "count" for key in ("carried", "kept", "updated", "hidden",
+                                        "unclassified", "truncated", "directories")},
+    "work_state": {"revision": "count", "context_incomplete": "bool",
+                   "item_counts": {key: "count" for key in WORK_ITEMS}},
+    "run_budget": {key: "count" for key in ("limit", "used", "held", "remaining")},
+    "context_incomplete": "bool",
+    "call_state": frozenset({"completed", "failed", "unknown"}),
+    "usage_status": frozenset({"recorded", "unavailable"}),
+    "isolation": frozenset({"main", "research", "extract", "mcp", "assistant_extract",
+                            "assistant_compare"}),
+}
+# SQL never selects the full event body, raw model result, execution binding or
+# Run.versions. Nested sections are then projected to a closed scalar schema.
+METRIC_KEYS = (*METRIC_SHAPE, "warnings", "reductions", "missing")
+
+
+def _metric_value(value, shape):
+    if isinstance(shape, dict):
+        return {key: _metric_value(value.get(key), child) for key, child in shape.items()} \
+            if isinstance(value, dict) else None
+    if isinstance(shape, frozenset):
+        return value if isinstance(value, str) and value in shape else None
+    if shape == "bool":
+        return value if type(value) is bool else None
+    if shape == "count":
+        return value if type(value) is int and 0 <= value <= 2**53 - 1 else None
+    if shape in {"number", "ratio"}:
+        if (type(value) not in {int, float} or abs(value) > 2**53 - 1
+                or not math.isfinite(value) or value < 0):
+            return None
+        return value if shape != "ratio" or value <= 1 else None
+    if shape == "path":
+        return value if isinstance(value, str) and PATH.fullmatch(value) else None
+    return None
+
+
+def public_context_metrics(value, kind):
+    """Only bounded, content-free recorded metadata reaches the public process."""
+    if kind not in METRIC_KINDS or not isinstance(value, dict):
+        return None
+    result = {key: _metric_value(value.get(key), shape) for key, shape in METRIC_SHAPE.items()}
+    result["version"] = 1  # Public projection version, not a fabricated provider fact.
+    result["context_incomplete"] = kind == "context_admission_observed" or (
+        result["context_incomplete"] is True
+    )
+    warnings = value.get("warnings", [])
+    result["warnings"] = list(dict.fromkeys(item for item in warnings
+        if isinstance(item, str) and item in WARNINGS)) if isinstance(warnings, list) else []
+    reductions = value.get("reductions")
+    result["reductions_count"] = len(reductions) if isinstance(reductions, list) else None
+    result["reductions"] = [{
+        "kind": _metric_value(item.get("kind"), frozenset({"history_directory",
+            "history_answer_preview", "older_tool_result", "object_detail_directory"})),
+        "field": _metric_value(item.get("field"), "path"),
+        # This is display metadata, never permission or a tool dispatch.
+        "recoverable": isinstance(item.get("read_more"), dict)
+        and item["read_more"].get("tool") in {
+            "result.read", "conversation.history", "proposal.items.read",
+        },
+    } for item in reductions[:100] if isinstance(item, dict)] \
+        if isinstance(reductions, list) else []
+    missing = value.get("missing")
+    result["missing_count"] = len(missing) if isinstance(missing, list) else None
+    result["missing"] = [{"field": _metric_value(item.get("field"), "path"),
+                          "estimated_tokens": _metric_value(item.get("estimated_tokens"), "count")}
+                         for item in missing[:256] if isinstance(item, dict)] \
+        if isinstance(missing, list) else []
+    return result
+
+
+def _metric_columns(kind):
+    return case((kind.in_(METRIC_KINDS), func.jsonb_build_object(*[
+        part for key in METRIC_KEYS for part in (literal(key), AgentEvent.body[key])
+    ])), else_=None).label("context_metric_data")
 
 
 def record_state(session, run):
@@ -64,6 +176,7 @@ def read_process(
         AgentEvent.body["fields"].label("context_fields"),
         AgentEvent.body["omitted"].label("context_omitted"),
         AgentEvent.body["issues"].label("context_issues"),
+        _metric_columns(kind),
     ).where(AgentEvent.run_id == run.id, kind.in_(KINDS))
     if before is not None:
         if not session.scalar(
@@ -184,6 +297,8 @@ def read_process(
                     "context_omitted": row.context_omitted or [],
                     "context_issues": row.context_issues or []}
                    if row.kind == "context_projected" else {}),
+                **({"context_metrics": public_context_metrics(row.context_metric_data, row.kind)}
+                   if row.kind in METRIC_KINDS else {}),
             }
             for row in reversed(visible)
         ],

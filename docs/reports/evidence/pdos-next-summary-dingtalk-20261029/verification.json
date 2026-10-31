@@ -1,0 +1,43 @@
+{
+  "scope": "stage only; no DB/real provider; root actual validation pending",
+  "backend_pure": {
+    "passed": 52,
+    "new_included": 7,
+    "xml": "pure-summary-legacy-final.xml",
+    "stdout": "pure-summary-legacy-final.txt"
+  },
+  "frontend": {
+    "passed": 35,
+    "stdout": "frontend-node-final2.txt"
+  },
+  "postgres_temporal_draft": {
+    "collected": 5,
+    "executed": 0,
+    "stdout": "pg-collect-final.txt",
+    "nodeids": [
+      "tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend",
+      "tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[binding]",
+      "tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[application]",
+      "tests/dingtalk/test_summary_delivery_pg.py::test_actual_reserved_summary_rechecks_current_binding_app_and_source_before_wire[source]",
+      "tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_temporal_delivery_uses_original_run_and_official_mock"
+    ]
+  },
+  "tsc": {
+    "exit_code": 0,
+    "command": "node_modules/.bin/tsc --noEmit --incremental false",
+    "workspace": "verify/web",
+    "stdout": "tsc-final.txt"
+  },
+  "eslint": {
+    "exit_code": 0,
+    "files": 10,
+    "stdout": "eslint-final.txt"
+  },
+  "ruff": {
+    "exit_code": 0,
+    "config": "pdos-next/ruff.toml",
+    "files": 12,
+    "stdout": "ruff-final.txt"
+  },
+  "no_db_or_real_network_used": true
+}

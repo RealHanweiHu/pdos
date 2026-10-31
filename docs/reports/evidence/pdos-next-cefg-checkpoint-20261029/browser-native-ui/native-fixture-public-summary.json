@@ -1,0 +1,69 @@
+{
+  "synthetic": true,
+  "native_ui_checks_passed": true,
+  "before": {
+    "artifact_versions": 1,
+    "agent_runs": 1,
+    "agent_tool_calls": 8,
+    "agent_validation_budgets": 0,
+    "tenant_skill_enablements": 0,
+    "category_knowledge_entries": 0,
+    "knowledge_answer_reviews": 0,
+    "knowledge_gap_submissions": 0,
+    "automation_rule_currents": 0,
+    "automation_rule_versions": 0,
+    "automation_service_grants": 0,
+    "enterprise_embedding_profiles": 0,
+    "enterprise_embedding_calls": 0,
+    "action_receipts": 4,
+    "confirmations": 3
+  },
+  "after": {
+    "artifact_versions": 1,
+    "agent_runs": 1,
+    "agent_tool_calls": 8,
+    "agent_validation_budgets": 0,
+    "tenant_skill_enablements": 0,
+    "category_knowledge_entries": 1,
+    "knowledge_answer_reviews": 1,
+    "knowledge_gap_submissions": 1,
+    "automation_rule_currents": 1,
+    "automation_rule_versions": 2,
+    "automation_service_grants": 1,
+    "enterprise_embedding_profiles": 1,
+    "enterprise_embedding_calls": 0,
+    "action_receipts": 8,
+    "confirmations": 5
+  },
+  "receipt_operations": {
+    "evidence.artifact.register": 1,
+    "proposal.create": 1,
+    "proposal.g0.submit": 1,
+    "proposal.g0.decide": 1,
+    "embedding.profile.save": 1,
+    "category.knowledge.add": 1,
+    "ai.automation.draft.save": 1,
+    "ai.automation.activate": 1
+  },
+  "kms_writes": 1,
+  "managed_connections": 1,
+  "profile_ids": [
+    "773c2cad-0e9b-59a3-ab04-6746d402db28"
+  ],
+  "original_personal_answer_unchanged": true,
+  "no_answer_artifact_created": true,
+  "browser_model_provider_calls": 0,
+  "browser_embedding_provider_calls": 0,
+  "real_provider_calls": 0,
+  "web": {
+    "actual_web_base": "http://127.0.0.1:50780",
+    "actual_api_base": "http://127.0.0.1:50795",
+    "fresh_principal_id": "2906155b-8f4c-44a4-89f8-ee8799ff4039",
+    "verified_at": "2026-10-29T14:21:00.807727+00:00"
+  },
+  "source_result_sha256": "563d2b7bedff429e1aee63d4dd616d29d047fe167f70b15fae7b051745c69cf0",
+  "verified_answer_reviews_count": 1,
+  "gap_submissions_count": 1,
+  "summary_rules_count": 1,
+  "summary_runs_count": 0
+}

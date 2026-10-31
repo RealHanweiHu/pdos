@@ -1,0 +1,131 @@
+[
+  {
+    "role": "s1-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "trial-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "trial-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "trial-3",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "quality-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "quality-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "quality-3",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "manufacturing-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "manufacturing-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "manufacturing-3",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "release-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "release-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "exceptions-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "exceptions-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "field-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "field-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "field-3",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "field-4",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "field-5",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "knowledge-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "work-1",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "role": "work-2",
+    "project_status": 200,
+    "items": 1
+  },
+  {
+    "quality_status": 200,
+    "issues": 7
+  },
+  {
+    "followup_status": 409,
+    "keys": [
+      "code",
+      "message",
+      "detail"
+    ],
+    "error": {
+      "code": "SOURCE_UNAVAILABLE",
+      "message": "原件尚无当前有效的安全扫描，或来源已失效。",
+      "detail": {
+        "reason": "ORIGINAL_SECURITY_BLOCKED"
+      }
+    }
+  }
+]

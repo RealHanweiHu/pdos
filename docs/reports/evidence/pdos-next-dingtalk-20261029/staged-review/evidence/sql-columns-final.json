@@ -1,0 +1,147 @@
+{
+  "mode": "static ORM/DDL column validation, not executed PG",
+  "column_grants": [
+    {
+      "table": "dingtalk_deliveries",
+      "privilege": "SELECT",
+      "columns": [
+        "consent_id",
+        "content_kind",
+        "error_code",
+        "id",
+        "message_id",
+        "owner_id",
+        "phase",
+        "request_key",
+        "source_dependencies",
+        "state",
+        "tenant_id"
+      ]
+    },
+    {
+      "table": "dingtalk_deliveries",
+      "privilege": "UPDATE",
+      "columns": [
+        "error_code",
+        "state"
+      ]
+    },
+    {
+      "table": "dingtalk_messages",
+      "privilege": "UPDATE",
+      "columns": [
+        "state"
+      ]
+    },
+    {
+      "table": "agent_runs",
+      "privilege": "SELECT",
+      "columns": [
+        "cancel_epoch",
+        "category_id",
+        "id",
+        "requester_id",
+        "reverted_at",
+        "state",
+        "tenant_id",
+        "writer_id"
+      ]
+    },
+    {
+      "table": "agent_runs",
+      "privilege": "UPDATE",
+      "columns": [
+        "cancel_epoch",
+        "error_code",
+        "state"
+      ]
+    },
+    {
+      "table": "agent_tool_calls",
+      "privilege": "SELECT",
+      "columns": [
+        "id",
+        "run_id",
+        "state",
+        "tenant_id"
+      ]
+    },
+    {
+      "table": "agent_run_events",
+      "privilege": "SELECT",
+      "columns": [
+        "run_id",
+        "sequence",
+        "tenant_id"
+      ]
+    },
+    {
+      "table": "principals",
+      "privilege": "SELECT",
+      "columns": [
+        "active",
+        "id",
+        "kind",
+        "tenant_id"
+      ]
+    },
+    {
+      "table": "tenant_administrators",
+      "privilege": "SELECT",
+      "columns": [
+        "active",
+        "principal_id",
+        "tenant_id"
+      ]
+    },
+    {
+      "table": "dingtalk_share_consents",
+      "privilege": "UPDATE",
+      "columns": [
+        "error_code",
+        "state"
+      ]
+    }
+  ],
+  "dynamic_record_selects_reviewed": {
+    "agent_runs": [
+      "id",
+      "tenant_id",
+      "requester_id",
+      "writer_id",
+      "category_id",
+      "state",
+      "cancel_epoch",
+      "reverted_at"
+    ],
+    "dingtalk_messages": [
+      "id",
+      "tenant_id",
+      "application_id",
+      "binding_id",
+      "binding_epoch",
+      "owner_id",
+      "run_id"
+    ],
+    "dingtalk_account_bindings": [
+      "active",
+      "epoch",
+      "owner_id",
+      "application_id"
+    ],
+    "dingtalk_applications": [
+      "id",
+      "revision",
+      "active",
+      "service_principal_id"
+    ],
+    "dingtalk_binding_nonces": [
+      "application_id",
+      "owner_id",
+      "app_revision",
+      "state_sha256",
+      "expires_at",
+      "consumed_at"
+    ]
+  }
+}

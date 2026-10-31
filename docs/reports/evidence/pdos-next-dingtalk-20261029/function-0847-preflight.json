@@ -1,0 +1,8 @@
+{
+  "signature": "dingtalk_lifecycle_reference_clock()",
+  "owner": "pdos_next_owner",
+  "acl": "{pdos_next_owner=X/pdos_next_owner}",
+  "old_sha256": "bf8868658f59cfabcc197d09337115c21394c1de26aeed951c7cee8d40800fd3",
+  "new_sha256": "431b7baafd9f7fdc49fccac0164d7d31ddface9aec13579c80da1c98749e3fae",
+  "only_change": "rename local categories array to source_categories; actual public.categories references retained"
+}

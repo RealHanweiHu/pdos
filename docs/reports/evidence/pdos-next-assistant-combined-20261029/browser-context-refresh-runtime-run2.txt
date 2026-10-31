@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /private/tmp/pdos-verification-browser-runtime-context-summary-20261029/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 1 item
+
+tests/enterprise_search/test_browser_context_refresh_fixture.py .
+
+=============================== warnings summary ===============================
+tests/enterprise_search/test_browser_context_refresh_fixture.py::test_browser_context
+tests/enterprise_search/test_browser_context_refresh_fixture.py::test_browser_context
+  /private/tmp/pdos-verification-browser-runtime-context-summary-20261029/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:122: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 1 passed, 2 warnings in 374.70s (0:06:14) ===================

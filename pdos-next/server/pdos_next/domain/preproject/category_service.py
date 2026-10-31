@@ -46,6 +46,7 @@ class ValidatedMaterial:
     current: object | None = None
     checks: dict | None = None
     source_proposal: object | None = None
+    knowledge_review: dict | None = None
 
 
 def _current(s, ctx, model, identity, expected):
@@ -328,6 +329,11 @@ def validate(s, ctx, command, scope, payload):
     if not isinstance(payload, KnowledgeAdd):
         human(s, ctx)
     path = writing_path(s, ctx, command, payload)
+    from .material_candidate_edits import effective
+
+    if getattr(payload, "human_edits", None) is not None and isinstance(payload, KnowledgeAdd):
+        check_shared_sources(s, ctx, _references(payload))
+    payload = effective(payload)
     result = ValidatedMaterial(path)
     run = s.get(AgentRun, path["run_id"]) if path["run_id"] else None
     if run and (run.tenant_id != ctx.tenant_id or run.category_id != ctx.category_id):
@@ -411,6 +417,16 @@ def validate(s, ctx, command, scope, payload):
                 },
             )
     elif isinstance(payload, KnowledgePromote):
+        if payload.supersedes:
+            old = result.current = _current(
+                s,
+                ctx,
+                KnowledgeCurrent,
+                payload.supersedes.lineage_id,
+                payload.supersedes.expected_version,
+            )
+            if old.kind != payload.kind:
+                fail("VALIDATION_FAILED", "knowledge_kind_immutable", "谱系种类不能改变。")
         if payload.kind == "competitor":
             from .competitor_segments import validate_refs
 
@@ -438,6 +454,21 @@ def validate(s, ctx, command, scope, payload):
         result.checks["refs_clean"] &= item_checks["refs_clean"]
     else:
         fail("VALIDATION_FAILED", "unsupported_material_operation", "不支持的资料操作。")
+    if isinstance(payload, (KnowledgeAdd, KnowledgePromote)):
+        from pdos_next.domain.knowledge.assistant_reviews import prepare
+        from pdos_next.domain.knowledge.assistant_sources import review_for
+
+        previous = (
+            review_for(s, "category", result.current.current_entry_id) if result.current else None
+        )
+        result.knowledge_review = prepare(
+            s,
+            ctx,
+            payload,
+            shared=True,
+            previous=previous,
+            promoted=isinstance(payload, KnowledgePromote),
+        )
     return result
 
 
@@ -467,15 +498,26 @@ def confirmation_subject(s, ctx, command, scope, payload):
 
 def preview_view(s, ctx, command, scope, payload):
     validated = validate(s, ctx, command, scope, payload)
+    from .material_candidate_edits import effective
+
     return {
         "operation": command.operation,
-        "payload": semantic(payload),
+        "payload": semantic(effective(payload)),
+        **(
+            {"human_edits": payload.human_edits}
+            if getattr(payload, "human_edits", None) is not None
+            else {}
+        ),
         "checks": validated.checks,
         "effect": "追加共享品类资料；保留既有版本。",
     }
 
 
 def apply_validated(s, ctx, command, scope, payload, validated):
+    from .material_candidate_edits import effective
+
+    edits = getattr(payload, "human_edits", None)
+    payload = effective(payload)
     if validated.checks and validated.checks["hits"]:
         fail(
             "VALIDATION_FAILED",
@@ -501,6 +543,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 "prepared_by_run_id",
                 "candidate_digest",
                 "confirmation_token",
+                "human_edits",
             }
         )
         row = ParameterVersion(
@@ -549,6 +592,11 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             action="withdraw" if withdrawal else "supersede" if current else "add",
             kind=old.kind if withdrawal else payload.kind,
             content=content,
+            answer_sources=old.answer_sources
+            if withdrawal
+            else validated.knowledge_review["source_proof"]
+            if validated.knowledge_review
+            else None,
             regions=old.regions if withdrawal else getattr(payload, "regions", []),
             source_refs=old.source_refs
             if withdrawal
@@ -599,8 +647,25 @@ def apply_validated(s, ctx, command, scope, payload, validated):
         result = {"lineage_id": str(identity), "version": version, "entry_id": str(row.id)}
         if isinstance(payload, KnowledgePromote):
             result["promotion_proof_id"] = str(proof_id)
+    if not isinstance(payload, ParameterPublish) and validated.knowledge_review:
+        from pdos_next.domain.knowledge.assistant_reviews import append
+
+        append(
+            s,
+            ctx,
+            command,
+            "category",
+            row.id,
+            receipt_id,
+            validated.knowledge_review,
+            verified=True,
+        )
     if current:
         _context_hints(s, ctx, kind, identity, version)
+    if edits is not None:
+        result["human_edits"] = edits
+        result["edited_by"] = str(ctx.requester_id)
+        result["prepared_candidate_id"] = str(provenance["prepared_candidate_id"])
     s.flush()
     subject = SimpleNamespace(
         id=identity,

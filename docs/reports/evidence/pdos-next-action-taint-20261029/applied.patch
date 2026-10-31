@@ -1,0 +1,189 @@
+--- a/pdos-next/server/pdos_next/enterprise_search/action_sources.py
++++ b/pdos-next/server/pdos_next/enterprise_search/action_sources.py
+@@ -402,6 +402,7 @@
+     build_id,
+     execution_references=(),
+     preparation_id=None,
++    include_taint=False,
+ ):
+     """Server-only capture; session must be the ordinary requester's transaction."""
+     run = _run(session, ctx, run)
+@@ -482,6 +483,10 @@
+         "read_set": reads,
+         "applicability_status": "not_assessed",
+     }
++    if include_taint:
++        from .action_taint import classify
++
++        value["taint"] = classify(actual)
+     return {**value, "digest": digest(value)}
+ 
+ 
+@@ -498,6 +503,8 @@
+         "applicability_status",
+         "digest",
+     }
++    if isinstance(frozen, dict) and "taint" in frozen:
++        expected.add("taint")
+     if (
+         not isinstance(frozen, dict)
+         or set(frozen) != expected
+@@ -520,6 +527,7 @@
+         build_id=target["build_id"],
+         execution_references=frozen["execution_references"],
+         preparation_id=preparation_id if preparation_id is not None else saved_id,
++        include_taint="taint" in frozen,
+     )
+     before, after = deepcopy(frozen), deepcopy(checked)
+     for value in (before, after):
+@@ -590,13 +598,14 @@
+         execution.append({"reference": ref.model_dump(mode="json"), "citation_id": cid,
+                           "content_hash": verified[cid]["content_hash"],
+                           **_root_read(session, run, cid, selected[cid])})
++    from .action_taint import classify
++
+     value = {
+         "version": 1, "run_id": str(run.id), "target": target,
+         "discussion_sources": discussion,
+         "execution_references": [ref.model_dump(mode="json") for ref in references],
+         "execution_sources": execution, "read_set": reads,
+-        "taint": {"private": any(row["private"] for row in actual.values()),
+-                  "customer_original": any(row["customer_original"] for row in actual.values())},
++        "taint": classify(actual),
+         "applicability_status": "not_assessed",
+     }
+     return {**value, "digest": digest(value)}
+--- a/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py
++++ b/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py
+@@ -323,11 +323,35 @@
+     def guard(self, scope):
+         if scope.isolation in {"assistant_extract", "assistant_compare"}:
+             self._selected(scope, scope.citation_ids)
+-        selected, historical = self._carried(scope)
+-        with human_snapshot(self.store.engine, scope) as session:
++        with self.store.transaction(scope) as (session, run):
++            action = any(run.versions.get(key) is not None
++                         for key in ("verification_action", "work_followup_action"))
++            if not action:
++                selected, historical = ledger.carried(session, scope)
++        with human_snapshot(self.store.engine, scope) as session:
++            if action:
++                from pdos_next.agent_kernel.models import AgentRun
++
++                from .action_sources import _discussion_footprint
++
++                ctx = Context(scope.tenant_id, scope.requester_id, scope.requester_id,
++                              category_id=scope.category_id)
++                _selected, historical, selected = _discussion_footprint(
++                    session, ctx, session.get(AgentRun, scope.run_id),
++                )
+             actual, missing = current(session, selected, allow_updated=historical)
+         if missing:
+             raise DomainError("SOURCE_UNAVAILABLE", "运行携带的企业引用已失效，请重新查询。")
++        if action:
++            from .action_taint import classify
++
++            taint = classify(actual)
++            if (taint["private"] and not scope.private_context
++                or taint["customer_original"] and "customer_original" not in scope.data_categories):
++                raise DomainError(
++                    "CONVERSATION_HISTORY_REVOKED",
++                    "旧运行未绑定完整来源分类，请从原讨论重新续接。",
++                )
+         categories = set(scope.data_categories)
+         for source in actual.values():
+             categories.add("internal")
+--- a/pdos-next/server/pdos_next/enterprise_search/verification_actions.py
++++ b/pdos-next/server/pdos_next/enterprise_search/verification_actions.py
+@@ -37,8 +37,11 @@
+     )
+     proof = capture(
+         session, ctx, parent, requested.citation_ids,
+-        product_id=parent.product_id, build_id=selected.id,
++        product_id=parent.product_id, build_id=selected.id, include_taint=True,
+     )
++    from .action_taint import inherit
++
++    inherit(parent, proof["taint"])
+     sources = {ref.artifact_id: ref for ref in effective.sources}
+     for value in proof["read_set"]:
+         reference = SourceRead.model_validate({
+--- a/pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py
++++ b/pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py
+@@ -59,15 +59,9 @@
+         raise DomainError("FORBIDDEN_SCOPE", "请从本项目的引用回答准备资料跟进任务。", 403)
+     _assignment(session, ctx, parent, requested.assignment)
+     proof = capture_work(session, ctx, parent, requested.citation_ids)
+-    inherited = getattr(parent, "_explicit_context_binding", {})
+-    categories = set(inherited.get("data_categories", ()))
+-    if proof["taint"]["customer_original"]:
+-        categories.add("customer_original")
+-    parent._explicit_context_binding = {
+-        **inherited,
+-        "private_context": inherited.get("private_context", False) or proof["taint"]["private"],
+-        "data_categories": sorted(categories),
+-    }
++    from .action_taint import inherit
++
++    inherit(parent, proof["taint"])
+     catalog = SkillCatalog()
+     skill = catalog.configuration(SKILL)
+     if skill is None:
+--- a/pdos-next/server/tests/enterprise_search/test_verification_actions.py
++++ b/pdos-next/server/tests/enterprise_search/test_verification_actions.py
+@@ -9,8 +9,6 @@
+ import pytest
+ from jsonschema import Draft202012Validator
+ from jsonschema.exceptions import ValidationError as SchemaValidationError
+-from pydantic import ValidationError
+-
+ from pdos_next.agent_kernel.api import StartInput
+ from pdos_next.agent_kernel.context_projection import combine_contracts, project
+ from pdos_next.agent_kernel.models import AgentRun
+@@ -21,6 +19,7 @@
+ from pdos_next.errors import DomainError
+ from pdos_next.schemas.verification.contracts import BuildRef
+ from pdos_next.service import Context, digest
++from pydantic import ValidationError
+ 
+ 
+ @pytest.fixture
+@@ -50,6 +49,7 @@
+         sources=[source],
+     )
+     proof = {
++        "taint": {"private": False, "customer_original": False},
+         "read_set": [{"artifact_id": str(uuid4()), "expected_revision": 3}],
+         "discussion_sources": [{"citation_id": str(cid)} for cid in citations],
+     }
+@@ -63,7 +63,8 @@
+ 
+     def capture(session, actual_ctx, actual_parent, cids, **kwargs):
+         assert actual_ctx is ctx and actual_parent is parent
+-        assert kwargs == {"product_id": product, "build_id": state.selected.id}
++        assert kwargs == {"product_id": product, "build_id": state.selected.id,
++                          "include_taint": True}
+         assert tuple(cids) == requested.citation_ids
+         calls.append(("capture", cids))
+         return deepcopy(state.proof)
+@@ -379,3 +380,20 @@
+         result = asyncio.run(endpoint(data, ctx=case.ctx))
+         assert result["run_id"] == str(existing.id) and result["status"] == "queued"
+         assert len(workflows) == 1 and workflows[0]["subject_id"] == str(existing.id)
++
++
++def test_prepare_start_merges_current_proof_taint_without_selecting_uncited_reads(case):
++    case.state.proof["taint"] = {"private": True, "customer_original": True}
++    case.parent._explicit_context_binding = {
++        "private_context": False, "data_categories": ["internal"],
++        "customer_identities": ["SyntheticClient"],
++    }
++    effective, action, _methods = start(case)
++    assert case.parent._explicit_context_binding == {
++        "private_context": True, "data_categories": ["customer_original", "internal"],
++        "customer_identities": ["SyntheticClient"],
++    }
++    assert effective.sources == case.effective.sources + [
++        SourceRead.model_validate(case.state.proof["read_set"][0]),
++    ]
++    assert action["citation_ids"] == sorted(str(cid) for cid in case.requested.citation_ids)

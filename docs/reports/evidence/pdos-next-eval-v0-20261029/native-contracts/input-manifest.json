@@ -1,0 +1,29 @@
+{
+  "scope": "v0 native contract source review and root-only PG draft; not whole candidate freeze",
+  "checks": {
+    "syntax": "passed",
+    "ruff": "passed",
+    "markdown_links": "passed",
+    "pg": "not_run",
+    "temporal": "not_run",
+    "model_quality": "not_run",
+    "real_model_calls": 0,
+    "real_embedding_calls": 0,
+    "real_outbound_calls": 0
+  },
+  "files": {
+    "pdos-next/server/tests/enterprise_search/test_eval_v0_contracts_pg.py": "deffd996b9f863b7aa90471ea1222a2bfbd40e17ae8c6b9846c16694538ad211",
+    "docs/reports/evidence/pdos-next-eval-v0-20261029/native-contracts/review.md": "e03e800ca71e1125f7e05ad5731f5161f4434c1a72b03f721866bdff90f8fe93",
+    "docs/evaluations/xiaopai-v0/corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "docs/evaluations/xiaopai-v0/questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685",
+    "docs/evaluations/xiaopai-v0/context-questions.json": "494fdf3d14d76f2586a093c8af6c9af6aa6b5c0fd8e56a3aace06d48bd22d69a",
+    "pdos-next/server/tests/enterprise_search/test_verification_action_temporal_pg.py": "75ed95572d7bb76d2dd3e435161dd7f60c78b8a085e719c67aa8dba3f9d546dd",
+    "pdos-next/server/tests/enterprise_search/test_work_followup_temporal_pg.py": "f26c93a414f83e805d5a2fac1ce338a685cd04e3a41c8f5179028565697e4b88",
+    "pdos-next/server/tests/enterprise_search/test_action_footprint_temporal_pg.py": "37a7409ecf6773a14f089edbe985fbabfcbf3da4beaae86bc50b60e01e60546c",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_graph.py": "78c9bba4a5b602e66434feebcb30b3fa811a5518723b1470b5c305c2c356b9a6",
+    "pdos-next/server/pdos_next/agent_kernel/registry.py": "d9a4ee6ac6d926ca42625d6bb0a672feeab98e035d542524016ba43bc35c7c05",
+    "docs/reports/evidence/pdos-next-action-footprint-20261029/pg-run2.xml": "d695a8fe129ff99c91580945f56bce11eec4394eecb2eb836542b574db6a7b9d",
+    "docs/reports/evidence/pdos-next-work-followup-20261029/pg-work-taint-final-run1.xml": "0565bfcb5bb4f1f79d157b9db7fb02aa86dd47192e64c8b71ad62e8e431c4e65",
+    "docs/reports/evidence/pdos-next-action-taint-20261029/pg-taint-verification-run3.xml": "7b299e38844b242d84fea04385ba619b26a8f6f408058a0989d1f5db3b9dafe6"
+  }
+}

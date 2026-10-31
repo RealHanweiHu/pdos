@@ -1,0 +1,97 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 28 items
+
+tests/agent_kernel/test_context_corrections_pg.py FF                     [  7%]
+tests/agent_kernel/test_personal_context_pins_pg.py FFF                  [ 17%]
+tests/agent_kernel/test_run_continuation.py F.............               [ 67%]
+tests/agent_kernel/test_work_state_pg.py ....F....                       [100%]
+
+=================================== FAILURES ===================================
+_ test_private_source_selection_replay_sql_limit_clear_and_deleted_constraint __
+tests/agent_kernel/test_context_corrections_pg.py:97: in test_private_source_selection_replay_sql_limit_clear_and_deleted_constraint
+    finish(setup, parent)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'
+_ test_context_options_are_owner_only_and_made_up_artifact_history_is_rejected _
+tests/agent_kernel/test_context_corrections_pg.py:209: in test_context_options_are_owner_only_and_made_up_artifact_history_is_rejected
+    finish(setup, parent)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'
+_ test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope _
+tests/agent_kernel/test_personal_context_pins_pg.py:115: in test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope
+    actual = pin_personal(setup, [first, second])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:32: in pin_personal
+    finish(setup, parent, personal=True)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'
+_ test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[content] _
+tests/agent_kernel/test_personal_context_pins_pg.py:141: in test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes
+    actual = pin_personal(setup, [identity])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:32: in pin_personal
+    finish(setup, parent, personal=True)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'
+_ test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[scan] _
+tests/agent_kernel/test_personal_context_pins_pg.py:141: in test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes
+    actual = pin_personal(setup, [identity])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:32: in pin_personal
+    finish(setup, parent, personal=True)
+tests/agent_kernel/test_context_corrections_pg.py:24: in finish
+    KernelStore(setup.engine).finish(
+pdos_next/agent_kernel/persistence.py:540: in finish
+    "partial" if result["status"] == "partial" else "completed",
+                 ^^^^^^^^^^^^^^^^
+E   KeyError: 'status'
+_ test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority _
+tests/agent_kernel/test_run_continuation.py:60: in test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
+    assert new.versions == {"checkpoint_layout": "session-run-ns/v1"}
+E   AssertionError: assert {'assistant_d...sion': 0, ...} == {'checkpoint_...on-run-ns/v1'}
+E     
+E     Omitting 1 identical items, use -vv to show
+E     Left contains 4 more items:
+E     {'assistant_depth': {'mode': 'quick',
+E                          'parent_run_id': '1f6ee6ad-23b9-4dbe-a369-0581be884c66',
+E                          'version': 1},
+E      'context_selection_start_revision': 0,...
+E     
+E     ...Full output truncated (3 lines hidden), use '-vv' to show
+______ test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress ______
+tests/agent_kernel/test_work_state_pg.py:220: in test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress
+    assert error.value.reason == "CONVERSATION_HISTORY_REVOKED"
+E   AssertionError: assert 'SOURCE_UNAVAILABLE' == 'CONVERSATION_HISTORY_REVOKED'
+E     
+E     - CONVERSATION_HISTORY_REVOKED
+E     + SOURCE_UNAVAILABLE
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-explicit-context-20261029/pg-explicit-corrections-candidate1.xml -
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_corrections_pg.py::test_private_source_selection_replay_sql_limit_clear_and_deleted_constraint
+FAILED tests/agent_kernel/test_context_corrections_pg.py::test_context_options_are_owner_only_and_made_up_artifact_history_is_rejected
+FAILED tests/agent_kernel/test_personal_context_pins_pg.py::test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope
+FAILED tests/agent_kernel/test_personal_context_pins_pg.py::test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[content]
+FAILED tests/agent_kernel/test_personal_context_pins_pg.py::test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[scan]
+FAILED tests/agent_kernel/test_run_continuation.py::test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
+FAILED tests/agent_kernel/test_work_state_pg.py::test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress
+=================== 7 failed, 21 passed in 71.98s (0:01:11) ====================

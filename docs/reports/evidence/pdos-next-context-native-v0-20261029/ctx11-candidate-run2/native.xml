@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="35.126" timestamp="2026-10-29T13:06:06.157619-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_handle_candidate_pg" name="test_ctx11_native_corrected_candidate_preserves_old_pending_without_business_receipt[F48000]" time="34.078"><failure message="AssertionError: assert 5 == 3&#10; +  where 5 = len([{'route_digest': 'bc6bb0740ff05f96f291d46371e38763e3b7661802b301aa1c4bf70824700821', 'system': 'You are 小Pai, the sin...egory_id': {...}, 'product_id': {...}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...], ...}])&#10; +    where [{'route_digest': 'bc6bb0740ff05f96f291d46371e38763e3b7661802b301aa1c4bf70824700821', 'system': 'You are 小Pai, the sin...egory_id': {...}, 'product_id': {...}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...], ...}] = &lt;test_eval_v0_handle_candidate_pg.ScriptedProvider object at 0x129b02720&gt;.requests&#10; +  and   3 = len([{'run_id': '9abd4960-6994-4d85-b9ac-28a73e824698', 'type': 'context_observed', 'cache': {'reporting': 'zero_or_unrepo...ing': 'zero_or_unreported', 'read_tokens': 0, 'read_hit_ratio': None, 'creation_tokens': 0, ...}, 'focus': 48000, ...}])">setup = &lt;isolated synthetic test scope&gt;, focus = 48000
+record_property = &lt;function record_property.&lt;locals&gt;.append_property at 0x129ba2340&gt;
+
+    @pytest.mark.parametrize("focus", [48_000, 64_000], ids=["F48000", "F64000"])
+    def test_ctx11_native_corrected_candidate_preserves_old_pending_without_business_receipt(
+        setup, focus, record_property,
+    ):
+        destination = observation_path("CTX-11", focus)
+        question = case("CTX-11")
+        project = create_g0_project(setup, visibility="category").project_id
+        source = register(setup, "S11-A 合成复验记录", "\n".join(
+            [f"合成复验记录目录行{number}" for number in range(1, 8)] + ["湿热复验原件尚未归档"]
+        ))
+        source["line"], source["quote"] = 8, "湿热复验原件尚未归档"
+        provider = ScriptedProvider("CTX-11")
+        provider.source = source
+        with native_runtime(setup, provider, focus) as runtime:
+            skill = runtime.owner.catalog.configuration("work_management")
+            enabled, _ = submit(setup, runtime.api, {
+                "command_id": str(uuid4()), "idempotency_key": str(uuid4()),
+                "category_id": str(setup.category), "product_id": None,
+                "operation": "ai.skill.enable", "expected_revision": 1, "source_read_set": [],
+                "payload": {"skill_key": skill.key, "expected_revision": 0,
+                            "skill_version": skill.version, "skill_digest": skill.digest,
+                            "enabled": True},
+            })
+            assert enabled.status_code == 200, enabled.text
+            parent, parent_state = advance(runtime, {
+                "goal": "只读取明确选择的S11-A复验记录，不保存或指派任务。",
+                "product_id": str(setup.product), "project_id": str(project),
+                "sources": [{"artifact_id": source["artifact_id"], "expected_revision": 1}],
+            })
+            answer = parent_state["output"]["result"]["assistant"]
+            assert answer["lookup"] == "cited" and answer["citation_ids"]
+            before = totals(setup), work_receipts(setup)
+            provider.title = OLD_TITLE
+            seed_dispatches = len(provider.requests)
+            old, old_state = advance(runtime, {
+                "goal": question["turns"][0]["content"], "continue_from_run_id": str(parent.run_id),
+                "sources": [{"artifact_id": source["artifact_id"], "expected_revision": 1}],
+                "work_followup_action": {"project_id": str(project),
+                                         "citation_ids": answer["citation_ids"], "assignment": None},
+            })
+            stopped = admission_stop(
+                runtime, provider, parent, old, old_state, focus, seed_dispatches, before,
+            )
+            if stopped is not None:
+                assert_disclosure(runtime, provider)
+&gt;               write_observation(destination, observed(
+                    runtime, provider, [parent, old], focus, native_binding_status="not_executable",
+                    status="context_admission_blocked",
+                    bindings={"source": source, "project_id": str(project), **stopped},
+                ), record_property)
+
+tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:509: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+runtime = namespace(owner=&lt;pdos_next.agent_kernel.bootstrap.Bootstrap object at 0x105f80740&gt;, host=&lt;pdos_next.agent_kernel.host....t_id': '6a5cc737-2adb-494d-88b7-b8c04b1c2c78'}], path='/v1/categories/b044ada7-7a31-4439-a171-c5d08d9ba0c2/agent-runs')
+provider = &lt;test_eval_v0_handle_candidate_pg.ScriptedProvider object at 0x129b02720&gt;
+scopes = [RunScope(tenant_id=UUID('2038e98b-d891-4709-86f1-ddd71516ea33'), requester_id=UUID('4bc29fd7-5afe-495b-9e28-1990474b6...rozenset(), citation_ids=frozenset(), trigger='conversation', project_id=UUID('44e9615f-13ae-4c9e-aa22-11ea95feaa13'))]
+focus = 48000, native_binding_status = 'not_executable'
+status = 'context_admission_blocked'
+bindings = {'source': {'artifact_id': '437f9e76-d772-4998-90a8-7389d18177b6', 'expected_revision': 1, 'line': 8, 'quote': '湿热复验原件...ll_count': 0, 'candidate_count': 0, ...}, 'corrected_candidate': {'status': 'not_executed_after_admission_stop'}}, ...}
+
+    def observed(runtime, provider, scopes, focus, *, native_binding_status, status, bindings):
+        actual, budgets = ledgers(runtime, scopes)
+        assert budgets and all(row["focus"] == focus for row in budgets)
+        admitted = [row for row in budgets if row["type"] == "context_observed"]
+        rejected = [row for row in budgets if row["type"] == "context_admission_observed"]
+        assert all(row["admission_tokens"] &lt;= focus for row in admitted)
+        assert all(row["window"] == focus + 2048 + TOOL_RESULT_RESERVE for row in budgets)
+        assert all(row["actual_input_tokens"] == row["actual_output_tokens"] == 0 for row in admitted)
+        model_rows = [row for row in actual["calls"] if row["tool"] == "model"]
+&gt;       assert len(model_rows) == len(provider.requests) == len(admitted)
+E       AssertionError: assert 5 == 3
+E        +  where 5 = len([{'route_digest': 'bc6bb0740ff05f96f291d46371e38763e3b7661802b301aa1c4bf70824700821', 'system': 'You are 小Pai, the sin...egory_id': {...}, 'product_id': {...}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...], ...}])
+E        +    where [{'route_digest': 'bc6bb0740ff05f96f291d46371e38763e3b7661802b301aa1c4bf70824700821', 'system': 'You are 小Pai, the sin...egory_id': {...}, 'product_id': {...}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...], ...}] = &lt;test_eval_v0_handle_candidate_pg.ScriptedProvider object at 0x129b02720&gt;.requests
+E        +  and   3 = len([{'run_id': '9abd4960-6994-4d85-b9ac-28a73e824698', 'type': 'context_observed', 'cache': {'reporting': 'zero_or_unrepo...ing': 'zero_or_unreported', 'read_tokens': 0, 'read_hit_ratio': None, 'creation_tokens': 0, ...}, 'focus': 48000, ...}])
+
+tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:284: AssertionError</failure></testcase></testsuite></testsuites>

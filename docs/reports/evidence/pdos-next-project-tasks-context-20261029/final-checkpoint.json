@@ -1,0 +1,28 @@
+{
+  "at_utc": "2026-10-29T21:34:02.459042+00:00",
+  "scope": "current project tasks and frozen project history; ANN qualification tracked separately",
+  "pure_passed": 230,
+  "native_distinct_passed": 41,
+  "per_batch": {
+    "core_pure": 143,
+    "adjacent_pure": 87,
+    "native": 32,
+    "focused": 4,
+    "retention": 5
+  },
+  "frontend_passed": 6,
+  "typescript": "passed",
+  "eslint": "passed",
+  "ruff": "passed",
+  "project_input_hashes_unchanged": true,
+  "project_input_count": 120,
+  "schema_head": "s0_0854",
+  "test_port": 53502,
+  "database_marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "migration": "backup and up/down/up passed; retained nonempty v2 downgrade refused",
+  "real_business_model_calls": 0,
+  "real_embedding_calls": 0,
+  "quality_status": "not_scored",
+  "focused_context_summary": "context-focused-summary.json",
+  "remaining_local": "ANN natural index and bounded source pool verification in separate evidence directory"
+}

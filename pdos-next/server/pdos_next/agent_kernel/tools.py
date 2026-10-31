@@ -12,12 +12,24 @@ READS = frozenset(
         "category.parameters.list",
         "category.competitors.list",
         "platform.read",
+        "build.read",
+        "build.lot.read",
+        "build.sample.read",
+        "quality.issue.read",
+        "test.run.read",
         "proposal.read",
         "proposal.items.read",
         "product.baseline.read",
         "evidence.search",
         "evidence.artifact.read",
         "evidence.extract",
+        "assistant.search",
+        "assistant.extract",
+        "assistant.citations.read",
+        "assistant.materials.read",
+        "assistant.compare",
+        "assistant.comparison.read",
+        "assistant.passage.read",
     }
 )
 RESEARCH = frozenset({"research.search", "research.read", "research.fanout"})
@@ -50,6 +62,8 @@ M3_TIERS = {
 
 
 def default_registry():
+    from pdos_next.enterprise_search.assistant_schemas import SCHEMAS as ASSISTANT_SCHEMAS
+
     from .category_candidate import CategoryCandidateInput
     from .conversation import HistoryInput
     from .domain_reads import SCHEMAS
@@ -59,6 +73,8 @@ def default_registry():
     from .m3_spec_compare import SCHEMAS as COMPARE_SCHEMAS
     from .mcp_schemas import SCHEMAS as MCP_SCHEMAS
     from .platform_reads import SCHEMAS as PLATFORM_SCHEMAS
+    from .project_object_reads import SCHEMAS as PROJECT_SCHEMAS
+    from .result_continuation import ResultReadInput
 
     schemas = {
         "conversation.history": HistoryInput,
@@ -68,17 +84,22 @@ def default_registry():
         **COMPARE_SCHEMAS,
         **DEFINITION_SCHEMAS,
         **PLATFORM_SCHEMAS,
+        **PROJECT_SCHEMAS,
+        **ASSISTANT_SCHEMAS,
     }
 
     registry = ToolRegistry(command_tools())
+    registry.add(ToolSpec(
+        "result.read",
+        describe("result.read", "READ", "read"),
+        ResultReadInput.model_json_schema(), {"type": "object"}, "read", "READ",
+        parallel_safe=True,
+    ))
     for name, schema in MCP_SCHEMAS.items():
         registry.add(ToolSpec(
             name,
-            {
-                "mcp.tools.list": "按实际已加载技能发现当前获授权的 MCP 只读工具；分页读取。",
-                "mcp.read": "调用获授权的 MCP 只读工具，由隔离子任务返回有原文依据的行。",
-                "mcp.result.read": "只在 MCP 隔离子任务内分页读取固定的不可信响应。",
-            }[name], schema.model_json_schema(), {"type": "object"}, "read", "READ",
+            describe(name, "READ", "read"),
+            schema.model_json_schema(), {"type": "object"}, "read", "READ",
             taint="external" if name != "mcp.tools.list" else "trusted",
         ))
     for name in sorted(READS | COMPUTE | {"skill.load"}):
@@ -91,8 +112,13 @@ def default_registry():
                 {"type": "object"},
                 kind,
                 "READ",
-                taint="external" if name in RESEARCH or name.startswith("evidence.") else "trusted",
-                parallel_safe=name != "skill.load",
+                taint="external" if name in RESEARCH or name.startswith(("evidence.", "assistant."))
+                else "trusted",
+                parallel_safe=name not in {
+                    "skill.load", "assistant.search", "assistant.extract",
+                    "assistant.citations.read",
+                    "assistant.materials.read", "assistant.compare",
+                },
                 version="5"
                 if name == "calc.spec_compare"
                 else "2"

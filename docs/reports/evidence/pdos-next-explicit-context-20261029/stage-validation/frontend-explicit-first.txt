@@ -1,0 +1,12 @@
+✔ SSR is a small explicit chooser and never reads, corrects or starts automatically (5.160625ms)
+✔ a readable single choice is displayed, fixed, saved, reread and natively continued once (6.833666ms)
+✔ lost correction response retries the original Human key and does not start early (2.037833ms)
+✔ a later Human clear wins over an older replay and no continuation is posted (1.70975ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 353.69175

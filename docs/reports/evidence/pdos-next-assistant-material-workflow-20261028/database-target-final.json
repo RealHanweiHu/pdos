@@ -1,0 +1,17 @@
+{
+  "backup_retained": true,
+  "backup_bytes": 71300987,
+  "target": "127.0.0.1:53502/pdos_test",
+  "container_and_environment_guard_verified": true,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0830",
+  "explicit_roles": [
+    "TEST_DATABASE_URL",
+    "DATABASE_URL",
+    "AUTH_DATABASE_URL",
+    "DISPATCH_DATABASE_URL"
+  ],
+  "env_fallback": false,
+  "created_database": false,
+  "new_migration": "s0_0830_assistant_comparison_isolation"
+}

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="78.016" timestamp="2026-10-29T06:00:54.994785-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]" time="77.105"><error message="failed on setup with &quot;AssertionError: {&quot;code&quot;:&quot;VALIDATION_FAILED&quot;,&quot;message&quot;:&quot;请求条件发生冲突，未提交此操作。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;CONSTRAINT_VALIDATION_FAILED&quot;}}&#10;assert 422 == 200&#10; +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code&quot;">change_work = namespace(setup=&lt;isolated synthetic test scope&gt;, config={'source': '6f38dc79-b60a-4cd8-9dc7-c3957adb77f1', 'project': ...: None}]}, issue_id=UUID('0c445114-6061-54fa-9140-0e02e277ecbb'), capa_id=UUID('0901a013-d5d2-4312-a41d-1c206af1b1d3'))
+
+    @pytest.fixture
+    def all_sources(change_work):
+        work = change_work
+        quality = work.quality
+        person = SimpleNamespace(
+            **{
+                **vars(quality),
+                "tokens": {
+                    **quality.tokens,
+                    quality.human: quality.headers["Authorization"].removeprefix("Bearer "),
+                },
+            }
+        )
+        created(work)
+        register(person, "Synthetic recovery artifact", "Synthetic recovery source evidence.")
+&gt;       add_knowledge(person)
+
+tests/enterprise_search/test_recovery_pg.py:85: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+person = namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine(postgresql+psycopg://postgres:**...e, cancel_epoch=None, category_id=UUID('e99a707e-28a4-4c8d-8263-d2f4c5281ef6'), agent_run_id=None, agent_call_id=None))
+index_ = 0
+
+    def add_knowledge(person, index_=0):
+        response = post(
+            person,
+            request(
+                person,
+                "category.knowledge.add",
+                {
+                    "kind": "boundary",
+                    "content": {"definition": f"Synthetic recovery knowledge {index_}"},
+                },
+            ),
+        )
+&gt;       assert response.status_code == 200, response.text
+E       AssertionError: {"code":"VALIDATION_FAILED","message":"请求条件发生冲突，未提交此操作。","detail":{"reason":"CONSTRAINT_VALIDATION_FAILED"}}
+E       assert 422 == 200
+E        +  where 422 = &lt;Response [422 Unprocessable Content]&gt;.status_code
+
+tests/enterprise_search/test_recovery_pg.py:67: AssertionError</error></testcase></testsuite></testsuites>

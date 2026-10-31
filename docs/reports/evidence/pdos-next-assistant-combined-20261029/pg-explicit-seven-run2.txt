@@ -1,0 +1,117 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 7 items
+
+tests/agent_kernel/test_context_corrections_pg.py ..                     [ 28%]
+tests/agent_kernel/test_personal_context_pins_pg.py FF.                  [ 71%]
+tests/agent_kernel/test_run_continuation.py .                            [ 85%]
+tests/agent_kernel/test_work_state_pg.py .                               [100%]
+
+=================================== FAILURES ===================================
+_ test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope _
+tests/agent_kernel/test_personal_context_pins_pg.py:115: in test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope
+    actual = pin_personal(setup, [first, second])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/test_personal_context_pins_pg.py:60: in pin_personal
+    Bootstrap(setup.engine).project_context(actual, "只依据这些资料继续核对。")
+pdos_next/agent_kernel/bootstrap.py:320: in project_context
+    value["work_state"] = frozen_state(
+pdos_next/agent_kernel/work_state.py:460: in frozen
+    recheck(session, ctx, run, selection)
+pdos_next/agent_kernel/context_corrections.py:176: in recheck
+    for row in resolve(session, ctx, run, choices) if choices else []:
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/context_corrections.py:116: in resolve
+    raise DomainError("SOURCE_UNAVAILABLE", "选定版本当前不可读，请重新选择。", 403)
+E   pdos_next.errors.DomainError: 选定版本当前不可读，请重新选择。
+_ test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[content] _
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   psycopg.errors.RaiseException: artifact original is immutable
+E   CONTEXT:  PL/pgSQL function protect_artifact_original() line 8 at RAISE
+
+The above exception was the direct cause of the following exception:
+tests/agent_kernel/test_personal_context_pins_pg.py:146: in test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes
+    with Session(setup.admin) as session, session.begin():
+                                          ^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:144: in __exit__
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/util.py:142: in __exit__
+    self.commit()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction.commit>:2: in commit
+    return target(fn, self, _to_root=_to_root)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1330: in commit
+    self._prepare_impl()
+<sqlalchemy generated _go() wrapper for sqlalchemy.orm.session.SessionTransaction._prepare_impl>:2: in _prepare_impl
+    return target(fn, self)
+           ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state_changes.py:137: in _go
+    ret_value = fn(self, *arg, **kw)
+                ^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:1304: in _prepare_impl
+    self.session.flush()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4536: in flush
+    self._flush(objects)
+<sqlalchemy generated warned() wrapper for sqlalchemy.orm.session.Session._flush>:2: in _flush
+    return target(fn, self, objects=objects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/deprecations.py:281: in warned
+    return fn(*args, **kwargs)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4679: in _flush
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/session.py:4640: in _flush
+    flush_context.execute()
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:467: in execute
+    rec.execute(self)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/unitofwork.py:643: in execute
+    util.preloaded.orm_persistence._save_obj(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:84: in _save_obj
+    _emit_update_statements(
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/persistence.py:916: in _emit_update_statements
+    c = connection.execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1448: in execute
+    return meth(
+.venv/lib/python3.12/site-packages/sqlalchemy/sql/elements.py:533: in _execute_on_connection
+    return connection._execute_clauseelement(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1668: in _execute_clauseelement
+    ret = self._execute_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1822: in _execute_context
+    return self._exec_single_context(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1962: in _exec_single_context
+    self._handle_dbapi_exception(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:2332: in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py:1943: in _exec_single_context
+    self.dialect.do_execute(
+.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py:1192: in do_execute
+    cursor.execute(statement, parameters)
+.venv/lib/python3.12/site-packages/psycopg/cursor.py:117: in execute
+    raise ex.with_traceback(None)
+E   sqlalchemy.exc.ProgrammingError: (psycopg.errors.RaiseException) artifact original is immutable
+E   CONTEXT:  PL/pgSQL function protect_artifact_original() line 8 at RAISE
+E   [SQL: UPDATE artifact_versions SET content=%(content)s::VARCHAR, content_hash=%(content_hash)s::VARCHAR, revision=%(revision)s::INTEGER WHERE artifact_versions.id = %(artifact_versions_id)s::UUID]
+E   [SQL parameters hidden due to hide_parameters=True]
+E   (Background on this error at: https://sqlalche.me/e/21/f405)
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-explicit-context-20261029/pg-explicit-seven-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_personal_context_pins_pg.py::test_personal_explicit_two_category_pins_read_normally_then_revoke_without_business_scope
+FAILED tests/agent_kernel/test_personal_context_pins_pg.py::test_personal_pin_is_not_upgraded_after_body_or_current_scan_proof_changes[content]
+========================= 2 failed, 5 passed in 28.95s =========================

@@ -1,0 +1,45 @@
+..........F                                                              [100%]
+=================================== FAILURES ===================================
+_______ test_customer_originals_are_excluded_until_separately_confirmed ________
+
+security_work = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.object_journal.store.JournaledLocalObjectStore objec...440>, parser=<function parse_original at 0x115d9ad40>), client=<starlette.testclient.TestClient object at 0x14665a6c0>)
+
+    def test_customer_originals_are_excluded_until_separately_confirmed(security_work):
+        setup = security_work.setup
+        internal = register(setup, "Synthetic internal", "SYNTHETIC_INTERNAL_ONLY")
+        customer = parsed(security_work, uploaded(security_work, content=b"SYNTHETIC_CUSTOMER_ONLY\n"))
+        for source in (internal, customer):
+            index(setup, source)
+        provider, ports = ports_for(setup)
+        receipt, preview = save_profile(setup, ports, command_for(setup))
+        assert preview["review"]["expected_sources"] == 1
+        _, plan = execute_saved(setup, ports, receipt)
+        with Session(setup.admin) as session:
+            from pdos_next.enterprise_search.embedding_models import EmbeddingBatch
+    
+            batch = session.get(EmbeddingBatch, UUID(plan["batches"][0]))
+            assert {row["source_id"] for row in batch.manifest["chunks"]} == {str(internal)}
+        explicit = command_for(setup, budget_revision=1)
+        metadata = explicit["payload"]["metadata"]
+        metadata.update(
+            data_categories=["internal", "customer_original"], include_customer_original=True
+        )
+        receipt, preview = save_profile(setup, ports, explicit)
+        assert preview["review"]["expected_sources"] == 2
+        _, plan = execute_saved(setup, ports, receipt)
+        with Session(setup.admin) as session:
+            batch = session.get(EmbeddingBatch, UUID(plan["batches"][0]))
+>           assert {row["source_id"] for row in batch.manifest["chunks"]} == {
+                str(internal),
+                str(customer),
+            }
+E           AssertionError: assert {'2eafa860-47...cb8cc66b009f'} == {'2eafa860-47...23298db0c497'}
+E             
+E             Extra items in the right set:
+E             'd2566da6-f679-4eb1-b824-23298db0c497'
+E             Use -v to get more diff
+
+tests/enterprise_search/test_embedding_controls_pg.py:158: AssertionError
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_embedding_controls_pg.py::test_customer_originals_are_excluded_until_separately_confirmed
+1 failed, 10 passed in 45.26s

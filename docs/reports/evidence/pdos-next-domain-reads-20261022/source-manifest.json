@@ -1,0 +1,16 @@
+{
+  "base_head": "67e2650e9fabc21161212f22b9546bf800e60043",
+  "scope": "10 source/test/skill files; unrelated working-tree changes excluded",
+  "files": {
+    "pdos-next/server/pdos_next/agent_kernel/project_object_reads.py": "6fa372108705d38be2af09ae91c070ba84ff2581539c7604c58e05080a5f98e1",
+    "pdos-next/server/pdos_next/agent_kernel/bootstrap.py": "1b86e7450f644a44c04da336a926a94049f897a12825818cc67c5c912f026dd8",
+    "pdos-next/server/pdos_next/agent_kernel/persistence.py": "82b57b8e65e59d31749f3db2a1cf7aef7a382682553a59544e10a1a38b8a4087",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py": "ff14b3196e3def1e4a2e7c94972c7aefa656a0924e2652beb3a2a43806885a8a",
+    "pdos-next/server/pdos_next/agent_kernel/command_usage.json": "6bd40f0aff7fd9121b3be8633f69e8900eb526e6d01eb035a4b3e8e4d7015aeb",
+    "pdos-next/server/pdos_next/skill_packages/build_execution.md": "6c9d8a0a1f14c24fa41c52e54a30e1b5a3a2805f42398842e1e36b902d842198",
+    "pdos-next/server/pdos_next/skill_packages/quality_issue.md": "136830488f4199994cfe24fd2b121ebc0e77bb9c07b926e272bc2275ed134bca",
+    "pdos-next/server/pdos_next/skill_packages/test_verification.md": "09182b05dcb1787922a5fd3187ec09e6777e6f46497329bc277ec7f1dfb1ac5a",
+    "pdos-next/server/tests/agent_kernel/test_project_object_reads.py": "478b3e66a7d115ec6062661e1038ab7c6f473a85b2c9654d3901b16764e4252b",
+    "pdos-next/server/tests/agent_kernel/test_project_object_reads_pg.py": "b7bcc826743214b4751759a4f59f20c2dc36f4c082936a15526d3eba9a465713"
+  }
+}

@@ -41,9 +41,7 @@ export async function readKnowledgeLibrary(api: KnowledgeLibraryApi, scope: Know
   const root = categoryRoot(scope);
   const raw = await api<unknown>(scope.productId === null ? `${root}/experience` : `${root}/products/${scope.productId}/experience`);
   // The shared parser uses projectId only as an optional filtering constraint.
-  // Empty strings here adapt its existing type; they do not select a Product or
-  // replace the real positive product_revision returned for category scope.
-  const value = parseKnowledgeView(raw, { categoryId: scope.categoryId, principalId: scope.principalId, productId: scope.productId ?? "", projectId: "" });
+  const value = parseKnowledgeView(raw, { categoryId: scope.categoryId, principalId: scope.principalId, productId: scope.productId, projectId: "" });
   if (value.projects.length > 100 || value.candidates.length > 100 || value.rules.length > 100
     || value.configurations.filter(row => row.kind === "engineering_configuration").length > 100
     || value.configurations.filter(row => row.kind === "process_revision").length > 100

@@ -1,0 +1,100 @@
+{
+  "synthetic": true,
+  "api_served": true,
+  "api_base": "http://127.0.0.1:62415",
+  "web_base": "http://127.0.0.1:59901",
+  "tenant_id": "f841172a-c610-4694-857a-317b5a21c5ef",
+  "principal_id": "93165db8-5759-4af0-805a-34729b695015",
+  "category_id": "b6238031-a6e2-45d3-b770-ec086d76b771",
+  "run_id": "5e63dde3-e11f-44f5-a94d-f20eb62ebae5",
+  "run_path": "/v1/categories/b6238031-a6e2-45d3-b770-ec086d76b771/agent-runs/5e63dde3-e11f-44f5-a94d-f20eb62ebae5",
+  "session_id": "5e8f5688-34b5-4d3a-b8cd-14c33802f414",
+  "recorded_at": "2026-10-29T19:34:27.337774+00:00",
+  "source_id": "c600bb1d-137c-4fde-bc9d-03e22562f3ce",
+  "source_receipt_id": "a229f2a2-7d50-429b-8074-02ffa68de19b",
+  "summary_visible_before_revoke": true,
+  "run_link": "/dingtalk/runs/5e63dde3-e11f-44f5-a94d-f20eb62ebae5?category=b6238031-a6e2-45d3-b770-ec086d76b771",
+  "browser_url": "http://127.0.0.1:59901/dingtalk/runs/5e63dde3-e11f-44f5-a94d-f20eb62ebae5?category=b6238031-a6e2-45d3-b770-ec086d76b771",
+  "expected_goal": "只核对充气泵的压力单位，未知处保留未知。",
+  "expected_hidden_message": "原回答所依据的资料已不可读，保留你的原话。",
+  "forbidden_summary_marker": "HIDDEN_SUMMARY_MARKER",
+  "storage_path": "/tmp/pdos-history-hidden-browser-20261029-v1/storage.json",
+  "finish_marker": "/tmp/pdos-history-hidden-browser-20261029-v1/finish",
+  "result_path": "/tmp/pdos-history-hidden-browser-20261029-v1/result.json",
+  "web_verified_path": "/tmp/pdos-history-hidden-browser-20261029-v1/web-verified.json",
+  "authorization_until": "2026-10-29T23:34:23.133670+00:00",
+  "baseline": {
+    "artifact_versions": {
+      "count": 1,
+      "digest": "b6bbafe70024849b909c970b975b1995"
+    },
+    "agent_sessions": {
+      "count": 1,
+      "digest": "135eaed34a396ad0f55b407988b8780d"
+    },
+    "agent_runs": {
+      "count": 1,
+      "digest": "ec6ae82d9dab736c597c0cab1e08be02"
+    },
+    "agent_tool_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_invocations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_budget_reservations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "enterprise_embedding_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_validation_budgets": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "uploaded_originals": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "original_scan_requests": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "original_scan_results": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "original_security": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "object_audiences": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_work_states": {
+      "count": 1,
+      "digest": "b85eb7a7d9faddaa856cfa0f0a06b1b1"
+    },
+    "agent_run_events": {
+      "count": 2,
+      "digest": "281d50d230bae2af8d972ef5e4cd7f6a"
+    },
+    "action_receipts": {
+      "count": 1,
+      "digest": "dcc92fff6e82d156e55f90d5737a897a"
+    },
+    "audit_entries": {
+      "count": 1,
+      "digest": "7ad59dd6a0a1aba60a74bb4da2c18826"
+    },
+    "outbox_events": {
+      "count": 1,
+      "digest": "45f850ef815e116ab34469e130dba341"
+    }
+  }
+}

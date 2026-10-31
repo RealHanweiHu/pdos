@@ -1,0 +1,80 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 3 items
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer PASSED [ 33%]
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity FAILED [ 66%]
+
+=================================== FAILURES ===================================
+_ test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity _
+
+publication_case = namespace(setup=<isolated synthetic test scope>, config={'source': '9d344789-a510-42cb-8b2f-371bd4be07a3', 'project': ...a0e-7908efb07694', 'manufacturing_release': None, 'qualification': 'unknown', 'negative_enumeration_complete': False}})
+
+    def test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity(
+        publication_case,
+    ):
+        work, person = publication_case, publication_case.setup
+        publication.import_authority(work, person.human)
+        publication.save_drafts(work)
+        first = work.documents["work_instruction"]
+        for kind in ("work_instruction", "control_plan"):
+>           assert apply_event(person, work.draft_receipts[kind]["id"])["processed"] == 1
+E           assert 0 == 1
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py:47: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_project_status_sources_pg.py::test_named_status_keeps_history_current_and_fixed_native_answer
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-role-native-sources-20261029/pg-role-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+================== 1 failed, 1 passed, 21 warnings in 58.39s ===================

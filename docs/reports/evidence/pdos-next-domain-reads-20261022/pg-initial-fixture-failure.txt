@@ -1,0 +1,78 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_five_registered_reads_current_pointers_replay_and_revoked_access _____
+
+quality_work = namespace(setup=<isolated synthetic test scope>, config={'source': '4a000f6d-83de-46f2-8024-23173a975683', 'project': ...8b-98a1-c0dec1f48a24'}}}, policy_issuer=<pdos_next.domain.quality_execution.policy.PolicyIssuer object at 0x15138b460>)
+
+    def test_five_registered_reads_current_pointers_replay_and_revoked_access(quality_work):
+        work = quality_work
+        first, _ = create_issue(work)
+        before = counts(work)
+        issue_id = first["result"]["issue_id"]
+        readers = {}
+        for tool, arguments in {
+            "build.read": {"build_id": work.build_id},
+            "build.lot.read": {"build_id": work.build_id},
+            "build.sample.read": {"build_id": work.build_id, "page_size": 1},
+            "quality.issue.read": {"issue_id": issue_id},
+            "test.run.read": {"test_run_id": str(work.failure_run.id)},
+        }.items():
+            f = readers[tool] = reader(work, tool, arguments)
+>           value = f.invoke()
+                    ^^^^^^^^^^
+
+tests/agent_kernel/test_project_object_reads_pg.py:130: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_project_object_reads_pg.py:90: in <lambda>
+    f.invoke = lambda: f.host.read(scope, f.spec, arguments, f.key, source=f.source)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/host.py:137: in read
+    return self.read_callback(
+pdos_next/agent_kernel/host.py:156: in read_callback
+    model = verify_read_source(
+pdos_next/agent_kernel/read_execution.py:177: in verify_read_source
+    _deny("read_route_or_registry_changed", code="VERSION_CONFLICT")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+reason = 'read_route_or_registry_changed', code = 'VERSION_CONFLICT'
+
+    def _deny(reason, *, code="FORBIDDEN_SCOPE"):
+>       raise DomainError(code, "读取须绑定实际运行、模型回复和登记工具。", detail={"reason": reason})
+E       pdos_next.errors.DomainError: 读取须绑定实际运行、模型回复和登记工具。
+
+pdos_next/agent_kernel/read_execution.py:96: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+1 failed, 9 warnings in 77.07s (0:01:17)

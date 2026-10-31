@@ -1,0 +1,26 @@
+{
+  "files": [
+    {
+      "path": "pdos-next/contracts/payloads.schema.json",
+      "before_sha256": "e6b44bafdb240291d290f0aa446e3ad747df8d041f70bb914ceae984051ee16a",
+      "sha256": "3511c2568f9a041a2252b10ebdfe5fc49a25c4779f8c05673aa4fe696de6329e"
+    },
+    {
+      "path": "pdos-next/contracts/operations.json",
+      "before_sha256": "0dac77457becaf9a52cc36deabfe5da67022a45b0db711ecc3ff762374f958c6",
+      "sha256": "0dac77457becaf9a52cc36deabfe5da67022a45b0db711ecc3ff762374f958c6"
+    },
+    {
+      "path": "pdos-next/contracts/acceptance.json",
+      "before_sha256": "833d896ed00900efea684e11559588a808fa1eb4d8da4a76b17c05ade62e0252",
+      "sha256": "833d896ed00900efea684e11559588a808fa1eb4d8da4a76b17c05ade62e0252"
+    },
+    {
+      "path": "pdos-next/contracts/openapi.json",
+      "before_sha256": "8e04579cbab2e683094024135844dd0cc3c1e0827a7f9515192542e255d5915b",
+      "sha256": "6f5bea2072b68a2b2100ec2c4a3795e54e93527d145f75e23b2a440ce750a7bf"
+    }
+  ],
+  "validate_exit": 0,
+  "network": "No connection permitted by exporter"
+}

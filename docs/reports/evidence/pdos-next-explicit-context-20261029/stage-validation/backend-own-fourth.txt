@@ -1,0 +1,77 @@
+...............F.....                                                    [100%]
+=================================== FAILURES ===================================
+__ test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal __
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x116ed6a80>
+
+    def test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal(monkeypatch):
+        run, _ctx, ref = case()
+        run.category_id = None
+        run.trigger, run.state, run.goal, run.session_id = "conversation", "failed", "压力单位未知", uuid4()
+        literal, _ = work_state.validate_constraints(
+            [{"run_id": str(run.id), "text": run.goal}], {str(run.id): run.goal}, set(),
+        )
+        body = work_state.empty() | {"removed_constraints": [literal[0]["id"]]}
+        latest = SimpleNamespace(revision=2, body=body)
+        condition = selection(ref)
+        run.versions = {"requested_context_selection": condition,
+                        "requested_context_selection_digest": digest(condition),
+                        "context_selection_start_revision": 1}
+        sequences = iter([[SimpleNamespace(id=run.id, goal=run.goal)], [], []])
+        session = SimpleNamespace(scalar=lambda *_: None, execute=lambda *_: next(sequences))
+        appended = []
+        monkeypatch.setattr(work_state, "_lock", lambda *_: None)
+        monkeypatch.setattr(work_state, "latest", lambda *_: latest)
+        monkeypatch.setattr(work_state, "_append", lambda _session, _run, value, **_kwargs:
+                            appended.append(deepcopy(value)))
+>       work_state._record_finish(session, run, {"result": {"context_proposals": {
+            "constraints": [{"run_id": str(run.id), "text": run.goal}],
+        }}})
+
+tests/agent_kernel/test_context_corrections.py:313: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = namespace(scalar=<function test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal.<locals>.<lambda...<function test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal.<locals>.<lambda> at 0x12074c400>)
+run = namespace(id=UUID('723bed94-e9d9-41a2-9a5e-7b9a2184f200'), tenant_id=UUID('207dda6e-2b86-4d1b-bb94-50e1544f5a13'), req...ies=[], trigger='conversation', state='failed', goal='压力单位未知', session_id=UUID('c0b8037b-59cf-47ca-bea2-78345f47c24d'))
+result = {'result': {'context_proposals': {'constraints': [{'run_id': '723bed94-e9d9-41a2-9a5e-7b9a2184f200', 'text': '压力单位未知'}]}}}
+
+    def _record_finish(session, run, result):
+        if run.trigger != "conversation":
+            return result  # Service automations never edit human conversation memory.
+        _lock(session, run.tenant_id, run.session_id)
+        prior = session.scalar(select(AgentWorkState).where(AgentWorkState.run_id == run.id))
+        value = deepcopy(result)
+        business = value.get("result")
+        proposals = business.pop("context_proposals", {}) if isinstance(business, dict) else {}
+        if prior is not None:
+            return value
+        current = latest(session, run.session_id)
+        body = deepcopy(current.body) if current else empty()
+        from .context_corrections import requested
+    
+        selection, configured = requested(run)
+        if configured and (current.revision if current else 0) == run.versions.get(
+            "context_selection_start_revision", -1,
+        ):
+            if selection:
+                body["context_selection"] = selection
+            else:
+                body.pop("context_selection", None)
+        # Human edits after start win, including an explicit clear. Never resurrect them.
+        # Only actual conversation goals from this session can prove a proposal.
+        rows = session.execute(
+            select(AgentRun.id, AgentRun.goal)
+            .where(
+                AgentRun.session_id == run.session_id,
+                AgentRun.requester_id == run.requester_id,
+                AgentRun.trigger == "conversation",
+            )
+            .order_by(AgentRun.created_at, AgentRun.id)
+>       ).all()
+          ^^^
+E       AttributeError: 'list' object has no attribute 'all'
+
+pdos_next/agent_kernel/work_state.py:187: AttributeError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_corrections.py::test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal
+1 failed, 20 passed in 1.05s

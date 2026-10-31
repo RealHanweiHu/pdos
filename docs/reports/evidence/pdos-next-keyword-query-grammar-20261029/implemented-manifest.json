@@ -1,0 +1,39 @@
+{
+  "version": "keyword-query-grammar-implemented/v1",
+  "recorded_at": "2026-10-29T23:02:23.577590+00:00",
+  "state": "implemented_pure_verified_frozen_waiting_root_native_http",
+  "changed_files_sha256": {
+    "pdos-next/server/pdos_next/enterprise_search/tokenizer.py": "db7825d21cd8a614b8458920b38cb98b49610f15e4da943ead9ce4d206066036",
+    "pdos-next/server/pdos_next/enterprise_search/query.py": "f3b5408880946486289074024192d3a718e6a753089d11ef2078698f438b4e0c",
+    "pdos-next/server/tests/enterprise_search/test_query_grammar.py": "d2b6deb3a56347b8f74d93b74cf6a83f31b386cfb0cbc8f979126573353d5ea3"
+  },
+  "exactly_matches_reviewed_drafts": true,
+  "pure": {
+    "passed": 22,
+    "new_contract_cases": 6,
+    "existing_keyword_cases": 12,
+    "existing_query_scope_cases": 4,
+    "log": "implemented-pure.log",
+    "xml": "implemented-pure.xml",
+    "environment": "database, PG and observer variables removed"
+  },
+  "ruff": {
+    "status": "passed",
+    "files": 3,
+    "log": "implemented-ruff.log"
+  },
+  "compile_whitespace": "three files passed",
+  "unchanged_inputs_sha256": {
+    "docs/evaluations/xiaopai-v0/corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "docs/evaluations/xiaopai-v0/questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+  },
+  "database_connections": 0,
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "native_http_status": "not_run_by_subagent; root to run existing 28-query HTTP baseline",
+  "native_baseline_unchanged": {
+    "macro_recall_at_5": 0.9791666666666666,
+    "macro_recall_at_10": 0.9791666666666666
+  },
+  "boundary": "query-only filtering; source analyzer/dictionary/index version and work keys unchanged; old completed READs retain their original immutable result with current source authorization checks"
+}

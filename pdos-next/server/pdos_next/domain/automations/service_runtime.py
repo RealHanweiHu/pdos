@@ -97,7 +97,7 @@ def saved(s, ref, *, admission=False):
     return grant, version, spec
 
 
-def run_binding(s, run):
+def run_binding(s, run, *, for_execution=True):
     attempt = s.scalar(select(Attempt).where(Attempt.run_id == run.id))
     if attempt is None or attempt.state != "admitted":
         raise DomainError("FORBIDDEN_SCOPE", "自动运行缺少实际服务受理记录。", 403)
@@ -127,7 +127,9 @@ def run_binding(s, run):
         )
     ):
         raise DomainError("FORBIDDEN_SCOPE", "运行超出固定服务授权。", 403)
-    if grant.expires_at is not None and now() >= grant.expires_at:
+    if not for_execution and run.state not in {"completed", "partial"}:
+        raise DomainError("FORBIDDEN_SCOPE", "未完成服务运行不能作为历史读取证明。", 403)
+    if for_execution and grant.expires_at is not None and now() >= grant.expires_at:
         raise DomainError("FORBIDDEN_SCOPE", "服务授权已到明确截止时刻。", 403)
     return attempt, spec
 
@@ -503,3 +505,34 @@ def grant_view(s, pointer):
         "expires_at": grant.expires_at.isoformat() if grant.expires_at else None,
         "state": state,
     }
+
+
+def summary_binding(s, run, *, historical=False):
+    """Narrow a real admitted service Run to its original owner's summary choice."""
+    if run is None or run.trigger != TRIGGER:
+        raise DomainError("FORBIDDEN_SCOPE", "摘要必须绑定实际自动服务运行。", 403)
+    attempt, spec = run_binding(s, run, for_execution=not historical)
+    grant = s.get(Grant, attempt.service_grant_id)
+    version = s.get(Version, attempt.published_version_id)
+    receipt = s.get(Receipt, version.receipt_id) if version else None
+    if (
+        spec.personal_summary is None or grant is None or version is None or receipt is None
+        or (attempt.tenant_id, attempt.category_id, attempt.owner_id, attempt.writer_id)
+        != (run.tenant_id, run.category_id, run.requester_id, run.writer_id)
+        or attempt.run_id != run.id or attempt.trigger_kind != spec.trigger_kind
+        or version.tenant_id != run.tenant_id or version.category_id != run.category_id
+        or version.state != "active" or version.operation != "ai.automation.activate"
+        or version.actor_id != run.requester_id or version.requester_id != run.requester_id
+        or version.spec_sha256 != digest(version.spec)
+        or (receipt.tenant_id, receipt.category_id, receipt.actor_id, receipt.requester_id)
+        != (run.tenant_id, run.category_id, run.requester_id, run.requester_id)
+        or receipt.operation != "ai.automation.activate"
+        or receipt.subject_type != "automation_rule"
+        or receipt.subject_id != version.id or receipt.subject_revision != version.revision
+        or receipt.command_id != version.command_id or receipt.confirmation_id is None
+        or receipt.confirmation_id != version.confirmation_id
+        or receipt.request_digest != version.request_digest
+        or receipt.intent_digest != version.intent_digest
+    ):
+        raise DomainError("FORBIDDEN_SCOPE", "摘要的原具名激活与实际受理记录不一致。", 403)
+    return attempt, spec

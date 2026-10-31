@@ -1,0 +1,80 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "scope": "Frozen-action full actual source classification only; no live/DB/provider operations",
+  "apply_only_listed_files": true,
+  "stage_root": "/tmp/pdos-action-taint-stage-20261029",
+  "base": "current live after CTA+B+D13; D source tables/audience hooks preserved",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "operation": "modified",
+      "base_sha256": "579e8effd0f88e87de564d0492a138eb33be8ed2c5d04af0ed23ec70fcfa733e",
+      "candidate_sha256": "1e941e838deaff463f5bd694a72603ab74e288590dce25ccc68633b6a5d26b7b",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "base_path": "/tmp/pdos-action-taint-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/action_sources.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/action_taint.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "eba83c29bcc3944ccb9ed372dacc0f609a3b03a19cc6896f84d9bdb7dc449b1d",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/action_taint.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+      "operation": "modified",
+      "base_sha256": "cd680b003ea65405968d13bdb81240200dec675fbb098cc170d316149e6faca1",
+      "candidate_sha256": "573b7e04246574d626511b262a2e5593d8ddd78c6b527e64f2e9a8b9e5468e1a",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py",
+      "base_path": "/tmp/pdos-action-taint-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/assistant_adapter.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/verification_actions.py",
+      "operation": "modified",
+      "base_sha256": "b1ec86acea550a39bcb95370ba840e222e425e44842d01bf8177182f1ca4d2b2",
+      "candidate_sha256": "7e1d0b019b4180f58c539c89c6c5243009bbe8d9227180d71e7fbc93c3c4bb41",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/verification_actions.py",
+      "base_path": "/tmp/pdos-action-taint-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/verification_actions.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py",
+      "operation": "modified",
+      "base_sha256": "fee81bb96a6242c81d461abbc2c6ee1eb86711e8be490f9f7e28e9356ce838c0",
+      "candidate_sha256": "51b0a8ba9bbc05ee836a72801469ff2268475448d0f827de83ba8ac9e58a2cc4",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py",
+      "base_path": "/tmp/pdos-action-taint-stage-20261029/base/pdos-next/server/pdos_next/enterprise_search/work_followup_actions.py"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_action_taint.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "567abea5fe443c1da1a8f7f9ad2619a66335debefcd7d33a1d2b723bafb7eff9",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_action_taint.py"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_action_taint_temporal_pg.py",
+      "operation": "new",
+      "base_sha256": null,
+      "candidate_sha256": "c8796180c3092be44419858dab82e17c9117aadd09ea82220b34152bb8ca8010",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_action_taint_temporal_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_verification_actions.py",
+      "operation": "modified",
+      "base_sha256": "a09832af6a8072e5e35f109395811ed652911bbc579249aac5c82c00c800a028",
+      "candidate_sha256": "92e204c6396f028c1d6b94b8422ff5f01b7bcff475c18492cff36a45eb688870",
+      "staged_path": "/tmp/pdos-action-taint-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_verification_actions.py",
+      "base_path": "/tmp/pdos-action-taint-stage-20261029/base/pdos-next/server/tests/enterprise_search/test_verification_actions.py"
+    }
+  ],
+  "shared_patch_sha256": "fcdee0e236d82d1ed310683af4bb78cd2ca1dd4d1fd7e28da31b6c6fccfd4512",
+  "verification": {
+    "pure": "105 passed; staged action/new verification integration + existing source/parent/work suites",
+    "ruff": "8 files passed, explicit pdos-next/ruff.toml and real target stdin filenames",
+    "native_pg": "1 nodeid collected ONLY; root must run actual guarded PG/Temporal",
+    "nodeids": [
+      "tests/enterprise_search/test_action_taint_temporal_pg.py::test_uncited_parent_customer_original_classifies_private_child_before_real_egress[setup0]"
+    ]
+  }
+}

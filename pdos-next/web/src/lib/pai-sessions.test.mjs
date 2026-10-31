@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url), ts = require("typescript"), comp
 runInNewContext(ts.transpileModule(readFileSync(new URL("./pai-sessions.ts", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
 }).outputText, { module: compiled, exports: compiled.exports, URLSearchParams });
-const { readSessionList, readSessionRuns } = compiled.exports;
+const { readSessionList, readSessionRuns, assertHiddenRun } = compiled.exports;
 const id = n => `00000000-0000-0000-0000-${n.toString(16).padStart(12, "0")}`;
 const scope = { principalId: id(1), categoryId: id(2), proposalId: id(3) };
 const time = "2026-10-17T12:34:56.123456789+00:00";
@@ -37,7 +37,56 @@ function apiFor(value) {
   const api = async (...args) => { calls.push(args); assert.equal(args.length, 1, "Every reader call has only a GET path"); return clone(value); };
   return { api, calls };
 }
+function hidden(n = 202, recorded_at = older) {
+  return { run_id: id(n), goal: "本人保留的原始目标", status: "hidden", error_code: null,
+    created_at: null, recorded_at, continued_from_id: null, reverted: null,
+    history_hidden: true, hidden_message: "原回答所依据的资料已不可读，保留你的原话。" };
+}
 const base = `v1/categories/${scope.categoryId}/agent-sessions`;
+
+test("goal-only heads use recorded_at without guessing original status, creation time or links", async () => {
+  const raw = runs(); raw.items[1] = { ...hidden(), conversation: { previous_run_id: null, next_run_id: null, links_unavailable: true } };
+  const transport = apiFor(raw), value = await readSessionRuns(transport.api, scope, id(100));
+  assert.equal(value.items[1].created_at, null); assert.equal(value.items[1].recorded_at, older);
+  assert.equal(value.items[1].status, "hidden"); assert.equal(value.items[1].reverted, null);
+  assert.equal(transport.calls.length, 1);
+  const found = list(); found.items[0].latest_run = hidden(201, time);
+  found.items[0].matched_run = { ...found.items[0].latest_run, match_kind: "goal" };
+  assert.equal((await readSessionList(apiFor(found).api, scope, { q: "原始目标" })).items[0].latest_run.created_at, null);
+  for (const mutate of [x => x.created_at = time, x => x.reverted = false, x => x.recorded_at = null,
+    x => x.history_hidden = false, x => x.result = {}, x => x.continued_from_id = id(1)]) {
+    const bad = runs(); bad.items[1] = clone(raw.items[1]); mutate(bad.items[1]);
+    await assert.rejects(readSessionRuns(apiFor(bad).api, scope, id(100)));
+  }
+});
+
+test("hidden GET codec refuses retained results, versions, original clocks and operational state", () => {
+  const head = hidden(); delete head.continued_from_id;
+  const value = { ...head, session_id: id(100), hidden_reason: "source_unavailable", result: null, versions: {},
+    product_id: id(4), project_id: null, proposal_id: null, session_proposal_id: id(3),
+    conversation: { previous_run_id: null, next_run_id: null, links_unavailable: true },
+    reconciliation: null, process: null, reverted_at: null, reverted_by: null, revert_receipt_id: null, cancel_epoch: null };
+  assert.doesNotThrow(() => assertHiddenRun(value));
+  for (const changed of [{ result: { summary: "private" } }, { versions: { model_version: "old" } }, { cancel_epoch: 0 },
+    { created_at: time }, { process: {} }, { reverted: false }, { status: "completed" },
+    { conversation: { previous_run_id: id(1), next_run_id: null, links_unavailable: true } }]) {
+    assert.throws(() => assertHiddenRun({ ...value, ...changed }));
+  }
+});
+
+test("project-selected run history binds query, envelope and actual Session project", async () => {
+  const selected = { ...scope, projectId: id(8) }, raw = runs();
+  raw.scope.project_id = selected.projectId; raw.session.scope.project_id = selected.projectId;
+  const transport = apiFor(raw); await readSessionRuns(transport.api, selected, id(100));
+  assert.equal(new URL(transport.calls[0][0], "https://local.invalid").searchParams.get("project_id"), id(8));
+  for (const field of ["envelope", "session"]) {
+    const mismatch = clone(raw); if (field === "envelope") mismatch.scope.project_id = id(9); else mismatch.session.scope.project_id = id(9);
+    await assert.rejects(readSessionRuns(async () => mismatch, selected, id(100)));
+  }
+  let calls = 0;
+  await assert.rejects(readSessionList(async () => { calls++; }, { ...selected, categoryId: null }));
+  assert.equal(calls, 0);
+});
 
 test("real Session identity groups Run metadata without inventing a title, session status or authority", async () => {
   const raw = list(), transport = apiFor(raw), value = await readSessionList(transport.api, scope);

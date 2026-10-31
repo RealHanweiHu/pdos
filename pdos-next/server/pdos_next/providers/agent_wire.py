@@ -14,10 +14,14 @@ from pdos_next.errors import DomainError
 from .client import json_value
 
 MINIMAX_CODEC = "minimax-functions/v1"
+FUNCTIONS_CODEC = "openai-functions/v1"
+FUNCTION_CODECS = {MINIMAX_CODEC, FUNCTIONS_CODEC}
 FINISH_TOOL = "pdos_agent_output"
 
 
-def response_codec(protocol, base_url):
+def response_codec(protocol, base_url, mode="auto"):
+    if mode not in {"auto", "tools"}:
+        return "native-schema/v1"
     target = urlsplit(base_url)
     return (
         MINIMAX_CODEC
@@ -28,7 +32,7 @@ def response_codec(protocol, base_url):
             and target.hostname in {"api.minimax.cn", "api.minimax.io"}
             and target.path.rstrip("/") == "/v1"
         )
-        else "native-schema/v1"
+        else FUNCTIONS_CODEC if mode == "tools" else "native-schema/v1"
     )
 
 
@@ -110,11 +114,11 @@ def restore_assistant(route, message):
         if "reasoning_content" in native and not isinstance(native["reasoning_content"], str):
             raise ValueError
         normal, finish_ids = [], []
-        for call in native.get("tool_calls", []):
+        for call in native.get("tool_calls") or []:
             if call["type"] != "function" or not isinstance(call["function"]["arguments"], str):
                 raise ValueError
             if call["function"]["name"] == FINISH_TOOL:
-                if route.agent_response_codec != MINIMAX_CODEC:
+                if route.agent_response_codec not in FUNCTION_CODECS:
                     raise ValueError
                 finish_ids.append(call["id"])
             else:

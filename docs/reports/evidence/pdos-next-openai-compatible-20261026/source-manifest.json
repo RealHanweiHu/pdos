@@ -1,0 +1,26 @@
+{
+  "scope": "Only files intentionally changed in this request; existing uncommitted changes preserved. Not a whole-worktree freeze.",
+  "sha256": {
+    "pdos-next/server/pdos_next/providers/types.py": "bbafecf69eae42a7a67b0d78597fc57719d9bfe88302d473991a1133704c8d8c",
+    "pdos-next/server/pdos_next/providers/agent_wire.py": "aafaa16180a0b7869adf7f748bfd5a1fb43b71829463f5b80c56ded9c5b99eb6",
+    "pdos-next/server/pdos_next/providers/agent_client.py": "a88f55683670d93b88266ca08fd31ad015b3a750eb8600458f1b36bad334cfba",
+    "pdos-next/server/pdos_next/providers/client.py": "5c28a8d400ea65af6ff69f5e0370f4d5418b6b2df37184107ab64a7196acee7b",
+    "pdos-next/server/pdos_next/schemas/model_configuration/dto.py": "a7ee2b7d8a36979ac56bbc028370a11325bf7cf8226491724ad6ff8f5f6212ab",
+    "pdos-next/server/pdos_next/model_configuration/service.py": "4cc74718524388434798be85262fca3c7e9c956c6e54e532a1ad15a798a29fae",
+    "pdos-next/server/pdos_next/agent_kernel/qualification_binding.py": "cc148b6b4d475763381c6bde6b9cf95675fa88f4a39a5ea354f1c97b3958ed22",
+    "pdos-next/server/tests/agent_kernel/test_openai_compatible.py": "39808c467470cceb7eb35c4bedd69a25283d02497c7007628ff8857c29f2482e",
+    "pdos-next/server/tests/agent_kernel/test_model_configuration_transactions.py": "1c84bfe4e0c02f4155dbd3ce79c7e948a164e9abbeeff1bd9cda2760f7e90cd4",
+    "pdos-next/web/src/components/model_configuration/settings.tsx": "d2cf145351f03a6b09e4d4d011b0aba101ddc93008c51449630098abeab5b2ab",
+    "pdos-next/web/src/components/model_configuration/contracts.ts": "7c04723eec4bf4ff759fe1b94f0591fe5e867eebfca79ce0ed0743b7c34069db",
+    "pdos-next/web/src/components/model_configuration/render.test.mjs": "ec5b8929205714ca10d39b1033fc6d441ceeb73a134e26ffef68bc390bc07f31",
+    "pdos-next/contracts/payloads.schema.json": "cd8af0fbc89c4a907ed5fdda1972a1b3fea9f41773d127b117c9e216886fa721",
+    "pdos-next/.env.example": "7d0af44b8b3b4a414296fda58c12fe75c7ef0f760ba46d192ff679c652c95eb2",
+    "docs/design/2026-10-08-pdos-next-design-confirmation.md": "b5c13d16c0bfaa4b6a5edede68e47b6718c7b7e85214232be24818fc29359081",
+    "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md": "ef393a7d773b1d368dad1bfa7eb8fd9eae8e6551a08448a705dd081f6b41ef62",
+    "docs/design/README.md": "72fcdf7a19d1960e20168e07e27b021017294ce60490e281febe41422bee8e38",
+    "docs/runbooks/pdos-next-tenant-model-runtime.md": "e204fc66058ad621d469f40f11666cf029bcffaadd2ee70da784633d5d5b59c8",
+    "README.md": "6dd4860cc18100648508cdfa02c04ed41c3562555b06f45c13d9a4afffb945d8",
+    "tasks/ai-native-integrated-todo.md": "9b8426af3a7ce5bd57a9b2c25b18b5e6371dac9347c5c713c67186e826ecf422",
+    "docs/reports/evidence/pdos-next-openai-compatible-20261026/result.md": "97b8c186c44b9fdf755eb41b24c6c5679de2cb0f68c6e94f3cd4b1f9e2efab36"
+  }
+}

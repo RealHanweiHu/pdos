@@ -1,0 +1,17 @@
+{
+  "candidate": "interrupted_before_any_case_completed",
+  "reason": "known CTX11 fixture assumption corrected before full candidate rerun",
+  "pytest_exit": 2,
+  "tenant_id": "da34810e-9cd9-4159-a0ce-224330ed0dcf",
+  "created_run_count": 24,
+  "cancelled_only_own_nonterminal_runs": [
+    {
+      "run_id": "75f2b187-c062-409a-8c6c-3de1d0f21f41",
+      "before": "queued",
+      "after": "cancelled"
+    }
+  ],
+  "no_rows_deleted": true,
+  "real_provider_calls": 0,
+  "test_database_and_temporal_retained": true
+}

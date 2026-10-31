@@ -1,0 +1,1706 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "context": {
+    "tenant_id": "f0775873-8566-4258-b374-bf732ce8471a",
+    "actor_id": "77dc4116-4877-426a-ad9f-a966aa88acd3",
+    "requester_id": "77dc4116-4877-426a-ad9f-a966aa88acd3",
+    "category_id": null
+  },
+  "authority_batch_sizes": [
+    9,
+    48
+  ],
+  "durations": {
+    "search": [
+      0.7777066670823842,
+      0.8523558330489323,
+      0.6896443750010803,
+      0.6709707920672372,
+      0.723547333967872,
+      0.6178302919724956,
+      0.6396626669447869,
+      0.5921005419222638,
+      0.6179568750085309,
+      0.5692920830333605,
+      0.5861681669484824,
+      0.6568247909890488
+    ],
+    "verify_nine": [
+      0.41996229090727866,
+      0.2986624160548672,
+      0.29603937501087785,
+      0.2834078330779448,
+      0.5300135840661824,
+      0.3904535420006141,
+      0.24282120796851814,
+      0.2547824999783188,
+      0.25058391597121954,
+      0.26573962497059256,
+      0.3221715419786051,
+      0.24212912505026907
+    ],
+    "verify_expanded": [
+      0.32766079204156995,
+      0.34455804200842977,
+      0.3456602500518784,
+      0.3387349999975413,
+      0.3427971659693867,
+      0.3024207919370383,
+      0.2629235840868205,
+      0.27451162494253367,
+      0.2693173340521753,
+      0.2967258340213448,
+      0.3386513750301674,
+      0.2514188749482855
+    ]
+  },
+  "sql_counts": {
+    "search": [
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5,
+      5
+    ],
+    "verify_nine": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ],
+    "verify_expanded": [
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4,
+      4
+    ]
+  },
+  "sql_timings": [
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 25,
+      "seconds": 0.0017724999925121665
+    },
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 205,
+      "seconds": 0.0008646249771118164
+    },
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0007464590016752481
+    },
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.04325654206331819
+    },
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.16251495806500316
+    },
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.021574250073172152
+    },
+    {
+      "iteration": 0,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3997324160300195
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.0024835829390212893
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0013519999338313937
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0011673748958855867
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.25212583399843425
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.02121575002092868
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.02766433299984783
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.002779417089186609
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0010526670375838876
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0012553749838843942
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.25733375002164394
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.0248999580508098
+    },
+    {
+      "iteration": 0,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.02136604196857661
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.002405958017334342
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0011277080047875643
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0010443329811096191
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.043975125066936016
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.1618662920081988
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.01940737501718104
+    },
+    {
+      "iteration": 1,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3878274579765275
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.003762125037610531
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.001954374951310456
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0019384169718250632
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.23148129100445658
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.026689708000048995
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.022173624951392412
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0019856670405715704
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0011434579500928521
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.00100545899476856
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.28408283297903836
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.02124254102818668
+    },
+    {
+      "iteration": 1,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.020628417027182877
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0021857500541955233
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0012349579483270645
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.001019250019453466
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.04424650000873953
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.15806074999272823
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.023135416908189654
+    },
+    {
+      "iteration": 2,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3818621669197455
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.003155917045660317
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.00116070790681988
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0010932079749181867
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.23418991698417813
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.02216383395716548
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.02274066605605185
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0018277500057592988
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0009621670469641685
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0008787079714238644
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.2852944160113111
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.020737625076435506
+    },
+    {
+      "iteration": 2,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.020359624992124736
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0017735000001266599
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0011652089888229966
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0010032920399680734
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.041179000050760806
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.1574563339818269
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.019445499987341464
+    },
+    {
+      "iteration": 3,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.37493375001940876
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.0033735829638317227
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0011641249293461442
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0013008329551666975
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.2303892079507932
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.01929795800242573
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.017038790974766016
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0035685000475496054
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0019146660342812538
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009235410252586007
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.2744929170003161
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.022836417076177895
+    },
+    {
+      "iteration": 3,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.02411654102616012
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0018970000091940165
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0014324999647215009
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0065130830043926835
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.04780366690829396
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.1691404579905793
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.02229516697116196
+    },
+    {
+      "iteration": 4,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.4093494589906186
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.00310083304066211
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0011196659179404378
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0015869580674916506
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.4710229159099981
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.02585620793979615
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.018198958016000688
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.002013582969084382
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.000936749973334372
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009475840488448739
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.2812834159703925
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.019001625012606382
+    },
+    {
+      "iteration": 4,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.02158266701735556
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0016247499734163284
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0008785829413682222
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009921250166371465
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.04241591598838568
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.1469184160232544
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.015089250053279102
+    },
+    {
+      "iteration": 5,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3370046659838408
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.0025537499459460378
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0012947919312864542
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009537090081721544
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.3409174170810729
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.020451458054594696
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.018551166052930057
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0019665410509333014
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0010629589669406414
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.010170458001084626
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.23727483302354813
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.0161896669305861
+    },
+    {
+      "iteration": 5,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.017609334085136652
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.001556458999402821
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.00117275002412498
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.00498908304143697
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.03856229200027883
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.14087212504819036
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.013778291991911829
+    },
+    {
+      "iteration": 6,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3903239999199286
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.003957957960665226
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0010859159519895911
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.001173958065919578
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.20497070904821157
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.015838166931644082
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.016504166997037828
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0022059170296415687
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.001327292062342167
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0008761670906096697
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.22787016606889665
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.016073749982751906
+    },
+    {
+      "iteration": 6,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.013042416889220476
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0020009580766782165
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.001091957907192409
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009285419946536422
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.03969841590151191
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.1375831669429317
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.021601082989946008
+    },
+    {
+      "iteration": 7,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.34952466702088714
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.0026033750036731362
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0010868749814108014
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009962080512195826
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.2100808749673888
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.016224541934207082
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.016214124974794686
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0030504160095006227
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0009498749859631062
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.001166249974630773
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.21920399996452034
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.017442499985918403
+    },
+    {
+      "iteration": 7,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.020525834057480097
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0019320830469951034
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0009886249899864197
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0010194169590249658
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.041825792053714395
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.1557567500276491
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.014662749948911369
+    },
+    {
+      "iteration": 8,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3322603330016136
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.005522749968804419
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0014812089502811432
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009462080197408795
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.2063762079924345
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.017033415962941945
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.01616295799612999
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0015781669644638896
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0008954580407589674
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009039170108735561
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.21770195895805955
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.01651391596533358
+    },
+    {
+      "iteration": 8,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.013429457903839648
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0018775840289890766
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0069785830564796925
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0015357090160250664
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.042382000014185905
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.13767420791555196
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.02275241690222174
+    },
+    {
+      "iteration": 9,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.2944979580352083
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.0021064169704914093
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.00176379201002419
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0015613749856129289
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.2053476250730455
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.019752125022932887
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.022649749997071922
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.002613874967209995
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0009324579732492566
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0018667500698938966
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.24919458397198468
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.016709874966181815
+    },
+    {
+      "iteration": 9,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.013473500031977892
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.002161166979931295
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0012333750491961837
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0010834999848157167
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.036684875027276576
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.15796862496063113
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.019088667002506554
+    },
+    {
+      "iteration": 10,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.3108708340441808
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.0023960419930517673
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0010832090629264712
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0009905410697683692
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.26474487502127886
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.02320520905777812
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.019859915948472917
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.002826708019711077
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0016343749593943357
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0014057919615879655
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.28281720797531307
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.020193791016936302
+    },
+    {
+      "iteration": 10,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.016188041074201465
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0020227920031175017
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0011283749481663108
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0010436250595375896
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 2,
+      "sql_bytes": 2261,
+      "seconds": 0.037714791018515825
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 3,
+      "sql_bytes": 69445,
+      "seconds": 0.14234112505801022
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.01605220790952444
+    },
+    {
+      "iteration": 11,
+      "mode": "search",
+      "index": 5,
+      "sql_bytes": 219001,
+      "seconds": 0.29543470893986523
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_nine",
+      "index": 6,
+      "sql_bytes": 25,
+      "seconds": 0.004376124939881265
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_nine",
+      "index": 7,
+      "sql_bytes": 205,
+      "seconds": 0.0018851249478757381
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_nine",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.0026312089757993817
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_nine",
+      "index": 2,
+      "sql_bytes": 160963,
+      "seconds": 0.2019954170100391
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_nine",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.021704958053305745
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_nine",
+      "index": 4,
+      "sql_bytes": 3185,
+      "seconds": 0.011548749986104667
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_expanded",
+      "index": 5,
+      "sql_bytes": 25,
+      "seconds": 0.0016093750018626451
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_expanded",
+      "index": 6,
+      "sql_bytes": 205,
+      "seconds": 0.0008449999149888754
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_expanded",
+      "index": 1,
+      "sql_bytes": 17,
+      "seconds": 0.00082016596570611
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_expanded",
+      "index": 2,
+      "sql_bytes": 163547,
+      "seconds": 0.2097840839996934
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_expanded",
+      "index": 3,
+      "sql_bytes": 4803,
+      "seconds": 0.0223974579712376
+    },
+    {
+      "iteration": 11,
+      "mode": "verify_expanded",
+      "index": 4,
+      "sql_bytes": 3203,
+      "seconds": 0.013275249977596104
+    }
+  ],
+  "warm_p95_seconds": {
+    "search": 0.9038792326813564,
+    "verify_nine": 0.5858376008924097,
+    "verify_expanded": 0.34610113326925784
+  },
+  "same_response_each_iteration": true,
+  "private_profile": "/tmp/c5-same-fixture-after-query-cache-private.json"
+}

@@ -1,0 +1,93 @@
+.....F..........F...........                                             [100%]
+=================================== FAILURES ===================================
+_____ test_catalog_lookup_keeps_scope_and_exact_version_under_ordinary_rls _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1195d70b0>
+
+    def test_catalog_lookup_keeps_scope_and_exact_version_under_ordinary_rls(monkeypatch):
+        run, _ctx, ref = case()
+        run.product_id, run.project_id = uuid4(), uuid4()
+        statements = []
+        monkeypatch.setattr("pdos_next.enterprise_search.sources.prepare_read", lambda *_: None)
+        session = SimpleNamespace(
+            execute=lambda query: (
+                statements.append(query)
+                or SimpleNamespace(mappings=lambda: SimpleNamespace(all=lambda: []))
+            )
+        )
+        corrections._rows(session, run, change(ref).sources)
+        sql = str(
+            statements[0].compile(dialect=postgresql.dialect(), compile_kwargs={"literal_binds": True})
+        )
+        assert str(run.tenant_id) in sql and str(run.category_id) in sql
+        assert "source_id" in sql and "category_id" in sql
+>       assert "product_id IS NULL" not in sql  # actual Human source may be same-category history
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       assert 'product_id IS NULL' not in "WITH enterp...af52a4', 2))"
+E         
+E         'product_id IS NULL' is contained here:
+E           _versions.product_id IS NULL OR products.id IS NOT NULL) AND (artifact_versions.original_id IS NULL OR uploaded_originals.id IS NOT NULL AND uploaded_originals.status = 'parsed' AND uploaded_originals.scan_status = 'clean' AND original_security.source_state = 'active' AND original_security.disposition = 'active' AND original_security.current_request_id IS NOT NULL)), 
+E         ?           ++++++++++++++++++
+E           shared_enterprise_quality_issue_versions AS MATERIALIZED 
+E           (SELECT quality_issue_versions.product_id AS product_id, quality_issue_versions.pr...
+E         
+E         ...Full output truncated (40 lines hidden), use '-vv' to show
+
+tests/agent_kernel/test_context_corrections.py:132: AssertionError
+____ test_actual_start_freezes_only_original_human_sources_before_dispatch _____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11a59cb00>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-579/test_actual_start_freezes_only0')
+
+    def test_actual_start_freezes_only_original_human_sources_before_dispatch(monkeypatch, tmp_path):
+        api = patched_api(tmp_path)
+        run, _ctx, ref = case()
+        ref.update(source_type="artifact", object_id=ref["source_id"])
+        ctx = Context(run.tenant_id, run.requester_id, run.requester_id, category_id=run.category_id)
+        original_ref = SourceRead(artifact_id=UUID(ref["source_id"]), expected_revision=2)
+        auto_ref = SourceRead(artifact_id=uuid4(), expected_revision=1)
+        data = api.StartInput(
+            goal="只看所选资料", idempotency_key="context-public-start", sources=[original_ref]
+        )
+        effective = data.model_copy(update={"session_id": uuid4(), "sources": [original_ref, auto_ref]})
+        run.session_id, run.state, run.continued_from_id = effective.session_id, "queued", None
+        events, dispatched, reads = [], [], []
+        scalars = iter([None, None, run, True, run])
+        session = SimpleNamespace(
+            execute=lambda *_args, **_kwargs: None,
+            scalar=lambda *_args: next(scalars),
+            add=events.append,
+        )
+    
+        @contextmanager
+        def transaction(*_args, **_kwargs):
+            yield session
+    
+        def resolve(_session, _ctx, _run, choices):
+            reads.append(choices)
+            assert len(choices) == 1 and choices[0].source_id == original_ref.artifact_id
+            return [ref]
+    
+        async def dispatch(_reference):
+            condition, configured = context_corrections.requested(run)
+            assert configured and condition["sources"] == [ref]
+            assert run.versions["requested_context_selection_digest"] == digest(condition)
+            dispatched.append(run.id)
+    
+        monkeypatch.setattr(api, "tenant_session", transaction)
+        created = []
+    
+        def create(*_args, **kwargs):
+            run.intent_digest = kwargs["request_digest"]
+            created.append(kwargs)
+            return run
+    
+        monkeypatch.setattr(api, "create_run", create)
+>       monkeypatch.setattr(api, "visible_run", lambda *_args: run)
+E       AttributeError: <module 'pdos_next.agent_kernel._context_correction_api_test' from '/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-579/test_actual_start_freezes_only0/pdos-next/server/pdos_next/agent_kernel/api.py'> has no attribute 'visible_run'
+
+tests/agent_kernel/test_context_correction_start.py:91: AttributeError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_corrections.py::test_catalog_lookup_keeps_scope_and_exact_version_under_ordinary_rls
+FAILED tests/agent_kernel/test_context_correction_start.py::test_actual_start_freezes_only_original_human_sources_before_dispatch
+2 failed, 26 passed in 1.18s

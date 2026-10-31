@@ -1,0 +1,265 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 14 items
+
+tests/enterprise_search/test_recovery_pg.py ..........F
+
+=================================== FAILURES ===================================
+_ test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second _
+
+all_sources = namespace(person=namespace(test_authorization_window=None, test_authorization_until=None, admin=Engine(postgresql+psyc... None, 'object_id': UUID('d7c7bac8-dd84-59fe-9c53-dceb1c39128f'), 'original_ids': [], 'read_basis_status': 'current'}])
+record_property = <function record_property.<locals>.append_property at 0x15e166b60>
+
+    def test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second(
+        all_sources,
+        record_property,
+    ):
+        person = all_sources.person
+        # Increase real derived workload across sources written by this same actor.
+        for index_ in range(5):
+            add_knowledge(person, index_ + 1)
+            register(person, f"Synthetic scale artifact {index_}", "Synthetic recovery scale evidence.")
+            all_sources.supply()
+            all_sources.waiting()
+            payload = change_payload(all_sources.work)
+            payload["title"] += f" scale #{index_}"
+            command, _inputs = change_command(all_sources.work, "change.request.create", payload)
+            response = post(all_sources.work.quality, command)
+            assert response.status_code == 200, response.text
+        indexing.rebuild(person.engine, replace(person.ctx, category_id=None))
+        source_rows = authority(person)
+        family_counts = Counter(row["source_type"] for row in source_rows)
+        assert set(family_counts) == set(SOURCE_TYPES)
+        citations, expanded = {}, {}
+        for kind in SOURCE_TYPES:
+            row = next(row for row in source_rows if row["source_type"] == kind and row["is_current"])
+            with readonly(person) as session:
+                found = search(
+                    session,
+                    replace(person.ctx, category_id=None),
+                    SearchInput(
+                        query=str(row["source_id"]),
+                        source_types=[kind],
+                        limit=50,
+                    ),
+                )
+            assert found["items"], (kind, found)
+            citations[str(uuid4())] = found["items"][0]
+            expanded[(kind, str(row["source_id"]))] = found["items"][0]
+        for row in source_rows:
+            key = row["source_type"], str(row["source_id"])
+            if not row["is_current"] or key in expanded:
+                continue
+            with readonly(person) as session:
+                found = search(
+                    session,
+                    replace(person.ctx, category_id=None),
+                    SearchInput(
+                        query=key[1],
+                        source_types=[key[0]],
+                        limit=1,
+                    ),
+                )
+            assert found["items"] and found["items"][0]["source_id"] == key[1], (key, found)
+            expanded[key] = found["items"][0]
+        expanded = {str(uuid4()): item for item in expanded.values()}
+        assert len(expanded) > len(citations)
+        modes = ("search", "verify_nine", "verify_expanded")
+        durations, counts, statements = {mode: [] for mode in modes}, {mode: [] for mode in modes}, []
+        profile_path = os.environ.get("PDOS_ENTERPRISE_PROFILE_PATH")
+        first_sql, capture_trace, active_mode = [], False, None
+    
+        def track(_connection, _cursor, statement, parameters, _context, _many):
+            statements.append(True)
+            if capture_trace:
+                first_sql.append({"mode": active_mode, "sql": statement, "parameters": parameters})
+    
+        event.listen(person.engine, "before_cursor_execute", track)
+        # Exercise the prepared statement and RLS plans before measuring warm reads.
+        # Forty observations keep empirical p95 within the measured distribution;
+        # eleven observations with the default exclusive estimator can exceed max.
+        warmup, measured = 5, 40
+        try:
+            for iteration in range(warmup + measured):
+                for mode in modes:
+                    active_mode = mode
+                    capture_trace = bool(profile_path) and iteration == 0
+                    with readonly(person) as session:
+                        statements.clear()
+                        started = time.perf_counter()
+                        if mode == "search":
+                            value = search(
+                                session,
+                                replace(person.ctx, category_id=None),
+                                SearchInput(
+                                    query="synthetic",
+                                    limit=50,
+                                ),
+                            )
+                            assert value["coverage"]["status"] == "current" and value["returned"] > 0
+                        else:
+                            batch = citations if mode == "verify_nine" else expanded
+                            actual, missing = current(session, batch)
+                            assert not missing and len(actual) == len(batch), missing
+                        durations[mode].append(time.perf_counter() - started)
+                        counts[mode].append(len(statements))
+        finally:
+            event.remove(person.engine, "before_cursor_execute", track)
+        if profile_path:
+            # Explicit local diagnostics only: context/SQL binds contain synthetic
+            # identities, never DSNs, bearer tokens, model credentials or bodies.
+            with os.fdopen(
+                os.open(profile_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600), "w"
+            ) as out:
+                json.dump(
+                    {
+                        "context": context_reference(replace(person.ctx, category_id=None)),
+                        "request": {"query": "synthetic", "limit": 50},
+                        "family_counts": dict(family_counts),
+                        "authority_batch_sizes": [len(citations), len(expanded)],
+                        "first_sql": first_sql,
+                    },
+                    out,
+                    default=str,
+                )
+        record_property("warmup_iterations", warmup)
+        record_property("measured_iterations", measured)
+        for mode in durations:
+            p95 = statistics.quantiles(durations[mode][warmup:], n=20, method="inclusive")[18]
+            record_property(mode + "_warm_p95_seconds", p95)
+            record_property(mode + "_durations_seconds", durations[mode])
+            record_property(mode + "_sql_counts", str(sorted(set(counts[mode]))))
+        record_property("mixed_source_family_counts", str(family_counts))
+        record_property("authority_batch_sizes", [len(citations), len(expanded)])
+        print(
+            json.dumps(
+                {
+                    "family_counts": dict(family_counts),
+                    "context": context_reference(replace(person.ctx, category_id=None)),
+                    "authority_batch_sizes": [len(citations), len(expanded)],
+                    "warm_p95_seconds": {
+                        mode: statistics.quantiles(
+                            durations[mode][warmup:], n=20, method="inclusive",
+                        )[18] for mode in modes
+                    },
+                    "sql_counts": {mode: sorted(set(counts[mode])) for mode in modes},
+                }
+            )
+        )
+        for mode in durations:
+            assert len(set(counts[mode])) == 1
+>           assert statistics.quantiles(durations[mode][warmup:], n=20, method="inclusive")[18] < 1.0
+E           assert 1.2385123273474163 < 1.0
+
+tests/enterprise_search/test_recovery_pg.py:663: AssertionError
+----------------------------- Captured stdout call -----------------------------
+{"family_counts": {"knowledge": 6, "artifact": 23, "issue": 4, "capa": 1, "change": 6, "external_wait": 6, "supply": 6, "build": 4, "test_run": 4, "field_feedback": 3}, "context": {"tenant_id": "da5fcb49-93c7-47dd-b181-da21bee81dd4", "actor_id": "87767152-cd50-4b5f-846e-290ec0692a87", "requester_id": "87767152-cd50-4b5f-846e-290ec0692a87", "category_id": null}, "authority_batch_sizes": [10, 52], "warm_p95_seconds": {"search": 1.2385123273474163, "verify_nine": 0.3911339770827908, "verify_expanded": 0.42481044996529815}, "sql_counts": {"search": [5], "verify_nine": [4], "verify_expanded": [4]}}
+=============================== warnings summary ===============================
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py: 21 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+tests/enterprise_search/test_recovery_pg.py::test_all_registered_outbox_replays_do_not_duplicate_nine_family_chunks_or_df
+tests/enterprise_search/test_recovery_pg.py::test_nine_families_repair_wrong_derived_scope_identifiers_and_keys
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_recovery_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py: 14 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[chunks_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[statistics_only]
+tests/enterprise_search/test_recovery_pg.py::test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[same_count]
+  tests/enterprise_search/test_recovery_pg.py:213: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    @pytest.mark.parametrize("damage", ["all_tables", "chunks_only", "statistics_only", "same_count"])
+
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:534: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:543: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/enterprise_search/test_recovery_pg.py::test_metadata_helper_cannot_read_bodies_assume_role_or_modify_other_tenants
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_creation.py:686: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+  tests/enterprise_search/test_recovery_pg.py:525: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-source-compatibility-20261029/pg-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_recovery_pg.py::test_nine_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============ 1 failed, 10 passed, 109 warnings in 808.23s (0:13:28) ============

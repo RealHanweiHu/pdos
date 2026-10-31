@@ -79,6 +79,17 @@ class InitialGroups(StrictModel):
         return self
 
 
+class CategoryHumanEdits(StrictModel):
+    name: str = Field(min_length=1, max_length=160)
+    purpose: str = Field(min_length=1, max_length=4000)
+
+    @model_validator(mode="after")
+    def meaningful(self):
+        if not self.name.strip() or not self.purpose.strip():
+            raise ValueError("名称和主要场景不能为空")
+        return self
+
+
 class CategoryCreate(StrictModel):
     key: str = Field(pattern=r"^[a-z0-9]+(-[a-z0-9]+)*$")
     name: str = Field(min_length=1, max_length=160)
@@ -88,11 +99,14 @@ class CategoryCreate(StrictModel):
     deidentified_confirmed: bool
     prepared_by_run_id: UUID | None = None
     candidate_digest: str | None = None
+    human_edits: CategoryHumanEdits | None = None
     idempotency_key: str = Field(min_length=8, max_length=160)
     confirmation_token: str | None = None
 
     @model_validator(mode="after")
     def candidate_pair(self):
+        if self.human_edits and not self.prepared_by_run_id:
+            raise ValueError("人工修订须绑定原小Pai候选")
         if bool(self.prepared_by_run_id) != bool(self.candidate_digest):
             raise ValueError("A candidate requires both its run and server digest")
         return self
@@ -204,7 +218,10 @@ def load_seed(key):
 
 
 def _semantic(data):
-    return data.model_dump(mode="json", exclude={"confirmation_token", "idempotency_key"})
+    result = data.model_dump(mode="json", exclude={"confirmation_token", "idempotency_key"})
+    if data.human_edits is None:
+        result.pop("human_edits", None)
+    return result
 
 
 def _human(s, ctx):
@@ -353,7 +370,7 @@ def preview(s, ctx, data):
     return {
         "operation": "category.create",
         "tier": "T1",
-        "payload": payload,
+        "payload": {**payload, **(data.human_edits.model_dump() if data.human_edits else {})},
         "confirmation_token": token,
         "expires_at": expires.isoformat(),
         "origin": _origin(material),
@@ -507,8 +524,8 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
         id=category_id,
         tenant_id=ctx.tenant_id,
         key=data.key,
-        name=data.name,
-        purpose=data.purpose,
+        name=data.human_edits.name if data.human_edits else data.name,
+        purpose=data.human_edits.purpose if data.human_edits else data.purpose,
         owner_id=ctx.actor_id,
         revision=1,
         created_by_run_id=candidate.run.id if candidate else None,
@@ -632,7 +649,13 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
         result={
             "category_id": str(category_id),
             "key": data.key,
-            "name": data.name,
+            "name": category.name,
+            "purpose": category.purpose,
+            **(
+                {"human_edits": data.human_edits.model_dump(), "edited_by": str(ctx.actor_id)}
+                if data.human_edits
+                else {}
+            ),
             "tier": "T1",
             "knowledge": knowledge,
             "parameters": parameters,

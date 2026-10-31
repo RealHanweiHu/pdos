@@ -5,8 +5,8 @@ import { defaultGlobalLocation, globalAreas, globalHref, normalizeGlobalSearch, 
 const category = "11111111-2222-4333-8444-555555555555";
 const project = "66666666-7777-4888-8999-aaaaaaaaaaaa";
 
-test("P15 四个全局主干按项目优先排列，默认仍是我的工作", () => {
-  assert.deepEqual(globalAreas.filter(entry => entry.group === "main").map(entry => [entry.id, entry.label]), [["work", "我的工作"], ["projects", "项目"], ["programs", "组合与资源"], ["knowledge", "知识"]]);
+test("确认版六个全局入口按用户工作路径排列，默认仍是我的工作", () => {
+  assert.deepEqual(globalAreas.filter(entry => entry.group === "main").map(entry => [entry.id, entry.label]), [["work", "我的工作"], ["inbox", "收件箱"], ["pai", "小Pai"], ["projects", "项目"], ["programs", "项目集"], ["knowledge", "知识"]]);
   assert.equal(globalAreas.find(entry => entry.id === "category")?.group, "product_management");
   assert.equal(globalAreas.find(entry => entry.id === "cockpit")?.group, undefined);
   assert.equal(defaultGlobalLocation.area, "work");
@@ -45,11 +45,11 @@ test("项目工作台直达保留具体项目和型号，直接进入计划", ()
   assert.equal(params.get("view"), "plan");
   assert.equal(params.get("product"), "model-identity");
   assert.equal(resolveGlobalLocation(href).projectId, project);
-  assert.equal(normalizeGlobalSearch(href).changed, false);
+  assert.equal(new URLSearchParams(normalizeGlobalSearch(href).search).get("projectView"), "plan");
 });
 
 test("全局及旧项目工作区七种位置解析与往返保持", () => {
-  for (const area of ["work", "cockpit", "projects", "programs", "category", "knowledge", "settings"] as const) {
+  for (const area of ["work", "inbox", "pai", "cockpit", "projects", "programs", "category", "knowledge", "settings"] as const) {
     const location = resolveGlobalLocation(`?area=${area}&category=${category}`);
     assert.equal(location.area, area);
     assert.equal(location.categoryId, category);
@@ -84,7 +84,7 @@ test("规范化旧 URL 一次到位且幂等", () => {
   assert.equal(params.get("view"), "builds");
   assert.equal(normalizeGlobalSearch(legacy.search).changed, false);
   const resources = normalizeGlobalSearch(`?category=${category}&area=resources`);
-  assert.equal(new URLSearchParams(resources.search).get("area"), "programs");
+  assert.equal(new URLSearchParams(resources.search).get("area"), "work");
   assert.equal(normalizeGlobalSearch(`?area=work`).changed, false);
 });
 
@@ -106,4 +106,20 @@ test("驾驶舱项目参数与跨区导航清理品类工作台参数", () => {
   assert.equal(params.get("category"), null);
   assert.equal(params.get("bench"), null);
   assert.equal(params.get("view"), null);
+});
+
+
+test("existing project links keep fixed objects and reach the matching modern maintenance panel", () => {
+  for (const [view, task, expectedView, panel] of [["files", "", "docs", "originals"], ["builds", "supply", "prep", "supply"], ["verification", "handoff", "builds", "handoff"], ["issues", "", "issues", "quality"]]) {
+    const mapped = normalizeGlobalSearch(`?area=category&bench=projects&category=${category}&product=model&project=${project}&view=${view}&task=${task}&build=fixed-build`);
+    const params = new URLSearchParams(mapped.search);
+    assert.equal(params.get("area"), "cockpit"); assert.equal(params.get("projectView"), expectedView); assert.equal(params.get("panel"), panel);
+    assert.equal(params.get("project"), project); assert.equal(params.get("category"), category); assert.equal(params.get("product"), "model"); assert.equal(params.get("build"), "fixed-build");
+    assert.equal(normalizeGlobalSearch(mapped.search).changed, false);
+  }
+});
+
+test("global navigation clears professional object selections across destinations", () => {
+  const href = globalHref({area:"projects",categoryId:category,projectId:""}, "?area=cockpit&build=b&request=r&run=t&issue=i&change=c&feedback=f&publication=p");
+  for (const key of ["build","request","run","issue","change","feedback","publication"]) assert.equal(new URLSearchParams(href).has(key), false);
 });

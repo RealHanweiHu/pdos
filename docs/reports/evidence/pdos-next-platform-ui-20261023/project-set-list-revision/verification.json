@@ -1,0 +1,30 @@
+{
+  "eslint": {
+    "command": [
+      "npx",
+      "eslint",
+      "src/app/ui-lab/platform"
+    ],
+    "exit_code": 0
+  },
+  "typecheck": {
+    "command": [
+      "npx",
+      "tsc",
+      "--noEmit"
+    ],
+    "exit_code": 0
+  },
+  "sources": {
+    "pdos-next/web/src/app/ui-lab/platform/design-data.ts": "aa414e543c5c0c81151fbf11659fceaf9415555bb2e88554a2148e16edc4e46d",
+    "pdos-next/web/src/app/ui-lab/platform/organization-preview.tsx": "b5ddbe9d7f9b51f9cbfa0751b6480bb6ade24a858c9b4b0464f903603b6bcdac",
+    "pdos-next/web/src/app/ui-lab/platform/organization-state.ts": "fe3455f36b7f20890d8279bad7f227f8e1fe7c80da453cce0733253221344645",
+    "pdos-next/web/src/app/ui-lab/platform/organization.module.css": "339697c28b3098b563b1d3e8f43cf4a158fa27bc99acdf36a96813f5ba164755",
+    "pdos-next/web/src/app/ui-lab/platform/page.tsx": "e71d798f8c049e5c26ae78cfd235a03004b237d5136ebebc457a3cad240878dd",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview-state.ts": "1e213bfb43ea05f8d176171fad1c7f097ee98004bf4b9597d175710137fbe73c",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview.module.css": "d02b1241a3429ecde557d5f57fd214d7e427f42f178ae1fb63ef73a759dff32e",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview.tsx": "fff2fdc46974b9c8d4ad58b86ccf013e4f8a894240fc0a46d1972ed24dd1591e",
+    "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "e1a257e1a1f85270756cad6aaf8e61b49986eec644d407b4df0575415ffbc494",
+    "pdos-next/web/src/app/ui-lab/platform/platform.module.css": "0404bcab7a76bd23503fc1072d4d0feaad5e5c7a8a0540546ea4f05653b577ea"
+  }
+}

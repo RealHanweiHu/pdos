@@ -1,0 +1,98 @@
+{
+  "changes": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_activities.py",
+      "stage_sha256": "1a2aa6762a766b6bfcd7a3eb130ffb0e4a16e26218e41699ac42ee169194552a",
+      "final_sha256": "e2aa3c3d787a88790ff797ecfb6786163a14679373fc72ba3bd15832c013919b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_api.py",
+      "stage_sha256": "c384c41773597dae44b4830468316a68a357f65966523fd5287fcc4d5f689470",
+      "final_sha256": "8cf74b4af45940e1c466cd8cb810cafde2407f839fc8045368dbedbcb959c0ef"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_composition.py",
+      "stage_sha256": "e04d8ed0b161dacd9b297a395bf3606b38e6264982613f7381133927b6b945e1",
+      "final_sha256": "8a948518accbe0a6e747836df2ae623f0968d896058bfa386201b1ebb055ff80"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_hybrid.py",
+      "stage_sha256": "a5d17f1c8b99fc7b3d31a7b21cf81893ccadcbf3c3ee41bb6795350bfc41904a",
+      "final_sha256": "c8850faf7bd3affe8625919faef3cca2673df33519efcc403825e5884c773903"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_jobs.py",
+      "stage_sha256": "e1bed3a8d9ed949129ef50dc84439cb552c552d98915a85b9a960376369befe5",
+      "final_sha256": "63c386cdd5408b1481aef00ace1715f250b18d875e88abcf7cc7aa64de6ac2c0"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_models.py",
+      "stage_sha256": "bc66bb7a175bcc073122d9964917663300cd377566ea9047b784e582f453d311",
+      "final_sha256": "74b20eab15d42892d03031f643eb563d95677d9813f14a87ec45eeffa486cb4e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_profiles.py",
+      "stage_sha256": "7051e7821b866b125c7b5b2574d9a417f932f35637d0a1f66ff976814b6f7e48",
+      "final_sha256": "d2dd58e48f96099563b3f313994fd8d5948dcc196396258fe2342ac295c500c5"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_provider.py",
+      "stage_sha256": "fad0393b78d2c2dc4f75d517a55da6770a455ec28615348f554fedc916450997",
+      "final_sha256": "a098bca553124d3636e31b4c20f0d4ef56dba2fafe98d7ce5f8b254f9e6790f6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_runtime.py",
+      "stage_sha256": "f4256dcb2af3e57a5452a46669905ef9a68781f2a874ba93f0abb5d2176950b1",
+      "final_sha256": "793ed5027263d7264d50587b6e55c0aacd7bbc78510c84f59cc19a3cbd6aa405"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_schemas.py",
+      "stage_sha256": "b5348959fea1ffb3a85a7920cdc63c241abd98c77260f8644d6d6d9931615688",
+      "final_sha256": "6efae8e3c3bbb4b01aafd47a4f4971fb072ffc46fe9abff1409abca265d7e2a4"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_sources.py",
+      "stage_sha256": "79d1ec7ba6a0af90d0a2fff0a82c11252e2c691ad579cbd9525498d46fc80a22",
+      "final_sha256": "9416eff6342baa91afa2cbcdcd93f4a1e838395bcc5dc15cef84ed749ad55019"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/embedding_workflow.py",
+      "stage_sha256": "d0aec8e81a92b5e8d7efd471696a2c923463d347a864683f4f47eca78e6f636e",
+      "final_sha256": "cafd77309196c05b1f1764901d1b99009e9672f5a708d6d4bdb88087bc5e24ee"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/retrieval_filters.py",
+      "stage_sha256": "ebc34a9e5a5ed37f682c9a024baa7d9790b9d7362482d6eae1a541db860ab239",
+      "final_sha256": "b9f8b0f526753a5370b564ec3829c894d7b599d9527b3e8ca4be8bd44d6c430b"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/embedding_harness.py",
+      "stage_sha256": "142c1d1b8cf0e2e0a99f0a9a547fd9fc66a0d4ea9d3adb87aad52a31e1158268",
+      "final_sha256": "332ee6a9f712e1471c78fcdb0a7e1cfab111fd1382c5aaa56ce5052a5726d5ac"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+      "stage_sha256": "27747794a4bd961c18e552b76f9b2bb8d299ee3194208bec91798cc270c89c7c",
+      "final_sha256": "b3668aba48caebd2737a80fe1883ba84c980eebc5bedeb6ed30c6aa9eb421b0b"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_embedding_projection_pg.py",
+      "stage_sha256": "cf81b9a242cec72ae246fe4aa09b5f922f18af464003c25772e82cb7c8c57242",
+      "final_sha256": "291eaa5f46faf372138182513c4fbc718b84f1fac6390c455b9023a59cb4e52a"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_embedding_projection_temporal_pg.py",
+      "stage_sha256": "7737fa7046f898dc2a31be5843c610620aced837706d051d963096f4732426dc",
+      "final_sha256": "dab8f39d275632722b3bb1588257fdb6c8da9d9e204e9546e4428b3d590c5776"
+    }
+  ],
+  "semantic_changes": [
+    "self-contained repo tests instead of stage-only imports",
+    "ordinary read-only administrator GET instead of write-lock guard",
+    "Select inputs for existing dependency_originals",
+    "preserve original engine runtime with connection-level repeatable-read write transactions",
+    "unknown or out-of-bound usage uses original conservative accounting cap",
+    "frozen numbered SQL; history guard before forced-RLS owner; post-transfer internal execute repair"
+  ],
+  "formatting": "new owned Python only; import ordering and formatting under repo Ruff configuration"
+}

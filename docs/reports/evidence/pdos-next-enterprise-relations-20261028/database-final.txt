@@ -1,0 +1,576 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 388 items
+
+tests/agent_kernel/test_assistant_result.py::test_no_lookup_marks_not_run[tools0] PASSED [  0%]
+tests/agent_kernel/test_assistant_result.py::test_no_lookup_marks_not_run[tools1] PASSED [  0%]
+tests/agent_kernel/test_assistant_result.py::test_other_tools_remove_model_authored_assistant[body0] PASSED [  0%]
+tests/agent_kernel/test_assistant_result.py::test_other_tools_remove_model_authored_assistant[body1] PASSED [  1%]
+tests/agent_kernel/test_assistant_result.py::test_non_dict_result_is_unchanged PASSED [  1%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_binds_model_response_and_rechecks_ordinary_replay[main] PASSED [  1%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_binds_model_response_and_rechecks_ordinary_replay[research] PASSED [  1%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_binds_model_response_and_rechecks_ordinary_replay[extract] PASSED [  2%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_rejects_changed_source_on_replay_without_rewriting_ledger PASSED [  2%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_current_authority_before_every_read[False] PASSED [  2%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_current_authority_before_every_read[True] PASSED [  2%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[completed] PASSED [  3%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[partial] PASSED [  3%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[failed] PASSED [  3%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[cancelled] PASSED [  3%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[cancelling] PASSED [  4%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[missing] PASSED [  4%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[provider-key] PASSED [  4%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[arguments] PASSED [  4%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[model-error] PASSED [  5%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[route] PASSED [  5%]
+tests/agent_kernel/test_bound_read_host.py::test_compute_metadata_is_complete_at_claim_and_ordinary_adapter_is_not_used PASSED [  5%]
+tests/agent_kernel/test_bound_read_host.py::test_compute_replay_refuses_same_version_with_different_calculated_result PASSED [  5%]
+tests/agent_kernel/test_bound_read_host.py::test_callback_failure_releases_new_call_and_preserves_original_exception PASSED [  6%]
+tests/agent_kernel/test_bound_read_host.py::test_replay_source_failure_does_not_release_or_rewrite_completed_call PASSED [  6%]
+tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[error_code-SOURCE_UNAVAILABLE] PASSED [  6%]
+tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[receipt_id-value1] PASSED [  6%]
+tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[result-None] PASSED [  7%]
+tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[result-value3] PASSED [  7%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_graph_passes_server_model_provenance_into_bound_host[True] PASSED [  7%]
+tests/agent_kernel/test_bound_read_host.py::test_actual_graph_passes_server_model_provenance_into_bound_host[False] PASSED [  7%]
+tests/agent_kernel/test_bound_read_host.py::test_category_scoped_baseline_selector_is_read_only_and_preserves_bound_scope PASSED [  8%]
+tests/agent_kernel/test_common_binding.py::test_execution_context_cannot_borrow_two_run_namespaces_or_an_unowned_call PASSED [  8%]
+tests/agent_kernel/test_common_binding.py::test_command_fingerprint_is_normalized_and_binds_the_actual_category PASSED [  8%]
+tests/agent_kernel/test_common_binding.py::test_configuration_rotation_changes_route_binding_without_inventing_a_model_version PASSED [  9%]
+tests/agent_kernel/test_context_budget.py::test_token_estimate[-0] PASSED [  9%]
+tests/agent_kernel/test_context_budget.py::test_token_estimate[abcd-1] PASSED [  9%]
+tests/agent_kernel/test_context_budget.py::test_token_estimate[\u5145\u6c14\u6cf5-3] PASSED [  9%]
+tests/agent_kernel/test_context_budget.py::test_token_estimate[\u5145\u6c14abcd\u6cf5!-5] PASSED [ 10%]
+tests/agent_kernel/test_context_budget.py::test_default_and_configured_budgets PASSED [ 10%]
+tests/agent_kernel/test_context_budget.py::test_segments_separate_history_skills_and_loop PASSED [ 10%]
+tests/agent_kernel/test_context_budget.py::test_optional_window_preserves_legacy_route_and_configuration_bindings PASSED [ 10%]
+tests/agent_kernel/test_context_budget.py::test_invalid_window_rejected_at_route_and_dto[512] PASSED [ 11%]
+tests/agent_kernel/test_context_budget.py::test_invalid_window_rejected_at_route_and_dto[10000001] PASSED [ 11%]
+tests/agent_kernel/test_context_budget.py::test_invalid_window_rejected_at_route_and_dto[True] PASSED [ 11%]
+tests/agent_kernel/test_context_budget.py::test_invalid_window_rejected_at_route_and_dto[2000.5] PASSED [ 11%]
+tests/agent_kernel/test_context_budget.py::test_invalid_window_rejected_at_route_and_dto[200000] PASSED [ 12%]
+tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked PASSED [ 12%]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development] PASSED [ 12%]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test] PASSED [ 12%]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production] PASSED [ 13%]
+tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider PASSED [ 13%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[None-current] PASSED [ 13%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[changed-updated] PASSED [ 13%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[SOURCE_STALE-updated] PASSED [ 14%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[VERSION_CONFLICT-updated] PASSED [ 14%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[FORBIDDEN_SCOPE-hidden] PASSED [ 14%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[NOT_FOUND-hidden] PASSED [ 14%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[SOURCE_UNAVAILABLE-hidden] PASSED [ 15%]
+tests/agent_kernel/test_conversation_memory.py::test_classify_content_changes_and_revocation[VALIDATION_FAILED-current] PASSED [ 15%]
+tests/agent_kernel/test_conversation_memory.py::test_candidate_and_unverified_read_keep_answer PASSED [ 15%]
+tests/agent_kernel/test_conversation_memory.py::test_missing_receipt_id_is_unverified_and_unreadable_receipt_hides[None-current] PASSED [ 15%]
+tests/agent_kernel/test_conversation_memory.py::test_missing_receipt_id_is_unverified_and_unreadable_receipt_hides[receipt1-hidden] PASSED [ 16%]
+tests/agent_kernel/test_conversation_memory.py::test_hidden_wins_over_updated_independent_of_call_order PASSED [ 16%]
+tests/agent_kernel/test_conversation_memory.py::test_thirty_turn_layering_full_history_and_hidden_sources PASSED [ 16%]
+tests/agent_kernel/test_conversation_memory.py::test_running_guard_only_stops_newly_hidden_turns[updated-False] PASSED [ 17%]
+tests/agent_kernel/test_conversation_memory.py::test_running_guard_only_stops_newly_hidden_turns[hidden-True] PASSED [ 17%]
+tests/agent_kernel/test_conversation_memory.py::test_scope_revoked_before_transaction_yields_is_mapped PASSED [ 17%]
+tests/agent_kernel/test_conversation_memory.py::test_history_freezes_once_across_context_reassembly PASSED [ 17%]
+tests/agent_kernel/test_conversation_memory.py::test_paged_history_revocation_is_checked_beyond_initial_window PASSED [ 18%]
+tests/agent_kernel/test_conversation_memory.py::test_continued_skills_are_bounded_deduplicated_and_currently_enabled[True-exclude0-expected0] PASSED [ 18%]
+tests/agent_kernel/test_conversation_memory.py::test_continued_skills_are_bounded_deduplicated_and_currently_enabled[True-exclude1-expected1] PASSED [ 18%]
+tests/agent_kernel/test_conversation_memory.py::test_continued_skills_are_bounded_deduplicated_and_currently_enabled[False-exclude2-expected2] PASSED [ 18%]
+tests/agent_kernel/test_disclosure.py::test_disclosure_hides_exactly_what_authorize_would_refuse PASSED [ 19%]
+tests/agent_kernel/test_disclosure.py::test_no_loaded_skill_keeps_reads_and_t2_preparation PASSED [ 19%]
+tests/agent_kernel/test_disclosure.py::test_loaded_skill_discloses_exactly_its_own_write_tools PASSED [ 19%]
+tests/agent_kernel/test_disclosure.py::test_disclosure_is_a_strict_subset_of_the_full_list PASSED [ 19%]
+tests/agent_kernel/test_disclosure.py::test_every_catalog_skill_narrows_the_surface PASSED [ 20%]
+tests/agent_kernel/test_disclosure.py::test_loading_every_skill_still_hides_unowned_skill_gated_commands PASSED [ 20%]
+tests/agent_kernel/test_disclosure.py::test_isolated_subtask_disclosure_cannot_be_widened_by_a_skill PASSED [ 20%]
+tests/agent_kernel/test_disclosure.py::test_digest_matches_the_full_list_when_nothing_is_hidden PASSED [ 20%]
+tests/agent_kernel/test_disclosure.py::test_digest_is_stable_and_distinguishes_disclosures PASSED [ 21%]
+tests/agent_kernel/test_disclosure.py::test_disclosure_follows_the_write_surface_not_the_skill_identity PASSED [ 21%]
+tests/agent_kernel/test_disclosure.py::test_core_stays_disclosed_under_every_combination PASSED [ 21%]
+tests/agent_kernel/test_disclosure.py::test_disclosure_may_only_grow_within_a_run PASSED [ 21%]
+tests/agent_kernel/test_disclosure.py::test_model_supplied_shapes_are_refused PASSED [ 22%]
+tests/agent_kernel/test_disclosure.py::test_run_records_an_append_only_disclosure_chain PASSED [ 22%]
+tests/agent_kernel/test_disclosure.py::test_a_narrowed_or_swapped_disclosure_is_refused_within_a_run PASSED [ 22%]
+tests/agent_kernel/test_disclosure.py::test_isolations_keep_separate_chains PASSED [ 22%]
+tests/agent_kernel/test_disclosure.py::test_binding_operations_refuses_a_skill_that_changed_after_the_call PASSED [ 23%]
+tests/agent_kernel/test_disclosure.py::test_module_imports_cleanly_from_every_entry_point PASSED [ 23%]
+tests/agent_kernel/test_domain_adapter_transactions.py::test_actual_common_claim_and_completed_recovery_need_only_current_read_access PASSED [ 23%]
+tests/agent_kernel/test_domain_adapter_transactions.py::test_actual_common_domain_failure_rolls_back_call_fact_and_receipt_group PASSED [ 23%]
+tests/agent_kernel/test_domain_adapter_transactions.py::test_actual_model_arguments_and_current_route_cannot_be_substituted PASSED [ 24%]
+tests/agent_kernel/test_domain_adapter_transactions.py::test_cross_run_existing_result_keeps_original_ownership_and_has_no_new_call PASSED [ 24%]
+tests/agent_kernel/test_domain_adapter_transactions.py::test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope PASSED [ 24%]
+tests/agent_kernel/test_execution_binding.py::test_selected_skill_and_response_index_use_server_model_identity PASSED [ 25%]
+tests/agent_kernel/test_execution_binding.py::test_loading_skill_in_same_reply_does_not_authorize_that_output PASSED [ 25%]
+tests/agent_kernel/test_execution_binding.py::test_missing_actual_model_ledger_cannot_execute_t0 PASSED [ 25%]
+tests/agent_kernel/test_execution_binding.py::test_generic_store_cannot_claim_t0_in_its_separate_transaction PASSED [ 25%]
+tests/agent_kernel/test_execution_binding.py::test_generic_store_cannot_finish_or_reconcile_domain_call[settle] PASSED [ 26%]
+tests/agent_kernel/test_execution_binding.py::test_generic_store_cannot_finish_or_reconcile_domain_call[reconcile] PASSED [ 26%]
+tests/agent_kernel/test_execution_binding.py::test_duplicate_protocol_ids_are_rejected_before_any_tool_dispatch PASSED [ 26%]
+tests/agent_kernel/test_execution_binding.py::test_checkpoint_restore_rejects_skill_drift_before_another_model_turn[version] PASSED [ 26%]
+tests/agent_kernel/test_execution_binding.py::test_checkpoint_restore_rejects_skill_drift_before_another_model_turn[content] PASSED [ 27%]
+tests/agent_kernel/test_execution_binding.py::test_checkpoint_restore_rejects_skill_drift_before_another_model_turn[operations] PASSED [ 27%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[run_id-FORBIDDEN_SCOPE] PASSED [ 27%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[tenant_id-FORBIDDEN_SCOPE] PASSED [ 27%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[state-FORBIDDEN_SCOPE] PASSED [ 28%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[result_index-FORBIDDEN_SCOPE] PASSED [ 28%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[arguments-DUPLICATE_INTENT_CONFLICT] PASSED [ 28%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[skill-FORBIDDEN_SCOPE] PASSED [ 28%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[model_version-VERSION_CONFLICT] PASSED [ 29%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[route_digest-VERSION_CONFLICT] PASSED [ 29%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[epoch-CANCELLED_RUN] PASSED [ 29%]
+tests/agent_kernel/test_execution_binding.py::test_actual_model_source_rejects_scope_index_version_and_epoch_changes[reverted-CANCELLED_RUN] PASSED [ 29%]
+tests/agent_kernel/test_execution_binding.py::test_in_session_call_completion_and_replay_keep_actual_receipt_and_single_call PASSED [ 30%]
+tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[running] PASSED [ 30%]
+tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[completed] PASSED [ 30%]
+tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[partial] PASSED [ 30%]
+tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_needs_read_authority_not_new_write_qualification[failed] PASSED [ 31%]
+tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_fails_without_current_read_authority[missing] PASSED [ 31%]
+tests/agent_kernel/test_execution_binding.py::test_completed_result_recovery_fails_without_current_read_authority[denied] PASSED [ 31%]
+tests/agent_kernel/test_execution_binding.py::test_recovery_port_has_no_new_write_dependencies_or_ledger_mutation PASSED [ 31%]
+tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[arguments] PASSED [ 32%]
+tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[command_digest] PASSED [ 32%]
+tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[epoch] PASSED [ 32%]
+tests/agent_kernel/test_execution_binding.py::test_completed_recovery_rejects_new_intents_and_cancelled_or_reverted_runs[reverted] PASSED [ 32%]
+tests/agent_kernel/test_execution_binding.py::test_prepare_refuses_revoked_qualification_unbound_load_and_borrowed_session[qualification] PASSED [ 33%]
+tests/agent_kernel/test_execution_binding.py::test_prepare_refuses_revoked_qualification_unbound_load_and_borrowed_session[loaded_event] PASSED [ 33%]
+tests/agent_kernel/test_execution_binding.py::test_prepare_refuses_revoked_qualification_unbound_load_and_borrowed_session[wrong_session] PASSED [ 33%]
+tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[agent_run_id] PASSED [ 34%]
+tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[category_id] PASSED [ 34%]
+tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[actor_id] PASSED [ 34%]
+tests/agent_kernel/test_execution_binding.py::test_other_receipt_cannot_be_reparented_or_complete_call[request_digest] PASSED [ 34%]
+tests/agent_kernel/test_execution_binding.py::test_prepared_call_cannot_change_payload_or_command_on_replay PASSED [ 35%]
+tests/agent_kernel/test_execution_binding.py::test_actual_route_is_rechecked_through_the_same_domain_session_callback PASSED [ 35%]
+tests/agent_kernel/test_execution_binding.py::test_loading_event_binding_is_actual_immutable_event_not_latest_name PASSED [ 35%]
+tests/agent_kernel/test_execution_binding.py::test_cancellation_or_revert_after_prepare_cannot_finish_call[epoch] PASSED [ 35%]
+tests/agent_kernel/test_execution_binding.py::test_cancellation_or_revert_after_prepare_cannot_finish_call[reverted] PASSED [ 36%]
+tests/agent_kernel/test_execution_binding.py::test_skill_load_event_from_another_scope_is_not_a_loading_fact[tenant_id] PASSED [ 36%]
+tests/agent_kernel/test_execution_binding.py::test_skill_load_event_from_another_scope_is_not_a_loading_fact[run_id] PASSED [ 36%]
+tests/agent_kernel/test_execution_binding.py::test_gateway_returns_actual_model_ledger_and_keeps_binding_out_of_native_payload PASSED [ 36%]
+tests/agent_kernel/test_gateway.py::test_provider_call_requires_registered_graph_and_replays_saved_request PASSED [ 37%]
+tests/agent_kernel/test_gateway.py::test_private_run_without_agreement_proceeds_and_receipts_none PASSED [ 37%]
+tests/agent_kernel/test_gateway.py::test_run_provider_identity_cannot_change_between_model_calls PASSED [ 37%]
+tests/agent_kernel/test_gateway.py::test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway PASSED [ 37%]
+tests/agent_kernel/test_gateway.py::test_prompt_is_fixed_and_tool_disclosure_only_grows_per_isolation PASSED [ 38%]
+tests/agent_kernel/test_gateway.py::test_scope_revocation_during_call_frees_slot_without_revealing_result PASSED [ 38%]
+tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries PASSED [ 38%]
+tests/agent_kernel/test_graph.py::test_progressive_load_preserves_prefix_and_unqualified_t0_becomes_candidate PASSED [ 38%]
+tests/agent_kernel/test_graph.py::test_raw_read_and_model_authority_are_rejected_before_host_callback PASSED [ 39%]
+tests/agent_kernel/test_graph.py::test_t2_has_no_executing_operation_and_only_prepares PASSED [ 39%]
+tests/agent_kernel/test_graph.py::test_whole_run_revert_target_is_t1_preparation_and_never_execution_identity PASSED [ 39%]
+tests/agent_kernel/test_graph.py::test_private_context_cannot_promote_shared_knowledge PASSED [ 39%]
+tests/agent_kernel/test_graph.py::test_interrupt_resumes_same_thread_without_repeating_model_or_actions PASSED [ 40%]
+tests/agent_kernel/test_graph.py::test_malformed_question_enters_bounded_repair_instead_of_crashing[True] PASSED [ 40%]
+tests/agent_kernel/test_graph.py::test_malformed_question_enters_bounded_repair_instead_of_crashing[False] PASSED [ 40%]
+tests/agent_kernel/test_graph.py::test_graph_resume_answer_cannot_replace_actual_category_run_or_identity PASSED [ 40%]
+tests/agent_kernel/test_graph.py::test_budget_forced_partial_keeps_actual_tool_results PASSED [ 41%]
+tests/agent_kernel/test_graph.py::test_cancel_never_calls_model PASSED   [ 41%]
+tests/agent_kernel/test_graph.py::test_durable_wallet_limit_returns_partial_without_retrying_model PASSED [ 41%]
+tests/agent_kernel/test_graph.py::test_interleaved_runs_in_same_session_cannot_resume_each_others_checkpoint PASSED [ 42%]
+tests/agent_kernel/test_graph.py::test_revoked_history_stops_with_partial_before_model_egress PASSED [ 42%]
+tests/agent_kernel/test_graph.py::test_required_work_state_over_budget_stops_partial_without_model PASSED [ 42%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_personal_child_reference_can_restore_and_feed_category_candidate PASSED [ 42%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_registered_page_returns_original_read_reference_on_restore PASSED [ 43%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_instruction_capture_is_locked_once_and_has_real_research_skill_event PASSED [ 43%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_captured_instruction_refuses_changed_skill_or_current_authority[version] PASSED [ 43%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_captured_instruction_refuses_changed_skill_or_current_authority[content] PASSED [ 43%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_captured_instruction_refuses_changed_skill_or_current_authority[disabled] PASSED [ 44%]
+tests/agent_kernel/test_m3_research_composition_transactions.py::test_actual_captured_instruction_refuses_changed_skill_or_current_authority[cancelled] PASSED [ 44%]
+tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[openai-compatible] PASSED [ 44%]
+tests/agent_kernel/test_native_protocols.py::test_refusal_truncation_and_http_errors_keep_sanitized_request_id[anthropic-native] PASSED [ 44%]
+tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[False-openai-compatible] PASSED [ 45%]
+tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[False-anthropic-native] PASSED [ 45%]
+tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[True-openai-compatible] PASSED [ 45%]
+tests/agent_kernel/test_native_protocols.py::test_native_tool_roundtrip_schema_and_server_secret[True-anthropic-native] PASSED [ 45%]
+tests/agent_kernel/test_native_protocols.py::test_tool_results_are_native_and_prefix_is_unchanged[openai-compatible] PASSED [ 46%]
+tests/agent_kernel/test_native_protocols.py::test_tool_results_are_native_and_prefix_is_unchanged[anthropic-native] PASSED [ 46%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\n-False-openai-compatible] PASSED [ 46%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\n-False-anthropic-native] PASSED [ 46%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\n-True-openai-compatible] PASSED [ 47%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\n-True-anthropic-native] PASSED [ 47%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\r\n-False-openai-compatible] PASSED [ 47%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\r\n-False-anthropic-native] PASSED [ 47%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\r\n-True-openai-compatible] PASSED [ 48%]
+tests/agent_kernel/test_native_protocols.py::test_sse_requires_terminal_usage_and_preserves_native_result[\r\n-True-anthropic-native] PASSED [ 48%]
+tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[429-PROVIDER_RATE_LIMITED-False] PASSED [ 48%]
+tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[503-PROVIDER_SERVER_ERROR-True] PASSED [ 48%]
+tests/agent_kernel/test_native_protocols.py::test_transport_never_repeats_unknown_or_redirect[302-PROVIDER_REDIRECT_DENIED-False] PASSED [ 49%]
+tests/agent_kernel/test_native_protocols.py::test_native_wire_schema_has_finite_strict_objects_and_decodes_domain_json PASSED [ 49%]
+tests/agent_kernel/test_native_protocols.py::test_native_name_encoding_is_bijective_for_underscores_and_dots[category.read] PASSED [ 49%]
+tests/agent_kernel/test_native_protocols.py::test_native_name_encoding_is_bijective_for_underscores_and_dots[mcp.private_dot_name] PASSED [ 50%]
+tests/agent_kernel/test_native_protocols.py::test_native_name_encoding_is_bijective_for_underscores_and_dots[mcp._0__1.lookup] PASSED [ 50%]
+tests/agent_kernel/test_native_protocols.py::test_anthropic_caches_envelope_and_latest_message_without_mutating_input[False] PASSED [ 50%]
+tests/agent_kernel/test_native_protocols.py::test_anthropic_caches_envelope_and_latest_message_without_mutating_input[True] PASSED [ 50%]
+tests/agent_kernel/test_process_view.py::test_process_reads_actual_call_receipt_and_selected_events_without_raw_content PASSED [ 51%]
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal PASSED [ 51%]
+tests/agent_kernel/test_process_view.py::test_terminal_time_is_atomic_and_stable_after_refresh_and_original_cancel_replay PASSED [ 51%]
+tests/agent_kernel/test_process_view.py::test_completed_run_is_not_claimed_as_business_approval_and_old_missing_end_stays_unknown PASSED [ 51%]
+tests/agent_kernel/test_process_view.py::test_timeline_uses_bounded_complete_pages_and_ignores_provider_delta_volume PASSED [ 52%]
+tests/agent_kernel/test_process_view.py::test_current_owner_source_and_category_access_are_rechecked_on_every_process_page PASSED [ 52%]
+tests/agent_kernel/test_process_view.py::test_state_and_record_rollback_as_one_transaction PASSED [ 52%]
+tests/agent_kernel/test_process_view.py::test_personal_run_process_is_readable_only_in_its_personal_entry PASSED [ 52%]
+tests/agent_kernel/test_process_view.py::test_all_sources_and_receipts_have_independent_complete_metadata_pages PASSED [ 53%]
+tests/agent_kernel/test_read_proof_transactions.py::test_real_compute_call_retains_complete_digest_and_exact_replay PASSED [ 53%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[writer_id-5c10424e-61de-47b3-af3e-730231c3fc7c] PASSED [ 53%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[category_id-36edd72a-9570-47c1-a8dc-ba8b09c61ed0] PASSED [ 53%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[cancel_epoch-1] PASSED [ 54%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[isolation-research] PASSED [ 54%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[private_context-True] PASSED [ 54%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[model_call_id-6314fba0-ba58-4ec3-9c73-845dd3691b6e] PASSED [ 54%]
+tests/agent_kernel/test_read_proof_transactions.py::test_sql_cannot_accept_forged_read_binding[tool_definitions_digest-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa] PASSED [ 55%]
+tests/agent_kernel/test_read_proof_transactions.py::test_real_read_proof_content_mismatch_and_cancelled_replay_refused PASSED [ 55%]
+tests/agent_kernel/test_read_proof_transactions.py::test_real_completed_read_result_and_binding_cannot_be_rewritten PASSED [ 55%]
+tests/agent_kernel/test_read_proof_transactions.py::test_original_agent_authority_is_rechecked_when_human_consumes_compute_proof PASSED [ 55%]
+tests/agent_kernel/test_read_proof_transactions.py::test_actual_domain_computed_claim_uses_complete_server_result PASSED [ 56%]
+tests/agent_kernel/test_read_proof_transactions.py::test_actual_computed_candidate_can_be_adopted_once_without_t0_qualification PASSED [ 56%]
+tests/agent_kernel/test_read_proof_transactions.py::test_actual_postgres_canonical_json_matches_server_digest[value0] PASSED [ 56%]
+tests/agent_kernel/test_read_proof_transactions.py::test_actual_postgres_canonical_json_matches_server_digest[value1] PASSED [ 56%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_actual_atomic_snapshot_registration_t0_and_t1[False] PASSED [ 57%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_actual_atomic_snapshot_registration_t0_and_t1[True] PASSED [ 57%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_actual_cross_requester_snapshot_read_keeps_original_run_private PASSED [ 57%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_marked_snapshot_without_actual_call_cannot_be_inserted PASSED [ 57%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_claim_needs_actual_current_run_page PASSED [ 58%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_cross_run_snapshot_link_requires_whole_locator_in_actual_page PASSED [ 58%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_computed_claim_can_consume_proven_cross_run_snapshot PASSED [ 58%]
+tests/agent_kernel/test_snapshot_proof_transactions.py::test_actual_bootstrap_search_seals_object_and_replays_without_provider PASSED [ 59%]
+tests/agent_kernel/test_work_products_pg.py::test_actual_run_document_revision_replay_and_permission_boundaries PASSED [ 59%]
+tests/agent_kernel/test_work_products_pg.py::test_table_uses_actual_markdown_and_revoked_category_stops_reads PASSED [ 59%]
+tests/agent_kernel/test_work_state.py::test_exact_contiguous_fragment_only_and_human_tombstones_win PASSED [ 59%]
+tests/agent_kernel/test_work_state.py::test_attached_page_data_cannot_prove_user_constraints PASSED [ 60%]
+tests/agent_kernel/test_work_state_pg.py::test_first_turn_constraint_remains_at_turn_fifteen_and_proposals_need_verbatim_proof PASSED [ 60%]
+tests/agent_kernel/test_work_state_pg.py::test_human_removal_is_versioned_replayable_frozen_and_not_resurrected PASSED [ 60%]
+tests/agent_kernel/test_work_state_pg.py::test_state_edit_cas_peer_scope_and_append_only PASSED [ 60%]
+tests/agent_kernel/test_work_state_pg.py::test_finish_replay_and_failure_roll_back_state_with_terminal_result PASSED [ 61%]
+tests/agent_kernel/test_work_state_pg.py::test_source_exclusion_and_revoke_hide_state_and_stop_frozen_egress PASSED [ 61%]
+tests/agent_kernel/test_work_state_pg.py::test_reusing_session_id_does_not_send_unbound_sources_from_other_runs PASSED [ 61%]
+tests/agent_kernel/test_work_state_pg.py::test_no_output_terminal_keeps_unfinished_work_and_fixed_focus_versions[cancelled] PASSED [ 61%]
+tests/agent_kernel/test_work_state_pg.py::test_no_output_terminal_keeps_unfinished_work_and_fixed_focus_versions[failed] PASSED [ 62%]
+tests/agent_kernel/test_work_state_pg.py::test_page_attachment_stays_material_and_is_not_a_goal_or_constraint PASSED [ 62%]
+tests/enterprise_search/test_assistant_originals_pg.py::test_server_customer_original_classification_reaches_real_egress_check[False] PASSED [ 62%]
+tests/enterprise_search/test_assistant_originals_pg.py::test_server_customer_original_classification_reaches_real_egress_check[True] PASSED [ 62%]
+tests/enterprise_search/test_assistant_pg.py::test_actual_search_citation_isolated_extract_and_server_answer_are_replayable PASSED [ 63%]
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state PASSED [ 63%]
+tests/enterprise_search/test_assistant_pg.py::test_final_source_withdrawal_removes_quotes_and_dependent_prose PASSED [ 63%]
+tests/enterprise_search/test_assistant_pg.py::test_forged_citation_cannot_become_a_verified_company_source PASSED [ 63%]
+tests/enterprise_search/test_assistant_pg.py::test_actual_no_match_is_not_mislabeled_as_no_lookup PASSED [ 64%]
+tests/enterprise_search/test_assistant_pg.py::test_saved_answer_and_carried_history_recheck_sources_without_inference[updated] PASSED [ 64%]
+tests/enterprise_search/test_assistant_pg.py::test_saved_answer_and_carried_history_recheck_sources_without_inference[withdrawn] PASSED [ 64%]
+tests/enterprise_search/test_assistant_pg.py::test_saved_answer_and_carried_history_recheck_sources_without_inference[revoked] PASSED [ 64%]
+tests/enterprise_search/test_assistant_pg.py::test_history_page_outside_frozen_recent_turns_retains_source_revocation_guard PASSED [ 65%]
+tests/enterprise_search/test_assistant_temporal_pg.py::test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference PASSED [ 65%]
+tests/enterprise_search/test_business_profile_pg.py::test_native_source_planner_cost_and_warm_latency_without_jit PASSED [ 65%]
+tests/enterprise_search/test_business_sources_pg.py::test_actual_quality_capa_change_build_and_run_sources_keep_scope_and_fixed_proofs PASSED [ 65%]
+tests/enterprise_search/test_business_temporal_pg.py::test_native_issue_question_is_durable_and_uses_no_extraction_model PASSED [ 66%]
+tests/enterprise_search/test_business_wait_supply_pg.py::test_native_wait_current_history_and_external_reply_are_separated PASSED [ 66%]
+tests/enterprise_search/test_business_wait_supply_pg.py::test_actual_supplier_commitment_is_structured_and_never_claims_stock PASSED [ 66%]
+tests/enterprise_search/test_dispatch.py::test_projection_ack_keeps_durable_identity_and_replay_is_idempotent PASSED [ 67%]
+tests/enterprise_search/test_dispatch.py::test_projection_start_failure_remains_unknown_for_outbox_retry PASSED [ 67%]
+tests/enterprise_search/test_dispatch.py::test_security_workflow_identity_is_preserved_alongside_projection PASSED [ 67%]
+tests/enterprise_search/test_execution_records_pg.py::test_fixed_execution_and_professional_records_are_citable_without_raw_measurements PASSED [ 67%]
+tests/enterprise_search/test_execution_records_pg.py::test_professional_record_runs_through_authenticated_temporal_and_fixed_source PASSED [ 68%]
+tests/enterprise_search/test_keyword.py::test_chinese_question_removes_function_words_but_keeps_domain_words_and_or PASSED [ 68%]
+tests/enterprise_search/test_keyword.py::test_identifiers_are_independent_of_tokenization_and_dates_are_not_codes PASSED [ 68%]
+tests/enterprise_search/test_keyword.py::test_long_lines_and_paragraphs_remain_exact_located_source_substrings PASSED [ 68%]
+tests/enterprise_search/test_keyword.py::test_projection_workflow_is_sandboxable_without_business_or_provider_imports PASSED [ 69%]
+tests/enterprise_search/test_originals_pg.py::test_uploaded_original_scan_epoch_and_current_configuration_are_rechecked PASSED [ 69%]
+tests/enterprise_search/test_retrieval_pg.py::test_or_recall_identifier_priority_and_no_raw_text_in_http_result PASSED [ 69%]
+tests/enterprise_search/test_retrieval_pg.py::test_authoritative_private_scope_and_tenant_filter_precede_returned_counts PASSED [ 69%]
+tests/enterprise_search/test_retrieval_pg.py::test_outbox_replay_and_full_rebuild_do_not_duplicate_df_or_business_facts PASSED [ 70%]
+tests/enterprise_search/test_retrieval_pg.py::test_withdrawal_and_membership_revocation_take_effect_without_reindex PASSED [ 70%]
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second PASSED [ 70%]
+tests/enterprise_search/test_retrieval_pg.py::test_missing_or_corrupt_projection_is_partial_and_never_leaks_wrong_scope PASSED [ 70%]
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex PASSED [ 71%]
+tests/enterprise_search/test_retrieval_pg.py::test_projection_failure_is_recorded_then_same_event_recovers PASSED [ 71%]
+tests/enterprise_search/test_retrieval_pg.py::test_projection_rejects_forged_envelopes_and_revoked_background_actor PASSED [ 71%]
+tests/enterprise_search/test_retrieval_pg.py::test_personal_rebuild_derives_each_category_from_actual_readable_sources PASSED [ 71%]
+tests/enterprise_search/test_retrieval_pg.py::test_search_parameters_only_narrow_and_never_accept_policy_facts PASSED [ 72%]
+tests/enterprise_search/test_retrieval_pg.py::test_concurrent_source_batches_keep_corpus_df_consistent_without_cross_source_deadlock PASSED [ 72%]
+tests/enterprise_search/test_temporal_pg.py::test_projection_retries_after_worker_restart_without_model_or_raw_temporal_payload PASSED [ 72%]
+tests/external_wait_pg/test_workflow.py::test_actual_delivery_transfer_history_and_exact_replay_are_one_t0_loop PASSED [ 72%]
+tests/external_wait_pg/test_workflow.py::test_adopt_actual_project_plan_calendar_without_inventing_native_records PASSED [ 73%]
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response PASSED [ 73%]
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck PASSED [ 73%]
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule PASSED [ 73%]
+tests/preproject/test_lifecycle_guard_repair_pg.py::test_restored_guards_are_enabled_and_keep_original_before_after_timing PASSED [ 74%]
+tests/preproject/test_lifecycle_guard_repair_pg.py::test_disabled_restored_guard_denies_coverage_and_rollback_restores_it PASSED [ 74%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_catalog_matches_actual_columns_without_consuming_transport PASSED [ 74%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_inbox_grouping_are_metadata_and_governance_still_requires_both_source_guards PASSED [ 75%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposals] PASSED [ 75%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_items] PASSED [ 75%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_item_versions] PASSED [ 75%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_revisions] PASSED [ 76%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_sources] PASSED [ 76%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_submissions] PASSED [ 76%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-proposal_decisions] PASSED [ 76%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-project_open_items] PASSED [ 77%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_entries] PASSED [ 77%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-category_knowledge_current] PASSED [ 77%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-product_target_segments] PASSED [ 77%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_versions] PASSED [ 78%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-parameter_current] PASSED [ 78%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-promotion_proofs] PASSED [ 78%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-evidence_links] PASSED [ 78%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[lifecycle_reference-claim_withdrawals] PASSED [ 79%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposals] PASSED [ 79%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_items] PASSED [ 79%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_item_versions] PASSED [ 79%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_revisions] PASSED [ 80%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_sources] PASSED [ 80%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_submissions] PASSED [ 80%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-proposal_decisions] PASSED [ 80%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-project_open_items] PASSED [ 81%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_entries] PASSED [ 81%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-category_knowledge_current] PASSED [ 81%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-product_target_segments] PASSED [ 81%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_versions] PASSED [ 82%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-parameter_current] PASSED [ 82%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-promotion_proofs] PASSED [ 82%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-evidence_links] PASSED [ 82%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_each_actual_m3_guard_is_required_for_coverage[category_lifecycle_clock-claim_withdrawals] PASSED [ 83%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_unknown_columns_tables_and_wrong_guard_implementation_fail_closed PASSED [ 83%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_frozen_migration_has_source_free_fast_path_and_exact_predecessor_down PASSED [ 83%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_coverage_and_private_helpers_have_no_runtime_execute PASSED [ 84%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[artifact] PASSED [ 84%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[original] PASSED [ 84%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[claim] PASSED [ 84%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[knowledge] PASSED [ 85%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_typed_refs_keep_id_but_ignore_identity_and_free_text[definition] PASSED [ 85%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_arbitrary_content_relation_keys_are_not_source_edges[section] PASSED [ 85%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_arbitrary_content_relation_keys_are_not_source_edges[option] PASSED [ 85%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_arbitrary_content_relation_keys_are_not_source_edges[risk] PASSED [ 86%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[commercial] PASSED [ 86%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[competitor] PASSED [ 86%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[voice] PASSED [ 86%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_registered_nested_reference_containers_are_retained[frozen_link] PASSED [ 87%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[False-False] PASSED [ 87%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[False-True] PASSED [ 87%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[True-False] PASSED [ 87%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_actual_original_roots_fence_and_advance_both_scopes[True-True] PASSED [ 88%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_public_m3_source_adoption_is_counted PASSED [ 88%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original PASSED [ 88%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head PASSED [ 88%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_source_free_item_never_invokes_history_node_queries PASSED [ 89%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry] PASSED [ 89%]
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[definition_spec] PASSED [ 89%]
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility PASSED [ 89%]
+tests/test_project_governance.py::test_adopt_review_decide_and_next_stage_not_block_current PASSED [ 90%]
+tests/test_project_governance.py::test_unknown_gate_cannot_be_approved_and_peer_cannot_adopt PASSED [ 90%]
+tests/test_project_governance.py::test_fixed_health_priority PASSED      [ 90%]
+tests/test_project_governance.py::test_baseline_binding_and_directory_share_facts PASSED [ 90%]
+tests/test_project_governance.py::test_governance_ledger_is_immutable_and_agent_has_no_write PASSED [ 91%]
+tests/test_scoped_dispatch.py::test_dispatcher_claims_only_bound_tenant_metadata_and_preserves_scope PASSED [ 91%]
+tests/test_scoped_dispatch.py::test_application_cannot_use_dispatcher_and_dispatcher_cannot_read_business PASSED [ 91%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_frozen_child_citation_extracts_without_search_and_replays_without_inference PASSED [ 92%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_reference_alias_resolves_across_three_turns_and_ledger_records_origin PASSED [ 92%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_bounded_preview_and_pages_preserve_older_refs_without_research PASSED [ 92%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_current_authority_rechecked_and_fixed_body_never_silently_replaced[withdrawn] PASSED [ 92%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_current_authority_rechecked_and_fixed_body_never_silently_replaced[updated] PASSED [ 93%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_same_session_without_lineage_and_foreign_reference_do_not_expand_scope PASSED [ 93%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_explicit_exclusion_is_versioned_and_keeps_refs_out_of_next_turn PASSED [ 93%]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history PASSED [ 93%]
+tests/enterprise_search/test_citation_inheritance_temporal_pg.py::test_http_continuation_reissues_citation_and_replay_does_not_repeat_inference PASSED [ 94%]
+tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[failed] PASSED [ 94%]
+tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[cancelled] PASSED [ 94%]
+tests/enterprise_search/test_interrupted_citations_pg.py::test_archived_reader_never_accepts_extraction_or_a_different_scope PASSED [ 94%]
+tests/enterprise_search/test_comparison.py::test_paragraph_changes_keep_both_exact_locations_and_unchanged_text_is_not_returned PASSED [ 95%]
+tests/enterprise_search/test_comparison.py::test_unrelated_replacements_are_unaligned_and_limits_are_never_no_change PASSED [ 95%]
+tests/enterprise_search/test_comparison.py::test_markdown_rows_and_empty_line_changes_keep_literal_spans PASSED [ 95%]
+tests/enterprise_search/test_comparison.py::test_xlsx_aligns_reordered_columns_and_rows_by_the_original_key_header PASSED [ 95%]
+tests/enterprise_search/test_comparison.py::test_ambiguous_headers_or_keys_are_not_invented_as_additions_or_removals PASSED [ 96%]
+tests/enterprise_search/test_comparison.py::test_formulas_are_literal_not_calculated_and_parse_gaps_stay_explicit PASSED [ 96%]
+tests/enterprise_search/test_comparison.py::test_comparison_child_has_one_read_surface_and_no_search_or_write_authority PASSED [ 96%]
+tests/enterprise_search/test_comparison_pg.py::test_pinned_documents_compare_without_index_and_save_verified_private_table PASSED [ 96%]
+tests/enterprise_search/test_comparison_pg.py::test_comparison_batches_are_complete_only_after_every_actual_change_is_read PASSED [ 97%]
+tests/enterprise_search/test_comparison_pg.py::test_unchanged_parsed_documents_need_no_interpretation_model PASSED [ 97%]
+tests/enterprise_search/test_comparison_pg.py::test_invented_impact_is_rejected_and_partial_is_not_presented_as_complete PASSED [ 97%]
+tests/enterprise_search/test_comparison_pg.py::test_materials_reader_cannot_sign_an_unpinned_source PASSED [ 97%]
+tests/enterprise_search/test_comparison_pg.py::test_documented_impact_has_a_literal_side_reference_without_inventing_authority PASSED [ 98%]
+tests/enterprise_search/test_comparison_pg.py::test_withdrawal_during_final_model_removes_comparison_and_unverified_unknowns PASSED [ 98%]
+tests/enterprise_search/test_comparison_originals_pg.py::test_uploaded_pair_uses_real_native_locations_and_scan_invalidation_is_model_free[pdf] PASSED [ 98%]
+tests/enterprise_search/test_comparison_originals_pg.py::test_uploaded_pair_uses_real_native_locations_and_scan_invalidation_is_model_free[xlsx] PASSED [ 98%]
+tests/enterprise_search/test_comparison_temporal_pg.py::test_http_document_pair_reaches_verified_differences_and_idempotent_private_table PASSED [ 99%]
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation PASSED [ 99%]
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference PASSED [ 99%]
+tests/enterprise_search/test_relations_temporal_pg.py::test_registered_relationship_reaches_fixed_source_and_continues_without_new_search PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py: 5 warnings
+tests/agent_kernel/test_snapshot_proof_transactions.py: 1 warning
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/enterprise_search/test_execution_records_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 5 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/enterprise_search/test_relations_pg.py: 2 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:174: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:199: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+tests/agent_kernel/test_snapshot_proof_transactions.py: 6 warnings
+tests/enterprise_search/test_business_sources_pg.py: 3 warnings
+tests/enterprise_search/test_business_temporal_pg.py: 3 warnings
+tests/enterprise_search/test_business_wait_supply_pg.py: 6 warnings
+tests/enterprise_search/test_execution_records_pg.py: 6 warnings
+tests/external_wait_pg/test_workflow.py: 6 warnings
+tests/field_feedback_pg/test_field_chain.py: 3 warnings
+tests/knowledge_pg/test_publication.py: 6 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 30 warnings
+tests/project_risk_pg/test_chain.py: 6 warnings
+tests/test_project_governance.py: 12 warnings
+tests/enterprise_search/test_relations_pg.py: 6 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 3 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]
+tests/enterprise_search/test_citation_inheritance_pg.py::test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history
+tests/enterprise_search/test_citation_inheritance_pg.py::test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_business_profile_pg.py::test_native_source_planner_cost_and_warm_latency_without_jit
+  tests/enterprise_search/test_business_profile_pg.py:12: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_native_source_planner_cost_and_warm_latency_without_jit(setup, record_property):
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/enterprise_search/test_execution_records_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/enterprise_search/test_relations_pg.py: 2 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/enterprise_search/test_execution_records_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/enterprise_search/test_relations_pg.py: 2 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/enterprise_search/test_execution_records_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/enterprise_search/test_relations_pg.py: 2 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/enterprise_search/test_execution_records_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/enterprise_search/test_relations_pg.py: 2 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_business_sources_pg.py: 1 warning
+tests/enterprise_search/test_business_temporal_pg.py: 1 warning
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/enterprise_search/test_execution_records_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+tests/enterprise_search/test_relations_pg.py: 2 warnings
+tests/enterprise_search/test_relations_temporal_pg.py: 1 warning
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_business_wait_supply_pg.py: 2 warnings
+tests/external_wait_pg/test_workflow.py: 13 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/knowledge/service.py:420: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:535: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/work_management/service.py:385: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/project_risk/service.py:205: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-relations-20261028/database-final.junit.xml -
+================ 388 passed, 271 warnings in 1436.24s (0:23:56) ================

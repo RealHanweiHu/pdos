@@ -29,6 +29,7 @@ function load(filename) {
   return mod.exports;
 }
 const { ModelConfigurationSettings } = load(path.join(directory, "settings.tsx"));
+const { ConnectionEditor } = load(path.join(directory, "connection-editor.tsx"));
 const { readinessText, validateRequest } = load(path.join(directory, "contracts.ts"));
 const metadata = { protocol: "openai-compatible", base_url: "https://synthetic.invalid/v1", model: "synthetic-model", model_version: "v1", max_output_tokens: 2048, openai_output_parameter: "max_completion_tokens", timeout_seconds: 30, response_bytes: 1048576 };
 const reading = { revision: 2, version_id: "synthetic-version", provider_version: "synthetic-binding", metadata, enabled: true, credential_status: "bound", credential_display: "已绑定 ••••", created_at: "2026-10-02T00:00:00Z", requires_requalification: true };
@@ -86,8 +87,34 @@ test("invalid numeric input is rejected before requesting a preview", () => {
 test("input labels have unique accessible ids with both explicit protocol choices", () => {
   const html = render({ reading, canEdit: true, readiness: null, onPreview: async () => {} });
   const ids = [...html.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
-  assert.equal(ids.length, 9);
+  assert.equal(ids.length, 12);
   assert.equal(new Set(ids).size, ids.length);
   for (const id of ids) assert.ok(html.includes(`for="${id}"`));
   assert.ok(html.includes("OpenAI 兼容")); assert.ok(html.includes("Anthropic 原生"));
+  assert.ok(html.includes("Chat Completions API"));
+  assert.ok(html.includes('value="tools"')); assert.ok(html.includes('value="text"'));
+  assert.ok(html.includes("接口支持流式响应"));
+});
+
+test("provider creation exposes direct password entry with no stored key echo", () => {
+  const html = renderToStaticMarkup(React.createElement(ConnectionEditor, {
+    api: async () => { throw new Error("Render cannot save"); }, onSaved() {}, onCancel() {},
+  }));
+  for (const label of ["Base URL", "API Key", "模型名称", "保存服务商"]) assert.ok(html.includes(label));
+  assert.match(html, /type="password"[^>]*autoComplete="new-password"/);
+  assert.ok(html.includes("保存到服务器安全存储"));
+  assert.equal(html.includes("synthetic-fixture-only"), false);
+});
+
+
+test("optional context window renders and validates configured and empty values", () => {
+  const props = { reading, canEdit: true, readiness: null, onPreview: async () => {} };
+  assert.ok(render(props).includes("未填写（按 32,000 估算）"));
+  assert.ok(render(props).includes("上下文窗口（tokens）"));
+  const configured = { ...reading, metadata: { ...metadata, context_window_tokens: 200000 } };
+  assert.match(render({ ...props, reading: configured }), /上下文窗口：200000/);
+  for (const value of [512, 10000001, 1024.5, NaN]) assert.ok(validateRequest({ expected_revision: 0, metadata: { ...metadata, context_window_tokens: value }, enabled: false }));
+  for (const value of [null, undefined, 200000]) assert.equal(validateRequest({ expected_revision: 0, metadata: { ...metadata, context_window_tokens: value }, enabled: false }), null);
+  const editor = renderToStaticMarkup(React.createElement(ConnectionEditor, { api: async () => {}, onSaved() {}, onCancel() {} }));
+  assert.ok(editor.includes("上下文窗口（tokens）"));
 });

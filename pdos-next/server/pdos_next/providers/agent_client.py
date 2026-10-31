@@ -11,6 +11,8 @@ The host authorizes every attempt; this transport never retries a possibly sent 
 """
 
 import json
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 import httpx
 
@@ -18,6 +20,7 @@ from pdos_next.agent_kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
 from pdos_next.providers.agent_wire import (
     FINISH_TOOL,
+    FUNCTION_CODECS,
     MINIMAX_CODEC,
     business_name,
     finish_tool,
@@ -27,10 +30,37 @@ from pdos_next.providers.agent_wire import (
     tool_name,
 )
 from pdos_next.providers.client import _identifier, _usage, json_value
-from pdos_next.providers.types import ProviderError, ProviderRoute
+from pdos_next.providers.types import ProviderError, ProviderRoute, ProviderTokenCount
+
+_PROMPT_CACHE_ALLOWED = ContextVar("pdos_anthropic_prompt_cache_allowed", default=True)
 
 
-def request_body(route, system, messages, tools, output_schema, streaming):
+@contextmanager
+def prompt_cache_policy(allowed):
+    """Host-only dispatch fact; preserves the existing synthetic client's turn interface."""
+    token = _PROMPT_CACHE_ALLOWED.set(allowed is True)
+    try:
+        yield
+    finally:
+        _PROMPT_CACHE_ALLOWED.reset(token)
+
+
+def _cache_mark(message):
+    content = message["content"]
+    if isinstance(content, str):
+        content = [{"type": "text", "text": content}]
+    else:
+        content = [dict(block) for block in content]
+    if content:
+        content[-1]["cache_control"] = {"type": "ephemeral"}
+    message["content"] = content
+
+
+def request_body(route, system, messages, tools, output_schema, streaming,
+                 *, prompt_cache_allowed=None):
+    if prompt_cache_allowed is None:
+        prompt_cache_allowed = _PROMPT_CACHE_ALLOWED.get()
+    streaming = streaming and route.streaming
     definitions = [{**t, "name": tool_name(t["name"])} for t in tools]
     if route.protocol == "openai-compatible":
         history = [{"role": "system", "content": system}]
@@ -57,18 +87,28 @@ def request_body(route, system, messages, tools, output_schema, streaming):
         body = {
             "model": route.model,
             "messages": history,
-            "tools": [{"type": "function", "function": t} for t in definitions],
             route.openai_output_parameter: route.max_output_tokens,
             "stream": streaming,
             **({"stream_options": {"include_usage": True}} if streaming else {}),
         }
-        if route.agent_response_codec == MINIMAX_CODEC:
-            body["tools"].append(finish_tool(output_schema))
-            body["reasoning_split"] = True
-        else:
+        if definitions:
+            body["tools"] = [{"type": "function", "function": t} for t in definitions]
+        if route.agent_response_codec in FUNCTION_CODECS:
+            body.setdefault("tools", []).append(finish_tool(output_schema))
+            if route.agent_response_codec == MINIMAX_CODEC:
+                body["reasoning_split"] = True
+        elif route.openai_response_mode in {"auto", "json_schema"}:
             body["response_format"] = {"type": "json_schema", "json_schema": {
                 "name": "agent_output", "schema": output_schema, "strict": True,
             }}
+        else:
+            # Dynamic schemas belong at the context tail, never in the frozen prefix.
+            history.append({"role": "user", "content":
+                "Return the final response as a JSON object matching this JSON Schema. "
+                "Use the available business tools first when needed. Do not wrap JSON in "
+                "Markdown. JSON Schema: " + json.dumps(output_schema, ensure_ascii=False)})
+            if route.openai_response_mode == "json_object":
+                body["response_format"] = {"type": "json_object"}
         return body
     if any(message.get("provider_continuation") is not None for message in messages):
         raise DomainError("VERSION_CONFLICT", "原模型协议续接不能用于其他协议。")
@@ -106,9 +146,14 @@ def request_body(route, system, messages, tools, output_schema, streaming):
             history[-1]["content"] = previous + value["content"]
         else:
             history.append(value)
+    if history and prompt_cache_allowed:
+        _cache_mark(history[0])
+        if len(history) > 1:
+            _cache_mark(history[-1])
     return {
         "model": route.model,
-        "system": [{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
+        "system": [{"type": "text", "text": system,
+                    **({"cache_control": {"type": "ephemeral"}} if prompt_cache_allowed else {})}],
         "messages": history,
         "tools": [
             {"name": t["name"], "description": t["description"], "input_schema": t["parameters"]}
@@ -139,11 +184,14 @@ def parse_turn(body, route, request_id=None):
                 raise ProviderError("PROVIDER_REFUSAL", usage=usage)
             minimax = route.agent_response_codec == MINIMAX_CODEC
             text = public_text(message.get("content")) if minimax else message.get("content") or ""
-            for call in message.get("tool_calls", []):
+            for call in message.get("tool_calls") or []:
                 if call["type"] != "function":
                     raise ValueError("Native function required")
                 arguments = json_value(call["function"]["arguments"])
-                if minimax and call["function"]["name"] == FINISH_TOOL:
+                if (
+                    route.agent_response_codec in FUNCTION_CODECS
+                    and call["function"]["name"] == FINISH_TOOL
+                ):
                     if len(message["tool_calls"]) != 1 or not isinstance(arguments, dict):
                         raise ValueError("Output function cannot mix with business calls")
                     # Validate the protocol identity without exposing an executable tool.
@@ -157,7 +205,10 @@ def parse_turn(body, route, request_id=None):
                         arguments=arguments,
                     )
                 )
-            if minimax or message.get("reasoning_content") is not None:
+            if (
+                route.agent_response_codec in FUNCTION_CODECS
+                or message.get("reasoning_content") is not None
+            ):
                 continuation = private_continuation(route, message)
         else:
             if body["stop_reason"] == "max_tokens":
@@ -204,8 +255,10 @@ def parse_turn(body, route, request_id=None):
 
 
 class StreamAccumulator:
-    def __init__(self, protocol, emit):
+    def __init__(self, protocol, emit, *, minimax=False):
         self.protocol, self.emit = protocol, emit
+        self.minimax = minimax
+        self.minimax_final = False
         self.body = (
             {
                 "usage": {},
@@ -228,6 +281,25 @@ class StreamAccumulator:
                 self.stopped = True
                 return
             chunk = json_value(data)
+            if self.minimax:
+                if self.minimax_final:
+                    raise ValueError("Data after MiniMax terminal usage")
+                prior_id = self.body.get("id")
+                if prior_id and chunk.get("id", prior_id) != prior_id:
+                    raise ValueError("Stream response identity changed")
+                if "base_resp" in chunk:
+                    if not isinstance(chunk["base_resp"], dict):
+                        raise ValueError("Invalid MiniMax status")
+                    status = chunk["base_resp"].get("status_code")
+                    if (
+                        type(status) is not int or status != 0
+                        or chunk.get("choices") != []
+                        or not prior_id or chunk.get("id") != prior_id
+                        or not self.body["choices"][0]["finish_reason"]
+                    ):
+                        raise ValueError("Invalid MiniMax terminal usage")
+                    _usage(chunk, self.protocol)
+                    self.minimax_final = True
             if chunk.get("usage") is not None:
                 self.body["usage"] = chunk["usage"]
             choices = chunk.get("choices", [])
@@ -246,7 +318,7 @@ class StreamAccumulator:
             if delta.get("content"):
                 message["content"] += delta["content"]
                 self.emit({"type": "text_delta", "text": delta["content"]})
-            for value in delta.get("tool_calls", []):
+            for value in delta.get("tool_calls") or []:
                 call = self.calls.setdefault(
                     value["index"],
                     {"id": "", "type": "function", "function": {"name": "", "arguments": ""}},
@@ -303,6 +375,51 @@ class AgentProviderClient:
     def close(self):
         self.client.close()
 
+    def count_tokens(self, route, *, system, messages, tools, output_schema,
+                     cancelled=lambda: False):
+        """Same-host preflight only; no generation, caching, retries or usage object.
+
+        https://platform.claude.com/docs/en/build-with-claude/token-counting
+        https://platform.claude.com/docs/en/api/typescript/messages/count_tokens
+        """
+        target = route.token_count_url
+        route.assert_target_allowed(target)
+        body = request_body(route, system, messages, tools, output_schema, False)
+        body.pop("max_tokens")
+        body.pop("stream")
+        if cancelled():
+            raise ProviderError("MODEL_CANCELLED")
+        request_id = None
+        try:
+            with self.client.stream("POST", target, json=body, headers={
+                "Accept-Encoding": "identity", "x-api-key": route.api_key.get_secret_value(),
+                "anthropic-version": "2023-06-01",
+            }, timeout=route.timeout_seconds) as response:
+                request_id = _identifier(response.headers.get("request-id"))
+                if response.status_code == 429:
+                    raise ProviderError("PROVIDER_RATE_LIMITED")
+                if response.is_redirect:
+                    raise ProviderError("PROVIDER_REDIRECT_DENIED")
+                if response.status_code != 200:
+                    raise ProviderError("PROVIDER_COUNT_REJECTED")
+                if response.headers.get("content-encoding", "identity").lower() != "identity":
+                    raise ProviderError("PROVIDER_ENCODING_DENIED", unknown=True)
+                raw = bytearray()
+                for chunk in response.iter_bytes():
+                    if cancelled():
+                        raise ProviderError("MODEL_CANCELLED", unknown=True)
+                    raw.extend(chunk)
+                    if len(raw) > min(route.response_bytes, 16384):
+                        raise ProviderError("PROVIDER_RESPONSE_TOO_LARGE", unknown=True)
+                return ProviderTokenCount(json_value(raw)["input_tokens"], request_id)
+        except ProviderError as error:
+            error.request_id = error.request_id or request_id
+            raise
+        except (httpx.HTTPError, ValueError, UnicodeDecodeError, KeyError, TypeError):
+            raise ProviderError(
+                "PROVIDER_COUNT_INVALID", unknown=True, request_id=request_id,
+            ) from None
+
     def turn(
         self,
         route: ProviderRoute,
@@ -315,7 +432,7 @@ class AgentProviderClient:
         cancelled=lambda: False,
     ):
         route.assert_target_allowed(route.target_url)
-        streaming = emit is not None
+        streaming = emit is not None and route.streaming
         body = request_body(route, system, messages, tools, output_schema, streaming)
         headers = {"Accept-Encoding": "identity"}
         if route.protocol == "openai-compatible":
@@ -348,6 +465,7 @@ class AgentProviderClient:
                 minimax = route.agent_response_codec == MINIMAX_CODEC
                 accumulator = StreamAccumulator(
                     route.protocol, (lambda _: None) if minimax else emit,
+                    minimax=minimax,
                 )
                 for chunk in response.iter_bytes():
                     if cancelled():
@@ -371,8 +489,13 @@ class AgentProviderClient:
                             if values:
                                 accumulator.accept(b"\n".join(values).decode())
                 if streaming:
-                    if not accumulator.stopped:
-                        raise ProviderError("PROVIDER_RESULT_UNKNOWN", unknown=True)
+                    # MiniMax can close normally after its identified success/usage
+                    # summary without [DONE]. Never accept a partial SSE packet.
+                    if raw.strip() or not (accumulator.stopped or accumulator.minimax_final):
+                        raise ProviderError(
+                            "PROVIDER_RESULT_UNKNOWN", unknown=True,
+                            request_id=_identifier(accumulator.body.get("id")),
+                        )
                     payload = accumulator.body
                 else:
                     payload = json_value(raw)

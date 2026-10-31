@@ -1,0 +1,109 @@
+Traceback (most recent call last):
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+psycopg.errors.DependentObjectsStillExist: cannot drop function knowledge_answer_sources_visible(uuid,uuid,jsonb) because other objects depend on it
+DETAIL:  policy contribution_read on table knowledge_gap_submissions depends on function knowledge_answer_sources_visible(uuid,uuid,jsonb)
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/__main__.py", line 4, in <module>
+    main(prog="alembic")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1039, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1029, in main
+    self.run_cmd(cfg, options)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 963, in run_cmd
+    fn(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/command.py", line 534, in downgrade
+    script.run_env()
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/script/base.py", line 550, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 114, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 132, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/env.py", line 19, in <module>
+    context.run_migrations()
+  File "<string>", line 8, in run_migrations
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/environment.py", line 970, in run_migrations
+    self.get_context().run_migrations(**kw)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 616, in run_migrations
+    step.migration_fn(**kw)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/versions/s0_0839_verified_knowledge.py", line 38, in downgrade
+    execute(DOWNGRADE_SQL)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/migrations/versions/s0_0839_verified_knowledge.py", line 22, in execute
+    op.get_bind().exec_driver_sql(sql, execution_options={"no_parameters": True})
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1755, in exec_driver_sql
+    ret = self._execute_context(
+          ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1822, in _execute_context
+    return self._exec_single_context(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1962, in _exec_single_context
+    self._handle_dbapi_exception(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 2332, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/base.py", line 1925, in _exec_single_context
+    self.dialect.do_execute_no_params(
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/sqlalchemy/engine/default.py", line 1195, in do_execute_no_params
+    cursor.execute(statement)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/psycopg/cursor.py", line 117, in execute
+    raise ex.with_traceback(None)
+sqlalchemy.exc.InternalError: (psycopg.errors.DependentObjectsStillExist) cannot drop function knowledge_answer_sources_visible(uuid,uuid,jsonb) because other objects depend on it
+DETAIL:  policy contribution_read on table knowledge_gap_submissions depends on function knowledge_answer_sources_visible(uuid,uuid,jsonb)
+HINT:  Use DROP ... CASCADE to drop the dependent objects too.
+[SQL: DROP FUNCTION public.knowledge_weekly_lookup_stats(uuid,uuid,timestamptz,timestamptz);
+
+DROP POLICY knowledge_answer_source_read ON public.category_knowledge_entries;
+
+DROP POLICY knowledge_answer_source_read ON public.knowledge_candidate_versions;
+
+DROP POLICY knowledge_answer_source_read ON public.knowledge_rule_versions;
+
+DROP FUNCTION public.knowledge_answer_sources_visible(uuid,uuid,jsonb);
+
+DROP TRIGGER knowledge_answer_origin ON public.category_knowledge_entries;
+
+DROP TRIGGER knowledge_answer_origin ON public.knowledge_candidate_versions;
+
+DROP TRIGGER knowledge_answer_origin ON public.knowledge_rule_versions;
+
+DROP FUNCTION public.require_knowledge_answer_origin();
+
+DROP TABLE public.knowledge_gap_attributions;
+
+DROP TABLE public.knowledge_gap_submissions;
+
+DROP TABLE public.knowledge_answer_reviews;
+
+DROP FUNCTION public.assert_knowledge_assistant_fact();
+
+DROP FUNCTION public.knowledge_answer_sources_known(uuid,jsonb);
+
+ALTER TABLE public.category_knowledge_entries DROP CONSTRAINT category_knowledge_kind;
+
+ALTER TABLE public.category_knowledge_entries ADD CONSTRAINT category_knowledge_kind CHECK (kind IN ('boundary','segment','competitor','voice','regulation','research_question'));
+
+ALTER TABLE public.knowledge_candidate_versions DROP CONSTRAINT knowledge_source_body_shape;
+
+ALTER TABLE public.knowledge_candidate_versions ADD CONSTRAINT knowledge_source_body_shape CHECK (jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' AND jsonb_typeof(reads)='array' AND jsonb_array_length(sources)>0 AND jsonb_array_length(reads)>0);
+
+ALTER TABLE public.knowledge_rule_versions DROP CONSTRAINT knowledge_source_body_shape;
+
+ALTER TABLE public.knowledge_rule_versions ADD CONSTRAINT knowledge_source_body_shape CHECK (jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' AND jsonb_typeof(reads)='array' AND jsonb_array_length(sources)>0 AND jsonb_array_length(reads)>0);
+
+ALTER TABLE public.category_knowledge_entries DROP COLUMN answer_sources;
+]
+(Background on this error at: https://sqlalche.me/e/21/2j85)

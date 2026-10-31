@@ -1,0 +1,63 @@
+{
+  "recorded_at_utc": "2026-10-30T09:33:19.703694+00:00",
+  "database_env_removed": true,
+  "db_operations": 0,
+  "model_calls": 0,
+  "embedding_calls": 0,
+  "checks": {
+    "ruff": {
+      "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/ruff",
+        "check",
+        "pdos_next/agent_kernel/requested_skills.py",
+        "tests/agent_kernel/test_requested_skills.py",
+        "tests/agent_kernel/test_requested_skills_pg.py",
+        "tests/agent_kernel/test_continued_skills_pg.py"
+      ],
+      "exit_code": 0
+    },
+    "front-helper": {
+      "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web",
+      "command": [
+        "node",
+        "-e",
+        "const fs=require('node:fs'),ts=require('typescript'); require.extensions['.ts']=(m,f)=>m._compile(ts.transpileModule(fs.readFileSync(f,'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2022,esModuleInterop:true}}).outputText,f); require('./src/lib/continued-skills.test.ts');"
+      ],
+      "exit_code": 0
+    },
+    "picker": {
+      "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web",
+      "command": [
+        "node",
+        "--test",
+        "src/components/pai/continued-skill-picker.test.mjs"
+      ],
+      "exit_code": 0
+    },
+    "eslint": {
+      "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/node_modules/.bin/eslint",
+        "src/components/pai/continued-skill-picker.tsx",
+        "src/components/pai/continued-skill-picker.test.mjs",
+        "src/lib/continued-skills.ts",
+        "src/lib/continued-skills.test.ts"
+      ],
+      "exit_code": 0
+    },
+    "pure-backend": {
+      "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+      "command": [
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python",
+        "-m",
+        "pytest",
+        "tests/agent_kernel/test_requested_skills.py",
+        "-q",
+        "--tb=short",
+        "--junitxml=/Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-context-skill-continuation-20261030/independent-checks/pure-backend.xml"
+      ],
+      "exit_code": 0
+    }
+  }
+}

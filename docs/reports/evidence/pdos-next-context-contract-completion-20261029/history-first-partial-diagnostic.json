@@ -1,0 +1,29 @@
+{
+  "run_id": "9550c4b3-7ea8-40af-9158-4c1c1dcf06ad",
+  "state": "partial",
+  "result": {
+    "status": "partial",
+    "summary": "服务限流或运行预算不足，保留已完成动作与已核对结果。",
+    "unfinished": [
+      "剩余目标尚未完成"
+    ]
+  },
+  "events": [
+    {
+      "type": "accepted"
+    },
+    {
+      "type": "context_projected"
+    },
+    {
+      "type": "model_started"
+    },
+    {
+      "type": "run_state"
+    },
+    {
+      "type": "finished"
+    }
+  ],
+  "calls": []
+}

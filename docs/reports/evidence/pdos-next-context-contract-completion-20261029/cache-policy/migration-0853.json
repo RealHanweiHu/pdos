@@ -1,0 +1,132 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0853",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/context-contract-53502-before-0853.dump",
+  "backup_bytes": 108713651,
+  "backup_sha256": "d484452afe3c0bbc85abfe8f7feb6c7b4925e83504d82519571370016c395872",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0853",
+      "records_preserved": true,
+      "history_counts_preserved": true,
+      "owners_acl_rls_policies_preserved": true,
+      "function_flags_acl_owner_preserved": true,
+      "exact_function_target_verified": true,
+      "exact_predecessor_restored": false
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0852",
+      "records_preserved": true,
+      "history_counts_preserved": true,
+      "owners_acl_rls_policies_preserved": true,
+      "function_flags_acl_owner_preserved": true,
+      "exact_function_target_verified": true,
+      "exact_predecessor_restored": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0853",
+      "records_preserved": true,
+      "history_counts_preserved": true,
+      "owners_acl_rls_policies_preserved": true,
+      "function_flags_acl_owner_preserved": true,
+      "exact_function_target_verified": true,
+      "exact_predecessor_restored": false
+    }
+  ],
+  "before": {
+    "head": "s0_0852",
+    "records": {
+      "count": 74,
+      "digest": "10ee42aca3e4416fcaa1682843715e93"
+    },
+    "table": {
+      "owner": "pdos_next_owner",
+      "acl": "{pdos_next_owner=arwdDxt/pdos_next_owner,pdos_next_app=arw/pdos_next_owner}",
+      "rls": true,
+      "force": true
+    },
+    "policies": [
+      [
+        "kernel_scope",
+        "PERMISSIVE",
+        "{public}",
+        "ALL",
+        "((tenant_id = (NULLIF(current_setting('pdos.tenant_id'::text, true), ''::text))::uuid) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_actor()) AND a.active))) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_requester()) AND a.active))))",
+        "((tenant_id = (NULLIF(current_setting('pdos.tenant_id'::text, true), ''::text))::uuid) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_actor()) AND a.active))) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_requester()) AND a.active))) AND (scope_actor() = scope_requester()) AND (EXISTS ( SELECT 1\n   FROM (tenant_administrators a\n     JOIN principals p ON (((p.tenant_id = a.tenant_id) AND (p.id = a.principal_id))))\n  WHERE ((a.tenant_id = (NULLIF(current_setting('pdos.tenant_id'::text, true), ''::text))::uuid) AND (a.principal_id = scope_actor()) AND a.active AND p.active AND ((p.kind)::text = 'human'::text)))))"
+      ],
+      [
+        "owner_internal",
+        "PERMISSIVE",
+        "{pdos_next_owner}",
+        "ALL",
+        "true",
+        "true"
+      ]
+    ],
+    "function": {
+      "definition": "CREATE OR REPLACE FUNCTION public.kernel_agreement_atom()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'pg_temp'\nAS $function$ BEGIN\n      IF NOT EXISTS(SELECT 1 FROM action_receipts r JOIN audit_entries a ON a.receipt_id=r.id\n        JOIN outbox_events o ON o.receipt_id=r.id\n        WHERE r.tenant_id=NEW.tenant_id AND r.id=NEW.receipt_id\n        AND r.operation='provider.agreement.register' AND r.actor_id=NEW.registered_by\n        AND r.requester_id=NEW.registered_by AND r.run_id IS NULL\n        AND r.subject_id=NEW.id AND r.subject_revision=NEW.revision\n        AND r.result->>'tier'='T2' AND r.result->>'decision'='批准'\n        AND a.tenant_id=r.tenant_id AND o.tenant_id=r.tenant_id\n        AND o.type='provider.agreement_registered')\n      THEN RAISE EXCEPTION 'Named agreement receipt atom required'; END IF;\n      RETURN NEW; END $function$\n",
+      "owner": "pdos_next_owner",
+      "acl": "{pdos_next_owner=X/pdos_next_owner}",
+      "security_definer": true,
+      "config": "{\"search_path=pg_catalog, public, pg_temp\"}"
+    },
+    "history_counts": {
+      "agent_runs": 5241,
+      "agent_tool_calls": 9944,
+      "action_receipts": 51600,
+      "audit_entries": 50857,
+      "outbox_events": 51424
+    }
+  },
+  "after": {
+    "head": "s0_0853",
+    "records": {
+      "count": 74,
+      "digest": "10ee42aca3e4416fcaa1682843715e93"
+    },
+    "table": {
+      "owner": "pdos_next_owner",
+      "acl": "{pdos_next_owner=arwdDxt/pdos_next_owner,pdos_next_app=arw/pdos_next_owner}",
+      "rls": true,
+      "force": true
+    },
+    "policies": [
+      [
+        "kernel_scope",
+        "PERMISSIVE",
+        "{public}",
+        "ALL",
+        "((tenant_id = (NULLIF(current_setting('pdos.tenant_id'::text, true), ''::text))::uuid) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_actor()) AND a.active))) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_requester()) AND a.active))))",
+        "((tenant_id = (NULLIF(current_setting('pdos.tenant_id'::text, true), ''::text))::uuid) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_actor()) AND a.active))) AND (EXISTS ( SELECT 1\n   FROM principals a\n  WHERE ((a.tenant_id = provider_data_agreements.tenant_id) AND (a.id = scope_requester()) AND a.active))) AND (scope_actor() = scope_requester()) AND (EXISTS ( SELECT 1\n   FROM (tenant_administrators a\n     JOIN principals p ON (((p.tenant_id = a.tenant_id) AND (p.id = a.principal_id))))\n  WHERE ((a.tenant_id = (NULLIF(current_setting('pdos.tenant_id'::text, true), ''::text))::uuid) AND (a.principal_id = scope_actor()) AND a.active AND p.active AND ((p.kind)::text = 'human'::text)))))"
+      ],
+      [
+        "owner_internal",
+        "PERMISSIVE",
+        "{pdos_next_owner}",
+        "ALL",
+        "true",
+        "true"
+      ]
+    ],
+    "function": {
+      "definition": "CREATE OR REPLACE FUNCTION public.kernel_agreement_atom()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog', 'public', 'pg_temp'\nAS $function$ BEGIN\n      IF NOT EXISTS(SELECT 1 FROM action_receipts r JOIN audit_entries a ON a.receipt_id=r.id\n        JOIN outbox_events o ON o.receipt_id=r.id\n        WHERE r.tenant_id=NEW.tenant_id AND r.id=NEW.receipt_id\n        AND r.operation='provider.agreement.register' AND r.actor_id=NEW.registered_by\n        AND r.requester_id=NEW.registered_by AND r.run_id IS NULL\n        AND r.subject_id=NEW.id AND r.subject_revision=NEW.revision\n        AND r.result->>'tier'='T2' AND r.result->>'decision'='批准'\n        AND a.tenant_id=r.tenant_id AND o.tenant_id=r.tenant_id\n        AND o.type='provider.agreement_registered'\n        AND ((NEW.prompt_cache_allowed IS NULL AND NOT (r.result ? 'prompt_cache_allowed'))\n          OR (NEW.prompt_cache_allowed IS NOT NULL\n            AND r.result->'prompt_cache_allowed'=to_jsonb(NEW.prompt_cache_allowed))))\n      THEN RAISE EXCEPTION 'Named agreement receipt atom required'; END IF;\n      RETURN NEW; END $function$\n",
+      "owner": "pdos_next_owner",
+      "acl": "{pdos_next_owner=X/pdos_next_owner}",
+      "security_definer": true,
+      "config": "{\"search_path=pg_catalog, public, pg_temp\"}"
+    },
+    "history_counts": {
+      "agent_runs": 5241,
+      "agent_tool_calls": 9944,
+      "action_receipts": 51600,
+      "audit_entries": 50857,
+      "outbox_events": 51424
+    }
+  },
+  "real_provider_calls": 0,
+  "first_attempt_repair": "migration-first-attempt-repair.json"
+}

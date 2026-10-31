@@ -1,0 +1,18 @@
+{
+  "head": "s0_0843",
+  "allocated": "s0_0844",
+  "body_exact": true,
+  "owner": "pdos_next_owner",
+  "runtime_exec": false,
+  "previous_sha256": "bba1b6f8d67ebd86c24f8cb0c9d2a4be294f4bee7207bac764649773599aa961",
+  "candidate_sha256": "d45c25f043f689181bab66627d4524785b6475f1ed698568c923f9c888ac29bc",
+  "downgrade_consumers": [
+    "category_knowledge_entries",
+    "knowledge_candidate_versions",
+    "knowledge_rule_versions",
+    "knowledge_answer_reviews",
+    "knowledge_gap_submissions",
+    "dingtalk_deliveries",
+    "agent_tool_calls actual ordinary read results"
+  ]
+}

@@ -1,0 +1,312 @@
+Browser tab: 4, Title: "PDOS · 研发工作区", URL: "http://localhost:57859/?area=knowledge&category=07af3ded-0804-4264-9cea-b5fec9d2932f&product=3e960e40-918f-4650-81d1-b7658a7ea9f3&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources".
+1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=knowledge&category=07af3ded-0804-4264-9cea-b5fec9d2932f&product=3e960e40-918f-4650-81d1-b7658a7ea9f3&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources
+	2 container
+		3 container
+			4 pop up button (collapsed) Description: Open Next.js Dev Tools, ID: next-logo, Secondary Actions: Expand
+				5 image
+			6 button Open issues overlay
+				7 text 5
+				8 text Issue
+			9 button Collapse issues badge
+				10 image
+		11 link Description: 跳到工作内容, Value: localhost:57859/?area=knowledge&category=07af3ded-0804-4264-9cea-b5fec9d2932f&product=3e960e40-918f-4650-81d1-b7658a7ea9f3&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources#workspace-content
+		12 text PDOS
+		13 button 收起侧栏
+			14 image
+		15 button (collapsed) Description: 新建：选择办理入口, Help: 新建, Secondary Actions: Expand
+			16 text 新建
+		17 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			18 text ⌘K
+		19 container 工作区导航
+			20 text 日常
+			21 link Description: 我的工作, Value: localhost:57859/?area=work&category=07af3ded-0804-4264-9cea-b5fec9d2932f
+			22 link Description: 项目, Value: localhost:57859/?area=projects&category=07af3ded-0804-4264-9cea-b5fec9d2932f
+			23 container 最近的在办项目
+				24 link Description: Approved revision fixture 阶段尚未提供, Help: Approved revision fixture · 阶段尚未提供, Value: localhost:57859/?area=cockpit&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f
+			25 link Description: 组合与资源, Value: localhost:57859/?area=programs&category=07af3ded-0804-4264-9cea-b5fec9d2932f
+			26 link Description: 知识, Value: localhost:57859/?area=knowledge&category=07af3ded-0804-4264-9cea-b5fec9d2932f
+		27 link Description: 计划执行进度, Help: 计划执行进度（唯一清单只读投影）, Value: localhost:57859/plan
+		28 link Description: 设置, Value: localhost:57859/?area=settings&category=07af3ded-0804-4264-9cea-b5fec9d2932f
+		29 button 切换明暗主题
+		30 text Synthetic owner
+		31 text 本地合成环境
+		32 text 知识 汽车充气泵
+		33 link Description: 综合预览 · 换场景 / 身份, Value: localhost:57859/preview
+		34 button Description: 搜索对象, Help: 搜索对象（⌘K / Ctrl K）
+			35 image
+		36 container workspace-content
+			37 container 品类工作台区
+				38 link Description: 型号, Value: localhost:57859/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f&bench=products&view=overview&product=3e960e40-918f-4650-81d1-b7658a7ea9f3
+				39 link Description: 项目, Value: localhost:57859/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f&bench=projects&view=overview&product=3e960e40-918f-4650-81d1-b7658a7ea9f3
+				40 link Description: 知识, Value: localhost:57859/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources&product=3e960e40-918f-4650-81d1-b7658a7ea9f3
+				41 link Description: 设置, Value: localhost:57859/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f&bench=settings&view=preferences&product=3e960e40-918f-4650-81d1-b7658a7ea9f3
+				42 button Description: 快速查找入口或型号, Help: 当前品类快速查找 · ⌘ / Ctrl Shift K
+				43 pop up button (collapsed, settable) Description: 当前型号, Value: Approved revision fixture, Secondary Actions: Expand
+					44 menu
+						45 Synthetic product
+						46 (selected) Approved revision fixture
+			47 container 知识视图
+				48 link Description: 来源与事实, Value: localhost:57859/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources&product=3e960e40-918f-4650-81d1-b7658a7ea9f3
+				49 link Description: 原件, Value: localhost:57859/?area=category&category=07af3ded-0804-4264-9cea-b5fec9d2932f&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=files&product=3e960e40-918f-4650-81d1-b7658a7ea9f3
+			50 container
+				51 heading 来源与事实, Value: 1
+					52 text 来源与事实
+				53 text 当前范围：Approved revision fixture
+				54 text 当前显示此型号中已授权的来源与原件。跨型号知识检索尚未接入。
+				55 container 经验候选与配置规则
+					56 container
+						57 text 证据与结果 → 经验候选 → 特定配置的经验规则
+						58 heading 经验沉淀, Value: 2
+							59 text 经验沉淀
+						60 button 刷新经验记录
+						61 button 记录经验候选
+					62 text 候选保存经验、证据和适用性假设；候选不是正式标准。规则只适用于载明的配置、用途、条件和有效期，不会成为企业全平台默认标准。正式发布资格由服务器核对。
+					63 container
+						64 text 读取于  2026-10-22T18:49:42.263286+00:00  · Approved revision fixture
+					65 container 经验候选列表
+						66 heading 经验候选, Value: 3
+							67 text 经验候选
+						68 container
+							69 heading Synthetic knowledge-library model_shared, Value: 4
+								70 text Synthetic knowledge-library model_shared
+							71 text 候选 · v 1 Reuse a result only after its actual configuration is established.
+							72 definition list
+								73 container 证据与结果摘要
+									74 text 证据与结果摘要
+								75 text One explicit synthetic source, with no asserted production sample.
+								76 container 适用性假设
+									77 text 适用性假设
+								78 text Check separately against the selected engineering version.
+								79 container 范围与受众
+									80 text 范围与受众
+								81 container
+									82 text Approved revision fixture  ·  品类授权成员
+								83 container 实际署名
+									84 text 实际署名
+								85 container
+									86 text 人员  ·  bea7f147-5b0d-4a98-83ca-38e2f953fc76
+								87 container 固定候选
+									88 text 固定候选
+								89 container
+									90 text 2241f5fd-4ab1-5a3b-90d9-8d29da50322e  · 实际版本  2241f5fd-4ab1-5a3b-90d9-8d29da50322e  ·  2026-10-19T01:03:39.981033+00:00
+							91 button (collapsed) 实际来源 · 1 条, Secondary Actions: Expand
+								92 text 实际来源 · 
+								93 text 1
+								94 text  条
+							95 button (collapsed) 实际结果回执 · 0 条, Secondary Actions: Expand
+								96 text 实际结果回执 · 
+								97 text 0
+								98 text  条
+							99 button (collapsed) 候选版本历史 · 1 条, Secondary Actions: Expand
+								100 text 候选版本历史 · 
+								101 text 1
+								102 text  条
+							103 button 续版此候选
+							104 button 拟定配置经验规则
+						105 container
+							106 heading Synthetic knowledge-library model_private, Value: 4
+								107 text Synthetic knowledge-library model_private
+							108 text 候选 · v 1 Reuse a result only after its actual configuration is established.
+							109 definition list
+								110 container 证据与结果摘要
+									111 text 证据与结果摘要
+								112 text One explicit synthetic source, with no asserted production sample.
+								113 container 适用性假设
+									114 text 适用性假设
+								115 text Check separately against the selected engineering version.
+								116 container 范围与受众
+									117 text 范围与受众
+								118 container
+									119 text Approved revision fixture  ·  私人
+								120 container 实际署名
+									121 text 实际署名
+								122 container
+									123 text 人员  ·  bea7f147-5b0d-4a98-83ca-38e2f953fc76
+								124 container 固定候选
+									125 text 固定候选
+								126 container
+									127 text bbd628cb-673e-52d8-b9e0-359514302552  · 实际版本  bbd628cb-673e-52d8-b9e0-359514302552  ·  2026-10-19T01:03:38.254366+00:00
+							128 button (collapsed) 实际来源 · 1 条, Secondary Actions: Expand
+								129 text 实际来源 · 
+								130 text 1
+								131 text  条
+							132 button (collapsed) 实际结果回执 · 0 条, Secondary Actions: Expand
+								133 text 实际结果回执 · 
+								134 text 0
+								135 text  条
+							136 button (collapsed) 候选版本历史 · 1 条, Secondary Actions: Expand
+								137 text 候选版本历史 · 
+								138 text 1
+								139 text  条
+							140 button 续版此候选
+							141 button 拟定配置经验规则
+						142 container
+							143 heading Synthetic knowledge-library category_shared_revision, Value: 4
+								144 text Synthetic knowledge-library category_shared_revision
+							145 text 候选 · v 2 Reuse a result only after its actual configuration is established.
+							146 definition list
+								147 container 证据与结果摘要
+									148 text 证据与结果摘要
+								149 text One explicit synthetic source, with no asserted production sample.
+								150 container 适用性假设
+									151 text 适用性假设
+								152 text Check separately against the selected engineering version.
+								153 container 范围与受众
+									154 text 范围与受众
+								155 container
+									156 text 未限定项目的候选  ·  品类授权成员
+								157 container 实际署名
+									158 text 实际署名
+								159 container
+									160 text 人员  ·  bea7f147-5b0d-4a98-83ca-38e2f953fc76
+								161 container 固定候选
+									162 text 固定候选
+								163 container
+									164 text 065550f3-77e2-5486-96fc-cda92a542c22  · 实际版本  81fc7cfc-27c7-51fb-a798-275dfe8fa303  ·  2026-10-19T01:03:47.312744+00:00
+							165 button (collapsed) 实际来源 · 1 条, Secondary Actions: Expand
+								166 text 实际来源 · 
+								167 text 1
+								168 text  条
+							169 button (collapsed) 实际结果回执 · 0 条, Secondary Actions: Expand
+								170 text 实际结果回执 · 
+								171 text 0
+								172 text  条
+							173 button (collapsed) 候选版本历史 · 2 条, Secondary Actions: Expand
+								174 text 候选版本历史 · 
+								175 text 2
+								176 text  条
+							177 button 拟定配置经验规则
+						178 container
+							179 heading Synthetic knowledge-library category_private, Value: 4
+								180 text Synthetic knowledge-library category_private
+							181 text 候选 · v 1 Reuse a result only after its actual configuration is established.
+							182 definition list
+								183 container 证据与结果摘要
+									184 text 证据与结果摘要
+								185 text One explicit synthetic source, with no asserted production sample.
+								186 container 适用性假设
+									187 text 适用性假设
+								188 text Check separately against the selected engineering version.
+								189 container 范围与受众
+									190 text 范围与受众
+								191 container
+									192 text 未限定项目的候选  ·  私人
+								193 container 实际署名
+									194 text 实际署名
+								195 container
+									196 text 人员  ·  bea7f147-5b0d-4a98-83ca-38e2f953fc76
+								197 container 固定候选
+									198 text 固定候选
+								199 container
+									200 text a4269efe-fd72-5c07-9115-ded24bf48283  · 实际版本  a4269efe-fd72-5c07-9115-ded24bf48283  ·  2026-10-19T01:03:34.839258+00:00
+							201 button (collapsed) 实际来源 · 1 条, Secondary Actions: Expand
+								202 text 实际来源 · 
+								203 text 1
+								204 text  条
+							205 button (collapsed) 实际结果回执 · 0 条, Secondary Actions: Expand
+								206 text 实际结果回执 · 
+								207 text 0
+								208 text  条
+							209 button (collapsed) 候选版本历史 · 1 条, Secondary Actions: Expand
+								210 text 候选版本历史 · 
+								211 text 1
+								212 text  条
+							213 button 拟定配置经验规则
+					214 container 配置经验规则列表
+						215 heading 配置经验规则, Value: 3
+							216 text 配置经验规则
+						217 container
+							218 heading Synthetic configuration-bound reuse rule, Value: 4
+								219 text Synthetic configuration-bound reuse rule
+							220 text 需要重核  · v 2 For this configured purpose, establish configuration identity before reuse.
+							221 definition list
+								222 container 实际项目
+									223 text 实际项目
+								224 text Approved revision fixture
+								225 container 目标配置
+									226 text 目标配置
+								227 text 工程配置 · Synthetic original engineering configuration · v1
+								228 container 具体用途
+									229 text 具体用途
+								230 text Apply one synthetic field lesson to this fixed engineering configuration
+								231 container 采用规则
+									232 text 采用规则
+								233 text Explicit named evidence review
+								234 container 差异
+									235 text 差异
+								236 text 评估未列差异
+								237 container 适用条件
+									238 text 适用条件
+								239 text Only the selected configuration and stated internal purpose
+								240 container 适用性与依据
+									241 text 适用性与依据
+								242 container
+									243 text 适用  ·  The actual target and source were explicitly reviewed.
+								244 container 有效区间
+									245 text 有效区间
+								246 container
+									247 text 2026-10-19T01:02:34.409348Z  →  未设结束时间
+								248 container 具名评估人
+									249 text 具名评估人
+								250 text bea7f147-5b0d-4a98-83ca-38e2f953fc76
+								251 container 发布署名与性质
+									252 text 发布署名与性质
+								253 container
+									254 text bea7f147-5b0d-4a98-83ca-38e2f953fc76  ·  合成环境规则
+								255 container 固定候选版本
+									256 text 固定候选版本
+								257 container
+									258 text 065550f3-77e2-5486-96fc-cda92a542c22  v 2  · 实际版本  81fc7cfc-27c7-51fb-a798-275dfe8fa303
+								259 container 规则版本
+									260 text 规则版本
+								261 container
+									262 text c57961f9-2feb-5b92-b00c-e920e3246961  · 实际版本  1331e309-43f5-570c-93f5-12d119bd9696
+							263 text 适用状态依据： PROFESSIONAL_AUTHORITY_CHANGED、SOURCE_UNAVAILABLE
+							264 button (collapsed) 实际来源 · 1 条, Secondary Actions: Expand
+								265 text 实际来源 · 
+								266 text 1
+								267 text  条
+							268 button (collapsed) 正式发布历史 · 2 条, Secondary Actions: Expand
+								269 text 正式发布历史 · 
+								270 text 2
+								271 text  条
+				272 image
+				273 heading 原始资料, Value: 2
+					274 text 原始资料
+				275 text 2
+				276 text  份
+				277 container
+					278 text 查看资料
+					279 pop up button (collapsed, settable) 查看资料, Value: Synthetic motor assembly input, Secondary Actions: Expand
+						280 menu
+							281 (selected) Synthetic motor assembly input
+							282 Synthetic explicit publication authority
+				283 container
+					284 text Explicit bounded synthetic configuration change  ·  品类共享  ·  有效
+				285 text 选择一行作为事实依据
+				286 checkbox 1 {"assembly_bom_line":"motor","requirement":"Synthetic requirement is unverified"}, Value: 0
+				287 button (collapsed) 登记另一份资料, Secondary Actions: Expand
+					288 text 登记另一份资料
+				289 heading 登记来源事实, Value: 2
+					290 text 登记来源事实
+				291 container
+					292 text 原文引用 · 第  1  行
+					293 text entry area (settable) 原文引用 · 第 1 行
+					294 text 要保留的事实
+					295 text entry area (settable) 要保留的事实
+					296 text 信息状态
+					297 pop up button (collapsed, settable) 信息状态, Value: 已知信息, Secondary Actions: Expand
+						298 menu
+							299 (selected) 已知信息
+							300 未知 / 待确认
+							301 存在冲突
+					302 text 结果受众
+					303 pop up button (collapsed, settable) 结果受众, Value: 仅我可见, Secondary Actions: Expand
+						304 menu
+							305 (selected) 仅我可见
+							306 品类授权成员
+					307 button (disabled) 登记事实
+				308 text 尚无事实记录。每条记录都需要准确原文定位。
+		309 button Description: 打开小Pai工作栏, Help: 在当前范围打开小Pai
+
+The focused UI element is 1 AXWebArea PDOS · 研发工作区, URL: localhost:57859/?area=knowledge&category=07af3ded-0804-4264-9cea-b5fec9d2932f&product=3e960e40-918f-4650-81d1-b7658a7ea9f3&project=93900873-e806-4c7c-9987-d3643129953f&bench=knowledge&view=sources

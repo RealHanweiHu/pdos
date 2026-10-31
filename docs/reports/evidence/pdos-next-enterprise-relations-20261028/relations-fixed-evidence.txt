@@ -1,0 +1,64 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation FAILED [ 50%]
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference PASSED [100%]
+
+=================================== FAILURES ===================================
+_ test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation _
+tests/enterprise_search/test_relations_pg.py:125: in test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+    assert output["status"] == "completed", output
+E   AssertionError: {'status': 'partial', 'summary': '按明确登记的原问题核对历史。', 'result': {'assistant': {'version': 1, 'kind': 'enterprise', 'lookup': 'cited', 'citation_ids': ['94881a5d-7204-5f74-a9e1-102791b50e94'], ...}}, 'questions': [], ...}
+E   assert 'partial' == 'completed'
+E     
+E     - completed
+E     + partial
+=============================== warnings summary ===============================
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+tests/enterprise_search/test_relations_pg.py::test_registered_build_parent_expands_unindexed_records_without_text_inference
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_relations_pg.py::test_registered_change_expands_only_one_hop_and_origin_revocation_hides_relation
+============= 1 failed, 1 passed, 18 warnings in 173.61s (0:02:53) =============

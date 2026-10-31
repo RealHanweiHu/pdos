@@ -1,0 +1,181 @@
+--- a/pdos-next/server/pdos_next/dingtalk/summary_delivery.py
++++ b/pdos-next/server/pdos_next/dingtalk/summary_delivery.py
+@@ -4,6 +4,9 @@
+ from dataclasses import asdict
+ from types import SimpleNamespace
+ from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
++
++from pydantic import Field
++from sqlalchemy import select, text
+ 
+ from pdos_next.agent_kernel.bootstrap import Bootstrap
+ from pdos_next.agent_kernel.models import AgentRun
+@@ -17,8 +20,6 @@
+ from pdos_next.personal_summary_schemas import Summary
+ from pdos_next.schema_base import StrictModel
+ from pdos_next.service import Context, digest, require_access
+-from pydantic import Field
+-from sqlalchemy import select, text
+ 
+ from .accounts import credential
+ from .models import Application
+--- a/pdos-next/server/pdos_next/dingtalk/summary_models.py
++++ b/pdos-next/server/pdos_next/dingtalk/summary_models.py
+@@ -3,11 +3,12 @@
+ from datetime import datetime
+ from uuid import UUID
+ 
+-from pdos_next.models import Base, Row
+ from sqlalchemy import CheckConstraint, DateTime, Integer, String, UniqueConstraint
+ from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+ from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+ from sqlalchemy.orm import Mapped, mapped_column
++
++from pdos_next.models import Base, Row
+ 
+ from .models import link
+ 
+--- a/pdos-next/server/pdos_next/dingtalk/summary_workflow.py
++++ b/pdos-next/server/pdos_next/dingtalk/summary_workflow.py
+@@ -31,6 +31,7 @@
+     def deliver(self, reference):
+         from langgraph.graph import END, START, StateGraph
+         from pdos_agent_runtime.graph import registered_graph_context
++
+         from pdos_next.errors import DomainError
+ 
+         from .summary_delivery import SummaryDeliveryService
+@@ -53,8 +54,9 @@
+         self.client, self.metadata_engine, self.task_queue = client, metadata_engine, task_queue
+ 
+     async def discover(self, tenant_id):
++        from sqlalchemy import text
++
+         from pdos_next.database import tenant_session
+-        from sqlalchemy import text
+ 
+         with tenant_session(self.metadata_engine, tenant_id) as session:
+             rows = (
+--- a/pdos-next/server/pdos_next/dingtalk/workflow.py
++++ b/pdos-next/server/pdos_next/dingtalk/workflow.py
+@@ -65,8 +65,9 @@
+     def deliver(self, reference):
+         from uuid import UUID
+ 
++        from sqlalchemy.exc import DBAPIError
++
+         from pdos_next.errors import DomainError
+-        from sqlalchemy.exc import DBAPIError
+ 
+         from .graph import execute
+         from .runtime import ChannelService
+@@ -109,8 +110,9 @@
+         self.native_sender, self.task_queue = native_sender, task_queue
+ 
+     async def discover(self, tenant_id):
++        from sqlalchemy import text
++
+         from pdos_next.database import tenant_session
+-        from sqlalchemy import text
+ 
+         with tenant_session(self.metadata_engine, tenant_id) as session:
+             refs = (
+--- a/pdos-next/server/pdos_next/personal_summary_channels.py
++++ b/pdos-next/server/pdos_next/personal_summary_channels.py
+@@ -1,10 +1,11 @@
+ """A subscriber chooses only their verified binding, in the existing rule T1."""
++
++from sqlalchemy import select
+ 
+ from pdos_next.dingtalk.accounts import human
+ from pdos_next.dingtalk.models import Application, Binding
+ from pdos_next.errors import DomainError
+ from pdos_next.models import Principal
+-from sqlalchemy import select
+ 
+ 
+ def selected(session, ctx, binding_id):
+--- a/pdos-next/server/pdos_next/personal_summary_delivery.py
++++ b/pdos-next/server/pdos_next/personal_summary_delivery.py
+@@ -4,6 +4,9 @@
+ from uuid import UUID
+ 
+ from fastapi import Query
++from pydantic import Field
++from sqlalchemy import and_, func, or_, select
++
+ from pdos_next.agent_kernel.models import AgentRun
+ from pdos_next.database import tenant_session
+ from pdos_next.domain.automations.models import AutomationRuleVersion as Version
+@@ -14,8 +17,6 @@
+ from pdos_next.personal_views import _personal
+ from pdos_next.schema_base import StrictModel
+ from pdos_next.service import Context
+-from pydantic import Field
+-from sqlalchemy import and_, func, or_, select
+ 
+ 
+ class Page(StrictModel):
+--- a/pdos-next/server/pdos_next/personal_summary_schemas.py
++++ b/pdos-next/server/pdos_next/personal_summary_schemas.py
+@@ -3,8 +3,9 @@
+ from typing import Annotated, Any, Literal
+ from uuid import UUID
+ 
++from pydantic import AwareDatetime, ConfigDict, Field, model_serializer, model_validator
++
+ from pdos_next.schema_base import StrictModel
+-from pydantic import AwareDatetime, ConfigDict, Field, model_serializer, model_validator
+ 
+ Group = Literal["action", "waiting", "following"]
+ Digest = Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+--- a/pdos-next/server/pdos_next/workflows/worker.py
++++ b/pdos-next/server/pdos_next/workflows/worker.py
+@@ -5,6 +5,11 @@
+ import os
+ from concurrent.futures import ThreadPoolExecutor
+ from uuid import UUID
++
++from temporalio import activity
++from temporalio.client import Client
++from temporalio.exceptions import ApplicationError
++from temporalio.worker import Worker
+ 
+ from pdos_next.database import configured_engines, tenant_session
+ from pdos_next.dispatch.outbox import dispatch_once
+@@ -20,10 +25,6 @@
+     UploadTerminal,
+ )
+ from pdos_next.workflows.transport import TemporalSender
+-from temporalio import activity
+-from temporalio.client import Client
+-from temporalio.exceptions import ApplicationError
+-from temporalio.worker import Worker
+ 
+ 
+ class Activities:
+--- a/pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py
++++ b/pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py
+@@ -6,17 +6,16 @@
+ 
+ import pytest
+ from lifecycle_fixture import lifecycle_work  # noqa: F401
++from migrations import schema_s0_0749 as migration
++from pdos_next import models
++from pdos_next.database import tenant_session
++from pdos_next.lifecycle_access import NON_CONSUMING, schema_covered
++from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED, M3_GUARDED
+ from security_fixture import secured_parse
+ from sqlalchemy import select, text
+ from sqlalchemy.exc import DBAPIError
+ from sqlalchemy.orm import Session
+ from test_durable_evidence import upload_input
+-
+-from migrations import schema_s0_0749 as migration
+-from pdos_next import models
+-from pdos_next.database import tenant_session
+-from pdos_next.lifecycle_access import NON_CONSUMING, schema_covered
+-from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED, M3_GUARDED
+ from tests.preproject.test_g0 import create, payload
+ 
+ 

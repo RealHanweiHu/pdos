@@ -1,0 +1,512 @@
+{
+  "run_id": "f9a37e1a-74e2-4281-8a6b-1e01083d5e51",
+  "tenant": "764539e8-3340-4a19-8527-96e357f4dc22",
+  "requester": "a4716a6d-f5de-48c5-b78d-fae9ab7ed860",
+  "status": "partial",
+  "error_code": null,
+  "result": {
+    "result": {
+      "assistant": {
+        "kind": "enterprise",
+        "as_of": "2026-10-29T07:39:13.208178+00:00",
+        "lookup": "cited",
+        "notice": null,
+        "sources": [
+          {
+            "url": "/api/v1/categories/708d742f-efc2-405b-be84-642955ffb5e8/agent-runs/f9a37e1a-74e2-4281-8a6b-1e01083d5e51/assistant-sources/3c78e6c9-bad9-51e5-83d0-ca64ccf9e472",
+            "group": "same_category",
+            "quote": "\u66f4\u6362\u5bc6\u5c01\u5708",
+            "title": "Synthetic historical discussion",
+            "nature": "untrusted",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 8,
+              "line_end": 1,
+              "char_start": 3,
+              "line_start": 1
+            },
+            "object_id": "e99e2355-3276-49a7-85a7-7a4f41e7d022",
+            "source_id": "e99e2355-3276-49a7-85a7-7a4f41e7d022",
+            "product_id": "ec352f88-d666-456c-882f-36a27cf43fce",
+            "project_id": null,
+            "category_id": "708d742f-efc2-405b-be84-642955ffb5e8",
+            "citation_id": "3c78e6c9-bad9-51e5-83d0-ca64ccf9e472",
+            "currentness": "current",
+            "group_label": "\u540c\u54c1\u7c7b\u5176\u4ed6\u9879\u76ee",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "4f0277a2e134960b5ee465e4f0f96f748bea1f8b4b1acb2c8c6974c899f2dc03",
+            "source_revision": 1,
+            "read_basis_status": "current",
+            "fixed_body_available": true
+          }
+        ],
+        "version": 1,
+        "coverage": {
+          "returned": 1,
+          "unavailable": []
+        },
+        "unknowns": [],
+        "scope_label": "\u5f53\u524d\u9879\u76ee\u7684\u53ef\u8bfb\u8d44\u6599\u53ca\u540c\u54c1\u7c7b\u5176\u4ed6\u9879\u76ee\u7684\u53ef\u8bfb\u8d44\u6599",
+        "citation_ids": [
+          "3c78e6c9-bad9-51e5-83d0-ca64ccf9e472"
+        ],
+        "scope_policy": {
+          "scope": "same_category",
+          "version": "same-category-once-threshold3/v1",
+          "fallback_performed": true,
+          "include_customer_private": false
+        },
+        "matched_count": 1,
+        "search_groups": [
+          {
+            "id": "current",
+            "label": "\u5f53\u524d\u9879\u76ee",
+            "scope": {
+              "product_id": "ec352f88-d666-456c-882f-36a27cf43fce",
+              "project_id": "f8aa9eca-4eee-4782-89d8-3a481569dc52",
+              "category_id": "708d742f-efc2-405b-be84-642955ffb5e8",
+              "proposal_id": null
+            },
+            "coverage": {
+              "notice": "\u90e8\u5206\u5f53\u524d\u53ef\u8bfb\u6765\u6e90\u5c1a\u672a\u5b8c\u6210\u7d22\u5f15\u6216\u5f53\u524d\u626b\u63cf\u590d\u6838\u3002",
+              "status": "partial",
+              "indexed_as_of": null
+            },
+            "returned": 0,
+            "truncated": false
+          },
+          {
+            "id": "same_category",
+            "label": "\u540c\u54c1\u7c7b\u5176\u4ed6\u9879\u76ee",
+            "scope": {
+              "product_id": null,
+              "project_id": null,
+              "category_id": "708d742f-efc2-405b-be84-642955ffb5e8",
+              "proposal_id": null
+            },
+            "coverage": {
+              "notice": "\u90e8\u5206\u5f53\u524d\u53ef\u8bfb\u6765\u6e90\u5c1a\u672a\u5b8c\u6210\u7d22\u5f15\u6216\u5f53\u524d\u626b\u63cf\u590d\u6838\u3002",
+              "status": "partial",
+              "indexed_as_of": "2026-10-29T07:39:07.817715+00:00"
+            },
+            "returned": 1,
+            "truncated": false
+          }
+        ]
+      }
+    },
+    "status": "partial",
+    "summary": "\u53c2\u8003\u56fa\u5b9a\u8bb0\u5f55\uff1a\u66f4\u6362\u5bc6\u5c01\u5708\u3002",
+    "questions": [],
+    "unfinished": [
+      "\u4f01\u4e1a\u8d44\u6599\u7684\u5f15\u7528\u6216\u8986\u76d6\u5c1a\u672a\u5b8c\u6574\u6838\u5bf9\u3002"
+    ]
+  },
+  "versions_keys": [
+    "work_state",
+    "provider_key",
+    "model_version",
+    "prompt_prefixes",
+    "tool_definitions",
+    "tool_disclosures",
+    "checkpoint_layout",
+    "context_snapshots",
+    "work_state_digest",
+    "context_admissions",
+    "model_route_digest",
+    "context_observations",
+    "work_state_proposals",
+    "project_metadata_context",
+    "personal_preferences_context"
+  ],
+  "events": [
+    {
+      "sequence": 1,
+      "type": "accepted",
+      "status": "queued",
+      "keys": [
+        "type",
+        "status"
+      ]
+    },
+    {
+      "sequence": 2,
+      "type": "context_projected",
+      "status": "projected",
+      "keys": [
+        "type",
+        "fields",
+        "issues",
+        "skills",
+        "status",
+        "omitted",
+        "schema_digest",
+        "content_digest"
+      ]
+    },
+    {
+      "sequence": 3,
+      "type": "model_started",
+      "keys": [
+        "turn",
+        "type"
+      ]
+    },
+    {
+      "sequence": 4,
+      "type": "egress_checked",
+      "keys": [
+        "type",
+        "provider",
+        "checked_at",
+        "agreement_id",
+        "data_categories",
+        "agreement_revision"
+      ]
+    },
+    {
+      "sequence": 5,
+      "type": "tool_started",
+      "keys": [
+        "tool",
+        "type",
+        "call_id"
+      ]
+    },
+    {
+      "sequence": 6,
+      "type": "tool_finished",
+      "keys": [
+        "tool",
+        "type",
+        "call_id"
+      ]
+    },
+    {
+      "sequence": 7,
+      "type": "model_started",
+      "keys": [
+        "turn",
+        "type"
+      ]
+    },
+    {
+      "sequence": 8,
+      "type": "egress_checked",
+      "keys": [
+        "type",
+        "provider",
+        "checked_at",
+        "agreement_id",
+        "data_categories",
+        "agreement_revision"
+      ]
+    },
+    {
+      "sequence": 9,
+      "type": "tool_started",
+      "keys": [
+        "tool",
+        "type",
+        "call_id"
+      ]
+    },
+    {
+      "sequence": 10,
+      "type": "assistant_extract_child",
+      "keys": [
+        "type",
+        "event_type",
+        "citation_id"
+      ]
+    },
+    {
+      "sequence": 11,
+      "type": "egress_checked",
+      "keys": [
+        "type",
+        "provider",
+        "checked_at",
+        "agreement_id",
+        "data_categories",
+        "agreement_revision"
+      ]
+    },
+    {
+      "sequence": 12,
+      "type": "assistant_extract_child",
+      "keys": [
+        "tool",
+        "type",
+        "event_type",
+        "citation_id"
+      ]
+    },
+    {
+      "sequence": 13,
+      "type": "assistant_extract_child",
+      "keys": [
+        "tool",
+        "type",
+        "event_type",
+        "citation_id"
+      ]
+    },
+    {
+      "sequence": 14,
+      "type": "assistant_extract_child",
+      "keys": [
+        "type",
+        "event_type",
+        "citation_id"
+      ]
+    },
+    {
+      "sequence": 15,
+      "type": "egress_checked",
+      "keys": [
+        "type",
+        "provider",
+        "checked_at",
+        "agreement_id",
+        "data_categories",
+        "agreement_revision"
+      ]
+    },
+    {
+      "sequence": 16,
+      "type": "assistant_extract_child",
+      "status": "completed",
+      "keys": [
+        "type",
+        "status",
+        "event_type",
+        "citation_id"
+      ]
+    },
+    {
+      "sequence": 17,
+      "type": "tool_finished",
+      "keys": [
+        "tool",
+        "type",
+        "call_id"
+      ]
+    },
+    {
+      "sequence": 18,
+      "type": "model_started",
+      "keys": [
+        "turn",
+        "type"
+      ]
+    },
+    {
+      "sequence": 19,
+      "type": "egress_checked",
+      "keys": [
+        "type",
+        "provider",
+        "checked_at",
+        "agreement_id",
+        "data_categories",
+        "agreement_revision"
+      ]
+    },
+    {
+      "sequence": 20,
+      "type": "run_state",
+      "status": "partial",
+      "error_code": null,
+      "keys": [
+        "type",
+        "status",
+        "error_code"
+      ]
+    },
+    {
+      "sequence": 21,
+      "type": "finished",
+      "status": "partial",
+      "keys": [
+        "type",
+        "status"
+      ]
+    }
+  ],
+  "calls": [
+    {
+      "id": "a8605c97-496f-4c3a-b279-5380d8c9f88d",
+      "tool": "assistant.search",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "as_of",
+        "items",
+        "scope",
+        "groups",
+        "version",
+        "coverage",
+        "returned",
+        "truncated",
+        "query_trace",
+        "scope_policy",
+        "direct_returned",
+        "ranking_version",
+        "related_returned",
+        "related_truncated"
+      ],
+      "result_error": null,
+      "model_calls": [],
+      "output_status": null
+    },
+    {
+      "id": "5d9d7e1a-e0af-4bdd-8c48-5f4104eba838",
+      "tool": "assistant.extract",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "rows",
+        "partial",
+        "version",
+        "coverage",
+        "failures",
+        "rejected",
+        "row_count"
+      ],
+      "result_error": null,
+      "model_calls": [],
+      "output_status": null
+    },
+    {
+      "id": "4e11dc15-2263-450d-aaed-3fe27ef27d18",
+      "tool": "assistant.passage.read",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "text",
+        "locator",
+        "citation_id",
+        "next_cursor",
+        "range_chars",
+        "content_hash",
+        "source_revision",
+        "read_basis_status"
+      ],
+      "result_error": null,
+      "model_calls": [],
+      "output_status": null
+    },
+    {
+      "id": "a5caf478-44dd-4b4f-81de-dc3c55eb5598",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "text",
+        "calls",
+        "usage",
+        "request_id",
+        "structured",
+        "context_budget"
+      ],
+      "result_error": null,
+      "model_calls": [
+        {
+          "name": "assistant.search",
+          "argument_keys": [
+            "query"
+          ]
+        }
+      ],
+      "output_status": null
+    },
+    {
+      "id": "6b3e27a0-fb16-4f73-981e-caf69343410e",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "text",
+        "calls",
+        "usage",
+        "request_id",
+        "structured",
+        "context_budget"
+      ],
+      "result_error": null,
+      "model_calls": [],
+      "output_status": "completed"
+    },
+    {
+      "id": "11276c28-d570-4c9f-90f6-f2a8de56f649",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "text",
+        "calls",
+        "usage",
+        "request_id",
+        "structured",
+        "context_budget"
+      ],
+      "result_error": null,
+      "model_calls": [],
+      "output_status": "completed"
+    },
+    {
+      "id": "d029f803-f1f8-4dcb-9291-c0b5138d4871",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "text",
+        "calls",
+        "usage",
+        "request_id",
+        "structured",
+        "context_budget"
+      ],
+      "result_error": null,
+      "model_calls": [
+        {
+          "name": "assistant.extract",
+          "argument_keys": [
+            "citation_ids"
+          ]
+        }
+      ],
+      "output_status": null
+    },
+    {
+      "id": "d52a0e6a-0c9b-4f40-a6f1-1a8e661ab355",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "result_keys": [
+        "text",
+        "calls",
+        "usage",
+        "request_id",
+        "structured",
+        "context_budget"
+      ],
+      "result_error": null,
+      "model_calls": [
+        {
+          "name": "assistant.passage.read",
+          "argument_keys": [
+            "cursor",
+            "page_chars",
+            "citation_id"
+          ]
+        }
+      ],
+      "output_status": null
+    }
+  ]
+}

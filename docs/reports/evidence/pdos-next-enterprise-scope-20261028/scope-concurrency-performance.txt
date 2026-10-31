@@ -1,0 +1,46 @@
+....                                                                     [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+  tests/enterprise_search/test_scope_pg.py:36: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice(
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_scope_pg.py::test_category_fallback_keeps_internal_private_but_customer_private_needs_human_choice
+tests/enterprise_search/test_scope_temporal_pg.py::test_server_category_fallback_and_group_survive_durable_continuation
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html

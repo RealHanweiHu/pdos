@@ -1,0 +1,121 @@
+{
+  "cases": 12,
+  "budgets": [
+    8192,
+    16384
+  ],
+  "formula_checked_against_current_code": true,
+  "raw_inputs_reproduced": true,
+  "real_model_calls": 0,
+  "answer_quality": "not_run",
+  "per_case": [
+    {
+      "case_id": "CTX-01",
+      "turns_with_final": 61,
+      "anchors_checked": 12,
+      "characters": 41104,
+      "utf8_bytes": 103678,
+      "estimated_tokens": 33682,
+      "sha256": "685970ad2297d853771ee6a94d2128e4ff62cc841f35ce6d21e3e8eb8744d45e"
+    },
+    {
+      "case_id": "CTX-02",
+      "turns_with_final": 7,
+      "anchors_checked": 5,
+      "characters": 625,
+      "utf8_bytes": 1313,
+      "estimated_tokens": 410,
+      "sha256": "d26c2e7ada4fd43e2b4867f6356c1bc2d4fb39a227b09265741948585566df6f"
+    },
+    {
+      "case_id": "CTX-03",
+      "turns_with_final": 7,
+      "anchors_checked": 3,
+      "characters": 529,
+      "utf8_bytes": 891,
+      "estimated_tokens": 268,
+      "sha256": "348849caba3f17b0d44dd89d30a431222599c2e7284fb5d05637894f9aa0033d"
+    },
+    {
+      "case_id": "CTX-04",
+      "turns_with_final": 8,
+      "anchors_checked": 6,
+      "characters": 603,
+      "utf8_bytes": 1243,
+      "estimated_tokens": 385,
+      "sha256": "1513270c9d96c6aa80d188a12f95c8d8b504256253d12210833f8e385486f3f7"
+    },
+    {
+      "case_id": "CTX-05",
+      "turns_with_final": 7,
+      "anchors_checked": 4,
+      "characters": 528,
+      "utf8_bytes": 932,
+      "estimated_tokens": 280,
+      "sha256": "0a276abf1c8db792614716910b1335e5fa90873588c4db56010dfe241331ed3b"
+    },
+    {
+      "case_id": "CTX-06",
+      "turns_with_final": 7,
+      "anchors_checked": 6,
+      "characters": 563,
+      "utf8_bytes": 1131,
+      "estimated_tokens": 350,
+      "sha256": "cd913d52c276e8b035c2bcb47ddc4b5cf8c5b0a91fdb7b290967a0a09a76bd74"
+    },
+    {
+      "case_id": "CTX-07",
+      "turns_with_final": 7,
+      "anchors_checked": 6,
+      "characters": 516,
+      "utf8_bytes": 932,
+      "estimated_tokens": 278,
+      "sha256": "46ee5d4dd26bb8d9e49c0ad09edf4f87804c3823647800d9d058267f5fa37864"
+    },
+    {
+      "case_id": "CTX-08",
+      "turns_with_final": 7,
+      "anchors_checked": 5,
+      "characters": 611,
+      "utf8_bytes": 1211,
+      "estimated_tokens": 374,
+      "sha256": "0e279c6e929899b41a7e1a1bd599e28f155febed711cf8a2983e3836a38222bf"
+    },
+    {
+      "case_id": "CTX-09",
+      "turns_with_final": 7,
+      "anchors_checked": 5,
+      "characters": 1227,
+      "utf8_bytes": 1595,
+      "estimated_tokens": 445,
+      "sha256": "d0e6df169b63360824d3512f493b6c455c0b4a0047975625df2ff661ae399690"
+    },
+    {
+      "case_id": "CTX-10",
+      "turns_with_final": 5,
+      "anchors_checked": 4,
+      "characters": 3101,
+      "utf8_bytes": 7941,
+      "estimated_tokens": 2591,
+      "sha256": "bae36f6dd0415fd527810b186d6e67cdcd4cf1a7b11fe4386979fa60c9c00ca4"
+    },
+    {
+      "case_id": "CTX-11",
+      "turns_with_final": 8,
+      "anchors_checked": 7,
+      "characters": 766,
+      "utf8_bytes": 1538,
+      "estimated_tokens": 475,
+      "sha256": "d456dd564eb5201ab8463cd1dd162139290f984a12634694ade3bbfe05740587"
+    },
+    {
+      "case_id": "CTX-12",
+      "turns_with_final": 22,
+      "anchors_checked": 10,
+      "characters": 39046,
+      "utf8_bytes": 92580,
+      "estimated_tokens": 29836,
+      "sha256": "0860f6adb9f89277fc1d6fb2f2c0b50776605bd208fd0f2b3df507e178671876"
+    }
+  ]
+}

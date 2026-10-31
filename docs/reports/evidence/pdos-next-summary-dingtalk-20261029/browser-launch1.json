@@ -1,0 +1,5 @@
+{
+  "PDOS_BROWSER_DIR": "/tmp/pdos-summary-dingtalk-browser-actual-20261029-v1",
+  "PDOS_BROWSER_WEB_URL": "http://127.0.0.1:51631",
+  "PDOS_BROWSER_TIMEOUT_SECONDS": "7200"
+}

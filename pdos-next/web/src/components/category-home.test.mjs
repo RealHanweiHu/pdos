@@ -9,6 +9,7 @@ const directory = path.dirname(fileURLToPath(import.meta.url)), webRoot = path.r
 const dependency = createRequire(path.join(webRoot, "package.json"));
 const ts = dependency("typescript"), React = dependency("react");
 const { renderToStaticMarkup } = dependency("react-dom/server");
+globalThis.window = new EventTarget();
 let hooks = null;
 /* eslint-disable react-hooks/rules-of-hooks -- Isolated component state driver; real SSR hooks delegate unchanged. */
 const reactShim = { ...React, useState(initial) {
@@ -66,8 +67,8 @@ function api(calls, failure = () => false) { return async (route, body) => {
   if (route.includes("cursor=next")) return { items: knowledge.slice(2), next_cursor: null };
   return { items: knowledge.slice(0, 2), next_cursor: "next" };
 }; }
-function switchView(tree, label) { const button = elements(tree, e => e.type === "button" && e.props.children === label)[0]; assert.ok(button); button.props.onClick(); }
-function create(api, opened = []) { return driver({ categoryId: category, categoryName: "合成品类", api, onOpenPai() { opened.push("pai"); }, onOpenWorkbench(...args) { opened.push(args); } }); }
+function switchView(tree, label) { const button = elements(tree, e => e.type === "button" && (e.props.children === label || elements(e, child => child.type === "strong" && child.props.children === label).length > 0))[0]; assert.ok(button); button.props.onClick(); }
+function create(api, opened = []) { const component = driver({ categoryId: category, categoryName: "合成品类", api, onOpenPai() { opened.push("pai"); }, onOpenWorkbench(...args) { opened.push(args); } }); switchView(component.render(), "竞品库"); return component; }
 
 test("category reads every knowledge page once and keeps original price, condition and per-observation nature", async () => {
   const calls = [], component = create(api(calls)); component.render(); component.mount(); await tick();
@@ -77,14 +78,14 @@ test("category reads every knowledge page once and keeps original price, conditi
   assert.equal(calls.filter(call => call.route.includes("/knowledge?")).length, 2);
   assert.ok(calls.every(call => call.body === undefined));
 });
-test("six knowledge views use the same reads and retain real proposal and standard matching components", async () => {
+test("six knowledge views use the same reads, retain standard matching and leave proposal navigation to its own page", async () => {
   const calls = [], opened = [], component = create(api(calls), opened); component.render(); component.mount(); await tick();
   let tree = component.render(), html = markup(tree);
-  assert.match(html, /data-preserved="ProposalList"/); assert.match(html, /data-preserved="StandardMatch"/);
+  assert.doesNotMatch(html, /data-preserved="ProposalList"/); assert.doesNotMatch(html, /data-preserved="StandardMatch"/);
   switchView(tree, "用户声音"); tree = component.render(); html = markup(tree); assert.match(html, /合成场景标签/); assert.match(html, /合成来源平台/); assert.doesNotMatch(html, /32%|47 条|<blockquote/);
-  switchView(tree, "法规认证"); tree = component.render(); html = markup(tree); assert.match(html, /符合性：未知/); assert.match(html, /自愿参考/); assert.doesNotMatch(html, /已符合/);
+  switchView(tree, "共享知识"); tree = component.render(); switchView(tree, "法规认证"); tree = component.render(); html = markup(tree); assert.match(html, /符合性：未知/); assert.match(html, /自愿参考/); assert.doesNotMatch(html, /已符合/);
   switchView(tree, "规格字典"); tree = component.render(); assert.match(markup(tree), /合成工况/);
-  switchView(tree, "型号"); tree = component.render(); const openModel = elements(tree, e => e.props?.children?.some?.(child => child === "打开型号"))[0]; openModel.props.onClick(); assert.deepEqual(opened, [["products", "model-a"]]);
+  switchView(tree, "型号"); tree = component.render(); assert.match(markup(tree), /data-preserved="StandardMatch"/); const openModel = elements(tree, e => e.props?.children?.some?.(child => child === "打开型号"))[0]; openModel.props.onClick(); assert.deepEqual(opened, [["products", "model-a"]]);
   switchView(tree, "品类矩阵"); tree = component.render(); html = markup(tree); assert.match(html, /data-preserved="CategoryMatrix"/); assert.doesNotMatch(html, /<table|2 款竞品|目标格/);
   assert.equal(calls.length, 4);
 });

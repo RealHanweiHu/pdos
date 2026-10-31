@@ -100,3 +100,32 @@ class AliyunKms:
             return SecretStr(response.secret_data)
         except Exception:
             raise DomainError("SOURCE_UNAVAILABLE", "租户凭据暂不可读取。") from None
+
+    def create(self, name, version, credential):
+        from alibabacloud_kms20160120.models import CreateSecretRequest, DescribeSecretRequest
+
+        try:
+            try:
+                response = self.sdk().create_secret_with_options(CreateSecretRequest(
+                    secret_name=name, version_id=version, secret_type="Generic",
+                    secret_data_type="text", secret_data=credential.get_secret_value()),
+                    self.options()).body
+            except Exception:
+                # Reconcile an unknown creation using the same deterministic secret name.
+                # No new name, version or potentially duplicated external write is attempted.
+                response = self.sdk().describe_secret_with_options(
+                    DescribeSecretRequest(secret_name=name), self.options()).body
+            arn = response.arn
+            if not isinstance(arn, str) or not arn.startswith(f"acs:kms:{self.region}:"):
+                raise ValueError("KMS target changed")
+            if arn.split(":secret/", 1)[-1] != name or self.current_version(arn) != version:
+                raise ValueError("KMS version changed")
+            from hmac import compare_digest
+
+            if not compare_digest(self.value(arn, version).get_secret_value(),
+                                  credential.get_secret_value()):
+                raise ValueError("Secret request changed")
+            return arn
+        except Exception:
+            raise DomainError(
+                "SOURCE_UNAVAILABLE", "凭据保存结果尚未确认，请核对原请求。", 503) from None

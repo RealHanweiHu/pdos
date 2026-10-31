@@ -1,0 +1,14 @@
+{
+  "frozen": true,
+  "scope": "Native Task original-withdrawal fixture uses an actual private G0 target; shared-source customer guard unchanged",
+  "depends_on": "/tmp/pdos-work-followup-stage-20261029/manifest.json",
+  "files": [
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_work_followup_temporal_pg.py",
+      "operation": "modified",
+      "base_sha256": "b46fec67cdd0e9e59e532fb27437bab006e5b5a578e14527a3a6edfd28e9815f",
+      "candidate_sha256": "f26c93a414f83e805d5a2fac1ce338a685cd04e3a41c8f5179028565697e4b88",
+      "staged_path": "/tmp/pdos-work-followup-fixture-fix-stage-20261029/candidate/pdos-next/server/tests/enterprise_search/test_work_followup_temporal_pg.py"
+    }
+  ]
+}

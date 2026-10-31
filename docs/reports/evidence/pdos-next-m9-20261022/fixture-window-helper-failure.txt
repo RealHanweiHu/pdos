@@ -1,0 +1,77 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ test_completion_fixture_declares_finite_window_for_only_its_named_operations[None-2] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1160fb020>
+hours = None
+expected = {'change.close', 'change.effectivity.record', 'change.verification.record'}
+
+    @pytest.mark.parametrize("hours,expected", ((None, 2), (4, 4)))
+    def test_completion_fixture_declares_finite_window_for_only_its_named_operations(
+        monkeypatch, hours, expected
+    ):
+        at = datetime(2026, 10, 22, tzinfo=UTC)
+        requester, reviewer = uuid4(), uuid4()
+        work = SimpleNamespace(
+            quality=SimpleNamespace(human=requester),
+            independent_reviewer=SimpleNamespace(human=reviewer),
+            build_id=uuid4(),
+            setup=SimpleNamespace(
+                test_authorization_window=timedelta(hours=hours) if hours is not None else None
+            ),
+        )
+        imports = []
+        monkeypatch.setattr(scenario, "now", lambda: at)
+        monkeypatch.setattr(
+            scenario, "import_authority",
+            lambda actual, role, kind, **fields: imports.append((actual, role, kind, fields)),
+        )
+        scenario.completion_people(work)
+        assert len(imports) == 4
+        for actual, role, kind, fields in imports:
+            assert actual is work and role == "quality" and kind in {"duty", "qualification"}
+            assert datetime.fromisoformat(fields["valid_from"]) == at - timedelta(minutes=1)
+>           assert datetime.fromisoformat(fields["valid_until"]) == at + timedelta(hours=expected)
+                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: unsupported type for timedelta hours component: set
+
+tests/change_execution/test_completion_fixture_window.py:37: TypeError
+_ test_completion_fixture_declares_finite_window_for_only_its_named_operations[4-4] _
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1160fba10>, hours = 4
+expected = {'change.close', 'change.effectivity.record', 'change.verification.record'}
+
+    @pytest.mark.parametrize("hours,expected", ((None, 2), (4, 4)))
+    def test_completion_fixture_declares_finite_window_for_only_its_named_operations(
+        monkeypatch, hours, expected
+    ):
+        at = datetime(2026, 10, 22, tzinfo=UTC)
+        requester, reviewer = uuid4(), uuid4()
+        work = SimpleNamespace(
+            quality=SimpleNamespace(human=requester),
+            independent_reviewer=SimpleNamespace(human=reviewer),
+            build_id=uuid4(),
+            setup=SimpleNamespace(
+                test_authorization_window=timedelta(hours=hours) if hours is not None else None
+            ),
+        )
+        imports = []
+        monkeypatch.setattr(scenario, "now", lambda: at)
+        monkeypatch.setattr(
+            scenario, "import_authority",
+            lambda actual, role, kind, **fields: imports.append((actual, role, kind, fields)),
+        )
+        scenario.completion_people(work)
+        assert len(imports) == 4
+        for actual, role, kind, fields in imports:
+            assert actual is work and role == "quality" and kind in {"duty", "qualification"}
+            assert datetime.fromisoformat(fields["valid_from"]) == at - timedelta(minutes=1)
+>           assert datetime.fromisoformat(fields["valid_until"]) == at + timedelta(hours=expected)
+                                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^
+E           TypeError: unsupported type for timedelta hours component: set
+
+tests/change_execution/test_completion_fixture_window.py:37: TypeError
+=========================== short test summary info ============================
+FAILED tests/change_execution/test_completion_fixture_window.py::test_completion_fixture_declares_finite_window_for_only_its_named_operations[None-2]
+FAILED tests/change_execution/test_completion_fixture_window.py::test_completion_fixture_declares_finite_window_for_only_its_named_operations[4-4]
+2 failed in 4.28s

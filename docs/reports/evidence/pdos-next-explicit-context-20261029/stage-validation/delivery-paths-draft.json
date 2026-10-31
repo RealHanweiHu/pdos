@@ -1,0 +1,34 @@
+{
+  "changed": [
+    "pdos-next/server/pdos_next/agent_kernel/conversation.py",
+    "pdos-next/server/pdos_next/agent_kernel/work_state.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_ledger.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_materials.py",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_scope.py",
+    "pdos-next/server/pdos_next/enterprise_search/query.py",
+    "pdos-next/server/pdos_next/skill_packages/context-schemas.json",
+    "pdos-next/web/src/app/api/[...path]/route.ts",
+    "pdos-next/web/src/app/api/route-work-state.test.mjs",
+    "pdos-next/web/src/components/pai/answer-followup-actions.test.mjs",
+    "pdos-next/web/src/components/pai/answer-followup-actions.tsx",
+    "pdos-next/web/src/components/pai/source-picker.test.mjs",
+    "pdos-next/web/src/components/pai/source-picker.tsx",
+    "pdos-next/web/src/components/pai/work-state-carry.tsx",
+    "pdos-next/web/src/lib/run-continuation.ts",
+    "pdos-next/web/src/lib/run-start-intent.test.mjs",
+    "pdos-next/web/src/lib/run-start-intent.ts"
+  ],
+  "new": [
+    "pdos-next/server/pdos_next/agent_kernel/context_corrections.py",
+    "pdos-next/server/tests/agent_kernel/test_context_correction_start.py",
+    "pdos-next/server/tests/agent_kernel/test_context_corrections.py",
+    "pdos-next/server/tests/agent_kernel/test_context_corrections_pg.py",
+    "pdos-next/server/tests/agent_kernel/test_personal_context_pins_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_context_correction_filters.py",
+    "pdos-next/server/tests/enterprise_search/test_personal_context_pins.py",
+    "pdos-next/web/src/components/pai/explicit-context-corrections.test.mjs",
+    "pdos-next/web/src/components/pai/explicit-context-corrections.tsx",
+    "pdos-next/web/src/lib/explicit-context-corrections.ts"
+  ]
+}

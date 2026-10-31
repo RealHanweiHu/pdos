@@ -1,0 +1,54 @@
+{
+  "head": "s0_0813",
+  "target": "127.0.0.1:64245/pdos_test",
+  "marker": "f9048729-3f2a-4494-af75-56e1db7d743d",
+  "change_id": "51d743d6-26a5-53d5-9729-b0d1e8023fb9",
+  "change_versions": 12,
+  "status": "closed",
+  "completion_records": 4,
+  "groups": [
+    {
+      "operation": "change.effectivity.record",
+      "receipt_id": "6fd6bf62-8e08-4537-95b6-9d33b29fe349",
+      "common_group_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "request_keys": 1
+      },
+      "exact_native_links_retained": 10
+    },
+    {
+      "operation": "change.effectivity.record",
+      "receipt_id": "77d5a9ef-dbc8-470e-9403-46db3e906138",
+      "common_group_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "request_keys": 1
+      },
+      "exact_native_links_retained": 10
+    },
+    {
+      "operation": "change.verification.record",
+      "receipt_id": "561bb479-fdab-44ad-b061-f76e6cfe8cb1",
+      "common_group_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "request_keys": 1
+      },
+      "exact_native_links_retained": 12
+    },
+    {
+      "operation": "change.close",
+      "receipt_id": "ba30b6c0-ad39-4612-8423-45c7b878f21e",
+      "common_group_counts": {
+        "audit_entries": 1,
+        "outbox_events": 1,
+        "request_keys": 1
+      },
+      "exact_native_links_retained": 12
+    }
+  ],
+  "fabricated_issue_capa": 0,
+  "business_writes": 0,
+  "model_calls": 0
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useProfessionalSelection } from "@/components/projects/professional-target";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CheckCircle, GitBranch, MapPin, Plus } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
@@ -97,6 +98,7 @@ function ScopedFieldFeedback({ api, categoryId, product, principalId, projectId 
   function captureGraph() { if (!editable || !nativeChange) return; try { begin(fieldCapturePending(nativeChange, local.graph_reason)); } catch (failure) { setError((failure as Error).message); } }
   function computeImpact() { if (!editable || !nativeChange || !capture) return; try { begin({ stage: "inputs", command: fieldImpactCommand(scope, productRevision, nativeChange, capture) }); } catch (failure) { setError((failure as Error).message); } }
 
+  useProfessionalSelection("feedback",data?.feedbacks.map(row=>row.id)??[],local.selected_feedback_id,!editable,id=>patch({selected_feedback_id:id,selected_change_id:"",selected_capture_id:""}));
   return <section className={styles.root} aria-label="现场与客户反馈">
     <header className={styles.heading}><div><p className={styles.eyebrow}>反馈来源 → 实际定位 → 遏制 / 改善 → 变更与复验</p><h2>现场与客户反馈</h2></div><div className={styles.actions}><Button variant="outline" size="sm" disabled={busy} onClick={() => setAttempt(value => value + 1)}><ArrowClockwise aria-hidden="true"/>刷新反馈记录</Button><Button size="sm" disabled={!editable} onClick={() => choose("create")}><Plus aria-hidden="true"/>登记反馈</Button></div></header>
     <p className={styles.note}>先保留收到的原话和来源。产品、批次或配置无法定位时保持未知；报告标签不作为实际配置。客户意见、变更要求与承认声明分别记录，承认声明不授予工程或制造放行。</p>

@@ -1,0 +1,17 @@
+F
+=================================== FAILURES ===================================
+__ test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body __
+tests/enterprise_search/test_knowledge_dependencies_pg.py:92: in test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+    assert "原知识说明" in str(context["conversation"])
+E   assert '原知识说明' in "{'session_id': '7231da64-48cc-410e-94b4-702795ee64a7', 'root_goal': '以前漏气怎么处理？', 'root_run_id': '2a31ef4f-775d-4d59-9... sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.'}"
+E    +  where "{'session_id': '7231da64-48cc-410e-94b4-702795ee64a7', 'root_goal': '以前漏气怎么处理？', 'root_run_id': '2a31ef4f-775d-4d59-9... sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.'}" = str({'session_id': '7231da64-48cc-410e-94b4-702795ee64a7', 'root_goal': '以前漏气怎么处理？', 'root_run_id': '2a31ef4f-775d-4d59-93...come': {'summary': '参考固定记录：更换密封圈。', 'unfinished': [], 'research': [], 'notes': ['资料已更新，回答中的事实需重新读取'], ...}, ...}], ...})
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 warning in 9.50s

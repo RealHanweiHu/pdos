@@ -1,0 +1,19 @@
+✔ work-state reads and explicit human edits preserve scoped endpoints (146.798584ms)
+✔ work state rejects extra scope and non-supported methods before forwarding (54.895834ms)
+✔ context options are ordinary read-only metadata with closed, encoded selectors (45.381417ms)
+✔ picker opens with GET only, distinguishes Artifact/original versions and copies the selected fixed version (10.128584ms)
+✔ unavailable source explains the server reason and stays unselectable; text registration needs no upload (2.194458ms)
+✔ refresh or read failure clears selected versions and old names instead of silently following Current (2.548041ms)
+✔ scope and API switches hide old source names immediately and a late page cannot restore them (0.907416ms)
+✔ catalog paging remains explicit, deduplicates repeated heads and hides the catalog on cursor failure (14.701583ms)
+✔ Run bindings read actual scope and fixed refs, current null never falls back to selected title (1.268625ms)
+✔ Run binding refresh failure hides prior source names and only non503 notifies parent scope failure (1.392708ms)
+✔ Run binding identity/protocol mismatch is rejected, with no stale fixed source details (0.579541ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 519.359958

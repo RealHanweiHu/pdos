@@ -1,0 +1,51 @@
+{
+  "unique_passed": 7,
+  "segmented": true,
+  "tests": [
+    {
+      "classname": "tests.agent_kernel.test_project_current_context_pg",
+      "name": "test_actual_current_project_context_has_named_status_native_unknown_gate_and_no_lookup_claim",
+      "evidence": "pg-native-final-run1.xml"
+    },
+    {
+      "classname": "tests.agent_kernel.test_project_current_context_pg",
+      "name": "test_native_project_footprint_does_not_expand_d3_explicit_evidence_search[False]",
+      "evidence": "pg-native-final-run1.xml"
+    },
+    {
+      "classname": "tests.agent_kernel.test_project_current_context_pg",
+      "name": "test_native_project_footprint_does_not_expand_d3_explicit_evidence_search[True]",
+      "evidence": "pg-native-final-run1.xml"
+    },
+    {
+      "classname": "tests.agent_kernel.test_project_current_context_pg",
+      "name": "test_actual_native_update_requires_fresh_current_context_but_history_is_preserved",
+      "evidence": "pg-native-final-run1.xml"
+    },
+    {
+      "classname": "tests.agent_kernel.test_project_current_context_temporal_pg",
+      "name": "test_actual_project_native_context_runs_main_graph_and_retains_history_after_update",
+      "evidence": "pg-native-final-run1.xml"
+    },
+    {
+      "classname": "tests.agent_kernel.test_project_native_footprint_lifecycle_pg",
+      "name": "test_actual_native_project_footprint_retains_original_without_explicit_binding",
+      "evidence": "pg-native-final-run1.xml"
+    },
+    {
+      "classname": "tests.agent_kernel.test_project_native_footprint_lifecycle_pg",
+      "name": "test_native_history_keeps_old_revision_but_hides_after_source_only_recipient_revoke",
+      "evidence": "pg-native-revoke-run3.xml"
+    }
+  ],
+  "retained_failed_files": [
+    "pg-native-final-run1.xml",
+    "pg-native-revoke-run2.xml"
+  ],
+  "fixture_only_corrections": [
+    "Use real uploaded/scanned/parsed original with exact source-only recipient ACL; native private registration receipt is not shared",
+    "Isolate actual conversation.memory permission check in current ordinary snapshot"
+  ],
+  "source_head": "s0_0850",
+  "real_model_calls": 0
+}

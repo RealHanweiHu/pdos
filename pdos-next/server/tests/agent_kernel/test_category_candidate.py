@@ -502,3 +502,29 @@ def test_human_adoption_context_cannot_borrow_other_identity(ledger, change):
     f.s.info["scope"] = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
     with pytest.raises(DomainError):
         candidate.validate(f.s, ctx, data)
+
+
+@pytest.mark.parametrize('whole_registry', [False, True])
+def test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools(
+    ledger, whole_registry
+):
+    from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
+
+    f = ledger
+    f.owner.registry.add(ToolSpec('proposal.create', 'Unloaded write', {}, {}, 'write', 'T1'))
+    binding = ModelBinding.model_validate(f.model.execution_binding)
+    actual = disclosure(
+        f.owner.registry, 'main', binding_operations(f.owner.catalog, binding.loaded_skills)
+    )
+    assert not any(item['name'] == 'proposal.create' for item in actual)
+    fingerprint = digest(f.owner.registry.definitions() if whole_registry else actual)
+    f.model.execution_binding = binding.model_copy(update={
+        'tool_definitions_digest': fingerprint,
+    }).model_dump(mode='json')
+    f.run.versions['tool_definitions']['main'] = fingerprint
+    if whole_registry:
+        with pytest.raises(DomainError):
+            prepare(f)
+    else:
+        result = prepare(f)
+        assert adopt(f, result).run is f.run

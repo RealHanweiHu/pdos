@@ -47,9 +47,12 @@ function load(filename) {
 }
 const { CategoryCreateForm } = load(path.join(directory, "category-create-form.tsx"));
 const { SessionHistory } = load(path.join(directory, "../pai/session-history.tsx"));
+const { PaiScope } = load(path.join(directory, "../pai-conversation.tsx"));
+const { RunContinuation } = load(path.join(directory, "../pai/run-continuation.tsx"));
 const { PersonalXiaopai } = load(path.join(directory, "personal-xiaopai.tsx"));
+const { SkillPicker } = load(path.join(directory, "../pai/skill-picker.tsx"));
 const { ClarificationForm, ClarificationDialog, panelVisible } = load(path.join(directory, "clarification.tsx"));
-const { adoptedCategory, asCandidate, selectedInput, RequestRejected } = load(path.join(directory, "contracts.ts"));
+const { adoptedCategory, asCandidate, selectedInput, RequestRejected, personalApi } = load(path.join(directory, "contracts.ts"));
 const candidate = { type: "category_candidate", cancel_epoch: 0, candidate_digest: "a".repeat(64),
   input: { key: "test-pump", name: "合成气泵", purpose: "公开便携充气用途", groups: {
     knowledge: [{ kind: "competitor", content: { name: "合成竞品" }, source_refs: [{ type: "snapshot", id: "snapshot-id", version: 1 }] }],
@@ -59,6 +62,7 @@ const candidate = { type: "category_candidate", cancel_epoch: 0, candidate_diges
 function elements(tree, predicate) {
   if (!tree || typeof tree !== "object") return [];
   if (Array.isArray(tree)) return tree.flatMap(item => elements(item, predicate));
+  if (["PaiResponse", "PaiDocumentCard", "PaiComposer"].includes(tree.type?.name)) return elements(tree.type(tree.props), predicate);
   return [...(predicate(tree) ? [tree] : []), ...elements(tree.props?.children, predicate)];
 }
 function session(Component, props) {
@@ -77,7 +81,8 @@ function session(Component, props) {
   }, mountEffects() { cleanups = levels.flatMap(state => state.effects.map(effect => effect())); },
     lastEffect() { return lastState.effects.at(-1)(); }, unmount() { cleanups.forEach(cleanup => cleanup?.()); } };
 }
-function button(tree, label) { return elements(tree, element => element.props?.children === label && element.props?.onClick)[0]; }
+function button(tree, label) { return elements(tree, element => (element.props?.children === label || element.props?.["aria-label"]?.startsWith(`${label}：`)) && element.props?.onClick)[0]; }
+globalThis.requestAnimationFrame = callback => { callback(); return 0; };
 const tick = () => new Promise(resolve => setImmediate(resolve));
 async function click(component, label) { const found = button(component.render(), label); assert.ok(found, label); found.props.onClick(); await tick(); }
 function check(component, index, checked = true) { elements(component.render(), element => element.type === "input" && element.props.type === "checkbox")[index].props.onChange({ target: { checked } }); }
@@ -88,7 +93,7 @@ test("rendering makes no model or write requests and preserves sealed source rea
   const output = renderToStaticMarkup(React.createElement(CategoryCreateForm, { candidate, runId: "run-id", api, onCreated() {} }));
   for (const text of [candidate.input.name, candidate.input.purpose, candidate.candidate_digest, "model-id", "source-digest", "read-id"]) assert.ok(output.includes(text), text);
   assert.equal((output.match(/type="checkbox"/g) ?? []).length, 4);
-  assert.equal(output.includes("<textarea"), false);
+  assert.equal(output.includes("<textarea"), true);
   assert.equal(calls, 0);
   assert.ok(renderToStaticMarkup(React.createElement(PersonalXiaopai, { api, onCreated() {} })).includes("执行需要已配置的模型和运行授权"));
   assert.equal(calls, 0);
@@ -169,7 +174,7 @@ async function openHistory(component, goal = "已有个人任务", id = runId) {
   if (goal === "新的运行") id = "99999999-9999-4999-8999-999999999999";
   elements(component.render(), e => e.type === SessionHistory)[0].props.onSelectRun(id, sessionId); await tick();
 }
-test("refresh and reopen read actual adoption receipt, suppress adoption form and navigate to original category", async () => {
+test("refresh and reopen read actual adoption receipt and open the saved category editor beside the conversation", async () => {
   const opened = [], calls = [];
   const api = async (path, body) => {
     calls.push({ path, body }); assert.equal(body, undefined);
@@ -187,10 +192,11 @@ test("refresh and reopen read actual adoption receipt, suppress adoption form an
     assert.ok(elements(component.render(), e => Array.isArray(e.props?.children) && e.props.children.includes(adoption.receipt_id)).length);
     await click(component, "刷新实际结果");
     assert.equal(elements(component.render(), e => e.type === CategoryCreateForm).length, 0);
-    await click(component, "进入已创建品类");
+    await click(component, "返回编辑");
+    assert.ok(elements(component.render(), e => e.type?.name === "CategoryMetadataEditor" && e.props.categoryId === adoption.category_id && e.props.embedded).length);
+    assert.ok(elements(component.render(), e => e.props?.["aria-label"] === "小Pai 对话线程").length);
   }
-  assert.equal(opened.length, 2); assert.equal(opened[0].id, adoption.category_id); assert.equal(opened[0].receiptId, adoption.receipt_id);
-  assert.equal(opened[0].name, candidate.input.name); assert.ok(calls.every(call => call.path.startsWith("v1/personal/agent-runs")));
+  assert.equal(opened.length, 0); assert.ok(calls.every(call => call.path.startsWith("v1/personal/agent-runs")));
 });
 test("an adoption from another run cannot suppress the current run candidate", async () => {
   const otherRun = "99999999-9999-4999-8999-999999999999";
@@ -201,6 +207,7 @@ test("an adoption from another run cannot suppress the current run candidate", a
     return { session_id: sessionId, run_id: otherRun, status: "completed", cancel_epoch: 0, reverted: false };
   } });
   await openHistory(component, "已有个人任务", otherRun);
+  await click(component, "查看与编辑");
   const form = elements(component.render(), e => e.type === CategoryCreateForm)[0];
   assert.equal(form.props.runId, otherRun); assert.equal(button(component.render(), "进入已创建品类"), undefined);
 });
@@ -222,6 +229,31 @@ test("switching away while creation is pending cannot navigate using the old run
   component.unmount(); complete({ subject_id: adoption.category_id, id: adoption.receipt_id }); await tick();
   assert.equal(created.length, 0);
 });
+test("personalApi preserves real HTTP status for permission cleanup", async t => {
+  const before = globalThis.fetch; t.after(() => { globalThis.fetch = before; });
+  for (const status of [401, 403]) {
+    globalThis.fetch = async () => ({ ok: false, status, json: async () => ({ message: "synthetic denied" }) });
+    await assert.rejects(personalApi("v1/synthetic"), error => { assert.equal(error.status, status); return true; });
+  }
+});
+
+test("personal parent binds continuation identity and permission cleanup", async () => {
+  const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
+    if (body) return { run_id: "run", session_id: sessionId };
+    if (path.includes("/events")) return { items: [], next_cursor: 0 };
+    return { run_id: "run", session_id: sessionId, status: "completed", cancel_epoch: 0, reverted: false };
+  } });
+  await startPersonal(component);
+  const continuation = elements(component.render(), e => e.type === RunContinuation)[0];
+  assert.ok(continuation); assert.equal(continuation.props.principalId, "aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa");
+  assert.equal(typeof continuation.props.onUnavailable, "function");
+});
+
+test("skill utility buttons are explicit non-submit controls", () => {
+  const html = renderToStaticMarkup(React.createElement(SkillPicker, { api: async () => { throw Error("not called"); }, value: [], onChange() {}, disabled: false }));
+  assert.match(html, /type="button"[^>]*>清除选择/); assert.match(html, /type="button"[^>]*>刷新技能/);
+});
+
 test("personal start retries the identical request and never fans out another model call", async () => {
   const calls = []; let count = 0;
   const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
@@ -246,6 +278,31 @@ test("successful personal start followed by read failure cannot resend start", a
   elements(component.render(), e => e.type === "textarea")[0].props.onChange({ target: { value: "合成新品类研究" } });
   elements(component.render(), e => e.type === "form")[0].props.onSubmit({ preventDefault() {} }); await tick();
   assert.equal(writes, 1); assert.equal(button(component.render(), "重试同一请求"), undefined);
+});
+
+test("personal skill choice is pinned to the original pending start and clears after acceptance", async () => {
+  const calls = [];
+  const component = session(PersonalXiaopai, { onCreated() {}, api: async (path, body) => {
+    if (body) {
+      calls.push(structuredClone(body));
+      if (calls.length === 1) throw Error("synthetic lost response");
+      return { run_id: "run", session_id: sessionId };
+    }
+    if (path.includes("/events")) return { items: [], next_cursor: 0 };
+    return { run_id: "run", session_id: sessionId, status: "completed", cancel_epoch: 0 };
+  } });
+  const picker = () => elements(component.render(), e => e.type === SkillPicker)[0];
+  assert.equal(picker().props.resource, "v1/personal/agent-skills");
+  const choice = { key: "gap_check", version: "fixed@1", digest: "a".repeat(64) };
+  picker().props.onChange([choice]);
+  await startPersonal(component);
+  assert.deepEqual(calls[0].requested_skills, [choice]);
+  assert.equal(picker().props.disabled, true);
+  await click(component, "重试同一请求");
+  assert.deepEqual(calls[1], calls[0]);
+  assert.equal(picker(), undefined, "A continuing conversation uses only its continuation composer");
+  elements(component.render(), e => typeof e.props?.onNewConversation === "function")[0].props.onNewConversation();
+  assert.deepEqual(picker().props.value, []);
 });
 
 const questions = [
@@ -367,10 +424,11 @@ test("failed run refresh hides material but restores the original confirmation t
   };
   const parent = session(PersonalXiaopai, { api, onCreated: value => opened.push(value) });
   await openHistory(parent);
+  await click(parent, "查看与编辑");
   const original = session(CategoryCreateForm, elements(parent.render(), e => e.type === CategoryCreateForm)[0].props);
   check(original, 3); await click(original, "查看创建预览"); await click(original, "本人确认并创建品类");
   readFails = true; await click(parent, "刷新实际结果"); assert.equal(elements(parent.render(), e => e.type === CategoryCreateForm).length, 0);
-  readFails = false; await click(parent, "刷新实际结果");
+  readFails = false; await click(parent, "刷新实际结果"); await click(parent, "查看与编辑");
   const restoredProps = elements(parent.render(), e => e.type === CategoryCreateForm)[0].props;
   const restored = session(CategoryCreateForm, restoredProps);
   await click(restored, "使用原请求重试创建");
@@ -401,7 +459,7 @@ test("personal background keeps the original run, issues no request and leaves l
   component.render().props.ref.current = visiblePanel();
   await startPersonal(component);
   const count = calls.length;
-  await click(component, "转后台继续");
+  elements(component.render(), e => e.type === PaiScope)[0].props.onBackground(); await tick();
   assert.equal(calls.length, count);
   const poll = capturePoll(component);
   status = "waiting_input"; events = [{ sequence: 1, event: { type: "needs_input", questions } }];
@@ -412,4 +470,57 @@ test("personal background keeps the original run, issues no request and leaves l
   assert.equal(dialogue(component).props.open, false);
   assert.equal(inlineQuestions(component).props.questions[0].id, "market");
   assert.ok(calls.filter(call => !call.body && !call.path.includes("?page_size=50")).every(call => call.path.includes(runId)));
+});
+
+
+test("个人对话的输入区停止仍只取消本人当前运行", async () => {
+  const writes = []; let stopped = false;
+  const component = session(PersonalXiaopai, {onCreated() {}, api: async (path, body) => {
+    if (body) { writes.push({path,body}); if (path.endsWith("/cancel")) stopped=true; return {session_id:sessionId,run_id:runId}; }
+    if (path.includes("/events")) return {items:[],next_cursor:0};
+    return {session_id:sessionId,run_id:runId,goal:"本地合成",status:stopped ? "cancelled" : "running",cancel_epoch:0,reverted:false};
+  }});
+  await startPersonal(component);
+  const before=writes.length;
+  const continuation=elements(component.render(),e=>e.type===RunContinuation)[0];
+  continuation.props.onStop(); continuation.props.onStop(); await tick();
+  assert.equal(writes.length,before+1);assert.equal(writes.at(-1).path,`v1/personal/agent-runs/${runId}/cancel`);
+  assert.equal(elements(component.render(),e=>e.type===RunContinuation)[0].props.onStop,undefined);
+});
+
+
+test("category creation preset sends the current enabled skill explicitly", async t => {
+  const priorDocument = globalThis.document;
+  globalThis.document = { visibilityState: "visible", addEventListener() {}, removeEventListener() {} };
+  t.after(() => { globalThis.document = priorDocument; });
+  const calls = [], choice = { skill_key: "category_framing", skill_version: "current@1", skill_digest: "a".repeat(64), enabled: true, available: true };
+  const component = session(PersonalXiaopai, { presetSkillKeys: ["category_framing"], onCreated() {}, api: async (path, body) => {
+    if (path === "v1/personal/agent-skills") return { items: [choice, { ...choice, skill_key: "disabled", enabled: false }] };
+    if (body) { calls.push(body); return { session_id: sessionId, run_id: "run" }; }
+    if (path.includes("/events")) return { items: [], next_cursor: 0 };
+    if (path.includes("?page_size=50")) return { items: [], next_cursor: null };
+    return { session_id: sessionId, run_id: "run", status: "completed", cancel_epoch: 0, reverted: false };
+  } });
+  component.render(); component.mountEffects(); await tick();
+  await startPersonal(component);
+  assert.deepEqual(calls[0].requested_skills, [{ key: choice.skill_key, version: choice.skill_version, digest: choice.skill_digest }]);
+  component.unmount();
+});
+
+test("unavailable preset skills do not block a personal request", async t => {
+  const priorDocument = globalThis.document;
+  globalThis.document = { visibilityState: "visible", addEventListener() {}, removeEventListener() {} };
+  t.after(() => { globalThis.document = priorDocument; });
+  const calls = [];
+  const component = session(PersonalXiaopai, { presetSkillKeys: ["category_framing"], onCreated() {}, api: async (path, body) => {
+    if (path === "v1/personal/agent-skills") throw Error("unavailable");
+    if (body) { calls.push(body); return { session_id: sessionId, run_id: "run" }; }
+    if (path.includes("/events")) return { items: [], next_cursor: 0 };
+    if (path.includes("?page_size=50")) return { items: [], next_cursor: null };
+    return { session_id: sessionId, run_id: "run", status: "completed", cancel_epoch: 0, reverted: false };
+  } });
+  component.render(); component.mountEffects(); await tick();
+  await startPersonal(component);
+  assert.deepEqual(calls[0].requested_skills ?? [], []);
+  component.unmount();
 });

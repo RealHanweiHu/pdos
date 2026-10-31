@@ -19,12 +19,17 @@ class TemporalSender:
         *,
         dispatch_engine=None,
         automation_sender=None,
+        projection_sender=None,
     ):
         self.client, self.task_queue = client, task_queue
         self.dispatch_engine = dispatch_engine
         self.automation_sender = automation_sender
+        self.projection_sender = projection_sender
 
     async def __call__(self, event: Envelope):
+        projection_id = None
+        if self.projection_sender is not None:
+            projection_id = await self.projection_sender.event(event)
         if self.automation_sender is not None:
             # Persist every eligible rule source before this single shared consumer
             # acknowledges delivery, even when the original event has no workflow.
@@ -84,4 +89,4 @@ class TemporalSender:
             except WorkflowAlreadyStartedError:
                 pass
             return identity
-        return None
+        return projection_id

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { dueState, findProject, openRisks, openTasks, projectStateLabel, readPortfolio, type Portfolio } from "@/lib/portfolio-reads";
 import type { GlobalLocation } from "@/lib/global-navigation";
 import type { browserApi } from "@/lib/browser-api";
+import type { ProjectViewId } from "@/lib/project-workspace-navigation";
 import { ProjectWorkspace } from "./project-workspace";
 import { ProjectStatusSummary } from "./project-status-summary";
 
@@ -58,12 +59,14 @@ function Overview({ portfolio, today, onOpenProject }: {
 }
 
 
-export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench, onPaiContext }: {
+export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOverview, onOpenWorkbench, onOpenRun, onPaiContext, initialView = "tasks" }: {
+  initialView?: ProjectViewId;
   api: Api; session: { name: string; principal_id: string }; location: GlobalLocation;
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenOverview: () => void;
   onPaiContext?: (context: PaiContext | null) => void;
   onOpenWorkbench: (categoryId: string, productId: string, projectId: string) => void;
+  onOpenRun?: (runId: string, categoryId: string) => void;
 }) {
   const [reload, setReload] = useState(0);
   const scope = JSON.stringify([session.principal_id, location.categoryId, location.projectId, reload]);
@@ -92,7 +95,7 @@ export function ProjectCockpit({ api, session, location, onOpenProject, onOpenOv
     <Button variant="outline" onClick={onOpenOverview}><ArrowLeft/>返回经营总览</Button>
   </>;
   const readTime = portfolio.asOf && <p className="subtle mb-4">项目资料读取于 <time dateTime={portfolio.asOf}>{new Date(portfolio.asOf).toLocaleString()}</time></p>;
-  if (entry) return <ProjectWorkspace entry={entry} api={api} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} readAt={portfolio.asOf} readVersion={reload} onRefresh={() => setReload(value => value + 1)} />;
+  if (entry) return <ProjectWorkspace initialView={initialView} entry={entry} api={api} session={session} today={today} onBack={onOpenOverview} onOpenWorkbench={onOpenWorkbench} onOpenRun={onOpenRun} readAt={portfolio.asOf} readVersion={reload} onRefresh={() => setReload(value => value + 1)} />;
   return <>
     {refresh}{readTime}
     {portfolio.readErrors.map(item => <p key={item.path} role="status" className="subtle">部分范围暂不可读：{item.message}</p>)}

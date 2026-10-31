@@ -1,0 +1,71 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____ test_actual_preparation_is_durable_deduplicated_and_reads_do_not_write ____
+
+setup = <isolated synthetic test scope>
+
+    def test_actual_preparation_is_durable_deduplicated_and_reads_do_not_write(setup):
+        f = fixture(setup)
+        before = counts(setup)
+>       first = prepare(f)
+                ^^^^^^^^^^
+
+tests/agent_kernel/test_domain_candidates_pg.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_domain_candidates_pg.py:36: in prepare
+    return f.bootstrap.prepare_candidate(
+pdos_next/agent_kernel/bootstrap.py:367: in prepare_candidate
+    arguments = prepare_from_intent(
+pdos_next/domain/preproject/provenance.py:150: in prepare_from_intent
+    fail("FORBIDDEN_SCOPE", "server_candidate_binding", "候选须绑定服务器实际模型调用。", 403)
+pdos_next/domain/preproject/provenance.py:64: in prepare_candidate
+    model, _skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x1344fb230>
+scope = RunScope(tenant_id=UUID('55f2b0f1-6e0b-44ee-b9f1-8db689780e57'), requester_id=UUID('d211ff27-4443-4455-9108-1c0c2a9ed0..._categories=frozenset({'public'}), isolation='main', artifact_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x135cb50d0>
+spec = ToolSpec(name='platform.link.create', description='办理 platform.link.create。何时调用尚未登记，使用前须由该领域确认。产生 platform.linked。预填候选...', tier='T1', operation_key='platform.link.create', taint='trusted', parallel_safe=False, budget_weight=1, version='1')
+arguments = {'product_id': 'e7fb571f-49e8-4209-8480-81af16a85e62', 'new_platform': {'code': 'SYNTHETIC-PLATFORM', 'name': '合成便携平台', 'description': '通用组件范围'}, 'action': 'attach', 'compatibility': None, ...}
+source = WriteSource(skill=SkillBinding(key='derivative_diff', version='0.2.1-draft', digest='1ee1f99464afc37a26159f49d74a6c317...'9bfa827b-16c9-4de3-8b31-e492187b5b4c')), model_call_id=UUID('ce98a723-8af1-457a-86f3-30d834629571'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x1332059a0>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x1344e51f0>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = True
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:290: DomainError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_domain_candidates_pg.py::test_actual_preparation_is_durable_deduplicated_and_reads_do_not_write
+1 failed in 2.36s

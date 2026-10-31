@@ -1,13 +1,13 @@
 ---
 key: build_execution
-version: 0.1.0-draft
+version: 0.1.1-draft
 purpose: 在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业授权材料，并用确定性工具算齐套与成本；实际数量、参数和时点只按真实记录写入。
 input_schema:
   type: object
   required: [instruction]
   properties:
     instruction: {type: string, description: "用户本轮要求，如“登记这轮试模的实际配置”“这批出了 12 件，分配给验证”"}
-    build_ref: {type: [object, "null"], description: "页面或触发给定的 build_id 与 expected_build_revision；null 表示尚未指定"}
+    build_ref: {type: [object, "null"], description: "页面、触发或领域读取给定的 build_id 与 expected_build_revision；null 表示尚未指定"}
     lot_ref: {type: [object, "null"], description: "lot_id 与 expected_lot_revision"}
     sample_refs: {type: array, items: string, description: "样件 id；逐件处置时必须逐个给出"}
     purpose: {type: [string, "null"], description: "本轮用途（探索试验/工程样机/客户样品/认证样品/试产/制造放行）"}
@@ -15,7 +15,7 @@ output_schema:
   type: object
   required: [bound_objects, prepared, unknowns]
   properties:
-    bound_objects: {type: array, items: {object_type: string, id: string, revision: integer, basis: "page|trigger|user_message"}, description: "本轮固定的对象与版本；没有来源的不写"}
+    bound_objects: {type: array, items: {object_type: string, id: string, revision: integer, basis: "page|trigger|user_message|domain_read"}, description: "本轮固定的对象与版本；没有来源的不写"}
     prepared: {type: array, items: {operation: string, tier: string, payload_summary: string, sources: "Citation[]"}, description: "已准备的命令候选；办理结果以领域回执为准"}
     differences: {type: array, items: {area: string, planned: string, actual: string, basis: string}, description: "计划配置与实际配置的逐项差异；不平均、不合并"}
     coverage: {type: object, description: "本轮覆盖的批次/模穴/样件与未覆盖项"}
@@ -25,10 +25,13 @@ context_schema: {$ref: "context-schemas.json#/profiles/project"}
 context_requirements:
   - 项目：id、名称、当前版本、可见范围（服务器绑定）
   - 型号与品类范围（服务器绑定）
-  - 页面或触发携带的 Build/Lot/Sample 精确 id 与 expected_*_revision
+  - 页面、触发或领域读取返回的 Build/Lot/Sample 精确 id 与 expected_*_revision
   - 本轮用途与验证目标（由用户或 Build 的 verification_objectives 给出）
 allowed_operations:
   - {tool: conversation.history, tier: READ, note: "同会话前几轮已固定的对象与版本"}
+  - {tool: build.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.lot.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
+  - {tool: build.sample.read, tier: READ, note: "当前项目结构元数据、id 与 revision；不代表依据适用"}
   - {tool: product.baseline.read, tier: READ, note: "已发布定义、BOM、认证、模具、平台引用"}
   - {tool: evidence.search, tier: READ, note: "已登记的试模记录、测量原件、供方资料"}
   - {tool: calc.cost_subtotal, tier: READ, kind: compute}
@@ -80,7 +83,7 @@ preload_when:
 
 ## 工具
 
-1. 先固定对象：`build_ref`/`lot_ref`/`sample_refs` 只能来自页面、触发对象或用户消息；`conversation.history` 可取同会话已固定过的版本。本技能没有 Build/Lot/Sample 的领域读取端口，缺 id 或版本就提问。
+1. 先固定对象：`build_ref`/`lot_ref`/`sample_refs` 来自页面、触发对象、用户消息或领域读取；`conversation.history` 可取同会话已固定过的版本。可先用 `build.read` → `build.lot.read` → `build.sample.read` 在当前项目分页发现并核对 id 与 revision；固定引用须来自真实返回。
 2. 读依据：`product.baseline.read` 取已发布定义/BOM/模具引用，`evidence.search` 取已登记的试模记录与测量原件。
 3. 算：准备度 `build.readiness.compute`、齐套 `supply.kit.compute`、成本 `cost.estimate.compute`，各自需要固定的输入版本（供应快照、成本输入）。
 4. 登记：建轮次 `build.create` → 双专业授权（只准备）→ `build.start` → 实际配置 `build.configuration.actual.record` → 产出 `build.output.record` → 样件 `build.sample.allocate` / `build.sample.readiness.record`。
@@ -123,3 +126,5 @@ preload_when:
 **输出要求**：
 - reply 第一句给本轮固定的对象与结论（例如"已按 Build 的当前版本准备实际配置登记，两项差异待你确认"——示意）。
 - 差异、覆盖范围、未知与阻塞各一列表；阻塞项写明规则或缺的证据与责任人。
+
+读取边界：`build.read`、`build.lot.read`、`build.sample.read`、`quality.issue.read`、`test.run.read` 返回 `structural_metadata/v1`，只读记录身份、当前指针和固定关系；`basis_status=not_assessed`。不从记录状态、存在的样件身份或计划摘要推断已就绪、未消耗、依据仍有效、专业批准或可执行；来源与当前适用性由领域命令重新核对。私有元数据须已由服务器在受理本运行时绑定当前项目和内部资料类别，当前 RLS 逐次重验；旧运行缺绑定时发起新运行。无 id 时分页读取 `next_cursor`，多对象匹配时由用户明确目标，不取第一条代替选择。

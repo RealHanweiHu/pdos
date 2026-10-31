@@ -1,0 +1,26 @@
+{
+  "format_version": 1,
+  "frozen": true,
+  "files": [
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "operation": "modified",
+      "old_sha256": "1550100d9baaa2409b7e6caf32b82b4842752f3890763acf36637d26d0e132a1",
+      "new_sha256": "80cd9abd8633c86b3b56f689ecb150af0026b30de4988b5ef27e87981e1ba487",
+      "base_path": "/tmp/pdos-project-native-original-fixture-stage-20261029/base/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py",
+      "staged_path": "/tmp/pdos-project-native-original-fixture-stage-20261029/pdos-next/server/tests/agent_kernel/test_project_native_footprint_lifecycle_pg.py"
+    }
+  ],
+  "patch_path": "/tmp/pdos-project-native-original-fixture-stage-20261029/private-original-fixture.patch",
+  "patch_sha256": "4ef632f4c917e7f6494fbd1a6b07ece05d68f636ef412ba58722b65f92843164",
+  "scope": "only source-only negative fixture; real peer private upload/scan/parse plus exact recipient ACL; original first case unchanged",
+  "validation": {
+    "Ruff": "passed in full current validation tree",
+    "AST": "parsed; first lifecycle test AST unchanged",
+    "collect": "2 nodeids collected only",
+    "replay": "exact old SHA dry-run/apply/final SHA verified",
+    "actual_pg": "not run; root owns isolated DB"
+  },
+  "no_production_change": true,
+  "no_sql_change": true
+}

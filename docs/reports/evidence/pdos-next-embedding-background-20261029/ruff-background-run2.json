@@ -1,0 +1,379 @@
+[
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 145,
+      "row": 247
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/command_handlers.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 247
+    },
+    "message": "Line too long (144 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 247,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E402",
+    "end_location": {
+      "column": 92,
+      "row": 526
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/contracts.py",
+    "fix": null,
+    "location": {
+      "column": 1,
+      "row": 526
+    },
+    "message": "Module level import not at top of file",
+    "name": "module-import-not-at-top-of-file",
+    "noqa_row": 526,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/module-import-not-at-top-of-file"
+  },
+  {
+    "cell": null,
+    "code": "I001",
+    "end_location": {
+      "column": 92,
+      "row": 526
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/contracts.py",
+    "fix": {
+      "applicability": "safe",
+      "edits": [
+        {
+          "content": "from pdos_next.domain.project_governance.schemas import OPERATIONS as GOVERNANCE_OPERATIONS\n\n",
+          "end_location": {
+            "column": 1,
+            "row": 527
+          },
+          "location": {
+            "column": 1,
+            "row": 526
+          }
+        }
+      ],
+      "message": "Organize imports"
+    },
+    "location": {
+      "column": 1,
+      "row": 526
+    },
+    "message": "Import block is un-sorted or un-formatted",
+    "name": "unsorted-imports",
+    "noqa_row": 526,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/unsorted-imports"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 102,
+      "row": 89
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/embedding_activities.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 89
+    },
+    "message": "Line too long (101 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 89,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 110,
+      "row": 102
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/embedding_activities.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 102
+    },
+    "message": "Line too long (109 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 102,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 105,
+      "row": 61
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/embedding_api.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 61
+    },
+    "message": "Line too long (104 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 61,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 127,
+      "row": 119
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/embedding_profiles.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 119
+    },
+    "message": "Line too long (126 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 119,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 109,
+      "row": 122
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/embedding_profiles.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 122
+    },
+    "message": "Line too long (108 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 122,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 104,
+      "row": 24
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/enterprise_search/embedding_workflow.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 24
+    },
+    "message": "Line too long (103 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 24,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 111,
+      "row": 72
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/embedding_harness.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 72
+    },
+    "message": "Line too long (110 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 72,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 108,
+      "row": 297
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 297
+    },
+    "message": "Line too long (107 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 297,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 104,
+      "row": 329
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 329
+    },
+    "message": "Line too long (103 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 329,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 107,
+      "row": 348
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 348
+    },
+    "message": "Line too long (106 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 348,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 105,
+      "row": 364
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 364
+    },
+    "message": "Line too long (104 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 364,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 103,
+      "row": 370
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 370
+    },
+    "message": "Line too long (102 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 370,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 104,
+      "row": 418
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_hybrid.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 418
+    },
+    "message": "Line too long (103 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 418,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 105,
+      "row": 69
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_projection_pg.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 69
+    },
+    "message": "Line too long (104 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 69,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 104,
+      "row": 118
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_projection_pg.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 118
+    },
+    "message": "Line too long (103 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 118,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  },
+  {
+    "cell": null,
+    "code": "E501",
+    "end_location": {
+      "column": 105,
+      "row": 123
+    },
+    "filename": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_projection_pg.py",
+    "fix": null,
+    "location": {
+      "column": 101,
+      "row": 123
+    },
+    "message": "Line too long (104 > 100)",
+    "name": "line-too-long",
+    "noqa_row": 123,
+    "severity": "error",
+    "url": "https://docs.astral.sh/ruff/rules/line-too-long"
+  }
+]

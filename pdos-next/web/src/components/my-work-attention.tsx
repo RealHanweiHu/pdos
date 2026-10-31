@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { ArrowClockwise, ArrowRight, Warning } from "@phosphor-icons/react";
+import { PersonalSummaryInbox } from "./personal-summary-inbox";
 import { Button } from "@/components/ui/button";
 import { personalAttentionHref, usePersonalAttention, type AttentionQueue, type PersonalAttentionApi, type PersonalAttentionItem, type PersonalAttentionState } from "@/lib/personal-attention";
 import styles from "./my-work-attention.module.css";
@@ -17,7 +19,7 @@ function stageState(item: PersonalAttentionItem, stage: keyof typeof stages) {
 }
 function AttentionCard({ item }: { item: PersonalAttentionItem }) {
   const href = personalAttentionHref(item);
-  return <article className={styles.card}>
+  return <details className={styles.card}><summary className={styles.summary}><span>{item.title}</span><small>{item.project?.name ?? item.category.name}</small><span className={styles.state}>{workStates[item.state] ?? item.state}</span></summary><div className={styles.detailBody}>
     <p className={styles.context}>{[item.category.name, item.product?.name, item.project?.name].filter(Boolean).join(" ／ ")}</p>
     <div className={styles.heading}><h4>{item.title}</h4><span className={styles.state} title={item.state}>{workStates[item.state] ?? item.state}</span></div>
     <p className={styles.reason}>{item.reason}</p>
@@ -36,7 +38,7 @@ function AttentionCard({ item }: { item: PersonalAttentionItem }) {
     {item.blocked && <p className={styles.blocked}><Warning size={14} aria-hidden="true"/><span>{item.blocked.message} <small>（{item.blocked.code}）</small></span></p>}
     {href && <a className={styles.open} href={href}>{item.target === "proposal" ? "查看原提案" : "查看原项目"}<ArrowRight size={13} aria-hidden="true"/></a>}
     <details className={styles.identity}><summary>来源与版本</summary><p>责任关系 {item.responsibility}</p>{typeof item.details.task_id === "string" && <p>稳定任务 {item.details.task_id}{typeof item.details.task_revision === "number" && Number.isSafeInteger(item.details.task_revision) && item.details.task_revision > 0 ? ` · v${item.details.task_revision}` : ""}</p>}{typeof item.details.submission_id === "string" && <p>提交记录 {item.details.submission_id}{typeof item.details.submission_revision === "number" && Number.isSafeInteger(item.details.submission_revision) && item.details.submission_revision > 0 ? ` · v${item.details.submission_revision}` : ""}</p>}<p>来源类型 {item.kind} · 稳定来源 {item.source.id}</p>{item.source.version_id && <p>固定事实 {item.source.version_id}</p>}{item.source.revision !== null && <p>来源版本 v{item.source.revision}</p>}{item.source.epoch !== null && <p>当前水位 {item.source.epoch}</p>}<p>记录时点 <time dateTime={item.recorded_at}>{item.recorded_at}</time></p></details>
-  </article>;
+  </div></details>;
 }
 
 export function PersonalAttentionQueue({ queue, state }: { queue: AttentionQueue; state: PersonalAttentionState }) {
@@ -46,7 +48,7 @@ export function PersonalAttentionQueue({ queue, state }: { queue: AttentionQueue
       {state.items.length > 0 ? <div className={styles.cards}>{state.items.map(item => <AttentionCard key={item.id} item={item}/>)}</div> : <p className={styles.note}>{state.totalRecords === 0 ? "当前可读范围内暂无此类注意项。" : "本页暂无可展示记录，队列尚未完整读取。"}</p>}
       {state.moreError && <p className={styles.error} role="alert">后续页读取失败：{state.moreError}。已读记录保留。</p>}
       {state.nextCursor !== null && <Button type="button" variant="outline" size="sm" disabled={state.loadingMore} onClick={() => void state.loadMore()}>{state.loadingMore ? "正在读取后续页…" : state.moreError ? "重试后续页" : "读取后续页"}</Button>}
-      {state.asOf && <p className={styles.note}>读回时点 {state.asOf}。请在原对象查看当前资料并办理。</p>}
+      {state.asOf && <details className={styles.readInfo}><summary>读取信息</summary><p className={styles.note}>读回时点 {state.asOf}。请在原对象查看当前资料并办理。</p></details>}
     </>}
   </section>;
 }
@@ -56,5 +58,7 @@ export function PersonalAttention({ api, principalId, reload }: { api: PersonalA
   const receive = usePersonalAttention(api, principalId, reload, "receive");
   const verify = usePersonalAttention(api, principalId, reload, "verify");
   const external = usePersonalAttention(api, principalId, reload, "external");
-  return <div className={styles.groups}><PersonalAttentionQueue queue="decide" state={decide}/><PersonalAttentionQueue queue="receive" state={receive}/><PersonalAttentionQueue queue="verify" state={verify}/><PersonalAttentionQueue queue="external" state={external}/></div>;
+  const [selected, setSelected] = useState<AttentionQueue | "summaries">("decide");
+  const queues = { decide, receive, verify, external };
+  return <div className={styles.groups}><nav className={styles.filters} aria-label="待办类型">{(Object.keys(attentionQueueNames) as AttentionQueue[]).map(queue => <button type="button" key={queue} aria-pressed={selected === queue} onClick={() => setSelected(queue)}>{attentionQueueNames[queue]}<span>{queues[queue].totalRecords ?? "—"}</span></button>)}<button type="button" aria-pressed={selected === "summaries"} onClick={() => setSelected("summaries")}>我的摘要</button></nav>{selected === "summaries" ? <PersonalSummaryInbox api={api} principalId={principalId}/> : <PersonalAttentionQueue queue={selected} state={queues[selected]}/>}</div>;
 }

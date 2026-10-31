@@ -1,0 +1,12 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0851",
+  "existing_feedback_rows": 8,
+  "existing_change_feedback_rows": 1,
+  "exact_guard_refusal": {
+    "sqlstate": "P0001",
+    "message": "Change-origin similar history feedback requires s0_0851"
+  },
+  "rollback_preserves_head_counts_columns_acl_forced_rls_policies": true,
+  "note": "Exact nonempty guard executed and rolled back, not a cascading schema downgrade."
+}

@@ -1,0 +1,14 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "head_before": "s0_0838",
+  "head_after": "s0_0838",
+  "expected_rejection": true,
+  "counts_before_and_after": {
+    "agent_runs": 4986,
+    "agent_tool_calls": 8825,
+    "agent_validation_budgets": 124,
+    "action_receipts": 47168
+  },
+  "retained_query_calls": 5,
+  "real_provider_accessed": false
+}

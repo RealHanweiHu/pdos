@@ -1,0 +1,217 @@
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/enterprise_search/test_field_feedback_source_contract.py:3:1
+   |
+ 1 |   """Offline D source wiring; actual native facts/permissions are checked in PG cases."""
+ 2 |
+ 3 | / from types import SimpleNamespace
+ 4 | | from uuid import uuid4
+ 5 | |
+ 6 | | import pytest
+ 7 | | from sqlalchemy import select
+ 8 | | from sqlalchemy.dialects import postgresql
+ 9 | |
+10 | | from pdos_next.agent_kernel.disclosure import disclosure
+11 | | from pdos_next.agent_kernel.tools import default_registry
+12 | | from pdos_next.domain.field_feedback.models import EVENTS
+13 | | from pdos_next.enterprise_search import business_events
+14 | | from pdos_next.enterprise_search.action_sources import _source_roots
+15 | | from pdos_next.enterprise_search.presence import MODELS
+16 | | from pdos_next.enterprise_search.relations import edges
+17 | | from pdos_next.enterprise_search.schemas import SOURCE_TYPES, SearchInput
+18 | | from pdos_next.enterprise_search.sources import catalog, identity_keys
+   | |______________________________________________________________________^
+help: Organize imports
+   |
+6  | import pytest
+   - from sqlalchemy import select
+   - from sqlalchemy.dialects import postgresql
+   -
+7  | from pdos_next.agent_kernel.disclosure import disclosure
+--------------------------------------------------------------------------------
+15 | from pdos_next.enterprise_search.sources import catalog, identity_keys
+16 + from sqlalchemy import select
+17 + from sqlalchemy.dialects import postgresql
+18 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/enterprise_search/test_recovery_pg.py:8:1
+   |
+ 6 |   # ruff: noqa: F401, F811 -- imported fixtures register their actual command dependency tree
+ 7 |
+ 8 | / import hashlib
+ 9 | | import json
+10 | | import os
+11 | | import statistics
+12 | | import time
+13 | | from collections import Counter
+14 | | from dataclasses import replace
+15 | | from datetime import timedelta
+16 | | from types import SimpleNamespace
+17 | | from uuid import UUID, uuid4
+18 | |
+19 | | import pytest
+20 | | from change_execution.test_transactions import command as change_command
+21 | | from change_execution.test_transactions import create_payload as change_payload
+22 | | from external_wait_pg.test_workflow import create_record
+23 | | from external_wait_pg.test_workflow import execute as wait_execute
+24 | | from sqlalchemy import delete, event, func, select, text
+25 | | from sqlalchemy.exc import DBAPIError
+26 | | from sqlalchemy.orm import Session
+27 | | from test_build_demand import compute
+28 | | from test_project_first_plan import accepted, post
+29 | | from test_supply_execution import TEXT, capture_input, recorded
+30 | | from verification_handoff.fixtures import artifact as product_artifact
+31 | |
+32 | | from pdos_next.database import tenant_session
+33 | | from pdos_next.enterprise_search import indexing
+34 | | from pdos_next.enterprise_search.assistant_sources import current
+35 | | from pdos_next.enterprise_search.events import EVENTS, process_event
+36 | | from pdos_next.enterprise_search.models import SearchChunk, SearchCorpus, SearchSource, SearchTerm
+37 | | from pdos_next.enterprise_search.query import SearchInput, search
+38 | | from pdos_next.enterprise_search.recovery import context_reference, plan_rebuild, rebuild_batch
+39 | | from pdos_next.enterprise_search.recovery_workflow import finish_rebuild
+40 | | from pdos_next.enterprise_search.schemas import SOURCE_TYPES
+41 | | from pdos_next.enterprise_search.sources import prepare_read, select_sources
+42 | | from pdos_next.errors import DomainError
+43 | | from pdos_next.models import Artifact, Grant, Outbox, Receipt, now
+44 | | from pdos_next.service import digest
+45 | | from tests.enterprise_search.test_business_sources_pg import (
+46 | |     accepted_work,
+47 | |     change_work,
+48 | |     created,
+49 | |     known_configuration,
+50 | |     launch_work,
+51 | |     operational_work,
+52 | |     quality_work,
+53 | |     ready_work,
+54 | |     results_work,
+55 | | )
+56 | | from tests.enterprise_search.test_retrieval_pg import index, register, session_for
+57 | | from tests.preproject.test_g0 import request
+   | |____________________________________________^
+help: Organize imports
+   |
+23 | from external_wait_pg.test_workflow import execute as wait_execute
+   - from sqlalchemy import delete, event, func, select, text
+   - from sqlalchemy.exc import DBAPIError
+   - from sqlalchemy.orm import Session
+   - from test_build_demand import compute
+   - from test_project_first_plan import accepted, post
+   - from test_supply_execution import TEXT, capture_input, recorded
+   - from verification_handoff.fixtures import artifact as product_artifact
+   -
+24 | from pdos_next.database import tenant_session
+--------------------------------------------------------------------------------
+36 | from pdos_next.service import digest
+37 + from sqlalchemy import delete, event, func, select, text
+38 + from sqlalchemy.exc import DBAPIError
+39 + from sqlalchemy.orm import Session
+40 + from test_build_demand import compute
+41 + from test_project_first_plan import accepted, post
+42 + from test_supply_execution import TEXT, capture_input, recorded
+43 | from tests.enterprise_search.test_business_sources_pg import (
+--------------------------------------------------------------------------------
+55 | from tests.preproject.test_g0 import request
+56 + from verification_handoff.fixtures import artifact as product_artifact
+57 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/enterprise_search/test_role_native_source_contract.py:3:1
+   |
+ 1 |   """Offline contracts at genuine catalog/event/schema and migration boundaries."""
+ 2 |
+ 3 | / from importlib import import_module
+ 4 | | from uuid import uuid4
+ 5 | |
+ 6 | | import pytest
+ 7 | | from sqlalchemy import select
+ 8 | | from sqlalchemy.dialects import postgresql
+ 9 | |
+10 | | from pdos_next.agent_kernel.disclosure import disclosure
+11 | | from pdos_next.agent_kernel.tools import default_registry
+12 | | from pdos_next.enterprise_search import business_events
+13 | | from pdos_next.enterprise_search.presence import MODELS
+14 | | from pdos_next.enterprise_search.relations import edges
+15 | | from pdos_next.enterprise_search.role_native_audience import PARENT_FIELDS
+16 | | from pdos_next.enterprise_search.role_native_events import OPERATIONS
+17 | | from pdos_next.enterprise_search.role_native_sources import FAMILIES
+18 | | from pdos_next.enterprise_search.schemas import SOURCE_TYPES, SearchInput
+19 | | from pdos_next.enterprise_search.sources import catalog, identity_keys
+20 | | from pdos_next.service import EVENTS
+   | |____________________________________^
+help: Organize imports
+   |
+6  | import pytest
+   - from sqlalchemy import select
+   - from sqlalchemy.dialects import postgresql
+   -
+7  | from pdos_next.agent_kernel.disclosure import disclosure
+--------------------------------------------------------------------------------
+17 | from pdos_next.service import EVENTS
+18 + from sqlalchemy import select
+19 + from sqlalchemy.dialects import postgresql
+20 |
+   |
+
+I001 [*] Import block is un-sorted or un-formatted
+  --> pdos-next/server/tests/manufacturing_preparation_transactions/fixtures.py:7:1
+   |
+ 5 |   """
+ 6 |
+ 7 | / from copy import deepcopy
+ 8 | | from datetime import timedelta
+ 9 | | from types import SimpleNamespace
+10 | | from uuid import UUID, uuid4
+11 | |
+12 | | import pytest
+13 | | from sqlalchemy import func, select
+14 | | from test_project_first_plan import cmd, post
+15 | |
+16 | | from pdos_next.database import tenant_session
+17 | | from pdos_next.domain.change_execution import service as evidence
+18 | | from pdos_next.domain.configurations import service as configurations
+19 | | from pdos_next.domain.configurations.models import (
+20 | |     BomLine,
+21 | |     BomRevision,
+22 | |     EngineeringConfiguration,
+23 | |     PartIdentity,
+24 | |     ProcessRevision,
+25 | | )
+26 | | from pdos_next.domain.manufacturing_baseline.models import (
+27 | |     BaselineDocumentLink,
+28 | |     PreparationCurrent,
+29 | |     PreparationVersion,
+30 | | )
+31 | | from pdos_next.domain.manufacturing_baseline.service import EVENTS
+32 | | from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource, DefinitionSpecRow
+33 | | from pdos_next.domain.professional_authority import service as professional
+34 | | from pdos_next.domain.professional_authority.models import ProfessionalFact
+35 | | from pdos_next.domain.projects import service as projects
+36 | | from pdos_next.domain.projects.models import Project, ProjectProductLink
+37 | | from pdos_next.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey, now
+38 | | from pdos_next.object_storage import LocalPrivateObjectStore
+39 | | from pdos_next.professional_import import import_professional_fact
+40 | | from pdos_next.safety import verify_test_target
+41 | | from pdos_next.service import digest
+   | |____________________________________^
+42 |
+43 |   OPERATIONS = tuple(EVENTS)
+   |
+help: Organize imports
+   |
+12 | import pytest
+   - from sqlalchemy import func, select
+   - from test_project_first_plan import cmd, post
+   -
+13 | from pdos_next.database import tenant_session
+--------------------------------------------------------------------------------
+38 | from pdos_next.service import digest
+39 + from sqlalchemy import func, select
+40 + from test_project_first_plan import cmd, post
+41 |
+   |
+
+Found 4 errors.
+[*] 4 fixable with the `--fix` option.

@@ -1,0 +1,40 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/citations-53502-before-0829.dump",
+  "operations": [
+    {
+      "operation": "upgrade",
+      "target": "s0_0829",
+      "exit": 0
+    },
+    {
+      "operation": "downgrade",
+      "target": "s0_0828",
+      "exit": 0
+    },
+    {
+      "operation": "upgrade",
+      "target": "s0_0829",
+      "exit": 0
+    }
+  ],
+  "tables": [
+    "external_wait_versions",
+    "external_wait_currents",
+    "project_risk_followups",
+    "project_risk_followup_currents",
+    "knowledge_candidate_versions",
+    "knowledge_candidate_currents",
+    "knowledge_rule_versions",
+    "knowledge_rule_currents",
+    "knowledge_applicability_assessments",
+    "field_feedback_versions",
+    "field_feedback_currents",
+    "field_response_records"
+  ],
+  "actual_triggers": 24,
+  "existing_record_counts_unchanged": true,
+  "final_head": "s0_0829",
+  "function_upgrade_downgrade_exact": true
+}

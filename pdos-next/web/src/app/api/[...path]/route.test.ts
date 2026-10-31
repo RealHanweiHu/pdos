@@ -44,7 +44,7 @@ function harness(configuration: { token?: string | null; api?: string | null; re
   assert.equal(dispatchers[0].options.bodyTimeout, 600000);
   const route = { exports: {} };
   runInNewContext(routeSource, {
-    module: route, exports: route.exports, URL, URLSearchParams, Response, Headers,
+    module: route, exports: route.exports, URL, URLSearchParams, Response, Headers, TextEncoder,
     process: { env: { PDOS_NEXT_API_URL: configuration.api === null ? undefined : configuration.api ?? "http://synthetic-api.invalid" } },
     AbortSignal: { timeout: (milliseconds: number) => { timeouts.push(milliseconds); return new AbortController().signal; } },
     require: (name: string) => {
@@ -84,6 +84,20 @@ function harness(configuration: { token?: string | null; api?: string | null; re
 }
 
 const resourceInspect = `${base}/builds/${build}/resources/inspect`;
+test("预算恢复与技能移除仅原样转发显式原请求，读取不重发", async () => {
+  for (const root of ["v1/agent-runs", "v1/personal/agent-runs"]) {
+    const h = harness();
+    const body = JSON.stringify({ goal: "保留工作状态继续核对", idempotency_key: issue,
+      restart_from_run_id: run, context_revision: 4,
+      excluded_continued_skills: ["public_research"] });
+    const result = await h.send(root, { method: "POST", body, unscoped: root.includes("personal") });
+    assert.equal(result.response.status, 200); assert.equal(h.calls[0].init.body, body);
+    assert.equal(h.calls[0].init.method, "POST");
+    await h.send(`${root}/${run}/continuation`, { unscoped: root.includes("personal") });
+    assert.equal(h.calls.length, 2); assert.equal(h.calls[1].init.method, "GET");
+    assert.equal(h.calls[1].init.body, undefined);
+  }
+});
 test("本人运行反馈按当前范围读写原正文，原请求核对与历史分页保持只读",async()=>{
  const h=harness();const path=`v1/agent-runs/${run}/feedback`;
  const body=JSON.stringify({idempotency_key:issue,categories:["wrong_value"],comment:"Actual issue",skill_load_event_id:null});
@@ -151,6 +165,23 @@ test("技能管理读取与原请求恢复保留品类和完整原正文", async
   assert.equal(result.response.status, 200); assert.equal(result.reads, 1);
   assert.equal(h.calls.at(-1)?.init.body, body);
   assert.equal(h.calls.at(-1)?.url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skills/recover`);
+});
+
+test("个人技能选择只读本人租户目录，不绑定品类或接受范围参数", async () => {
+  const h = harness();
+  const result = await h.send("v1/personal/agent-skills", { unscoped: true });
+  assert.equal(result.response.status, 200);
+  assert.equal(h.calls[0].url, "http://synthetic-api.invalid/v1/personal/agent-skills");
+  for (const options of [
+    { unscoped: true, query: "tenant_id=forged" },
+    { unscoped: true, query: "page_size=20" },
+    { unscoped: true, method: "POST", body: "{}" },
+  ] as const) {
+    const rejected = harness();
+    const response = await rejected.send("v1/personal/agent-skills", options);
+    assert.equal(response.response.status, options.method ? 405 : 422);
+    assert.equal(rejected.calls.length, 0);
+  }
 });
 
 test("技能管理拒绝伪造范围与方法，回执查询失败保持只读含义", async () => {
@@ -922,4 +953,68 @@ test("采用复核材料保留同源和会话守卫；传输失败只报告读�
   assert.equal(response.status, 503);
   assert.equal((await response.json()).code, "SOURCE_UNAVAILABLE");
   assert.equal(lost.calls.length, 1);
+});
+
+test("品类资料维护、可分派成员与提案筛选保留品类范围", async () => {
+ const h=harness();
+ assert.equal((await h.send("v1/metadata")).response.status,200);
+ const body=JSON.stringify({name:"名称",purpose:"场景",expected_revision:2,idempotency_key:run});
+ assert.equal((await h.send("v1/metadata",{method:"POST",body})).response.status,200);
+ assert.equal(h.calls.at(-1)?.init.body,body);
+ assert.equal((await h.send("v1/participants")).response.status,200);
+ assert.equal((await h.send("v1/participants",{method:"POST",body})).response.status,405);
+ assert.equal((await h.send("v1/proposals",{query:"q=搜索&status=draft&page_size=50"})).response.status,200);
+ assert.ok(h.calls.at(-1)?.url.includes(`categories/${category}/proposals?`));
+ const before=h.calls.length;
+ assert.equal((await h.send("v1/proposals",{query:"status=unknown"})).response.status,422);
+ assert.equal((await h.send("v1/proposals",{query:"q=a&q=b"})).response.status,422);
+ assert.equal((await h.send("v1/metadata",{query:`category_id=${category}`})).response.status,422);
+ assert.equal(h.calls.length,before);
+});
+
+
+test("组织消息代理保留原请求，只接受个人入口和明确分页", async () => {
+  const h=harness(), path="v1/personal/inbox/conversations";
+  const body=JSON.stringify({category_id:category,recipients:[run],title:"合成主题",body:"合成消息",request_key:issue});
+  assert.equal((await h.send(path,{method:"POST",body,unscoped:true})).response.status,200);
+  assert.equal(h.calls[0].init.body,body);
+  assert.equal((await h.send(`${path}/${run}/messages`,{query:"before=8&page_size=20",unscoped:true})).response.status,200);
+  assert.equal((await h.send("v1/personal/inbox/states",{unscoped:true})).response.status,200);
+  for(const query of ["principal_id="+run,"page_size=200","cursor="+issue+"&cursor="+run]) {
+    const isolated=harness();assert.equal((await isolated.send(path,{query,unscoped:true})).response.status,422);assert.equal(isolated.calls.length,0);
+  }
+  const cross=harness();assert.equal((await cross.send(path,{method:"POST",body,origin:"https://untrusted.invalid",unscoped:true})).response.status,403);assert.equal(cross.calls.length,0);
+});
+test("NPI 任务模板必须读取实际项目，拒绝无范围和写请求",async()=>{
+ const path=`${base}/project-work/templates`,h=harness();
+ assert.equal((await h.send(path,{query:`project_id=${issue}`})).response.status,200);
+ for(const value of [{},{query:`project_id=${issue}&principal_id=${run}`},{method:"POST" as const,body:"{}"}]){const isolated=harness();assert.notEqual((await isolated.send(path,value)).response.status,200);assert.equal(isolated.calls.length,0)}
+});
+
+test("shared project sets use only the authenticated organization routes", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/project-sets", { unscoped:true })).response.status,200);
+  const body = JSON.stringify({ name:"合成共享项目集",expected_revision:0,request_key:run });
+  assert.equal((await h.send("v1/project-sets", { unscoped:true,method:"POST",body })).response.status,200);
+  assert.equal(h.calls.at(-1)?.init.body,body);
+  assert.equal((await h.send("v1/project-sets/move", { unscoped:true,method:"POST",body:JSON.stringify({set_id:run,projects:[],request_key:issue}) })).response.status,200);
+  assert.equal((await h.send("v1/project-sets", { unscoped:true,query:`tenant_id=${run}` })).response.status,422);
+  assert.equal((await h.send("v1/project-sets/move", { unscoped:true })).response.status,405);
+  assert.equal((await h.send("v1/project-sets", { unscoped:true,method:"POST",body,origin:"http://untrusted.invalid" })).response.status,403);
+});
+
+
+test("model provider credentials require same-origin POST and stay out of URLs", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/model-connections")).response.status, 200);
+  const body = JSON.stringify({ request_id: "synthetic-request", api_key: "synthetic-private-key" });
+  assert.equal((await h.send("v1/model-connections", { method: "POST", body })).response.status, 200);
+  assert.equal(h.calls[1].init.body, body);
+  assert.equal(h.calls[1].init.cache, "no-store");
+  assert.equal(h.calls[1].url.includes("synthetic-private-key"), false);
+  const denied = harness();
+  assert.equal((await denied.send("v1/model-connections", { method: "POST", body, origin: "https://other.invalid" })).response.status, 403);
+  assert.equal((await denied.send("v1/model-connections", { query: "api_key=synthetic-private-key" })).response.status, 422);
+  assert.equal((await denied.send("v1/model-connections", { method: "POST", body: "x".repeat(32769) })).response.status, 413);
+  assert.equal(denied.calls.length, 0);
 });

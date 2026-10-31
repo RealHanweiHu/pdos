@@ -1,0 +1,20 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/agent_kernel/test_context_restart.py",
+    "tests/agent_kernel/test_work_state.py",
+    "tests/agent_kernel/test_work_state_candidates.py",
+    "tests/agent_kernel/test_work_state_candidate_context_schema.py",
+    "tests/agent_kernel/test_context_correction_start.py"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-30T09:39:51.433465+00:00",
+  "finished_at": "2026-10-30T09:40:08.270774+00:00",
+  "exit_code": 1,
+  "stdout_log": "restart-pure-run1.log",
+  "stdout_sha256": "6eac2313563834bb0b8ea98f084d72f95f13d461e5e0870f92c95a64ed1c8501",
+  "scope": "pure/collection/static only; no DB/provider/browser"
+}

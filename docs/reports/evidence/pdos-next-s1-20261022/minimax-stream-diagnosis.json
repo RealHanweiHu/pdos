@@ -1,0 +1,14 @@
+{
+  "source": "Actual MiniMax SSE received 2026-10-22; offline replay only, no execution",
+  "provider_request_id": "07293429f2c3187edeabf876aa6fd71a",
+  "terminal_usage": true,
+  "done_marker": false,
+  "tools": [
+    "proposal.read",
+    "proposal.items.read"
+  ],
+  "input_tokens": 40767,
+  "output_tokens": 992,
+  "cached_input_tokens": 128,
+  "original_ledger_unchanged": true
+}

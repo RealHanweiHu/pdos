@@ -26,6 +26,7 @@ class Host:
             [],
         )
         self.cancelled = False
+        self.captured_model_messages = []
 
     def current(self, _):
         if self.cancelled:
@@ -45,6 +46,7 @@ class Host:
 
         assert in_agent_graph()
         self.prefixes.append((kwargs["system"], kwargs["tools"]))
+        self.captured_model_messages.append(kwargs["messages"])
         return next(self.turns)
 
     def read(self, _, spec, arguments, intent_key):
@@ -236,6 +238,28 @@ def test_interrupt_resumes_same_thread_without_repeating_model_or_actions():
     assert result["output"]["status"] == "completed" and len(host.prefixes) == 2
 
 
+@pytest.mark.parametrize("repair", [True, False])
+def test_malformed_question_enters_bounded_repair_instead_of_crashing(repair):
+    malformed = ModelTurn(structured={
+        "status": "needs_input", "summary": "Need scope", "result": {},
+        "questions": [{
+            "id": "q", "question": "Which scope?", "why": "Needs scope",
+            "options": [], "depends_on": "",
+        }], "unfinished": [],
+    })
+    host = Host([malformed, final() if repair else malformed])
+    result = AgentKernel(host, default_registry(), budget=Budget(validation_retries=1)).execute(
+        scope(), goal="你好", checkpointer=InMemorySaver(),
+    )
+    assert result["output"]["status"] == ("completed" if repair else "partial")
+    assert len(host.prefixes) == 2
+    feedback = host.captured_model_messages[1][-1]["content"]
+    assert "questions.0.depends_on" in feedback and "list_type" in feedback
+    assert "JSON 数组" in feedback and "input" not in feedback
+    assert not any(event["type"] == "needs_input" for event in host.events)
+    assert not host.writes and not host.prepared
+
+
 def test_graph_resume_answer_cannot_replace_actual_category_run_or_identity():
     checked = []
 
@@ -329,3 +353,28 @@ def test_interleaved_runs_in_same_session_cannot_resume_each_others_checkpoint()
     assert output["output"]["status"] == "completed"
     assert "original goal" in restored.messages[0]["content"]
     assert "later goal" not in restored.messages[0]["content"]
+
+
+def test_revoked_history_stops_with_partial_before_model_egress():
+    host = Host([])
+
+    def revoked(*_args, **_kwargs):
+        raise DomainError("CONVERSATION_HISTORY_REVOKED", "synthetic revocation")
+
+    host.model = revoked
+    result = AgentKernel(host, default_registry()).execute(scope(), goal="继续")
+    assert result["output"]["status"] == "partial"
+    assert result["output"]["summary"] == (
+        "会话中引用的资料已无权读取或已撤回，本次处理已停止。请重新发起，小Pai会按当前权限重新整理。"
+    )
+
+
+def test_required_work_state_over_budget_stops_partial_without_model():
+    host = Host([])
+    host.context = lambda *_: {"work_state": {"context_incomplete": True,
+                                            "missing": ["必需约束超出预算"]}}
+    result = AgentKernel(host, default_registry()).execute(scope(), goal="保留全部明确约束")
+    assert result["output"]["status"] == "partial"
+    assert result["output"]["result"]["context_incomplete"] is True
+    assert result["output"]["unfinished"] == ["必需约束超出预算"]
+    assert host.captured_model_messages == []

@@ -276,6 +276,12 @@ def _public_baseline_bom(session, ctx, product_id, result, *, objects=None):
 
 
 class DomainReads:
+    # Only these registered local lists generate a top-level observation clock.
+    # Competitors use the same category_reads.knowledge list implementation.
+    OBSERVED_LISTS = frozenset({
+        "category.parameters.list", "category.knowledge.list", "category.competitors.list",
+    })
+
     def __init__(self, store, commands):
         self.store, self.commands = store, commands
 
@@ -310,7 +316,7 @@ class DomainReads:
                     "purpose": category.purpose,
                     "revision": category.revision,
                 }
-                return [value] if name == "category.list" else value
+                return {"items": [value]} if name == "category.list" else value
             reads = {UUID(ref["artifact_id"]): ref for ref in run.read_sources}
             if name == "evidence.search":
                 values = []
@@ -328,7 +334,7 @@ class DomainReads:
                                 "content_hash": source.content_hash,
                             }
                         )
-                return values
+                return {"items": values}
             if (
                 scope.isolation != "extract"
                 or payload.artifact_version_id not in scope.artifact_ids
@@ -523,6 +529,21 @@ class DomainReads:
                     if area != "specification"
                 },
             }
+
+    def _restore_list(self, scope, arguments, previous, *, name):
+        # A handle is never authority: perform the ordinary source/ACL read on
+        # every replay. Keep only its original observation time; the Host still
+        # compares every other fresh field with the durable original digest.
+        current = self.call(scope, arguments, name=name)
+        if (
+            not isinstance(previous, dict) or not isinstance(previous.get("as_of"), str)
+            or not isinstance(current, dict) or not isinstance(current.get("as_of"), str)
+        ):
+            raise DomainError("SOURCE_STALE", "原列表观测时刻无法核对。")
+        return {**current, "as_of": previous["as_of"]}
+
+    def restores(self):
+        return {name: partial(self._restore_list, name=name) for name in self.OBSERVED_LISTS}
 
     def handlers(self):
         return {name: partial(self.call, name=name) for name in SCHEMAS}

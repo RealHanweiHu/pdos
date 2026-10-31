@@ -1,0 +1,57 @@
+{
+  "user_date": "2026-10-31",
+  "threshold_bytes_exclusive": 5000000,
+  "count": 8,
+  "total_bytes": 78809432,
+  "archive_root": "/Users/huhanwei/pdos-evidence-archive",
+  "files": [
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-ann-authority-20261029/native-auto8192/ann-authority-n8192.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-ann-authority-20261029/native-auto8192/ann-authority-n8192.json",
+      "bytes": 11859940,
+      "sha256": "525e786999c10e0e1cd0585c6058678f197bac92c2a733172ed84bb4ddb69574"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-ann-authority-20261029/native-custom32768/ann-authority-n32768.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-ann-authority-20261029/native-custom32768/ann-authority-n32768.json",
+      "bytes": 5423023,
+      "sha256": "b26156a76dc3681e42bef4bbc44005a3f7fb07a148992455ec4f5b73f9e3b0c9"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-ann-quality-performance-20261029/diagnostic-live/ann-quality-diagnostic-n32768.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-ann-quality-performance-20261029/diagnostic-live/ann-quality-diagnostic-n32768.json",
+      "bytes": 18565643,
+      "sha256": "dc34a7cb208e1e6795b00d6a64dbfa8058d1713122e1598f2ee0486950c27269"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-context-fixture-completion-20261029/native-normalized-20261030/tests.xml",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-context-fixture-completion-20261029/native-normalized-20261030/tests.xml",
+      "bytes": 8078945,
+      "sha256": "105cb416d560ddc18e30a518d31446d6866cc1a7944b86786505e763a31df61c"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-context-native-v0-20261029/native-candidate2/baseline.json",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-context-native-v0-20261029/native-candidate2/baseline.json",
+      "bytes": 8777538,
+      "sha256": "a7c27e7e9b04a51a804d52e1bd9848075ff0ed00331c322511e02d535f94fe43"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-context-native-v0-20261029/native-candidate2/native.xml",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-context-native-v0-20261029/native-candidate2/native.xml",
+      "bytes": 10100344,
+      "sha256": "fbb0d164f16adfd850082c15028b56bbb95308c3b69ac65daec4f4692a9fdaf4"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-embedding-settings-20261029/pg-canonical-regression-run1.xml",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-embedding-settings-20261029/pg-canonical-regression-run1.xml",
+      "bytes": 9193098,
+      "sha256": "98a6338d6e0d67a90dcf3211586822bf90395e0656fe80e91f87b0601b93a8ce"
+    },
+    {
+      "repository_path": "docs/reports/evidence/pdos-next-project-tasks-context-20261029/context-focused/tests.xml",
+      "archive_path": "/Users/huhanwei/pdos-evidence-archive/pdos-next-project-tasks-context-20261029/context-focused/tests.xml",
+      "bytes": 6810901,
+      "sha256": "0e41421ece12c37ada853a6e4b9c8d0b855d42c57c821f39ea3db842bd13a947"
+    }
+  ]
+}

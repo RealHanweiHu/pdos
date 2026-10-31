@@ -1,0 +1,82 @@
+{
+  "status": "staged_unapplied_no_db",
+  "apply_after": [
+    "verification combined",
+    "depth first/second layers",
+    "X3 frozen",
+    "observability admission runtime delta + process UI"
+  ],
+  "runtime_changes": [
+    "Only retained_latest_results count; no permissions, thresholds or raw ledger changes"
+  ],
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/context_runtime.py",
+      "operation": "modify",
+      "base_sha256": "b38674743e12432f8dd80faccceb766236bc051fbf96bedcffcbfb73bfd8d4eb",
+      "sha256": "7dedcdb32a84e8e1f3d360362fa487945f93266fed62f0208c15c184af7dc3c8"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/context_x3_capacity.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "b98c914063626676c1afc2c5249820fafb3bc264a4f25ea8ade31846ca343ebc"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/context_x3_temporal_harness.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "ef7b8ed99f2b84c49c4edfb9c874908e09dc9098f80b14a0fb6f5e58c579d1c4"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_x3_capacity.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "37bdfc78b63b16027224aa820be8cf49184f81d72abb6b6db248d622caef805f"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_context_x3_temporal_pg.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "6d06304a8359772bb6a346787fefc88c1e113200a1f172bccdbef2f5c8cad742"
+    }
+  ],
+  "dependencies": {
+    "context_runtime": {
+      "path": "/tmp/pdos-context-x3-stage-20261029/pdos-next/server/pdos_next/agent_kernel/context_runtime.py",
+      "sha256": "b38674743e12432f8dd80faccceb766236bc051fbf96bedcffcbfb73bfd8d4eb"
+    },
+    "host": {
+      "path": "/tmp/pdos-context-x3-stage-20261029/pdos-next/server/pdos_next/agent_kernel/host.py",
+      "sha256": "6a8c20bdf51d0bcb129ffaf7aa659bf032189007ed928b53348e47af5b4babb2"
+    },
+    "graph": {
+      "path": "/tmp/pdos-context-x3-stage-20261029/pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "sha256": "97cbefbd07c75e84ba70a7a9e3df42052ac69b7398a2a4cfabac576f04840e02"
+    },
+    "context_budget": {
+      "path": "/tmp/pdos-context-x3-stage-20261029/pdos-next/server/pdos_next/agent_kernel/context_budget.py",
+      "sha256": "1224b8b123e57f596423a49127084ae5eaa948945cefa40f0e7b4274a5de9cfb"
+    },
+    "context_observability": {
+      "path": "/tmp/pdos-context-observability-ui-stage-20261029/pdos-next/server/pdos_next/agent_kernel/context_observability.py",
+      "sha256": "efb62dc629c9b49f6fc60b09f1fb6156615ce19c2832a7fd07d1ab2a708ab120"
+    },
+    "process_view": {
+      "path": "/tmp/pdos-context-observability-ui-stage-20261029/pdos-next/server/pdos_next/agent_kernel/process_view.py",
+      "sha256": "d0eaf36362264a3d7cf527950ab2046df3952fbea745d7343c74c9b2a59c4a03"
+    },
+    "bootstrap": {
+      "path": "/tmp/pdos-verification-combined-20261029/server/pdos_next/agent_kernel/bootstrap.py",
+      "sha256": "2010058f54caee75488d1e2e1dc714cc4f61eecc280c3f236ba0b1ac638b2e6c"
+    },
+    "api": {
+      "path": "/tmp/pdos-assistant-depth-integration-stage-20261029/pdos-next/server/pdos_next/agent_kernel/api.py",
+      "sha256": "666ee89418784cf833c28c7c04a91fd7c2bad7c39bce6ea0e03f6427a23ed0c2"
+    }
+  },
+  "runner_sha256": "de9a008a7be530282e283251767e70920e2d3a6606832ad3fb86cc90e94c4f63",
+  "patch_sha256": "2a9f27474f37aa3622e8a91d5e21093758f0621613f358c01a5ee59645346856",
+  "syntax_files": 6,
+  "pg_temporal_status": "NOT_RUN; actual guarded environment root-owned"
+}

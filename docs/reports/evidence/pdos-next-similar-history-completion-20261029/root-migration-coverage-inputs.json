@@ -1,0 +1,27 @@
+{
+  "files": {
+    "pdos-next/server/migrations/schema_s0_0851.py": "7eae246f5d0feab24b0f324e8a7cd1c055883ed343767f4fb8e29cfb0f24b790",
+    "pdos-next/server/migrations/versions/s0_0851_similar_history_change_origin.py": "8709c034950c09eab5e26a812e2cf0b6e38567fb702dee11fbcd49ca11b311ea",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "d0103d80f0441a872a170cf81e758e054e8254d48e1a51aa358b9dc757c4ca72",
+    "pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py": "a03204fce9ddf80d5018463bb168c084071639e9bd065fcc9cdd432265349f31"
+  },
+  "lifecycle_columns_added": {
+    "similar_history_feedback": [
+      "change_id",
+      "change_version_id",
+      "change_revision"
+    ],
+    "enterprise_search_sources": [
+      "original_ids"
+    ]
+  },
+  "existing_mock_corrected": "Catalog gate/clock fixture now describes actual installed DingTalk gate and clock names; missing/incorrect guard negatives remain.",
+  "pure": "pure-lifecycle-0851-run3.xml",
+  "pure_passed": 40,
+  "actual_schema_and_no_helper_runtime_execute": "pg-lifecycle-coverage-0851-run1.xml",
+  "actual_passed": 1,
+  "earlier_failures": [
+    "pure-lifecycle-0851.xml",
+    "pure-lifecycle-0851-run2.xml"
+  ]
+}

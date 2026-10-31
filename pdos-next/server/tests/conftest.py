@@ -36,9 +36,15 @@ def engines():
 
 
 @pytest.fixture
-def setup(engines):
+def setup(engines, request):
     from pdos_next.agent_kernel.models import TenantPilotAdmission
 
+    parameters = getattr(request, "param", None)
+    if parameters is not None:
+        assert parameters == {"test_authorization_hours": 4}
+    test_window = timedelta(hours=4) if parameters is not None else None
+    test_deadline = now() + test_window if test_window else None
+    membership_window = test_window or timedelta(hours=1)
     admin, app, auth = engines
     tenant, human, peer, agent, other_tenant, other_human = (uuid4() for _ in range(6))
     category, product = uuid4(), uuid4()
@@ -84,7 +90,7 @@ def setup(engines):
                     category_id=category,
                     principal_id=p,
                     can_write=True,
-                    expires_at=now() + timedelta(hours=1),
+                    expires_at=now() + membership_window,
                 )
                 for p in [human, peer, agent]
             ]
@@ -95,13 +101,15 @@ def setup(engines):
                     tenant_id=other_tenant if p == other_human else tenant,
                     principal_id=p,
                     token_hash=digest(token),
-                    expires_at=now() + timedelta(hours=1),
+                    expires_at=now() + membership_window,
                 )
                 for p, token in tokens.items()
             ]
         )
     client = TestClient(create_app(app, auth))
     yield IsolatedFixture(
+        test_authorization_window=test_window,
+        test_authorization_until=test_deadline,
         admin=admin,
         engine=app,
         auth=auth,

@@ -1,0 +1,44 @@
+✔ work-state reads and explicit human edits preserve scoped endpoints (196.139833ms)
+✔ work state rejects extra scope and non-supported methods before forwarding (59.090875ms)
+✔ context options are ordinary read-only metadata with closed, encoded selectors (38.694125ms)
+✔ before deep starts the UI names the actual scope, sources and longer effort without inventing an ETA (6.403958ms)
+✔ deep click delegates one native deep continuation with no extra confirmation (3.723625ms)
+✔ exclusion waits for current state and actual feedback identity before collapsing (1.662958ms)
+✔ a later restored exclusion is read back and never re-collapsed from an old replay response (0.781875ms)
+✔ source cards collapse with original quotes and anchors intact and restore from current props (1.604583ms)
+✔ native journal preserves deep after a lost response, replays exact body and opens actual next Run (4.842541ms)
+✔ reload restores deep journal and an already accepted continuation opens with zero repost (1.296125ms)
+✔ native deep actions strip picker titles and preserve fixed selected versions (2.641333ms)
+✔ personal deep follows its actual native endpoint and journal without copying project scope (2.482958ms)
+✔ SSR is a small explicit chooser and never reads, corrects or starts automatically (5.611333ms)
+✔ a readable single choice is displayed, fixed, saved, reread and natively continued once (9.135292ms)
+✔ lost correction response retries the original Human key and does not start early (1.963292ms)
+✔ a later Human clear wins over an older replay and no continuation is posted (1.456167ms)
+✔ picker opens with GET only, distinguishes Artifact/original versions and copies the selected fixed version (9.965708ms)
+✔ unavailable source explains the server reason and stays unselectable; text registration needs no upload (2.240375ms)
+✔ refresh or read failure clears selected versions and old names instead of silently following Current (2.905042ms)
+✔ scope and API switches hide old source names immediately and a late page cannot restore them (0.964208ms)
+✔ catalog paging remains explicit, deduplicates repeated heads and hides the catalog on cursor failure (15.437083ms)
+✔ Run bindings read actual scope and fixed refs, current null never falls back to selected title (1.235292ms)
+✔ Run binding refresh failure hides prior source names and only non503 notifies parent scope failure (1.446833ms)
+✔ Run binding identity/protocol mismatch is rejected, with no stale fixed source details (0.575458ms)
+✔ opening reads only and explicit removal keeps the original key after a lost reply (39.827583ms)
+✔ permission loss hides carried text and prevents stale UI responses crossing sessions (19.744167ms)
+✔ carried citation shows its fixed version and explicit exclusion uses the server citation ID (3.749584ms)
+✔ explicit scope edits preserve the same full choice and request key after a lost reply (7.071958ms)
+✔ verification continuation recovery retains only the exact project selection and original read versions (1.432334ms)
+✔ recovery retains the original human lookup choice and rejects untyped authority fields (0.164667ms)
+✔ short greetings can recover while blank goals stay invalid (0.113291ms)
+✔ restoring a start preserves the exact goal, intent and proposal without executing (0.174916ms)
+✔ local recovery cannot substitute another operation, proposal or policy context (0.147625ms)
+✔ project start recovery retains its original project and product and rejects another page (0.097208ms)
+✔ unknown skill selection restores its exact version without accepting extra authority (0.259458ms)
+✔ explicit deep and correction continuation restore their original closed requests (0.246166ms)
+ℹ tests 36
+ℹ suites 0
+ℹ pass 36
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 709.629958

@@ -1,0 +1,14 @@
+{
+  "tenant": "445ddb61-21fd-45ee-a22f-637f710467c3",
+  "human": "b2d4a2ae-e0dc-4037-a221-f29bb1e0c9b4",
+  "agent": "1f601af7-03fe-4d2d-b0d9-a967de394e33",
+  "category": "f1aa0deb-3dbe-4fcf-9946-40b6128f2863",
+  "product": "1548a0f6-5a5c-4551-b3aa-9d6c13cc4820",
+  "project": "726090ee-5760-4f80-8c20-bb5c7fbf9ca0",
+  "run": "f7179baf-c023-4102-a089-704cf21e8eab",
+  "session": "0159db46-02e6-4093-9adc-2351918c1a31",
+  "baseline_models": 12,
+  "baseline_receipts": 10,
+  "synthetic": true,
+  "credentials": "private temporary state only, not in evidence"
+}

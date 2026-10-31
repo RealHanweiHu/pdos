@@ -1,0 +1,34 @@
+{
+  "pdos-next/server/pdos_next/personal_summary_schemas.py": {
+    "base_sha256": "19056b7472d6479087603f71bd01e4ca9197f0e3a7268c5cb097b5bbd71eadb6",
+    "final_sha256": "955a5424cd8ea1fa644d699600cb1c5118aee8e62513bee7047a7c0c26e7806e"
+  },
+  "pdos-next/server/pdos_next/personal_summary_delivery.py": {
+    "base_sha256": "07ffeb1802ded509467fa3ca34122dd3c22133f7c892f677fe0e1174ccd7e396",
+    "final_sha256": "217ab75fb091c8eab843a4886492ab450d5e4dcb35a171c753bf7f19263cab27"
+  },
+  "pdos-next/server/pdos_next/domain/automations/service.py": {
+    "base_sha256": "9c589de0014261c3bf5a0c65bd40cf537b0243decef5795d99cb30b97d9efe16",
+    "final_sha256": "257d1c2c9f1762a3eb48f7475768627ccb1d8df6dbe4e26535ac1b2fdd02bf51"
+  },
+  "pdos-next/server/pdos_next/dingtalk/workflow.py": {
+    "base_sha256": "15e8ff653c8f6e2e2e9db6c024a38c6013c52dec3c7f56950a5780473218c46e",
+    "final_sha256": "88a7aa7e02b86c205b582699d4d58b280c2b0fa1fbc2bc6db4594db06bf44673"
+  },
+  "pdos-next/web/src/components/personal-summary-settings.tsx": {
+    "base_sha256": "8a6973b917a2cd1af14974f5561bce816321f5778e5b4d3ade78a988c0cc16af",
+    "final_sha256": "f9283d61382e54cf75bb562b9d5247a1ccb230715ac831ed4f5f0174fff69e73"
+  },
+  "pdos-next/web/src/components/automation-rules.tsx": {
+    "base_sha256": "1cad12e21566c32ec8d0b1feaec993858b25ea30b7bab99b94f9d17c03993f21",
+    "final_sha256": "07a01d98856f53fa44d905b7abab777097f09bb839eb996c631d670b74d04cb5"
+  },
+  "pdos-next/web/src/lib/personal-summary.ts": {
+    "base_sha256": "9520ebd7ba95f34c728b841d9dbc33e53083d0c0af1f4b371d5d2befe66a4c95",
+    "final_sha256": "2107efc2b47fbfabfdbb4e9fd2e98f559e56c87082b1a28274e27c9379f010b2"
+  },
+  "pdos-next/web/src/components/automation-rules.test.mjs": {
+    "base_sha256": "3dc13360dc67391a8d9c719e78bc7b967055300d7f2d7945c2525340b4fd22b8",
+    "final_sha256": "6a841413d2fbeb72259f4ddbceab7249f1dc5c169266cee93efe5f6a6d4b4247"
+  }
+}

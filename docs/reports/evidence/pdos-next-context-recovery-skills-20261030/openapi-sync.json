@@ -1,0 +1,11 @@
+{
+  "applied_at_utc": "2026-10-30T10:06:00.348957+00:00",
+  "changed_paths": [
+    "/components/schemas/StartInput/properties/excluded_continued_skills",
+    "/components/schemas/StartInput/properties/restart_from_run_id"
+  ],
+  "before_sha256": "ee7c279256fde263f84c9da644f8929fcca2175188808cf832c8e427cf529bbc",
+  "after_sha256": "a5632fa9dfa03604c496640a38ad9eac377f7ee31f16400274d2d58cb77e9dc4",
+  "source": "offline actual app.openapi() with database connections forbidden",
+  "schema_only": true
+}

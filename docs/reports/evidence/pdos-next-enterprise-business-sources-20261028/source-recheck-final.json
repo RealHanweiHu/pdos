@@ -1,0 +1,14 @@
+{
+  "verified_at_utc": "2026-10-28T21:42:12.827873+00:00",
+  "manifest": "source-manifest-scope-final.json",
+  "inputs": 205,
+  "changed": [],
+  "frontend_sources_compared": 660,
+  "frontend_changed": {
+    "workspace": [],
+    "built_snapshot": []
+  },
+  "excluded_generated": [
+    "next-env.d.ts"
+  ]
+}

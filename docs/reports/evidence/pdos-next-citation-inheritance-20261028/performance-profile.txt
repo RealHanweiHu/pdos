@@ -1,0 +1,11 @@
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+SQL_PROFILE {"tag": "presence", "samples": 12, "median_seconds": 0.012420104467310011, "max_seconds": 0.020858083968050778, "sql_chars": 2261}
+SQL_PROFILE {"tag": "dependencies", "samples": 12, "median_seconds": 0.011713041516486555, "max_seconds": 0.027104292064905167, "sql_chars": 5916}
+SQL_PROFILE {"tag": "page_health", "samples": 12, "median_seconds": 0.014761937956791371, "max_seconds": 0.0188340418972075, "sql_chars": 16203}
+1 passed, 1 warning in 8.68s

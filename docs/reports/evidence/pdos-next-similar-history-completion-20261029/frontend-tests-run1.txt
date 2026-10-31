@@ -1,0 +1,71 @@
+✔ an explicit category material request releases a previously focused run (12.639208ms)
+✔ knowledge reads all authorized categories without requiring product management (2.267167ms)
+✔ knowledge opens directly without choosing a category or guessing an inaccessible one (2.175ms)
+✔ explicit legacy knowledge bench plus product retains CategoryArea without mounting the new entry (1.662833ms)
+✔ knowledge bench without a product still mounts the category library (3.416166ms)
+✔ category read failure mounts neither library nor legacy workbench and retry uses fresh data (9.556916ms)
+✔ document mode preserves document children and never mounts the library even with knowledge URL (3.34225ms)
+✔ work keeps its own real shell entry instead of the knowledge library (3.037791ms)
+✔ projects keeps its own real shell entry instead of the knowledge library (3.155584ms)
+✔ cockpit keeps its own real shell entry instead of the knowledge library (3.200875ms)
+✔ category navigation never widens the global authorized set and leaving knowledge removes it (8.819583ms)
+✔ shell refresh rebinds knowledge to the current identity and authorized categories (9.113583ms)
+✔ project timeline opens the formal plan tab and ordinary project navigation returns to tasks (12.313458ms)
+✔ starting a proposal is shown only with product management capability (3.406333ms)
+✔ issue history selection opens Pai with both exact versions and never starts a Run (7.52275ms)
+✔ history selection from another category or project cannot replace current Pai context (3.521167ms)
+✔ continuing an already displayed auto-selected Build does not leave its records loading forever (11.150458ms)
+✔ unreadable deep-linked Build remains an explicit error instead of adopting another Build (1.401292ms)
+✔ late reads from an earlier refresh cannot replace current records (3.754333ms)
+✔ quality actual row detail mounts history using that exact fixed issue version (4.455375ms)
+✔ followup actual row detail mounts history using that exact fixed issue version (2.579625ms)
+✔ change row detail mounts the selected historical version without merge or creation callbacks (2.502666ms)
+✔ unsaved Issue and Change titles debounce GET only, with no guessed object or feedback (40.269958ms)
+✔ draft suggestions reuse bounded cards and expose only actual object links (3.88225ms)
+✔ title changes hide old results immediately and late reads cannot replace the latest title (3.508958ms)
+✖ revoked refresh and mismatched scope never leave stale cards visible (17.490083ms)
+✔ empty and overlong titles make no lookup and are not silently truncated (3.58975ms)
+✔ opening an issue only reads; cards expose fixed facts, differences and explicit unknowns (24.212875ms)
+✔ not-relevant is explicit, recorded without text and only then hides the selected card (11.582375ms)
+✔ lost feedback response retains exact request for retry; another open cannot replace it (4.866416ms)
+✔ stale or revoked feedback hides old cards and requires a fresh explicit lookup (9.195292ms)
+✔ duplicate preparation enters the existing T1 callback after feedback ack, including lost-response retry (18.610833ms)
+✔ Pai action opens the exact selected pair without feedback writes or Run creation (2.868834ms)
+✔ change detail keeps its fixed version, supports explicit feedback and never offers issue merging (2.781708ms)
+✔ fixed-version read forwards server session only and does not expose upstream private headers (36.413375ms)
+✔ read rejects guessed scope, duplicate fixed version and viewer overrides before networking (8.248959ms)
+✔ feedback is a bounded explicit append and never forwards viewer, text or alternate commands (9.490625ms)
+✔ missing session and unavailable transport remain explicit; original stale outcomes are preserved (45.757125ms)
+✔ static BFF routes expose GET for reads and POST for explicit feedback alone (3.318959ms)
+✔ Pai prefill is a natural comparison request while metadata retains both fixed objects (4.95975ms)
+✔ change BFF uses fixed native identities, preserves explicit feedback and rejects merging (4.33525ms)
+✔ title BFF accepts only bounded title and real selectors; no alternate identity or body is forwarded (4.962292ms)
+✔ completion routes expose saved Change feedback and title GET only (5.056709ms)
+✔ Change Pai prefill preserves the actual selected pair without pretending it is a quality issue (2.233167ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 43
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 917.452125
+
+✖ failing tests:
+
+test at src/components/similar-history-title.test.mjs:89:1
+✖ revoked refresh and mismatched scope never leave stale cards visible (17.490083ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(env.text().includes("当前无权读取"))
+  
+      at TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/similar-history-title.test.mjs:93:10)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:831:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

@@ -1,0 +1,127 @@
+TAP version 13
+# Subtest: read failure remains distinct from an empty task list and can be retried
+ok 1 - read failure remains distinct from an empty task list and can be retried
+  ---
+  duration_ms: 28.258667
+  type: 'test'
+  ...
+# Subtest: actual component acceptance previews but only the explicit confirmation performs one save
+ok 2 - actual component acceptance previews but only the explicit confirmation performs one save
+  ---
+  duration_ms: 36.952875
+  type: 'test'
+  ...
+# Subtest: response loss survives remount without an automatic POST and replays the exact original command
+ok 3 - response loss survives remount without an automatic POST and replays the exact original command
+  ---
+  duration_ms: 43.404042
+  type: 'test'
+  ...
+# Subtest: storage failure stays inside the event boundary and prevents every command POST
+ok 4 - storage failure stays inside the event boundary and prevents every command POST
+  ---
+  duration_ms: 19.848875
+  type: 'test'
+  ...
+# Subtest: confirmation storage failure retains the review and never sends an unrecoverable write
+ok 5 - confirmation storage failure retains the review and never sends an unrecoverable write
+  ---
+  duration_ms: 31.091583
+  type: 'test'
+  ...
+# Subtest: access denial removes local private material and hides previous task and report details
+ok 6 - access denial removes local private material and hides previous task and report details
+  ---
+  duration_ms: 16.073916
+  type: 'test'
+  ...
+# Subtest: scope disposal during actual inputs cancels the old preview continuation
+ok 7 - scope disposal during actual inputs cancels the old preview continuation
+  ---
+  duration_ms: 20.716875
+  type: 'test'
+  ...
+# Subtest: time categories and named weekly statements retain their separate meaning
+ok 8 - time categories and named weekly statements retain their separate meaning
+  ---
+  duration_ms: 14.832792
+  type: 'test'
+  ...
+# Subtest: G0 continuation prefills an editable draft while outcomes require human input and T0 saves only a task
+ok 9 - G0 continuation prefills an editable draft while outcomes require human input and T0 saves only a task
+  ---
+  duration_ms: 39.984959
+  type: 'test'
+  ...
+# Subtest: an existing G0 link selects the same task and task completion preserves the independent risk
+ok 10 - an existing G0 link selects the same task and task completion preserves the independent risk
+  ---
+  duration_ms: 13.790709
+  type: 'test'
+  ...
+# Subtest: a current G0 task assignment accepts its inherited fixed basis but still waits for T1 confirmation
+ok 11 - a current G0 task assignment accepts its inherited fixed basis but still waits for T1 confirmation
+  ---
+  duration_ms: 32.072541
+  type: 'test'
+  ...
+# Subtest: G0 draft refresh never duplicates a newly linked task or automatically replays an unknown save
+ok 12 - G0 draft refresh never duplicates a newly linked task or automatically replays an unknown save
+  ---
+  duration_ms: 40.857875
+  type: 'test'
+  ...
+# Subtest: stale G0 draft links and G0 access denial cannot become a fresh duplicate task
+ok 13 - stale G0 draft links and G0 access denial cannot become a fresh duplicate task
+  ---
+  duration_ms: 22.8825
+  type: 'test'
+  ...
+# Subtest: list and board share filtered actual tasks, and linked plan tasks never appear twice
+ok 14 - list and board share filtered actual tasks, and linked plan tasks never appear twice
+  ---
+  duration_ms: 25.05575
+  type: 'test'
+  ...
+# Subtest: unknown plan metadata cannot classify a linked task as NPI and filter state remains read-only
+ok 15 - unknown plan metadata cannot classify a linked task as NPI and filter state remains read-only
+  ---
+  duration_ms: 2.131208
+  type: 'test'
+  ...
+# Subtest: the compact task drawer carries confirmation and preserves the draft when closed
+ok 16 - the compact task drawer carries confirmation and preserves the draft when closed
+  ---
+  duration_ms: 6.710709
+  type: 'test'
+  ...
+# Subtest: status update drawer reports read failures inside the dialog and closing notifies its parent
+not ok 17 - status update drawer reports read failures inside the dialog and closing notifies its parent
+  ---
+  duration_ms: 8.194167
+  type: 'test'
+  location: '/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/projects/project-work.test.mjs:102:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(sheet)
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (file:///Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/web/src/components/projects/project-work.test.mjs:106:96)
+    async Test.run (node:internal/test_runner/test:1208:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:831:7)
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 16
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 769.674792

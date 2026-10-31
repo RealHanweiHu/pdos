@@ -1,0 +1,79 @@
+[
+  {
+    "case": "quality",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "quality",
+    "path": "personal/projects/9c36b6fc-1206-4ad1-8aab-5175fd35e5af",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "quality",
+    "path": "categories/378f7546-7b12-4da4-925e-b1679389d5d9/products/4ea8a2e1-82d6-4b9a-bb18-db94d76c1514/quality-execution?project_id=9c36b6fc-1206-4ad1-8aab-5175fd35e5af",
+    "status": 200,
+    "summary": {
+      "issues": 0,
+      "failures": 0,
+      "next_owners": 0
+    },
+    "error": null
+  },
+  {
+    "case": "quality",
+    "path": "categories/378f7546-7b12-4da4-925e-b1679389d5d9/products/4ea8a2e1-82d6-4b9a-bb18-db94d76c1514/quality-followup?project_id=9c36b6fc-1206-4ad1-8aab-5175fd35e5af",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "field",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "field",
+    "path": "personal/projects/92024f6a-febd-4f3b-869b-82b15639a70e",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "field",
+    "path": "categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/products/815224c5-3d8a-4bce-853e-0c5ba4df7a49/field-feedback?project_id=92024f6a-febd-4f3b-869b-82b15639a70e",
+    "status": 200,
+    "summary": {
+      "feedbacks": 1
+    },
+    "error": null
+  },
+  {
+    "case": "field",
+    "path": "categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/products/815224c5-3d8a-4bce-853e-0c5ba4df7a49/change-execution?project_id=92024f6a-febd-4f3b-869b-82b15639a70e",
+    "status": 200,
+    "summary": {
+      "changes": 12,
+      "captures": 2,
+      "reference_options": 1,
+      "source_options": 0
+    },
+    "error": null
+  }
+]

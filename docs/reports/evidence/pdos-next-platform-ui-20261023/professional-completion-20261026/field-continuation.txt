@@ -1,0 +1,167 @@
+- alert: PDOS · 研发工作区
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+      - generic: 知识
+    - paragraph: 产品管理
+    - link "品类":
+      - /url: "?area=category"
+      - generic: 品类
+    - link "立项提案":
+      - /url: "?area=category&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&focus=proposals"
+      - generic: 立项提案
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb&project=92024f6a-febd-4f3b-869b-82b15639a70e"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Approved revision fixture
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Ap
+  - heading "Approved revision fixture" [level=1]
+  - button "设计":
+    - text: 设计
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览"
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "更多项目视图":
+    - region "现场反馈":
+      - heading "现场反馈" [level=2]
+      - paragraph: 保留现场现象和原始依据，跟进分诊与后续改进。
+      - region "专业记录":
+        - text: 查找记录
+        - searchbox "查找专业记录"
+        - checkbox "包含历史版本"
+        - text: 包含历史版本
+        - button "刷新专业记录":
+        - table:
+          - rowgroup:
+            - row "记录 类型 状态 版本与依据 保存时间":
+              - columnheader "记录"
+              - columnheader "类型"
+              - columnheader "状态"
+              - columnheader "版本与依据"
+              - columnheader "保存时间"
+          - rowgroup:
+            - row "Synthetic customer vibration feedback 现场反馈 已登记 v2 · 依据当前 2026/10/22 10:57:44":
+              - cell "Synthetic customer vibration feedback":
+                - button "Synthetic customer vibration feedback" [expanded]:
+                  - text: Synthetic customer vibration feedback
+              - cell "现场反馈"
+              - cell "已登记"
+              - cell "v2 · 依据当前"
+              - cell "2026/10/22 10:57:44"
+        - region "专业记录详情":
+          - heading "Synthetic customer vibration feedback · 现场反馈" [level=3]
+          - button "收起详情"
+          - paragraph: 已登记 · 依据当前
+          - term: 记录说明
+          - definition: Actual synthetic report; no failure event or CAPA is inferred
+          - term: 用途
+          - definition: Verify preparation
+          - term: 标题
+          - definition: Synthetic customer vibration feedback
+          - button "继续专业办理" [active]:
+            - text: 继续专业办理
+          - paragraph: 进入后按当前事实核对，原有确认、具名决定及历史记录保留。
+      - button "维护记录与专业办理" [expanded]:
+        - text: 维护记录与专业办理
+      - region "现场与客户反馈":
+        - paragraph: 反馈来源 → 实际定位 → 遏制 / 改善 → 变更与复验
+        - heading "现场与客户反馈" [level=2]
+        - button "刷新反馈记录":
+          - text: 刷新反馈记录
+        - button "登记反馈":
+          - text: 登记反馈
+        - paragraph: 先保留收到的原话和来源。产品、批次或配置无法定位时保持未知；报告标签不作为实际配置。客户意见、变更要求与承认声明分别记录，承认声明不授予工程或制造放行。
+        - region "反馈列表":
+          - heading "收到的反馈" [level=3]
+          - article:
+            - heading "Synthetic customer vibration feedback" [level=4]
+            - generic: 已有配置定位 · v2
+            - paragraph: Actual synthetic report; no failure event or CAPA is inferred
+            - term: 来源类型
+            - definition: 客户 · 客户变更要求
+            - term: 接收时间
+            - definition: 2026-10-22T17:57:44.739140Z
+            - term: 用途
+            - definition: Verify preparation
+            - term: 报告中的标签
+            - definition: 产品：Synthetic motor；批次：未知；配置：未知
+            - term: 实际项目
+            - definition: Approved revision fixture
+            - term: 实际工程配置
+            - definition: Synthetic original engineering configuration · v1
+            - term: 实际制造配置
+            - definition: Synthetic original motor assembly process · v1
+            - term: 实际批次
+            - definition: 未知，待调查
+            - term: 受众与来源
+            - definition: 品类授权成员 · 当前来源已核对
+            - generic "固定来源 · 2 条"
+            - button "重新核对定位":
+              - text: 重新核对定位
+            - button "登记遏制 / 改善"
+            - button "链接后续结果"
+            - button "查看变更接续":
+              - text: 查看变更接续
+            - region "Synthetic customer vibration feedback的处置与后续结果":
+              - heading "处置与后续结果" [level=5]
+              - paragraph: 尚无可读处置记录；不能据此推定问题已解决。
+            - generic "反馈版本历史 · 2 条"
+        - region "现场反馈变更接续":
+          - heading "Synthetic customer vibration feedback · 变更接续" [level=3]
+          - button "收起变更接续"
+          - button "拟定此反馈的变更" [disabled]:
+            - text: 拟定此反馈的变更
+          - paragraph: 当前专业职责、用途资格或材料仍有缺项，服务器尚未授予本次建变更条件。
+          - text: 选择实际变更
+          - combobox "选择实际变更":
+            - option "请选择固定反馈对应的实际变更" [selected]
+            - option "Synthetic actual Field corrective configuration change · v12 · 需重核"
+          - paragraph: 未来计划、具名适用性、变更令准备、各专业批准与实际实施分别办理。实施记录不代表新一轮测试已完成；复验继续使用真实新配置、Build 与 Run 的结果。
+        - paragraph: 实际复验与处置结果可继续形成经验候选。前往本型号“知识 → 来源与事实”记录候选，并保留上述固定来源及实际结果回执；适用性审核与正式规则发布另行办理。
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

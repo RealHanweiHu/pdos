@@ -1,0 +1,19 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "ordinary_requester_RLS": true,
+  "snapshots": [
+    {
+      "with_body": false,
+      "equal": true,
+      "batch": 48
+    },
+    {
+      "with_body": true,
+      "equal": true,
+      "batch": 48
+    }
+  ],
+  "transaction_as_of_excluded": true,
+  "cached_shape_contains_no_source_ids": true,
+  "source_id_values_bound_each_execution": true
+}

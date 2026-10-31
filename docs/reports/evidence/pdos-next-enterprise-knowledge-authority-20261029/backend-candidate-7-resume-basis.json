@@ -1,0 +1,13 @@
+{
+  "production_source_unchanged_from_candidate6": true,
+  "only_delta": [
+    "pdos-next/server/tests/enterprise_search/test_recovery_pg.py"
+  ],
+  "retained": 607,
+  "remaining_expected": 231,
+  "total_cases": 838,
+  "scope": "The failed benchmark only: 5 warmup iterations, 40 measured; empirical inclusive p95, retain all raw timings. All 9 source families, 9/48 authority cases, 1.0 second threshold and 5/4/4 SQL gates remain unchanged. Previous 11-point exclusive estimator extrapolated above observed max; previous failure logs preserved.",
+  "previous_formal_search_observed_max": 1.3924157089786604,
+  "previous_formal_search_exclusive_p95": 1.6051191761856898,
+  "current_authority_expanded_formal_p95": 0.3563946330454201
+}

@@ -1,0 +1,46 @@
+{
+  "status": "frozen-pure-tested-native-pg-temporal-not-executed",
+  "base": "live action_sources.py after confirmed verification_action special guard inspection",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "operation": "modify",
+      "base_sha256": "edc8bb0ba83d3b431a5e7bc0a1656a3872d33118af5ffccf2fc1723cc7701b19",
+      "sha256": "a843c73a5b6888529cd3e03d176f4fae678837504a0a3677f490ce574906cba7",
+      "live_matches_base": true
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_action_footprint.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "9e94db1606403c82f08da28004e29e7e64027256aa2d29d899432796c028b22b",
+      "live_absent": true
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_action_footprint_temporal_pg.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "9a9ed051894367d2e35a532b8546ff9806e24466bb2b14efa52516ff84701659",
+      "live_absent": true
+    }
+  ],
+  "schema_migration_required": false,
+  "validation": {
+    "action_pure_passed": 115,
+    "new_pure_passed": 5,
+    "pg_temporal_collected": 3,
+    "pg_temporal_executed": false,
+    "ruff": "passed explicit pdos-next/ruff.toml E/F/I/B/UP line-length100"
+  },
+  "safety": {
+    "live_modified": false,
+    "db_connected": false,
+    "real_model_embedding_egress_calls": 0,
+    "default_source_selection_or_binding_added": false,
+    "golden_case_or_question_set_written": false
+  },
+  "root_validation_required": [
+    "Actual native PG/Temporal three cases",
+    "Existing actual verification action Temporal regressions"
+  ]
+}

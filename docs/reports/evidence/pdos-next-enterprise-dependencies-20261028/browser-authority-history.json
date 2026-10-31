@@ -1,0 +1,23 @@
+[
+  {
+    "stage": "updated",
+    "root_status": "active",
+    "model_calls_unchanged": true,
+    "business_receipts_unchanged": true,
+    "original_run_still_completed_and_personal": true
+  },
+  {
+    "stage": "withdraw",
+    "root_status": "withdrawn",
+    "model_calls_unchanged": true,
+    "business_receipts_unchanged": true,
+    "original_run_still_completed_and_personal": true
+  },
+  {
+    "stage": "withdrawn",
+    "root_status": "withdrawn",
+    "model_calls_unchanged": true,
+    "business_receipts_unchanged": true,
+    "original_run_still_completed_and_personal": true
+  }
+]

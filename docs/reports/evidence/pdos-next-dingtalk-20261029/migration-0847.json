@@ -1,0 +1,46 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0847",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/dingtalk-lifecycle-53502-before-0847.dump",
+  "backup_bytes": 103165002,
+  "backup_sha256": "7d19118e1528d4755fcc4920a7b1fe24391128d32cf1a8d5ee53cc8afe7f4b26",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0847",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0846",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0847",
+      "functions_exact": true,
+      "acl_unchanged": true,
+      "history_counts_unchanged": true
+    }
+  ],
+  "counts": {
+    "agent_runs": 5128,
+    "agent_tool_calls": 9555,
+    "action_receipts": 49063,
+    "category_knowledge_entries": 488,
+    "knowledge_candidate_versions": 63,
+    "knowledge_rule_versions": 32,
+    "knowledge_answer_reviews": 44,
+    "knowledge_gap_submissions": 11,
+    "automation_rule_versions": 94,
+    "field_feedback_versions": 54,
+    "field_response_records": 53,
+    "dingtalk_deliveries": 6
+  },
+  "real_provider_accessed": false
+}

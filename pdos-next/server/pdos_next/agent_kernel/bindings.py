@@ -32,7 +32,9 @@ class ModelBinding(StrictModel):
     model_route_digest: Hash = Field(pattern=r"^[a-f0-9]{64}$")
     tool_definitions_digest: Hash = Field(pattern=r"^[a-f0-9]{64}$")
     prompt_digest: Hash = Field(pattern=r"^[a-f0-9]{64}$")
-    isolation: Literal["main", "research", "extract", "mcp"]
+    isolation: Literal[
+        "main", "research", "extract", "mcp", "assistant_extract", "assistant_compare"
+    ]
     cancel_epoch: int = Field(ge=0)
     loaded_skills: tuple[SkillBinding, ...] = ()
 

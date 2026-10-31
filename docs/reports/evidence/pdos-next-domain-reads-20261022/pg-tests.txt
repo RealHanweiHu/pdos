@@ -1,0 +1,34 @@
+..                                                                       [100%]
+=============================== warnings summary ===============================
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:715: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:600: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:880: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:935: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/agent_kernel/test_project_object_reads_pg.py::test_five_registered_reads_current_pointers_replay_and_revoked_access
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:229: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2 passed, 9 warnings in 89.04s (0:01:29)

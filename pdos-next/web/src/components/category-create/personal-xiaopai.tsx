@@ -1,4 +1,6 @@
 "use client";
+import { useAnswerResume } from "../pai/use-answer-resume";
+import { collapsedAnswerCitations, type AnswerExclusions } from "@/lib/answer-followup";
 
 import { RunFeedback } from "@/components/pai/run-feedback";
 import { RunContinuation } from "@/components/pai/run-continuation";
@@ -7,28 +9,43 @@ import type { RunProcessData } from "@/lib/run-process";
 import { RunReconciliation } from "@/components/pai/run-reconciliation";
 import { reconciliationNeeded } from "@/lib/run-reconciliation";
 import { ResearchResult } from "@/components/pai/research-result";
-import { loadedSkillFacts, PaiCarry, PaiMessage, PaiPolicy, PaiScope } from "@/components/pai-conversation";
+import { usePaiScroll, loadedSkillFacts, PaiCarry, PaiMessage, PaiUnfinished, PaiResponse, PaiReplyDetails, PaiDocumentCard, PaiGoal, PaiScope, PaiContextBar, PaiMobileWorkspaceSwitch, PaiHiddenResponse } from "@/components/pai-conversation";
+import { assertHiddenRun, type PaiHiddenRun, type PaiRunStatus } from "@/lib/pai-sessions";
+import { PersonalPreferenceWelcome } from "@/components/personal-preference-welcome";
 import type { LoadedSkill } from "@/components/pai-conversation";
+import { ConversationHistory } from "@/components/pai/conversation-history";
 import { SessionHistory } from "@/components/pai/session-history";
+import { SkillPicker } from "@/components/pai/skill-picker";
+import type { AgentSkill } from "@/lib/agent-skills";
+import { skillTitle } from "@/lib/agent-skills";
+import type { RequestedSkill } from "@/lib/run-start-intent";
 import styles from "../pai-conversation.module.css";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { PaperPlaneTilt, Plus, Sparkle } from "@phosphor-icons/react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Plus } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { PaiComposer } from "@/components/pai/composer";
+import { clearPaiComposerDrafts, useSessionDraft } from "@/components/pai/use-session-draft";
+import { CategoryMetadataEditor } from "../category-metadata-editor";
 import { CategoryCreateForm } from "./category-create-form";
 import { ClarificationDialog, ClarificationForm, panelVisible } from "./clarification";
 import type { Question } from "./clarification";
 import { adoptedCategory, asCandidate, personalApi } from "./contracts";
+import { PersonalRunMaterials } from "./personal-run-materials";
+import { WorkProductActions } from "@/components/pai/work-product-actions";
+import { WorkProductEditor } from "@/components/pai/work-product-editor";
+import { useWorkProducts } from "@/components/pai/use-work-products";
 import type { Api, CategoryAdopted, CategoryCandidate, CategoryConfirmationDraft, CreatedCategory } from "./contracts";
 
-type Run = { session_id: string; goal?: string; conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; status: string; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type ReadableRun = { session_id: string; goal?: string; conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; status: Exclude<PaiRunStatus, "hidden">; history_hidden?: false; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type Run = ReadableRun | PaiHiddenRun;
 type Event = { sequence: number; event: { type: string; key?: string; version?: string; questions?: Question[] } };
 type Pending = { path: string; body: unknown };
 const root = "v1/personal/agent-runs";
 const labels: Record<string, string> = { queued: "已保存，等待执行", running: "正在执行", waiting_input: "等待你的答复", completed: "已完成", partial: "已有部分结果", cancelled: "已取消", failed: "执行未完成" };
 
 /** Opening or refreshing this panel only reads durable runs and events. */
-type Props = { api?: Api; principalId?: string; onCreated: (category: CreatedCategory) => void; initialRunId?: string; onBackground?: () => void };
+type Props = { presetSkillKeys?: string[]; fullPage?: boolean; contextControl?: ReactNode; headerActions?: ReactNode; api?: Api; principalId?: string; onCreated: (category: CreatedCategory) => void; initialRunId?: string; onBackground?: () => void };
 export function PersonalXiaopai(props: Props) {
   const api = props.api ?? personalApi;
   const [binding, setBinding] = useState({ api, revision: 0 });
@@ -52,19 +69,55 @@ function PersonalIdentity(props: Props & { api: Api }) {
   if (!principalId) return <section className={styles.workspace} aria-label="个人小 Pai"><p role={identity.error ? "alert" : "status"}>{identity.error || "正在核对当前身份…"}</p><p>执行需要已配置的模型和运行授权。</p>{identity.error && <Button variant="outline" onClick={() => { setIdentity({}); setAttempt(value => value + 1); }}>重新核对身份</Button>}</section>;
   return <ScopedPersonalXiaopai key={principalId} {...props} principalId={principalId} />;
 }
-function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBackground }: Props & { api: Api; principalId: string }) {
-  const [goal, setGoal] = useState("");
+function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBackground, presetSkillKeys, fullPage = false, contextControl, headerActions }: Props & { api: Api; principalId: string }) {
+  const [answerExclusions, setAnswerExclusions] = useState<AnswerExclusions | null>(null);
+  const materialDialog = useRef<HTMLDialogElement>(null);
+  const savedDialog = useRef<HTMLDialogElement>(null);
+  const [savedCategory, setSavedCategory] = useState<CreatedCategory | null>(null);
+  const [mobileView, setMobileView] = useState<"chat" | "editor">("chat");
+  const [material, setMaterial] = useState<{ runId: string; candidate: CategoryCandidate; sourceRun: Run } | null>(null);
+  const [requestedSkills, setRequestedSkills] = useState<RequestedSkill[]>([]);
   const [historyVersion, setHistoryVersion] = useState(0);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [goal, setGoal] = useSessionDraft(principalId, "personal", sessionId);
   const [run, setRun] = useState<Run | null>(null);
   const [skills, setSkills] = useState<LoadedSkill[]>([]);
-  const [historyOpen, setHistoryOpen] = useState(false);
+  const presetKeys = (presetSkillKeys ?? []).join(":");
+  const appliedPreset = useRef("");
+  useEffect(() => {
+    if (!presetKeys || run || initialRunId || requestedSkills.length || appliedPreset.current === presetKeys) return;
+    let active = true;
+    type SkillChoice = Pick<AgentSkill, "skill_key" | "skill_version" | "skill_digest" | "enabled" | "available">;
+    void api<{ items: SkillChoice[] }>("v1/personal/agent-skills").then(reading => {
+      if (!active) return;
+      appliedPreset.current = presetKeys;
+      const keys = presetKeys.split(":");
+      const selected = reading.items.filter(item => keys.includes(item.skill_key) && item.enabled === true && item.available
+        && item.skill_version && item.skill_digest).map(item => ({ key: item.skill_key, version: item.skill_version!, digest: item.skill_digest! }));
+      setRequestedSkills(current => current.length ? current : selected);
+    }).catch(() => { /* The catalog remains available through skill.load. */ });
+    return () => { active = false; };
+  }, [api, presetKeys, run, initialRunId, requestedSkills.length]);
+
+  const materialRunId = material?.runId, activeRunId = run?.run_id, activeSessionId = run?.session_id;
+  useEffect(() => {
+    if (!materialRunId || !activeRunId || activeRunId === materialRunId) return;
+    let live = true;
+    void api<Run>(`${root}/${materialRunId}`).then(value => {
+      if (value.run_id !== materialRunId || value.session_id !== activeSessionId) throw new Error("编辑资料与会话不一致。");
+      if (value.status === "hidden") throw new Error("原回答所依据的资料已不可读。");
+      if (live) setMaterial(previous => previous?.runId === value.run_id ? { ...previous, sourceRun: value } : previous);
+    }).catch(() => { if (live) { setMaterial(null); materialDialog.current?.close(); setSavedCategory(null); savedDialog.current?.close(); } });
+    return () => { live = false; };
+  }, [api, materialRunId, activeRunId, activeSessionId]);
+  const [historyOpen, setHistoryOpen] = useState(() => fullPage && typeof window !== "undefined" && window.innerWidth >= 1000);
   const [backgroundRun, setBackgroundRun] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<CategoryCandidate[]>([]);
   const [adoptions, setAdoptions] = useState<{ proof: CategoryAdopted; category: CreatedCategory }[]>([]);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
+  const { pending: resumingAnswers, accepted: resumeAccepted, observe: observeResume, waiting: resumeWaiting, clear: clearResumes } = useAnswerResume();
   const [busy, setBusy] = useState(false);
   const [pending, setPending] = useState<Pending | null>(null);
   const [error, setError] = useState("");
@@ -76,6 +129,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
   const lock = useRef(false);
   const request = useRef<Pending | null>(null);
   const panel = useRef<HTMLElement | null>(null);
+  usePaiScroll(panel, run?.run_id);
   const composer = useRef<HTMLTextAreaElement | null>(null);
   const answerAnchor = useRef<HTMLDivElement | null>(null);
   const questionIdentity = useRef<string | null>(null);
@@ -85,11 +139,25 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
   const selectedSession = useRef<string | null>(null);
   const current = useRef<string | null>(null);
   const clearSelection = useCallback(() => {
+    setMobileView("chat"); setMaterial(null); materialDialog.current?.close(); setSavedCategory(null); savedDialog.current?.close();
     generation.current++; current.current = null; selectedSession.current = null;
     background.current = null; setBackgroundRun(null); setSelectedRunId(null); setSessionId(null);
     setRun(null); setSkills([]); setCandidates([]); setAdoptions([]); setQuestions([]); setAnswers({});
     setQuestionDialog(false); questionIdentity.current = null;
   }, []);
+  const sourceUnavailable = useCallback(() => {
+    clearResumes(); clearPaiComposerDrafts(principalId); setGoal(""); request.current = null; setPending(null);
+    setConfirmationDrafts({}); clearSelection(); setBusy(false);
+    setError("当前来源或运行范围无法核对，已清除旧资料；请重新读取。");
+  }, [clearSelection, clearResumes, principalId, setGoal]);
+  const workProducts = useWorkProducts(api, sourceUnavailable);
+  const { load: loadWorkProducts, clear: clearWorkProducts } = workProducts;
+  useEffect(() => {
+    if (run?.session_id && run.status !== "hidden") void loadWorkProducts(run.session_id);
+  }, [run?.session_id, run?.status, loadWorkProducts]);
+  useEffect(() => {
+    if (!run || run.status === "hidden") clearWorkProducts();
+  }, [run, clearWorkProducts]);
   useEffect(() => { const alive = mounted, counter = generation; alive.current = true; return () => { alive.current = false; counter.current++; }; }, []);
 
   const readRun = useCallback(async (id: string, mode: "restore" | "live" = "restore", expectedSessionId?: string) => {
@@ -101,6 +169,15 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       const value = await api<Run>(`${root}/${id}`);
       if (generation.current !== own) return;
       if (value.run_id !== id || typeof value.session_id !== "string" || !value.session_id || expected && value.session_id !== expected) throw new Error("读取结果与所选个人会话或运行不一致，请重新选择。");
+      if (value.status === "hidden") {
+        assertHiddenRun(value);
+        selectedSession.current = value.session_id; setSessionId(value.session_id); setRun(value);
+        setSkills([]); setCandidates([]); setAdoptions([]); setQuestions([]); setAnswers({});
+        setQuestionDialog(false); questionIdentity.current = null; clearResumes();
+        setMaterial(null); materialDialog.current?.close(); setSavedCategory(null);
+        savedDialog.current?.close(); background.current = null; setBackgroundRun(null);
+        return value;
+      }
       const events: Event[] = [];
       let after = 0;
       for (;;) {
@@ -127,6 +204,8 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       const currentQuestions = value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) && latestInput?.event.type === "needs_input"
         ? latestInput.event.questions ?? [] : [];
       const identity = currentQuestions.length && latestInput ? `${id}:${latestInput.sequence}` : null;
+      if (resumeWaiting(id)) setError("");
+      if (observeResume(id, value.status, value.reverted, identity)) setNotice("");
       if (identity !== questionIdentity.current) {
         setAnswers({});
         setQuestionDialog(!!identity && mode === "live" && background.current !== id && !seenInterrupts.current.has(identity) && panelVisible(panel.current));
@@ -138,8 +217,9 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
         if (event.event.type === "needs_input") seenInterrupts.current.add(`${id}:${event.sequence}`);
       }
       setQuestions(currentQuestions);
-    } catch (failure) { if (generation.current === own) { setRun(null); setSkills([]); setCandidates([]); setAdoptions([]); setQuestions([]); setAnswers({}); setQuestionDialog(false); questionIdentity.current = null; throw failure; } }
-  }, [api]);
+      return value;
+    } catch (failure) { if (generation.current === own) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setMaterial(null); materialDialog.current?.close(); setSavedCategory(null); savedDialog.current?.close(); setRun(null); setSkills([]); setCandidates([]); setAdoptions([]); setQuestions([]); setAnswers({}); setQuestionDialog(false); questionIdentity.current = null; throw failure; } }
+  }, [api, sourceUnavailable, observeResume, resumeWaiting, clearResumes]);
 
   useEffect(() => {
     const hide = () => { if (document.visibilityState !== "visible") setQuestionDialog(false); };
@@ -156,117 +236,125 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
     });
     return () => { active = false; };
   }, [initialRunId, readRun, clearSelection]);
+  const resumingRunId = selectedRunId && resumingAnswers[selectedRunId] ? selectedRunId : null;
   useEffect(() => {
-    if (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run)) return;
+    const id = run?.run_id ?? resumingRunId;
+    if (!id || !resumingRunId && (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run))) return;
     let reading = false;
     const timer = setInterval(() => {
       if (lock.current || reading) return;
       reading = true;
-      void readRun(run.run_id, "live").catch(failure => { setError(failure.message); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); })
+      void readRun(id, "live").catch(failure => { setError(failure.message); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); })
         .finally(() => { reading = false; });
     }, 3000);
     return () => clearInterval(timer);
-  }, [run, readRun]);
+  }, [run, resumingRunId, readRun]);
 
   async function read(action: () => Promise<unknown>, clearRun = false) {
     if (lock.current) return;
     lock.current = true; setBusy(true); setError("");
-    if (clearRun) { clearSelection(); setHistoryOpen(false); }
+    if (clearRun) { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); }
     try { await action(); }
-    catch (failure) { setError(failure instanceof Error ? failure.message : "读取暂不可用。"); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); }
+    catch (failure) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setError(failure instanceof Error ? failure.message : "读取暂不可用。"); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); }
     finally { lock.current = false; setBusy(false); }
   }
   async function send(value: Pending) {
-    if (lock.current) return;
+    const answeredRunId = current.current && value.path === `${root}/${current.current}/answers` ? current.current : null;
+    const answeredInput = answeredRunId ? questionIdentity.current : null;
+    if (lock.current || answeredRunId && (!answeredInput || resumeWaiting(answeredRunId))) return;
     lock.current = true; generation.current++; setBusy(true); setError(""); setNotice("");
     request.current = value; setPending(value);
     setQuestionDialog(false);
-    if (value.path === root) { clearSelection(); setHistoryOpen(false); }
+    if (value.path === root) { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); }
     try {
-      const result = await api<{ run_id: string; execution_state?: string }>(value.path, value.body);
+      const result = await api<{ run_id: string; execution_state?: string; status?: string; answer_ref?: string }>(value.path, value.body);
       if (!mounted.current) return;
-      request.current = null; setPending(null); setAnswers({});
+      if (answeredRunId) {
+        if (result.run_id !== answeredRunId || result.status !== "resume_requested" || !result.answer_ref) throw new Error("答复受理结果尚未核对，请保留原请求重试。");
+        resumeAccepted(answeredRunId, answeredInput!);
+      }
+      request.current = null; setPending(null);
+      if (!answeredRunId) setAnswers({});
       setNotice(result.execution_state === "durable_runtime_unavailable"
-        ? "运行已保存，持久执行服务暂不可用，尚未完成模型执行。" : "请求已保存，以下显示服务器的实际运行结果。");
-      if (value.path === root) setGoal("");
-      setRun(null); setCandidates([]); setAdoptions([]); setQuestions([]);
+        ? "运行已保存，持久执行服务暂不可用，尚未完成模型执行。" : "");
+      if (answeredRunId) setNotice("答复已提交，正在等待继续执行；无需重复答复。");
+      if (value.path === root) { setGoal(""); setRequestedSkills([]); }
+      if (!answeredRunId) setRun(null); setCandidates([]); setAdoptions([]); setQuestions([]);
       await readRun(result.run_id, "live");
       setHistoryVersion(value => value + 1);
-    } catch (failure) { if (mounted.current) setError(failure instanceof Error ? failure.message : "请求未完成。"); }
+    } catch (failure) { if (mounted.current) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setError(failure instanceof Error ? failure.message : "请求未完成。"); } }
     finally { lock.current = false; setBusy(false); }
   }
-  const answerProps = { questions, answers, disabled: busy || !!pending,
+  const answerProps = { questions, answers, disabled: busy || !!pending || !!resumingRunId,
     onAnswer: (id: string, value: string) => setAnswers(old => ({ ...old, [id]: value })),
-    onSubmit: () => { if (run && !pending) void send({ path: `${root}/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); },
+    onSubmit: () => { if (run && !pending && !resumeWaiting(run.run_id)) void send({ path: `${root}/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); },
   };
   const runGoal = run?.goal;
-  const active = !!run && !run.reverted && ["queued", "running"].includes(run.status);
-  return <section ref={panel} className={styles.workspace} data-history-open={historyOpen} aria-label="个人小 Pai">
-    <PaiScope scope="个人工作 · 建立新品类" skills={skills} hasRun={!!run} historyOpen={historyOpen} onHistoryToggle={() => setHistoryOpen(value => !value)} />
+  const active = !!run && run.status !== "hidden" && !run.reverted && (["queued", "running"].includes(run.status) || resumingRunId === run.run_id);
+  return <section ref={panel} className={styles.workspace} data-history-open={historyOpen} data-full-page={fullPage} data-mobile-view={mobileView} data-editor-open={!!(savedCategory || material || workProducts.openProduct)} aria-label="小Pai工作区">
+    {workProducts.openProduct && <WorkProductEditor key={workProducts.openProduct.root_id} product={workProducts.openProduct} original={workProducts.original} open onClose={() => { workProducts.close(); setMobileView("chat"); }} onSaved={workProducts.saved} onReload={workProducts.reload} onUnavailable={sourceUnavailable} onMobileChat={() => setMobileView("chat")} api={api} />}
+
     <div className={styles.layout}>
-      <aside className={styles.history} aria-label="个人工作记录">
-        <Button className={styles.newWork} disabled={busy || !!pending} onClick={() => { clearSelection(); setHistoryOpen(false); composer.current?.focus(); }}><Plus size={14} aria-hidden="true" />新工作</Button>
-        <SessionHistory api={api} scope={{ categoryId: null }} principalId={principalId} currentSessionId={sessionId} currentRunId={selectedRunId} refreshVersion={historyVersion} disabled={busy || !!pending} onClearSelection={clearSelection} onSelectRun={(id, sid) => { clearSelection(); selectedSession.current = sid; setSessionId(sid); setHistoryOpen(false); void read(() => readRun(id, "restore", sid)); }} />
+      <aside className={styles.history} aria-label="小Pai会话列表">
+        <div className={styles.historyHeading}><strong>会话</strong><button type="button" className={styles.historyBack} onClick={() => setHistoryOpen(false)}>返回对话</button></div>
+        <Button variant="ghost" className={styles.newWork} disabled={busy || !!pending} onClick={() => { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); composer.current?.focus(); }}><Plus size={14} aria-hidden="true" />新对话</Button>
+        <SessionHistory api={api} scope={{ categoryId: null }} principalId={principalId} currentSessionId={sessionId} currentRunId={selectedRunId} refreshVersion={historyVersion} disabled={busy || !!pending} onClearSelection={clearSelection} onPermissionDenied={sourceUnavailable} onSelectRun={(id, sid) => { clearSelection(); selectedSession.current = sid; setSessionId(sid); setHistoryOpen(fullPage && window.innerWidth >= 1000); void read(() => readRun(id, "restore", sid)); }} />
+        <p className={styles.historyPrivacy}>私人会话 · 仅你可见</p>
       </aside>
       <div className={styles.conversation}>
+    <PaiScope onBackground={active ? () => { if (onBackground) onBackground(); else { background.current = run.run_id; setBackgroundRun(run.run_id); } setQuestionDialog(false); setNotice("已在后台继续，可从会话记录返回。"); } : undefined} actions={headerActions} scope="个人工作" skills={skills} hasRun={!!run && run.status !== "hidden"} title={runGoal} disabled={busy || !!pending} onNewConversation={() => { clearSelection(); setGoal(""); setHistoryOpen(fullPage && window.innerWidth >= 1000); composer.current?.focus(); }} historyOpen={historyOpen} onHistoryToggle={() => setHistoryOpen(value => !value)} />
+        <PaiContextBar scope={"通用对话"} control={contextControl}/>
+        {(savedCategory || material || workProducts.openProduct) && <PaiMobileWorkspaceSwitch view="editor" onClick={() => setMobileView("editor")} />}
         <div className={styles.thread} aria-label="小Pai 对话线程">
           {notice && <p role="status" className="text-xs">{notice}</p>}{error && <p role="alert" className="text-sm text-destructive">{error}</p>}
-          {pending && <Button variant="outline" disabled={busy} onClick={() => { if (request.current) void send(request.current); }}>重试同一请求</Button>}
+          {pending && run?.status !== "hidden" && !busy && <Button variant="outline" disabled={busy} onClick={() => { if (request.current) void send(request.current); }}>重试同一请求</Button>}
           {!run && selectedRunId && <Button variant="outline" disabled={busy || !!pending} onClick={() => void read(() => readRun(selectedRunId))}>刷新实际结果</Button>}
-          {!run && <div className={styles.empty}><Sparkle size={24} aria-hidden="true" /><p>从一个新品类目标开始</p><p>说明产品用途、市场范围和希望核对的问题。</p><p className={styles.threadIntro}>执行需要已配置的模型和运行授权；研究依据、问题、候选与采用回执保存在实际工作中。</p></div>}
+          {!run && <PersonalPreferenceWelcome api={api} onSuggest={value => { setGoal(value); composer.current?.focus(); }}/>}
           {run && backgroundRun === run.run_id && <div className="rounded-lg border p-3 text-sm"><p>工作已保留 · {labels[run.status] ?? "状态待核对"}</p><p className={styles.runId}>运行 {run.run_id}</p><Button className="mt-2" size="sm" variant="outline" onClick={() => { background.current = null; setBackgroundRun(null); }}>返回当前工作</Button></div>}
-    {run && backgroundRun !== run.run_id && <>
-      {runGoal && <PaiMessage from="user"><p className="whitespace-pre-wrap break-words text-sm">{runGoal}</p></PaiMessage>}
+    {run?.status === "hidden" && <><PaiMessage from="user"><PaiGoal value={run.goal}/></PaiMessage><PaiMessage from="pai"><PaiHiddenResponse run={run}/></PaiMessage></>}
+    {run && run.status !== "hidden" && backgroundRun !== run.run_id && <>
+      <ConversationHistory api={api} root={root} sessionId={run.session_id} previousRunId={run.conversation?.previous_run_id ?? null} onUnavailable={sourceUnavailable} onOpen={id => { void read(() => readRun(id)); }} renderMaterials={historyRun => <><PersonalRunMaterials api={api} runId={historyRun.run_id} onUnavailable={sourceUnavailable}
+        onOpenCandidate={(runId, candidate) => { void read(async () => { const restored = await readRun(runId); if (!restored) return; setMobileView("editor"); setMaterial({ runId, candidate, sourceRun: restored }); requestAnimationFrame(() => materialDialog.current?.show()); }); }}
+        onOpenCategory={(runId, proof, category) => { void read(async () => { const restored = await readRun(runId); if (!restored) return; setMobileView("editor"); setSavedCategory({ ...category, receiptId: proof.receipt_id }); requestAnimationFrame(() => savedDialog.current?.show()); }); }} /><WorkProductActions run={historyRun} items={workProducts.items} busy={workProducts.busy} onOpen={kind => { void workProducts.openFromRun(historyRun, kind).then(product => { if (product) setMobileView("editor"); }); }} /></>} />
+      {runGoal && <PaiMessage from="user"><PaiGoal value={runGoal}/></PaiMessage>}
       <PaiMessage from="pai">
-      <h3 className="text-xs font-semibold">{reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? "状态待核对"}{run.reverted ? " · 已撤回" : ""}</h3>
-      <p className={styles.runId}>运行 {run.run_id}</p>
-      {active && <div className="flex flex-wrap items-center gap-2"><Button size="sm" variant="outline" disabled={busy || !!pending} onClick={() => void send({ path: `${root}/${run.run_id}/cancel`, body: {} })}>停止后续执行</Button><Button size="sm" variant="ghost" disabled={busy || !!pending} onClick={() => { if (onBackground) onBackground(); else { background.current = run.run_id; setBackgroundRun(run.run_id); } setQuestionDialog(false); setNotice("已转后台继续，仍是同一次运行；可从工作记录找回。"); }}>转后台继续</Button></div>}
-      {run.error_code && <p role="alert" className="text-sm">执行未完成：{run.error_code}。请检查模型配置、权限或执行服务后再继续。</p>}
-      {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root={root} />}
-      <RunFeedback key={`feedback:${run.run_id}`} api={api} root={root} runId={run.run_id} />
-      <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={() => readRun(run.run_id)} />
-      {run.result?.summary && <p className={styles.bubble}>{run.result.summary}</p>}
+      <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root={root} presentation="conversation" onUnavailable={sourceUnavailable} />
+      {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
+
+      <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={async () => { await readRun(run.run_id); }} />
+
       <ResearchResult value={run.result?.result?.research} />
-      {run.result?.unfinished?.map((item, index) => <p key={index} className="text-sm text-muted-foreground">待完成：{item}</p>)}
-      <Button variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>刷新实际结果</Button>
-      {!run.reverted && ["queued", "running", "waiting_input"].includes(run.status) && <Button variant="ghost" disabled={busy || !!pending}
+      <WorkProductActions run={run} items={workProducts.items} busy={workProducts.busy} onOpen={kind => { void workProducts.openFromRun(run, kind).then(product => { if (product) setMobileView("editor"); }); }} />
+      <PaiUnfinished items={run.result?.unfinished} />
+      {!run.reverted && run.status === "waiting_input" && <Button variant="ghost" disabled={busy || !!pending}
         onClick={() => void send({ path: `${root}/${run.run_id}/cancel`, body: {} })}>取消后续执行</Button>}
       {questions.length > 0 && <div ref={answerAnchor} tabIndex={-1}><ClarificationForm {...answerProps} prefix="inline" /></div>}
-      {!candidates.length && !adoptions.length && <p className="text-sm text-muted-foreground">此运行尚无可采用的品类候选。</p>}
+      <PaiReplyDetails key={`details:${run.run_id}`} scope="通用对话" skills={skills}><div className={styles.recordDetails}><h3 className="text-xs font-semibold">{reconciliationNeeded(run) ? "原调用结果待核对" : resumingRunId === run.run_id ? "答复已提交，等待继续执行" : labels[run.status] ?? "状态待核对"}{run.reverted ? " · 已撤回" : ""}</h3>{run.error_code && <p>错误代码：{run.error_code}</p>}
+      <p className={styles.runId}>运行 {run.run_id}</p>
+      {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root={root} />}
+      <RunFeedback key={`feedback:${run.run_id}`} api={api} root={root} runId={run.run_id} />
+      <Button variant="outline" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>刷新实际结果</Button>
+      </div></PaiReplyDetails>
       </PaiMessage>
     </>}
-    {run && backgroundRun !== run.run_id && adoptions.map(({ proof, category }) => <section key={proof.receipt_id} className="panel space-y-3">
-      <h3 className="font-medium">已采用 · {category.name}</h3>
-      <p role="status" className="text-sm">品类创建已完成，原候选已采用。</p>
-      <p className="break-all text-sm">创建回执：{proof.receipt_id}</p>
-      <details className="text-sm text-muted-foreground"><summary className="cursor-pointer">原采用记录</summary>
-        <p className="break-all">个人运行：{proof.run_id}</p><p className="break-all">候选摘要：{proof.candidate_digest}</p>
-        <p className="break-all">采用输入：{proof.input_ref}</p>
-      </details>
-      <Button onClick={() => onCreated(category)}>进入已创建品类</Button>
-    </section>)}
-    {run && backgroundRun !== run.run_id && candidates.map(candidate => <CategoryCreateForm key={`${run.run_id}:${candidate.candidate_digest}`} candidate={candidate} runId={run.run_id} api={api} onCreated={onCreated}
-      draft={confirmationDrafts[`${run.run_id}:${candidate.candidate_digest}`]} onDraftChange={draft => setConfirmationDrafts(old => {
-        const key = `${run.run_id}:${candidate.candidate_digest}`;
+    {run && backgroundRun !== run.run_id && adoptions.map(({ proof, category }) => <PaiDocumentCard key={proof.receipt_id} title={category.name} metadata="品类 · 已保存" action="返回编辑" onOpen={() => { setMobileView("editor"); setSavedCategory(category); requestAnimationFrame(() => savedDialog.current?.show()); }}><details className="px-3 pb-3 text-xs text-muted-foreground"><summary className="cursor-pointer">保存记录</summary><p>品类创建已完成，原候选已采用。</p><p className="break-all">创建回执：{proof.receipt_id}</p><p className="break-all">个人运行：{proof.run_id}</p><p className="break-all">候选摘要：{proof.candidate_digest}</p><p className="break-all">采用输入：{proof.input_ref}</p></details></PaiDocumentCard>)}
+    <dialog ref={savedDialog} className="candidate-editor" aria-label="编辑已保存品类">{savedCategory && <><header className="candidate-editor-heading"><h3>{savedCategory.name}</h3><PaiMobileWorkspaceSwitch view="chat" onClick={() => setMobileView("chat")} /><Button size="sm" variant="ghost" onClick={() => { setMobileView("chat"); savedDialog.current?.close(); }}>收起材料</Button></header><div className="candidate-editor-body"><CategoryMetadataEditor key={savedCategory.id} categoryId={savedCategory.id} api={api} embedded/></div></>}</dialog>
+    {run && backgroundRun !== run.run_id && candidates.map(candidate => <PaiDocumentCard key={candidate.candidate_digest} title={candidate.input.name} metadata="品类 · 小Pai 起草 · 待确认" action="查看与编辑" onOpen={() => { setMobileView("editor"); setMaterial({ runId: run.run_id, candidate, sourceRun: run }); requestAnimationFrame(() => materialDialog.current?.show()); }} />)}
+    <dialog ref={materialDialog} className="candidate-editor" aria-label="品类材料编辑">{material && <><header className="candidate-editor-heading"><h3>{material.candidate.input.name}</h3><PaiMobileWorkspaceSwitch view="chat" onClick={() => setMobileView("chat")} /><Button size="sm" variant="ghost" onClick={() => { setMobileView("chat"); materialDialog.current?.close(); }}>收起材料</Button></header><div className="candidate-editor-body"><CategoryCreateForm key={`${material.runId}:${material.candidate.candidate_digest}`} candidate={material.candidate} runId={material.runId} api={api} onCreated={onCreated}
+      draft={confirmationDrafts[`${material.runId}:${material.candidate.candidate_digest}`]} onDraftChange={draft => setConfirmationDrafts(old => {
+        const key = `${material.runId}:${material.candidate.candidate_digest}`;
         if (draft) return { ...old, [key]: draft };
         const next = { ...old }; delete next[key]; return next;
       })}
-      disabled={busy || !!pending || run.reverted || candidate.cancel_epoch !== run.cancel_epoch || !["queued", "running", "waiting_input", "completed", "partial"].includes(run.status)} />)}
+      disabled={busy || !!pending || material.sourceRun.reverted || material.candidate.cancel_epoch !== material.sourceRun.cancel_epoch || !["queued", "running", "waiting_input", "completed", "partial"].includes(material.sourceRun.status)} /></div></>}</dialog>
     {run && backgroundRun !== run.run_id && questions.length > 0 && <ClarificationDialog {...answerProps} open={questionDialog} onClose={() => setQuestionDialog(false)}
       onReturnFocus={() => answerAnchor.current?.focus()} />}
         </div>
         <div className={styles.composer}>
-          {run && <div className={styles.continuation}><RunContinuation key={`continue:${run.run_id}`} api={api} root={root} run={run} onOpen={async id => { await readRun(id); setHistoryVersion(value => value + 1); }} /></div>}
-          <form onSubmit={event => { event.preventDefault(); if (!pending && goal.trim().length >= 3) void send({ path: root, body: { goal, idempotency_key: crypto.randomUUID(), sources: [] } }); }}>
-            <div className={styles.composerBox}>
-              <div className={styles.composerTools}><span className={styles.skillLabel}>新工作 · 建立新品类</span><PaiCarry scope="个人工作 · 建立新品类" objects={[]} /></div>
-              <div className={styles.inputRow}>
-                <textarea ref={composer} aria-label="要研究和建立什么品类？" required minLength={3} maxLength={8000} rows={2} value={goal} disabled={busy || !!pending} onChange={event => setGoal(event.target.value)} placeholder="说明品类用途、市场范围和希望核对的问题" />
-                <Button className={styles.send} aria-label="保存并启动个人任务" disabled={busy || !!pending || goal.trim().length < 3}><PaperPlaneTilt size={17} aria-hidden="true" /><span className="sr-only">保存并启动个人任务</span></Button>
-              </div>
-            </div>
-            <div className={styles.composerFooter}><PaiPolicy /></div>
-          </form>
+          {run && run.status !== "hidden" && <div className={styles.continuation}><RunContinuation onStop={active ? () => { void send({ path: `${root}/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root={root} run={run} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async (id, sid) => { if (sid) { clearSelection(); selectedSession.current = sid; setSessionId(sid); } await readRun(id, "restore", sid); setHistoryVersion(value => value + 1); }} /></div>}
+          {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send({ path: root, body: { goal, idempotency_key: crypto.randomUUID(), sources: [], ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}) } })}
+            disabled={busy || !!pending} inputRef={composer}
+            tools={<><SkillPicker api={api} resource="v1/personal/agent-skills" value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/><PaiCarry scope="个人工作" objects={requestedSkills.map(skill => `优先技能 ${skillTitle(skill.key)} · ${skill.version}`)} /></>} /></div>}
         </div>
       </div>
     </div>

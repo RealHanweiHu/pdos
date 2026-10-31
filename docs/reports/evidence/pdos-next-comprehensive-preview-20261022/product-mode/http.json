@@ -1,0 +1,26 @@
+{
+  "login": {
+    "status": 200
+  },
+  "identity": {
+    "status": 200
+  },
+  "categories": {
+    "status": 200
+  },
+  "projects": {
+    "status": 200
+  },
+  "case_switch": {
+    "status": 400
+  },
+  "identity_after": {
+    "status": 200
+  },
+  "single_workspace_session": true,
+  "home": "/?area=work&category=efcc7f95-0a5b-4c58-a1e3-67764de167eb",
+  "principal_id": "78dbc83d-75d2-4513-bc4d-a5d3d5081f6c",
+  "category_count": 1,
+  "project_count": 1,
+  "business_commands": 0
+}

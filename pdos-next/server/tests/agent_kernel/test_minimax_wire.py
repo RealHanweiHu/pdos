@@ -261,3 +261,82 @@ def test_unclosed_thinking_is_not_misread_as_a_final_result():
     value["choices"][0]["message"]["content"] = "<think>" + PRIVATE
     with pytest.raises(ProviderError):
         parse_turn(value, minimax())
+
+
+def terminal_usage_packets():
+    return [
+        {
+            "id": "synthetic-terminal",
+            "choices": [{"index": 0, "delta": {"tool_calls": [{
+                "index": 0, "id": "native-1", "type": "function",
+                "function": {"name": FINISH_TOOL, "arguments": '{"ok":true}'},
+            }]}}],
+        },
+        {
+            "id": "synthetic-terminal",
+            "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}],
+        },
+        {
+            "id": "synthetic-terminal", "choices": [],
+            "usage": {"prompt_tokens": 30, "completion_tokens": 20},
+            "base_resp": {"status_code": 0, "status_msg": ""},
+        },
+    ]
+
+
+def terminal_client(packets, tail=b""):
+    wire = "".join("data: " + json.dumps(p) + "\n\n" for p in packets).encode() + tail
+    return AgentProviderClient(httpx.MockTransport(lambda _: httpx.Response(
+        200, headers={"content-type": "text/event-stream"}, stream=Fragments(wire),
+    )))
+
+
+@pytest.mark.parametrize("done", [False, True])
+def test_minimax_identified_terminal_usage_completes_at_clean_eof(done):
+    client = terminal_client(terminal_usage_packets(), b"data: [DONE]\n\n" if done else b"")
+    try:
+        turn = client.turn(minimax(), system="fixed", messages=[], tools=TOOLS,
+                           output_schema=SCHEMA, emit=lambda _: None)
+        assert turn.structured == {"ok": True}
+        assert turn.request_id == "synthetic-terminal"
+        assert turn.usage.input_tokens == 30 and turn.usage.output_tokens == 20
+    finally:
+        client.close()
+
+
+@pytest.mark.parametrize("corruption", [
+    "missing_finish", "missing_usage", "missing_status", "error_status", "invalid_status",
+    "different_id", "missing_id", "extra_data", "partial_packet", "other_provider",
+])
+def test_terminal_usage_never_accepts_incomplete_or_unbound_stream(corruption):
+    packets = terminal_usage_packets()
+    tail = b""
+    configured = minimax()
+    if corruption == "missing_finish":
+        packets.pop(1)
+    elif corruption == "missing_usage":
+        packets[-1].pop("usage")
+    elif corruption == "missing_status":
+        packets[-1].pop("base_resp")
+    elif corruption == "error_status":
+        packets[-1]["base_resp"]["status_code"] = 1000
+    elif corruption == "invalid_status":
+        packets[-1]["base_resp"] = None
+    elif corruption == "different_id":
+        packets[-1]["id"] = "another-response"
+    elif corruption == "missing_id":
+        packets[-1].pop("id")
+    elif corruption == "extra_data":
+        packets.append(packets[0])
+    elif corruption == "partial_packet":
+        tail = b'data: {"unfinished":'
+    else:
+        configured = route("openai-compatible")
+    client = terminal_client(packets, tail)
+    try:
+        with pytest.raises(ProviderError) as failure:
+            client.turn(configured, system="fixed", messages=[], tools=TOOLS,
+                        output_schema=SCHEMA, emit=lambda _: None)
+        assert failure.value.unknown
+    finally:
+        client.close()

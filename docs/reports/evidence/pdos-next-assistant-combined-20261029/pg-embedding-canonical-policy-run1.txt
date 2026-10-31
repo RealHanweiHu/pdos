@@ -1,0 +1,46 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 3 items
+
+tests/enterprise_search/test_embedding_canonical_provider_pg.py F..      [100%]
+
+=================================== FAILURES ===================================
+_ test_profile_confirms_canonical_identity_and_plan_excludes_internal_under_its_agreement _
+
+setup = <isolated synthetic test scope>
+
+    def test_profile_confirms_canonical_identity_and_plan_excludes_internal_under_its_agreement(setup):
+        source = register(setup, "Canonical plan source", "SYNTHETIC_CANONICAL_INTERNAL")
+        index(setup, source)
+        provider, backend = canonical_ports(setup)
+        policy = register_policy(setup, ["public"])
+        command = command_for(setup)
+        assert urlsplit(command["payload"]["metadata"]["base_url"]).hostname != CANONICAL
+        receipt, preview = save_profile(setup, backend, command)
+        assert preview["review"]["provider"] == CANONICAL
+        assert preview["command"]["payload"]["confirmation_token"]
+        assert provider.calls == []
+        version_id = UUID(receipt["subject_id"])
+        with Session(setup.admin) as session:
+            stored = session.get(EmbeddingProfile, version_id)
+            assert stored.binding_digest == preview["review"]["binding_digest"]
+            actual = session.get(Receipt, UUID(receipt["id"]))
+            confirmed = session.get(Confirmation, actual.confirmation_id)
+>           assert confirmed.consumed is True
+                   ^^^^^^^^^^^^^^^^^^
+E           AttributeError: 'NoneType' object has no attribute 'consumed'
+
+tests/enterprise_search/test_embedding_canonical_provider_pg.py:107: AttributeError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_embedding_canonical_provider_pg.py::test_profile_confirms_canonical_identity_and_plan_excludes_internal_under_its_agreement
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/tests/enterprise_search/test_embedding_canonical_provider_pg.py:106: SAWarning: fully NULL primary key identity cannot load any object.  This condition may raise an error in a future release.
+    confirmed = session.get(Confirmation, actual.confirmation_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-embedding-settings-20261029/pg-canonical-policy-run1.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_embedding_canonical_provider_pg.py::test_profile_confirms_canonical_identity_and_plan_excludes_internal_under_its_agreement
+=================== 1 failed, 2 passed, 1 warning in 16.99s ====================

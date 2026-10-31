@@ -1,8 +1,10 @@
 export const budgetIntegerMax = 2147483647;
 export type BudgetLimits = { limit_micro_usd: number; input_token_limit: number; output_token_limit: number; call_limit: number };
 export type AgentBudget = BudgetLimits & { id: string; revision: number; active: boolean; created_at: string; receipt_id: string | null;
+  development_unlimited?: boolean;
   calls: number; held_micro_usd: number; spent_micro_usd: number; held_input_tokens: number; used_input_tokens: number; held_output_tokens: number; used_output_tokens: number };
 export type BudgetReading = { can_edit: boolean; category_revision: number; requester_id: string; active_digest: string; control_revision: number;
+  development_unlimited?: boolean;
   selected_budget_id: string | null; active_budgets: AgentBudget[]; items: AgentBudget[]; next_cursor: string | null };
 export type BudgetCommand = { category_id: string; product_id: null; command_id: string; idempotency_key: string;
   operation: "ai.budget.configure"; expected_revision: number; source_read_set: [];

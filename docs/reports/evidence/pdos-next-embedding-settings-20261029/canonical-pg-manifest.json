@@ -1,0 +1,20 @@
+{
+  "base_sha": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "stage_root": "/tmp/pdos-embedding-canonical-pg-stage-20261029",
+  "requires": "/tmp/pdos-embedding-connection-stage-20261029/provider-delta/manifest.json",
+  "files": [
+    {
+      "source": "files/pdos-next/server/tests/enterprise_search/test_embedding_canonical_provider_pg.py",
+      "target": "pdos-next/server/tests/enterprise_search/test_embedding_canonical_provider_pg.py",
+      "action": "create",
+      "sha256": "25da9b69802de910a22e2a89324047e8fb1763c1c9a644da9d631f3ba8fd1f88"
+    }
+  ],
+  "checks": {
+    "collect_only": "3 tests collected; imports passed",
+    "ruff": "passed, explicit repo config with staging first-party names",
+    "postgresql_execution": "not run",
+    "database_kms_keychain_network": "not accessed",
+    "live_source_changes": false
+  }
+}

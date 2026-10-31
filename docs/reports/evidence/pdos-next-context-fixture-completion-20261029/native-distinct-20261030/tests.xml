@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="11.966" timestamp="2026-10-30T02:19:51.967853-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_eval_v0_handle_candidate_pg" name="test_ctx09_native_handle_page2_then_same_handle_page3_failure[F48000]" time="10.702"><failure message="AssertionError">tests/agent_kernel/test_eval_v0_handle_candidate_pg.py:440: in test_ctx09_native_handle_page2_then_same_handle_page3_failure
+    directory = native_directory(setup, question)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent_kernel/eval_v0_ctx09_directory_support.py:120: in native_directory
+    assert row.source_refs == ([code_reference(entry["faq"])] if entry["faq"] else [])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError</failure></testcase></testsuite></testsuites>

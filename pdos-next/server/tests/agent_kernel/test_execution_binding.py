@@ -11,7 +11,7 @@ import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 from pdos_agent_runtime.graph import registered_graph_context
 
-from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure, skill_operations
 from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
 from pdos_next.agent_kernel.execution import (
     finish_domain_call,
@@ -540,9 +540,12 @@ def test_gateway_returns_actual_model_ledger_and_keeps_binding_out_of_native_pay
     client = AgentProviderClient(httpx.MockTransport(transport))
     store = GatewayStore(f)
     gateway = AgentGateway(store, route_for=lambda _: route, cost_required=False, client=client)
-    options = dict(system="frozen", messages=[{"role": "user", "content": "synthetic"}],
-                   tools=f.registry.definitions(), output_schema={"type": "object"},
-                   loaded_skills=(f.source.skill,))
+    options = dict(
+        system="frozen", messages=[{"role": "user", "content": "synthetic"}],
+        tools=disclosure(f.registry, operations=binding_operations(f.catalog, (f.source.skill,))),
+        output_schema={"type": "object"}, loaded_skills=(f.source.skill,),
+    )
+    assert f.spec.name in {tool["name"] for tool in options["tools"]}
     try:
         with registered_graph_context("xiaopai"):
             first = gateway.turn(f.scope, **options)

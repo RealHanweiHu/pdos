@@ -1,0 +1,26 @@
+[
+  {
+    "check": "TypeScript",
+    "chunk_id": "a2812f",
+    "wall_time_seconds": 3.787955208,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  {
+    "check": "ESLint",
+    "chunk_id": "bc60f6",
+    "wall_time_seconds": 5.195532875,
+    "exit_code": 0,
+    "original_token_count": 0,
+    "output": ""
+  },
+  {
+    "check": "Layout",
+    "chunk_id": "b0167e",
+    "wall_time_seconds": 0.000007958,
+    "exit_code": 0,
+    "original_token_count": 1,
+    "output": "[]\n"
+  }
+]

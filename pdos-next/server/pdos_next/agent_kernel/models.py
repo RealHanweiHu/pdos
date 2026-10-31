@@ -60,6 +60,33 @@ class AgentSession(KernelRow, Base):
     )
 
 
+class AgentSessionBinding(KernelRow, Base):
+    __tablename__ = "agent_session_bindings"
+    session_id: Mapped[UUID]
+    owner_id: Mapped[UUID]
+    category_id: Mapped[UUID]
+    proposal_id: Mapped[UUID]
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "session_id"),
+        UniqueConstraint("tenant_id", "receipt_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "proposal_id"],
+            ["proposals.tenant_id", "proposals.category_id", "proposals.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
+        ),
+    )
+
+
 class AgentRun(KernelRow, Base):
     __tablename__ = "agent_runs"
     category_id: Mapped[UUID | None] = mapped_column(index=True)
@@ -140,6 +167,54 @@ class AgentRun(KernelRow, Base):
     )
 
 
+class AgentWorkProduct(KernelRow, Base):
+    __tablename__ = "agent_work_products"
+    session_id: Mapped[UUID]
+    run_id: Mapped[UUID]
+    root_id: Mapped[UUID]
+    supersedes_id: Mapped[UUID | None]
+    owner_id: Mapped[UUID]
+    category_id: Mapped[UUID | None]
+    kind: Mapped[str] = mapped_column(String(16))
+    title: Mapped[str] = mapped_column(String(200))
+    body: Mapped[str] = mapped_column(Text)
+    revision: Mapped[int] = mapped_column(Integer)
+    origin: Mapped[str] = mapped_column(String(16))
+    request_key: Mapped[UUID]
+    request_sha256: Mapped[str] = mapped_column(String(64))
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "root_id", "revision"),
+        UniqueConstraint("tenant_id", "owner_id", "request_key"),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id"], ["categories.tenant_id", "categories.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "root_id"], ["agent_work_products.tenant_id", "agent_work_products.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "supersedes_id"],
+            ["agent_work_products.tenant_id", "agent_work_products.id"],
+        ),
+        CheckConstraint("kind IN ('document','table')", name="work_product_kind"),
+        CheckConstraint("origin IN ('ai_draft','human')", name="work_product_origin"),
+        CheckConstraint("revision > 0", name="work_product_revision"),
+        CheckConstraint("char_length(btrim(title)) BETWEEN 1 AND 200", name="work_product_title"),
+        CheckConstraint("char_length(btrim(body)) BETWEEN 1 AND 200000", name="work_product_body"),
+        CheckConstraint("request_sha256 ~ '^[0-9a-f]{64}$'", name="work_product_request_sha256"),
+        CheckConstraint("supersedes_id IS DISTINCT FROM id", name="work_product_not_self_parent"),
+    )
+
+
 class AgentToolCall(KernelRow, Base):
     __tablename__ = "agent_tool_calls"
     run_id: Mapped[UUID]
@@ -205,6 +280,7 @@ class ProviderDataAgreement(KernelRow, Base):
     data_categories: Mapped[list] = mapped_column(JSONB)
     retention_terms: Mapped[str] = mapped_column(Text)
     training_terms: Mapped[str] = mapped_column(Text)
+    prompt_cache_allowed: Mapped[bool | None] = mapped_column(Boolean)
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     registered_by: Mapped[UUID]
     active: Mapped[bool] = mapped_column(Boolean, default=True)
@@ -403,6 +479,9 @@ class ValidationBudget(KernelRow, Base):
     __tablename__ = "agent_validation_budgets"
     requester_id: Mapped[UUID]
     active: Mapped[bool] = mapped_column(Boolean, default=True)
+    development_unlimited: Mapped[bool] = mapped_column(
+        Boolean, default=False, server_default="false"
+    )
     limit_micro_usd: Mapped[int] = mapped_column(Integer)
     input_token_limit: Mapped[int] = mapped_column(Integer)
     output_token_limit: Mapped[int] = mapped_column(Integer)
@@ -417,6 +496,16 @@ class ValidationBudget(KernelRow, Base):
     revision: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     receipt_id: Mapped[UUID | None]
     __table_args__ = (
+        CheckConstraint(
+            "calls>=0 AND held_micro_usd>=0 AND spent_micro_usd>=0 "
+            "AND held_input_tokens>=0 AND used_input_tokens>=0 "
+            "AND held_output_tokens>=0 AND used_output_tokens>=0 "
+            "AND (development_unlimited OR (calls<=call_limit "
+            "AND held_micro_usd+spent_micro_usd<=limit_micro_usd "
+            "AND held_input_tokens+used_input_tokens<=input_token_limit "
+            "AND held_output_tokens+used_output_tokens<=output_token_limit))",
+            name="agent_validation_budgets_check1",
+        ),
         UniqueConstraint("tenant_id", "id"),
         ForeignKeyConstraint(
             ["tenant_id", "requester_id"], ["principals.tenant_id", "principals.id"]

@@ -1,0 +1,28 @@
+{
+  "status": "checkpoint_verified_full_goal_in_progress",
+  "previous_checkpoint": "../pdos-next-enterprise-scope-20261028/result.md",
+  "database": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0830",
+  "new_migration": false,
+  "real_models": false,
+  "embedding": false,
+  "live_processes": [],
+  "completed_evidence": {
+    "artifact_claim_scan": "knowledge-authority-fixed.txt: 4 passed before final root binding guard",
+    "knowledge": "knowledge-ui-eligibility-fixture-fixed.txt: all 8 new cases passed",
+    "frontend": "137 tests, production build/TypeScript and target ESLint passed",
+    "browser": "Actual authenticated updated body read and withdrawn body hiding verified; services and token files closed",
+    "source_recheck": "258 source inputs and 665 frontend inputs unchanged"
+  },
+  "pending": [],
+  "goal_complete": false,
+  "test_files": 61,
+  "expected_cases": 476,
+  "source_inputs": 258,
+  "interrupted_reason": "Actual browser revealed that generic updated-source UI hides the still readable fixed KnowledgeEntry body; source view eligibility and explicit original snippet label added.",
+  "browser": "browser-result.json",
+  "remaining": [
+    "See result.md remaining scope and sole queue"
+  ],
+  "result": "result.md"
+}

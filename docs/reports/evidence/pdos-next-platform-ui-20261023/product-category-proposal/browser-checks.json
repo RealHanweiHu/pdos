@@ -1,0 +1,124 @@
+[
+  {
+    "name": "Category search filters the category list",
+    "pass": true
+  },
+  {
+    "name": "Category opens shared knowledge without customer file names",
+    "pass": true
+  },
+  {
+    "name": "Category Pai carries the current category",
+    "pass": true,
+    "note": "Context is a disclosure summary, not a DOM button; verified visible panel text."
+  },
+  {
+    "name": "Category finder includes only proposals in that category",
+    "pass": true
+  },
+  {
+    "name": "Unsaved draft survives returning from proposal list",
+    "pass": true,
+    "note": "Textarea value inspected through live DOM property; value attribute is not applicable."
+  },
+  {
+    "name": "Inline spec and question edits save as a new revision",
+    "pass": true
+  },
+  {
+    "name": "Previous version remains readable",
+    "pass": true
+  },
+  {
+    "name": "G0 requires named reviewer before confirmation",
+    "pass": true
+  },
+  {
+    "name": "Submitting fixes the version without approval or project creation",
+    "pass": true
+  },
+  {
+    "name": "Management sees shared and assigned-review proposals but not unrelated private customer draft",
+    "pass": true
+  },
+  {
+    "name": "Product work offers remaining private drafts directly",
+    "pass": true
+  },
+  {
+    "name": "Approved proposal is read-only and offers its project",
+    "pass": true
+  },
+  {
+    "name": "Approved proposal links to correct project task list",
+    "pass": true
+  },
+  {
+    "name": "New proposal opens a private editable draft without creating a project",
+    "pass": true
+  },
+  {
+    "name": "Incomplete proposal cannot submit",
+    "pass": true
+  },
+  {
+    "name": "Combined proposal category and status filters",
+    "pass": true
+  },
+  {
+    "name": "Proposal empty search has recovery guidance",
+    "pass": true
+  },
+  {
+    "name": "Proposal Pai carries its own scope, not the last project",
+    "pass": true
+  },
+  {
+    "name": "390px proposal detail has no page overflow",
+    "pass": true
+  },
+  {
+    "name": "Mobile editor keeps every input inside its viewport",
+    "pass": true
+  },
+  {
+    "name": "Offline editing preserves draft and disables saving",
+    "pass": true
+  },
+  {
+    "name": "1024px document layout fits the page",
+    "pass": true
+  },
+  {
+    "name": "Proposal view: 规格对标",
+    "pass": true
+  },
+  {
+    "name": "Proposal view: 功能配置",
+    "pass": true
+  },
+  {
+    "name": "Proposal view: 定义成熟度",
+    "pass": true
+  },
+  {
+    "name": "Proposal view: 证据与决定",
+    "pass": true
+  },
+  {
+    "name": "Read failure provides retry instead of a false empty list",
+    "pass": true
+  },
+  {
+    "name": "Retry restores accessible proposals",
+    "pass": true
+  },
+  {
+    "name": "Product work item opens matching S2-L proposal, not P1 or project placeholder",
+    "pass": true
+  },
+  {
+    "name": "Fresh final candidate has no browser warning or error",
+    "pass": true
+  }
+]

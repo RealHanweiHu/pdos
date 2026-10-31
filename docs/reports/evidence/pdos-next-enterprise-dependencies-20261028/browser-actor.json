@@ -1,0 +1,13 @@
+{
+  "tenant": "f6f1f2d1-6733-4ae7-a524-f45d28f27159",
+  "human": "924ea6cb-387a-41fa-8ded-2738a81f0166",
+  "agent": "f9335dd8-995f-4151-89ed-17b07b5dc3ed",
+  "category": "e2810c52-4e79-47e8-906c-39e3b054e0d7",
+  "root": "07e4bef6-a33e-42a7-87bb-a69c71cbca8b",
+  "run": "dfacb1df-5fe5-47b9-b69c-804e95e8a0ba",
+  "session": "f3991758-1ecc-4633-9415-d373ac8195ac",
+  "baseline_models": 3,
+  "baseline_receipts": 10,
+  "synthetic": true,
+  "credentials": "private temporary files only"
+}

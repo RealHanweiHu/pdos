@@ -1,0 +1,134 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 2 items
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity PASSED [ 50%]
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination _
+
+handoff_work = namespace(setup=<isolated synthetic test scope>, config={'source': '7ad6dce7-9ec5-406f-a808-709485c60338', 'project': ...': '52559c74-ee54-4fca-b981-dc56366c02fd', 'expected_revision': 1, 'line': 2, 'quote': 'Synthetic limits 9.5 to 10.5'})
+
+    work, person = handoff_work, handoff_work.engineer
+    methods(work)
+    receipt, _prepared, offered_request = offered(work)
+    assert apply_event(person, receipt["id"])["processed"] == 1
+    assert apply_event(person, receipt["id"])["changed"] == 0
+    with native_session(person) as session:
+        prepare_read(session, ["verification_handoff"])
+        facts = [
+            dict(row)
+            for row in session.execute(
+                select_sources(
+                    source_type="verification_handoff",
+                    include_body=True,
+                )
+            ).mappings()
+        ]
+        actual = session.scalar(
+            select(VerificationHandoffFact).where(
+                VerificationHandoffFact.next_request_version_id == UUID(offered_request["id"]),
+            )
+        )
+    row = next(row for row in facts if row["source_id"] == actual.id)
+>   assert row["nature"] == "structured" and row["is_current"]
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_verification_handoff_sources_pg.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/enterprise_search/test_verification_handoff_sources_pg.py:50: in <genexpr>
+    assert row["nature"] == "structured" and row["is_current"]
+                                                           ^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1121: in _fire_loader_callables
+    return state._load_expired(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:833: in _load_expired
+    self.manager.expired_attribute_loader(self, toload, passive)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+mapper = <Mapper at 0x10985fe30; VerificationHandoffFact>
+state = <sqlalchemy.orm.state.InstanceState object at 0x11651a3f0>
+attribute_names = {'authority_snapshot', 'category_id', 'created_at', 'id', 'input_snapshot', 'intent_digest', ...}
+passive = symbol('PASSIVE_OFF')
+
+    def _load_scalar_attributes(mapper, state, attribute_names, passive):
+        """initiate a column-based attribute refresh operation."""
+    
+        # assert mapper is _state_mapper(state)
+        session = state.session
+        if not session:
+>           raise orm_exc.DetachedInstanceError(
+                "Instance %s is not bound to a Session; "
+                "attribute refresh operation cannot proceed" % (state_str(state))
+            )
+E           sqlalchemy.orm.exc.DetachedInstanceError: Instance <VerificationHandoffFact at 0x117038710> is not bound to a Session; attribute refresh operation cannot proceed (Background on this error at: https://sqlalche.me/e/21/bhk3)
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/loading.py:1633: DetachedInstanceError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/manufacturing_baseline/service.py:1036: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])  # Root's deferred common atom must complete or all rolls back.
+
+tests/enterprise_search/test_manufacturing_document_sources_pg.py::test_draft_revision_does_not_replace_formal_fixed_document_and_answer_keeps_link_identity
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/manufacturing_baseline/publication_service.py:975: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-role-native-sources-20261029/pg-role-run4.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_verification_handoff_sources_pg.py::test_offer_is_a_fixed_physical_fact_with_explicit_build_and_current_destination
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+============= 1 failed, 1 passed, 23 warnings in 108.59s (0:01:48) =============

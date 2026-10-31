@@ -184,7 +184,8 @@ def handoff_work(ready_work):
                 category_id=setup.category,
                 principal_id=quality_id,
                 can_write=True,
-                expires_at=now() + timedelta(minutes=53),
+                expires_at=now() + (getattr(setup, "test_authorization_window", None)
+                                    or timedelta(minutes=53)),
             )
         )
         session.add(
@@ -192,7 +193,8 @@ def handoff_work(ready_work):
                 tenant_id=setup.tenant,
                 principal_id=quality_id,
                 token_hash=digest(token),
-                expires_at=now() + timedelta(hours=1),
+                expires_at=now() + (getattr(setup, "test_authorization_window", None)
+                                    or timedelta(hours=1)),
             )
         )
     work.engineer = caller(setup, setup.peer, setup.tokens[setup.peer])

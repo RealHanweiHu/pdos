@@ -155,3 +155,15 @@ test("old Build adoption options remain exact current server refs and never acce
   for (const old_builds of [[{ ...row, ref: { ...row.ref, kind: "planned_build" } }], [row, row], [{ ...row, ref: { ...row.ref, revision: "3" } }]]) assert.throws(() => normalizeOrderContext({ ...ctx, old_builds }, changeId, project));
 });
 test("fixed Change mode reads only that actual index and cannot restore another Change's pending request", async () => { const calls: string[] = [], api: OrderApi = async <T>(path: string) => { calls.push(path); return (path.includes("order-context?") ? fieldContext() : path.includes("change-execution") ? { changes: [fieldContext().change] } : { sources: [] }) as T; }; assert.ok(await readOrderScope(api, product.id, changeId, project, () => true, changeId)); assert.equal(calls[0], `v1/products/${product.id}/change-execution?project_id=${project}&change_id=${changeId}`); await assert.rejects(readOrderScope(api, product.id, id(99), project, () => true, changeId)); const saved = { ...blankOrderLocal(), selectedChangeId: changeId, schema_version: 1, product_id: product.id, principal_id: principal, project_id: project }; assert.ok(restoreOrders(saved, product.id, principal, project, changeId)); assert.equal(restoreOrders(saved, product.id, principal, project, id(99)), null); });
+
+
+test("a blocked source keeps readable changes selectable without granting formal context, while revoked scope still fails", async () => {
+  const row = context().change;
+  const api = async (route: string) => {
+    if (route.includes("/order-context")) throw { status: 409, code: "SOURCE_UNAVAILABLE" };
+    return route.endsWith("/workspace") ? { sources: [] } : { changes: [row] };
+  };
+  const value = await readOrderScope(api as OrderApi, product.id, changeId, project, () => true);
+  assert.equal(value?.context, null); assert.equal(value?.contextUnavailable, true); assert.deepEqual(value?.changes, [row]);
+  await assert.rejects(readOrderScope((async (route: string) => { if (route.includes("/order-context")) throw {status:403,code:"FORBIDDEN_SCOPE"}; return api(route); }) as OrderApi, product.id, changeId, project, () => true));
+});

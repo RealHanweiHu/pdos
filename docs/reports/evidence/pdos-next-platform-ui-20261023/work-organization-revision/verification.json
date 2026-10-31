@@ -1,0 +1,42 @@
+{
+  "recorded_at": "2026-10-23T18:30:35.131004+00:00",
+  "scope": "local synthetic UI preview only",
+  "checks": [
+    {
+      "command": "npx eslint src/app/ui-lab/platform",
+      "exit_code": 0,
+      "output": "eslint.txt"
+    },
+    {
+      "command": "npx tsc --noEmit",
+      "exit_code": 0,
+      "output": "typecheck.txt"
+    }
+  ],
+  "source_sha256": {
+    "pdos-next/web/src/app/ui-lab/platform/organization-state.ts": "b0d0ce3cb5069a85d0e1fc0cf0795ab0d15902ac163894f1455c9d8b3e1ed601",
+    "pdos-next/web/src/app/ui-lab/platform/organization-preview.tsx": "2bb2f81d9437a570a54ba0605e0b9b081e828f4778d4f61883859e7fdbe04ad8",
+    "pdos-next/web/src/app/ui-lab/platform/organization.module.css": "d2783d2bbd31d07d712a9f4956622ef8e97c767a97e03444d74540825ab46e54",
+    "pdos-next/web/src/app/ui-lab/platform/platform-preview.tsx": "c272fca425b545a61b5a9fdd58b2d32e2ff2da59242069178d4c87127c381aa9",
+    "pdos-next/web/src/app/ui-lab/platform/design-data.ts": "aa414e543c5c0c81151fbf11659fceaf9415555bb2e88554a2148e16edc4e46d",
+    "pdos-next/web/src/app/ui-lab/platform/page.tsx": "e71d798f8c049e5c26ae78cfd235a03004b237d5136ebebc457a3cad240878dd",
+    "pdos-next/web/src/app/ui-lab/platform/platform.module.css": "0404bcab7a76bd23503fc1072d4d0feaad5e5c7a8a0540546ea4f05653b577ea",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview.tsx": "fff2fdc46974b9c8d4ad58b86ccf013e4f8a894240fc0a46d1972ed24dd1591e",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview-state.ts": "1e213bfb43ea05f8d176171fad1c7f097ee98004bf4b9597d175710137fbe73c",
+    "pdos-next/web/src/app/ui-lab/platform/pai-preview.module.css": "d02b1241a3429ecde557d5f57fd214d7e427f42f178ae1fb63ef73a759dff32e"
+  },
+  "browser_log_errors": [],
+  "browser_evidence": "browser-checks.json",
+  "resolved_failure": {
+    "name": "资源冲突返回项目计划办理",
+    "reason": "MG-003 linked back to portfolio",
+    "fix": "MG-003 now links to plan",
+    "recheck": "修复复核：资源冲突详情正确返回P1项目计划"
+  },
+  "limitations": [
+    "No business API/database/model calls",
+    "Messages only append to React state; no actual org communication",
+    "Refresh resets prototype state",
+    "No full backend, production build or phase acceptance rerun"
+  ]
+}

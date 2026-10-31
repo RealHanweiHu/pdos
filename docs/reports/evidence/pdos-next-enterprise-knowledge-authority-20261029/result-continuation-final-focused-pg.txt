@@ -1,0 +1,10 @@
+...F                                                                     [100%]
+=================================== FAILURES ===================================
+___ test_actual_extract_child_reads_fragments_before_returning_verified_rows ___
+tests/agent_kernel/test_result_continuation_pg.py:277: in test_actual_extract_child_reads_fragments_before_returning_verified_rows
+    assert len(output["rows"]) == 1 and client.pages >= 2
+               ^^^^^^^^^^^^^^
+E   TypeError: tuple indices must be integers or slices, not str
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_result_continuation_pg.py::test_actual_extract_child_reads_fragments_before_returning_verified_rows
+1 failed, 3 passed in 13.75s

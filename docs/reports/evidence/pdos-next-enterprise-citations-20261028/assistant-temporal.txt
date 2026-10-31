@@ -1,0 +1,169 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x11e4c8e60>
+
+    @pytest.mark.skipif(
+        not os.environ.get("PDOS_TEMPORAL_ADDRESS")
+        or not os.environ.get("PDOS_CHECKPOINT_DATABASE_URL"),
+        reason="Explicit verified local Temporal and checkpoint runtime required",
+    )
+    def test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference(
+        setup, monkeypatch
+    ):
+        address = os.environ["PDOS_TEMPORAL_ADDRESS"]
+        endpoint = urlsplit("//" + address)
+        assert endpoint.hostname in {"127.0.0.1", "localhost", "::1"} and endpoint.port
+        checkpoint = verified_checkpoint_url(os.environ["PDOS_CHECKPOINT_DATABASE_URL"])
+        index(setup, register(setup, "D16 气密记录", "漏气。更换密封圈。RAW_ONLY_CHILD_MARKER"))
+        management, runtime, command = configured(setup)
+        saved, _command = submit(setup, management, command)
+        assert saved.status_code == 200, saved.text
+        provider = SyntheticClient()
+        runtime = replace(runtime, provider_client=provider, preload=lambda _: ())
+        bootstrap = Bootstrap(setup.engine, ports=runtime)
+        adapters = replace(
+            bootstrap.adapters(),
+            cost_required=False,
+            provider_for=lambda *_args: "synthetic-assistant-no-egress",
+        )
+        bootstrap._assistant_adapter.graph = AssistantExtractGraph(
+            BoundHost(bootstrap.store, adapters),
+            bootstrap._assistant_adapter,
+            checkpointer_factory=lambda: PostgresSaver.from_conn_string(checkpoint),
+        )
+        monkeypatch.setattr(setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
+        configure_agent_kernel(setup.engine, adapters)
+    
+        async def actual():
+            temporal = await Client.connect(address, namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"])
+            assert await temporal.service_client.check_health()
+            port = TemporalPort(temporal, task_queue="assistant-offline-" + str(uuid4()))
+            ports = bootstrap.api_ports(port)
+    
+            def synthetic_binding(*args):
+                binding = bootstrap.binding_for(*args)
+                binding.token_limit = 2_000_000
+                return binding
+    
+            app = create_app(
+                setup.engine,
+                setup.auth,
+                agent_runtime_ports=runtime,
+                agent_api_ports=replace(ports, binding_for=synthetic_binding),
+            )
+            activities = KernelActivities(
+                setup.engine, checkpoint_url=checkpoint, technical_engine=setup.dispatch
+            )
+            with ThreadPoolExecutor(max_workers=2) as executor:
+                async with (
+                    Worker(
+                        temporal,
+                        task_queue=port.task_queue,
+                        workflows=[XiaopaiWork],
+                        activities=[activities.advance, activities.reconcile],
+                        activity_executor=executor,
+                    ),
+                    httpx.AsyncClient(
+                        transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local"
+                    ) as http,
+                ):
+                    path = "/v1/personal/agent-runs"
+                    payload = {"goal": "以前漏气怎么处理？", "idempotency_key": str(uuid4())}
+                    started = await http.post(path, headers=setup.headers, json=payload)
+                    assert started.status_code == 202, started.text
+                    identity = UUID(started.json()["run_id"])
+                    handle = temporal.get_workflow_handle(workflow_id(setup.tenant, identity))
+                    outcome = await asyncio.wait_for(handle.result(), 55)
+                    assert outcome["status"] == "completed", outcome
+                    record = await http.get(path + "/" + str(identity), headers=setup.headers)
+                    assert record.status_code == 200, record.text
+                    answer = record.json()["result"]["result"]["assistant"]
+                    assert answer["lookup"] == "cited" and answer["matched_count"] == 1
+                    source = await http.get(
+                        answer["sources"][0]["url"].removeprefix("/api"), headers=setup.headers
+                    )
+                    assert source.status_code == 200 and "更换密封圈" in source.json()["text"]
+                    repeat = await http.post(path, headers=setup.headers, json=payload)
+                    assert repeat.status_code == 202 and repeat.json()["run_id"] == str(identity)
+                    assert provider.calls == 5 and provider.child_calls == 2
+                    history = await handle.fetch_history()
+                    assert "RAW_ONLY_CHILD_MARKER" not in str(history)
+                    assert "更换密封圈" not in str(history)
+    
+>       asyncio.run(actual())
+
+tests/enterprise_search/test_assistant_temporal_pg.py:117: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def actual():
+        temporal = await Client.connect(address, namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"])
+        assert await temporal.service_client.check_health()
+        port = TemporalPort(temporal, task_queue="assistant-offline-" + str(uuid4()))
+        ports = bootstrap.api_ports(port)
+    
+        def synthetic_binding(*args):
+            binding = bootstrap.binding_for(*args)
+            binding.token_limit = 2_000_000
+            return binding
+    
+        app = create_app(
+            setup.engine,
+            setup.auth,
+            agent_runtime_ports=runtime,
+            agent_api_ports=replace(ports, binding_for=synthetic_binding),
+        )
+        activities = KernelActivities(
+            setup.engine, checkpoint_url=checkpoint, technical_engine=setup.dispatch
+        )
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            async with (
+                Worker(
+                    temporal,
+                    task_queue=port.task_queue,
+                    workflows=[XiaopaiWork],
+                    activities=[activities.advance, activities.reconcile],
+                    activity_executor=executor,
+                ),
+                httpx.AsyncClient(
+                    transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local"
+                ) as http,
+            ):
+                path = "/v1/personal/agent-runs"
+                payload = {"goal": "以前漏气怎么处理？", "idempotency_key": str(uuid4())}
+                started = await http.post(path, headers=setup.headers, json=payload)
+                assert started.status_code == 202, started.text
+                identity = UUID(started.json()["run_id"])
+                handle = temporal.get_workflow_handle(workflow_id(setup.tenant, identity))
+                outcome = await asyncio.wait_for(handle.result(), 55)
+>               assert outcome["status"] == "completed", outcome
+E               AssertionError: {'error_code': 'INTERNAL_ERROR', 'run_id': 'ab97de2d-c1c4-43b3-9fcf-a35006101c87', 'status': 'failed'}
+E               assert 'failed' == 'completed'
+E                 
+E                 - completed
+E                 + failed
+
+tests/enterprise_search/test_assistant_temporal_pg.py:101: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    pdos_next.agent_kernel.activities:activities.py:173 Unexpected RuntimeError in Run ab97de2d-c1c4-43b3-9fcf-a35006101c87:   File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/activities.py", line 155, in advance
+    verified_checkpoint_url(self.checkpoint_url)
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/workflows/checkpoints.py", line 19, in verified_checkpoint_url
+    engine = engine_for(url)
+             ^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/database.py", line 12, in engine_for
+    raise RuntimeError("Explicit PostgreSQL psycopg URL required; no environment fallback")
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_assistant_temporal_pg.py::test_authenticated_question_runs_durably_and_opens_fixed_source_without_new_inference
+1 failed in 6.79s

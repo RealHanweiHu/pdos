@@ -1,0 +1,558 @@
+{
+  "version": 1,
+  "frozen": true,
+  "stage": "/tmp/pdos-dingtalk-integration-stage-20261029",
+  "live_root": "/Users/huhanwei/Desktop/ai-native-R&D-platform",
+  "apply_mode": "manifest_only_no_directory_copy",
+  "source_layers": [
+    {
+      "manifest": "/tmp/pdos-dingtalk-stage-20261029/manifest.json",
+      "sha256": "31d4e410e8e0b3d274ef1a6f99eedc5c2d3c7636e8ad87657660e8e4b5a37c41"
+    },
+    {
+      "manifest": "/tmp/pdos-dingtalk-delta-stage-20261029/manifest.json",
+      "sha256": "abc9d9ee88419f216409e012ad3f5b45977eadb23f4aa193c2601eda56a9e4e3"
+    },
+    {
+      "manifest": "/tmp/pdos-dingtalk-protocol-ui-stage-20261029/manifest.json",
+      "sha256": "0160dae49e49ddf9c65e4ec0d449e0b0f8dde875f7b2a7ac7625f2405882b700"
+    },
+    {
+      "manifest": "/tmp/pdos-dingtalk-lifecycle-stage-20261029/manifest.json",
+      "sha256": "8f678136bafbe0f4406a5c33644016e42bf8d1f916e1b0a20da27260bb643403"
+    }
+  ],
+  "reported_actual_head": "s0_0842",
+  "formal_migration_number": null,
+  "files": [
+    {
+      "path": "pdos-next/server/migrations/candidates/dingtalk.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "151be9b052ea878cc6524019a16c556987cd298c81b7ff46a293b11b61d1346c",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/migrations/candidates/dingtalk.py"
+    },
+    {
+      "path": "pdos-next/server/migrations/candidates/dingtalk_lifecycle.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "6ce5a4f53b1b0e83429d24467d002929861761c80ccc2f1726ea2998156049a2",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/migrations/candidates/dingtalk_lifecycle.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "mode": "modify",
+      "base_sha256": "f7915895dd02bf98e9e25354ad6cbde3ea395691667dcfc3d698da700592cd28",
+      "staged_sha256": "546d15d22e0b134d36ee9a8d5b42bdb6416b84703ccf3cca061dc11d733ada13",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/agent_kernel/execution.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "mode": "modify",
+      "base_sha256": "6a8c20bdf51d0bcb129ffaf7aa659bf032189007ed928b53348e47af5b4babb2",
+      "staged_sha256": "44ead88b494bbc5ef43effbd59256b1a727e222677e0212dc44c6928a391eacd",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/host.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/agent_kernel/host.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "mode": "modify",
+      "base_sha256": "981dd6e029579555490f528fd8299e03c922efe7ba8f061886b52c8b9319f1b9",
+      "staged_sha256": "e0d0a9ab74111848cc48118b74e3c5680a6b4722a82d7d2e794ddff91f69b5a9",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/agent_kernel/persistence.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/agent_kernel/persistence.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/api.py",
+      "mode": "modify",
+      "base_sha256": "71d834ed027c845cc70dbee1862e29177069fce3368ddbb5c1f99b838549fd99",
+      "staged_sha256": "59620ce6f89815d806bd6aecc23fef06d5f71c707340c933b2717511ee4d5191",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/api.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/api.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/__init__.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "1f6e415b48387b6a349528982ecb28893a4fa8fabd11e90ba8c93c535db372c7",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/__init__.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/accounts.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "400d060b763a08e662b95a7004418a58f522724f5bef35ffaa228dc6b2694ede",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/accounts.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/admission.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "a653f8ee8ad8c76b3bba710d101815726c9fb8095b0abf3f4d6d67509808c2d1",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/admission.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/api.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "cd40a6d1b32fd3e44da41569c08923284362a18ad683f12b738775f3d9fb72ab",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/api.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/graph.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "21fc9cdc139a26fef97f8c5fa44d8ccab214c7658dbff4d109f5a50a60e7f290",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/graph.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/guards.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "776b6e3f931e56d3b180d38aa0f40a5c46a547f42fec05182b4048e42142bf94",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/guards.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/lifecycle.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "f6ab51a7e909c8581f1d617268953f0ac54d8392780efc76de77947bc2461468",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/lifecycle.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/models.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "835cf40cbc415c811e025d325d6c573b1d3cc67597fc4c3f37f64d119caae336",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/models.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/official.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "492430f57c7f66209175f9d88d16b6b6f4b40150abfea27cb1913759e56677b1",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/official.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/ports.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "767eda6d47120d4b1739fd0b69f3a05be45a8b89e352a765da8d1f335efc6ae0",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/ports.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/projection.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "aac01711db51c8f9a8f24aeb262a11481507331a936759054df9ea4f83c4842c",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/projection.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/runtime.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "c73537c764f2b3d7ef06c98053db38b4a48b5bd817dd803ff706b44284f255fc",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/runtime.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/schemas.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "3673e81b1ac1c0d8f53fdb999986fbb93a2d03702270a02701f83294e6cb6b25",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/schemas.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/settings.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "823920443bb7655bd43c1bd64778d036fd1c4badbdc488c246fdd9fc14bebe83",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/settings.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/synthetic.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "892fcb7d4ab3c0834c87751b0d930fcb062b6cd25f401e0f0a177521402cb259",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/synthetic.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/dingtalk/workflow.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "ed46e180dea403cc4d7934d2936edea38d83e46e96071382aab2dfef25c51d68",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/dingtalk/workflow.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/lifecycle_access.py",
+      "mode": "modify",
+      "base_sha256": "424c1114d90d30c16e29954e4ac722682fea3fb87933a5e83e8b74ff1b28bb3a",
+      "staged_sha256": "1cee782c17428b55aeb62aea60a4e2f2d864d5346f378eab904290b7dbfc2807",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/lifecycle_access.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/lifecycle_access.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/lifecycle_catalog.py",
+      "mode": "modify",
+      "base_sha256": "f470501e6068fa748d31036ae1d06148559ac262ed12617bbb97abd8aad86171",
+      "staged_sha256": "da6c121879ebd7c64a067414f4ce912577fe295fe8c2db3ca0f455d180e08880",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/lifecycle_catalog.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/lifecycle_catalog.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/models.py",
+      "mode": "modify",
+      "base_sha256": "c7cc18587dadbd4265f548b62b14330f9d3bf953ee2f13ca568cb37a825cdc81",
+      "staged_sha256": "43d294ab18af26d427fcfa171c69309b2058a8f718d918a910a5ffce5cb5b2ea",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/models.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/models.py"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/workflows/worker.py",
+      "mode": "modify",
+      "base_sha256": "a49944e2d765baac15194b8c43dd256aa8f17f0f09a8dff5d66029a183934be1",
+      "staged_sha256": "eaffa57043415a539767d3234d85f3b37b1cb13cdcc27b9baba111a928d164fb",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/server/pdos_next/workflows/worker.py",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/pdos_next/workflows/worker.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_channel.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "3053ec5f0719d6aec339584dbaaf81ef2c33f3294647a78adb1c0c2e950aab87",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_channel.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_channel_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "d372961b0735b3aae5fe5aa42216582412d902b410c6c7d1ccd68d02d8e0410e",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_channel_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_channel_temporal_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "a4065481ec62fd4dff2d5d65554bf0abc0ebcd8e1a462626bdfadbeb8f230318",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_channel_temporal_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_integration_proposal.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "58c1a132d62c1f7c12f7a7d5b78b0fb6cc47a0e540c51abcf32edf82183bda3d",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_integration_proposal.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_lifecycle.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "2005910ee1f3b1105800357565ec72775a86acc1bf3ad8d561bec9886a40a975",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_lifecycle.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_official.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "4924c44e1228046fef521bcf91cdc701fff262504737fd60fc46881a07dbb191",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_official.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_official_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "f5422065332e11c98803ba8eb80f88a948ec29730c8b768b4dd4bba3889ea572",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_official_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_official_temporal_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "8fd8c1e30ba1cadac07620d7e091031ee4952ff3d49050e07fc9c26629662dc5",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_official_temporal_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_retention_pg.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "b1305ca17bd05139f0b53e23783d34bd428e6f7bf1e86007bde06e190f4b9761",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_retention_pg.py"
+    },
+    {
+      "path": "pdos-next/server/tests/dingtalk/test_retention_proposal.py",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "3fb33434c0214a7e9b4401666794d320645277afa03d546fcfeee83c51cfa004",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/server/tests/dingtalk/test_retention_proposal.py"
+    },
+    {
+      "path": "pdos-next/web/src/app/api/[...path]/route.ts",
+      "mode": "modify",
+      "base_sha256": "101f3c58fc7c7424580b62d4207c9eb428472473a1e8a3575d0f9843a9655037",
+      "staged_sha256": "39a36ab5b06de26270df39c628e4eb6f4d138be3510beb8545595a948e9d4ed7",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/web/src/app/api/[...path]/route.ts",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/app/api/[...path]/route.ts"
+    },
+    {
+      "path": "pdos-next/web/src/app/dingtalk/runs/[runId]/page.tsx",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "bd3437d31fbf475c38fddd0eb5e01523abfad96ddc23e17541a9cb9ddd7b0bc8",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/app/dingtalk/runs/[runId]/page.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/app-shell.tsx",
+      "mode": "modify",
+      "base_sha256": "6de64f2360eb34e3d788c1770313f8d0366e8f50552f82509c256b84fdbae5a8",
+      "staged_sha256": "f7d052254e29dd6b25b3907e28edcfbaecce2edf96cbb0c2829e1b8be75efa26",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/web/src/components/app-shell.tsx",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/components/app-shell.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/dingtalk-settings.test.mjs",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "b6f607dfa8fba2df64a08207c88568324336d7f5c1de5a384175a54ca03a945f",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/components/dingtalk-settings.test.mjs"
+    },
+    {
+      "path": "pdos-next/web/src/components/dingtalk-settings.tsx",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "d1b64f1269915e71caf6ab61439bb26819ad95b715df81c96933c478329dee6e",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/components/dingtalk-settings.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/components/platform-settings.tsx",
+      "mode": "modify",
+      "base_sha256": "48b2acca3b77a3d5ffbf8ad744e2824e6f00e5de3c2140a59ebd75035de9e8e3",
+      "staged_sha256": "1c4fe2198b1d98696acfef577c897a7618bd498f21885dad47d88e617234c7e0",
+      "base_path": "/tmp/pdos-dingtalk-integration-stage-20261029/base/pdos-next/web/src/components/platform-settings.tsx",
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/components/platform-settings.tsx"
+    },
+    {
+      "path": "pdos-next/web/src/lib/dingtalk-proxy.test.mjs",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "628ff203759081151b2f6b4274d7e1f0d1cee3c090f0cf7ec0bf6bc99d8da300",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/lib/dingtalk-proxy.test.mjs"
+    },
+    {
+      "path": "pdos-next/web/src/lib/dingtalk-proxy.ts",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "eb777661619d6161a21dd8eddcbe1544ca5d4edc817014dbf3d4a60c97752ec9",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/lib/dingtalk-proxy.ts"
+    },
+    {
+      "path": "pdos-next/web/src/lib/dingtalk.test.mjs",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "16e7b44efdd5efe1a644e66a7c2742cc31dafba6517b05175b7eef5ed22a7544",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/lib/dingtalk.test.mjs"
+    },
+    {
+      "path": "pdos-next/web/src/lib/dingtalk.ts",
+      "mode": "new",
+      "base_sha256": null,
+      "staged_sha256": "550ecf2169c00c4f3bde91554df9d6f018f96f4e5d7b00f32e9edc7f10b4241f",
+      "base_path": null,
+      "staged_path": "/tmp/pdos-dingtalk-integration-stage-20261029/pdos-next/web/src/lib/dingtalk.ts"
+    }
+  ],
+  "files_count": 46,
+  "new_files": 35,
+  "modified_files": 11,
+  "candidate_digest_sha256": "77afb2874b2f47475b8023e4ce72135a70a96e0240f017c48b16e3a32a553c35",
+  "review_artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "4f2b2d661c5a5d9d173384cdc685a9797b877b06bc25ad4e117b9bac6a8e7cb5"
+    },
+    {
+      "path": "DDL.md",
+      "sha256": "b5801bce19362b2cb9bd76d089d9a19423a41aade514742781025d60b49e4cda"
+    },
+    {
+      "path": "TABLES.md",
+      "sha256": "490388591c10b258bcd702c4f9af558c0ad57153a8d6fc0b68b044000b3b202e"
+    },
+    {
+      "path": "lifecycle-columns.json",
+      "sha256": "98faef0882d3bad829098b527196657d84f07f04a37ff54dc6b0c09a2e0e16ec"
+    },
+    {
+      "path": "owner-policy-static-summary.json",
+      "sha256": "8cce167812268f7f36f4405c15bbf43b16a11a4e7391f6db9f4fc497e46c0884"
+    },
+    {
+      "path": "PG-PLAN.md",
+      "sha256": "24e3aa349b19224c0e51517233b0d4b7e6cebcfcb10de0e969384927515061c1"
+    },
+    {
+      "path": "pg-temporal-nodeids.json",
+      "sha256": "2ba7e4244d3f19c4f66e078adb25a7457f0a23912c4352133017618955efeba5"
+    },
+    {
+      "path": "merge-decisions.json",
+      "sha256": "2e81ff7f8f26e58d41220302ad47919d64dda8e02c3c3a69408377ffa1662af8"
+    },
+    {
+      "path": "review/alembic-wrapper.py.template",
+      "sha256": "a3b486e37474b7302e4c211146248bf3d05e8c88221c6abac628393312f3e8e5"
+    },
+    {
+      "path": "replay.py",
+      "sha256": "09a77e1d85f83fba45a3ddf3f4d2d81afdbd33dd985e966c646bcd215038a22c"
+    },
+    {
+      "path": "integration.patch",
+      "sha256": "f9b49af935e82b5ae4378f849d15007bc1b82e61314ab8f95c4116898978b818"
+    },
+    {
+      "path": "sql/01-dingtalk-base-up.sql",
+      "sha256": "bc038fdd91b5964642f94538cce58c3821bb1f77794cb2c162f54446383bae92"
+    },
+    {
+      "path": "sql/02-delivery-lifecycle-up.sql",
+      "sha256": "09032ff12fef7f8d0d471f16903c3f13c498e8b4875b18d8e0a3a3735fd33130"
+    },
+    {
+      "path": "sql/03-delivery-lifecycle-down.sql",
+      "sha256": "8f7068ecfa5a007d5b27acaf8bc855b4d9503e39bf4ec739dbe7331fc15fd4b1"
+    },
+    {
+      "path": "sql/04-dingtalk-base-down.sql",
+      "sha256": "5c0b26302597fe884c5f42ae543e7a883794ec07ece873bf0bbec4d762cbdd4f"
+    },
+    {
+      "path": "sql/combined-down.draft.sql",
+      "sha256": "4fa7fc89bb9aaafaac00934b99468a6d0452acfd3efc6df7a324527f48fb49f5"
+    },
+    {
+      "path": "sql/combined-up.draft.sql",
+      "sha256": "f6d1e837e98e441851b81f29afb15113c58eef2c4df9c2532a695de4b836d39a"
+    },
+    {
+      "path": "evidence/native-function-pins.json",
+      "sha256": "438b1daff21b5d8d2d8f593cb38e64aa6a924cf68ddbc9053b06111d09c98239"
+    },
+    {
+      "path": "evidence/sql-assembly.json",
+      "sha256": "61bf9cf5da68f132ed70e190f0bccda2a70c61ff832e607a8b083f124a877908"
+    },
+    {
+      "path": "evidence/sql-columns-final.json",
+      "sha256": "437cbfd4821092cba99e5a1ba33a32b0cb252b458f57c5214608b8be6eda78b2"
+    },
+    {
+      "path": "evidence/validation-final.json",
+      "sha256": "44f0a0483ff8cbb1892c3c487a35453fe2d0f4d1f18c0b4c074c597e949ae6d9"
+    },
+    {
+      "path": "evidence/backend-final.txt",
+      "sha256": "0a057971c071a23a7af6231c98946b2ec989017699983f8b5663fd2a5372aa8f"
+    },
+    {
+      "path": "evidence/frontend-final.txt",
+      "sha256": "0d8e7ea89fee7dac1b7714138f7d469604329505207191ff884510ae910c5413"
+    },
+    {
+      "path": "evidence/ruff-final.txt",
+      "sha256": "fc594223e365217e0765fface1e94fb8d3014b61a43b7c23bcf431be09d02cc5"
+    },
+    {
+      "path": "evidence/tsc-run2.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/eslint-final.txt",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "evidence/pg-temporal-final-collect.txt",
+      "sha256": "442805864859f5cd1bbb0e3960a8fbc232139232e9f1fa38bb9e3aef3cab1b94"
+    },
+    {
+      "path": "evidence/replay-final.json",
+      "sha256": "5ae67c3d811ca117dbb8002bcb12be1dffc7add67f99a26915462efc76120e9c"
+    }
+  ],
+  "validation": {
+    "backend_pure_unique": 89,
+    "backend_g_pure_unique": 74,
+    "backend_existing_graph_pure": 15,
+    "frontend_unique": 298,
+    "frontend_g_unique": 19,
+    "frontend_existing_affected_unique": 279,
+    "python_delivery_ast_ruff": 36,
+    "frontend_eslint_delivery_files": 10,
+    "typescript_noemit_exit_code": 0,
+    "pg_temporal_collect_only": 13,
+    "database_accessed": false,
+    "temporal_executed": false,
+    "real_model_or_embedding": false,
+    "egress_executed": false,
+    "build_executed": false,
+    "live_modified": false,
+    "formal_migration_number": null
+  },
+  "SQL_sequence": {
+    "upgrade": [
+      "administrative preflight/new-role-absence/ordinary-owner old-pin check",
+      "admin BASE_SQL",
+      "admin TRANSFER_TABLES_SQL",
+      "ordinary_owner LIFECYCLE_UP_SQL",
+      "SET LOCAL ROLE NONE"
+    ],
+    "downgrade": [
+      "admin EMPTY_HISTORY_SQL (locks six tables and rejects any real row)",
+      "ordinary_owner require new NATIVE_FUNCTIONS then LIFECYCLE_DOWN_SQL",
+      "admin BASE_DOWN_SQL (including exact column revokes and role drop)"
+    ],
+    "wrapper": "review/alembic-wrapper.py.template"
+  },
+  "warnings": [
+    "Candidates are not installed or numbered migrations",
+    "Current schemas 839 m3 pins; if future revisions alter them, fail closed and rebase",
+    "PG/Temporal only collected; no actual SQL compile/up/down or DB runtime claim",
+    "Official group membership incomplete: citations blocked",
+    "Official lost processQueryKey: unknown, no resend",
+    "Five control tables NON_CONSUMING; Delivery consuming before and after closure",
+    "Review artifacts are not copied to live by replay.py; root installs formal migration separately"
+  ]
+}

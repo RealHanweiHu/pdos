@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="11" time="45.233" timestamp="2026-10-29T03:27:07.947262-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_embedding_projection_pg" name="test_actual_t1_background_rls_exact_ann_profile_version_and_disable" time="12.533" /><testcase classname="tests.enterprise_search.test_embedding_projection_pg" name="test_actual_started_unknown_is_conservatively_charged_then_native_t1_reconciled" time="5.493" /><testcase classname="tests.enterprise_search.test_embedding_projection_temporal_pg" name="test_confirmed_embedding_committed_batch_recovers_without_provider_reissue" time="4.712" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_current_batch_admission_stops_before_any_provider_call[credential_rotated]" time="2.548" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_current_batch_admission_stops_before_any_provider_call[budget_empty]" time="2.424" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_current_batch_admission_stops_before_any_provider_call[source_withdrawn]" time="2.043" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_provider_failure_or_usage_bounds_keep_exact_original_accounting[unknown_partial_usage]" time="2.606" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_provider_failure_or_usage_bounds_keep_exact_original_accounting[overreported_usage]" time="2.131" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_provider_failure_or_usage_bounds_keep_exact_original_accounting[known_error]" time="2.725" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_metadata_get_and_profile_preview_require_actual_current_human_admin" time="1.126" /><testcase classname="tests.enterprise_search.test_embedding_controls_pg" name="test_customer_originals_are_excluded_until_separately_confirmed" time="6.069"><failure message="AssertionError: assert {'2eafa860-47...cb8cc66b009f'} == {'2eafa860-47...23298db0c497'}&#10;  &#10;  Extra items in the right set:&#10;  'd2566da6-f679-4eb1-b824-23298db0c497'&#10;  Use -v to get more diff">security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...440&gt;, parser=&lt;function parse_original at 0x115d9ad40&gt;), client=&lt;starlette.testclient.TestClient object at 0x14665a6c0&gt;)
+
+    def test_customer_originals_are_excluded_until_separately_confirmed(security_work):
+        setup = security_work.setup
+        internal = register(setup, "Synthetic internal", "SYNTHETIC_INTERNAL_ONLY")
+        customer = parsed(security_work, uploaded(security_work, content=b"SYNTHETIC_CUSTOMER_ONLY\n"))
+        for source in (internal, customer):
+            index(setup, source)
+        provider, ports = ports_for(setup)
+        receipt, preview = save_profile(setup, ports, command_for(setup))
+        assert preview["review"]["expected_sources"] == 1
+        _, plan = execute_saved(setup, ports, receipt)
+        with Session(setup.admin) as session:
+            from pdos_next.enterprise_search.embedding_models import EmbeddingBatch
+    
+            batch = session.get(EmbeddingBatch, UUID(plan["batches"][0]))
+            assert {row["source_id"] for row in batch.manifest["chunks"]} == {str(internal)}
+        explicit = command_for(setup, budget_revision=1)
+        metadata = explicit["payload"]["metadata"]
+        metadata.update(
+            data_categories=["internal", "customer_original"], include_customer_original=True
+        )
+        receipt, preview = save_profile(setup, ports, explicit)
+        assert preview["review"]["expected_sources"] == 2
+        _, plan = execute_saved(setup, ports, receipt)
+        with Session(setup.admin) as session:
+            batch = session.get(EmbeddingBatch, UUID(plan["batches"][0]))
+&gt;           assert {row["source_id"] for row in batch.manifest["chunks"]} == {
+                str(internal),
+                str(customer),
+            }
+E           AssertionError: assert {'2eafa860-47...cb8cc66b009f'} == {'2eafa860-47...23298db0c497'}
+E             
+E             Extra items in the right set:
+E             'd2566da6-f679-4eb1-b824-23298db0c497'
+E             Use -v to get more diff
+
+tests/enterprise_search/test_embedding_controls_pg.py:158: AssertionError</failure></testcase></testsuite></testsuites>

@@ -1,0 +1,335 @@
+[
+  {
+    "case": "s1",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "s1",
+    "path": "personal/projects/f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "s1",
+    "path": "categories/b24a8a71-981e-49cc-a32c-496641be611d/proposals",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "work",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "work",
+    "path": "personal/projects/c51618c9-5a5e-4fb6-854d-511eab271c1d",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "work",
+    "path": "categories/4005cc53-21fc-4e3b-bb4a-4f9b7179a121/products/5c5b1613-08a1-4ca4-8d47-548f29ea13b1/project-work",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "trial",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "trial",
+    "path": "personal/projects/8f8b24bb-fffd-488e-8cf4-c64042253960",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "trial",
+    "path": "categories/7fcc114e-186a-4372-8f51-c6e5d37b2085/products/a6498265-4437-4e97-811e-6bec2f33c824/builds",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "trial",
+    "path": "categories/7fcc114e-186a-4372-8f51-c6e5d37b2085/products/a6498265-4437-4e97-811e-6bec2f33c824/verification-results",
+    "status": 200,
+    "summary": {
+      "requests": 1,
+      "runs": 11,
+      "captures": 0,
+      "measurements": 0,
+      "projections": 3,
+      "actions": 5,
+      "reference_samples": 2,
+      "report_sources": 0,
+      "next_owners": 3
+    },
+    "error": null
+  },
+  {
+    "case": "trial",
+    "path": "categories/7fcc114e-186a-4372-8f51-c6e5d37b2085/products/a6498265-4437-4e97-811e-6bec2f33c824/verification-handoff",
+    "status": 200,
+    "summary": {
+      "requests": 13,
+      "actual_methods": 2,
+      "method_current_by_pair": 2,
+      "handoffs": 3,
+      "reference_samples": 2,
+      "next_owners": 3,
+      "blockers": 0,
+      "runs": 0
+    },
+    "error": null
+  },
+  {
+    "case": "quality",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "quality",
+    "path": "personal/projects/9c36b6fc-1206-4ad1-8aab-5175fd35e5af",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "quality",
+    "path": "categories/378f7546-7b12-4da4-925e-b1679389d5d9/products/4ea8a2e1-82d6-4b9a-bb18-db94d76c1514/quality",
+    "status": 404,
+    "summary": {},
+    "error": {
+      "code": "NOT_FOUND",
+      "message": "此请求当前无法办理。",
+      "detail": {
+        "reason": "HTTP_404"
+      }
+    }
+  },
+  {
+    "case": "manufacturing",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "manufacturing",
+    "path": "personal/projects/096c8f49-5136-47fc-8d60-a773c70ad9f4",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "manufacturing",
+    "path": "categories/0b1261de-e54b-4520-bd59-45764f4c56f3/products/ac902601-dffe-47a6-a875-5572675c31de/manufacturing-preparations",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "manufacturing",
+    "path": "categories/0b1261de-e54b-4520-bd59-45764f4c56f3/products/ac902601-dffe-47a6-a875-5572675c31de/manufacturing-publications",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "manufacturing",
+    "path": "categories/0b1261de-e54b-4520-bd59-45764f4c56f3/products/ac902601-dffe-47a6-a875-5572675c31de/pilots",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "release",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "release",
+    "path": "personal/projects/2053d8e3-3f53-4355-8638-ebe4ce65d0bd",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "release",
+    "path": "categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/release-packages",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "release",
+    "path": "categories/6fa24f56-6650-4e57-9610-9a875785cb32/products/f45ccec6-58a5-4331-8ce6-cc70b72931ed/external-handoffs",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "exceptions",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "exceptions",
+    "path": "personal/projects/70300502-3f96-4481-8048-9f7e6649640f",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "exceptions",
+    "path": "categories/8f1d2f8c-2087-489c-b0b4-f510f4e4d4d1/products/332526d1-148b-469f-91c8-ad3fea3688f4/release-packages",
+    "status": 422,
+    "summary": {},
+    "error": {
+      "code": "VALIDATION_FAILED",
+      "message": "内容不符合此操作的专用格式。",
+      "detail": {
+        "reason": "INVALID_PAYLOAD"
+      }
+    }
+  },
+  {
+    "case": "field",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "field",
+    "path": "personal/projects/92024f6a-febd-4f3b-869b-82b15639a70e",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "field",
+    "path": "categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/products/815224c5-3d8a-4bce-853e-0c5ba4df7a49/field-feedback",
+    "status": 200,
+    "summary": {
+      "feedbacks": 1
+    },
+    "error": null
+  },
+  {
+    "case": "field",
+    "path": "categories/efcc7f95-0a5b-4c58-a1e3-67764de167eb/products/815224c5-3d8a-4bce-853e-0c5ba4df7a49/change-context",
+    "status": 404,
+    "summary": {},
+    "error": {
+      "code": "NOT_FOUND",
+      "message": "此请求当前无法办理。",
+      "detail": {
+        "reason": "HTTP_404"
+      }
+    }
+  },
+  {
+    "case": "knowledge",
+    "path": "session",
+    "status": 200,
+    "summary": {},
+    "error": null
+  },
+  {
+    "case": "knowledge",
+    "path": "personal/projects/93900873-e806-4c7c-9987-d3643129953f",
+    "status": 200,
+    "summary": {
+      "items": 1
+    },
+    "error": null
+  },
+  {
+    "case": "knowledge",
+    "path": "categories/07af3ded-0804-4264-9cea-b5fec9d2932f/products/3e960e40-918f-4650-81d1-b7658a7ea9f3/experience",
+    "status": 200,
+    "summary": {
+      "projects": 1,
+      "configurations": 2,
+      "candidates": 4,
+      "rules": 1
+    },
+    "error": null
+  }
+]

@@ -240,7 +240,9 @@ def test_actual_graph_appends_only_child_context_and_passes_real_skill_binding_t
     assert context["research_skill"] == binding.context()
     assert call["loaded_skills"] == (binding.skill,)
     assert binding.instruction not in call["system"]
-    assert {tool["name"] for tool in call["tools"]} == {"research.search", "research.read"}
+    assert {tool["name"] for tool in call["tools"]} == {
+        "research.search", "research.read", "result.read",
+    }
     assert "category.knowledge.add" not in json.dumps(context)
     assert all(event["type"] == "research_child" for event in f.host.events)
     assert len(f.store.session.events) == 1

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="79.811" timestamp="2026-10-28T22:03:30.358979-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]" time="78.958"><error message="failed on setup with &quot;AssertionError: {&quot;code&quot;:&quot;FORBIDDEN_SCOPE&quot;,&quot;message&quot;:&quot;当前项目不可用，计划由项目负责人建立。&quot;,&quot;detail&quot;:{&quot;reason&quot;:&quot;FORBIDDEN_SCOPE&quot;}}&#10;assert 403 == 200&#10; +  where 403 = &lt;Response [403 Forbidden]&gt;.status_code&quot;">tests/enterprise_search/test_recovery_pg.py:84: in all_sources
+    demand = compute(person, work.config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_build_demand.py:41: in compute
+    receipt, _ = accepted(setup, build_command(setup, config))
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_project_first_plan.py:86: in accepted
+    assert preview.status_code == 200, preview.text
+E   AssertionError: {"code":"FORBIDDEN_SCOPE","message":"当前项目不可用，计划由项目负责人建立。","detail":{"reason":"FORBIDDEN_SCOPE"}}
+E   assert 403 == 200
+E    +  where 403 = &lt;Response [403 Forbidden]&gt;.status_code</error></testcase></testsuite></testsuites>

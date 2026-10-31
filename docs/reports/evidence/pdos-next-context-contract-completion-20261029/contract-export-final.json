@@ -1,0 +1,9 @@
+{
+  "exit": 0,
+  "database_connections": "forbidden by export engine hook",
+  "changed_contract_files": [],
+  "verified_files": {
+    "openapi.json": "ee7c279256fde263f84c9da644f8929fcca2175188808cf832c8e427cf529bbc",
+    "payloads.schema.json": "1c9638bb71ec9626faa2c96f75a56c0c28da7cf9b0fadcbed6875f51920c73e0"
+  }
+}

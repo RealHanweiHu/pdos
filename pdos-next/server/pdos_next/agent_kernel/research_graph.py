@@ -92,8 +92,17 @@ class ResearchGraph:
                     )
                 return host.model(bound, **kwargs)
 
+            def tool_message(self, bound, spec, value):
+                view = getattr(host, "tool_message", None)
+                return view(bound, spec, value) if callable(view) else value
+
             def read(self, bound, spec, arguments, intent_key, *, source: ReadSource | None = None):
                 self.current(bound)
+                if spec.name == "result.read":
+                    return host.read_result(
+                        bound, spec, arguments, intent_key,
+                        source=source, original_reader=self.read,
+                    )
                 if spec.name == "research.search":
                     data = SearchInput.model_validate(arguments)
 

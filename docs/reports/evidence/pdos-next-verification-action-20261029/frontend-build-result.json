@@ -1,0 +1,16 @@
+{
+  "exit_code": 0,
+  "input_count": 694,
+  "aggregate_sha256": "4866a111a71fcb4deed001921d7645438476816643d8f987e3ade280363d0f0c",
+  "inputs_unchanged": true,
+  "build_dir": "/tmp/pdos-verification-ui-stage-20261029/pdos-next/web/.next",
+  "font_mock": "/tmp/pdos_scope_cached_google_fonts_v2.cjs",
+  "network": "External net.Socket.connect blocked by stage-only NODE_OPTIONS preload; loopback and Unix sockets allowed. Telemetry disabled.",
+  "command": [
+    "node",
+    "node_modules/next/dist/bin/next",
+    "build",
+    "--webpack"
+  ],
+  "elapsed_seconds": 45.73
+}

@@ -1,0 +1,51 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0851",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/similar-history-change-53502-before-0851.dump",
+  "backup_bytes": 106811892,
+  "backup_sha256": "a251d93685ed6838bf1568a80335afa2dd3eefca5397699f9736cf5736b2bd1b",
+  "operations": [
+    {
+      "direction": "upgrade",
+      "head": "s0_0851",
+      "history_counts_and_feedback_bytes_unchanged": true,
+      "all_public_functions_owners_acl_and_body_unchanged": true,
+      "table_owner_acl_forced_rls_and_trigger_unchanged": true,
+      "only_two_existing_feedback_policy_expressions_changed": true,
+      "exact_original_schema_and_policy_restoration": false
+    },
+    {
+      "direction": "downgrade",
+      "head": "s0_0850",
+      "history_counts_and_feedback_bytes_unchanged": true,
+      "all_public_functions_owners_acl_and_body_unchanged": true,
+      "table_owner_acl_forced_rls_and_trigger_unchanged": true,
+      "only_two_existing_feedback_policy_expressions_changed": false,
+      "exact_original_schema_and_policy_restoration": true
+    },
+    {
+      "direction": "upgrade",
+      "head": "s0_0851",
+      "history_counts_and_feedback_bytes_unchanged": true,
+      "all_public_functions_owners_acl_and_body_unchanged": true,
+      "table_owner_acl_forced_rls_and_trigger_unchanged": true,
+      "only_two_existing_feedback_policy_expressions_changed": true,
+      "exact_original_schema_and_policy_restoration": false
+    }
+  ],
+  "counts": {
+    "agent_runs": 5207,
+    "agent_tool_calls": 9926,
+    "action_receipts": 50723,
+    "similar_history_feedback": 6,
+    "category_knowledge_entries": 511,
+    "knowledge_answer_reviews": 46,
+    "knowledge_gap_submissions": 12,
+    "automation_rule_versions": 96,
+    "dingtalk_deliveries": 26,
+    "quality_issue_versions": 742,
+    "change_request_versions": 166
+  },
+  "real_provider_accessed": false
+}

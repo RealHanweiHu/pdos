@@ -1,0 +1,356 @@
+--- a/pdos-next/web/src/components/xiaopai.tsx
++++ b/pdos-next/web/src/components/xiaopai.tsx
+@@ -31,6 +31,7 @@
+ import { browserApi } from "@/lib/browser-api";
+ import type { SourceSelection } from "@/components/pai/source-picker";
+ import styles from "./pai-conversation.module.css";
++import { useAnswerResume } from "./pai/use-answer-resume";
+ import { collapsedAnswerCitations, type AnswerExclusions } from "@/lib/answer-followup";
+ 
+ type Source = { id: string; title: string; revision: number; status: string };
+@@ -96,6 +97,8 @@
+   const [backgroundRun, setBackgroundRun] = useState<string | null>(null);
+   const [questions, setQuestions] = useState<Question[]>([]);
+   const [answers, setAnswers] = useState<Record<string, string>>({});
++  const { pending: resumingAnswers, accepted: resumeAccepted, observe: observeResume, waiting: resumeWaiting, clear: clearResumes } = useAnswerResume();
++  const questionIdentity = useRef<string | null>(null);
+   const [candidates, setCandidates] = useState<Candidate[]>([]);
+   const [eventSequence, setEventSequence] = useState(0);
+   const [adoption, setAdoption] = useState<{ command: unknown; expires_at: string; review: { effect: string } } | null>(null);
+@@ -113,11 +116,11 @@
+   const clearSelection = useCallback(() => {
+     generation.current++; current.current = null; selectedSession.current = null;
+     setEditingMaterial(null); setMaterialDocuments([]); setEditorContexts({}); setMobileView("chat");
+-    setSessionId(null); setSelectedRunId(null); setRun(null); setSkills([]); setQuestions([]); setAnswers({});
++    setSessionId(null); setSelectedRunId(null); setRun(null); setSkills([]); setQuestions([]); setAnswers({}); questionIdentity.current = null;
+     setCandidates([]); setAdoption(null); setRevert(null); setEventSequence(0); setBackgroundRun(null);
+     setSearchPreferences({ ...defaultSearchPreferences });
+   }, []);
+-  const sourceUnavailable = useCallback(() => { clearPaiComposerDrafts(principalId); clearMaterialJournals(principalId, categoryId); setGoal(""); setMaterialDenied(true); setEditingMaterial(null); setMaterialDocuments([]); setEditorContexts({}); setSelected(null); setSourceReadVersion(version => version + 1); clearSelection(); setError("当前来源或运行范围无法核对，已清除旧资料；请重新读取。"); }, [clearSelection, principalId, categoryId, setGoal]);
++  const sourceUnavailable = useCallback(() => { clearResumes(); clearPaiComposerDrafts(principalId); clearMaterialJournals(principalId, categoryId); setGoal(""); setMaterialDenied(true); setEditingMaterial(null); setMaterialDocuments([]); setEditorContexts({}); setSelected(null); setSourceReadVersion(version => version + 1); clearSelection(); setError("当前来源或运行范围无法核对，已清除旧资料；请重新读取。"); }, [clearSelection, clearResumes, principalId, categoryId, setGoal]);
+   const workProducts = useWorkProducts(browserApi, sourceUnavailable);
+   const { load: loadWorkProducts, clear: clearWorkProducts } = workProducts;
+   useEffect(() => {
+@@ -151,7 +154,7 @@
+   useEffect(() => { const alive = mounted, counter = generation; alive.current = true; return () => { alive.current = false; counter.current++; }; }, []);
+   const readRun = useCallback(async (id: string, expectedSessionId?: string) => {
+     const expected = expectedSessionId ?? selectedSession.current;
+-    if (current.current !== id) { setRun(null); setSkills([]); setQuestions([]); setAnswers({}); setCandidates([]); setAdoption(null); setRevert(null); setEventSequence(0); }
++    if (current.current !== id) { questionIdentity.current = null; setRun(null); setSkills([]); setQuestions([]); setAnswers({}); setCandidates([]); setAdoption(null); setRevert(null); setEventSequence(0); }
+     const own = ++generation.current;
+     current.current = id; setSelectedRunId(id);
+     try {
+@@ -178,25 +181,38 @@
+     setAdoption(null);
+     setRevert(null);
+     setMaterialDenied(false);
+-    setQuestions(value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) ? [...events].reverse().find(item => item.event.type === "needs_input")?.event.questions ?? [] : []);
++    const latestInput = [...events].reverse().find(item => item.event.type === "needs_input");
++    const currentQuestions = value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) ? latestInput?.event.questions ?? [] : [];
++    const identity = currentQuestions.length && latestInput ? `${id}:${latestInput.sequence}` : null;
++    if (identity !== questionIdentity.current) { setAnswers({}); questionIdentity.current = identity; }
++    if (resumeWaiting(id)) setError("");
++    if (observeResume(id, value.status, value.reverted, identity)) setNotice("");
++    setQuestions(currentQuestions);
+     } catch (failure) { if (own === generation.current) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setRun(null); setSkills([]); setQuestions([]); setAnswers({}); setCandidates([]); setAdoption(null); setRevert(null); setEventSequence(0); setSelected(null); if ((failure as { status?: number }).status !== 503) setSourceReadVersion(version => version + 1); throw failure; } }
+-  }, [api, proposalId, sourceUnavailable]);
++  }, [api, proposalId, sourceUnavailable, observeResume, resumeWaiting]);
+   useEffect(() => {
+     if (!initialRunId) return;
+     let active = true;
+     void Promise.resolve().then(() => { if (active) { clearSelection(); return readRun(initialRunId).catch(failure => { if (active) setError(failure.message); }); } });
+     return () => { active = false; };
+   }, [initialRunId, readRun, clearSelection]);
+-  useEffect(() => {
+-    if (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run)) return;
++  const resumingRunId = selectedRunId && resumingAnswers[selectedRunId] ? selectedRunId : null;
++  useEffect(() => {
++    const id = run?.run_id ?? resumingRunId;
++    if (!id || !resumingRunId && (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run))) return;
++    let reading = false;
+     const timer = setInterval(() => {
+-      if (!writeLock.current) void readRun(run.run_id).catch(failure => setError(failure.message));
++      if (writeLock.current || reading) return;
++      reading = true;
++      void readRun(id).catch(failure => setError(failure.message)).finally(() => { reading = false; });
+     }, 3000);
+     return () => clearInterval(timer);
+-  }, [run, readRun]);
++  }, [run, resumingRunId, readRun]);
+ 
+   async function send(value: Pending) {
+-    if (writeLock.current) return;
++    const answeredRunId = current.current && value.path === `v1/agent-runs/${current.current}/answers` ? current.current : null;
++    const answeredInput = answeredRunId ? questionIdentity.current : null;
++    if (writeLock.current || answeredRunId && (!answeredInput || resumeWaiting(answeredRunId))) return;
+     writeLock.current = true;
+     request.current = value; setPending(value); setBusy(true); setError(""); setNotice("");
+     generation.current++;
+@@ -206,17 +222,22 @@
+       try { localStorage.setItem(startStorageKey, JSON.stringify(value)); } catch { /* In-memory original remains available. */ }
+     }
+     try {
+-      const result = await api<{ run_id: string; continued_from_id?: string | null; execution_state?: string; workflow_cancel_pending?: boolean }>(value.path, value.body);
++      const result = await api<{ run_id: string; continued_from_id?: string | null; execution_state?: string; workflow_cancel_pending?: boolean; status?: string; answer_ref?: string }>(value.path, value.body);
+       if (!mounted.current) return;
+       if (value.path === "v1/agent-runs" && !result.run_id) throw new Error("运行受理结果尚未核对，请重试原请求。");
+       const started = value.body as { continue_from_run_id?: string; verification_action?: unknown };
+       if (value.path === "v1/agent-runs" && started.verification_action && result.continued_from_id !== started.continue_from_run_id) throw new Error("后续受理结果尚未核对，请保留原请求。");
++      if (answeredRunId) {
++        if (result.run_id !== answeredRunId || result.status !== "resume_requested" || !result.answer_ref) throw new Error("答复受理结果尚未核对，请保留原请求重试。");
++        resumeAccepted(answeredRunId, answeredInput!);
++      }
+       accepted = true;
+       request.current = null; setPending(null);
+       if (value.path === "v1/agent-runs") { try { localStorage.removeItem(startStorageKey); } catch { /* Optional storage. */ } }
+       setNotice(result.execution_state === "durable_runtime_unavailable" ? "运行已保存，持久执行服务暂不可用。恢复后会继续派送。" : result.workflow_cancel_pending ? "取消已记录，正在通知执行服务。" : "");
+       if (value.path === "v1/agent-runs") { setGoal(""); setSelected(null); setRequestedSkills([]); setBackgroundRun(null); onComposeChange(false); }
+-      setAnswers({});
++      if (answeredRunId) setNotice("答复已提交，正在等待继续执行；无需重复答复。");
++      else setAnswers({});
+       await readRun(result.run_id ?? current.current!);
+       setHistoryVersion(value => value + 1);
+     } catch (failure) {
+@@ -249,7 +270,7 @@
+   const runScope = `${categoryScope}${run?.project_id ? ` · ${run.project_id === projectId ? projectName || "当前项目" : "关联项目"}` : ""}${run?.proposal_id ? ` · ${run.proposal_id === proposalId ? proposalTitle || "当前提案" : "运行绑定提案"}` : ""}${run?.product_id ? " · 运行绑定型号" : ""}`;
+   const runContextHref = run?.proposal_id ? `/categories/${categoryId}/proposals/${run.proposal_id}` : run?.project_id ? `/?area=cockpit&category=${categoryId}&project=${run.project_id}` : `/?area=category&category=${categoryId}`;
+   const runGoal = run?.goal;
+-  const active = !!run && !run.reverted && ["queued", "running"].includes(run.status);
++  const active = !!run && !run.reverted && (["queued", "running"].includes(run.status) || resumingRunId === run.run_id);
+ 
+   return <section ref={panel} className={styles.workspace} data-history-open={historyOpen} data-full-page={fullPage} data-mobile-view={mobileView} data-editor-open={!!(editingMaterial || workProducts.openProduct)} aria-label="小Pai工作区">
+     {!materialDenied && materialDocuments.map(candidate => { const Editor = ["proposal.create", "proposal.item.patch"].includes(candidate.operation ?? "") ? PaiProposalWorkspace : PaiMaterialWorkspace; return <Editor key={candidate.event_id} candidate={candidate} categoryId={categoryId} principalId={principalId} open={editingMaterial === candidate.event_id} onClose={() => { setEditingMaterial(null); setMobileView("chat"); }} onMobileChat={() => setMobileView("chat")} onContextChange={updateEditorContext} onUnavailable={sourceUnavailable} onSaved={() => { setMaterialVersion(value => value + 1); window.dispatchEvent(new CustomEvent("pdos:category-material-saved", { detail: { categoryId } })); }} />; })}
+@@ -288,13 +309,13 @@
+       {!run.reverted && run.status !== "cancelled" && candidates.map(candidate => <section key={candidate.event_id} className="rounded-lg border p-3 space-y-3"><h3 className="font-medium">待你确认的来源事实</h3><p>{candidate.command.payload.statement}</p><blockquote className="text-sm text-muted-foreground">{candidate.command.payload.quote}</blockquote><Button variant="outline" disabled={busy || !!pending} onClick={() => void read(async () => { setAdoption(await api("v1/commands/preview", candidate.command)); })}>核对并预览此事实</Button></section>)}
+       {adoption && <section className="rounded-lg border p-3 space-y-3"><p>{adoption.review.effect}</p><Button disabled={busy || !!pending || !proofClockCurrent("T1", adoption.expires_at)} onClick={() => void send({ path: "v1/commands", body: adoption.command })}>确认登记此事实</Button></section>}
+       {!run.reconciliation && <RunCandidates api={api} categoryName={categoryName} materialContexts={editorContexts} editingMaterial={editingMaterial} categoryId={categoryId} principalId={principalId} runId={run.run_id} eventSequence={eventSequence + materialVersion} disabled={busy || !!pending} onUnavailable={sourceUnavailable} onEditMaterial={openMaterial} />}
+-      {questions.length > 0 && <form onSubmit={event => { event.preventDefault(); void send({ path: `v1/agent-runs/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); }}><fieldset disabled={busy || !!pending}>
++      {questions.length > 0 && <form onSubmit={event => { event.preventDefault(); void send({ path: `v1/agent-runs/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); }}><fieldset disabled={busy || !!pending || !!resumingRunId}>
+         {questions.map(question => <div key={question.id} className="mb-4"><label htmlFor={`pai-${question.id}`}>{question.question}</label><p className="subtle mb-2">{question.why}</p>{question.allow_free_text ? <><input id={`pai-${question.id}`} list={`pai-options-${question.id}`} required value={answers[question.id] ?? ""} onChange={event => setAnswers(old => ({ ...old, [question.id]: event.target.value }))} /><datalist id={`pai-options-${question.id}`}>{question.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</datalist></> : <select id={`pai-${question.id}`} required value={answers[question.id] ?? ""} onChange={event => setAnswers(old => ({ ...old, [question.id]: event.target.value }))}><option value="">请选择</option>{question.options.map(option => <option key={option.value} value={option.value}>{option.label}</option>)}</select>}</div>)}
+         <Button>提交答复并继续</Button>
+       </fieldset></form>}
+ 
+ 
+-      <PaiReplyDetails key={`details:${run.run_id}`} scope={runScope} skills={skills} contextHref={runContextHref}><div className={styles.recordDetails}><div className={styles.runHeader}><span>{run.reverted ? "已整次撤回" : reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? "状态待核对"}</span><Button size="sm" variant="ghost" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>核对当前状态</Button></div>{run.error_code && <p>错误代码：{run.error_code}</p>}
++      <PaiReplyDetails key={`details:${run.run_id}`} scope={runScope} skills={skills} contextHref={runContextHref}><div className={styles.recordDetails}><div className={styles.runHeader}><span>{run.reverted ? "已整次撤回" : reconciliationNeeded(run) ? "原调用结果待核对" : resumingRunId === run.run_id ? "答复已提交，等待继续执行" : labels[run.status] ?? "状态待核对"}</span><Button size="sm" variant="ghost" disabled={busy} onClick={() => void read(() => readRun(run.run_id))}>核对当前状态</Button></div>{run.error_code && <p>错误代码：{run.error_code}</p>}
+       {!run.reverted && ["queued", "running", "waiting_input"].includes(run.status) && <details><summary className="cursor-pointer text-sm">取消此次运行</summary><p className="subtle my-3">停止后续动作，已经形成的结果和回执保留。</p><Button variant="outline" disabled={busy || !!pending} onClick={() => void send({ path: `v1/agent-runs/${run.run_id}/cancel`, body: {} })}>确认取消后续执行</Button></details>}
+       <details className={styles.runDetails}><summary>引用资料</summary><p className={styles.runId}>运行 {run.run_id}</p><RunSourceBindings api={api} scope={{ principalId, categoryId, productId: run.product_id, proposalId: run.proposal_id ?? null }} runId={run.run_id} sessionId={run.session_id} onUnavailable={sourceUnavailable} /></details>
+       {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" />}
+--- a/pdos-next/web/src/components/category-create/personal-xiaopai.tsx
++++ b/pdos-next/web/src/components/category-create/personal-xiaopai.tsx
+@@ -1,4 +1,5 @@
+ "use client";
++import { useAnswerResume } from "../pai/use-answer-resume";
+ import { collapsedAnswerCitations, type AnswerExclusions } from "@/lib/answer-followup";
+ 
+ import { RunFeedback } from "@/components/pai/run-feedback";
+@@ -113,6 +114,7 @@
+   const [adoptions, setAdoptions] = useState<{ proof: CategoryAdopted; category: CreatedCategory }[]>([]);
+   const [questions, setQuestions] = useState<Question[]>([]);
+   const [answers, setAnswers] = useState<Record<string, string>>({});
++  const { pending: resumingAnswers, accepted: resumeAccepted, observe: observeResume, waiting: resumeWaiting, clear: clearResumes } = useAnswerResume();
+   const [busy, setBusy] = useState(false);
+   const [pending, setPending] = useState<Pending | null>(null);
+   const [error, setError] = useState("");
+@@ -141,10 +143,10 @@
+     setQuestionDialog(false); questionIdentity.current = null;
+   }, []);
+   const sourceUnavailable = useCallback(() => {
+-    clearPaiComposerDrafts(principalId); setGoal(""); request.current = null; setPending(null);
++    clearResumes(); clearPaiComposerDrafts(principalId); setGoal(""); request.current = null; setPending(null);
+     setConfirmationDrafts({}); clearSelection(); setBusy(false);
+     setError("当前来源或运行范围无法核对，已清除旧资料；请重新读取。");
+-  }, [clearSelection, principalId, setGoal]);
++  }, [clearSelection, clearResumes, principalId, setGoal]);
+   const workProducts = useWorkProducts(api, sourceUnavailable);
+   const { load: loadWorkProducts, clear: clearWorkProducts } = workProducts;
+   useEffect(() => {
+@@ -190,6 +192,8 @@
+       const currentQuestions = value.status === "waiting_input" && !value.reverted && !reconciliationNeeded(value) && latestInput?.event.type === "needs_input"
+         ? latestInput.event.questions ?? [] : [];
+       const identity = currentQuestions.length && latestInput ? `${id}:${latestInput.sequence}` : null;
++      if (resumeWaiting(id)) setError("");
++      if (observeResume(id, value.status, value.reverted, identity)) setNotice("");
+       if (identity !== questionIdentity.current) {
+         setAnswers({});
+         setQuestionDialog(!!identity && mode === "live" && background.current !== id && !seenInterrupts.current.has(identity) && panelVisible(panel.current));
+@@ -203,7 +207,7 @@
+       setQuestions(currentQuestions);
+       return value;
+     } catch (failure) { if (generation.current === own) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setMaterial(null); materialDialog.current?.close(); setSavedCategory(null); savedDialog.current?.close(); setRun(null); setSkills([]); setCandidates([]); setAdoptions([]); setQuestions([]); setAnswers({}); setQuestionDialog(false); questionIdentity.current = null; throw failure; } }
+-  }, [api, sourceUnavailable]);
++  }, [api, sourceUnavailable, observeResume, resumeWaiting]);
+ 
+   useEffect(() => {
+     const hide = () => { if (document.visibilityState !== "visible") setQuestionDialog(false); };
+@@ -220,17 +224,19 @@
+     });
+     return () => { active = false; };
+   }, [initialRunId, readRun, clearSelection]);
+-  useEffect(() => {
+-    if (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run)) return;
++  const resumingRunId = selectedRunId && resumingAnswers[selectedRunId] ? selectedRunId : null;
++  useEffect(() => {
++    const id = run?.run_id ?? resumingRunId;
++    if (!id || !resumingRunId && (!run || run.reverted || !["queued", "running"].includes(run.status) && !reconciliationNeeded(run))) return;
+     let reading = false;
+     const timer = setInterval(() => {
+       if (lock.current || reading) return;
+       reading = true;
+-      void readRun(run.run_id, "live").catch(failure => { setError(failure.message); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); })
++      void readRun(id, "live").catch(failure => { setError(failure.message); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); })
+         .finally(() => { reading = false; });
+     }, 3000);
+     return () => clearInterval(timer);
+-  }, [run, readRun]);
++  }, [run, resumingRunId, readRun]);
+ 
+   async function read(action: () => Promise<unknown>, clearRun = false) {
+     if (lock.current) return;
+@@ -241,30 +247,38 @@
+     finally { lock.current = false; setBusy(false); }
+   }
+   async function send(value: Pending) {
+-    if (lock.current) return;
++    const answeredRunId = current.current && value.path === `${root}/${current.current}/answers` ? current.current : null;
++    const answeredInput = answeredRunId ? questionIdentity.current : null;
++    if (lock.current || answeredRunId && (!answeredInput || resumeWaiting(answeredRunId))) return;
+     lock.current = true; generation.current++; setBusy(true); setError(""); setNotice("");
+     request.current = value; setPending(value);
+     setQuestionDialog(false);
+     if (value.path === root) { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); }
+     try {
+-      const result = await api<{ run_id: string; execution_state?: string }>(value.path, value.body);
++      const result = await api<{ run_id: string; execution_state?: string; status?: string; answer_ref?: string }>(value.path, value.body);
+       if (!mounted.current) return;
+-      request.current = null; setPending(null); setAnswers({});
++      if (answeredRunId) {
++        if (result.run_id !== answeredRunId || result.status !== "resume_requested" || !result.answer_ref) throw new Error("答复受理结果尚未核对，请保留原请求重试。");
++        resumeAccepted(answeredRunId, answeredInput!);
++      }
++      request.current = null; setPending(null);
++      if (!answeredRunId) setAnswers({});
+       setNotice(result.execution_state === "durable_runtime_unavailable"
+         ? "运行已保存，持久执行服务暂不可用，尚未完成模型执行。" : "");
++      if (answeredRunId) setNotice("答复已提交，正在等待继续执行；无需重复答复。");
+       if (value.path === root) { setGoal(""); setRequestedSkills([]); }
+-      setRun(null); setCandidates([]); setAdoptions([]); setQuestions([]);
++      if (!answeredRunId) setRun(null); setCandidates([]); setAdoptions([]); setQuestions([]);
+       await readRun(result.run_id, "live");
+       setHistoryVersion(value => value + 1);
+     } catch (failure) { if (mounted.current) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setError(failure instanceof Error ? failure.message : "请求未完成。"); } }
+     finally { lock.current = false; setBusy(false); }
+   }
+-  const answerProps = { questions, answers, disabled: busy || !!pending,
++  const answerProps = { questions, answers, disabled: busy || !!pending || !!resumingRunId,
+     onAnswer: (id: string, value: string) => setAnswers(old => ({ ...old, [id]: value })),
+-    onSubmit: () => { if (run && !pending) void send({ path: `${root}/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); },
++    onSubmit: () => { if (run && !pending && !resumeWaiting(run.run_id)) void send({ path: `${root}/${run.run_id}/answers`, body: { answers, idempotency_key: crypto.randomUUID() } }); },
+   };
+   const runGoal = run?.goal;
+-  const active = !!run && !run.reverted && ["queued", "running"].includes(run.status);
++  const active = !!run && !run.reverted && (["queued", "running"].includes(run.status) || resumingRunId === run.run_id);
+   return <section ref={panel} className={styles.workspace} data-history-open={historyOpen} data-full-page={fullPage} data-mobile-view={mobileView} data-editor-open={!!(savedCategory || material || workProducts.openProduct)} aria-label="小Pai工作区">
+     {workProducts.openProduct && <WorkProductEditor key={workProducts.openProduct.root_id} product={workProducts.openProduct} original={workProducts.original} open onClose={() => { workProducts.close(); setMobileView("chat"); }} onSaved={workProducts.saved} onReload={workProducts.reload} onUnavailable={sourceUnavailable} onMobileChat={() => setMobileView("chat")} api={api} />}
+ 
+@@ -302,7 +316,7 @@
+       {!run.reverted && run.status === "waiting_input" && <Button variant="ghost" disabled={busy || !!pending}
+         onClick={() => void send({ path: `${root}/${run.run_id}/cancel`, body: {} })}>取消后续执行</Button>}
+       {questions.length > 0 && <div ref={answerAnchor} tabIndex={-1}><ClarificationForm {...answerProps} prefix="inline" /></div>}
+-      <PaiReplyDetails key={`details:${run.run_id}`} scope="通用对话" skills={skills}><div className={styles.recordDetails}><h3 className="text-xs font-semibold">{reconciliationNeeded(run) ? "原调用结果待核对" : labels[run.status] ?? "状态待核对"}{run.reverted ? " · 已撤回" : ""}</h3>{run.error_code && <p>错误代码：{run.error_code}</p>}
++      <PaiReplyDetails key={`details:${run.run_id}`} scope="通用对话" skills={skills}><div className={styles.recordDetails}><h3 className="text-xs font-semibold">{reconciliationNeeded(run) ? "原调用结果待核对" : resumingRunId === run.run_id ? "答复已提交，等待继续执行" : labels[run.status] ?? "状态待核对"}{run.reverted ? " · 已撤回" : ""}</h3>{run.error_code && <p>错误代码：{run.error_code}</p>}
+       <p className={styles.runId}>运行 {run.run_id}</p>
+       {run.process && <RunProcess key={`process:${run.run_id}`} value={run.process} api={api} root={root} />}
+       <RunFeedback key={`feedback:${run.run_id}`} api={api} root={root} runId={run.run_id} />
+--- /dev/null
++++ b/pdos-next/web/src/components/pai/use-answer-resume.ts
+@@ -0,0 +1,22 @@
++"use client";
++
++import { useCallback, useRef, useState } from "react";
++
++/** A 202 acknowledges an input; the durable Run can still expose its old interrupt. */
++export function useAnswerResume() {
++  const [pending, setPending] = useState<Record<string, string>>({});
++  const current = useRef<Record<string, string>>({});
++  const accepted = useCallback((runId: string, inputIdentity: string) => {
++    const next = { ...current.current, [runId]: inputIdentity };
++    current.current = next; setPending(next);
++  }, []);
++  const observe = useCallback((runId: string, status: string, reverted: boolean, inputIdentity: string | null) => {
++    const original = current.current[runId];
++    if (!original || !reverted && status === "waiting_input" && original === inputIdentity) return false;
++    const next = { ...current.current }; delete next[runId];
++    current.current = next; setPending(next); return true;
++  }, []);
++  const waiting = useCallback((runId: string) => !!current.current[runId], []);
++  const clear = useCallback(() => { current.current = {}; setPending({}); }, []);
++  return { pending, accepted, observe, waiting, clear };
++}
+--- /dev/null
++++ b/pdos-next/web/src/components/pai/answer-resume.test.mjs
+@@ -0,0 +1,64 @@
++import assert from "node:assert/strict";
++import { readFileSync } from "node:fs";
++import Module, { createRequire } from "node:module";
++import path from "node:path";
++import test from "node:test";
++import { fileURLToPath } from "node:url";
++
++// Execute both real parent components and their actual resume hook. Only React
++// scheduling, clock, unrelated children and HTTP are controlled substitutes.
++const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../.."), dep = createRequire(path.join(web, "package.json"));
++const ts = dep("typescript"), React = dep("react"), modules = new Map();
++let hooks;
++const same = (a, b) => a && b && a.length === b.length && a.every((v, i) => Object.is(v, b[i]));
++const shim = { ...React,
++  useState(initial) { const own = hooks, i = own.index++; if (!own.values[i]) { const cell = { value: typeof initial === "function" ? initial() : initial }; cell.set = value => { if (!own.disposed) { cell.value = typeof value === "function" ? value(cell.value) : value; own.dirty = true; } }; own.values[i] = cell; } const cell = own.values[i]; return [cell.value, cell.set]; },
++  useRef(initial) { const i = hooks.index++; if (!hooks.values[i]) hooks.values[i] = { current: initial }; return hooks.values[i]; },
++  useCallback(callback, deps) { const i = hooks.index++; if (!same(hooks.values[i]?.deps, deps)) hooks.values[i] = { deps, value: callback }; return hooks.values[i].value; },
++  useMemo(callback, deps) { const i = hooks.index++; if (!same(hooks.values[i]?.deps, deps)) hooks.values[i] = { deps, value: callback() }; return hooks.values[i].value; },
++  useEffect(effect, deps) { const own = hooks, i = own.index++; if (!same(own.values[i]?.deps, deps)) { const previous = own.values[i], cell = { deps, cleanup: previous?.cleanup }; own.values[i] = cell; own.effects.push(() => { cell.cleanup?.(); cell.cleanup = effect(); }); } },
++};
++const noop = () => {}, products = { items: [], busy: false, openProduct: null, load: async () => {}, clear: noop };
++const children = new Map();
++function child(name) { if (!children.has(name)) { const fn = props => React.createElement("div", null, props.children); Object.defineProperty(fn, "name", { value: name }); children.set(name, fn); } return children.get(name); }
++const stubs = new Proxy({ useSessionDraft: () => shim.useState(""), clearPaiComposerDrafts: noop, useWorkProducts: () => products, usePaiScroll: noop,
++  loadedSkillFacts: () => [], reconciliationNeeded: () => false, collapsedAnswerCitations: () => [], panelVisible: () => false,
++  asCandidate: () => null, adoptedCategory: () => null, materialContextText: () => "", sourcePickerScope: v => JSON.stringify(v), defaultSearchPreferences: {},
++}, { get: (object, key) => key in object ? object[key] : child(key) });
++function load(filename) { if (modules.has(filename)) return modules.get(filename).exports; const m = new Module(filename); modules.set(filename, m); m.require = name => name === "react" ? shim : name.includes("use-answer-resume") ? load(path.join(web, "src/components/pai/use-answer-resume.ts")) : name.endsWith(".module.css") ? { __esModule: true, default: {} } : name === "@phosphor-icons/react" || name.startsWith("@/") || name.startsWith(".") ? stubs : dep(name); m._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename); return m.exports; }
++const { Xiaopai } = load(path.join(web, "src/components/xiaopai.tsx"));
++const { PersonalXiaopai } = load(path.join(web, "src/components/category-create/personal-xiaopai.tsx"));
++const uuid = n => `00000000-1111-4111-8111-${String(n).padStart(12, "0")}`, runId = uuid(1), sessionId = uuid(2);
++const base = { run_id: runId, session_id: sessionId, goal: "准备三件复验", status: "waiting_input", reverted: false, cancel_epoch: 0, product_id: uuid(3), proposal_id: null, result: {} };
++const input = (sequence = 4) => ({ sequence, event: { type: "needs_input", questions: [{ id: "sample_count", question: `确认样本数量 ${sequence}`, why: "明确实际准备数量", allow_free_text: true, options: [] }] } });
++const nodes = (tree, match) => !tree || typeof tree !== "object" ? [] : Array.isArray(tree) ? tree.flatMap(t => nodes(t, match)) : [...(match(tree) ? [tree] : []), ...nodes(tree.props?.children, match)];
++const tick = () => new Promise(resolve => setImmediate(resolve));
++function environment(t, personal) {
++  const originalInterval = globalThis.setInterval, originalClear = globalThis.clearInterval, originalDocument = globalThis.document;
++  const timers = new Map(); let nextTimer = 0;
++  globalThis.setInterval = callback => { const id = ++nextTimer; timers.set(id, callback); return id; }; globalThis.clearInterval = id => timers.delete(id);
++  globalThis.document = { visibilityState: "visible", addEventListener: noop, removeEventListener: noop };
++  const state = { run: structuredClone(base), events: [input()], calls: [], failRead: null, failPost: false, acceptedReadFailure: false };
++  const api = async (route, body) => { state.calls.push({ route, body: body === undefined ? undefined : structuredClone(body) }); if (body !== undefined) { if (state.failPost) { state.failPost = false; throw new Error("synthetic lost acknowledgement"); } if (state.acceptedReadFailure) { state.acceptedReadFailure = false; state.failRead = Object.assign(new Error("synthetic read unavailable"), { status: 503 }); } return { run_id: runId, answer_ref: uuid(20), status: "resume_requested" }; } if (route.includes("/events?")) return { items: structuredClone(state.events), next_cursor: state.events.at(-1)?.sequence ?? 0 }; if (state.failRead) { const error = state.failRead; state.failRead = null; throw error; } return structuredClone(state.run); };
++  let props = { api, principalId: uuid(4), initialRunId: runId, onCreated: noop, categoryId: uuid(5), productId: uuid(3), sources: [], composeOpen: false, onComposeChange: noop }, tree;
++  const levels = [], Component = personal ? PersonalXiaopai : Xiaopai;
++  const dispose = (from = 0) => { for (const own of levels.slice(from)) if (!own.disposed) { own.disposed = true; own.values.forEach(cell => cell?.cleanup?.()); } levels.splice(from); };
++  const render = () => { let call = Component, args = props, depth = 0; for (;;) { const key = args.__key ?? "root"; if (levels[depth]?.key !== key) { dispose(depth); levels[depth] = { key, values: [], index: 0, effects: [], dirty: false }; } const own = levels[depth]; own.index = 0; own.effects = []; own.dirty = false; hooks = own; let result; try { result = call(args); } finally { hooks = null; } if (!result || typeof result.type !== "function" || !/ScopedXiaopai|PersonalIdentity|ScopedPersonalXiaopai/.test(result.type.name)) { tree = result; break; } call = result.type; args = { ...result.props, __key: result.key }; depth++; } levels.forEach(own => own.effects.forEach(effect => effect())); };
++  const flush = async () => { for (let i = 0; i < 12; i++) { await tick(); if (levels.some(v => v.dirty)) render(); } };
++  const question = () => personal ? nodes(tree, node => node.type?.name === "ClarificationForm")[0] : nodes(tree, node => node.type === "form" && nodes(node, n => n.type === "input" && n.props.id === "pai-sample_count").length)[0];
++  const submit = async () => { const q = question(); assert.ok(q, "actual clarification form"); q.props.onSubmit(personal ? undefined : { preventDefault: noop }); await flush(); };
++  const value = () => { const q = question(); return personal ? q?.props.answers.sample_count : nodes(q, n => n.type === "input")[0]?.props.value; };
++  const disabled = () => { const q = question(); return personal ? q?.props.disabled : nodes(q, n => n.type === "fieldset")[0]?.props.disabled; };
++  render(); t.after(() => { dispose(); globalThis.setInterval = originalInterval; globalThis.clearInterval = originalClear; globalThis.document = originalDocument; });
++  return { state, flush, submit, value, disabled, question, timers, tree: () => tree, async fill(value) { const q = question(); assert.ok(q); if (personal) q.props.onAnswer("sample_count", value); else nodes(q, n => n.type === "input")[0].props.onChange({ target: { value } }); await flush(); }, async poll() { assert.ok(timers.size, "resume poll remains scheduled"); for (const callback of [...timers.values()]) callback(); await flush(); }, writes: () => state.calls.filter(c => c.body !== undefined), async retry() { const button = nodes(tree, n => n.props?.onClick && ["重试原请求", "重试同一请求"].includes(n.props.children))[0]; assert.ok(button, "same original request recovery"); button.props.onClick(); await flush(); }, async open(id) { const history = nodes(tree, n => n.type?.name === "SessionHistory")[0]; history.props.onSelectRun(id, sessionId); await flush(); }, async changeProps(next) { props = { ...props, ...next }; render(); await flush(); } };
++}
++
++for (const personal of [false, true]) {
++  const label = personal ? "Personal" : "Xiaopai";
++  test(`${label}: 202 plus unchanged waiting_input preserves answer, polls, blocks repeat and reaches completion`, async t => { const e = environment(t, personal); await e.flush(); await e.fill("3"); await e.submit(); assert.equal(e.value(), "3"); assert.equal(e.disabled(), true); assert.equal(e.writes().length, 1); await e.submit(); assert.equal(e.writes().length, 1); await e.poll(); assert.equal(e.disabled(), true); e.state.run.status = "completed"; await e.poll(); assert.equal(e.question(), undefined); assert.equal(e.timers.size, 0); assert.equal(e.writes().length, 1); });
++  test(`${label}: new needs_input sequence with the same question ID unlocks a fresh empty answer`, async t => { const e = environment(t, personal); await e.flush(); await e.fill("3"); await e.submit(); e.state.events = [input(), input(7)]; await e.poll(); assert.equal(e.disabled(), false); assert.equal(e.value() ?? "", ""); assert.equal(e.timers.size, 0); assert.equal(e.writes().length, 1); });
++  test(`${label}: unknown POST response retains the exact original answer and key for explicit retry`, async t => { const e = environment(t, personal); await e.flush(); await e.fill("3"); e.state.failPost = true; await e.submit(); const first = e.writes()[0]; assert.equal(e.disabled(), true); await e.retry(); assert.deepEqual(e.writes()[1], first); assert.equal(e.disabled(), true); await e.submit(); assert.equal(e.writes().length, 2); });
++  test(`${label}: accepted answer survives an immediate GET 503 and resumes GET polling without reposting`, async t => { const e = environment(t, personal); await e.flush(); await e.fill("3"); e.state.acceptedReadFailure = true; await e.submit(); assert.equal(e.question(), undefined); assert.equal(e.writes().length, 1); await e.poll(); assert.equal(e.disabled(), true); e.state.run.status = "completed"; await e.poll(); assert.equal(e.timers.size, 0); assert.equal(e.writes().length, 1); });
++  test(`${label}: a later 403 clears the old form and stops the accepted-resume poll`, async t => { const e = environment(t, personal); await e.flush(); await e.fill("3"); await e.submit(); e.state.failRead = Object.assign(new Error("scope revoked"), { status: 403 }); await e.poll(); assert.equal(e.question(), undefined); assert.equal(e.timers.size, 0); assert.equal(e.writes().length, 1); });
++  test(`${label}: navigating away and back cannot re-enable the already submitted old interrupt`, async t => { const e = environment(t, personal); await e.flush(); await e.fill("3"); await e.submit(); e.state.run.run_id = uuid(8); await e.open(uuid(8)); assert.equal(e.disabled(), false); e.state.run.run_id = runId; await e.open(runId); assert.equal(e.disabled(), true); await e.submit(); assert.equal(e.writes().length, 1); });
++}

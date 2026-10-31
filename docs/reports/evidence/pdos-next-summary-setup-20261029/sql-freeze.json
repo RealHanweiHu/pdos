@@ -1,0 +1,15 @@
+{
+  "schema_path": "pdos-next/server/migrations/schema_summary_walletless.py",
+  "sha256": "9d7b20327c31ebbfff1034d022784e968950f4864e9a204a2f9e07c78bc5150b",
+  "schema_copy": "sql/schema_summary_walletless.py",
+  "original_function_sha256": {
+    "automation_service_start(uuid)": "eb85bdf0f8a6e7b8d6594b5f3c7089099f02815d7e206d652245a75105f74b72",
+    "assert_automation_service_run(uuid,uuid)": "bf6e98b001234aef87d3b2cca08160afaa42e858d9728c25a6f000070ed4b8d2"
+  },
+  "upgrade_installs": [
+    "replace automation_service_start(uuid) only wallet preflight branch",
+    "replace assert_automation_service_run(uuid,uuid) only added zero-capacity refusal",
+    "reject_summary_generic_call() before INSERT trigger for actual summary service Run"
+  ],
+  "downgrade": "Access-exclusive lock, refuse any walletless summary version history, drop trigger, restore exact prior definitions."
+}

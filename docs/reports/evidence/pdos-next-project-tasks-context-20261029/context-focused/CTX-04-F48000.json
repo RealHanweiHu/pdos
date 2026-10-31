@@ -1,0 +1,344 @@
+{
+  "version": "context-native-observation/v1",
+  "case_id": "CTX-04",
+  "f_budget_tokens": 48000,
+  "native_binding_status": "bound",
+  "status": "native_control_checks_passed",
+  "scripted_provider": true,
+  "real_model_calls": 0,
+  "provider_dispatches": 2,
+  "context_budget": [
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 0,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 712,
+        "envelope": 2502
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33708,
+      "fixed_over_half": true,
+      "admission_tokens": 38765,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    },
+    {
+      "focus": 48000,
+      "window": 54048,
+      "cleanup": {
+        "reason": "within_focus",
+        "applied": false,
+        "triggered": false
+      },
+      "reserve": 6048,
+      "segments": {
+        "loop": 184,
+        "tools": 27644,
+        "skills": 0,
+        "system": 2850,
+        "history": 712,
+        "envelope": 2502
+      },
+      "over_focus": false,
+      "reductions": [],
+      "estimated_total": 33892,
+      "fixed_over_half": true,
+      "admission_tokens": 38976,
+      "estimation_basis": "first_call_estimate",
+      "estimation_margin": 0.15,
+      "window_configured": true,
+      "calibration_factor": 1.15,
+      "actual_input_tokens": 0,
+      "fixed_admission_tokens": 35069,
+      "input_estimate_error_ratio": null
+    }
+  ],
+  "bindings": {
+    "session_id": "863c7eaa-43e1-44b0-ba31-730f4f1bd2ea",
+    "current_project_id": "98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5",
+    "excluded_neighbor_project_id": "a7915b1b-665c-416e-88ca-8cee1752d5d5",
+    "task_ids": [
+      "1386f740-d5f8-49a2-a933-3bb80888dc34",
+      "51db2550-4b42-4733-bafa-167e59b88e6b"
+    ],
+    "native_receipt_ids": [
+      "6e8c568a-96c9-4ba9-9d43-c43dab3e00ed",
+      "fa01ae77-fe30-42d0-abe4-8cf5ae2dd4b9",
+      "39eea93f-6a82-45ca-a512-f3d5e4dfee2f"
+    ],
+    "assignee_alias": {
+      "周柯": "5c039ae5-89a4-4180-82db-08e49a611dd4"
+    },
+    "document_source_id": "720ff738-9adc-422e-b681-d19a5ae156b2",
+    "native_plan": {
+      "id": "381a8287-8549-4939-9304-6199416b4ab7",
+      "revision": 1,
+      "tasks": {
+        "humidity": {
+          "id": "53c97d38-9232-4154-b993-b0270bbed5fd",
+          "key": "humidity",
+          "lineage_ids": [
+            "53c97d38-9232-4154-b993-b0270bbed5fd"
+          ],
+          "work_package_id": "8708473d-31df-4eb8-9076-043fd9508cc4",
+          "forecast": {
+            "key": "humidity",
+            "title": "密封圈湿热复验",
+            "blocked_by": [],
+            "depends_on": [],
+            "discipline": "engineering",
+            "not_before": null,
+            "calendar_ref": {
+              "key": "ctx04-synthetic-seven-day",
+              "version": "ctx04-seven-day@1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "latest_start": "2026-11-08T01:00:00Z",
+            "latest_finish": null,
+            "earliest_start": "2026-11-08T01:00:00Z",
+            "earliest_finish": null,
+            "estimate_source": null,
+            "unknown_reasons": [
+              "DURATION_MIN_UNKNOWN",
+              "DURATION_MAX_UNKNOWN"
+            ],
+            "duration_max_minutes": null,
+            "duration_min_minutes": null
+          }
+        },
+        "pressure": {
+          "id": "37348272-e603-4377-9a24-e0c6b194f15b",
+          "key": "pressure",
+          "lineage_ids": [
+            "37348272-e603-4377-9a24-e0c6b194f15b"
+          ],
+          "work_package_id": "8708473d-31df-4eb8-9076-043fd9508cc4",
+          "forecast": {
+            "key": "pressure",
+            "title": "接头耐压复验",
+            "blocked_by": [],
+            "depends_on": [],
+            "discipline": "engineering",
+            "not_before": null,
+            "calendar_ref": {
+              "key": "ctx04-synthetic-seven-day",
+              "version": "ctx04-seven-day@1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "latest_start": "2026-11-08T01:00:00Z",
+            "latest_finish": "2026-11-08T02:00:00Z",
+            "earliest_start": "2026-11-08T01:00:00Z",
+            "earliest_finish": "2026-11-08T02:00:00Z",
+            "estimate_source": "CTX04 合成负责人估计；建议日期，不是承诺",
+            "unknown_reasons": [],
+            "duration_max_minutes": 60,
+            "duration_min_minutes": 60
+          }
+        }
+      },
+      "project_revision": 2,
+      "forecast": {
+        "algorithm_version": "planning.fs-duration-bounds@1",
+        "input_start": "2026-11-08T01:00:00Z",
+        "calendar_ref": {
+          "key": "ctx04-synthetic-seven-day",
+          "version": "ctx04-seven-day@1",
+          "timezone": "Asia/Shanghai",
+          "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+        },
+        "tasks": [
+          {
+            "key": "humidity",
+            "title": "密封圈湿热复验",
+            "discipline": "engineering",
+            "depends_on": [],
+            "duration_min_minutes": null,
+            "duration_max_minutes": null,
+            "estimate_source": null,
+            "not_before": null,
+            "earliest_start": "2026-11-08T01:00:00Z",
+            "earliest_finish": null,
+            "latest_start": "2026-11-08T01:00:00Z",
+            "latest_finish": null,
+            "calendar_ref": {
+              "key": "ctx04-synthetic-seven-day",
+              "version": "ctx04-seven-day@1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "unknown_reasons": [
+              "DURATION_MIN_UNKNOWN",
+              "DURATION_MAX_UNKNOWN"
+            ],
+            "blocked_by": []
+          },
+          {
+            "key": "pressure",
+            "title": "接头耐压复验",
+            "discipline": "engineering",
+            "depends_on": [],
+            "duration_min_minutes": 60,
+            "duration_max_minutes": 60,
+            "estimate_source": "CTX04 合成负责人估计；建议日期，不是承诺",
+            "not_before": null,
+            "earliest_start": "2026-11-08T01:00:00Z",
+            "earliest_finish": "2026-11-08T02:00:00Z",
+            "latest_start": "2026-11-08T01:00:00Z",
+            "latest_finish": "2026-11-08T02:00:00Z",
+            "calendar_ref": {
+              "key": "ctx04-synthetic-seven-day",
+              "version": "ctx04-seven-day@1",
+              "timezone": "Asia/Shanghai",
+              "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+            },
+            "unknown_reasons": [],
+            "blocked_by": []
+          }
+        ],
+        "earliest_finish": null,
+        "latest_finish": null,
+        "warnings": []
+      },
+      "calendar": {
+        "key": "ctx04-synthetic-seven-day",
+        "version": "ctx04-seven-day@1",
+        "holidays": [],
+        "timezone": "Asia/Shanghai",
+        "intervals": [
+          {
+            "end_minute": 720,
+            "start_minute": 540
+          },
+          {
+            "end_minute": 1020,
+            "start_minute": 780
+          }
+        ],
+        "working_weekdays": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "timezone_rules_sha256": "bf8b7ed82fe6e63e6d98f8cea934eeac901cd16aba85eb5755ce3f8b4289ea8a"
+      },
+      "proposal_id": "aea47b3f-e906-41f2-9d6d-c42eb562f3a4",
+      "propose_receipt_id": "cd45c90b-f39a-437a-875c-b134a6dcbb01",
+      "apply_receipt_id": "29f714c2-087e-4973-84d4-7a1b53bee77f"
+    },
+    "verified_current_facts": {
+      "tasks": [
+        {
+          "reference": {
+            "kind": "work_task",
+            "id": "d4580b7a-1aee-41e1-b9e1-731a0c4331cd",
+            "revision": 2,
+            "receipt_id": "39eea93f-6a82-45ca-a512-f3d5e4dfee2f",
+            "url": "/?area=cockpit&category=c0832aa5-006d-491d-9729-214f851c77fd&product=56ce4f2b-d318-4190-8036-e5c01476d291&project=98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5&projectView=tasks"
+          },
+          "task_id": "1386f740-d5f8-49a2-a933-3bb80888dc34",
+          "title": "接头耐压复验",
+          "record_status": "assigned",
+          "assignee_id": "5c039ae5-89a4-4180-82db-08e49a611dd4",
+          "assignee_name": "Synthetic peer",
+          "plan": {
+            "state": "available",
+            "task_reference": {
+              "kind": "plan_task",
+              "id": "37348272-e603-4377-9a24-e0c6b194f15b",
+              "revision": 1,
+              "receipt_id": null,
+              "url": "/?area=cockpit&category=c0832aa5-006d-491d-9729-214f851c77fd&product=56ce4f2b-d318-4190-8036-e5c01476d291&project=98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5&projectView=tasks"
+            },
+            "plan_reference": {
+              "kind": "plan",
+              "id": "381a8287-8549-4939-9304-6199416b4ab7",
+              "revision": 1,
+              "receipt_id": null,
+              "url": "/?area=cockpit&category=c0832aa5-006d-491d-9729-214f851c77fd&product=56ce4f2b-d318-4190-8036-e5c01476d291&project=98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5&projectView=tasks"
+            },
+            "earliest_finish": "2026-11-08T02:00:00Z",
+            "latest_finish": "2026-11-08T02:00:00Z",
+            "date_nature": "forecast",
+            "unknown_reasons": []
+          },
+          "commitments": [],
+          "commitments_has_more": false
+        },
+        {
+          "reference": {
+            "kind": "work_task",
+            "id": "51db2550-4b42-4733-bafa-167e59b88e6b",
+            "revision": 1,
+            "receipt_id": "fa01ae77-fe30-42d0-abe4-8cf5ae2dd4b9",
+            "url": "/?area=cockpit&category=c0832aa5-006d-491d-9729-214f851c77fd&product=56ce4f2b-d318-4190-8036-e5c01476d291&project=98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5&projectView=tasks"
+          },
+          "task_id": "51db2550-4b42-4733-bafa-167e59b88e6b",
+          "title": "密封圈湿热复验",
+          "record_status": "proposed",
+          "assignee_id": null,
+          "assignee_name": null,
+          "plan": {
+            "state": "available",
+            "task_reference": {
+              "kind": "plan_task",
+              "id": "53c97d38-9232-4154-b993-b0270bbed5fd",
+              "revision": 1,
+              "receipt_id": null,
+              "url": "/?area=cockpit&category=c0832aa5-006d-491d-9729-214f851c77fd&product=56ce4f2b-d318-4190-8036-e5c01476d291&project=98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5&projectView=tasks"
+            },
+            "plan_reference": {
+              "kind": "plan",
+              "id": "381a8287-8549-4939-9304-6199416b4ab7",
+              "revision": 1,
+              "receipt_id": null,
+              "url": "/?area=cockpit&category=c0832aa5-006d-491d-9729-214f851c77fd&product=56ce4f2b-d318-4190-8036-e5c01476d291&project=98f21e9e-93ec-4bfd-a4c4-f1091c7a40c5&projectView=tasks"
+            },
+            "earliest_finish": null,
+            "latest_finish": null,
+            "date_nature": "forecast",
+            "unknown_reasons": [
+              "DURATION_MIN_UNKNOWN",
+              "DURATION_MAX_UNKNOWN"
+            ]
+          },
+          "commitments": [],
+          "commitments_has_more": false
+        }
+      ],
+      "commitment_versions": 0,
+      "assignee_alias_basis": "题内周柯映射到实际合成人员ID；不把项目owner当负责人",
+      "actual_assignee_name": "Synthetic peer"
+    },
+    "final_run_id": "2cdf71be-91bf-40e7-bf07-e7326f67fa02"
+  },
+  "model_quality_score": null,
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "binding_limitations": [],
+  "usage_basis": "unmeasured_scripted_zero_only"
+}

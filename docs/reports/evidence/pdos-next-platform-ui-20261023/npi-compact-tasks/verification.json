@@ -1,0 +1,18 @@
+{
+  "url": "http://localhost:57859/ui-lab/platform?view=tasks",
+  "eslintExit": 0,
+  "typecheckExit": 0,
+  "browserChecks": 15,
+  "browserChecksPassed": 15,
+  "desktopRowHeight": 40,
+  "mobileRowHeight": 44,
+  "viewports": [
+    "1440x1000",
+    "390x844"
+  ],
+  "finalBrowserErrorsWarnings": 0,
+  "dataSource": "assets/cehub/deliverable-guide-manifest.json",
+  "sourceUnchanged": true,
+  "realBusinessWrites": 0,
+  "scope": "Local synthetic UI prototype, task catalog read on the server; no production task template publication or gate changes."
+}

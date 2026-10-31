@@ -1,0 +1,26 @@
+{
+  "summary": [
+    {
+      "viewport": 390,
+      "document": 390,
+      "client": 350,
+      "scroll": 350,
+      "dark": true
+    },
+    {
+      "viewport": 320,
+      "document": 320,
+      "client": 280,
+      "scroll": 280,
+      "dark": true
+    }
+  ],
+  "channel": {
+    "viewport": 320,
+    "document": 320,
+    "client": 226,
+    "scroll": 226,
+    "dark": true
+  },
+  "actual_navigation": "Mobile session list -> \u8fd4\u56de\u5bf9\u8bdd; original category-bound Run summary preserved."
+}

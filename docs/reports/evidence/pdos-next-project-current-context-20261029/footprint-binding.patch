@@ -1,0 +1,196 @@
+--- a/pdos-next/server/pdos_next/agent_kernel/persistence.py
++++ b/pdos-next/server/pdos_next/agent_kernel/persistence.py
+@@ -680,20 +680,14 @@
+         private_context = private_context or project_metadata["private_objects"]
+         data_categories = tuple(sorted(set(data_categories) | {"internal"}))
+         from .project_current_context import bind as bind_project_facts
+-        from .project_current_context import reads as project_fact_reads
+ 
+         project_facts = bind_project_facts(session, ctx, actual_project)
+         private_context = private_context or project_facts["private_context"]
+         data_categories = tuple(sorted(
+             set(data_categories) | set(project_facts["data_categories"]),
+         ))
+-        merged_reads = {ref["artifact_id"]: ref for ref in read_sources}
+-        for ref in project_fact_reads(project_facts):
+-            previous = merged_reads.get(ref["artifact_id"])
+-            if previous is not None and previous != ref:
+-                raise DomainError("SOURCE_STALE", "当前项目依据与选定原件版本不同，请重新读取。")
+-            merged_reads[ref["artifact_id"]] = ref
+-        read_sources = [merged_reads[key] for key in sorted(merged_reads)]
++        # Native context dependencies classify and recheck this Run independently.
++        # Only the existing Human/proposal binding supplies explicit read_sources.
+     run = AgentRun(
+         id=uuid4(),
+         tenant_id=ctx.tenant_id,
+--- a/pdos-next/server/pdos_next/agent_kernel/project_current_context.py
++++ b/pdos-next/server/pdos_next/agent_kernel/project_current_context.py
+@@ -403,11 +403,6 @@
+     }
+ 
+ 
+-def reads(binding):
+-    return [{key: ref[key] for key in ("artifact_id", "expected_revision", "product_id")}
+-            for ref in binding["source_proof"]]
+-
+-
+ def _current(session, ctx, run):
+     stored = run.versions.get(KEY)
+     if not stored:
+@@ -425,9 +420,7 @@
+     value, proof, private, categories = _collect(session, ctx, project)
+     if (proof != stored["source_proof"] or _basis(value) != stored["basis_digest"]):
+         raise DomainError("SOURCE_STALE", "项目状态或门禁依据已变化，请从当前项目继续读取。")
+-    bound_reads = {digest(ref) for ref in run.read_sources}
+-    if (private and not run.private_context or not categories <= set(run.data_categories)
+-            or not {digest(ref) for ref in reads(stored)} <= bound_reads):
++    if private and not run.private_context or not categories <= set(run.data_categories):
+         raise DomainError("FORBIDDEN_SCOPE", "项目事实尚未绑定本运行的实际资料分类。", 403)
+     value.as_of = stored["as_of"]
+     return value
+--- a/pdos-next/server/tests/agent_kernel/test_project_current_context.py
++++ b/pdos-next/server/tests/agent_kernel/test_project_current_context.py
+@@ -236,11 +236,55 @@
+     bound = facts.bind(f, f.ctx, f.project)
+     assert bound["private_context"]
+     assert bound["data_categories"] == ["customer_original", "internal"]
+-    assert facts.reads(bound) == [{"artifact_id": str(artifact.id), "expected_revision": 3,
+-                                  "product_id": str(artifact.product_id)}]
+-    assert bound["source_proof"][0]["content_hash"] == "a" * 64
++    assert bound["source_proof"][0] == {
++        "artifact_id": str(artifact.id), "expected_revision": 3,
++        "product_id": str(artifact.product_id), "content_hash": "a" * 64,
++        "visibility": "private", "original_id": str(artifact.original_id),
++    }
++    assert f.run.read_sources == []
+     assert "fact_summary" not in str(bound) and "RAW_" not in str(bound)
+     assert bound["basis_digest"] == facts._basis(facts._collect(f, f.ctx, f.project)[0])
++
++
++@pytest.mark.parametrize("explicit", [False, True])
++def test_native_footprint_rechecks_without_becoming_explicit_sources(
++    reading, monkeypatch, explicit,
++):
++    f = reading
++    source = NS(id=uuid4(), revision=1, content_hash="a" * 64, visibility="private",
++                original_id=uuid4(), product_id=f.scope.product_id)
++    f.rows[Artifact, source.id] = source
++    row = status(f)
++    row.reads = [{"artifact_id": str(source.id), "expected_revision": 1}]
++    monkeypatch.setattr(facts, "source_privacy", lambda *_: "private")
++    if explicit:
++        f.run.read_sources = [{"artifact_id": str(source.id), "expected_revision": 1,
++                               "product_id": str(source.product_id)}]
++    original = deepcopy(f.run.read_sources)
++    f.run.versions[facts.KEY] = facts.bind(f, f.ctx, f.project)
++    f.run.private_context = True
++    f.run.data_categories = frozenset({"internal", "customer_original"})
++    assert facts._current(f, f.ctx, f.run).named_status.fact_summary == "工程验证尚缺结果"
++    assert f.run.read_sources == original
++    f.run.private_context = False
++    with pytest.raises(DomainError) as privacy:
++        facts._current(f, f.ctx, f.run)
++    assert privacy.value.code == "FORBIDDEN_SCOPE"
++    f.run.private_context = True
++    f.run.data_categories = frozenset({"internal"})
++    with pytest.raises(DomainError) as classification:
++        facts._current(f, f.ctx, f.run)
++    assert classification.value.code == "FORBIDDEN_SCOPE"
++    f.run.data_categories = frozenset({"internal", "customer_original"})
++    source.content_hash = "b" * 64
++    with pytest.raises(DomainError) as changed:
++        facts._current(f, f.ctx, f.run)
++    assert changed.value.code == "SOURCE_STALE"
++    del f.rows[Artifact, source.id]
++    with pytest.raises(DomainError) as revoked:
++        facts._current(f, f.ctx, f.run)
++    assert revoked.value.code == "SOURCE_UNAVAILABLE"
++    assert f.run.read_sources == original
+ 
+ 
+ def test_current_record_change_cannot_silently_replace_the_bound_basis(reading):
+--- a/pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py
++++ b/pdos-next/server/tests/agent_kernel/test_project_current_context_pg.py
+@@ -11,14 +11,17 @@
+ from test_project_first_plan import accepted, cmd, post
+ 
+ from pdos_next.agent_kernel.bootstrap import Bootstrap
++from pdos_next.agent_kernel.domain_reads import DomainReads
+ from pdos_next.agent_kernel.host import BoundHost
+-from pdos_next.agent_kernel.models import AgentRun
++from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
+ from pdos_next.agent_kernel.project_current_context import KEY
+ from pdos_next.agent_kernel.types import AgentOutput
+ from pdos_next.database import tenant_session
+ from pdos_next.domain.work_management.constants import STATUS
+ from pdos_next.errors import DomainError
+ from pdos_next.models import Grant, now
++from tests.agent_kernel.test_run_continuation import scope as api_scope
++from tests.agent_kernel.test_run_continuation import start as api_start
+ from tests.agent_kernel.test_transactions import run as create_read_run
+ from tests.work_management_pg import test_workflow as flow
+ from tests.work_management_pg.test_workflow import original_security_work
+@@ -78,8 +81,42 @@
+     assert "sources" not in answer and "citation_ids" not in answer
+     with store.transaction(scope) as (_, run):
+         assert "customer_original" in run.data_categories
+-        assert any(ref["artifact_id"] == work.source["id"] for ref in run.read_sources)
++        assert run.read_sources == [] and result["context"]["sources"] == []
++        assert any(ref["artifact_id"] == work.source["id"]
++                   for ref in run.versions[KEY]["source_proof"])
+         assert "fact_summary" not in str(run.versions[KEY])
++    owner.check_conversation(scope)
++
++
++@pytest.mark.parametrize("explicit", [False, True])
++def test_native_project_footprint_does_not_expand_d3_explicit_evidence_search(
++    project_work, explicit,
++):
++    """Real Human StartInput and ordinary-RLS adapter; no manufactured tool READ."""
++    work, setup = project_work, project_work.setup
++    prepare(work)
++    selected = [{"artifact_id": work.source["id"], "expected_revision": 1}] if explicit else []
++    identity, _ = api_start(setup, product_id=str(setup.product),
++                            project_id=str(work.project_id), sources=selected)
++    scope = api_scope(setup, identity)
++    owner = Bootstrap(setup.engine)
++    context = owner.project_context(scope, "按项目当前记录核对，保持本人原件选择。")
++    assert context["project"]["current_facts"]["named_status"]["state"] == "available"
++    expected = {work.source["id"]} if explicit else set()
++    assert {ref["artifact_id"] for ref in context["sources"]} == expected
++    # Exercise the registered adapter's actual SQL/RLS contract without forging
++    # a model response, ReadSource, ToolCall row or execution receipt.
++    evidence = DomainReads(owner.store, owner.commands).call(scope, {"query": ""},
++                                                           name="evidence.search")
++    assert {item["artifact_id"] for item in evidence["items"]} == expected
++    with owner.store.transaction(scope) as (session, run):
++        assert "customer_original" in run.data_categories
++        assert any(ref["artifact_id"] == work.source["id"]
++                   for ref in run.versions[KEY]["source_proof"])
++        assert {ref["artifact_id"] for ref in run.read_sources} == expected
++        assert list(session.scalars(select(AgentToolCall).where(
++            AgentToolCall.run_id == identity,
++        ))) == []
+     owner.check_conversation(scope)
+ 
+ 
+--- a/pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py
++++ b/pdos-next/server/tests/agent_kernel/test_project_current_context_temporal_pg.py
+@@ -26,6 +26,7 @@
+ from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
+ from pdos_next.agent_kernel.bootstrap import Bootstrap
+ from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
++from pdos_next.agent_kernel.project_current_context import KEY
+ from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
+ from pdos_next.agent_kernel.types import ModelTurn
+ from pdos_next.api import create_app
+@@ -159,6 +160,9 @@
+                                     category_id=setup.category) as session:
+                     run = session.get(AgentRun, identity)
+                     assert "customer_original" in run.data_categories
++                    assert run.read_sources == []
++                    assert any(ref["artifact_id"] == work.source["id"]
++                               for ref in run.versions[KEY]["source_proof"])
+                     model = list(session.scalars(select(AgentToolCall).where(
+                         AgentToolCall.run_id == identity, AgentToolCall.tool == "model",
+                     )))

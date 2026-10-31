@@ -1,0 +1,23 @@
+{
+  "argv": [
+    ".venv/bin/ruff",
+    "check",
+    "pdos_next/agent_kernel/api.py",
+    "pdos_next/agent_kernel/context_restart.py",
+    "pdos_next/agent_kernel/work_state.py",
+    "pdos_next/agent_kernel/work_state_candidates.py",
+    "pdos_next/agent_kernel/conversation_acl.py",
+    "pdos_next/enterprise_search/assistant_inheritance.py",
+    "tests/agent_kernel/test_context_restart.py",
+    "tests/agent_kernel/test_context_restart_pg.py",
+    "tests/agent_kernel/test_work_state_candidates.py",
+    "tests/agent_kernel/test_context_correction_start.py"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-30T09:50:50.367329+00:00",
+  "finished_at": "2026-10-30T09:50:50.433557+00:00",
+  "exit_code": 0,
+  "stdout_log": "restart-ruff-final-v3.log",
+  "stdout_sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+  "scope": "pure/static only; no DB/provider/browser"
+}

@@ -1,0 +1,11 @@
+{
+  "status": "not_executed",
+  "files": [
+    "pdos-next/server/tests/agent_kernel/test_context_process_metrics_pg.py",
+    "pdos-next/server/tests/agent_kernel/test_retrieval_feedback_pg.py",
+    "pdos-next/server/tests/automations_pg/test_personal_summary_pg.py",
+    "pdos-next/server/tests/automations_pg/test_personal_summary_temporal_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_assistant_depth_temporal_pg.py"
+  ],
+  "policy_requirement": "retrieval feedback PG cases need root-reviewed fresh migration for the external unnumbered draft before actual execution"
+}

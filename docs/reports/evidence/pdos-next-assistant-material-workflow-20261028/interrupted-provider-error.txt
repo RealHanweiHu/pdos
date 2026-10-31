@@ -1,0 +1,42 @@
+.F
+=================================== FAILURES ===================================
+_ test_metadata_outside_preview_survives_interruption_without_reviving_old_run[cancelled] _
+tests/enterprise_search/test_interrupted_citations_pg.py:86: in test_metadata_outside_preview_survives_interruption_without_reviving_old_run
+    output = execute(child_owner, child, host)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/enterprise_search/test_assistant_pg.py:162: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:725: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:231: in prepare
+    context = project_context(scope, state["goal"], bindings=tuple(
+pdos_next/agent_kernel/host.py:78: in skill_context
+    raw = self.adapters.project_context(scope, goal, frozenset(schema["properties"]))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/bootstrap.py:307: in project_context
+    frozen = memory(
+pdos_next/agent_kernel/conversation.py:319: in memory
+    truncated = len(outcome["summary"]) > limit
+                ^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: object of type 'NoneType' has no len()
+E   During task with name 'prepare_context' and id 'b75a98ff-6a49-511d-2adb-5659745ce7c7'
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_interrupted_citations_pg.py::test_metadata_outside_preview_survives_interruption_without_reviving_old_run[cancelled]
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+1 failed, 1 passed in 44.43s

@@ -1,0 +1,65 @@
+{
+  "status": "frozen-pure-tested-native-pg-not-executed",
+  "base": "live post-personal-target s0_0841",
+  "files": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/knowledge/assistant_sources.py",
+      "operation": "modify",
+      "base_sha256": "0a8af9906b74ba1a21251c950c6212492b3f7e0bd3f1fa5a276cfb9f39fd645c",
+      "sha256": "e117df0e3f5f427faa842796ee91fb9f2cabbdabd40b02f87b6f0fe212fd7c21",
+      "live_matches_base": true
+    },
+    {
+      "path": "pdos-next/server/pdos_next/domain/knowledge/assistant_storage.py",
+      "operation": "modify",
+      "base_sha256": "fbe6cc0fe5293d61bc285a17cd241eb7a2ea4038a7b61b044f1351961c489e09",
+      "sha256": "630abfbedc49b284f8a2d984e5f49ce13f3ae987bf52387d77ffb9e0f9df05df",
+      "live_matches_base": true
+    },
+    {
+      "path": "pdos-next/server/migrations/schema_answer_footprint.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "34983723c272a7d96e4cce197eb88eba7c8e54e09b02770bfa9ca2bf3007a8fd",
+      "live_absent": true
+    },
+    {
+      "path": "pdos-next/server/tests/knowledge/test_answer_footprint.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "5f7e7ccb9a8dd44a240107b1fa97e1032b668e486d12532e227972be7f6ff274",
+      "live_absent": true
+    },
+    {
+      "path": "pdos-next/server/tests/knowledge_pg/test_answer_footprint_pg.py",
+      "operation": "add",
+      "base_sha256": null,
+      "sha256": "e0b3ade791773c31052adc441b1ee894e9937c7efc9a9553c193639f23963bac",
+      "live_absent": true
+    }
+  ],
+  "migration": {
+    "number_allocated": false,
+    "predecessor": "s0_0841",
+    "helper_runtime_exec_grants_added": false,
+    "normalized_previous_function_sha256": "1db40c5d01c1d83a52455a22d998c910256bba92f9ec06a774b74186b95fe001",
+    "normalized_candidate_function_sha256": "db1fafbd16e99134f199d85bc556659c784ef62594968c3f64430f610b997189"
+  },
+  "validation": {
+    "knowledge_pure_passed": 77,
+    "new_pure_passed": 9,
+    "native_pg_collected": 5,
+    "native_pg_executed": false,
+    "ruff": "passed explicit pdos-next/ruff.toml E/F/I/B/UP line-length100"
+  },
+  "safety": {
+    "live_modified": false,
+    "db_connected": false,
+    "real_model_embedding_egress_calls": 0,
+    "golden_case_or_question_set_written": false
+  },
+  "remaining": [
+    "Root actual migration/PG/permission/downgrade checks",
+    "Separate I14 action carried-footprint investigation"
+  ]
+}

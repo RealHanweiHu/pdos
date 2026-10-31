@@ -1,0 +1,944 @@
+{
+  "kind": "offline-mechanics-only-not-provider-window-or-quality-qualification",
+  "base_head": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/graph.py": "97cbefbd07c75e84ba70a7a9e3df42052ac69b7398a2a4cfabac576f04840e02",
+    "pdos-next/server/pdos_next/agent_kernel/tools.py": "e162c650f4519e48f2a078c73393556cc2372bd6af4703571e3ff83ec1be836f",
+    "pdos-next/server/pdos_next/agent_kernel/registry.py": "d9a4ee6ac6d926ca42625d6bb0a672feeab98e035d542524016ba43bc35c7c05",
+    "pdos-next/server/pdos_next/agent_kernel/disclosure.py": "a9e47e6cc6109cfee055c8d0c985761926d593c709f1252e8f17dbff1f94b089",
+    "pdos-next/server/pdos_next/agent_kernel/skills.py": "e90634d80361cd87de284a1bc0a6027303baf33f15673a16681102f2aadbcd68",
+    "pdos-next/server/pdos_next/agent_kernel/types.py": "f5df9b54756a4bd4aa0307168ab51739c486cdfb9e1bf2602452a8972d3bd78e",
+    "pdos-next/server/pdos_next/agent_kernel/context_budget.py": "1224b8b123e57f596423a49127084ae5eaa948945cefa40f0e7b4274a5de9cfb",
+    "pdos-next/server/pdos_next/agent_kernel/context_runtime.py": "7dedcdb32a84e8e1f3d360362fa487945f93266fed62f0208c15c184af7dc3c8",
+    "pdos-next/server/pdos_next/agent_kernel/result_continuation.py": "6b6c5ef4716410dc3223634e567a286aca07471666920bf724f9c9193addbe8e",
+    "pdos-next/server/pdos_next/providers/types.py": "fc233333de16350ab5dfbd85446db5577c48a844510ad280ccac1b494bd92f0f",
+    "docs/design/2026-10-28-xiaopai-context-design.md": "df9c0948e04556a6da84a4c3c7dafae7422236960479d283aef4a131fa93a28e",
+    "docs/reports/evidence/pdos-next-assistant-combined-20261029/result.md": "3db2c91d12a1d607d84e22eecef5dd9ae19f97afbc7de36a6216d0e2af1b7148",
+    "docs/reports/evidence/pdos-next-assistant-combined-20261029/x3-README.md": "cec27e975d0a94b29207f6a03089b495a4b5ec859fca8eeb8145251913886805"
+  },
+  "positive": [
+    {
+      "configured_synthetic_window": 64000,
+      "focus": 58976,
+      "fixed_over_half": true,
+      "provider_calls_before_wait": 6,
+      "provider_calls_after_host_replacement": 1,
+      "tool_call_count": 13,
+      "ordinary_capacity_reads": 9,
+      "initial_tool_names": [
+        "ai.skill.qualify",
+        "assistant.citations.read",
+        "assistant.compare",
+        "assistant.extract",
+        "assistant.materials.read",
+        "assistant.search",
+        "build.engineering.authorize",
+        "build.lot.read",
+        "build.manufacturing.authorize",
+        "build.read",
+        "build.sample.read",
+        "calc.cost_subtotal",
+        "calc.derivation_diff",
+        "calc.market_size",
+        "calc.opportunity_score",
+        "calc.price_band",
+        "calc.spec_compare",
+        "category.competitors.list",
+        "category.knowledge.list",
+        "category.list",
+        "category.member.grant",
+        "category.parameters.list",
+        "category.read",
+        "change.close",
+        "change.order.approve",
+        "change.selection.decide",
+        "change.verification.record",
+        "conversation.history",
+        "evidence.extract",
+        "evidence.search",
+        "integration.handoff.authorize",
+        "knowledge.rule.publish",
+        "mcp.connector.allow",
+        "mcp.read",
+        "mcp.tools.list",
+        "npi.manufacturing_baseline.publish",
+        "platform.read",
+        "product.baseline.read",
+        "project.create",
+        "proposal.g0.decide",
+        "proposal.g0.submit",
+        "proposal.items.read",
+        "proposal.read",
+        "proposal.share",
+        "provider.agreement.register",
+        "quality.capa.verification.review",
+        "quality.issue.read",
+        "quality.issue.root_cause.decide",
+        "release.engineering.approve",
+        "release.exception.decide",
+        "release.exception.withdraw",
+        "release.manufacturing.approve",
+        "research.fanout",
+        "research.search",
+        "result.read",
+        "skill.load",
+        "test.disposition.decide",
+        "test.run.read",
+        "test.run.review",
+        "work.baseline.approve",
+        "work.stage.decide"
+      ],
+      "tool_definition_digest": "a7a3d62a3040d64469e311165117416e0c58656470f1bba9f317702c59aa4925",
+      "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+      "output_schema_digest": "96edee73b127e50aaac5fe9f61239a65f3007f5863369cacd2f839796bf9737d",
+      "registry_version": "8fcf442df423bd04b8ae967f3ef9b8df42d10327274928275af7cb8abd9b139a",
+      "all_registered_count": 171,
+      "same_61_definitions_every_model_call": true,
+      "admissions": [
+        {
+          "turn": 1,
+          "window": 64000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 58976,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 0
+          },
+          "estimated_total": 30583,
+          "admission_tokens": 35171,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": true,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 2,
+          "window": 64000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 58976,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 208
+          },
+          "estimated_total": 30791,
+          "admission_tokens": 35410,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": true,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 3,
+          "window": 64000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 58976,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 10367
+          },
+          "estimated_total": 40950,
+          "admission_tokens": 47093,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": true,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 4,
+          "window": 64000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 58976,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 20526
+          },
+          "estimated_total": 51109,
+          "admission_tokens": 58776,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": true,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 5,
+          "window": 64000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 58976,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 480,
+            "history": 0,
+            "loop": 17860
+          },
+          "estimated_total": 48812,
+          "admission_tokens": 56134,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": true,
+          "fixed_admission_tokens": 35043,
+          "reductions": [
+            {
+              "kind": "older_tool_result",
+              "field": "messages[6]",
+              "handle": "result:a637c84e-9a75-52aa-b5d3-9ae02ca92250:decdeee5c8104da510811978a8aec1897b27342f0ebd38f186da3314d82c626c",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:a637c84e-9a75-52aa-b5d3-9ae02ca92250:decdeee5c8104da510811978a8aec1897b27342f0ebd38f186da3314d82c626c",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[7]",
+              "handle": "result:0ac31714-e5e5-56f0-96d9-07c306bdb7ca:3ba9d5db8eb08f4df91615d32ce7d057cae50f55632b67376f0770e8730c3c71",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:0ac31714-e5e5-56f0-96d9-07c306bdb7ca:3ba9d5db8eb08f4df91615d32ce7d057cae50f55632b67376f0770e8730c3c71",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[8]",
+              "handle": "result:54f1dee4-96d1-5365-a83e-1382d97f3865:62a48c7ba6b6fbe8fbbd8aa27fa8d873f3862ebe0e1ecd6c6307a917583a6b7e",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:54f1dee4-96d1-5365-a83e-1382d97f3865:62a48c7ba6b6fbe8fbbd8aa27fa8d873f3862ebe0e1ecd6c6307a917583a6b7e",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[10]",
+              "handle": "result:857c5f55-08e7-579f-8f44-786069d1ab53:6049eaf538d2216469566992064d61d142d2bdef56f4ec4fc7d3566b7a0c1148",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:857c5f55-08e7-579f-8f44-786069d1ab53:6049eaf538d2216469566992064d61d142d2bdef56f4ec4fc7d3566b7a0c1148",
+                  "page": 1
+                }
+              }
+            }
+          ],
+          "cleanup": {
+            "triggered": true,
+            "applied": true,
+            "minimum_tokens": 11796,
+            "before_tokens": 70600,
+            "after_tokens": 56134,
+            "saved_tokens": 14466,
+            "candidate_saved_tokens": 14466,
+            "eligible_results": 4,
+            "protected_results": 3,
+            "retained_latest_results": 3,
+            "replaced_results": 4,
+            "cache_invalidation_from_message": 6,
+            "reason": "minimum_reached"
+          }
+        },
+        {
+          "turn": 6,
+          "window": 64000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 58976,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 844,
+            "history": 0,
+            "loop": 8525
+          },
+          "estimated_total": 39841,
+          "admission_tokens": 45818,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": true,
+          "fixed_admission_tokens": 35043,
+          "reductions": [
+            {
+              "kind": "older_tool_result",
+              "field": "messages[11]",
+              "handle": "result:596df8b5-d886-51d2-a0d5-b91d9258ae90:68ce63365a64860f78a08f55b3afd73aa810934875b7e003f9fcecbdf7048976",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:596df8b5-d886-51d2-a0d5-b91d9258ae90:68ce63365a64860f78a08f55b3afd73aa810934875b7e003f9fcecbdf7048976",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[12]",
+              "handle": "result:1786d5c5-cda9-56e6-a3df-c82bd779987f:e666d757dfa7d8aeae5d043b014e46db02aaecaa3fdbcf0d75c38b98f7523a9f",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:1786d5c5-cda9-56e6-a3df-c82bd779987f:e666d757dfa7d8aeae5d043b014e46db02aaecaa3fdbcf0d75c38b98f7523a9f",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[14]",
+              "handle": "result:410b1595-b5b9-53f4-ae80-3459c2bd835b:70597b6e7aea23321ab53c3509b4c780977934749185ad281c657a7c35150100",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:410b1595-b5b9-53f4-ae80-3459c2bd835b:70597b6e7aea23321ab53c3509b4c780977934749185ad281c657a7c35150100",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[15]",
+              "handle": "result:ee1e0a09-829a-587c-bc0b-79d6df72f3c5:8f5fdfe1483cd2eb8f6e9ae7aca679f4595df1aa5c7c9de9f678e61a892d3346",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:ee1e0a09-829a-587c-bc0b-79d6df72f3c5:8f5fdfe1483cd2eb8f6e9ae7aca679f4595df1aa5c7c9de9f678e61a892d3346",
+                  "page": 1
+                }
+              }
+            }
+          ],
+          "cleanup": {
+            "triggered": true,
+            "applied": true,
+            "minimum_tokens": 11796,
+            "before_tokens": 60289,
+            "after_tokens": 45818,
+            "saved_tokens": 14471,
+            "candidate_saved_tokens": 14471,
+            "eligible_results": 4,
+            "protected_results": 7,
+            "retained_latest_results": 1,
+            "replaced_results": 4,
+            "cache_invalidation_from_message": 11,
+            "reason": "minimum_reached"
+          }
+        }
+      ],
+      "resumed_admission": {
+        "window": 64000,
+        "window_configured": true,
+        "reserve": 5024,
+        "focus": 58976,
+        "segments": {
+          "system": 2850,
+          "tools": 27622,
+          "skills": 0,
+          "envelope": 844,
+          "history": 0,
+          "loop": 8535
+        },
+        "estimated_total": 39851,
+        "admission_tokens": 45829,
+        "estimation_margin": 0.15,
+        "calibration_factor": 1.15,
+        "estimation_basis": "first_call_estimate",
+        "over_focus": false,
+        "fixed_over_half": true,
+        "fixed_admission_tokens": 35043,
+        "reductions": [],
+        "cleanup": {
+          "triggered": false,
+          "applied": false,
+          "reason": "within_focus"
+        }
+      },
+      "result": "completed",
+      "resumed_read_calls": 0
+    },
+    {
+      "configured_synthetic_window": 200000,
+      "focus": 64000,
+      "fixed_over_half": false,
+      "provider_calls_before_wait": 6,
+      "provider_calls_after_host_replacement": 1,
+      "tool_call_count": 13,
+      "ordinary_capacity_reads": 9,
+      "initial_tool_names": [
+        "ai.skill.qualify",
+        "assistant.citations.read",
+        "assistant.compare",
+        "assistant.extract",
+        "assistant.materials.read",
+        "assistant.search",
+        "build.engineering.authorize",
+        "build.lot.read",
+        "build.manufacturing.authorize",
+        "build.read",
+        "build.sample.read",
+        "calc.cost_subtotal",
+        "calc.derivation_diff",
+        "calc.market_size",
+        "calc.opportunity_score",
+        "calc.price_band",
+        "calc.spec_compare",
+        "category.competitors.list",
+        "category.knowledge.list",
+        "category.list",
+        "category.member.grant",
+        "category.parameters.list",
+        "category.read",
+        "change.close",
+        "change.order.approve",
+        "change.selection.decide",
+        "change.verification.record",
+        "conversation.history",
+        "evidence.extract",
+        "evidence.search",
+        "integration.handoff.authorize",
+        "knowledge.rule.publish",
+        "mcp.connector.allow",
+        "mcp.read",
+        "mcp.tools.list",
+        "npi.manufacturing_baseline.publish",
+        "platform.read",
+        "product.baseline.read",
+        "project.create",
+        "proposal.g0.decide",
+        "proposal.g0.submit",
+        "proposal.items.read",
+        "proposal.read",
+        "proposal.share",
+        "provider.agreement.register",
+        "quality.capa.verification.review",
+        "quality.issue.read",
+        "quality.issue.root_cause.decide",
+        "release.engineering.approve",
+        "release.exception.decide",
+        "release.exception.withdraw",
+        "release.manufacturing.approve",
+        "research.fanout",
+        "research.search",
+        "result.read",
+        "skill.load",
+        "test.disposition.decide",
+        "test.run.read",
+        "test.run.review",
+        "work.baseline.approve",
+        "work.stage.decide"
+      ],
+      "tool_definition_digest": "a7a3d62a3040d64469e311165117416e0c58656470f1bba9f317702c59aa4925",
+      "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+      "output_schema_digest": "96edee73b127e50aaac5fe9f61239a65f3007f5863369cacd2f839796bf9737d",
+      "registry_version": "8fcf442df423bd04b8ae967f3ef9b8df42d10327274928275af7cb8abd9b139a",
+      "all_registered_count": 171,
+      "same_61_definitions_every_model_call": true,
+      "admissions": [
+        {
+          "turn": 1,
+          "window": 200000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 64000,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 0
+          },
+          "estimated_total": 30583,
+          "admission_tokens": 35171,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": false,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 2,
+          "window": 200000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 64000,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 208
+          },
+          "estimated_total": 30791,
+          "admission_tokens": 35410,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": false,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 3,
+          "window": 200000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 64000,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 10367
+          },
+          "estimated_total": 40950,
+          "admission_tokens": 47093,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": false,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 4,
+          "window": 200000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 64000,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 111,
+            "history": 0,
+            "loop": 20526
+          },
+          "estimated_total": 51109,
+          "admission_tokens": 58776,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": false,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        },
+        {
+          "turn": 5,
+          "window": 200000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 64000,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 480,
+            "history": 0,
+            "loop": 17860
+          },
+          "estimated_total": 48812,
+          "admission_tokens": 56134,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": false,
+          "fixed_admission_tokens": 35043,
+          "reductions": [
+            {
+              "kind": "older_tool_result",
+              "field": "messages[6]",
+              "handle": "result:a637c84e-9a75-52aa-b5d3-9ae02ca92250:decdeee5c8104da510811978a8aec1897b27342f0ebd38f186da3314d82c626c",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:a637c84e-9a75-52aa-b5d3-9ae02ca92250:decdeee5c8104da510811978a8aec1897b27342f0ebd38f186da3314d82c626c",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[7]",
+              "handle": "result:0ac31714-e5e5-56f0-96d9-07c306bdb7ca:3ba9d5db8eb08f4df91615d32ce7d057cae50f55632b67376f0770e8730c3c71",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:0ac31714-e5e5-56f0-96d9-07c306bdb7ca:3ba9d5db8eb08f4df91615d32ce7d057cae50f55632b67376f0770e8730c3c71",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[8]",
+              "handle": "result:54f1dee4-96d1-5365-a83e-1382d97f3865:62a48c7ba6b6fbe8fbbd8aa27fa8d873f3862ebe0e1ecd6c6307a917583a6b7e",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:54f1dee4-96d1-5365-a83e-1382d97f3865:62a48c7ba6b6fbe8fbbd8aa27fa8d873f3862ebe0e1ecd6c6307a917583a6b7e",
+                  "page": 1
+                }
+              }
+            },
+            {
+              "kind": "older_tool_result",
+              "field": "messages[10]",
+              "handle": "result:857c5f55-08e7-579f-8f44-786069d1ab53:6049eaf538d2216469566992064d61d142d2bdef56f4ec4fc7d3566b7a0c1148",
+              "read_more": {
+                "tool": "result.read",
+                "arguments": {
+                  "handle": "result:857c5f55-08e7-579f-8f44-786069d1ab53:6049eaf538d2216469566992064d61d142d2bdef56f4ec4fc7d3566b7a0c1148",
+                  "page": 1
+                }
+              }
+            }
+          ],
+          "cleanup": {
+            "triggered": true,
+            "applied": true,
+            "minimum_tokens": 12800,
+            "before_tokens": 70600,
+            "after_tokens": 56134,
+            "saved_tokens": 14466,
+            "candidate_saved_tokens": 14466,
+            "eligible_results": 4,
+            "protected_results": 3,
+            "retained_latest_results": 3,
+            "replaced_results": 4,
+            "cache_invalidation_from_message": 6,
+            "reason": "minimum_reached"
+          }
+        },
+        {
+          "turn": 6,
+          "window": 200000,
+          "window_configured": true,
+          "reserve": 5024,
+          "focus": 64000,
+          "segments": {
+            "system": 2850,
+            "tools": 27622,
+            "skills": 0,
+            "envelope": 480,
+            "history": 0,
+            "loop": 21473
+          },
+          "estimated_total": 52425,
+          "admission_tokens": 60289,
+          "estimation_margin": 0.15,
+          "calibration_factor": 1.15,
+          "estimation_basis": "first_call_estimate",
+          "over_focus": false,
+          "fixed_over_half": false,
+          "fixed_admission_tokens": 35043,
+          "reductions": [],
+          "cleanup": {
+            "triggered": false,
+            "applied": false,
+            "reason": "within_focus"
+          }
+        }
+      ],
+      "resumed_admission": {
+        "window": 200000,
+        "window_configured": true,
+        "reserve": 5024,
+        "focus": 64000,
+        "segments": {
+          "system": 2850,
+          "tools": 27622,
+          "skills": 0,
+          "envelope": 480,
+          "history": 0,
+          "loop": 21483
+        },
+        "estimated_total": 52435,
+        "admission_tokens": 60301,
+        "estimation_margin": 0.15,
+        "calibration_factor": 1.15,
+        "estimation_basis": "first_call_estimate",
+        "over_focus": false,
+        "fixed_over_half": false,
+        "fixed_admission_tokens": 35043,
+        "reductions": [],
+        "cleanup": {
+          "triggered": false,
+          "applied": false,
+          "reason": "within_focus"
+        }
+      },
+      "result": "completed",
+      "resumed_read_calls": 0
+    }
+  ],
+  "negative": [
+    {
+      "configured_window": null,
+      "provider_calls": 0,
+      "read_calls": 0,
+      "output_status": "partial",
+      "context_incomplete": true,
+      "missing": [
+        {
+          "field": "system",
+          "estimated_tokens": 2850
+        },
+        {
+          "field": "tool_definitions",
+          "estimated_tokens": 27160
+        },
+        {
+          "field": "output_schema",
+          "estimated_tokens": 462
+        },
+        {
+          "field": "current_question",
+          "estimated_tokens": 28
+        },
+        {
+          "field": "work_state.current_goal",
+          "estimated_tokens": 28
+        },
+        {
+          "field": "work_state.constraints",
+          "estimated_tokens": 14
+        },
+        {
+          "field": "work_state.citations",
+          "estimated_tokens": 15
+        },
+        {
+          "field": "work_state.revision",
+          "estimated_tokens": 1
+        },
+        {
+          "field": "skill_body[0]",
+          "estimated_tokens": 111
+        }
+      ],
+      "context_budget": {
+        "window": 32000,
+        "window_configured": false,
+        "reserve": 5024,
+        "focus": 26976,
+        "segments": {
+          "system": 2850,
+          "tools": 27622,
+          "skills": 0,
+          "envelope": 111,
+          "history": 0,
+          "loop": 0
+        },
+        "estimated_total": 30583,
+        "admission_tokens": 35171,
+        "estimation_margin": 0.15,
+        "calibration_factor": 1.15,
+        "estimation_basis": "first_call_estimate",
+        "over_focus": true,
+        "fixed_over_half": true,
+        "fixed_admission_tokens": 35043,
+        "reductions": [],
+        "cleanup": {
+          "triggered": true,
+          "applied": false,
+          "minimum_tokens": 5396,
+          "before_tokens": 35171,
+          "after_tokens": 35171,
+          "saved_tokens": 0,
+          "candidate_saved_tokens": 0,
+          "eligible_results": 0,
+          "protected_results": 0,
+          "retained_latest_results": 0,
+          "replaced_results": 0,
+          "cache_invalidation_from_message": null,
+          "reason": "no_eligible_results"
+        }
+      },
+      "recovery": {
+        "action": "configure_model_context_window",
+        "new_run_required": true
+      },
+      "actions": []
+    },
+    {
+      "configured_window": 32000,
+      "provider_calls": 0,
+      "read_calls": 0,
+      "output_status": "partial",
+      "context_incomplete": true,
+      "missing": [
+        {
+          "field": "system",
+          "estimated_tokens": 2850
+        },
+        {
+          "field": "tool_definitions",
+          "estimated_tokens": 27160
+        },
+        {
+          "field": "output_schema",
+          "estimated_tokens": 462
+        },
+        {
+          "field": "current_question",
+          "estimated_tokens": 28
+        },
+        {
+          "field": "work_state.current_goal",
+          "estimated_tokens": 28
+        },
+        {
+          "field": "work_state.constraints",
+          "estimated_tokens": 14
+        },
+        {
+          "field": "work_state.citations",
+          "estimated_tokens": 15
+        },
+        {
+          "field": "work_state.revision",
+          "estimated_tokens": 1
+        },
+        {
+          "field": "skill_body[0]",
+          "estimated_tokens": 111
+        }
+      ],
+      "context_budget": {
+        "window": 32000,
+        "window_configured": true,
+        "reserve": 5024,
+        "focus": 26976,
+        "segments": {
+          "system": 2850,
+          "tools": 27622,
+          "skills": 0,
+          "envelope": 111,
+          "history": 0,
+          "loop": 0
+        },
+        "estimated_total": 30583,
+        "admission_tokens": 35171,
+        "estimation_margin": 0.15,
+        "calibration_factor": 1.15,
+        "estimation_basis": "first_call_estimate",
+        "over_focus": true,
+        "fixed_over_half": true,
+        "fixed_admission_tokens": 35043,
+        "reductions": [],
+        "cleanup": {
+          "triggered": true,
+          "applied": false,
+          "minimum_tokens": 5396,
+          "before_tokens": 35171,
+          "after_tokens": 35171,
+          "saved_tokens": 0,
+          "candidate_saved_tokens": 0,
+          "eligible_results": 0,
+          "protected_results": 0,
+          "retained_latest_results": 0,
+          "replaced_results": 0,
+          "cache_invalidation_from_message": null,
+          "reason": "no_eligible_results"
+        }
+      },
+      "recovery": {
+        "action": "configure_model_context_window",
+        "new_run_required": true
+      },
+      "actions": []
+    }
+  ]
+}

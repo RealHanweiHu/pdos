@@ -3,6 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -14,8 +15,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import ARRAY, JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.models import Base, Row
 
 from .models import category_fk, principal_fk
 
@@ -37,6 +36,7 @@ class KnowledgeEntry(Row, Base):
     confirmed_by: Mapped[UUID | None]
     receipt_id: Mapped[UUID | None]
     prepared_candidate_id: Mapped[UUID | None]
+    answer_sources: Mapped[list | None] = mapped_column(JSONB(none_as_null=True))
     __table_args__ = (
         ForeignKeyConstraint(
             ["tenant_id", "prepared_candidate_id"],
@@ -48,9 +48,19 @@ class KnowledgeEntry(Row, Base):
         UniqueConstraint("tenant_id", "category_id", "lineage_id", "version"),
         UniqueConstraint("tenant_id", "lineage_id", "version"),
         UniqueConstraint("tenant_id", "category_id", "id"),
+        CheckConstraint(
+            "answer_sources IS NULL OR jsonb_typeof(answer_sources)='array'",
+            name="knowledge_answer_proof_shape",
+        ),
+        CheckConstraint(
+            "kind<>'verified_answer' OR answer_sources IS NOT NULL",
+            name="verified_answer_has_proof",
+        ),
         CheckConstraint("version>0 AND action IN ('add','supersede','withdraw')"),
         CheckConstraint(
-            "kind IN ('boundary','segment','competitor','voice','regulation','research_question')"
+            "kind IN ('boundary','segment','competitor','voice','regulation',"
+            "'research_question','verified_answer')",
+            name="category_knowledge_kind",
         ),
         CheckConstraint("action<>'withdraw' OR length(withdraw_reason)>0"),
         CheckConstraint(

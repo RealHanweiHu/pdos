@@ -1,0 +1,32 @@
+{
+  "status": "checkpoint_verified_full_goal_in_progress",
+  "database": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0830",
+  "new_migration": false,
+  "real_models": false,
+  "embedding": false,
+  "live_processes": [],
+  "pending": [],
+  "previous_checkpoint": "../pdos-next-enterprise-relations-20261028/result.md",
+  "goal_complete": false,
+  "completed_evidence": {
+    "scope_and_Temporal": "scope-contract-fixed.txt: 8 passed",
+    "native_issue": "scope-business-explicit-customer.txt: 1 passed, includes default customer-private exclusion and explicit inclusion",
+    "scope_concurrency_performance": "scope-focused.junit.xml: all 4 passed, p95 0.427830 sec / 12 SQL / 12 samples",
+    "workstate_context": "work-state-context-final.txt: 15 passed",
+    "skill_coverage": "skill-coverage-fixed.txt: 42 passed, existing T1/T2-prepare-only declarations retained",
+    "frontend": "frontend-tests.txt: 87 passed; target ESLint passed",
+    "build": "frontend-build.txt: passed with unchanged product source and cached actual Geist fonts",
+    "narrowed_preference": "narrowed-preference-corrected.txt: 2 passed after test fixture variable correction",
+    "browser": "browser-result.json: actual authenticated UI/API and zero inference/business command additions",
+    "source_recheck": "255 source inputs and 665 frontend inputs unchanged; targeted diff check passed"
+  },
+  "remaining": [
+    "See result.md remaining scope and sole queue"
+  ],
+  "test_files": 59,
+  "expected_cases": 468,
+  "source_inputs": 255,
+  "browser_note": "Authenticated product/API checks completed; cached real font build passed. Own browser/API/web stopped and temporary token files removed.",
+  "result": "result.md"
+}

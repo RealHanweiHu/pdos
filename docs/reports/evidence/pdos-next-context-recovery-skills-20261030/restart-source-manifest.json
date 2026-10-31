@@ -1,0 +1,25 @@
+{
+  "created_at_utc": "2026-10-30T09:58:44.547099+00:00",
+  "scope": "restart-owned inputs after pure/UI/TS/lint, native deferred to root",
+  "sha256": {
+    "pdos-next/server/pdos_next/agent_kernel/api.py": "73ad25b8e3cb9ddc6830abf4e3d0054bd319297244096b3ca79c87efffa5abb9",
+    "pdos-next/server/pdos_next/agent_kernel/context_restart.py": "dafb5e4f64c2d1b437badf835b1e7a9eb98da7e71dba49928b7ec9a93636333e",
+    "pdos-next/server/pdos_next/agent_kernel/work_state.py": "b8a66967f018b9b554af1f5f10df1f93a6f3b924c1440f20de31e8a1557d4a00",
+    "pdos-next/server/pdos_next/agent_kernel/work_state_candidates.py": "4b96855801f6aba3d38dbfcd78ba618130c37f8637e4386d1a0ca42c66cacc2e",
+    "pdos-next/server/pdos_next/enterprise_search/assistant_inheritance.py": "f264afd18cb0fea4f652dff2ef980d18c16e235beae69aa798252842e13e9402",
+    "pdos-next/server/tests/agent_kernel/test_context_restart.py": "274b48d232fef8477e64ab0c15404e5e791d64f622026953224e71045b3be835",
+    "pdos-next/server/tests/agent_kernel/test_context_restart_pg.py": "23a18cf44e177bf0a6e1559f9078491704c49cc3bb829b0ca6feae8e6f04d48e",
+    "pdos-next/server/tests/agent_kernel/test_work_state_candidates.py": "03547b1e1018aeb673503bc33da14e02368ef677e02deb6b21a06e26e5cffca5",
+    "pdos-next/server/tests/agent_kernel/test_context_correction_start.py": "f06a705be0aa5ea258f05a87dffcb82ddf6678f31689197c0970c3028a05e0b8",
+    "pdos-next/web/src/components/pai/context-restart.tsx": "feac6d91d0277f84ac9b0b3629bdee0412c743d1da989a0a9e5e44186014ac12",
+    "pdos-next/web/src/components/pai/context-restart.test.mjs": "2d8e92dea6ecbf054a9bd904cf63a86bba34f372be40957fdb0d59cf1384f848",
+    "pdos-next/web/src/components/pai/run-continuation.tsx": "3e4ff83949a463c4e78cd45deec4051718a8293f3293fa2c10cde0f408b9963f",
+    "pdos-next/web/src/components/pai/run-continuation.test.mjs": "64e6d4520eaa90aa0b3909ecd173680547084a7a06784a6d77aecea0ac966369",
+    "pdos-next/web/src/lib/run-continuation.ts": "ca9bfb46aa6c3c8df9db6d5dbb45762931e44a2ec68d43cac0a6da3204660c49",
+    "pdos-next/web/src/lib/run-start-intent.test.mjs": "143ca068b1bcdc7bfdae873ec7d4d57784649e4893fea465f651f68e9ba653ab",
+    "pdos-next/web/src/components/xiaopai.tsx": "f8d4aa8756d1269d665096044b4967f4657087c7eea968e4efc36c5c13abd822",
+    "pdos-next/web/src/components/category-create/personal-xiaopai.tsx": "d07a99fe293ed5ca07902646c95ca6eb7355006bc08b06c36e4fec388157ebe0",
+    "pdos-next/web/src/app/api/[...path]/route.test.ts": "2a129e0920320ba3eaa7a0fe0382259c66dd56ed69e341ae3eb4023372208023",
+    "pdos-next/server/pdos_next/agent_kernel/conversation_acl.py": "c162d6ff7b35df9ad98e257d68f48d129cf5d96657ee174261a45141c8ee2542"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "frozen": true,
+  "migration": null,
+  "scope": "Stage only; no live/DB/Temporal/build/model/embedding/outbound operation",
+  "kind": "existing-memory-session-fixture-compatibility",
+  "apply_after": "apply-manifest.json",
+  "files": [
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_category_adoption.py",
+      "mode": "modify",
+      "base_sha256": "3b716e1dd8b9bd6c96944167045a8f780175b8d7b7047b694f4cf599dc61df1c",
+      "staged_sha256": "a438474514fc39d57f2604d4d9f3ecb4c38e50dcbb7322fa90a3224a7df4602c",
+      "staged_path": "/tmp/pdos-x2-candidate-state-stage-20261029/pdos-next/server/tests/agent_kernel/test_category_adoption.py",
+      "base_path": "/tmp/pdos-x2-candidate-state-stage-20261029/base/pdos-next/server/tests/agent_kernel/test_category_adoption.py"
+    }
+  ],
+  "patch": {
+    "path": "memory-session-fixture.patch",
+    "sha256": "6827818f53828aa7454024e55918109c3251b6a595d34bf2d5d9458532d4e2e6"
+  },
+  "production_changes": [],
+  "validation": "53 fixture cases passed on final fixture in evidence/native-adoption-metadata-final2.txt (3 unrelated new metadata assertion failures corrected separately; evidence/metadata-final.txt).",
+  "behavior": "Actual run/sequence seed reads return matching stored events or empty. Explicitly supports current failure finalization work-state queries; unknown SQL still asserts. Original Activity remains byte-for-byte untouched; terminal/no-reexecution/error assertions preserved and strengthened.",
+  "public_api_file_changes": false,
+  "review_artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "84952cd1979a0e89c60ff6296e1c1481e72abaa193a7c4cf350801a7ad3b36fa"
+    },
+    {
+      "path": "pg-temporal-nodeids.json",
+      "sha256": "f1c0c9b66ae0ea8fabdb5b056be95dc6fb2e4a2566c48e82075427dc6015cc73"
+    },
+    {
+      "path": "evidence/replay.json",
+      "sha256": "d940ff70c2f83fe3d5a2a0dac12c3081e4d12842f53514f9dc6b5aa200282655"
+    }
+  ]
+}

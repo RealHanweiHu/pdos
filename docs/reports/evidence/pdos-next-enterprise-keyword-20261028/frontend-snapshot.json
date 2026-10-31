@@ -1,0 +1,15 @@
+{
+  "prior_build_inputs": 659,
+  "changed_since_prior_build": [
+    "src/app/api/[...path]/route.ts"
+  ],
+  "current_typecheck_snapshot_matches_all_inputs": true,
+  "new_tests_are_not_production_build_inputs": true,
+  "typecheck_exit": 0,
+  "bff_and_continuation_tests": 21,
+  "eslint_exit": 0,
+  "tests_command": "node --test src/app/api/route-enterprise-search.test.mjs src/app/api/route-work-state.test.mjs src/app/api/route-pai-work-products.test.mjs src/components/pai/work-state-carry.test.mjs src/components/pai/run-continuation.test.mjs",
+  "typecheck_command": "node_modules/.bin/tsc --noEmit --incremental false (isolated prior build snapshot with current BFF route)",
+  "eslint_command": "node_modules/.bin/eslint src/app/api/[...path]/route.ts src/app/api/route-enterprise-search.test.mjs",
+  "tests_exit": 0
+}

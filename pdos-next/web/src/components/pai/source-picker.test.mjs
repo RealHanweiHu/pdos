@@ -114,7 +114,7 @@ test("picker opens with GET only, distinguishes Artifact/original versions and c
   const details = elements(c.render(), e => e.type?.name === "SourceDetails")[0];
   const html = renderToStaticMarkup(React.createElement(details.type, details.props));
   assert.match(html, /原件：真实规格.pdf · 版本 8/); assert.match(html, /已登记解析结果/); assert.match(html, /已记录扫描通过/);
-  assert.equal(calls[0].body, undefined); assert.match(text(c.render()), /只随下次新工作发送固定版本/);
+  assert.equal(calls[0].body, undefined); assert.match(text(c.render()), /所选资料会限定下次回答的检索范围/);
   pickerButton(c).props.onClick(); await c.flush(); assert.equal(calls.length, 1); assert.match(text(c.render()), /真实已登记附件 · v3/);
 });
 

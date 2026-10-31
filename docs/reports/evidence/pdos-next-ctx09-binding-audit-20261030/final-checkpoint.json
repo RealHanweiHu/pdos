@@ -1,0 +1,16 @@
+{
+  "at_utc": "2026-10-30T10:14:20.651163+00:00",
+  "previous_goal_turn_classification": "progress",
+  "current_turn_classification": "progress",
+  "scope": "CTX09 candidate compatibility and concrete revision draft; no production change",
+  "source_manifest": "source-sha256.json",
+  "independent_recompute": "recomputed.json",
+  "original_questions_modified": false,
+  "old_partial_or_metrics_overwritten": false,
+  "revision_candidate": "ctx09-revision-draft.md",
+  "candidate_approved": false,
+  "formal_goal_complete": false,
+  "real_model_calls": 0,
+  "database_calls": 0,
+  "network_calls": 0
+}

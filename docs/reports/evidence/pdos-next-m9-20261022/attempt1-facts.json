@@ -1,0 +1,31 @@
+{
+  "target": "127.0.0.1:64245/pdos_test",
+  "case": "868e07e1-52d2-505c-ac27-58c107fe4146",
+  "change_status": "implementing",
+  "change_revision": 8,
+  "completion_records": 0,
+  "qualification_windows": [
+    {
+      "kind": "duty",
+      "from": "2026-10-22T15:24:50.834390+00:00",
+      "until": "2026-10-22T16:14:50.834390+00:00",
+      "operations": [
+        "change.close",
+        "change.effectivity.record",
+        "change.verification.record"
+      ]
+    },
+    {
+      "kind": "qualification",
+      "from": "2026-10-22T15:24:50.834390+00:00",
+      "until": "2026-10-22T16:14:50.834390+00:00",
+      "operations": [
+        "change.close",
+        "change.effectivity.record",
+        "change.verification.record"
+      ]
+    }
+  ],
+  "failure_log_saved_at": "2026-10-22T16:17:46.075549+00:00",
+  "failed_chain_not_counted_passed": true
+}

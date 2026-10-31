@@ -1,0 +1,60 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope FAILED [100%]
+
+=================================== FAILURES ===================================
+_ test_actual_other_project_issue_uses_its_own_source_and_current_object_scope _
+tests/enterprise_search/test_scope_business_pg.py:38: in test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+    assert preflight["returned"] == 1, preflight
+E   AssertionError: {'coverage': {'status': 'current', 'notice': None, 'indexed_as_of': None}, 'version': 'enterprise-search/v1', 'items': [], 'returned': 0, ...}
+E   assert 0 == 1
+=============================== warnings summary ===============================
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_scope_business_pg.py::test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
+================== 1 failed, 18 warnings in 81.41s (0:01:21) ===================

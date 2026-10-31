@@ -1,0 +1,46 @@
+[
+  {
+    "file": "pdos-next/server/pdos_next/contracts.py",
+    "base_sha256": "13a12a22d205ae4514108713445a4bcf3778a2ac0d2120d3b06bd173387f9270",
+    "baseline_findings": [
+      {
+        "code": "I001",
+        "location": {
+          "column": 1,
+          "row": 1
+        },
+        "message": "Import block is un-sorted or un-formatted"
+      },
+      {
+        "code": "I001",
+        "location": {
+          "column": 1,
+          "row": 526
+        },
+        "message": "Import block is un-sorted or un-formatted"
+      },
+      {
+        "code": "E402",
+        "location": {
+          "column": 1,
+          "row": 526
+        },
+        "message": "Module level import not at top of file"
+      }
+    ]
+  },
+  {
+    "file": "pdos-next/server/pdos_next/command_handlers.py",
+    "base_sha256": "b2aa8dafef480cba06e4c079e32f2b67602862ff960c3783518e48db8849731e",
+    "baseline_findings": [
+      {
+        "code": "E501",
+        "location": {
+          "column": 101,
+          "row": 239
+        },
+        "message": "Line too long (144 > 100)"
+      }
+    ]
+  }
+]

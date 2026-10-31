@@ -1,0 +1,14 @@
+{
+  "scope": "Anthropic near-focus preflight count and host-controlled cache markers",
+  "production_calls": 0,
+  "database_operations_by_subagent": 0,
+  "offline_tests": 119,
+  "pg_status": "delegated_to_root_not_run_by_subagent",
+  "source_sha256": {
+    "pdos-next/server/pdos_next/providers/agent_client.py": "cbcda5db3bc42a22dbf6f5af397df8f730e8a2b4510476788f3cd2647e9d5a25",
+    "pdos-next/server/pdos_next/providers/types.py": "5d2e1d3179aef15a956a8e623829aeec19f1869ac1d2251b3263319116091b27",
+    "pdos-next/server/pdos_next/agent_kernel/gateway.py": "af5e92855cc4e25c40ca3f014151c83b911dbd8adfbbc4fa383b21b889f4fe63",
+    "pdos-next/server/tests/agent_kernel/test_anthropic_context_count.py": "465749c0341959ab557401bbe0f84486e6c09fb096854c8e8fcf40c7df0c728d",
+    "pdos-next/server/tests/agent_kernel/test_anthropic_context_count_pg.py": "cbda08fc4e20a917c245c0a8b2452a88eb5e5cbab7e52a812c9fd79f25f91cd6"
+  }
+}

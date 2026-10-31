@@ -1,0 +1,26 @@
+..........................F.....                                         [100%]
+=================================== FAILURES ===================================
+__ test_project_conversation_selector_precedes_title_search_counts_and_cursor __
+
+    def test_project_conversation_selector_precedes_title_search_counts_and_cursor():
+        project = uuid4()
+        page = service.ConversationPage(project_id=project, q="saved discussion")
+        compiled = select(service._eligible(context(), page)).compile(dialect=postgresql.dialect())
+        sql = str(compiled)
+        assert project in compiled.params.values()
+        assert "agent_sessions.project_id =" in sql
+        assert "EXISTS (SELECT projects.id" in sql
+>       assert "agent_runs.project_id IS NOT DISTINCT FROM readable_sessions.project_id" in sql
+E       AssertionError: assert 'agent_runs.project_id IS NOT DISTINCT FROM readable_sessions.project_id' in 'WITH readable_sessions AS \n(SELECT agent_sessions.id AS session_id, agent_sessions.tenant_id AS tenant_id, agent_ses...d_from_id, eligible_conversations.matched_reverted_at, eligible_conversations.match_kind \nFROM eligible_conversations'
+
+tests/agent_kernel/test_session_presentation.py:90: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_session_presentation.py::test_search_compiles_with_current_actual_parents_and_project_before_pagination
+tests/agent_kernel/test_session_presentation.py::test_project_conversation_selector_precedes_title_search_counts_and_cursor
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/agent_kernel/session_presentation.py:98: SADeprecationWarning: Passing expression to ``distinct`` to generate a DISTINCT ON clause is deprecated. Use instead the ``postgresql.distinct_on`` function as an extension.
+    .distinct(presentation.session_id)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_session_presentation.py::test_project_conversation_selector_precedes_title_search_counts_and_cursor
+1 failed, 31 passed, 2 warnings in 4.21s

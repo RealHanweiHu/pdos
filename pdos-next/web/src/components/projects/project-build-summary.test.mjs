@@ -81,11 +81,11 @@ test("Builds retain precise planned quantities, fixed configurations and purpose
   for (const text of ["保留原验证目标", "保留原处置要求", "固定范围数值判定未通过", "样件 2", "配对 5", "已登记测量记录配对 4", "尚缺测量记录配对 1", "本轮按下列固定引用核对", "11.000001", "2026-10-17T01:00:00.000001Z", "仅覆盖当前固定测试范围的具名结论"]) assert.ok(env.html().includes(text), text);
   assert.doesNotMatch(env.html(), /阶段通过<|制造放行成功|100%|INTERNAL_SNAPSHOT_SHOULD_NOT_RENDER|<pre/);
 });
-test("native workbench anchors retain all exact scope and Build parameters without claiming automatic Run selection", async t => {
+test("native workbench anchors retain all exact scope and Build parameters and the selected Run when continuing its result", async t => {
   const env = environment(t); await ready(env); await select(env); env.respond(env.pending("verification-results"), tests()); await env.flush();
   const links = elements(env.tree(), node => node.props?.href); assert.ok(links.length >= 4);
-  for (const anchor of links) { assert.equal(anchor.type, "a"); const params = new URL(anchor.props.href, "https://example.test").searchParams; assert.equal(params.get("category"), scope.categoryId); assert.equal(params.get("product"), scope.productId); assert.equal(params.get("project"), scope.projectId); assert.equal(params.get("build"), id(5)); assert.ok(params.get("view")); assert.ok(params.get("task")); assert.equal(params.has("run"), false); }
-  assert.match(env.html(), /测试 Run 仍需在原页面选择/);
+  for (const anchor of links) { assert.equal(anchor.type, "a"); const params = new URL(anchor.props.href, "https://example.test").searchParams; assert.equal(params.get("category"), scope.categoryId); assert.equal(params.get("product"), scope.productId); assert.equal(params.get("project"), scope.projectId); assert.equal(params.get("build"), id(5)); assert.ok(params.get("view")); assert.ok(params.get("task")); if (params.has("run")) { assert.equal(params.get("run"), id(20)); assert.ok(params.get("request")); } }
+  assert.match(env.html(), /同时带入对应请求与运行/);
 });
 test("selected test failures do not erase the project Build list, and retry retains the same explicit Build", async t => {
   const env = environment(t); await ready(env); await select(env); env.reject(env.pending("verification-results"), Object.assign(new Error("合成测试读取失败"), { status: 503 })); await env.flush();
@@ -160,5 +160,28 @@ test("saved preparation receives only the explicitly selected, rechecked Build w
   await select(env, "合成轮次 6"); assert.equal(preparations().length, 0);
   env.respond(env.pending("verification-results"), tests()); await env.flush();
   assert.equal(preparations()[0].props.build.id, id(6)); assert.equal(env.calls.length, 4);
+  assert.ok(env.calls.every(call => call.body === undefined));
+});
+
+
+test("source destination selects only an authorized returned Build and never submits a command", async t => {
+  const env = environment(t);
+  env.setProps({ initialBuild: id(6) });
+  await ready(env, list([build(), build(6)]));
+  assert.ok(env.pending(`verification-results?build_id=${id(6)}`));
+  assert.equal(env.calls.filter(call => call.route.includes("verification-results")).length, 1);
+  assert.ok(env.calls.every(call => call.body === undefined));
+  env.setProps({ initialBuild: id(999) });
+  await env.flush();
+  assert.equal(env.calls.filter(call => call.route.includes("verification-results")).length, 1);
+  env.setProps({ initialBuild: id(5) });
+  await env.flush();
+  assert.ok(env.pending(`verification-results?build_id=${id(5)}`));
+  await select(env, "合成轮次 6");
+  await env.flush();
+  const before = env.calls.length;
+  env.setProps({ initialBuild: id(5) });
+  await env.flush();
+  assert.equal(env.calls.length, before);
   assert.ok(env.calls.every(call => call.body === undefined));
 });

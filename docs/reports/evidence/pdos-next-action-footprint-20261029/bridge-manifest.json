@@ -1,0 +1,40 @@
+{
+  "stage": "native action direct-parent discussion bridge plus authorized child-B fixture correction",
+  "base": "D already-live final; SOURCE_TABLES and field basis hook retained",
+  "shared": [
+    {
+      "path": "pdos-next/server/pdos_next/enterprise_search/action_sources.py",
+      "base_sha256": "3a142ee8b7619ece79ef5f58111e251c14517dedee98e45a3072bce3c47088f1",
+      "candidate_sha256": "fe0d80a5b4b8cdeef08e5c333a9a2f517f499cc551a1e0275c3009be94a64139"
+    },
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_action_footprint_temporal_pg.py",
+      "base_sha256": "9a9ed051894367d2e35a532b8546ff9806e24466bb2b14efa52516ff84701659",
+      "candidate_sha256": "37a7409ecf6773a14f089edbe985fbabfcbf3da4beaae86bc50b60e01e60546c"
+    }
+  ],
+  "new": [
+    {
+      "path": "pdos-next/server/tests/enterprise_search/test_action_parent_carry.py",
+      "sha256": "6b96b09031c5f951a2b57cbe22b6600386dcc126f0fa9c6f7aef680fac1092aa"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "README.md",
+      "sha256": "bae754e243f57c1151088dfedb02135991f730c09ee1e03a553b0a722f5a5cba"
+    },
+    {
+      "path": "shared.patch",
+      "sha256": "9644c4b03c5882a029d3061128c20cdf6febd61bf375b5b930919a1a8741c4c1"
+    }
+  ],
+  "validation": {
+    "pure": "130 passed in 16.31s (12 new+118 existing), candidate production module; no DB/Temporal/checkpoint environment",
+    "ruff": "PASS: explicit --config pdos-next/ruff.toml, 3 files",
+    "native_pg_temporal": "Candidate 3 new+6 old cases collect-only=9; actual rerun root-only"
+  },
+  "no_live_modification": true,
+  "no_db_or_service": true,
+  "no_migration": true
+}

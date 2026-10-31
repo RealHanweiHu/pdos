@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="12.194" timestamp="2026-10-29T01:40:52.568158-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.agent_kernel.test_retrieval_feedback_pg" name="test_actual_search_or_material_citation_preserves_real_origin_and_ranking[materials]" time="11.869"><failure message="pdos_next.errors.DomainError: 原模型调用需对账。&#10;During task with name 'model' and id 'af34f01c-f93b-814a-fccf-d9a8b7596199'">tests/agent_kernel/test_retrieval_feedback_pg.py:148: in test_actual_search_or_material_citation_preserves_real_origin_and_ranking
+    execute(owner, run_scope, host)
+tests/enterprise_search/test_assistant_pg.py:181: in execute
+    return AgentKernel(host, owner.registry).execute(
+pdos_next/agent_kernel/graph.py:833: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:325: in model
+    response = (model_step if callable(model_step) else ports.model)(
+pdos_next/agent_kernel/host.py:155: in model_step
+    turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/gateway.py:333: in turn
+    raise DomainError(
+E   pdos_next.errors.DomainError: 原模型调用需对账。
+E   During task with name 'model' and id 'af34f01c-f93b-814a-fccf-d9a8b7596199'</failure></testcase></testsuite></testsuites>

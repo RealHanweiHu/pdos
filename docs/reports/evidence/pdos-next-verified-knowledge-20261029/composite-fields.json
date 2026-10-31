@@ -1,0 +1,202 @@
+{
+  "checks": [
+    {
+      "label": "GUARD",
+      "table": "action_receipts",
+      "prefix": "receipt",
+      "fields": [
+        "actor_id",
+        "command_id",
+        "confirmation_id",
+        "operation",
+        "requester_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD",
+      "table": "agent_runs",
+      "prefix": "origin",
+      "fields": [
+        "requester_id",
+        "reverted_at",
+        "state"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD",
+      "table": "categories",
+      "prefix": "category",
+      "fields": [
+        "owner_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "NATIVE_ORIGIN",
+      "table": "knowledge_answer_reviews",
+      "prefix": "review",
+      "fields": [
+        "answer_digest",
+        "id",
+        "origin_run_id",
+        "source_proof"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD common",
+      "table": "knowledge_answer_reviews",
+      "prefix": "NEW",
+      "fields": [
+        "category_id",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD common",
+      "table": "knowledge_gap_submissions",
+      "prefix": "NEW",
+      "fields": [
+        "category_id",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD common",
+      "table": "knowledge_gap_attributions",
+      "prefix": "NEW",
+      "fields": [
+        "category_id",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD review",
+      "table": "knowledge_answer_reviews",
+      "prefix": "NEW",
+      "fields": [
+        "answer_digest",
+        "category_id",
+        "command_id",
+        "id",
+        "origin_run_id",
+        "receipt_id",
+        "responsible_id",
+        "source_proof",
+        "subject_id",
+        "subject_kind",
+        "tenant_id",
+        "verified_by"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD gap",
+      "table": "knowledge_gap_submissions",
+      "prefix": "NEW",
+      "fields": [
+        "answer",
+        "category_id",
+        "feedback_id",
+        "kind",
+        "owner_id",
+        "recipient_id",
+        "run_id",
+        "source_proof",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "GUARD attribution",
+      "table": "knowledge_gap_attributions",
+      "prefix": "NEW",
+      "fields": [
+        "actor_id",
+        "category_id",
+        "submission_id",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "NATIVE_ORIGIN category",
+      "table": "category_knowledge_entries",
+      "prefix": "NEW",
+      "fields": [
+        "action",
+        "id",
+        "kind",
+        "receipt_id",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "NATIVE_ORIGIN native",
+      "table": "knowledge_candidate_versions",
+      "prefix": "NEW",
+      "fields": [
+        "command",
+        "id",
+        "reads",
+        "sources",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "NATIVE_ORIGIN native",
+      "table": "knowledge_rule_versions",
+      "prefix": "NEW",
+      "fields": [
+        "command",
+        "id",
+        "reads",
+        "sources",
+        "tenant_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "NATIVE_ORIGIN rule",
+      "table": "knowledge_rule_versions",
+      "prefix": "NEW",
+      "fields": [
+        "candidate_version_id"
+      ],
+      "missing": []
+    },
+    {
+      "label": "NATIVE_ORIGIN candidate",
+      "table": "knowledge_candidate_versions",
+      "prefix": "NEW",
+      "fields": [
+        "previous_id"
+      ],
+      "missing": []
+    }
+  ],
+  "receipt_confirmation_id_present": true,
+  "native_new_fields_closed": [
+    "action",
+    "candidate_version_id",
+    "command",
+    "id",
+    "kind",
+    "previous_id",
+    "reads",
+    "receipt_id",
+    "sources",
+    "tenant_id"
+  ],
+  "acl_finite_branches": 9,
+  "acl_review_catalog_reference": false,
+  "db_access": false,
+  "note": "Static field closure only; PostgreSQL execution/RLS/recursion still requires root PG validation."
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "cache-policy inputs only; pre-existing shared-file edits are not part of this increment",
+  "migration": "s0_0853",
+  "down_revision": "s0_0852",
+  "files": {
+    "pdos-next/server/pdos_next/agent_kernel/policy.py": "4986dca6c582d11c87541f39df53c0732c84969b671aa65ae7cf064d98119940",
+    "pdos-next/server/pdos_next/agent_kernel/management.py": "66afdd9df70770ba3c9c362e6ce3ea6199567a5e632d6cf39eb7c5d25a9ea7bb",
+    "pdos-next/server/pdos_next/agent_kernel/management_api.py": "f7210025eb9caf5c5b0af5921b27336a6936dba25f406c3408db73fba220e035",
+    "pdos-next/server/pdos_next/agent_kernel/models.py": "826754f3bfee06ad44d237c81fbdc58b578b92b383e051d9711cc3b37f1d8aa0",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "7c1336933d039829689b838792858e80fc544f3b43503d04526e6279dd57f0b9",
+    "pdos-next/server/migrations/schema_s0_0853.py": "967df8935735820a436cb919e29357250c10dcc54477770a060746915e981027",
+    "pdos-next/server/migrations/versions/s0_0853_agreement_prompt_cache.py": "700fb39c9a3917d9bd2a6b13dbae45684b4ed721321cab4f897ecd99893e7995",
+    "pdos-next/server/tests/agent_kernel/test_prompt_cache_policy.py": "101697f381ac9e75ec7354f6c097a6915efca3b43260b76ac429255da3a5156c",
+    "pdos-next/server/tests/agent_kernel/test_prompt_cache_policy_pg.py": "66d3d89efc6e38becf4b6d2b10137dc05958aa3644592c04e044f798036ab990",
+    "pdos-next/web/src/lib/provider-agreements.ts": "bdfefe055544efd1fcae3fdec6bc9bb561bb4d4482045e79b54d4fc15009e32c",
+    "pdos-next/web/src/lib/provider-agreements.test.ts": "bebaedc5e9bc8d1df6f068821f2ccf4e533e50db2f6d12ad88da249a9aa3a447",
+    "pdos-next/web/src/components/model_configuration/provider-agreements.tsx": "8895c799fa52134f38255ba07052ae9818821beb877505fe7504b1f9702956ae"
+  }
+}

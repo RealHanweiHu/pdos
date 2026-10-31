@@ -1,0 +1,42 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 7 items
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body PASSED [ 14%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root] PASSED [ 28%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim] PASSED [ 42%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs PASSED [ 57%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_registered_snapshot_dependency_is_signed_without_original_text_and_cannot_be_retargeted PASSED [ 71%]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency FAILED [ 85%]
+
+=================================== FAILURES ===================================
+_ test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency _
+tests/enterprise_search/test_knowledge_dependencies_pg.py:229: in test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+    assert len(selected) == 6
+E   AssertionError: assert 2 == 6
+E    +  where 2 = len({'c7fa3df7-283c-5afb-9feb-47f94bff8137': {'rank': 1, 'title': '品类知识 · boundary', 'nature': 'structured', 'channel': 'keyword', ...}, 'aa4740f2-4fbd-5798-9747-fc2344ddb00d': {'rank': 2, 'title': '品类知识 · boundary', 'nature': 'structured', 'channel': 'keyword', ...}})
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim]
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_registered_snapshot_dependency_is_signed_without_original_text_and_cannot_be_retargeted
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+  tests/enterprise_search/test_knowledge_dependencies_pg.py:210: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-enterprise-dependencies-20261028/knowledge-focused.junit.xml -
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+=================== 1 failed, 5 passed, 8 warnings in 43.01s ===================

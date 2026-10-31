@@ -1,0 +1,142 @@
+.............EEEEEEE...........................................F....EEE. [ 59%]
+.................................................F                       [100%]
+==================================== ERRORS ====================================
+_ ERROR at setup of test_provider_call_requires_registered_graph_and_replays_saved_request _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_private_run_without_agreement_proceeds_and_receipts_none _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_run_provider_identity_cannot_change_between_model_calls _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_prompt_is_fixed_and_tool_disclosure_only_grows_per_isolation _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_scope_revocation_during_call_frees_slot_without_revealing_result _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_unknown_network_attempt_frees_slot_and_never_blindly_retries _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[customer_request] _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[new_product] _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+_ ERROR at setup of test_three_bound_entries_preserve_all_declared_working_context[derivative] _
+
+    @pytest.fixture(scope="session")
+    def engines():
+>       admin = engine_for(os.environ["TEST_DATABASE_URL"])
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       KeyError: 'TEST_DATABASE_URL'
+
+tests/conftest.py:25: KeyError
+=================================== FAILURES ===================================
+_ test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest _
+
+    def test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest():
+        catalog = SkillCatalog()
+>       assert len(catalog.index) == 17
+E       AssertionError: assert 18 == 17
+E        +  where 18 = len([{'key': 'build_execution', 'purpose': '在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业...gap_check', 'purpose': '检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。'}, ...])
+E        +    where [{'key': 'build_execution', 'purpose': '在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业...gap_check', 'purpose': '检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。'}, ...] = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x10dcf09b0>.index
+
+tests/agent_kernel/test_context_projection.py:14: AssertionError
+___________________ test_source_catalog_validator_runs_clean ___________________
+
+    def test_source_catalog_validator_runs_clean():
+        """The derived catalogs still match the frozen v1.1 source they record."""
+        import subprocess
+        import sys
+    
+        root = CONTRACTS.parent
+        result = subprocess.run(
+            [sys.executable, str(root / "tools/validate_contracts.py")],
+            capture_output=True,
+            text=True,
+        )
+>       assert result.returncode == 0, result.stderr
+E       AssertionError: Traceback (most recent call last):
+E           File "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/tools/validate_contracts.py", line 16, in <module>
+E             assert len(data["items"]) == count
+E                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E         AssertionError
+E         
+E       assert 1 == 0
+E        +  where 1 = CompletedProcess(args=['/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python', '/Users/huh...ine 16, in <module>\n    assert len(data["items"]) == count\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n').returncode
+
+tests/command_catalog/test_catalog.py:70: AssertionError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_projection.py::test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest
+FAILED tests/command_catalog/test_catalog.py::test_source_catalog_validator_runs_clean
+ERROR tests/agent_kernel/test_gateway.py::test_provider_call_requires_registered_graph_and_replays_saved_request
+ERROR tests/agent_kernel/test_gateway.py::test_private_run_without_agreement_proceeds_and_receipts_none
+ERROR tests/agent_kernel/test_gateway.py::test_run_provider_identity_cannot_change_between_model_calls
+ERROR tests/agent_kernel/test_gateway.py::test_generic_capability_graph_cannot_bypass_registered_xiaopai_gateway
+ERROR tests/agent_kernel/test_gateway.py::test_prompt_is_fixed_and_tool_disclosure_only_grows_per_isolation
+ERROR tests/agent_kernel/test_gateway.py::test_scope_revocation_during_call_frees_slot_without_revealing_result
+ERROR tests/agent_kernel/test_gateway.py::test_unknown_network_attempt_frees_slot_and_never_blindly_retries
+ERROR tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[customer_request]
+ERROR tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[new_product]
+ERROR tests/agent_kernel/test_context_projection_entries.py::test_three_bound_entries_preserve_all_declared_working_context[derivative]
+2 failed, 110 passed, 10 errors in 6.82s

@@ -1,0 +1,29 @@
+{
+  "original_id": "f9e84210-91c7-4f9b-b3f9-01f8ffba97c9",
+  "parse": {
+    "status": "parsed",
+    "original_id": "f9e84210-91c7-4f9b-b3f9-01f8ffba97c9"
+  },
+  "source": {
+    "artifact_id": "3ef628ca-6ee1-439a-829b-eff84d0004b7",
+    "artifact_revision": 1,
+    "title": "ui-completion-source.txt",
+    "product_id": null,
+    "status": "active",
+    "original": {
+      "id": "f9e84210-91c7-4f9b-b3f9-01f8ffba97c9",
+      "revision": 2,
+      "filename": "ui-completion-source.txt",
+      "parse_status": "parsed",
+      "parse_code": null,
+      "scan_status": "clean"
+    },
+    "availability": {
+      "available": true,
+      "code": null
+    }
+  },
+  "scanner": "synthetic-test-port",
+  "real_models": 0,
+  "workflow_enabled": false
+}

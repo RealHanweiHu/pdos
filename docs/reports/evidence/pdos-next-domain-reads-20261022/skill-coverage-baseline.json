@@ -1,0 +1,14 @@
+{
+  "head": "67e2650e9fabc21161212f22b9546bf800e60043",
+  "current_missing": [
+    "change.close",
+    "change.effectivity.record",
+    "change.verification.record"
+  ],
+  "head_skill_missing": [
+    "change.close",
+    "change.effectivity.record",
+    "change.verification.record"
+  ],
+  "new_reads_all_declared": true
+}

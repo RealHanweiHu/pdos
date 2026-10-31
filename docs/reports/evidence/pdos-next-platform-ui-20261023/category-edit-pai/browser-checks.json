@@ -1,0 +1,106 @@
+[
+  {
+    "name": "未修改时禁用保存",
+    "pass": true
+  },
+  {
+    "name": "品类改名保留重名校验",
+    "pass": true
+  },
+  {
+    "name": "保存后名称与主要场景同步到详情",
+    "pass": true
+  },
+  {
+    "name": "编辑名称不会丢失原竞品",
+    "pass": true
+  },
+  {
+    "name": "小Pai携带品类新名称",
+    "pass": true
+  },
+  {
+    "name": "关联提案同步显示新名称",
+    "pass": true
+  },
+  {
+    "name": "品类总览显示已更新名称",
+    "pass": true
+  },
+  {
+    "name": "信息未给定时保留空候选，不擅自命名",
+    "pass": true
+  },
+  {
+    "name": "对话补充候选名称和场景，旧候选不可创建",
+    "pass": true
+  },
+  {
+    "name": "修改候选内容后须重新核对共享内容",
+    "pass": true
+  },
+  {
+    "name": "小Pai确认后创建品类并跳转对象页",
+    "pass": true
+  },
+  {
+    "name": "小Pai创建结果出现在品类总览",
+    "pass": true
+  },
+  {
+    "name": "创建回执保留且不出现重复确认",
+    "pass": true
+  },
+  {
+    "name": "历史回执打开正确品类",
+    "pass": true
+  },
+  {
+    "name": "取消编辑不更改品类",
+    "pass": true
+  },
+  {
+    "name": "离线禁用品类编辑入口",
+    "pass": true
+  },
+  {
+    "name": "独立小Pai识别直接创建请求",
+    "pass": true
+  },
+  {
+    "name": "小Pai候选也执行品类重名校验",
+    "pass": true
+  },
+  {
+    "name": "离线禁止确认小Pai候选",
+    "pass": true
+  },
+  {
+    "name": "取消小Pai候选不创建对象",
+    "pass": true
+  },
+  {
+    "name": "取消后品类总览无候选记录",
+    "pass": true
+  },
+  {
+    "name": "待确认候选显示需要处理，未混入跟进问题",
+    "pass": true
+  },
+  {
+    "name": "390px 页面无整体横向溢出",
+    "pass": true
+  },
+  {
+    "name": "手机可确认创建并进入新品类",
+    "pass": true
+  },
+  {
+    "name": "手机编辑面板无横向溢出",
+    "pass": true
+  },
+  {
+    "name": "无品类权限角色不提供创建候选",
+    "pass": true
+  }
+]

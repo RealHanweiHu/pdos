@@ -7,14 +7,14 @@ const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work)$/i;
+const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|agent-skills)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
 const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/platform-links)$/i;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
-const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
+const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|governance(?:\/review-inputs)?))?$/i;
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
 const manufacturingPreparationCommands = new Set(["npi.work_instruction.record", "npi.control_plan.record", "npi.manufacturing_baseline.record"]);
 const manufacturingPublicationPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/manufacturing-publications(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
@@ -22,7 +22,7 @@ const manufacturingPublicationCommands = new Set(["npi.manufacturing_baseline.pu
 const nativePilotPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/pilots(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.record"]);
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
-const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/risks(?:\/inputs)?|\/inputs)?$/i;
+const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/templates|\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/risks(?:\/inputs)?|\/inputs)?$/i;
 const projectWorkCommands = new Set(["work.risk.followup.record", "work.external_wait.record", "work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
 const knowledgeExperiencePaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?experience(?:\/inputs)?$/i;
 const fieldFeedbackPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?field-feedback(?:\/inputs)?$/i;
@@ -147,15 +147,22 @@ function validProjectWorkCommand(value: unknown, productId: string, categoryId: 
   }
   return true;
 }
+function validKnowledgeReview(value: unknown) {
+  return isRecord(value) && Object.keys(value).every(key => ["responsible_id", "applicability_scope", "review_due_at"].includes(key)) && typeof value.responsible_id === "string" && uuid.test(value.responsible_id) && typeof value.applicability_scope === "string" && !!value.applicability_scope.trim() && value.applicability_scope.length <= 4000 && typeof value.review_due_at === "string" && /(?:Z|[+-]\d{2}:\d{2})$/.test(value.review_due_at) && Number.isFinite(Date.parse(value.review_due_at));
+}
+function validAnswerOrigin(value: unknown) {
+  return isRecord(value) && Object.keys(value).every(key => ["run_id", "answer_digest"].includes(key)) && typeof value.run_id === "string" && uuid.test(value.run_id) && typeof value.answer_digest === "string" && /^[a-f0-9]{64}$/.test(value.answer_digest);
+}
 function validKnowledgeCommand(value: unknown, productId: string | null, categoryId: string): boolean {
-  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || value.category_id !== categoryId || (value.product_id ?? null) !== productId || typeof value.operation !== "string" || !knowledgeCommands.has(value.operation) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || !Array.isArray(value.source_read_set) || !value.source_read_set.length || productId !== null && !uuid.test(productId)) return false;
+  if (!isRecord(value) || Object.keys(value).some(key => !["command_id", "idempotency_key", "operation", "category_id", "product_id", "expected_revision", "payload", "source_read_set"].includes(key)) || value.category_id !== categoryId || (value.product_id ?? null) !== productId || typeof value.operation !== "string" || !knowledgeCommands.has(value.operation) || typeof value.command_id !== "string" || !uuid.test(value.command_id) || typeof value.idempotency_key !== "string" || value.idempotency_key.length < 8 || value.idempotency_key.length > 160 || !positiveRevision(value.expected_revision) || !isRecord(value.payload) || !Array.isArray(value.source_read_set) || productId !== null && !uuid.test(productId)) return false;
   const p = value.payload, candidate = value.operation === "knowledge.candidate.create";
   const ref = (v: unknown) => isRecord(v) && Object.keys(v).every(key => ["id", "revision"].includes(key)) && typeof v.id === "string" && uuid.test(v.id) && positiveRevision(v.revision);
   const nonempty = (v: unknown, max = 4000) => typeof v === "string" && !!v.trim() && v.trim().length <= max;
   const instant = (v: unknown): v is string => typeof v === "string" && /(?:Z|[+-]\d{2}:\d{2})$/.test(v) && Number.isFinite(Date.parse(v));
   const nullableProject = p.project_id == null || typeof p.project_id === "string" && uuid.test(p.project_id);
-  const allowed = candidate ? ["candidate", "project_id", "visibility", "title", "lesson", "evidence_summary", "applicability_hypothesis", "result_receipts", "sources", "reason"] : ["project_id", "candidate", "rule", "title", "rule_text", "applicability", "sources", "reason", "approval_token"];
-  if (Object.keys(p).some(key => !allowed.includes(key)) || !nullableProject || !nonempty(p.title, 200) || !nonempty(p.reason) || !Array.isArray(p.sources) || !p.sources.length) return false;
+  const allowed = candidate ? ["candidate", "project_id", "visibility", "title", "lesson", "evidence_summary", "applicability_hypothesis", "result_receipts", "sources", "reason", "knowledge_review", "answer_origin"] : ["project_id", "candidate", "rule", "title", "rule_text", "applicability", "sources", "reason", "approval_token", "knowledge_review"];
+  if (p.knowledge_review !== undefined && p.knowledge_review !== null && !validKnowledgeReview(p.knowledge_review) || p.answer_origin !== undefined && p.answer_origin !== null && !validAnswerOrigin(p.answer_origin)) return false;
+  if (Object.keys(p).some(key => !allowed.includes(key)) || !nullableProject || !nonempty(p.title, 200) || !nonempty(p.reason) || !Array.isArray(p.sources) || !p.sources.length && !(candidate && validKnowledgeReview(p.knowledge_review) && (validAnswerOrigin(p.answer_origin) || ref(p.candidate)))) return false;
   const seen = new Map<string, number>();
   for (const read of value.source_read_set) {
     if (!isRecord(read) || Object.keys(read).some(key => !["artifact_id", "expected_revision"].includes(key)) || typeof read.artifact_id !== "string" || !uuid.test(read.artifact_id) || !positiveRevision(read.expected_revision) || seen.has(read.artifact_id.toLowerCase())) return false;
@@ -207,14 +214,30 @@ const longCommands = new Set([
 
 async function forward(request: NextRequest, context: { params: Promise<{ path: string[] }> }) {
   const { path: forwardPath } = await context.params;
+  const dingPath = forwardPath.join("/");
+  if (/^v1\/personal\/inbox\/summary-(?:channels|deliveries)(?:\/|$)/i.test(dingPath)) {
+    const { summaryChannelRequest } = await import("@/lib/summary-channel-proxy");
+    return summaryChannelRequest(request, dingPath);
+  }
+  if (dingPath === "v1/dingtalk/application" || dingPath.startsWith("v1/personal/dingtalk/")) {
+    const { dingtalkRequest } = await import("@/lib/dingtalk-proxy");
+    return dingtalkRequest(request, dingPath);
+  }
   const categoryId = forwardPath[0] === "v1" && forwardPath[1] === "categories" && uuid.test(forwardPath[2] ?? "") ? forwardPath[2] : undefined;
   const categoryRoot = forwardPath.join("/") === "v1/categories";
   const categoryPreview = forwardPath.join("/") === "v1/categories/preview";
   const categorySeed = /^v1\/category-seeds\/(?:auto-tire-inflator|bicycle-pump)$/.test(forwardPath.join("/"));
   const personalAgent = personalAgentPaths.test(forwardPath.join("/"));
+  const knowledgeReminders = forwardPath.join("/") === "v1/personal/knowledge-review-reminders";
   const personalView = personalViewPaths.test(forwardPath.join("/"));
+  const personalWorkProducts = /^v1\/personal\/work-products(?:\/[a-f0-9-]{36}(?:\/revisions)?|\/from-run)?$/i.test(forwardPath.join("/"));
+  const workState = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-sessions\/[a-f0-9-]{36}\/work-state(?:\/context-options)?$/i.test(forwardPath.join("/"));
+  const enterpriseSearch = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/enterprise-search$/i.test(forwardPath.join("/"));
+  const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
+  const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
+  const inbox = /^v1\/personal\/inbox\/(?:summaries|summary-options|states|conversations(?:\/[a-f0-9-]{36}\/messages)?)$/i.test(forwardPath.join("/"));
   const categoryMembers = categoryId && forwardPath.length === 4 && forwardPath[3] === "members";
-  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !enterpriseSearch && !assistantSource && !inbox && !projectSets && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const path = categoryId ? ["v1", ...forwardPath.slice(3)] : forwardPath;
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
@@ -222,11 +245,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
   const categoryKnowledge = categoryKnowledgePaths.test(pathname);
+  const categoryMetadata = pathname === "v1/metadata";
+  const categoryParticipants = pathname === "v1/participants";
   const platform = platformPaths.test(pathname);
   const standardMatch = pathname === "v1/standard-match";
   const proposalClaim = proposalClaimPaths.test(pathname);
   const agent = agentPaths.test(pathname) || personalAgent;
   const modelConfiguration = pathname === "v1/model-configuration";
+  const modelConnections = pathname === "v1/model-connections";
   const providerAgreement = /^v1\/provider-agreements(?:\/recover)?$/.test(pathname);
   const skillQualification = /^v1\/agent-skill-qualification(?:\/recover)?$/.test(pathname);
   const mcpManagement = /^v1\/agent-mcp(?:\/(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/history)?|recover))?$/i.test(pathname);
@@ -244,13 +270,41 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
+  const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !standardMatch && !platform && !personalView) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !enterpriseSearch && !assistantSource && !inbox && !projectSets) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
-  if (automation) {
+  if (assistantSource) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      if (query.has(key) || !(key === "cursor" && /^(0|[1-9]\d*)$/.test(value) || key === "page_chars" && /^[1-9]\d*$/.test(value) && Number(value) <= 2000 || key === "change_id" && /^[a-f0-9]{64}$/.test(value))) return Response.json({ code: "VALIDATION_FAILED", message: "资料片段分页条件无效。" }, { status: 422 });
+      query.set(key, value);
+    }
+  } else if (enterpriseSearch) {
+    if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "检索请使用只读查询提交入口。" }, { status: 405, headers: { Allow: "POST" } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "检索条件只接受正文，不接受其他范围或查询参数。" }, { status: 422 });
+  } else if (workState) {
+    const options = pathname.endsWith("/context-options");
+    if (!(options ? ["GET"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用资料选择读取或本人携带修改入口。" }, { status: 405, headers: { Allow: options ? "GET" : "GET, POST" } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      if (!options || query.has(key) || !(key === "query" && value.length <= 120 || key === "object_id" && uuid.test(value))) return Response.json({ code: "VALIDATION_FAILED", message: "本次携带或资料选择条件无效。" }, { status: 422 });
+      query.set(key, value);
+    }
+  } else if (projectSets) {
+    if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });
+  } else if (inbox) {
+    if ((pathname.endsWith("/summaries") || pathname.endsWith("/summary-options")) && request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "摘要列表只支持本人读取。" }, { status: 405 });
+    if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只支持读取与保存。" }, { status: 405 });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = request.method === "GET" && (pathname.endsWith("/summary-options") ? ["category_id", "product_id"].includes(key) && uuid.test(value) : !pathname.endsWith("/states") && (key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100 : pathname.endsWith("/messages") ? key === "before" && /^[1-9]\d*$/.test(value) : key === "cursor" && uuid.test(value)));
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "消息分页条件无效。" }, { status: 422 });
+      query.set(key, value);
+    }
+  } else if (automation) {
     const method = pathname.endsWith("/trigger") ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用规则读取或明确手动触发入口。" }, { status: 405, headers: { Allow: method } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "规则只按当前本人和品类读取。" }, { status: 422 });
@@ -294,7 +348,20 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
   } else if (projectPlanning) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
-    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目直达读取不接受额外条件。" }, { status: 422 });
+    for (const [key,value] of request.nextUrl.searchParams) {
+      const accepted = pathname.endsWith("/plan-comparison") ? key === "proposal_id" : pathname.endsWith("/governance/review-inputs") ? key === "package_id" : false;
+      if (!accepted || !uuid.test(value) || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用当前项目的唯一计划候选或发布包。" }, { status: 422 });
+      query.set(key,value);
+    }
+  } else if (personalWorkProducts) {
+    const writing = pathname.endsWith("/from-run") || pathname.endsWith("/revisions");
+    const method = writing ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "成果列表/详情只读，创建与修订使用明确提交入口。" }, { status: 405, headers: { Allow: method } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = pathname === "v1/personal/work-products" && key === "session_id" && uuid.test(value);
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "成果只按当前会话读取，不接受其他查询条件。" }, { status: 422 });
+      query.set(key, value);
+    }
   } else if (personalView) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     const collection = ["v1/personal/projects", "v1/personal/run-activity"].includes(pathname);
@@ -337,6 +404,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     const allowed = categoryRoot ? ["GET", "POST"] : categorySeed ? ["GET"] : ["POST"];
     if (!allowed.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "品类入口不接受额外查询条件。" }, { status: 422 });
+  } else if (modelConnections) {
+    if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅支持读取与保存服务商。" }, { status: 405 });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "服务商配置只使用当前租户及请求正文。" }, { status: 422 });
   } else if (modelConfiguration) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "模型设置不接受额外查询条件。" }, { status: 422 });
@@ -376,9 +446,13 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       // Preserve every parameter occurrence and its order; comparison belongs to the API.
       query.append(key, value);
     }
+  } else if (categoryMetadata || categoryParticipants) {
+    const methods = categoryMetadata ? ["GET", "POST"] : ["GET"];
+    if (!methods.includes(request.method)) return Response.json({ message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: methods.join(", ") } });
+    if (request.nextUrl.searchParams.size) return Response.json({ message: "品类资料只按当前范围读取。" }, { status: 422 });
   } else if (categoryKnowledge) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
-    const kinds = new Set(["boundary", "segment", "competitor", "voice", "regulation", "research_question"]);
+    const kinds = new Set(["boundary", "segment", "competitor", "voice", "regulation", "research_question", "verified_answer"]);
     for (const [key, value] of request.nextUrl.searchParams) {
       const valid = key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200
         : key === "include_history" ? ["true", "false"].includes(value)
@@ -396,13 +470,21 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (pathname.endsWith("/handoff") && request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "立项结果只按当前提案读取。" }, { status: 422 });
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     for (const [key, value] of request.nextUrl.searchParams) {
-      const valid = key === "include_history" ? ["true", "false"].includes(value) : key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : ["cursor", "proposal_id"].includes(key) && uuid.test(value);
+      const valid = key === "q" && pathname === "v1/proposals" ? [...value].length <= 160 : key === "status" && pathname === "v1/proposals" ? ["draft", "returned", "in_review", "approved", "rejected", "withdrawn"].includes(value) : key === "include_history" ? ["true", "false"].includes(value) : key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 200 : ["cursor", "proposal_id"].includes(key) && uuid.test(value);
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用明确的提案范围与分页条件。" }, { status: 422 });
       query.set(key, value);
     }
   } else if (resourceInspect) {
     if (request.method !== "POST") return Response.json({ code: "VALIDATION_FAILED", message: "此入口不支持这类请求。" }, { status: 405, headers: { Allow: "POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "请在正文中固定唯一试制资源范围。" }, { status: 422 });
+  } else if (answerKnowledge || knowledgeReminders) {
+    const weekly = pathname.endsWith("/weekly"), reading = knowledgeReminders || weekly || pathname.endsWith("/verified-answers"), method = reading ? "GET" : "POST";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用知识读取或本人提交入口。" }, { status: 405, headers: { Allow: method } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      if (!weekly || key !== "week" || !/^\d{4}-\d{2}-\d{2}$/.test(value) || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用固定知识范围与周一日期。" }, { status: 422 });
+      query.set(key, value);
+    }
+    if (weekly && !query.has("week")) return Response.json({ code: "VALIDATION_FAILED", message: "请选择周一日期。" }, { status: 422 });
   } else if (knowledgeExperience || fieldFeedback) {
     const input = pathname.endsWith("/inputs"), method = input ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用经验读取或材料核对入口。" }, { status: 405, headers: { Allow: method } });
@@ -543,6 +625,13 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   if (!base) return Response.json({ code: "SOURCE_UNAVAILABLE", message: "服务尚未配置。" }, { status: 503 });
   try {
     const body = request.method === "GET" ? undefined : await request.text();
+    if (answerKnowledge && request.method === "POST") {
+      let value: unknown;
+      try { value = JSON.parse(body ?? ""); } catch { return Response.json({ code: "VALIDATION_FAILED", message: "请提交完整知识请求。" }, { status: 422 }); }
+      const fields = pathname.endsWith("answer-draft") ? ["run_id", "kind"] : pathname.endsWith("review-draft") ? ["entry_id"] : pathname.endsWith("attributions") ? ["request_key", "submission_id", "reason"] : pathname.endsWith("preview") ? ["run_id", "kind", "feedback_id"] : ["run_id", "kind", "feedback_id", "request_key", "preview_digest"];
+      if (!isRecord(value) || Object.keys(value).some(key => !fields.includes(key))) return Response.json({ code: "VALIDATION_FAILED", message: "请仅提交本人选择的知识操作。" }, { status: 422 });
+    }
+    if (modelConnections && body && new TextEncoder().encode(body).length > 32768) return Response.json({ code: "VALIDATION_FAILED", message: "服务商配置内容过大。" }, { status: 413 });
     if (fieldFeedback && request.method === "POST" || request.method === "POST" && ["v1/commands","v1/commands/preview"].includes(pathname)) {
       let value: unknown;
       try { value=JSON.parse(body ?? ""); } catch { if(fieldFeedback)return Response.json({code:"VALIDATION_FAILED",message:"请提交完整反馈原请求。"},{status:422}); }

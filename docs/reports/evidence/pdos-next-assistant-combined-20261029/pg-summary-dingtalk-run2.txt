@@ -1,0 +1,111 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 6 items
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend FAILED [ 16%]
+
+=================================== FAILURES ===================================
+__ test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend __
+
+summary_channel = namespace(setup=<isolated synthetic test scope>, work=namespace(work=namespace(setup=<isolated synthetic test scope>, ...ies object at 0x139b9a930>, service=<pdos_next.dingtalk.summary_delivery.SummaryDeliveryService object at 0x139b9be30>)
+
+    def test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend(summary_channel):
+        work = summary_channel
+        meta = complete(work)
+        before = len(work.wire.calls)
+        sent = work.service.deliver(work.reference)
+        assert sent["state"] == "unknown" and sent["attempts"] == 1
+        assert body_sends(work) == 1
+        revoked = work.channel.client.post(
+            "/v1/personal/dingtalk/bindings/revoke",
+            headers=work.setup.headers,
+            json={
+                "binding_id": work.binding["binding_id"],
+                "expected_epoch": work.binding["epoch"],
+                "reason": "Native local receipt recovery",
+                "request_key": str(uuid4()),
+            },
+        )
+        assert revoked.status_code == 200, revoked.text
+        # A fresh service does lookup only using its original durable provider receipt.
+        restarted = SummaryDeliveryService(
+            work.setup.engine, work.setup.dispatch, runtime=work.wire.runtime
+        )
+        restored = restarted.reconcile(meta, UUID(sent["delivery_id"]))
+        assert restored["state"] == "delivered" and body_sends(work) == 1
+        receipts = work.channel.client.get(
+            "/v1/personal/inbox/summary-deliveries", headers=work.setup.headers
+        )
+        assert receipts.status_code == 200 and len(receipts.json()["items"]) == 1
+        with Session(work.setup.admin) as s:
+            row = s.get(SummaryDelivery, UUID(sent["delivery_id"]))
+            assert row.run_id == UUID(work.envelope["subject_id"])
+            assert row.p26["provider"] == "dingtalk" and row.attempts == 1
+            assert UUID(work.work.receipt["subject_id"]) in row.source_ids
+>           assert "具名登记" in row.payload["text"] and row.payload["target_kind"] == "direct"
+E           AssertionError: assert ('具名登记' in '本人的工作摘要\n读取时点：2026-10-29T17:16:59.959761+00:00\n\n我关注项目的新变化 · 本人私有摘要项目\n变化：本次首次列入摘要，以下是当前登记记录。\n与我有关：这是你显式选择关注的项目。\n下一步：等待原记录中具名办理；不自行判定健康度。\n责任人：未单独登记\n继续：https://pdos.synthetic.invalid/?area=cockpit&category=77446663-6177-4651-8840-bf4ddfa1f73d&project=86c05f0c-0eb7-43c8-973d-e71222ef6ec3')
+
+tests/dingtalk/test_summary_delivery_pg.py:170: AssertionError
+=============================== warnings summary ===============================
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:256: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:176: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:201: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-summary-dingtalk-20261029/pg-summary-dingtalk-run2.xml -
+=========================== short test summary info ============================
+FAILED tests/dingtalk/test_summary_delivery_pg.py::test_actual_summary_pending_receipt_reconciles_after_revoke_without_resend
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+======================= 1 failed, 22 warnings in 16.80s ========================

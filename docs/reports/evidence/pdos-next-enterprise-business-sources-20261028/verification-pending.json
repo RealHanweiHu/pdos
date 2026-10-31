@@ -1,0 +1,44 @@
+{
+  "goal": "完成日常助手/RAG v0.4与上下文v0.2，尚未完成",
+  "phase": "final regression after scope-before-materialization performance repair",
+  "process_session": null,
+  "log": "database-final-scope.txt",
+  "junit": "/tmp/pdos-business-final-scope-20261028.xml",
+  "test_selection": "regression-selection.json",
+  "source_manifest": "source-manifest-scope-final.json",
+  "database": "53502/pdos_test",
+  "head": "s0_0829",
+  "real_models": false,
+  "frontend_build": "frontend-build-final.txt",
+  "frontend_tests": "frontend-tests.txt",
+  "pending": "No pending regression process for this candidate. Remaining design work stays in the sole active queue.",
+  "first_regression": {
+    "log": "database-final.txt",
+    "passed": 353,
+    "failed": 1,
+    "skipped": 0,
+    "seconds": 711.99
+  },
+  "targeted": {
+    "log": "scoped-proof-repair.txt",
+    "passed": 16,
+    "failed": 0,
+    "seconds": 135.99
+  },
+  "second_regression": {
+    "log": "database-final-proof.txt",
+    "passed": 353,
+    "failed": 1,
+    "skipped": 0,
+    "seconds": 722.56,
+    "p95_seconds": 1.0386736411601305
+  },
+  "performance_repair": {
+    "before_p95_seconds": 1.1087015750177671,
+    "after_p95_seconds": 0.39899417900596745,
+    "queries": 3,
+    "log": "performance-after-scope.txt"
+  },
+  "status": "checkpoint_passed_designs_incomplete",
+  "result": "verification-result.json"
+}

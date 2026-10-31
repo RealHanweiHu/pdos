@@ -1,0 +1,13 @@
+{
+  "id": "be727d35-4331-4101-9712-64d8d94306ae",
+  "state": "partial",
+  "error_code": null,
+  "result_status": "partial",
+  "summary": "服务限流或运行预算不足，保留已完成动作与已核对结果。",
+  "questions": [],
+  "unfinished": [
+    "剩余目标尚未完成"
+  ],
+  "context_budget": null,
+  "tools": 0
+}

@@ -1,0 +1,7 @@
+{
+  "file": "pdos-next/server/tests/change_execution/test_native_field_completion_chain.py",
+  "before_sha256": "c17110ecbb84657322d95987c3b610e848c1d617e546ebf35cab7e46738205e7",
+  "after_sha256": "391716b871c3390ced820730e6e324542b83d2d44a06232711f8457480edf8d1",
+  "identical_ast": true,
+  "scope": "Only wrap two assertion messages; runtime/domain source unchanged"
+}

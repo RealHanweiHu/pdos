@@ -1,0 +1,14 @@
+[
+  {
+    "url": "http://localhost:57859/ui-lab/platform",
+    "status": 200,
+    "contains_preview_title": true,
+    "contains_chat_welcome": false
+  },
+  {
+    "url": "http://localhost:57859/ui-lab/platform?view=pai",
+    "status": 200,
+    "contains_preview_title": true,
+    "contains_chat_welcome": true
+  }
+]

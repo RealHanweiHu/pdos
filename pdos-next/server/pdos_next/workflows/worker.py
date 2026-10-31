@@ -31,6 +31,45 @@ class Activities:
     def __init__(self, engine, store, checkpoint_url):
         self.engine, self.store, self.checkpoint_url = engine, store, checkpoint_url
 
+    @activity.defn(name="project_enterprise_source")
+    def enterprise_projection(self, reference: dict):
+        from pdos_next.enterprise_search.events import process_event
+
+        try:
+            return process_event(self.engine, reference)
+        except DomainError as error:
+            raise ApplicationError(
+                "Enterprise projection unavailable",
+                type=error.code,
+                non_retryable=error.code == "FORBIDDEN_SCOPE",
+            ) from None
+
+    @activity.defn(name="plan_enterprise_rebuild")
+    def enterprise_rebuild_plan(self, reference: dict):
+        from pdos_next.enterprise_search.recovery import _context, plan_rebuild
+
+        try:
+            return plan_rebuild(self.engine, _context(reference))
+        except DomainError as error:
+            raise ApplicationError(
+                "Enterprise rebuild planning unavailable",
+                type=error.code,
+                non_retryable=error.code == "FORBIDDEN_SCOPE",
+            ) from None
+
+    @activity.defn(name="rebuild_enterprise_batch")
+    def enterprise_rebuild_batch(self, reference: dict):
+        from pdos_next.enterprise_search.recovery import rebuild_batch
+
+        try:
+            return rebuild_batch(self.engine, reference["plan"], reference["cursor"])
+        except DomainError as error:
+            raise ApplicationError(
+                "Enterprise rebuild batch unavailable",
+                type=error.code,
+                non_retryable=error.code == "FORBIDDEN_SCOPE",
+            ) from None
+
     @activity.defn(name="automation_rule_tick")
     def automation_rule_tick(self, reference: dict):
         from pdos_next.domain.automations.service_runtime import tick
@@ -100,7 +139,10 @@ class Activities:
             ) from None
 
 
-async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
+async def main(
+    *, agent_runtime_ports=None, agent_kernel_adapters=None, embedding_ports=None,
+    dingtalk_runtime=None,
+):
     engine, auth = configured_engines()
     from pdos_next.database import engine_for
 
@@ -133,13 +175,52 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
         os.environ["PDOS_TEMPORAL_ADDRESS"], namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"]
     )
     activities = Activities(engine, store, os.environ["PDOS_CHECKPOINT_DATABASE_URL"])
+    from pdos_next.enterprise_search.embedding_activities import EmbeddingActivities
+    from pdos_next.enterprise_search.embedding_composition import configured_ports
+    from pdos_next.enterprise_search.embedding_workflow import (
+        EnterpriseEmbedding,
+        EnterpriseEmbeddingProjection,
+        EnterpriseEmbeddingRebuild,
+    )
+
+    if embedding_ports is None:
+        from pdos_next.model_configuration.host import runtime_ports
+
+        embedding_ports = configured_ports(
+            agent_runtime_ports if agent_runtime_ports is not None else runtime_ports(engine),
+            provider_io=True,
+        )
+    embedding_activities = EmbeddingActivities(
+        engine, embedding_ports, checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
+    )
     automation_sender = ServiceAutomationSender(client, engine, dispatch_engine)
+    from pdos_next.enterprise_search.events import EnterpriseProjection, ProjectionSender
+    from pdos_next.enterprise_search.recovery_workflow import EnterpriseRebuild
+
     sender = TemporalSender(
-        client, dispatch_engine=dispatch_engine, automation_sender=automation_sender
+        client,
+        dispatch_engine=dispatch_engine,
+        automation_sender=automation_sender,
+        projection_sender=ProjectionSender(client, embedding=True),
     )
     from pdos_next.agent_kernel.temporal_port import TemporalPort, dispatch_pending_runs
 
     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
+    from pdos_next.dingtalk.runtime import configure as configure_dingtalk
+    from pdos_next.dingtalk.summary_workflow import DingTalkSummaryDelivery, SummaryActivities
+    from pdos_next.dingtalk.workflow import ChannelActivities, ChannelSender, DingTalkCompletion
+
+    summary_channel_activities = SummaryActivities(
+        engine, dispatch_engine, runtime=dingtalk_runtime,
+    )
+    channel_activities = ChannelActivities(
+        engine, dispatch_engine, kernel_sender, runtime=dingtalk_runtime,
+    )
+    channel_sender = ChannelSender(
+        client, dispatch_engine, kernel_sender, task_queue=sender.task_queue,
+    )
+    if dingtalk_runtime is not None:
+        configure_dingtalk(engine, dingtalk_runtime)
     stop = asyncio.Event()
 
     async def deliver():
@@ -153,6 +234,8 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
                     )
                 await dispatch_once(dispatch_engine, tenant, sender)
                 await dispatch_pending_runs(dispatch_engine, tenant, kernel_sender)
+                if dingtalk_runtime is not None:
+                    await channel_sender.discover(tenant)
             try:
                 await asyncio.wait_for(stop.wait(), 1)
             except TimeoutError:
@@ -164,15 +247,25 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
             task_queue=sender.task_queue,
             workflows=[
                 XiaopaiWork,
+                DingTalkCompletion,
+                DingTalkSummaryDelivery,
                 AutomationRuleWork,
                 ParseOriginal,
                 QueueOriginalSecurity,
                 SecureOriginal,
                 OriginalLifecycle,
                 UploadTerminal,
+                EnterpriseProjection,
+                EnterpriseEmbedding,
+                EnterpriseEmbeddingProjection,
+                EnterpriseEmbeddingRebuild,
+                EnterpriseRebuild,
             ],
             activities=[
                 kernel_activities.advance,
+                channel_activities.deliver,
+                channel_activities.cancel,
+                summary_channel_activities.deliver,
                 activities.automation_rule_tick,
                 kernel_activities.reconcile,
                 activities.parse,
@@ -180,6 +273,11 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
                 activities.scan,
                 activities.lifecycle,
                 activities.terminal_upload,
+                activities.enterprise_projection,
+                embedding_activities.plan,
+                embedding_activities.embed,
+                activities.enterprise_rebuild_plan,
+                activities.enterprise_rebuild_batch,
             ],
             activity_executor=executor,
         ):
@@ -192,6 +290,8 @@ async def main(*, agent_runtime_ports=None, agent_kernel_adapters=None):
                 runtime = getattr(engine, "_pdos_security_runtime", None)
                 if runtime and hasattr(runtime.scanner, "close"):
                     await runtime.scanner.close()
+                if callable(getattr(embedding_ports.client, "close", None)):
+                    embedding_ports.client.close()
                 engine.dispose()
                 auth.dispose()
 

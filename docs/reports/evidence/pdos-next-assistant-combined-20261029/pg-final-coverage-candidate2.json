@@ -1,0 +1,74 @@
+{
+  "unique_passed": 17,
+  "method": "first 12 unaffected passed + 3 corrected tests passed + 2 corrected tests passed; no production code relaxed",
+  "cases": {
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_bound_exclusion_replays_one_private_event_and_one_memory_version": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "3.693"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_actual_search_or_material_citation_preserves_real_origin_and_ranking[search]": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "8.601"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_event_append_failure_rolls_back_exclusion_and_replay_saves_both": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.397"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_exclusion_does_not_change_process_business_truth_or_model_context": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.772"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_finish_and_exclusion_share_run_then_memory_lock_order_without_deadlock": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.521"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_event_sequence_serializes_exclusion_with_existing_kernel_emitter": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.262"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_feedback_cross_tenant_hidden_and_agent_has_no_direct_sql_write": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.152"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_app_ai_writer_and_wrong_recorded_by_cannot_insert_feedback": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.346"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_committed_exclusion_cannot_be_reused_for_a_new_human_feedback_event": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "2.374"
+    },
+    "tests.agent_kernel.test_context_process_metrics_pg::test_actual_model_ledger_metrics_are_readable_through_existing_process_and_current_rls": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "0.997"
+    },
+    "tests.automations_pg.test_personal_summary_pg::test_actual_cancelled_summary_run_cannot_append_result": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "11.100"
+    },
+    "tests.automations_pg.test_personal_summary_temporal_pg::test_actual_no_model_summary_acknowledgement_loss_and_worker_restart": {
+      "evidence": "pg-temporal-candidate1-run1.xml",
+      "seconds": "12.727"
+    },
+    "tests.agent_kernel.test_retrieval_feedback_pg::test_actual_search_or_material_citation_preserves_real_origin_and_ranking[materials]": {
+      "evidence": "pg-materials-depth-x3-run2.xml",
+      "seconds": "12.438"
+    },
+    "tests.enterprise_search.test_assistant_depth_temporal_pg::test_public_fast_then_deep_same_session_uses_actual_claim_limits_and_idempotent_replay": {
+      "evidence": "pg-materials-depth-x3-run2.xml",
+      "seconds": "65.822"
+    },
+    "tests.agent_kernel.test_context_x3_temporal_pg::test_actual_http_temporal_32k_cleanup_preserves_ledger_then_worker_resume_does_not_regrow": {
+      "evidence": "pg-materials-depth-x3-run2.xml",
+      "seconds": "21.206"
+    },
+    "tests.automations_pg.test_personal_summary_pg::test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_result": {
+      "evidence": "pg-summary-two-run2.xml",
+      "seconds": "19.767"
+    },
+    "tests.automations_pg.test_personal_summary_pg::test_actual_owner_revocation_hides_persisted_summary": {
+      "evidence": "pg-summary-two-run2.xml",
+      "seconds": "11.750"
+    }
+  }
+}

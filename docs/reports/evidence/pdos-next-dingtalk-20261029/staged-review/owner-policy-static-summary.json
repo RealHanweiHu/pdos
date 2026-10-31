@@ -1,0 +1,24 @@
+{
+  "s0_0720_owner_policy_source": {
+    "path": "pdos-next/server/migrations/versions/s0_0720_trusted_owner.py",
+    "sha256": "c267e972e988cd0ad42d8890c0914a6b85a32632d45145b4b3352b9d4784ebef",
+    "semantics": "all existing RLS tables transferred to ordinary non-BYPASS owner; owner_internal true; PUBLIC restrictive policies retargeted to four runtime roles; runtime membership rejected"
+  },
+  "native_readset_tables_preexist_0720": [
+    "artifact_versions",
+    "quality_issue_versions",
+    "change_request_versions",
+    "supply_snapshots",
+    "build_starts",
+    "actual_configurations",
+    "build_lots",
+    "verification_run_versions",
+    "test_result_actions",
+    "builds",
+    "engineering_configurations",
+    "process_revisions"
+  ],
+  "later_source": "external_wait_versions schema_s0_0796 explicit owner_internal(true)",
+  "new_g_policy": "dingtalk_deliveries SELECT only pdos_next_owner with exact current tenant; no new runtime EXEC/member/original table grant",
+  "actual_database_proof": "not run; pending root PG probes and actual owner/ACL/catalog verification"
+}

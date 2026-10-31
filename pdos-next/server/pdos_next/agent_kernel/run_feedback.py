@@ -31,6 +31,8 @@ def lookup(session, identity, *, lock=False):
         AgentRun.id,
         AgentRun.tenant_id,
         AgentRun.category_id,
+        AgentRun.product_id,
+        AgentRun.project_id,
         AgentRun.proposal_id,
         AgentRun.requester_id,
         AgentRun.cancel_epoch,

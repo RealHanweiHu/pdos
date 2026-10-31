@@ -1,0 +1,22 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 1 item
+
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency PASSED [100%]
+
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+tests/enterprise_search/test_knowledge_dependencies_pg.py::test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+======================== 1 passed, 6 warnings in 15.36s ========================

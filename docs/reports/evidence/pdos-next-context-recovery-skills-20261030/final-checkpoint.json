@@ -1,0 +1,51 @@
+{
+  "completed_at_utc": "2026-10-30T10:07:04.092615+00:00",
+  "scope": "Two local implementation gaps: trusted fresh-session budget recovery and removable fixed-version continued skills",
+  "local_implementation_verified": true,
+  "formal_design_acceptance_complete": false,
+  "pure_passed": 168,
+  "additional_offline_fixture_type_check": 1,
+  "native_distinct_passed": 60,
+  "native_runs": {
+    "native-run2": {
+      "cases": 5,
+      "passed": 4
+    },
+    "native-run4": {
+      "cases": 56,
+      "passed": 56
+    }
+  },
+  "frontend_interaction_helper_passed": 40,
+  "bff_passed": 88,
+  "native_inputs": 153,
+  "native_inputs_unchanged": true,
+  "production_build_inputs": 758,
+  "build_inputs_unchanged": true,
+  "openapi": {
+    "applied_at_utc": "2026-10-30T10:06:00.348957+00:00",
+    "changed_paths": [
+      "/components/schemas/StartInput/properties/excluded_continued_skills",
+      "/components/schemas/StartInput/properties/restart_from_run_id"
+    ],
+    "before_sha256": "ee7c279256fde263f84c9da644f8929fcca2175188808cf832c8e427cf529bbc",
+    "after_sha256": "a5632fa9dfa03604c496640a38ad9eac377f7ee31f16400274d2d58cb77e9dc4",
+    "source": "offline actual app.openapi() with database connections forbidden",
+    "schema_only": true
+  },
+  "schema_head": "s0_0854",
+  "real_model_calls": 0,
+  "real_embedding_calls": 0,
+  "real_channel_calls": 0,
+  "migration_added": false,
+  "default_retrieval": "keyword",
+  "answer_quality_scored": false,
+  "native_scope_note": "4 unchanged recovery cases from run2 plus final targeted/regression run4; production inputs unchanged, failed fifth fixture replaced only by its passing observation",
+  "result": "result.md",
+  "independent_summary": "independent-summary.json",
+  "remaining": [
+    "CTX-09 same-binding directory fixture remains partial",
+    "Human review and real role/pilot evidence",
+    "Genuine model/embedding answer quality, long-context correctness, cache/cost/latency under current no-real-model constraint"
+  ]
+}

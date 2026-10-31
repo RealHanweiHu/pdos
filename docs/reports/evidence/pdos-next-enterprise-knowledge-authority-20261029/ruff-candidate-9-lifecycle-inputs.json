@@ -1,0 +1,17 @@
+{
+  "exit_code": 0,
+  "command": [
+    "pdos-next/server/.venv/bin/python",
+    "-m",
+    "ruff",
+    "check",
+    "pdos-next/server/pdos_next/lifecycle_access.py",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py",
+    "pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py"
+  ],
+  "sha256": {
+    "pdos-next/server/pdos_next/lifecycle_access.py": "3f3e423881aa2e6c8987ee2d75385e5fbedf2a6a911f6de79a398c9f1792ab59",
+    "pdos-next/server/pdos_next/lifecycle_catalog.py": "aea930a6503eb431c19e322103b7f807b396028e75902831fad25e3caa6ee802",
+    "pdos-next/server/tests/preproject/test_m3_lifecycle_catalog.py": "6bae994a025933698d790c3b7864123e1cfdbf5d24f62bbadbdf23c39362a45c"
+  }
+}

@@ -34,7 +34,10 @@ class RuntimePorts:
     rate_card_for: object | None = None
     provider_for: object | None = None
     provider_client: object | None = None
+    output_limit_for: object | None = None
+    development_budget_for: object | None = None
     read_tools: dict = field(default_factory=dict)
+    embedding_query: object | None = None
     preload: object | None = None
     research_service: object | None = None
     research_artifacts: object | None = None
@@ -73,7 +76,8 @@ class Bootstrap:
         version = SessionConfigurationStore(session).current(scope.tenant_id)
         if version is None or not version.enabled:
             raise DomainError("SOURCE_UNAVAILABLE", "当前租户模型尚未启用。")
-        secret = current_secret(self.ports.secrets, scope.tenant_id, version.metadata.protocol)
+        secret = current_secret(
+            self.ports.secrets, scope.tenant_id, version.metadata.protocol, version.metadata)
         if (
             secret is None
             or not secret.available
@@ -86,13 +90,21 @@ class Bootstrap:
             raise DomainError("SOURCE_UNAVAILABLE", "模型凭据暂不可用。") from None
         if not isinstance(material, SecretMaterial) or material.binding != secret:
             raise DomainError("SOURCE_UNAVAILABLE", "模型凭据与当前登记不一致。")
-        latest = current_secret(self.ports.secrets, scope.tenant_id, version.metadata.protocol)
+        latest = current_secret(
+            self.ports.secrets, scope.tenant_id, version.metadata.protocol, version.metadata)
         if secret_digest(latest) != secret_digest(secret):
             raise DomainError("VERSION_CONFLICT", "模型凭据已轮换。")
-        return replace(
-            version.metadata.route(material.credential, version.metadata.model_version),
-            configuration_digest=version.binding_digest,
-        )
+        route = version.metadata.route(material.credential, version.metadata.model_version)
+        if self.ports.output_limit_for is not None:
+            route = replace(route, max_output_tokens=self.ports.output_limit_for(scope, route))
+        if self.ports.development_budget_for is not None and (
+            self.ports.development_budget_for(scope, route)
+        ):
+            from .development_budget import require_local_test_database
+
+            require_local_test_database(session)
+            route = replace(route, budget_policy="development_unlimited")
+        return replace(route, configuration_digest=version.binding_digest)
 
     def route_for(self, scope):
         with self.commands.transaction(scope) as session:
@@ -284,43 +296,124 @@ class Bootstrap:
                     "revision": actual_project.revision,
                     "visibility": actual_project.visibility,
                 }
-            if run.continued_from_id is not None:
-                from .conversation import memory
-                value["conversation"] = memory(
-                    session, run, readers=getattr(self, "_history_readers", {}),
-                )
-        if "conversation" in value:
+            has_history = run.continued_from_id is not None
+        if scope.project_id is not None and (fields is None or "project" in fields):
+            from .project_current_context import read as current_project_facts
+
+            current_facts = current_project_facts(self.store, scope)
+            if current_facts is not None:
+                value["project"]["current_facts"] = current_facts
+        if has_history:
             from pdos_next.service import digest
-            fingerprint = digest(value["conversation"])
+
+            from .conversation import memory
+
             with self.store.transaction(scope, lock=True) as (session, current):
-                previous = current.versions.get("conversation_memory_digest")
-                if previous is not None and previous != fingerprint:
-                    raise DomainError("SOURCE_STALE", "原工作记忆来源已变化，请重新核对后继续。")
-                if previous is None:
-                    current.versions = {
-                        **current.versions, "conversation_memory_digest": fingerprint,
-                    }
+                frozen = current.versions.get("conversation_memory")
+                if frozen is None:
+                    access = {}
+                    frozen = memory(
+                        session, current, readers=getattr(self, "_history_readers", {}),
+                        access_out=access,
+                    )
+                    if current.state in {"queued", "running", "waiting_input"}:
+                        current.versions = {
+                            **current.versions, "conversation_memory": frozen,
+                            "conversation_memory_digest": digest(frozen),
+                            "conversation_access": access,
+                        }
+                value["conversation"] = frozen
+        if scope.isolation == "main":
+            from .work_state import frozen as frozen_state
+
+            with self.store.transaction(scope, lock=True) as (session, current):
+                if current.trigger == "conversation":
+                    value["work_state"] = frozen_state(
+                        session, current, self.commands.context(scope)
+                    )
         return value
 
     def check_conversation(self, scope):
-        from pdos_next.service import digest
+        from .conversation_acl import (
+            classify,
+            has_project_roots,
+            manifests,
+            upgrade_project_roots,
+        )
+        from .project_current_context import check as check_current_project
 
-        from .conversation import memory
-        with self.store.transaction(scope) as (session, run):
-            if run.continued_from_id is None:
-                return
-            current = memory(session, run, readers=getattr(self, "_history_readers", {}))
-            if digest(current) != run.versions.get("conversation_memory_digest"):
-                raise DomainError("SOURCE_STALE", "原工作来源或权限已变化，不能沿用旧记忆出站。")
-            for page in run.versions.get("conversation_history_pages", {}).values():
-                current = memory(
-                    session, run, readers=getattr(self, "_history_readers", {}),
-                    before=UUID(page["before"]) if page["before"] else None,
-                    page_size=page["page_size"],
-                    include_research_rows=page["include_research_rows"],
-                )
-                if digest(current) != page["digest"]:
-                    raise DomainError("SOURCE_STALE", "已读取的历史工作来源或权限已变化。")
+        check_current_project(self.store, scope)
+        try:
+            with self.store.transaction(scope) as (session, run):
+                from .work_state import check_frozen
+
+                if run.versions.get("work_state"):
+                    check_frozen(session, run, self.commands.context(scope))
+                frozen = run.versions.get("conversation_memory")
+                if run.continued_from_id is None or frozen is None:
+                    return
+                access = run.versions.get("conversation_access")
+                pages = run.versions.get("conversation_history_pages", {})
+                cached = [*(access or {}).values(), *(manifest for page in pages.values()
+                           for manifest in page.get("access", {}).values())]
+                if (access is None or any("access" not in page for page in pages.values())
+                        or any(not has_project_roots(value) for value in cached)):
+                    # Upgrade only the active consumer. Immutable project roots
+                    # supplement old caches without replacing their READ roots.
+                    from .conversation import lineage
+
+                    ancestors = lineage(session, run)
+                    by_id = {str(row.id): row for row in ancestors}
+                    visible = {turn["run_id"] for turn in frozen["turns"]
+                               if turn["outcome_state"] != "hidden"}
+                    requested = visible | set(access or {})
+                    for page in pages.values():
+                        if "access" in page:
+                            requested.update(page["access"])
+                            continue
+                        before = page.get("before")
+                        start = next((index + 1 for index, row in enumerate(ancestors)
+                                      if str(row.id) == before), 0) if before else 0
+                        requested.update(str(row.id) for row in
+                                         ancestors[start:start + page["page_size"]]
+                                         if str(row.id) not in page.get("hidden", []))
+                    if not requested <= by_id.keys():
+                        raise DomainError(
+                            "CONVERSATION_HISTORY_REVOKED", "会话中引用的资料已无权读取或已撤回。")
+                    legacy = manifests(session, [by_id[identity] for identity in requested],
+                                       ancestors=ancestors, consumer=run)
+
+                    def upgraded(values):
+                        return {identity: (value if has_project_roots(value) else
+                                upgrade_project_roots(value, legacy[identity]))
+                                for identity, value in values.items()}
+
+                    access = upgraded(access) if access is not None else {
+                        identity: value for identity, value in legacy.items()
+                        if identity in visible}
+                    pages = {key: {**page, "access": upgraded(page["access"])
+                                   if "access" in page else legacy}
+                             for key, page in pages.items()}
+                    if run.state in {"queued", "running", "waiting_input"}:
+                        run.versions = {**run.versions, "conversation_access": access,
+                                        "conversation_history_pages": pages}
+                merged = dict(access)
+                for page in pages.values():
+                    merged.update(page["access"])
+                hidden = {identity for identity, state in classify(
+                    session, merged, consumer=run).items()
+                          if state == "hidden"}
+                if hidden:
+                    raise DomainError(
+                        "CONVERSATION_HISTORY_REVOKED", "会话中引用的资料已无权读取或已撤回。",
+                        detail={"run_ids": sorted(hidden)},
+                    )
+        except DomainError as error:
+            if error.code == "FORBIDDEN_SCOPE" and error.reason != "CONVERSATION_HISTORY_REVOKED":
+                raise DomainError(
+                    "CONVERSATION_HISTORY_REVOKED", "会话中引用的资料已无权读取或已撤回。"
+                ) from None
+            raise
 
     def conversation_history(self, scope, arguments):
         from pdos_next.service import digest
@@ -328,21 +421,41 @@ class Bootstrap:
         from .conversation import HistoryInput, memory
         payload = HistoryInput.model_validate(arguments)
         with self.store.transaction(scope, lock=True) as (session, run):
+            access = {}
             value = memory(session, run, readers=getattr(self, "_history_readers", {}),
                            before=payload.before, page_size=payload.page_size,
-                           include_research_rows=payload.include_research_rows)
+                           include_research_rows=payload.include_research_rows, layered=False,
+                           access_out=access)
             key = f"{payload.before or ''}:{payload.page_size}:{payload.include_research_rows}"
             pages = run.versions.get("conversation_history_pages", {})
-            run.versions = {**run.versions, "conversation_history_pages": {**pages, key: {
+            access = {**pages.get(key, {}).get("access", {}), **access}
+            descriptor = {
                 "before": str(payload.before) if payload.before else None,
                 "page_size": payload.page_size, "digest": digest(value),
+                "hidden": [t["run_id"] for t in value["turns"] if t["outcome_state"] == "hidden"],
                 "include_research_rows": payload.include_research_rows,
-            }}}
+                "access": access,
+            }
+            if run.state in {"queued", "running", "waiting_input"}:
+                run.versions = {**run.versions,
+                                "conversation_history_pages": {**pages, key: descriptor}}
             return value
 
-    def prepare_candidate(self, scope, spec, arguments, intent_key):
+    def prepare_candidate(self, scope, spec, arguments, intent_key, *, source=None):
         if spec.tier not in {"T0", "T1", "T2-prepare-only"}:
             raise DomainError("FORBIDDEN_SCOPE", "该工具不是领域候选。", 403)
+        if spec.name == "work.task.create":
+            from pdos_next.enterprise_search.work_followup_candidates import prepare
+
+            candidate = prepare(self, scope, spec, arguments, intent_key)
+            if candidate is not None:
+                return candidate
+        if spec.name == "verification.preparation.record":
+            from pdos_next.enterprise_search.verification_kernel import prepare
+
+            candidate = prepare(self, scope, spec, arguments, intent_key, source=source)
+            if candidate is not None:
+                return candidate
         with self.commands.transaction(scope) as session:
             self.store.authority(session, scope)
             if spec.name == "category.create":
@@ -446,9 +559,20 @@ class Bootstrap:
                     if row is None:
                         raise DomainError("FORBIDDEN_SCOPE", "结果没有当前可读的领域回执。", 403)
                     self.commands.read_receipt(session, scope, row)
+        from .assistant_result import attach as attach_assistant
         from .research_result import attach
 
-        return attach(result, tool_results)
+        if hasattr(self, "_assistant_adapter"):
+            from pdos_next.enterprise_search.assistant_answer import attach as enterprise_answer
+
+            verified = enterprise_answer(
+                self._assistant_adapter, scope, attach(result, tool_results), tool_results,
+            )
+        else:
+            verified = attach_assistant(attach(result, tool_results), tool_results)
+        from .project_current_context import attach as attach_project_basis
+
+        return attach_project_basis(self.store, scope, verified)
 
     def default_preload(self, scope):
         if scope.isolation != "main":
@@ -456,7 +580,8 @@ class Bootstrap:
         with self.store.transaction(scope) as (session, run):
             self.store.authority(session, scope)
             if scope.category_id is None:
-                return ("category_framing",)
+                # Free conversation starts with the catalog; page actions request skills.
+                return ()
             if scope.proposal_id is None:
                 if scope.project_id is not None:
                     # A project run is not proposal drafting. Which project method applies is
@@ -517,15 +642,18 @@ class Bootstrap:
         from .m3_object_reads import M3ObjectReads
         from .m3_spec_compare import SpecCompareReads
         from .platform_reads import PlatformReads
+        from .project_object_reads import ProjectObjectReads
 
         domain_reads = DomainReads(self.store, self.commands)
         definition_diff = DefinitionDiffReads(self.store, self.commands, domain_reads)
         spec_compare = SpecCompareReads(self.store, self.commands, self.catalog)
         platform_reads = PlatformReads(self.store, self.commands)
+        project_reads = ProjectObjectReads(self.store, self.commands)
         local_reads = {
             **domain_reads.handlers(), **definition_diff.handlers(),
             **M3ObjectReads(self.store, self.commands).handlers(), **handlers,
             **spec_compare.handlers(), **platform_reads.handlers(),
+            **project_reads.handlers(),
         }
 
         adapters = KernelAdapters(
@@ -542,6 +670,7 @@ class Bootstrap:
                 **handlers,
                 **spec_compare.handlers(),
                 **platform_reads.handlers(),
+                **project_reads.handlers(),
                 **self.ports.read_tools,
             },
             provider_client=self.ports.provider_client,
@@ -554,8 +683,26 @@ class Bootstrap:
             tool_registry=self.registry,
             compute_engines=ENGINES,
             read_restores={
-                **spec_compare.restores(), **definition_diff.restores(), **platform_reads.restores()
+                **{name: restore for name, restore in domain_reads.restores().items()
+                   if name not in self.ports.read_tools},
+                **spec_compare.restores(), **definition_diff.restores(),
+                **platform_reads.restores(),
+                **project_reads.restores(),
             },
+        )
+        from pdos_next.enterprise_search.assistant_adapter import AssistantReadAdapter
+
+        assistant_adapter = AssistantReadAdapter(self.store, self.commands)
+        if self.ports.embedding_query is not None:
+            from pdos_next.enterprise_search.embedding_query import QueryEmbedding
+
+            assistant_adapter.query_embedding = QueryEmbedding(
+                self.store, self.ports.embedding_query, source_guard=assistant_adapter.guard,
+            )
+        self._assistant_adapter = assistant_adapter
+        adapters = replace(
+            adapters, citation_guard=assistant_adapter.guard,
+            source_action_guard=assistant_adapter.guard_action,
         )
         self._history_readers = {
             name: (lambda scope, args, previous, consumer, callback=callback: callback(scope, args))
@@ -595,6 +742,25 @@ class Bootstrap:
         )
         adapters.read_tools.update(extract_adapter.handlers())
         adapters.read_restores.update(extract_adapter.restores())
+        from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
+        from pdos_next.enterprise_search.comparison_graph import AssistantComparisonGraph
+
+        assistant_adapter.graph = AssistantExtractGraph(
+            BoundHost(self.store, adapters), assistant_adapter,
+            checkpointer_factory=self.ports.research_checkpointer_factory,
+        )
+        assistant_adapter.comparison_graph = AssistantComparisonGraph(
+            BoundHost(self.store, adapters), assistant_adapter,
+            checkpointer_factory=self.ports.research_checkpointer_factory,
+        )
+        adapters.read_tools.update(assistant_adapter.handlers())
+        adapters.read_resumes.update(assistant_adapter.resumes())
+        adapters.read_restores.update(assistant_adapter.restores())
+        for name, restore in assistant_adapter.restores().items():
+            self._history_readers[name] = (
+                lambda bound, args, previous, _consumer, callback=restore:
+                callback(bound, args, previous)
+            )
         if self.ports.research_service is not None:
             from pdos_next.research.tools import ResearchToolHost
 

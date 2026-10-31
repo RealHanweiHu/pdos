@@ -1,0 +1,35 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex _
+
+setup = <isolated synthetic test scope>
+
+    def test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex(setup):
+        visible = indexed_knowledge(setup, reference(register(setup, "有效依据", "漏气处理。")),
+                                    definition="漏气有效记录，核对密封圈。")
+        hidden = []
+        for number in range(3):
+            root = register(setup, f"待撤回依据 {number}", "漏气处理。")
+            entry = indexed_knowledge(setup, reference(root),
+                                      definition=f"漏气漏气漏气，隐藏知识编号 {number}。")
+            hidden.append(entry)
+            with Session(setup.admin) as session, session.begin():
+                session.get(Artifact, root).status = "withdrawn"
+        page = query(setup, "漏气", source_types=["knowledge"], limit=1)
+>       assert page["returned"] == 1 and page["truncated"] is False, page
+E       AssertionError: {'coverage': {'status': 'current', 'notice': None, 'indexed_as_of': '2026-10-29T04:26:50.844344+00:00'}, 'version': 'e...'220f6aa6-ba04-47e8-9f3e-e1228fea3fe8', 'object_id': 'bf1fb217-a70b-4294-b5c4-4c3ea488ece4', ...}], 'returned': 1, ...}
+E       assert (1 == 1 and True is False)
+
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py:38: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex
+tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_unreadable_knowledge_is_removed_before_limit_and_truncation_without_reindex
+1 failed, 4 warnings in 9.12s

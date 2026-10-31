@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="2" time="133.612" timestamp="2026-10-29T06:58:18.756847-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.dingtalk.test_official_temporal_pg" name="test_official_wire_uses_same_temporal_graph_and_current_private_delivery" time="130.419" /><testcase classname="tests.dingtalk.test_retention_pg" name="test_private_two_category_delivery_retains_each_actual_root_without_service_body_read" time="2.205"><failure message="TypeError: Context.__init__() got an unexpected keyword argument 'product_id'">channel = namespace(setup=&lt;isolated synthetic test scope&gt;, app=&lt;pdos_next.dingtalk.models.Application object at 0x12bb29a90&gt;, ru...estclient.TestClient object at 0x12bb1bdd0&gt;, service=&lt;pdos_next.dingtalk.runtime.ChannelService object at 0x158e34890&gt;)
+security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...290&gt;, parser=&lt;function parse_original at 0x10f362de0&gt;), client=&lt;starlette.testclient.TestClient object at 0x1595f7b90&gt;)
+
+    def test_private_two_category_delivery_retains_each_actual_root_without_service_body_read(
+        channel, security_work
+    ):
+        setup = channel.setup
+        # Seed a second new self-owned synthetic scope exactly as the core setup
+        # factory does; no existing owner/ACL is patched. Upload/scan/parse still use
+        # real native commands and the existing explicit synthetic security ports.
+        category2, product2 = uuid4(), uuid4()
+        with Session(setup.admin) as session, session.begin():
+            session.add(
+                Category(
+                    id=category2,
+                    tenant_id=setup.tenant,
+                    name="Second private retention scope",
+                    purpose="Synthetic source grouping",
+                    owner_id=setup.human,
+                )
+            )
+            session.flush()
+            session.add(
+                Product(
+                    id=product2,
+                    tenant_id=setup.tenant,
+                    category_id=category2,
+                    name="Second synthetic product",
+                    purpose="Retention fixture",
+                    owner_id=setup.human,
+                )
+            )
+            session.add_all(
+                [
+                    Grant(
+                        tenant_id=setup.tenant,
+                        category_id=category2,
+                        principal_id=person,
+                        can_write=True,
+                        expires_at=now() + timedelta(hours=1),
+                    )
+                    for person in [setup.human, setup.peer, setup.agent]
+                ]
+            )
+        second_setup = SimpleNamespace(
+            **{
+                **vars(setup),
+                "category": category2,
+                "product": product2,
+&gt;               "ctx": replace(setup.ctx, category_id=category2, product_id=product2),
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            }
+        )
+
+tests/dingtalk/test_retention_pg.py:175: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+obj = Context(tenant_id=UUID('35b0db1f-9d09-4749-b601-c2956ba82daf'), actor_id=UUID('42497a1c-163e-42f9-b2f1-acffd32b1614'),...ne, cancel_epoch=None, category_id=UUID('3db61774-c7ea-4b32-bc18-148a9f613a1a'), agent_run_id=None, agent_call_id=None)
+changes = {'category_id': UUID('74acfbb2-8346-4592-96dd-2be98ff0e52e'), 'product_id': UUID('8f38adc2-d0b6-41b7-843c-67e027be9f63...enant_id': UUID('35b0db1f-9d09-4749-b601-c2956ba82daf'), 'actor_id': UUID('42497a1c-163e-42f9-b2f1-acffd32b1614'), ...}
+
+    def replace(obj, /, **changes):
+        """Return a new object replacing specified fields with new values.
+    
+        This is especially useful for frozen classes.  Example usage::
+    
+          @dataclass(frozen=True)
+          class C:
+              x: int
+              y: int
+    
+          c = C(1, 2)
+          c1 = replace(c, x=3)
+          assert c1.x == 3 and c1.y == 2
+        """
+    
+        # We're going to mutate 'changes', but that's okay because it's a
+        # new dict, even if called with 'replace(obj, **my_changes)'.
+    
+        if not _is_dataclass_instance(obj):
+            raise TypeError("replace() should be called on dataclass instances")
+    
+        # It's an error to have init=False fields in 'changes'.
+        # If a field is not in 'changes', read its value from the provided obj.
+    
+        for f in getattr(obj, _FIELDS).values():
+            # Only consider normal fields or InitVars.
+            if f._field_type is _FIELD_CLASSVAR:
+                continue
+    
+            if not f.init:
+                # Error if this field is specified in changes.
+                if f.name in changes:
+                    raise ValueError(f'field {f.name} is declared with '
+                                     'init=False, it cannot be specified with '
+                                     'replace()')
+                continue
+    
+            if f.name not in changes:
+                if f._field_type is _FIELD_INITVAR and f.default is MISSING:
+                    raise ValueError(f"InitVar {f.name!r} "
+                                     'must be specified with replace()')
+                changes[f.name] = getattr(obj, f.name)
+    
+        # Create the new object, which calls __init__() and
+        # __post_init__() (if defined), using all of the init fields we've
+        # added and/or left in 'changes'.  If there are values supplied in
+        # changes that aren't fields, this will correctly raise a
+        # TypeError.
+&gt;       return obj.__class__(**changes)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+E       TypeError: Context.__init__() got an unexpected keyword argument 'product_id'
+
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/dataclasses.py:1588: TypeError</failure></testcase></testsuite></testsuites>

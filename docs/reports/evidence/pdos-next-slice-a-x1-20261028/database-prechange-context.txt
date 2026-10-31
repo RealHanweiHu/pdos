@@ -1,0 +1,702 @@
+FFFFF                                                                    [100%]
+=================================== FAILURES ===================================
+_ test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked _
+
+setup = <isolated synthetic test scope>
+
+    def test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked(setup):
+        owner, scope, host = host_for(setup)
+        first = load(host, scope, "public_research")
+        initial = host.skill_context(scope, "Synthetic focused research", bindings=(first,))
+        assert "proposal" not in initial["context"]
+        assert initial == host.skill_context(scope, "Synthetic focused research", bindings=(first,))
+        second = load(host, scope, "proposal_drafting")
+        expanded = host.skill_context(scope, "Synthetic focused research", bindings=(first, second))
+        assert expanded["context"]["proposal"]["id"] == str(scope.proposal_id)
+        assert expanded["context_ref"] != initial["context_ref"]
+        messages = [{"role": "user", "content": json.dumps(initial)}]
+        check_messages(owner.store, scope, messages, (first, second))
+        tampered = deepcopy(initial)
+        tampered["context"]["goal"] = "Changed after projection"
+        with pytest.raises(DomainError) as failure:
+            check_messages(owner.store, scope, [{"role": "user", "content": json.dumps(tampered)}],
+                           (first, second))
+        assert failure.value.code == "SOURCE_STALE"
+        with Session(setup.admin) as session:
+            row = session.get(AgentRun, scope.run_id)
+            assert len(row.versions["context_snapshots"]) == 2
+            assert "Synthetic context target" not in str(row.versions["context_snapshots"])
+            for value in row.versions["context_snapshots"].values():
+                assert value["read_set"] == row.read_sources
+                assert value["scope"]["proposal_id"] == str(scope.proposal_id)
+                assert value["scope"]["requester_id"] == str(scope.requester_id)
+                assert value["scope"]["data_categories"] == ["internal"]
+>       response = setup.client.get(
+            f"/v1/categories/{setup.category}/agent-runs/{scope.run_id}/process", headers=setup.headers,
+        )
+
+tests/agent_kernel/test_context_projection_pg.py:83: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1113: in get
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/api.py:306: in process
+    return read_process(
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/process_view.py:103: in read_process
+    receipts = _receipts(session, run)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/run_reconciliation.py:155: in _receipts
+    if run.trigger == "automation_service":
+       ^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1124: in _fire_loader_callables
+    return callable_(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:611: in __call__
+    return strategy._load_for_state(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:576: in _load_for_state
+    self._invoke_raise_load(state, passive, "raise")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.orm.strategies._DeferredColumnLoader object at 0x1562231b0>
+state = <sqlalchemy.orm.state.InstanceState object at 0x156307e30>
+passive = symbol('PASSIVE_OFF'), lazy = 'raise'
+
+    def _invoke_raise_load(self, state, passive, lazy):
+>       raise sa_exc.InvalidRequestError(
+            "'%s' is not available due to raiseload=True" % (self,)
+        )
+E       sqlalchemy.exc.InvalidRequestError: 'AgentRun.trigger' is not available due to raiseload=True
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:585: InvalidRequestError
+_ test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development] _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1563319a0>
+environment = 'development'
+
+    @pytest.mark.parametrize("environment", ["development", "test", "production"])
+    def test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production(
+        setup, monkeypatch, environment
+    ):
+        monkeypatch.setenv("PDOS_ENVIRONMENT", environment)
+        owner, scope, host = host_for(setup)
+        binding = load(host, scope, "public_research")
+        def extra(bound, goal, fields):
+            value = owner.project_context(bound, goal, fields)
+            value["category"]["unplanned_field"] = "PRIVATE OMITTED BODY"
+            return value
+        host.adapters = replace(host.adapters, project_context=extra)
+        if environment == "production":
+            projected = host.skill_context(
+                scope, "Synthetic production projection", bindings=(binding,),
+            )
+            assert "PRIVATE OMITTED BODY" not in str(projected)
+        else:
+            with pytest.raises(DomainError) as failure:
+                host.skill_context(scope, "Synthetic strict projection", bindings=(binding,))
+            assert failure.value.code == "VALIDATION_FAILED"
+        with owner.store.transaction(scope) as (session, row):
+            events = list(session.scalars(select(AgentEvent).where(AgentEvent.run_id == row.id)))
+            event = next(value for value in events if value.body["type"] == "context_projected")
+            assert event.body["omitted"] == [{"field": "/category/unplanned_field",
+                                              "reason": "outside_skill_context_schema"}]
+            assert "PRIVATE OMITTED BODY" not in str(event.body)
+>       response = setup.client.get(
+            f"/v1/categories/{setup.category}/agent-runs/{scope.run_id}/process", headers=setup.headers,
+        )
+
+tests/agent_kernel/test_context_projection_pg.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1113: in get
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/api.py:306: in process
+    return read_process(
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/process_view.py:103: in read_process
+    receipts = _receipts(session, run)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/run_reconciliation.py:155: in _receipts
+    if run.trigger == "automation_service":
+       ^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1124: in _fire_loader_callables
+    return callable_(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:611: in __call__
+    return strategy._load_for_state(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:576: in _load_for_state
+    self._invoke_raise_load(state, passive, "raise")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.orm.strategies._DeferredColumnLoader object at 0x1562231b0>
+state = <sqlalchemy.orm.state.InstanceState object at 0x157ddec30>
+passive = symbol('PASSIVE_OFF'), lazy = 'raise'
+
+    def _invoke_raise_load(self, state, passive, lazy):
+>       raise sa_exc.InvalidRequestError(
+            "'%s' is not available due to raiseload=True" % (self,)
+        )
+E       sqlalchemy.exc.InvalidRequestError: 'AgentRun.trigger' is not available due to raiseload=True
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:585: InvalidRequestError
+_ test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test] _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x169226600>
+environment = 'test'
+
+    @pytest.mark.parametrize("environment", ["development", "test", "production"])
+    def test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production(
+        setup, monkeypatch, environment
+    ):
+        monkeypatch.setenv("PDOS_ENVIRONMENT", environment)
+        owner, scope, host = host_for(setup)
+        binding = load(host, scope, "public_research")
+        def extra(bound, goal, fields):
+            value = owner.project_context(bound, goal, fields)
+            value["category"]["unplanned_field"] = "PRIVATE OMITTED BODY"
+            return value
+        host.adapters = replace(host.adapters, project_context=extra)
+        if environment == "production":
+            projected = host.skill_context(
+                scope, "Synthetic production projection", bindings=(binding,),
+            )
+            assert "PRIVATE OMITTED BODY" not in str(projected)
+        else:
+            with pytest.raises(DomainError) as failure:
+                host.skill_context(scope, "Synthetic strict projection", bindings=(binding,))
+            assert failure.value.code == "VALIDATION_FAILED"
+        with owner.store.transaction(scope) as (session, row):
+            events = list(session.scalars(select(AgentEvent).where(AgentEvent.run_id == row.id)))
+            event = next(value for value in events if value.body["type"] == "context_projected")
+            assert event.body["omitted"] == [{"field": "/category/unplanned_field",
+                                              "reason": "outside_skill_context_schema"}]
+            assert "PRIVATE OMITTED BODY" not in str(event.body)
+>       response = setup.client.get(
+            f"/v1/categories/{setup.category}/agent-runs/{scope.run_id}/process", headers=setup.headers,
+        )
+
+tests/agent_kernel/test_context_projection_pg.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1113: in get
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/api.py:306: in process
+    return read_process(
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/process_view.py:103: in read_process
+    receipts = _receipts(session, run)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/run_reconciliation.py:155: in _receipts
+    if run.trigger == "automation_service":
+       ^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1124: in _fire_loader_callables
+    return callable_(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:611: in __call__
+    return strategy._load_for_state(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:576: in _load_for_state
+    self._invoke_raise_load(state, passive, "raise")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.orm.strategies._DeferredColumnLoader object at 0x1562231b0>
+state = <sqlalchemy.orm.state.InstanceState object at 0x1537aac30>
+passive = symbol('PASSIVE_OFF'), lazy = 'raise'
+
+    def _invoke_raise_load(self, state, passive, lazy):
+>       raise sa_exc.InvalidRequestError(
+            "'%s' is not available due to raiseload=True" % (self,)
+        )
+E       sqlalchemy.exc.InvalidRequestError: 'AgentRun.trigger' is not available due to raiseload=True
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:585: InvalidRequestError
+_ test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production] _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1680c5460>
+environment = 'production'
+
+    @pytest.mark.parametrize("environment", ["development", "test", "production"])
+    def test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production(
+        setup, monkeypatch, environment
+    ):
+        monkeypatch.setenv("PDOS_ENVIRONMENT", environment)
+        owner, scope, host = host_for(setup)
+        binding = load(host, scope, "public_research")
+        def extra(bound, goal, fields):
+            value = owner.project_context(bound, goal, fields)
+            value["category"]["unplanned_field"] = "PRIVATE OMITTED BODY"
+            return value
+        host.adapters = replace(host.adapters, project_context=extra)
+        if environment == "production":
+            projected = host.skill_context(
+                scope, "Synthetic production projection", bindings=(binding,),
+            )
+            assert "PRIVATE OMITTED BODY" not in str(projected)
+        else:
+            with pytest.raises(DomainError) as failure:
+                host.skill_context(scope, "Synthetic strict projection", bindings=(binding,))
+            assert failure.value.code == "VALIDATION_FAILED"
+        with owner.store.transaction(scope) as (session, row):
+            events = list(session.scalars(select(AgentEvent).where(AgentEvent.run_id == row.id)))
+            event = next(value for value in events if value.body["type"] == "context_projected")
+            assert event.body["omitted"] == [{"field": "/category/unplanned_field",
+                                              "reason": "outside_skill_context_schema"}]
+            assert "PRIVATE OMITTED BODY" not in str(event.body)
+>       response = setup.client.get(
+            f"/v1/categories/{setup.category}/agent-runs/{scope.run_id}/process", headers=setup.headers,
+        )
+
+tests/agent_kernel/test_context_projection_pg.py:119: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1113: in get
+    return self.request(
+.venv/lib/python3.12/site-packages/starlette/testclient.py:463: in request
+    return super().request(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:797: in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:980: in send
+    response = self._send_handling_auth(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1008: in _send_handling_auth
+    response = self._send_handling_redirects(
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1043: in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/httpx2/_client.py:1076: in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/starlette/testclient.py:360: in handle_request
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/testclient.py:357: in handle_request
+    portal.call(self.app, scope, receive, send)
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:340: in call
+    ???
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:456: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/_base.py:401: in __get_result
+    raise self._exception
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/from_thread.py:265: in _call_func
+    ???
+.venv/lib/python3.12/site-packages/fastapi/applications.py:1215: in __call__
+    await super().__call__(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/applications.py:96: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:186: in __call__
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/middleware/errors.py:164: in __call__
+    await self.app(scope, receive, _send)
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_asgi.py:151: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/middleware/exceptions.py:63: in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/middleware/asyncexitstack.py:18: in __call__
+    await self.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/routing.py:676: in __call__
+    await self.middleware_stack(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2786: in app
+    await route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1817: in handle
+    await self.original_router.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:2869: in handle
+    await included_router._handle_selected(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1843: in _handle_selected
+    await original_route.handle(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:1308: in handle
+    await effective_context.app(scope, receive, send)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:165: in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:53: in wrapped_app
+    raise exc
+.venv/lib/python3.12/site-packages/starlette/_exception_handler.py:42: in wrapped_app
+    await app(scope, receive, sender)
+.venv/lib/python3.12/site-packages/fastapi/routing.py:151: in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/fastapi/routing.py:727: in app
+    raw_response = await run_endpoint_function(
+.venv/lib/python3.12/site-packages/fastapi/routing.py:362: in run_endpoint_function
+    return await run_in_threadpool(
+.venv/lib/python3.12/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/to_thread.py:65: in run_sync
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    ???
+/Users/huhanwei/Documents/ai-native-R&D-platform/pdos-next/server/.venv/lib/python3.12/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    ???
+.venv/lib/python3.12/site-packages/fastapi/telemetry/_api.py:240: in _run_sync_endpoint
+    return function(**arguments)
+           ^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/api.py:306: in process
+    return read_process(
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/process_view.py:103: in read_process
+    receipts = _receipts(session, run)
+               ^^^^^^^^^^^^^^^^^^^^^^^
+/tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/agent_kernel/run_reconciliation.py:155: in _receipts
+    if run.trigger == "automation_service":
+       ^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:575: in __get__
+    return self.impl.get(state, dict_)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1091: in get
+    value = self._fire_loader_callables(state, key, passive)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/attributes.py:1124: in _fire_loader_callables
+    return callable_(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:611: in __call__
+    return strategy._load_for_state(state, passive)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:576: in _load_for_state
+    self._invoke_raise_load(state, passive, "raise")
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <sqlalchemy.orm.strategies._DeferredColumnLoader object at 0x1562231b0>
+state = <sqlalchemy.orm.state.InstanceState object at 0x1694b4770>
+passive = symbol('PASSIVE_OFF'), lazy = 'raise'
+
+    def _invoke_raise_load(self, state, passive, lazy):
+>       raise sa_exc.InvalidRequestError(
+            "'%s' is not available due to raiseload=True" % (self,)
+        )
+E       sqlalchemy.exc.InvalidRequestError: 'AgentRun.trigger' is not available due to raiseload=True
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/strategies.py:585: InvalidRequestError
+_ test_registered_graph_progressively_adds_context_and_replay_never_calls_provider _
+
+setup = <isolated synthetic test scope>
+
+    def test_registered_graph_progressively_adds_context_and_replay_never_calls_provider(setup):
+        owner, scope, host = host_for(setup)
+        with Session(setup.admin) as session, session.begin():
+            session.add(TenantAdministrator(tenant_id=setup.tenant, principal_id=setup.human))
+            session.get(AgentRun, scope.run_id).token_limit = 500000
+        with human_session(setup) as session:
+            register_agreement(session, setup.ctx, agreement(setup).model_copy(
+                update={"data_categories": ["internal"]},
+            ))  # Synthetic-only contract fixture.
+        class Client:
+            def __init__(self):
+                self.requests = []
+            def turn(self, route, **kwargs):
+                self.requests.append(deepcopy(kwargs))
+                if len(self.requests) == 1:
+                    assert "proposal" not in json.loads(kwargs["messages"][0]["content"])["context"]
+                    return ModelTurn(usage=ProviderUsage(20, 10), calls=(
+                        ToolCall(id="load-drafting", name="skill.load",
+                                 arguments={"name": "proposal_drafting"}),
+                    ))
+                latest = json.loads(kwargs["messages"][-1]["content"])
+                assert latest["context"]["proposal"]["id"] == str(scope.proposal_id)
+                return ModelTurn(usage=ProviderUsage(20, 10), structured={
+                    "status": "completed", "summary": "Synthetic projected context", "result": {},
+                })
+            def close(self):
+                pass
+        client = Client()
+        host = BoundHost(owner.store, replace(host.adapters, route_for=lambda _: configured_route(),
+            provider_for=lambda *_: "synthetic-provider", cost_required=False, provider_client=client))
+        saver = InMemorySaver()
+        result = AgentKernel(host, default_registry()).execute(
+            scope, goal="Synthetic progressive context", checkpointer=saver,
+            preload=("public_research",),
+        )
+        assert result["output"]["status"] == "completed" and len(client.requests) == 2
+        assert client.requests[0]["system"] == client.requests[1]["system"]
+>       assert client.requests[0]["tools"] == client.requests[1]["tools"]
+E       AssertionError: assert [{'name': 'ai...bject'}}, ...] == [{'name': 'ai...bject'}}, ...]
+E         
+E         At index 25 diff: {'name': 'evidence.extract', 'description': '读取 evidence.extract。何时调用尚未登记，使用前须由该领域确认。只读，无业务写入。', 'parameters': {'type': 'object'}} != {'name': 'evidence.claim.withdraw', 'description': '确认稿决策 P9：单条撤回 Claim，已被签署决定消费的不可撤回。产生 claim.withdrawn。预填候选，须一次实质确认后才生效。', 'parameters': {'additionalProperties': False, 'properties': {'claim_id': {'format': 'uuid', 'title': 'Claim Id', 'type': 'string'}, 'expected_version': {'exclusiveMinimum': 0, 'title': 'Expected Version', 'type': 'integer'}, 'reason': {'minLength': 1, 'title': 'Reason', 'type': 'string'}}, 'require...
+E         
+E         ...Full output truncated (3 lines hidden), use '-vv' to show
+
+tests/agent_kernel/test_context_projection_pg.py:163: AssertionError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]
+tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]
+tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+  /tmp/pdos-x1-prechange-source/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_context_uses_loaded_methods_and_snapshot_is_idempotent_private_and_checked
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[development]
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[test]
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_unexpected_fields_fail_in_dev_test_and_are_explained_without_values_in_production[production]
+FAILED tests/agent_kernel/test_context_projection_pg.py::test_registered_graph_progressively_adds_context_and_replay_never_calls_provider
+5 failed, 5 warnings in 20.01s

@@ -1,0 +1,16 @@
+{
+  "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md": "10d6d43aef243e4d7c84a5178d4b92cac4d3f402d1d52f8e2b1a67a9d9b6a330",
+  "docs/design/2026-10-28-xiaopai-context-design.md": "df9c0948e04556a6da84a4c3c7dafae7422236960479d283aef4a131fa93a28e",
+  "docs/evaluations/xiaopai-v0/context-questions.json": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+  "docs/reports/evidence/pdos-next-context-fixture-completion-20261029/native-normalized-20261030/CTX-09-F48000.json": "805439a28a53dd185948d117cc5c7d4ab511c16f7b8eba8ba24ffdddb399d984",
+  "docs/reports/evidence/pdos-next-context-fixture-completion-20261029/result.md": "ae9d2969ee285177878a3962394afb41ed9d2b000aa907ef665ec34b37414d24",
+  "pdos-next/server/pdos_next/agent_kernel/context_budget.py": "1224b8b123e57f596423a49127084ae5eaa948945cefa40f0e7b4274a5de9cfb",
+  "pdos-next/server/pdos_next/agent_kernel/domain_reads.py": "d8e91e7547bf6902c8f9a856380c7b1035ba66cf0e4ffc3086531500d810c72a",
+  "pdos-next/server/pdos_next/agent_kernel/host.py": "13b152c05f4cc1d589da50a0e968818a4b268b76016732433c68afa5f66c54a4",
+  "pdos-next/server/pdos_next/agent_kernel/registry.py": "d9a4ee6ac6d926ca42625d6bb0a672feeab98e035d542524016ba43bc35c7c05",
+  "pdos-next/server/pdos_next/agent_kernel/result_continuation.py": "6b6c5ef4716410dc3223634e567a286aca07471666920bf724f9c9193addbe8e",
+  "pdos-next/server/pdos_next/domain/preproject/category_reads.py": "8424f49090ee9e7d61255dd8255c46754fbfd25301b907f305c8ba51091dfde7",
+  "pdos-next/server/pdos_next/domain/preproject/category_schemas.py": "21cd39feec3c9d42d603e285311ffc56bf8bf8842d7254f626e78654b6e7d95f",
+  "pdos-next/server/tests/agent_kernel/eval_v0_ctx09_directory_support.py": "2754b2e786377b586e799246d0cd1a102f9c97298f18e1015a410f353607cb81",
+  "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py": "67ef95b6522a3762e727a8836ec610e44b13d42431271af8a4deae3246b9508c"
+}

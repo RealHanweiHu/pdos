@@ -1,0 +1,24 @@
+{
+  "previous_unique_passes": 613,
+  "source_delta": [
+    "pdos-next/server/pdos_next/enterprise_search/assistant_sources.py",
+    "pdos-next/server/tests/enterprise_search/test_recovery_pg.py",
+    "pdos-next/server/tests/enterprise_search/test_relations.py"
+  ],
+  "new_test_file": "pdos-next/server/tests/enterprise_search/test_authority_query_cache_pg.py",
+  "new_cases": 2,
+  "total_cases": 838,
+  "affected_previously_passed_rerun": [
+    "test_artifact_dependency_update_keeps_answer_but_never_extracts_a_new_body",
+    "test_primary_revision_change_never_offers_a_replacement_body_as_the_old_fixed_snippet",
+    "test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[old_root]",
+    "test_claim_dependency_keeps_fixed_root_and_named_withdrawal_in_the_read_proof[claim]",
+    "test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs",
+    "test_registered_snapshot_dependency_is_signed_without_original_text_and_cannot_be_retargeted",
+    "test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_latency"
+  ],
+  "retained": 606,
+  "remaining_expected": 232,
+  "semantic_equivalence_evidence": "authority-query-cache-equality.json",
+  "change": "Cache only immutable authority SELECT shape; source IDs remain execution binds and actual requester GUC/RLS is evaluated every transaction. No source data or authority facts cached. Diagnostics add durations after measured interval."
+}

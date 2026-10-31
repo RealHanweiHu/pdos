@@ -1,0 +1,15 @@
+{
+  "exit": 0,
+  "files": [
+    "src/app/api/[...path]/route.ts",
+    "src/app/dingtalk/runs/[runId]/page.tsx",
+    "src/components/app-shell.tsx",
+    "src/components/automation-rules.tsx",
+    "src/components/personal-summary-settings.tsx",
+    "src/components/summary-dingtalk-settings.tsx",
+    "src/components/xiaopai.tsx",
+    "src/lib/personal-summary.ts",
+    "src/lib/summary-channel-proxy.ts",
+    "src/lib/summary-channels.ts"
+  ]
+}

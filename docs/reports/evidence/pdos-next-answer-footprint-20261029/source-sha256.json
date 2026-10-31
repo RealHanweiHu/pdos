@@ -1,0 +1,8 @@
+{
+  "pdos-next/server/pdos_next/domain/knowledge/assistant_sources.py": "e117df0e3f5f427faa842796ee91fb9f2cabbdabd40b02f87b6f0fe212fd7c21",
+  "pdos-next/server/pdos_next/domain/knowledge/assistant_storage.py": "630abfbedc49b284f8a2d984e5f49ce13f3ae987bf52387d77ffb9e0f9df05df",
+  "pdos-next/server/migrations/schema_answer_footprint.py": "34983723c272a7d96e4cce197eb88eba7c8e54e09b02770bfa9ca2bf3007a8fd",
+  "pdos-next/server/tests/knowledge/test_answer_footprint.py": "5f7e7ccb9a8dd44a240107b1fa97e1032b668e486d12532e227972be7f6ff274",
+  "pdos-next/server/tests/knowledge_pg/test_answer_footprint_pg.py": "2f24f8c39ef68aa923bb78b71df2dbc95f962d4bf76d86089a8c76e4fab5c565",
+  "pdos-next/server/migrations/versions/s0_0842_answer_footprint.py": "e4c70efacaff5c4e04bc3e5c73ca1bb9df4005dc1a92ca3c2d4297049cbc61a9"
+}

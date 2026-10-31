@@ -1,0 +1,9 @@
+{
+  "offline_export_exit": 0,
+  "changed_paths": [
+    "/v1/categories/{category_id}/agent-runs/{run_id}/assistant-sources/{citation_id}",
+    "/v1/personal/agent-runs/{run_id}/assistant-sources/{citation_id}"
+  ],
+  "schema_components_unchanged": true,
+  "payloads_operations_acceptance_unchanged": true
+}

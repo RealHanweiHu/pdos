@@ -1,0 +1,99 @@
+- alert
+- link "跳到工作内容":
+  - /url: "#workspace-content"
+- complementary:
+  - generic: P
+  - generic: PDOS
+  - button "收起侧栏":
+  - button "搜索或跳转":
+    - generic: 搜索或跳转
+    - generic: ⌘ K
+  - navigation "工作区导航":
+    - link "我的工作":
+      - /url: "?area=work&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 我的工作
+    - link "收件箱":
+      - /url: "?area=inbox&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 收件箱
+    - link "小Pai":
+      - /url: "?area=pai"
+      - generic: 小Pai
+    - link "项目":
+      - /url: "?area=projects&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目
+    - link "项目集":
+      - /url: "?area=programs&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 项目集
+    - link "知识":
+      - /url: "?area=knowledge&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+      - generic: 知识
+    - generic "最近的在办项目":
+      - paragraph: 常用项目
+      - link "Approved revision fixture":
+        - /url: "?area=cockpit&category=6fa24f56-6650-4e57-9610-9a875785cb32&project=2053d8e3-3f53-4355-8638-ebe4ce65d0bd"
+        - generic: Ap
+        - generic: Approved revision fixture
+  - link "设置":
+    - /url: "?area=settings&category=6fa24f56-6650-4e57-9610-9a875785cb32"
+    - generic: 设置
+  - generic: S
+  - paragraph: Synthetic owner
+  - paragraph: 本地合成环境
+- banner:
+  - generic: 工作空间
+  - link "项目":
+    - /url: "?area=projects"
+  - generic: Approved revision fixture
+  - button "切换明暗主题":
+  - button "搜索对象":
+- main:
+  - button "返回项目列表": Ap
+  - heading "Approved revision fixture" [level=1]
+  - button "阶段待确认":
+    - text: 阶段待确认
+  - generic: 负责人 Synthetic owner（本人）
+  - tablist "项目工作区视图":
+    - tab "概览"
+    - tab "任务"
+    - tab "计划"
+    - tab "文件"
+  - generic "更多项目视图":
+    - text: 更多
+  - tabpanel "更多项目视图":
+    - region "评审与交付":
+      - heading "评审与交付" [level=2]
+      - paragraph: 核对固定版本、用途、例外与专业结论，完成具名办理。
+      - navigation "评审与交付视图":
+        - button "发布与交付包"
+        - button "例外与专业决定"
+        - button "外部移交" [active] [pressed]
+      - region "本项目外部交接与原回执":
+        - heading "外部交接与原回执" [level=2]
+        - button "刷新本页外部交接"
+        - paragraph: 本页 1 条可读交接，非项目总数。明确选择后读取固定授权和原发送意图。
+        - region "本页可选外部交接":
+          - table:
+            - rowgroup:
+              - row "用途 / 固定包 服务器状态 原回执水位 查看":
+                - columnheader "用途 / 固定包"
+                - columnheader "服务器状态"
+                - columnheader "原回执水位"
+                - columnheader "查看"
+            - rowgroup:
+              - row "Verify preparation 固定包 f3880b4e-e87e-4b31-9c11-b795176bb29e · v1 已记录接收 6 条 · epoch 7 读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857":
+                - cell "Verify preparation 固定包 f3880b4e-e87e-4b31-9c11-b795176bb29e · v1":
+                  - strong: Verify preparation
+                  - generic: 固定包 f3880b4e-e87e-4b31-9c11-b795176bb29e · v1
+                - cell "已记录接收"
+                - cell "6 条 · epoch 7"
+                - cell "读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857":
+                  - button "读取外部交接 91668fab-1122-4fc9-b6ca-64717f92e857": 读取固定交接
+        - button "回首页" [disabled]
+        - button "下一页外部交接" [disabled]
+        - generic: 本页未提供下一页位置。
+        - paragraph: 请选择固定交接，分别核对发送、接收与实际生效。
+        - paragraph: 授权和原意图不表示已发送、已接收或已生效。三个阶段按服务器原投影分别展示；此面板仅供读取，不进行网络发送或资格判定。
+      - button "维护记录与专业办理":
+        - text: 维护记录与专业办理
+  - generic "项目资料与更多操作"
+- button "打开小Pai工作栏":

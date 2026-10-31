@@ -6,8 +6,9 @@ import { budgetIntegerMax, budgetPendingKey, dollars, matchBudgetReceipt, microD
 import { proofClockCurrent } from "@/lib/proof-clock";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 
-function Usage({ row }: { row: AgentBudget }) {
-  return <div className="space-y-1 text-sm"><p>费用：已计 {dollars(row.spent_micro_usd)} · 占用 {dollars(row.held_micro_usd)} · 额度 {dollars(row.limit_micro_usd)} USD</p><p>调用 {row.calls} / {row.call_limit} 次</p><p>输入：已用 {row.used_input_tokens} · 占用 {row.held_input_tokens} / {row.input_token_limit} tokens</p><p>输出：已用 {row.used_output_tokens} · 占用 {row.held_output_tokens} / {row.output_token_limit} tokens</p></div>;
+function Usage({ row, unlimited = false }: { row: AgentBudget; unlimited?: boolean }) {
+  if (unlimited) return <div className="space-y-1 text-sm"><p>费用：已计 {dollars(row.spent_micro_usd)} · 占用 {dollars(row.held_micro_usd)} USD · 不设额度</p><p>调用 {row.calls} 次 · 不设次数上限</p><p>输入：已用 {row.used_input_tokens} · 占用 {row.held_input_tokens} tokens</p><p>输出：已用 {row.used_output_tokens} · 占用 {row.held_output_tokens} tokens · 按模型支持范围生成</p></div>;
+  return <div className="space-y-1 text-sm">{row.development_unlimited && <p>此记录含开发期不限额用量；以下额度保留原设置。</p>}<p>费用：已计 {dollars(row.spent_micro_usd)} · 占用 {dollars(row.held_micro_usd)} · 额度 {dollars(row.limit_micro_usd)} USD</p><p>调用 {row.calls} / {row.call_limit} 次</p><p>输入：已用 {row.used_input_tokens} · 占用 {row.held_input_tokens} / {row.input_token_limit} tokens</p><p>输出：已用 {row.used_output_tokens} · 占用 {row.held_output_tokens} / {row.output_token_limit} tokens</p></div>;
 }
 
 export function ConnectedAgentBudgets({ api, principalId, categoryId }: { api: WorkspaceTransport; principalId: string; categoryId: string }) {
@@ -105,8 +106,9 @@ export function ConnectedAgentBudgets({ api, principalId, categoryId }: { api: W
     {busy && <p role="status" className="text-sm">正在核对预算与回执…</p>}
     {reading && <div className="space-y-3">
       <p className="text-sm text-muted-foreground">本人预算配置 · 第 {reading.control_revision} 版</p>
+      {reading.development_unlimited && <p role="status" className="text-sm">本地开发期 MiniMax 不应用费用、调用次数和 token 配额；实际用量、费用及停止状态继续记录。其他模型仍按各自预算执行。</p>}
       {!reading.active_budgets.length && <p className="text-sm">当前没有可供新调用使用的活动预算。</p>}
-      {reading.active_budgets.map(row => <article key={row.id} className="space-y-2 rounded-lg border border-border p-3"><h3 className="font-medium">{row.id === reading.selected_budget_id ? "新工作将绑定此预算" : "其他活动预算"} · 第 {row.revision} 版</h3><Usage row={row} /><p className="break-all text-xs text-muted-foreground">预算 {row.id}</p></article>)}
+      {reading.active_budgets.map(row => <article key={row.id} className="space-y-2 rounded-lg border border-border p-3"><h3 className="font-medium">{row.id === reading.selected_budget_id ? "新工作将绑定此预算" : "其他活动预算"} · 第 {row.revision} 版</h3><Usage row={row} unlimited={reading.development_unlimited} /><p className="break-all text-xs text-muted-foreground">预算 {row.id}</p></article>)}
       <Button variant="outline" className="h-auto whitespace-normal" disabled={disabled || !reading.active_budgets.length} onClick={() => void run(current => prepare("stop", null, current))}>核对并停用全部活动预算</Button>
       {!reading.can_edit && <p className="text-sm text-muted-foreground">当前可查询本人预算；变更额度须本人具有当前租户管理员和品类写入权限。</p>}
     </div>}

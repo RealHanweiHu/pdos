@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="1" time="96.167" timestamp="2026-10-28T21:57:34.617515-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_recovery_pg" name="test_all_nine_sources_rebuild_after_real_derived_damage_without_business_changes[all_tables]" time="95.222"><error message="failed on setup with &quot;KeyError: UUID('3679032c-4fe6-45ae-ad03-f58250a32ad7')&quot;">tests/enterprise_search/test_recovery_pg.py:69: in all_sources
+    register(person, "Synthetic recovery artifact", "Synthetic recovery source evidence.")
+tests/enterprise_search/test_retrieval_pg.py:24: in register
+    response = post(
+tests/preproject/test_g0.py:87: in post
+    route, json=req, headers={"Authorization": f"Bearer {work.tokens[actor or work.human]}"}
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: UUID('3679032c-4fe6-45ae-ad03-f58250a32ad7')</error></testcase></testsuite></testsuites>

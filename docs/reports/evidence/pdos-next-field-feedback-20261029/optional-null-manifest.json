@@ -1,0 +1,47 @@
+{
+  "stage": "/tmp/pdos-knowledge-optional-proof-null-stage-20261029",
+  "base_git_head": "28bacbb7d8be01b50296004a66891ab9892d30f4",
+  "new_files": [
+    {
+      "path": "pdos-next/server/migrations/candidates/knowledge_optional_proof.py",
+      "stage_path": "files/pdos-next/server/migrations/candidates/knowledge_optional_proof.py",
+      "sha256": "2ff4b57e84a59d5c0fcdf759e0791fec038d1fe4b556ae173ee9e75191e19816"
+    },
+    {
+      "path": "pdos-next/server/tests/knowledge/test_optional_answer_proof_nulls.py",
+      "stage_path": "files/pdos-next/server/tests/knowledge/test_optional_answer_proof_nulls.py",
+      "sha256": "d48ce87b82b7add74ad430b2668b815b03d9192305b6806eed5ec35d9db99a14"
+    }
+  ],
+  "patches": [
+    {
+      "path": "pdos-next/server/pdos_next/domain/preproject/category_models.py",
+      "base_sha256": "7f53a41c846466fd777193a02612b2768a2ec73fa363d0064db0e52d718b5651",
+      "result_sha256": "445935f505b6df032297ad0502d90e6799f8d19aedc83c01cc3941df431d1f53",
+      "patch_path": "patches/category-answer-proof-null.patch",
+      "patch_sha256": "175a7339337fea13ca89527c89e26ebea223d41ccc5fbf3240e6e29ffce41366"
+    }
+  ],
+  "unnumbered_sql": [
+    {
+      "path": "sql/base-g843-m3-lifecycle-source-links.sql",
+      "sha256": "733384741acc5653b91ae882bd29b4ade077229c153c68facbdad30e9ca20dc2"
+    },
+    {
+      "path": "sql/unnumbered-optional-answer-proof-up.sql",
+      "sha256": "dfa947ded55c754f6cd4c7b1f58401d04f52a106063ed3af5ae4c806e7824737"
+    }
+  ],
+  "artifacts": {
+    "contract.json": "3bb0df1475d63659478d16d45d8b4026ebf350b13dad76590619b28cb1483821",
+    "evidence.json": "a45650553dd7c4cbf49986e8ba4b2b1e1b85d78dde91abf2696544b6790d005d",
+    "README.md": "2d7bcd3977734e11ffdf216263d0a7db996d4b33c2a819f30257dd5c9604c5e7"
+  },
+  "live_mutation": false,
+  "verification": {
+    "pure_passed": 3,
+    "ruff_files": 3,
+    "pg_executed": 0
+  },
+  "remaining": "Root current-pin/migration845 assembly and native PG checkpoint."
+}

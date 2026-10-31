@@ -2,6 +2,8 @@
 
 CATEGORY_OPERATIONS = frozenset(
     {
+        "embedding.profile.save",
+        "embedding.call.reconcile",
         "field.feedback.create",
         "field.feedback.locate",
         "field.feedback.action.record",
@@ -44,6 +46,8 @@ CATEGORY_OPERATIONS = frozenset(
 
 T2_OPERATIONS = frozenset(
     {
+        "work.baseline.approve",
+        "work.stage.decide",
         "knowledge.rule.publish",
         "integration.handoff.authorize",
         "release.exception.decide",
@@ -69,12 +73,17 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "embedding.profile.save",
+        "embedding.call.reconcile",
         "field.feedback.locate",
         "field.feedback.action.record",
         "field.feedback.followup.link",
         "work.risk.followup.record",
         "ai.automation.activate",
         "ai.automation.pause",
+        "work.stage.milestone.bind",
+        "work.stage.adopt",
+        "work.stage.review.submit",
         "work.task.assign",
         "work.task.accept",
         "work.commitment.accept",
@@ -231,6 +240,13 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"embedding.profile.save", "embedding.call.reconcile"}:
+        from pdos_next.enterprise_search import embedding_profiles
+
+        return embedding_profiles
+    if operation in {"work.stage.milestone.bind", "work.stage.adopt", "work.baseline.approve", "work.stage.review.submit", "work.stage.decide"}:
+        from pdos_next.domain.project_governance import service
+        return service
     if operation in {
         "field.feedback.create",
         "field.feedback.locate",

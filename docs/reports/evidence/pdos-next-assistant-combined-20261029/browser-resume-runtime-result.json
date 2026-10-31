@@ -1,0 +1,24 @@
+{
+  "synthetic": true,
+  "tenant": "5e339f5d-a173-4afa-9b6c-649aadec9fae",
+  "human": "905d9deb-ac6f-4868-a1d4-6b2e0ffe5f39",
+  "category": "29e45276-6a8d-48a8-9726-e1324130f038",
+  "product": "e9801000-20f6-4950-b006-1d05caaf0f25",
+  "project": "5dbfd5fe-bb53-48bb-9c58-c01609ff91d9",
+  "parent_run": "30a5e23a-9da2-4287-a946-f5e8d4fc4c9a",
+  "build": "751e6de4-dc74-444d-a41b-d77fcee14e33",
+  "api": "http://127.0.0.1:58265",
+  "before": [
+    1,
+    2
+  ],
+  "parent_provider_calls": 5,
+  "after": [
+    1,
+    2
+  ],
+  "candidate_provider_calls": 12,
+  "final_provider_calls": 12,
+  "actual_sample_count": 3,
+  "domain_writes": 0
+}

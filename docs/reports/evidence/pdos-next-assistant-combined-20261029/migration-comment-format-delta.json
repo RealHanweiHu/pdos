@@ -1,0 +1,6 @@
+{
+  "path": "pdos-next/server/migrations/schema_s0_0835.py",
+  "before_sha256": "45d6507cc94f5c71b80912b037cb654dd7cb63433dec3f39e7961b6d7cb297d2",
+  "after_sha256": "602857bcb84951e859f8bb8bfc9f15f854a01fc573855a88bf36c5d83750b52b",
+  "change": "docstring line wrap only; exact SCHEMA_SQL and DOWNGRADE_SQL unchanged; no database operation"
+}

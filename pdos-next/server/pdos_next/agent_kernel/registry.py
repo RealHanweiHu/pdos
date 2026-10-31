@@ -21,7 +21,11 @@ PREPARE_ONLY = frozenset(
     }
 )
 ISOLATED = {
-    "research.read": "research", "evidence.artifact.read": "extract", "mcp.result.read": "mcp",
+    "research.read": "research",
+    "evidence.artifact.read": "extract",
+    "mcp.result.read": "mcp",
+    "assistant.passage.read": "assistant_extract",
+    "assistant.comparison.read": "assistant_compare",
 }
 SCOPE_KEYS = frozenset(
     {
@@ -79,6 +83,11 @@ class ToolSpec:
     budget_weight: int = 1
     handler: Callable | None = field(default=None, repr=False, compare=False)
     version: str = "1"
+    max_result_tokens: int = 4_000
+
+    def __post_init__(self):
+        if type(self.max_result_tokens) is not int or self.max_result_tokens < 512:
+            raise ValueError("Tool result limit must fit a continuation envelope")
 
     def definition(self):
         return {"name": self.name, "description": self.description, "parameters": self.input_schema}
@@ -119,9 +128,11 @@ class ToolRegistry:
     def definitions(self, isolation="main"):
         # A child has a physically separate read-only list, not a model-visible write switch.
         allowed = {
-            "research": {"research.search", "research.read"},
-            "extract": {"evidence.artifact.read"},
-            "mcp": {"mcp.result.read"},
+            "research": {"research.search", "research.read", "result.read"},
+            "extract": {"evidence.artifact.read", "result.read"},
+            "mcp": {"mcp.result.read", "result.read"},
+            "assistant_extract": {"assistant.passage.read", "result.read"},
+            "assistant_compare": {"assistant.comparison.read", "result.read"},
         }
         return [
             self._specs[n].definition()
@@ -132,7 +143,8 @@ class ToolRegistry:
     @property
     def version(self):
         body = [
-            {**s.definition(), "tier": s.tier, "version": s.version}
+            {**s.definition(), "tier": s.tier, "version": s.version,
+             "max_result_tokens": s.max_result_tokens}
             for _, s in sorted(self._specs.items())
         ]
         return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()
@@ -146,9 +158,16 @@ class ToolRegistry:
         if not isinstance(arguments, Mapping) or authority:
             raise DomainError("FORBIDDEN_SCOPE", "模型参数不能声明运行权限或身份。")
         for key in ("category_id", "product_id", "proposal_id"):
+            if name == "assistant.search" and spec.tier == "READ" and (
+                arguments.get(key) is None or getattr(scope, key) is None
+                or str(arguments[key]) == str(getattr(scope, key))
+            ):
+                continue  # The adapter narrows selectors against actual requester RLS.
             if (
-                key == "product_id" and name in {"product.baseline.read", "platform.read"}
-                and scope.product_id is None and scope.category_id is not None
+                key == "product_id"
+                and name in {"product.baseline.read", "platform.read"}
+                and scope.product_id is None
+                and scope.category_id is not None
                 and spec.tier == "READ"
             ):
                 # This is a read selector inside the actual category. The port
@@ -201,14 +220,20 @@ def command_tools(payloads=None, tiers=None, handlers=None):
     specs = []
     for operation, schema in sorted(payloads.items()):
         tier = (
-            "T1" if operation == "ai.run.revert"
-            else "T2-prepare-only" if operation in PREPARE_ONLY else tiers[operation]
+            "T1"
+            if operation == "ai.run.revert"
+            else "T2-prepare-only"
+            if operation in PREPARE_ONLY
+            else tiers[operation]
         )
         raw = schema.model_json_schema()
         # Confirmation credentials and server scope can never be supplied by a model.
         for key in tuple(raw.get("properties", {})):
             target_run = operation == "ai.run.revert" and key == "run_id"
-            if (key in SCOPE_KEYS and not target_run) or key == "confirmation_token":
+            if (key in SCOPE_KEYS and not target_run) or key in {
+                "confirmation_token",
+                "human_edits",
+            }:
                 raw["properties"].pop(key)
                 raw["required"] = [v for v in raw.get("required", []) if v != key]
         specs.append(

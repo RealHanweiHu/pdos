@@ -1,0 +1,13 @@
+{
+  "tests": [
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py::test_ctx09_native_handle_page2_then_same_handle_page3_failure[F48000]",
+    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py::test_ctx09_native_handle_page2_then_same_handle_page3_failure[F64000]",
+    "tests/enterprise_search/test_eval_v0_source_context_pg.py::test_eval_v0_native_source_context_admission[48000-CTX-12]",
+    "tests/enterprise_search/test_eval_v0_source_context_pg.py::test_eval_v0_native_source_context_admission[64000-CTX-12]",
+    "-x",
+    "--tb=short"
+  ],
+  "port": 53502,
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "model_calls": 0
+}

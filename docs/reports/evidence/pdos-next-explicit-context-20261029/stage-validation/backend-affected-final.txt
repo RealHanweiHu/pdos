@@ -1,0 +1,58 @@
+................F............................................F.......... [ 72%]
+...........................                                              [100%]
+=================================== FAILURES ===================================
+_ test_registered_context_schema_retains_exact_human_selection_without_new_authority _
+
+    def test_registered_context_schema_retains_exact_human_selection_without_new_authority():
+        from pdos_next.agent_kernel.context_projection import project
+        from pdos_next.agent_kernel.skills import SkillCatalog
+    
+        _run, _ctx, ref = case()
+        registered = SkillCatalog().contexts
+        schema = {
+            **registered["$defs"]["work_state"]["properties"]["context_selection"],
+            "$defs": registered["$defs"],
+        }
+        value = selection(ref, version_mode="fixed", versions=[ref])
+        projected, omitted, issues = project(value, schema)
+        assert projected == value and not omitted and not issues
+        assert projected["versions"][0]["content_hash"] == ref["content_hash"]
+        assert schema["additionalProperties"] is False
+        _, _, invalid = project({**value, "audience": ["model-supplied"]}, schema)
+>       assert invalid
+E       assert []
+
+tests/agent_kernel/test_context_corrections.py:364: AssertionError
+_ test_prepare_deep_calls_real_continuation_with_server_inherited_scope_and_fixed_sources _
+
+    def test_prepare_deep_calls_real_continuation_with_server_inherited_scope_and_fixed_sources():
+        session, ctx, parent, requested, writes = case()
+>       effective, actual, profile = prepare_deep(session, ctx, requested)
+                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/enterprise_search/test_assistant_depth.py:46: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/enterprise_search/assistant_depth.py:48: in prepare_deep
+    effective, parent = prepare(session, ctx, original)
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/conversation.py:77: in prepare
+    _lock(session, ctx.tenant_id, parent.session_id)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = namespace(scalar=<function case.<locals>.<lambda> at 0x11a95c2c0>, get=<function case.<locals>.get at 0x11a95c860>, add=<function case.<locals>.<lambda> at 0x11a95c540>)
+tenant_id = UUID('a4ddf9ae-e4f0-4ddc-891b-2608b0ddee7d')
+session_id = UUID('5a7632aa-7c1c-4c3a-a415-65832784b58c')
+
+    def _lock(session, tenant_id, session_id):
+>       session.execute(
+        ^^^^^^^^^^^^^^^
+            text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"),
+            {"key": f"work-state:{tenant_id}:{session_id}"},
+        )
+E       AttributeError: 'types.SimpleNamespace' object has no attribute 'execute'
+
+pdos_next/agent_kernel/work_state.py:68: AttributeError
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_context_corrections.py::test_registered_context_schema_retains_exact_human_selection_without_new_authority
+FAILED tests/enterprise_search/test_assistant_depth.py::test_prepare_deep_calls_real_continuation_with_server_inherited_scope_and_fixed_sources
+2 failed, 97 passed in 5.44s

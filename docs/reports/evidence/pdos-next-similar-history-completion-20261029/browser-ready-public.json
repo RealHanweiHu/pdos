@@ -1,0 +1,49 @@
+{
+  "synthetic": true,
+  "web_base": "http://127.0.0.1:63199",
+  "tenant_id": "8089c0c3-fdca-4f30-8b90-1b41284daca5",
+  "principal_id": "402abbc7-dd81-45cd-bf41-c38ad43d7625",
+  "category_id": "73711877-ef9b-42f7-99a8-902801b02e12",
+  "product_id": "a86c0e16-4541-438e-8f37-619508159d78",
+  "project_id": "11a99ae3-e01b-4f55-a35d-73849bdfd6a9",
+  "build_id": "e45c5283-10b5-4eab-b471-6bc4c11048fd",
+  "build_revision": 1,
+  "changes": [
+    {
+      "change_id": "1e630027-e7bc-5f96-bd99-a7ba504b34ec",
+      "version_id": "1b1933b3-0946-406a-862e-9d52f42ddef8",
+      "revision": 1,
+      "title": "D16 接口漏气历史变更 A"
+    },
+    {
+      "change_id": "c8c02bcb-3834-5b62-a2ae-977121113268",
+      "version_id": "03a89d4d-330d-4cf2-9c55-cb95cf510db4",
+      "revision": 1,
+      "title": "D16 接口漏气历史变更 B"
+    }
+  ],
+  "change_ids": [
+    "1e630027-e7bc-5f96-bd99-a7ba504b34ec",
+    "c8c02bcb-3834-5b62-a2ae-977121113268"
+  ],
+  "change_version_ids": [
+    "1b1933b3-0946-406a-862e-9d52f42ddef8",
+    "03a89d4d-330d-4cf2-9c55-cb95cf510db4"
+  ],
+  "issue_id": "9892d125-a8ef-54c4-b182-d5d53c92b83b",
+  "issue_version_id": "5e0772bd-586e-4141-b8d1-374d36896b27",
+  "issue_revision": 1,
+  "title_query": "接口漏气",
+  "authorization_until": "2026-10-29T20:15:45.443709+00:00",
+  "ui_paths": {
+    "changes": [
+      "/?area=cockpit&category=73711877-ef9b-42f7-99a8-902801b02e12&product=a86c0e16-4541-438e-8f37-619508159d78&project=11a99ae3-e01b-4f55-a35d-73849bdfd6a9&projectView=issues&panel=changes&change=1e630027-e7bc-5f96-bd99-a7ba504b34ec",
+      "/?area=cockpit&category=73711877-ef9b-42f7-99a8-902801b02e12&product=a86c0e16-4541-438e-8f37-619508159d78&project=11a99ae3-e01b-4f55-a35d-73849bdfd6a9&projectView=issues&panel=changes&change=c8c02bcb-3834-5b62-a2ae-977121113268"
+    ],
+    "issue": "/?area=cockpit&category=73711877-ef9b-42f7-99a8-902801b02e12&product=a86c0e16-4541-438e-8f37-619508159d78&project=11a99ae3-e01b-4f55-a35d-73849bdfd6a9&projectView=issues&panel=quality&build=e45c5283-10b5-4eab-b471-6bc4c11048fd&issue=9892d125-a8ef-54c4-b182-d5d53c92b83b"
+  },
+  "api_base": "http://127.0.0.1:63343",
+  "storage": "/tmp/pdos-similar-history-browser-20261029/actual1/storage.json",
+  "server_bound": true,
+  "finish_file": "/tmp/pdos-similar-history-browser-20261029/actual1/finish"
+}

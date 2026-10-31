@@ -1,0 +1,18 @@
+{
+  "synthetic": true,
+  "expired_login_sessions": 1,
+  "removed_private_files": [
+    "storage.json",
+    "state.json"
+  ],
+  "browser_cookies_cleared": true,
+  "browser_closed": true,
+  "stopped_ports": {
+    "59901": true,
+    "62415": true
+  },
+  "test_database_and_temporal_retained": true,
+  "verified_database": "127.0.0.1:53502/pdos_test",
+  "head": "s0_0853",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b"
+}

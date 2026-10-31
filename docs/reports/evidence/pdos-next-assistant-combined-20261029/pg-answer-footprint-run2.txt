@@ -1,0 +1,35 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collected 3 items
+
+tests/knowledge_pg/test_answer_footprint_pg.py ...                       [100%]
+
+=============================== warnings summary ===============================
+tests/knowledge_pg/test_answer_footprint_pg.py::test_uncited_shared_read_survives_native_save_and_does_not_acquire_an_unread_source
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_answer_footprint_pg.py::test_uncited_private_parent_footprint_remains_when_only_public_source_is_requeried
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/knowledge/service.py:437: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+tests/knowledge_pg/test_answer_footprint_pg.py::test_human_original_deidentification_publishes_clean_answer_with_private_native_proof
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-answer-footprint-20261029/pg-run2.xml -
+================== 3 passed, 10 warnings in 88.37s (0:01:28) ===================

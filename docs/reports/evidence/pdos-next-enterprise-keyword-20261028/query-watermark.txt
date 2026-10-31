@@ -1,0 +1,53 @@
+..........F.                                                             [100%]
+=================================== FAILURES ===================================
+_______ test_search_parameters_only_narrow_and_never_accept_policy_facts _______
+
+setup = <isolated synthetic test scope>
+
+    def test_search_parameters_only_narrow_and_never_accept_policy_facts(setup):
+        index(setup, register(setup, "范围过滤", "漏气复验。"))
+        for extra in (
+            {"tenant_id": str(setup.other_tenant)},
+            {"requester_id": str(setup.peer)},
+            {"visibility": "category"},
+            {"include_private": True},
+            {"limit": 51},
+            {"after": "2026-10-28T00:00:00"},
+        ):
+            response = setup.client.post(
+                "/v1/personal/enterprise-search",
+                headers=setup.headers,
+                json={"query": "漏气", **extra},
+            )
+            assert response.status_code == 422, response.text
+        denied = setup.client.post(
+            f"/v1/categories/{setup.category}/enterprise-search",
+            headers=setup.headers,
+            json={"query": "漏气", "category_id": str(uuid4())},
+        )
+        assert denied.status_code == 403
+        assert query(setup, "漏气", product_id=str(setup.product))["returned"] == 0
+        empty = setup.client.post(
+            "/v1/personal/enterprise-search",
+            headers=setup.headers,
+            json={"query": "， ？"},
+        )
+>       assert empty.status_code == 422 and empty.json()["code"] == "INVALID_PAYLOAD"
+E       AssertionError: assert (422 == 422 and 'VALIDATION_FAILED' == 'INVALID_PAYLOAD'
+E        +  where 422 = <Response [422 Unprocessable Content]>.status_code
+E         
+E         - INVALID_PAYLOAD
+E         + VALIDATION_FAILED)
+
+tests/enterprise_search/test_retrieval_pg.py:435: AssertionError
+=============================== warnings summary ===============================
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/enterprise_search/test_retrieval_pg.py::test_search_parameters_only_narrow_and_never_accept_policy_facts
+1 failed, 11 passed, 3 warnings in 32.01s

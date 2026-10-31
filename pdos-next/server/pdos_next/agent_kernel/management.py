@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import uuid4
 
-from pydantic import Field
+from pydantic import Field, StrictBool, model_serializer
 from sqlalchemy import select, text
 
 from pdos_next.clock import now
@@ -23,10 +23,19 @@ class AgreementInput(StrictModel):
     data_categories: list[str] = Field(min_length=1)
     retention_terms: str = Field(min_length=3)
     training_terms: str = Field(min_length=3)
+    prompt_cache_allowed: StrictBool | None = None
     expires_at: datetime
     active: bool = True
     decision: str
     idempotency_key: str = Field(min_length=8, max_length=160)
+
+    @model_serializer(mode="wrap")
+    def original_request(self, handler):
+        value = handler(self)
+        # Old approved requests retain their exact digest and recovery identity.
+        if self.prompt_cache_allowed is None:
+            value.pop("prompt_cache_allowed", None)
+        return value
 
 
 def agreement_receipt(session, ctx, data):
@@ -117,6 +126,8 @@ def register_agreement(session, ctx, data: AgreementInput):
             "tier": "T2",
             "decided_by": str(ctx.actor_id),
             "decision": "批准",
+            **({"prompt_cache_allowed": data.prompt_cache_allowed}
+               if data.prompt_cache_allowed is not None else {}),
         },
     )
     session.add(receipt)
@@ -130,6 +141,7 @@ def register_agreement(session, ctx, data: AgreementInput):
         data_categories=list(dict.fromkeys(data.data_categories)),
         retention_terms=data.retention_terms,
         training_terms=data.training_terms,
+        prompt_cache_allowed=data.prompt_cache_allowed,
         expires_at=data.expires_at,
         registered_by=ctx.actor_id,
         active=data.active,

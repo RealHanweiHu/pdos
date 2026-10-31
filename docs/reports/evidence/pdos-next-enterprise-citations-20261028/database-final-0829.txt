@@ -1,0 +1,1391 @@
+.....FFFFFFFFFFFFFFFFFFFFFFFFFF......................................... [ 20%]
+........................................................................ [ 41%]
+........................................................................ [ 62%]
+........................................................................ [ 82%]
+...........................................................              [100%]
+=================================== FAILURES ===================================
+___ test_actual_host_binds_model_response_and_rechecks_ordinary_replay[main] ___
+
+isolation = 'main'
+
+    @pytest.mark.parametrize("isolation", ["main", "research", "extract"])
+    def test_actual_host_binds_model_response_and_rechecks_ordinary_replay(isolation):
+>       f = make_host(isolation=isolation)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x117fbed80>
+kwargs = {'tenant_id': UUID('4a3939d6-3397-460e-9d73-5ee35ef371f5'), 'requester_id': UUID('439c974c-a8fe-4af9-9f7a-c4a60778e305...ter_id': UUID('7bb63bbb-8973-4b4a-97de-ceb8cd72c8d8'), 'session_id': UUID('39258290-2a47-45c6-979e-feaf27307787'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_binds_model_response_and_rechecks_ordinary_replay[research] _
+
+isolation = 'research'
+
+    @pytest.mark.parametrize("isolation", ["main", "research", "extract"])
+    def test_actual_host_binds_model_response_and_rechecks_ordinary_replay(isolation):
+>       f = make_host(isolation=isolation)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f80260>
+kwargs = {'tenant_id': UUID('7817c3a7-95ee-4310-a567-457a14a0da28'), 'requester_id': UUID('893e1d04-cbda-45cd-bbfc-16c7898f5dba...ter_id': UUID('aa0892de-2b09-45ec-9168-e933b00aed31'), 'session_id': UUID('765461e0-1e8c-418a-9c8a-72e089fb3b60'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_binds_model_response_and_rechecks_ordinary_replay[extract] __
+
+isolation = 'extract'
+
+    @pytest.mark.parametrize("isolation", ["main", "research", "extract"])
+    def test_actual_host_binds_model_response_and_rechecks_ordinary_replay(isolation):
+>       f = make_host(isolation=isolation)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:143: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f81670>
+kwargs = {'tenant_id': UUID('05125982-4826-409b-98c1-d8ef7b306a2d'), 'requester_id': UUID('39174423-27bb-4709-8614-db27108225d8...ter_id': UUID('bc2cdc24-0507-45fe-b937-6da26ffa5f01'), 'session_id': UUID('0bb1dca9-7b8f-40c2-9edf-819e780d8245'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+__ test_actual_host_rejects_changed_source_on_replay_without_rewriting_ledger __
+
+    def test_actual_host_rejects_changed_source_on_replay_without_rewriting_ledger():
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:158: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f82a20>
+kwargs = {'tenant_id': UUID('b71b7537-0554-48a7-8438-e368126fd77e'), 'requester_id': UUID('7060a155-387e-4e87-bd9e-c6e6d9d0faac...ter_id': UUID('a7a1d530-d8aa-4ee7-980f-2707788e54f8'), 'session_id': UUID('66058fd2-38b9-482c-b212-0a556d4b0a29'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_____ test_actual_host_requires_current_authority_before_every_read[False] _____
+
+replay = False
+
+    @pytest.mark.parametrize("replay", [False, True])
+    def test_actual_host_requires_current_authority_before_every_read(replay):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f83e30>
+kwargs = {'tenant_id': UUID('3fa60e0f-2670-45f9-9a3d-17cff9223399'), 'requester_id': UUID('c2a9bf2c-acfa-46e5-ba70-f4731343d84e...ter_id': UUID('9a426b14-c188-4f35-a770-c5a763707e97'), 'session_id': UUID('f3ae7e83-5532-4e67-a6a5-372f36c96dae'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_____ test_actual_host_requires_current_authority_before_every_read[True] ______
+
+replay = True
+
+    @pytest.mark.parametrize("replay", [False, True])
+    def test_actual_host_requires_current_authority_before_every_read(replay):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:171: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f83a10>
+kwargs = {'tenant_id': UUID('45656cdd-3263-4994-a51a-275d149697df'), 'requester_id': UUID('51436847-c242-4210-abc9-a9f25324e362...ter_id': UUID('c6c54305-76a0-4844-b5e2-f522d13eca1a'), 'session_id': UUID('01a379e8-e4de-4f4b-8e53-74373f59da7e'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+___ test_actual_host_cannot_start_or_replay_a_read_after_run_ends[completed] ___
+
+state = 'completed'
+
+    @pytest.mark.parametrize("state", ["completed", "partial", "failed", "cancelled", "cancelling"])
+    def test_actual_host_cannot_start_or_replay_a_read_after_run_ends(state):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8dee0>
+kwargs = {'tenant_id': UUID('3ced9146-9976-41a6-98c5-98a285dd9b62'), 'requester_id': UUID('3bdf3fe4-34e0-42d7-ae13-d3a0a6b597c4...ter_id': UUID('89c4b70f-e8d6-4d5f-9e80-471a447ceafc'), 'session_id': UUID('6cd49b03-7497-4c11-a22d-26d6d45ceaa2'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+____ test_actual_host_cannot_start_or_replay_a_read_after_run_ends[partial] ____
+
+state = 'partial'
+
+    @pytest.mark.parametrize("state", ["completed", "partial", "failed", "cancelled", "cancelling"])
+    def test_actual_host_cannot_start_or_replay_a_read_after_run_ends(state):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f81f40>
+kwargs = {'tenant_id': UUID('7815465f-04ad-4ab4-ae9e-97b40d251230'), 'requester_id': UUID('182a1277-dac7-4338-88a4-fdc9d1af2c06...ter_id': UUID('82c7ae0d-48d8-4dfd-9cc5-737098bf9415'), 'session_id': UUID('a33e7b2b-d7aa-4c15-8eb5-f31173f0a013'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+____ test_actual_host_cannot_start_or_replay_a_read_after_run_ends[failed] _____
+
+state = 'failed'
+
+    @pytest.mark.parametrize("state", ["completed", "partial", "failed", "cancelled", "cancelling"])
+    def test_actual_host_cannot_start_or_replay_a_read_after_run_ends(state):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8d910>
+kwargs = {'tenant_id': UUID('aa224c38-ae90-4355-8884-67a7339f809d'), 'requester_id': UUID('41bae7dc-d77f-4be5-b3c8-a7e04de66b57...ter_id': UUID('03ac7506-d08d-48d6-a1ce-1443c0877404'), 'session_id': UUID('258cdf0f-294c-4fc1-99d8-05523c076103'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+___ test_actual_host_cannot_start_or_replay_a_read_after_run_ends[cancelled] ___
+
+state = 'cancelled'
+
+    @pytest.mark.parametrize("state", ["completed", "partial", "failed", "cancelled", "cancelling"])
+    def test_actual_host_cannot_start_or_replay_a_read_after_run_ends(state):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8dc10>
+kwargs = {'tenant_id': UUID('813e938c-222c-4863-b469-0fa395bf370c'), 'requester_id': UUID('00d33f06-a685-4b16-8b1b-326d91ab1423...ter_id': UUID('8836389d-e901-42bd-a640-b88fcb1857b9'), 'session_id': UUID('6983adbe-9ece-4e66-8aa6-9945cb299083'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+__ test_actual_host_cannot_start_or_replay_a_read_after_run_ends[cancelling] ___
+
+state = 'cancelling'
+
+    @pytest.mark.parametrize("state", ["completed", "partial", "failed", "cancelled", "cancelling"])
+    def test_actual_host_cannot_start_or_replay_a_read_after_run_ends(state):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:183: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x120118470>
+kwargs = {'tenant_id': UUID('4ea6258b-214d-4e8b-846d-7bd471ba127f'), 'requester_id': UUID('d6ecf961-da67-4d1a-a971-ba70329cafd2...ter_id': UUID('e7e96841-3a6e-45e4-927e-eca0193cb383'), 'session_id': UUID('3fb07909-62c0-4970-881a-d5aec431994f'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_requires_real_successful_model_provenance_before_callback[missing] _
+
+tamper = 'missing'
+
+    @pytest.mark.parametrize("tamper", ["missing", "provider-key", "arguments", "model-error", "route"])
+    def test_actual_host_requires_real_successful_model_provenance_before_callback(tamper):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8d040>
+kwargs = {'tenant_id': UUID('f14f89a5-1e73-49e6-b9d4-226fcc55894a'), 'requester_id': UUID('149f2786-63f3-4e7a-9ee6-ae18b5c66ba1...ter_id': UUID('6895a6fa-2677-43a1-902a-3995a38ae48f'), 'session_id': UUID('34251d29-bc08-4c87-b885-c5d4ebc1a5e4'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_requires_real_successful_model_provenance_before_callback[provider-key] _
+
+tamper = 'provider-key'
+
+    @pytest.mark.parametrize("tamper", ["missing", "provider-key", "arguments", "model-error", "route"])
+    def test_actual_host_requires_real_successful_model_provenance_before_callback(tamper):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fca4b0>
+kwargs = {'tenant_id': UUID('fcbc4294-f62d-47ec-af20-f3ff7ec85a7e'), 'requester_id': UUID('50d7106e-76ac-42b5-8bc7-4370ab61e931...ter_id': UUID('e7222b90-6253-4f12-882d-80bedbe6890d'), 'session_id': UUID('f2bb66b9-b35e-4ec6-9afa-aedcb545dfa3'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_requires_real_successful_model_provenance_before_callback[arguments] _
+
+tamper = 'arguments'
+
+    @pytest.mark.parametrize("tamper", ["missing", "provider-key", "arguments", "model-error", "route"])
+    def test_actual_host_requires_real_successful_model_provenance_before_callback(tamper):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8c680>
+kwargs = {'tenant_id': UUID('7209e3a6-b517-475a-8a1a-1895f1850ebd'), 'requester_id': UUID('28d33cae-95da-491c-a6f6-ea00a456ccd6...ter_id': UUID('e406f438-5c3c-41a4-9634-ba85d087d3f3'), 'session_id': UUID('ef354921-df54-4ff8-bf56-8f5f06fb75e4'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_requires_real_successful_model_provenance_before_callback[model-error] _
+
+tamper = 'model-error'
+
+    @pytest.mark.parametrize("tamper", ["missing", "provider-key", "arguments", "model-error", "route"])
+    def test_actual_host_requires_real_successful_model_provenance_before_callback(tamper):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fcb140>
+kwargs = {'tenant_id': UUID('98ab508c-6a1c-4a7b-b120-7785511efa8f'), 'requester_id': UUID('87fe1447-739d-4595-ae8c-de656c775fcb...ter_id': UUID('c298ce60-6039-49e9-9410-e96fb31adee9'), 'session_id': UUID('12144e58-ee11-42fa-a142-f36756d25ea9'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_actual_host_requires_real_successful_model_provenance_before_callback[route] _
+
+tamper = 'route'
+
+    @pytest.mark.parametrize("tamper", ["missing", "provider-key", "arguments", "model-error", "route"])
+    def test_actual_host_requires_real_successful_model_provenance_before_callback(tamper):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:193: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fcacf0>
+kwargs = {'tenant_id': UUID('55c5d531-d958-4a7a-a632-044f6053fb9b'), 'requester_id': UUID('d84f2a9b-fe8f-4998-8c30-5f6d8b034553...ter_id': UUID('a7242944-0ac0-4859-a6a9-76473cfa0bf5'), 'session_id': UUID('9a14b729-33bf-495c-89e4-017df374688a'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_compute_metadata_is_complete_at_claim_and_ordinary_adapter_is_not_used __
+
+    def test_compute_metadata_is_complete_at_claim_and_ordinary_adapter_is_not_used():
+        calculated = []
+    
+        def calculate(arguments):
+            calculated.append(deepcopy(arguments))
+            return {"content": {"total": Decimal("1.20")}}
+    
+        engine = ComputeEngine("synthetic-cost-v1", calculate, (("content",),))
+>       f = make_host(engine=engine)
+            ^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:215: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f81e20>
+kwargs = {'tenant_id': UUID('978dab15-cf78-4176-b2f2-5bb131870bd1'), 'requester_id': UUID('3a09ab41-2bb9-4b16-9f2b-01565a85c4fd...ter_id': UUID('7998d07b-0abe-4048-b771-22659f22165e'), 'session_id': UUID('d06139cc-ae7a-41d7-9f82-9e900ad2665c'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+__ test_compute_replay_refuses_same_version_with_different_calculated_result ___
+
+    def test_compute_replay_refuses_same_version_with_different_calculated_result():
+        totals = iter([Decimal("1.20"), Decimal("1.21")])
+>       f = make_host(engine=ComputeEngine(
+            "synthetic-cost-v1", lambda _: {"content": {"total": next(totals)}}, (("content",),),
+        ))
+
+tests/agent_kernel/test_bound_read_host.py:228: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fa99a0>
+kwargs = {'tenant_id': UUID('31cd0ee9-857a-46e5-b97d-81b6f6c438e4'), 'requester_id': UUID('94f2e4f2-0eaa-4388-9a15-55439342b92c...ter_id': UUID('77cb8f5f-b64f-4684-aafb-fe243de3bd01'), 'session_id': UUID('84dcb135-4dd2-4432-adcc-f6921a6b65bd'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+___ test_callback_failure_releases_new_call_and_preserves_original_exception ___
+
+    def test_callback_failure_releases_new_call_and_preserves_original_exception():
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:241: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fa8230>
+kwargs = {'tenant_id': UUID('cc6bdfee-3d1d-4c3e-9f30-dc40126647d7'), 'requester_id': UUID('889a51b3-139a-48b6-bcd5-10d511fc3dbb...ter_id': UUID('b294ac12-0796-493e-9eff-d0984d04c689'), 'session_id': UUID('399eeaa4-9bb8-4e0a-af4a-f3b11a59f5fb'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+____ test_replay_source_failure_does_not_release_or_rewrite_completed_call _____
+
+    def test_replay_source_failure_does_not_release_or_rewrite_completed_call():
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:250: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fca960>
+kwargs = {'tenant_id': UUID('45f1da42-15ae-4d50-a184-54945e2aea1a'), 'requester_id': UUID('0ab63729-46d1-47f7-a841-b3ead2b0ff8b...ter_id': UUID('c4de2dcd-f10d-4406-8f92-cae2856baac7'), 'session_id': UUID('61819e56-954c-43b8-ab76-191d6db74516'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_ test_completed_invalid_read_cannot_replay_as_success[error_code-SOURCE_UNAVAILABLE] _
+
+invalid = 'error_code', value = 'SOURCE_UNAVAILABLE'
+
+    @pytest.mark.parametrize("invalid,value", [
+        ("error_code", "SOURCE_UNAVAILABLE"), ("receipt_id", uuid4()),
+        ("result", None), ("result", []),
+    ])
+    def test_completed_invalid_read_cannot_replay_as_success(invalid, value):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fa9be0>
+kwargs = {'tenant_id': UUID('5de79337-555a-433c-ab90-9d0ff8f8399f'), 'requester_id': UUID('dca27be8-e2be-473c-9c93-8612174b1e7c...ter_id': UUID('28c798c9-bc2d-4972-8bb5-e5f1c29ba438'), 'session_id': UUID('268fc879-e010-4c32-b25d-b4990b267403'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+___ test_completed_invalid_read_cannot_replay_as_success[receipt_id-value1] ____
+
+invalid = 'receipt_id', value = UUID('f3c85fac-c3a0-421a-b11e-ffdb1b406159')
+
+    @pytest.mark.parametrize("invalid,value", [
+        ("error_code", "SOURCE_UNAVAILABLE"), ("receipt_id", uuid4()),
+        ("result", None), ("result", []),
+    ])
+    def test_completed_invalid_read_cannot_replay_as_success(invalid, value):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fa9fd0>
+kwargs = {'tenant_id': UUID('1c11cbf2-4825-4a05-bd84-8340178b5519'), 'requester_id': UUID('cb69668c-b670-44ba-8665-9bba9857e14f...ter_id': UUID('5c8d6bd5-2820-4f83-b107-7034e4643682'), 'session_id': UUID('3ac2d47d-1347-49e1-90e0-edc7b5c9c172'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+______ test_completed_invalid_read_cannot_replay_as_success[result-None] _______
+
+invalid = 'result', value = None
+
+    @pytest.mark.parametrize("invalid,value", [
+        ("error_code", "SOURCE_UNAVAILABLE"), ("receipt_id", uuid4()),
+        ("result", None), ("result", []),
+    ])
+    def test_completed_invalid_read_cannot_replay_as_success(invalid, value):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8d160>
+kwargs = {'tenant_id': UUID('60813ece-8be4-402d-b36b-63cb2f5fd3cd'), 'requester_id': UUID('ca1a36ee-c08e-4734-9983-38cdbba6ffa1...ter_id': UUID('d513ba4e-2d67-4da8-93e9-27bf55fd9351'), 'session_id': UUID('f11de25f-e7d2-4033-95fb-a95074732f22'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+_____ test_completed_invalid_read_cannot_replay_as_success[result-value3] ______
+
+invalid = 'result', value = []
+
+    @pytest.mark.parametrize("invalid,value", [
+        ("error_code", "SOURCE_UNAVAILABLE"), ("receipt_id", uuid4()),
+        ("result", None), ("result", []),
+    ])
+    def test_completed_invalid_read_cannot_replay_as_success(invalid, value):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:264: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124fcb170>
+kwargs = {'tenant_id': UUID('57d7956a-b006-4aec-a5ba-de775a58492e'), 'requester_id': UUID('abd51acc-68af-4960-aecd-96c18175c2bb...ter_id': UUID('c834dd2f-dc02-4ab5-aa20-41512cb62015'), 'session_id': UUID('6d04c49a-5677-4daf-a7d7-8b852fdc3a6f'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+____ test_actual_graph_passes_server_model_provenance_into_bound_host[True] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x124f8eba0>
+ledger = True
+
+    @pytest.mark.parametrize("ledger", [True, False])
+    def test_actual_graph_passes_server_model_provenance_into_bound_host(monkeypatch, ledger):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8f0e0>
+kwargs = {'tenant_id': UUID('495e7f64-29c6-4a0f-84bd-7cdac1e4579b'), 'requester_id': UUID('966fdb36-31c4-498d-9a4c-136363cc5169...ter_id': UUID('da690a47-a3b4-42d0-8a16-5e91d8d98528'), 'session_id': UUID('47dca9b4-9a26-418b-b837-95e0309b464c'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+___ test_actual_graph_passes_server_model_provenance_into_bound_host[False] ____
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x124f8eed0>
+ledger = False
+
+    @pytest.mark.parametrize("ledger", [True, False])
+    def test_actual_graph_passes_server_model_provenance_into_bound_host(monkeypatch, ledger):
+>       f = make_host()
+            ^^^^^^^^^^^
+
+tests/agent_kernel/test_bound_read_host.py:273: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/agent_kernel/test_bound_read_host.py:95: in make_host
+    run = AgentRun(
+<sqlalchemy generated __init__ for class pdos_next.agent_kernel.models.AgentRun>:4: in __init__
+    return new_state._initialize_instance(self, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:597: in _initialize_instance
+    with util.safe_reraise():
+         ^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/sqlalchemy/util/langhelpers.py:166: in __exit__
+    raise exc_value.with_traceback(exc_tb)
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/state.py:595: in _initialize_instance
+    manager.original_init(*mixed[1:], **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.models.AgentRun object at 0x124f8fe60>
+kwargs = {'tenant_id': UUID('ae0e3c4e-a59a-4b6c-ad9f-15c0d0eb3ab0'), 'requester_id': UUID('d8961bc0-5329-4fe9-90aa-4c54db10e71c...ter_id': UUID('9e895f12-fb35-4d7d-9420-7993317ec8a2'), 'session_id': UUID('938805c3-1b2f-4058-8c56-1d25b3bfb909'), ...}
+
+    def _declarative_constructor(self: Any, **kwargs: Any) -> None:
+        """A simple constructor that allows initialization from kwargs.
+    
+        Sets attributes on the constructed instance using the names and
+        values in ``kwargs``.
+    
+        Only keys that are present as
+        attributes of the instance's class are allowed. These could be,
+        for example, any mapped columns or relationships.
+        """
+        cls_ = type(self)
+        for k in kwargs:
+            if not hasattr(cls_, k):
+>               raise TypeError(
+                    "%r is an invalid keyword argument for %s" % (k, cls_.__name__)
+                )
+E               TypeError: 'citation_ids' is an invalid keyword argument for AgentRun
+
+.venv/lib/python3.12/site-packages/sqlalchemy/orm/decl_base.py:2287: TypeError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_context_projection_pg.py: 5 warnings
+tests/agent_kernel/test_snapshot_proof_transactions.py: 1 warning
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 5 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service.py:242: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:174: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([chain])
+
+tests/agent_kernel/test_process_view.py::test_service_run_process_checks_binding_without_exposing_fixed_goal
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/automations/service_runtime.py:199: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([attempt])
+
+tests/agent_kernel/test_snapshot_proof_transactions.py: 6 warnings
+tests/external_wait_pg/test_workflow.py: 6 warnings
+tests/field_feedback_pg/test_field_chain.py: 3 warnings
+tests/knowledge_pg/test_publication.py: 6 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 30 warnings
+tests/project_risk_pg/test_chain.py: 6 warnings
+tests/test_project_governance.py: 12 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/enterprise_search/test_assistant_pg.py::test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_state
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/enterprise_search/test_retrieval_pg.py::test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without_reindex
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_fixed_knowledge_claim_and_definition_edges_retain_actual_original
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_evidence_link_target_closure_retains_original_after_withdrawal[knowledge_entry]
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:580: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/enterprise_search/test_retrieval_pg.py::test_query_count_is_constant_and_local_warm_latency_below_one_second
+  tests/enterprise_search/test_retrieval_pg.py:206: PytestWarning: record_property is incompatible with junit_family 'xunit2' (use 'legacy' or 'xunit1')
+    def test_query_count_is_constant_and_local_warm_latency_below_one_second(setup, record_property):
+
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/preproject/test_m3_lifecycle_catalog.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/external_wait_pg/test_workflow.py: 2 warnings
+tests/field_feedback_pg/test_field_chain.py: 1 warning
+tests/knowledge_pg/test_publication.py: 2 warnings
+tests/project_risk_pg/test_chain.py: 1 warning
+tests/test_project_governance.py: 4 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/projects/service.py:271: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/external_wait_pg/test_workflow.py: 13 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/external_wait/service.py:261: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+tests/field_feedback_pg/test_field_chain.py::test_unknown_field_to_real_change_impact_and_retained_response
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/field_feedback/service.py:323: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_category_experience_to_explicit_named_rule_and_retained_source_recheck
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+tests/knowledge_pg/test_publication.py::test_actual_planned_build_result_becomes_scoped_candidate_and_named_rule
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/knowledge/service.py:420: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+tests/preproject/test_m3_lifecycle_catalog.py::test_pg_parameter_reference_resolves_fixed_version_not_current_head
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/category_service.py:535: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/work_management/service.py:385: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+tests/project_risk_pg/test_chain.py::test_native_risk_followup_t1_chain_preserves_g0_task_and_actual_responsibility
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/project_risk/service.py:205: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_binds_model_response_and_rechecks_ordinary_replay[main]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_binds_model_response_and_rechecks_ordinary_replay[research]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_binds_model_response_and_rechecks_ordinary_replay[extract]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_rejects_changed_source_on_replay_without_rewriting_ledger
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_current_authority_before_every_read[False]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_current_authority_before_every_read[True]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[completed]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[partial]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[failed]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[cancelled]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_cannot_start_or_replay_a_read_after_run_ends[cancelling]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[missing]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[provider-key]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[arguments]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[model-error]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_host_requires_real_successful_model_provenance_before_callback[route]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_compute_metadata_is_complete_at_claim_and_ordinary_adapter_is_not_used
+FAILED tests/agent_kernel/test_bound_read_host.py::test_compute_replay_refuses_same_version_with_different_calculated_result
+FAILED tests/agent_kernel/test_bound_read_host.py::test_callback_failure_releases_new_call_and_preserves_original_exception
+FAILED tests/agent_kernel/test_bound_read_host.py::test_replay_source_failure_does_not_release_or_rewrite_completed_call
+FAILED tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[error_code-SOURCE_UNAVAILABLE]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[receipt_id-value1]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[result-None]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_completed_invalid_read_cannot_replay_as_success[result-value3]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_graph_passes_server_model_provenance_into_bound_host[True]
+FAILED tests/agent_kernel/test_bound_read_host.py::test_actual_graph_passes_server_model_provenance_into_bound_host[False]
+26 failed, 321 passed, 184 warnings in 465.83s (0:07:45)

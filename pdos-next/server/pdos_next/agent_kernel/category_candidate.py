@@ -18,6 +18,7 @@ from pdos_next.service import digest
 from . import policy
 from .bindings import ModelBinding, WriteSource, execution_key
 from .deterministic_proofs import _historical_read
+from .disclosure import binding_operations, disclosure
 from .execution import _check_session, check_run_binding, scope_for_run, validate_skill_load
 from .models import AgentEvent, AgentRun, AgentSession, AgentToolCall
 from .snapshot_command import verify_snapshot_page
@@ -118,6 +119,9 @@ def _source(session, run, owner, source, binding, arguments, intent_key, *, spec
     model = session.get(AgentToolCall, source.model_call_id)
     current = owner.registry.get(OPERATION)
     route = owner.route(session, scope)
+    disclosed = disclosure(
+        owner.registry, binding.isolation, binding_operations(owner.catalog, binding.loaded_skills)
+    )
     if (
         not model or model.tenant_id != run.tenant_id or model.run_id != run.id
         or model.tool != "model" or model.state != "completed"
@@ -136,7 +140,8 @@ def _source(session, run, owner, source, binding, arguments, intent_key, *, spec
         or current.kind != "write" or current.tier != "T1"
         or current.input_schema != CategoryCandidateInput.model_json_schema()
         or (spec is not None and current != spec)
-        or digest(owner.registry.definitions()) != binding.tool_definitions_digest
+        or digest(disclosed) != binding.tool_definitions_digest
+        or not any(item["name"] == OPERATION for item in disclosed)
     ):
         _deny()
     try:
@@ -293,11 +298,12 @@ def prepare(session, scope, spec, arguments, intent_key, bootstrap):
     }
 
 
-def validate(session, ctx, data, *, artifacts=None):
+def validate(session, ctx, data, *, artifacts=None, _read_only=False):
     require_context(session, ctx)
-    run = session.scalar(select(AgentRun).where(
+    query = select(AgentRun).where(
         AgentRun.id == data.prepared_by_run_id,
-    ).execution_options(populate_existing=True).with_for_update())
+    ).execution_options(populate_existing=True)
+    run = session.scalar(query if _read_only else query.with_for_update())
     if (
         not run or not data.candidate_digest or data.seed_key is not None
         or ctx.tenant_id != run.tenant_id or ctx.requester_id != run.requester_id
@@ -352,3 +358,25 @@ def validate(session, ctx, data, *, artifacts=None):
     except (KeyError, TypeError, ValueError, AttributeError, IndexError, ValidationError):
         _deny()
     return CategoryProof(run, event, snapshots)
+
+
+def read_metadata(session, ctx, run, event):
+    """Run the native pending proof in this readonly session; never acquire write locks."""
+    if (event.tenant_id != run.tenant_id or event.run_id != run.id
+            or event.body.get("type") != CANDIDATE):
+        _deny()
+    if (run.reverted_at or run.state == "cancelled"
+            or event.body.get("cancel_epoch") != run.cancel_epoch):
+        return {"operation": OPERATION, "state": "cancelled", "receipt_id": None}
+    original = CategoryCandidateInput.model_validate(event.body["input"])
+    data = CategoryCreate(
+        **original.model_dump(mode="json"),
+        deidentified_confirmed=False,
+        prepared_by_run_id=run.id,
+        candidate_digest=event.body["candidate_digest"],
+        idempotency_key=f"category-candidate:{event.id}",
+    )
+    proof = validate(session, ctx, data, _read_only=True)
+    if proof.event.id != event.id:
+        _deny()
+    return {"operation": OPERATION, "state": "pending", "receipt_id": None}

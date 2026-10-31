@@ -1,0 +1,17 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 6 items
+
+tests/enterprise_search/test_identifier_upgrade_pg.py::test_identifier_rule_version_rebuild_preserves_native_artifact_and_receipts PASSED [ 16%]
+tests/enterprise_search/test_retrieval_pg.py::test_or_recall_identifier_priority_and_no_raw_text_in_http_result PASSED [ 33%]
+tests/enterprise_search/test_retrieval_pg.py::test_authoritative_private_scope_and_tenant_filter_precede_returned_counts PASSED [ 50%]
+tests/enterprise_search/test_retrieval_pg.py::test_outbox_replay_and_full_rebuild_do_not_duplicate_df_or_business_facts PASSED [ 66%]
+tests/enterprise_search/test_retrieval_pg.py::test_withdrawal_and_membership_revocation_take_effect_without_reindex PASSED [ 83%]
+tests/enterprise_search/test_retrieval_pg.py::test_missing_or_corrupt_projection_is_partial_and_never_leaks_wrong_scope PASSED [100%]
+
+- generated xml file: /Users/huhanwei/Desktop/ai-native-R&D-platform/docs/reports/evidence/pdos-next-eval-v0-20261029/identifier-regression.xml -
+============================== 6 passed in 14.13s ==============================

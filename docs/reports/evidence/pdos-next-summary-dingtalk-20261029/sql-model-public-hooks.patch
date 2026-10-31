@@ -1,0 +1,44 @@
+--- a/pdos-next/server/pdos_next/models.py
++++ b/pdos-next/server/pdos_next/models.py
+@@ -1194,3 +1194,5 @@
+ import pdos_next.domain.knowledge.assistant_models  # noqa: E402,F401
+ 
+ import pdos_next.dingtalk.models  # noqa: E402,F401
++
++import pdos_next.dingtalk.summary_models  # noqa: E402,F401
+--- a/pdos-next/server/pdos_next/lifecycle_catalog.py
++++ b/pdos-next/server/pdos_next/lifecycle_catalog.py
+@@ -5341,3 +5341,33 @@
+     'created_at',
+ )
+ GUARDED += ("dingtalk_deliveries",)
++
++COVERED_COLUMNS['dingtalk_summary_deliveries'] = (
++    'category_id',
++    'owner_id',
++    'run_id',
++    'attempt_id',
++    'service_grant_id',
++    'published_version_id',
++    'application_id',
++    'application_revision',
++    'binding_id',
++    'binding_epoch',
++    'cancel_epoch',
++    'summary_sha256',
++    'source_ids',
++    'request_key',
++    'payload',
++    'payload_sha256',
++    'state',
++    'p26',
++    'provider_receipt',
++    'error_code',
++    'attempts',
++    'send_attempt_id',
++    'send_started_at',
++    'id',
++    'tenant_id',
++    'created_at',
++)
++GUARDED += ('dingtalk_summary_deliveries',)

@@ -84,6 +84,13 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "embedding.profile.save": "embedding.profile_saved",
+    "embedding.call.reconcile": "embedding.call_reconciled",
+    "work.stage.milestone.bind": "stage.milestone_bound",
+    "work.stage.adopt": "stage.adopted",
+    "work.baseline.approve": "baseline.approved",
+    "work.stage.review.submit": "stage.review_submitted",
+    "work.stage.decide": "stage.decided",
     "field.feedback.create": "field.feedback_created",
     "field.feedback.locate": "field.feedback_located",
     "field.feedback.action.record": "field.feedback_action_recorded",

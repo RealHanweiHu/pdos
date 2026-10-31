@@ -1,0 +1,796 @@
+{
+  "version": "keyword-query-grammar-native-order-agreement/v1",
+  "status": "pure_original_bm25_matches_recorded_native_top10",
+  "native_observation_source": "docs/reports/evidence/pdos-next-eval-v0-20261029/native-candidate2/observations.json",
+  "native_observation_sha256": "358de5381b838c9576688bf82b8e17f12846b2e84e4fdb1ba23494d810a3148f",
+  "database_connections": 0,
+  "same_order_cases": 28,
+  "total_cases": 28,
+  "method_limits": "Python transcription of production BM25; one unchanged chunk per frozen source; same tenant DF including private sources; peer private exclusion mirrors this fixture only; freshness omitted, not PG/ACL proof",
+  "cases": [
+    {
+      "case_id": "ENG-01",
+      "native_top10": [
+        "pur_commitment",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "qua_line_review",
+        "qua_capa_plan",
+        "pur_supply_archive",
+        "pur_substitution",
+        "eng_private_reserve",
+        "qua_issue_record",
+        "prd_pilot_archive"
+      ],
+      "pure_original_top10": [
+        "pur_commitment",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "qua_line_review",
+        "qua_capa_plan",
+        "pur_supply_archive",
+        "pur_substitution",
+        "eng_private_reserve",
+        "qua_issue_record",
+        "prd_pilot_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "ENG-02",
+      "native_top10": [
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "eng_private_reserve",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_capa_plan",
+        "prd_work_instruction"
+      ],
+      "pure_original_top10": [
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "eng_private_reserve",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_capa_plan",
+        "prd_work_instruction"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "ENG-03",
+      "native_top10": [
+        "eng_thermal_report",
+        "eng_private_reserve",
+        "qua_private_blind",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_downtime",
+        "pur_supply_archive",
+        "qua_failure_archive"
+      ],
+      "pure_original_top10": [
+        "eng_thermal_report",
+        "eng_private_reserve",
+        "qua_private_blind",
+        "eng_seal_design",
+        "eng_gate_minutes",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_downtime",
+        "pur_supply_archive",
+        "qua_failure_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "ENG-04",
+      "native_top10": [
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "prd_first_article",
+        "eng_shield_trial",
+        "pur_private_cost",
+        "eng_private_reserve",
+        "qua_lab_report",
+        "pur_substitution",
+        "qua_issue_record",
+        "prd_downtime"
+      ],
+      "pure_original_top10": [
+        "eng_gate_minutes",
+        "eng_seal_design",
+        "prd_first_article",
+        "eng_shield_trial",
+        "pur_private_cost",
+        "eng_private_reserve",
+        "qua_lab_report",
+        "pur_substitution",
+        "qua_issue_record",
+        "prd_downtime"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "ENG-05",
+      "native_top10": [
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "eng_seal_design",
+        "qua_lab_report",
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "eng_seal_design",
+        "qua_lab_report",
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "ENG-06",
+      "native_top10": [
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_seal_design",
+        "prd_downtime",
+        "eng_gate_minutes",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "eng_pilot_archive"
+      ],
+      "pure_original_top10": [
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_seal_design",
+        "prd_downtime",
+        "eng_gate_minutes",
+        "prd_wip_reconcile",
+        "pur_supply_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "eng_pilot_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "ENG-07",
+      "native_top10": [
+        "eng_seal_design",
+        "prd_first_article",
+        "pur_commitment",
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_substitution",
+        "qua_line_review"
+      ],
+      "pure_original_top10": [
+        "eng_seal_design",
+        "prd_first_article",
+        "pur_commitment",
+        "eng_pilot_archive",
+        "eng_gate_minutes",
+        "eng_shield_trial",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_substitution",
+        "qua_line_review"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-01",
+      "native_top10": [
+        "qua_issue_record",
+        "qua_capa_plan",
+        "qua_failure_archive",
+        "prd_private_shift",
+        "qua_private_blind",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "eng_seal_design",
+        "pur_receiving_conflict",
+        "eng_private_reserve"
+      ],
+      "pure_original_top10": [
+        "qua_issue_record",
+        "qua_capa_plan",
+        "qua_failure_archive",
+        "prd_private_shift",
+        "qua_private_blind",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "eng_seal_design",
+        "pur_receiving_conflict",
+        "eng_private_reserve"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-02",
+      "native_top10": [
+        "qua_failure_archive",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "qua_lab_report",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "pur_commitment"
+      ],
+      "pure_original_top10": [
+        "qua_failure_archive",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "qua_lab_report",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "pur_commitment"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-03",
+      "native_top10": [
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "pur_rfq",
+        "qua_lab_report",
+        "prd_first_article",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_substitution",
+        "prd_work_instruction"
+      ],
+      "pure_original_top10": [
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "eng_shield_trial",
+        "pur_rfq",
+        "qua_lab_report",
+        "prd_first_article",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_substitution",
+        "prd_work_instruction"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-04",
+      "native_top10": [
+        "qua_issue_record",
+        "qua_private_blind",
+        "qua_failure_archive",
+        "eng_gate_minutes",
+        "pur_substitution",
+        "pur_private_cost",
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "qua_capa_plan"
+      ],
+      "pure_original_top10": [
+        "qua_issue_record",
+        "qua_private_blind",
+        "qua_failure_archive",
+        "eng_gate_minutes",
+        "pur_substitution",
+        "pur_private_cost",
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "qua_capa_plan"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-05",
+      "native_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_failure_archive",
+        "pur_receiving_conflict",
+        "prd_wip_reconcile",
+        "qua_private_blind",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "qua_capa_plan",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_failure_archive",
+        "pur_receiving_conflict",
+        "prd_wip_reconcile",
+        "qua_private_blind",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-06",
+      "native_top10": [
+        "qua_private_blind",
+        "qua_line_review",
+        "prd_downtime",
+        "eng_seal_design",
+        "pur_private_cost",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "pur_commitment"
+      ],
+      "pure_original_top10": [
+        "qua_private_blind",
+        "qua_line_review",
+        "prd_downtime",
+        "eng_seal_design",
+        "pur_private_cost",
+        "qua_lab_report",
+        "prd_wip_reconcile",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "pur_commitment"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "QUA-07",
+      "native_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "eng_seal_design",
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "prd_downtime",
+        "qua_issue_record",
+        "qua_failure_archive",
+        "pur_substitution",
+        "eng_gate_minutes"
+      ],
+      "pure_original_top10": [
+        "qua_lab_report",
+        "qua_line_review",
+        "eng_seal_design",
+        "qua_capa_plan",
+        "eng_thermal_report",
+        "prd_downtime",
+        "qua_issue_record",
+        "qua_failure_archive",
+        "pur_substitution",
+        "eng_gate_minutes"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-01",
+      "native_top10": [
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_line_review",
+        "eng_seal_design",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "qua_lab_report",
+        "qua_failure_archive"
+      ],
+      "pure_original_top10": [
+        "prd_work_instruction",
+        "prd_first_article",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_line_review",
+        "eng_seal_design",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "qua_lab_report",
+        "qua_failure_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-02",
+      "native_top10": [
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "qua_issue_record",
+        "prd_downtime",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "prd_first_article",
+        "pur_commitment",
+        "pur_substitution",
+        "qua_private_blind"
+      ],
+      "pure_original_top10": [
+        "prd_pilot_archive",
+        "qua_failure_archive",
+        "qua_issue_record",
+        "prd_downtime",
+        "prd_work_instruction",
+        "prd_private_shift",
+        "prd_first_article",
+        "pur_commitment",
+        "pur_substitution",
+        "qua_private_blind"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-03",
+      "native_top10": [
+        "prd_first_article",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "pur_rfq",
+        "qua_private_blind",
+        "prd_wip_reconcile",
+        "eng_thermal_report",
+        "eng_seal_design",
+        "prd_private_shift",
+        "prd_pilot_archive"
+      ],
+      "pure_original_top10": [
+        "prd_first_article",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "pur_rfq",
+        "qua_private_blind",
+        "prd_wip_reconcile",
+        "eng_thermal_report",
+        "eng_seal_design",
+        "prd_private_shift",
+        "prd_pilot_archive"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-04",
+      "native_top10": [
+        "prd_downtime",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "pur_supply_archive",
+        "qua_line_review",
+        "qua_lab_report",
+        "prd_work_instruction",
+        "eng_gate_minutes"
+      ],
+      "pure_original_top10": [
+        "prd_downtime",
+        "prd_private_shift",
+        "prd_pilot_archive",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "pur_supply_archive",
+        "qua_line_review",
+        "qua_lab_report",
+        "prd_work_instruction",
+        "eng_gate_minutes"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-05",
+      "native_top10": [
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_downtime",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_pilot_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "pure_original_top10": [
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_downtime",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_pilot_archive",
+        "prd_pilot_archive",
+        "pur_substitution",
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-06",
+      "native_top10": [
+        "prd_private_shift",
+        "prd_work_instruction",
+        "prd_downtime",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_rfq"
+      ],
+      "pure_original_top10": [
+        "prd_private_shift",
+        "prd_work_instruction",
+        "prd_downtime",
+        "pur_substitution",
+        "prd_wip_reconcile",
+        "prd_first_article",
+        "prd_pilot_archive",
+        "eng_gate_minutes",
+        "qua_private_blind",
+        "pur_rfq"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PRD-07",
+      "native_top10": [
+        "prd_wip_reconcile",
+        "prd_pilot_archive",
+        "pur_receiving_conflict",
+        "pur_commitment",
+        "pur_substitution",
+        "prd_downtime",
+        "qua_capa_plan",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "eng_seal_design"
+      ],
+      "pure_original_top10": [
+        "prd_wip_reconcile",
+        "prd_pilot_archive",
+        "pur_receiving_conflict",
+        "pur_commitment",
+        "pur_substitution",
+        "prd_downtime",
+        "qua_capa_plan",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "eng_seal_design"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-01",
+      "native_top10": [
+        "pur_commitment",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "qua_line_review",
+        "prd_first_article",
+        "prd_downtime",
+        "eng_thermal_report"
+      ],
+      "pure_original_top10": [
+        "pur_commitment",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "pur_rfq",
+        "pur_private_cost",
+        "qua_failure_archive",
+        "qua_line_review",
+        "prd_first_article",
+        "prd_downtime",
+        "eng_thermal_report"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-02",
+      "native_top10": [
+        "pur_supply_archive",
+        "pur_commitment",
+        "pur_rfq",
+        "pur_receiving_conflict",
+        "pur_private_cost",
+        "eng_gate_minutes",
+        "qua_failure_archive",
+        "prd_downtime",
+        "eng_seal_design",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "pur_supply_archive",
+        "pur_commitment",
+        "pur_rfq",
+        "pur_receiving_conflict",
+        "pur_private_cost",
+        "eng_gate_minutes",
+        "qua_failure_archive",
+        "prd_downtime",
+        "eng_seal_design",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-03",
+      "native_top10": [
+        "pur_rfq",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_private_blind",
+        "pur_substitution",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "qua_capa_plan",
+        "pur_commitment",
+        "prd_private_shift"
+      ],
+      "pure_original_top10": [
+        "pur_rfq",
+        "qua_issue_record",
+        "prd_downtime",
+        "qua_private_blind",
+        "pur_substitution",
+        "pur_supply_archive",
+        "pur_receiving_conflict",
+        "qua_capa_plan",
+        "pur_commitment",
+        "prd_private_shift"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-04",
+      "native_top10": [
+        "pur_substitution",
+        "pur_private_cost",
+        "pur_receiving_conflict",
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_gate_minutes",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "prd_work_instruction",
+        "qua_private_blind"
+      ],
+      "pure_original_top10": [
+        "pur_substitution",
+        "pur_private_cost",
+        "pur_receiving_conflict",
+        "eng_private_reserve",
+        "pur_commitment",
+        "eng_gate_minutes",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "prd_work_instruction",
+        "qua_private_blind"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-05",
+      "native_top10": [
+        "pur_receiving_conflict",
+        "pur_substitution",
+        "pur_commitment",
+        "pur_supply_archive",
+        "qua_failure_archive",
+        "eng_seal_design",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "prd_downtime"
+      ],
+      "pure_original_top10": [
+        "pur_receiving_conflict",
+        "pur_substitution",
+        "pur_commitment",
+        "pur_supply_archive",
+        "qua_failure_archive",
+        "eng_seal_design",
+        "eng_pilot_archive",
+        "pur_rfq",
+        "eng_gate_minutes",
+        "prd_downtime"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-06",
+      "native_top10": [
+        "pur_private_cost",
+        "pur_rfq",
+        "prd_wip_reconcile",
+        "pur_commitment",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "prd_private_shift",
+        "pur_receiving_conflict",
+        "eng_seal_design"
+      ],
+      "pure_original_top10": [
+        "pur_private_cost",
+        "pur_rfq",
+        "prd_wip_reconcile",
+        "pur_commitment",
+        "qua_failure_archive",
+        "pur_supply_archive",
+        "qua_private_blind",
+        "prd_private_shift",
+        "pur_receiving_conflict",
+        "eng_seal_design"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    },
+    {
+      "case_id": "PUR-07",
+      "native_top10": [
+        "pur_substitution",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_seal_design",
+        "pur_supply_archive",
+        "qua_lab_report",
+        "qua_line_review",
+        "prd_wip_reconcile",
+        "pur_rfq"
+      ],
+      "pure_original_top10": [
+        "pur_substitution",
+        "eng_gate_minutes",
+        "qua_issue_record",
+        "pur_receiving_conflict",
+        "eng_seal_design",
+        "pur_supply_archive",
+        "qua_lab_report",
+        "qua_line_review",
+        "prd_wip_reconcile",
+        "pur_rfq"
+      ],
+      "baseline_top10_exactly_reproduced": true
+    }
+  ]
+}

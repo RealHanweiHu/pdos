@@ -1,0 +1,56 @@
+{
+  "synthetic": true,
+  "api_served": true,
+  "api_base": "http://127.0.0.1:59605",
+  "web_base": "http://127.0.0.1:59588",
+  "tenant_id": "1822afd9-b502-48dd-881e-9818d510aa60",
+  "principal_id": "ca2eb0ad-22f8-4a06-aeee-d38d33153fa4",
+  "category_id": "87d36a35-1bb9-4d60-9002-f070dd68b898",
+  "provider": "synthetic-prompt-cache-ui",
+  "storage_path": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/storage.json",
+  "state_path": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/state.json",
+  "preview_marker": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/preview",
+  "preview_verified_path": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/preview-verified.json",
+  "finish_marker": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/finish",
+  "result_path": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/result.json",
+  "web_verified_path": "/tmp/pdos-prompt-cache-browser-actual-20261029-v1/web-verified.json",
+  "settings_path": "/?area=settings&category=87d36a35-1bb9-4d60-9002-f070dd68b898",
+  "agreement_api_path": "/v1/categories/87d36a35-1bb9-4d60-9002-f070dd68b898/provider-agreements",
+  "signed_on_suggestion": "2026-10-28T19:08:36.840883+00:00",
+  "expires_at_suggestion": "2026-11-28T19:08:36.840894+00:00",
+  "authorization_until": "2026-10-29T23:08:34.575308+00:00",
+  "baseline": {
+    "artifact_versions": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_sessions": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_runs": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_tool_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_invocations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "model_budget_reservations": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "enterprise_embedding_calls": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    "agent_validation_budgets": {
+      "count": 0,
+      "digest": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  }
+}

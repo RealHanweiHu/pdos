@@ -1,0 +1,7 @@
+{
+  "path": "pdos-next/server/pdos_next/agent_kernel/api.py",
+  "base_sha256": "666ee89418784cf833c28c7c04a91fd7c2bad7c39bce6ea0e03f6427a23ed0c2",
+  "patched_sha256": "4c3cfec1e90afb1ac03b840930dd414675bdf8d9f56116c4796e6fead54c201e",
+  "patch_sha256": "6472620feade21b0a6b5c8b9be8e8e8091f7b3d3c608524f6118df3e0464c6db",
+  "must_merge_with_current_root_api": true
+}

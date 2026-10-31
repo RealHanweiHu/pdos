@@ -1,0 +1,22 @@
+{
+  "argv": [
+    ".venv/bin/python",
+    "-m",
+    "pytest",
+    "-q",
+    "tests/agent_kernel/test_context_restart.py",
+    "tests/agent_kernel/test_work_state.py",
+    "tests/agent_kernel/test_work_state_candidates.py",
+    "tests/agent_kernel/test_work_state_candidate_context_schema.py",
+    "tests/agent_kernel/test_context_correction_start.py",
+    "tests/agent_kernel/test_conversation_acl.py",
+    "--junitxml=../../docs/reports/evidence/pdos-next-context-recovery-skills-20261030/restart-pure-final-v3.xml"
+  ],
+  "cwd": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server",
+  "started_at": "2026-10-30T09:50:50.367345+00:00",
+  "finished_at": "2026-10-30T09:51:16.793248+00:00",
+  "exit_code": 0,
+  "stdout_log": "restart-pure-final-v3.log",
+  "stdout_sha256": "29abbdc44a369e58f4b626a75ebf1a724296f03ab755ec946cf3b46d52780129",
+  "scope": "pure/static only; no DB/provider/browser"
+}

@@ -46,7 +46,7 @@ def _project(s, ctx, product_id, project_id, *, write=False):
         s, (Project, product_id, project_id), query, lock=write, scope_id=product_id
     )
     if not row or (write and row.owner_id != ctx.requester_id):
-        raise DomainError("FORBIDDEN_SCOPE", "当前项目不可用，首版计划由项目负责人建立。", 403)
+        raise DomainError("FORBIDDEN_SCOPE", "当前项目不可用，计划由项目负责人建立。", 403)
     link = snapshot_scalar(
         s,
         (ProjectProductLink, product_id, row.id),
@@ -75,15 +75,25 @@ def validate(s, ctx, command, product, payload):
 
     actor = s.get(Principal, ctx.actor_id)
     if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
-        raise DomainError("NAMED_DECISION_REQUIRED", "首版计划由本人手工建立。", 403)
+        raise DomainError("NAMED_DECISION_REQUIRED", "计划由本人手工建立。", 403)
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
-    _, _, definition = _project(s, ctx, product.id, payload.project_id, write=True)
+    project, _, definition = _project(s, ctx, product.id, payload.project_id, write=True)
+    if project.revision != payload.expected_project_revision:
+        raise DomainError("VERSION_CONFLICT", "项目版本已变化，请重新核对候选。")
     validate_sources(s, ctx, definition)
     if isinstance(payload, PlanApplyPayload):
-        _proposal(s, ctx, product.id, payload)
+        proposal = _proposal(s, ctx, product.id, payload)
+        if (
+            proposal.project_revision != project.revision
+            or proposal.base_plan_id != project.current_plan_id
+        ):
+            raise DomainError("VERSION_CONFLICT", "候选已过期，请从当前计划准备新候选。")
     else:
+        from .resources import validate_demands
+
         calculate(payload)
+        validate_demands(s, ctx, product.id, payload.project_id, payload.resource_demands)
     reads = {str(read.artifact_id): read.expected_revision for read in command.source_read_set}
     for reference in definition["sources"]:
         if reads.get(reference["artifact_id"]) != reference["expected_revision"]:
@@ -122,7 +132,15 @@ def preview_view(s, ctx, command, product, payload):
     validate(s, ctx, command, product, payload)
     project, link, _ = _project(s, ctx, product.id, payload.project_id, write=True)
     proposal = _proposal(s, ctx, product.id, payload)
+    from .resources import analyze, compare
+
+    current = s.get(PlanRevision, project.current_plan_id) if project.current_plan_id else None
     return {
+        "comparison": compare(current.forecast if current else None, proposal.forecast),
+        "resources": analyze(
+            s, ctx, product.id, project, proposal.forecast, proposal.resource_demands
+        ),
+        "base_plan_id": str(proposal.base_plan_id) if proposal.base_plan_id else None,
         "operation": command.operation,
         "project_id": str(project.id),
         "name": project.name,
@@ -134,7 +152,11 @@ def preview_view(s, ctx, command, product, payload):
         "input_snapshot": proposal.input_snapshot,
         "reason": proposal.reason,
         "forecast": proposal.forecast,
-        "effect": "一次建立工程/NPI工作包、全部任务和依赖；预测不构成批准基线、个人承诺或实绩。",
+        "effect": (
+            "生成新的计划版本与工作包、任务及依赖；"
+            "保留历史计划、已执行任务、基线、承诺与实绩，"
+            "不改动实际预约。"
+        ),
     }
 
 
@@ -168,19 +190,28 @@ def create_project(
     proposal = s.get(Proposal, decision.proposal_id, populate_existing=True)
     submission = s.get(ProposalSubmission, decision.submission_id, populate_existing=True)
     if (
-        not product or product.tenant_id != ctx.tenant_id or product.category_id != ctx.category_id
-        or not proposal or proposal.tenant_id != ctx.tenant_id
-        or proposal.category_id != ctx.category_id or proposal.owner_id != decision.owner_id
-        or not submission or submission.tenant_id != ctx.tenant_id
-        or submission.category_id != ctx.category_id or submission.proposal_id != proposal.id
+        not product
+        or product.tenant_id != ctx.tenant_id
+        or product.category_id != ctx.category_id
+        or not proposal
+        or proposal.tenant_id != ctx.tenant_id
+        or proposal.category_id != ctx.category_id
+        or proposal.owner_id != decision.owner_id
+        or not submission
+        or submission.tenant_id != ctx.tenant_id
+        or submission.category_id != ctx.category_id
+        or submission.proposal_id != proposal.id
         or proposal.current_submission_id != submission.id
-        or submission.owner_id != decision.owner_id or submission.reviewer_id != decision.decided_by
+        or submission.owner_id != decision.owner_id
+        or submission.reviewer_id != decision.decided_by
         or decision.review_digest != submission.document_digest
         or project_id != decision.created_project_id
         or definition_id != decision.created_definition_id
-        or owner_id != decision.project_owner_id or variant_id != decision.created_variant_id
+        or owner_id != decision.project_owner_id
+        or variant_id != decision.created_variant_id
         or name != decision.creation["project_name"]
-        or purpose != proposal.brief or scope != proposal.brief
+        or purpose != proposal.brief
+        or scope != proposal.brief
         or visibility != proposal.effective_visibility
     ):
         raise DomainError("FORBIDDEN_SCOPE", "项目须准确对应本次 G0 决定及固定提案。", 403)
@@ -188,28 +219,39 @@ def create_project(
     # so checks use the actual stored seal and provenance, not its prior draft.
     definition = s.get(DefinitionRevision, definition_id, populate_existing=True)
     if (
-        not definition or definition.tenant_id != ctx.tenant_id
-        or definition.category_id != ctx.category_id or definition.product_id != product.id
-        or definition_revision != 1 or definition.revision != 1
-        or not definition.sealed or definition.status != "draft"
-        or definition.variant_id != variant_id or definition.g0_decision_id != decision.id
+        not definition
+        or definition.tenant_id != ctx.tenant_id
+        or definition.category_id != ctx.category_id
+        or definition.product_id != product.id
+        or definition_revision != 1
+        or definition.revision != 1
+        or not definition.sealed
+        or definition.status != "draft"
+        or definition.variant_id != variant_id
+        or definition.g0_decision_id != decision.id
         or definition.source_proposal_id != proposal.id
         or definition.source_submission_id != submission.id
         or definition.source_proposal_revision != submission.revision
-        or definition.owner_id != proposal.owner_id or definition.visibility != visibility
+        or definition.owner_id != proposal.owner_id
+        or definition.visibility != visibility
     ):
         raise DomainError("SOURCE_UNAVAILABLE", "项目须固定本次 G0 封存的型号定义 v1。")
     if variant_id is not None:
         variant = s.get(Variant, variant_id, populate_existing=True)
         if (
-            not variant or variant.tenant_id != ctx.tenant_id
-            or variant.category_id != ctx.category_id or variant.product_id != product.id
+            not variant
+            or variant.tenant_id != ctx.tenant_id
+            or variant.category_id != ctx.category_id
+            or variant.product_id != product.id
             or variant.g0_decision_id != decision.id
         ):
             raise DomainError("SOURCE_UNAVAILABLE", "项目变体须属于本次 G0 结果。")
     trigger_type = (
-        "parent_product" if proposal.baseline_product_id is not None
-        else "customer_request" if proposal.entry_kind == "customer_request" else "proposal"
+        "parent_product"
+        if proposal.baseline_product_id is not None
+        else "customer_request"
+        if proposal.entry_kind == "customer_request"
+        else "proposal"
     )
     trigger_id = proposal.baseline_product_id or proposal.id
     project = Project(
@@ -246,9 +288,9 @@ def apply(s, ctx, command, product, payload):
     project, _, _ = _project(s, ctx, product.id, payload.project_id, write=True)
     if project.revision != payload.expected_project_revision:
         raise DomainError("VERSION_CONFLICT", "项目已变化，请重新查看实际范围。")
-    if project.current_plan_id:
-        raise DomainError("VERSION_CONFLICT", "首版计划已应用；后续修订须走独立变更路径。")
     if isinstance(payload, PlanProposePayload):
+        if payload.base_plan_id != project.current_plan_id:
+            raise DomainError("VERSION_CONFLICT", "请基于当前计划版本准备修订，原候选已保留。")
         forecast = calculate(payload)
         fixed_input = payload.schedule.model_dump(mode="json")
         calendar = fixed_input["calendar"]
@@ -282,13 +324,29 @@ def apply(s, ctx, command, product, payload):
             owner_id=ctx.requester_id,
             visibility=project.visibility,
             input_snapshot=fixed_input,
+            base_plan_id=payload.base_plan_id,
+            resource_demands=[d.model_dump(mode="json") for d in payload.resource_demands],
             forecast=forecast,
             reason=payload.reason,
         )
         return proposal, "plan_proposal", project.visibility
     proposal = _proposal(s, ctx, product.id, payload)
-    if proposal.project_revision != project.revision:
+    if (
+        proposal.project_revision != project.revision
+        or proposal.base_plan_id != project.current_plan_id
+    ):
         raise DomainError("VERSION_CONFLICT", "计划候选针对的项目版本已经过期。")
+    from .resources import validate_demands
+    from .schemas import ResourceDemand
+
+    validate_demands(
+        s,
+        ctx,
+        product.id,
+        project.id,
+        [ResourceDemand.model_validate(d) for d in proposal.resource_demands],
+    )
+    previous = s.get(PlanRevision, project.current_plan_id) if project.current_plan_id else None
     plan = PlanRevision(
         id=uuid4(),
         tenant_id=ctx.tenant_id,
@@ -296,7 +354,7 @@ def apply(s, ctx, command, product, payload):
         project_id=project.id,
         proposal_id=proposal.id,
         owner_id=ctx.requester_id,
-        revision=1,
+        revision=previous.revision + 1 if previous else 1,
         visibility=project.visibility,
         forecast=proposal.forecast,
     )
@@ -386,6 +444,16 @@ def list_projects(s, ctx, product_id, *, project_id=None):
         plan = s.get(PlanRevision, row.current_plan_id) if row.current_plan_id else None
         if project_id is not None and row.current_plan_id and plan is None:
             raise DomainError("SOURCE_UNAVAILABLE", "当前计划暂不可读，请核对权限后刷新。", 403)
+        from pdos_next.domain.project_governance.projection import summary as governance_summary
+
+        from .resources import lineage
+
+        current_tasks = (
+            list(s.scalars(select(ProjectTask).where(ProjectTask.plan_id == plan.id)))
+            if plan
+            else []
+        )
+        task_lineage = lineage(s, row.id, current_tasks)
         items.append(
             {
                 "id": str(row.id),
@@ -396,6 +464,7 @@ def list_projects(s, ctx, product_id, *, project_id=None):
                 "visibility": row.visibility,
                 "revision": row.revision,
                 "status": row.status,
+                "governance": governance_summary(s, ctx, row),
                 "definition": {
                     key: definition[key]
                     for key in ("id", "title", "revision", "status", "source_status")
@@ -417,6 +486,8 @@ def list_projects(s, ctx, product_id, *, project_id=None):
                         "forecast": p.forecast,
                         "input_snapshot": p.input_snapshot,
                         "project_revision": p.project_revision,
+                        "base_plan_id": str(p.base_plan_id) if p.base_plan_id else None,
+                        "resource_demands": p.resource_demands,
                     }
                     for p in proposals
                 ],
@@ -426,6 +497,7 @@ def list_projects(s, ctx, product_id, *, project_id=None):
                     "status": plan.status,
                     "proposal_id": str(plan.proposal_id),
                     "input_snapshot": s.get(PlanProposal, plan.proposal_id).input_snapshot,
+                    "resource_demands": s.get(PlanProposal, plan.proposal_id).resource_demands,
                     "forecast": plan.forecast,
                 }
                 if plan
@@ -448,10 +520,11 @@ def list_projects(s, ctx, product_id, *, project_id=None):
                     {
                         "id": str(task.id),
                         "key": task.key,
+                        "lineage_ids": task_lineage[task.key],
                         "work_package_id": str(task.work_package_id),
                         "forecast": task.forecast,
                     }
-                    for task in s.scalars(select(ProjectTask).where(ProjectTask.plan_id == plan.id))
+                    for task in current_tasks
                 ]
                 if plan
                 else [],

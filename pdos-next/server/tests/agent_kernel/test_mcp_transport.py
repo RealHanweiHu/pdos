@@ -100,9 +100,9 @@ def test_protocol_does_not_follow_redirect_or_invent_credentials_and_hides_error
     )
 
 
-def test_fixed_registry_exposes_only_one_raw_read_tool_to_mcp_child():
+def test_fixed_registry_exposes_raw_read_and_guarded_continuation_to_mcp_child():
     registry = default_registry()
-    assert [x["name"] for x in registry.definitions("mcp")] == ["mcp.result.read"]
+    assert [x["name"] for x in registry.definitions("mcp")] == ["mcp.result.read", "result.read"]
     assert "mcp.result.read" not in {x["name"] for x in registry.definitions()}
     scope = RunScope(*(uuid4() for _ in range(6)))
     for name in ["mcp.result.read", "mcp.read", "mcp.tools.list"]:

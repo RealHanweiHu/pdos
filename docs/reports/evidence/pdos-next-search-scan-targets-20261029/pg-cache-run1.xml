@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="1" time="10.382" timestamp="2026-10-29T06:49:42.250152-07:00" hostname="huhanweideMacBook-Pro.local"><testcase classname="tests.enterprise_search.test_original_scan_targets_pg" name="test_scan_target_cache_falls_back_and_never_grants_original_readability" time="9.251"><failure message="AssertionError: assert 'partial' == 'current'&#10;  &#10;  - current&#10;  + partial">setup = &lt;isolated synthetic test scope&gt;
+security_work = namespace(setup=&lt;isolated synthetic test scope&gt;, store=&lt;pdos_next.object_journal.store.JournaledLocalObjectStore objec...f80&gt;, parser=&lt;function parse_original at 0x117662de0&gt;), client=&lt;starlette.testclient.TestClient object at 0x15b71a300&gt;)
+
+    def test_scan_target_cache_falls_back_and_never_grants_original_readability(setup, security_work):
+        first = uploaded(security_work, visibility="private", content=b"Original cachemarker evidence")
+        identity = parsed(security_work, first)
+        other = uploaded(security_work, visibility="category", content=b"Unrelated public original")
+        parsed(security_work, other)
+        index(setup, identity)
+    
+        def hint(value):
+            with Session(setup.admin) as session, session.begin():
+                row = session.scalar(select(SearchSource).where(
+                    SearchSource.tenant_id == setup.tenant,
+                    SearchSource.source_type == "artifact", SearchSource.source_id == identity,
+                ))
+                assert row is not None
+                row.original_ids = value
+    
+        def read(person):
+            statements = []
+    
+            def track(*args):
+                statements.append(args[2])
+    
+            event.listen(setup.engine, "before_cursor_execute", track)
+            try:
+                with tenant_session(setup.engine, setup.tenant, actor_id=person,
+                                    requester_id=person, read_snapshot=True) as session:
+                    value = search(session, replace(setup.ctx, actor_id=person,
+                                   requester_id=person, category_id=None),
+                                   SearchInput(query="cachemarker", source_types=["artifact"]))
+            finally:
+                event.remove(setup.engine, "before_cursor_execute", track)
+            return value, len(statements)
+    
+        with Session(setup.admin) as session:
+            assert session.scalar(select(SearchSource.original_ids).where(
+                SearchSource.source_id == identity, SearchSource.tenant_id == setup.tenant,
+            )) == [first]
+        cached, cached_sql = read(setup.human)
+&gt;       assert cached["coverage"]["status"] == "current"
+E       AssertionError: assert 'partial' == 'current'
+E         
+E         - current
+E         + partial
+
+tests/enterprise_search/test_original_scan_targets_pg.py:53: AssertionError</failure></testcase></testsuite></testsuites>

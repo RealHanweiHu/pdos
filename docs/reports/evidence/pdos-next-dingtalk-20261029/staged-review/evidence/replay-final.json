@@ -1,0 +1,52 @@
+{
+  "scratch": "/tmp/pdos-dingtalk-integration-replay-20261029",
+  "files_verified": 46,
+  "live_checked_only": true,
+  "live_applied": false,
+  "steps": [
+    {
+      "argv": [
+        "patch",
+        "--dry-run",
+        "--batch",
+        "--fuzz=0",
+        "-p1",
+        "-i",
+        "/tmp/pdos-dingtalk-integration-stage-20261029/integration.patch"
+      ],
+      "exit_code": 0,
+      "output": "patching file 'pdos-next/server/migrations/candidates/dingtalk.py'\npatching file 'pdos-next/server/migrations/candidates/dingtalk_lifecycle.py'\npatching file 'pdos-next/server/pdos_next/agent_kernel/execution.py'\npatching file 'pdos-next/server/pdos_next/agent_kernel/host.py'\npatching file 'pdos-next/server/pdos_next/agent_kernel/persistence.py'\npatching file 'pdos-next/server/pdos_next/api.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/__init__.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/accounts.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/admission.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/api.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/graph.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/guards.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/lifecycle.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/models.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/official.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/ports.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/projection.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/runtime.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/schemas.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/settings.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/synthetic.py'\npatching file 'pdos-next/server/pdos_next/dingtalk/workflow.py'\npatching file 'pdos-next/server/pdos_next/lifecycle_access.py'\npatching file 'pdos-next/server/pdos_next/lifecycle_catalog.py'\npatching file 'pdos-next/server/pdos_next/models.py'\npatching file 'pdos-next/server/pdos_next/workflows/worker.py'\npatching file 'pdos-next/server/tests/dingtalk/test_channel.py'\npatching file 'pdos-next/server/tests/dingtalk/test_channel_pg.py'\npatching file 'pdos-next/server/tests/dingtalk/test_channel_temporal_pg.py'\npatching file 'pdos-next/server/tests/dingtalk/test_integration_proposal.py'\npatching file 'pdos-next/server/tests/dingtalk/test_lifecycle.py'\npatching file 'pdos-next/server/tests/dingtalk/test_official.py'\npatching file 'pdos-next/server/tests/dingtalk/test_official_pg.py'\npatching file 'pdos-next/server/tests/dingtalk/test_official_temporal_pg.py'\npatching file 'pdos-next/server/tests/dingtalk/test_retention_pg.py'\npatching file 'pdos-next/server/tests/dingtalk/test_retention_proposal.py'\npatching file 'pdos-next/web/src/app/api/[...path]/route.ts'\npatching file 'pdos-next/web/src/app/dingtalk/runs/[runId]/page.tsx'\npatching file 'pdos-next/web/src/components/app-shell.tsx'\npatching file 'pdos-next/web/src/components/dingtalk-settings.test.mjs'\npatching file 'pdos-next/web/src/components/dingtalk-settings.tsx'\npatching file 'pdos-next/web/src/components/platform-settings.tsx'\npatching file 'pdos-next/web/src/lib/dingtalk-proxy.test.mjs'\npatching file 'pdos-next/web/src/lib/dingtalk-proxy.ts'\npatching file 'pdos-next/web/src/lib/dingtalk.test.mjs'\npatching file 'pdos-next/web/src/lib/dingtalk.ts'\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "/tmp/pdos-dingtalk-integration-stage-20261029/replay.py",
+        "--target",
+        "/tmp/pdos-dingtalk-integration-replay-20261029"
+      ],
+      "exit_code": 0,
+      "output": "{\"checked\": 46, \"applied\": false}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "/tmp/pdos-dingtalk-integration-stage-20261029/replay.py",
+        "--target",
+        "/tmp/pdos-dingtalk-integration-replay-20261029",
+        "--apply"
+      ],
+      "exit_code": 0,
+      "output": "{\"checked\": 46, \"applied\": true}\n"
+    },
+    {
+      "argv": [
+        "python3",
+        "/tmp/pdos-dingtalk-integration-stage-20261029/replay.py",
+        "--target",
+        "/Users/huhanwei/Desktop/ai-native-R&D-platform"
+      ],
+      "exit_code": 0,
+      "output": "{\"checked\": 46, \"applied\": false}\n"
+    }
+  ]
+}

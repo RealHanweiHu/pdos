@@ -1,0 +1,43 @@
+{
+  "run_id": "3fe04f06-62b1-4ecb-a3d1-51cb96f845a9",
+  "status": "failed",
+  "cancel_epoch": 1,
+  "required": false,
+  "can_finalize": false,
+  "automatic_after": "2026-10-22T12:31:43.361178+00:00",
+  "counts": {
+    "calls": 1,
+    "pending_calls": 0,
+    "business_receipts": 0
+  },
+  "held_tokens": 0,
+  "estimated_micro_usd": 49012,
+  "completed": {
+    "external_effect_unknown": false,
+    "recovered_call_count": 0,
+    "original_cancel_epoch": 0,
+    "held_tokens": 0,
+    "mode": "administrator",
+    "event_id": "f1677f46-63fe-4e7c-bdb8-0102a188c39e",
+    "estimated_micro_usd": 49012,
+    "initiated_by": "69f1c732-2201-4c0f-a064-41bc207f8363",
+    "failed_call_count": 1,
+    "closed_at": "2026-10-22T12:31:22.925669+00:00",
+    "business_receipt_count": 0,
+    "may_start_new_request": true
+  },
+  "calls": [
+    {
+      "id": "d2c33d94-8f43-4bf1-ad1d-c8c062f2002f",
+      "tool": "model",
+      "state": "failed",
+      "receipt_id": null,
+      "charged_tokens": 150055,
+      "held_tokens": 0,
+      "cost_state": "estimated_unknown"
+    }
+  ],
+  "receipts": [],
+  "next_call_cursor": null,
+  "next_receipt_cursor": null
+}

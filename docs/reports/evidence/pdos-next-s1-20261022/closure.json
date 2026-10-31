@@ -1,0 +1,40 @@
+{
+  "status": "accepted_minimum_slice",
+  "scope": "User-requested S1 minimum vertical slice only; not all S1 appendix scenarios, all M3 work, production enablement or T0 qualification.",
+  "basis": "User requested closure by this slice and personally confirmed save, G0 submission and G0 approval; persisted receipts and browser evidence verified.",
+  "user_confirmations": [
+    "已在页面确认保存",
+    "已确认提交 G0",
+    "已在页面确认批准 G0"
+  ],
+  "checks": {
+    "actual_model_candidate_adopted_with_ai_author_and_human_confirmation": true,
+    "g0_approved_by_same_named_human": true,
+    "project_bound_to_actual_sealed_definition_v1": true,
+    "two_unknowns_carried_to_assigned_project_tasks": true,
+    "actual_cockpit_visible_with_definition_and_tasks": true,
+    "authorized_model_budget_respected": true,
+    "no_t0_qualification_granted": true
+  },
+  "adoption_receipt_id": "ed39ee43-9e64-46b3-a5a6-907d993dcc65",
+  "g0_receipt_id": "325a1235-1a21-4b29-92e4-833dd8976497",
+  "g0_decided_at": "2026-10-22T12:54:55.862988+00:00",
+  "project_id": "f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+  "cockpit_url": "http://127.0.0.1:59650/?area=cockpit&category=b24a8a71-981e-49cc-a32c-496641be611d&project=f0b9ea1f-e8fa-45cb-b3e3-ffd1627d016d",
+  "model_calls": 7,
+  "total_booked_micro_usd": 138995,
+  "source_manifest_unchanged_at_closure": true,
+  "evidence_sha256": {
+    "g0-handoff.json": "bbdf32dff927cb59c2b72e3652126fba0095c069fa4edf0b5c355092cf8cad23",
+    "human-adoption.json": "7eeee3347584c897e752b3cf137532d1acb9ebe2887aea7cdadaf0e644971e3d",
+    "model-budget-evidence.json": "415d2631c07ed8a2c85ca53eec0357b649a6fd30ad97dd9f563cd62d2b9d64b9",
+    "cockpit-visible.txt": "e40c7147a826252782eb3408e364216d91934fbcbc655d774b33a05242fe5412",
+    "cockpit.png": "e76800501764a4893cc09c1fc679aa5bc560edddc0b42e1529c08a44012113d1",
+    "source-manifest.json": "e204c1ae2cca4654b71d8288bdabba9f98ac8d5cc92e3ab7933b26b8b4616f56"
+  },
+  "remaining_scope": [
+    "Uncovered full S1 appendix scenarios and other M3 gaps",
+    "Six platform candidate disclosure-digest fixture failures documented in result.md",
+    "Project noise tasks due 2026-11-20"
+  ]
+}

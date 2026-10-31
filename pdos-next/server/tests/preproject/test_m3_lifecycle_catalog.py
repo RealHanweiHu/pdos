@@ -6,17 +6,16 @@ from uuid import UUID, uuid4
 
 import pytest
 from lifecycle_fixture import lifecycle_work  # noqa: F401
-from security_fixture import secured_parse
-from sqlalchemy import select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_durable_evidence import upload_input
-
 from migrations import schema_s0_0749 as migration
 from pdos_next import models
 from pdos_next.database import tenant_session
 from pdos_next.lifecycle_access import NON_CONSUMING, schema_covered
 from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED, M3_GUARDED
+from security_fixture import secured_parse
+from sqlalchemy import select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_durable_evidence import upload_input
 from tests.preproject.test_g0 import create, payload
 
 
@@ -24,11 +23,26 @@ def test_frozen_catalog_matches_actual_columns_without_consuming_transport():
     assert set(COVERED_COLUMNS) == set(models.Base.metadata.tables)
     for name, table in models.Base.metadata.tables.items():
         assert set(COVERED_COLUMNS[name]) == set(table.columns.keys())
-    assert set(M3_GUARDED) == set(migration.M3_TABLES)
-    assert len(M3_GUARDED) == 16
+    assert set(M3_GUARDED) == set(migration.M3_TABLES) | {
+        "knowledge_answer_reviews", "knowledge_gap_submissions",
+    }
+    assert len(M3_GUARDED) == 18
     assert set(M3_GUARDED) <= set(GUARDED)
     assert not set(M3_GUARDED) & NON_CONSUMING
     assert {"proposal_prepared_candidates", "category_creation_confirmations"} <= NON_CONSUMING
+
+
+def test_inbox_grouping_are_metadata_and_governance_still_requires_both_source_guards():
+    assert {
+        "inbox_conversations", "inbox_messages", "inbox_states",
+        "project_set_versions", "project_set_links",
+        "personal_preferences", "similar_history_feedback",
+    } <= NON_CONSUMING
+    assert "project_governance_events" in GUARDED
+    assert "project_governance_events" not in NON_CONSUMING
+    assert schema_covered(Catalog())
+    for trigger in ("lifecycle_reference", "category_lifecycle_clock"):
+        assert not schema_covered(Catalog(missing=("project_governance_events", trigger)))
 
 
 class Catalog:
@@ -41,7 +55,11 @@ class Catalog:
             if name == "inbox_deliveries":
                 continue
             gate = (
-                "kernel_source_reference_gate"
+                "dingtalk_summary_identity_guard"
+                if name == "dingtalk_summary_deliveries"
+                else "dingtalk_lifecycle_reference_gate"
+                if name == "dingtalk_deliveries"
+                else "kernel_source_reference_gate"
                 if name == "agent_runs"
                 else (
                     "m3_lifecycle_reference_gate"
@@ -50,7 +68,11 @@ class Catalog:
                 )
             )
             clock = (
-                "kernel_source_reference_clock"
+                "dingtalk_summary_reference_clock"
+                if name == "dingtalk_summary_deliveries"
+                else "dingtalk_lifecycle_reference_clock"
+                if name == "dingtalk_deliveries"
+                else "kernel_source_reference_clock"
                 if name == "agent_runs"
                 else (
                     "m3_lifecycle_reference_clock"
@@ -59,7 +81,8 @@ class Catalog:
                 )
             )
             self.guards |= {
-                (name, "lifecycle_reference", gate),
+                (name, "summary_identity" if name == "dingtalk_summary_deliveries"
+                 else "lifecycle_reference", gate),
                 (name, "category_lifecycle_clock", clock),
             }
         self.guards |= {
@@ -633,3 +656,9 @@ def test_pg_evidence_link_target_closure_retains_original_after_withdrawal(
     assert original_id in roots()
     save(setup, withdraw_request(setup, claim["subject_id"]))
     assert original_id in roots()
+
+
+@pytest.mark.parametrize("trigger", ["summary_identity", "category_lifecycle_clock"])
+def test_summary_delivery_identity_and_source_clock_are_both_required(trigger):
+    assert schema_covered(Catalog())
+    assert not schema_covered(Catalog(missing=("dingtalk_summary_deliveries", trigger)))

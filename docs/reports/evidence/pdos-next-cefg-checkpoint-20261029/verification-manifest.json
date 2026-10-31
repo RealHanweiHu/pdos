@@ -1,0 +1,617 @@
+{
+  "checkpoint": "pdos-next-cefg-20261029",
+  "status": "completed_bounded_cefg_checkpoint",
+  "overall_pass": true,
+  "snapshot_note": "The 747 frontend inputs identify this checkpoint build/browser candidate. Subsequent E section 11.5 work has a separate implementation and future build checkpoint. All results retain their run boundaries.",
+  "current_migration_head_evidenced": "s0_0850",
+  "frontend": {
+    "production_build": {
+      "status": "passed",
+      "input_count": 747,
+      "inputs_unchanged": true,
+      "seconds": 48.61,
+      "external_network": "blocked by snapshot-only preload",
+      "result": "frontend-cefg-candidate1-build-result.json",
+      "input_hashes": "frontend-cefg-candidate1-inputs.json",
+      "final_input_check": {
+        "input_count": 747,
+        "unchanged_from_build_and_browser": true,
+        "evidence": "integrated-checks.json"
+      },
+      "snapshot_scope": "747 inputs for this completed CEFG build/browser checkpoint; later E section 11.5 work will have its own build snapshot."
+    },
+    "node_tests": {
+      "status": "passed",
+      "passed": 43,
+      "files": [
+        "src/components/pai/work-followup-flow.test.mjs",
+        "src/lib/run-start-intent.test.mjs",
+        "src/components/pai/project-current-basis.test.mjs",
+        "src/components/pai/answer-sources.test.mjs",
+        "src/components/xiaopai.test.mjs"
+      ],
+      "evidence": "integrated-checks.json"
+    },
+    "eslint_compiler_scope": {
+      "errors": 0,
+      "warnings": 6,
+      "evidence": "eslint-compiler-scope-run1.txt"
+    },
+    "eslint_full_directory": {
+      "status": "failed_existing_copy_parse_error",
+      "errors": 1,
+      "warnings": 8,
+      "parse_error_file": "pdos-next/web/src/components/pai/use-work-products 2.ts",
+      "line": 12,
+      "evidence": "eslint-full-run1.txt"
+    }
+  },
+  "offline_checks": {
+    "contract_export": {
+      "implemented_payloads": 128,
+      "offline_db_connect_forbidden": true,
+      "catalog_operations": 87,
+      "events": 92,
+      "acceptance_ids": 63
+    },
+    "contract_sha256": {
+      "payloads.schema.json": "87a792adc9044ad7a2fb0c3a6432120279dfe83d68bc66caf38e95a207882db6",
+      "events.json": "6bc01278cbcd469fef18abe05366ccbef681b0bb4f009beae8ac80b1d5c41733",
+      "acceptance.json": "833d896ed00900efea684e11559588a808fa1eb4d8da4a76b17c05ade62e0252",
+      "auxiliary-operations.json": "f33bf502845b310ffbf346990f5c60c83f73fbe9671dbc61fa0e1fde1db1ab7b",
+      "openapi.json": "738409d071f55bc1234679eb22c38df8a82b66e4354d3f100b85d3fbdade14d1",
+      "operations.json": "0dac77457becaf9a52cc36deabfe5da67022a45b0db711ecc3ff762374f958c6"
+    },
+    "pure_integrated_final": {
+      "evidence": "pure-integrated-final.xml",
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "tests": 145,
+      "passed": 145
+    },
+    "ruff_segmented_final": {
+      "status": "passed_in_segments",
+      "python_files": 66,
+      "segments": [
+        {
+          "status": "passed",
+          "python_files": 65,
+          "exit": 0,
+          "evidence": "ruff-integrated-final2.txt"
+        },
+        {
+          "python_files": 1,
+          "status": "passed",
+          "evidence": "../pdos-next-search-performance-20261029/ruff-query-state.txt"
+        }
+      ],
+      "count_basis": "65 earlier files plus the later query.py-only check, as scoped by root"
+    },
+    "pure_counting": "145 integrated plus 26 query-state checks have zero test-identity overlap: 171 unique passes across two runs.",
+    "final_python_inputs": {
+      "evidence": "final-python-inputs.json",
+      "file_count": 66,
+      "scope": "Final integrated Python 65-file Ruff scope plus one search query delta; timestamps and test results remain segmented."
+    },
+    "pure_segmented_unique": {
+      "integrated_passed": 145,
+      "query_state_passed": 26,
+      "overlap": 0,
+      "unique_passed": 171,
+      "test_identity": "classname plus testcase name",
+      "evidence": "integrated-checks.json",
+      "boundary": "145-case and 26-case results remain separate runs"
+    }
+  },
+  "native_browser": {
+    "status": "passed_with_documented_observation_limits",
+    "fixture_passed": true,
+    "evidence": "browser-native-ui/steps.md",
+    "fixture_evidence": "browser-native-ui/native-fixture-public-summary.json",
+    "artifact_hashes": "browser-native-ui/artifacts-sha256.json",
+    "fixture_source_result_sha256": "563d2b7bedff429e1aee63d4dd616d29d047fe167f70b15fae7b051745c69cf0",
+    "after": {
+      "artifact_versions": 1,
+      "agent_runs": 1,
+      "agent_tool_calls": 8,
+      "agent_validation_budgets": 0,
+      "tenant_skill_enablements": 0,
+      "category_knowledge_entries": 1,
+      "knowledge_answer_reviews": 1,
+      "knowledge_gap_submissions": 1,
+      "automation_rule_currents": 1,
+      "automation_rule_versions": 2,
+      "automation_service_grants": 1,
+      "enterprise_embedding_profiles": 1,
+      "enterprise_embedding_calls": 0,
+      "action_receipts": 8,
+      "confirmations": 5
+    },
+    "managed_connections": 1,
+    "kms_writes": 1,
+    "original_personal_answer_unchanged": true,
+    "no_answer_artifact_created": true,
+    "summary_runs": 0,
+    "browser_model_provider_calls": 0,
+    "browser_embedding_provider_calls": 0,
+    "real_provider_calls": 0,
+    "limits": [
+      "F gap submission success and fixture persistence were verified; no ordinary UI list was found to reread the gap after refresh.",
+      "E verifies native draft/preview/activate/refresh; no manual summary run was performed."
+    ],
+    "storage_or_credentials_copied": false,
+    "playwright_session_closed": true,
+    "process_cleanup": "API/worker fixture closed; dedicated web stopped; fresh storage.json removed; Playwright session closed"
+  },
+  "actual_regressions": {
+    "G_dingtalk": {
+      "status": "passed_in_segments",
+      "unique_cases_passed": 17,
+      "segments_passed": [
+        5,
+        3,
+        1,
+        8
+      ],
+      "single_17_case_run": false,
+      "runs": [
+        {
+          "evidence": "../pdos-next-dingtalk-20261029/pg-run2.xml",
+          "failed": 1,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 6,
+          "passed": 5
+        },
+        {
+          "evidence": "../pdos-next-dingtalk-20261029/pg-run4.xml",
+          "failed": 1,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 4,
+          "passed": 3
+        },
+        {
+          "evidence": "../pdos-next-dingtalk-20261029/pg-run5.xml",
+          "failed": 1,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 2,
+          "passed": 1
+        },
+        {
+          "evidence": "../pdos-next-dingtalk-20261029/pg-run6.xml",
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 8,
+          "passed": 8
+        }
+      ],
+      "report": "../pdos-next-dingtalk-20261029/result.md",
+      "real_dingtalk_send": false
+    },
+    "I14_action_footprint": {
+      "status": "passed",
+      "run": {
+        "evidence": "../pdos-next-action-footprint-20261029/pg-run2.xml",
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "tests": 9,
+        "passed": 9
+      },
+      "breakdown": {
+        "complete_action_sources": 3,
+        "existing_verification_followups": 6
+      },
+      "new_general_taint_coverage": false,
+      "report": "../pdos-next-action-footprint-20261029/result.md"
+    },
+    "E_summary_setup": {
+      "status": "passed",
+      "run": {
+        "evidence": "../pdos-next-summary-setup-20261029/pg-summary-run1.xml",
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "tests": 20,
+        "passed": 20
+      },
+      "breakdown": {
+        "new_setup_and_gateway": 16,
+        "old_personal_summary_entries": 3,
+        "old_personal_summary_temporal": 1
+      },
+      "raw_log": "../pdos-next-assistant-combined-20261029/pg-summary-setup-run1.txt"
+    },
+    "X2_candidate_state": {
+      "status": "passed",
+      "run": {
+        "evidence": "../pdos-next-x2-candidate-state-20261029/pg-evidence-x2-run1.xml",
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0,
+        "tests": 11,
+        "passed": 11
+      },
+      "raw_log": "../pdos-next-assistant-combined-20261029/pg-evidence-x2-candidate-run1.txt"
+    },
+    "D_native_role_sources": {
+      "status": "passed_in_segments",
+      "unique_cases_passed": 3,
+      "segments_passed": [
+        1,
+        1,
+        1
+      ],
+      "runs": [
+        {
+          "evidence": "../pdos-next-role-native-sources-20261029/pg-role-run2.xml",
+          "failed": 1,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 2,
+          "passed": 1
+        },
+        {
+          "evidence": "../pdos-next-role-native-sources-20261029/pg-role-run4.xml",
+          "failed": 1,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 2,
+          "passed": 1
+        },
+        {
+          "evidence": "../pdos-next-role-native-sources-20261029/pg-role-run5.xml",
+          "failed": 0,
+          "errors": 0,
+          "skipped": 0,
+          "tests": 1,
+          "passed": 1
+        }
+      ],
+      "report": "../pdos-next-role-native-sources-20261029/result.md"
+    },
+    "B_final_native": {
+      "status": "passed_in_segments",
+      "initial_final_run": {
+        "evidence": "../pdos-next-project-current-context-20261029/pg-native-final-run1.xml",
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "tests": 7,
+        "passed": 6
+      },
+      "retained_retry": {
+        "evidence": "../pdos-next-project-current-context-20261029/pg-native-revoke-run2.xml",
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "tests": 1,
+        "passed": 0
+      },
+      "observed_failure": "Retained first runs failed native source-proof initialization; root corrected the fixture to the actual peer uploaded source and the same remaining case passed in run3.",
+      "unique_cases_passed": 7,
+      "segments_passed": [
+        6,
+        1
+      ],
+      "single_7_case_passed_run": false,
+      "passing_retry": {
+        "evidence": "../pdos-next-project-current-context-20261029/pg-native-revoke-run3.xml",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "thirteen_family_recovery": {
+      "status": "passed",
+      "planned_cases": 3,
+      "run": {
+        "evidence": "../pdos-next-role-native-sources-20261029/pg-thirteen-recovery-functional-run1.xml",
+        "tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      }
+    },
+    "CTA_and_action_taint": {
+      "status": "passed_in_segments",
+      "unique_cases_passed": 6,
+      "segments_passed": [
+        4,
+        2
+      ],
+      "breakdown": {
+        "native_work_followup": 4,
+        "new_customer_original_taint": 1,
+        "existing_verification_positive": 1
+      },
+      "native_CTA_run": {
+        "evidence": "../pdos-next-work-followup-20261029/pg-work-taint-final-run1.xml",
+        "failed": 0,
+        "errors": 1,
+        "skipped": 0,
+        "tests": 5,
+        "passed": 4
+      },
+      "taint_verification_final_run": {
+        "evidence": "../pdos-next-action-taint-20261029/pg-taint-verification-run3.xml",
+        "tests": 2,
+        "passed": 2,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "taint_verification_cli_seconds": 179.82,
+      "raw_log": "../pdos-next-assistant-combined-20261029/pg-taint-verification-run3.txt",
+      "retained_setup_error": "The combined work-followup run passed four native cases and had one setup error: missing known_configuration fixture.",
+      "retained_taint_run2": {
+        "evidence": "../pdos-next-action-taint-20261029/pg-taint-verification-run2.xml",
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "taint_run2_fixture_correction": "Fixture incorrectly assumed parent private=false although the native project scope was already private; customer_original initial-category absence, child classification and actual egress refusal remain required."
+    },
+    "thirteen_family_formal_performance": {
+      "status": "passed",
+      "retained_failed_attempt": {
+        "evidence": "../pdos-next-role-native-sources-20261029/pg-thirteen-performance-run1.xml",
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0,
+        "tests": 1,
+        "passed": 0
+      },
+      "previous_failure": "QUALIFICATION_REQUIRED during fixture initialization before timing; not a performance pass",
+      "formal_threshold_seconds": 1.0,
+      "run2": {
+        "evidence": "../pdos-next-role-native-sources-20261029/pg-thirteen-performance-run2.xml",
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "errors": 0,
+        "skipped": 0
+      },
+      "source_count": 71,
+      "family_count": 13,
+      "warmup_iterations": 5,
+      "measured_iterations": 40,
+      "run2_warm_p95_seconds": {
+        "search": 1.0259137981163804,
+        "verify_13": 0.505392936069984,
+        "verify_59": 0.5013382480421569
+      },
+      "run2_sql_counts": {
+        "search": 5,
+        "verify_13": 4,
+        "verify_59": 4
+      },
+      "run2_raw_log": "../pdos-next-assistant-combined-20261029/pg-thirteen-family-performance-run2.txt",
+      "run3": {
+        "evidence": "../pdos-next-role-native-sources-20261029/pg-thirteen-performance-run3.xml",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "errors": 0,
+        "skipped": 0
+      },
+      "run3_warm_p95_seconds": {
+        "search": 0.9663491211773362,
+        "verify_13": 0.5147289586486294,
+        "verify_59": 0.6745712569158059
+      },
+      "run3_sql_counts": {
+        "search": 5,
+        "verify_13": 4,
+        "verify_59": 4
+      },
+      "run3_raw_log": "../pdos-next-assistant-combined-20261029/pg-thirteen-family-performance-run3.txt",
+      "source_family_counts": {
+        "knowledge": 6,
+        "artifact": 26,
+        "issue": 4,
+        "capa": 1,
+        "change": 6,
+        "external_wait": 6,
+        "supply": 6,
+        "build": 4,
+        "test_run": 4,
+        "field_feedback": 3,
+        "project_status": 1,
+        "manufacturing_document": 2,
+        "verification_handoff": 2
+      },
+      "authority_batch_sizes": [
+        13,
+        59
+      ]
+    }
+  },
+  "migration_0850": {
+    "status": "passed",
+    "evidence": "../pdos-next-project-current-context-20261029/migration-0850.json",
+    "operations": [
+      {
+        "direction": "upgrade",
+        "head": "s0_0850",
+        "functions_exact": true,
+        "acl_unchanged": true,
+        "history_counts_unchanged": true,
+        "function_owners_and_flags_unchanged": true,
+        "one_policy_expression_only": true
+      },
+      {
+        "direction": "downgrade",
+        "head": "s0_0849",
+        "functions_exact": true,
+        "acl_unchanged": true,
+        "history_counts_unchanged": true,
+        "function_owners_and_flags_unchanged": true,
+        "one_policy_expression_only": true
+      },
+      {
+        "direction": "upgrade",
+        "head": "s0_0850",
+        "functions_exact": true,
+        "acl_unchanged": true,
+        "history_counts_unchanged": true,
+        "function_owners_and_flags_unchanged": true,
+        "one_policy_expression_only": true
+      }
+    ],
+    "real_provider_accessed": false
+  },
+  "pending": {},
+  "evidence_sha256": {
+    "../../../design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md": "10d6d43aef243e4d7c84a5178d4b92cac4d3f402d1d52f8e2b1a67a9d9b6a330",
+    "../pdos-next-action-footprint-20261029/pg-run2.xml": "d695a8fe129ff99c91580945f56bce11eec4394eecb2eb836542b574db6a7b9d",
+    "../pdos-next-action-footprint-20261029/result.md": "eeb1d552d4d9c43577ff4d6f34a29f0ac55cd6a22eac04a0ae967079a1d9fe30",
+    "../pdos-next-action-taint-20261029/pg-taint-verification-run2.xml": "8b6db7e60ef317e352f693025bad3a669865ba87c391565fa485fc40536a3d9c",
+    "../pdos-next-action-taint-20261029/pg-taint-verification-run3.xml": "7b299e38844b242d84fea04385ba619b26a8f6f408058a0989d1f5db3b9dafe6",
+    "../pdos-next-assistant-combined-20261029/pg-evidence-x2-candidate-run1.txt": "27f6245c89afa2f7226ebead30e22d1644ffad9cf8877da2f6fcc1c2c01c1bad",
+    "../pdos-next-assistant-combined-20261029/pg-summary-setup-run1.txt": "3e1bd74fb17e09d984acf0cf9ff39f6db153a5c71359389447bcff46c9e34731",
+    "../pdos-next-assistant-combined-20261029/pg-taint-verification-run3.txt": "abebb604a1720b3fb3a3be6cfd8541a644cc673a2fc77aa0fcb6b7ff7141f31f",
+    "../pdos-next-assistant-combined-20261029/pg-thirteen-family-performance-run2.txt": "d4cea6e406547c05dfdb3b75fd2ef3e855bebe0d5b33110d80ff8d32bd04058b",
+    "../pdos-next-assistant-combined-20261029/pg-thirteen-family-performance-run3.txt": "3f96c3e1010fcd1edee3d9fc859e0d978333f44f01fdeea279edbb22b10d1a33",
+    "../pdos-next-dingtalk-20261029/pg-run2.xml": "7b77dfb455bee430aed39d6d7205bee4fb3e37c1a22db168dbcfbcf87653e9f2",
+    "../pdos-next-dingtalk-20261029/pg-run4.xml": "7289b3bf3453b11850e83c9bc646cda2a8cdad6020f7dacbbdc36f9b53f63289",
+    "../pdos-next-dingtalk-20261029/pg-run5.xml": "44e0a9039297b302c9e59fcbe59ad6b38d4d7f5fe66a39c6f42537bc5e5b1f06",
+    "../pdos-next-dingtalk-20261029/pg-run6.xml": "7bfedd36c0815651ce8deb6c53431a59e0357576aef566cbee15f1be1cf3d1ac",
+    "../pdos-next-dingtalk-20261029/result.md": "a22b245d8672baa371a32844f27c06d1360526a28a88a457d9b473a6b02f3ef2",
+    "../pdos-next-project-current-context-20261029/migration-0850.json": "5608038a29711d896a7a2cd576916d2146413af48725909e070f9bab476c3f2f",
+    "../pdos-next-project-current-context-20261029/pg-native-final-run1.xml": "1da9226bb67920077fe4c472dcb3a0adedd2de57ebf8bbecfa53e987165b8906",
+    "../pdos-next-project-current-context-20261029/pg-native-revoke-run2.xml": "77910deb5ef33ce4090a6b1337ed1f2ee671de85e40243b099a99ebff14db8a9",
+    "../pdos-next-project-current-context-20261029/pg-native-revoke-run3.xml": "31769e43ccc7a30491ac89636b70d45312d6326753e1395cd7ec67f6c89bcafc",
+    "../pdos-next-role-native-sources-20261029/pg-role-run2.xml": "00311274574b2f8df7257e60c50a9a329cc62f558ee19070db8dc89848d87e04",
+    "../pdos-next-role-native-sources-20261029/pg-role-run4.xml": "dd927069b721134c7292d0075b08fb1a88484bb15b7fc8abfbf6501a1a074505",
+    "../pdos-next-role-native-sources-20261029/pg-role-run5.xml": "092e7c0e69721672008e033293acba388016a7cddd643b5f6ebc7dafc4b6cbfd",
+    "../pdos-next-role-native-sources-20261029/pg-thirteen-performance-run1.xml": "45dcd36b71e07704deb23621eaf10442ff9c62ff7e2ffc228bcf2732943dfce2",
+    "../pdos-next-role-native-sources-20261029/pg-thirteen-performance-run2.xml": "5a046762a4ea7a4f475a625bd585c072803da224e87cc89d9cbd7aaf12049f74",
+    "../pdos-next-role-native-sources-20261029/pg-thirteen-performance-run3.xml": "b9d2d9c09301fdf81d039b675f8e596e86e4523839e84f1ae8feb6bc46dba6ab",
+    "../pdos-next-role-native-sources-20261029/pg-thirteen-recovery-functional-run1.xml": "835e9207d8fd3c56738e9912dc6d70567298234dac2cf74918fa30fc57f30262",
+    "../pdos-next-role-native-sources-20261029/result.md": "3eb083867cb721387638dea31373c3311ab8e2243e20455a06d42a7576abd020",
+    "../pdos-next-search-performance-20261029/pg-state-metadata-run1.xml": "8bd48c0dde081c803723adcba3a82c7ce847f5253ea9a5c316b6aaddb1a5580d",
+    "../pdos-next-search-performance-20261029/pure-state-metadata-run1.xml": "517fd6ed69d9c97be2aa2b198c6597ae7bf5562442024760646ed537cce23446",
+    "../pdos-next-search-performance-20261029/query-state-delta.json": "2df883ca214ef9dcefe5cb9d98b8e1fa2e0435f6fe8e1536b3ade98199cbe803",
+    "../pdos-next-search-performance-20261029/query-state-materialization.patch": "9f1434effa06ba315b8ce4794aaab1cf2ff4e05382c16ca857d0f768cff109c3",
+    "../pdos-next-search-performance-20261029/ruff-query-state.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+    "../pdos-next-summary-setup-20261029/pg-summary-run1.xml": "aa8b13b0a4eb50fed575485a7fec667017649404709aca83fdbe32537ad419b3",
+    "../pdos-next-work-followup-20261029/pg-work-taint-final-run1.xml": "0565bfcb5bb4f1f79d157b9db7fb02aa86dd47192e64c8b71ad62e8e431c4e65",
+    "../pdos-next-x2-candidate-state-20261029/pg-evidence-x2-run1.xml": "9e3585f4bf3733690007c7b519ef32005a4070cac415d088282fc3ed8ff4e777",
+    "browser-native-ui/artifacts-sha256.json": "72cd1a12d54ee91bf424acf714d2ac14cbc7cd68d27c723c3af9792b80d4ccef",
+    "browser-native-ui/native-fixture-public-summary.json": "8bf4baab57274d1cc9bdb7e9c81093823d26d8be942b164f713932d11d4e0cae",
+    "browser-native-ui/steps.md": "9a51ca5736d316ebd05b0ec6f2e61a043614c4971db94b7d121b212499db9426",
+    "browser-native-ui/web-verified.json": "c251ff23526e97d209c26444b7202682f588848f9a2cf8073d46af7e6e5426cd",
+    "eslint-compiler-scope-run1.txt": "475163c20712e59431f070d579fd1b9b9c46cc524d74ef534df1afb385d4d456",
+    "eslint-full-run1.txt": "688780dabce158af6c4801bec7c8a0fe4442bbc793ed34328016b4fa52647880",
+    "final-history-guards.json": "29bdc50997e1bdbbd48876bf456f1d4292c952da4610874662ca8b17c2cf32b2",
+    "final-python-inputs.json": "d5393c578e31f79ef8e7160358945b5729db67dbe82a540d47edd12ea2c57046",
+    "frontend-cefg-candidate1-build-result.json": "70660dac6e50a14f021c32a4bb7465bb55d69768fe9439094e2f57503dc9be2a",
+    "frontend-cefg-candidate1-inputs.json": "bd1d411c4ff52a2f1fe68c40c012b25bc69ea17d815b17f9d9079f07c86ca4dc",
+    "integrated-checks.json": "581ff84c885fda55e8212edd080f9a2ea34f3134c5c74c95bacf71b70a6d19b4",
+    "pure-integrated-final.xml": "51bc3a02e82bc5a08220c939e4ef2b2051e05c7adc274a2b1cd1fa21c6529bcf",
+    "ruff-integrated-final2.txt": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18"
+  },
+  "boundaries": [
+    "Pass counts retain the listed group and segmented-run boundaries; only the two pure groups have an explicitly verified disjoint total of 171.",
+    "Unfiltered ESLint retains the existing excluded backup-file parse error. Real model/embedding calls, real DingTalk egress and true-material quality acceptance remain deferred.",
+    "F gap persistence was verified by the native fixture; ordinary UI gap reread after refresh was not observed.",
+    "This checkpoint does not close the full frozen designs: E section 11.5 remaining pages/forms are separately assigned."
+  ],
+  "functional_checks_passed": true,
+  "history_guards": {
+    "status": "passed",
+    "evidence": "final-history-guards.json",
+    "head": "s0_0850",
+    "checks": [
+      {
+        "revision": "0843",
+        "exact_retained_history_guard_rejected": true,
+        "sqlstate": "P0001",
+        "message": "G history must be retained; nonempty channel tables cannot be downgraded",
+        "rolled_back_head_counts_functions_policies_unchanged": true,
+        "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+      },
+      {
+        "revision": "0845",
+        "exact_retained_history_guard_rejected": true,
+        "sqlstate": "23514",
+        "message": "Field feedback knowledge history cannot lose native visibility",
+        "rolled_back_head_counts_functions_policies_unchanged": true,
+        "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+      },
+      {
+        "revision": "0849",
+        "exact_retained_history_guard_rejected": true,
+        "sqlstate": "23514",
+        "message": "Native role source history cannot lose native lifecycle roots",
+        "rolled_back_head_counts_functions_policies_unchanged": true,
+        "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+      },
+      {
+        "revision": "0850",
+        "exact_retained_history_guard_rejected": true,
+        "sqlstate": "23514",
+        "message": "Independent native project source history requires its retention closure",
+        "rolled_back_head_counts_functions_policies_unchanged": true,
+        "scope": "replay exact guard in a rollback transaction; no cascading downgrade attempted"
+      }
+    ],
+    "real_provider_calls": 0
+  },
+  "query_state_materialization": {
+    "status": "implemented_regressions_and_formal_performance_passed",
+    "scope": "ordinary live RLS metadata reused once inside the same final SQL statement",
+    "files": [
+      "pdos-next/server/pdos_next/enterprise_search/query.py"
+    ],
+    "before_sha256": "cba39e6a0811c6fff139e13c633275703e24cdbccb67a88de40a43848ba6b38f",
+    "after_sha256": "fa2eae06378cf27492e0245d3e5965c9974e6cdf379035c0fddb4f867cc61307",
+    "migration": null,
+    "source_permissions_scan_and_final_catalog_conditions": "unchanged",
+    "delta": "../pdos-next-search-performance-20261029/query-state-delta.json",
+    "patch": "../pdos-next-search-performance-20261029/query-state-materialization.patch",
+    "pure": {
+      "evidence": "../pdos-next-search-performance-20261029/pure-state-metadata-run1.xml",
+      "tests": 26,
+      "passed": 26,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "actual_permissions_and_recovery": {
+      "evidence": "../pdos-next-search-performance-20261029/pg-state-metadata-run1.xml",
+      "tests": 5,
+      "passed": 5,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "ruff": {
+      "python_files": 1,
+      "status": "passed",
+      "evidence": "../pdos-next-search-performance-20261029/ruff-query-state.txt"
+    }
+  },
+  "completion_scope": "This CEFG local checkpoint and its listed functional/performance evidence. Full frozen-design completion remains separate.",
+  "subsequent_work_outside_checkpoint": [
+    {
+      "frozen_clause": "Enterprise RAG design E section 11.5",
+      "design": "../../../design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md",
+      "remaining_local_capability": [
+        "Change detail similar-history panel",
+        "New Issue/Change form duplicate hints"
+      ],
+      "owner": "root separate E increment and checkpoint"
+    }
+  ]
+}

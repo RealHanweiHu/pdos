@@ -18,11 +18,12 @@ const reactShim = { ...React,
 };
 const modules = new Map();
 function load(filename) {
+  if (filename.endsWith(".css")) return { __esModule: true, default: new Proxy({}, { get: (_, key) => String(key) }) };
   if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync);
   if (modules.has(filename)) return modules.get(filename).exports;
   const loaded = new Module(filename); modules.set(filename, loaded);
   loaded.require = specifier => specifier === "react" ? reactShim
-    : specifier === "@phosphor-icons/react" ? { Sparkle: () => React.createElement("svg") }
+    : specifier === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") })
     : specifier.startsWith("@/") ? load(path.join(webRoot, "src", specifier.slice(2)))
     : specifier.startsWith(".") ? load(path.resolve(path.dirname(filename), specifier)) : dependency(specifier);
   loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: {
@@ -30,7 +31,8 @@ function load(filename) {
   } }).outputText, filename);
   return loaded.exports;
 }
-const { RunCandidates } = load(path.join(directory,"run-candidates.tsx"));
+const { RunCandidates, syncCandidatePreviewDialog } = load(path.join(directory,"run-candidates.tsx"));
+const workspaceCss = readFileSync(path.join(directory, "../pai-conversation.module.css"), "utf8");
 const category="11111111-1111-4111-8111-111111111111", run="22222222-2222-4222-8222-222222222222", event="33333333-3333-4333-8333-333333333333", snapshot="44444444-4444-4444-8444-444444444444";
 const original = {command_id:run,idempotency_key:"actual-original-key",category_id:category,product_id:null,operation:"research.snapshot.register",expected_revision:1,source_read_set:[],payload:{snapshot_id:snapshot,prepared_event_id:event}};
 const receipt = {id:"receipt",operation:original.operation,subject_id:snapshot,subject_type:"public_web_snapshot",result:{}};
@@ -56,6 +58,25 @@ function port(mode) {
   committed=true;return receipt;
  }};
 }
+
+test("mobile CSS keeps ordinary candidate confirmation visible and hides only the controlled editor background", () => {
+ assert.match(workspaceCss, /\.workspace\[data-mobile-view="chat"\]\[data-editor-open="true"\] :global\(\.candidate-editor\[open\]:not\(\[data-candidate-preview="true"\]\)\)/);
+ assert.match(workspaceCss, /\.workspace\[data-mobile-view="editor"\]\[data-editor-open="true"\]:has\(:global\(\.candidate-editor\[open\]\)\) \.conversation/);
+ assert.doesNotMatch(workspaceCss, /\.workspace\[data-mobile-view="chat"\] :global\(\.candidate-editor\[open\]\)/);
+});
+
+test("ordinary preview is modal on mobile and returns to non-modal desktop chat", () => {
+ const calls = [], dialog = { open: false, modal: false,
+  matches(query) { assert.equal(query, ":modal"); return this.modal; },
+  close() { calls.push("close"); this.open = false; this.modal = false; },
+  show() { calls.push("show"); this.open = true; this.modal = false; },
+  showModal() { calls.push("showModal"); this.open = true; this.modal = true; },
+ };
+ syncCandidatePreviewDialog(dialog, true); assert.deepEqual(calls, ["showModal"]);
+ syncCandidatePreviewDialog(dialog, true); assert.deepEqual(calls, ["showModal"]);
+ syncCandidatePreviewDialog(dialog, false); assert.deepEqual(calls, ["showModal", "close", "show"]);
+ assert.equal(dialog.open, true); assert.equal(dialog.modal, false);
+});
 
 test("snapshot is listed without a write, then one preview and one confirmation save it",async()=>{
  storage.clear();const p=port("success"),c=session(p.api);
@@ -150,7 +171,7 @@ test("failed later-page read retains the exact request and refresh can recover t
  try {
   await c.settle(); const saved = [...storage.values()][0]; await c.click("查看更多候选");
   assert.match(c.text(), /Synthetic page unavailable/); assert.equal([...storage.values()][0], saved);
-  await c.click("刷新候选"); await c.click("查看更多候选");
+  await c.click("刷新材料"); await c.click("查看更多候选");
   assert.match(c.text(), /研究来源登记已保存/); assert.equal(storage.size, 0);
   assert.equal(p.writes.length, 0); assert.equal(p.previews.length, 0);
  } finally { c.unmount(); }
@@ -178,5 +199,15 @@ test("later-page authority loss removes local recovery and does not send the ori
   await c.settle(); await c.click("查看更多候选");
   assert.equal(storage.size, 0); assert.ok(!c.text().includes("保存结果待核对，已保留原请求"));
   assert.equal(p.writes.length, 0); assert.equal(p.previews.length, 0);
+ } finally { c.unmount(); }
+});
+
+test("candidate confirmation authorization failure clears private material but preserves its error", async () => {
+ storage.clear(); const p = port("success"), c = session(async (path, body) => {
+  if (path === "v1/commands") throw Object.assign(new Error("Access revoked"), {status: 403});
+  return p.api(path, body);
+ });
+ try { await c.settle(); await c.click("核对并预览研究来源登记"); await c.click("确认保存");
+  assert.match(c.text(), /Access revoked/); assert.doesNotMatch(c.text(), /Actual retained source|确认保存/); assert.equal(storage.size, 0);
  } finally { c.unmount(); }
 });

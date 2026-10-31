@@ -14,7 +14,7 @@ export async function paiSessionsRead(request: NextRequest, categoryId?: string,
     if (query.has(key)) return error("会话查询须使用唯一明确的范围与游标。", 422);
     const valid = key === "page_size" ? /^(?:[1-9]|[1-4][0-9]|50)$/.test(value)
       : key === "cursor" ? uuid.test(value)
-      : key === "proposal_id" ? categoryId !== undefined && uuid.test(value)
+      : key === "proposal_id" || key === "project_id" ? categoryId !== undefined && uuid.test(value)
       : key === "q" ? sessionId === undefined && [...value].length <= 160
       : false;
     if (!valid) return error("请使用有效的会话范围、搜索或分页参数。", 422);

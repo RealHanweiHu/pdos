@@ -1,0 +1,128 @@
+{
+  "target": "127.0.0.1:53502/pdos_test",
+  "marker": "f117bb5b-b3d7-4286-aaec-c54d9255e96b",
+  "head": "s0_0834",
+  "backup": "/Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/.local/enterprise-source-repair-53502-before-0834.dump",
+  "backup_bytes": 85252814,
+  "operations": [
+    {
+      "operation": "upgrade",
+      "target": "s0_0834",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "statistics_function_unchanged": true
+    },
+    {
+      "operation": "downgrade",
+      "target": "s0_0833",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "statistics_function_unchanged": true
+    },
+    {
+      "operation": "upgrade",
+      "target": "s0_0834",
+      "exit": 0,
+      "existing_counts_unchanged": true,
+      "statistics_function_unchanged": true
+    }
+  ],
+  "compared_tables": [
+    "action_receipts",
+    "agent_runs",
+    "artifact_versions",
+    "category_knowledge_entries",
+    "enterprise_search_chunks",
+    "enterprise_search_sources",
+    "enterprise_search_corpus",
+    "enterprise_search_terms",
+    "personal_preferences",
+    "similar_history_feedback"
+  ],
+  "role": {
+    "rolcanlogin": false,
+    "rolsuper": false,
+    "rolbypassrls": false,
+    "rolinherit": false,
+    "rolcreatedb": false,
+    "rolcreaterole": false,
+    "rolreplication": false
+  },
+  "function": {
+    "owner": "pdos_enterprise_index_maintainer",
+    "prosecdef": true,
+    "proconfig": [
+      "search_path=pg_catalog, public, pg_temp"
+    ]
+  },
+  "function_execute": {
+    "pdos_next_app": true,
+    "pdos_agent": false,
+    "pdos_next_auth": false,
+    "pdos_next_dispatch": false
+  },
+  "runtime_membership": {
+    "pdos_next_app": false,
+    "pdos_agent": false,
+    "pdos_next_auth": false,
+    "pdos_next_dispatch": false
+  },
+  "maintenance_column_privileges": {
+    "tenant_id": true,
+    "token_count": true,
+    "term_counts": true,
+    "title_counts": true,
+    "source_id": true,
+    "work_key": true,
+    "text": false,
+    "content_hash": false
+  },
+  "force_rls_preserved": {
+    "principals": [
+      true,
+      true
+    ],
+    "action_receipts": [
+      true,
+      true
+    ],
+    "agent_runs": [
+      true,
+      true
+    ],
+    "artifact_versions": [
+      true,
+      true
+    ],
+    "category_knowledge_entries": [
+      true,
+      true
+    ],
+    "enterprise_search_chunks": [
+      true,
+      true
+    ],
+    "enterprise_search_sources": [
+      true,
+      true
+    ],
+    "enterprise_search_corpus": [
+      true,
+      true
+    ],
+    "enterprise_search_terms": [
+      true,
+      true
+    ],
+    "personal_preferences": [
+      true,
+      true
+    ],
+    "similar_history_feedback": [
+      true,
+      true
+    ]
+  },
+  "env_fallback": false,
+  "new_database": false
+}

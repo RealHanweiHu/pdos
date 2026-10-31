@@ -104,6 +104,7 @@ def reading(session, ctx, page):
                 "data_categories": row.data_categories,
                 "retention_terms": row.retention_terms,
                 "training_terms": row.training_terms,
+                "prompt_cache_allowed": row.prompt_cache_allowed,
                 "active": row.active,
                 "registered_by": str(row.registered_by),
                 "registered_by_name": people.get(row.registered_by),

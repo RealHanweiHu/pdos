@@ -1,0 +1,12 @@
+{
+  "failed_source_counts": [
+    {
+      "source_type": "field_feedback",
+      "last_error": "INDEX_WRITE_FAILED",
+      "count": 3
+    }
+  ],
+  "target": "127.0.0.1:53502/pdos_test",
+  "sqlstate": "22023",
+  "message": "Derived source repair requires projector-computed identity"
+}
