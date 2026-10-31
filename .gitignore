@@ -24,12 +24,14 @@ htmlcov/
 .DS_Store
 *.log
 
-# iCloud/桌面同步冲突副本（" 2" 后缀）
+# iCloud/桌面同步冲突副本（" 2"、" 3" 后缀）
 * 2.*
+* 3.*
 
 # 本地数据卷
 .docker-data/
 .local/
+.next-comprehensive/
 tmp/agent-convergence-*/
 
 # 本地验证产物
