@@ -1,0 +1,406 @@
+.taskPage.taskPage {
+  padding-top: 14px;
+}
+.screenReaderOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.toolbar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  margin: 0 0 12px;
+}
+.views,
+.filters,
+.actions {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+.views {
+  gap: 2px;
+}
+.views button {
+  height: 30px;
+  padding: 0 9px;
+  border-radius: 8px;
+  color: var(--text-subtle);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.views button:hover,
+.search button:hover {
+  background: var(--sidebar);
+  color: var(--foreground);
+}
+.views button[aria-pressed="true"] {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.filters {
+  gap: 6px;
+}
+.filter {
+  position: relative;
+  flex-shrink: 0;
+  width: 88px;
+}
+.phaseFilter {
+  width: 158px;
+}
+.ownerFilter {
+  width: 112px;
+}
+.toolbar .filter select {
+  appearance: none;
+  display: block;
+  width: 100%;
+  height: 30px;
+  margin: 0;
+  padding: 0 26px 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--text-subtle);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.filter > svg {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-subtle);
+}
+.filter select:hover {
+  background: var(--sidebar);
+}
+.filter[data-active="true"] select {
+  background: var(--muted);
+  color: var(--foreground);
+}
+.actions {
+  gap: 10px;
+  justify-content: flex-end;
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 148px;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-subtle);
+  background: var(--background);
+}
+.toolbar .search input {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  outline: none;
+  background: transparent;
+  color: var(--foreground);
+  font-size: 12px;
+}
+.toolbar .search input::placeholder {
+  color: var(--text-subtle);
+  opacity: 1;
+}
+.search:focus-within {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+.search button {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 24px;
+  border-radius: 4px;
+}
+.count {
+  min-width: 28px;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--text-subtle);
+}
+.taskPage .create {
+  height: 30px;
+  min-height: 30px;
+  padding: 0 10px;
+  font-size: 12px;
+  gap: 5px;
+}
+.notice {
+  margin: 0 0 8px;
+  color: var(--text-subtle);
+  font-size: 11px;
+}
+.taskTable .table {
+  min-width: 840px;
+  table-layout: fixed;
+}
+.taskTable .table th {
+  padding: 5px 12px 5px 0;
+  height: 30px;
+}
+.taskTable .table th:first-child {
+  width: 42%;
+}
+.taskTable .table th:nth-child(2) {
+  width: 8%;
+}
+.taskTable .table th:nth-child(3) {
+  width: 17%;
+}
+.taskTable .table[data-projects="true"] {
+  min-width: 1000px;
+}
+.taskTable .table[data-projects="true"] th:first-child {
+  width: 35%;
+}
+.taskTable .table[data-projects="true"] th:nth-child(3) {
+  width: 15%;
+}
+.taskTable .table[data-projects="true"] th:last-child {
+  width: 17%;
+}
+.taskTable .table td {
+  padding: 0 12px 0 0;
+  height: 40px;
+  vertical-align: middle;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-variant-numeric: tabular-nums;
+}
+.taskTable .table td:first-child button {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  gap: 8px;
+}
+.taskTable .table td:first-child button:focus-visible {
+  outline-offset: -2px;
+  border-radius: 4px;
+}
+.taskIcon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  color: var(--text-subtle);
+}
+.taskTable .table td:first-child small {
+  display: inline;
+  flex-shrink: 0;
+  width: 56px;
+  margin: 0;
+  font-size: 11px;
+  color: var(--text-subtle);
+}
+.taskTable .table td:first-child strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 400;
+}
+.taskTable .table tbody tr:hover,
+.taskTable .table tbody tr:focus-within {
+  background: var(--sidebar);
+}
+.board {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  padding-top: 10px;
+}
+.board h2 {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+.board h2 span {
+  color: var(--text-subtle);
+  font-weight: 400;
+}
+.board section > button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  text-align: left;
+  margin-bottom: 8px;
+}
+.board section > button:hover {
+  background: var(--sidebar);
+}
+.board small {
+  color: var(--text-subtle);
+  font-size: 11px;
+}
+.board strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  margin: 6px 0 12px;
+  overflow-wrap: anywhere;
+}
+.board button > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--text-subtle);
+  font-size: 11px;
+}
+.cardPhase {
+  font-size: 11px;
+  color: var(--text-subtle);
+  margin-bottom: 8px;
+}
+.empty {
+  padding: 48px 0;
+  color: var(--text-subtle);
+}
+.empty h2 {
+  color: var(--foreground);
+  margin-bottom: 8px;
+}
+.empty button {
+  margin-top: 18px;
+}
+.editor fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+}
+.editor fieldset > label {
+  margin-bottom: 18px;
+}
+.editor input,
+.editor select {
+  margin-top: 7px;
+}
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.fields select {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid var(--input);
+  border-radius: 8px;
+  color: var(--foreground);
+  background: var(--background);
+  font-size: 13px;
+}
+.templateInfo.templateInfo {
+  padding: 0 0 16px;
+  margin: 0 0 16px;
+  border-top: 0;
+  border-bottom: 1px solid var(--border);
+}
+.templateInfo summary {
+  font-size: 12px;
+  color: var(--text-subtle);
+  cursor: pointer;
+}
+.templateInfo ul {
+  padding-left: 18px;
+  margin: 10px 0;
+  color: var(--text-subtle);
+  font-size: 12px;
+  line-height: 1.8;
+}
+@container (max-width: 1020px) {
+  .toolbar {
+    grid-template-columns: auto 1fr;
+    gap: 10px 16px;
+  }
+  .filters {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+@container (max-width: 900px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@container (max-width: 620px) {
+  .taskPage.taskPage {
+    padding: 12px 20px 36px;
+  }
+  .toolbar {
+    gap: 10px 8px;
+  }
+  .views button,
+  .toolbar .filter select,
+  .search,
+  .taskPage .create {
+    height: 36px;
+    min-height: 36px;
+  }
+  .views button {
+    padding: 0 8px;
+  }
+  .actions {
+    gap: 8px;
+  }
+  .search {
+    width: 112px;
+  }
+  .search button {
+    width: 24px;
+    height: 30px;
+  }
+  .count {
+    display: none;
+  }
+  .filters {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 6px;
+  }
+  .filter {
+    width: 100%;
+    min-width: 0;
+  }
+  .taskTable .table td {
+    height: 44px;
+  }
+  .taskTable .table td:first-child button {
+    min-height: 42px;
+  }
+  .board {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 420px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+}

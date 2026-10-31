@@ -1,0 +1,229 @@
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.filters,
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.filters {
+  font-size: 11px;
+  color: var(--text-subtle);
+}
+.filters label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  white-space: nowrap;
+}
+.filters input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+}
+.actions {
+  gap: 8px;
+}
+.actions > button {
+  height: 30px;
+  min-height: 30px;
+  padding: 0 10px;
+  gap: 5px;
+  font-size: 12px;
+}
+.paiAction {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-subtle);
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.paiAction:hover {
+  background: var(--sidebar);
+  color: var(--foreground);
+}
+.table td {
+  max-width: 230px;
+  overflow-wrap: anywhere;
+}
+.table tr[data-withdrawn="true"] td {
+  color: var(--text-subtle);
+}
+.table small {
+  color: var(--text-subtle);
+  font-size: 10px;
+  font-weight: 400;
+}
+.notice {
+  font-size: 12px;
+  color: var(--text-subtle);
+  margin-bottom: 14px;
+  line-height: 1.7;
+}
+.form {
+  padding-top: 4px;
+  gap: 16px;
+}
+.form fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.fields label:has(textarea),
+.fields label:has(input[aria-label="来源与位置"]),
+.fields label:has(input[aria-label="依据与适用范围"]) {
+  grid-column: 1/-1;
+}
+.form label {
+  display: block;
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+.form input,
+.form select,
+.form textarea {
+  width: 100%;
+  min-width: 0;
+  margin-top: 6px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 10px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 13px;
+}
+.form textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+.form input[readonly] {
+  color: var(--text-subtle);
+  background: var(--sidebar);
+}
+.form fieldset:disabled {
+  opacity: 0.7;
+}
+.required {
+  color: var(--text-subtle);
+}
+.more {
+  border-top: 1px solid var(--border);
+  margin-top: 18px;
+  padding-top: 14px;
+}
+.more > summary,
+.history summary {
+  cursor: pointer;
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+.more .fields {
+  margin-top: 14px;
+}
+.reason {
+  margin-top: 18px;
+}
+.error {
+  font-size: 12px;
+  color: var(--primary);
+}
+.history {
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+.history > details {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.history p {
+  font-size: 12px;
+  color: var(--text-subtle);
+  margin: 10px 0;
+}
+.history dl {
+  display: grid;
+  gap: 8px;
+}
+.history dl > div {
+  display: grid;
+  grid-template-columns: 110px minmax(0, 1fr);
+  gap: 12px;
+  font-size: 12px;
+}
+.history dt {
+  color: var(--text-subtle);
+}
+.history dd {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.withdraw {
+  border-block: 1px solid var(--border);
+  padding: 16px 0;
+}
+.withdraw h2 {
+  font-size: 14px;
+}
+.withdraw p {
+  font-size: 12px;
+  color: var(--text-subtle);
+  margin: 10px 0;
+}
+.withdraw .actions {
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+.footer {
+  position: sticky;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  background: var(--background);
+  z-index: 1;
+}
+.footer > button:first-child:not(:last-child) {
+  margin-right: auto;
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+@container (max-width:620px) {
+  .toolbar {
+    align-items: stretch;
+    gap: 10px;
+  }
+  .actions {
+    width: 100%;
+  }
+  .actions > div {
+    flex: 1;
+  }
+  .actions > button {
+    height: 36px;
+    min-height: 36px;
+  }
+}
+@media (max-width: 420px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .history dl > div {
+    grid-template-columns: 86px minmax(0, 1fr);
+  }
+}

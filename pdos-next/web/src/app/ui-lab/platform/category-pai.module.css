@@ -1,0 +1,366 @@
+.candidate {
+  border-top: 1px solid var(--border);
+  padding: 14px;
+  margin-top: 0;
+  display: grid;
+  gap: 12px;
+}
+.candidate header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+}
+.candidate header span,
+.candidate > p {
+  font-size: 11px;
+  color: var(--text-subtle);
+}
+.candidate > p {
+  margin: 0 !important;
+}
+.candidate label {
+  font-size: 12px;
+  color: var(--text-subtle);
+  display: grid;
+  gap: 6px;
+}
+.candidate input:not([type="checkbox"]),
+.candidate select,
+.candidate textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-size: 13px;
+  color: var(--foreground);
+  background: var(--background);
+}
+.candidate input[readonly] {
+  background: var(--sidebar);
+  color: var(--text-subtle);
+}
+.moreFields {
+  font-size: 12px;
+  color: var(--text-subtle);
+}
+.moreFields summary {
+  cursor: pointer;
+  padding: 4px 0;
+}
+.moreFields > div {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+}
+.moreFields dl {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+.moreFields dl > div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 8px;
+}
+.moreFields dd {
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+  color: var(--foreground);
+}
+.candidate textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+.candidate label.confirm {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 7px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+.confirm input {
+  width: 14px;
+  height: 14px;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+.candidate footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.candidate footer > button {
+  font-size: 12px;
+  min-height: 32px;
+}
+.candidate footer > button:first-child {
+  color: var(--text-subtle);
+}
+.candidate > p.error {
+  color: var(--primary);
+}
+.receipt {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  justify-content: space-between;
+  border-block: 1px solid var(--border);
+  padding: 12px 0;
+  margin-top: 14px;
+  font-size: 12px;
+}
+.receipt span,
+.receipt button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.receipt span {
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.preview {
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--background);
+}
+.preview > header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px 14px 10px;
+}
+.preview > header > svg {
+  flex-shrink: 0;
+  color: var(--text-subtle);
+  margin-top: 2px;
+}
+.preview > header > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.preview > header strong {
+  font-size: 13px;
+  font-weight: 550;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.preview > header span {
+  font-size: 11px;
+  color: var(--text-subtle);
+}
+.previewRows {
+  margin: 0 !important;
+  padding: 0 14px 8px;
+  display: grid;
+  gap: 8px;
+}
+.previewRows > div {
+  display: grid;
+  grid-template-columns: 62px minmax(0, 1fr);
+  gap: 8px;
+  font-size: 12px;
+  line-height: 1.65;
+}
+.previewRows dt {
+  color: var(--text-subtle);
+}
+.previewRows dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.preview .expand {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 0;
+  font-size: 12px;
+  color: var(--foreground);
+  text-align: left;
+}
+.preview .expand:hover {
+  background: var(--muted);
+}
+.candidate :is(input, textarea, select):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+.candidate > h3 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 550;
+}
+.candidate .summaryText {
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}
+.candidate .sourceList {
+  list-style: none;
+  display: grid;
+  gap: 12px;
+  margin: 12px 0;
+  padding: 0;
+}
+.sourceList li {
+  font-size: 12px;
+  line-height: 1.6;
+}
+.sourceList li small {
+  display: block;
+  color: var(--text-subtle);
+}
+.moreFields > summary::after {
+  content: "+";
+  margin-left: auto;
+  font-size: 14px;
+}
+.moreFields[open] > summary::after {
+  content: "−";
+}
+
+.editorForm .candidate {
+  border: 0;
+  padding: 0;
+  gap: 18px;
+}
+.editorForm .candidate > label {
+  font-size: 12px;
+  color: var(--foreground);
+  gap: 8px;
+}
+.editorForm .candidate input:not([type="checkbox"]),
+.editorForm .candidate select,
+.editorForm .candidate textarea {
+  padding: 9px 10px;
+}
+.editorForm .candidate textarea {
+  min-height: 84px;
+  line-height: 1.65;
+}
+.editorForm .candidate .moreFields {
+  border-top: 1px solid var(--border);
+  padding-top: 10px;
+}
+.editorForm .moreFields > summary {
+  min-height: 32px;
+  color: var(--foreground);
+  font-weight: 500;
+}
+.editorForm .candidate > footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  margin-top: 6px;
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+  background: var(--background);
+}
+.editorForm .candidate :is(input, select, textarea):disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.editorForm {
+  container-type: inline-size;
+}
+.editorForm .candidate label {
+  margin: 0;
+}
+.editorForm .candidate :is(input:not([type="checkbox"]), select, textarea) {
+  margin: 0;
+}
+.identityFields {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 14px;
+}
+@container (max-width: 400px) {
+  .identityFields {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+}
+
+.fieldGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px 14px;
+}
+.fieldGrid
+  > label:is(:has(textarea), [data-field="source"], [data-field="key"]) {
+  grid-column: 1 / -1;
+}
+.savedFields {
+  margin: 0;
+  display: grid;
+  gap: 22px;
+}
+.savedFields > div {
+  display: grid;
+  gap: 7px;
+}
+.savedFields dt {
+  color: var(--text-subtle);
+  font-size: 12px;
+}
+.savedFields dd {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--foreground);
+}
+.editorForm .candidate > .saveNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border);
+  color: var(--foreground);
+  font-size: 12px;
+}
+.saveNotice > svg {
+  margin-top: 2px;
+  color: var(--text-subtle);
+}
+.saveNotice small {
+  display: block;
+  margin-top: 5px;
+  font-size: 11px;
+  color: var(--text-subtle);
+}
+.savedDocument .moreFields :is(p, small) {
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+}
+.savedDocument .moreFields p {
+  margin: 8px 0;
+}
+.savedDocument .moreFields strong {
+  color: var(--foreground);
+  font-weight: 500;
+}
+@container (max-width: 400px) {
+  .fieldGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
