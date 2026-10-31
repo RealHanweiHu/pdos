@@ -30,7 +30,7 @@
 
 **统一产品本地预览（2026-10-23）**：按用户纠正，[入口](http://localhost:57859/)直接进入正式产品“我的工作”，同一个演示身份沿统一导航访问项目、知识、品类/提案、设置和小Pai；已移除主入口的九案例/角色选择。使用既有独立副本中的现场反馈/变更项目与实际 Build 记录，未把不同租户案例拼接为同一履历；为该合成账号在副本中启用本品类产品管理入口，专业资格和原 S1 保留。8 项会话入口、类型/lint、实际 BFF 身份保持与首页/项目/知识/提案导航、深链刷新核对通过。小Pai已按用户开发期 MiniMax 不限额授权接通，18个注册技能启用且T0资格为0；独立Temporal/Worker/LangGraph真实问候约8秒完成，共3次调用、$0.028178，保留首次格式失败记录并修复有限重试入口。输入与图19项、前端恢复7项及类型/lint通过；空队列及未完成模块如实显示，不改变阶段验收。见[统一入口证据](../docs/reports/evidence/pdos-next-comprehensive-preview-20261022/product-mode/result.md)与[小Pai启用和恢复](../docs/reports/evidence/pdos-next-comprehensive-preview-20261022/pai-enabled/result.md)。
 
-**GitHub 分批同步与旧代码清理（2026-10-22）**：近期功能、设计与证据按组留存，目标分支 `pdos-next/design-v1.1`；原版源码核对归档标签后移除，运行框架/golden/生产下线资产保留。验证、删除范围与同期在途改动边界见[同步记录](../docs/reports/evidence/repository-sync-20261022/result.md)。不改变业务阶段验收状态。
+**GitHub 分批同步与旧代码清理（2026-10-22）**：近期功能、设计与证据按组留存，目标分支 `pdos-next/design-v1.1`；原版源码核对归档标签后移除，运行框架/golden/生产下线资产保留。验证、删除范围与同期在途改动边界见[同步记录](../docs/reports/evidence/repository-sync-20261022/result.md)。不改变业务阶段验收状态。远端为公开仓库，按用户选择只发布不含旧历史的快照：10-22 为 `codex/pdos-next-snapshot-20261022`，2026-10-31 在同一分支追加 10-30 前全部改动的快照提交，本地开发提交不推送，见[追加发布记录](../docs/reports/evidence/repository-sync-20261031/snapshot-publication.md)。
 
 **依据**：[完整目标架构 v1.1](../docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md)（用户 2026-10-08 批准并冻结）、[设计确认稿](../docs/design/2026-10-08-pdos-next-design-confirmation.md)（K1–K9、C1–C14 已全部确认）、[执行计划](../docs/design/2026-10-07-xiaopai-product-execution-plan.md)。原工程（`server/` + `web/`）已停用归档（标签 `original-final-2026-10-08`），原 N/P/Q 65 项、Sprint、原版生产与 Q0–Q6 人工出口随之归档，下方 N/P/Q 条目只作历史记录。
 
