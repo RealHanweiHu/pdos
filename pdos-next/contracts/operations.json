@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "eb9f156e46cc77a4653e4b823aca92e41bb58831a03731817002c08415ccb64d",
+    "sha256": "4e558f32b77f2914ad8f19fe2c62f8a3e31a13f0ffbab086a2583ba6c79bf9f6",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -151,7 +151,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "baseline.approved",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.forecast.refresh",
@@ -749,7 +750,7 @@
     {
       "operation": "proposal.g0.decide",
       "write_tier": "T2",
-      "ai_execution": "仅准备/不可代决定；评审人不得为负责人",
+      "ai_execution": "仅准备/不可代决定；非试点评审人不得为负责人，当前有效试点允许负责人本人具名评审（P27）",
       "event": "proposal.g0_decided",
       "stage": "S1",
       "implementation": "implemented_local_slice",

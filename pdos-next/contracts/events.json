@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "eb9f156e46cc77a4653e4b823aca92e41bb58831a03731817002c08415ccb64d",
+    "sha256": "4e558f32b77f2914ad8f19fe2c62f8a3e31a13f0ffbab086a2583ba6c79bf9f6",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -546,6 +546,48 @@
       "stage": "S1",
       "schema_version": 1,
       "v1_1": "added"
+    },
+    {
+      "type": "stage.adopted",
+      "operation": "work.stage.adopt",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "stage.review_submitted",
+      "operation": "work.stage.review.submit",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "stage.decided",
+      "operation": "work.stage.decide",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "stage.milestone_bound",
+      "operation": "work.stage.milestone.bind",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "embedding.profile_saved",
+      "operation": "embedding.profile.save",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "embedding.call_reconciled",
+      "operation": "embedding.call.reconcile",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
     }
   ]
 }

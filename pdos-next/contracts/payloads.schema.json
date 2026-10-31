@@ -759,6 +759,19 @@
           "default": null,
           "title": "Confirmation Token"
         },
+        "human_edits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Edits"
+        },
         "title": {
           "minLength": 1,
           "title": "Title",
@@ -1046,6 +1059,19 @@
           ],
           "default": null,
           "title": "Confirmation Token"
+        },
+        "human_edits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Edits"
         },
         "proposal_id": {
           "format": "uuid",
@@ -1451,6 +1477,55 @@
     },
     "category.knowledge.add": {
       "$defs": {
+        "AnswerOrigin": {
+          "additionalProperties": false,
+          "properties": {
+            "run_id": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "answer_digest": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Answer Digest",
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "answer_digest"
+          ],
+          "title": "AnswerOrigin",
+          "type": "object"
+        },
+        "KnowledgeReview": {
+          "additionalProperties": false,
+          "properties": {
+            "responsible_id": {
+              "format": "uuid",
+              "title": "Responsible Id",
+              "type": "string"
+            },
+            "applicability_scope": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Applicability Scope",
+              "type": "string"
+            },
+            "review_due_at": {
+              "format": "date-time",
+              "title": "Review Due At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "responsible_id",
+            "applicability_scope",
+            "review_due_at"
+          ],
+          "title": "KnowledgeReview",
+          "type": "object"
+        },
         "Reference": {
           "additionalProperties": false,
           "properties": {
@@ -1585,6 +1660,41 @@
           "default": null,
           "title": "Confirmation Token"
         },
+        "human_edits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Edits"
+        },
+        "knowledge_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KnowledgeReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "answer_origin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnswerOrigin"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "kind": {
           "enum": [
             "boundary",
@@ -1592,7 +1702,8 @@
             "competitor",
             "voice",
             "regulation",
-            "research_question"
+            "research_question",
+            "verified_answer"
           ],
           "title": "Kind",
           "type": "string"
@@ -1675,6 +1786,19 @@
           "default": null,
           "title": "Confirmation Token"
         },
+        "human_edits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Edits"
+        },
         "lineage_id": {
           "format": "uuid",
           "title": "Lineage Id",
@@ -1701,6 +1825,55 @@
     },
     "category.knowledge.promote": {
       "$defs": {
+        "AnswerOrigin": {
+          "additionalProperties": false,
+          "properties": {
+            "run_id": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "answer_digest": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Answer Digest",
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "answer_digest"
+          ],
+          "title": "AnswerOrigin",
+          "type": "object"
+        },
+        "KnowledgeReview": {
+          "additionalProperties": false,
+          "properties": {
+            "responsible_id": {
+              "format": "uuid",
+              "title": "Responsible Id",
+              "type": "string"
+            },
+            "applicability_scope": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Applicability Scope",
+              "type": "string"
+            },
+            "review_due_at": {
+              "format": "date-time",
+              "title": "Review Due At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "responsible_id",
+            "applicability_scope",
+            "review_due_at"
+          ],
+          "title": "KnowledgeReview",
+          "type": "object"
+        },
         "SourceItemRef": {
           "additionalProperties": false,
           "properties": {
@@ -1720,6 +1893,27 @@
             "version"
           ],
           "title": "SourceItemRef",
+          "type": "object"
+        },
+        "Supersedes": {
+          "additionalProperties": false,
+          "properties": {
+            "lineage_id": {
+              "format": "uuid",
+              "title": "Lineage Id",
+              "type": "string"
+            },
+            "expected_version": {
+              "exclusiveMinimum": 0,
+              "title": "Expected Version",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "lineage_id",
+            "expected_version"
+          ],
+          "title": "Supersedes",
           "type": "object"
         }
       },
@@ -1762,6 +1956,52 @@
           "default": null,
           "title": "Confirmation Token"
         },
+        "human_edits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Edits"
+        },
+        "supersedes": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Supersedes"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "knowledge_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KnowledgeReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "answer_origin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnswerOrigin"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "source_proposal_id": {
           "format": "uuid",
           "title": "Source Proposal Id",
@@ -1786,7 +2026,8 @@
             "competitor",
             "voice",
             "regulation",
-            "research_question"
+            "research_question",
+            "verified_answer"
           ],
           "title": "Kind",
           "type": "string"
@@ -1850,6 +2091,19 @@
           ],
           "default": null,
           "title": "Confirmation Token"
+        },
+        "human_edits": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Human Edits"
         },
         "parameter_id": {
           "anyOf": [
@@ -2259,6 +2513,20 @@
               "title": "Max Output Tokens",
               "type": "integer"
             },
+            "context_window_tokens": {
+              "anyOf": [
+                {
+                  "maximum": 10000000,
+                  "minimum": 1024,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Context Window Tokens"
+            },
             "openai_output_parameter": {
               "default": "max_completion_tokens",
               "enum": [
@@ -2267,6 +2535,36 @@
               ],
               "title": "Openai Output Parameter",
               "type": "string"
+            },
+            "openai_response_mode": {
+              "default": "auto",
+              "enum": [
+                "auto",
+                "tools",
+                "json_schema",
+                "json_object",
+                "text"
+              ],
+              "title": "Openai Response Mode",
+              "type": "string"
+            },
+            "streaming": {
+              "default": true,
+              "title": "Streaming",
+              "type": "boolean"
+            },
+            "connection_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Connection Id"
             },
             "timeout_seconds": {
               "default": 30.0,
@@ -4187,6 +4485,19 @@
               ],
               "default": null,
               "title": "Estimate Source"
+            },
+            "not_before": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Not Before"
             }
           },
           "required": [
@@ -4195,6 +4506,57 @@
             "discipline"
           ],
           "title": "PlanTask",
+          "type": "object"
+        },
+        "ResourceDemand": {
+          "additionalProperties": false,
+          "properties": {
+            "task_key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Task Key",
+              "type": "string"
+            },
+            "resource_id": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "person",
+                "resource"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "coordinator_id": {
+              "format": "uuid",
+              "title": "Coordinator Id",
+              "type": "string"
+            },
+            "purpose": {
+              "maxLength": 500,
+              "minLength": 3,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "units": {
+              "default": 1,
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Units",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "task_key",
+            "resource_id",
+            "kind",
+            "coordinator_id",
+            "purpose"
+          ],
+          "title": "ResourceDemand",
           "type": "object"
         },
         "ScheduleInput": {
@@ -4260,6 +4622,28 @@
           "minimum": 1,
           "title": "Expected Project Revision",
           "type": "integer"
+        },
+        "base_plan_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Base Plan Id"
+        },
+        "resource_demands": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/ResourceDemand"
+          },
+          "maxItems": 1000,
+          "title": "Resource Demands",
+          "type": "array"
         },
         "schedule": {
           "$ref": "#/$defs/ScheduleInput"
@@ -19301,6 +19685,56 @@
           "title": "G0OpenItemRef",
           "type": "object"
         },
+        "NpiTemplateRef": {
+          "additionalProperties": false,
+          "properties": {
+            "manifest_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Manifest Sha256",
+              "type": "string"
+            },
+            "project_type": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Project Type",
+              "type": "string"
+            },
+            "phase_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Phase Id",
+              "type": "string"
+            },
+            "task_id": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Task Id",
+              "type": "string"
+            },
+            "phase_code": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Phase Code",
+              "type": "string"
+            },
+            "phase_name": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Phase Name",
+              "type": "string"
+            }
+          },
+          "required": [
+            "manifest_sha256",
+            "project_type",
+            "phase_id",
+            "task_id",
+            "phase_code",
+            "phase_name"
+          ],
+          "title": "NpiTemplateRef",
+          "type": "object"
+        },
         "Outcome": {
           "additionalProperties": false,
           "properties": {
@@ -19433,6 +19867,17 @@
           "anyOf": [
             {
               "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "npi_template": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NpiTemplateRef"
             },
             {
               "type": "null"
@@ -21230,6 +21675,17 @@
               "default": null,
               "title": "Trigger Config"
             },
+            "personal_summary": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/Selection"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
             "conditions": {
               "$ref": "#/$defs/Conditions"
             },
@@ -21264,14 +21720,20 @@
                 "$ref": "#/$defs/SkillRef"
               },
               "maxItems": 12,
-              "minItems": 1,
               "title": "Skill Keys",
               "type": "array"
             },
             "validation_budget_id": {
-              "format": "uuid",
-              "title": "Validation Budget Id",
-              "type": "string"
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Validation Budget Id"
             },
             "token_limit": {
               "maximum": 2147483647,
@@ -21340,17 +21802,17 @@
               "type": "integer"
             },
             "input_token_limit": {
-              "minimum": 1,
+              "minimum": 0,
               "title": "Input Token Limit",
               "type": "integer"
             },
             "output_token_limit": {
-              "minimum": 1,
+              "minimum": 0,
               "title": "Output Token Limit",
               "type": "integer"
             },
             "call_limit": {
-              "minimum": 1,
+              "minimum": 0,
               "title": "Call Limit",
               "type": "integer"
             }
@@ -21412,6 +21874,81 @@
             }
           },
           "title": "Conditions",
+          "type": "object"
+        },
+        "Selection": {
+          "additionalProperties": false,
+          "properties": {
+            "followed_project_ids": {
+              "default": [],
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Followed Project Ids",
+              "type": "array"
+            },
+            "category_ids": {
+              "default": [],
+              "items": {
+                "format": "uuid",
+                "type": "string"
+              },
+              "maxItems": 32,
+              "title": "Category Ids",
+              "type": "array"
+            },
+            "groups": {
+              "default": [
+                "action",
+                "waiting",
+                "following"
+              ],
+              "items": {
+                "enum": [
+                  "action",
+                  "waiting",
+                  "following"
+                ],
+                "type": "string"
+              },
+              "title": "Groups",
+              "type": "array"
+            },
+            "excluded_kinds": {
+              "default": [],
+              "items": {
+                "maxLength": 80,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 40,
+              "title": "Excluded Kinds",
+              "type": "array"
+            },
+            "max_items": {
+              "default": 100,
+              "maximum": 300,
+              "minimum": 1,
+              "title": "Max Items",
+              "type": "integer"
+            },
+            "dingtalk_binding_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Dingtalk Binding Id"
+            }
+          },
+          "title": "Selection",
           "type": "object"
         },
         "SkillRef": {
@@ -21904,6 +22441,55 @@
     },
     "knowledge.candidate.create": {
       "$defs": {
+        "AnswerOrigin": {
+          "additionalProperties": false,
+          "properties": {
+            "run_id": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "answer_digest": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Answer Digest",
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "answer_digest"
+          ],
+          "title": "AnswerOrigin",
+          "type": "object"
+        },
+        "KnowledgeReview": {
+          "additionalProperties": false,
+          "properties": {
+            "responsible_id": {
+              "format": "uuid",
+              "title": "Responsible Id",
+              "type": "string"
+            },
+            "applicability_scope": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Applicability Scope",
+              "type": "string"
+            },
+            "review_due_at": {
+              "format": "date-time",
+              "title": "Review Due At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "responsible_id",
+            "applicability_scope",
+            "review_due_at"
+          ],
+          "title": "KnowledgeReview",
+          "type": "object"
+        },
         "ResultRef": {
           "additionalProperties": false,
           "properties": {
@@ -21981,6 +22567,28 @@
       },
       "additionalProperties": false,
       "properties": {
+        "knowledge_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KnowledgeReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "answer_origin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnswerOrigin"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "candidate": {
           "anyOf": [
             {
@@ -22050,7 +22658,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -22074,6 +22681,27 @@
     },
     "knowledge.rule.publish": {
       "$defs": {
+        "AnswerOrigin": {
+          "additionalProperties": false,
+          "properties": {
+            "run_id": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            },
+            "answer_digest": {
+              "pattern": "^[a-f0-9]{64}$",
+              "title": "Answer Digest",
+              "type": "string"
+            }
+          },
+          "required": [
+            "run_id",
+            "answer_digest"
+          ],
+          "title": "AnswerOrigin",
+          "type": "object"
+        },
         "Applicability": {
           "additionalProperties": false,
           "properties": {
@@ -22156,6 +22784,34 @@
             "valid_from"
           ],
           "title": "Applicability",
+          "type": "object"
+        },
+        "KnowledgeReview": {
+          "additionalProperties": false,
+          "properties": {
+            "responsible_id": {
+              "format": "uuid",
+              "title": "Responsible Id",
+              "type": "string"
+            },
+            "applicability_scope": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Applicability Scope",
+              "type": "string"
+            },
+            "review_due_at": {
+              "format": "date-time",
+              "title": "Review Due At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "responsible_id",
+            "applicability_scope",
+            "review_due_at"
+          ],
+          "title": "KnowledgeReview",
           "type": "object"
         },
         "SourceRef": {
@@ -22250,6 +22906,28 @@
       },
       "additionalProperties": false,
       "properties": {
+        "knowledge_review": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/KnowledgeReview"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "answer_origin": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/AnswerOrigin"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "project_id": {
           "format": "uuid",
           "title": "Project Id",
@@ -22926,6 +23604,548 @@
         "result_receipts"
       ],
       "title": "FollowupPayload",
+      "type": "object"
+    },
+    "work.stage.milestone.bind": {
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "expected_governance_revision": {
+          "minimum": 0,
+          "title": "Expected Governance Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "stage_id": {
+          "format": "uuid",
+          "title": "Stage Id",
+          "type": "string"
+        },
+        "task_key": {
+          "maxLength": 80,
+          "minLength": 1,
+          "title": "Task Key",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "expected_governance_revision",
+        "reason",
+        "stage_id",
+        "task_key"
+      ],
+      "title": "MilestonePayload",
+      "type": "object"
+    },
+    "work.stage.adopt": {
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "expected_governance_revision": {
+          "minimum": 0,
+          "title": "Expected Governance Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "template": {
+          "enum": [
+            "standard@1",
+            "derivative@1",
+            "small-change@1"
+          ],
+          "title": "Template",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "expected_governance_revision",
+        "reason",
+        "template"
+      ],
+      "title": "AdoptPayload",
+      "type": "object"
+    },
+    "work.baseline.approve": {
+      "$defs": {
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "Ref",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "expected_governance_revision": {
+          "minimum": 0,
+          "title": "Expected Governance Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "plan": {
+          "$ref": "#/$defs/Ref"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "expected_governance_revision",
+        "reason",
+        "plan"
+      ],
+      "title": "BaselinePayload",
+      "type": "object"
+    },
+    "work.stage.review.submit": {
+      "$defs": {
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "Ref",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "expected_governance_revision": {
+          "minimum": 0,
+          "title": "Expected Governance Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "stage_id": {
+          "format": "uuid",
+          "title": "Stage Id",
+          "type": "string"
+        },
+        "release_package": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Ref"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "expected_governance_revision",
+        "reason",
+        "stage_id"
+      ],
+      "title": "ReviewPayload",
+      "type": "object"
+    },
+    "work.stage.decide": {
+      "$defs": {
+        "Ref": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "Ref",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "expected_project_revision": {
+          "minimum": 1,
+          "title": "Expected Project Revision",
+          "type": "integer"
+        },
+        "expected_governance_revision": {
+          "minimum": 0,
+          "title": "Expected Governance Revision",
+          "type": "integer"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "review": {
+          "$ref": "#/$defs/Ref"
+        },
+        "outcome": {
+          "enum": [
+            "approved",
+            "returned"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "project_id",
+        "expected_project_revision",
+        "expected_governance_revision",
+        "reason",
+        "review",
+        "outcome"
+      ],
+      "title": "DecidePayload",
+      "type": "object"
+    },
+    "embedding.profile.save": {
+      "$defs": {
+        "EmbeddingMetadata": {
+          "additionalProperties": false,
+          "properties": {
+            "base_url": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Base Url",
+              "type": "string"
+            },
+            "model": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,159}$",
+              "title": "Model",
+              "type": "string"
+            },
+            "model_version": {
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,159}$",
+              "title": "Model Version",
+              "type": "string"
+            },
+            "dimensions": {
+              "maximum": 2000,
+              "minimum": 1,
+              "title": "Dimensions",
+              "type": "integer"
+            },
+            "connection_id": {
+              "format": "uuid",
+              "title": "Connection Id",
+              "type": "string"
+            },
+            "data_categories": {
+              "items": {
+                "enum": [
+                  "public",
+                  "synthetic",
+                  "internal",
+                  "customer",
+                  "customer_original"
+                ],
+                "type": "string"
+              },
+              "title": "Data Categories",
+              "type": "array"
+            },
+            "include_customer_original": {
+              "default": false,
+              "title": "Include Customer Original",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "base_url",
+            "model",
+            "model_version",
+            "dimensions",
+            "connection_id",
+            "data_categories"
+          ],
+          "title": "EmbeddingMetadata",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": {
+          "format": "uuid",
+          "title": "Profile Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 0,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "metadata": {
+          "$ref": "#/$defs/EmbeddingMetadata"
+        },
+        "enabled": {
+          "default": false,
+          "title": "Enabled",
+          "type": "boolean"
+        },
+        "expected_budget_revision": {
+          "minimum": 0,
+          "title": "Expected Budget Revision",
+          "type": "integer"
+        },
+        "index_budget_micro_usd": {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "title": "Index Budget Micro Usd",
+          "type": "integer"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "profile_id",
+        "expected_revision",
+        "metadata",
+        "expected_budget_revision",
+        "index_budget_micro_usd"
+      ],
+      "title": "SaveEmbeddingProfile",
+      "type": "object"
+    },
+    "embedding.call.reconcile": {
+      "additionalProperties": false,
+      "properties": {
+        "call_id": {
+          "format": "uuid",
+          "title": "Call Id",
+          "type": "string"
+        },
+        "expected_revision": {
+          "minimum": 1,
+          "title": "Expected Revision",
+          "type": "integer"
+        },
+        "input_tokens": {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "title": "Input Tokens",
+          "type": "integer"
+        },
+        "actual_micro_usd": {
+          "maximum": 2147483647,
+          "minimum": 0,
+          "title": "Actual Micro Usd",
+          "type": "integer"
+        },
+        "evidence_ref": {
+          "maxLength": 500,
+          "minLength": 3,
+          "title": "Evidence Ref",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "call_id",
+        "expected_revision",
+        "input_tokens",
+        "actual_micro_usd",
+        "evidence_ref"
+      ],
+      "title": "ReconcileEmbeddingCall",
       "type": "object"
     }
   },

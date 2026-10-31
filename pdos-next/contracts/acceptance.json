@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "eb9f156e46cc77a4653e4b823aca92e41bb58831a03731817002c08415ccb64d",
+    "sha256": "4e558f32b77f2914ad8f19fe2c62f8a3e31a13f0ffbab086a2583ba6c79bf9f6",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -389,7 +389,7 @@
     {
       "id": "AT-52",
       "scenario": "G0 独立性与结果（v1.1）",
-      "expected": "负责人不能作为评审人；批准后生成型号定义 v1 与项目，待决问题转为任务或风险。",
+      "expected": "非试点负责人不能作为评审人；当前有效试点允许负责人本人具名评审（P27）。批准后生成型号定义 v1 与项目，待决问题转为任务或风险。",
       "stage": "S1",
       "definition_only": true,
       "s1_first_loop": true
