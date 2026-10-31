@@ -176,6 +176,24 @@ export async function requestProjectRisks(projectId: string): Promise<ProjectRis
   );
 }
 
+/** Open Risks across every Project the caller may see, highest score first. */
+export async function requestPortfolioRisks(): Promise<ProjectRisk[]> {
+  return readList(
+    await fetch("/api/portfolio/risks", { cache: "no-store", credentials: "same-origin" }),
+    isProjectRisk,
+    "Risk",
+  );
+}
+
+/** The caller's unfinished Tasks across visible Projects, soonest due first. */
+export async function requestMyTasks(): Promise<ProjectTask[]> {
+  return readList(
+    await fetch("/api/portfolio/my-tasks", { cache: "no-store", credentials: "same-origin" }),
+    isProjectTask,
+    "Task",
+  );
+}
+
 export async function createTask(projectId: string, input: TaskCreateInput) {
   return readItem(await fetch(collectionUrl(projectId, "tasks"), mutation(input)), isProjectTask, "Task");
 }

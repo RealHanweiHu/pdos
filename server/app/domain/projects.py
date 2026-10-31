@@ -163,6 +163,17 @@ def _stage_from_row(row: RowMapping) -> StageRecord:
     )
 
 
+def _stage_statement() -> Any:
+    return select(
+        tables.stages.c.id,
+        tables.stages.c.workflow_id,
+        tables.stages.c.code,
+        tables.stages.c.name,
+        tables.stages.c.description,
+        tables.stages.c.sequence,
+    )
+
+
 def _stages_for_workflow(
     connection: Connection,
     *,
@@ -170,13 +181,7 @@ def _stages_for_workflow(
     workflow_id: UUID,
 ) -> tuple[StageRecord, ...]:
     rows = connection.execute(
-        select(
-            tables.stages.c.id,
-            tables.stages.c.code,
-            tables.stages.c.name,
-            tables.stages.c.description,
-            tables.stages.c.sequence,
-        )
+        _stage_statement()
         .where(
             tables.stages.c.tenant_id == tenant_id,
             tables.stages.c.workflow_id == workflow_id,
@@ -186,17 +191,42 @@ def _stages_for_workflow(
     return tuple(_stage_from_row(row) for row in rows)
 
 
+def _stages_by_workflow(
+    connection: Connection,
+    *,
+    tenant_id: UUID,
+    workflow_ids: list[UUID],
+) -> dict[UUID, tuple[StageRecord, ...]]:
+    """Stages for many workflows in one query (list views)."""
+    grouped: dict[UUID, list[StageRecord]] = {workflow_id: [] for workflow_id in workflow_ids}
+    if not workflow_ids:
+        return {}
+    rows = connection.execute(
+        _stage_statement()
+        .where(
+            tables.stages.c.tenant_id == tenant_id,
+            tables.stages.c.workflow_id.in_(workflow_ids),
+        )
+        .order_by(tables.stages.c.sequence, tables.stages.c.id)
+    ).mappings()
+    for row in rows:
+        grouped[row["workflow_id"]].append(_stage_from_row(row))
+    return {workflow_id: tuple(stages) for workflow_id, stages in grouped.items()}
+
+
 def _record_from_row(
     connection: Connection,
     *,
     tenant_id: UUID,
     row: RowMapping,
+    stages: tuple[StageRecord, ...] | None = None,
 ) -> ProjectRecord:
-    stages = _stages_for_workflow(
-        connection,
-        tenant_id=tenant_id,
-        workflow_id=row["workflow_id"],
-    )
+    if stages is None:
+        stages = _stages_for_workflow(
+            connection,
+            tenant_id=tenant_id,
+            workflow_id=row["workflow_id"],
+        )
     current_stage = next(
         (stage for stage in stages if stage.id == row["current_stage_id"]),
         None,
@@ -316,9 +346,20 @@ class ProjectService:
             tables.projects.c.id.desc(),
         )
         with self._engine.connect() as connection:
+            rows = list(connection.execute(statement).mappings())
+            stages = _stages_by_workflow(
+                connection,
+                tenant_id=tenant_id,
+                workflow_ids=list({row["workflow_id"] for row in rows}),
+            )
             return [
-                _record_from_row(connection, tenant_id=tenant_id, row=row)
-                for row in connection.execute(statement).mappings()
+                _record_from_row(
+                    connection,
+                    tenant_id=tenant_id,
+                    row=row,
+                    stages=stages[row["workflow_id"]],
+                )
+                for row in rows
             ]
 
     def create(

@@ -8,6 +8,7 @@ import {
   isTaskOverdue,
   localIsoDate,
   memberLabel,
+  overdueDays,
   taskFormValues,
 } from "./project-task-planning";
 import type { ProjectMember, ProjectTask } from "./project-work-item-types";
@@ -42,6 +43,11 @@ const today = "2026-10-31";
 describe("task planning helpers", () => {
   it("formats the viewer's local calendar date", () => {
     expect(localIsoDate(new Date(2026, 0, 5, 23, 59))).toBe("2026-01-05");
+  });
+
+  it("counts whole overdue days", () => {
+    expect(overdueDays("2026-10-20", today)).toBe(11);
+    expect(overdueDays("2026-02-28", "2026-03-01")).toBe(1);
   });
 
   it("treats only unfinished tasks past their due date as overdue", () => {

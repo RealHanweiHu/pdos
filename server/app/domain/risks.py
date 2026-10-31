@@ -214,6 +214,32 @@ class RiskService:
                 risk_id=risk_id,
             )
 
+    def list_open_for_portfolio(
+        self,
+        *,
+        tenant_id: UUID,
+        member_user_id: UUID | None,
+        limit: int = 200,
+    ) -> list[RiskRecord]:
+        """Open Risks across the Projects a user may see, highest score first."""
+        statement = _risk_statement().where(
+            tables.risks.c.tenant_id == tenant_id,
+            tables.risks.c.status != "closed",
+        )
+        if member_user_id is not None:
+            statement = statement.join(
+                tables.project_members,
+                (tables.project_members.c.tenant_id == tables.risks.c.tenant_id)
+                & (tables.project_members.c.project_id == tables.risks.c.project_id),
+            ).where(tables.project_members.c.user_id == member_user_id)
+        statement = statement.order_by(
+            (tables.risks.c.likelihood * tables.risks.c.impact).desc(),
+            tables.risks.c.updated_at.desc(),
+            tables.risks.c.id.desc(),
+        ).limit(limit)
+        with self._engine.connect() as connection:
+            return [_record_from_row(row) for row in connection.execute(statement).mappings()]
+
     def list(self, *, tenant_id: UUID, project_id: UUID) -> list[RiskRecord]:
         with self._engine.connect() as connection:
             return [

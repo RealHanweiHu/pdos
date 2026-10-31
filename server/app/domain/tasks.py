@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import builtins
+from collections.abc import Sequence
 from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from typing import Any
@@ -150,18 +152,55 @@ def _dependency_statuses(
     return tuple(sorted(((row[0], row[1]) for row in rows), key=lambda item: str(item[0])))
 
 
+def _dependency_statuses_by_task(
+    connection: Connection,
+    *,
+    tenant_id: UUID,
+    task_ids: Sequence[UUID],
+) -> dict[UUID, tuple[tuple[UUID, str], ...]]:
+    """Predecessor statuses for many Tasks in one query (list views)."""
+    grouped: dict[UUID, list[tuple[UUID, str]]] = {task_id: [] for task_id in task_ids}
+    if not task_ids:
+        return {}
+    rows = connection.execute(
+        select(
+            tables.task_dependencies.c.task_id,
+            tables.task_dependencies.c.depends_on_task_id,
+            tables.tasks.c.status,
+        )
+        .join(
+            tables.tasks,
+            (tables.tasks.c.tenant_id == tables.task_dependencies.c.tenant_id)
+            & (tables.tasks.c.project_id == tables.task_dependencies.c.project_id)
+            & (tables.tasks.c.id == tables.task_dependencies.c.depends_on_task_id),
+        )
+        .where(
+            tables.task_dependencies.c.tenant_id == tenant_id,
+            tables.task_dependencies.c.task_id.in_(task_ids),
+        )
+    ).all()
+    for task_id, depends_on_task_id, status in rows:
+        grouped[task_id].append((depends_on_task_id, status))
+    return {
+        task_id: tuple(sorted(items, key=lambda item: str(item[0])))
+        for task_id, items in grouped.items()
+    }
+
+
 def _record_from_row(
     connection: Connection,
     *,
     tenant_id: UUID,
     row: RowMapping,
+    dependency_statuses: tuple[tuple[UUID, str], ...] | None = None,
 ) -> TaskRecord:
-    dependency_statuses = _dependency_statuses(
-        connection,
-        tenant_id=tenant_id,
-        project_id=row["project_id"],
-        task_id=row["id"],
-    )
+    if dependency_statuses is None:
+        dependency_statuses = _dependency_statuses(
+            connection,
+            tenant_id=tenant_id,
+            project_id=row["project_id"],
+            task_id=row["id"],
+        )
     dependency_ids = tuple(item[0] for item in dependency_statuses)
     unresolved = tuple(
         dependency_id
@@ -471,7 +510,57 @@ class TaskService:
                 )
                 .order_by(tables.tasks.c.updated_at.desc(), tables.tasks.c.id.desc())
             ).mappings()
-            return [_record_from_row(connection, tenant_id=tenant_id, row=row) for row in rows]
+            return self._records(connection, tenant_id=tenant_id, rows=list(rows))
+
+    @staticmethod
+    def _records(
+        connection: Connection,
+        *,
+        tenant_id: UUID,
+        rows: Sequence[RowMapping],
+    ) -> builtins.list[TaskRecord]:
+        dependencies = _dependency_statuses_by_task(
+            connection,
+            tenant_id=tenant_id,
+            task_ids=[row["id"] for row in rows],
+        )
+        return [
+            _record_from_row(
+                connection,
+                tenant_id=tenant_id,
+                row=row,
+                dependency_statuses=dependencies[row["id"]],
+            )
+            for row in rows
+        ]
+
+    def list_assigned(
+        self,
+        *,
+        tenant_id: UUID,
+        assignee_user_id: UUID,
+        member_user_id: UUID | None,
+    ) -> builtins.list[TaskRecord]:
+        """Unfinished Tasks assigned to one user across the Projects that user may see."""
+        statement = _task_statement().where(
+            tables.tasks.c.tenant_id == tenant_id,
+            tables.tasks.c.assignee_user_id == assignee_user_id,
+            tables.tasks.c.status.not_in(TERMINAL_TASK_STATUSES),
+        )
+        if member_user_id is not None:
+            statement = statement.join(
+                tables.project_members,
+                (tables.project_members.c.tenant_id == tables.tasks.c.tenant_id)
+                & (tables.project_members.c.project_id == tables.tasks.c.project_id),
+            ).where(tables.project_members.c.user_id == member_user_id)
+        statement = statement.order_by(
+            tables.tasks.c.due_date.asc().nulls_last(),
+            tables.tasks.c.updated_at.desc(),
+            tables.tasks.c.id.desc(),
+        ).limit(200)
+        with self._engine.connect() as connection:
+            rows = list(connection.execute(statement).mappings())
+            return self._records(connection, tenant_id=tenant_id, rows=rows)
 
     def create(
         self,

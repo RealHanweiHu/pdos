@@ -10,7 +10,7 @@ import pytest
 from alembic import command
 from alembic.config import Config
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, func, select, text
+from sqlalchemy import create_engine, event, func, select, text
 
 from app.auth.passwords import PasswordService
 from app.auth.roles import Role
@@ -713,3 +713,173 @@ def test_project_members_list_supports_assignee_picking_without_leaking_scope(
         == 403
     )
     assert client.get(members_url).status_code == 401
+
+
+def test_task_list_query_count_does_not_grow_with_tasks(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    headers = bearer_headers(client)
+    project_id = scope["project_id"]
+    first = post_task(client, headers, project_id, {"title": "Root task"}).json()
+
+    statements: list[str] = []
+
+    def record(*args: Any) -> None:
+        statements.append(str(args[2]))
+
+    def measure() -> int:
+        statements.clear()
+        event.listen(get_engine(), "before_cursor_execute", record)
+        try:
+            response = client.get(f"/api/projects/{project_id}/tasks", headers=headers)
+        finally:
+            event.remove(get_engine(), "before_cursor_execute", record)
+        assert response.status_code == 200
+        return len(statements)
+
+    baseline = measure()
+    for index in range(5):
+        created = post_task(
+            client,
+            headers,
+            project_id,
+            {"title": f"Dependent {index}", "dependency_task_ids": [first["id"]]},
+        )
+        assert created.status_code == 201
+    assert measure() == baseline
+
+
+def post_risk(
+    client: TestClient,
+    headers: dict[str, str],
+    project_id: UUID,
+    title: str,
+    likelihood: int,
+    impact: int,
+) -> dict[str, object]:
+    response = client.post(
+        f"/api/projects/{project_id}/risks",
+        headers=headers,
+        json={"title": title, "likelihood": likelihood, "impact": impact},
+    )
+    assert response.status_code == 201
+    return dict(response.json())
+
+
+def test_portfolio_risks_rank_open_risks_within_visible_projects(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    mine = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    other = seed_project(
+        isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id, label="OTHER"
+    )
+    seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=mine["project_id"],
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=mine["project_id"],
+        added_by_user_id=owner_id,
+        username="supplier",
+        role=Role.SUPPLIER,
+    )
+    owner_headers = bearer_headers(client)
+    low = post_risk(client, owner_headers, mine["project_id"], "Low risk", 1, 2)
+    high = post_risk(client, owner_headers, mine["project_id"], "High risk", 5, 4)
+    closed = post_risk(client, owner_headers, mine["project_id"], "Closed risk", 5, 5)
+    hidden = post_risk(client, owner_headers, other["project_id"], "Other project", 3, 3)
+    closed_transitions = f"/api/projects/{mine['project_id']}/risks/{closed['id']}/transitions"
+    for target in ("mitigating", "closed"):
+        assert (
+            client.post(
+                closed_transitions, headers=owner_headers, json={"to_status": target}
+            ).status_code
+            == 200
+        )
+
+    owner_view = client.get("/api/portfolio/risks", headers=owner_headers)
+    assert owner_view.status_code == 200
+    assert owner_view.headers["cache-control"] == "no-store"
+    assert [item["id"] for item in owner_view.json()["items"]] == [
+        high["id"],
+        hidden["id"],
+        low["id"],
+    ]
+
+    engineer_view = client.get(
+        "/api/portfolio/risks", headers=bearer_headers(client, username="engineer")
+    )
+    assert [item["id"] for item in engineer_view.json()["items"]] == [high["id"], low["id"]]
+
+    supplier_view = client.get(
+        "/api/portfolio/risks", headers=bearer_headers(client, username="supplier")
+    )
+    assert supplier_view.status_code == 403
+    assert client.get("/api/portfolio/risks").status_code == 401
+
+
+def test_my_tasks_lists_only_my_unfinished_tasks_in_visible_projects(
+    client: TestClient,
+    isolated_work_item_database: str,
+) -> None:
+    setup = client.post("/api/setup", json=SETUP_PAYLOAD).json()
+    tenant_id = UUID(setup["tenant"]["id"])
+    owner_id = UUID(setup["user"]["id"])
+    scope = seed_project(isolated_work_item_database, tenant_id=tenant_id, owner_id=owner_id)
+    project_id = scope["project_id"]
+    engineer_id = seed_member(
+        isolated_work_item_database,
+        tenant_id=tenant_id,
+        project_id=project_id,
+        added_by_user_id=owner_id,
+        username="engineer",
+        role=Role.ENGINEER,
+    )
+    owner_headers = bearer_headers(client)
+    engineer_headers = bearer_headers(client, username="engineer")
+
+    def task(title: str, assignee: UUID, due: str | None) -> dict[str, object]:
+        body: dict[str, object] = {"title": title, "assignee_user_id": str(assignee)}
+        if due is not None:
+            body["due_date"] = due
+        response = post_task(client, owner_headers, project_id, body)
+        assert response.status_code == 201
+        return dict(response.json())
+
+    later = task("Later", engineer_id, "2026-12-01")
+    no_due = task("No due date", engineer_id, None)
+    sooner = task("Sooner", engineer_id, "2026-11-01")
+    done = task("Already done", engineer_id, "2026-10-01")
+    task("Owner work", owner_id, "2026-10-15")
+    transitions = f"/api/projects/{project_id}/tasks/{done['id']}/transitions"
+    for target in ("in_progress", "done"):
+        assert (
+            client.post(transitions, headers=owner_headers, json={"to_status": target}).status_code
+            == 200
+        )
+
+    response = client.get("/api/portfolio/my-tasks", headers=engineer_headers)
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-store"
+    assert [item["id"] for item in response.json()["items"]] == [
+        sooner["id"],
+        later["id"],
+        no_due["id"],
+    ]
+    owner_items = client.get("/api/portfolio/my-tasks", headers=owner_headers).json()["items"]
+    assert [item["title"] for item in owner_items] == ["Owner work"]

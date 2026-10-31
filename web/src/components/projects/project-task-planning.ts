@@ -47,6 +47,11 @@ export function isTaskOverdue(task: ProjectTask, today: string) {
   return isTaskOpen(task) && task.due_date !== null && task.due_date < today;
 }
 
+/** Whole days a due date has slipped, e.g. due 2026-10-20 seen on 2026-10-31 → 11. */
+export function overdueDays(dueDate: string, today: string) {
+  return Math.round((Date.parse(today) - Date.parse(dueDate)) / 86_400_000);
+}
+
 function matchesView(task: ProjectTask, view: TaskView, currentUserId: string) {
   if (view.status === "open" && !isTaskOpen(task)) return false;
   if (view.status === "closed" && isTaskOpen(task)) return false;

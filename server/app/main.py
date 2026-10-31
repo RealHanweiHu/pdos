@@ -11,6 +11,7 @@ from app.api.findings import router as findings_router
 from app.api.gates import router as gates_router
 from app.api.health import router as health_router
 from app.api.issue_risks import router as issue_risks_router
+from app.api.portfolio import router as portfolio_router
 from app.api.memories import router as memories_router
 from app.api.model_governance import router as model_governance_router
 from app.api.npi_execution import router as npi_execution_router
@@ -41,6 +42,7 @@ app.include_router(development_cases_router)
 app.include_router(events_router)
 app.include_router(work_items_router)
 app.include_router(issue_risks_router)
+app.include_router(portfolio_router)
 app.include_router(quality_complaints_router)
 app.include_router(quality_capa_router)
 app.include_router(memories_router)

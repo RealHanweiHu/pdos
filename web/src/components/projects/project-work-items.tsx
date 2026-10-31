@@ -15,6 +15,7 @@ import {
   isTaskOverdue,
   localIsoDate,
   memberLabel,
+  overdueDays,
   taskFormValues,
   type TaskFormValues,
   type TaskSort,
@@ -122,10 +123,6 @@ const taskStatusFilterLabels: Record<TaskStatusFilter, string> = {
   closed: "已结束",
   all: "全部状态",
 };
-
-function daysBetween(fromIsoDate: string, toIsoDate: string) {
-  return Math.round((Date.parse(toIsoDate) - Date.parse(fromIsoDate)) / 86_400_000);
-}
 
 function AssigneeOptions({
   currentUserId,
@@ -436,7 +433,7 @@ export function TaskPanel({
                       <Badge tone={task.readiness === "waiting" ? "pending" : task.readiness === "blocked" ? "bad" : "neutral"}>{readinessLabels[task.readiness]}</Badge>
                       <Badge>{priorityLabels[task.priority]}优先级</Badge>
                       {task.dependency_task_ids.length > 0 ? <Badge>{task.unresolved_dependency_ids.length}/{task.dependency_task_ids.length} 前置未完成</Badge> : null}
-                      {overdue && task.due_date ? <Badge tone="bad">逾期 {daysBetween(task.due_date, today)} 天</Badge> : null}
+                      {overdue && task.due_date ? <Badge tone="bad">逾期 {overdueDays(task.due_date, today)} 天</Badge> : null}
                     </div>
                     <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
                       <span className="inline-flex min-w-0 items-center gap-1"><UserCircleIcon aria-hidden className="size-3.5 shrink-0" />负责人：{memberLabel(members, task.assignee_user_id, currentUserId)}</span>
