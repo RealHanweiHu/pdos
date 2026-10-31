@@ -920,7 +920,7 @@ describe("ProjectWorkspace", () => {
     expect(await screen.findByText(/阶段逾期 \d+ 天/, { selector: "[data-metric='stage-schedule']" })).toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: "时间线" }));
-    expect(screen.getByTestId("stage-dates-concept")).toHaveTextContent("计划01-01 → 01-10");
+    expect(screen.getByTestId("stage-dates-concept")).toHaveTextContent("计划01-01→01-10");
     expect(screen.getByTestId("stage-schedule-concept")).toHaveTextContent(/阶段逾期 \d+ 天/);
     expect(screen.getByTestId("stage-schedule-planning")).toHaveTextContent("未设计划");
     await user.click(screen.getByRole("button", { name: "编辑阶段计划" }));
@@ -935,7 +935,8 @@ describe("ProjectWorkspace", () => {
     const sentStages = (JSON.parse(String(planCall?.[1]?.body)) as { stages: unknown[] }).stages;
     expect(sentStages).toHaveLength(7);
     expect(sentStages[1]).toEqual({ stage_id: "stage-2", planned_start_date: "2999-02-01", planned_end_date: "2999-03-01" });
-    expect(await screen.findByTestId("stage-schedule-planning")).toHaveTextContent("计划 2999-02-01 开始");
+    expect(await screen.findByTestId("stage-schedule-planning")).toHaveTextContent("未开始");
+    expect(screen.getByTestId("stage-dates-planning")).toHaveTextContent("计划02-01→03-01");
     expect(screen.queryByRole("form", { name: "编辑阶段计划" })).not.toBeInTheDocument();
 
     await user.click(screen.getByRole("tab", { name: "概览" }));

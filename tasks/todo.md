@@ -1395,3 +1395,24 @@
 - [x] Server：`test_work_items_api.py` 新增成员接口角色/范围/401 用例；完整 389 tests（`pdos_test`）、ruff、format、mypy 全绿
 - [x] Web：139 tests、eslint、typecheck、production build 全绿
 - [x] 本地真实浏览器：390px 无横向滚动、亮/暗主题、console warning/error 为 0
+
+## Post-Cutover 优化：PM-2 项目管理剩余项（计划外，2026-10-31 经人授权在同一分支实现）
+
+> 含 schema 变更：迁移 `0031_project_planning`（见 `docs/decisions/ADR-002-project-cancelled-status-and-stage-plan.md`）。未 push、未部署；上线需单独授权执行生产迁移 0030 → 0031。
+
+**Acceptance criteria**
+
+- [x] 项目/任务列表去除 N+1 查询；任务列表查询数不随任务数增长（回归测试固定）
+- [x] `GET /api/portfolio/risks` 与 `/api/portfolio/my-tasks` 按可见项目范围返回；Dashboard 风险卡改为单次请求，新增“我的任务”卡（逾期优先）
+- [x] 项目成员增删（`project.members.manage`）：负责人不可移除；名下有未完成任务/问题/风险/投诉/NCR/CAPA/在用资源时拒绝移除；同事务写 `PROJECT_MEMBER_ADDED/REMOVED` + 审计
+- [x] 由 Case 创建项目可选 NPD/OBT 模板，OBT 自动套用 OBT Gate 策略
+- [x] 项目新增“已取消”状态：需填写原因（写入审计 context），只能转归档；取消/归档后阶段计划锁定
+- [x] 阶段计划（计划起止）与实际（进入/退出时间）：推进同事务记录实际时间，迁移按事件历史回填；时间线显示计划/实际/延期，概览提示当前阶段逾期
+- [x] 资源与成本登记接入既有 `costs`/`resources` 表：成本 预估→已批准→实际（批准后锁定，仅 `project.edit` 角色可见）；资源 计划中→在岗→已释放，显示跨项目在岗总负荷与超负荷
+- [ ] 列表分页：未做。当前规模（单项目 ≤117 任务）下前端需要全量做筛选，真正的性能问题是 N+1，已修复
+
+**Verification**
+
+- [x] Server：完整 397 tests（`pdos_test`，含 0031 升降级、回填与降级守卫）、ruff、format、mypy 全绿
+- [x] Web：152 tests、eslint、typecheck、production build 全绿
+- [x] 本地真实浏览器：Dashboard 我的任务、成员卡、时间线计划/实际、资源与成本页在 390px 无横向滚动，亮/暗主题，console warning/error 为 0

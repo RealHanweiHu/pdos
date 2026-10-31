@@ -137,12 +137,12 @@ export function ProjectTimeline({
               <p className="mt-2 text-sm font-medium">{stage.name}</p>
               <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">{stage.description}</p>
               <dl className="mt-2 space-y-0.5 font-mono text-[10px] text-muted-foreground" data-testid={`stage-dates-${stage.code}`}>
-                <div className="flex justify-between gap-2"><dt>计划</dt><dd>{shortDate(stage.planned_start_date)} → {shortDate(stage.planned_end_date)}</dd></div>
-                <div className="flex justify-between gap-2"><dt>实际</dt><dd>{shortDate(stage.entered_at ? localIsoDate(new Date(stage.entered_at)) : null)} → {shortDate(stage.exited_at ? localIsoDate(new Date(stage.exited_at)) : null)}</dd></div>
+                <div className="flex flex-wrap justify-between gap-x-1"><dt className="whitespace-nowrap">计划</dt><dd className="whitespace-nowrap">{shortDate(stage.planned_start_date)}→{shortDate(stage.planned_end_date)}</dd></div>
+                <div className="flex flex-wrap justify-between gap-x-1"><dt className="whitespace-nowrap">实际</dt><dd className="whitespace-nowrap">{shortDate(stage.entered_at ? localIsoDate(new Date(stage.entered_at)) : null)}→{shortDate(stage.exited_at ? localIsoDate(new Date(stage.exited_at)) : null)}</dd></div>
               </dl>
               <span
                 className={cn(
-                  "mt-2 inline-flex rounded-full border px-2 py-0.5 text-[10px] font-medium",
+                  "mt-2 inline-flex whitespace-nowrap rounded-full border px-2 py-0.5 text-[10px] font-medium",
                   schedule.tone === "late" && "border-destructive/25 bg-destructive/10 text-destructive",
                   schedule.tone === "ok" && "border-success/25 bg-success/10 text-success",
                   schedule.tone === "pending" && "border-pending/25 bg-pending/10 text-pending",

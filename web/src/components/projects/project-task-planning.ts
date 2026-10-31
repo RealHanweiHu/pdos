@@ -157,7 +157,7 @@ export type StageSchedule = { tone: "ok" | "late" | "pending" | "none"; label: s
 
 /**
  * Plan-vs-actual status of one stage. Finished stages compare their exit date with the
- * planned end; the current stage compares today; later stages show their planned start.
+ * planned end; the current stage compares today; later stages only report whether they are planned.
  */
 export function stageSchedule(stage: ProjectStage, currentSequence: number, today: string): StageSchedule {
   const plannedEnd = stage.planned_end_date ?? null;
@@ -174,7 +174,5 @@ export function stageSchedule(stage: ProjectStage, currentSequence: number, toda
       ? { tone: "late", label: `阶段逾期 ${late} 天` }
       : { tone: "pending", label: late === 0 ? "今天计划结束" : `剩余 ${-late} 天` };
   }
-  return stage.planned_start_date
-    ? { tone: "pending", label: `计划 ${stage.planned_start_date} 开始` }
-    : { tone: "none", label: "未设计划" };
+  return stage.planned_start_date ? { tone: "pending", label: "未开始" } : { tone: "none", label: "未设计划" };
 }

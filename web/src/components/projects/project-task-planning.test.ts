@@ -179,6 +179,6 @@ describe("task planning helpers", () => {
     expect(stageSchedule({ ...stage, sequence: 2, planned_end_date: today }, 2, today)).toEqual({ tone: "pending", label: "今天计划结束" });
     expect(stageSchedule({ ...stage, sequence: 2, planned_end_date: "2026-11-10" }, 2, today)).toEqual({ tone: "pending", label: "剩余 10 天" });
     expect(stageSchedule({ ...stage, sequence: 2 }, 2, today)).toEqual({ tone: "none", label: "未设计划" });
-    expect(stageSchedule({ ...stage, sequence: 3, planned_start_date: "2026-12-01" }, 2, today)).toEqual({ tone: "pending", label: "计划 2026-12-01 开始" });
+    expect(stageSchedule({ ...stage, sequence: 3, planned_start_date: "2026-12-01" }, 2, today)).toEqual({ tone: "pending", label: "未开始" });
   });
 });
