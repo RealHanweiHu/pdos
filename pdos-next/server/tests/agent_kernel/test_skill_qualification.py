@@ -16,9 +16,11 @@ from pdos_next.agent_kernel.models import (
 )
 from pdos_next.agent_kernel.policy import qualified
 from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent_kernel.skill_qualification import recovery_digest
 from pdos_next.agent_kernel.skills import SkillCatalog
 from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt
+from pdos_next.contracts import Command
+from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 from tests.agent_kernel.test_skill_management import command as toggle
 from tests.agent_kernel.test_transactions import human_session
@@ -72,7 +74,8 @@ def confirmed(f, data):
 def review(f, number=10, *, critical=False, offset=0):
     current = reading(f)
     payload = {
-        key: current[key] for key in ("skill_key", "skill_digest", "tool_digest", "model_digest")
+        key: current[key]
+        for key in ("skill_key", "skill_digest", "tool_digest", "model_digest", "prompt_digest")
     }
     payload.update(
         personally_reviewed=True,
@@ -105,7 +108,8 @@ def grant_command(f, refs, decision="批准"):
     }
     if decision == "批准":
         payload.update(
-            {key: current[key] for key in ("skill_digest", "tool_digest", "model_digest")}
+            {key: current[key]
+             for key in ("skill_digest", "tool_digest", "model_digest", "prompt_digest")}
         )
     return command(f, "ai.skill.qualify", payload)
 
@@ -124,6 +128,7 @@ def f(setup):
 
 def eligible(f):
     skill, tools = SkillCatalog().configuration("public_research"), default_registry()
+    current = reading(f)
     with human_session(f.setup) as session:
         from pdos_next.agent_kernel.skill_qualification import current_model
 
@@ -135,6 +140,7 @@ def eligible(f):
             model.model_version,
             model_digest=model_identity(model),
             tool_digest=tool_identity(skill, tools),
+            prompt_digest=current["prompt_digest"],
             lock=True,
         )
 
@@ -151,9 +157,37 @@ def test_batch_t1_named_t2_atom_replay_and_actual_policy(f):
     assert reading(f)["qualification"]["state"] == "qualified"
     assert post(f, original_grant).json() == receipt
     assert post(f, original, "agent-skill-qualification/recover").json() == {"receipt": saved}
+    legacy_review = {**original, "payload": {
+        key: value for key, value in original["payload"].items() if key != "prompt_digest"
+    }}
+    assert post(f, legacy_review, "agent-skill-qualification/recover").json()["code"] == (
+        "DUPLICATE_INTENT_CONFLICT"
+    )
+    with Session(f.setup.admin) as session, session.begin():
+        key = session.scalar(select(RequestKey).where(
+            RequestKey.tenant_id == f.setup.tenant,
+            RequestKey.actor_id == f.setup.human,
+            RequestKey.key == original["idempotency_key"],
+        ))
+        key.digest = recovery_digest(Command.model_validate(legacy_review), legacy=True)
+    assert post(f, legacy_review, "agent-skill-qualification/recover").json() == {"receipt": saved}
     assert post(f, original_grant, "agent-skill-qualification/recover").json() == {
         "receipt": receipt
     }
+    legacy_grant = {**original_grant, "payload": {
+        key: value for key, value in original_grant["payload"].items() if key != "prompt_digest"
+    }}
+    assert post(f, legacy_grant, "agent-skill-qualification/recover").json()["code"] == (
+        "DUPLICATE_INTENT_CONFLICT"
+    )
+    with Session(f.setup.admin) as session, session.begin():
+        key = session.scalar(select(RequestKey).where(
+            RequestKey.tenant_id == f.setup.tenant,
+            RequestKey.actor_id == f.setup.human,
+            RequestKey.key == original_grant["idempotency_key"],
+        ))
+        key.digest = recovery_digest(Command.model_validate(legacy_grant), legacy=True)
+    assert post(f, legacy_grant, "agent-skill-qualification/recover").json() == {"receipt": receipt}
     with Session(f.setup.admin) as session:
         for record in (saved, receipt):
             row = session.get(Receipt, UUID(record["id"]))
@@ -237,7 +271,7 @@ def test_revoke_survives_model_removal_and_trial_shutdown(f, monkeypatch):
     from pdos_next.agent_kernel import skill_qualification
 
     monkeypatch.setattr(skill_qualification, "current_model", lambda *_args, **_kwargs: None)
-    _, receipt, _ = confirmed(
+    original_revoke, receipt, _ = confirmed(
         f,
         command(
             f,
@@ -251,6 +285,19 @@ def test_revoke_survives_model_removal_and_trial_shutdown(f, monkeypatch):
         ),
     )
     assert receipt["result"]["next_revision"] == 3
+    assert post(f, original_revoke, "agent-skill-qualification/recover").json() == {
+        "receipt": receipt
+    }
+    with Session(f.setup.admin) as session, session.begin():
+        key = session.scalar(select(RequestKey).where(
+            RequestKey.tenant_id == f.setup.tenant,
+            RequestKey.actor_id == f.setup.human,
+            RequestKey.key == original_revoke["idempotency_key"],
+        ))
+        key.digest = recovery_digest(Command.model_validate(original_revoke), legacy=True)
+    assert post(f, original_revoke, "agent-skill-qualification/recover").json() == {
+        "receipt": receipt
+    }
     monkeypatch.undo()
     assert not eligible(f)
 
@@ -309,14 +356,16 @@ def test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_c
     with human_session(f.setup) as session:
         metadata = current_model(session, f.setup.tenant).metadata
         model_digest = model_identity(metadata)
-        for selected_skill, selected_tool, selected_model in (
+        for selected_skill, selected_tool, selected_model, selected_prompt in (
             (
                 replace(skill, content=skill.content + " changed"),
                 tool_identity(skill, tools),
                 model_digest,
+                reading(f)["prompt_digest"],
             ),
-            (skill, "0" * 64, model_digest),
-            (skill, tool_identity(skill, tools), "0" * 64),
+            (skill, "0" * 64, model_digest, reading(f)["prompt_digest"]),
+            (skill, tool_identity(skill, tools), "0" * 64, reading(f)["prompt_digest"]),
+            (skill, tool_identity(skill, tools), model_digest, "0" * 64),
         ):
             assert not qualified(
                 session,
@@ -325,6 +374,7 @@ def test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_c
                 metadata.model_version,
                 tool_digest=selected_tool,
                 model_digest=selected_model,
+                prompt_digest=selected_prompt,
                 lock=True,
             )
     with Session(f.setup.admin) as session, session.begin():
@@ -385,7 +435,8 @@ def test_pause_batch_does_not_count_as_new_review_after_its_own_critical_error(f
         for i in range(11)
     ]
     payload = {
-        key: current[key] for key in ("skill_key", "skill_digest", "tool_digest", "model_digest")
+        key: current[key]
+        for key in ("skill_key", "skill_digest", "tool_digest", "model_digest", "prompt_digest")
     }
     _, receipt, _ = confirmed(
         f,

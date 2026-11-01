@@ -4,8 +4,6 @@
 import hashlib
 from dataclasses import replace
 from types import SimpleNamespace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
@@ -17,7 +15,9 @@ from pdos_next.agent_kernel.bootstrap import Bootstrap
 from pdos_next.agent_kernel.host import BoundHost
 from pdos_next.agent_kernel.models import PublicWebSnapshot
 from pdos_next.agent_kernel.persistence import KernelStore
+from pdos_next.agent_kernel.prompts import PromptCatalog
 from pdos_next.agent_kernel.proposal_context import KEY
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
 from pdos_next.agent_kernel.research_read_ledger import page_result
 from pdos_next.errors import DomainError
@@ -348,6 +348,7 @@ def test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_r
         run_id=run_id,
     )
     skill = f.owner.catalog._skills["proposal_drafting"]
+    _, prompt_identity = PromptCatalog().active.compose(f.owner.catalog.index)
     with Session(work.admin) as session, session.begin():
         # The synthetic model route changed above; pin that actual quality identity too.
         prior = session.get(TenantSkillEnablement, f.qualification.id)
@@ -366,7 +367,10 @@ def test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_r
                 qualified_model_digest=model_identity(route),
                 reviewed_by=work.human,
                 reviewed_at=now(),
-                review_case_refs=["synthetic-review-" + str(i) for i in range(10)],
+                review_case_refs=[
+                    f"synthetic-review-{i}:prompt:{prompt_identity['system_digest']}"
+                    for i in range(10)
+                ],
             )
         )
     agree(work, scope, scope.data_categories)

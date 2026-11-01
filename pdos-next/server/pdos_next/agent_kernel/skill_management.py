@@ -14,6 +14,7 @@ from pdos_next.request_proof import command_inputs_once
 from pdos_next.schema_base import StrictModel
 
 from .models import TenantAdministrator, TenantSkillEnablement
+from .prompts import PromptCatalog
 from .skills import SkillCatalog
 
 
@@ -112,6 +113,8 @@ def apply_validated(session, ctx, command, scope, payload, plan):
 
 def reading(session, ctx):
     catalog = SkillCatalog()
+    prompt = PromptCatalog().active
+    _, prompt_identity = prompt.compose(catalog.index)
     rows = {
         row.skill_key: row
         for row in session.scalars(
@@ -145,6 +148,8 @@ def reading(session, ctx):
                 "skill_digest": skill.digest if skill else None,
                 "available": skill is not None,
                 "operations": sorted(skill.operations) if skill else [],
+                "content": skill.content if skill else None,
+                "evaluation_suite": skill.metadata.get("evaluation_suite") if skill else None,
                 "enabled": bool(row and row.enabled),
                 "revision": row.revision if row else 0,
                 "receipt_id": str(row.receipt_id) if row and row.receipt_id else None,
@@ -159,6 +164,11 @@ def reading(session, ctx):
         "items": items,
         "can_edit": bool(admin and write),
         "category_revision": category.revision,
+        "prompt": {
+            **prompt_identity,
+            "content": prompt.content,
+            "source": f"pdos-next/server/pdos_next/prompt_packages/versions/{prompt.version}.md",
+        },
     }
 
 

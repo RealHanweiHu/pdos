@@ -17,6 +17,7 @@ from pdos_next.agent_kernel.models import (
     AgentToolCall,
     TenantSkillEnablement,
 )
+from pdos_next.agent_kernel.prompts import PromptCatalog
 from pdos_next.agent_kernel.qualification_binding import tool_identity
 from pdos_next.contracts import Command
 from pdos_next.database import tenant_session
@@ -87,13 +88,14 @@ def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_rese
     run.read_sources = [
         {"artifact_id": str(artifact_id), "expected_revision": 1, "product_id": None}
     ]
+    _, prompt_identity = PromptCatalog().active.compose(f.catalog.index)
     binding = ModelBinding(
         model_version=f.route.version,
         model_route_digest=f.route.digest,
         tool_definitions_digest=disclosure_digest(
             f.registry, "main", binding_operations(f.catalog, (bound,))
         ),
-        prompt_digest=digest("prefix"),
+        prompt_digest=prompt_identity["system_digest"],
         isolation="main",
         cancel_epoch=0,
         loaded_skills=(bound,),
@@ -119,6 +121,9 @@ def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_rese
     f.qualification.qualified_skill_digest = skill.digest
     f.qualification.qualified_tool_digest = tool_identity(skill, f.registry)
     f.qualification.reviewed_by = setup.human
+    f.qualification.review_case_refs = [
+        f"synthetic:{index}:prompt:{binding.prompt_digest}" for index in range(10)
+    ]
     with tenant_session(
         setup.admin,
         setup.tenant,

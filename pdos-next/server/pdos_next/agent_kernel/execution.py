@@ -142,6 +142,7 @@ def qualify_command(session, ctx, operation, run):
             model.model_version,
             model_digest=model_identity(actual_route),
             tool_digest=tool_identity(skill, owner.registry),
+            prompt_digest=model.prompt_digest,
             lock=True,
         )
     ):
@@ -439,6 +440,7 @@ def prepare_domain_call(
         model.model_version,
         model_digest=model_identity(actual_route),
         tool_digest=tool_identity(skill, registry),
+        prompt_digest=model.prompt_digest,
         lock=True,
     ):
         raise DomainError("QUALIFICATION_REQUIRED", "所选技能与实际模型尚无当前资格。")

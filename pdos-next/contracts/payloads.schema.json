@@ -3027,6 +3027,19 @@
           "default": null,
           "title": "Model Digest"
         },
+        "prompt_digest": {
+          "anyOf": [
+            {
+              "pattern": "^[0-9a-f]{64}$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Prompt Digest"
+        },
         "case_refs": {
           "items": {
             "$ref": "#/$defs/CaseReference"
@@ -3205,6 +3218,11 @@
           "title": "Model Digest",
           "type": "string"
         },
+        "prompt_digest": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Prompt Digest",
+          "type": "string"
+        },
         "cases": {
           "items": {
             "$ref": "#/$defs/ReviewCase"
@@ -3239,6 +3257,7 @@
         "skill_digest",
         "tool_digest",
         "model_digest",
+        "prompt_digest",
         "cases",
         "personally_reviewed"
       ],

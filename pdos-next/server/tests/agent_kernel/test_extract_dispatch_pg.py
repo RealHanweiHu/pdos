@@ -27,6 +27,7 @@ from pdos_next.agent_kernel.models import (
     TenantSkillEnablement,
 )
 from pdos_next.agent_kernel.persistence import cancel_run
+from pdos_next.agent_kernel.prompts import PromptCatalog
 from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.agent_kernel.read_execution import ReadSource
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
@@ -142,6 +143,7 @@ def fixture(
                 ),
             )
     skill = owner.catalog._skills["rfq_extraction"]
+    _, prompt_identity = PromptCatalog().active.compose(owner.catalog.index)
     with Session(work.admin) as session, session.begin():
         if (
             session.scalar(
@@ -166,7 +168,10 @@ def fixture(
                     qualified_model_digest=model_identity(route),
                     reviewed_by=work.human,
                     reviewed_at=now(),
-                    review_case_refs=[f"synthetic-reviewed-case-{index}" for index in range(10)],
+                    review_case_refs=[
+                        f"synthetic-reviewed-case-{index}:prompt:{prompt_identity['system_digest']}"
+                        for index in range(10)
+                    ],
                 )
             )
         load_event_id = uuid4()

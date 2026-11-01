@@ -11,8 +11,8 @@ import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 from pdos_agent_runtime.graph import registered_graph_context
 
-from pdos_next.agent_kernel.disclosure import binding_operations, disclosure, skill_operations
 from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent_kernel.disclosure import binding_operations, disclosure, skill_operations
 from pdos_next.agent_kernel.execution import (
     finish_domain_call,
     prepare_domain_call,
@@ -22,8 +22,15 @@ from pdos_next.agent_kernel.execution import (
 )
 from pdos_next.agent_kernel.gateway import AgentGateway
 from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
+from pdos_next.agent_kernel.models import (
+    AgentEvent,
+    AgentRun,
+    AgentToolCall,
+    TenantPilotAdmission,
+    TenantSkillEnablement,
+)
 from pdos_next.agent_kernel.persistence import KernelStore
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.agent_kernel.skills import SkillCatalog
 from pdos_next.agent_kernel.tools import default_registry
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
@@ -154,10 +161,6 @@ def test_checkpoint_restore_rejects_skill_drift_before_another_model_turn(change
     assert error.value.code == "VERSION_CONFLICT" and not host.prefixes and not host.writes
 
 
-from pdos_next.agent_kernel.models import TenantPilotAdmission
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
-
 class LedgerSession:
     """In-memory Session port double; deliberately provides no commit/transaction API."""
     def __init__(self, actual, run, model, event, qualification):
@@ -197,7 +200,11 @@ def ledger():
     skill = catalog._skills["proposal_drafting"]
     bound = SkillBinding(key=skill.key, version=skill.version, digest=skill.digest,
                          load_event_id=uuid4())
-    route = SimpleNamespace(version="synthetic@1", digest=digest("synthetic route"), protocol="openai-compatible", base_url="https://synthetic.invalid/v1", model="synthetic-model")
+    route = SimpleNamespace(
+        version="synthetic@1", digest=digest("synthetic route"),
+        protocol="openai-compatible", base_url="https://synthetic.invalid/v1",
+        model="synthetic-model",
+    )
     spec, arguments = registry.get("proposal.item.patch"), {"text": "draft"}
     model_binding = ModelBinding(
         model_version=route.version, model_route_digest=route.digest,
@@ -230,8 +237,11 @@ def ledger():
         id=uuid4(), tenant_id=actual.tenant_id, skill_key=skill.key, enabled=True, pilot=True,
         qualification_revoked=False, qualified_skill_version=skill.version,
         qualified_model_version=route.version, qualified_skill_digest=skill.digest,
-        qualified_tool_digest=tool_identity(skill, registry), qualified_model_digest=model_identity(route), quality_paused=False,
-        review_case_refs=[str(uuid4()) for _ in range(10)],
+        qualified_tool_digest=tool_identity(skill, registry),
+        qualified_model_digest=model_identity(route), quality_paused=False,
+        review_case_refs=[
+            f"{uuid4()}:0:prompt:{model_binding.prompt_digest}" for _ in range(10)
+        ],
         reviewed_by=actual.requester_id, reviewed_at=now(),
     )
     f = SimpleNamespace(

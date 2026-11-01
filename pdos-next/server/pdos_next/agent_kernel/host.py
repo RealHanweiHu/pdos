@@ -138,6 +138,12 @@ class BoundHost:
                 run.versions["model_version"],
                 model_digest=model_identity(route),
                 tool_digest=tool_identity(skill, self.adapters.tool_registry or default_registry()),
+                prompt_digest=(
+                    run.versions.get("prompt_identities", {}).get(scope.isolation, {}).get(
+                        "system_digest"
+                    )
+                    or run.versions.get("prompt_prefixes", {}).get(scope.isolation)
+                ),
             )
 
     def model(self, scope, **kwargs):

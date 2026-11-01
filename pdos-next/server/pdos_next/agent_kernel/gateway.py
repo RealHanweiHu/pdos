@@ -74,7 +74,10 @@ class AgentGateway:
                 },
             }}
 
-    def turn(self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=()):
+    def turn(
+        self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=(),
+        prompt_identity=None,
+    ):
         if not in_registered_agent_graph():
             raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
         from pdos_next.domain.automations.runtime import guard_tool
@@ -99,6 +102,15 @@ class AgentGateway:
         ):
             raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
         from pdos_next.service import digest
+
+        if prompt_identity is not None and (
+            not isinstance(prompt_identity, dict)
+            or set(prompt_identity) != {"key", "version", "content_digest", "system_digest"}
+            or any(not isinstance(prompt_identity.get(key), str) or not prompt_identity[key]
+                   for key in ("key", "version", "content_digest", "system_digest"))
+            or prompt_identity["system_digest"] != digest(system)
+        ):
+            raise DomainError("VERSION_CONFLICT", "提示词版本身份与实际前缀不一致。")
 
         from .context_budget import fit_messages
 
@@ -152,6 +164,15 @@ class AgentGateway:
 
             tool_digests = run.versions.get("tool_definitions", {})
             prompt_digests = run.versions.get("prompt_prefixes", {})
+            prompt_identities = run.versions.get("prompt_identities", {})
+            record_prompt_identity = prompt_identity is not None and (
+                scope.isolation in prompt_identities or scope.isolation not in prompt_digests
+            )
+            if (
+                prompt_identity is not None
+                and prompt_identities.get(scope.isolation, prompt_identity) != prompt_identity
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示词版本不能静默替换。")
             if prompt_digests.get(scope.isolation, digest(system)) != digest(system):
                 raise DomainError("VERSION_CONFLICT", "原运行的提示前缀不能静默替换。")
             # The disclosure may grow when a skill loads, and only that way: the
@@ -169,6 +190,9 @@ class AgentGateway:
                 "provider_key": provider_key,
                 "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
                 "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+                **({"prompt_identities": {
+                    **prompt_identities, scope.isolation: prompt_identity,
+                }} if record_prompt_identity else {}),
                 CHAIN_KEY: chain,
                 **({"budget_policy": route.budget_policy}
                    if route.budget_policy != "enforced" else {}),

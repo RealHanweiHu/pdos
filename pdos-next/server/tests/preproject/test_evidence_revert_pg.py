@@ -3,8 +3,6 @@
 
 from copy import deepcopy
 from types import SimpleNamespace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
@@ -18,6 +16,7 @@ from pdos_next.agent_kernel.models import (
     AgentToolCall,
     TenantSkillEnablement,
 )
+from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.models import Artifact, Audit, Claim, Confirmation, Consumption, Outbox, Receipt, now
 from pdos_next.service import digest
@@ -83,7 +82,10 @@ def drafting_model_source(work, fixture, arguments):
                     qualified_skill_digest=skill.digest,
                     qualified_tool_digest=tool_identity(skill, fixture.registry),
                     qualified_model_digest=model_identity(fixture.route),
-                    review_case_refs=[str(uuid4()) for _ in range(10)],
+                    review_case_refs=[
+                        f"{uuid4()}:0:prompt:{fixture.model.execution_binding['prompt_digest']}"
+                        for _ in range(10)
+                    ],
                     reviewed_by=work.human,
                     reviewed_at=now(),
                 )

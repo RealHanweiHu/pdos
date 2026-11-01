@@ -18,6 +18,7 @@ from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
 from pdos_next.agent_kernel.graph import AgentKernel
 from pdos_next.agent_kernel.host import BoundHost
 from pdos_next.agent_kernel.models import TenantSkillEnablement
+from pdos_next.agent_kernel.prompts import PromptCatalog
 from pdos_next.agent_kernel.proposal_context import KEY
 from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.agent_kernel.types import ModelTurn, ToolCall
@@ -56,6 +57,7 @@ def bound(work, *, human=False):
     owner, route = Bootstrap(work.engine), configured_route()
     owner.route = owner.commands.route = lambda *_: route
     scope, sources = actual_run(work, owner, UUID(proposal_id))
+    prompt_digest = PromptCatalog().active.compose(owner.catalog.index)[1]["system_digest"]
     assert scope.product_id is None and sources == [
         {"artifact_id": artifact_id, "expected_revision": 1, "product_id": str(work.product)}
     ]
@@ -76,7 +78,10 @@ def bound(work, *, human=False):
                     reviewed_by=work.human,
                     reviewed_at=now(),
                     qualification_revoked=human,
-                    review_case_refs=["synthetic-review-" + str(i) for i in range(10)],
+                    review_case_refs=[
+                        f"synthetic-review-{i}:prompt:{prompt_digest}"
+                        for i in range(10)
+                    ],
                 )
             )
     return SimpleNamespace(
@@ -137,13 +142,14 @@ def prepared(f, tool, args):
         f.loaded[key] = SkillBinding(
             key=key, version=skill.version, digest=skill.digest, load_event_id=identity
         )
+    prompt_digest = PromptCatalog().active.compose(f.owner.catalog.index)[1]["system_digest"]
     binding = ModelBinding(
         model_version=f.route.version,
         model_route_digest=f.route.digest,
         tool_definitions_digest=digest(
             disclosure(f.registry, "main", binding_operations(f.owner.catalog, f.loaded.values()))
         ),
-        prompt_digest=digest("Synthetic frozen source writeback prefix"),
+        prompt_digest=prompt_digest,
         isolation="main",
         cancel_epoch=0,
         loaded_skills=tuple(f.loaded.values()),

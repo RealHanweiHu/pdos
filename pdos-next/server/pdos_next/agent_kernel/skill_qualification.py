@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import Literal
 from uuid import UUID, uuid4
 
-from pydantic import Field, model_validator
+from pydantic import Field, ValidationError, model_validator
 from sqlalchemy import select, text
 
 from pdos_next.errors import DomainError
@@ -25,6 +25,7 @@ from .models import (
     TenantPilotAdmission,
     TenantSkillEnablement,
 )
+from .prompts import PromptCatalog
 from .qualification_binding import draft_operations, model_identity, tool_identity
 from .skills import SkillCatalog
 
@@ -59,6 +60,7 @@ class BindingInput(StrictModel):
     skill_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     tool_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
     model_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
+    prompt_digest: str = Field(pattern=r"^[0-9a-f]{64}$")
 
 
 class RecordReviews(BindingInput):
@@ -86,6 +88,7 @@ class QualifySkill(StrictModel):
     skill_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     tool_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     model_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
+    prompt_digest: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
     case_refs: list[CaseReference] = Field(default_factory=list, max_length=20)
     approval_token: str | None = Field(default=None, min_length=20, max_length=128)
 
@@ -95,7 +98,7 @@ class QualifySkill(StrictModel):
             raise ValueError("请填写本人决定理由。")
         if self.decision == "批准" and (
             len(self.case_refs) < 10
-            or not all((self.skill_digest, self.tool_digest, self.model_digest))
+            or not all((self.skill_digest, self.tool_digest, self.model_digest, self.prompt_digest))
         ):
             raise ValueError("批准须选择 10–20 个本人已审阅案例并绑定当前技能及模型。")
         if self.decision == "撤销" and self.case_refs:
@@ -130,15 +133,19 @@ def current_model(session, tenant, *, lock=False):
 
 
 def current_binding(session, tenant, key, *, lock=False):
-    skill = SkillCatalog().configuration(key)
+    catalog = SkillCatalog()
+    skill = catalog.configuration(key)
     model = current_model(session, tenant, lock=lock)
     tools = registry()
     if not skill or not model or not model.enabled:
         raise DomainError("SOURCE_UNAVAILABLE", "请先登记并启用实际模型与技能配置。")
+    prompt = PromptCatalog().active
+    _, prompt_identity = prompt.compose(catalog.index)
     binding = {
         "skill_digest": skill.digest,
         "tool_digest": tool_identity(skill, tools),
         "model_digest": model_identity(model.metadata),
+        "prompt_digest": prompt_identity["system_digest"],
     }
     return skill, model, binding, draft_operations(skill, tools)
 
@@ -207,7 +214,7 @@ def prepared(session, ctx, command, scope, payload):
     )
     if any(getattr(payload, field) != actual for field, actual in binding.items()):
         raise DomainError(
-            "VERSION_CONFLICT", "技能、领域工具或实际模型已变化，请重新审阅当前版本。"
+            "VERSION_CONFLICT", "技能、领域工具、主提示词或实际模型已变化，请重新审阅当前版本。"
         )
     common = {
         "skill_key": skill.key,
@@ -248,6 +255,15 @@ def prepared(session, ctx, command, scope, payload):
             )
         )
     }
+    receipts = {
+        receipt.id: receipt
+        for receipt in session.scalars(
+            select(Receipt).where(
+                Receipt.tenant_id == ctx.tenant_id,
+                Receipt.id.in_({batch.receipt_id for batch in batches.values()}),
+            )
+        )
+    }
     selected = []
     for ref in payload.case_refs:
         batch = batches.get(ref.batch_id)
@@ -256,10 +272,12 @@ def prepared(session, ctx, command, scope, payload):
             or ref.index >= len(batch.cases)
             or (row.quality_paused_at is not None and batch.created_at <= row.quality_paused_at)
             or (batch.skill_digest, batch.tool_digest, batch.model_digest)
-            != tuple(binding.values())
+            != (binding["skill_digest"], binding["tool_digest"], binding["model_digest"])
+            or receipts[batch.receipt_id].result.get("prompt_digest") != binding["prompt_digest"]
         ):
             raise DomainError(
-                "SOURCE_UNAVAILABLE", "所选材料必须是本人针对当前技能、工具和模型的已登记审阅。"
+                "SOURCE_UNAVAILABLE",
+                "所选材料必须是本人针对当前技能、工具、主提示词和模型的已登记审阅。",
             )
         case = batch.cases[ref.index]
         if case["severity"] == "critical":
@@ -355,6 +373,7 @@ def apply_validated(session, ctx, command, scope, payload, plan):
         result.action_result = {
             "skill_key": payload.skill_key,
             "case_count": len(payload.cases),
+            "prompt_digest": payload.prompt_digest,
             "quality_paused": bool(row and row.quality_paused),
         }
         subject = "skill_review"
@@ -384,10 +403,14 @@ def apply_validated(session, ctx, command, scope, payload, plan):
                 payload.model_digest,
             )
             row.reviewed_by, row.reviewed_at = ctx.actor_id, now()
-            row.review_case_refs = [f"{ref.batch_id}:{ref.index}" for ref in payload.case_refs]
+            row.review_case_refs = [
+                f"{ref.batch_id}:{ref.index}:prompt:{plan.review['prompt_digest']}"
+                for ref in payload.case_refs
+            ]
         result.after_snapshot = snapshot(row)
         result.action_result = {
             "skill_key": payload.skill_key,
+            "prompt_digest": plan.review.get("prompt_digest"),
             "decision": payload.decision,
             "next_revision": row.revision,
             "case_count": len(row.review_case_refs),
@@ -400,7 +423,10 @@ def apply_validated(session, ctx, command, scope, payload, plan):
 
 
 def reading(session, ctx, key, cursor=None):
-    skill = SkillCatalog().configuration(key)
+    catalog = SkillCatalog()
+    skill = catalog.configuration(key)
+    prompt = PromptCatalog().active
+    _, prompt_identity = prompt.compose(catalog.index)
     row = session.scalar(
         select(TenantSkillEnablement).where(
             TenantSkillEnablement.tenant_id == ctx.tenant_id, TenantSkillEnablement.skill_key == key
@@ -414,6 +440,7 @@ def reading(session, ctx, key, cursor=None):
         "skill_digest": skill.digest if skill else None,
         "tool_digest": tool_identity(skill, tools) if skill else None,
         "model_digest": model_identity(model.metadata) if model else None,
+        "prompt_digest": prompt_identity["system_digest"],
     }
     query = select(SkillReviewBatch).where(
         SkillReviewBatch.tenant_id == ctx.tenant_id,
@@ -448,6 +475,11 @@ def reading(session, ctx, key, cursor=None):
         row
         and model
         and skill
+        and row.review_case_refs
+        and all(
+            ref.rsplit(":prompt:", 1)[-1] == binding["prompt_digest"]
+            for ref in row.review_case_refs
+        )
         and row.qualified_skill_digest == binding["skill_digest"]
         and row.qualified_tool_digest == binding["tool_digest"]
         and row.qualified_model_digest == binding["model_digest"]
@@ -467,9 +499,19 @@ def reading(session, ctx, key, cursor=None):
         else "qualified"
     )
     person = session.get(Principal, row.reviewed_by) if row and row.reviewed_by else None
+    receipts = {
+        receipt.id: receipt
+        for receipt in session.scalars(
+            select(Receipt).where(
+                Receipt.tenant_id == ctx.tenant_id,
+                Receipt.id.in_({batch.receipt_id for batch in batches}),
+            )
+        )
+    }
     return {
         "skill_key": key,
         "skill_version": skill.version if skill else None,
+        "prompt_version": prompt.version,
         **binding,
         "model_version": model.metadata.model_version if model else None,
         "model_label": model.metadata.model if model else None,
@@ -496,8 +538,12 @@ def reading(session, ctx, key, cursor=None):
                 "created_at": batch.created_at.isoformat(),
                 "receipt_id": str(batch.receipt_id),
                 "cases": batch.cases,
-                "current": (batch.skill_digest, batch.tool_digest, batch.model_digest)
-                == tuple(binding.values()),
+                "current": (
+                    (batch.skill_digest, batch.tool_digest, batch.model_digest)
+                    == (binding["skill_digest"], binding["tool_digest"], binding["model_digest"])
+                    and receipts[batch.receipt_id].result.get("prompt_digest")
+                    == binding["prompt_digest"]
+                ),
             }
             for batch in batches[:20]
         ],
@@ -505,8 +551,30 @@ def reading(session, ctx, key, cursor=None):
     }
 
 
+def recovery_digest(command, *, legacy):
+    from pdos_next.service import command_digest, digest
+
+    if not legacy:
+        return command_digest(command)
+    cls = {"ai.skill.review.record": RecordReviews, "ai.skill.qualify": QualifySkill}[
+        command.operation
+    ]
+    payload = cls.model_validate(
+        {**command.payload, "prompt_digest": "0" * 64}
+    ).model_dump(mode="json")
+    payload.pop("prompt_digest")
+    return digest({
+        "operation": command.operation,
+        "category_id": command.category_id,
+        "product_id": command.product_id,
+        "expected_revision": command.expected_revision,
+        "source_read_set": [row.model_dump(mode="json") for row in command.source_read_set],
+        "payload": payload,
+    })
+
+
 def recover(session, ctx, command):
-    from pdos_next.service import command_digest, receipt_view
+    from pdos_next.service import receipt_view
 
     cls = {"ai.skill.review.record": RecordReviews, "ai.skill.qualify": QualifySkill}.get(
         command.operation
@@ -515,7 +583,17 @@ def recover(session, ctx, command):
         raise DomainError("VALIDATION_FAILED", "这里只核对原案例审阅与资格请求。", 422)
     if command.category_id is not None and command.category_id != ctx.category_id:
         raise DomainError("FORBIDDEN_SCOPE", "原请求与当前品类不一致。", 403)
-    cls.model_validate(command.payload)
+    legacy = "prompt_digest" not in command.payload
+    current = None
+    try:
+        cls.model_validate(command.payload)
+        current = recovery_digest(command, legacy=False)
+    except ValidationError:
+        if not legacy or not (
+            cls is RecordReviews or command.payload.get("decision") in {"批准", "撤销"}
+        ):
+            raise
+        cls.model_validate({**command.payload, "prompt_digest": "0" * 64})
     key = session.scalar(
         select(RequestKey).where(
             RequestKey.tenant_id == ctx.tenant_id,
@@ -525,7 +603,10 @@ def recover(session, ctx, command):
     )
     if key is None:
         return None
-    if key.digest != command_digest(command):
+    candidates = [current] if current is not None else []
+    if legacy:
+        candidates.append(recovery_digest(command, legacy=True))
+    if key.digest not in candidates:
         raise DomainError("DUPLICATE_INTENT_CONFLICT", "原请求编号已绑定不同内容。")
     row = session.get(Receipt, key.receipt_id)
     if not row or row.operation != command.operation or row.category_id != ctx.category_id:

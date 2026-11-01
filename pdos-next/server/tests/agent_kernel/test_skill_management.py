@@ -59,6 +59,10 @@ def test_member_reads_real_catalog_but_only_current_admin_can_preview(setup):
     assert value.status_code == 200
     data = value.json()
     assert data["can_edit"] is False and data["category_revision"] == 1
+    assert data["prompt"]["version"] == "1.0.0"
+    assert data["prompt"]["content"].startswith("You are 小Pai")
+    assert data["prompt"]["system_digest"] != data["prompt"]["content_digest"]
+    assert all(row["content"] for row in data["items"])
     assert {row["skill_key"] for row in data["items"]} == {
         row["key"] for row in SkillCatalog().index
     }

@@ -45,6 +45,8 @@ graphify-out/
 .understand-anything/
 .zcode/
 .zcodeignore
+# 提示词注册表进程锁（xiaopai_prompt 运行时生成的空文件）
+.registry.lock
 
 # 临时工作区（日志、草稿、模型资产等，不入库）
 tmp/
