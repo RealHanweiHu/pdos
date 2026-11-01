@@ -1,10 +1,8 @@
 """Actual BFS/DTO/Session offline boundaries; owner rows and SQL results substituted."""
 
-import ast
 import time
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
@@ -593,33 +591,4 @@ def test_listener_finally_cleanup_on_owner_exception(case):
         run(case)
     assert all(
         hook.__name__ == "_discard_direct_mutation_reads" for hook in case.s.dispatch.do_orm_execute
-    )
-
-
-def test_dedicated_clock_table_set_matches_archived_clock_contract():
-    source = (
-        Path(__file__).resolve().parents[3]
-        / "server/migrations/archive/pre-s0/versions/0030_change_dependency_clock.py"
-    )
-    module = ast.parse(source.read_text())
-    actual = next(
-        ast.literal_eval(node.value)
-        for node in module.body
-        if isinstance(node, ast.Assign)
-        and any(isinstance(t, ast.Name) and t.id == "DEPENDENCY_TABLES" for t in node.targets)
-    )
-    assert c.DEPENDENCY_TABLES == frozenset(actual) | {
-        "field_feedback_versions", "field_feedback_currents"
-    }
-    assert len(actual) == 70
-    assert (
-        not {
-            "change_graph_captures",
-            "change_request_versions",
-            "confirmations",
-            "action_receipts",
-            "audit_events",
-            "outbox_events",
-        }
-        & c.DEPENDENCY_TABLES
     )

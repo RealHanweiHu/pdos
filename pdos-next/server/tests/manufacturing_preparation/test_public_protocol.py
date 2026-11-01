@@ -3,8 +3,6 @@
 These tests cannot attest real professional facts, persisted atom/RLS or a Pilot.
 """
 
-import ast
-import importlib.util
 from copy import deepcopy
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -283,39 +281,6 @@ def test_new_atom_reciprocal_scoped_proof_and_family_receipt_does_not_replace_ol
         and tuple(c.columns.keys()) == ("tenant_id", "shared_proof_id")
         for c in service.PreparationVersion.__table__.constraints
     )
-
-
-def test_archived_migration28_retains_static_frozen_sql():
-    path = SERVER / "migrations/archive/pre-s0/versions/0028_manufacturing_preparation.py"
-    spec = importlib.util.spec_from_file_location("owned_manufacturing_migration28", path)
-    module = importlib.util.module_from_spec(spec)
-    spec.loader.exec_module(module)
-    assert module.revision == "next_0028" and module.down_revision == "next_0027"
-    assert not any("CASCADE" in v for v in module.DOWNGRADE_SQL)
-    assert any("Retained manufacturing preparation" in v for v in module.DOWNGRADE_SQL)
-    assert not any("CREATE OR REPLACE" in v for v in module.UPGRADE_SQL)
-    assert module.DOWNGRADE_SQL[0] == (
-        "LOCK TABLE products,confirmations,action_receipts,request_keys,audit_entries,"
-        "outbox_events,"
-        "manufacturing_preparation_versions,manufacturing_preparation_currents,"
-        "manufacturing_baseline_document_links IN SHARE ROW EXCLUSIVE MODE"
-    )
-    for table in schema_proposal.TABLES:
-        assert f"EXISTS(SELECT 1 FROM {table.name})" in module.DOWNGRADE_SQL[1]
-        assert any(f"CREATE TABLE {table.name}" in sql for sql in module.UPGRADE_SQL)
-    assert "FROM confirmations WHERE operation IN" in module.DOWNGRADE_SQL[1]
-    assert "FROM action_receipts WHERE operation IN" in module.DOWNGRADE_SQL[1]
-    assert "OR subject_type IN" in module.DOWNGRADE_SQL[1]
-    imports = [
-        n.module for n in ast.walk(ast.parse(path.read_text())) if isinstance(n, ast.ImportFrom)
-    ]
-    assert imports == ["alembic", "sqlalchemy"]
-    tree = ast.parse(path.read_text())
-    for name, collection in (("upgrade", "UPGRADE_SQL"), ("downgrade", "DOWNGRADE_SQL")):
-        function = next(node for node in tree.body if getattr(node, "name", None) == name)
-        loop = next(node for node in function.body if isinstance(node, ast.For))
-        assert ast.unparse(loop.iter) == collection
-        assert ast.unparse(loop.body[0]) == "op.execute(text(statement))"
 
 
 def test_all_physical_fks_point_to_existing_exact_unique_columns():

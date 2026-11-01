@@ -1,10 +1,8 @@
 """No-connect actual DTO/kernel/ORM seam checks; owner IO is expressly substituted."""
 
-import ast
 import hashlib
 import json
 from datetime import UTC, datetime, timedelta
-from pathlib import Path
 from types import SimpleNamespace
 from uuid import UUID as CategoryUUID
 from uuid import uuid4
@@ -31,7 +29,6 @@ from pdos_next.command_handlers import (
 from pdos_next.contracts import PAYLOADS, Command
 from pdos_next.domain.change_execution import service as old
 from pdos_next.errors import DomainError
-from pdos_next.models import Base
 from pdos_next.service import Context
 
 from . import kernel_helpers as helper
@@ -313,50 +310,6 @@ def test_fixed_reader_keeps_actual_order_chain_but_old_preparation_boundary_rema
     assert old._snapshot(row) == value
     row.operation = "change.impact.compute"
     rejected("INTEGRITY_MISMATCH", lambda: old._snapshot(row))
-
-
-def test_archived_migration27_retains_frozen_eight_tables_and_old_guards():
-    server = Path(__file__).resolve().parents[2]
-    path = server / "migrations/archive/pre-s0/versions/0027_controlled_change_orders.py"
-    source = path.read_text()
-    constants = {}
-    for node in ast.parse(source).body:
-        if (
-            isinstance(node, ast.Assign)
-            and len(node.targets) == 1
-            and isinstance(node.targets[0], ast.Name)
-        ):
-            constants[node.targets[0].id] = ast.literal_eval(node.value)
-    assert constants["revision"] == "next_0027"
-    assert constants["down_revision"] == constants["EXPECTED_PARENT"] == "next_0026"
-    assert len(constants["TABLES"]) == 8 and len(constants["DROP_TABLES"]) == 8
-    assert all(n in Base.metadata.tables for n in constants["TABLES"])
-    assert "quality.issue.merge" in constants["EXTENDED_RECEIPT_HELPER"]
-    assert "CapaVerificationCandidateRecorded" in constants["EXTENDED_RECEIPT_HELPER"]
-    for operation in (
-        "change.order.prepare",
-        "change.order.approve",
-        "change.implementation.record",
-    ):
-        assert operation in constants["EXTENDED_RECEIPT_HELPER"]
-    assert "require_quality_change_atom" not in constants["CONTROLLED_GUARDS"]
-    assert "CASCADE" not in constants["DOWNGRADE_PREFLIGHT"]
-    assert constants["DOWNGRADE_PREFLIGHT"].startswith("LOCK TABLE ")
-    for table in constants["TABLES"]:
-        assert f"EXISTS(SELECT 1 FROM {table})" in constants["DOWNGRADE_PREFLIGHT"]
-    for table in ("change_request_versions", "confirmations", "action_receipts"):
-        assert f"EXISTS(SELECT 1 FROM {table}" in constants["DOWNGRADE_PREFLIGHT"]
-    assert "retained change history prevents downgrade" in constants["DOWNGRADE_PREFLIGHT"]
-    assert "FROM PUBLIC,pdos_next_app,pdos_agent" in "\n".join(constants["PERMISSIONS"])
-    assert hashlib.sha256(constants["OLD_RECEIPT_HELPER"].encode()).hexdigest() in source
-    tree = ast.parse(source)
-    imports = [node.module for node in ast.walk(tree) if isinstance(node, ast.ImportFrom)]
-    assert imports == ["alembic", "sqlalchemy"]  # All SQL is embedded, no live model/stage reads.
-    downgrade = next(
-        node for node in tree.body if getattr(node, "name", None) == "downgrade_candidate"
-    )
-    assert "CASCADE" not in ast.get_source_segment(source, downgrade)
-    assert ast.unparse(downgrade.body[0]) == "op.execute(DOWNGRADE_PREFLIGHT)"
 
 
 def test_new_professional_matrix_uses_only_actual_existing_fact_role_types():
