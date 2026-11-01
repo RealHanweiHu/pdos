@@ -106,9 +106,9 @@ def probe(focus, system, tools, schema, messages):
                 "missing": error.detail["missing"], "recovery": error.recovery}
 
 
-def evaluate(questions, expanded):
+def evaluate(questions, expanded, *, prompt=None):
     registry = default_registry()
-    kernel = AgentKernel(None, registry)
+    kernel = AgentKernel(None, registry, prompt=prompt)
     tools = disclosure(registry, "main", ())
     schema = WireAgentOutput.model_json_schema()
     empty = question_only_messages({"final_prompt": ""})
@@ -143,6 +143,7 @@ def evaluate(questions, expanded):
         ],
         "production_fixed_prefix": {
             "source": "AgentKernel(None, default_registry()).system; disclosure(main, ())",
+            "prompt_identity": kernel.prompt_identity,
             "loaded_skills": [], "tool_count": len(tools),
             "system_sha256": sha256(kernel.system.encode()),
             "tool_definitions_sha256": sha256(encoded(tools).encode()),
