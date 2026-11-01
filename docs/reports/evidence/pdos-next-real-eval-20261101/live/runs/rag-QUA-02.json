@@ -1,0 +1,1173 @@
+{
+  "case_id": "QUA-02",
+  "label": "rag-QUA-02",
+  "id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+  "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+  "session_id": "edd6fb2f-7d7f-431d-967a-34471fb21145",
+  "status": "waiting_input",
+  "state": "waiting_input",
+  "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+  "product_id": null,
+  "project_id": null,
+  "continued_from_id": null,
+  "elapsed_ms": 3797.2752500063507,
+  "first_visible_ms": null,
+  "request": {
+    "goal": "以前有过冷冲击以后连接件开裂的案例吗？那时怎么改的，能直接把这次壳体裂纹归成同一问题吗？",
+    "idempotency_key": "a37eb8ba-807a-58ba-979e-52e9a5a2e45e"
+  },
+  "view": {
+    "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+    "goal": "以前有过冷冲击以后连接件开裂的案例吗？那时怎么改的，能直接把这次壳体裂纹归成同一问题吗？",
+    "session_id": "edd6fb2f-7d7f-431d-967a-34471fb21145",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "session_proposal_id": null,
+    "project_id": null,
+    "status": "waiting_input",
+    "result": null,
+    "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+    "reconciliation": null,
+    "process": {
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "status": "waiting_input",
+      "reverted": false,
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "started_at": "2026-11-01T20:32:43.812624+00:00",
+      "observed_at": "2026-11-01T20:40:03.275433+00:00",
+      "last_recorded_at": "2026-11-01T20:40:02.595295+00:00",
+      "ended_at": null,
+      "elapsed_seconds": null,
+      "call_counts": {
+        "total": 1,
+        "completed": 0,
+        "pending": 1,
+        "failed": 0
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "0fee88ee-d04d-436a-b48a-c5034a6fae5c",
+          "sequence": 1,
+          "at": "2026-11-01T20:32:43.833856+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "4879908e-7c89-4c12-8ccc-d5054c712094",
+          "sequence": 2,
+          "at": "2026-11-01T20:32:44.184036+00:00",
+          "kind": "skill_loaded",
+          "tool": null,
+          "skill": "proposal_drafting",
+          "version": "0.2.3-draft",
+          "status": null
+        },
+        {
+          "id": "c02b81e0-8b1d-4767-b0e4-6587311eb58f",
+          "sequence": 3,
+          "at": "2026-11-01T20:40:00.387946+00:00",
+          "kind": "context_projected",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "projected",
+          "context_fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "context_omitted": [],
+          "context_issues": []
+        },
+        {
+          "id": "3e241566-7a4c-4488-ad23-139cbb35bd38",
+          "sequence": 4,
+          "at": "2026-11-01T20:40:00.543136+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "3f38c437-9127-4f33-8a79-bc22cf403cf1",
+          "sequence": 6,
+          "at": "2026-11-01T20:40:01.377712+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 675,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 37553,
+            "admission_tokens": 43186,
+            "fixed_over_half": null,
+            "actual_input_tokens": null,
+            "actual_output_tokens": null,
+            "estimation_error_ratio": null,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "cache": {
+              "read_tokens": null,
+              "creation_tokens": null,
+              "read_hit_ratio": null,
+              "input_includes_cache": true,
+              "reporting": null,
+              "status": "not_recorded_for_failed_call"
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 674619,
+              "held": 0,
+              "remaining": 1999325381
+            },
+            "context_incomplete": false,
+            "call_state": "unknown",
+            "usage_status": "unavailable",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "5b5532c3-4623-4eb1-a27a-38a05fde81df",
+          "sequence": 7,
+          "at": "2026-11-01T20:40:01.431268+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "waiting_input"
+        },
+        {
+          "id": "99d12ace-e7e7-4985-b080-dedbc78d58e1",
+          "sequence": 8,
+          "at": "2026-11-01T20:40:01.456409+00:00",
+          "kind": "reconciliation_required",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "81333e27-b72c-44d6-b014-8814ecb96c52",
+          "sequence": 9,
+          "at": "2026-11-01T20:40:02.045342+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "5cfcb6e2-ac79-40dc-be85-5744736400e0",
+          "sequence": 10,
+          "at": "2026-11-01T20:40:02.595295+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "waiting_input"
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [],
+        "version": "agent-work-state/v1",
+        "revision": 0,
+        "citations": [],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "以前有过冷冲击以后连接件开裂的案例吗？那时怎么改的，能直接把这次壳体裂纹归成同一问题吗？",
+          "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "edd6fb2f-7d7f-431d-967a-34471fb21145",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "以前有过冷冲击以后连接件开裂的案例吗？那时怎么改的，能直接把这次壳体裂纹归成同一问题吗？",
+          "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f"
+        },
+        "focus_objects": [],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 292,
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": false,
+          "next_cursor": null
+        },
+        "context_incomplete": false,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "provider_key": "minimax",
+      "budget_policy": "development_unlimited",
+      "model_version": "MiniMax-M3",
+      "assistant_depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "prompt_prefixes": {
+        "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+      },
+      "tool_definitions": {
+        "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "assistant.citations.read",
+            "assistant.compare",
+            "assistant.extract",
+            "assistant.materials.read",
+            "assistant.search",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.claim.withdraw",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "project.create",
+            "proposal.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "result.read",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review",
+            "work.baseline.approve",
+            "work.stage.decide"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "63dd59e91945cae840eab0c94ced3f7ae85fa2dfad18ddcdcabe053cbce13cb1": {
+          "scope": {
+            "product_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "proposal_id": null,
+            "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "proposal_drafting",
+              "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+              "version": "0.2.3-draft",
+              "load_event_id": "4879908e-7c89-4c12-8ccc-d5054c712094"
+            }
+          ],
+          "omitted": [],
+          "event_id": "c02b81e0-8b1d-4767-b0e4-6587311eb58f",
+          "read_set": [],
+          "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "da69571f31d7422ce6705e91ecd5aaf3fdd2c2e71914f60114a55ec8b7e7212f"
+        }
+      },
+      "prompt_identities": {
+        "main": {
+          "key": "xiaopai.main",
+          "version": "1.0.0",
+          "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+          "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+        }
+      },
+      "work_state_digest": "f205ab26e692cc4e1bed4780c6b745f9ef7319d7d169886f0a7f7eb26dd51785",
+      "context_admissions": {
+        "08eb52a41cca8a55b3422464387c29472aeef28b65320d9180df54d833ef376c": {
+          "calibration": null
+        }
+      },
+      "context_runtime_v1": {
+        "calls": {
+          "0a889fe3-f952-4bf1-8ef8-a355d64a9ba3": {
+            "cache": {
+              "status": "not_recorded_for_failed_call",
+              "read_tokens": null,
+              "read_hit_ratio": null,
+              "creation_tokens": null,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 675
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "unknown",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 674619,
+              "limit": 2000000000,
+              "remaining": 1999325381
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "unavailable",
+            "cleanup_count": 0,
+            "admission_tokens": 43186,
+            "estimation_basis": "first_call_estimate",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": null,
+            "actual_output_tokens": null,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 37553,
+            "estimation_error_ratio": null,
+            "estimation_error_streak": 0
+          }
+        },
+        "routes": {
+          "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+            "error_streak": 0
+          }
+        },
+        "cleanup_count": 0
+      },
+      "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+      "requested_context_selection": null,
+      "personal_preferences_context": {
+        "use": "personalization_only",
+        "role": null,
+        "source": "explicit_user_settings",
+        "revision": 0,
+        "department": null,
+        "role_defaults": {
+          "summary_sections": [],
+          "welcome_examples": []
+        },
+        "answer_language": "auto",
+        "response_detail": "balanced",
+        "navigation_candidates": []
+      },
+      "context_selection_start_revision": 0,
+      "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "output": null,
+  "observed_at": "2026-11-01T20:40:03.320151+00:00",
+  "suite": "rag40",
+  "role": "quality",
+  "slice": "historical",
+  "focus": 64000,
+  "native_binding_status": "bound",
+  "case_sha256": "84e726e4bf2e6033f507c137cf3c26aef8cd9e8e62c7452bd39eca8e0d76a5f8",
+  "expected_sha256": "d5458652c3e13b47965005ab6ac35a2b7247b0437c68ed83887df80f8b8a62e3",
+  "versions": {
+    "work_state": {
+      "notes": [],
+      "skills": [],
+      "missing": [],
+      "version": "agent-work-state/v1",
+      "revision": 0,
+      "citations": [],
+      "completed": [],
+      "questions": [],
+      "root_goal": {
+        "text": "以前有过冷冲击以后连接件开裂的案例吗？那时怎么改的，能直接把这次壳体裂纹归成同一问题吗？",
+        "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f"
+      },
+      "candidates": [],
+      "exclusions": [],
+      "session_id": "edd6fb2f-7d7f-431d-967a-34471fb21145",
+      "unfinished": [],
+      "constraints": [],
+      "current_goal": {
+        "text": "以前有过冷冲击以后连接件开裂的案例吗？那时怎么改的，能直接把这次壳体裂纹归成同一问题吗？",
+        "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f"
+      },
+      "focus_objects": [],
+      "search_context": {
+        "kind": "category",
+        "label": "当前品类的可读资料",
+        "scoped": false
+      },
+      "completed_count": 0,
+      "estimated_tokens": 292,
+      "citation_directory": {
+        "tool": "assistant.citations.read",
+        "has_more": false,
+        "next_cursor": null
+      },
+      "context_incomplete": false,
+      "search_preferences": {
+        "scope": "same_category",
+        "include_customer_private": false
+      }
+    },
+    "provider_key": "minimax",
+    "budget_policy": "development_unlimited",
+    "model_version": "MiniMax-M3",
+    "assistant_depth": {
+      "mode": "quick",
+      "version": 1,
+      "parent_run_id": null
+    },
+    "prompt_prefixes": {
+      "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+    },
+    "tool_definitions": {
+      "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+    },
+    "tool_disclosures": {
+      "main": {
+        "chain": [
+          "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+        ],
+        "names": [
+          "ai.skill.qualify",
+          "assistant.citations.read",
+          "assistant.compare",
+          "assistant.extract",
+          "assistant.materials.read",
+          "assistant.search",
+          "build.engineering.authorize",
+          "build.lot.read",
+          "build.manufacturing.authorize",
+          "build.read",
+          "build.sample.read",
+          "calc.cost_subtotal",
+          "calc.derivation_diff",
+          "calc.market_size",
+          "calc.opportunity_score",
+          "calc.price_band",
+          "calc.spec_compare",
+          "category.competitors.list",
+          "category.knowledge.list",
+          "category.list",
+          "category.member.grant",
+          "category.parameters.list",
+          "category.read",
+          "change.close",
+          "change.order.approve",
+          "change.selection.decide",
+          "change.verification.record",
+          "conversation.history",
+          "evidence.claim.withdraw",
+          "evidence.extract",
+          "evidence.link.create",
+          "evidence.search",
+          "integration.handoff.authorize",
+          "knowledge.rule.publish",
+          "mcp.connector.allow",
+          "mcp.read",
+          "mcp.tools.list",
+          "npi.manufacturing_baseline.publish",
+          "platform.read",
+          "product.baseline.read",
+          "project.create",
+          "proposal.create",
+          "proposal.g0.decide",
+          "proposal.g0.submit",
+          "proposal.item.patch",
+          "proposal.items.read",
+          "proposal.question.create",
+          "proposal.read",
+          "proposal.share",
+          "provider.agreement.register",
+          "quality.capa.verification.review",
+          "quality.issue.read",
+          "quality.issue.root_cause.decide",
+          "release.engineering.approve",
+          "release.exception.decide",
+          "release.exception.withdraw",
+          "release.manufacturing.approve",
+          "research.fanout",
+          "research.search",
+          "result.read",
+          "skill.load",
+          "test.disposition.decide",
+          "test.run.read",
+          "test.run.review",
+          "work.baseline.approve",
+          "work.stage.decide"
+        ]
+      }
+    },
+    "checkpoint_layout": "session-run-ns/v1",
+    "context_snapshots": {
+      "63dd59e91945cae840eab0c94ced3f7ae85fa2dfad18ddcdcabe053cbce13cb1": {
+        "scope": {
+          "product_id": null,
+          "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+          "proposal_id": null,
+          "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+          "data_categories": [
+            "internal"
+          ]
+        },
+        "fields": [
+          "assistant_depth",
+          "category",
+          "goal",
+          "personal_preferences",
+          "sources",
+          "work_state"
+        ],
+        "issues": [],
+        "skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "4879908e-7c89-4c12-8ccc-d5054c712094"
+          }
+        ],
+        "omitted": [],
+        "event_id": "c02b81e0-8b1d-4767-b0e4-6587311eb58f",
+        "read_set": [],
+        "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+        "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+        "content_digest": "da69571f31d7422ce6705e91ecd5aaf3fdd2c2e71914f60114a55ec8b7e7212f"
+      }
+    },
+    "prompt_identities": {
+      "main": {
+        "key": "xiaopai.main",
+        "version": "1.0.0",
+        "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+      }
+    },
+    "work_state_digest": "f205ab26e692cc4e1bed4780c6b745f9ef7319d7d169886f0a7f7eb26dd51785",
+    "context_admissions": {
+      "08eb52a41cca8a55b3422464387c29472aeef28b65320d9180df54d833ef376c": {
+        "calibration": null
+      }
+    },
+    "context_runtime_v1": {
+      "calls": {
+        "0a889fe3-f952-4bf1-8ef8-a355d64a9ba3": {
+          "cache": {
+            "status": "not_recorded_for_failed_call",
+            "read_tokens": null,
+            "read_hit_ratio": null,
+            "creation_tokens": null,
+            "input_includes_cache": true
+          },
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "history": {
+            "kept": 0,
+            "hidden": 0,
+            "carried": 0,
+            "updated": 0,
+            "truncated": 0,
+            "directories": 0,
+            "unclassified": 0
+          },
+          "reserve": 528288,
+          "version": 1,
+          "segments": {
+            "loop": {
+              "actual_tokens": null,
+              "estimated_tokens": 0
+            },
+            "tools": {
+              "actual_tokens": null,
+              "estimated_tokens": 30248
+            },
+            "skills": {
+              "actual_tokens": null,
+              "estimated_tokens": 3780
+            },
+            "system": {
+              "actual_tokens": null,
+              "estimated_tokens": 2850
+            },
+            "history": {
+              "actual_tokens": null,
+              "estimated_tokens": 0
+            },
+            "envelope": {
+              "actual_tokens": null,
+              "estimated_tokens": 675
+            }
+          },
+          "warnings": [
+            "fixed_over_half_focus"
+          ],
+          "call_state": "unknown",
+          "reductions": [],
+          "run_budget": {
+            "held": 0,
+            "used": 674619,
+            "limit": 2000000000,
+            "remaining": 1999325381
+          },
+          "work_state": {
+            "revision": 0,
+            "item_counts": {
+              "citations": 0,
+              "completed": 0,
+              "questions": 0,
+              "candidates": 0,
+              "exclusions": 0,
+              "unfinished": 0,
+              "constraints": 0,
+              "focus_objects": 0
+            },
+            "context_incomplete": false
+          },
+          "usage_status": "unavailable",
+          "cleanup_count": 0,
+          "admission_tokens": 43186,
+          "estimation_basis": "first_call_estimate",
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": null,
+          "actual_output_tokens": null,
+          "actual_segment_tokens": "provider_not_reported",
+          "estimated_input_tokens": 37553,
+          "estimation_error_ratio": null,
+          "estimation_error_streak": 0
+        }
+      },
+      "routes": {
+        "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+          "error_streak": 0
+        }
+      },
+      "cleanup_count": 0
+    },
+    "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+    "requested_context_selection": null,
+    "personal_preferences_context": {
+      "use": "personalization_only",
+      "role": null,
+      "source": "explicit_user_settings",
+      "revision": 0,
+      "department": null,
+      "role_defaults": {
+        "summary_sections": [],
+        "welcome_examples": []
+      },
+      "answer_language": "auto",
+      "response_detail": "balanced",
+      "navigation_candidates": []
+    },
+    "context_selection_start_revision": 0,
+    "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+  },
+  "tool_calls": [
+    {
+      "id": "0a889fe3-f952-4bf1-8ef8-a355d64a9ba3",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "tool": "model",
+      "state": "unknown",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "created_at": "2026-11-01 20:40:00.999153+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "main",
+        "cancel_epoch": 0,
+        "loaded_skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "4879908e-7c89-4c12-8ccc-d5054c712094"
+          }
+        ],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": null,
+      "reserved_tokens": 0,
+      "charged_tokens": 674619,
+      "provider_request_id": null,
+      "actual_input_tokens": 150331,
+      "actual_output_tokens": 524288,
+      "cost_state": "estimated_unknown",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 705199,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "0fee88ee-d04d-436a-b48a-c5034a6fae5c",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:32:43.833856+00:00",
+      "sequence": 1,
+      "body": {
+        "type": "accepted",
+        "status": "queued"
+      }
+    },
+    {
+      "id": "4879908e-7c89-4c12-8ccc-d5054c712094",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:32:44.184036+00:00",
+      "sequence": 2,
+      "body": {
+        "key": "proposal_drafting",
+        "type": "skill_loaded",
+        "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+        "version": "0.2.3-draft",
+        "isolation": "main"
+      }
+    },
+    {
+      "id": "c02b81e0-8b1d-4767-b0e4-6587311eb58f",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:00.387946+00:00",
+      "sequence": 3,
+      "body": {
+        "type": "context_projected",
+        "fields": [
+          "assistant_depth",
+          "category",
+          "goal",
+          "personal_preferences",
+          "sources",
+          "work_state"
+        ],
+        "issues": [],
+        "skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "4879908e-7c89-4c12-8ccc-d5054c712094"
+          }
+        ],
+        "status": "projected",
+        "omitted": [],
+        "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+        "content_digest": "da69571f31d7422ce6705e91ecd5aaf3fdd2c2e71914f60114a55ec8b7e7212f"
+      }
+    },
+    {
+      "id": "3e241566-7a4c-4488-ad23-139cbb35bd38",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:00.543136+00:00",
+      "sequence": 4,
+      "body": {
+        "turn": 1,
+        "type": "model_started"
+      }
+    },
+    {
+      "id": "a5bf52ca-9248-498a-b3a6-6f805adecd3b",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:01.035634+00:00",
+      "sequence": 5,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T20:40:00.941526+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "3f38c437-9127-4f33-8a79-bc22cf403cf1",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:01.377712+00:00",
+      "sequence": 6,
+      "body": {
+        "type": "context_observed",
+        "cache": {
+          "status": "not_recorded_for_failed_call",
+          "read_tokens": null,
+          "read_hit_ratio": null,
+          "creation_tokens": null,
+          "input_includes_cache": true
+        },
+        "focus": 64000,
+        "window": 592288,
+        "cleanup": {
+          "reason": "within_focus",
+          "applied": false,
+          "triggered": false
+        },
+        "history": {
+          "kept": 0,
+          "hidden": 0,
+          "carried": 0,
+          "updated": 0,
+          "truncated": 0,
+          "directories": 0,
+          "unclassified": 0
+        },
+        "reserve": 528288,
+        "version": 1,
+        "segments": {
+          "loop": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "tools": {
+            "actual_tokens": null,
+            "estimated_tokens": 30248
+          },
+          "skills": {
+            "actual_tokens": null,
+            "estimated_tokens": 3780
+          },
+          "system": {
+            "actual_tokens": null,
+            "estimated_tokens": 2850
+          },
+          "history": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "envelope": {
+            "actual_tokens": null,
+            "estimated_tokens": 675
+          }
+        },
+        "warnings": [
+          "fixed_over_half_focus"
+        ],
+        "isolation": "main",
+        "call_state": "unknown",
+        "reductions": [],
+        "run_budget": {
+          "held": 0,
+          "used": 674619,
+          "limit": 2000000000,
+          "remaining": 1999325381
+        },
+        "work_state": {
+          "revision": 0,
+          "item_counts": {
+            "citations": 0,
+            "completed": 0,
+            "questions": 0,
+            "candidates": 0,
+            "exclusions": 0,
+            "unfinished": 0,
+            "constraints": 0,
+            "focus_objects": 0
+          },
+          "context_incomplete": false
+        },
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "usage_status": "unavailable",
+        "cleanup_count": 0,
+        "model_call_id": "0a889fe3-f952-4bf1-8ef8-a355d64a9ba3",
+        "admission_tokens": 43186,
+        "estimation_basis": "first_call_estimate",
+        "window_configured": true,
+        "calibration_factor": 1.15,
+        "actual_input_tokens": null,
+        "actual_output_tokens": null,
+        "actual_segment_tokens": "provider_not_reported",
+        "estimated_input_tokens": 37553,
+        "estimation_error_ratio": null,
+        "estimation_error_streak": 0
+      }
+    },
+    {
+      "id": "5b5532c3-4623-4eb1-a27a-38a05fde81df",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:01.431268+00:00",
+      "sequence": 7,
+      "body": {
+        "type": "run_state",
+        "status": "waiting_input",
+        "error_code": "EXTERNAL_OUTCOME_UNKNOWN"
+      }
+    },
+    {
+      "id": "99d12ace-e7e7-4985-b080-dedbc78d58e1",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:01.456409+00:00",
+      "sequence": 8,
+      "body": {
+        "type": "reconciliation_required",
+        "cancel_epoch": 0,
+        "automatic_after_seconds": 300
+      }
+    },
+    {
+      "id": "81333e27-b72c-44d6-b014-8814ecb96c52",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:02.045342+00:00",
+      "sequence": 9,
+      "body": {
+        "turn": 1,
+        "type": "model_started"
+      }
+    },
+    {
+      "id": "5cfcb6e2-ac79-40dc-be85-5744736400e0",
+      "run_id": "81dc73df-f3c5-49b7-ae88-c27c37c7fe3f",
+      "created_at": "2026-11-01 20:40:02.595295+00:00",
+      "sequence": 10,
+      "body": {
+        "type": "run_state",
+        "status": "waiting_input",
+        "error_code": "EXTERNAL_OUTCOME_UNKNOWN"
+      }
+    }
+  ],
+  "held_tokens": 0,
+  "used_tokens": 674619,
+  "issued_citations": [],
+  "read_source_ids": [],
+  "carried_source_ids": [],
+  "citation_source_ids": [],
+  "candidates": []
+}

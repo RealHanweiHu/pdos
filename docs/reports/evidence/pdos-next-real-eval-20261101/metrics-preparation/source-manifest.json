@@ -1,0 +1,49 @@
+{
+  "kind": "offline_metrics_preparation_not_real_model_results",
+  "files": [
+    {
+      "path": "AGENTS.md",
+      "sha256": "cc7940286e311d36edd227c882c893b5562e72229659342a61093bcd5cc072e6"
+    },
+    {
+      "path": "pdos-next/tools/xiaopai_real_eval_metrics.py",
+      "sha256": "0c493726a71c3dd3ad6940d9b83af3df35f63f89a980795e168fd3f8e5c5b166"
+    },
+    {
+      "path": "pdos-next/tools/tests/test_xiaopai_real_eval_metrics.py",
+      "sha256": "e6e6a88917e37b084c010655207f76210ba6cb9ab8f84da07677736eca8b5512"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/questions.json",
+      "sha256": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/context-questions.json",
+      "sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c"
+    },
+    {
+      "path": "docs/evaluations/xiaopai-v0/rubric.md",
+      "sha256": "2fb0c99abc53c63b927de89a17d8922aeb63ce29682af0fa9bf6afeaab172c14"
+    },
+    {
+      "path": "docs/design/2026-10-28-xiaopai-context-design.md",
+      "sha256": "df9c0948e04556a6da84a4c3c7dafae7422236960479d283aef4a131fa93a28e"
+    },
+    {
+      "path": "docs/design/2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md",
+      "sha256": "10d6d43aef243e4d7c84a5178d4b92cac4d3f402d1d52f8e2b1a67a9d9b6a330"
+    }
+  ],
+  "verification": {
+    "pure_tests_passed": 16,
+    "ruff": "passed",
+    "database_access": false,
+    "network_access": false,
+    "model_calls": 0
+  },
+  "owned_paths": [
+    "pdos-next/tools/xiaopai_real_eval_metrics.py",
+    "pdos-next/tools/tests/test_xiaopai_real_eval_metrics.py",
+    "docs/reports/evidence/pdos-next-real-eval-20261101/metrics-preparation/"
+  ]
+}

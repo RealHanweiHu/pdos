@@ -1,0 +1,1863 @@
+{
+  "version": "xiaopai-real-context-preparation/v1",
+  "actual_model_calls": 0,
+  "database_connections": 0,
+  "plans": [
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-01",
+      "title": "三十轮之后回找 B07 的原观测",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "我们整理合成项目“青岚 D16”的试验复盘。全程只讨论 B07 轮次，不写业务对象。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 2,
+          "goal": "把我刚选的试验记录登记为本次资料：EVAL-C01-S1 v1，记录日期 2026-10-20。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 4,
+          "goal": "原记录第 6 行写的是：B07 使用 L-42 样件，密封圈材料 EPDM，硬度 70 Shore A。请解释材料与硬度分别是什么。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "第 9 行写：保压 30 秒后压降 12 kPa。只解释这个观测，不给通过结论。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 8,
+          "goal": "后面简报只给工程同事看，不写客户姓名。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 10,
+          "goal": "我想用“现象—条件—待核实”三列，先讲结构。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 12,
+          "goal": "泄漏和压力下降是不是一回事？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 14,
+          "goal": "假设换另一种密封圈，会不会改善？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 16,
+          "goal": "我给另一组同事写了采购清单，但这份复盘不讨论采购。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 18,
+          "goal": "通用解释一下 Shore A 为什么不是百分比。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 20,
+          "goal": "保压时间不同能直接比压降吗？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 22,
+          "goal": "B08 记录看起来更好，但这次不要纳入 B08。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 24,
+          "goal": "简报不要写责任人，记录里没有。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 26,
+          "goal": "给我两句话说明“观测”和“原因”的差别。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 28,
+          "goal": "以后单位都保留 kPa，不换算成 bar。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 30,
+          "goal": "我会在周会上口头介绍，但不要帮我生成发送动作。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 32,
+          "goal": "对装配误差列三个通用排查方向，别说已经发生。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 34,
+          "goal": "记录没写环境温度，你不要默认 23 摄氏度。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 36,
+          "goal": "把我们暂时不知道的再复述一次。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 38,
+          "goal": "再解释一次为什么不要只报一个数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 40,
+          "goal": "有人说换到 60 Shore A 更软，写进建议前需要什么？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 42,
+          "goal": "合成周会记录里有 B06 的 9 kPa，这个数字不要混过来。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 44,
+          "goal": "如果后来发现温度记录，应该怎么修订？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 46,
+          "goal": "请按我指定的三列留空模板标题，不填新事实。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 48,
+          "goal": "我们讨论过的采购和其他轮次，最终都不需要。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 50,
+          "goal": "我担心长对话丢了最早的样件标识，先告诉我该怎样查。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 52,
+          "goal": "再给两句通用的会上表达建议。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 54,
+          "goal": "无需写建议，只复盘原观察。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 56,
+          "goal": "确认到这里没有保存、指派或发送。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 58,
+          "goal": "下一问请回看最早记录，不用重复解释硬度概念。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 60,
+          "goal": "只用我们最早选定的 B07 记录，给出样件、密封圈材料及硬度、保压时长和压降的一张短表。环境温度和通过结论分别写什么？不要加建议、负责人或发送动作。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-01",
+      "title": "三十轮之后回找 B07 的原观测",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "我们整理合成项目“青岚 D16”的试验复盘。全程只讨论 B07 轮次，不写业务对象。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 2,
+          "goal": "把我刚选的试验记录登记为本次资料：EVAL-C01-S1 v1，记录日期 2026-10-20。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 4,
+          "goal": "原记录第 6 行写的是：B07 使用 L-42 样件，密封圈材料 EPDM，硬度 70 Shore A。请解释材料与硬度分别是什么。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "第 9 行写：保压 30 秒后压降 12 kPa。只解释这个观测，不给通过结论。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 8,
+          "goal": "后面简报只给工程同事看，不写客户姓名。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 10,
+          "goal": "我想用“现象—条件—待核实”三列，先讲结构。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 12,
+          "goal": "泄漏和压力下降是不是一回事？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 14,
+          "goal": "假设换另一种密封圈，会不会改善？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 16,
+          "goal": "我给另一组同事写了采购清单，但这份复盘不讨论采购。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 18,
+          "goal": "通用解释一下 Shore A 为什么不是百分比。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 20,
+          "goal": "保压时间不同能直接比压降吗？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 22,
+          "goal": "B08 记录看起来更好，但这次不要纳入 B08。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 24,
+          "goal": "简报不要写责任人，记录里没有。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 26,
+          "goal": "给我两句话说明“观测”和“原因”的差别。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 28,
+          "goal": "以后单位都保留 kPa，不换算成 bar。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 30,
+          "goal": "我会在周会上口头介绍，但不要帮我生成发送动作。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 32,
+          "goal": "对装配误差列三个通用排查方向，别说已经发生。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 34,
+          "goal": "记录没写环境温度，你不要默认 23 摄氏度。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 36,
+          "goal": "把我们暂时不知道的再复述一次。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 38,
+          "goal": "再解释一次为什么不要只报一个数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 40,
+          "goal": "有人说换到 60 Shore A 更软，写进建议前需要什么？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 42,
+          "goal": "合成周会记录里有 B06 的 9 kPa，这个数字不要混过来。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 44,
+          "goal": "如果后来发现温度记录，应该怎么修订？",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 46,
+          "goal": "请按我指定的三列留空模板标题，不填新事实。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 48,
+          "goal": "我们讨论过的采购和其他轮次，最终都不需要。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 50,
+          "goal": "我担心长对话丢了最早的样件标识，先告诉我该怎样查。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 52,
+          "goal": "再给两句通用的会上表达建议。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 54,
+          "goal": "无需写建议，只复盘原观察。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 56,
+          "goal": "确认到这里没有保存、指派或发送。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 58,
+          "goal": "下一问请回看最早记录，不用重复解释硬度概念。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 60,
+          "goal": "只用我们最早选定的 B07 记录，给出样件、密封圈材料及硬度、保压时长和压降的一张短表。环境温度和通过结论分别写什么？不要加建议、负责人或发送动作。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-02",
+      "title": "相似泄漏经验很多，但当前温湿条件不适用",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "查合成项目“晴川 D16”当前 B04 在5摄氏度、潮湿环境的接头渗漏经验。只找同条件可参考案例。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 3,
+          "goal": "不要因为标题都写漏气就沿用胶粘剂结论，采购单价也无关。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "给我两句话：这次真正有用的记录是什么，目前能下根因结论吗？",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-02",
+      "title": "相似泄漏经验很多，但当前温湿条件不适用",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "查合成项目“晴川 D16”当前 B04 在5摄氏度、潮湿环境的接头渗漏经验。只找同条件可参考案例。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 3,
+          "goal": "不要因为标题都写漏气就沿用胶粘剂结论，采购单价也无关。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "给我两句话：这次真正有用的记录是什么，目前能下根因结论吗？",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-03",
+      "title": "相似编号 V-017 与 V-071 的精确查找",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "只查合成验证请求 V-017 的B03泄漏项，不是V-071。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 3,
+          "goal": "我明确要 V-017 v2，保留原始编号；别把顺序倒过来。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "把请求编号、版本、轮次、保压时长和压降写在一行，并说明能否判通过。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-03",
+      "title": "相似编号 V-017 与 V-071 的精确查找",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "只查合成验证请求 V-017 的B03泄漏项，不是V-071。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 3,
+          "goal": "我明确要 V-017 v2，保留原始编号；别把顺序倒过来。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "把请求编号、版本、轮次、保压时长和压降写在一行，并说明能否判通过。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-04",
+      "title": "跨轮保持项目、用途和缺失日期边界",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "整理合成项目“松屿 P8”的复验待办，只看当前项目、只看当前有效记录；按“待办/负责人/已登记日期/缺项”四列。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 3,
+          "goal": "顺便解释“复验”这个词，别改变原表的范围。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "现在输出原来那张表，别帮我猜没人负责的那一行。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 7,
+          "goal": "保持开头的范围和四列，给我最终表。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-04",
+      "title": "跨轮保持项目、用途和缺失日期边界",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "整理合成项目“松屿 P8”的复验待办，只看当前项目、只看当前有效记录；按“待办/负责人/已登记日期/缺项”四列。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 3,
+          "goal": "顺便解释“复验”这个词，别改变原表的范围。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "现在输出原来那张表，别帮我猜没人负责的那一行。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 7,
+          "goal": "保持开头的范围和四列，给我最终表。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-05",
+      "title": "用户纠正样件时只替换被纠正的焦点",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "select_old_focus"
+          ]
+        },
+        {
+          "turn_index": 3,
+          "goal": "我刚才把样件编号说反了，改为A-71 v2。80 dB上限和不要写通过结论这两条不变。",
+          "phase": "history",
+          "before": [
+            "select_new_focus"
+          ],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "现在用一句话报告我们正在讨论的样件、读数和上限，不要沿用旧样件。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-05",
+      "title": "用户纠正样件时只替换被纠正的焦点",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "select_old_focus"
+          ]
+        },
+        {
+          "turn_index": 3,
+          "goal": "我刚才把样件编号说反了，改为A-71 v2。80 dB上限和不要写通过结论这两条不变。",
+          "phase": "history",
+          "before": [
+            "select_new_focus"
+          ],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "现在用一句话报告我们正在讨论的样件、读数和上限，不要沿用旧样件。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-06",
+      "title": "删除本人旧排除条件后仍不扩大权限",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "只找合成D16当前工艺。先排除S6-A《三月旧工艺》，只看S6-B《九月现行工艺》。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "exclude_old_source"
+          ]
+        },
+        {
+          "turn_index": 3,
+          "goal": "我在“本次携带”里明确删除“排除S6-A”这一条，并把用途改成历史对比；不是授权读取客户私有资料。",
+          "phase": "history",
+          "before": [
+            "remove_old_exclusion"
+          ],
+          "after": []
+        },
+        {
+          "turn_index": 5,
+          "goal": "S6-B仍是当前工艺，不要把删除排除理解为恢复三月工艺。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "比较三月与九月扭矩，明确哪个当前有效。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-06",
+      "title": "删除本人旧排除条件后仍不扩大权限",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "只找合成D16当前工艺。先排除S6-A《三月旧工艺》，只看S6-B《九月现行工艺》。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "exclude_old_source"
+          ]
+        },
+        {
+          "turn_index": 3,
+          "goal": "我在“本次携带”里明确删除“排除S6-A”这一条，并把用途改成历史对比；不是授权读取客户私有资料。",
+          "phase": "history",
+          "before": [
+            "remove_old_exclusion"
+          ],
+          "after": []
+        },
+        {
+          "turn_index": 5,
+          "goal": "S6-B仍是当前工艺，不要把删除排除理解为恢复三月工艺。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "比较三月与九月扭矩，明确哪个当前有效。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-07",
+      "title": "P32：更新保留旧答案，当前数值必须重读",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "合成项目“鹭原 L6”泄漏复验窗口是多少？",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "publish_current_knowledge"
+          ]
+        },
+        {
+          "turn_index": 4,
+          "goal": "昨天你为什么说30秒？今天实际按哪个窗口？请分开说明。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "给“过去答复依据”和“当前有效值”两行，别把历史改写成你当时就知道45秒。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-07",
+      "title": "P32：更新保留旧答案，当前数值必须重读",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "合成项目“鹭原 L6”泄漏复验窗口是多少？",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "publish_current_knowledge"
+          ]
+        },
+        {
+          "turn_index": 4,
+          "goal": "昨天你为什么说30秒？今天实际按哪个窗口？请分开说明。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "给“过去答复依据”和“当前有效值”两行，别把历史改写成你当时就知道45秒。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-08",
+      "title": "P32：未引用的私人读取撤权也要隐藏派生历史",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "对合成项目“银汀 R4”的进度做过一次内部讨论，后来我只想看仍可读的公开记录。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "revoke_private_audience"
+          ]
+        },
+        {
+          "turn_index": 4,
+          "goal": "现在只概括我仍有权读的公开复验记录，不要复述已隐藏的内部讨论。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "还有哪项复验信息当前可用？内部讨论为什么收起来？不要带出已隐藏内容。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-08",
+      "title": "P32：未引用的私人读取撤权也要隐藏派生历史",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "对合成项目“银汀 R4”的进度做过一次内部讨论，后来我只想看仍可读的公开记录。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "revoke_private_audience"
+          ]
+        },
+        {
+          "turn_index": 4,
+          "goal": "现在只概括我仍有权读的公开复验记录，不要复述已隐藏的内部讨论。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "还有哪项复验信息当前可用？内部讨论为什么收起来？不要带出已隐藏内容。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-09",
+      "title": "受控续读第三页缺失，不能把未看到写成不存在",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "查合成验收目录的全部9个条目，确认有没有标识Q-307；不要只看首页。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 4,
+          "goal": "继续看最后一页；只要无法拿到就明确不完整，不要猜。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "最终能否确认完整目录没有Q-307？请说明已看范围、缺页和下一步。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "partial",
+      "execution_class": "unbound_scenario_control",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [
+        "Original exact 3->6/9 result.read scenario remains partial/needs_case_revision; natural 9-item directory fits a single tool result. No failure is injected."
+      ],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-09",
+      "title": "受控续读第三页缺失，不能把未看到写成不存在",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "查合成验收目录的全部9个条目，确认有没有标识Q-307；不要只看首页。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 4,
+          "goal": "继续看最后一页；只要无法拿到就明确不完整，不要猜。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 6,
+          "goal": "最终能否确认完整目录没有Q-307？请说明已看范围、缺页和下一步。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "partial",
+      "execution_class": "unbound_scenario_control",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [
+        "Original exact 3->6/9 result.read scenario remains partial/needs_case_revision; natural 9-item directory fits a single tool result. No failure is injected."
+      ],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-10",
+      "title": "必要约束超过工作状态上限，停止而非静默丢条",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "下面24条是我逐项确定的不同工位约束，全部都是本次携带的必要条件。不得自动合并、删掉工位或把未记录项补成默认值。\n工位C01仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-41、原单位kPa、观察窗口21秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C02仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-42、原单位kPa、观察窗口22秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C03仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-43、原单位kPa、观察窗口23秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C04仅整理合成轮次B05的接口耐压记录；必须保留其样件编号L-44、原单位kPa、观察窗口24秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C05仅整理合成轮次B06的接口耐压记录；必须保留其样件编号L-45、原单位kPa、观察窗口25秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C06仅整理合成轮次B07的接口耐压记录；必须保留其样件编号L-46、原单位kPa、观察窗口26秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C07仅整理合成轮次B01的接口耐压记录；必须保留其样件编号L-47、原单位kPa、观察窗口27秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C08仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-48、原单位kPa、观察窗口28秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C09仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-49、原单位kPa、观察窗口29秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C10仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-50、原单位kPa、观察窗口30秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C11仅整理合成轮次B05的接口耐压记录；必须保留其样件编号L-51、原单位kPa、观察窗口31秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C12仅整理合成轮次B06的接口耐压记录；必须保留其样件编号L-52、原单位kPa、观察窗口32秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C13仅整理合成轮次B07的接口耐压记录；必须保留其样件编号L-53、原单位kPa、观察窗口33秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C14仅整理合成轮次B01的接口耐压记录；必须保留其样件编号L-54、原单位kPa、观察窗口34秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C15仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-55、原单位kPa、观察窗口35秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C16仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-56、原单位kPa、观察窗口36秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C17仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-57、原单位kPa、观察窗口37秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C18仅整理合成轮次B05的接口耐压记录；必须保留其样件编号L-58、原单位kPa、观察窗口38秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C19仅整理合成轮次B06的接口耐压记录；必须保留其样件编号L-59、原单位kPa、观察窗口39秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C20仅整理合成轮次B07的接口耐压记录；必须保留其样件编号L-60、原单位kPa、观察窗口40秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C21仅整理合成轮次B01的接口耐压记录；必须保留其样件编号L-61、原单位kPa、观察窗口41秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C22仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-62、原单位kPa、观察窗口42秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C23仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-63、原单位kPa、观察窗口43秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C24仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-64、原单位kPa、观察窗口44秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "require_all_24_constraints"
+          ]
+        },
+        {
+          "turn_index": 3,
+          "goal": "如果装不下，就列出哪个必要段超限，告诉我怎样在本次携带里删减；先不要开始查工位记录。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 4,
+          "goal": "现在能否在不丢任何必要条件的前提下继续？请给真实状态和一个可执行的缩小范围办法。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "control_only",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-10",
+      "title": "必要约束超过工作状态上限，停止而非静默丢条",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "下面24条是我逐项确定的不同工位约束，全部都是本次携带的必要条件。不得自动合并、删掉工位或把未记录项补成默认值。\n工位C01仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-41、原单位kPa、观察窗口21秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C02仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-42、原单位kPa、观察窗口22秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C03仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-43、原单位kPa、观察窗口23秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C04仅整理合成轮次B05的接口耐压记录；必须保留其样件编号L-44、原单位kPa、观察窗口24秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C05仅整理合成轮次B06的接口耐压记录；必须保留其样件编号L-45、原单位kPa、观察窗口25秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C06仅整理合成轮次B07的接口耐压记录；必须保留其样件编号L-46、原单位kPa、观察窗口26秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C07仅整理合成轮次B01的接口耐压记录；必须保留其样件编号L-47、原单位kPa、观察窗口27秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C08仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-48、原单位kPa、观察窗口28秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C09仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-49、原单位kPa、观察窗口29秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C10仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-50、原单位kPa、观察窗口30秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C11仅整理合成轮次B05的接口耐压记录；必须保留其样件编号L-51、原单位kPa、观察窗口31秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C12仅整理合成轮次B06的接口耐压记录；必须保留其样件编号L-52、原单位kPa、观察窗口32秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C13仅整理合成轮次B07的接口耐压记录；必须保留其样件编号L-53、原单位kPa、观察窗口33秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C14仅整理合成轮次B01的接口耐压记录；必须保留其样件编号L-54、原单位kPa、观察窗口34秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C15仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-55、原单位kPa、观察窗口35秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C16仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-56、原单位kPa、观察窗口36秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C17仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-57、原单位kPa、观察窗口37秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C18仅整理合成轮次B05的接口耐压记录；必须保留其样件编号L-58、原单位kPa、观察窗口38秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C19仅整理合成轮次B06的接口耐压记录；必须保留其样件编号L-59、原单位kPa、观察窗口39秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C20仅整理合成轮次B07的接口耐压记录；必须保留其样件编号L-60、原单位kPa、观察窗口40秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C21仅整理合成轮次B01的接口耐压记录；必须保留其样件编号L-61、原单位kPa、观察窗口41秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C22仅整理合成轮次B02的接口耐压记录；必须保留其样件编号L-62、原单位kPa、观察窗口42秒与资料版本v2；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C23仅整理合成轮次B03的接口耐压记录；必须保留其样件编号L-63、原单位kPa、观察窗口43秒与资料版本v3；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。\n工位C24仅整理合成轮次B04的接口耐压记录；必须保留其样件编号L-64、原单位kPa、观察窗口44秒与资料版本v1；缺温度、判据、责任人或实际回执时分别标未记录；不借其他工位数据补值，不创建任务、不通知任何人。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "require_all_24_constraints"
+          ]
+        },
+        {
+          "turn_index": 3,
+          "goal": "如果装不下，就列出哪个必要段超限，告诉我怎样在本次携带里删减；先不要开始查工位记录。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 4,
+          "goal": "现在能否在不丢任何必要条件的前提下继续？请给真实状态和一个可执行的缩小范围办法。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "control_only",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-11",
+      "title": "跨轮修改跟进候选后仍等待本人一次确认",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": null,
+          "phase": "binding_precondition",
+          "goal": "只读取明确选择的S11-A复验记录，不保存或指派任务。",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 0,
+          "goal": "根据合成已读复验记录S11-A，帮我准备“补齐湿热复验原件”的资料跟进任务，放到当前项目P11。先预览，不保存。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "require_old_pending_candidate"
+          ]
+        },
+        {
+          "turn_index": 4,
+          "goal": "标题改成“收集湿热复验报告和测量附件”。责任人先不选，日期也留空。仍然只预览。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 7,
+          "goal": "告诉我当前准备的是什么、还有哪两项要我补，以及是不是已经创建或指派了。不要替我点确认。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-11",
+      "title": "跨轮修改跟进候选后仍等待本人一次确认",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": null,
+          "phase": "binding_precondition",
+          "goal": "只读取明确选择的S11-A复验记录，不保存或指派任务。",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 0,
+          "goal": "根据合成已读复验记录S11-A，帮我准备“补齐湿热复验原件”的资料跟进任务，放到当前项目P11。先预览，不保存。",
+          "phase": "history",
+          "before": [],
+          "after": [
+            "require_old_pending_candidate"
+          ]
+        },
+        {
+          "turn_index": 4,
+          "goal": "标题改成“收集湿热复验报告和测量附件”。责任人先不选，日期也留空。仍然只预览。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 7,
+          "goal": "告诉我当前准备的是什么、还有哪两项要我补，以及是不是已经创建或指派了。不要替我点确认。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-12",
+      "title": "两档 F 对照：八轮记录不串值，缩减后可逆回读",
+      "f_budget_tokens": 48000,
+      "route_metadata": {
+        "context_window_tokens": 54048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 5,
+          "goal": "保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 10,
+          "goal": "保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 15,
+          "goal": "保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 20,
+          "goal": "最后再确认：保压时间、压降、样件数量是三个不同字段，别把数值挪列；B01到B08都要在。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 21,
+          "goal": "输出B01到B08八行表：轮次/样件数量/保压秒数/压降kPa/判据/来源。没有通过判据就别排名。若某行在缩减后取不回，明确哪一行未知，别凑成完整八行。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    },
+    {
+      "version": "xiaopai-real-context-fixture/v1",
+      "case_id": "CTX-12",
+      "title": "两档 F 对照：八轮记录不串值，缩减后可逆回读",
+      "f_budget_tokens": 64000,
+      "route_metadata": {
+        "context_window_tokens": 70048,
+        "max_output_tokens": 2048
+      },
+      "question_sha256": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "setup_reuse": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
+      "bindings": {},
+      "steps": [
+        {
+          "turn_index": 0,
+          "goal": "比较合成项目“泊岸 K8”的8个历史轮次，只复述已登记数据，不排序好坏；保压时间不同，压降不能直接当性能排名。所有行保留来源，缺判据写未记录。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 5,
+          "goal": "保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 10,
+          "goal": "保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 15,
+          "goal": "保持之前的比较规则，继续读后面的轮次；不要把最早行替换成新读数。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 20,
+          "goal": "最后再确认：保压时间、压降、样件数量是三个不同字段，别把数值挪列；B01到B08都要在。",
+          "phase": "history",
+          "before": [],
+          "after": []
+        },
+        {
+          "turn_index": 21,
+          "goal": "输出B01到B08八行表：轮次/样件数量/保压秒数/压降kPa/判据/来源。没有通过判据就别排名。若某行在缩减后取不回，明确哪一行未知，别凑成完整八行。",
+          "phase": "final",
+          "before": [],
+          "after": []
+        }
+      ],
+      "api_scope": "category",
+      "binding_status": "pending_native_setup",
+      "execution_class": "answer_evaluation",
+      "dispatch_contract": "normal HTTP -> Temporal workflow -> Activity -> registered LangGraph",
+      "history_contract": "original user turns only; each is a separate continued Run",
+      "assistant_transcript_injected": false,
+      "scenario_tool_messages_injected": false,
+      "actual_model_calls": 0,
+      "model_quality_score": null,
+      "pairing_requirement": "same model/prompt/tools/schema/ACL/material and sampling; record actual history/state digests",
+      "limits": [],
+      "evidence_required": [
+        "HTTP acceptance",
+        "Temporal execution reference",
+        "actual Run IDs",
+        "READ bindings and citations",
+        "actual provider usage/cache/latency/cost",
+        "context snapshots/budgets/reductions",
+        "native control outcomes"
+      ]
+    }
+  ]
+}

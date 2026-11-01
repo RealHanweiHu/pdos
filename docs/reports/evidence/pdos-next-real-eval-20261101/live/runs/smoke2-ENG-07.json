@@ -1,0 +1,2759 @@
+{
+  "case_id": "ENG-07",
+  "label": "smoke2-ENG-07",
+  "id": "a0613743-f930-4272-8bbb-b95595696113",
+  "run_id": "a0613743-f930-4272-8bbb-b95595696113",
+  "session_id": "af8bdcc1-fb9d-4430-b45a-12736e4412dc",
+  "status": "failed",
+  "state": "failed",
+  "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+  "product_id": null,
+  "project_id": null,
+  "continued_from_id": null,
+  "elapsed_ms": 50278.68295900407,
+  "first_visible_ms": 8053.13675000798,
+  "request": {
+    "goal": "我是同组同事，帮我查ENG-PRV-2026-009里的B支架尺寸和验证安排。",
+    "idempotency_key": "cb58ce2b-e28f-5915-9129-3657c791956d"
+  },
+  "view": {
+    "run_id": "a0613743-f930-4272-8bbb-b95595696113",
+    "goal": "我是同组同事，帮我查ENG-PRV-2026-009里的B支架尺寸和验证安排。",
+    "session_id": "af8bdcc1-fb9d-4430-b45a-12736e4412dc",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "session_proposal_id": null,
+    "project_id": null,
+    "status": "failed",
+    "result": null,
+    "error_code": "INTERNAL_ERROR",
+    "reconciliation": null,
+    "process": {
+      "run_id": "a0613743-f930-4272-8bbb-b95595696113",
+      "status": "failed",
+      "reverted": false,
+      "error_code": "INTERNAL_ERROR",
+      "started_at": "2026-11-01T18:22:38.332727+00:00",
+      "observed_at": "2026-11-01T18:23:28.527323+00:00",
+      "last_recorded_at": "2026-11-01T18:23:27.634219+00:00",
+      "ended_at": "2026-11-01T18:23:27.634219+00:00",
+      "elapsed_seconds": 49.301492,
+      "call_counts": {
+        "total": 53,
+        "completed": 42,
+        "pending": 1,
+        "failed": 10
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "479486b9-2287-46e2-a92f-b129ffebc2e3",
+          "sequence": 93,
+          "at": "2026-11-01T18:23:16.074404+00:00",
+          "kind": "tool_started",
+          "tool": "test.run.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "5c0cbede-f373-49d5-b488-7624812560be",
+          "sequence": 94,
+          "at": "2026-11-01T18:23:16.109466+00:00",
+          "kind": "tool_started",
+          "tool": "build.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "1daf420f-283d-4fbb-84d9-d9a6de718d08",
+          "sequence": 95,
+          "at": "2026-11-01T18:23:16.154628+00:00",
+          "kind": "tool_started",
+          "tool": "quality.issue.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "6caa50a5-14ab-4b9a-900a-bd6ccc6b87f6",
+          "sequence": 96,
+          "at": "2026-11-01T18:23:16.653492+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "f78c14f4-2ccb-499a-8a71-78b61aa8f81c",
+          "sequence": 98,
+          "at": "2026-11-01T18:23:18.492727+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 604,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 4550,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 42032,
+            "admission_tokens": 48337,
+            "fixed_over_half": null,
+            "actual_input_tokens": 45137,
+            "actual_output_tokens": 182,
+            "estimation_error_ratio": 0.06879057092850654,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": 44549,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.9869729933314133,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 646477,
+              "held": 691434,
+              "remaining": 1998662089
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "d62f8a55-3de0-4659-9832-6c1360043ea8",
+          "sequence": 99,
+          "at": "2026-11-01T18:23:18.681736+00:00",
+          "kind": "tool_started",
+          "tool": "conversation.history",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "b0685d5d-436b-48db-a0f4-b37b7583a3ea",
+          "sequence": 100,
+          "at": "2026-11-01T18:23:18.715486+00:00",
+          "kind": "tool_started",
+          "tool": "category.parameters.list",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "5a857bb3-8352-4a03-8ed4-002bf8b40273",
+          "sequence": 101,
+          "at": "2026-11-01T18:23:19.196573+00:00",
+          "kind": "tool_finished",
+          "tool": "category.parameters.list",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "80bf0454-e15b-4daa-abef-b5b11faf23ce",
+          "sequence": 102,
+          "at": "2026-11-01T18:23:19.242617+00:00",
+          "kind": "tool_finished",
+          "tool": "conversation.history",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "bff5439f-b851-4ea7-8fe7-ac68aa2adaba",
+          "sequence": 103,
+          "at": "2026-11-01T18:23:19.399857+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "5a1c15ba-87e0-48ec-a4ea-f2d964d7fbe8",
+          "sequence": 105,
+          "at": "2026-11-01T18:23:20.864518+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 604,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 4587,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 42069,
+            "admission_tokens": 48380,
+            "fixed_over_half": null,
+            "actual_input_tokens": 45048,
+            "actual_output_tokens": 338,
+            "estimation_error_ratio": 0.06612946190729888,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": 44238,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.982019179541822,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 691863,
+              "held": 693789,
+              "remaining": 1998614348
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "d78b2379-3a17-461c-ba35-097a7b71e1ad",
+          "sequence": 106,
+          "at": "2026-11-01T18:23:20.981849+00:00",
+          "kind": "tool_started",
+          "tool": "mcp.tools.list",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "72f967c4-2e0c-4986-9ca6-d2760bcd32e5",
+          "sequence": 107,
+          "at": "2026-11-01T18:23:21.893626+00:00",
+          "kind": "tool_finished",
+          "tool": "mcp.tools.list",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "b61ff83c-e84f-480f-8396-32a3e6b666b8",
+          "sequence": 108,
+          "at": "2026-11-01T18:23:22.039269+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "982b83c7-9ddc-4e5a-9d6d-f7729db510bc",
+          "sequence": 110,
+          "at": "2026-11-01T18:23:23.307417+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 604,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 5239,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 42721,
+            "admission_tokens": 49130,
+            "fixed_over_half": null,
+            "actual_input_tokens": 45787,
+            "actual_output_tokens": 220,
+            "estimation_error_ratio": 0.06696223818987922,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": 45137,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.9858038307816629,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 737870,
+              "held": 693805,
+              "remaining": 1998568325
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "c4003512-5ed4-45e8-b737-99a090f201af",
+          "sequence": 111,
+          "at": "2026-11-01T18:23:23.415417+00:00",
+          "kind": "tool_started",
+          "tool": "assistant.citations.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "0896988e-336f-4c96-b6d7-ee2c474d2853",
+          "sequence": 112,
+          "at": "2026-11-01T18:23:23.841846+00:00",
+          "kind": "tool_finished",
+          "tool": "assistant.citations.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "1bfc5c1a-dbac-416b-b04f-f9624ea67261",
+          "sequence": 113,
+          "at": "2026-11-01T18:23:23.885096+00:00",
+          "kind": "tool_started",
+          "tool": "mcp.tools.list",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "3cbeab9d-557e-4e29-8ba7-d15a017120da",
+          "sequence": 114,
+          "at": "2026-11-01T18:23:24.359635+00:00",
+          "kind": "tool_finished",
+          "tool": "mcp.tools.list",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "13b4c6d9-73ae-4b83-a18a-1b70df669fae",
+          "sequence": 115,
+          "at": "2026-11-01T18:23:24.556503+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "f3039a46-8f45-4275-b3f4-a5ca17d51d97",
+          "sequence": 117,
+          "at": "2026-11-01T18:23:26.424045+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 604,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 5205,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 42687,
+            "admission_tokens": 49091,
+            "fixed_over_half": null,
+            "actual_input_tokens": 45625,
+            "actual_output_tokens": 269,
+            "estimation_error_ratio": 0.0643945205479452,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": 45048,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.9873534246575343,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 783764,
+              "held": 695969,
+              "remaining": 1998520267
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "ce364c7f-6d52-4aaf-9f4b-2e6673ae2bbf",
+          "sequence": 118,
+          "at": "2026-11-01T18:23:26.565074+00:00",
+          "kind": "tool_started",
+          "tool": "evidence.extract",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "0dec36c7-9759-4d50-b55c-88273a4a0b91",
+          "sequence": 119,
+          "at": "2026-11-01T18:23:26.589187+00:00",
+          "kind": "tool_started",
+          "tool": "platform.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "857861e2-7f1f-4fb7-b8fe-1b408a32b59e",
+          "sequence": 120,
+          "at": "2026-11-01T18:23:27.034759+00:00",
+          "kind": "tool_finished",
+          "tool": "platform.read",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "fc7b8d1f-f3e2-4447-b09b-2df8300dc75d",
+          "sequence": 121,
+          "at": "2026-11-01T18:23:27.634219+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "failed"
+        }
+      ],
+      "next_before": 93
+    },
+    "versions": {
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [],
+        "version": "agent-work-state/v1",
+        "revision": 0,
+        "citations": [],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "我是同组同事，帮我查ENG-PRV-2026-009里的B支架尺寸和验证安排。",
+          "run_id": "a0613743-f930-4272-8bbb-b95595696113"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "af8bdcc1-fb9d-4430-b45a-12736e4412dc",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "我是同组同事，帮我查ENG-PRV-2026-009里的B支架尺寸和验证安排。",
+          "run_id": "a0613743-f930-4272-8bbb-b95595696113"
+        },
+        "focus_objects": [],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 256,
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": false,
+          "next_cursor": null
+        },
+        "context_incomplete": false,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "provider_key": "minimax",
+      "budget_policy": "development_unlimited",
+      "model_version": "MiniMax-M3",
+      "assistant_depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "prompt_prefixes": {
+        "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+      },
+      "tool_definitions": {
+        "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "assistant.citations.read",
+            "assistant.compare",
+            "assistant.extract",
+            "assistant.materials.read",
+            "assistant.search",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.claim.withdraw",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "project.create",
+            "proposal.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "result.read",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review",
+            "work.baseline.approve",
+            "work.stage.decide"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "1e6c7acfa086acbf308019174662dcdf0a378973ac6df714bb9f46feca70ccbd": {
+          "scope": {
+            "product_id": null,
+            "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+            "proposal_id": null,
+            "requester_id": "a55d6700-af42-48c3-9f03-f9c8efc91a50",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "proposal_drafting",
+              "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+              "version": "0.2.3-draft",
+              "load_event_id": "8c967223-04c2-4608-bafc-843e13ea217c"
+            }
+          ],
+          "omitted": [],
+          "event_id": "6d89c511-a0a4-4d97-9971-513340bd91f7",
+          "read_set": [],
+          "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "3ea50c874a437459a8278a04a6eaa4cbf56e845310d12282acc8c04282d19e0f"
+        },
+        "a795100a8389978eb4facb8373655b0ba177e07a5c25d022f07929516bdaa517": {
+          "scope": {
+            "product_id": null,
+            "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+            "proposal_id": null,
+            "requester_id": "a55d6700-af42-48c3-9f03-f9c8efc91a50",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "proposal_drafting",
+              "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+              "version": "0.2.3-draft",
+              "load_event_id": "90bb81ad-bc81-4f53-ae2c-0710f8c9be98"
+            }
+          ],
+          "omitted": [],
+          "event_id": "0c4c83cf-a49d-4e1b-98ae-b7dd999f0000",
+          "read_set": [],
+          "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "3ea50c874a437459a8278a04a6eaa4cbf56e845310d12282acc8c04282d19e0f"
+        }
+      },
+      "prompt_identities": {
+        "main": {
+          "key": "xiaopai.main",
+          "version": "1.0.0",
+          "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+          "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+        }
+      },
+      "work_state_digest": "44b634da477fff39990e452ad1fc86ecc2b40fba03915bfb44d9965642641242",
+      "context_admissions": {
+        "0503e0347365c77614d14b987259381fe879d76a1e40ae120c3e3fe0a950e211": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 37482,
+            "actual_input_tokens": 40995
+          }
+        },
+        "0bbc5ac15d74d2134b630ddc858246e76fbb6dd377f0a2e1bfd8c5344531a624": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 42032,
+            "actual_input_tokens": 45137
+          }
+        },
+        "266fec371f742dfae9403620be145e8326f8fa0d3af42821413643e901dbfcd2": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 38146,
+            "actual_input_tokens": 41601
+          }
+        },
+        "4c82b7c595e6cbb23e093f9a2ff0233e3682ef696212b43037de3bf4f88a3abe": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 38961,
+            "actual_input_tokens": 42487
+          }
+        },
+        "4d7df3a4bf0c24dd54e9a6bc19eec6b83b761aae4eeb9370d8f2b62d384bab26": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 41130,
+            "actual_input_tokens": 44238
+          }
+        },
+        "5bb27c4301eb1123a9bc037f6805dd60b079dccb080b1c604b30897df89437c4": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 42069,
+            "actual_input_tokens": 45048
+          }
+        },
+        "6510862d917bc36a2b8662890b27fd26a6c6155171c38846397fc6304f982852": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 39532,
+            "actual_input_tokens": 42779
+          }
+        },
+        "719ca064fc7a5bd62cbd13dda564f3c7ed5a6732edfc0c934899bf45d80de9a9": {
+          "calibration": null
+        },
+        "76273ab9d76a525c96fba8f6ee7e9f51d500887d2ef72deae8a2baa603904832": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 38754,
+            "actual_input_tokens": 42077
+          }
+        },
+        "7b439ec9276286c36e681cee8114edcc7213fdd01ae34c51f74763d58b699420": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 40371,
+            "actual_input_tokens": 43531
+          }
+        },
+        "a3af9ad706cbfc75fa6051c9daad4d787798824fa8a68f97c92166e319a817ea": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 38961,
+            "actual_input_tokens": 42487
+          }
+        },
+        "a71611ce814eed582835bfee7b0ea8a5a7c1925034f0aa24376f609b2d274c0a": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 42721,
+            "actual_input_tokens": 45787
+          }
+        },
+        "aa6df80643d3714e3fd8328229ab8da2f64b04786a71f0fff64f3193696dbd1e": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 40371,
+            "actual_input_tokens": 43531
+          }
+        },
+        "aadd4c5effc144f6ad4de7e34ffdbd00f0c27726f5b590b6fb53a58394dd6d0e": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 37482,
+            "actual_input_tokens": 40995
+          }
+        },
+        "c57f4e942148c589ead43b55de0bc1a54d4acdc710868924a55d8229a84021bd": {
+          "calibration": null
+        },
+        "cfae531ed56f542ef58f756e668af5c4c9acbd48e94a6bd020001a1a074d4338": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 39532,
+            "actual_input_tokens": 42779
+          }
+        },
+        "d418f3c3ea60206ba09885e69ed63b4eb8cb89f999bbd8260f91253a3402164c": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 41366,
+            "actual_input_tokens": 44549
+          }
+        },
+        "eee103d3dcf30f53b279eacfe3ff1843f503fab6d4cb8ce9152b23c9b3cb5ae1": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 38146,
+            "actual_input_tokens": 41601
+          }
+        },
+        "f431ca49a21d5e3c227f40f79338c769fc0f5fe708755b4e1e9d6e395f2dc777": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 38754,
+            "actual_input_tokens": 42077
+          }
+        }
+      },
+      "context_runtime_v1": {
+        "calls": {
+          "099f8b64-5dad-4d67-8c66-49992dfa58ba": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 44238,
+              "read_hit_ratio": 0.982019179541822,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 4587
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 693789,
+              "used": 691863,
+              "limit": 2000000000,
+              "remaining": 1998614348
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 48380,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 45048,
+            "actual_output_tokens": 338,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 42069,
+            "estimation_error_ratio": 0.06612946190729888,
+            "estimation_error_streak": 0
+          },
+          "0ecb27e4-2f84-4f17-93c7-4e5b5185d3be": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 42077,
+              "read_hit_ratio": 0.9835900792444892,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 2050
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 423521,
+              "limit": 2000000000,
+              "remaining": 1999576479
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 45462,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 42779,
+            "actual_output_tokens": 454,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 39532,
+            "estimation_error_ratio": 0.07590172748311087,
+            "estimation_error_streak": 0
+          },
+          "44998d58-a184-4298-8d3a-666477b8fe89": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 42879,
+              "read_hit_ratio": 0.9912386148226917,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 2344
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 681890,
+              "used": 380288,
+              "limit": 2000000000,
+              "remaining": 1998937822
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 45800,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 43258,
+            "actual_output_tokens": 321,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 39826,
+            "estimation_error_ratio": 0.07933792593277544,
+            "estimation_error_streak": 0
+          },
+          "4cd395a1-037e-4652-a153-836ddccc0763": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 40995,
+              "read_hit_ratio": 0.9854330424749405,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 664
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 166680,
+              "limit": 2000000000,
+              "remaining": 1999833320
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 43868,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 41601,
+            "actual_output_tokens": 126,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 38146,
+            "estimation_error_ratio": 0.08305088819980289,
+            "estimation_error_streak": 0
+          },
+          "515bd18f-b5b2-466e-b5a2-96eddc2804c1": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 45048,
+              "read_hit_ratio": 0.9873534246575343,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 5205
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 695969,
+              "used": 783764,
+              "limit": 2000000000,
+              "remaining": 1998520267
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 49091,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 45625,
+            "actual_output_tokens": 269,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 42687,
+            "estimation_error_ratio": 0.0643945205479452,
+            "estimation_error_streak": 0
+          },
+          "61811a0e-2724-4cbe-aed3-f17d3d0a7b54": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 42055,
+              "read_hit_ratio": 0.9898321839621531,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 1479
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 251338,
+              "limit": 2000000000,
+              "remaining": 1999748662
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 44806,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 42487,
+            "actual_output_tokens": 219,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 38961,
+            "estimation_error_ratio": 0.08299009108668534,
+            "estimation_error_streak": 0
+          },
+          "67510172-0251-4aaa-b92b-23a6efdd2e50": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 42779,
+              "read_hit_ratio": 0.9827249546300337,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 2889
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 511627,
+              "limit": 2000000000,
+              "remaining": 1999488373
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 46427,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 43531,
+            "actual_output_tokens": 297,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 40371,
+            "estimation_error_ratio": 0.07259194596953895,
+            "estimation_error_streak": 0
+          },
+          "6e11314c-5123-4619-b589-d239847e2e6e": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 43870,
+              "read_hit_ratio": 0.9847583559675862,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 3884
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 687878,
+              "used": 556473,
+              "limit": 2000000000,
+              "remaining": 1998755649
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 47571,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 44549,
+            "actual_output_tokens": 297,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 41366,
+            "estimation_error_ratio": 0.07144941525062291,
+            "estimation_error_streak": 0
+          },
+          "7d09c21f-6321-44d0-a190-2a86253d83fc": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 41601,
+              "read_hit_ratio": 0.9951916176259509,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 924
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 679859,
+              "used": 208632,
+              "limit": 2000000000,
+              "remaining": 1999111509
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 44167,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 41802,
+            "actual_output_tokens": 150,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 38406,
+            "estimation_error_ratio": 0.08124013205109804,
+            "estimation_error_streak": 0
+          },
+          "abfe561d-4b66-4d89-8f7f-980820299c9d": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 40996,
+              "read_hit_ratio": 0.9748186898109619,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 954
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 676811,
+              "used": 124953,
+              "limit": 2000000000,
+              "remaining": 1999198236
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 44202,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 42055,
+            "actual_output_tokens": 293,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 38436,
+            "estimation_error_ratio": 0.08605397693496612,
+            "estimation_error_streak": 0
+          },
+          "b31fafe4-4a37-4901-b2a4-f922477ede68": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 43258,
+              "read_hit_ratio": 0.9860496922726236,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 3077
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 511627,
+              "limit": 2000000000,
+              "remaining": 1999488373
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 46643,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 43870,
+            "actual_output_tokens": 408,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 40559,
+            "estimation_error_ratio": 0.07547298837474356,
+            "estimation_error_streak": 0
+          },
+          "b509417a-16cc-44f9-900c-457f3890595f": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 41802,
+              "read_hit_ratio": 0.9934643629536326,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 1272
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 336709,
+              "limit": 2000000000,
+              "remaining": 1999663291
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 44568,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 42077,
+            "actual_output_tokens": 275,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 38754,
+            "estimation_error_ratio": 0.07897426147301376,
+            "estimation_error_streak": 0
+          },
+          "bbdfa2bc-41ff-42e0-8396-8f8052b89510": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 44549,
+              "read_hit_ratio": 0.9869729933314133,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 4550
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 691434,
+              "used": 646477,
+              "limit": 2000000000,
+              "remaining": 1998662089
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 48337,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 45137,
+            "actual_output_tokens": 182,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 42032,
+            "estimation_error_ratio": 0.06879057092850654,
+            "estimation_error_streak": 0
+          },
+          "d76fc0a1-c1df-4d10-8bad-8370175b863c": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 184,
+              "read_hit_ratio": 0.0044883522380778145,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 82605,
+              "limit": 2000000000,
+              "remaining": 1999917395
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 43105,
+            "estimation_basis": "first_call_estimate",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 40995,
+            "actual_output_tokens": 262,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 37482,
+            "estimation_error_ratio": 0.08569337724112697,
+            "estimation_error_streak": 0
+          },
+          "de4818b1-b5dc-4e9c-8716-9dfdf1f0e455": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 42487,
+              "read_hit_ratio": 0.990857995755498,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 1939
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 678947,
+              "used": 294357,
+              "limit": 2000000000,
+              "remaining": 1999026696
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 45335,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 42879,
+            "actual_output_tokens": 140,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 39421,
+            "estimation_error_ratio": 0.08064553744257096,
+            "estimation_error_streak": 0
+          },
+          "ed47e48d-ee09-43a4-b054-5529aeed0bd7": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 184,
+              "read_hit_ratio": 0.00448824275539077,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 674425,
+              "used": 41348,
+              "limit": 2000000000,
+              "remaining": 1999284227
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 43105,
+            "estimation_basis": "first_call_estimate",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 40996,
+            "actual_output_tokens": 352,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 37482,
+            "estimation_error_ratio": 0.08571567957849546,
+            "estimation_error_streak": 0
+          },
+          "f8e2f368-daa0-4705-83e0-087a3ec68aae": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 45137,
+              "read_hit_ratio": 0.9858038307816629,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 5239
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 693805,
+              "used": 737870,
+              "limit": 2000000000,
+              "remaining": 1998568325
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 49130,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 45787,
+            "actual_output_tokens": 220,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 42721,
+            "estimation_error_ratio": 0.06696223818987922,
+            "estimation_error_streak": 0
+          },
+          "f8e58539-7257-443a-964b-3e15982e456a": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 43531,
+              "read_hit_ratio": 0.9840182648401826,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 3648
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 604
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 691175,
+              "used": 601158,
+              "limit": 2000000000,
+              "remaining": 1998707667
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 47300,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 44238,
+            "actual_output_tokens": 447,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 41130,
+            "estimation_error_ratio": 0.07025634070256341,
+            "estimation_error_streak": 0
+          }
+        },
+        "routes": {
+          "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+            "error_streak": 0
+          }
+        },
+        "cleanup_count": 0
+      },
+      "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+      "context_observations": {
+        "main": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 42687,
+          "actual_input_tokens": 45625
+        }
+      },
+      "work_state_proposals": {
+        "accepted": [],
+        "rejected": []
+      },
+      "conversation_history_pages": {
+        ":10:True": {
+          "access": {},
+          "before": null,
+          "digest": "9c6a4dfc36f47507939d43f7302c6f9b9aa14bcf76fe3365b63b8f247574aee2",
+          "hidden": [],
+          "page_size": 10,
+          "include_research_rows": true
+        },
+        ":10:False": {
+          "access": {},
+          "before": null,
+          "digest": "9c6a4dfc36f47507939d43f7302c6f9b9aa14bcf76fe3365b63b8f247574aee2",
+          "hidden": [],
+          "page_size": 10,
+          "include_research_rows": false
+        }
+      },
+      "requested_context_selection": null,
+      "personal_preferences_context": {
+        "use": "personalization_only",
+        "role": null,
+        "source": "explicit_user_settings",
+        "revision": 0,
+        "department": null,
+        "role_defaults": {
+          "summary_sections": [],
+          "welcome_examples": []
+        },
+        "answer_language": "auto",
+        "response_detail": "balanced",
+        "navigation_candidates": []
+      },
+      "context_selection_start_revision": 0,
+      "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "output": null,
+  "observed_at": "2026-11-01T18:23:28.533377+00:00"
+}

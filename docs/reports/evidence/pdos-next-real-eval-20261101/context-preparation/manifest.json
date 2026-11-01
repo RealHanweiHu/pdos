@@ -1,0 +1,24 @@
+{
+  "version": "xiaopai-real-context-preparation-manifest/v1",
+  "actual_model_calls": 0,
+  "database_connections": 0,
+  "planned_cells": 24,
+  "native_execution_status": "not_run_by_preparation_agent",
+  "latest_run_spec": "run-specs.final.json",
+  "initial_draft": "run-specs.json",
+  "source_sha256": {
+    "pdos-next/tools/xiaopai_real_context_fixtures.py": "149cb17162cad08dc9a8aa040ed52039426db36b7a3a475b91279754f48c7082",
+    "pdos-next/server/tests/agent_kernel/test_real_context_fixtures.py": "9d293b454b9b0fb5cc75ca2f849060e3028dd5e5997e46d6280b1277fbe00014",
+    "docs/evaluations/xiaopai-v0/context-questions.json": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c"
+  },
+  "checks": {
+    "pytest": "10 passed in 0.11s",
+    "ruff": "All checks passed!"
+  },
+  "not_verified": [
+    "actual native setup commands",
+    "actual HTTP/Temporal/LangGraph execution",
+    "provider quality/cache/latency/cost",
+    "actual permissions or candidate writes"
+  ]
+}

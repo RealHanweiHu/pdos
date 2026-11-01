@@ -1,0 +1,651 @@
+{
+  "case_id": "QUA-08",
+  "label": "ordinary-QUA-08",
+  "id": "b1aca291-2c9f-41a5-a7e1-f601e9c23a6d",
+  "run_id": "b1aca291-2c9f-41a5-a7e1-f601e9c23a6d",
+  "session_id": "7d07c369-ec5a-461a-a938-565320f100a2",
+  "status": "completed",
+  "state": "completed",
+  "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+  "product_id": null,
+  "project_id": null,
+  "continued_from_id": null,
+  "elapsed_ms": 15279.015416002949,
+  "first_visible_ms": null,
+  "request": {
+    "goal": "给新人解释一下“纠正”和“纠正措施”的一般区别，用两三句话就行，不用找公司案例。",
+    "idempotency_key": "3a658b7a-3b14-58c2-af9a-65b0b8cbba9f"
+  },
+  "view": {
+    "run_id": "b1aca291-2c9f-41a5-a7e1-f601e9c23a6d",
+    "goal": "给新人解释一下“纠正”和“纠正措施”的一般区别，用两三句话就行，不用找公司案例。",
+    "session_id": "7d07c369-ec5a-461a-a938-565320f100a2",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "session_proposal_id": null,
+    "project_id": null,
+    "status": "completed",
+    "result": {
+      "result": {
+        "kind": "general_knowledge",
+        "topic": "纠正与纠正措施的一般区别",
+        "assistant": {
+          "kind": "general",
+          "lookup": "not_run",
+          "version": 1
+        },
+        "scope_note": "一般性质量术语解释，未查询公司资料，未引用任何公司案例。",
+        "definitions": [
+          {
+            "term": "纠正 / correction",
+            "meaning": "对已经发生的具体不合格做处置，使该产品/批次恢复到符合要求的状态。",
+            "examples": [
+              "返工",
+              "返修",
+              "退货",
+              "换货",
+              "重新检验后放行"
+            ],
+            "addressed_question": "这一次的不合格怎么处理"
+          },
+          {
+            "term": "纠正措施 / corrective action",
+            "meaning": "分析并消除产生不合格的根本原因，防止同类问题再次发生。",
+            "elements": [
+              "原因分析",
+              "消除或降低原因的措施",
+              "效果验证（是否防再发生）"
+            ],
+            "addressed_question": "为什么会出这个问题，怎么让它不再出"
+          }
+        ],
+        "key_relation": "纠正作用于结果，纠正措施作用于原因；纠正措施通常建立在纠正已经完成的前提之上。",
+        "uncertainties": [],
+        "common_confusion": "把返工/换货当作纠正措施——那只是纠正；如果原因没被消除，问题会复发。"
+      },
+      "status": "completed",
+      "summary": "纠正（correction）是处置已经发生的那个不合格本身，让这一件/这一批回到符合要求的状态，比如返工、返修、退货、换货。纠正措施（corrective action）是针对导致不合格产生的原因做分析和整改，消除原因，避免同类问题再发生。一句话：纠正处理“这次的产品”，纠正措施处理“导致出错的机制”；前者是对已发现不合格的处置，后者要求有原因分析和防再发生的验证。",
+      "questions": [],
+      "unfinished": []
+    },
+    "error_code": null,
+    "reconciliation": null,
+    "process": {
+      "run_id": "b1aca291-2c9f-41a5-a7e1-f601e9c23a6d",
+      "status": "completed",
+      "reverted": false,
+      "error_code": null,
+      "started_at": "2026-11-01T18:33:27.264561+00:00",
+      "observed_at": "2026-11-01T18:33:42.127674+00:00",
+      "last_recorded_at": "2026-11-01T18:33:41.690425+00:00",
+      "ended_at": "2026-11-01T18:33:41.690425+00:00",
+      "elapsed_seconds": 14.425864,
+      "call_counts": {
+        "total": 1,
+        "completed": 1,
+        "pending": 0,
+        "failed": 0
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "ee0e269d-36e0-4502-9847-229a4ed5f925",
+          "sequence": 1,
+          "at": "2026-11-01T18:33:27.292819+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "35c0d9be-bb75-4560-81a3-4c388e07c66a",
+          "sequence": 2,
+          "at": "2026-11-01T18:33:27.655394+00:00",
+          "kind": "skill_loaded",
+          "tool": null,
+          "skill": "proposal_drafting",
+          "version": "0.2.3-draft",
+          "status": null
+        },
+        {
+          "id": "b134c9dc-bffe-431e-b05b-127f2e33e9e1",
+          "sequence": 3,
+          "at": "2026-11-01T18:33:27.813930+00:00",
+          "kind": "context_projected",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "projected",
+          "context_fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "context_omitted": [],
+          "context_issues": []
+        },
+        {
+          "id": "e17f9452-be29-46df-9de9-f5306afcb187",
+          "sequence": 4,
+          "at": "2026-11-01T18:33:27.935736+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "44ded97d-0391-4435-a428-8cafcfc5b1d0",
+          "sequence": 6,
+          "at": "2026-11-01T18:33:40.985190+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 647,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 37525,
+            "admission_tokens": 43154,
+            "fixed_over_half": null,
+            "actual_input_tokens": 41007,
+            "actual_output_tokens": 994,
+            "estimation_error_ratio": 0.08491233204087108,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "cache": {
+              "read_tokens": 184,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.0044870387982539565,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 42001,
+              "held": 0,
+              "remaining": 1999957999
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "3c4e04d8-9b89-4629-a025-7a77670f734c",
+          "sequence": 7,
+          "at": "2026-11-01T18:33:41.667952+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "completed"
+        },
+        {
+          "id": "354500ac-d4d6-485d-91f4-031242235b61",
+          "sequence": 8,
+          "at": "2026-11-01T18:33:41.690425+00:00",
+          "kind": "finished",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "completed"
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [],
+        "version": "agent-work-state/v1",
+        "revision": 0,
+        "citations": [],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "给新人解释一下“纠正”和“纠正措施”的一般区别，用两三句话就行，不用找公司案例。",
+          "run_id": "b1aca291-2c9f-41a5-a7e1-f601e9c23a6d"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "7d07c369-ec5a-461a-a938-565320f100a2",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "给新人解释一下“纠正”和“纠正措施”的一般区别，用两三句话就行，不用找公司案例。",
+          "run_id": "b1aca291-2c9f-41a5-a7e1-f601e9c23a6d"
+        },
+        "focus_objects": [],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 278,
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": false,
+          "next_cursor": null
+        },
+        "context_incomplete": false,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "provider_key": "minimax",
+      "budget_policy": "development_unlimited",
+      "model_version": "MiniMax-M3",
+      "assistant_depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "prompt_prefixes": {
+        "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+      },
+      "tool_definitions": {
+        "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "assistant.citations.read",
+            "assistant.compare",
+            "assistant.extract",
+            "assistant.materials.read",
+            "assistant.search",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.claim.withdraw",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "project.create",
+            "proposal.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "result.read",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review",
+            "work.baseline.approve",
+            "work.stage.decide"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "8b1b10e19f631752ea35130577fa02092a6a471e9533f94b7730289dc64195e4": {
+          "scope": {
+            "product_id": null,
+            "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+            "proposal_id": null,
+            "requester_id": "a55d6700-af42-48c3-9f03-f9c8efc91a50",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "proposal_drafting",
+              "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+              "version": "0.2.3-draft",
+              "load_event_id": "35c0d9be-bb75-4560-81a3-4c388e07c66a"
+            }
+          ],
+          "omitted": [],
+          "event_id": "b134c9dc-bffe-431e-b05b-127f2e33e9e1",
+          "read_set": [],
+          "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "0ee7311eb42bd258afabfc8fa1193ff9a4ee6d760c73fb4939b1e65ea59bcb68"
+        }
+      },
+      "prompt_identities": {
+        "main": {
+          "key": "xiaopai.main",
+          "version": "1.0.0",
+          "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+          "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+        }
+      },
+      "work_state_digest": "2115416d1677788252638a563e7f5e88e2f30eaa3d2f4a0ae0bd8d4b30fe5ac4",
+      "context_admissions": {
+        "4cd8379da0827eec17ff90932ebab0f077b30cba7b5163b8c6e3008f295cc1b7": {
+          "calibration": null
+        }
+      },
+      "context_runtime_v1": {
+        "calls": {
+          "a5de11ae-a828-4b08-badd-02939aea1bc0": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 184,
+              "read_hit_ratio": 0.0044870387982539565,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 647
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 42001,
+              "limit": 2000000000,
+              "remaining": 1999957999
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 43154,
+            "estimation_basis": "first_call_estimate",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 41007,
+            "actual_output_tokens": 994,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 37525,
+            "estimation_error_ratio": 0.08491233204087108,
+            "estimation_error_streak": 0
+          }
+        },
+        "routes": {
+          "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+            "error_streak": 0
+          }
+        },
+        "cleanup_count": 0
+      },
+      "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+      "context_observations": {
+        "main": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 37525,
+          "actual_input_tokens": 41007
+        }
+      },
+      "work_state_proposals": {
+        "accepted": [],
+        "rejected": []
+      },
+      "requested_context_selection": null,
+      "personal_preferences_context": {
+        "use": "personalization_only",
+        "role": null,
+        "source": "explicit_user_settings",
+        "revision": 0,
+        "department": null,
+        "role_defaults": {
+          "summary_sections": [],
+          "welcome_examples": []
+        },
+        "answer_language": "auto",
+        "response_detail": "balanced",
+        "navigation_candidates": []
+      },
+      "context_selection_start_revision": 0,
+      "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "output": {
+    "result": {
+      "kind": "general_knowledge",
+      "topic": "纠正与纠正措施的一般区别",
+      "assistant": {
+        "kind": "general",
+        "lookup": "not_run",
+        "version": 1
+      },
+      "scope_note": "一般性质量术语解释，未查询公司资料，未引用任何公司案例。",
+      "definitions": [
+        {
+          "term": "纠正 / correction",
+          "meaning": "对已经发生的具体不合格做处置，使该产品/批次恢复到符合要求的状态。",
+          "examples": [
+            "返工",
+            "返修",
+            "退货",
+            "换货",
+            "重新检验后放行"
+          ],
+          "addressed_question": "这一次的不合格怎么处理"
+        },
+        {
+          "term": "纠正措施 / corrective action",
+          "meaning": "分析并消除产生不合格的根本原因，防止同类问题再次发生。",
+          "elements": [
+            "原因分析",
+            "消除或降低原因的措施",
+            "效果验证（是否防再发生）"
+          ],
+          "addressed_question": "为什么会出这个问题，怎么让它不再出"
+        }
+      ],
+      "key_relation": "纠正作用于结果，纠正措施作用于原因；纠正措施通常建立在纠正已经完成的前提之上。",
+      "uncertainties": [],
+      "common_confusion": "把返工/换货当作纠正措施——那只是纠正；如果原因没被消除，问题会复发。"
+    },
+    "status": "completed",
+    "summary": "纠正（correction）是处置已经发生的那个不合格本身，让这一件/这一批回到符合要求的状态，比如返工、返修、退货、换货。纠正措施（corrective action）是针对导致不合格产生的原因做分析和整改，消除原因，避免同类问题再发生。一句话：纠正处理“这次的产品”，纠正措施处理“导致出错的机制”；前者是对已发现不合格的处置，后者要求有原因分析和防再发生的验证。",
+    "questions": [],
+    "unfinished": []
+  },
+  "observed_at": "2026-11-01T18:33:42.171045+00:00"
+}

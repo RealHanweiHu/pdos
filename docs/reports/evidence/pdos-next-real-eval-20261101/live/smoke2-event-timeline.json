@@ -1,0 +1,734 @@
+[
+  {
+    "created_at": "2026-11-01 18:22:38.361426+00:00",
+    "event_type": "accepted",
+    "status": "queued",
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:38.702955+00:00",
+    "event_type": "skill_loaded",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:38.887368+00:00",
+    "event_type": "context_projected",
+    "status": "projected",
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:38.918390+00:00",
+    "event_type": "skill_loaded",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:38.989590+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:39.114874+00:00",
+    "event_type": "context_projected",
+    "status": "projected",
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:39.249708+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:39.523517+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:39.872375+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:44.569773+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:44.694453+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:45.151893+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:45.231213+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.206499+00:00",
+    "event_type": "text_delta",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.360437+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.397309+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.433149+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.532039+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.957054+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:46.990104+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:47.057395+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:47.519060+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:47.943629+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:49.826969+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.005253+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.048606+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.480140+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.609349+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.639006+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.665697+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:50.728879+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:51.112356+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:51.243533+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:51.272664+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:51.775769+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.289951+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.441417+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.467110+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.692835+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.869022+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.898127+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.957606+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:54.978587+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:55.067967+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:55.306212+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:55.336127+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:55.402359+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:55.685374+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:55.995065+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:58.254680+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:58.436016+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:58.474883+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:58.604959+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:58.790453+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:58.945509+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:59.054865+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:59.183464+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:59.542591+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:22:59.799761+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:03.015567+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:03.168155+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:03.636898+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:03.807430+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:03.932047+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:04.171146+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:04.383412+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:04.448323+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:04.740920+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:04.915460+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:05.474191+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:08.707567+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:08.824816+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:08.911311+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:08.980316+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:09.078564+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:09.107067+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:09.615333+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:09.642053+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:09.681757+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:09.767317+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:10.274837+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:10.304200+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:10.441624+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:11.262440+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:14.237592+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:14.426943+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:14.472302+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:14.959095+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:14.991858+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:15.143293+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:15.758981+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:15.894254+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:16.074404+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:16.109466+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:16.154628+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:16.653492+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:17.191139+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:18.492727+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:18.681736+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:18.715486+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:19.196573+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:19.242617+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:19.399857+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:20.047001+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:20.864518+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:20.981849+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:21.893626+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:22.039269+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:22.754310+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:23.307417+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:23.415417+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:23.841846+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:23.885096+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:24.359635+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:24.556503+00:00",
+    "event_type": "model_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:25.225190+00:00",
+    "event_type": "egress_checked",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:26.424045+00:00",
+    "event_type": "context_observed",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:26.565074+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:26.589187+00:00",
+    "event_type": "tool_started",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:27.034759+00:00",
+    "event_type": "tool_finished",
+    "status": null,
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:27.634219+00:00",
+    "event_type": "run_state",
+    "status": "failed",
+    "code": null
+  },
+  {
+    "created_at": "2026-11-01 18:23:28.254370+00:00",
+    "event_type": "run_state",
+    "status": "failed",
+    "code": null
+  }
+]

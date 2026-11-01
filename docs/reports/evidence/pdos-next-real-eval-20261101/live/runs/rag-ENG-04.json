@@ -1,0 +1,5179 @@
+{
+  "case_id": "ENG-04",
+  "label": "rag-ENG-04",
+  "id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+  "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+  "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+  "status": "waiting_input",
+  "state": "waiting_input",
+  "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+  "product_id": null,
+  "project_id": null,
+  "continued_from_id": null,
+  "elapsed_ms": 103621.12450000132,
+  "first_visible_ms": 6205.363834000309,
+  "request": {
+    "goal": "我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？",
+    "idempotency_key": "3d6bf962-4638-53ee-94b5-c1454c8b8fa6"
+  },
+  "view": {
+    "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+    "goal": "我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？",
+    "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "session_proposal_id": null,
+    "project_id": null,
+    "status": "waiting_input",
+    "result": null,
+    "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+    "reconciliation": null,
+    "process": {
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "status": "waiting_input",
+      "reverted": false,
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "started_at": "2026-11-01T18:38:21.793182+00:00",
+      "observed_at": "2026-11-01T20:16:39.182252+00:00",
+      "last_recorded_at": "2026-11-01T20:16:39.036830+00:00",
+      "ended_at": null,
+      "elapsed_seconds": null,
+      "call_counts": {
+        "total": 13,
+        "completed": 9,
+        "pending": 4,
+        "failed": 0
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "a3e4fbdc-49a5-4455-9ae7-55fd364a4017",
+          "sequence": 1,
+          "at": "2026-11-01T18:38:21.807507+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "c1411132-eecd-45f3-9755-d8ab61545d41",
+          "sequence": 2,
+          "at": "2026-11-01T18:38:22.110178+00:00",
+          "kind": "skill_loaded",
+          "tool": null,
+          "skill": "proposal_drafting",
+          "version": "0.2.3-draft",
+          "status": null
+        },
+        {
+          "id": "e5c134d3-50a6-4cbf-a09c-1e100677bd42",
+          "sequence": 3,
+          "at": "2026-11-01T18:38:22.257179+00:00",
+          "kind": "context_projected",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "projected",
+          "context_fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "context_omitted": [],
+          "context_issues": []
+        },
+        {
+          "id": "bdd3f7e6-c9bf-4f22-a26e-f6af275075fb",
+          "sequence": 4,
+          "at": "2026-11-01T18:38:22.356289+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "5cb60fe4-2bec-4e84-8a73-aabeea34397d",
+          "sequence": 7,
+          "at": "2026-11-01T18:38:27.812090+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 651,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 37529,
+            "admission_tokens": 43159,
+            "fixed_over_half": null,
+            "actual_input_tokens": 41024,
+            "actual_output_tokens": 569,
+            "estimation_error_ratio": 0.08519403276131045,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "cache": {
+              "read_tokens": 184,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.004485179407176287,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 41593,
+              "held": 0,
+              "remaining": 1999958407
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "c37bcc97-2d55-4f35-a92d-acff51ad47c5",
+          "sequence": 8,
+          "at": "2026-11-01T18:38:27.926775+00:00",
+          "kind": "tool_started",
+          "tool": "assistant.search",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "f8c0dda7-3d67-4278-91bf-baecf11ce0de",
+          "sequence": 9,
+          "at": "2026-11-01T18:38:28.483528+00:00",
+          "kind": "tool_finished",
+          "tool": "assistant.search",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "46b90b5b-7bc9-4b7d-b50e-97e4b59012ab",
+          "sequence": 10,
+          "at": "2026-11-01T18:38:28.581688+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "db27b9a8-6be9-4aae-823c-649d6c8c7cfa",
+          "sequence": 13,
+          "at": "2026-11-01T18:38:33.066404+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 651,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 4597,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 42126,
+            "admission_tokens": 48445,
+            "fixed_over_half": null,
+            "actual_input_tokens": 47761,
+            "actual_output_tokens": 579,
+            "estimation_error_ratio": 0.11798329180712297,
+            "estimation_error_streak": 1,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": 41024,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.8589434894579259,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 89933,
+              "held": 0,
+              "remaining": 1999910067
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "9e4c3452-f358-453a-bcc7-4942c3578214",
+          "sequence": 14,
+          "at": "2026-11-01T18:38:33.194920+00:00",
+          "kind": "tool_started",
+          "tool": "assistant.extract",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "c2daa6e6-f5c8-4795-8551-0ba7b7ec6f0c",
+          "sequence": 30,
+          "at": "2026-11-01T19:27:02.935941+00:00",
+          "kind": "tool_started",
+          "tool": "assistant.extract",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "d25efbf8-733d-4e88-8516-417b1384aa84",
+          "sequence": 33,
+          "at": "2026-11-01T20:16:37.853139+00:00",
+          "kind": "tool_finished",
+          "tool": "assistant.extract",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "4c7e7308-a2d2-4f9e-b231-9b0f7ce485f0",
+          "sequence": 34,
+          "at": "2026-11-01T20:16:37.948545+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "92964a1e-971c-40d1-9462-5ba6b45f4882",
+          "sequence": 35,
+          "at": "2026-11-01T20:16:38.198169+00:00",
+          "kind": "tool_finished",
+          "tool": "assistant.extract",
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "956a5f09-5f45-4d87-9d34-9b00dfb15692",
+          "sequence": 36,
+          "at": "2026-11-01T20:16:38.279727+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "035610b8-3723-4b45-a661-fdc1722ca880",
+          "sequence": 39,
+          "at": "2026-11-01T20:16:38.940063+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 651,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 5472,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 43001,
+            "admission_tokens": 49452,
+            "fixed_over_half": null,
+            "actual_input_tokens": null,
+            "actual_output_tokens": null,
+            "estimation_error_ratio": null,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": null,
+              "creation_tokens": null,
+              "read_hit_ratio": null,
+              "input_includes_cache": true,
+              "reporting": null,
+              "status": "not_recorded_for_failed_call"
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 1888830,
+              "held": 696188,
+              "remaining": 1997414982
+            },
+            "context_incomplete": false,
+            "call_state": "unknown",
+            "usage_status": "unavailable",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "78040aef-c99a-48ac-9026-841ee841df41",
+          "sequence": 40,
+          "at": "2026-11-01T20:16:38.991727+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "waiting_input"
+        },
+        {
+          "id": "b7b2984e-6378-4759-b4eb-042144dc692b",
+          "sequence": 41,
+          "at": "2026-11-01T20:16:39.036830+00:00",
+          "kind": "reconciliation_required",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [],
+        "version": "agent-work-state/v1",
+        "revision": 0,
+        "citations": [],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？",
+          "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？",
+          "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0"
+        },
+        "focus_objects": [],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 280,
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": false,
+          "next_cursor": null
+        },
+        "context_incomplete": false,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "provider_key": "minimax",
+      "budget_policy": "development_unlimited",
+      "model_version": "MiniMax-M3",
+      "assistant_depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "prompt_prefixes": {
+        "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "assistant_extract": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+      },
+      "tool_definitions": {
+        "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188",
+        "assistant_extract": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "assistant.citations.read",
+            "assistant.compare",
+            "assistant.extract",
+            "assistant.materials.read",
+            "assistant.search",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.claim.withdraw",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "project.create",
+            "proposal.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "result.read",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review",
+            "work.baseline.approve",
+            "work.stage.decide"
+          ]
+        },
+        "assistant_extract": {
+          "chain": [
+            "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+          ],
+          "names": [
+            "assistant.passage.read",
+            "result.read"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "7657bc4ea78cf3e8eeceb23a898489bbf9778fdc47d355889979fa324e478123": {
+          "scope": {
+            "product_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "proposal_id": null,
+            "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "proposal_drafting",
+              "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+              "version": "0.2.3-draft",
+              "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+            }
+          ],
+          "omitted": [],
+          "event_id": "e5c134d3-50a6-4cbf-a09c-1e100677bd42",
+          "read_set": [],
+          "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "eec86b209df2d9cbb370126804ea878729672e9d908446e1a30c255e7355e38e"
+        }
+      },
+      "prompt_identities": {
+        "main": {
+          "key": "xiaopai.main",
+          "version": "1.0.0",
+          "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+          "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+        },
+        "assistant_extract": {
+          "key": "xiaopai.main",
+          "version": "1.0.0",
+          "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+          "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+        }
+      },
+      "work_state_digest": "762707c940132a6a0a336106d8ed38c0584e0f5b160e49134f546fefe2ed1a4a",
+      "context_admissions": {
+        "084737704abc254c3eb6b4427741fa2f217f27585e9f1ecea688f906cc67f908": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 37529,
+            "actual_input_tokens": 41024
+          }
+        },
+        "2aee26e7670a5cf4070b3139713d0225bc1bb0a14733b5af495f9a9dac6a0689": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 3889,
+            "actual_input_tokens": 3654
+          }
+        },
+        "40e0036088580615a52cf559a5bc330afe0c1d83d289039dc470123d26a9e590": {
+          "calibration": null
+        },
+        "52820b11033f68d46ecebb7cd48368d3648c34c9d69e8e10122e32fb5d6ce6d4": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 3889,
+            "actual_input_tokens": 3655
+          }
+        },
+        "5ce1839f80361d72b3ec268fc3b99e651cd49eb02d844c74ac573870d0b35ba2": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 4435,
+            "actual_input_tokens": 4167
+          }
+        },
+        "79ae4faf87b941afbc76c0ccb58eb523932390083b8c0ff2f490cf8b22706f84": {
+          "calibration": null
+        },
+        "87e878a53b561c79b3f9ec908f76f1cf02fc20b9e2b86900e058bdac3604d54e": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 3889,
+            "actual_input_tokens": 3654
+          }
+        },
+        "9d3c7438800b5fcb9f938c2d69b210df937c9633188fe1d682b55a48fd703faf": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 42126,
+            "actual_input_tokens": 47761
+          }
+        },
+        "9f2e97d6cdb7ca8f6bb863154874347d0e4743686320718cf023ae6f25bdf12f": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 42126,
+            "actual_input_tokens": 47761
+          }
+        }
+      },
+      "context_runtime_v1": {
+        "calls": {
+          "2a8a8f79-67c6-45b1-8d2e-6a4990ac05d7": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 184,
+              "read_hit_ratio": 0.004485179407176287,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 651
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 41593,
+              "limit": 2000000000,
+              "remaining": 1999958407
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 43159,
+            "estimation_basis": "first_call_estimate",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 41024,
+            "actual_output_tokens": 569,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 37529,
+            "estimation_error_ratio": 0.08519403276131045,
+            "estimation_error_streak": 0
+          },
+          "99f4bb84-2ed5-4ef6-b0b7-485aef249fba": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 41024,
+              "read_hit_ratio": 0.8589434894579259,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 4597
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 651
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 89933,
+              "limit": 2000000000,
+              "remaining": 1999910067
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 48445,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 47761,
+            "actual_output_tokens": 579,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 42126,
+            "estimation_error_ratio": 0.11798329180712297,
+            "estimation_error_streak": 1
+          },
+          "a73fdb44-7ca0-46a8-973b-2e65d5d6bb28": {
+            "cache": {
+              "status": "not_recorded_for_failed_call",
+              "read_tokens": null,
+              "read_hit_ratio": null,
+              "creation_tokens": null,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 5472
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 651
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "unknown",
+            "reductions": [],
+            "run_budget": {
+              "held": 696188,
+              "used": 1888830,
+              "limit": 2000000000,
+              "remaining": 1997414982
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "unavailable",
+            "cleanup_count": 0,
+            "admission_tokens": 49452,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": null,
+            "actual_output_tokens": null,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 43001,
+            "estimation_error_ratio": null,
+            "estimation_error_streak": 0
+          }
+        },
+        "routes": {
+          "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+            "error_streak": 0
+          }
+        },
+        "cleanup_count": 0
+      },
+      "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+      "context_observations": {
+        "main": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 42126,
+          "actual_input_tokens": 47761
+        },
+        "assistant_extract": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 3889,
+          "actual_input_tokens": 3654
+        }
+      },
+      "requested_context_selection": null,
+      "personal_preferences_context": {
+        "use": "personalization_only",
+        "role": null,
+        "source": "explicit_user_settings",
+        "revision": 0,
+        "department": null,
+        "role_defaults": {
+          "summary_sections": [],
+          "welcome_examples": []
+        },
+        "answer_language": "auto",
+        "response_detail": "balanced",
+        "navigation_candidates": []
+      },
+      "context_selection_start_revision": 0,
+      "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "output": null,
+  "observed_at": "2026-11-01T20:16:39.185470+00:00",
+  "suite": "rag40",
+  "role": "engineering",
+  "slice": "should_lookup",
+  "focus": 64000,
+  "native_binding_status": "bound",
+  "case_sha256": "89a679a1d1492bcae7926a6f6e973b124406e7c59ded3c8c681fc6d9ff797f39",
+  "expected_sha256": "37023da9e7ca690798d8ca4a82ff63245dbf53183b9cc0231e742cfe1ffc4427",
+  "versions": {
+    "work_state": {
+      "notes": [],
+      "skills": [],
+      "missing": [],
+      "version": "agent-work-state/v1",
+      "revision": 0,
+      "citations": [],
+      "completed": [],
+      "questions": [],
+      "root_goal": {
+        "text": "我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0"
+      },
+      "candidates": [],
+      "exclusions": [],
+      "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+      "unfinished": [],
+      "constraints": [],
+      "current_goal": {
+        "text": "我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0"
+      },
+      "focus_objects": [],
+      "search_context": {
+        "kind": "category",
+        "label": "当前品类的可读资料",
+        "scoped": false
+      },
+      "completed_count": 0,
+      "estimated_tokens": 280,
+      "citation_directory": {
+        "tool": "assistant.citations.read",
+        "has_more": false,
+        "next_cursor": null
+      },
+      "context_incomplete": false,
+      "search_preferences": {
+        "scope": "same_category",
+        "include_customer_private": false
+      }
+    },
+    "provider_key": "minimax",
+    "budget_policy": "development_unlimited",
+    "model_version": "MiniMax-M3",
+    "assistant_depth": {
+      "mode": "quick",
+      "version": 1,
+      "parent_run_id": null
+    },
+    "prompt_prefixes": {
+      "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+      "assistant_extract": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+    },
+    "tool_definitions": {
+      "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188",
+      "assistant_extract": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+    },
+    "tool_disclosures": {
+      "main": {
+        "chain": [
+          "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+        ],
+        "names": [
+          "ai.skill.qualify",
+          "assistant.citations.read",
+          "assistant.compare",
+          "assistant.extract",
+          "assistant.materials.read",
+          "assistant.search",
+          "build.engineering.authorize",
+          "build.lot.read",
+          "build.manufacturing.authorize",
+          "build.read",
+          "build.sample.read",
+          "calc.cost_subtotal",
+          "calc.derivation_diff",
+          "calc.market_size",
+          "calc.opportunity_score",
+          "calc.price_band",
+          "calc.spec_compare",
+          "category.competitors.list",
+          "category.knowledge.list",
+          "category.list",
+          "category.member.grant",
+          "category.parameters.list",
+          "category.read",
+          "change.close",
+          "change.order.approve",
+          "change.selection.decide",
+          "change.verification.record",
+          "conversation.history",
+          "evidence.claim.withdraw",
+          "evidence.extract",
+          "evidence.link.create",
+          "evidence.search",
+          "integration.handoff.authorize",
+          "knowledge.rule.publish",
+          "mcp.connector.allow",
+          "mcp.read",
+          "mcp.tools.list",
+          "npi.manufacturing_baseline.publish",
+          "platform.read",
+          "product.baseline.read",
+          "project.create",
+          "proposal.create",
+          "proposal.g0.decide",
+          "proposal.g0.submit",
+          "proposal.item.patch",
+          "proposal.items.read",
+          "proposal.question.create",
+          "proposal.read",
+          "proposal.share",
+          "provider.agreement.register",
+          "quality.capa.verification.review",
+          "quality.issue.read",
+          "quality.issue.root_cause.decide",
+          "release.engineering.approve",
+          "release.exception.decide",
+          "release.exception.withdraw",
+          "release.manufacturing.approve",
+          "research.fanout",
+          "research.search",
+          "result.read",
+          "skill.load",
+          "test.disposition.decide",
+          "test.run.read",
+          "test.run.review",
+          "work.baseline.approve",
+          "work.stage.decide"
+        ]
+      },
+      "assistant_extract": {
+        "chain": [
+          "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+        ],
+        "names": [
+          "assistant.passage.read",
+          "result.read"
+        ]
+      }
+    },
+    "checkpoint_layout": "session-run-ns/v1",
+    "context_snapshots": {
+      "7657bc4ea78cf3e8eeceb23a898489bbf9778fdc47d355889979fa324e478123": {
+        "scope": {
+          "product_id": null,
+          "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+          "proposal_id": null,
+          "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+          "data_categories": [
+            "internal"
+          ]
+        },
+        "fields": [
+          "assistant_depth",
+          "category",
+          "goal",
+          "personal_preferences",
+          "sources",
+          "work_state"
+        ],
+        "issues": [],
+        "skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+          }
+        ],
+        "omitted": [],
+        "event_id": "e5c134d3-50a6-4cbf-a09c-1e100677bd42",
+        "read_set": [],
+        "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+        "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+        "content_digest": "eec86b209df2d9cbb370126804ea878729672e9d908446e1a30c255e7355e38e"
+      }
+    },
+    "prompt_identities": {
+      "main": {
+        "key": "xiaopai.main",
+        "version": "1.0.0",
+        "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+      },
+      "assistant_extract": {
+        "key": "xiaopai.main",
+        "version": "1.0.0",
+        "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+      }
+    },
+    "work_state_digest": "762707c940132a6a0a336106d8ed38c0584e0f5b160e49134f546fefe2ed1a4a",
+    "context_admissions": {
+      "084737704abc254c3eb6b4427741fa2f217f27585e9f1ecea688f906cc67f908": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 37529,
+          "actual_input_tokens": 41024
+        }
+      },
+      "2aee26e7670a5cf4070b3139713d0225bc1bb0a14733b5af495f9a9dac6a0689": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 3889,
+          "actual_input_tokens": 3654
+        }
+      },
+      "40e0036088580615a52cf559a5bc330afe0c1d83d289039dc470123d26a9e590": {
+        "calibration": null
+      },
+      "52820b11033f68d46ecebb7cd48368d3648c34c9d69e8e10122e32fb5d6ce6d4": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 3889,
+          "actual_input_tokens": 3655
+        }
+      },
+      "5ce1839f80361d72b3ec268fc3b99e651cd49eb02d844c74ac573870d0b35ba2": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 4435,
+          "actual_input_tokens": 4167
+        }
+      },
+      "79ae4faf87b941afbc76c0ccb58eb523932390083b8c0ff2f490cf8b22706f84": {
+        "calibration": null
+      },
+      "87e878a53b561c79b3f9ec908f76f1cf02fc20b9e2b86900e058bdac3604d54e": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 3889,
+          "actual_input_tokens": 3654
+        }
+      },
+      "9d3c7438800b5fcb9f938c2d69b210df937c9633188fe1d682b55a48fd703faf": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 42126,
+          "actual_input_tokens": 47761
+        }
+      },
+      "9f2e97d6cdb7ca8f6bb863154874347d0e4743686320718cf023ae6f25bdf12f": {
+        "calibration": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 42126,
+          "actual_input_tokens": 47761
+        }
+      }
+    },
+    "context_runtime_v1": {
+      "calls": {
+        "2a8a8f79-67c6-45b1-8d2e-6a4990ac05d7": {
+          "cache": {
+            "reporting": "positive_usage_reported",
+            "read_tokens": 184,
+            "read_hit_ratio": 0.004485179407176287,
+            "creation_tokens": 0,
+            "input_includes_cache": true
+          },
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "history": {
+            "kept": 0,
+            "hidden": 0,
+            "carried": 0,
+            "updated": 0,
+            "truncated": 0,
+            "directories": 0,
+            "unclassified": 0
+          },
+          "reserve": 528288,
+          "version": 1,
+          "segments": {
+            "loop": {
+              "actual_tokens": null,
+              "estimated_tokens": 0
+            },
+            "tools": {
+              "actual_tokens": null,
+              "estimated_tokens": 30248
+            },
+            "skills": {
+              "actual_tokens": null,
+              "estimated_tokens": 3780
+            },
+            "system": {
+              "actual_tokens": null,
+              "estimated_tokens": 2850
+            },
+            "history": {
+              "actual_tokens": null,
+              "estimated_tokens": 0
+            },
+            "envelope": {
+              "actual_tokens": null,
+              "estimated_tokens": 651
+            }
+          },
+          "warnings": [
+            "fixed_over_half_focus"
+          ],
+          "call_state": "completed",
+          "reductions": [],
+          "run_budget": {
+            "held": 0,
+            "used": 41593,
+            "limit": 2000000000,
+            "remaining": 1999958407
+          },
+          "work_state": {
+            "revision": 0,
+            "item_counts": {
+              "citations": 0,
+              "completed": 0,
+              "questions": 0,
+              "candidates": 0,
+              "exclusions": 0,
+              "unfinished": 0,
+              "constraints": 0,
+              "focus_objects": 0
+            },
+            "context_incomplete": false
+          },
+          "usage_status": "recorded",
+          "cleanup_count": 0,
+          "admission_tokens": 43159,
+          "estimation_basis": "first_call_estimate",
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 41024,
+          "actual_output_tokens": 569,
+          "actual_segment_tokens": "provider_not_reported",
+          "estimated_input_tokens": 37529,
+          "estimation_error_ratio": 0.08519403276131045,
+          "estimation_error_streak": 0
+        },
+        "99f4bb84-2ed5-4ef6-b0b7-485aef249fba": {
+          "cache": {
+            "reporting": "positive_usage_reported",
+            "read_tokens": 41024,
+            "read_hit_ratio": 0.8589434894579259,
+            "creation_tokens": 0,
+            "input_includes_cache": true
+          },
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "history": {
+            "kept": 0,
+            "hidden": 0,
+            "carried": 0,
+            "updated": 0,
+            "truncated": 0,
+            "directories": 0,
+            "unclassified": 0
+          },
+          "reserve": 528288,
+          "version": 1,
+          "segments": {
+            "loop": {
+              "actual_tokens": null,
+              "estimated_tokens": 4597
+            },
+            "tools": {
+              "actual_tokens": null,
+              "estimated_tokens": 30248
+            },
+            "skills": {
+              "actual_tokens": null,
+              "estimated_tokens": 3780
+            },
+            "system": {
+              "actual_tokens": null,
+              "estimated_tokens": 2850
+            },
+            "history": {
+              "actual_tokens": null,
+              "estimated_tokens": 0
+            },
+            "envelope": {
+              "actual_tokens": null,
+              "estimated_tokens": 651
+            }
+          },
+          "warnings": [
+            "fixed_over_half_focus"
+          ],
+          "call_state": "completed",
+          "reductions": [],
+          "run_budget": {
+            "held": 0,
+            "used": 89933,
+            "limit": 2000000000,
+            "remaining": 1999910067
+          },
+          "work_state": {
+            "revision": 0,
+            "item_counts": {
+              "citations": 0,
+              "completed": 0,
+              "questions": 0,
+              "candidates": 0,
+              "exclusions": 0,
+              "unfinished": 0,
+              "constraints": 0,
+              "focus_objects": 0
+            },
+            "context_incomplete": false
+          },
+          "usage_status": "recorded",
+          "cleanup_count": 0,
+          "admission_tokens": 48445,
+          "estimation_basis": "previous_actual_input",
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 47761,
+          "actual_output_tokens": 579,
+          "actual_segment_tokens": "provider_not_reported",
+          "estimated_input_tokens": 42126,
+          "estimation_error_ratio": 0.11798329180712297,
+          "estimation_error_streak": 1
+        },
+        "a73fdb44-7ca0-46a8-973b-2e65d5d6bb28": {
+          "cache": {
+            "status": "not_recorded_for_failed_call",
+            "read_tokens": null,
+            "read_hit_ratio": null,
+            "creation_tokens": null,
+            "input_includes_cache": true
+          },
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "history": {
+            "kept": 0,
+            "hidden": 0,
+            "carried": 0,
+            "updated": 0,
+            "truncated": 0,
+            "directories": 0,
+            "unclassified": 0
+          },
+          "reserve": 528288,
+          "version": 1,
+          "segments": {
+            "loop": {
+              "actual_tokens": null,
+              "estimated_tokens": 5472
+            },
+            "tools": {
+              "actual_tokens": null,
+              "estimated_tokens": 30248
+            },
+            "skills": {
+              "actual_tokens": null,
+              "estimated_tokens": 3780
+            },
+            "system": {
+              "actual_tokens": null,
+              "estimated_tokens": 2850
+            },
+            "history": {
+              "actual_tokens": null,
+              "estimated_tokens": 0
+            },
+            "envelope": {
+              "actual_tokens": null,
+              "estimated_tokens": 651
+            }
+          },
+          "warnings": [
+            "fixed_over_half_focus"
+          ],
+          "call_state": "unknown",
+          "reductions": [],
+          "run_budget": {
+            "held": 696188,
+            "used": 1888830,
+            "limit": 2000000000,
+            "remaining": 1997414982
+          },
+          "work_state": {
+            "revision": 0,
+            "item_counts": {
+              "citations": 0,
+              "completed": 0,
+              "questions": 0,
+              "candidates": 0,
+              "exclusions": 0,
+              "unfinished": 0,
+              "constraints": 0,
+              "focus_objects": 0
+            },
+            "context_incomplete": false
+          },
+          "usage_status": "unavailable",
+          "cleanup_count": 0,
+          "admission_tokens": 49452,
+          "estimation_basis": "previous_actual_input",
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": null,
+          "actual_output_tokens": null,
+          "actual_segment_tokens": "provider_not_reported",
+          "estimated_input_tokens": 43001,
+          "estimation_error_ratio": null,
+          "estimation_error_streak": 0
+        }
+      },
+      "routes": {
+        "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+          "error_streak": 0
+        }
+      },
+      "cleanup_count": 0
+    },
+    "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+    "context_observations": {
+      "main": {
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "estimated_total": 42126,
+        "actual_input_tokens": 47761
+      },
+      "assistant_extract": {
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "estimated_total": 3889,
+        "actual_input_tokens": 3654
+      }
+    },
+    "requested_context_selection": null,
+    "personal_preferences_context": {
+      "use": "personalization_only",
+      "role": null,
+      "source": "explicit_user_settings",
+      "revision": 0,
+      "department": null,
+      "role_defaults": {
+        "summary_sections": [],
+        "welcome_examples": []
+      },
+      "answer_language": "auto",
+      "response_detail": "balanced",
+      "navigation_candidates": []
+    },
+    "context_selection_start_revision": 0,
+    "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+  },
+  "tool_calls": [
+    {
+      "id": "2a8a8f79-67c6-45b1-8d2e-6a4990ac05d7",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:22.820051+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "main",
+        "cancel_epoch": 0,
+        "loaded_skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+          }
+        ],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": {
+        "text": "我先查一下本品类里关于端盖防水/气密检验的实际记录，再回答同事的说法。",
+        "calls": [
+          {
+            "id": "call_01a19868bb3e722ea863fa25",
+            "name": "assistant.search",
+            "arguments": {
+              "limit": 20,
+              "query": "端盖 防水 送测前 检查 气密 浸水 泡水 IP 防护等级 检验",
+              "source_types": [
+                "artifact",
+                "manufacturing_document",
+                "knowledge",
+                "test_run"
+              ],
+              "include_history": true
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 41024,
+          "output_tokens": 569,
+          "cache_read_tokens": 184,
+          "cache_creation_tokens": 0
+        },
+        "request_id": "0736ba5894f1888ddb56703c80eeb129",
+        "structured": null,
+        "continuation": {
+          "message": {
+            "role": "assistant",
+            "content": "我先查一下本品类里关于端盖防水/气密检验的实际记录，再回答同事的说法。",
+            "tool_calls": [
+              {
+                "id": "call_01a19868bb3e722ea863fa25",
+                "type": "function",
+                "function": {
+                  "name": "assistant_0search",
+                  "arguments": "{\"query\":\"端盖 防水 送测前 检查 气密 浸水 泡水 IP 防护等级 检验\",\"source_types\":[\"artifact\",\"manufacturing_document\",\"knowledge\",\"test_run\"],\"include_history\":true,\"limit\":20}"
+                }
+              }
+            ],
+            "reasoning_content": "The user asks: \"我们给端盖做防水送测前到底怎么检查？同事说做完气密就不用泡水，这个说法对吗？\" This is a company-practice question — must look up company data first. The skill loaded is proposal_drafting, but the actual question is about company standard/practice for end cap waterproof testing pre-check. This isn't really a proposal drafting task... but the skill loaded is proposal_drafting. Hmm. The user question is a Q&A about company practice. The guidance says: \"When the user asks how 'we', the company or this factory does something, or about company standards, parameters, projects or history, look up company data first; never present general knowledge as company practice.\"\n\nSo I should search the category for relevant documents: waterproof test, 端盖 (end cap), 气密 (air tightness), 泡水 (immersion), IP rating.\n\nDepth mode is \"quick\": max_search_calls 1, max_extract_sources 3.\n\nLet me search. Source types: artifact, knowledge, manufacturing_document, etc.\n\nLet me do one search with a query covering 端盖 防水 气密 泡水 IP.\n\nActually I could do a couple of searches but max_search_calls is 1. Let me do one comprehensive search. Maybe I can use a broad query and larger limit (up to 20).\n\nLet me call assistant.search with query \"端盖 防水 送测 前 检查 气密 浸水 泡水 IP等级 检验规范\" and limit 20, source_types maybe artifact, manufacturing_document, knowledge.\n\nActually including more source types increases coverage. Let me include: artifact, knowledge, manufacturing_document, test_run, issue, change, project_status. Hmm, keep it focused: artifact, manufacturing_document, knowledge, test_run.\n\nLet's do it.\n\nAlso, maybe read category.parameters.list to see if there are parameters on 防水. But depth says max_search_calls 1. category.read and category.parameters.list are reads not searches. But let's first do the search.\n\nLet me run the search."
+          },
+          "protocol": "openai-compatible",
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec"
+        },
+        "context_budget": {
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "reserve": 528288,
+          "segments": {
+            "loop": 0,
+            "tools": 30248,
+            "skills": 3780,
+            "system": 2850,
+            "history": 0,
+            "envelope": 651
+          },
+          "over_focus": false,
+          "reductions": [],
+          "estimated_total": 37529,
+          "fixed_over_half": true,
+          "admission_tokens": 43159,
+          "estimation_basis": "first_call_estimate",
+          "estimation_margin": 0.15,
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 41024,
+          "fixed_admission_tokens": 42410,
+          "input_estimate_error_ratio": 0.08519403276131045
+        }
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 41593,
+      "provider_request_id": "0736ba5894f1888ddb56703c80eeb129",
+      "actual_input_tokens": 41024,
+      "actual_output_tokens": 569,
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 13541,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      },
+      "elapsed_ms": 4545.187750001787,
+      "protocol": "openai-compatible",
+      "raw_usage": {
+        "total_tokens": 41593,
+        "total_characters": 0,
+        "prompt_tokens": 41024,
+        "completion_tokens": 569,
+        "completion_tokens_details": {
+          "reasoning_tokens": 426
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 184
+        }
+      },
+      "provider_observation": {
+        "started_at": "2026-11-01T18:38:23.146744+00:00",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "isolation": "main",
+        "protocol": "openai-compatible",
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "request_body_sha256": "348978389da542543b412815a59e2658b002cf3370dbb5a7f8279dbfcc6ab407",
+        "request_bytes": 136658,
+        "private_request_path": "pdos-next/.local/real-eval-20261101/wire/348978389da542543b412815a59e2658b002cf3370dbb5a7f8279dbfcc6ab407.json",
+        "private_response_path": "pdos-next/.local/real-eval-20261101/wire/f817e52ef17c37055d283d13a6e2162df1d72670869cab82ee18f9a78924750a.response.json",
+        "response_sha256": "f817e52ef17c37055d283d13a6e2162df1d72670869cab82ee18f9a78924750a",
+        "raw_usage": {
+          "total_tokens": 41593,
+          "total_characters": 0,
+          "prompt_tokens": 41024,
+          "completion_tokens": 569,
+          "completion_tokens_details": {
+            "reasoning_tokens": 426
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 184
+          }
+        },
+        "body_request_id": "0736ba5894f1888ddb56703c80eeb129",
+        "header_request_id": null,
+        "request_id": "0736ba5894f1888ddb56703c80eeb129",
+        "normalized_usage": {
+          "input_tokens": 41024,
+          "output_tokens": 569,
+          "cache_read_tokens": 184,
+          "cache_creation_tokens": 0
+        },
+        "public_turn": {
+          "text": "我先查一下本品类里关于端盖防水/气密检验的实际记录，再回答同事的说法。",
+          "structured": null,
+          "calls": [
+            {
+              "id": "call_01a19868bb3e722ea863fa25",
+              "name": "assistant.search",
+              "arguments": {
+                "query": "端盖 防水 送测前 检查 气密 浸水 泡水 IP 防护等级 检验",
+                "source_types": [
+                  "artifact",
+                  "manufacturing_document",
+                  "knowledge",
+                  "test_run"
+                ],
+                "include_history": true,
+                "limit": 20
+              }
+            }
+          ]
+        },
+        "outcome": "returned",
+        "elapsed_ms": 4545.187750001787,
+        "finished_at": "2026-11-01T18:38:27.691967+00:00"
+      }
+    },
+    {
+      "id": "d83b832b-23ae-4b41-a222-9ee6d7e87cc7",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "assistant.search",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:28.243997+00:00",
+      "execution_binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "assistant.search",
+        "graph": "xiaopai",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "call_key": "agent:74044278-7c0c-4e8e-9f49-c42fc69ca5c0:model:2a8a8f79-67c6-45b1-8d2e-6a4990ac05d7:0",
+        "isolation": "main",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
+        "writer_id": "a2c6209e-9c7f-4a2c-bcef-291a884c6389",
+        "product_id": null,
+        "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+        "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+        "proposal_id": null,
+        "cancel_epoch": 0,
+        "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+        "model_call_id": "2a8a8f79-67c6-45b1-8d2e-6a4990ac05d7",
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "internal"
+        ],
+        "private_context": false,
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "customer_identities": [],
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": {
+        "as_of": "2026-11-01T18:38:28.317840+00:00",
+        "items": [
+          {
+            "rank": 1,
+            "title": "岚桥A7工程联席检查纪要",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 290,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "57235310-f37a-5562-bf7e-d878e07b31b3",
+            "object_id": "baf5210e-8acd-4d23-b4a9-fdd86edb494f",
+            "source_id": "baf5210e-8acd-4d23-b4a9-fdd86edb494f",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "4723424eef5510aee5871a2383ae68e283dd03712fcb83b4308866bee2a3415b",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 2,
+            "title": "岚桥A7端盖密封设计变更说明 Rev C",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 339,
+              "line_end": 5,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "2c0a43c7-b668-5dd6-97fd-9effdbd039c9",
+            "object_id": "1d0dcedf-8501-4115-aeb3-963253c5cc97",
+            "source_id": "1d0dcedf-8501-4115-aeb3-963253c5cc97",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "cef1659b85c7035dade51e600b3078b407be2d2885a70f6e120ca17637684897",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 3,
+            "title": "青岑M2端子座首件尺寸检查记录",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 285,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "7ba1f0e2-7f1a-5b10-bd1e-03b3208da46f",
+            "object_id": "ee0dacdb-bbb7-4a09-9ba4-9e75407946dc",
+            "source_id": "ee0dacdb-bbb7-4a09-9ba4-9e75407946dc",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "29a44de0-791f-5a66-ac97-1a139fe92a48",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "acefeb0ef08a5b004abcd1f0818dda85808d8ebaf960b0ee0b45207fa2e16b20",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 4,
+            "title": "青岑M2端子座装配作业资料 Rev D",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 264,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "77f6d522-a124-52cb-9a25-ba1d751ccd90",
+            "object_id": "affa63cd-3e6c-4377-be2f-8be740058e8c",
+            "source_id": "affa63cd-3e6c-4377-be2f-8be740058e8c",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "6b208c2d-96ff-5a8f-b528-8e1afb6011f0",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "62429bd6c30dcc2fc095842b3262e22714c088a1c618baf7bad33acd5b1b8633",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 5,
+            "title": "青岑M2夜班换线预案工作稿",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 251,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": true,
+            "chunk_id": "abfba989-6b1a-5e47-9892-dd51a54356c3",
+            "object_id": "df683974-49e0-4cbf-a121-4c0338f8c858",
+            "source_id": "df683974-49e0-4cbf-a121-4c0338f8c858",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "2156d965-55ee-5d50-92d9-7b7187ce6c27",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "4b23118ebe91c68f0269cb61d18c646898886ec51836cd6100bc2d86c8ed3746",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 6,
+            "title": "M2密封料候选替代与采购前提",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 288,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "8dd006dc-51cc-5b9e-ade6-ea1b6ff37b92",
+            "object_id": "c1035cc6-b213-421e-a683-c9b3f3b84d9b",
+            "source_id": "c1035cc6-b213-421e-a683-c9b3f3b84d9b",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "0b4f98f9-d60d-5757-9be3-27fa763871cb",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "98cc2946eb8ad881d5fbe904464e680d4e57418b39e25258b92f258ad07505a1",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 7,
+            "title": "青岑M2装配线停机与待确认事项",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 264,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "d3476795-947a-5664-9963-e8258ee1c724",
+            "object_id": "4b50192a-b000-472f-89c3-9d7e0003331f",
+            "source_id": "4b50192a-b000-472f-89c3-9d7e0003331f",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "c346e26a-b2a9-5154-a5df-d1e986d69b3c",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "63222644a4813d68e5e2493a7e57735bf4614596935e526e1285ddaa387b7b43",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 8,
+            "title": "壳体裂纹纠正措施计划与有效性待办",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 280,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "d1015fbb-21fa-5f65-b5d6-17b783260182",
+            "object_id": "f92dff7a-6b48-4ad4-9bc3-664821d1a116",
+            "source_id": "f92dff7a-6b48-4ad4-9bc3-664821d1a116",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "314aedbd-c6dd-52d7-8427-d9404696d081",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "2697c79e56a1f87ffbcd0c15348d9dd2cfaba22b11463393e6452b098cae6b54",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 9,
+            "title": "M2-L08裂纹现场复查纪要",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 272,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "11cac984-ec9b-5bea-900a-e8ba76c851f7",
+            "object_id": "4fec1341-68e5-450a-ac7e-53b058001e66",
+            "source_id": "4fec1341-68e5-450a-ac7e-53b058001e66",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "d0ebd43d-6c08-5650-a1db-a95a21e76cbe",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "8f2695fc20da91602446659cdc203c443ec11e0fb4609a05d3a247a57e727c09",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 10,
+            "title": "青岑M2控制板供应承诺往来",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 285,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "a8ff35c3-a9fb-55e1-acd8-1a0ffb5ba310",
+            "object_id": "f9410c0f-0490-4579-9d7e-73e48eacd9dd",
+            "source_id": "f9410c0f-0490-4579-9d7e-73e48eacd9dd",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "3cd7e738-ffb3-5fe4-a125-738ea73f243d",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "d5bbd040eeda66e4a0b362a74da385b38a47955c9028820dc4a936165f0ecf39",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 11,
+            "title": "M2-L08裂纹样品实验室分析",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 254,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "4d17448c-b66d-5dcf-aecd-c28e143eb456",
+            "object_id": "cd1cca3b-07d7-432a-831c-305d02ea8d60",
+            "source_id": "cd1cca3b-07d7-432a-831c-305d02ea8d60",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "29252276-f080-5e29-b46a-091bf07f0bf7",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "435cd7094e9913853a81ed4438a0990f999db7d434187c172a0db850eb665fde",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 12,
+            "title": "连接件冷冲击裂纹历史分析",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 266,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "815c9986-5287-56b4-9213-7ea2b7f23004",
+            "object_id": "b7feef57-022b-4f83-813a-1a6a1fdc5cbd",
+            "source_id": "b7feef57-022b-4f83-813a-1a6a1fdc5cbd",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "5ae7b936-f8c6-5611-9a83-d4354e311ab2",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "07408ddf6fc9dc344883a4d1f6143ef5133a0213fc892fa1497c7601d21b5152",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 13,
+            "title": "青岑M1焊接气孔试制复盘",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 234,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "6a674417-7265-59a2-9074-1798ccd501d0",
+            "object_id": "71215e57-6237-4d8a-ae29-4c0529c8be69",
+            "source_id": "71215e57-6237-4d8a-ae29-4c0529c8be69",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "9430494c-099a-5bdd-805d-5b8c6e04f2c9",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "cdc1f2d1b8ba01bcd7858a45bd28bf6a660fc5e2eacd568c55be42274300eef0",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 14,
+            "title": "澄岳电子小批加急交付复盘",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 265,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "13752aaf-a4d6-5605-a451-a362dac67c9e",
+            "object_id": "449d01d6-5b6b-4a6b-b505-8c056dcef4b4",
+            "source_id": "449d01d6-5b6b-4a6b-b505-8c056dcef4b4",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "fdd49dbc-5aca-5177-a275-ef65a90978d0",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "75eb4969b8a3aa2547b9e8e863a6e80025a54354f91033f549536940bbd9fa1f",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 15,
+            "title": "岚桥A6低温漏气试制复盘",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 282,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "dfe8bbe1-c094-5bee-9256-3f3e32000ee8",
+            "object_id": "19dc69fa-1714-4e8b-8b2a-00e80881ba4c",
+            "source_id": "19dc69fa-1714-4e8b-8b2a-00e80881ba4c",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "8d0d27dc-9bec-5ebf-be1b-68ed52a446c9",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "d893acc057751d80e453cfaeecefd0c6df1d37ea6ddb002f103fd5bd496eb3b8",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 16,
+            "title": "岚桥A7屏蔽压片临时试验单",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 279,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "fa751418-aa5d-5e11-8fff-42adfc6ead56",
+            "object_id": "5195f0c4-a442-401a-a8ef-7cce01606389",
+            "source_id": "5195f0c4-a442-401a-a8ef-7cce01606389",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "423e2ab4-2ec6-59ac-b155-cc48de6c38dd",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "aa85d5d60f28792467a6acb18fefe905f777ab5cf699186aa392f98c8fc5c4ad",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 17,
+            "title": "M2-L09在制品数量待核对记录",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 286,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "f5cf1215-b913-594a-89dc-26f788c2abf3",
+            "object_id": "3f378758-d690-496c-aaf3-a37577866001",
+            "source_id": "3f378758-d690-496c-aaf3-a37577866001",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "688c4b24-aac3-5583-8b4d-09fac5f092e5",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "f62e508ede726c3b68cc27fb4d1f85b5764121ef8c1a7a74aed3ee5f25735f39",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          },
+          {
+            "rank": 18,
+            "title": "岚桥A7温升测试记录第六轮",
+            "nature": "untrusted",
+            "channel": "keyword",
+            "locator": {
+              "native": [
+                "line:1"
+              ],
+              "char_end": 281,
+              "line_end": 4,
+              "char_start": 0,
+              "line_start": 1
+            },
+            "private": false,
+            "chunk_id": "169a67b1-a455-5396-9c89-d948cfcb53b0",
+            "object_id": "04c6e562-ec84-4680-8d30-b69b8fb2e325",
+            "source_id": "04c6e562-ec84-4680-8d30-b69b8fb2e325",
+            "is_current": true,
+            "product_id": null,
+            "project_id": null,
+            "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+            "citation_id": "21e77ba4-1b90-539e-a996-38fdfae4c217",
+            "proposal_id": null,
+            "source_type": "artifact",
+            "content_hash": "645809216dace31d42e9f4eaf15605f46b3197849af36d02ea03cae730fdaa37",
+            "source_revision": 1,
+            "customer_original": false,
+            "read_basis_status": "current"
+          }
+        ],
+        "scope": {
+          "product_id": null,
+          "project_id": null,
+          "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+          "proposal_id": null
+        },
+        "version": "enterprise-search/v1",
+        "coverage": {
+          "notice": null,
+          "status": "current",
+          "indexed_as_of": "2026-11-01T18:33:52.347724+00:00"
+        },
+        "returned": 18,
+        "truncated": false,
+        "query_trace": {
+          "codes": [],
+          "terms": [
+            "ip",
+            "前",
+            "检查",
+            "检验",
+            "气密",
+            "泡水",
+            "测",
+            "浸水",
+            "端盖",
+            "等级",
+            "送",
+            "防护",
+            "防水"
+          ],
+          "removed": [],
+          "families": [],
+          "code_rule_version": "enterprise-codes/v2",
+          "tokenizer_version": "jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab",
+          "query_policy_version": "query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf"
+        },
+        "direct_returned": 18,
+        "ranking_version": "bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1",
+        "related_returned": 0,
+        "related_truncated": false
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 0,
+      "provider_request_id": null,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "cost_state": "unmetered",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 0,
+      "cost_pricing": {}
+    },
+    {
+      "id": "99f4bb84-2ed5-4ef6-b0b7-485aef249fba",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:29.080170+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "main",
+        "cancel_epoch": 0,
+        "loaded_skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+          }
+        ],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": {
+        "text": "检索到几份直接相关的记录，我取正文核对。",
+        "calls": [
+          {
+            "id": "call_01a19868d08370eab7a2f8d4",
+            "name": "assistant.extract",
+            "arguments": {
+              "question": "端盖防水送测前的检查项有哪些？气密测试与泡水/浸水(IP)测试的关系，气密合格是否可免做泡水？依据原文",
+              "citation_ids": [
+                "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                "c822a03f-29bc-52ee-9328-e4281f3b56d9",
+                "314aedbd-c6dd-52d7-8427-d9404696d081"
+              ]
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 47761,
+          "output_tokens": 579,
+          "cache_read_tokens": 41024,
+          "cache_creation_tokens": 0
+        },
+        "request_id": "0736ba5ef20a6c2b3e28cf6f56e36513",
+        "structured": null,
+        "continuation": {
+          "message": {
+            "role": "assistant",
+            "content": "检索到几份直接相关的记录，我取正文核对。",
+            "tool_calls": [
+              {
+                "id": "call_01a19868d08370eab7a2f8d4",
+                "type": "function",
+                "function": {
+                  "name": "assistant_0extract",
+                  "arguments": "{\"citation_ids\":[\"88228a35-a996-5bd8-8838-4f5bd0da5eef\",\"c822a03f-29bc-52ee-9328-e4281f3b56d9\",\"314aedbd-c6dd-52d7-8427-d9404696d081\"],\"question\":\"端盖防水送测前的检查项有哪些？气密测试与泡水/浸水(IP)测试的关系，气密合格是否可免做泡水？依据原文\"}"
+                }
+              }
+            ],
+            "reasoning_content": "The most relevant: \"岚桥A7端盖密封设计变更说明 Rev C\" (端盖密封设计变更), \"岚桥A7工程联席检查纪要\" (工程联席检查纪要), \"岚桥A6低温漏气试制复盘\", \"壳体裂纹纠正措施计划与有效性待办\" (防水相关?), \"M2-L08裂纹现场复查纪要\" etc.\n\nLet me extract evidence from the top candidates. max_extract_sources: 3. So pick 3 citation_ids: 岚桥A7工程联席检查纪要 (88228a35), 岚桥A7端盖密封设计变更说明 Rev C (c822a03f), 岚桥A6低温漏气试制复盘 (8d0d27dc)? Or 壳体裂纹纠正措施计划 (314aedbd).\n\nThe question is: 防水送测前怎么检查？气密后是否就不用泡水？Probably the answer is in the A7 端盖密封设计变更说明 Rev C and 工程联席检查纪要 — likely says both 气密 和 泡水/浸水 are required, 送测前需先自检 (尺寸、螺纹、密封槽、涂胶、锁付扭矩...) and that 气密不能替代 IP 浸水测试。\n\nLet me extract from 3-4 sources. Rule says max_extract_sources: 3 in assistant_depth. Let me extract from the top 3: 88228a35 (工程联席检查纪要), c822a03f (端盖密封设计变更说明 Rev C), 314aedbd (壳体裂纹纠正措施计划与有效性待办). Hmm, but 岚桥A6低温漏气试制复盘 might mention 泡水 as well.\n\nI'll do one extract call with 3 citation ids and a question asking about 防水送测前检查项、气密与浸水/泡水的关系。"
+          },
+          "protocol": "openai-compatible",
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec"
+        },
+        "context_budget": {
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "reserve": 528288,
+          "segments": {
+            "loop": 4597,
+            "tools": 30248,
+            "skills": 3780,
+            "system": 2850,
+            "history": 0,
+            "envelope": 651
+          },
+          "over_focus": false,
+          "reductions": [],
+          "estimated_total": 42126,
+          "fixed_over_half": true,
+          "admission_tokens": 48445,
+          "estimation_basis": "previous_actual_input",
+          "estimation_margin": 0.15,
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 47761,
+          "fixed_admission_tokens": 42410,
+          "previous_estimated_tokens": 37529,
+          "input_estimate_error_ratio": 0.11798329180712297,
+          "previous_actual_input_tokens": 41024
+        }
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 48340,
+      "provider_request_id": "0736ba5ef20a6c2b3e28cf6f56e36513",
+      "actual_input_tokens": 47761,
+      "actual_output_tokens": 579,
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 5416,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      },
+      "elapsed_ms": 3523.6464999907184,
+      "protocol": "openai-compatible",
+      "raw_usage": {
+        "total_tokens": 48340,
+        "total_characters": 0,
+        "prompt_tokens": 47761,
+        "completion_tokens": 579,
+        "completion_tokens_details": {
+          "reasoning_tokens": 403
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 41024
+        }
+      },
+      "provider_observation": {
+        "started_at": "2026-11-01T18:38:29.450690+00:00",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "isolation": "main",
+        "protocol": "openai-compatible",
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "request_body_sha256": "7e2e7e813c8acacbfd2a2605de9ef542eeb89cc905f74ff0c9c532430f9dbc25",
+        "request_bytes": 155608,
+        "private_request_path": "pdos-next/.local/real-eval-20261101/wire/7e2e7e813c8acacbfd2a2605de9ef542eeb89cc905f74ff0c9c532430f9dbc25.json",
+        "private_response_path": "pdos-next/.local/real-eval-20261101/wire/ab5d47662d05ee3b0cb7b690d7985eb16f36a9bdf00da94452118709e592dc95.response.json",
+        "response_sha256": "ab5d47662d05ee3b0cb7b690d7985eb16f36a9bdf00da94452118709e592dc95",
+        "raw_usage": {
+          "total_tokens": 48340,
+          "total_characters": 0,
+          "prompt_tokens": 47761,
+          "completion_tokens": 579,
+          "completion_tokens_details": {
+            "reasoning_tokens": 403
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 41024
+          }
+        },
+        "body_request_id": "0736ba5ef20a6c2b3e28cf6f56e36513",
+        "header_request_id": null,
+        "request_id": "0736ba5ef20a6c2b3e28cf6f56e36513",
+        "normalized_usage": {
+          "input_tokens": 47761,
+          "output_tokens": 579,
+          "cache_read_tokens": 41024,
+          "cache_creation_tokens": 0
+        },
+        "public_turn": {
+          "text": "检索到几份直接相关的记录，我取正文核对。",
+          "structured": null,
+          "calls": [
+            {
+              "id": "call_01a19868d08370eab7a2f8d4",
+              "name": "assistant.extract",
+              "arguments": {
+                "citation_ids": [
+                  "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                  "c822a03f-29bc-52ee-9328-e4281f3b56d9",
+                  "314aedbd-c6dd-52d7-8427-d9404696d081"
+                ],
+                "question": "端盖防水送测前的检查项有哪些？气密测试与泡水/浸水(IP)测试的关系，气密合格是否可免做泡水？依据原文"
+              }
+            }
+          ]
+        },
+        "outcome": "returned",
+        "elapsed_ms": 3523.6464999907184,
+        "finished_at": "2026-11-01T18:38:32.974366+00:00"
+      }
+    },
+    {
+      "id": "9ecc6fe5-09ed-459c-8924-7d175fe2a1bf",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "assistant.extract",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:33.544263+00:00",
+      "execution_binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "assistant.extract",
+        "graph": "xiaopai",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "call_key": "agent:74044278-7c0c-4e8e-9f49-c42fc69ca5c0:model:99f4bb84-2ed5-4ef6-b0b7-485aef249fba:0",
+        "isolation": "main",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
+        "writer_id": "a2c6209e-9c7f-4a2c-bcef-291a884c6389",
+        "product_id": null,
+        "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+        "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+        "proposal_id": null,
+        "cancel_epoch": 0,
+        "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+        "model_call_id": "99f4bb84-2ed5-4ef6-b0b7-485aef249fba",
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "internal"
+        ],
+        "private_context": false,
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "customer_identities": [],
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": {
+        "rows": [],
+        "partial": true,
+        "version": 1,
+        "coverage": [
+          {
+            "kind": "untrusted",
+            "complete": true,
+            "read_chars": 290,
+            "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+            "range_chars": 290
+          }
+        ],
+        "failures": [
+          {
+            "code": "EXTERNAL_OUTCOME_UNKNOWN",
+            "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+          },
+          {
+            "code": "EXTERNAL_OUTCOME_UNKNOWN",
+            "citation_id": "314aedbd-c6dd-52d7-8427-d9404696d081"
+          }
+        ],
+        "rejected": [],
+        "row_count": 0
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 0,
+      "provider_request_id": null,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "cost_state": "unmetered",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 0,
+      "cost_pricing": {}
+    },
+    {
+      "id": "119d9127-b267-4352-84b2-34b12b2810c9",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:35.462966+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "assistant_extract",
+        "cancel_epoch": 0,
+        "loaded_skills": [],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": {
+        "text": "",
+        "calls": [
+          {
+            "id": "call_CSXxgmQRssy1Ct9qDGg211rS",
+            "name": "assistant.passage.read",
+            "arguments": {
+              "cursor": 0,
+              "page_chars": 1600,
+              "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 3655,
+          "output_tokens": 121,
+          "cache_read_tokens": 184,
+          "cache_creation_tokens": 0
+        },
+        "request_id": "0736ba65463497d7870a390bf3bcc8ce",
+        "structured": null,
+        "continuation": {
+          "message": {
+            "role": "assistant",
+            "content": "",
+            "tool_calls": [
+              {
+                "id": "call_CSXxgmQRssy1Ct9qDGg211rS",
+                "type": "function",
+                "function": {
+                  "name": "assistant_0passage_0read",
+                  "arguments": "{\"citation_id\": \"88228a35-a996-5bd8-8838-4f5bd0da5eef\", \"cursor\": 0, \"page_chars\": 1600}"
+                }
+              }
+            ],
+            "reasoning_content": "The task: read the citation's passages using assistant_0passage_0read, page by page, and return evidence rows with citation_id, statement, and verbatim quote.\n\nLet me start reading."
+          },
+          "protocol": "openai-compatible",
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec"
+        },
+        "context_budget": {
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "reserve": 528288,
+          "segments": {
+            "loop": 0,
+            "tools": 823,
+            "skills": 0,
+            "system": 2850,
+            "history": 0,
+            "envelope": 216
+          },
+          "over_focus": false,
+          "reductions": [],
+          "estimated_total": 3889,
+          "fixed_over_half": false,
+          "admission_tokens": 4473,
+          "estimation_basis": "first_call_estimate",
+          "estimation_margin": 0.15,
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 3655,
+          "fixed_admission_tokens": 4224,
+          "input_estimate_error_ratio": 0.0640218878248974
+        }
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 3776,
+      "provider_request_id": "0736ba65463497d7870a390bf3bcc8ce",
+      "actual_input_tokens": 3655,
+      "actual_output_tokens": 121,
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 1253,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      },
+      "elapsed_ms": 2036.7826250003418,
+      "protocol": "openai-compatible",
+      "raw_usage": {
+        "total_tokens": 3776,
+        "total_characters": 0,
+        "prompt_tokens": 3655,
+        "completion_tokens": 121,
+        "completion_tokens_details": {
+          "reasoning_tokens": 41
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 184
+        }
+      },
+      "provider_observation": {
+        "started_at": "2026-11-01T18:38:35.981616+00:00",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "isolation": "assistant_extract",
+        "protocol": "openai-compatible",
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "request_body_sha256": "36547762b4f5e7e437c7766ae4494c825a88f116a485aeb350037a6a3d9f48c5",
+        "request_bytes": 14498,
+        "private_request_path": "pdos-next/.local/real-eval-20261101/wire/36547762b4f5e7e437c7766ae4494c825a88f116a485aeb350037a6a3d9f48c5.json",
+        "private_response_path": "pdos-next/.local/real-eval-20261101/wire/f1214cceac32e0abcbe47c4a4041338258192ffdb629b4cc56e614dfdc6542d6.response.json",
+        "response_sha256": "f1214cceac32e0abcbe47c4a4041338258192ffdb629b4cc56e614dfdc6542d6",
+        "raw_usage": {
+          "total_tokens": 3776,
+          "total_characters": 0,
+          "prompt_tokens": 3655,
+          "completion_tokens": 121,
+          "completion_tokens_details": {
+            "reasoning_tokens": 41
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 184
+          }
+        },
+        "body_request_id": "0736ba65463497d7870a390bf3bcc8ce",
+        "header_request_id": null,
+        "request_id": "0736ba65463497d7870a390bf3bcc8ce",
+        "normalized_usage": {
+          "input_tokens": 3655,
+          "output_tokens": 121,
+          "cache_read_tokens": 184,
+          "cache_creation_tokens": 0
+        },
+        "public_turn": {
+          "text": "",
+          "structured": null,
+          "calls": [
+            {
+              "id": "call_CSXxgmQRssy1Ct9qDGg211rS",
+              "name": "assistant.passage.read",
+              "arguments": {
+                "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                "cursor": 0,
+                "page_chars": 1600
+              }
+            }
+          ]
+        },
+        "outcome": "returned",
+        "elapsed_ms": 2036.7826250003418,
+        "finished_at": "2026-11-01T18:38:38.018426+00:00"
+      }
+    },
+    {
+      "id": "d77a55c2-5a37-465c-95d1-6afaa58cdee5",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "assistant.passage.read",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:38.769825+00:00",
+      "execution_binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "assistant.passage.read",
+        "graph": "xiaopai",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "call_key": "agent:74044278-7c0c-4e8e-9f49-c42fc69ca5c0:model:119d9127-b267-4352-84b2-34b12b2810c9:0",
+        "isolation": "assistant_extract",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
+        "writer_id": "a2c6209e-9c7f-4a2c-bcef-291a884c6389",
+        "product_id": null,
+        "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+        "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+        "proposal_id": null,
+        "cancel_epoch": 0,
+        "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+        "model_call_id": "119d9127-b267-4352-84b2-34b12b2810c9",
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "internal"
+        ],
+        "private_context": false,
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "customer_identities": [],
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": {
+        "text": "资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。\n防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验；气密预检不能代替浸水。浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。\n屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。\n阶段讨论：会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。",
+        "locator": {
+          "native": [
+            "line:1"
+          ],
+          "char_end": 290,
+          "line_end": 4,
+          "char_start": 0,
+          "line_start": 1
+        },
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+        "next_cursor": null,
+        "range_chars": 290,
+        "content_hash": "4723424eef5510aee5871a2383ae68e283dd03712fcb83b4308866bee2a3415b",
+        "source_revision": 1,
+        "read_basis_status": "current"
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 0,
+      "provider_request_id": null,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "cost_state": "unmetered",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 0,
+      "cost_pricing": {}
+    },
+    {
+      "id": "705f95bd-4a4f-47ff-a9f5-daf25b04e3d9",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:38:39.840099+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "assistant_extract",
+        "cancel_epoch": 0,
+        "loaded_skills": [],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": {
+        "text": "已读取该引用绑定的全部段落（290 字符，next_cursor 为 null，无后续分页），以下为逐字证据行。\n\n",
+        "calls": [],
+        "usage": {
+          "input_tokens": 4167,
+          "output_tokens": 3016,
+          "cache_read_tokens": 3654,
+          "cache_creation_tokens": 0
+        },
+        "request_id": "0736ba69b3dda027059a3aaa793b32c4",
+        "structured": {
+          "result": {
+            "result": {
+              "rows": [
+                {
+                  "quote": "防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验",
+                  "statement": "防水送测约定：端盖按 Rev C 装配后先做工程气密预检，再按项目约定做 1 米水深、30 分钟浸水试验。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                },
+                {
+                  "quote": "气密预检不能代替浸水。",
+                  "statement": "气密预检不能代替浸水试验，故气密合格不可免做泡水/浸水。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                },
+                {
+                  "quote": "浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。",
+                  "statement": "浸水试验负责人顾言，计划 2026-10-30，尚无本次执行结果。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                },
+                {
+                  "quote": "屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。",
+                  "statement": "屏蔽压片问题：同一批 E7 台架检查在压紧力 28 N 时有间歇接触，拟验证 35 N 方案。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                },
+                {
+                  "quote": "会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。",
+                  "statement": "会议未批准 35 N 为正式量产参数，负责人齐川，补充确认截止 2026-10-31。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                },
+                {
+                  "quote": "会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。",
+                  "statement": "阶段讨论：会议当日仅建议继续补证，未作 DVT 放行决定；当前节点、阻塞项与具名状态须查看项目原生记录。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                },
+                {
+                  "quote": "资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。",
+                  "statement": "证据来源为会议纪要 ENG-MTG-2026-044，会议日期 2026-10-24，记录人沈禾。",
+                  "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                }
+              ]
+            },
+            "assistant": {
+              "unknowns": [
+                "原文未出现 IP 等级代码或引用测试标准编号，且未使用“泡水”措辞，仅表述为“1米水深、30分钟浸水试验”，故 IP 口径无法由本引用确定。",
+                "原文未列出送测前检查项的完整清单，可核实的仅为“按Rev C装配后先做工程气密预检”这一前置约定。",
+                "浸水试验尚无本次执行结果（计划 2026-10-30），本引用不含实际合格/判定记录。",
+                "35 N 压紧力方案未获会议批准为正式量产参数，需齐川于 2026-10-31 前补充确认。",
+                "本引用为会议纪要，不能代替项目当前原生记录（节点、阻塞项与具名状态）。"
+              ],
+              "citation_ids": [
+                "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+              ]
+            }
+          },
+          "status": "completed",
+          "summary": "已逐页读完引用 88228a35（ENG-MTG-2026-044 会议纪要，2026-10-24，记录人沈禾，range_chars 290，next_cursor 为 null，覆盖完整）。提取 7 条证据行：端盖按 Rev C 装配后先做工程气密预检、再做 1 米水深 30 分钟浸水试验；原文明确\"气密预检不能代替浸水\"，故气密合格不可免做泡水/浸水；浸水试验负责人顾言、计划 2026-10-30 且尚无执行结果；屏蔽压片在 28 N 出现间歇接触、35 N 方案未获会议批准（齐川 2026-10-31 补充确认）；会议未作 DVT 放行决定。未知项：原文未出现 IP 等级或标准编号、未使用\"泡水\"措辞，且未给出送测前完整检查项清单。",
+          "questions": [],
+          "unfinished": []
+        },
+        "continuation": {
+          "message": {
+            "role": "assistant",
+            "content": "已读取该引用绑定的全部段落（290 字符，next_cursor 为 null，无后续分页），以下为逐字证据行。\n\n",
+            "tool_calls": [
+              {
+                "id": "call_xCR8fDxHiIAo4V9Mw7nxj4ze",
+                "type": "function",
+                "function": {
+                  "name": "pdos_agent_output",
+                  "arguments": "{\"status\": \"completed\", \"summary\": \"已逐页读完引用 88228a35（ENG-MTG-2026-044 会议纪要，2026-10-24，记录人沈禾，range_chars 290，next_cursor 为 null，覆盖完整）。提取 7 条证据行：端盖按 Rev C 装配后先做工程气密预检、再做 1 米水深 30 分钟浸水试验；原文明确\\\"气密预检不能代替浸水\\\"，故气密合格不可免做泡水/浸水；浸水试验负责人顾言、计划 2026-10-30 且尚无执行结果；屏蔽压片在 28 N 出现间歇接触、35 N 方案未获会议批准（齐川 2026-10-31 补充确认）；会议未作 DVT 放行决定。未知项：原文未出现 IP 等级或标准编号、未使用\\\"泡水\\\"措辞，且未给出送测前完整检查项清单。\", \"result_json\": \"{\\\"result\\\":{\\\"rows\\\":[{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"防水送测约定：端盖按 Rev C 装配后先做工程气密预检，再按项目约定做 1 米水深、30 分钟浸水试验。\\\",\\\"quote\\\":\\\"防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验\\\"},{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"气密预检不能代替浸水试验，故气密合格不可免做泡水/浸水。\\\",\\\"quote\\\":\\\"气密预检不能代替浸水。\\\"},{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"浸水试验负责人顾言，计划 2026-10-30，尚无本次执行结果。\\\",\\\"quote\\\":\\\"浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。\\\"},{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"屏蔽压片问题：同一批 E7 台架检查在压紧力 28 N 时有间歇接触，拟验证 35 N 方案。\\\",\\\"quote\\\":\\\"屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。\\\"},{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"会议未批准 35 N 为正式量产参数，负责人齐川，补充确认截止 2026-10-31。\\\",\\\"quote\\\":\\\"会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。\\\"},{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"阶段讨论：会议当日仅建议继续补证，未作 DVT 放行决定；当前节点、阻塞项与具名状态须查看项目原生记录。\\\",\\\"quote\\\":\\\"会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。\\\"},{\\\"citation_id\\\":\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\",\\\"statement\\\":\\\"证据来源为会议纪要 ENG-MTG-2026-044，会议日期 2026-10-24，记录人沈禾。\\\",\\\"quote\\\":\\\"资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。\\\"}]},\\\"assistant\\\":{\\\"citation_ids\\\":[\\\"88228a35-a996-5bd8-8838-4f5bd0da5eef\\\"],\\\"unknowns\\\":[\\\"原文未出现 IP 等级代码或引用测试标准编号，且未使用“泡水”措辞，仅表述为“1米水深、30分钟浸水试验”，故 IP 口径无法由本引用确定。\\\",\\\"原文未列出送测前检查项的完整清单，可核实的仅为“按Rev C装配后先做工程气密预检”这一前置约定。\\\",\\\"浸水试验尚无本次执行结果（计划 2026-10-30），本引用不含实际合格/判定记录。\\\",\\\"35 N 压紧力方案未获会议批准为正式量产参数，需齐川于 2026-10-31 前补充确认。\\\",\\\"本引用为会议纪要，不能代替项目当前原生记录（节点、阻塞项与具名状态）。\\\"]}}\", \"questions\": [], \"unfinished\": []}"
+                }
+              }
+            ],
+            "reasoning_content": "The full text is 290 chars, next_cursor is null, so coverage is complete. Now I need to produce result.rows with citation_id, statement, and verbatim quote.\n\nThe question: 端盖防水送测前的检查项有哪些？气密测试与泡水/浸水(IP)测试的关系，气密合格是否可免做泡水？依据原文\n\nEvidence rows from the text:\n1. 防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验 — quote: \"防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验\"\n2. 气密预检不能代替浸水 — quote: \"气密预检不能代替浸水\"\n3. 浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果 — quote: \"浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。\"\n4. 屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案 — quote: \"屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。\"\n5. 会议没有批准35 N为正式量产参数 — quote: \"会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。\"\n6. 阶段讨论：会议当日建议继续补证，未作DVT放行决定 — quote: \"会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。\"\n\nAlso the doc metadata: 资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。\n\nNow, the instruction says \"返回 result.rows，每行只含 citation_id、statement、逐字 quote。\" This is an isolated subtask. The wire schema: result_json contains the JSON business result. The result_json.assistant contains only citation_ids and unknowns for evidence-based answers... Hmm, but this is an isolated subtask with a specific format requested: result.rows.\n\nLet me check what the schema says. The tool `pdos_agent_output` has result_json as a string. There's mention of \"For an evidence-based answer, result_json.assistant contains only citation_ids and unknowns.\" But the instruction here explicitly asks for result.rows with citation_id, statement, quote. This is the isolated subtask's own format.\n\nAlso note \"task_result\" formats are for blockers/cases/review/commitments. Here we need rows with statement/quote, which matches the isolated reading subtask format: result.rows.\n\nI'll build result_json as:\n{\n  \"result\": {\n    \"rows\": [\n      {\"citation_id\": \"...\", \"statement\": \"...\", \"quote\": \"...\"},\n      ...\n    ]\n  },\n  \"assistant\": {\"citation_ids\": [\"88228a35-...\"], \"unknowns\": [...]}\n}\n\nHmm — but should I include assistant.citation_ids? The spec says \"For an evidence-based answer, result_json.assistant contains only citation_ids and unknowns.\" That seems appropriate. But there's also \"task_result\" for specific formats. The request explicitly wants result.rows with statement and quote, so I'll include both result.rows and assistant with citation_ids and unknowns.\n\nAlso note: unknowns — the question mentions \"泡水/浸水(IP)测试\" — the source doesn't use the term \"IP\" (IP等级). I should note that the source does not mention IP rating designation, and the 泡水 test is described as 1米水深、30分钟浸水试验. Also no explicit list of \"检查项\" beyond 气密预检 — the source doesn't enumerate a full checklist. Also note that 屏蔽压片/压紧力 issue is an open item (间歇接触 at 28N), which is a related check but not explicitly a 送测前检查项 — I should be careful in statement wording to avoid over-claiming.\n\nLet me be precise: statement should describe what the evidence says, and quote must be a verbatim substring of the passage read.\n\nRows:\n1. statement: \"防水送测前先按 Rev C 装配做工程气密预检，再做 1 米水深、30 分钟浸水试验（原文未使用 IP 等级表述）。\" quote: \"防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验\"\n2. statement: \"气密预检不能代替浸水试验，故气密合格不可免做泡水/浸水。\" quote: \"气密预检不能代替浸水。\"\n3. statement: \"浸水试验负责人顾言，计划 2026-10-30，尚无本次执行结果（本次尚无实际记录）。\" quote: \"浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。\"\n4. statement: \"同一批 E7 台架检查在压紧力 28 N 时出现间歇接触，拟验证 35 N 方案（送测相关未闭环项）。\" quote: \"屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。\"\n5. statement: \"会议未批准 35 N 为正式量产参数，负责人齐川补充确认截止 2026-10-31。\" quote: \"会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。\"\n6. statement: \"会议当日仅建议继续补证，未作 DVT 放行决定；当前状态须查看项目原生记录，不能用本纪要代替。\" quote: \"会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。\"\n7. Maybe metadata row: 资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。 — quote verbatim.\n\nI'll include 7 rows? The metadata row is useful for traceability. I'll include it.\n\nUnknowns: \n- 原文未给出 IP 等级代码/标准编号，也未使用\"泡水\"一词，只写\"1米水深、30分钟浸水试验\"。\n- 原文未列出送测前的完整检查项清单，除工程气密预检与 Rev C 装配前提外无其他条目。\n- 浸水试验尚无执行结果（计划 2026-10-30），故无实际合格记录。\n- 压紧力方案 35 N 未获会议批准，待齐川 2026-10-31 补充确认。\n\nStatus: completed. Summary in Chinese.\n\nLet me verify quotes are exact substrings:\nText: \"资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。\\n防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验；气密预检不能代替浸水。浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。\\n屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。\\n阶段讨论：会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。\"\n\nQuote 1: \"防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验\" ✓\nQuote 2: \"气密预检不能代替浸水。\" ✓\nQuote 3: \"浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。\" ✓\nQuote 4: \"屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。\" ✓\nQuote 5: \"会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。\" ✓\nQuote 6: \"会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。\" ✓\nQuote 7: \"资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。\" ✓\n\nGood. Now output."
+          },
+          "protocol": "openai-compatible",
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec"
+        },
+        "context_budget": {
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "reserve": 528288,
+          "segments": {
+            "loop": 546,
+            "tools": 823,
+            "skills": 0,
+            "system": 2850,
+            "history": 0,
+            "envelope": 216
+          },
+          "over_focus": false,
+          "reductions": [],
+          "estimated_total": 4435,
+          "fixed_over_half": false,
+          "admission_tokens": 5101,
+          "estimation_basis": "previous_actual_input",
+          "estimation_margin": 0.15,
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 4167,
+          "fixed_admission_tokens": 4224,
+          "previous_estimated_tokens": 3889,
+          "input_estimate_error_ratio": 0.06431485481161507,
+          "previous_actual_input_tokens": 3655
+        }
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 7183,
+      "provider_request_id": "0736ba69b3dda027059a3aaa793b32c4",
+      "actual_input_tokens": 4167,
+      "actual_output_tokens": 3016,
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 4176,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      },
+      "elapsed_ms": 18197.191999992356,
+      "protocol": "openai-compatible",
+      "raw_usage": {
+        "total_tokens": 7183,
+        "total_characters": 0,
+        "prompt_tokens": 4167,
+        "completion_tokens": 3016,
+        "completion_tokens_details": {
+          "reasoning_tokens": 1908
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 3654
+        }
+      },
+      "provider_observation": {
+        "started_at": "2026-11-01T18:38:40.279472+00:00",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "isolation": "assistant_extract",
+        "protocol": "openai-compatible",
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "request_body_sha256": "7e2c5aab67ebf74e701bde35f2571ea47904333426f3c09b638dc4c319e9a0b3",
+        "request_bytes": 16263,
+        "private_request_path": "pdos-next/.local/real-eval-20261101/wire/7e2c5aab67ebf74e701bde35f2571ea47904333426f3c09b638dc4c319e9a0b3.json",
+        "private_response_path": "pdos-next/.local/real-eval-20261101/wire/1c1b9c3304cd6a30c839df446d387ae112e3d9e6316cd58c836c3bd2f2491ce2.response.json",
+        "response_sha256": "1c1b9c3304cd6a30c839df446d387ae112e3d9e6316cd58c836c3bd2f2491ce2",
+        "raw_usage": {
+          "total_tokens": 7183,
+          "total_characters": 0,
+          "prompt_tokens": 4167,
+          "completion_tokens": 3016,
+          "completion_tokens_details": {
+            "reasoning_tokens": 1908
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 3654
+          }
+        },
+        "body_request_id": "0736ba69b3dda027059a3aaa793b32c4",
+        "header_request_id": null,
+        "request_id": "0736ba69b3dda027059a3aaa793b32c4",
+        "normalized_usage": {
+          "input_tokens": 4167,
+          "output_tokens": 3016,
+          "cache_read_tokens": 3654,
+          "cache_creation_tokens": 0
+        },
+        "public_turn": {
+          "text": "已读取该引用绑定的全部段落（290 字符，next_cursor 为 null，无后续分页），以下为逐字证据行。\n\n",
+          "structured": {
+            "status": "completed",
+            "summary": "已逐页读完引用 88228a35（ENG-MTG-2026-044 会议纪要，2026-10-24，记录人沈禾，range_chars 290，next_cursor 为 null，覆盖完整）。提取 7 条证据行：端盖按 Rev C 装配后先做工程气密预检、再做 1 米水深 30 分钟浸水试验；原文明确\"气密预检不能代替浸水\"，故气密合格不可免做泡水/浸水；浸水试验负责人顾言、计划 2026-10-30 且尚无执行结果；屏蔽压片在 28 N 出现间歇接触、35 N 方案未获会议批准（齐川 2026-10-31 补充确认）；会议未作 DVT 放行决定。未知项：原文未出现 IP 等级或标准编号、未使用\"泡水\"措辞，且未给出送测前完整检查项清单。",
+            "questions": [],
+            "unfinished": [],
+            "result": {
+              "result": {
+                "rows": [
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "防水送测约定：端盖按 Rev C 装配后先做工程气密预检，再按项目约定做 1 米水深、30 分钟浸水试验。",
+                    "quote": "防水送测约定：端盖按Rev C装配后先做工程气密预检，再按项目约定做1米水深、30分钟浸水试验"
+                  },
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "气密预检不能代替浸水试验，故气密合格不可免做泡水/浸水。",
+                    "quote": "气密预检不能代替浸水。"
+                  },
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "浸水试验负责人顾言，计划 2026-10-30，尚无本次执行结果。",
+                    "quote": "浸水试验负责人顾言，计划2026-10-30，尚无本次执行结果。"
+                  },
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "屏蔽压片问题：同一批 E7 台架检查在压紧力 28 N 时有间歇接触，拟验证 35 N 方案。",
+                    "quote": "屏蔽压片问题：同一批E7的台架检查记录压紧力28 N时有间歇接触，拟验证35 N方案。"
+                  },
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "会议未批准 35 N 为正式量产参数，负责人齐川，补充确认截止 2026-10-31。",
+                    "quote": "会议没有批准35 N为正式量产参数；负责人齐川，补充确认截止2026-10-31。"
+                  },
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "阶段讨论：会议当日仅建议继续补证，未作 DVT 放行决定；当前节点、阻塞项与具名状态须查看项目原生记录。",
+                    "quote": "会议当日建议继续补证，未作DVT放行决定；项目现在的节点、阻塞项与具名状态须查看项目当前原生记录，不能用本纪要代替当前状态。"
+                  },
+                  {
+                    "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+                    "statement": "证据来源为会议纪要 ENG-MTG-2026-044，会议日期 2026-10-24，记录人沈禾。",
+                    "quote": "资料编号：ENG-MTG-2026-044；会议日期：2026-10-24；记录人：沈禾。"
+                  }
+                ]
+              },
+              "assistant": {
+                "citation_ids": [
+                  "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+                ],
+                "unknowns": [
+                  "原文未出现 IP 等级代码或引用测试标准编号，且未使用“泡水”措辞，仅表述为“1米水深、30分钟浸水试验”，故 IP 口径无法由本引用确定。",
+                  "原文未列出送测前检查项的完整清单，可核实的仅为“按Rev C装配后先做工程气密预检”这一前置约定。",
+                  "浸水试验尚无本次执行结果（计划 2026-10-30），本引用不含实际合格/判定记录。",
+                  "35 N 压紧力方案未获会议批准为正式量产参数，需齐川于 2026-10-31 前补充确认。",
+                  "本引用为会议纪要，不能代替项目当前原生记录（节点、阻塞项与具名状态）。"
+                ]
+              }
+            }
+          },
+          "calls": []
+        },
+        "outcome": "returned",
+        "elapsed_ms": 18197.191999992356,
+        "finished_at": "2026-11-01T18:38:58.476694+00:00"
+      }
+    },
+    {
+      "id": "dd97bf66-edb3-40e7-a678-25f590f355ae",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:39:02.073831+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "assistant_extract",
+        "cancel_epoch": 0,
+        "loaded_skills": [],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": {
+        "text": "I'll read the bound citation passage.",
+        "calls": [
+          {
+            "id": "call_01a198694dc4730e8efa4810",
+            "name": "assistant.passage.read",
+            "arguments": {
+              "cursor": 0,
+              "page_chars": 2000,
+              "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+            }
+          }
+        ],
+        "usage": {
+          "input_tokens": 3654,
+          "output_tokens": 85,
+          "cache_read_tokens": 184,
+          "cache_creation_tokens": 0
+        },
+        "request_id": "0736ba7f1715cca026921024fb743ed2",
+        "structured": null,
+        "continuation": {
+          "message": {
+            "role": "assistant",
+            "content": "I'll read the bound citation passage.",
+            "tool_calls": [
+              {
+                "id": "call_01a198694dc4730e8efa4810",
+                "type": "function",
+                "function": {
+                  "name": "assistant_0passage_0read",
+                  "arguments": "{\"citation_id\":\"c822a03f-29bc-52ee-9328-e4281f3b56d9\",\"cursor\":0,\"page_chars\":2000}"
+                }
+              }
+            ]
+          },
+          "protocol": "openai-compatible",
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec"
+        },
+        "context_budget": {
+          "focus": 64000,
+          "window": 592288,
+          "cleanup": {
+            "reason": "within_focus",
+            "applied": false,
+            "triggered": false
+          },
+          "reserve": 528288,
+          "segments": {
+            "loop": 0,
+            "tools": 823,
+            "skills": 0,
+            "system": 2850,
+            "history": 0,
+            "envelope": 216
+          },
+          "over_focus": false,
+          "reductions": [],
+          "estimated_total": 3889,
+          "fixed_over_half": false,
+          "admission_tokens": 4473,
+          "estimation_basis": "previous_actual_input",
+          "estimation_margin": 0.15,
+          "window_configured": true,
+          "calibration_factor": 1.15,
+          "actual_input_tokens": 3654,
+          "fixed_admission_tokens": 4224,
+          "previous_estimated_tokens": 4435,
+          "input_estimate_error_ratio": 0.06431308155446086,
+          "previous_actual_input_tokens": 4167
+        }
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 3739,
+      "provider_request_id": "0736ba7f1715cca026921024fb743ed2",
+      "actual_input_tokens": 3654,
+      "actual_output_tokens": 85,
+      "cost_state": "actual",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 1208,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      },
+      "elapsed_ms": 1467.2012499941047,
+      "protocol": "openai-compatible",
+      "raw_usage": {
+        "total_tokens": 3739,
+        "total_characters": 0,
+        "prompt_tokens": 3654,
+        "completion_tokens": 85,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 184
+        }
+      },
+      "provider_observation": {
+        "started_at": "2026-11-01T18:39:02.457763+00:00",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "isolation": "assistant_extract",
+        "protocol": "openai-compatible",
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "request_body_sha256": "ce22f05957ee9f04655935832857b2dfe75826ee31e42fb698d5e0dc1df58e78",
+        "request_bytes": 14498,
+        "private_request_path": "pdos-next/.local/real-eval-20261101/wire/ce22f05957ee9f04655935832857b2dfe75826ee31e42fb698d5e0dc1df58e78.json",
+        "private_response_path": "pdos-next/.local/real-eval-20261101/wire/f0b5d8c7255a5ed86c6cc0b68743da9318760273e39ddce5872d7f17a12150ec.response.json",
+        "response_sha256": "f0b5d8c7255a5ed86c6cc0b68743da9318760273e39ddce5872d7f17a12150ec",
+        "raw_usage": {
+          "total_tokens": 3739,
+          "total_characters": 0,
+          "prompt_tokens": 3654,
+          "completion_tokens": 85,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 184
+          }
+        },
+        "body_request_id": "0736ba7f1715cca026921024fb743ed2",
+        "header_request_id": null,
+        "request_id": "0736ba7f1715cca026921024fb743ed2",
+        "normalized_usage": {
+          "input_tokens": 3654,
+          "output_tokens": 85,
+          "cache_read_tokens": 184,
+          "cache_creation_tokens": 0
+        },
+        "public_turn": {
+          "text": "I'll read the bound citation passage.",
+          "structured": null,
+          "calls": [
+            {
+              "id": "call_01a198694dc4730e8efa4810",
+              "name": "assistant.passage.read",
+              "arguments": {
+                "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9",
+                "cursor": 0,
+                "page_chars": 2000
+              }
+            }
+          ]
+        },
+        "outcome": "returned",
+        "elapsed_ms": 1467.2012499941047,
+        "finished_at": "2026-11-01T18:39:03.924998+00:00"
+      }
+    },
+    {
+      "id": "74ec72db-88e1-48fc-bf66-6ec545ec3ba0",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "assistant.passage.read",
+      "state": "completed",
+      "error_code": null,
+      "created_at": "2026-11-01 18:39:06.307808+00:00",
+      "execution_binding": {
+        "kind": "read",
+        "step": "tools",
+        "tool": "assistant.passage.read",
+        "graph": "xiaopai",
+        "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+        "call_key": "agent:74044278-7c0c-4e8e-9f49-c42fc69ca5c0:model:dd97bf66-edb3-40e7-a678-25f590f355ae:0",
+        "isolation": "assistant_extract",
+        "read_kind": "ordinary/v1",
+        "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
+        "writer_id": "a2c6209e-9c7f-4a2c-bcef-291a884c6389",
+        "product_id": null,
+        "session_id": "d156535d-c0e6-4705-8d4c-b15d699c24fd",
+        "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+        "proposal_id": null,
+        "cancel_epoch": 0,
+        "requester_id": "8292060b-065a-4367-8e3a-c49cd15bd1f7",
+        "model_call_id": "dd97bf66-edb3-40e7-a678-25f590f355ae",
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "proof_version": 1,
+        "response_index": 0,
+        "data_categories": [
+          "internal"
+        ],
+        "private_context": false,
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "customer_identities": [],
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": {
+        "text": "资料编号：ENG-DS-2026-031；版本：Rev C；登记日期：2026-10-21。\n适用对象：岚桥A7样机，配置A7-C，端盖密封结构。密封唇高度由Rev B的0.60 mm改为0.90 mm，压装力要求18±2 N；不能把这个力值用于屏蔽压片。\n设计原因：雨淋后拆机发现密封接触印痕局部中断，目前只登记为漏水路径假设，尚未完成根因确认。加胶方案未采用，以免影响拆修。\n送正式防水试验前，工程预检使用0.25 bar气压保压60秒，观察压降；本页未登记合格压降阈值，不得补成“零压降”。预检不等同IPX7结论。\n验证负责人：顾言；计划2026-10-30补做3件端盖装配与拆解检查。截至本版登记时，3件仅为计划数量，结果未填。设计登记人：沈禾，登记人不是该验证负责人。",
+        "locator": {
+          "native": [
+            "line:1"
+          ],
+          "char_end": 339,
+          "line_end": 5,
+          "char_start": 0,
+          "line_start": 1
+        },
+        "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9",
+        "next_cursor": null,
+        "range_chars": 339,
+        "content_hash": "cef1659b85c7035dade51e600b3078b407be2d2885a70f6e120ca17637684897",
+        "source_revision": 1,
+        "read_basis_status": "current"
+      },
+      "reserved_tokens": 0,
+      "charged_tokens": 0,
+      "provider_request_id": null,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "cost_state": "unmetered",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 0,
+      "cost_pricing": {}
+    },
+    {
+      "id": "aac5e26f-07db-4c18-b672-b1695eafc92f",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "unknown",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "created_at": "2026-11-01 18:39:08.938048+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "assistant_extract",
+        "cancel_epoch": 0,
+        "loaded_skills": [],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": null,
+      "reserved_tokens": 0,
+      "charged_tokens": 544869,
+      "provider_request_id": null,
+      "actual_input_tokens": 20581,
+      "actual_output_tokens": 524288,
+      "cost_state": "estimated_unknown",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 664487,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      }
+    },
+    {
+      "id": "3decfc58-f91c-4447-9be1-16ffd29e6687",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "unknown",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "created_at": "2026-11-01 20:16:37.405568+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "assistant_extract",
+        "cancel_epoch": 0,
+        "loaded_skills": [],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "e1a1e75437ec82235d951fb3727e943e8a89bf7bb56d278c75b6810f80ca1f37"
+      },
+      "result": null,
+      "reserved_tokens": 0,
+      "charged_tokens": 543142,
+      "provider_request_id": null,
+      "actual_input_tokens": 18854,
+      "actual_output_tokens": 524288,
+      "cost_state": "estimated_unknown",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 663946,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      }
+    },
+    {
+      "id": "a73fdb44-7ca0-46a8-973b-2e65d5d6bb28",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "unknown",
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "created_at": "2026-11-01 20:16:38.464408+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "main",
+        "cancel_epoch": 0,
+        "loaded_skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+          }
+        ],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": null,
+      "reserved_tokens": 0,
+      "charged_tokens": 696188,
+      "provider_request_id": null,
+      "actual_input_tokens": 171900,
+      "actual_output_tokens": 524288,
+      "cost_state": "estimated_unknown",
+      "cost_reserved_micro_usd": 0,
+      "cost_charged_micro_usd": 711967,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      }
+    },
+    {
+      "id": "fe3ebd31-d69f-4381-8c4d-f29933167507",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "tool": "model",
+      "state": "started",
+      "error_code": null,
+      "created_at": "2026-11-01 20:16:38.816715+00:00",
+      "execution_binding": {
+        "kind": "model",
+        "isolation": "main",
+        "cancel_epoch": 0,
+        "loaded_skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+          }
+        ],
+        "model_version": "MiniMax-M3",
+        "prompt_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+        "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "tool_definitions_digest": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "result": null,
+      "reserved_tokens": 696188,
+      "charged_tokens": 0,
+      "provider_request_id": null,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "cost_state": "reserved",
+      "cost_reserved_micro_usd": 711967,
+      "cost_charged_micro_usd": 0,
+      "cost_pricing": {
+        "model": "MiniMax-M3",
+        "digest": "05c49cddf1490fca5e05bcf69064125a583569c8a5cae83636e2ff507af57e1d",
+        "source": "MiniMax 官方定价页 2026-10-19 复核：标准档、总输入 ≤512k（页面标注\"永久五折\"，以表列价为准）：输入 2.10、输出 8.40、缓存命中 0.42 CNY/百万 token；M3 无单独缓存写入价，新增输入按输入价计。CNY→USD=6.69274（open.er-api.com，2026-10-19；frankfurter.dev 2026-10-16 为 6.6862 交叉核对）。未含账号折扣/订阅/汇率波动，首笔真实账单须复核；总输入 >512k 的对话按官方 >512k 档重新核价。",
+        "currency": "USD",
+        "provider": "minimax",
+        "request_fee": "0",
+        "valid_until": "2026-11-18 07:07:42+00:00",
+        "verified_at": "2026-10-19 07:07:42+00:00",
+        "budget_policy": "development_unlimited",
+        "covers_all_fees": true,
+        "input_per_million": "0.313773",
+        "output_per_million": "1.255091",
+        "text_billing_source": "MiniMax 官方接口文档：输入/输出/缓存命中按百万 token 计费；M3 缓存写入无额外费用（新增输入按输入价计）；多轮工具文档说明 thinking 计入输出长度（2026-10-16 读取）。",
+        "text_framing_tokens": 4096,
+        "configuration_version": "MiniMax-M3",
+        "cache_read_per_million": "0.062755",
+        "text_tokens_per_utf8_byte": "1",
+        "cache_creation_per_million": "0.313773",
+        "output_cap_covers_all_billing": true
+      }
+    }
+  ],
+  "events": [
+    {
+      "id": "a3e4fbdc-49a5-4455-9ae7-55fd364a4017",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:21.807507+00:00",
+      "sequence": 1,
+      "body": {
+        "type": "accepted",
+        "status": "queued"
+      }
+    },
+    {
+      "id": "c1411132-eecd-45f3-9755-d8ab61545d41",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:22.110178+00:00",
+      "sequence": 2,
+      "body": {
+        "key": "proposal_drafting",
+        "type": "skill_loaded",
+        "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+        "version": "0.2.3-draft",
+        "isolation": "main"
+      }
+    },
+    {
+      "id": "e5c134d3-50a6-4cbf-a09c-1e100677bd42",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:22.257179+00:00",
+      "sequence": 3,
+      "body": {
+        "type": "context_projected",
+        "fields": [
+          "assistant_depth",
+          "category",
+          "goal",
+          "personal_preferences",
+          "sources",
+          "work_state"
+        ],
+        "issues": [],
+        "skills": [
+          {
+            "key": "proposal_drafting",
+            "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+            "version": "0.2.3-draft",
+            "load_event_id": "c1411132-eecd-45f3-9755-d8ab61545d41"
+          }
+        ],
+        "status": "projected",
+        "omitted": [],
+        "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+        "content_digest": "eec86b209df2d9cbb370126804ea878729672e9d908446e1a30c255e7355e38e"
+      }
+    },
+    {
+      "id": "bdd3f7e6-c9bf-4f22-a26e-f6af275075fb",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:22.356289+00:00",
+      "sequence": 4,
+      "body": {
+        "turn": 1,
+        "type": "model_started"
+      }
+    },
+    {
+      "id": "8b6175ae-d811-4473-aec4-da29233b5188",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:22.849061+00:00",
+      "sequence": 5,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T18:38:22.779583+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "3ec14605-364b-496e-aaea-39ad8d769e06",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:27.686832+00:00",
+      "sequence": 6,
+      "body": {
+        "text": "我先查一下本品类里关于端盖防水/气密检验的实际记录，再回答同事的说法。",
+        "type": "text_delta"
+      }
+    },
+    {
+      "id": "5cb60fe4-2bec-4e84-8a73-aabeea34397d",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:27.812090+00:00",
+      "sequence": 7,
+      "body": {
+        "type": "context_observed",
+        "cache": {
+          "reporting": "positive_usage_reported",
+          "read_tokens": 184,
+          "read_hit_ratio": 0.004485179407176287,
+          "creation_tokens": 0,
+          "input_includes_cache": true
+        },
+        "focus": 64000,
+        "window": 592288,
+        "cleanup": {
+          "reason": "within_focus",
+          "applied": false,
+          "triggered": false
+        },
+        "history": {
+          "kept": 0,
+          "hidden": 0,
+          "carried": 0,
+          "updated": 0,
+          "truncated": 0,
+          "directories": 0,
+          "unclassified": 0
+        },
+        "reserve": 528288,
+        "version": 1,
+        "segments": {
+          "loop": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "tools": {
+            "actual_tokens": null,
+            "estimated_tokens": 30248
+          },
+          "skills": {
+            "actual_tokens": null,
+            "estimated_tokens": 3780
+          },
+          "system": {
+            "actual_tokens": null,
+            "estimated_tokens": 2850
+          },
+          "history": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "envelope": {
+            "actual_tokens": null,
+            "estimated_tokens": 651
+          }
+        },
+        "warnings": [
+          "fixed_over_half_focus"
+        ],
+        "isolation": "main",
+        "call_state": "completed",
+        "reductions": [],
+        "run_budget": {
+          "held": 0,
+          "used": 41593,
+          "limit": 2000000000,
+          "remaining": 1999958407
+        },
+        "work_state": {
+          "revision": 0,
+          "item_counts": {
+            "citations": 0,
+            "completed": 0,
+            "questions": 0,
+            "candidates": 0,
+            "exclusions": 0,
+            "unfinished": 0,
+            "constraints": 0,
+            "focus_objects": 0
+          },
+          "context_incomplete": false
+        },
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "usage_status": "recorded",
+        "cleanup_count": 0,
+        "model_call_id": "2a8a8f79-67c6-45b1-8d2e-6a4990ac05d7",
+        "admission_tokens": 43159,
+        "estimation_basis": "first_call_estimate",
+        "window_configured": true,
+        "calibration_factor": 1.15,
+        "actual_input_tokens": 41024,
+        "actual_output_tokens": 569,
+        "actual_segment_tokens": "provider_not_reported",
+        "estimated_input_tokens": 37529,
+        "estimation_error_ratio": 0.08519403276131045,
+        "estimation_error_streak": 0
+      }
+    },
+    {
+      "id": "c37bcc97-2d55-4f35-a92d-acff51ad47c5",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:27.926775+00:00",
+      "sequence": 8,
+      "body": {
+        "tool": "assistant.search",
+        "type": "tool_started",
+        "call_id": "call_01a19868bb3e722ea863fa25"
+      }
+    },
+    {
+      "id": "f8c0dda7-3d67-4278-91bf-baecf11ce0de",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:28.483528+00:00",
+      "sequence": 9,
+      "body": {
+        "tool": "assistant.search",
+        "type": "tool_finished",
+        "call_id": "call_01a19868bb3e722ea863fa25"
+      }
+    },
+    {
+      "id": "46b90b5b-7bc9-4b7d-b50e-97e4b59012ab",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:28.581688+00:00",
+      "sequence": 10,
+      "body": {
+        "turn": 2,
+        "type": "model_started"
+      }
+    },
+    {
+      "id": "0103a0b6-2ebb-49d0-8287-a01c93b03a7f",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:29.111460+00:00",
+      "sequence": 11,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T18:38:29.042327+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "c1bb5e7e-5b60-4378-befd-bd28cb9931e8",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:32.968611+00:00",
+      "sequence": 12,
+      "body": {
+        "text": "检索到几份直接相关的记录，我取正文核对。",
+        "type": "text_delta"
+      }
+    },
+    {
+      "id": "db27b9a8-6be9-4aae-823c-649d6c8c7cfa",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:33.066404+00:00",
+      "sequence": 13,
+      "body": {
+        "type": "context_observed",
+        "cache": {
+          "reporting": "positive_usage_reported",
+          "read_tokens": 41024,
+          "read_hit_ratio": 0.8589434894579259,
+          "creation_tokens": 0,
+          "input_includes_cache": true
+        },
+        "focus": 64000,
+        "window": 592288,
+        "cleanup": {
+          "reason": "within_focus",
+          "applied": false,
+          "triggered": false
+        },
+        "history": {
+          "kept": 0,
+          "hidden": 0,
+          "carried": 0,
+          "updated": 0,
+          "truncated": 0,
+          "directories": 0,
+          "unclassified": 0
+        },
+        "reserve": 528288,
+        "version": 1,
+        "segments": {
+          "loop": {
+            "actual_tokens": null,
+            "estimated_tokens": 4597
+          },
+          "tools": {
+            "actual_tokens": null,
+            "estimated_tokens": 30248
+          },
+          "skills": {
+            "actual_tokens": null,
+            "estimated_tokens": 3780
+          },
+          "system": {
+            "actual_tokens": null,
+            "estimated_tokens": 2850
+          },
+          "history": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "envelope": {
+            "actual_tokens": null,
+            "estimated_tokens": 651
+          }
+        },
+        "warnings": [
+          "fixed_over_half_focus"
+        ],
+        "isolation": "main",
+        "call_state": "completed",
+        "reductions": [],
+        "run_budget": {
+          "held": 0,
+          "used": 89933,
+          "limit": 2000000000,
+          "remaining": 1999910067
+        },
+        "work_state": {
+          "revision": 0,
+          "item_counts": {
+            "citations": 0,
+            "completed": 0,
+            "questions": 0,
+            "candidates": 0,
+            "exclusions": 0,
+            "unfinished": 0,
+            "constraints": 0,
+            "focus_objects": 0
+          },
+          "context_incomplete": false
+        },
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "usage_status": "recorded",
+        "cleanup_count": 0,
+        "model_call_id": "99f4bb84-2ed5-4ef6-b0b7-485aef249fba",
+        "admission_tokens": 48445,
+        "estimation_basis": "previous_actual_input",
+        "window_configured": true,
+        "calibration_factor": 1.15,
+        "actual_input_tokens": 47761,
+        "actual_output_tokens": 579,
+        "actual_segment_tokens": "provider_not_reported",
+        "estimated_input_tokens": 42126,
+        "estimation_error_ratio": 0.11798329180712297,
+        "estimation_error_streak": 1
+      }
+    },
+    {
+      "id": "9e4c3452-f358-453a-bcc7-4942c3578214",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:33.194920+00:00",
+      "sequence": 14,
+      "body": {
+        "tool": "assistant.extract",
+        "type": "tool_started",
+        "call_id": "call_01a19868d08370eab7a2f8d4"
+      }
+    },
+    {
+      "id": "39b96934-530e-4a02-964c-10a1c92eae81",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:34.823372+00:00",
+      "sequence": 15,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "model_started",
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+      }
+    },
+    {
+      "id": "af05e8cc-65ee-465b-89d2-761f4cc3356f",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:35.516953+00:00",
+      "sequence": 16,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T18:38:35.428820+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "8b0528d3-4003-4614-9924-df66b550cc71",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:38.396727+00:00",
+      "sequence": 17,
+      "body": {
+        "tool": "assistant.passage.read",
+        "type": "assistant_extract_child",
+        "event_type": "tool_started",
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+      }
+    },
+    {
+      "id": "912e7cbd-fa47-469b-b664-6000dd2e11f0",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:39.008694+00:00",
+      "sequence": 18,
+      "body": {
+        "tool": "assistant.passage.read",
+        "type": "assistant_extract_child",
+        "event_type": "tool_finished",
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+      }
+    },
+    {
+      "id": "3aace0fb-41ef-4f95-a51a-4bee5cf69d4b",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:39.193499+00:00",
+      "sequence": 19,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "model_started",
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+      }
+    },
+    {
+      "id": "941f2dd8-5645-4dd5-84b5-54b1b02c58ff",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:39.867048+00:00",
+      "sequence": 20,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T18:38:39.779376+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "7a3b4a2b-889d-4374-a0d6-0f55297d6b07",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:58.464928+00:00",
+      "sequence": 21,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "text_delta",
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+      }
+    },
+    {
+      "id": "a816618f-3ec3-4fae-81b8-a1a8d4553ed4",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:38:59.497794+00:00",
+      "sequence": 22,
+      "body": {
+        "type": "assistant_extract_child",
+        "status": "completed",
+        "event_type": "finished",
+        "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef"
+      }
+    },
+    {
+      "id": "89a2c302-9853-480b-b6d5-3790555375f4",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:01.469169+00:00",
+      "sequence": 23,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "model_started",
+        "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+      }
+    },
+    {
+      "id": "26f429a1-1046-4904-9b1f-0f6c2237765c",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:02.115890+00:00",
+      "sequence": 24,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T18:39:02.017043+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "ee0da4e6-b6a8-470d-ae32-5bc733817087",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:03.919360+00:00",
+      "sequence": 25,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "text_delta",
+        "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+      }
+    },
+    {
+      "id": "be9f5bee-55bf-480a-87d7-c5883b638718",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:05.767102+00:00",
+      "sequence": 26,
+      "body": {
+        "tool": "assistant.passage.read",
+        "type": "assistant_extract_child",
+        "event_type": "tool_started",
+        "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+      }
+    },
+    {
+      "id": "766703ea-edd1-4e71-b534-4b443cd4ce5d",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:06.579193+00:00",
+      "sequence": 27,
+      "body": {
+        "tool": "assistant.passage.read",
+        "type": "assistant_extract_child",
+        "event_type": "tool_finished",
+        "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+      }
+    },
+    {
+      "id": "006cf03c-7b12-4ce3-9f83-f5bc753a50b2",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:06.821906+00:00",
+      "sequence": 28,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "model_started",
+        "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9"
+      }
+    },
+    {
+      "id": "54649118-163d-473f-8e48-b2de84d95eff",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 18:39:08.979149+00:00",
+      "sequence": 29,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T18:39:08.833892+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "c2daa6e6-f5c8-4795-8551-0ba7b7ec6f0c",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 19:27:02.935941+00:00",
+      "sequence": 30,
+      "body": {
+        "tool": "assistant.extract",
+        "type": "tool_started",
+        "call_id": "call_01a19868d08370eab7a2f8d4"
+      }
+    },
+    {
+      "id": "eff117c9-6bd1-4b36-b0c2-d729276428fc",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:36.879123+00:00",
+      "sequence": 31,
+      "body": {
+        "type": "assistant_extract_child",
+        "event_type": "model_started",
+        "citation_id": "314aedbd-c6dd-52d7-8427-d9404696d081"
+      }
+    },
+    {
+      "id": "c052ef3f-6aa6-4f21-963c-b4a4983c468f",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:37.428293+00:00",
+      "sequence": 32,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T20:16:37.371626+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "d25efbf8-733d-4e88-8516-417b1384aa84",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:37.853139+00:00",
+      "sequence": 33,
+      "body": {
+        "tool": "assistant.extract",
+        "type": "tool_finished",
+        "call_id": "call_01a19868d08370eab7a2f8d4"
+      }
+    },
+    {
+      "id": "4c7e7308-a2d2-4f9e-b231-9b0f7ce485f0",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:37.948545+00:00",
+      "sequence": 34,
+      "body": {
+        "turn": 3,
+        "type": "model_started"
+      }
+    },
+    {
+      "id": "92964a1e-971c-40d1-9462-5ba6b45f4882",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:38.198169+00:00",
+      "sequence": 35,
+      "body": {
+        "tool": "assistant.extract",
+        "type": "tool_finished",
+        "call_id": "call_01a19868d08370eab7a2f8d4"
+      }
+    },
+    {
+      "id": "956a5f09-5f45-4d87-9d34-9b00dfb15692",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:38.279727+00:00",
+      "sequence": 36,
+      "body": {
+        "turn": 3,
+        "type": "model_started"
+      }
+    },
+    {
+      "id": "c0a44c78-2215-4032-b6f6-182318ba40c1",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:38.498806+00:00",
+      "sequence": 37,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T20:16:38.383054+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "f1c3e129-7f0b-4a4d-a9e6-cbb28516ab93",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:38.844895+00:00",
+      "sequence": 38,
+      "body": {
+        "type": "egress_checked",
+        "provider": "minimax",
+        "checked_at": "2026-11-01T20:16:38.761876+00:00",
+        "agreement_id": null,
+        "data_categories": [
+          "internal"
+        ],
+        "agreement_revision": null,
+        "prompt_cache_allowed": true
+      }
+    },
+    {
+      "id": "035610b8-3723-4b45-a661-fdc1722ca880",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:38.940063+00:00",
+      "sequence": 39,
+      "body": {
+        "type": "context_observed",
+        "cache": {
+          "status": "not_recorded_for_failed_call",
+          "read_tokens": null,
+          "read_hit_ratio": null,
+          "creation_tokens": null,
+          "input_includes_cache": true
+        },
+        "focus": 64000,
+        "window": 592288,
+        "cleanup": {
+          "reason": "within_focus",
+          "applied": false,
+          "triggered": false
+        },
+        "history": {
+          "kept": 0,
+          "hidden": 0,
+          "carried": 0,
+          "updated": 0,
+          "truncated": 0,
+          "directories": 0,
+          "unclassified": 0
+        },
+        "reserve": 528288,
+        "version": 1,
+        "segments": {
+          "loop": {
+            "actual_tokens": null,
+            "estimated_tokens": 5472
+          },
+          "tools": {
+            "actual_tokens": null,
+            "estimated_tokens": 30248
+          },
+          "skills": {
+            "actual_tokens": null,
+            "estimated_tokens": 3780
+          },
+          "system": {
+            "actual_tokens": null,
+            "estimated_tokens": 2850
+          },
+          "history": {
+            "actual_tokens": null,
+            "estimated_tokens": 0
+          },
+          "envelope": {
+            "actual_tokens": null,
+            "estimated_tokens": 651
+          }
+        },
+        "warnings": [
+          "fixed_over_half_focus"
+        ],
+        "isolation": "main",
+        "call_state": "unknown",
+        "reductions": [],
+        "run_budget": {
+          "held": 696188,
+          "used": 1888830,
+          "limit": 2000000000,
+          "remaining": 1997414982
+        },
+        "work_state": {
+          "revision": 0,
+          "item_counts": {
+            "citations": 0,
+            "completed": 0,
+            "questions": 0,
+            "candidates": 0,
+            "exclusions": 0,
+            "unfinished": 0,
+            "constraints": 0,
+            "focus_objects": 0
+          },
+          "context_incomplete": false
+        },
+        "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+        "usage_status": "unavailable",
+        "cleanup_count": 0,
+        "model_call_id": "a73fdb44-7ca0-46a8-973b-2e65d5d6bb28",
+        "admission_tokens": 49452,
+        "estimation_basis": "previous_actual_input",
+        "window_configured": true,
+        "calibration_factor": 1.15,
+        "actual_input_tokens": null,
+        "actual_output_tokens": null,
+        "actual_segment_tokens": "provider_not_reported",
+        "estimated_input_tokens": 43001,
+        "estimation_error_ratio": null,
+        "estimation_error_streak": 0
+      }
+    },
+    {
+      "id": "78040aef-c99a-48ac-9026-841ee841df41",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:38.991727+00:00",
+      "sequence": 40,
+      "body": {
+        "type": "run_state",
+        "status": "waiting_input",
+        "error_code": "EXTERNAL_OUTCOME_UNKNOWN"
+      }
+    },
+    {
+      "id": "b7b2984e-6378-4759-b4eb-042144dc692b",
+      "run_id": "74044278-7c0c-4e8e-9f49-c42fc69ca5c0",
+      "created_at": "2026-11-01 20:16:39.036830+00:00",
+      "sequence": 41,
+      "body": {
+        "type": "reconciliation_required",
+        "cancel_epoch": 0,
+        "automatic_after_seconds": 300
+      }
+    }
+  ],
+  "held_tokens": 696188,
+  "used_tokens": 1888830,
+  "issued_citations": [
+    {
+      "rank": 1,
+      "title": "岚桥A7工程联席检查纪要",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 290,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "57235310-f37a-5562-bf7e-d878e07b31b3",
+      "object_id": "baf5210e-8acd-4d23-b4a9-fdd86edb494f",
+      "source_id": "baf5210e-8acd-4d23-b4a9-fdd86edb494f",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "88228a35-a996-5bd8-8838-4f5bd0da5eef",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "4723424eef5510aee5871a2383ae68e283dd03712fcb83b4308866bee2a3415b",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 2,
+      "title": "岚桥A7端盖密封设计变更说明 Rev C",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 339,
+        "line_end": 5,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "2c0a43c7-b668-5dd6-97fd-9effdbd039c9",
+      "object_id": "1d0dcedf-8501-4115-aeb3-963253c5cc97",
+      "source_id": "1d0dcedf-8501-4115-aeb3-963253c5cc97",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "c822a03f-29bc-52ee-9328-e4281f3b56d9",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "cef1659b85c7035dade51e600b3078b407be2d2885a70f6e120ca17637684897",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 3,
+      "title": "青岑M2端子座首件尺寸检查记录",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 285,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "7ba1f0e2-7f1a-5b10-bd1e-03b3208da46f",
+      "object_id": "ee0dacdb-bbb7-4a09-9ba4-9e75407946dc",
+      "source_id": "ee0dacdb-bbb7-4a09-9ba4-9e75407946dc",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "29a44de0-791f-5a66-ac97-1a139fe92a48",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "acefeb0ef08a5b004abcd1f0818dda85808d8ebaf960b0ee0b45207fa2e16b20",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 4,
+      "title": "青岑M2端子座装配作业资料 Rev D",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 264,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "77f6d522-a124-52cb-9a25-ba1d751ccd90",
+      "object_id": "affa63cd-3e6c-4377-be2f-8be740058e8c",
+      "source_id": "affa63cd-3e6c-4377-be2f-8be740058e8c",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "6b208c2d-96ff-5a8f-b528-8e1afb6011f0",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "62429bd6c30dcc2fc095842b3262e22714c088a1c618baf7bad33acd5b1b8633",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 5,
+      "title": "青岑M2夜班换线预案工作稿",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 251,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": true,
+      "chunk_id": "abfba989-6b1a-5e47-9892-dd51a54356c3",
+      "object_id": "df683974-49e0-4cbf-a121-4c0338f8c858",
+      "source_id": "df683974-49e0-4cbf-a121-4c0338f8c858",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "2156d965-55ee-5d50-92d9-7b7187ce6c27",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "4b23118ebe91c68f0269cb61d18c646898886ec51836cd6100bc2d86c8ed3746",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 6,
+      "title": "M2密封料候选替代与采购前提",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 288,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "8dd006dc-51cc-5b9e-ade6-ea1b6ff37b92",
+      "object_id": "c1035cc6-b213-421e-a683-c9b3f3b84d9b",
+      "source_id": "c1035cc6-b213-421e-a683-c9b3f3b84d9b",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "0b4f98f9-d60d-5757-9be3-27fa763871cb",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "98cc2946eb8ad881d5fbe904464e680d4e57418b39e25258b92f258ad07505a1",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 7,
+      "title": "青岑M2装配线停机与待确认事项",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 264,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "d3476795-947a-5664-9963-e8258ee1c724",
+      "object_id": "4b50192a-b000-472f-89c3-9d7e0003331f",
+      "source_id": "4b50192a-b000-472f-89c3-9d7e0003331f",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "c346e26a-b2a9-5154-a5df-d1e986d69b3c",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "63222644a4813d68e5e2493a7e57735bf4614596935e526e1285ddaa387b7b43",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 8,
+      "title": "壳体裂纹纠正措施计划与有效性待办",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 280,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "d1015fbb-21fa-5f65-b5d6-17b783260182",
+      "object_id": "f92dff7a-6b48-4ad4-9bc3-664821d1a116",
+      "source_id": "f92dff7a-6b48-4ad4-9bc3-664821d1a116",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "314aedbd-c6dd-52d7-8427-d9404696d081",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "2697c79e56a1f87ffbcd0c15348d9dd2cfaba22b11463393e6452b098cae6b54",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 9,
+      "title": "M2-L08裂纹现场复查纪要",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 272,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "11cac984-ec9b-5bea-900a-e8ba76c851f7",
+      "object_id": "4fec1341-68e5-450a-ac7e-53b058001e66",
+      "source_id": "4fec1341-68e5-450a-ac7e-53b058001e66",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "d0ebd43d-6c08-5650-a1db-a95a21e76cbe",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "8f2695fc20da91602446659cdc203c443ec11e0fb4609a05d3a247a57e727c09",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 10,
+      "title": "青岑M2控制板供应承诺往来",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 285,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "a8ff35c3-a9fb-55e1-acd8-1a0ffb5ba310",
+      "object_id": "f9410c0f-0490-4579-9d7e-73e48eacd9dd",
+      "source_id": "f9410c0f-0490-4579-9d7e-73e48eacd9dd",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "3cd7e738-ffb3-5fe4-a125-738ea73f243d",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "d5bbd040eeda66e4a0b362a74da385b38a47955c9028820dc4a936165f0ecf39",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 11,
+      "title": "M2-L08裂纹样品实验室分析",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 254,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "4d17448c-b66d-5dcf-aecd-c28e143eb456",
+      "object_id": "cd1cca3b-07d7-432a-831c-305d02ea8d60",
+      "source_id": "cd1cca3b-07d7-432a-831c-305d02ea8d60",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "29252276-f080-5e29-b46a-091bf07f0bf7",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "435cd7094e9913853a81ed4438a0990f999db7d434187c172a0db850eb665fde",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 12,
+      "title": "连接件冷冲击裂纹历史分析",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 266,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "815c9986-5287-56b4-9213-7ea2b7f23004",
+      "object_id": "b7feef57-022b-4f83-813a-1a6a1fdc5cbd",
+      "source_id": "b7feef57-022b-4f83-813a-1a6a1fdc5cbd",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "5ae7b936-f8c6-5611-9a83-d4354e311ab2",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "07408ddf6fc9dc344883a4d1f6143ef5133a0213fc892fa1497c7601d21b5152",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 13,
+      "title": "青岑M1焊接气孔试制复盘",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 234,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "6a674417-7265-59a2-9074-1798ccd501d0",
+      "object_id": "71215e57-6237-4d8a-ae29-4c0529c8be69",
+      "source_id": "71215e57-6237-4d8a-ae29-4c0529c8be69",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "9430494c-099a-5bdd-805d-5b8c6e04f2c9",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "cdc1f2d1b8ba01bcd7858a45bd28bf6a660fc5e2eacd568c55be42274300eef0",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 14,
+      "title": "澄岳电子小批加急交付复盘",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 265,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "13752aaf-a4d6-5605-a451-a362dac67c9e",
+      "object_id": "449d01d6-5b6b-4a6b-b505-8c056dcef4b4",
+      "source_id": "449d01d6-5b6b-4a6b-b505-8c056dcef4b4",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "fdd49dbc-5aca-5177-a275-ef65a90978d0",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "75eb4969b8a3aa2547b9e8e863a6e80025a54354f91033f549536940bbd9fa1f",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 15,
+      "title": "岚桥A6低温漏气试制复盘",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 282,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "dfe8bbe1-c094-5bee-9256-3f3e32000ee8",
+      "object_id": "19dc69fa-1714-4e8b-8b2a-00e80881ba4c",
+      "source_id": "19dc69fa-1714-4e8b-8b2a-00e80881ba4c",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "8d0d27dc-9bec-5ebf-be1b-68ed52a446c9",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "d893acc057751d80e453cfaeecefd0c6df1d37ea6ddb002f103fd5bd496eb3b8",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 16,
+      "title": "岚桥A7屏蔽压片临时试验单",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 279,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "fa751418-aa5d-5e11-8fff-42adfc6ead56",
+      "object_id": "5195f0c4-a442-401a-a8ef-7cce01606389",
+      "source_id": "5195f0c4-a442-401a-a8ef-7cce01606389",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "423e2ab4-2ec6-59ac-b155-cc48de6c38dd",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "aa85d5d60f28792467a6acb18fefe905f777ab5cf699186aa392f98c8fc5c4ad",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 17,
+      "title": "M2-L09在制品数量待核对记录",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 286,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "f5cf1215-b913-594a-89dc-26f788c2abf3",
+      "object_id": "3f378758-d690-496c-aaf3-a37577866001",
+      "source_id": "3f378758-d690-496c-aaf3-a37577866001",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "688c4b24-aac3-5583-8b4d-09fac5f092e5",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "f62e508ede726c3b68cc27fb4d1f85b5764121ef8c1a7a74aed3ee5f25735f39",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    },
+    {
+      "rank": 18,
+      "title": "岚桥A7温升测试记录第六轮",
+      "nature": "untrusted",
+      "channel": "keyword",
+      "locator": {
+        "native": [
+          "line:1"
+        ],
+        "char_end": 281,
+        "line_end": 4,
+        "char_start": 0,
+        "line_start": 1
+      },
+      "private": false,
+      "chunk_id": "169a67b1-a455-5396-9c89-d948cfcb53b0",
+      "object_id": "04c6e562-ec84-4680-8d30-b69b8fb2e325",
+      "source_id": "04c6e562-ec84-4680-8d30-b69b8fb2e325",
+      "is_current": true,
+      "product_id": null,
+      "project_id": null,
+      "category_id": "58076da2-ddf8-457c-8664-2abccfd23a3c",
+      "citation_id": "21e77ba4-1b90-539e-a996-38fdfae4c217",
+      "proposal_id": null,
+      "source_type": "artifact",
+      "content_hash": "645809216dace31d42e9f4eaf15605f46b3197849af36d02ea03cae730fdaa37",
+      "source_revision": 1,
+      "customer_original": false,
+      "read_basis_status": "current"
+    }
+  ],
+  "read_source_ids": [
+    "04c6e562-ec84-4680-8d30-b69b8fb2e325",
+    "19dc69fa-1714-4e8b-8b2a-00e80881ba4c",
+    "1d0dcedf-8501-4115-aeb3-963253c5cc97",
+    "3f378758-d690-496c-aaf3-a37577866001",
+    "449d01d6-5b6b-4a6b-b505-8c056dcef4b4",
+    "4b50192a-b000-472f-89c3-9d7e0003331f",
+    "4fec1341-68e5-450a-ac7e-53b058001e66",
+    "5195f0c4-a442-401a-a8ef-7cce01606389",
+    "71215e57-6237-4d8a-ae29-4c0529c8be69",
+    "affa63cd-3e6c-4377-be2f-8be740058e8c",
+    "b7feef57-022b-4f83-813a-1a6a1fdc5cbd",
+    "baf5210e-8acd-4d23-b4a9-fdd86edb494f",
+    "c1035cc6-b213-421e-a683-c9b3f3b84d9b",
+    "cd1cca3b-07d7-432a-831c-305d02ea8d60",
+    "df683974-49e0-4cbf-a121-4c0338f8c858",
+    "ee0dacdb-bbb7-4a09-9ba4-9e75407946dc",
+    "f92dff7a-6b48-4ad4-9bc3-664821d1a116",
+    "f9410c0f-0490-4579-9d7e-73e48eacd9dd"
+  ],
+  "carried_source_ids": [
+    "04c6e562-ec84-4680-8d30-b69b8fb2e325",
+    "19dc69fa-1714-4e8b-8b2a-00e80881ba4c",
+    "1d0dcedf-8501-4115-aeb3-963253c5cc97",
+    "3f378758-d690-496c-aaf3-a37577866001",
+    "449d01d6-5b6b-4a6b-b505-8c056dcef4b4",
+    "4b50192a-b000-472f-89c3-9d7e0003331f",
+    "4fec1341-68e5-450a-ac7e-53b058001e66",
+    "5195f0c4-a442-401a-a8ef-7cce01606389",
+    "71215e57-6237-4d8a-ae29-4c0529c8be69",
+    "affa63cd-3e6c-4377-be2f-8be740058e8c",
+    "b7feef57-022b-4f83-813a-1a6a1fdc5cbd",
+    "baf5210e-8acd-4d23-b4a9-fdd86edb494f",
+    "c1035cc6-b213-421e-a683-c9b3f3b84d9b",
+    "cd1cca3b-07d7-432a-831c-305d02ea8d60",
+    "df683974-49e0-4cbf-a121-4c0338f8c858",
+    "ee0dacdb-bbb7-4a09-9ba4-9e75407946dc",
+    "f92dff7a-6b48-4ad4-9bc3-664821d1a116",
+    "f9410c0f-0490-4579-9d7e-73e48eacd9dd"
+  ],
+  "citation_source_ids": [],
+  "candidates": []
+}

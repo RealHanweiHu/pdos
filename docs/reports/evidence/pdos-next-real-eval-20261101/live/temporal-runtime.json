@@ -1,0 +1,7 @@
+{
+  "port": 50795,
+  "pid": 48235,
+  "storage_mode": "local-sqlite-development",
+  "binary_sha256": "33c298d41f6eefebf01a28a3511f444480e939e21d3518cb0c12a4abad467c4b",
+  "owned": true
+}

@@ -1,0 +1,20 @@
+{
+  "scope": "pure preparation only; DB, HTTP, Temporal and model not run",
+  "checks": [
+    {
+      "name": "pure-unittest",
+      "exit_code": 0
+    },
+    {
+      "name": "ruff",
+      "exit_code": 0
+    }
+  ],
+  "input_sha256": {
+    "questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685",
+    "corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "rubric.md": "2fb0c99abc53c63b927de89a17d8922aeb63ce29682af0fa9bf6afeaab172c14",
+    "question-review.md": "a9fd06a8d678a6a7789de8cb2b1fae91114e31a166f03878c8f57559e4785089"
+  },
+  "script_sha256": "8f135de7b4d52f619a752e8a7ba15e2e8a7caa72865c9a6374eb198e7d7867df"
+}

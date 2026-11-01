@@ -1,0 +1,104 @@
+{
+  "case_id": "ENG-07",
+  "label": "smoke-ENG-07",
+  "id": "3743d7d8-fb5e-4ec4-a5d7-278a66370ae6",
+  "run_id": "3743d7d8-fb5e-4ec4-a5d7-278a66370ae6",
+  "session_id": "39c96837-c1f1-4433-91a0-3c6c729b0f14",
+  "status": "failed",
+  "state": "failed",
+  "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+  "product_id": null,
+  "project_id": null,
+  "continued_from_id": null,
+  "elapsed_ms": 885.3740830090828,
+  "first_visible_ms": null,
+  "request": {
+    "goal": "我是同组同事，帮我查ENG-PRV-2026-009里的B支架尺寸和验证安排。",
+    "idempotency_key": "5614dceb-582d-51a2-bbf5-54bda0558711"
+  },
+  "view": {
+    "run_id": "3743d7d8-fb5e-4ec4-a5d7-278a66370ae6",
+    "goal": "我是同组同事，帮我查ENG-PRV-2026-009里的B支架尺寸和验证安排。",
+    "session_id": "39c96837-c1f1-4433-91a0-3c6c729b0f14",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "session_proposal_id": null,
+    "project_id": null,
+    "status": "failed",
+    "result": null,
+    "error_code": "INTERNAL_ERROR",
+    "reconciliation": null,
+    "process": {
+      "run_id": "3743d7d8-fb5e-4ec4-a5d7-278a66370ae6",
+      "status": "failed",
+      "reverted": false,
+      "error_code": "INTERNAL_ERROR",
+      "started_at": "2026-11-01T18:21:33.518945+00:00",
+      "observed_at": "2026-11-01T18:21:34.311643+00:00",
+      "last_recorded_at": "2026-11-01T18:21:34.135302+00:00",
+      "ended_at": "2026-11-01T18:21:34.135302+00:00",
+      "elapsed_seconds": 0.616357,
+      "call_counts": {
+        "total": 0,
+        "completed": 0,
+        "pending": 0,
+        "failed": 0
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "d41d0980-8a9e-4976-8cc0-1bc4e698cc45",
+          "sequence": 1,
+          "at": "2026-11-01T18:21:33.536114+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "2ce02832-4c9a-45b7-9afd-60ede25914e9",
+          "sequence": 2,
+          "at": "2026-11-01T18:21:34.135302+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "failed"
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "assistant_depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "work_state_proposals": {
+        "accepted": [],
+        "rejected": []
+      },
+      "requested_context_selection": null,
+      "context_selection_start_revision": 0,
+      "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "output": null,
+  "observed_at": "2026-11-01T18:21:34.363977+00:00"
+}

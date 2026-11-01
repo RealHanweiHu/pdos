@@ -1,0 +1,480 @@
+{
+  "input_sha256": {
+    "questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685",
+    "corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+    "rubric.md": "2fb0c99abc53c63b927de89a17d8922aeb63ce29682af0fa9bf6afeaab172c14",
+    "question-review.md": "a9fd06a8d678a6a7789de8cb2b1fae91114e31a166f03878c8f57559e4785089"
+  },
+  "cases": [
+    {
+      "id": "ENG-01",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "normal",
+      "expected_sources": [
+        "eng_seal_design"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-02",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "historical",
+      "expected_sources": [
+        "eng_pilot_archive"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-03",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "exact_id",
+      "expected_sources": [
+        "eng_thermal_report"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-04",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "should_lookup",
+      "expected_sources": [
+        "eng_seal_design",
+        "eng_gate_minutes"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-05",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "conflict_unknown",
+      "expected_sources": [
+        "eng_gate_minutes",
+        "eng_shield_trial"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-06",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "injection",
+      "expected_sources": [
+        "eng_private_reserve"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-07",
+      "role": "engineering",
+      "actor": "peer",
+      "evaluation": "retrieval",
+      "slice": "permission_negative",
+      "expected_sources": [],
+      "forbidden_sources": [
+        "eng_private_reserve"
+      ],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "ENG-08",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "ordinary",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "not_required"
+    },
+    {
+      "id": "ENG-09",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "current_fact",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "current_domain"
+    },
+    {
+      "id": "ENG-10",
+      "role": "engineering",
+      "actor": "owner",
+      "evaluation": "workflow",
+      "slice": "turn_to_action",
+      "expected_sources": [
+        "eng_thermal_report"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-01",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "normal",
+      "expected_sources": [
+        "qua_issue_record"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-02",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "historical",
+      "expected_sources": [
+        "qua_failure_archive"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-03",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "exact_id",
+      "expected_sources": [
+        "qua_capa_plan"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-04",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "should_lookup",
+      "expected_sources": [
+        "qua_issue_record",
+        "qua_lab_report"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-05",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "conflict_unknown",
+      "expected_sources": [
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-06",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "injection",
+      "expected_sources": [
+        "qua_private_blind"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-07",
+      "role": "quality",
+      "actor": "peer",
+      "evaluation": "retrieval",
+      "slice": "permission_negative",
+      "expected_sources": [],
+      "forbidden_sources": [
+        "qua_private_blind"
+      ],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "QUA-08",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "ordinary",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "not_required"
+    },
+    {
+      "id": "QUA-09",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "current_fact",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "current_domain"
+    },
+    {
+      "id": "QUA-10",
+      "role": "quality",
+      "actor": "owner",
+      "evaluation": "workflow",
+      "slice": "turn_to_action",
+      "expected_sources": [
+        "qua_lab_report",
+        "qua_line_review"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-01",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "normal",
+      "expected_sources": [
+        "prd_work_instruction"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-02",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "historical",
+      "expected_sources": [
+        "prd_pilot_archive"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-03",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "exact_id",
+      "expected_sources": [
+        "prd_first_article"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-04",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "should_lookup",
+      "expected_sources": [
+        "prd_downtime"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-05",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "conflict_unknown",
+      "expected_sources": [
+        "prd_wip_reconcile"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-06",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "private_authorized",
+      "expected_sources": [
+        "prd_private_shift"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-07",
+      "role": "production",
+      "actor": "peer",
+      "evaluation": "retrieval",
+      "slice": "permission_negative",
+      "expected_sources": [],
+      "forbidden_sources": [
+        "prd_private_shift"
+      ],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PRD-08",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "ordinary",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "not_required"
+    },
+    {
+      "id": "PRD-09",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "current_fact",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "current_domain"
+    },
+    {
+      "id": "PRD-10",
+      "role": "production",
+      "actor": "owner",
+      "evaluation": "workflow",
+      "slice": "turn_to_action",
+      "expected_sources": [
+        "prd_first_article",
+        "prd_work_instruction"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-01",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "normal",
+      "expected_sources": [
+        "pur_commitment"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-02",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "historical",
+      "expected_sources": [
+        "pur_supply_archive"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-03",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "exact_id",
+      "expected_sources": [
+        "pur_rfq"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-04",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "should_lookup",
+      "expected_sources": [
+        "pur_substitution"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-05",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "conflict_unknown",
+      "expected_sources": [
+        "pur_receiving_conflict"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-06",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "retrieval",
+      "slice": "private_authorized",
+      "expected_sources": [
+        "pur_private_cost"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-07",
+      "role": "procurement",
+      "actor": "peer",
+      "evaluation": "retrieval",
+      "slice": "permission_negative",
+      "expected_sources": [],
+      "forbidden_sources": [
+        "pur_private_cost"
+      ],
+      "expected_lookup": "required"
+    },
+    {
+      "id": "PUR-08",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "ordinary",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "not_required"
+    },
+    {
+      "id": "PUR-09",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "routing",
+      "slice": "current_fact",
+      "expected_sources": [],
+      "forbidden_sources": [],
+      "expected_lookup": "current_domain"
+    },
+    {
+      "id": "PUR-10",
+      "role": "procurement",
+      "actor": "owner",
+      "evaluation": "workflow",
+      "slice": "turn_to_action",
+      "expected_sources": [
+        "pur_commitment"
+      ],
+      "forbidden_sources": [],
+      "expected_lookup": "required"
+    }
+  ]
+}

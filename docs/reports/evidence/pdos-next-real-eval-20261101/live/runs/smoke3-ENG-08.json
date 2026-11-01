@@ -1,0 +1,786 @@
+{
+  "case_id": "ENG-08",
+  "label": "smoke3-ENG-08",
+  "id": "2821fa25-49f7-4d9c-abb9-af808bb48381",
+  "run_id": "2821fa25-49f7-4d9c-abb9-af808bb48381",
+  "session_id": "ac93d926-7545-49c2-9443-28539bc2fd66",
+  "status": "waiting_input",
+  "state": "waiting_input",
+  "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+  "product_id": null,
+  "project_id": null,
+  "continued_from_id": null,
+  "elapsed_ms": 34493.68625000352,
+  "first_visible_ms": null,
+  "request": {
+    "goal": "帮我把这句话写得适合项目群：今天样机还在测，别急着给结论。只改语气，不补信息。",
+    "idempotency_key": "dbbf2cc7-4c70-5dda-ae02-609cc01b1e75"
+  },
+  "view": {
+    "run_id": "2821fa25-49f7-4d9c-abb9-af808bb48381",
+    "goal": "帮我把这句话写得适合项目群：今天样机还在测，别急着给结论。只改语气，不补信息。",
+    "session_id": "ac93d926-7545-49c2-9443-28539bc2fd66",
+    "conversation": {
+      "previous_run_id": null,
+      "next_run_id": null
+    },
+    "product_id": null,
+    "proposal_id": null,
+    "session_proposal_id": null,
+    "project_id": null,
+    "status": "waiting_input",
+    "result": null,
+    "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+    "reconciliation": null,
+    "process": {
+      "run_id": "2821fa25-49f7-4d9c-abb9-af808bb48381",
+      "status": "waiting_input",
+      "reverted": false,
+      "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+      "started_at": "2026-11-01T18:31:03.451700+00:00",
+      "observed_at": "2026-11-01T18:31:37.491412+00:00",
+      "last_recorded_at": "2026-11-01T18:31:37.018355+00:00",
+      "ended_at": null,
+      "elapsed_seconds": null,
+      "call_counts": {
+        "total": 2,
+        "completed": 1,
+        "pending": 1,
+        "failed": 0
+      },
+      "source_count": 0,
+      "sources": [],
+      "next_source_cursor": null,
+      "business_receipt_count": 0,
+      "receipts": [],
+      "next_receipt_cursor": null,
+      "steps": [
+        {
+          "id": "8e700465-0bc5-44d3-a8c6-77e32d0b7d79",
+          "sequence": 1,
+          "at": "2026-11-01T18:31:03.477840+00:00",
+          "kind": "accepted",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "e32937f8-520d-4191-9132-4c7dab45b67f",
+          "sequence": 2,
+          "at": "2026-11-01T18:31:03.901700+00:00",
+          "kind": "skill_loaded",
+          "tool": null,
+          "skill": "proposal_drafting",
+          "version": "0.2.3-draft",
+          "status": null
+        },
+        {
+          "id": "ff8277d6-4b06-438c-85e3-f1c2e05291f7",
+          "sequence": 3,
+          "at": "2026-11-01T18:31:04.191223+00:00",
+          "kind": "context_projected",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "projected",
+          "context_fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "context_omitted": [],
+          "context_issues": []
+        },
+        {
+          "id": "3e8078ab-704c-42ab-8af7-4397e32e6441",
+          "sequence": 4,
+          "at": "2026-11-01T18:31:04.268920+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "d192c24f-ca5d-47b5-8c53-488a2bac9097",
+          "sequence": 6,
+          "at": "2026-11-01T18:31:28.955810+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 655,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 37533,
+            "admission_tokens": 43163,
+            "fixed_over_half": null,
+            "actual_input_tokens": 41008,
+            "actual_output_tokens": 2933,
+            "estimation_error_ratio": 0.0847395630120952,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "first_call_estimate",
+            "cache": {
+              "read_tokens": 184,
+              "creation_tokens": 0,
+              "read_hit_ratio": 0.004486929379633242,
+              "input_includes_cache": true,
+              "reporting": "positive_usage_reported",
+              "status": null
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 43941,
+              "held": 0,
+              "remaining": 1999956059
+            },
+            "context_incomplete": false,
+            "call_state": "completed",
+            "usage_status": "recorded",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "ade81856-ac7e-408d-bd16-ad7c777bd932",
+          "sequence": 7,
+          "at": "2026-11-01T18:31:29.092288+00:00",
+          "kind": "model_started",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        },
+        {
+          "id": "38d6d02a-10fa-44c1-a795-10147c3e7540",
+          "sequence": 9,
+          "at": "2026-11-01T18:31:36.961834+00:00",
+          "kind": "context_observed",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null,
+          "context_metrics": {
+            "window": 592288,
+            "window_configured": true,
+            "reserve": 528288,
+            "focus": 64000,
+            "segments": {
+              "system": {
+                "estimated_tokens": 2850,
+                "actual_tokens": null
+              },
+              "tools": {
+                "estimated_tokens": 30248,
+                "actual_tokens": null
+              },
+              "skills": {
+                "estimated_tokens": 3780,
+                "actual_tokens": null
+              },
+              "envelope": {
+                "estimated_tokens": 655,
+                "actual_tokens": null
+              },
+              "history": {
+                "estimated_tokens": 0,
+                "actual_tokens": null
+              },
+              "loop": {
+                "estimated_tokens": 3914,
+                "actual_tokens": null
+              }
+            },
+            "estimated_input_tokens": 41447,
+            "admission_tokens": 47665,
+            "fixed_over_half": null,
+            "actual_input_tokens": null,
+            "actual_output_tokens": null,
+            "estimation_error_ratio": null,
+            "estimation_error_streak": 0,
+            "calibration_factor": 1.15,
+            "estimation_basis": "previous_actual_input",
+            "cache": {
+              "read_tokens": null,
+              "creation_tokens": null,
+              "read_hit_ratio": null,
+              "input_includes_cache": true,
+              "reporting": null,
+              "status": "not_recorded_for_failed_call"
+            },
+            "cleanup": {
+              "triggered": false,
+              "applied": false,
+              "minimum_tokens": null,
+              "before_tokens": null,
+              "after_tokens": null,
+              "saved_tokens": null,
+              "candidate_saved_tokens": null,
+              "eligible_results": null,
+              "protected_results": null,
+              "retained_latest_results": null,
+              "replaced_results": null,
+              "cache_invalidation_from_message": null,
+              "reason": "within_focus"
+            },
+            "cleanup_count": 0,
+            "history": {
+              "carried": 0,
+              "kept": 0,
+              "updated": 0,
+              "hidden": 0,
+              "unclassified": 0,
+              "truncated": 0,
+              "directories": 0
+            },
+            "work_state": {
+              "revision": 0,
+              "context_incomplete": false,
+              "item_counts": {
+                "constraints": 0,
+                "exclusions": 0,
+                "focus_objects": 0,
+                "completed": 0,
+                "candidates": 0,
+                "unfinished": 0,
+                "questions": 0,
+                "citations": 0
+              }
+            },
+            "run_budget": {
+              "limit": 2000000000,
+              "used": 732211,
+              "held": 0,
+              "remaining": 1999267789
+            },
+            "context_incomplete": false,
+            "call_state": "unknown",
+            "usage_status": "unavailable",
+            "isolation": "main",
+            "version": 1,
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "reductions_count": 0,
+            "reductions": [],
+            "missing_count": null,
+            "missing": []
+          }
+        },
+        {
+          "id": "81dfde3b-1144-480f-be1a-ad4292ddbffc",
+          "sequence": 10,
+          "at": "2026-11-01T18:31:36.994806+00:00",
+          "kind": "run_state",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": "waiting_input"
+        },
+        {
+          "id": "9d26ddb4-8979-4689-8cee-5bab19331780",
+          "sequence": 11,
+          "at": "2026-11-01T18:31:37.018355+00:00",
+          "kind": "reconciliation_required",
+          "tool": null,
+          "skill": null,
+          "version": null,
+          "status": null
+        }
+      ],
+      "next_before": null
+    },
+    "versions": {
+      "work_state": {
+        "notes": [],
+        "skills": [],
+        "missing": [],
+        "version": "agent-work-state/v1",
+        "revision": 0,
+        "citations": [],
+        "completed": [],
+        "questions": [],
+        "root_goal": {
+          "text": "帮我把这句话写得适合项目群：今天样机还在测，别急着给结论。只改语气，不补信息。",
+          "run_id": "2821fa25-49f7-4d9c-abb9-af808bb48381"
+        },
+        "candidates": [],
+        "exclusions": [],
+        "session_id": "ac93d926-7545-49c2-9443-28539bc2fd66",
+        "unfinished": [],
+        "constraints": [],
+        "current_goal": {
+          "text": "帮我把这句话写得适合项目群：今天样机还在测，别急着给结论。只改语气，不补信息。",
+          "run_id": "2821fa25-49f7-4d9c-abb9-af808bb48381"
+        },
+        "focus_objects": [],
+        "search_context": {
+          "kind": "category",
+          "label": "当前品类的可读资料",
+          "scoped": false
+        },
+        "completed_count": 0,
+        "estimated_tokens": 282,
+        "citation_directory": {
+          "tool": "assistant.citations.read",
+          "has_more": false,
+          "next_cursor": null
+        },
+        "context_incomplete": false,
+        "search_preferences": {
+          "scope": "same_category",
+          "include_customer_private": false
+        }
+      },
+      "provider_key": "minimax",
+      "budget_policy": "development_unlimited",
+      "model_version": "MiniMax-M3",
+      "assistant_depth": {
+        "mode": "quick",
+        "version": 1,
+        "parent_run_id": null
+      },
+      "prompt_prefixes": {
+        "main": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a"
+      },
+      "tool_definitions": {
+        "main": "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+      },
+      "tool_disclosures": {
+        "main": {
+          "chain": [
+            "2e0946639f4d284cad0aced855bcc1c98ca2e9d9b4291a6dd5214bdb46af0188"
+          ],
+          "names": [
+            "ai.skill.qualify",
+            "assistant.citations.read",
+            "assistant.compare",
+            "assistant.extract",
+            "assistant.materials.read",
+            "assistant.search",
+            "build.engineering.authorize",
+            "build.lot.read",
+            "build.manufacturing.authorize",
+            "build.read",
+            "build.sample.read",
+            "calc.cost_subtotal",
+            "calc.derivation_diff",
+            "calc.market_size",
+            "calc.opportunity_score",
+            "calc.price_band",
+            "calc.spec_compare",
+            "category.competitors.list",
+            "category.knowledge.list",
+            "category.list",
+            "category.member.grant",
+            "category.parameters.list",
+            "category.read",
+            "change.close",
+            "change.order.approve",
+            "change.selection.decide",
+            "change.verification.record",
+            "conversation.history",
+            "evidence.claim.withdraw",
+            "evidence.extract",
+            "evidence.link.create",
+            "evidence.search",
+            "integration.handoff.authorize",
+            "knowledge.rule.publish",
+            "mcp.connector.allow",
+            "mcp.read",
+            "mcp.tools.list",
+            "npi.manufacturing_baseline.publish",
+            "platform.read",
+            "product.baseline.read",
+            "project.create",
+            "proposal.create",
+            "proposal.g0.decide",
+            "proposal.g0.submit",
+            "proposal.item.patch",
+            "proposal.items.read",
+            "proposal.question.create",
+            "proposal.read",
+            "proposal.share",
+            "provider.agreement.register",
+            "quality.capa.verification.review",
+            "quality.issue.read",
+            "quality.issue.root_cause.decide",
+            "release.engineering.approve",
+            "release.exception.decide",
+            "release.exception.withdraw",
+            "release.manufacturing.approve",
+            "research.fanout",
+            "research.search",
+            "result.read",
+            "skill.load",
+            "test.disposition.decide",
+            "test.run.read",
+            "test.run.review",
+            "work.baseline.approve",
+            "work.stage.decide"
+          ]
+        }
+      },
+      "checkpoint_layout": "session-run-ns/v1",
+      "context_snapshots": {
+        "9765522ae7e51e8cb7382f75542c2c7798067b36202f3b899d2d96e174a20206": {
+          "scope": {
+            "product_id": null,
+            "category_id": "5a18f0a8-4ff7-412b-8e67-d902a3399172",
+            "proposal_id": null,
+            "requester_id": "a55d6700-af42-48c3-9f03-f9c8efc91a50",
+            "data_categories": [
+              "internal"
+            ]
+          },
+          "fields": [
+            "assistant_depth",
+            "category",
+            "goal",
+            "personal_preferences",
+            "sources",
+            "work_state"
+          ],
+          "issues": [],
+          "skills": [
+            {
+              "key": "proposal_drafting",
+              "digest": "2217647a07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f",
+              "version": "0.2.3-draft",
+              "load_event_id": "e32937f8-520d-4191-9132-4c7dab45b67f"
+            }
+          ],
+          "omitted": [],
+          "event_id": "ff8277d6-4b06-438c-85e3-f1c2e05291f7",
+          "read_set": [],
+          "schema_digest": "8fdf88be5121fca07c9dfcf50e87b8236f5716967681f3c4fc1b8d94c08e9f6e",
+          "source_digest": "94b94e787248beeea7456cd72dc35432aa2ea420e9afede5dac44943154af8a7",
+          "content_digest": "7257d24ac0e195d3e2363b695d828aeeeb91eef4505820e6e5813f91cb6fd727"
+        }
+      },
+      "prompt_identities": {
+        "main": {
+          "key": "xiaopai.main",
+          "version": "1.0.0",
+          "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+          "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+        }
+      },
+      "work_state_digest": "4a9a8603b37a1b6c81b572123b59d6b030a164309849336413349f4ea9439027",
+      "context_admissions": {
+        "c4d872053907481b0bdb1204b92ea2e10e81caf64cdc03806fa39fbda76ebd35": {
+          "calibration": null
+        },
+        "ecac8214d00837a2bc21acb1216055283d5d18637dd760da7e617d231db6a96e": {
+          "calibration": {
+            "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+            "estimated_total": 37533,
+            "actual_input_tokens": 41008
+          }
+        }
+      },
+      "context_runtime_v1": {
+        "calls": {
+          "1ea0d011-35bc-4225-872e-9a6b164c90db": {
+            "cache": {
+              "reporting": "positive_usage_reported",
+              "read_tokens": 184,
+              "read_hit_ratio": 0.004486929379633242,
+              "creation_tokens": 0,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 655
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "completed",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 43941,
+              "limit": 2000000000,
+              "remaining": 1999956059
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "recorded",
+            "cleanup_count": 0,
+            "admission_tokens": 43163,
+            "estimation_basis": "first_call_estimate",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": 41008,
+            "actual_output_tokens": 2933,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 37533,
+            "estimation_error_ratio": 0.0847395630120952,
+            "estimation_error_streak": 0
+          },
+          "2123fe7d-07c7-4546-8bd5-2f219910328b": {
+            "cache": {
+              "status": "not_recorded_for_failed_call",
+              "read_tokens": null,
+              "read_hit_ratio": null,
+              "creation_tokens": null,
+              "input_includes_cache": true
+            },
+            "focus": 64000,
+            "window": 592288,
+            "cleanup": {
+              "reason": "within_focus",
+              "applied": false,
+              "triggered": false
+            },
+            "history": {
+              "kept": 0,
+              "hidden": 0,
+              "carried": 0,
+              "updated": 0,
+              "truncated": 0,
+              "directories": 0,
+              "unclassified": 0
+            },
+            "reserve": 528288,
+            "version": 1,
+            "segments": {
+              "loop": {
+                "actual_tokens": null,
+                "estimated_tokens": 3914
+              },
+              "tools": {
+                "actual_tokens": null,
+                "estimated_tokens": 30248
+              },
+              "skills": {
+                "actual_tokens": null,
+                "estimated_tokens": 3780
+              },
+              "system": {
+                "actual_tokens": null,
+                "estimated_tokens": 2850
+              },
+              "history": {
+                "actual_tokens": null,
+                "estimated_tokens": 0
+              },
+              "envelope": {
+                "actual_tokens": null,
+                "estimated_tokens": 655
+              }
+            },
+            "warnings": [
+              "fixed_over_half_focus"
+            ],
+            "call_state": "unknown",
+            "reductions": [],
+            "run_budget": {
+              "held": 0,
+              "used": 732211,
+              "limit": 2000000000,
+              "remaining": 1999267789
+            },
+            "work_state": {
+              "revision": 0,
+              "item_counts": {
+                "citations": 0,
+                "completed": 0,
+                "questions": 0,
+                "candidates": 0,
+                "exclusions": 0,
+                "unfinished": 0,
+                "constraints": 0,
+                "focus_objects": 0
+              },
+              "context_incomplete": false
+            },
+            "usage_status": "unavailable",
+            "cleanup_count": 0,
+            "admission_tokens": 47665,
+            "estimation_basis": "previous_actual_input",
+            "window_configured": true,
+            "calibration_factor": 1.15,
+            "actual_input_tokens": null,
+            "actual_output_tokens": null,
+            "actual_segment_tokens": "provider_not_reported",
+            "estimated_input_tokens": 41447,
+            "estimation_error_ratio": null,
+            "estimation_error_streak": 0
+          }
+        },
+        "routes": {
+          "main:3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec": {
+            "error_streak": 0
+          }
+        },
+        "cleanup_count": 0
+      },
+      "model_route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+      "context_observations": {
+        "main": {
+          "route_digest": "3170fcc0d9bd56f68aeafb0ca0fb1c57443b9de56f58e871138d9dfe4af573ec",
+          "estimated_total": 37533,
+          "actual_input_tokens": 41008
+        }
+      },
+      "requested_context_selection": null,
+      "personal_preferences_context": {
+        "use": "personalization_only",
+        "role": null,
+        "source": "explicit_user_settings",
+        "revision": 0,
+        "department": null,
+        "role_defaults": {
+          "summary_sections": [],
+          "welcome_examples": []
+        },
+        "answer_language": "auto",
+        "response_detail": "balanced",
+        "navigation_candidates": []
+      },
+      "context_selection_start_revision": 0,
+      "requested_context_selection_digest": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b"
+    },
+    "reverted": false,
+    "reverted_at": null,
+    "reverted_by": null,
+    "revert_receipt_id": null,
+    "cancel_epoch": 0
+  },
+  "output": null,
+  "observed_at": "2026-11-01T18:31:37.538201+00:00"
+}
