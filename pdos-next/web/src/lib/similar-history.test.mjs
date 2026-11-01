@@ -14,14 +14,14 @@ function load(relative, require = dependency, extras = {}) {
     { module: mod, exports: mod.exports, require, Response, URL, URLSearchParams, AbortSignal, ...extras });
   return mod.exports;
 }
-const values = load("lib/similar-history.ts"), origin = load("lib/request-origin.ts");
+const values = load("lib/similar-history.ts"), origin = load("lib/server/request-origin.ts");
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const scope = { categoryId: id(1), productId: id(2), issueId: id(3) };
 const feedback = () => ({ version_id: id(4), candidate_kind: "issue", candidate_source_id: id(5), candidate_revision: 2, action: "not_relevant", request_key: id(6) });
 
 function harness(options = {}) {
   const calls = [];
-  const proxy = load("lib/similar-history-proxy.ts", name => name === "./similar-history" ? values : name === "./request-origin" ? origin : name === "next/headers" ? { cookies: async () => ({ get: key => { assert.equal(key, "pdos-next-session"); return options.session === false ? undefined : { value: "synthetic-session" }; } }) } : dependency(name), {
+  const proxy = load("lib/server/similar-history-proxy.ts", name => name === "../similar-history" ? values : name === "./request-origin" ? origin : name === "next/headers" ? { cookies: async () => ({ get: key => { assert.equal(key, "pdos-next-session"); return options.session === false ? undefined : { value: "synthetic-session" }; } }) } : dependency(name), {
     process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
     fetch: async (url, init) => {
       calls.push({ url, init }); if (options.failure) throw Error("synthetic transport failure");
@@ -84,7 +84,7 @@ test("missing session and unavailable transport remain explicit; original stale 
 
 test("static BFF routes expose GET for reads and POST for explicit feedback alone", async () => {
   const request = {}, params = Promise.resolve(scope), calls = [];
-  const require = name => { assert.equal(name, "@/lib/similar-history-proxy"); return { similarHistoryProxy: (...args) => { calls.push(args); return "handled"; } }; };
+  const require = name => { assert.equal(name, "@/lib/server/similar-history-proxy"); return { similarHistoryProxy: (...args) => { calls.push(args); return "handled"; } }; };
   const base = "app/api/v1/categories/[categoryId]/products/[productId]/quality-issues/[issueId]/similar-history";
   const reading = load(`${base}/route.ts`, require), writing = load(`${base}/feedback/route.ts`, require);
   assert.deepEqual(Object.keys(reading), ["GET"]); assert.deepEqual(Object.keys(writing), ["POST"]);
@@ -93,7 +93,7 @@ test("static BFF routes expose GET for reads and POST for explicit feedback alon
 });
 
 test("Pai prefill is a natural comparison request while metadata retains both fixed objects", () => {
-  const { similarHistoryMaterial } = load("components/similar-history-pai.tsx");
+  const { similarHistoryMaterial } = load("features/xiaopai/similar-history/similar-history-pai.tsx");
   const anchor = { issue_id: id(3), version_id: id(4), revision: 7, title: "当前接口漏气", category_id: id(1), product_id: id(2), project_id: id(8) };
   const candidate = { kind: "change", object_id: id(9), source_id: id(10), source_revision: 3, title: "历史变更措施" };
   const material = similarHistoryMaterial({ anchor, candidate }, id(11));
@@ -132,7 +132,7 @@ test("title BFF accepts only bounded title and real selectors; no alternate iden
 
 test("completion routes expose saved Change feedback and title GET only", async () => {
   const calls = [], params = Promise.resolve({ categoryId: id(1), productId: id(2), changeId: id(3) }), request = {};
-  const require = name => { assert.equal(name, "@/lib/similar-history-proxy"); return { similarHistoryProxy: (...args) => calls.push(args), similarHistorySuggestionsProxy: (...args) => calls.push(args) }; };
+  const require = name => { assert.equal(name, "@/lib/server/similar-history-proxy"); return { similarHistoryProxy: (...args) => calls.push(args), similarHistorySuggestionsProxy: (...args) => calls.push(args) }; };
   const base = "app/api/v1/categories/[categoryId]/products/[productId]";
   const reading = load(`${base}/change-execution/[changeId]/similar-history/route.ts`, require);
   const writing = load(`${base}/change-execution/[changeId]/similar-history/feedback/route.ts`, require);
@@ -143,7 +143,7 @@ test("completion routes expose saved Change feedback and title GET only", async 
 });
 
 test("Change Pai prefill preserves the actual selected pair without pretending it is a quality issue", () => {
-  const { similarHistoryMaterial } = load("components/similar-history-pai.tsx");
+  const { similarHistoryMaterial } = load("features/xiaopai/similar-history/similar-history-pai.tsx");
   const anchor = { kind: "change", change_id: id(3), version_id: id(4), revision: 2, title: "当前变更", category_id: id(1), product_id: id(2), project_id: id(8) };
   const candidate = { kind: "issue", object_id: id(9), source_id: id(10), source_revision: 3, title: "历史问题" };
   const material = similarHistoryMaterial({ anchor, candidate }, id(11));

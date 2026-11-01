@@ -18,8 +18,8 @@ const options = { module: ModuleKind.CommonJS, target: ScriptTarget.ES2022, esMo
 const compiled = (path: string) => transpileModule(readFileSync(resolve(path), "utf8"), { compilerOptions: options, fileName: path }).outputText;
 // Run the actual handler and actual origin guard; only its host I/O is replaced.
 const routeSource = compiled("src/app/api/[...path]/route.ts");
-const originSource = compiled("src/lib/request-origin.ts");
-const transportSource = compiled("src/lib/candidate-transport.ts");
+const originSource = compiled("src/lib/server/request-origin.ts");
+const transportSource = compiled("src/lib/server/candidate-transport.ts");
 type Handler = (request: NextRequest, context: { params: Promise<{ path: string[] }> }) => Promise<Response>;
 
 function harness(configuration: { token?: string | null; api?: string | null; response?: () => Promise<Response> } = {}) {
@@ -48,8 +48,8 @@ function harness(configuration: { token?: string | null; api?: string | null; re
     process: { env: { PDOS_NEXT_API_URL: configuration.api === null ? undefined : configuration.api ?? "http://synthetic-api.invalid" } },
     AbortSignal: { timeout: (milliseconds: number) => { timeouts.push(milliseconds); return new AbortController().signal; } },
     require: (name: string) => {
-      if (name === "@/lib/request-origin") return origin.exports;
-      if (name === "@/lib/candidate-transport") return transport.exports;
+      if (name === "@/lib/server/request-origin") return origin.exports;
+      if (name === "@/lib/server/candidate-transport") return transport.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: (key: string) => {
         assert.equal(key, "pdos-next-session");
         const token = configuration.token === null ? undefined : configuration.token ?? "synthetic-test-session";

@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
-import { sameOrigin } from "@/lib/request-origin";
+import { sameOrigin } from "@/lib/server/request-origin";
 import { validPreferenceSave } from "@/lib/personal-preferences";
-import { preferenceError, preferenceProxy } from "@/lib/personal-preferences-proxy";
+import { preferenceError, preferenceProxy } from "@/lib/server/personal-preferences-proxy";
 
 export async function GET(request: NextRequest) {
   if (request.nextUrl.searchParams.size) return preferenceError("个人偏好不接受其他身份或范围。", 422);

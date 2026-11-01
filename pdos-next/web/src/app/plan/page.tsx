@@ -1,10 +1,10 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { parsePlanProgress, planStatusLabels, planStatusOrder, type PlanItem, type PlanItemStatus, type PlanProgress } from "@/lib/plan-progress";
-import { PlanItemsTable } from "@/components/plan/plan-items-table";
-import { readPlanSource } from "@/lib/plan-source";
+import { PlanItemsTable } from "@/features/projects/plan/plan-items-table";
+import { readPlanSource } from "@/lib/server/plan-source";
 import { parseCurrentProgress } from "@/lib/current-progress";
-import { CurrentMilestones } from "@/components/plan/current-milestones";
+import { CurrentMilestones } from "@/features/projects/plan/current-milestones";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "计划执行进度 · PDOS" };

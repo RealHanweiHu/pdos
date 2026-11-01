@@ -1,4 +1,4 @@
-import type { ProposalViewSource } from "@/components/preproject/proposal-view-contracts";
+import type { ProposalViewSource } from "@/features/categories/preproject/proposal-view-contracts";
 
 export type MatrixSource = ProposalViewSource;
 export type MatrixSubject = { type: "product" | "competitor"; id: string; label: string; revision: number; origin?: string };

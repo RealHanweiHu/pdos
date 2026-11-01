@@ -2,7 +2,7 @@ import type { Build } from "@/lib/build-preparation-view";
 import { mergeReadSets, referencesReadSet, utcInput } from "@/lib/build-preparation-view";
 import type { DefinitionReference } from "@/lib/product-view";
 import type { SourceRead } from "@/lib/project-plan-view";
-import type { CoverageView, ProjectionRecord, SupplySnapshotView } from "@/components/supply_cost/types";
+import type { CoverageView, ProjectionRecord, SupplySnapshotView } from "@/features/manufacturing/supply-cost/types";
 
 export type SupplyApi = <T>(path: string, body?: unknown) => Promise<T>;
 export type SupplyKind = "inventory" | "commitment" | "in_transit" | "receipt" | "restriction";

@@ -58,7 +58,7 @@ test("selection intents wait for readable options and pending work, consume once
   let intent = null, index = 0;
   const refs = [], effects = [], choices = [];
   const react = { createContext: () => ({}), useContext: () => intent, useRef: value => refs[index++] ??= { current: value }, useEffect: effect => effects.push(effect) };
-  const { useProfessionalSelection } = load(path.resolve(directory, "../components/projects/professional-target.tsx"), react);
+  const { useProfessionalSelection } = load(path.resolve(directory, "../features/projects/professional-target.tsx"), react);
   const RenderSelection = (options, selected, blocked) => { index = 0; useProfessionalSelection("build", options, selected, blocked, id => choices.push(id)); effects.splice(0).forEach(effect => effect()); };
   intent = { target: { build: "b" }, serial: 1 };
   RenderSelection([], "", false); RenderSelection(["foreign"], "", false); RenderSelection(["b"], "", true);
@@ -81,7 +81,7 @@ test("supply and cost history use freshness and captured_at, preserving recalcul
     assert.equal(reading.rows[0].historical,true);assert.equal(reading.rows[0].at,"2026-10-20T00:00:00Z");assert.equal(reading.rows[1].source,"依据需重算");
   }
 });
-const {restoreProjectBuildDraft}=load(path.join(directory,"project-draft-recovery.ts"));
+const {restoreProjectBuildDraft}=load(path.join(directory,"../features/builds/lib/project-draft-recovery.ts"));
 test("legacy recovery retains only verified project drafts and the exact unknown command without POST", async () => {
   const pending={stage:"execute",command:{command_id:"original",idempotency_key:"original-key",payload:{build_id:"b",confirmation_token:"original-token"}}};
   const saved={buildId:"b",drafts:{b:{reason:"ours"},other:{reason:"foreign"}},prepared:{},pending};

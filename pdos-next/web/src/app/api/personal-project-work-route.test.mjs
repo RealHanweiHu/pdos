@@ -5,7 +5,7 @@ import { runInNewContext } from "node:vm";
 import test from "node:test";
 import { transpileModule, ModuleKind, ScriptTarget } from "typescript";
 const compile = name => transpileModule(readFileSync(resolve(name), "utf8"), { compilerOptions: { module: ModuleKind.CommonJS, target: ScriptTarget.ES2022 } }).outputText;
-const route = compile("src/app/api/[...path]/route.ts"), guard = compile("src/lib/request-origin.ts"), transport = compile("src/lib/candidate-transport.ts");
+const route = compile("src/app/api/[...path]/route.ts"), guard = compile("src/lib/server/request-origin.ts"), transport = compile("src/lib/server/candidate-transport.ts");
 const root = "v1/personal/project-work";
 const cursor = "00000000-0000-4000-8000-000000000001";
 function harness({ loggedIn = true, unavailable = false } = {}) {
@@ -16,8 +16,8 @@ function harness({ loggedIn = true, unavailable = false } = {}) {
     module: routeModule, exports: routeModule.exports, URL, URLSearchParams, Response, Headers,
     process: { env: { PDOS_NEXT_API_URL: "http://synthetic-api.invalid" } }, AbortSignal,
     require: name => {
-      if (name === "@/lib/request-origin") return originModule.exports;
-      if (name === "@/lib/candidate-transport") return transportModule.exports;
+      if (name === "@/lib/server/request-origin") return originModule.exports;
+      if (name === "@/lib/server/candidate-transport") return transportModule.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: () => loggedIn ? { value: "synthetic-session-substitute" } : undefined }) };
       throw new Error(`Unexpected dependency: ${name}`);
     },

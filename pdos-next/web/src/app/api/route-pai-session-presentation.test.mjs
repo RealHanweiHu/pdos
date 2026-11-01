@@ -11,10 +11,10 @@ const id = n => `00000000-0000-4000-8000-${String(n).padStart(12,"0")}`, categor
 const original = { expected_revision: 0, request_key: key, action: "rename", title: "原名称😀" };
 function harness(options = {}) {
  const loaded = { exports: {} }, calls = [], origins = { exports: {} };
- runInNewContext(compile("lib/request-origin.ts"), { module: origins, exports: origins.exports, URL });
- runInNewContext(compile("lib/pai-session-presentation-proxy.ts"), { module: loaded, exports: loaded.exports, URLSearchParams, Response, AbortSignal, TextDecoder, Uint8Array,
+ runInNewContext(compile("lib/server/request-origin.ts"), { module: origins, exports: origins.exports, URL });
+ runInNewContext(compile("lib/server/pai-session-presentation-proxy.ts"), { module: loaded, exports: loaded.exports, URLSearchParams, Response, AbortSignal, TextDecoder, Uint8Array,
   process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
-  require: name => name === "@/lib/request-origin" ? origins.exports : name === "next/headers" ? { cookies: async () => ({ get: () => options.session === false ? undefined : { value: "synthetic-token" } }) } : assert.fail(name),
+  require: name => name === "@/lib/server/request-origin" ? origins.exports : name === "next/headers" ? { cookies: async () => ({ get: () => options.session === false ? undefined : { value: "synthetic-token" } }) } : assert.fail(name),
   fetch: async (url, init) => { calls.push({ url, init }); if (options.failure) throw Error("offline"); return Response.json(options.body ?? { received: true }, { status: options.status ?? 200 }); },
  });
  function request(method, query = "", value = original, headers = {}, stream) {
@@ -82,7 +82,7 @@ test("unknown POST transport is 503 outcome unknown; actual ACL, conflict and ab
 test("all six isolated routes await real params and expose only their single exact method", async () => {
  for(const cat of [false,true]) for(const kind of ["list","write","recover"]) {
   const root=cat?"categories/[categoryId]":"personal", sub=kind==="list"?"agent-conversations":"agent-sessions/[sessionId]/presentation"+(kind==="recover"?"/requests/[requestKey]":""), name=kind==="list"?"paiConversationsRead":"paiPresentation", method=kind==="write"?"POST":"GET", calls=[], loaded={exports:{}}, req={};
-  runInNewContext(compile(`app/api/v1/${root}/${sub}/route.ts`),{module:loaded,exports:loaded.exports,require:n=>{assert.equal(n,"@/lib/pai-session-presentation-proxy");return {[name]:(...args)=>calls.push(args)};}});
+  runInNewContext(compile(`app/api/v1/${root}/${sub}/route.ts`),{module:loaded,exports:loaded.exports,require:n=>{assert.equal(n,"@/lib/server/pai-session-presentation-proxy");return {[name]:(...args)=>calls.push(args)};}});
   assert.deepEqual(Object.keys(loaded.exports),[method]); await loaded.exports[method](req,{params:Promise.resolve({categoryId:category,sessionId:session,requestKey:key})});
   assert.equal(calls[0][0],req); assert.deepEqual([...calls[0].slice(1)],kind==="list"?(cat?[category]:[]):[cat?category:undefined,session,...(kind==="recover"?[key]:[])]);
  }

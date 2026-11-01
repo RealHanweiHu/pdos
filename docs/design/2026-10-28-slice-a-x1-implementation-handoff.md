@@ -77,8 +77,8 @@ git diff --stat -- \
   pdos-next/server/pdos_next/providers/types.py \
   pdos-next/server/pdos_next/model_configuration/host.py \
   pdos-next/server/pdos_next/schemas/model_configuration/dto.py \
-  pdos-next/web/src/components/category-create/personal-xiaopai.tsx \
-  pdos-next/web/src/components/pai-conversation.tsx
+  pdos-next/web/src/features/categories/create/personal-xiaopai.tsx \
+  pdos-next/web/src/features/xiaopai/pai-conversation.tsx
 ```
 
 - 记录哪些目标文件已有未提交改动（2026-10-28 已知 `conversation.py` 当天有在途修改）。
@@ -115,7 +115,7 @@ if scope.category_id is None:
 
 ### 3.2 前端
 
-“与小Pai一起创建”按钮在 `pdos-next/web/src/components/category-workspace.tsx`（约 69 行，`新建品类` 对话框里，调用 `onOpenPai()`）。它打开的是 `PaiRail` 里的 `PersonalXiaopai`（`components/category-create/personal-xiaopai.tsx`）。
+“与小Pai一起创建”按钮在 `pdos-next/web/src/features/categories/category-workspace.tsx`（约 69 行，`新建品类` 对话框里，调用 `onOpenPai()`）。它打开的是 `PaiRail` 里的 `PersonalXiaopai`（`components/category-create/personal-xiaopai.tsx`）。
 
 步骤：
 
@@ -220,7 +220,7 @@ return attach_assistant(attach(result, tool_results), tool_results)
 
 ### 5.2 前端
 
-文件：`pdos-next/web/src/components/pai-conversation.tsx`，组件 `PaiResponse`（约 62 行）。
+文件：`pdos-next/web/src/features/xiaopai/pai-conversation.tsx`，组件 `PaiResponse`（约 62 行）。
 
 1. Props 类型中 `result?: { summary?: string } | null` 扩展为 `result?: { summary?: string; result?: { assistant?: { lookup?: string } } | null } | null`。
 2. 计算 `const notLooked = run.status === "completed" && run.result?.result?.assistant?.lookup === "not_run";`。
@@ -266,10 +266,10 @@ cd pdos-next/web && npm run typecheck && npm run lint
 | `providers/types.py` 的 `ProviderRoute`（约 25 行） | 增加 `context_window_tokens: int \| None = None`；在 `__post_init__` 校验：为 `None`，或为 `int` 且 `1024 <= 值 <= 10_000_000`，否则 `raise ValueError("Invalid context window")`。在 `digest` 属性里**只在不为 None 时**加入 `body["context_window_tokens"]`（照抄同函数里 `openai_response_mode` 的写法），这样现有路由的摘要不变 |
 | `model_configuration/host.py` 的 `ModelHost`（约 68–93 行） | 加 `context_window_tokens: int \| None = Field(default=None, strict=True, ge=1024, le=10_000_000)`；如该文件的 `ManagedConnection`（约 112 行）或其他类也保存 `max_output_tokens`，同样加入 |
 | `schemas/model_configuration/dto.py`（约 21 行字段、约 48–54 行构造 `ProviderRoute` 处） | 加同样的字段，并在 `ProviderRoute(...)` 中传入 `context_window_tokens=self.context_window_tokens` |
-| `web/src/components/model_configuration/contracts.ts` | 类型加 `context_window_tokens?: number \| null` |
-| `web/src/components/model_configuration/connection-editor.tsx` | 加一个可选数字输入，标签“上下文窗口（tokens）”，说明文字“不填时按 32,000 估算”；留空提交 `null` |
-| `web/src/components/model_configuration/settings.tsx` | 连接详情里显示该值，空值显示“未填写（按 32,000 估算）” |
-| `web/src/components/model_configuration/render.test.mjs` | 按现有用例风格，增加该字段的渲染断言 |
+| `web/src/features/settings/model-configuration/contracts.ts` | 类型加 `context_window_tokens?: number \| null` |
+| `web/src/features/settings/model-configuration/connection-editor.tsx` | 加一个可选数字输入，标签“上下文窗口（tokens）”，说明文字“不填时按 32,000 估算”；留空提交 `null` |
+| `web/src/features/settings/model-configuration/settings.tsx` | 连接详情里显示该值，空值显示“未填写（按 32,000 估算）” |
+| `web/src/features/settings/model-configuration/render.test.mjs` | 按现有用例风格，增加该字段的渲染断言 |
 
 上表是已核实的位置。动手前再执行 `grep -rn "max_output_tokens" pdos-next/server/pdos_next pdos-next/web/src`，凡是保存、校验、传递 `max_output_tokens` 的地方都要同样处理 `context_window_tokens`（`providers/types.py` 的 `digest` 按上表条件加入；`agent_client.py`、`client.py`、`gateway.py` 里把它当输出上限用的地方不需要加）。
 
@@ -292,7 +292,7 @@ cd pdos-next && git diff --stat -- contracts/openapi.json contracts/payloads.sch
 
 ```bash
 cd pdos-next/server && uv run pytest tests/agent_kernel/test_native_protocols.py tests/agent_kernel/test_openai_compatible.py tests/agent_kernel/test_gateway.py -q
-cd pdos-next/web && npm run typecheck && npm run lint && node --test src/components/model_configuration/render.test.mjs
+cd pdos-next/web && npm run typecheck && npm run lint && node --test src/features/settings/model-configuration/render.test.mjs
 ```
 
 - [ ] 配置页可填写、可留空；
@@ -751,7 +751,7 @@ uv run pytest -q tests/agent_kernel/test_run_continuation.py \
 
 # 前端
 cd ../web && npm run typecheck && npm run lint && \
-  node --test src/components/model_configuration/render.test.mjs src/components/pai/*.test.mjs
+  node --test src/features/settings/model-configuration/render.test.mjs src/components/pai/*.test.mjs
 
 # 合同（已知 events 90≠86 为既有失败，与本批无关）
 cd .. && python3 tools/validate_contracts.py

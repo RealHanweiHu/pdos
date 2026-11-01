@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import { notFound, redirect } from "next/navigation";
-import { CurrentMilestones } from "@/components/plan/current-milestones";
-import { PreviewGuide } from "@/components/preview-guide";
+import { CurrentMilestones } from "@/features/projects/plan/current-milestones";
+import { PreviewGuide } from "@/features/shell/preview-guide";
 import { parseCurrentProgress } from "@/lib/current-progress";
-import { readPlanSource } from "@/lib/plan-source";
-import { loadLocalPreview, workspacePreview } from "@/lib/local-preview-server";
-import { ProductPreviewEntry } from "@/components/product-preview-entry";
+import { readPlanSource } from "@/lib/server/plan-source";
+import { loadLocalPreview, workspacePreview } from "@/lib/server/local-preview-server";
+import { ProductPreviewEntry } from "@/features/shell/product-preview-entry";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "本地预览 · PDOS" };

@@ -14,7 +14,7 @@ runInNewContext(compile("lib/category-matrix.ts"), { module: matrix, exports: ma
 const category = "11111111-1111-4111-8111-111111111111", proposal = "22222222-2222-4222-8222-222222222222";
 function harness(options = {}) {
   const helper = { exports: {} }, calls = [];
-  runInNewContext(compile("lib/category-research-proxy.ts"), {
+  runInNewContext(compile("lib/server/category-research-proxy.ts"), {
     module: helper, exports: helper.exports, Response, URLSearchParams, AbortSignal,
     process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
     require: name => {
@@ -31,7 +31,7 @@ function harness(options = {}) {
   const routes = Object.fromEntries(["category-matrix", "voices"].map(kind => {
     const routeModule = { exports: {} };
     const file = kind === "voices" ? "app/api/v1/categories/[categoryId]/proposals/[proposalId]/voices/route.ts" : "app/api/v1/categories/[categoryId]/category-matrix/route.ts";
-    runInNewContext(compile(file), { module: routeModule, exports: routeModule.exports, require: name => { assert.equal(name, "@/lib/category-research-proxy"); return helper.exports; } });
+    runInNewContext(compile(file), { module: routeModule, exports: routeModule.exports, require: name => { assert.equal(name, "@/lib/server/category-research-proxy"); return helper.exports; } });
     return [kind, routeModule.exports];
   }));
   return { calls, async send(kind, query = "", ids = {}, method = "GET") {

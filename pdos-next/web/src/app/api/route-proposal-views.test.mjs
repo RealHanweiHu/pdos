@@ -13,8 +13,8 @@ const compiled = file => ts.transpileModule(readFileSync(file, "utf8"), {
 }).outputText;
 // Test-only source selection. The production BFF does not read this override.
 const routeSource = compiled(process.env.PDOS_PROPOSAL_VIEWS_BFF_SOURCE ?? path.join(webRoot, "src/app/api/[...path]/route.ts"));
-const originSource = compiled(path.join(webRoot, "src/lib/request-origin.ts"));
-const transportSource = compiled(path.join(webRoot, "src/lib/candidate-transport.ts"));
+const originSource = compiled(path.join(webRoot, "src/lib/server/request-origin.ts"));
+const transportSource = compiled(path.join(webRoot, "src/lib/server/candidate-transport.ts"));
 const category = "11111111-1111-4111-8111-111111111111";
 const proposal = "22222222-2222-4222-8222-222222222222";
 const parameter = "33333333-3333-4333-8333-333333333333";
@@ -31,8 +31,8 @@ function harness(options = {}) {
     process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
     AbortSignal: { timeout: () => new AbortController().signal },
     require: name => {
-      if (name === "@/lib/request-origin") return origin.exports;
-      if (name === "@/lib/candidate-transport") return transport.exports;
+      if (name === "@/lib/server/request-origin") return origin.exports;
+      if (name === "@/lib/server/candidate-transport") return transport.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: () => options.session === false ? undefined : { value: "synthetic-session" } }) };
       throw Error(`Unexpected import ${name}`);
     },

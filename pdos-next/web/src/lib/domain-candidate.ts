@@ -1,5 +1,5 @@
 import { verificationBuildRef, type VerificationBuildRef } from "./verification-action";
-import type { SavedVerificationPreparation } from "@/components/pai/verification-preparation-card";
+import type { SavedVerificationPreparation } from "@/features/xiaopai/verification-preparation-card";
 export const candidateLabels: Record<string, string> = {
   "work.task.create": "资料跟进任务",
   "verification.preparation.record": "复验准备", "verification.request.create": "复验请求",

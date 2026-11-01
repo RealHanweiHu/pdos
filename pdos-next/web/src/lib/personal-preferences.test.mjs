@@ -36,7 +36,7 @@ test("navigation lookup validates finite unique query and pagination without sup
 
 function harness(options = {}) {
   const calls = [];
-  const proxy = compile("src/lib/personal-preferences-proxy.ts", name => {
+  const proxy = compile("src/lib/server/personal-preferences-proxy.ts", name => {
     assert.equal(name, "next/headers");
     return { cookies: async () => ({ get: () => options.noSession ? undefined : { value: "synthetic-self-session" } }) };
   });
@@ -47,7 +47,7 @@ function harness(options = {}) {
     if (options.failure) throw Error("synthetic transport failure");
     return Response.json(options.body ?? { revision: 2 }, { status: options.status ?? 200 });
   };
-  const require = name => name === "@/lib/personal-preferences" ? values : name === "@/lib/personal-preferences-proxy" ? proxy : name === "@/lib/request-origin" ? { sameOrigin: request => request.headers.get("origin") === "http://localhost:3000" } : dependency(name);
+  const require = name => name === "@/lib/personal-preferences" ? values : name === "@/lib/server/personal-preferences-proxy" ? proxy : name === "@/lib/server/request-origin" ? { sameOrigin: request => request.headers.get("origin") === "http://localhost:3000" } : dependency(name);
   const root = compile("src/app/api/v1/personal/preferences/route.ts", require), lookup = compile("src/app/api/v1/personal/preferences/options/route.ts", require);
   return { calls, root, lookup, request(query = "", body, origin = "http://localhost:3000") {
     const request = new Request(`http://localhost:3000/api/v1/personal/preferences${query}`, { method: body === undefined ? "GET" : "POST", headers: { origin, host: "localhost:3000", "content-type": "application/json" }, body: body === undefined ? undefined : JSON.stringify(body) });

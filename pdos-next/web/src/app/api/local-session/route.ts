@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { sameOrigin } from "@/lib/request-origin";
+import { sameOrigin } from "@/lib/server/request-origin";
 
 export async function POST(request: NextRequest) {
   if (!["localhost", "127.0.0.1"].includes(request.nextUrl.hostname)) return Response.json({ message: "此会话仅供本机合成预览。" }, { status: 403 });

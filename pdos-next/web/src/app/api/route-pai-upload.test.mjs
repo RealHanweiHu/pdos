@@ -10,16 +10,16 @@ const web = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..
 const compile = relative => ts.transpileModule(readFileSync(path.join(web, "src", relative), "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText;
 const upload = { exports: {} }, origin = { exports: {} };
 runInNewContext(compile("lib/pai-upload.ts"), { module: upload, exports: upload.exports, URLSearchParams, TextEncoder, crypto: webcrypto, btoa, atob });
-runInNewContext(compile("lib/request-origin.ts"), { module: origin, exports: origin.exports, URL });
+runInNewContext(compile("lib/server/request-origin.ts"), { module: origin, exports: origin.exports, URL });
 const id = n => `00000000-0000-0000-0000-${n.toString(16).padStart(12, "0")}`;
 const category = id(1), product = id(2), proposal = id(3), nonce = id(4), digest = "a".repeat(64);
 const body = () => ({ filename: "资料.txt", title: "真实标题", source_label: "真实来源", visibility: "private", content_base64: "eA==", expected_revision: 3, idempotency_key: nonce });
 function harness(options = {}) {
   const mod = { exports: {} }, calls = [];
-  runInNewContext(compile("lib/pai-upload-proxy.ts"), {
+  runInNewContext(compile("lib/server/pai-upload-proxy.ts"), {
     module: mod, exports: mod.exports, URLSearchParams, Response, TextDecoder, AbortSignal,
     process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
-    require: name => name === "@/lib/pai-upload" ? upload.exports : name === "@/lib/request-origin" ? origin.exports : name === "next/headers" ? { cookies: async () => ({ get: key => { assert.equal(key, "pdos-next-session"); return options.session === false ? undefined : { value: "synthetic-session" }; } }) } : assert.fail(name),
+    require: name => name === "@/lib/pai-upload" ? upload.exports : name === "@/lib/server/request-origin" ? origin.exports : name === "next/headers" ? { cookies: async () => ({ get: key => { assert.equal(key, "pdos-next-session"); return options.session === false ? undefined : { value: "synthetic-session" }; } }) } : assert.fail(name),
     fetch: async (url, init) => { calls.push({ url, init }); if (options.failure) throw Error("synthetic lost response"); return options.html ? new Response("<html>too large</html>", { status: 413, headers: { "Content-Type": "text/html" } }) : Response.json(options.response ?? { original: "metadata" }, { status: options.status ?? 200 }); },
   });
   function request(query, method, raw, customHeaders = {}) {
@@ -107,7 +107,7 @@ test("four static routes expose only the intended method and await exact IDs", a
     ["app/api/v1/categories/[categoryId]/products/[productId]/originals/route.ts", "POST", { categoryId: category, productId: product }, "paiOriginalUpload", [category, product]],
   ]) {
     const mod = { exports: {} }, calls = [], request = {};
-    runInNewContext(compile(relative), { module: mod, exports: mod.exports, require: name => { assert.equal(name, "@/lib/pai-upload-proxy"); return { [operation]: (...values) => calls.push(values) }; } });
+    runInNewContext(compile(relative), { module: mod, exports: mod.exports, require: name => { assert.equal(name, "@/lib/server/pai-upload-proxy"); return { [operation]: (...values) => calls.push(values) }; } });
     assert.deepEqual(Object.keys(mod.exports), [method]); await mod.exports[method](request, { params: Promise.resolve(params) }); assert.equal(calls[0][0], request); assert.deepEqual([...calls[0].slice(1)], args);
   }
 });

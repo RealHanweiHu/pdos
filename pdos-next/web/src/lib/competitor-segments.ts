@@ -1,4 +1,4 @@
-import type { ProposalViewSource } from "@/components/preproject/proposal-view-contracts";
+import type { ProposalViewSource } from "@/features/categories/preproject/proposal-view-contracts";
 
 export type FixedSegment = { entry_id: string; version: number; lineage_id: string | null; label: string | null; status?: "available" | "unavailable"; source_refs: ProposalViewSource[] };
 export type CompetitorAssignment = {

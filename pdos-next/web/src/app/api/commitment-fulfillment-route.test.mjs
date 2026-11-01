@@ -10,7 +10,7 @@ import { transpileModule, ModuleKind, ScriptTarget } from "typescript";
 // fetch substitute. No network request or domain authorization is exercised.
 const web = resolve(dirname(fileURLToPath(import.meta.url)), "../../..");
 const compile = name => transpileModule(readFileSync(resolve(web, name), "utf8"), { compilerOptions: { module: ModuleKind.CommonJS, target: ScriptTarget.ES2022 } }).outputText;
-const route = compile("src/app/api/[...path]/route.ts"), guard = compile("src/lib/request-origin.ts"), transport = compile("src/lib/candidate-transport.ts");
+const route = compile("src/app/api/[...path]/route.ts"), guard = compile("src/lib/server/request-origin.ts"), transport = compile("src/lib/server/candidate-transport.ts");
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const category = `v1/categories/${id(1)}`, product = `${category}/products/${id(2)}`, root = `${product}/project-work/fulfillment`, inputs = `${root}/inputs`;
 function command() { return { category_id: id(1), product_id: id(2), operation: "work.commitment.review", command_id: id(3), idempotency_key: "original-commitment-fulfillment-key", expected_revision: 7, source_read_set: [{ artifact_id: id(5), expected_revision: 1 }], payload: { project_id: id(4), commitment: { id: id(6), revision: 2 }, task: { id: id(7), revision: 5 }, submission: { id: id(8), revision: 4 }, expected_review_revision: 0, decision: "returned", checks: [{ key: "report", decision: "unknown", reason: "实际附件待补" }], sources: [{ id: id(5), revision: 1, kind: "artifact", position: "line:1;quote_sha256:" + "a".repeat(64) }], reason: "本人核对本条承诺" } }; }
@@ -22,8 +22,8 @@ function harness({ loggedIn = true, unavailable = false } = {}) {
     module: routeModule, exports: routeModule.exports, URL, URLSearchParams, Response, Headers, AbortSignal,
     process: { env: { PDOS_NEXT_API_URL: "http://synthetic-api.invalid" } },
     require: name => {
-      if (name === "@/lib/request-origin") return originModule.exports;
-      if (name === "@/lib/candidate-transport") return transportModule.exports;
+      if (name === "@/lib/server/request-origin") return originModule.exports;
+      if (name === "@/lib/server/candidate-transport") return transportModule.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: () => loggedIn ? { value: "synthetic-session-substitute" } : undefined }) };
       throw new Error(`Unexpected dependency: ${name}`);
     },

@@ -53,7 +53,7 @@ import {
   type WorkItem,
 } from "./design-data";
 import s from "./platform.module.css";
-import { ProjectDirectoryView } from "@/components/projects/project-directory-view";
+import { ProjectDirectoryView } from "@/features/projects/project-directory-view";
 import { PaiPreview } from "./pai-preview";
 import {
   usePaiPreview,

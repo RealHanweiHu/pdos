@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { sameOrigin } from "@/lib/request-origin";
-import { candidateTransportOptions } from "@/lib/candidate-transport";
+import { sameOrigin } from "@/lib/server/request-origin";
+import { candidateTransportOptions } from "@/lib/server/candidate-transport";
 
 const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
@@ -216,11 +216,11 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const { path: forwardPath } = await context.params;
   const dingPath = forwardPath.join("/");
   if (/^v1\/personal\/inbox\/summary-(?:channels|deliveries)(?:\/|$)/i.test(dingPath)) {
-    const { summaryChannelRequest } = await import("@/lib/summary-channel-proxy");
+    const { summaryChannelRequest } = await import("@/lib/server/summary-channel-proxy");
     return summaryChannelRequest(request, dingPath);
   }
   if (dingPath === "v1/dingtalk/application" || dingPath.startsWith("v1/personal/dingtalk/")) {
-    const { dingtalkRequest } = await import("@/lib/dingtalk-proxy");
+    const { dingtalkRequest } = await import("@/lib/server/dingtalk-proxy");
     return dingtalkRequest(request, dingPath);
   }
   const categoryId = forwardPath[0] === "v1" && forwardPath[1] === "categories" && uuid.test(forwardPath[2] ?? "") ? forwardPath[2] : undefined;

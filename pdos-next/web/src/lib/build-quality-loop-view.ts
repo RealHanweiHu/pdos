@@ -1,8 +1,8 @@
 import { projectBuildsPath } from "./project-build-scope";
 import { sourceLines, type DefinitionSource } from "./product-view";
 import type { SourceRead } from "./project-plan-view";
-import type { Issue as ReadingIssue, FailureRef as ReadingFailure, SourceRef as ReadingSource } from "../components/quality_issues/contracts";
-import type { ChangeRequest as ReadingChange, Impact as ReadingImpact, Ref as ReadingRef, Source as ChangeSource } from "../components/change_control/contracts";
+import type { Issue as ReadingIssue, FailureRef as ReadingFailure, SourceRef as ReadingSource } from "../features/quality/issues/contracts";
+import type { ChangeRequest as ReadingChange, Impact as ReadingImpact, Ref as ReadingRef, Source as ChangeSource } from "../features/quality/change-control/contracts";
 
 export type QualityApi = <T>(path: string, body?: unknown) => Promise<T>;
 export const qualityOperations = ["quality.issue.create", "quality.issue.merge", "quality.issue.triage", "quality.issue.containment.record", "quality.capa.draft", "change.request.create", "change.impact.compute"] as const;

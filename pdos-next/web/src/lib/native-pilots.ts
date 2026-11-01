@@ -1,4 +1,4 @@
-import { mpDecimal, mpRecord, mpRevision, mpSame, mpUuid } from "@/components/manufacturing-preparation/manufacturing-preparation-contract";
+import { mpDecimal, mpRecord, mpRevision, mpSame, mpUuid } from "@/features/manufacturing/preparation/manufacturing-preparation-contract";
 import { qualitySource, validQualitySource, type QualitySource } from "@/lib/build-quality-loop-view";
 import { sourceLines, type DefinitionSource } from "@/lib/product-view";
 import type { SourceRead } from "@/lib/project-plan-view";

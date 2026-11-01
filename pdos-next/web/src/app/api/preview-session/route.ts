@@ -1,7 +1,7 @@
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
-import { sameOrigin } from "@/lib/request-origin";
-import { loadLocalPreview, localPreviewHost, workspacePreview } from "@/lib/local-preview-server";
+import { sameOrigin } from "@/lib/server/request-origin";
+import { loadLocalPreview, localPreviewHost, workspacePreview } from "@/lib/server/local-preview-server";
 
 export async function POST(request: NextRequest) {
   if (!localPreviewHost(request.headers.get("host")) || !sameOrigin(request)) return Response.json({ message: "此入口只接受本机预览页面的操作。" }, { status: 403 });

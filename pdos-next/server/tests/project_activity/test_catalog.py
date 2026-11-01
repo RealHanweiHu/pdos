@@ -82,7 +82,7 @@ def test_every_operation_has_one_primary_subject_and_a_real_registered_event():
 
 
 def test_destinations_are_actual_existing_workspace_panels():
-    workspace = Path(__file__).resolve().parents[3] / "web/src/components/workspace.tsx"
+    workspace = Path(__file__).resolve().parents[3] / "web/src/features/shell/workspace.tsx"
     panels = set(re.findall(r'<WorkspacePanel\b[^>]*\bname="([^"]+)"', workspace.read_text()))
     assert panels and {source.view for source in SOURCES} <= panels
     assert _source(WorkTaskVersion).view == "plan"

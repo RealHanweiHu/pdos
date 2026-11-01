@@ -5,7 +5,7 @@ import { runInNewContext } from 'node:vm';
 import { ModuleKind, ScriptTarget, transpileModule } from 'typescript';
 import type { NextRequest } from 'next/server';
 const compile=(p:string)=>transpileModule(readFileSync(p,'utf8'),{compilerOptions:{module:ModuleKind.CommonJS,target:ScriptTarget.ES2022}}).outputText;
-const source=compile('src/app/api/preview-session/route.ts'), serverSource=compile('src/lib/local-preview-server.ts'), originSource=compile('src/lib/request-origin.ts');
+const source=compile('src/app/api/preview-session/route.ts'), serverSource=compile('src/lib/server/local-preview-server.ts'), originSource=compile('src/lib/server/request-origin.ts');
 function harness(options:{identity?:string;enabled?:boolean;expired?:boolean;api?:string;workspace?:boolean;brokenWorkspace?:boolean}={}) {
  const sets:unknown[][]=[],calls:string[]=[];
  const value={version:1,created_at:'2026-01-01T00:00:00Z',expires_at:options.expired?'2000-01-01T00:00:00Z':'2100-01-01T00:00:00Z',api_port:12345,workspace:options.workspace?{roleId:options.brokenWorkspace?'missing':'quality'}:undefined,cases:[{id:'trial',categoryId:'category-a',roleIds:['quality'],entries:[{id:'results',href:'/?area=work'}]}],roles:[{id:'quality',caseId:'trial',principalId:'person-a',tenantId:'tenant-a',token:'private-session-token'}]};
@@ -13,8 +13,8 @@ function harness(options:{identity?:string;enabled?:boolean;expired?:boolean;api
  runInNewContext(serverSource,{module:server,exports:server.exports,process:{env:{PDOS_NEXT_PREVIEW_CONFIG:options.enabled===false?undefined:'/private/fixture.json'}},require:(name:string)=>name==='server-only'?{}:{readFile:async()=>JSON.stringify(value)},Date,URLSearchParams});
  runInNewContext(originSource,{module:origin,exports:origin.exports,URL});
  runInNewContext(source,{module:route,exports:route.exports,URL,Response,Date,AbortSignal,process:{env:{PDOS_NEXT_API_URL:options.api??'http://127.0.0.1:12345'}},fetch:async(url:string)=>{calls.push(url);return Response.json({principal_id:options.identity??'person-a'});},require:(name:string)=>{
-  if(name==='@/lib/local-preview-server')return server.exports;
-  if(name==='@/lib/request-origin')return origin.exports;
+  if(name==='@/lib/server/local-preview-server')return server.exports;
+  if(name==='@/lib/server/request-origin')return origin.exports;
   if(name==='next/headers')return {cookies:async()=>({set:(...args:unknown[])=>sets.push(args)})};
   throw new Error(name);
  }});

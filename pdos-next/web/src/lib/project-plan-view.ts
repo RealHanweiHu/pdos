@@ -53,7 +53,7 @@ export type ProjectReview = {
   visibility?: "private" | "category" | "audience"; definition?: { id: string; title: string; revision: number; status: string };
   project_id?: string; project_revision?: number; proposal_id?: string; proposal_revision?: number;
   forecast?: PlanForecast; input_snapshot?: ScheduleInput; reason?: string;
-  resources?: import("@/components/projects/project-plan-resources").ResourceAnalysis;
+  resources?: import("@/features/projects/project-plan-resources").ResourceAnalysis;
 };
 export type PreparedProject = { command: ProjectCommand; review: ProjectReview; expires_at: string; confirmation_token: string };
 export type TaskDraft = { key: string; title: string; discipline: Discipline; depends_on: string[]; minimum: string; maximum: string; basis: string; notBefore?: string };

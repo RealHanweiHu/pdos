@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { AppShell } from "@/components/app-shell";
+import { AppShell } from "@/features/shell/app-shell";
 
 /** IDs only. The normal login and original personal Run/source READ run again. */
 export default async function Page({ params, searchParams }: { params: Promise<{ runId: string }>; searchParams?: Promise<{ category?: string | string[] }> }) {

@@ -17,8 +17,8 @@ function harness(options = {}) {
     process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
     require: name => {
       if (name === "next/headers") return { cookies: async () => ({ get: key => { assert.equal(key, "pdos-next-session"); return options.session === false ? undefined : { value: "synthetic-session" }; } }) };
-      if (name === "@/lib/request-origin") return { sameOrigin: () => "http://synthetic-api.invalid" };
-      if (name === "@/lib/candidate-transport") return { candidateTransportOptions: () => ({}) };
+      if (name === "@/lib/server/request-origin") return { sameOrigin: () => "http://synthetic-api.invalid" };
+      if (name === "@/lib/server/candidate-transport") return { candidateTransportOptions: () => ({}) };
       if (name === "next/server") return { NextRequest: class {} };
       throw new Error(`unexpected module ${name}`);
     },

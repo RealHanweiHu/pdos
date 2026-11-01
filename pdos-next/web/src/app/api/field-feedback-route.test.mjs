@@ -9,8 +9,8 @@ const compile = name => transpileModule(readFileSync(resolve(name), "utf8"), {
   compilerOptions: { module: ModuleKind.CommonJS, target: ScriptTarget.ES2022 },
 }).outputText;
 const route = compile("src/app/api/[...path]/route.ts");
-const guard = compile("src/lib/request-origin.ts");
-const transport = compile("src/lib/candidate-transport.ts");
+const guard = compile("src/lib/server/request-origin.ts");
+const transport = compile("src/lib/server/candidate-transport.ts");
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const root=`v1/categories/${id(1)}/products/${id(2)}/field-feedback`, category=`v1/categories/${id(1)}/field-feedback`;
 const source={kind:"artifact",id:id(5),revision:2,position:`line:1;quote_sha256:${"a".repeat(64)}`};
@@ -23,8 +23,8 @@ function harness({ loggedIn = true } = {}) {
     module: routeModule, exports: routeModule.exports, URL, URLSearchParams, Response, Headers,
     process: { env: { PDOS_NEXT_API_URL: "http://synthetic-api.invalid" } }, AbortSignal,
     require: name => {
-      if (name === "@/lib/request-origin") return originModule.exports;
-      if (name === "@/lib/candidate-transport") return transportModule.exports;
+      if (name === "@/lib/server/request-origin") return originModule.exports;
+      if (name === "@/lib/server/candidate-transport") return transportModule.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: () => loggedIn ? { value: "synthetic-experience-session" } : undefined }) };
       throw new Error(`Unexpected dependency: ${name}`);
     },

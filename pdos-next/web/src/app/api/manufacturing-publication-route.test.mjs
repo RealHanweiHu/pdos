@@ -6,7 +6,7 @@ import test from "node:test";
 import { transpileModule, ModuleKind, ScriptTarget } from "typescript";
 
 const compile = name => transpileModule(readFileSync(resolve(name), "utf8"), { compilerOptions: { module: ModuleKind.CommonJS, target: ScriptTarget.ES2022 } }).outputText;
-const route = compile("src/app/api/[...path]/route.ts"), guard = compile("src/lib/request-origin.ts"), transport = compile("src/lib/candidate-transport.ts");
+const route = compile("src/app/api/[...path]/route.ts"), guard = compile("src/lib/server/request-origin.ts"), transport = compile("src/lib/server/candidate-transport.ts");
 const id = n => `00000000-0000-4000-8000-${String(n).padStart(12, "0")}`;
 const root = `v1/categories/${id(1)}/products/${id(2)}/manufacturing-publications`;
 const command = () => ({ category_id: id(1), product_id: id(2), operation: "npi.manufacturing_baseline.publish", command_id: id(3), idempotency_key: id(4), expected_revision: 5, source_read_set: [{ artifact_id: id(8), expected_revision: 1 }], payload: { project_id: id(5), baseline: { kind: "manufacturing_baseline", id: id(6), revision: 2 } } });
@@ -18,8 +18,8 @@ function harness({ loggedIn = true, unavailable = false } = {}) {
     module: routeModule, exports: routeModule.exports, URL, URLSearchParams, Response, Headers,
     process: { env: { PDOS_NEXT_API_URL: "http://synthetic-api.invalid" } }, AbortSignal,
     require: name => {
-      if (name === "@/lib/request-origin") return originModule.exports;
-      if (name === "@/lib/candidate-transport") return transportModule.exports;
+      if (name === "@/lib/server/request-origin") return originModule.exports;
+      if (name === "@/lib/server/candidate-transport") return transportModule.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: () => loggedIn ? { value: "synthetic-session-substitute" } : undefined }) };
       throw new Error(`Unexpected dependency: ${name}`);
     },

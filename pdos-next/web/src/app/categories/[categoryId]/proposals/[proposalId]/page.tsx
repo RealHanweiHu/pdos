@@ -1,5 +1,5 @@
-import { AppShell } from "@/components/app-shell";
-import { ProposalDocument } from "@/components/preproject/proposal-document";
+import { AppShell } from "@/features/shell/app-shell";
+import { ProposalDocument } from "@/features/categories/preproject/proposal-document";
 
 export default async function Page({ params }: { params: Promise<{ categoryId: string; proposalId: string }> }) {
   const { categoryId, proposalId } = await params;

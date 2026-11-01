@@ -34,8 +34,8 @@ const compiled = (path: string) => transpileModule(
 // The same actual route/origin-guard VM protocol as route.test.ts, without executing it.
 // Only cookie/config/transport host IO is replaced; there is no copied validation policy.
 const routeSource = compiled("src/app/api/[...path]/route.ts");
-const originSource = compiled("src/lib/request-origin.ts");
-const transportSource = compiled("src/lib/candidate-transport.ts");
+const originSource = compiled("src/lib/server/request-origin.ts");
+const transportSource = compiled("src/lib/server/candidate-transport.ts");
 type Handler = (
   request: NextRequest,
   context: { params: Promise<{ path: string[] }> },
@@ -78,8 +78,8 @@ function harness(configuration: {
       return new AbortController().signal;
     } },
     require: (name: string) => {
-      if (name === "@/lib/request-origin") return origin.exports;
-      if (name === "@/lib/candidate-transport") return transport.exports;
+      if (name === "@/lib/server/request-origin") return origin.exports;
+      if (name === "@/lib/server/candidate-transport") return transport.exports;
       if (name === "next/headers") return { cookies: async () => ({ get: (key: string) => {
         assert.equal(key, "pdos-next-session");
         const token = configuration.token === null

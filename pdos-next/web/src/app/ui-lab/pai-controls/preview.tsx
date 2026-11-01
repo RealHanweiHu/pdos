@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { PaiContextBar, PaiMessage, PaiScope } from "@/components/pai-conversation";
-import { RunContinuation } from "@/components/pai/run-continuation";
-import styles from "@/components/pai-conversation.module.css";
+import { PaiContextBar, PaiMessage, PaiScope } from "@/features/xiaopai/pai-conversation";
+import { RunContinuation } from "@/features/xiaopai/run-continuation";
+import styles from "@/features/xiaopai/pai-conversation.module.css";
 
 // Uses the production controls with local state only. No transport or model calls.
 const previewApi = async <T,>(path: string): Promise<T> => {

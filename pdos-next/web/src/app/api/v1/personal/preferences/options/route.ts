@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { preferenceOptionsQuery } from "@/lib/personal-preferences";
-import { preferenceError, preferenceProxy } from "@/lib/personal-preferences-proxy";
+import { preferenceError, preferenceProxy } from "@/lib/server/personal-preferences-proxy";
 
 export async function GET(request: NextRequest) {
   const query = preferenceOptionsQuery(request.nextUrl.searchParams);

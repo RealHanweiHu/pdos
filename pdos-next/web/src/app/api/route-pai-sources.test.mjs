@@ -13,7 +13,7 @@ const id = n => `00000000-0000-0000-0000-${n.toString(16).padStart(12, "0")}`;
 const category = id(1), run = id(2), product = id(3), proposal = id(4), cursor = id(5);
 function harness(options = {}) {
   const loaded = { exports: {} }, calls = [];
-  runInNewContext(compile("lib/pai-sources-proxy.ts"), {
+  runInNewContext(compile("lib/server/pai-sources-proxy.ts"), {
     module: loaded, exports: loaded.exports, URLSearchParams, Response, AbortSignal,
     process: { env: { PDOS_NEXT_API_URL: options.configured === false ? undefined : "http://synthetic-api.invalid" } },
     require: name => { assert.equal(name, "next/headers"); return { cookies: async () => ({ get: key => { assert.equal(key, "pdos-next-session"); return options.session === false ? undefined : { value: "synthetic-session" }; } }) }; },
@@ -66,7 +66,7 @@ test("both static modules export only GET and await exact route parameters", asy
     ["app/api/v1/categories/[categoryId]/agent-runs/[runId]/source-bindings/route.ts", { categoryId: category, runId: run }, [category, run]],
   ]) {
     const loaded = { exports: {} }, calls = [], request = {};
-    runInNewContext(compile(relative), { module: loaded, exports: loaded.exports, require: name => { assert.equal(name, "@/lib/pai-sources-proxy"); return { paiSourcesRead: (...values) => calls.push(values) }; } });
+    runInNewContext(compile(relative), { module: loaded, exports: loaded.exports, require: name => { assert.equal(name, "@/lib/server/pai-sources-proxy"); return { paiSourcesRead: (...values) => calls.push(values) }; } });
     assert.deepEqual(Object.keys(loaded.exports), ["GET"]); await loaded.exports.GET(request, { params: Promise.resolve(params) });
     assert.equal(calls[0][0], request); assert.deepEqual([...calls[0].slice(1)], args);
   }
