@@ -3,9 +3,17 @@
 import { useEffect, useRef, useState } from "react";
 import { ConnectedSkillQualification } from "./skill-qualification";
 import { Button } from "@/components/ui/button";
-import { matchSkillReceipt, parseSkillPending, skillPendingKey, skillTitle, type AgentSkill, type SkillCommand, type SkillPreview, type SkillReading, type SkillReceipt } from "@/lib/agent-skills";
+import { matchSkillReceipt, parseSkillPending, skillPendingKey, skillTitle, type AgentSkill, type PromptReading, type SkillCommand, type SkillPreview, type SkillReading, type SkillReceipt } from "@/lib/agent-skills";
 import { proofClockCurrent } from "@/lib/proof-clock";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
+
+export function PromptAssetView({ prompt }: { prompt: PromptReading }) {
+  return <section aria-label="当前主提示词" className="space-y-3 rounded-lg border border-border p-4 sm:p-5">
+    <div><h2 className="font-semibold">当前主提示词</h2><p className="mt-1 text-sm text-muted-foreground">代码版本 {prompt.version} · 内容 {prompt.content_digest.slice(0, 12)} · 实际前缀 {prompt.system_digest.slice(0, 12)}</p></div>
+    <p className="text-sm text-muted-foreground">提示词与技能正文是随代码评审的版本化资产；动态上下文仍由服务器按权限追加。修改须新建草稿、查看差异并完成同题评估，不在此页面直接覆盖已发布版本。</p>
+    <details><summary className="cursor-pointer text-sm">查看主提示词正文与源文件</summary><div className="mt-3 space-y-2"><p className="break-all text-xs text-muted-foreground">{prompt.source}</p><pre tabIndex={0} role="region" aria-label="主提示词正文，可滚动" className="max-h-96 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 text-xs">{prompt.content}</pre></div></details>
+  </section>;
+}
 
 export function ConnectedAgentSkills({ api, principalId, categoryId }: { api: WorkspaceTransport; principalId: string; categoryId: string }) {
   const epoch = useRef(0), locked = useRef(false), key = skillPendingKey(principalId, categoryId);
@@ -97,7 +105,7 @@ export function ConnectedAgentSkills({ api, principalId, categoryId }: { api: Wo
     catch { if (epoch.current === current) setError("已取得技能变更回执，当前列表读取失败，请刷新。"); }
   }
   const disabled = busy || !reading?.can_edit || !!preview || !!pending || broken;
-  return <><section aria-label="租户技能包" className="space-y-4 rounded-lg border border-border p-4 sm:p-5">
+  return <>{reading?.prompt && <PromptAssetView prompt={reading.prompt} />}<section aria-label="租户技能包" className="space-y-4 rounded-lg border border-border p-4 sm:p-5">
     <div className="flex flex-wrap items-center justify-between gap-3"><h2 className="font-semibold">租户技能包</h2><Button variant="outline" disabled={busy} onClick={() => void run(async current => { await load(current); })}>刷新技能状态</Button></div>
     <p className="text-sm text-muted-foreground">技能启用状态在当前租户所有品类共用，由管理员核对后一次确认。启用只开放该能力，不授予自动写入资格；实际调用仍核对当前权限、协议、资格和预算。</p>
     {error && <p role="alert" className="break-words text-sm text-destructive">{error}</p>}
@@ -109,6 +117,7 @@ export function ConnectedAgentSkills({ api, principalId, categoryId }: { api: Wo
       <p className="break-words text-muted-foreground">{item.purpose}</p><p className="break-all">配置 {item.skill_version ?? "已移除"} · 状态第 {item.revision} 版</p>
       <p className="text-muted-foreground">{item.qualification_record === "recorded" ? "已有审阅记录，实际 T0 资格由运行核对。" : item.qualification_record === "revoked" ? "T0 审阅资格已撤销。" : "尚无 T0 审阅记录。"}</p>
       <details><summary className="cursor-pointer">查看领域动作与回执</summary><div className="mt-2 space-y-1 break-all text-xs"><p>技能标识：{item.skill_key}</p>{item.operations.map(operation => <p key={operation}>{operation}</p>)}<p>最近回执：{item.receipt_id ?? "尚无变更回执"}</p></div></details>
+      {item.content && <details><summary className="cursor-pointer">查看技能提示词正文</summary><pre tabIndex={0} role="region" aria-label={`${skillTitle(item.skill_key)}技能提示词正文，可滚动`} className="mt-2 max-h-80 overflow-auto whitespace-pre-wrap break-words rounded-md bg-muted p-3 text-xs">{item.content}</pre></details>}
       <Button variant={item.enabled ? "outline" : "default"} disabled={disabled || !item.available && !item.enabled} aria-label={`${item.enabled ? "停用" : "启用"}${skillTitle(item.skill_key)}`} onClick={() => prepare(item, !item.enabled)}>{item.enabled ? "停用" : "启用"}</Button>
     </li>)}</ul>}
     {preview && <section ref={reviewFocus} tabIndex={-1} aria-label="确认技能状态变更" className="space-y-3 rounded-lg border border-primary/40 p-3 text-sm">

@@ -2,8 +2,12 @@ export type AgentSkill = {
   skill_key: string; purpose: string; skill_version: string | null; skill_digest: string | null;
   available: boolean; operations: string[]; enabled: boolean; revision: number; receipt_id: string | null;
   qualification_record: "recorded" | "not_recorded" | "revoked";
+  content?: string | null; evaluation_suite?: unknown;
 };
-export type SkillReading = { items: AgentSkill[]; can_edit: boolean; category_revision: number };
+export type PromptReading = { key: string; version: string; content_digest: string;
+  system_digest: string; content: string; source: string };
+export type SkillReading = { items: AgentSkill[]; can_edit: boolean; category_revision: number;
+  prompt?: PromptReading };
 export type SkillCommand = {
   category_id: string; product_id: null; command_id: string; idempotency_key: string;
   operation: "ai.skill.enable"; expected_revision: number; source_read_set: [];

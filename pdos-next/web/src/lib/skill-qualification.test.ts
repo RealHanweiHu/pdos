@@ -1,8 +1,8 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { blankReview, matchesQualificationReceipt, parseQualificationPending, qualificationPendingKey, type QualificationCommand, type QualificationReceipt } from "./skill-qualification";
+import { blankReview, hasCurrentPromptBinding, matchesQualificationReceipt, parseQualificationPending, qualificationPendingKey, type QualificationCommand, type QualificationReceipt } from "./skill-qualification";
 const category = "00000000-0000-4000-8000-000000000001", principal = "00000000-0000-4000-8000-000000000002";
-const command: QualificationCommand = { category_id: category, product_id: null, command_id: category, idempotency_key: category, operation: "ai.skill.review.record", expected_revision: 1, source_read_set: [], payload: { skill_key: "public_research", skill_digest: "a".repeat(64), tool_digest: "b".repeat(64), model_digest: "c".repeat(64), personally_reviewed: true, cases: [{ ...blankReview(), source_ref: "合成案例", conclusion: "本人核对未知" }], confirmation_token: "x".repeat(32) } };
+const command: QualificationCommand = { category_id: category, product_id: null, command_id: category, idempotency_key: category, operation: "ai.skill.review.record", expected_revision: 1, source_read_set: [], payload: { skill_key: "public_research", skill_digest: "a".repeat(64), tool_digest: "b".repeat(64), model_digest: "c".repeat(64), prompt_digest: "d".repeat(64), personally_reviewed: true, cases: [{ ...blankReview(), source_ref: "合成案例", conclusion: "本人核对未知" }], confirmation_token: "x".repeat(32) } };
 const receipt: QualificationReceipt = { id: category, operation: command.operation, category_id: category, writer_id: principal, requester_id: principal, agent_run_id: null, subject_type: "skill_review", subject_revision: 1, result: { skill_key: "public_research", case_count: 1 } };
 test("case review defaults keep unknowns and recovery remains person/category scoped", () => {
   assert.ok(Object.values(blankReview().criteria).every(value => value === "unknown"));
@@ -22,4 +22,21 @@ test("named qualification recovery checks decision and original control revision
   assert.deepEqual(parseQualificationPending(JSON.stringify(original), category), original);
   assert.ok(matchesQualificationReceipt(actual, original, principal, category));
   assert.equal(matchesQualificationReceipt({ ...actual, result: { ...actual.result, decision: "批准" } }, original, principal, category), false);
+  assert.ok(hasCurrentPromptBinding(original));
+});
+test("legacy pending commands recover receipts without being treated as current writes", () => {
+  const { prompt_digest: _reviewPrompt, ...reviewPayload } = command.payload;
+  assert.equal(_reviewPrompt, "d".repeat(64));
+  const legacyReview = { ...command, payload: reviewPayload };
+  assert.deepEqual(parseQualificationPending(JSON.stringify(legacyReview), category), legacyReview);
+  assert.equal(hasCurrentPromptBinding(legacyReview), false);
+  assert.ok(matchesQualificationReceipt(receipt, legacyReview, principal, category));
+  const approval: QualificationCommand = { ...command, operation: "ai.skill.qualify", payload: { skill_key: "public_research", expected_revision: 4, decision: "批准", reason: "本人决定", case_refs: Array.from({ length: 10 }, (_, index) => ({ batch_id: category, index })), skill_digest: "a".repeat(64), tool_digest: "b".repeat(64), model_digest: "c".repeat(64), prompt_digest: "d".repeat(64), approval_token: "a".repeat(32) } };
+  const { prompt_digest: _approvalPrompt, ...approvalPayload } = approval.payload;
+  assert.equal(_approvalPrompt, "d".repeat(64));
+  const legacyApproval = { ...approval, payload: approvalPayload };
+  assert.deepEqual(parseQualificationPending(JSON.stringify(legacyApproval), category), legacyApproval);
+  assert.equal(hasCurrentPromptBinding(legacyApproval), false);
+  assert.equal(hasCurrentPromptBinding(approval), true);
+  assert.throws(() => parseQualificationPending(JSON.stringify({ ...approval, payload: { ...approval.payload, prompt_digest: "stale" } }), category));
 });

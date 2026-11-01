@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { skillTitle, type SkillReading } from "@/lib/agent-skills";
-import { assessments, blankReview, dimensions, matchesQualificationReceipt, parseQualificationPending, qualificationPendingKey, severities, type CaseReference, type QualificationCommand, type QualificationPreview, type QualificationReading, type QualificationReceipt, type ReviewCase } from "@/lib/skill-qualification";
+import { assessments, blankReview, dimensions, hasCurrentPromptBinding, matchesQualificationReceipt, parseQualificationPending, qualificationPendingKey, severities, type CaseReference, type QualificationCommand, type QualificationPreview, type QualificationReading, type QualificationReceipt, type RecoverableQualificationCommand, type ReviewCase } from "@/lib/skill-qualification";
 import { proofClockCurrent } from "@/lib/proof-clock";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 
@@ -14,7 +14,7 @@ export function ConnectedSkillQualification({ api, principalId, categoryId, cata
   const key = qualificationPendingKey(principalId, categoryId);
   const [skill, setSkill] = useState(""), [reading, setReading] = useState<QualificationReading | null>(null);
   const [cases, setCases] = useState<ReviewCase[]>([blankReview()]), [attested, setAttested] = useState(false), [refs, setRefs] = useState<CaseReference[]>([]), [reason, setReason] = useState("");
-  const [preview, setPreview] = useState<QualificationPreview | null>(null), [pending, setPending] = useState<QualificationCommand | null>(null);
+  const [preview, setPreview] = useState<QualificationPreview | null>(null), [pending, setPending] = useState<RecoverableQualificationCommand | null>(null);
   const [busy, setBusy] = useState(false), [broken, setBroken] = useState(false), [error, setError] = useState(""), [notice, setNotice] = useState("");
   useEffect(() => { if (preview || pending) focus.current?.focus(); }, [preview, pending]);
   async function load(selected: string, current: number, cursor?: string) {
@@ -22,7 +22,7 @@ export function ConnectedSkillQualification({ api, principalId, categoryId, cata
     if (epoch.current === current) setReading(previous => cursor && previous?.skill_key === selected ? { ...result, reviews: [...previous.reviews, ...result.reviews.filter(batch => !previous.reviews.some(old => old.id === batch.id))] } : result);
     return result;
   }
-  function accept(original: QualificationCommand, receipt: QualificationReceipt, current: number) {
+  function accept(original: RecoverableQualificationCommand, receipt: QualificationReceipt, current: number) {
     if (!matchesQualificationReceipt(receipt, original, principalId, categoryId)) throw new Error("回执与原审阅请求不一致，请保留原请求继续核对。");
     if (epoch.current !== current) return;
     setPending(null); setPreview(null); setRefs([]); setAttested(false); setCases([blankReview()]); setReason("");
@@ -36,7 +36,7 @@ export function ConnectedSkillQualification({ api, principalId, categoryId, cata
       try {
         const raw = localStorage.getItem(key);
         if (!raw) return;
-        let original: QualificationCommand;
+        let original: RecoverableQualificationCommand;
         try { original = parseQualificationPending(raw, categoryId); } catch (failure) { setBroken(true); throw failure; }
         if (epoch.current !== current) return;
         setPending(original); setSkill(original.payload.skill_key);
@@ -75,7 +75,7 @@ export function ConnectedSkillQualification({ api, principalId, categoryId, cata
     void run(async current => {
       const actual = await load(skill, current);
       if (!actual.can_edit) throw new Error("当前已无办理权限，请核对当前身份。");
-      const binding = { skill_key: skill, skill_digest: actual.skill_digest, tool_digest: actual.tool_digest, model_digest: actual.model_digest };
+      const binding = { skill_key: skill, skill_digest: actual.skill_digest, tool_digest: actual.tool_digest, model_digest: actual.model_digest, prompt_digest: actual.prompt_digest };
       const payload = operation === "ai.skill.review.record" ? { ...binding, cases, personally_reviewed: attested } : { skill_key: skill, expected_revision: actual.revision, decision, reason, case_refs: decision === "批准" ? refs : [], ...(decision === "批准" ? binding : {}) };
       const result = await api<QualificationPreview>("v1/commands/preview", { command_id: crypto.randomUUID(), idempotency_key: crypto.randomUUID(), category_id: categoryId, product_id: null, operation, expected_revision: actual.category_revision, source_read_set: [], payload });
       if (epoch.current === current) { setPreview(result); setNotice(""); }
@@ -109,7 +109,7 @@ export function ConnectedSkillQualification({ api, principalId, categoryId, cata
       <div className="flex flex-wrap gap-2"><Button disabled={!canEdit || !reading.pilot || !reading.enabled || !reading.model_enabled || !reading.draft_operations.length || refs.length < 10 || !reason.trim()} onClick={() => prepare("ai.skill.qualify", "批准")}>预览具名批准试点资格</Button><Button variant="outline" disabled={!canEdit || !reading.qualification.reviewed_by_name || !reason.trim()} onClick={() => prepare("ai.skill.qualify", "撤销")}>预览撤销试点资格</Button></div>
     </>}
     {preview && <section ref={focus} tabIndex={-1} aria-label="确认审阅或资格决定" className="space-y-3 rounded-lg border border-primary/40 p-3 text-sm"><h3 className="font-medium">{preview.command.operation === "ai.skill.qualify" ? `具名${preview.review.decision}试点资格` : "确认本批案例审阅"} · {skillTitle(preview.review.skill_key)}</h3><p className="break-all">{preview.review.skill_version} · {preview.review.model_label} / {preview.review.model_version} · {preview.review.case_count} 个案例</p><p>{preview.review.effect}</p>{preview.review.reason && <p className="break-words">决定理由：{preview.review.reason}</p>}<details><summary className="cursor-pointer">核对案例材料与结论</summary><ul className="mt-2 space-y-2">{preview.review.cases?.map((item, index) => <li key={index} className="break-words">{item.source_ref}：{item.conclusion}（{severities[item.severity]}）</li>)}</ul></details><div className="flex flex-wrap gap-2"><Button disabled={busy || !reading?.can_edit || !proofClockCurrent(preview.write_tier ?? "T1", preview.expires_at)} onClick={() => void run(current => save(preview.command, current))}>{preview.command.operation === "ai.skill.qualify" ? `本人具名${preview.review.decision}` : "确认保存审阅"}</Button><Button variant="outline" disabled={busy} onClick={() => setPreview(null)}>返回</Button></div></section>}
-    {pending && <section ref={focus} tabIndex={-1} aria-label="恢复原审阅请求" className="space-y-3 rounded-lg border border-primary/40 p-3 text-sm"><p>原{pending.operation === "ai.skill.qualify" ? "资格决定" : "案例审阅"}结果待核对。重新打开先只读查询回执；只有本人点击才沿用原请求重试。</p><Button disabled={busy} onClick={() => void run(async current => { const result = await api<{ receipt: QualificationReceipt | null }>("v1/agent-skill-qualification/recover", pending); if (result.receipt) { accept(pending, result.receipt, current); await Promise.all([load(pending.payload.skill_key, current), onUpdated()]); } else { await load(pending.payload.skill_key, current); await save(pending, current); } })}>核对并重试原审阅请求</Button></section>}
+    {pending && <section ref={focus} tabIndex={-1} aria-label="恢复原审阅请求" className="space-y-3 rounded-lg border border-primary/40 p-3 text-sm"><p>原{pending.operation === "ai.skill.qualify" ? "资格决定" : "案例审阅"}结果待核对。重新打开先只读查询回执；只有本人点击才沿用原请求重试。</p><Button disabled={busy} onClick={() => void run(async current => { const result = await api<{ receipt: QualificationReceipt | null }>("v1/agent-skill-qualification/recover", pending); if (result.receipt) { accept(pending, result.receipt, current); await Promise.all([load(pending.payload.skill_key, current), onUpdated()]); } else { await load(pending.payload.skill_key, current); if (!hasCurrentPromptBinding(pending)) { localStorage.removeItem(key); setPending(null); setNotice("未找到旧请求回执，未重新提交。请按当前提示词重新预览。"); return; } await save(pending, current); } })}>核对并重试原审阅请求</Button></section>}
     {broken && <Button variant="outline" disabled={busy} onClick={() => { localStorage.removeItem(key); setBroken(false); setError(""); }}>已核对当前状态，清除损坏的本地记录</Button>}
   </section>;
 }
