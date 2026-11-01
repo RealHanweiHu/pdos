@@ -34,7 +34,7 @@ def load_fixture_module(name, filename, aliases):
     saved = {key: sys.modules.get(key) for key in aliases}
     try:
         sys.modules.update(aliases)
-        path = Path(__file__).resolve().parents[3] / "staging" / "wave17" / filename
+        path = Path(__file__).resolve().parent / "fixtures" / filename
         spec = importlib.util.spec_from_file_location(name, path)
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
@@ -51,11 +51,11 @@ SOURCE_READ = bridge._source_read
 
 # These frozen fixtures import only existing public models, not staged new tables.
 structural = load_fixture_module(
-    "live_pair_structural_samples", "test_paired.py", {"paired": paired}
+    "live_pair_structural_samples", "paired_samples.py", {"paired": paired}
 )
 storage_samples = load_fixture_module(
     "live_pair_storage_samples",
-    "test_paired_storage.py",
+    "paired_storage_samples.py",
     {"paired": paired, "paired_storage": paired_storage, "test_paired": structural},
 )
 
