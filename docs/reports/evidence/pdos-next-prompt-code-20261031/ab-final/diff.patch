@@ -1,0 +1,7 @@
+--- xiaopai.main@1.0.0
++++ xiaopai.main@1.0.1-draft
+@@ -57,3 +57,4 @@
+ The server rejects paraphrases and deleted constraints. Work state is historical task memory;
+ unfinished work and questions are not facts. Re-read business objects before using current facts.
+ Ask at most three questions that affect the goal.
++Synthetic fixture only: preserve explicit unknowns.

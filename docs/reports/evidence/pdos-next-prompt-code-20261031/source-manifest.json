@@ -1,0 +1,147 @@
+{
+  "schema": "pdos-prompt-source-manifest/v1",
+  "generated_at": "2026-10-31T17:05:39.966748+00:00",
+  "excluded": [
+    "README.md (unrelated concurrent change)",
+    "docs/reports/evidence/** (evidence, not runtime source)",
+    "tasks/** (status, not runtime source)"
+  ],
+  "files": [
+    {
+      "path": "docs/runbooks/pdos-next-prompt-code.md",
+      "sha256": "0ca50ed37af3a4324d324bc0785df8e75bf0d978fdcbb45ab9072db402704136"
+    },
+    {
+      "path": "pdos-next/contracts/payloads.schema.json",
+      "sha256": "c215d937440d0468fc53cd709d40da83d8495de312cad8421fd0e24c22fca15e"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/execution.py",
+      "sha256": "6e8d3805f1931fac3862b9e8d1fff08fb0127939b4c4514bbc3f65ce7a38eb14"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/gateway.py",
+      "sha256": "27f72783d012014ed86d6061f02f3011be58779d63d64c9321b3fbbfed3a2bb0"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/graph.py",
+      "sha256": "7c4cf19bfd5c4011a8d1200f8d43c549b2774b83672f32fa9fab0423bfeb8a8f"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/host.py",
+      "sha256": "f49be8651c4eb786ac8ad735b8dc73ebcd42fde5fd19705e58b4c4d79c78b001"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/policy.py",
+      "sha256": "7ded4d09bafe066c266c9d0ed87ea2244a5f3fdc71cde398a944f6d75b39c5a6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/prompt_admin.py",
+      "sha256": "7653e590c4594e6c26fbcde7f4448abd2a4deb2a6540e62098cc6b47fa02ed6b"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/prompts.py",
+      "sha256": "59ea84e8807a5271bd565f45313e2f7f2b832099bbf9af81f676fed033a8d0e1"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/skill_management.py",
+      "sha256": "8369b8a07d1cc7506a034326c096a0d8c5516aa99f211f8186c81d6c9d140544"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/agent_kernel/skill_qualification.py",
+      "sha256": "a9b177fa2df58500e12d03ea31a6a5660ba9e80ade7bca8ee75211cbb888968a"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/prompt_packages/README.md",
+      "sha256": "8301015864775e93f679f7fec8c1766d3c9f0dc4c62808184242e898c3b6b1a6"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/prompt_packages/registry.json",
+      "sha256": "75944257e11310702871ed0941b2ddc6617f9719e6cb4b24c23bbcdd3218e6d8"
+    },
+    {
+      "path": "pdos-next/server/pdos_next/prompt_packages/versions/1.0.0.md",
+      "sha256": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_category_source_writeback_pg.py",
+      "sha256": "e457afa7380f7ead7edebf8cd3779401399787d69f912e06ea9d39bbc85b44d2"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_domain_adapter_transactions.py",
+      "sha256": "2ec0645914e41847ded5c596dab94169f6a8b691af24c6815677abaa3ea3a4c8"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_execution_binding.py",
+      "sha256": "cbcc1a0b5d667ceefb5c88db29e5a6f5687e7597425590d5aee95c3d6136ab89"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_extract_dispatch_pg.py",
+      "sha256": "77fd4ab966b0e2a93af72bc26e8a2fec3471db1f69d047b58a5e6b5d3885d051"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_prompt_admin.py",
+      "sha256": "edab43fd72cb9900671d67a12a6bc47085a8145dcc20e3d3e7d6d3e2f2b2b5a1"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_prompt_gateway_pg.py",
+      "sha256": "5e0bb3f7000eda3782f1e462985bdc116e2db07d4d2c899946daf4667c609e0c"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_prompts.py",
+      "sha256": "ab4205b74d15acc82cf6763a38b01a910720d2d4e8cfb49c596e522f0be61482"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_proposal_context_admission_pg.py",
+      "sha256": "998f163721e5c46f550b53cca707c08d9fa5ffa467fcb8b112554d566af80b4b"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_skill_management.py",
+      "sha256": "849f1e7216136acc93915d35fb93505de6e51bf4cd24a2e342c74e796b2a139f"
+    },
+    {
+      "path": "pdos-next/server/tests/agent_kernel/test_skill_qualification.py",
+      "sha256": "1b64035751194ed19febaacf96bff94f597b1fd560e49068cc486c565167c018"
+    },
+    {
+      "path": "pdos-next/server/tests/preproject/test_evidence_revert_pg.py",
+      "sha256": "7ce8e3d8dc07718dae1d40aa009587a682ff04e52424de3cebe1861c5bc3475e"
+    },
+    {
+      "path": "pdos-next/tools/tests/test_xiaopai_prompt.py",
+      "sha256": "2fa249db027ca89245c9b55bb21c623df4235e11f7a3eb547b5b73f24be540d2"
+    },
+    {
+      "path": "pdos-next/tools/xiaopai_context_admission_baseline.py",
+      "sha256": "80aa357098624bf91bd5d90115c1e7208415a9133d1c5f59ae79dbdbc324bc33"
+    },
+    {
+      "path": "pdos-next/tools/xiaopai_prompt.py",
+      "sha256": "b89ba53eca2ffe605c65636f89d0a0dd0b1620a6930bb7348dc4b64d010ed28a"
+    },
+    {
+      "path": "pdos-next/web/src/components/model_configuration/agent-skills.tsx",
+      "sha256": "99ed48a8030032fe39b8410b75affbd3fe752ef61ee0c3f823d54d061eb089ee"
+    },
+    {
+      "path": "pdos-next/web/src/components/model_configuration/prompt-assets.test.mjs",
+      "sha256": "65e2c394ef636c2607a77eed89143a3ffb19d5696095825421016539f98ccd01"
+    },
+    {
+      "path": "pdos-next/web/src/components/model_configuration/skill-qualification.tsx",
+      "sha256": "a3b500e40b537493f56b235be2dcdaedb4042cceeebffe0b3060963a061c64a3"
+    },
+    {
+      "path": "pdos-next/web/src/lib/agent-skills.ts",
+      "sha256": "c73fe5daffc085518c533c3b9215f07af3b67e55edad79527f62b5f465608624"
+    },
+    {
+      "path": "pdos-next/web/src/lib/skill-qualification.test.ts",
+      "sha256": "c680dc539269846e8fd574ee289e69763d9fabc9eafe5bcf3340d97f18770d76"
+    },
+    {
+      "path": "pdos-next/web/src/lib/skill-qualification.ts",
+      "sha256": "f1c1c0d359870dfe0cfe9f24bb1703182f34140da3c7e889319e6a9fe7299422"
+    }
+  ]
+}

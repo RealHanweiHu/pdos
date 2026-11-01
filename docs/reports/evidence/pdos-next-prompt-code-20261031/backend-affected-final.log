@@ -1,0 +1,1114 @@
+F.......................................FF................FFFFFFFFF      [100%]
+=================================== FAILURES ===================================
+_____________ test_batch_t1_named_t2_atom_replay_and_actual_policy _____________
+
+f = namespace(setup=<isolated synthetic test scope>, client=<starlette.testclient.TestClient object at 0x124b97260>, ports...kpointer_factory=None, mcp_resolve_secret=None, mcp_transport=None, mcp_artifacts=None, mcp_checkpointer_factory=None))
+
+    def test_batch_t1_named_t2_atom_replay_and_actual_policy(f):
+        original, saved, refs = review(f)
+        assert not eligible(f)
+        data = grant_command(f, refs)
+        assert post(f, data).json()["code"] == "NAMED_DECISION_REQUIRED"
+        original_grant, receipt, preview = confirmed(f, data)
+        assert preview["write_tier"] == "T2" and preview["expires_at"] is None
+        assert preview["review"]["cases"][0]["criteria"]["coverage"] == "unknown"
+        assert eligible(f)
+        assert reading(f)["qualification"]["state"] == "qualified"
+        assert post(f, original_grant).json() == receipt
+        assert post(f, original, "agent-skill-qualification/recover").json() == {"receipt": saved}
+        legacy_review = {**original, "payload": {
+            key: value for key, value in original["payload"].items() if key != "prompt_digest"
+        }}
+>       assert post(f, legacy_review, "agent-skill-qualification/recover").json() == {"receipt": saved}
+E       AssertionError: assert {'code': 'VAL...LID_PAYLOAD'}} == {'receipt': {...record', ...}}
+E         
+E         Left contains 3 more items:
+E         {'code': 'VALIDATION_FAILED',
+E          'detail': {'reason': 'INVALID_PAYLOAD'},
+E          'message': '内容不符合此操作的专用格式。'}
+E         Right contains 1 more item:
+E         {'receipt': {'agent_run_id': None,...
+E         
+E         ...Full output truncated (18 lines hidden), use '-vv' to show
+
+tests/agent_kernel/test_skill_qualification.py:161: AssertionError
+____ test_new_claim_can_be_adopted_read_and_replayed_in_original_run[False] ____
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x1262169c0>
+human = False
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_new_claim_can_be_adopted_read_and_replayed_in_original_run(work, monkeypatch, human):
+        f = bound(work, monkeypatch)
+        f.client, f.headers = work.client, work.headers
+        before = current(f)[1]
+        receipt, replay = execute(f, "evidence.claim.record", claim_args(f), human=human)
+        identity = UUID(receipt["subject_id"])
+        after = current(f)
+        assert {ref["type"] for ref in after[1]} >= {"claim", "artifact"}
+        assert not any(ref["id"] == str(identity) for ref in before)
+        attach(work, f, "claim", identity)
+>       assert replay()["id"] == receipt["id"] and current(f) == after
+E       AssertionError: assert ('0aba02da-f91...-3cf2a57dac05' == '0aba02da-f91...-3cf2a57dac05'
+E         
+E           0aba02da-f913-4f60-b4f2-3cf2a57dac05 and ('b9da7d04450...: None, ...}]) == ('bc1bb96837d...: None, ...}])
+E         
+E         At index 0 diff: 'b9da7d0445000dee14c9055114b047f32326dc048bb771e0d7198aea87445acf' != 'bc1bb96837df55bcf2e2b6384c8810c98f422577b352123b21b3fb6b290ebfda'
+E         Use -v to get more diff)
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:159: AssertionError
+____ test_new_claim_can_be_adopted_read_and_replayed_in_original_run[True] _____
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x131794e60>
+human = True
+
+    @pytest.mark.parametrize("human", [False, True])
+    def test_new_claim_can_be_adopted_read_and_replayed_in_original_run(work, monkeypatch, human):
+        f = bound(work, monkeypatch)
+        f.client, f.headers = work.client, work.headers
+        before = current(f)[1]
+        receipt, replay = execute(f, "evidence.claim.record", claim_args(f), human=human)
+        identity = UUID(receipt["subject_id"])
+        after = current(f)
+        assert {ref["type"] for ref in after[1]} >= {"claim", "artifact"}
+        assert not any(ref["id"] == str(identity) for ref in before)
+        attach(work, f, "claim", identity)
+>       assert replay()["id"] == receipt["id"] and current(f) == after
+E       AssertionError: assert ('c7df18ce-de0...-ce0ae99f7d5d' == 'c7df18ce-de0...-ce0ae99f7d5d'
+E         
+E           c7df18ce-de05-465c-af17-ce0ae99f7d5d and ('77c44e77b0e...: None, ...}]) == ('947675d8306...: None, ...}])
+E         
+E         At index 0 diff: '77c44e77b0e31a50de39cd8497d7cda2a7c8a8251cff0e41a047691854ff2cf9' != '947675d8306520d6621aa04c03a453a1602a6a2a7e12a7b950d9517adc53454b'
+E         Use -v to get more diff)
+
+tests/agent_kernel/test_proposal_context_admission_pg.py:159: AssertionError
+___ test_registered_graph_records_product_source_adopts_reads_and_completes ____
+
+work = <isolated synthetic test scope>
+
+    def test_registered_graph_records_product_source_adopts_reads_and_completes(work):
+        f = bound(work)
+        with f.store.transaction(f.scope, lock=True) as (_, run):
+            run.token_limit = 1_000_000  # Synthetic byte reservation, no real provider metering.
+        agree(work, f.scope, f.scope.data_categories)
+        claim_id = None
+    
+        def answer(kwargs):
+            nonlocal claim_id
+            step = client.calls
+            if step == 1:
+                tool, args = "evidence.claim.record", claim_args(f)
+            elif step == 2:
+                receipt = json.loads(kwargs["messages"][-1]["content"])
+                assert "error" not in receipt, receipt
+                claim_id = receipt["subject_id"]
+                tool, args = "proposal.item.patch", patch_args(f, claim_id)
+            elif step == 3:
+                assert "error" not in json.loads(kwargs["messages"][-1]["content"])
+                tool, args = "proposal.items.read", {"proposal_id": str(f.scope.proposal_id)}
+            else:
+                value = json.loads(kwargs["messages"][-1]["content"])
+                assert any(
+                    item["content"].get("text") == "Synthetic adoption" for item in value["items"]
+                ), value
+                return ModelTurn(
+                    structured={
+                        "status": "completed",
+                        "summary": "Synthetic product source adopted",
+                        "result": {"claim_id": claim_id},
+                        "questions": [],
+                        "unfinished": [],
+                    },
+                    usage=ProviderUsage(2, 1),
+                )
+            return ModelTurn(
+                calls=(ToolCall(id="synthetic-" + str(step), name=tool, arguments=args),),
+                usage=ProviderUsage(2, 1),
+            )
+    
+        client = Client(answer)
+        host = BoundHost(
+            f.store,
+            replace(
+                f.owner.adapters(),
+                route_for=lambda _: f.route,
+                provider_for=lambda *_: "synthetic-provider",
+                provider_client=client,
+                cost_required=False,
+            ),
+        )
+>       result = AgentKernel(host, f.registry).execute(
+            f.scope,
+            goal="Synthetic product source writeback",
+            preload=("public_research", "proposal_drafting"),
+        )
+
+tests/agent_kernel/test_category_source_writeback_pg.py:459: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+pdos_next/agent_kernel/graph.py:772: in execute
+    result = compiled.invoke(payload, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:3913: in invoke
+    for chunk in self.stream(
+.venv/lib/python3.12/site-packages/langgraph/pregel/main.py:2967: in stream
+    for _ in runner.tick(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py:207: in tick
+    run_with_retry(
+.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py:617: in run_with_retry
+    return task.proc.invoke(task.input, config)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:707: in invoke
+    input = context.run(step.invoke, input, config, **kwargs)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py:447: in invoke
+    ret = self.func(*args, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/agent_kernel/graph.py:263: in model
+    response = (model_step if callable(model_step) else ports.model)(
+pdos_next/agent_kernel/host.py:168: in model_step
+    turn = self.gateway.turn(scope, emit=lambda e: self.emit(scope, e), **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <pdos_next.agent_kernel.gateway.AgentGateway object at 0x126398f80>
+scope = RunScope(tenant_id=UUID('590e3628-97bd-45a6-ab4f-d093eddf0b54'), requester_id=UUID('0806316c-ef15-4610-992b-ada5a7051a...rnal'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+system = 'You are 小Pai, the single PDOS assistant.\nConverse naturally in the user\'s language. For greetings or general discus..."work_management", "purpose": "按真实项目和原件起草任务、计划、阶段办理与外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。"}]'
+messages = [{'role': 'user', 'content': '{"goal": "Synthetic product source writeback", "context": {"goal": "Synthetic product so...requires_human": true, "write_tier": "T1", "state": "candidate", "event_id": "1ff144f6-9d2e-43ad-803a-f598339b8c4a"}'}]
+tools = [{'name': 'ai.skill.qualify', 'description': '记录 T0 资格依据。产生 ai.skill_qualified。只能准备具名决定材料，不取得执行身份。', 'parameters': {'$....}], 'default': None, 'title': 'Product Id'}, ...}, 'required': ['query'], 'title': 'AssistantSearchInput', ...}}, ...]
+output_schema = {'$defs': {'ClarifyOption': {'additionalProperties': False, 'properties': {'value': {'title': 'Value', 'type': 'string...estions': {'items': {'$ref': '#/$defs/WireQuestion'}, 'maxItems': 3, 'title': 'Questions', 'type': 'array'}, ...}, ...}
+emit = <function BoundHost.model_step.<locals>.<lambda> at 0x126206660>
+loaded_skills = (SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8728c0cfdcfe70a40f...07a0e9513ff39492c5156f89b56e49482a21f1f985f1f6534db2521f', load_event_id=UUID('e0782725-af1d-42d9-b213-1b84e3f785ef')))
+prompt_identity = {'key': 'xiaopai.main', 'version': '1.0.0', 'content_digest': '148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552', 'system_digest': '13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a'}
+
+    def turn(
+        self, scope, *, system, messages, tools, output_schema, emit=None, loaded_skills=(),
+        prompt_identity=None,
+    ):
+        if not in_registered_agent_graph():
+            raise DomainError("FORBIDDEN_SCOPE", "模型只能由登记的小Pai执行图调用。")
+        from pdos_next.domain.automations.runtime import guard_tool
+    
+        guard_tool(self.store, scope, "model")
+        self.store.current(scope)
+        from .proposal_context import check
+    
+        check(self.store, scope)
+        if self.context_guard is not None:
+            self.context_guard(scope)
+        source_categories = self.data_categories_for(scope) if self.data_categories_for else None
+        route = self.route_for(scope)
+        if route is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前模型未配置，AI 暂不可用。")
+        provider_key = self.provider_for(scope, route)
+        if not isinstance(provider_key, str) or not provider_key:
+            raise DomainError("SOURCE_UNAVAILABLE", "当前服务商身份未登记。")
+        if not isinstance(system, str) or any(
+            not isinstance(message, dict) or not isinstance(message.get("content", ""), str)
+            for message in messages
+        ):
+            raise DomainError("VALIDATION_FAILED", "当前费用资格只覆盖纯文本模型请求。")
+        from pdos_next.service import digest
+    
+        if prompt_identity is not None and (
+            not isinstance(prompt_identity, dict)
+            or set(prompt_identity) != {"key", "version", "content_digest", "system_digest"}
+            or any(not isinstance(prompt_identity.get(key), str) or not prompt_identity[key]
+                   for key in ("key", "version", "content_digest", "system_digest"))
+            or prompt_identity["system_digest"] != digest(system)
+        ):
+            raise DomainError("VERSION_CONFLICT", "提示词版本身份与实际前缀不一致。")
+    
+        from .context_budget import fit_messages
+    
+        calibration = self.context_baseline(
+            scope, route, digest([
+                system, messages, tools, output_schema, route.digest, scope.isolation,
+            ]),
+        )
+    
+        try:
+            if self.context_admitter is not None:
+                messages, context_budget = self.context_admitter(
+                    scope, route=route, system=system, tools=tools, messages=messages,
+                    output_schema=output_schema, loaded_skills=loaded_skills,
+                    calibration=calibration,
+                )
+            else:
+                messages, context_budget = fit_messages(
+                    route, system, tools, messages, output_schema,
+                    calibration=calibration,
+                )
+        except DomainError as error:
+            if error.reason == "CONTEXT_INCOMPLETE":
+                self.store.emit(scope, {"type": "context_incomplete", **error.detail})
+            raise
+        request = {
+            "system": system,
+            "messages": messages,
+            "tools": tools,
+            "output_schema": output_schema,
+            "route": route.digest,
+            "provider_key": provider_key,
+        }
+        replay_only = False
+        with self.store.transaction(scope, lock=True) as (session, run):
+            for binding in loaded_skills:
+                validate_skill_load(session, scope, binding)
+            prior_model = run.versions.get("model_version")
+            prior_route = run.versions.get("model_route_digest")
+            prior_provider = run.versions.get("provider_key")
+            if (
+                prior_model is not None
+                and prior_model != route.version
+                or prior_route is not None
+                and prior_route != route.digest
+                or prior_provider is not None
+                and prior_provider != provider_key
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的模型版本不能静默替换。")
+            from pdos_next.service import digest
+    
+            tool_digests = run.versions.get("tool_definitions", {})
+            prompt_digests = run.versions.get("prompt_prefixes", {})
+            prompt_identities = run.versions.get("prompt_identities", {})
+            if (
+                prompt_identity is not None
+                and prompt_identities.get(scope.isolation, prompt_identity) != prompt_identity
+            ):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示词版本不能静默替换。")
+            if prompt_digests.get(scope.isolation, digest(system)) != digest(system):
+                raise DomainError("VERSION_CONFLICT", "原运行的提示前缀不能静默替换。")
+            # The disclosure may grow when a skill loads, and only that way: the
+            # chain keeps every earlier, narrower list verifiable (see .disclosure).
+            chain = record_disclosure(
+                run.versions,
+                scope.isolation,
+                [item["name"] for item in tools],
+                digest(tools),
+            )
+            run.versions = {
+                **run.versions,
+                "model_version": route.version,
+                "model_route_digest": route.digest,
+                "provider_key": provider_key,
+                "tool_definitions": {**tool_digests, scope.isolation: digest(tools)},
+                "prompt_prefixes": {**prompt_digests, scope.isolation: digest(system)},
+                **({"prompt_identities": {
+                    **prompt_identities, scope.isolation: prompt_identity,
+                }} if prompt_identity is not None else {}),
+                CHAIN_KEY: chain,
+                **({"budget_policy": route.budget_policy}
+                   if route.budget_policy != "enforced" else {}),
+            }
+            binding = ModelBinding(
+                model_version=route.version, model_route_digest=route.digest,
+                tool_definitions_digest=digest(tools), prompt_digest=digest(system),
+                isolation=scope.isolation, cancel_epoch=scope.cancel_epoch,
+                loaded_skills=tuple(loaded_skills),
+            ).model_dump(mode="json")
+            request["execution_binding"] = binding
+            decision = egress(session, scope, provider_key, data_categories=source_categories)
+            cache_allowed = getattr(decision, "prompt_cache_allowed", False) is True
+            if route.protocol == "anthropic-native":
+                # True is the historical wire default, preserving existing keys.
+                if not cache_allowed:
+                    request["prompt_cache_allowed"] = False
+                if prior_model is not None:
+                    from sqlalchemy import case, select
+    
+                    from .models import AgentToolCall
+    
+                    alternate = dict(request)
+                    if cache_allowed:
+                        alternate["prompt_cache_allowed"] = False
+                    else:
+                        alternate.pop("prompt_cache_allowed")
+                    current_key, alternate_key = ("model:" + digest(value)
+                                                  for value in (request, alternate))
+                    existing_key = session.scalar(select(AgentToolCall.call_key).where(
+                        AgentToolCall.run_id == scope.run_id, AgentToolCall.tool == "model",
+                        AgentToolCall.call_key.in_([current_key, alternate_key]),
+                    ).order_by(case((AgentToolCall.call_key == current_key, 0), else_=1))
+                        .limit(1).with_for_update())
+                    if existing_key == alternate_key:
+                        # Only the original claim may restore a completed result or
+                        # reject an unknown/started one; no new outbound dispatch.
+                        request, replay_only = alternate, True
+        from pdos_next.service import digest
+    
+        call_key = "model:" + digest(request)
+        import json
+    
+        wire = request_body(route, system, messages, tools, output_schema, bool(emit),
+                            prompt_cache_allowed=cache_allowed)
+        wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
+        input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
+        pricing = self.rate_card_for(scope, route) if self.rate_card_for else None
+        if self.cost_required and pricing is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "模型费用尚无当前价格卡与验证预算。")
+        cost_lease = None
+        if pricing:
+            pricing.validate(provider_key, route)
+            input_upper = pricing.input_upper_bound(wire_bytes)
+            cost_lease = (
+                pricing.reserve(input_upper, route.max_output_tokens),
+                input_upper,
+                route.max_output_tokens,
+                pricing.snapshot(),
+            )
+        reserve = input_upper + route.max_output_tokens
+        call_id, saved = self.store.claim(
+            scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
+            execution_binding=binding,
+            **({"budget_policy": route.budget_policy} if route.budget_policy != "enforced" else {}),
+        )
+        if saved is not None:
+            from .types import ModelTurn, ToolCall
+    
+            if saved.get("context_budget"):
+                self.observe_context(
+                    scope, route, saved["context_budget"], ProviderUsage(**saved["usage"]),
+                    only_if_missing=True,
+                )
+            return ModelTurn(
+                saved["text"],
+                tuple(ToolCall.model_validate(c) for c in saved["calls"]),
+                usage=ProviderUsage(**saved["usage"]),
+                request_id=saved["request_id"],
+                structured=saved["structured"],
+                ledger_call_id=call_id,
+                continuation=saved.get("continuation"),
+            )
+        if replay_only:
+            self.store.release_call(scope, call_id, error="VERSION_CONFLICT", usage=0)
+            raise DomainError("VERSION_CONFLICT", "原模型调用已变化，不能重新发送。")
+        dispatch_started = False
+        try:
+            self.store.emit(
+                scope,
+                {
+                    "type": "egress_checked",
+                    **{
+                        k: v.isoformat() if hasattr(v, "isoformat") else v
+                        for k, v in asdict(decision).items()
+                    },
+                },
+            )
+            self._recheck_dispatch(scope, route, provider_key, decision, pricing)
+            if (route.protocol == "anthropic-native"
+                    and context_budget["admission_tokens"] * 10 >= context_budget["focus"] * 9):
+                count, count_call_id = self._count_context(
+                    scope, route, request, binding, decision, pricing,
+                )
+                context_budget = {
+                    **context_budget, "provider_counted_input_tokens": count.input_tokens,
+                    "provider_count_call_id": str(count_call_id),
+                }
+                # Count is preflight metadata, never a generation usage/calibration.
+                if count.input_tokens > context_budget["focus"]:
+                    from .context_budget import required_items
+    
+                    detail = {"reason_key": "provider_count_exceeds_focus",
+                              "context_budget": context_budget,
+                              "missing": required_items(system, tools, messages, output_schema)}
+                    self.store.emit(scope, {"type": "context_incomplete", **detail})
+                    raise DomainError(
+                        "CONTEXT_INCOMPLETE", "服务商预先计量超过当前上下文预算，请缩小范围。",
+                        detail=detail, recovery={"action": "reduce_required_context"},
+                    )
+                self._recheck_dispatch(scope, route, provider_key, decision, pricing)
+            dispatch_started = True
+            with prompt_cache_policy(cache_allowed):
+                result = self.client.turn(
+                    route,
+                    system=system,
+                    messages=messages,
+                    tools=tools,
+                    output_schema=output_schema,
+                    emit=emit,
+                    cancelled=lambda: self._cancelled(scope),
+                )
+        except ProviderError as error:
+            usage = error.usage
+            unknown = error.unknown or bool(
+                usage
+                and (
+                    usage.input_tokens > input_upper
+                    or usage.output_tokens > route.max_output_tokens
+                )
+            )
+            charged = usage.input_tokens + usage.output_tokens if usage else 0
+            cancellation_code = None
+            if error.code == "MODEL_CANCELLED":
+                # The native transport also closes on revoked ACL/budget. Only the
+                # actual persisted cancel epoch/state can call this a cancelled Run.
+                try:
+                    self.store.current(scope)
+                except DomainError as current_error:
+                    cancellation_code = current_error.code
+                else:
+                    cancellation_code = (
+                        "EXTERNAL_OUTCOME_UNKNOWN" if unknown else "SOURCE_UNAVAILABLE"
+                    )
+            code = (
+                cancellation_code
+                if error.code == "MODEL_CANCELLED"
+                else (
+                    "EXTERNAL_OUTCOME_UNKNOWN"
+                    if unknown
+                    else "RATE_LIMITED"
+                    if error.code == "PROVIDER_RATE_LIMITED"
+                    else "SOURCE_UNAVAILABLE"
+                )
+            )
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0 if unknown else charged,
+                unknown=unknown,
+                error=code,
+                request_id=error.request_id,
+                cost_usage=CostUsage(usage.input_tokens, usage.output_tokens, pricing.actual(usage))
+                if pricing and usage and not unknown
+                else CostUsage(0, 0, pricing.actual(ProviderUsage(0, 0)))
+                if pricing and not unknown
+                else None,
+            )
+            raise DomainError(
+                code,
+                "模型调用未形成可用结果，请查看原调用回执。",
+                detail={"provider_reason": error.code, "call_id": str(call_id)},
+            ) from None
+        except DomainError as error:
+            self.store.release_call(
+                scope,
+                call_id,
+                usage=0,
+                unknown=dispatch_started,
+                error=error.code,
+                request_id=error.detail.get("provider_request_id"),
+            )
+            raise
+        except Exception:
+            code = "EXTERNAL_OUTCOME_UNKNOWN" if dispatch_started else "SOURCE_UNAVAILABLE"
+            self.store.release_call(scope, call_id, unknown=dispatch_started, error=code)
+>           raise DomainError(
+                code, "模型调用未形成可用结果。", detail={"call_id": str(call_id)}
+            ) from None
+E           pdos_next.errors.DomainError: 模型调用未形成可用结果。
+E           During task with name 'model' and id '8f7fc6ff-568d-b661-812a-66864648dfe1'
+
+pdos_next/agent_kernel/gateway.py:389: DomainError
+_ test_t0_claim_and_link_whole_run_revert_is_one_named_confirmation_and_replay _
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x134220260>
+
+    def test_t0_claim_and_link_whole_run_revert_is_one_named_confirmation_and_replay(work, monkeypatch):
+>       evidence = ai_evidence_run(work, monkeypatch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_evidence_revert_pg.py:234: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_evidence_revert_pg.py:126: in ai_evidence_run
+    claim = fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x133bf8590>
+scope = RunScope(tenant_id=UUID('622d5b99-b1bd-40db-a89a-236dcdff6d8d'), requester_id=UUID('57bd0b8d-cf9d-4c2a-b609-28967095a2...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x1411647a0>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': '3f865b59-4847-4c4c-a047-47782620f067', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': '合成研究事实'}, ...}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'70100371-546e-4d6c-9fec-d4fac582c3de')), model_call_id=UUID('d98a27be-6541-4445-8844-22210123de49'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x130e64980>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x136117a70>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+_ test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[human_edit] _
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x141af2e70>
+dependency = 'human_edit'
+
+    @pytest.mark.parametrize("dependency", ["human_edit", "submitted", "signed"])
+    def test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo(
+        work, monkeypatch, dependency
+    ):
+>       evidence = ai_evidence_run(work, monkeypatch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_evidence_revert_pg.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_evidence_revert_pg.py:126: in ai_evidence_run
+    claim = fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x142518560>
+scope = RunScope(tenant_id=UUID('0fd4667f-1dd0-4117-afef-9b1de88212d1'), requester_id=UUID('bd3d85b6-38f9-423f-9d4b-b575bdbfa7...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x130e19640>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': 'c1ee08d4-8d6a-43e3-abfe-f2cd864f29cb', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': '合成研究事实'}, ...}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'162ca6cf-60ab-45eb-bf33-a58681db7d97')), model_call_id=UUID('6ff1ffea-bd5a-4942-a3fa-d6125a769114'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x134e1a300>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x124408ce0>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+_ test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[submitted] _
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x13230fcb0>
+dependency = 'submitted'
+
+    @pytest.mark.parametrize("dependency", ["human_edit", "submitted", "signed"])
+    def test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo(
+        work, monkeypatch, dependency
+    ):
+>       evidence = ai_evidence_run(work, monkeypatch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_evidence_revert_pg.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_evidence_revert_pg.py:126: in ai_evidence_run
+    claim = fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x1355f3500>
+scope = RunScope(tenant_id=UUID('455850f4-9ae3-474f-bf42-0a6ccbc82170'), requester_id=UUID('e2177a53-677c-429b-9b5b-6f486d1948...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x13549bfb0>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': '673593bf-d4bc-4f45-abb4-28212643d106', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': '合成研究事实'}, ...}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'5926bc23-1214-47ac-90f2-6e9a294cc3d2')), model_call_id=UUID('ef02a90a-ade2-426b-a893-477c38f2fbd7'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x1427a5e80>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x131f08800>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+_ test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[signed] _
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x136bbc0b0>
+dependency = 'signed'
+
+    @pytest.mark.parametrize("dependency", ["human_edit", "submitted", "signed"])
+    def test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo(
+        work, monkeypatch, dependency
+    ):
+>       evidence = ai_evidence_run(work, monkeypatch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_evidence_revert_pg.py:285: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_evidence_revert_pg.py:126: in ai_evidence_run
+    claim = fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x133b85220>
+scope = RunScope(tenant_id=UUID('8f3a7915-e3ea-4386-96ce-3adadf2c8e81'), requester_id=UUID('c3e0489a-251f-4b90-940a-8d4a810604...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x1319bb5c0>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': 'c495632e-dc9d-481e-95b9-40b5b3492aae', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': '合成研究事实'}, ...}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'0ff051be-9cee-4fb7-8b3f-9a8ba0553841')), model_call_id=UUID('a523ff40-51db-427f-b8c1-144563693d1a'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x13282cc80>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x132891490>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+__ test_whole_run_revert_tail_failure_rolls_back_claim_link_counter_and_proof __
+
+work = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x132289f70>
+
+    def test_whole_run_revert_tail_failure_rolls_back_claim_link_counter_and_proof(work, monkeypatch):
+        from pdos_next.agent_kernel import persistence
+    
+>       evidence = ai_evidence_run(work, monkeypatch)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/preproject/test_evidence_revert_pg.py:339: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/preproject/test_evidence_revert_pg.py:126: in ai_evidence_run
+    claim = fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x136b68590>
+scope = RunScope(tenant_id=UUID('138e45a6-fb7f-41ce-84b8-ca8684542d61'), requester_id=UUID('1f5ba7de-8085-4d54-bda5-5fd1585590...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x136886630>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': '9b1e971a-3ed9-4d92-8597-bfa926c053ea', 'version': 1, 'locator': 'line:1', ...}, 'nature': 'extracted', 'availability': 'known', 'content': {'text': '合成研究事实'}, ...}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'64fb8be3-4002-41d6-9320-ce566850a955')), model_call_id=UUID('376a1fdb-3a24-4cd8-b06a-b0f6b82c3a84'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x127538230>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x136840ce0>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+_______ test_mixed_claim_item_link_run_reverts_once_with_actual_receipts _______
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x127538b30>
+
+    def test_mixed_claim_item_link_run_reverts_once_with_actual_receipts(setup, monkeypatch):
+>       history = mixed_history(setup, monkeypatch)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/products/test_definition_item_revert_mixed_pg.py:227: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/products/test_definition_item_revert_mixed_pg.py:168: in mixed_history
+    claim = actual_model(
+tests/products/test_definition_item_revert_mixed_pg.py:110: in actual_model
+    return fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x133166240>
+scope = RunScope(tenant_id=UUID('ffef20e3-2849-4b22-b4c0-7ad980b61ab1'), requester_id=UUID('f1a81c1f-0a05-4d91-a2e2-efc4b238e2...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x142cb5490>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': '7ab2f173-0443-4f24-a0b2-8471748cfcfc', 'version': 1, 'locator': 'line:2', ...},...e': 'extracted', 'availability': 'known', 'content': {'text': 'Synthetic pressure source only; no verified condition'}}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'9e493cc9-3161-4311-bfa7-557f4cc7dcea')), model_call_id=UUID('17915789-3d9b-42ea-b9b3-8693f2d8b531'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x130ee37a0>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x1327fac60>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+_ test_mixed_revert_finish_failure_rolls_back_and_original_confirmation_retries _
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x142c10cb0>
+
+    def test_mixed_revert_finish_failure_rolls_back_and_original_confirmation_retries(
+        setup, monkeypatch
+    ):
+        from pdos_next.agent_kernel import persistence
+    
+>       history = mixed_history(setup, monkeypatch)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/products/test_definition_item_revert_mixed_pg.py:262: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/products/test_definition_item_revert_mixed_pg.py:168: in mixed_history
+    claim = actual_model(
+tests/products/test_definition_item_revert_mixed_pg.py:110: in actual_model
+    return fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x1246fbda0>
+scope = RunScope(tenant_id=UUID('d8d64a35-ecbb-43f4-bad6-e868f62dbbc5'), requester_id=UUID('dc675b6a-ac86-476f-b526-969d23139b...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x124741730>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': '3ca050de-810c-4138-9b36-71f6e367996f', 'version': 1, 'locator': 'line:2', ...},...e': 'extracted', 'availability': 'known', 'content': {'text': 'Synthetic pressure source only; no verified condition'}}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'f345e276-a3f1-4d07-8007-2cbfc6289451')), model_call_id=UUID('6dc30ab5-e6e0-4c7a-8f73-6678387befdb'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x132972540>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x136776ba0>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+________ test_mixed_run_fixed_definition_dependency_blocks_all_effects _________
+
+setup = <isolated synthetic test scope>
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x142d24ce0>
+
+    def test_mixed_run_fixed_definition_dependency_blocks_all_effects(setup, monkeypatch):
+>       history = mixed_history(setup, monkeypatch)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/products/test_definition_item_revert_mixed_pg.py:304: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/products/test_definition_item_revert_mixed_pg.py:168: in mixed_history
+    claim = actual_model(
+tests/products/test_definition_item_revert_mixed_pg.py:110: in actual_model
+    return fixture.adapter.execute(
+pdos_next/agent_kernel/domain_adapter.py:327: in execute
+    return category_transaction(self.engine, ctx, write)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pdos_next/database.py:99: in category_transaction
+    return action(s)
+           ^^^^^^^^^
+pdos_next/agent_kernel/domain_adapter.py:302: in write
+    call, previous = prepare_domain_call(
+pdos_next/agent_kernel/execution.py:408: in prepare_domain_call
+    model, skill = verify_source(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+session = <sqlalchemy.orm.session.Session object at 0x1262e6c60>
+scope = RunScope(tenant_id=UUID('efe0d6ba-30e1-4a71-af4e-b2965a15ca85'), requester_id=UUID('6bbaf5d9-99e7-4642-b8e1-764389e045...blic'}), isolation='main', artifact_ids=frozenset(), citation_ids=frozenset(), trigger='conversation', project_id=None)
+run = <pdos_next.agent_kernel.models.AgentRun object at 0x136bd4f50>
+spec = ToolSpec(name='evidence.claim.record', description='办理 evidence.claim.record。何时调用尚未登记，使用前须由该领域确认。产生 claim.recorded。需当前...ey='evidence.claim.record', taint='trusted', parallel_safe=False, budget_weight=1, version='1', max_result_tokens=4000)
+arguments = {'source': {'kind': 'artifact', 'id': '37116987-f108-481d-8ed9-29ea334ff0ed', 'version': 1, 'locator': 'line:2', ...},...e': 'extracted', 'availability': 'known', 'content': {'text': 'Synthetic pressure source only; no verified condition'}}
+source = WriteSource(skill=SkillBinding(key='public_research', version='0.2.3-draft', digest='44d941410faa587a1b423fdc0ed5519c8...'fa0173a5-4eae-4118-a694-6733daec6950')), model_call_id=UUID('067ee996-ecb6-4e3a-9722-7177f00c32ad'), response_index=0)
+catalog = <pdos_next.agent_kernel.skills.SkillCatalog object at 0x142d92a80>
+registry = <pdos_next.agent_kernel.registry.ToolRegistry object at 0x134e18830>
+route = namespace(version='synthetic@1', digest='6e9ad00716ce9b360ada47b8da2d22c754351358e4be0baaabe1dfea26e677a8', protocol='openai-compatible', base_url='https://synthetic.invalid/v1', model='synthetic-model')
+prepare_only = False
+
+    def verify_source(
+        session, scope, run, spec, arguments, source, *, catalog, registry, route, prepare_only=False
+    ):
+        if not isinstance(source, WriteSource):
+            raise DomainError("FORBIDDEN_SCOPE", "T0 来源须来自服务器执行账本。")
+        model_call = session.get(AgentToolCall, source.model_call_id)
+        model = validate_model_source(
+            run, model_call, scope, source, spec, arguments, route=route, prepare_only=prepare_only
+        )
+        validate_skill_load(session, scope, source.skill)
+        skill = catalog.load(
+            source.skill.key, scope, lambda _, s: policy.skill_enabled(session, scope, s)
+        )
+        if skill.version != source.skill.version or skill.digest != source.skill.digest:
+            raise DomainError("VERSION_CONFLICT", "实际技能版本或内容已变化。")
+        current = registry.get(spec.name)
+        # The binding must match the disclosure its own loaded skills imply, so a write
+        # is provably bound to a call that could actually see that command.
+        disclosed = disclosure(
+            registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        )
+        if (
+            current != spec
+            or current.tier not in ({"T0", "T1"} if prepare_only else {"T0"})
+            or current.operation_key != spec.operation_key
+            or spec.name not in skill.operations
+            or digest(disclosed) != model.tool_definitions_digest
+            or not any(item["name"] == spec.name for item in disclosed)
+        ):
+>           raise DomainError("VERSION_CONFLICT", "实际登记工具或技能允许操作已变化。")
+E           pdos_next.errors.DomainError: 实际登记工具或技能允许操作已变化。
+
+pdos_next/agent_kernel/execution.py:294: DomainError
+=============================== warnings summary ===============================
+tests/agent_kernel/test_extract_dispatch_pg.py: 5 warnings
+tests/agent_kernel/test_proposal_context_admission_pg.py: 9 warnings
+tests/agent_kernel/test_category_source_writeback_pg.py: 10 warnings
+tests/preproject/test_evidence_revert_pg.py: 5 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent_kernel/test_proposal_context_admission_pg.py: 60 warnings
+tests/agent_kernel/test_category_source_writeback_pg.py: 62 warnings
+tests/preproject/test_evidence_revert_pg.py: 30 warnings
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/products/test_definition_item_revert_mixed_pg.py::test_mixed_claim_item_link_run_reverts_once_with_actual_receipts
+tests/products/test_definition_item_revert_mixed_pg.py::test_mixed_revert_finish_failure_rolls_back_and_original_confirmation_retries
+tests/products/test_definition_item_revert_mixed_pg.py::test_mixed_run_fixed_definition_dependency_blocks_all_effects
+  /Users/huhanwei/Desktop/ai-native-R&D-platform/pdos-next/server/pdos_next/domain/products/definitions.py:206: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent_kernel/test_skill_qualification.py::test_batch_t1_named_t2_atom_replay_and_actual_policy
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[False]
+FAILED tests/agent_kernel/test_proposal_context_admission_pg.py::test_new_claim_can_be_adopted_read_and_replayed_in_original_run[True]
+FAILED tests/agent_kernel/test_category_source_writeback_pg.py::test_registered_graph_records_product_source_adopts_reads_and_completes
+FAILED tests/preproject/test_evidence_revert_pg.py::test_t0_claim_and_link_whole_run_revert_is_one_named_confirmation_and_replay
+FAILED tests/preproject/test_evidence_revert_pg.py::test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[human_edit]
+FAILED tests/preproject/test_evidence_revert_pg.py::test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[submitted]
+FAILED tests/preproject/test_evidence_revert_pg.py::test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo[signed]
+FAILED tests/preproject/test_evidence_revert_pg.py::test_whole_run_revert_tail_failure_rolls_back_claim_link_counter_and_proof
+FAILED tests/products/test_definition_item_revert_mixed_pg.py::test_mixed_claim_item_link_run_reverts_once_with_actual_receipts
+FAILED tests/products/test_definition_item_revert_mixed_pg.py::test_mixed_revert_finish_failure_rolls_back_and_original_confirmation_retries
+FAILED tests/products/test_definition_item_revert_mixed_pg.py::test_mixed_run_fixed_definition_dependency_blocks_all_effects
+12 failed, 55 passed, 184 warnings in 363.23s (0:06:03)

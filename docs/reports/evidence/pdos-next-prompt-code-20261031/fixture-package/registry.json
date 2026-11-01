@@ -1,0 +1,74 @@
+{
+  "schema": "xiaopai-prompt-registry/v1",
+  "key": "xiaopai.main",
+  "active": "1.0.0",
+  "versions": [
+    {
+      "version": "1.0.0",
+      "file": "versions/1.0.0.md",
+      "digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552",
+      "status": "active",
+      "created_at": "2026-10-31"
+    },
+    {
+      "version": "1.0.1-draft",
+      "file": "versions/1.0.1-draft.md",
+      "digest": "832763cb1c43312f1447011029d8ee58cec040982ea8728d4c98dc9db7def993",
+      "status": "published",
+      "created_at": "2026-10-31"
+    }
+  ],
+  "history": [
+    {
+      "kind": "activate",
+      "version": "1.0.1-draft",
+      "previous": "1.0.0",
+      "at": "2026-10-31T15:54:29.328042+00:00",
+      "reviewer": "Synthetic Code Reviewer",
+      "quality_status": "not_scored",
+      "evaluation_digest": "de9de4c6681b97e52ed7acdfdf617f79665f442bb675ed1a5ba1087306f9f267"
+    },
+    {
+      "kind": "rollback",
+      "version": "1.0.0",
+      "previous": "1.0.1-draft",
+      "at": "2026-10-31T15:54:31.037549+00:00",
+      "reviewer": "Synthetic Code Reviewer",
+      "reason": "Synthetic lifecycle verification"
+    },
+    {
+      "kind": "activate",
+      "version": "1.0.1-draft",
+      "previous": "1.0.0",
+      "at": "2026-10-31T16:30:56.386045+00:00",
+      "reviewer": "Synthetic Code Reviewer",
+      "quality_status": "not_scored",
+      "evaluation_digest": "bc835ce3348a611a2d9e85519f286a5785e57cf36a8332f920f6cad51d7b53d4"
+    },
+    {
+      "kind": "rollback",
+      "version": "1.0.0",
+      "previous": "1.0.1-draft",
+      "at": "2026-10-31T16:30:58.199639+00:00",
+      "reviewer": "Synthetic Code Reviewer",
+      "reason": "Final synthetic lifecycle verification"
+    },
+    {
+      "kind": "activate",
+      "version": "1.0.1-draft",
+      "previous": "1.0.0",
+      "at": "2026-10-31T17:01:20.156532+00:00",
+      "reviewer": "Synthetic Code Reviewer",
+      "quality_status": "not_scored",
+      "evaluation_digest": "878ef99f9b1170637cb87255ae1a494aa2e0d3134ce62ff7727ceed4eb676bbf"
+    },
+    {
+      "kind": "rollback",
+      "version": "1.0.0",
+      "previous": "1.0.1-draft",
+      "at": "2026-10-31T17:01:21.976319+00:00",
+      "reviewer": "Synthetic Code Reviewer",
+      "reason": "Release-candidate synthetic lifecycle verification"
+    }
+  ]
+}

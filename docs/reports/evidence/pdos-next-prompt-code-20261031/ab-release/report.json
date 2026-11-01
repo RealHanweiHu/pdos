@@ -1,0 +1,328 @@
+{
+  "schema": "xiaopai-prompt-ab/v1",
+  "created_at": "2026-10-31T17:01:17.741046+00:00",
+  "baseline": {
+    "key": "xiaopai.main",
+    "version": "1.0.0",
+    "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552",
+    "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+    "system_estimated_tokens": 2850,
+    "fixed_admission_tokens": 35109
+  },
+  "candidate": {
+    "key": "xiaopai.main",
+    "version": "1.0.1-draft",
+    "content_digest": "832763cb1c43312f1447011029d8ee58cec040982ea8728d4c98dc9db7def993",
+    "system_digest": "7a428587a6612a91966006d3c554058bdc44b7456d369078d7cd07cccf50843c",
+    "system_estimated_tokens": 2863,
+    "fixed_admission_tokens": 35124
+  },
+  "question_set": {
+    "version": "xiaopai-context-eval/v0",
+    "status": "draft_for_review",
+    "synthetic": true,
+    "trusted_root": false,
+    "cases": 12
+  },
+  "scope": "Same native production-prefix admission controls; only the prompt version changes",
+  "cases": [
+    {
+      "case_id": "CTX-01",
+      "input_sha256": "685970ad2297d853771ee6a94d2128e4ff62cc841f35ce6d21e3e8eb8744d45e",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-02",
+      "input_sha256": "d26c2e7ada4fd43e2b4867f6356c1bc2d4fb39a227b09265741948585566df6f",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-03",
+      "input_sha256": "348849caba3f17b0d44dd89d30a431222599c2e7284fb5d05637894f9aa0033d",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-04",
+      "input_sha256": "1513270c9d96c6aa80d188a12f95c8d8b504256253d12210833f8e385486f3f7",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-05",
+      "input_sha256": "0a276abf1c8db792614716910b1335e5fa90873588c4db56010dfe241331ed3b",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-06",
+      "input_sha256": "cd913d52c276e8b035c2bcb47ddc4b5cf8c5b0a91fdb7b290967a0a09a76bd74",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-07",
+      "input_sha256": "46ee5d4dd26bb8d9e49c0ad09edf4f87804c3823647800d9d058267f5fa37864",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-08",
+      "input_sha256": "0e279c6e929899b41a7e1a1bd599e28f155febed711cf8a2983e3836a38222bf",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-09",
+      "input_sha256": "d0e6df169b63360824d3512f493b6c455c0b4a0047975625df2ff661ae399690",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-10",
+      "input_sha256": "bae36f6dd0415fd527810b186d6e67cdcd4cf1a7b11fe4386979fa60c9c00ca4",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-11",
+      "input_sha256": "d456dd564eb5201ab8463cd1dd162139290f984a12634694ade3bbfe05740587",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-12",
+      "input_sha256": "0860f6adb9f89277fc1d6fb2f2c0b50776605bd208fd0f2b3df507e178671876",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    }
+  ],
+  "regressions": [],
+  "control_status": "passed",
+  "quality_status": "not_scored",
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "provider_calls": 0,
+  "database_operations": 0,
+  "diff": "--- xiaopai.main@1.0.0\n+++ xiaopai.main@1.0.1-draft\n@@ -57,3 +57,4 @@\n The server rejects paraphrases and deleted constraints. Work state is historical task memory;\n unfinished work and questions are not facts. Re-read business objects before using current facts.\n Ask at most three questions that affect the goal.\n+Synthetic fixture only: preserve explicit unknowns.\n",
+  "inputs": {
+    "source_sha256": {
+      "docs/evaluations/xiaopai-v0/context-questions.json": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "docs/reports/evidence/pdos-next-eval-v0-20261029/context-expanded-inputs.json": "c5e9c56b87bbaa2736c7f0ae97e2212b99e89e3606aa3402cb20b1bf13f92cd8",
+      "docs/reports/evidence/pdos-next-prompt-code-20261031/fixture-package/registry.json": "f5f0871e99fe9d956eb5032477d46040d50fe2381d221076ddd334a82b0322ff",
+      "docs/reports/evidence/pdos-next-prompt-code-20261031/fixture-package/versions/1.0.0.md": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552",
+      "docs/reports/evidence/pdos-next-prompt-code-20261031/fixture-package/versions/1.0.1-draft.md": "832763cb1c43312f1447011029d8ee58cec040982ea8728d4c98dc9db7def993",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/__init__.py": "960d5df349628c29b42757d68f3b7395bba1957a04bfdf1c5dc9365946a69ead",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/activity.py": "623b4b23972e4c8b02c6d9aa97782a3ceb906ee6c909db075ac51663116e95ea",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/bootstrap.py": "52990b07b741a07fc18d836f6e94feb929d9ce5bbd9109f38ebf40cdcc25b355",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/client.py": "8775960b5002a8d5f14ae1f2e3c3b43a6636839680028d791185f6938564bf70",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/followup.py": "22cadfba3f96b1d8f80c1587fa0206d9bbe5572a86e79973d3015d18211ee7b1",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/graph.py": "bb3947a84a60a87b2ba49aee53d6dda53d07b943fe0be869635d53ccf6410f41",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/store.py": "707086044db6a1d688cc84caeb7af968457c7da4e9caa259feaf66fe3f9a804e",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/workflow.py": "23f5492b90ef4fc11883b04b50edb8122ab6d62a89a4d48676eaf3a2112e448a",
+      "pdos-next/server/pdos_next/agent_kernel/context_budget.py": "1224b8b123e57f596423a49127084ae5eaa948945cefa40f0e7b4274a5de9cfb",
+      "pdos-next/server/pdos_next/agent_kernel/context_runtime.py": "7dedcdb32a84e8e1f3d360362fa487945f93266fed62f0208c15c184af7dc3c8",
+      "pdos-next/server/pdos_next/agent_kernel/disclosure.py": "a9e47e6cc6109cfee055c8d0c985761926d593c709f1252e8f17dbff1f94b089",
+      "pdos-next/server/pdos_next/agent_kernel/execution.py": "6e8d3805f1931fac3862b9e8d1fff08fb0127939b4c4514bbc3f65ce7a38eb14",
+      "pdos-next/server/pdos_next/agent_kernel/gateway.py": "27f72783d012014ed86d6061f02f3011be58779d63d64c9321b3fbbfed3a2bb0",
+      "pdos-next/server/pdos_next/agent_kernel/graph.py": "7c4cf19bfd5c4011a8d1200f8d43c549b2774b83672f32fa9fab0423bfeb8a8f",
+      "pdos-next/server/pdos_next/agent_kernel/host.py": "f49be8651c4eb786ac8ad735b8dc73ebcd42fde5fd19705e58b4c4d79c78b001",
+      "pdos-next/server/pdos_next/agent_kernel/policy.py": "7ded4d09bafe066c266c9d0ed87ea2244a5f3fdc71cde398a944f6d75b39c5a6",
+      "pdos-next/server/pdos_next/agent_kernel/prompt_admin.py": "7653e590c4594e6c26fbcde7f4448abd2a4deb2a6540e62098cc6b47fa02ed6b",
+      "pdos-next/server/pdos_next/agent_kernel/prompts.py": "59ea84e8807a5271bd565f45313e2f7f2b832099bbf9af81f676fed033a8d0e1",
+      "pdos-next/server/pdos_next/agent_kernel/registry.py": "d9a4ee6ac6d926ca42625d6bb0a672feeab98e035d542524016ba43bc35c7c05",
+      "pdos-next/server/pdos_next/agent_kernel/skill_management.py": "8369b8a07d1cc7506a034326c096a0d8c5516aa99f211f8186c81d6c9d140544",
+      "pdos-next/server/pdos_next/agent_kernel/skill_qualification.py": "a9b177fa2df58500e12d03ea31a6a5660ba9e80ade7bca8ee75211cbb888968a",
+      "pdos-next/server/pdos_next/agent_kernel/skills.py": "e90634d80361cd87de284a1bc0a6027303baf33f15673a16681102f2aadbcd68",
+      "pdos-next/server/pdos_next/agent_kernel/tools.py": "e162c650f4519e48f2a078c73393556cc2372bd6af4703571e3ff83ec1be836f",
+      "pdos-next/server/pdos_next/agent_kernel/types.py": "f5df9b54756a4bd4aa0307168ab51739c486cdfb9e1bf2602452a8972d3bd78e",
+      "pdos-next/server/pdos_next/skill_packages/build_execution.md": "6c9d8a0a1f14c24fa41c52e54a30e1b5a3a2805f42398842e1e36b902d842198",
+      "pdos-next/server/pdos_next/skill_packages/category_framing.md": "1d77b771aa920fe86e4e7ff38a8c192f97c82e685b934fa99ddb9831083df9e1",
+      "pdos-next/server/pdos_next/skill_packages/change_control.md": "6230e341d51ef198c0c4bbffaf68e6c805c3f50ee7b788104666c3ed1c72fa19",
+      "pdos-next/server/pdos_next/skill_packages/competitor_comparison.md": "b5056fcfb11a049568f23f6f90beac594f3f06f56d05129f0e01e3cd5682448d",
+      "pdos-next/server/pdos_next/skill_packages/context-schemas.json": "8f7b4033494e2fc7f7797a9de9e4c936a2f1b21936c3b111512a04c804092176",
+      "pdos-next/server/pdos_next/skill_packages/derivative_diff.md": "9047aab351fcd512649c0f2b12a287ca50a0f1adf80b4d3502696f926da4fdf9",
+      "pdos-next/server/pdos_next/skill_packages/gap_check.md": "ba7c2a60f3447818bae162a4c5ca66d2d29580bc1cb7ecc4e11656fdb58c8f6b",
+      "pdos-next/server/pdos_next/skill_packages/jtbd.md": "9c8e1bb968607fb5207d23568eb89e29222b5ecf913663202cdc2542de9b7647",
+      "pdos-next/server/pdos_next/skill_packages/opportunity_scoring.md": "0ab5c3123033f6d9d81fa3789ce4c9a060d5faa8a9536a036da056bcd35eca4b",
+      "pdos-next/server/pdos_next/skill_packages/option_comparison.md": "31c47c6689900a93d36c39811805fc8bad670ca6f3daf230fc8794cae64b0fb0",
+      "pdos-next/server/pdos_next/skill_packages/price_band.md": "858026f32200f74e587ab66bfcf76bb7ebfd9f6eb98310d53ba1bddfdbc2dc3f",
+      "pdos-next/server/pdos_next/skill_packages/proposal_drafting.md": "e2781b350521952c9419c63bee3e937a1acb7e89558f068e2e9578b50f086756",
+      "pdos-next/server/pdos_next/skill_packages/public_research.md": "b35a1fe8a9aff5ec753dd88dcfc2f9b50e02f2fd601b0fc639806d1a56774a4a",
+      "pdos-next/server/pdos_next/skill_packages/quality_issue.md": "136830488f4199994cfe24fd2b121ebc0e77bb9c07b926e272bc2275ed134bca",
+      "pdos-next/server/pdos_next/skill_packages/release_handover.md": "7ed3472c48bd62800d165270fc65a3c5d104e39d152ff882f49e711c727c3755",
+      "pdos-next/server/pdos_next/skill_packages/review_pain_clustering.md": "c961038b38138e9e1270f0729560b2d36dadb7e5abb9abca4913fe9cb0b7b6b7",
+      "pdos-next/server/pdos_next/skill_packages/rfq_extraction.md": "a6027d23785dd785c9fdad772e493f8108211844d1f6c6aa86cae7a97f68549a",
+      "pdos-next/server/pdos_next/skill_packages/test_verification.md": "09182b05dcb1787922a5fd3187ec09e6777e6f46497329bc277ec7f1dfb1ac5a",
+      "pdos-next/server/pdos_next/skill_packages/work_management.md": "13db091c356155167b3c92c6460d2afd31a00c4e741e5d747fa035ab0c08aeb5",
+      "pdos-next/tools/xiaopai_context_admission_baseline.py": "80aa357098624bf91bd5d90115c1e7208415a9133d1c5f59ae79dbdbc324bc33",
+      "pdos-next/tools/xiaopai_prompt.py": "b89ba53eca2ffe605c65636f89d0a0dd0b1620a6930bb7348dc4b64d010ed28a"
+    }
+  },
+  "limits": [
+    "Admission controls are not native full-scene replay or answer-quality evidence.",
+    "The candidate question set is synthetic and has not been promoted to a golden root.",
+    "No provider, database, credential or real model was used."
+  ]
+}
