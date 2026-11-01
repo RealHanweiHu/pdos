@@ -1,0 +1,3904 @@
+{
+ "lite-none": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nlc1",
+     "name": "产品机会与立项论证（含技术可行性检查项）",
+     "owner": "产品经理",
+     "days": 10,
+     "deps": [],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc3",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": 1,
+     "deps": [
+      "nlc1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "立项申请书"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "2-3周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nlp1",
+     "name": "产品需求与规格一页纸（含 BOM 初版检查项）",
+     "owner": "产品经理/R&D",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np3",
+     "name": "Kickoff 会议 (Gate 2)",
+     "owner": "项目经理/产品经理",
+     "days": 1,
+     "deps": [
+      "nlp1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "产品需求文档 PRD",
+    "BOM v0.1"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nd2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": 20,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nld3",
+     "name": "电子设计（原理图+Layout）",
+     "owner": "EE",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd6",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nd2",
+      "nld3"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "结构 3D 设计",
+    "EE 原理图 & PCB Layout"
+   ]
+  },
+  {
+   "id": "verification",
+   "name": "样机验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nle1",
+     "name": "样机与功能/性能测试",
+     "owner": "EE/EMS",
+     "days": 10,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": 15,
+     "deps": [
+      "nle1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv3",
+     "name": "验证评审 (Gate)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nle1",
+      "nv2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "Build Record",
+    "功能/性能测试报告",
+    "可靠性测试报告"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nlpv1",
+     "name": "试产准备与执行",
+     "owner": "ME/工厂",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv2",
+     "name": "治具与 EOL 100% 测试",
+     "owner": "测试工程",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv5",
+     "name": "PVT 评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nlpv1",
+      "npv2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "SOP/WI作业指导书",
+    "良率报告",
+    "EOL 100%测试能力验收记录",
+    "包装与物流验证报告"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nm1",
+     "name": "首批量产与客户放行",
+     "owner": "工厂/项目经理",
+     "days": 15,
+     "deps": [
+      "npv5"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nm2",
+     "name": "项目关闭移交评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nm1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "首批量产与客户放行记录",
+    "项目关闭评审记录"
+   ]
+  }
+ ],
+ "lite-all": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nlc1",
+     "name": "产品机会与立项论证（含技术可行性检查项）",
+     "owner": "产品经理",
+     "days": 10,
+     "deps": [],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc3",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": 1,
+     "deps": [
+      "nlc1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "立项申请书"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "2-3周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nlp1",
+     "name": "产品需求与规格一页纸（含 BOM 初版检查项）",
+     "owner": "产品经理/R&D",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pb1",
+     "name": "电芯/电池包策略与供应商资质",
+     "owner": "EE/采购/电池安全",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pc1",
+     "name": "认证路线图",
+     "owner": "认证/QA",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np3",
+     "name": "Kickoff 会议 (Gate 2)",
+     "owner": "项目经理/产品经理",
+     "days": 1,
+     "deps": [
+      "nlp1",
+      "pb1",
+      "pc1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "产品需求文档 PRD",
+    "BOM v0.1",
+    "电芯厂质量审核或复用资质确认"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nd2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": 20,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nld3",
+     "name": "电子设计（原理图+Layout）",
+     "owner": "EE",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pb2",
+     "name": "安全 FMEA 与保护链路评审",
+     "owner": "QA/电池安全/EE",
+     "days": 7,
+     "deps": [
+      "nld3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ps1",
+     "name": "软件设计与架构",
+     "owner": "SW",
+     "days": 15,
+     "deps": [
+      "nld3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd6",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nd2",
+      "nld3",
+      "pb2",
+      "ps1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "结构 3D 设计",
+    "EE 原理图 & PCB Layout",
+    "安全FMEA与危害分析",
+    "保护电路设计评审或复用确认"
+   ]
+  },
+  {
+   "id": "verification",
+   "name": "样机验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nle1",
+     "name": "样机与功能/性能测试",
+     "owner": "EE/EMS",
+     "days": 10,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": 15,
+     "deps": [
+      "nle1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pc2",
+     "name": "认证测试执行",
+     "owner": "QA/认证",
+     "days": 20,
+     "deps": [
+      "nle1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ps2",
+     "name": "软件完整测试",
+     "owner": "SW/QA",
+     "days": 10,
+     "deps": [
+      "nle1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pmo1",
+     "name": "模具开发与 T1/T2 验证",
+     "owner": "MD/模厂",
+     "days": 30,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv3",
+     "name": "验证评审 (Gate)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nle1",
+      "nv2",
+      "pc2",
+      "ps2",
+      "pmo1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "Build Record",
+    "功能/性能测试报告",
+    "可靠性测试报告",
+    "认证报告",
+    "软件完整测试报告",
+    "模具T1样品"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nlpv1",
+     "name": "试产准备与执行",
+     "owner": "ME/工厂",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv2",
+     "name": "治具与 EOL 100% 测试",
+     "owner": "测试工程",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv5",
+     "name": "PVT 评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nlpv1",
+      "npv2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "SOP/WI作业指导书",
+    "良率报告",
+    "EOL 100%测试能力验收记录",
+    "包装与物流验证报告",
+    "UN38.3运输测试报告或复用确认",
+    "MSDS",
+    "电芯/电池包安全认证报告或复用确认"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nm1",
+     "name": "首批量产与客户放行",
+     "owner": "工厂/项目经理",
+     "days": 15,
+     "deps": [
+      "npv5"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nm2",
+     "name": "项目关闭移交评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nm1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "首批量产与客户放行记录",
+    "项目关闭评审记录"
+   ]
+  }
+ ],
+ "standard-none": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nc1",
+     "name": "产品机会与立项论证",
+     "owner": "产品经理",
+     "days": 10,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc2",
+     "name": "技术可行性评估",
+     "owner": "R&D Lead",
+     "days": 7,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc3",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": 1,
+     "deps": [
+      "nc1",
+      "nc2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "立项申请书",
+    "认证路线图初判"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "2-3周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "np1",
+     "name": "产品需求与规格书",
+     "owner": "产品经理/R&D",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np2",
+     "name": "初版 BOM 与关键供应商",
+     "owner": "EE/采购",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np3",
+     "name": "Kickoff 会议 (Gate 2)",
+     "owner": "项目经理/产品经理",
+     "days": 1,
+     "deps": [
+      "np1",
+      "np2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "产品需求文档 PRD",
+    "BOM v0.1"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nd1",
+     "name": "ID 工业设计",
+     "owner": "ID",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": 20,
+     "deps": [
+      "nd1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd3",
+     "name": "EE 原理设计",
+     "owner": "EE",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd4",
+     "name": "PCB Layout",
+     "owner": "EE",
+     "days": 10,
+     "deps": [
+      "nd3",
+      "nd2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd5",
+     "name": "关键料件定型与 BOM 冻结",
+     "owner": "EE/采购",
+     "days": 7,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd6",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nd1",
+      "nd2",
+      "nd3",
+      "nd4",
+      "nd5"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "ID 外观设计稿",
+    "结构 3D 设计",
+    "电子原理图",
+    "PCB Layout 文件",
+    "BOM v1.0"
+   ]
+  },
+  {
+   "id": "evt",
+   "name": "EVT 工程验证",
+   "duration": "4-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "ne1",
+     "name": "EVT 样机制作",
+     "owner": "EE/EMS",
+     "days": 10,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne2",
+     "name": "EVT 功能/性能测试",
+     "owner": "QA",
+     "days": 10,
+     "deps": [
+      "ne1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne3",
+     "name": "EVT 评审 (Gate 4)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "ne2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "EVT 样机",
+    "功能/性能测试报告"
+   ]
+  },
+  {
+   "id": "dvt",
+   "name": "DVT 设计验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nv1",
+     "name": "DVT 样机制作",
+     "owner": "EMS",
+     "days": 10,
+     "deps": [
+      "ne3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": 15,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv3",
+     "name": "DVT 评审 (Gate 5)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nv2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "DVT 样机",
+    "可靠性测试报告"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "npv1",
+     "name": "试产准备",
+     "owner": "ME/工厂",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv2",
+     "name": "治具与 EOL 100% 测试",
+     "owner": "测试工程",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv3",
+     "name": "包装与物流验证",
+     "owner": "SCM/物流",
+     "days": 7,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv4",
+     "name": "试产执行与良率",
+     "owner": "工厂/QE",
+     "days": 10,
+     "deps": [
+      "npv1",
+      "npv2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv5",
+     "name": "PVT 评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "npv1",
+      "npv2",
+      "npv3",
+      "npv4"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "SOP/WI作业指导书",
+    "良率报告",
+    "EOL 100%测试能力验收记录",
+    "包装与物流验证报告"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nm1",
+     "name": "首批量产与客户放行",
+     "owner": "工厂/项目经理",
+     "days": 15,
+     "deps": [
+      "npv5"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nm2",
+     "name": "项目关闭移交评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nm1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "首批量产与客户放行记录",
+    "项目关闭评审记录"
+   ]
+  }
+ ],
+ "standard-all": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nc1",
+     "name": "产品机会与立项论证",
+     "owner": "产品经理",
+     "days": 10,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc2",
+     "name": "技术可行性评估",
+     "owner": "R&D Lead",
+     "days": 7,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc3",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": 1,
+     "deps": [
+      "nc1",
+      "nc2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "立项申请书",
+    "认证路线图初判"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "2-3周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "np1",
+     "name": "产品需求与规格书",
+     "owner": "产品经理/R&D",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np2",
+     "name": "初版 BOM 与关键供应商",
+     "owner": "EE/采购",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pb1",
+     "name": "电芯/电池包策略与供应商资质",
+     "owner": "EE/采购/电池安全",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pc1",
+     "name": "认证路线图",
+     "owner": "认证/QA",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np3",
+     "name": "Kickoff 会议 (Gate 2)",
+     "owner": "项目经理/产品经理",
+     "days": 1,
+     "deps": [
+      "np1",
+      "np2",
+      "pb1",
+      "pc1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "产品需求文档 PRD",
+    "BOM v0.1",
+    "电芯厂质量审核或复用资质确认"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nd1",
+     "name": "ID 工业设计",
+     "owner": "ID",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": 20,
+     "deps": [
+      "nd1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd3",
+     "name": "EE 原理设计",
+     "owner": "EE",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd4",
+     "name": "PCB Layout",
+     "owner": "EE",
+     "days": 10,
+     "deps": [
+      "nd3",
+      "nd2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd5",
+     "name": "关键料件定型与 BOM 冻结",
+     "owner": "EE/采购",
+     "days": 7,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pb2",
+     "name": "安全 FMEA 与保护链路评审",
+     "owner": "QA/电池安全/EE",
+     "days": 7,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ps1",
+     "name": "软件设计与架构",
+     "owner": "SW",
+     "days": 15,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd6",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nd1",
+      "nd2",
+      "nd3",
+      "nd4",
+      "nd5",
+      "pb2",
+      "ps1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "ID 外观设计稿",
+    "结构 3D 设计",
+    "电子原理图",
+    "PCB Layout 文件",
+    "BOM v1.0",
+    "安全FMEA与危害分析",
+    "保护电路设计评审或复用确认"
+   ]
+  },
+  {
+   "id": "evt",
+   "name": "EVT 工程验证",
+   "duration": "4-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "ne1",
+     "name": "EVT 样机制作",
+     "owner": "EE/EMS",
+     "days": 10,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne2",
+     "name": "EVT 功能/性能测试",
+     "owner": "QA",
+     "days": 10,
+     "deps": [
+      "ne1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne3",
+     "name": "EVT 评审 (Gate 4)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "ne2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "EVT 样机",
+    "功能/性能测试报告"
+   ]
+  },
+  {
+   "id": "dvt",
+   "name": "DVT 设计验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nv1",
+     "name": "DVT 样机制作",
+     "owner": "EMS",
+     "days": 10,
+     "deps": [
+      "ne3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": 15,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pc2",
+     "name": "认证测试执行",
+     "owner": "QA/认证",
+     "days": 20,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ps2",
+     "name": "软件完整测试",
+     "owner": "SW/QA",
+     "days": 10,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pmo1",
+     "name": "模具开发与 T1/T2 验证",
+     "owner": "MD/模厂",
+     "days": 30,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv3",
+     "name": "DVT 评审 (Gate 5)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nv2",
+      "pc2",
+      "ps2",
+      "pmo1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "DVT 样机",
+    "可靠性测试报告",
+    "认证报告",
+    "软件完整测试报告",
+    "模具T1样品"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "npv1",
+     "name": "试产准备",
+     "owner": "ME/工厂",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv2",
+     "name": "治具与 EOL 100% 测试",
+     "owner": "测试工程",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv3",
+     "name": "包装与物流验证",
+     "owner": "SCM/物流",
+     "days": 7,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv4",
+     "name": "试产执行与良率",
+     "owner": "工厂/QE",
+     "days": 10,
+     "deps": [
+      "npv1",
+      "npv2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv5",
+     "name": "PVT 评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "npv1",
+      "npv2",
+      "npv3",
+      "npv4"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "SOP/WI作业指导书",
+    "良率报告",
+    "EOL 100%测试能力验收记录",
+    "包装与物流验证报告",
+    "UN38.3运输测试报告或复用确认",
+    "MSDS",
+    "电芯/电池包安全认证报告或复用确认"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nm1",
+     "name": "首批量产与客户放行",
+     "owner": "工厂/项目经理",
+     "days": 15,
+     "deps": [
+      "npv5"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nm2",
+     "name": "项目关闭移交评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nm1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "首批量产与客户放行记录",
+    "项目关闭评审记录"
+   ]
+  }
+ ],
+ "full-none": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nc1",
+     "name": "产品机会与立项论证",
+     "owner": "产品经理",
+     "days": 10,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc2",
+     "name": "技术可行性评估",
+     "owner": "R&D Lead",
+     "days": 7,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc3",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": 1,
+     "deps": [
+      "nc1",
+      "nc2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "立项申请书",
+    "认证路线图初判"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "2-3周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "np1",
+     "name": "产品需求与规格书",
+     "owner": "产品经理/R&D",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np2",
+     "name": "初版 BOM 与关键供应商",
+     "owner": "EE/采购",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np3",
+     "name": "Kickoff 会议 (Gate 2)",
+     "owner": "项目经理/产品经理",
+     "days": 1,
+     "deps": [
+      "np1",
+      "np2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "产品需求文档 PRD",
+    "BOM v0.1"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nd1",
+     "name": "ID 工业设计",
+     "owner": "ID",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": 20,
+     "deps": [
+      "nd1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd3",
+     "name": "EE 原理设计",
+     "owner": "EE",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd4",
+     "name": "PCB Layout",
+     "owner": "EE",
+     "days": 10,
+     "deps": [
+      "nd3",
+      "nd2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd5",
+     "name": "关键料件定型与 BOM 冻结",
+     "owner": "EE/采购",
+     "days": 7,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd6",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nd1",
+      "nd2",
+      "nd3",
+      "nd4",
+      "nd5"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "ID 外观设计稿",
+    "结构 3D 设计",
+    "电子原理图",
+    "PCB Layout 文件",
+    "BOM v1.0"
+   ]
+  },
+  {
+   "id": "evt",
+   "name": "EVT 工程验证",
+   "duration": "4-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "ne1",
+     "name": "EVT 样机制作",
+     "owner": "EE/EMS",
+     "days": 10,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne2",
+     "name": "EVT 功能/性能测试",
+     "owner": "QA",
+     "days": 10,
+     "deps": [
+      "ne1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne3",
+     "name": "EVT 评审 (Gate 4)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "ne2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "EVT 样机",
+    "功能/性能测试报告"
+   ]
+  },
+  {
+   "id": "dvt",
+   "name": "DVT 设计验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nv1",
+     "name": "DVT 样机制作",
+     "owner": "EMS",
+     "days": 10,
+     "deps": [
+      "ne3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": 15,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv3",
+     "name": "DVT 评审 (Gate 5)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nv2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "DVT 样机",
+    "可靠性测试报告"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "npv1",
+     "name": "试产准备",
+     "owner": "ME/工厂",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv2",
+     "name": "治具与 EOL 100% 测试",
+     "owner": "测试工程",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv3",
+     "name": "包装与物流验证",
+     "owner": "SCM/物流",
+     "days": 7,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv4",
+     "name": "试产执行与良率",
+     "owner": "工厂/QE",
+     "days": 10,
+     "deps": [
+      "npv1",
+      "npv2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv5",
+     "name": "PVT 评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "npv1",
+      "npv2",
+      "npv3",
+      "npv4"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "SOP/WI作业指导书",
+    "良率报告",
+    "EOL 100%测试能力验收记录",
+    "包装与物流验证报告"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nm1",
+     "name": "首批量产与客户放行",
+     "owner": "工厂/项目经理",
+     "days": 15,
+     "deps": [
+      "npv5"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nm2",
+     "name": "项目关闭移交评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nm1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "首批量产与客户放行记录",
+    "项目关闭评审记录"
+   ]
+  }
+ ],
+ "full-all": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nc1",
+     "name": "产品机会与立项论证",
+     "owner": "产品经理",
+     "days": 10,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc2",
+     "name": "技术可行性评估",
+     "owner": "R&D Lead",
+     "days": 7,
+     "deps": [],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nc3",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": 1,
+     "deps": [
+      "nc1",
+      "nc2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "立项申请书",
+    "认证路线图初判"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "2-3周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "np1",
+     "name": "产品需求与规格书",
+     "owner": "产品经理/R&D",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np2",
+     "name": "初版 BOM 与关键供应商",
+     "owner": "EE/采购",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pb1",
+     "name": "电芯/电池包策略与供应商资质",
+     "owner": "EE/采购/电池安全",
+     "days": 7,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pc1",
+     "name": "认证路线图",
+     "owner": "认证/QA",
+     "days": 5,
+     "deps": [
+      "nc3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "np3",
+     "name": "Kickoff 会议 (Gate 2)",
+     "owner": "项目经理/产品经理",
+     "days": 1,
+     "deps": [
+      "np1",
+      "np2",
+      "pb1",
+      "pc1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "产品需求文档 PRD",
+    "BOM v0.1",
+    "电芯厂质量审核或复用资质确认"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nd1",
+     "name": "ID 工业设计",
+     "owner": "ID",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": 20,
+     "deps": [
+      "nd1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd3",
+     "name": "EE 原理设计",
+     "owner": "EE",
+     "days": 15,
+     "deps": [
+      "np3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd4",
+     "name": "PCB Layout",
+     "owner": "EE",
+     "days": 10,
+     "deps": [
+      "nd3",
+      "nd2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd5",
+     "name": "关键料件定型与 BOM 冻结",
+     "owner": "EE/采购",
+     "days": 7,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pb2",
+     "name": "安全 FMEA 与保护链路评审",
+     "owner": "QA/电池安全/EE",
+     "days": 7,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ps1",
+     "name": "软件设计与架构",
+     "owner": "SW",
+     "days": 15,
+     "deps": [
+      "nd3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nd6",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nd1",
+      "nd2",
+      "nd3",
+      "nd4",
+      "nd5",
+      "pb2",
+      "ps1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "ID 外观设计稿",
+    "结构 3D 设计",
+    "电子原理图",
+    "PCB Layout 文件",
+    "BOM v1.0",
+    "安全FMEA与危害分析",
+    "保护电路设计评审或复用确认"
+   ]
+  },
+  {
+   "id": "evt",
+   "name": "EVT 工程验证",
+   "duration": "4-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "ne1",
+     "name": "EVT 样机制作",
+     "owner": "EE/EMS",
+     "days": 10,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne2",
+     "name": "EVT 功能/性能测试",
+     "owner": "QA",
+     "days": 10,
+     "deps": [
+      "ne1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ne3",
+     "name": "EVT 评审 (Gate 4)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "ne2"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "EVT 样机",
+    "功能/性能测试报告"
+   ]
+  },
+  {
+   "id": "dvt",
+   "name": "DVT 设计验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nv1",
+     "name": "DVT 样机制作",
+     "owner": "EMS",
+     "days": 10,
+     "deps": [
+      "ne3"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": 15,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pc2",
+     "name": "认证测试执行",
+     "owner": "QA/认证",
+     "days": 20,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "ps2",
+     "name": "软件完整测试",
+     "owner": "SW/QA",
+     "days": 10,
+     "deps": [
+      "nv1"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pmo1",
+     "name": "模具开发与 T1/T2 验证",
+     "owner": "MD/模厂",
+     "days": 30,
+     "deps": [
+      "nd6"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nv3",
+     "name": "DVT 评审 (Gate 5)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nv2",
+      "pc2",
+      "ps2",
+      "pmo1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "DVT 样机",
+    "可靠性测试报告",
+    "认证报告",
+    "软件完整测试报告",
+    "模具T1样品"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "npv1",
+     "name": "试产准备",
+     "owner": "ME/工厂",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv2",
+     "name": "治具与 EOL 100% 测试",
+     "owner": "测试工程",
+     "days": 10,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv3",
+     "name": "包装与物流验证",
+     "owner": "SCM/物流",
+     "days": 7,
+     "deps": [
+      "nv3"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv4",
+     "name": "试产执行与良率",
+     "owner": "工厂/QE",
+     "days": 10,
+     "deps": [
+      "npv1",
+      "npv2"
+     ],
+     "evidence": "heavy",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "npv5",
+     "name": "PVT 评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "npv1",
+      "npv2",
+      "npv3",
+      "npv4"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "SOP/WI作业指导书",
+    "良率报告",
+    "EOL 100%测试能力验收记录",
+    "包装与物流验证报告",
+    "UN38.3运输测试报告或复用确认",
+    "MSDS",
+    "电芯/电池包安全认证报告或复用确认"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "nm1",
+     "name": "首批量产与客户放行",
+     "owner": "工厂/项目经理",
+     "days": 15,
+     "deps": [
+      "npv5"
+     ],
+     "evidence": "light",
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "nm2",
+     "name": "项目关闭移交评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "nm1"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "首批量产与客户放行记录",
+    "项目关闭评审记录"
+   ]
+  }
+ ],
+ "packs": [
+  {
+   "id": "battery",
+   "name": "电池安全包",
+   "redline": true,
+   "tasks": [
+    {
+     "phase": "planning",
+     "id": "pb1",
+     "name": "电芯/电池包策略与供应商资质",
+     "owner": "EE/采购/电池安全",
+     "days": 7
+    },
+    {
+     "phase": "design",
+     "id": "pb2",
+     "name": "安全 FMEA 与保护链路评审",
+     "owner": "QA/电池安全/EE",
+     "days": 7
+    }
+   ]
+  },
+  {
+   "id": "cert",
+   "name": "认证包",
+   "redline": true,
+   "tasks": [
+    {
+     "phase": "planning",
+     "id": "pc1",
+     "name": "认证路线图",
+     "owner": "认证/QA",
+     "days": 5
+    },
+    {
+     "phase": "dvt",
+     "id": "pc2",
+     "name": "认证测试执行",
+     "owner": "QA/认证",
+     "days": 20
+    }
+   ]
+  },
+  {
+   "id": "software",
+   "name": "软件包",
+   "redline": false,
+   "tasks": [
+    {
+     "phase": "design",
+     "id": "ps1",
+     "name": "软件设计与架构",
+     "owner": "SW",
+     "days": 15
+    },
+    {
+     "phase": "dvt",
+     "id": "ps2",
+     "name": "软件完整测试",
+     "owner": "SW/QA",
+     "days": 10
+    }
+   ]
+  },
+  {
+   "id": "mold",
+   "name": "模具包",
+   "redline": false,
+   "tasks": [
+    {
+     "phase": "dvt",
+     "id": "pmo1",
+     "name": "模具开发与 T1/T2 验证",
+     "owner": "MD/模厂",
+     "days": 30
+    }
+   ]
+  }
+ ],
+ "legacy": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "c1",
+     "name": "市场调研与竞品分析",
+     "owner": "产品经理/BD",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c2",
+     "name": "用户需求收集 (VoC)",
+     "owner": "产品经理/UX",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c3",
+     "name": "产品概念定义",
+     "owner": "产品经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c4",
+     "name": "技术可行性评估",
+     "owner": "R&D Lead",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c5",
+     "name": "商业可行性分析",
+     "owner": "产品经理/Finance",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c6",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "市场调研报告",
+    "产品概念书",
+    "商业可行性分析",
+    "立项申请书",
+    "认证路线图初判"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "3-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "p1",
+     "name": "产品需求文档 (PRD)",
+     "owner": "产品经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p2",
+     "name": "产品规格书 (PSD)",
+     "owner": "R&D",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p3",
+     "name": "项目时程规划",
+     "owner": "项目经理/PMO",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p4",
+     "name": "BOM初版",
+     "owner": "EE/采购",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p5",
+     "name": "关键供应商初选",
+     "owner": "采购",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p5a",
+     "name": "电芯复用/定点与二供策略",
+     "owner": "EE/采购/电池安全",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p6a",
+     "name": "认证路线图",
+     "owner": "认证/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p6",
+     "name": "团队组建与资源分配",
+     "owner": "项目经理/PMO/HR",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p7",
+     "name": "Kickoff会议",
+     "owner": "项目经理/产品经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "PRD产品需求文档",
+    "PSD产品规格书",
+    "项目甘特图",
+    "BOM v0.1",
+    "认证路线图",
+    "电芯复用/定点与二供策略"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "d1",
+     "name": "ID 工业设计",
+     "owner": "ID",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d3",
+     "name": "EE 电子原理设计",
+     "owner": "EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d4",
+     "name": "PCB Layout",
+     "owner": "EE/PCB",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d5",
+     "name": "SW 软件架构",
+     "owner": "SW",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d6",
+     "name": "DFM/DFA 评审",
+     "owner": "ME/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d6a",
+     "name": "安全 FMEA 与危害分析",
+     "owner": "QA/电池安全/R&D",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d7",
+     "name": "关键料件定型",
+     "owner": "EE/采购",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d7a",
+     "name": "电芯厂质量审核/复用资质确认",
+     "owner": "SCM/QA/电池安全",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d7b",
+     "name": "保护电路设计评审/复用确认",
+     "owner": "EE/电池安全",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d8",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "ID外观图",
+    "MD结构图",
+    "PCB原理图&Layout",
+    "SW架构文档",
+    "BOM v1.0",
+    "安全FMEA与危害分析",
+    "电芯厂质量审核或复用资质确认",
+    "保护电路设计评审或复用确认"
+   ]
+  },
+  {
+   "id": "evt",
+   "name": "EVT 工程验证",
+   "duration": "4-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "e1",
+     "name": "工程样机制作",
+     "owner": "EE/EMS",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e2",
+     "name": "功能测试 (FT)",
+     "owner": "QA/EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e3",
+     "name": "性能测试 (PT)",
+     "owner": "QA/EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e4",
+     "name": "软硬件联调",
+     "owner": "SW/EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e5",
+     "name": "设计问题清单",
+     "owner": "项目经理/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e6",
+     "name": "PCB改板 (v2)",
+     "owner": "EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e7",
+     "name": "EVT评审 (Gate 4)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "EVT样机 ≥10台",
+    "功能测试报告",
+    "问题清单 (Issue List)",
+    "PCB v2"
+   ]
+  },
+  {
+   "id": "dvt",
+   "name": "DVT 设计验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "v1",
+     "name": "DVT样机制作",
+     "owner": "EMS",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v3",
+     "name": "安规与认证",
+     "owner": "QA/认证",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v4",
+     "name": "模具T1/T2试模",
+     "owner": "MD/模厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v5",
+     "name": "软件功能完整测试",
+     "owner": "SW/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v6",
+     "name": "包装设计验证",
+     "owner": "包装",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v7",
+     "name": "量产工艺评估",
+     "owner": "ME/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v8",
+     "name": "DVT评审 (Gate 5)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "DVT样机 ≥30台",
+    "可靠性测试报告",
+    "认证报告",
+    "模具T1样品",
+    "PFMEA/CTQ控制计划"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "pv1",
+     "name": "试产规划",
+     "owner": "ME/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv2",
+     "name": "SOP/WI制定",
+     "owner": "ME/IE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv3",
+     "name": "治具与测试程序",
+     "owner": "测试工程",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv4",
+     "name": "试产 (50-300台)",
+     "owner": "工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv5",
+     "name": "良率分析与改善",
+     "owner": "QE/ME",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv6",
+     "name": "包装与物流验证",
+     "owner": "包装/物流",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv7",
+     "name": "品质标准固化",
+     "owner": "QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv8",
+     "name": "PVT评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "试产50-300台",
+    "SOP/WI作业指导书",
+    "良率报告",
+    "治具与测试程序",
+    "EOL 100%测试能力验收记录",
+    "UN38.3运输测试报告或复用确认",
+    "MSDS",
+    "电芯/电池包安全认证报告或复用确认"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "mp1",
+     "name": "首批量产 (Ramp-up)",
+     "owner": "工厂/项目经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "mp2",
+     "name": "良率监控与改善",
+     "owner": "QE/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "mp3",
+     "name": "产能爬坡",
+     "owner": "工厂/项目经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "mp4",
+     "name": "工程变更管理",
+     "owner": "项目经理/CM",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "mp5",
+     "name": "售后问题跟踪",
+     "owner": "售后/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "mp6",
+     "name": "持续改善 (CIP)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "量产产品",
+    "良率周报",
+    "ECN/ECR记录",
+    "售后数据分析"
+   ]
+  }
+ ],
+ "current": [
+  {
+   "id": "concept",
+   "name": "概念阶段",
+   "duration": "2-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "c1",
+     "name": "市场调研与竞品分析",
+     "owner": "产品经理/BD",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c2",
+     "name": "用户需求收集 (VoC)",
+     "owner": "产品经理/UX",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c3",
+     "name": "产品概念定义",
+     "owner": "产品经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c4",
+     "name": "技术可行性评估",
+     "owner": "R&D Lead",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c5",
+     "name": "商业可行性分析",
+     "owner": "产品经理/Finance",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "c6",
+     "name": "立项评审 (Gate 1)",
+     "owner": "管理层",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "市场调研报告",
+    "产品概念书",
+    "商业可行性分析",
+    "立项申请书",
+    "认证路线图初判"
+   ]
+  },
+  {
+   "id": "planning",
+   "name": "规划阶段",
+   "duration": "3-4周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "p1",
+     "name": "产品需求文档 (PRD)",
+     "owner": "产品经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p2",
+     "name": "产品规格书 (PSD)",
+     "owner": "R&D",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p3",
+     "name": "项目时程规划",
+     "owner": "项目经理/PMO",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p4",
+     "name": "BOM初版",
+     "owner": "EE/采购",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p5",
+     "name": "关键供应商初选",
+     "owner": "采购",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p5a",
+     "name": "电芯复用/定点与二供策略",
+     "owner": "EE/采购/电池安全",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p6a",
+     "name": "认证路线图",
+     "owner": "认证/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p6",
+     "name": "团队组建与资源分配",
+     "owner": "项目经理/PMO/HR",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "p7",
+     "name": "Kickoff会议",
+     "owner": "项目经理/产品经理",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "PRD产品需求文档",
+    "PSD产品规格书",
+    "项目甘特图",
+    "BOM v0.1",
+    "认证路线图",
+    "电芯复用/定点与二供策略"
+   ]
+  },
+  {
+   "id": "design",
+   "name": "设计阶段",
+   "duration": "6-12周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "d1",
+     "name": "ID 工业设计",
+     "owner": "ID",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d2",
+     "name": "MD 结构设计",
+     "owner": "MD",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d3",
+     "name": "EE 电子原理设计",
+     "owner": "EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d4",
+     "name": "PCB Layout",
+     "owner": "EE/PCB",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d5",
+     "name": "SW 软件架构",
+     "owner": "SW",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d6",
+     "name": "DFM/DFA 评审",
+     "owner": "ME/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d6a",
+     "name": "安全 FMEA 与危害分析",
+     "owner": "QA/电池安全/R&D",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d7",
+     "name": "关键料件定型",
+     "owner": "EE/采购",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d7a",
+     "name": "电芯厂质量审核/复用资质确认",
+     "owner": "SCM/QA/电池安全",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d7b",
+     "name": "保护电路设计评审/复用确认",
+     "owner": "EE/电池安全",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "d8",
+     "name": "设计冻结评审 (Gate 3)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "ID外观图",
+    "MD结构图",
+    "PCB原理图&Layout",
+    "SW架构文档",
+    "BOM v1.0",
+    "安全FMEA与危害分析",
+    "电芯厂质量审核或复用资质确认",
+    "保护电路设计评审或复用确认"
+   ]
+  },
+  {
+   "id": "evt",
+   "name": "EVT 工程验证",
+   "duration": "4-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "e1",
+     "name": "工程样机制作",
+     "owner": "EE/EMS",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e2",
+     "name": "功能测试 (FT)",
+     "owner": "QA/EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e3",
+     "name": "性能测试 (PT)",
+     "owner": "QA/EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e4",
+     "name": "软硬件联调",
+     "owner": "SW/EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e5",
+     "name": "设计问题清单",
+     "owner": "项目经理/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e6",
+     "name": "PCB改板 (v2)",
+     "owner": "EE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "e7",
+     "name": "EVT评审 (Gate 4)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "EVT样机 ≥10台",
+    "功能测试报告",
+    "问题清单 (Issue List)",
+    "PCB v2"
+   ]
+  },
+  {
+   "id": "dvt",
+   "name": "DVT 设计验证",
+   "duration": "4-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "v1",
+     "name": "DVT样机制作",
+     "owner": "EMS",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v2",
+     "name": "可靠性测试",
+     "owner": "QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v3",
+     "name": "安规与认证",
+     "owner": "QA/认证",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v4",
+     "name": "模具T1/T2试模",
+     "owner": "MD/模厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v5",
+     "name": "软件功能完整测试",
+     "owner": "SW/QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v6",
+     "name": "包装设计验证",
+     "owner": "包装",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v7",
+     "name": "量产工艺评估",
+     "owner": "ME/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "v8",
+     "name": "DVT评审 (Gate 5)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "DVT样机 ≥30台",
+    "可靠性测试报告",
+    "认证报告",
+    "模具T1样品",
+    "PFMEA/CTQ控制计划"
+   ]
+  },
+  {
+   "id": "pvt",
+   "name": "PVT 试产验证",
+   "duration": "3-6周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "pv1",
+     "name": "试产规划",
+     "owner": "ME/工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv2",
+     "name": "SOP/WI制定",
+     "owner": "ME/IE",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv3",
+     "name": "治具与测试程序",
+     "owner": "测试工程",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv4",
+     "name": "试产 (50-300台)",
+     "owner": "工厂",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv5",
+     "name": "良率分析与改善",
+     "owner": "QE/ME",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv6",
+     "name": "包装与物流验证",
+     "owner": "包装/物流",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv7",
+     "name": "品质标准固化",
+     "owner": "QA",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "pv8",
+     "name": "PVT评审 (Gate 6)",
+     "owner": "跨部门",
+     "days": null,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "试产50-300台",
+    "SOP/WI作业指导书",
+    "良率报告",
+    "治具与测试程序",
+    "EOL 100%测试能力验收记录",
+    "UN38.3运输测试报告或复用确认",
+    "MSDS",
+    "电芯/电池包安全认证报告或复用确认"
+   ]
+  },
+  {
+   "id": "mp",
+   "name": "量产稳定与移交",
+   "duration": "2-8周",
+   "gate": {
+    "required": null
+   },
+   "tasks": [
+    {
+     "id": "stability_ramp",
+     "name": "首批量产与爬坡",
+     "owner": "工厂/NPI",
+     "days": 5,
+     "deps": [],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "stability_metrics",
+     "name": "良率、质量与产能稳定确认",
+     "owner": "QA/NPI",
+     "days": 7,
+     "deps": [
+      "stability_ramp"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "stability_issues",
+     "name": "遗留问题关闭与受控转交",
+     "owner": "项目经理/QA",
+     "days": 2,
+     "deps": [
+      "stability_metrics"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    },
+    {
+     "id": "project_close_review",
+     "name": "项目关闭评审",
+     "owner": "跨部门",
+     "days": 1,
+     "deps": [
+      "stability_ramp",
+      "stability_metrics",
+      "stability_issues"
+     ],
+     "evidence": null,
+     "isGate": false,
+     "deliverables": null
+    }
+   ],
+   "phaseDeliverables": [
+    "项目关闭评审记录"
+   ]
+  }
+ ]
+}
