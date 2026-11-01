@@ -132,8 +132,14 @@ pnpm build
 - [接口契约](pdos-next/contracts/openapi.json)与[操作目录](pdos-next/contracts/operations.json)：机器可读定义。
 - [编码协作约定](AGENTS.md)：实现、验证、迁移和授权边界。
 
-## 版本与归档
+## 版本、分支与归档
 
 `pdos-next/` 是当前开发主线。原 `server/` + `web/` 业务工程已停用，旧业务源码、旧迁移、旧测试与旧 CI 已从当前目录移除；仍需使用的运行框架、golden 材料和复用资产继续保留。
 
-GitHub 上的清理后快照不携带原工程提交历史，旧工程归档标签仅保留在开发机器。原资格材料不自动授予新工程资格。根目录仍保留的旧生产 compose 与部署脚本服务于[原生产环境下线](docs/runbooks/original-production-decommission.md)，现行应用使用 `pdos-next/` 的独立环境。
+| 用途 | 分支 | 使用边界 |
+|---|---|---|
+| 本地开发主线 | `pdos-next/design-v1.1` | 新实现只从这里续接；保留本地分组提交，不直接推送到公开仓库 |
+| 公开发布快照 | `codex/pdos-next-snapshot-20261022` | 仅在获得推送授权后发布选定本地提交的文件树；不把快照历史合回开发主线 |
+| 历史与实验分支 | `main`、`archive/original-2026-10-08`、`codex/s0-*`、`codex/sprint-*`、`ui/linear-restyle` 等 | 只作历史追溯或旧实验对照，不作为新功能起点，也不因存在未合并提交而重新接入现行工程 |
+
+GitHub 上的清理后快照不携带原工程提交历史，快照发布方法见[2026-10-31 发布记录](docs/reports/evidence/repository-sync-20261031/snapshot-publication.md)。旧工程归档标签 `original-final-2026-10-08` 仅保留在开发机器，原资格材料不自动授予新工程资格。根目录仍保留的旧生产 compose 与部署脚本服务于[原生产环境下线](docs/runbooks/original-production-decommission.md)，现行应用使用 `pdos-next/` 的独立环境。
