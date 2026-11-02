@@ -319,7 +319,7 @@ W3c · 想法已变但没有记录
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
-- D31 〔你〕Prompt A/B 用真实模型同题评分（目前 not_scored）；S2–S5 技能包启用并建评测集；签 rfq 资格集的参考答案（随 D20-A2）。
+- D31 〔你〕Prompt A/B 用真实模型同题评分（目前 not_scored）；S2–S5 技能包启用并建评测集，其中 build_execution、change_control、quality_issue、release_handover、test_verification、work_management 六个技能包要先在评测规则 §4 补专属小节（见 D240 余项）；签 rfq 资格集的参考答案（随 D20-A2）。
 - D32 〔你〕work_management 的 T0 资格要 10–20 个多品类计划给你审阅。仓库只有两个品类种子（auto-tire-inflator、bicycle-pump），帐篷泵和气垫泵需要另建品类。
 
 **W6 P34→P33 实施（设计已定未实现；按 ①–⑧ 的顺序；前置 D17、D18）**
