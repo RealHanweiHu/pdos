@@ -8,6 +8,14 @@
 - 服务器、Nginx、RDS 实例与 ERP 看板、CEHub（以及同网络的 CRM）共用。**只动 PDOS 自己的部分**，每一步后都要确认其他站点正常。
 - 命令中的 `<…>` 是占位符。口令、密钥不写进命令历史、日志或本文件。
 
+**脚本与 compose 文件的位置（2026-11-01 起）**：仓库已只保留 pdos-next，`scripts/deploy-ecs.sh`、`compose.production.yaml` 等原工程文件不在当前目录。执行下面的步骤前，先把原工程最终版检出到一个独立目录，再在那里操作：
+
+```bash
+git worktree add ../pdos-original-final original-final-2026-10-08
+```
+
+根目录未入库的 `.env.production` 仍保留在原处，供需要时复制到上述目录。下线完成后可用 `git worktree remove ../pdos-original-final` 移除该目录。
+
 ## 资源清单（来自 Sprint 0 运行手册与部署脚本）
 
 | 资源 | PDOS 部分 | 共用部分（不要动） |
