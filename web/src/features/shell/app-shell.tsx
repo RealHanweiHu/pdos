@@ -35,7 +35,7 @@ function ThemeOptions() {
   return <div className="workspace-theme-options">{([{ value: "light", label: "亮色", Icon: Sun }, { value: "dark", label: "暗色", Icon: Moon }, { value: "system", label: "跟随系统", Icon: SidebarSimple }] as const).map(({ value, label, Icon }) => <Button key={value} variant="outline" aria-pressed={theme === value} onClick={() => apply(value)}><Icon/>{label}</Button>)}</div>;
 }
 
-export function AppShell({ children, documentPage, runPage, localPreview = false }: { children?: ReactNode; documentPage?: { categoryId: string }; runPage?: { runId: string; categoryId?: string }; localPreview?: boolean } = {}) {
+export function AppShell({ children, documentPage, runPage, localPreview = false, localSession = false }: { children?: ReactNode; documentPage?: { categoryId: string }; runPage?: { runId: string; categoryId?: string }; localPreview?: boolean; localSession?: boolean } = {}) {
   const runPageId = runPage?.runId ?? "";
   const documentCategoryId = documentPage?.categoryId ?? "";
   const documentMode = Boolean(documentCategoryId);
@@ -63,7 +63,7 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
   const { resolvedTheme, setTheme } = useTheme();
 
   const load = useCallback(async () => {
-    try {
+    const read = async () => {
       const who = await browserApi<Session>("v1/session");
       const [list, projects] = await Promise.allSettled([
         browserApi<Category[]>("v1/categories"),
@@ -75,11 +75,18 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
       setNavigationProjects(projects.status === "fulfilled" ? projects.value.items : []);
       setProjectsError(projects.status === "rejected" ? (projects.reason as Error).message : "");
       setAuth("ready");
+    };
+    // There is no sign-in page yet (D214). When this server holds a local session for this machine,
+    // that session decides who is signed in, so a cookie left by another local environment on the
+    // same host cannot win. The entry card below remains the fallback.
+    if (localSession) { try { await browserApi("local-session", {}); } catch { /* keep the existing cookie */ } }
+    try {
+      await read();
     } catch (failure) {
       if ((failure as { status?: number }).status === 401) setAuth("signed_out");
       else { setEntryError((failure as Error).message); setAuth("signed_out"); }
     }
-  }, []);
+  }, [localSession]);
   useEffect(() => { let active = true; void Promise.resolve().then(() => { if (active) return load(); }); return () => { active = false; }; }, [load]);
   useEffect(() => { const refresh = () => { void load(); }; window.addEventListener("pdos:category-metadata-saved", refresh); return () => window.removeEventListener("pdos:category-metadata-saved", refresh); }, [load]);
 
@@ -184,11 +191,11 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
   if (auth === "signed_out") return <>
     <header className="workspace-public-header"><span className={styles.brandMark} aria-hidden="true">P</span><span className="font-semibold">PDOS</span><Button className="ml-auto" size="icon" variant="ghost" aria-label="切换明暗主题" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>{resolvedTheme === "dark" ? <Sun/> : <Moon/>}</Button></header>
     <main className="mx-auto max-w-lg px-4 py-16"><div className="panel">
-      <p className="subtle">独立新工程 · 合成预览</p>
+      <p className="subtle">本地开发环境</p>
       <h1 className="mt-3 text-2xl font-semibold">PDOS 研发工作区</h1>
-      <p className="my-5">从我的工作开始，办理项目、整理项目集、查找知识。小Pai 对所有岗位开放，产品管理入口按本人品类权限显示。此环境只用于合成资料演练。</p>
+      <p className="my-5">从我的工作开始，办理项目、整理项目集、查找知识。小Pai 对所有岗位开放，产品管理入口按本人品类权限显示。此环境只用于本地开发。</p>
       {entryError && <p role="alert" className="mb-4">{entryError}</p>}
-      <Button onClick={async () => { setEntryError(""); try { await browserApi("local-session", {}); await load(); } catch (failure) { setEntryError((failure as Error).message); } }}>进入本地合成环境</Button>
+      <Button onClick={async () => { setEntryError(""); try { await browserApi("local-session", {}); await load(); } catch (failure) { setEntryError((failure as Error).message); } }}>进入本地开发环境</Button>
     </div></main>
   </>;
 
@@ -226,7 +233,7 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
       </nav>
       <div className="workspace-sidebar-bottom">
         <a href={pageHref(globalHref({ area: "settings", categoryId: location.categoryId, projectId: "" }, window.location.search))} className="workspace-nav-item" aria-label="设置" title="设置" aria-current={location.area === "settings" ? "page" : undefined} onClick={event => { if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); navigate("settings"); }}><GearSix size={17} aria-hidden="true"/><span className="workspace-nav-label">设置</span></a>
-        <div className="workspace-profile"><span className="workspace-avatar" aria-hidden="true">{session?.name.slice(0, 1) ?? "P"}</span><div className="workspace-nav-label min-w-0"><p className="truncate text-xs font-medium">{session?.name}</p><p className="workspace-environment">本地合成环境</p></div></div>
+        <div className="workspace-profile"><span className="workspace-avatar" aria-hidden="true">{session?.name.slice(0, 1) ?? "P"}</span><div className="workspace-nav-label min-w-0"><p className="truncate text-xs font-medium">{session?.name}</p><p className="workspace-environment">本地开发环境</p></div></div>
       </div>
     </>;
   }

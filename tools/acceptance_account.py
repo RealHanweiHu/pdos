@@ -51,8 +51,8 @@ def repo_head():
     revisions, parents = set(), set()
     for path in VERSIONS.glob("*.py"):
         body = path.read_text(encoding="utf-8")
-        revision = re.search(r'^revision = "([^"]+)"', body, re.M)
-        parent = re.search(r'^down_revision = "([^"]+)"', body, re.M)
+        revision = re.search(r"^revision\s*=\s*[\"']([^\"']+)[\"']", body, re.M)
+        parent = re.search(r"^down_revision\s*=\s*[\"']([^\"']+)[\"']", body, re.M)
         if revision:
             revisions.add(revision.group(1))
         if parent:

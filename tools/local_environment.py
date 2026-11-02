@@ -344,6 +344,26 @@ def main():
             env=env,
             check=True,
         )
+    if action == "serve-dev":
+        # Next dev mode (hot reload) signed in as a personal development account
+        # from tools/dev_account.py. Needs serve-api running on 8898.
+        account = sys.argv[2] if len(sys.argv) > 2 else None
+        tokens = state.get("dev_tokens", {})
+        if account not in tokens:
+            raise SystemExit(
+                f"No development account named {account!r} in this environment; "
+                "create one with tools/dev_account.py create."
+            )
+        env.update(
+            PDOS_NEXT_API_URL="http://127.0.0.1:8898",
+            PDOS_NEXT_LOCAL_SESSION=tokens[account],
+        )
+        subprocess.run(
+            ["pnpm", "dev", "--hostname", "127.0.0.1", "--port", "3000"],
+            cwd=ROOT / "web",
+            env=env,
+            check=True,
+        )
     if action == "destroy":
         # Container identity, endpoint, and DB marker were all checked above.
         docker("rm", "-f", state["container"])

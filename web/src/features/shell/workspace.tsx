@@ -213,7 +213,7 @@ export function Workspace({ categoryId, projectId = "", fixedProductId, embedded
       {auth === "ready" && productId && (!data || data.product.id !== productId) && (error || readingFacts) && <section className="panel mt-5"><p className="subtle">{readingFacts ? "正在按当前身份和型号读取事实；此次只读，不提交业务操作。" : "当前型号事实尚未取得。可按当前身份明确重试读取，不改变授权、草稿或原操作。"}</p><Button type="button" variant="outline" className="mt-3" disabled={busy || readingFacts} onClick={() => void retryCurrentFacts()}>重试读取当前事实</Button></section>}
       </div>
       {auth === "loading" ? <p role="status">正在载入你的工作…</p> : auth === "signed_out" ? <div className="panel mx-auto mt-12 max-w-lg">
-        <p className="subtle">独立新工程 · 合成预览</p><h1 className="mt-3 text-2xl font-semibold">从一份型号资料开始</h1>
+        <p className="subtle">本地开发环境</p><h1 className="mt-3 text-2xl font-semibold">从一份型号资料开始</h1>
         <p className="my-5">登记原文、定位依据、保存事实，再查看实际工作结果。此环境只用于合成资料演练。</p>
         <Button disabled={busy} onClick={async () => { setBusy(true); setError(""); try { await api("local-session", {}); await load(); } catch (e) { setError((e as Error).message); } finally { setBusy(false); } }}>进入本地合成环境</Button>
       </div> : <>

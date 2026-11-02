@@ -10,5 +10,6 @@ export default async function Page() {
     const workspace = config && workspacePreview(config);
     if (!workspace || (await cookies()).get("pdos-next-session")?.value !== workspace.role.token) redirect("/preview");
   }
-  return <AppShell localPreview={preview} />;
+  const localSession = Boolean(process.env.PDOS_NEXT_LOCAL_SESSION) && localPreviewHost(host);
+  return <AppShell localPreview={preview} localSession={localSession} />;
 }
