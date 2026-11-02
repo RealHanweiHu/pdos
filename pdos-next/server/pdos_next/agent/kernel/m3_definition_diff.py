@@ -13,9 +13,9 @@ from pydantic import Field, model_validator
 from pdos_next.core.database import tenant_session
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.preproject import baseline
-from pdos_next.domain.products import definitions, variants
-from pdos_next.domain.products.models import DefinitionRevision
+from pdos_next.domain.categories.preproject import baseline
+from pdos_next.domain.categories.products import definitions, variants
+from pdos_next.domain.categories.products.models import DefinitionRevision
 from pdos_next.errors import DomainError
 from pdos_next.schemas.products.derivation import DerivationRequest
 

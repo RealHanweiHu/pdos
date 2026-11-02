@@ -11,8 +11,8 @@ from uuid import UUID
 
 from pdos_next.core.safety import verify_test_target
 from pdos_next.core.service import digest
-from pdos_next.domain.build_operational_facts.schemas import DecisionInput
-from pdos_next.domain.test_resources.schemas import TestPlanBinding
+from pdos_next.domain.builds.operational_facts.schemas import DecisionInput
+from pdos_next.domain.builds.test_resources.schemas import TestPlanBinding
 from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 
 DEFAULT_ISSUER_KEY = "synthetic-test-resources"
@@ -69,7 +69,7 @@ def _profile(profile, *, strict_material=False):
 
 
 def _register(engine, profile, tenant, product, ledger, key, version):
-    from pdos_next.domain.test_resources.service import configure_local_synthetic
+    from pdos_next.domain.builds.test_resources.service import configure_local_synthetic
 
     def verify(_session, ctx, binding, resource, decision, at):
         entry = ledger.get(str(decision.named_decision_id))

@@ -13,6 +13,15 @@ from copy import deepcopy
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from builds.test_build_project_scope import second_project_configuration
+from builds.test_builds import build_command
+from builds.test_builds import configuration as configuration
+from projects.test_project_first_plan import accepted, cmd
+from projects.test_project_first_plan import definition as definition
+from projects.test_project_first_plan import project as project
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+
 from pdos_next.core.models import (
     Artifact,
     Audit,
@@ -24,25 +33,17 @@ from pdos_next.core.models import (
     Receipt,
     RequestKey,
 )
-from pdos_next.domain.builds.models import Build, BuildReadiness
-from pdos_next.domain.configurations.models import (
+from pdos_next.domain.builds.configurations.models import (
     BomLine,
     BomRevision,
     EngineeringConfiguration,
     PartIdentity,
     ProcessRevision,
 )
-from pdos_next.domain.configurations.schemas import ExternalDesignReference
-from pdos_next.domain.products.models import DefinitionRevision
+from pdos_next.domain.builds.configurations.schemas import ExternalDesignReference
+from pdos_next.domain.builds.models import Build, BuildReadiness
+from pdos_next.domain.categories.products.models import DefinitionRevision
 from pdos_next.domain.projects.models import Project, ProjectProductLink
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from test_build_project_scope import second_project_configuration
-from test_builds import build_command
-from test_builds import configuration as configuration
-from test_project_first_plan import accepted, cmd
-from test_project_first_plan import definition as definition
-from test_project_first_plan import project as project
 
 
 def _counts(setup):

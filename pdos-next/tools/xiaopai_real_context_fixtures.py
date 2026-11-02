@@ -20,9 +20,9 @@ ROOT = Path(__file__).resolve().parents[2]
 QUESTIONS = ROOT / "docs/evaluations/xiaopai-v0/context-questions.json"
 FOCUS = (48000, 64000)
 REUSE = {
-    "history": "pdos-next/server/tests/agent_kernel/test_eval_v0_history_state_pg.py",
-    "source": "pdos-next/server/tests/enterprise_search/test_eval_v0_source_context_pg.py",
-    "candidate": "pdos-next/server/tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+    "history": "pdos-next/server/tests/agent/kernel/test_eval_v0_history_state_pg.py",
+    "source": "pdos-next/server/tests/agent/enterprise_search/test_eval_v0_source_context_pg.py",
+    "candidate": "pdos-next/server/tests/agent/kernel/test_eval_v0_handle_candidate_pg.py",
 }
 
 
@@ -144,12 +144,12 @@ def prepare_case(setup, case_id, focus):
     spec, case = run_spec(case_id, focus), cases()[case_id]
     bindings = spec["bindings"]
     if case_id in {"CTX-02", "CTX-03", "CTX-08", "CTX-12"}:
-        from tests.enterprise_search.test_eval_v0_source_context_pg import register_sources
+        from tests.agent.enterprise_search.test_eval_v0_source_context_pg import register_sources
 
         sources, audience = register_sources(setup, case)
         bindings.update(sources=sources, private_audience_id=str(audience) if audience else None)
         if case_id == "CTX-12":
-            from tests.enterprise_search.test_eval_v0_source_context_pg import ctx12_queries
+            from tests.agent.enterprise_search.test_eval_v0_source_context_pg import ctx12_queries
 
             bindings["diagnostic_full_span_queries"] = list(ctx12_queries(case))
             bindings["selection_variant"] = "category_scoped_read_without_fixed_pins"
@@ -160,7 +160,7 @@ def prepare_case(setup, case_id, focus):
                 "This batch uses category-scoped HTTP Runs for fixture isolation; "
                 "the old scripted control used personal scope. Record the variant.")
     elif case_id in {"CTX-05", "CTX-06", "CTX-07"}:
-        from tests.agent_kernel.eval_v0_history_state_support import knowledge
+        from tests.agent.kernel.eval_v0_history_state_support import knowledge
 
         if case_id == "CTX-05":
             first = knowledge(setup, "A-17 v1；空载噪声78 dB。", label="S5-A")
@@ -169,7 +169,7 @@ def prepare_case(setup, case_id, focus):
                                 previous=old_second, label="S5-B")
             bindings.update(old_focus=first, new_focus=current)
         elif case_id == "CTX-06":
-            from tests.preproject.test_g0 import post, request
+            from tests.categories.preproject.test_g0 import post, request
 
             first = knowledge(setup, "EVALCTX06扭矩；三月工艺0.6 N·m。", label="S6-A")
             middle = knowledge(setup, "EVALCTX06扭矩；过渡版未选作比较。",
@@ -186,7 +186,7 @@ def prepare_case(setup, case_id, focus):
         else:
             bindings["old_source"] = knowledge(setup, "S7-A；复验观察窗口30秒。", label="S7-A v1")
     elif case_id in {"CTX-01", "CTX-04", "CTX-11"}:
-        from tests.enterprise_search.test_retrieval_pg import index, register
+        from tests.agent.enterprise_search.test_retrieval_pg import index, register
 
         body = {"CTX-01": "B07；样件L-42；密封圈EPDM；硬度70 Shore A；保压30秒；压降12 kPa；"
                           "环境温度未记录；验收判据未提供。",
@@ -208,7 +208,7 @@ def prepare_case(setup, case_id, focus):
         if case_id == "CTX-04":
             _ctx04_tasks(setup, spec, body)
     elif case_id == "CTX-09":
-        from tests.agent_kernel.eval_v0_ctx09_directory_support import native_directory
+        from tests.agent.kernel.eval_v0_ctx09_directory_support import native_directory
 
         bindings["directory"] = native_directory(setup, case)
     if case_id != "CTX-09":
@@ -218,8 +218,8 @@ def prepare_case(setup, case_id, focus):
 
 def _ctx04_tasks(setup, spec, body):
     from g0_fixture import create_g0_project
-    from tests.agent_kernel.eval_v0_ctx04_plan_support import TITLES, native_plan
-    from tests.work_management_pg import test_workflow as flow
+    from tests.agent.kernel.eval_v0_ctx04_plan_support import TITLES, native_plan
+    from tests.projects.work_pg import test_workflow as flow
 
     bindings = spec["bindings"]
     work = SimpleNamespace(setup=setup, project_id=UUID(bindings["project_id"]), source={
@@ -287,13 +287,13 @@ def apply_control(setup, spec, action, previous):
     No Run/ToolCall/READ/result/constraint/candidate rows are written here.
     """
     require_isolated_target(setup)
-    from tests.agent_kernel.eval_v0_history_state_support import (
+    from tests.agent.kernel.eval_v0_history_state_support import (
         change,
         choice,
         knowledge,
         select_context,
     )
-    from tests.agent_kernel.test_context_corrections_pg import read_state
+    from tests.agent.kernel.test_context_corrections_pg import read_state
 
     bindings = spec["bindings"]
     session_id = previous["session_id"]

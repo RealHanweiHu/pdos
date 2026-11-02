@@ -5,7 +5,7 @@ from copy import deepcopy
 from uuid import UUID
 
 from pdos_next.core.safety import verify_test_target
-from pdos_next.domain.quality_execution.policy import configure_local_synthetic
+from pdos_next.domain.quality.execution.policy import configure_local_synthetic
 
 _KEYS = {"tenant_id", "product_id", "project_id", "issuer_key", "issuer_version"}
 _REGISTRY = "_pdos_quality_policy_issuers"

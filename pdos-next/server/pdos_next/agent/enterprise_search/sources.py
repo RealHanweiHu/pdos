@@ -20,7 +20,7 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, UUID, array
 
 from pdos_next.core.models import Artifact, OriginalSecurity, Product, UploadedOriginal
-from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
+from pdos_next.domain.categories.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 
 
 def bound_tenant():

@@ -92,17 +92,19 @@ PAYLOADS = {
     "ai.run.revert": RevertPayload,
 }
 
-from pdos_next.domain.preproject.schemas import PAYLOADS as PREPROJECT_PAYLOADS  # noqa: E402
+from pdos_next.domain.categories.preproject.schemas import (  # noqa: E402
+    PAYLOADS as PREPROJECT_PAYLOADS,
+)
 
 PAYLOADS.update(PREPROJECT_PAYLOADS)
 
-from pdos_next.domain.preproject.category_schemas import (  # noqa: E402
+from pdos_next.domain.categories.preproject.category_schemas import (  # noqa: E402
     PAYLOADS as CATEGORY_MATERIAL_PAYLOADS,
 )
 
 PAYLOADS.update(CATEGORY_MATERIAL_PAYLOADS)
 
-from pdos_next.domain.preproject.evidence_schemas import (  # noqa: E402
+from pdos_next.domain.categories.preproject.evidence_schemas import (  # noqa: E402
     PAYLOADS as PREPROJECT_EVIDENCE_PAYLOADS,
 )
 
@@ -179,12 +181,12 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.builds.schemas import BuildCreatePayload, BuildReadinessPayload  # noqa: E402
-from pdos_next.domain.configurations.schemas import (  # noqa: E402
+from pdos_next.domain.builds.configurations.schemas import (  # noqa: E402
     EngineeringBomRevisePayload,
     EngineeringConfigurationCreatePayload,
     NpiProcessRevisePayload,
 )
+from pdos_next.domain.builds.schemas import BuildCreatePayload, BuildReadinessPayload  # noqa: E402
 
 PAYLOADS.update(
     {
@@ -196,7 +198,7 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.build_execution.schemas import (  # noqa: E402
+from pdos_next.domain.builds.execution.schemas import (  # noqa: E402
     ActualConfigurationPayload,
     OutputPayload,
     SampleAllocatePayload,
@@ -210,7 +212,7 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.supply_execution.schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.supply_execution.schemas import (  # noqa: E402
     KitComputePayload,
     SnapshotRecordPayload,
 )
@@ -223,7 +225,7 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.cost_execution.schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.cost_execution.schemas import (  # noqa: E402
     EstimateComputePayload,
     InputsRecordPayload,
 )
@@ -235,14 +237,14 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.verification_execution.schemas import (  # noqa: E402
+from pdos_next.domain.verification.execution.schemas import (  # noqa: E402
     PreparationRecordPayload,
 )
 
 # Human preparation records do not grant professional or canonical execution qualification.
 PAYLOADS["verification.preparation.record"] = PreparationRecordPayload
 
-from pdos_next.domain.verification_front.schemas import (  # noqa: E402
+from pdos_next.domain.verification.preparation.schemas import (  # noqa: E402
     MethodPreparePayload,
     RequestCreatePayload,
     ScheduleProposePayload,
@@ -256,7 +258,7 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.original_lifecycle_execution.schemas import (  # noqa: E402
+from pdos_next.originals.lifecycle.execution.schemas import (  # noqa: E402
     LifecycleCancelPayload,
     LifecycleCommandPayload,
     LifecycleProtectionPayload,
@@ -271,7 +273,7 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.build_start.schemas import (  # noqa: E402
+from pdos_next.domain.builds.start.schemas import (  # noqa: E402
     BuildAuthorizationPayload,
     BuildStartPayload,
 )
@@ -284,8 +286,8 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.sample_handoff.schemas import SampleReadinessPayload  # noqa: E402
-from pdos_next.domain.verification_handoff.schemas import (  # noqa: E402
+from pdos_next.domain.builds.sample_handoff.schemas import SampleReadinessPayload  # noqa: E402
+from pdos_next.domain.verification.handoff.schemas import (  # noqa: E402
     AcceptPayload,
     ActualMethodPreparePayload,
     OfferPayload,
@@ -302,13 +304,13 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.verification_launch.schemas import (  # noqa: E402
+from pdos_next.domain.verification.launch.schemas import (  # noqa: E402
     PlanPayload as TestPlanPayload,
 )
-from pdos_next.domain.verification_launch.schemas import (  # noqa: E402
+from pdos_next.domain.verification.launch.schemas import (  # noqa: E402
     PromisePayload as TestPromisePayload,
 )
-from pdos_next.domain.verification_launch.schemas import (  # noqa: E402
+from pdos_next.domain.verification.launch.schemas import (  # noqa: E402
     StartPayload as TestStartPayload,
 )
 
@@ -320,16 +322,16 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+from pdos_next.domain.verification.results.schemas import (  # noqa: E402
     ComputePayload as TestComputePayload,
 )
-from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+from pdos_next.domain.verification.results.schemas import (  # noqa: E402
     DispositionPayload as TestDispositionPayload,
 )
-from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+from pdos_next.domain.verification.results.schemas import (  # noqa: E402
     ImportPayload as TestImportPayload,
 )
-from pdos_next.domain.verification_results.schemas import (  # noqa: E402
+from pdos_next.domain.verification.results.schemas import (  # noqa: E402
     ReviewPayload as TestReviewPayload,
 )
 
@@ -342,11 +344,11 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.change_execution.schemas import (  # noqa: E402
+from pdos_next.domain.change.execution.schemas import (  # noqa: E402
     ChangeCreatePayload,
     ImpactComputePayload,
 )
-from pdos_next.domain.quality_execution.schemas import (  # noqa: E402
+from pdos_next.domain.quality.execution.schemas import (  # noqa: E402
     CapaDraftPayload,
     ContainmentPayload,
     IssueCreatePayload,
@@ -367,8 +369,8 @@ PAYLOADS.update(
 )
 
 
-from pdos_next.domain.capa_verification.schemas import FollowupLinkPayload  # noqa: E402
-from pdos_next.domain.quality_followup.schemas import (  # noqa: E402
+from pdos_next.domain.quality.capa.verification.schemas import FollowupLinkPayload  # noqa: E402
+from pdos_next.domain.quality.followup.schemas import (  # noqa: E402
     ActionsCompletePayload,
     RootCausePayload,
 )
@@ -381,13 +383,13 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.capa_effectiveness.candidate_commands import (  # noqa: E402
+from pdos_next.domain.quality.capa.candidate_commands import (  # noqa: E402
     CandidateRecordPayload,
 )
 
 PAYLOADS["quality.capa.verification.candidate.record"] = CandidateRecordPayload
 
-from pdos_next.domain.capa_effectiveness.fact_commands import (  # noqa: E402
+from pdos_next.domain.quality.capa.fact_commands import (  # noqa: E402
     NamedReviewPayload,
     ObservationPayload,
 )
@@ -402,17 +404,17 @@ PAYLOADS.update(
 
 # Canonical Change operations; selection is an explicit auxiliary proposal.
 # The host-only policy publisher is deliberately absent from PAYLOADS.
-from pdos_next.features.change.command_schemas import (  # noqa: E402
+from pdos_next.domain.change.command_schemas import (  # noqa: E402
     ImplementationPayload,
     OrderApprovePayload,
     OrderPreparePayload,
 )
-from pdos_next.features.change.completion_schemas import (  # noqa: E402
+from pdos_next.domain.change.completion_schemas import (  # noqa: E402
     ClosePayload,
     EffectivityPayload,
     VerificationPayload,
 )
-from pdos_next.features.change.controlled_schemas import SelectionPayload  # noqa: E402
+from pdos_next.domain.change.controlled_schemas import SelectionPayload  # noqa: E402
 
 PAYLOADS.update(
     {
@@ -426,7 +428,7 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.manufacturing_baseline.schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.baseline.schemas import (  # noqa: E402
     BaselinePayload,
     ControlPlanPayload,
     InstructionPayload,
@@ -440,19 +442,19 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.baseline.publication_schemas import (  # noqa: E402
     OPERATION as MANUFACTURING_PUBLICATION_OPERATION,
 )
-from pdos_next.domain.manufacturing_baseline.publication_schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.baseline.publication_schemas import (  # noqa: E402
     PublishPayload as ManufacturingPublicationPayload,
 )
 
 PAYLOADS[MANUFACTURING_PUBLICATION_OPERATION] = ManufacturingPublicationPayload
 
-from pdos_next.domain.manufacturing_trials.native_schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.trials.native_schemas import (  # noqa: E402
     PilotCreatePayload as NativePilotCreatePayload,
 )
-from pdos_next.domain.manufacturing_trials.native_schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.trials.native_schemas import (  # noqa: E402
     PilotResultPayload as NativePilotResultPayload,
 )
 
@@ -467,18 +469,20 @@ from pdos_next.schemas.products.definition_items import DefinitionItemPatch  # n
 
 PAYLOADS["product.definition.item.patch"] = DefinitionItemPatch
 
-from pdos_next.domain.products.platform_schemas import PlatformLinkInput  # noqa: E402
+from pdos_next.domain.categories.products.platform_schemas import PlatformLinkInput  # noqa: E402
 
 PAYLOADS["platform.link.create"] = PlatformLinkInput
 
-from pdos_next.domain.release.schemas import PAYLOADS as RELEASE_PAYLOADS  # noqa: E402
+from pdos_next.domain.manufacturing.release.schemas import (  # noqa: E402
+    PAYLOADS as RELEASE_PAYLOADS,
+)
 
 PAYLOADS.update(RELEASE_PAYLOADS)
 
-from pdos_next.domain.external_handoff.schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.external_handoff.schemas import (  # noqa: E402
     AuthorizePayload as ExternalHandoffAuthorizePayload,
 )
-from pdos_next.domain.external_handoff.schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.external_handoff.schemas import (  # noqa: E402
     ReceiptRecordPayload as ExternalReceiptRecordPayload,
 )
 
@@ -489,17 +493,19 @@ PAYLOADS.update(
     }
 )
 
-from pdos_next.domain.release_exceptions.schemas import (  # noqa: E402
+from pdos_next.domain.manufacturing.release.exceptions.schemas import (  # noqa: E402
     PAYLOADS as RELEASE_EXCEPTION_PAYLOADS,
 )
 
 PAYLOADS.update(RELEASE_EXCEPTION_PAYLOADS)
 
-from pdos_next.domain.work_management.schemas import PAYLOADS as WORK_PAYLOADS  # noqa: E402
+from pdos_next.domain.projects.work.schemas import PAYLOADS as WORK_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(WORK_PAYLOADS)
 
-from pdos_next.domain.external_wait.schemas import PAYLOADS as EXTERNAL_WAIT_PAYLOADS  # noqa: E402
+from pdos_next.domain.projects.external_wait.schemas import (  # noqa: E402
+    PAYLOADS as EXTERNAL_WAIT_PAYLOADS,
+)
 
 PAYLOADS.update(EXTERNAL_WAIT_PAYLOADS)
 
@@ -507,11 +513,13 @@ from pdos_next.domain.automations.schemas import PAYLOADS as AUTOMATION_PAYLOADS
 
 PAYLOADS.update(AUTOMATION_PAYLOADS)
 
-from pdos_next.domain.work_fulfillment.schemas import PAYLOADS as FULFILLMENT_PAYLOADS  # noqa: E402
+from pdos_next.domain.projects.fulfillment.schemas import (  # noqa: E402
+    PAYLOADS as FULFILLMENT_PAYLOADS,
+)
 
 PAYLOADS.update(FULFILLMENT_PAYLOADS)
 
-from pdos_next.domain.project_risk.schemas import PAYLOADS as RISK_FOLLOWUP_PAYLOADS  # noqa: E402
+from pdos_next.domain.projects.risk.schemas import PAYLOADS as RISK_FOLLOWUP_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(RISK_FOLLOWUP_PAYLOADS)
 
@@ -519,11 +527,11 @@ from pdos_next.domain.knowledge.schemas import PAYLOADS as KNOWLEDGE_PAYLOADS  #
 
 PAYLOADS.update(KNOWLEDGE_PAYLOADS)
 
-from pdos_next.domain.field_feedback.schemas import PAYLOADS as FIELD_PAYLOADS  # noqa: E402
+from pdos_next.domain.quality.field_feedback.schemas import PAYLOADS as FIELD_PAYLOADS  # noqa: E402
 
 PAYLOADS.update(FIELD_PAYLOADS)
 
-from pdos_next.domain.project_governance.schemas import OPERATIONS as GOVERNANCE_OPERATIONS
+from pdos_next.domain.projects.governance.schemas import OPERATIONS as GOVERNANCE_OPERATIONS
 
 PAYLOADS.update({op: value[0] for op, value in GOVERNANCE_OPERATIONS.items()})
 

@@ -3,15 +3,15 @@
 from sqlalchemy import select
 
 from pdos_next.core.service import EVENTS as DOMAIN_EVENTS
-from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot
-from pdos_next.domain.build_start.models import BuildStart
+from pdos_next.domain.builds.execution.models import ActualConfiguration, BuildLot
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.change_execution.models import ChangeRequestVersion
-from pdos_next.domain.external_wait.models import ExternalWaitVersion
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.domain.supply_execution.models import SupplySnapshot
-from pdos_next.domain.verification_launch.models import VerificationRunVersion
-from pdos_next.domain.verification_results.models import TestResultActionFact
+from pdos_next.domain.builds.start.models import BuildStart
+from pdos_next.domain.change.execution.models import ChangeRequestVersion
+from pdos_next.domain.manufacturing.supply_execution.models import SupplySnapshot
+from pdos_next.domain.projects.external_wait.models import ExternalWaitVersion
+from pdos_next.domain.quality.execution.models import QualityIssueVersion
+from pdos_next.domain.verification.launch.models import VerificationRunVersion
+from pdos_next.domain.verification.results.models import TestResultActionFact
 
 from . import field_feedback_events, role_native_events
 

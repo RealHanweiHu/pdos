@@ -11,7 +11,7 @@ def direct_source_basis(s, ctx, product, refs, read_set):
     Read-set entries not referenced here remain the caller's independent guards.
     No ref's required read set or upstream parent is loaded by this helper.
     """
-    from pdos_next.domain.quality_execution.evidence import check_source, merge_reads
+    from pdos_next.domain.quality.execution.evidence import check_source, merge_reads
 
     references = tuple(
         ref if isinstance(ref, SourceRef) else SourceRef.model_validate(ref) for ref in refs

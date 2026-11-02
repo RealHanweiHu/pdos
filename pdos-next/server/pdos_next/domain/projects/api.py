@@ -46,7 +46,7 @@ def register_routes(app, engine, auth_dependency):
                 or proposal.tenant_id != ctx.tenant_id
             ):
                 raise DomainError("FORBIDDEN_SCOPE", "计划候选不在当前项目范围。", 403)
-            from pdos_next.domain.project_governance.service import promise_facts
+            from pdos_next.domain.projects.governance.service import promise_facts
 
             from .models import ProjectTask
 

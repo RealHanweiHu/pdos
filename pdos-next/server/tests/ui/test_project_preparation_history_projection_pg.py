@@ -12,24 +12,25 @@ from copy import deepcopy
 from pathlib import Path
 from uuid import UUID
 
-from manufacturing_preparation_transactions.fixtures import (
+from builds.test_build_project_scope import second_project_configuration
+from builds.test_builds import configuration as configuration
+from manufacturing.preparation_transactions.fixtures import (
     bootstrap_authority,
     inputs,
     payload,
 )
-from manufacturing_preparation_transactions.fixtures import manufacturing_case as manufacturing_case
-from manufacturing_preparation_transactions.test_transactions import reference, save
+from manufacturing.preparation_transactions.fixtures import manufacturing_case as manufacturing_case
+from manufacturing.preparation_transactions.test_transactions import reference, save
+from projects.test_project_first_plan import cmd
+from projects.test_project_first_plan import definition as definition
+from projects.test_project_first_plan import project as project
+from sqlalchemy import update
+from sqlalchemy.orm import Session
+
 from pdos_next.core.models import Artifact
 from pdos_next.core.safety import verify_test_target
 from pdos_next.core.service import digest
-from pdos_next.features.capa.history import PAGE_SIZE
-from sqlalchemy import update
-from sqlalchemy.orm import Session
-from test_build_project_scope import second_project_configuration
-from test_builds import configuration as configuration
-from test_project_first_plan import cmd
-from test_project_first_plan import definition as definition
-from test_project_first_plan import project as project
+from pdos_next.domain.quality.capa.history import PAGE_SIZE
 from tests.ui import test_project_manufacturing_preparation_projection_pg as prior_ui
 
 

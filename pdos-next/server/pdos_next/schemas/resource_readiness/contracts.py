@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import AfterValidator, AwareDatetime, BaseModel, ConfigDict, Field, model_validator
 
-from pdos_next.domain.engines.planning.dto import CalendarSnapshot
+from pdos_next.domain.projects.planning.engine.dto import CalendarSnapshot
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
 
 Key = Annotated[str, Field(min_length=1, max_length=160)]

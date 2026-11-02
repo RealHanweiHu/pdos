@@ -12,24 +12,25 @@ from pathlib import Path
 from uuid import UUID
 
 import pytest
-from change_execution.approved_configuration_helpers import initial_configuration
-from knowledge_pg import test_publication as flow
-from knowledge_pg.test_publication import knowledge_work as knowledge_work
+from change.execution.approved_configuration_helpers import initial_configuration
+from knowledge.pg import test_publication as flow
+from knowledge.pg.test_publication import knowledge_work as knowledge_work
+from sqlalchemy import update
+from sqlalchemy.orm import Session
+
 from pdos_next.core.models import Artifact, Category, Grant, ObjectAudience, Product
 from pdos_next.core.safety import verify_test_target
 from pdos_next.core.service import digest
-from pdos_next.domain.configurations.models import (
+from pdos_next.domain.builds.configurations.models import (
     BomLine,
     BomRevision,
     EngineeringConfiguration,
     PartIdentity,
     ProcessRevision,
 )
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.domain.professional_authority.models import ProfessionalFact
+from pdos_next.domain.builds.professional_authority.models import ProfessionalFact
+from pdos_next.domain.categories.products.models import DefinitionRevision
 from pdos_next.domain.projects.models import ProjectProductLink
-from sqlalchemy import update
-from sqlalchemy.orm import Session
 
 
 @pytest.fixture

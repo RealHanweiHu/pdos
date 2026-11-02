@@ -11,19 +11,24 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
+from pydantic import JsonValue, ValidationError
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from pdos_next.core.models import now
-from pdos_next.domain.engines.supply_cost.common import (
+from pdos_next.domain.manufacturing.supply_cost.engine.common import (
     FrozenDTO,
     SnapshotRef,
     digest,
     source_issues,
 )
-from pdos_next.domain.engines.supply_cost.dto import CoverageResult, DemandLine, FixedBasis
+from pdos_next.domain.manufacturing.supply_cost.engine.dto import (
+    CoverageResult,
+    DemandLine,
+    FixedBasis,
+)
 from pdos_next.errors import DomainError
 from pdos_next.schemas.supply_cost.dto import BoundDemand, DemandSnapshot, Scope
-from pydantic import JsonValue, ValidationError
-from sqlalchemy import select
-from sqlalchemy.orm import Session
 
 from .models import Build, BuildReadiness
 from .readiness import _Input, _ref

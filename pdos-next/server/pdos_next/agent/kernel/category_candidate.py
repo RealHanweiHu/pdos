@@ -11,8 +11,8 @@ from pdos_next.core.database import require_context
 from pdos_next.core.models import Principal
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest
-from pdos_next.domain.preproject.category_creation import CategoryCreate, InitialGroups
-from pdos_next.domain.preproject.category_service import _references
+from pdos_next.domain.categories.preproject.category_creation import CategoryCreate, InitialGroups
+from pdos_next.domain.categories.preproject.category_service import _references
 from pdos_next.errors import DomainError
 
 from . import policy

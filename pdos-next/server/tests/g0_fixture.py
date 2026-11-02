@@ -6,10 +6,11 @@ from datetime import date, timedelta
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
-from pdos_next.core.models import Grant, LoginSession, Principal, now
-from pdos_next.core.service import digest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+
+from pdos_next.core.models import Grant, LoginSession, Principal, now
+from pdos_next.core.service import digest
 
 
 def run_command(setup, operation, payload, *, actor=None, revision=1):
@@ -112,7 +113,7 @@ def published_parent(setup, *, product_id=None, private=False):
     needs the one owner-only publication fixture the derivation tests already
     cover. It records `synthetic: True`; no real publication qualification.
     """
-    from tests.preproject.test_derivation_transactions import synthetic_parent
+    from tests.categories.preproject.test_derivation_transactions import synthetic_parent
 
     return synthetic_parent(setup, product_id=product_id or setup.product, private=private)
 

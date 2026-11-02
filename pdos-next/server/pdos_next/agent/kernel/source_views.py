@@ -80,7 +80,7 @@ def _human(session, ctx, product_id=None, proposal_id=None):
     ):
         raise DomainError("FORBIDDEN_SCOPE", "资料只向当前品类内的具名本人显示。", 403)
     if proposal_id is not None:
-        from pdos_next.domain.preproject.access import proposal
+        from pdos_next.domain.categories.preproject.access import proposal
 
         proposal(session, ctx, proposal_id)
 

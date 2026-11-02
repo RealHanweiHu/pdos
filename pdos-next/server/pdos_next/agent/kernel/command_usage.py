@@ -26,7 +26,7 @@ from pdos_next.errors import DomainError
 REGISTRY = Path(__file__).resolve().parent / "command_usage.json"
 
 # Registered commands whose 何时调用 is still unwritten. This number may only go
-# down: tests/agent_kernel/test_command_usage.py fails if it grows, and a new
+# down: tests/agent/kernel/test_command_usage.py fails if it grows, and a new
 # command must either carry a note or be added here deliberately.
 PENDING_LIMIT = 131
 

@@ -9,8 +9,8 @@ from pdos_next.agent.kernel.models import AgentRun
 from pdos_next.agent.kernel.requested_skills import RequestedSkill, validate
 from pdos_next.agent.kernel.skills import SkillCatalog
 from pdos_next.core.schema_base import StrictModel
-from pdos_next.domain.preproject.access import member
-from pdos_next.domain.work_management.owner import project
+from pdos_next.domain.categories.preproject.access import member
+from pdos_next.domain.projects.work.owner import project
 from pdos_next.errors import DomainError
 
 from .action_sources import capture_work, recheck_work

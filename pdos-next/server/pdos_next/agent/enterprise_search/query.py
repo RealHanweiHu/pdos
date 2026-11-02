@@ -8,7 +8,7 @@ from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from pdos_next.core.database import require_context
 from pdos_next.core.models import Category, Product
-from pdos_next.domain.preproject.models import Proposal
+from pdos_next.domain.categories.preproject.models import Proposal
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
 

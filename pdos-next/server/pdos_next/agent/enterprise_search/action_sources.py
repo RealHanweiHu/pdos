@@ -15,12 +15,12 @@ from pdos_next.agent.kernel.execution import scope_for_run
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
 from pdos_next.core.models import Base, ObjectAudience
 from pdos_next.core.service import digest, require_access
+from pdos_next.domain.builds.configurations.schemas import DefinitionReference
+from pdos_next.domain.builds.configurations.service import _merge_reads
 from pdos_next.domain.builds.service import _build, _linked
-from pdos_next.domain.configurations.schemas import DefinitionReference
-from pdos_next.domain.configurations.service import _merge_reads
-from pdos_next.domain.supply_execution.service import _human, _sources
-from pdos_next.domain.verification_execution.service import _row as preparation_row
-from pdos_next.domain.verification_execution.service import _snapshot as preparation_snapshot
+from pdos_next.domain.manufacturing.supply_execution.service import _human, _sources
+from pdos_next.domain.verification.execution.service import _row as preparation_row
+from pdos_next.domain.verification.execution.service import _snapshot as preparation_snapshot
 from pdos_next.errors import DomainError
 
 from . import assistant_ledger as ledger
@@ -543,7 +543,7 @@ def recheck(session, ctx, run, frozen, *, preparation_id=None):
 def capture_work(session, ctx, run, citation_ids, *, execution_references=()):
     """Existing action proof for a project task; originals remain explicit inputs."""
     from pdos_next.core.source_current import direct_source_basis
-    from pdos_next.domain.work_management import owner
+    from pdos_next.domain.projects.work import owner
     from pdos_next.schemas.verification.contracts import SourceRef
 
     run = _run(session, ctx, run)

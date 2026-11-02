@@ -8,18 +8,18 @@ from sqlalchemy import Text, and_, cast, column, exists, func, literal, select, 
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import aliased
 
-from pdos_next.domain.manufacturing_baseline.models import PreparationCurrent, PreparationVersion
-from pdos_next.domain.manufacturing_baseline.publication_models import (
+from pdos_next.domain.manufacturing.baseline.models import PreparationCurrent, PreparationVersion
+from pdos_next.domain.manufacturing.baseline.publication_models import (
     ManufacturingBaselinePublication,
     ManufacturingBaselinePublicationCurrent,
     ManufacturingPublicationDocument,
 )
-from pdos_next.domain.verification_front.models import (
+from pdos_next.domain.projects.work.models import ProjectStatusUpdate
+from pdos_next.domain.verification.handoff.models import VerificationHandoffFact
+from pdos_next.domain.verification.preparation.models import (
     FormalVerificationCurrent,
     FormalVerificationRequest,
 )
-from pdos_next.domain.verification_handoff.models import VerificationHandoffFact
-from pdos_next.domain.work_management.models import ProjectStatusUpdate
 
 FAMILIES = frozenset({"project_status", "manufacturing_document", "verification_handoff"})
 MODELS = {

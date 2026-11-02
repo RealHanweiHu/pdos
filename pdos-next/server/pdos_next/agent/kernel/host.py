@@ -71,7 +71,7 @@ class BoundHost:
         return self.skill_context(scope, goal, bindings=())["context"]
 
     def skill_context(self, scope, goal, *, bindings):
-        from pdos_next.features.personal.preferences import context_preferences
+        from pdos_next.domain.my_work.preferences import context_preferences
 
         from .context_projection import combine_contracts, project, snapshot
 
@@ -184,7 +184,7 @@ class BoundHost:
             return max(0, run.token_limit - run.used_tokens - run.held_tokens)
 
     def context_guard(self, scope):
-        from pdos_next.features.personal.preferences import recheck_context_preferences
+        from pdos_next.domain.my_work.preferences import recheck_context_preferences
 
         if self.adapters.context_guard is not None:
             self.adapters.context_guard(scope)

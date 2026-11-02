@@ -12,8 +12,13 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 from g0_fixture import create_g0_project
-from manufacturing_preparation import publication_pg_helpers as upstream
-from manufacturing_preparation.publication_pg_helpers import publication_case as publication_case
+from manufacturing.preparation import publication_pg_helpers as upstream
+from manufacturing.preparation.publication_pg_helpers import publication_case as publication_case
+from manufacturing.release_policy_transactions import test_decisions as flow
+from projects.test_project_first_plan import post
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+
 from pdos_next.core.models import (
     Artifact,
     Consumption,
@@ -23,21 +28,17 @@ from pdos_next.core.models import (
     Product,
     UploadedOriginal,
 )
-from pdos_next.domain.configurations.models import (
+from pdos_next.domain.builds.configurations.models import (
     BomLine,
     BomRevision,
     EngineeringConfiguration,
     PartIdentity,
     ProcessRevision,
 )
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.domain.professional_authority.models import ProfessionalFact
+from pdos_next.domain.builds.professional_authority.models import ProfessionalFact
+from pdos_next.domain.categories.products.models import DefinitionRevision
+from pdos_next.domain.manufacturing.release.policy_owner import ActualReleasePolicyOwner
 from pdos_next.domain.projects.models import Project, ProjectProductLink
-from pdos_next.domain.release.policy_owner import ActualReleasePolicyOwner
-from release_policy_transactions import test_decisions as flow
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from test_project_first_plan import post
 
 
 def _counts(work):
@@ -320,7 +321,7 @@ def test_actual_release_reads_keep_named_decisions_on_old_package_after_renewal_
     # The stage read consumes the same actual package and separate named
     # signatures, while unknown physical delivery scope remains unknown.
     def stage_projection(reference):
-        from pdos_next.domain.project_governance.service import gate
+        from pdos_next.domain.projects.governance.service import gate
 
         stage = {"id": str(uuid4()), "rules": ["engineering", "manufacturing", "delivery"]}
         body = {"stages": [stage], "position": 0, "baseline": None}

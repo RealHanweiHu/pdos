@@ -9,11 +9,14 @@ from sqlalchemy import select
 
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest
-from pdos_next.domain.preproject import standard_match
-from pdos_next.domain.preproject.access import proposal
-from pdos_next.domain.preproject.category_models import ParameterCurrent, ParameterVersion
-from pdos_next.domain.preproject.category_service import parameter_version
-from pdos_next.domain.preproject.schemas import SpecItem
+from pdos_next.domain.categories.preproject import standard_match
+from pdos_next.domain.categories.preproject.access import proposal
+from pdos_next.domain.categories.preproject.category_models import (
+    ParameterCurrent,
+    ParameterVersion,
+)
+from pdos_next.domain.categories.preproject.category_service import parameter_version
+from pdos_next.domain.categories.preproject.schemas import SpecItem
 from pdos_next.errors import DomainError
 
 from .deterministic_proofs import _historical_read, canonical_hash

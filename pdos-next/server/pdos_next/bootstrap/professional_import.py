@@ -18,8 +18,8 @@ from pdos_next.errors import DomainError
 
 
 def import_professional_fact(s, ctx, issuer, payload, *, request_key: str, command_id: UUID):
-    from pdos_next.domain.professional_authority.schemas import FactInput
-    from pdos_next.domain.professional_authority.service import trusted_import
+    from pdos_next.domain.builds.professional_authority.schemas import FactInput
+    from pdos_next.domain.builds.professional_authority.service import trusted_import
 
     data = FactInput.model_validate(payload)
     if ctx.actor_id != ctx.requester_id or ctx.run_id is not None:

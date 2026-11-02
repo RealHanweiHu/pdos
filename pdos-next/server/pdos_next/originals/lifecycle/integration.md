@@ -64,8 +64,8 @@ Synthetic checks cover strict facts/scope, unknown/protected history, terminal f
 Run from `pdos-next/server`:
 
 ```text
-PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest tests/original_lifecycle --confcutdir=tests/original_lifecycle -o cache_dir=tests/original_lifecycle/.pytest_cache -q
-.venv/bin/ruff check --no-cache pdos_next/originals/lifecycle tests/original_lifecycle
+PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest tests/originals/lifecycle --confcutdir=tests/originals/lifecycle -o cache_dir=tests/originals/lifecycle/.pytest_cache -q
+.venv/bin/ruff check --no-cache pdos_next/originals/lifecycle tests/originals/lifecycle
 ```
 
 These are package-local rule/port/state checks, not PG transactional or storage/API/worker/browser acceptance. Mainline still needs entity registration/migration, complete reference inventory, upload-attempt journal and transaction ambiguity reconciliation, current permission mapping, original read/parse gates, Outbox/Inbox wiring, bounded real reversible adapter with storage fencing, multi-transaction rollback/concurrency/worker restart reconciliation, actual backup/restore, and applicable formal exits. This package grants no real qualification, production activation or G/N/P/Q completion.

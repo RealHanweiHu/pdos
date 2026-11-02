@@ -3,6 +3,8 @@
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
+from sqlalchemy import select, text
+
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun
 from pdos_next.agent.kernel.work_state import user_goal
 from pdos_next.core.category_scope import category_scope
@@ -10,9 +12,8 @@ from pdos_next.core.clock import now
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Category, Principal
 from pdos_next.core.service import Context, digest, require_access
-from pdos_next.domain.preproject.access import human, proposal
+from pdos_next.domain.categories.preproject.access import human, proposal
 from pdos_next.errors import DomainError
-from sqlalchemy import select, text
 
 from .assistant_models import KnowledgeGapAttribution, KnowledgeGapSubmission
 from .assistant_sources import answer_body, bound_proof, recheck, require
@@ -123,7 +124,7 @@ def preview(session, ctx, data, *, engine):
         answer = answer_body(run)
         require(bool(answer), "原反馈尚无可分享的回答正文。", "MISSING_REQUIRED_EVIDENCE", 422)
     from pdos_next.core.models import Product
-    from pdos_next.domain.preproject.models import Proposal
+    from pdos_next.domain.categories.preproject.models import Proposal
     from pdos_next.domain.projects.models import Project
 
     product = session.get(Product, run.product_id) if run.product_id else None

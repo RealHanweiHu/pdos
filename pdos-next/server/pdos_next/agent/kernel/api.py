@@ -101,7 +101,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         if row is None or row.requester_id != ctx.requester_id:
             raise DomainError("FORBIDDEN_SCOPE", "运行不在当前可读范围。", 403)
         if row.proposal_id is not None:
-            from pdos_next.domain.preproject.access import proposal
+            from pdos_next.domain.categories.preproject.access import proposal
 
             proposal(session, ctx, row.proposal_id)
         from .project_scope import require_project
@@ -343,7 +343,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 if recorded:
                     return hidden_detail(recorded[0])
             row = visible_run(s, ctx, actual)
-            from pdos_next.features.personal.summary_runtime import checked_result
+            from pdos_next.domain.my_work.summary_runtime import checked_result
 
             answer = checked_result(s, ctx, row)
             if answer is None:
@@ -356,7 +356,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 raise DomainError("FORBIDDEN_SCOPE", "原会话不在当前可读范围。", 403)
             session_proposal_id = current_proposal_id(s, conversation)
             if session_proposal_id is not None and session_proposal_id != row.proposal_id:
-                from pdos_next.domain.preproject.access import proposal
+                from pdos_next.domain.categories.preproject.access import proposal
 
                 proposal(s, ctx, session_proposal_id)
             return {

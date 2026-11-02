@@ -2,7 +2,7 @@
 
 from sqlalchemy import select
 
-from pdos_next.domain.field_feedback.models import (
+from pdos_next.domain.quality.field_feedback.models import (
     ACTION,
     CREATE,
     EVENTS,

@@ -10,8 +10,8 @@ from pdos_next.core.service import append_receipt, digest, receipt_view, require
 from sqlalchemy import select
 
 from pdos_next.core.contracts import Command
-from pdos_next.domain.capa_effectiveness import fact_commands as commands, fact_service, fact_write
-from pdos_next.domain.capa_effectiveness import anchor, fact_atom_storage as guards
+from pdos_next.domain.quality.capa import fact_commands as commands, fact_service, fact_write
+from pdos_next.domain.quality.capa import anchor, fact_atom_storage as guards
 from pdos_next.errors import DomainError
 from pdos_next.core.models import Product, Receipt, RequestKey
 

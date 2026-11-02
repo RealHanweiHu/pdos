@@ -5,9 +5,13 @@ from uuid import UUID
 from pydantic import ValidationError
 from sqlalchemy import select
 
-from pdos_next.domain.preproject.access import fail
-from pdos_next.domain.preproject.claim_access import load_source, resolve, source_reference
-from pdos_next.domain.preproject.schemas import Reference
+from pdos_next.domain.categories.preproject.access import fail
+from pdos_next.domain.categories.preproject.claim_access import (
+    load_source,
+    resolve,
+    source_reference,
+)
+from pdos_next.domain.categories.preproject.schemas import Reference
 from pdos_next.errors import DomainError
 
 from .deterministic_proofs import resolve_compute_proof
@@ -93,7 +97,7 @@ def _source(session, ctx, run, ref):
     elif ref.type == "snapshot":
         _snapshot(session, ctx, run, ref)
     else:
-        from pdos_next.domain.preproject.service import _references
+        from pdos_next.domain.categories.preproject.service import _references
 
         # Reuse ordinary-RLS/version checks and recursively inspect actual roots,
         # including private knowledge/definitions. Model privacy labels grant nothing.

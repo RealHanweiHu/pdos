@@ -22,9 +22,9 @@ from pdos_next.core.contracts import Command, SourceRead
 from pdos_next.core.database import require_context, tenant_session
 from pdos_next.core.models import Receipt, RequestKey
 from pdos_next.core.service import Context, digest, receipt_view, require_access
-from pdos_next.domain.work_management import owner as work_owner
-from pdos_next.domain.work_management import service as work_service
-from pdos_next.domain.work_management.schemas import TaskCreatePayload
+from pdos_next.domain.projects.work import owner as work_owner
+from pdos_next.domain.projects.work import service as work_service
+from pdos_next.domain.projects.work.schemas import TaskCreatePayload
 from pdos_next.errors import DomainError
 
 from .action_sources import capture_work, recheck_work

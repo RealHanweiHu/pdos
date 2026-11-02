@@ -7,7 +7,7 @@ from sqlalchemy import or_, select, tuple_
 
 from pdos_next.core.database import require_context
 from pdos_next.core.service import Context
-from pdos_next.domain.preproject.access import human
+from pdos_next.domain.categories.preproject.access import human
 from pdos_next.errors import DomainError
 
 from .execution import check_run_binding, scope_for_run

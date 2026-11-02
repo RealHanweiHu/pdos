@@ -49,7 +49,7 @@ def declared_contract(declaration, contracts):
 
 
 def combine_contracts(catalog, skills):
-    from pdos_next.features.personal.preferences import CONTEXT_SCHEMA
+    from pdos_next.domain.my_work.preferences import CONTEXT_SCHEMA
     schemas = [skill.metadata["context_schema"] for skill in skills] or [
         declared_contract({"$ref": "context-schemas.json#/profiles/navigation"}, catalog.contexts)
     ]

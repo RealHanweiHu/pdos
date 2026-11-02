@@ -16,10 +16,10 @@ from sqlalchemy.orm import load_only
 
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Product
-from pdos_next.domain.build_execution.models import BuildLot, SampleUnit
+from pdos_next.domain.builds.execution.models import BuildLot, SampleUnit
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.domain.verification_launch.models import (
+from pdos_next.domain.quality.execution.models import QualityIssueCurrent, QualityIssueVersion
+from pdos_next.domain.verification.launch.models import (
     VerificationRunCurrent,
     VerificationRunVersion,
 )

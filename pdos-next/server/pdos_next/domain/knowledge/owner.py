@@ -2,13 +2,14 @@
 
 from copy import deepcopy
 
+from sqlalchemy import select
+
 from pdos_next.core.models import Receipt
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.configurations import service as configurations
-from pdos_next.domain.preproject.access import human
+from pdos_next.domain.builds.configurations import service as configurations
+from pdos_next.domain.categories.preproject.access import human
 from pdos_next.domain.projects.models import ProjectProductLink
-from pdos_next.domain.work_management.owner import project
-from sqlalchemy import select
+from pdos_next.domain.projects.work.owner import project
 
 from .models import (
     DesignRuleCurrent,

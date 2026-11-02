@@ -17,9 +17,9 @@ from pdos_next.core.models import Principal
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import Context, digest, require_access
 from pdos_next.domain.automations.service_models import AutomationServiceAttempt as Attempt
+from pdos_next.domain.my_work.summary_runtime import _bound, _check_sources
+from pdos_next.domain.my_work.summary_schemas import Summary
 from pdos_next.errors import DomainError
-from pdos_next.features.personal.summary_runtime import _bound, _check_sources
-from pdos_next.features.personal.summary_schemas import Summary
 
 from .accounts import credential
 from .models import Application
@@ -158,7 +158,7 @@ class SummaryDeliveryService:
                 or choice.dingtalk_binding_id != meta["binding_id"]
             ):
                 raise DomainError("CANCELLED_RUN", "摘要服务授权或本人投递选择已失效。")
-            from pdos_next.features.personal.summary_channels import selected
+            from pdos_next.domain.my_work.summary_channels import selected
 
             app, binding = selected(session, ctx, choice.dingtalk_binding_id)
             if row is not None and (

@@ -154,7 +154,7 @@ class KernelStore:
             }:
                 raise DomainError("FORBIDDEN_SCOPE", "品类运行授权失效。")
         if scope.proposal_id is not None:
-            from pdos_next.domain.preproject.access import proposal
+            from pdos_next.domain.categories.preproject.access import proposal
 
             proposal(
                 session,

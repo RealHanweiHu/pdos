@@ -2,8 +2,8 @@
 
 from pdos_next.core.database import tenant_session
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.products import platforms
-from pdos_next.domain.products.platform_schemas import PlatformReadInput
+from pdos_next.domain.categories.products import platforms
+from pdos_next.domain.categories.products.platform_schemas import PlatformReadInput
 from pdos_next.errors import DomainError
 
 from .execution import check_run_binding

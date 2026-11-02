@@ -13,7 +13,7 @@ from pdos_next.agent.kernel.execution import check_run_binding
 from pdos_next.agent.kernel.models import AgentRun
 from pdos_next.core.database import tenant_session
 from pdos_next.core.service import Context
-from pdos_next.domain.verification_execution.schemas import PreparationRecordPayload
+from pdos_next.domain.verification.execution.schemas import PreparationRecordPayload
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import BuildRef
 

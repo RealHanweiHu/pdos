@@ -5,10 +5,14 @@ from uuid import UUID
 
 from sqlalchemy import and_, select
 
-from pdos_next.domain.build_execution.models import ActualConfiguration
+from pdos_next.domain.builds.configurations.models import (
+    BomLine,
+    EngineeringConfiguration,
+    PartIdentity,
+)
+from pdos_next.domain.builds.execution.models import ActualConfiguration
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.configurations.models import BomLine, EngineeringConfiguration, PartIdentity
-from pdos_next.domain.project_governance.models import GovernanceEvent
+from pdos_next.domain.projects.governance.models import GovernanceEvent
 
 
 def structural_context(session, tenant_id, snapshots, projects):

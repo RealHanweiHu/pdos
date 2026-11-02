@@ -3,14 +3,14 @@
 from sqlalchemy import Text, and_, case, cast, func, literal, null
 from sqlalchemy.dialects.postgresql import JSONB
 
-from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot
-from pdos_next.domain.build_start.models import BuildStart
+from pdos_next.domain.builds.execution.models import ActualConfiguration, BuildLot
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.verification_launch.models import (
+from pdos_next.domain.builds.start.models import BuildStart
+from pdos_next.domain.verification.launch.models import (
     VerificationRunCurrent,
     VerificationRunVersion,
 )
-from pdos_next.domain.verification_results.models import TestResultActionFact
+from pdos_next.domain.verification.results.models import TestResultActionFact
 
 from .business_sources import array_fields, object_fields
 

@@ -84,7 +84,7 @@ def owner(session, ctx, run):
 
     require_run_project(session, ctx, run)
     if run.proposal_id:
-        from pdos_next.domain.preproject.access import proposal
+        from pdos_next.domain.categories.preproject.access import proposal
 
         proposal(session, ctx, run.proposal_id)
     return run

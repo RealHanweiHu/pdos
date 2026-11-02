@@ -15,11 +15,11 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import JSONB, array
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
-from pdos_next.domain.change_execution.models import ChangeRequestVersion
-from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.domain.supply_execution.models import SupplySnapshot
-from pdos_next.domain.verification_launch.models import VerificationRunVersion
-from pdos_next.domain.verification_results.models import TestResultActionFact
+from pdos_next.domain.change.execution.models import ChangeRequestVersion
+from pdos_next.domain.manufacturing.supply_execution.models import SupplySnapshot
+from pdos_next.domain.quality.execution.models import QualityIssueCurrent, QualityIssueVersion
+from pdos_next.domain.verification.launch.models import VerificationRunVersion
+from pdos_next.domain.verification.results.models import TestResultActionFact
 
 from .indexing import _locator
 from .readable_sources import readable
@@ -136,9 +136,9 @@ def edges(kinds, seeds):
         edge("issue", q.id, "issue", pointer.issue_version_id, "merged_into", merged)
         edge("issue", pointer.issue_version_id, "issue", q.id, "merged_from", merged)
     if "build" in kinds:
-        from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot
-        from pdos_next.domain.build_start.models import BuildStart
+        from pdos_next.domain.builds.execution.models import ActualConfiguration, BuildLot
         from pdos_next.domain.builds.models import Build
+        from pdos_next.domain.builds.start.models import BuildStart
 
         build = readable(Build)
         for kind, models in (

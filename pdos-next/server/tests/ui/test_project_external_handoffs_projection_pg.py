@@ -12,17 +12,17 @@ from copy import deepcopy
 from pathlib import Path
 from uuid import UUID
 
-from external_handoff_transactions import harness
-from manufacturing_preparation import publication_pg_helpers as upstream
-from manufacturing_preparation.publication_pg_helpers import publication_case as publication_case
-from release_policy_transactions import test_decisions as flow
+from manufacturing.external_handoff_transactions import harness
+from manufacturing.preparation import publication_pg_helpers as upstream
+from manufacturing.preparation.publication_pg_helpers import publication_case as publication_case
+from manufacturing.release_policy_transactions import test_decisions as flow
+from projects.test_project_first_plan import post
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-from test_project_first_plan import post
 
-from pdos_next.domain.configurations.models import EngineeringConfiguration
-from pdos_next.domain.external_handoff.evidence_owner import revoke_issuer
-from pdos_next.domain.release.policy_owner import ActualReleasePolicyOwner
+from pdos_next.domain.builds.configurations.models import EngineeringConfiguration
+from pdos_next.domain.manufacturing.external_handoff.evidence_owner import revoke_issuer
+from pdos_next.domain.manufacturing.release.policy_owner import ActualReleasePolicyOwner
 from tests.ui import test_project_release_packages_projection_pg as release_ui
 
 PHASES = (

@@ -32,7 +32,7 @@ def main():
     )
     command = [
         sys.executable, "-m", "pytest", "-vv", "-x",
-        "tests/enterprise_search/test_question_set_v0_pg.py",
+        "tests/agent/enterprise_search/test_question_set_v0_pg.py",
         "--junitxml=" + str(destination / "native.xml"),
     ]
     process = subprocess.Popen(

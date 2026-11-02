@@ -18,8 +18,8 @@ from pdos_next.errors import DomainError
 
 
 def import_operational_fact(s, ctx, issuer, payload, *, request_key: str, command_id: UUID):
-    from pdos_next.domain.build_operational_facts.schemas import FactInput
-    from pdos_next.domain.build_operational_facts.service import IssuerContext, trusted_import
+    from pdos_next.domain.builds.operational_facts.schemas import FactInput
+    from pdos_next.domain.builds.operational_facts.service import IssuerContext, trusted_import
 
     data = FactInput.model_validate(payload)
     if not isinstance(issuer, IssuerContext):

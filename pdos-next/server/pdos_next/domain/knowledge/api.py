@@ -3,10 +3,11 @@
 from uuid import UUID
 
 from fastapi import Request
+
 from pdos_next.core.contracts import Command
 from pdos_next.core.database import tenant_session
 from pdos_next.core.service import Context
-from pdos_next.domain.manufacturing_baseline.api import _query
+from pdos_next.domain.manufacturing.baseline.api import _query
 
 from .assistant_schemas import (
     AnswerDraftInput,
@@ -86,7 +87,7 @@ def register_routes(app, engine, auth_dependency):
 
     @app.get("/v1/personal/knowledge-review-reminders")
     def review_reminders(request: Request, ctx: Context = auth_dependency):
-        from pdos_next.domain.preproject.access import human
+        from pdos_next.domain.categories.preproject.access import human
 
         from .assistant_views import reminders
 

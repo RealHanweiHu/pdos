@@ -26,15 +26,15 @@ from pdos_next.core.contracts import PAYLOADS, Command
 from pdos_next.core.database import require_context
 from pdos_next.core.models import Principal, Receipt
 from pdos_next.core.service import digest, require_access
+from pdos_next.domain.builds.configurations.schemas import DefinitionReference
 from pdos_next.domain.builds.service import _build, _linked
-from pdos_next.domain.configurations.schemas import DefinitionReference
-from pdos_next.domain.verification_execution import service as preparation_service
-from pdos_next.domain.verification_execution.schemas import (
+from pdos_next.domain.verification.execution import service as preparation_service
+from pdos_next.domain.verification.execution.schemas import (
     PreparationItem,
     PreparationRecordPayload,
     Text,
 )
-from pdos_next.domain.verification_front.schemas import RequestCreatePayload
+from pdos_next.domain.verification.preparation.schemas import RequestCreatePayload
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import BuildRef, ConfigurationRef
 

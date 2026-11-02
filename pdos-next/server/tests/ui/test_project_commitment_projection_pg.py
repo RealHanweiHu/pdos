@@ -13,6 +13,13 @@ from uuid import UUID
 
 import pytest
 from fastapi.testclient import TestClient
+from originals.test_original_security import security_work as base_security_work  # noqa: F401
+from projects.fulfillment_pg import test_workflow as fulfillment
+from projects.work_pg import test_workflow as flow
+from projects.work_pg.test_workflow import work as work_case  # noqa: F401
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+
 from pdos_next.api import create_app
 from pdos_next.core.models import (
     Artifact,
@@ -22,11 +29,11 @@ from pdos_next.core.models import (
     UploadedOriginal,
     now,
 )
-from pdos_next.domain.work_fulfillment.models import (
+from pdos_next.domain.projects.fulfillment.models import (
     WorkCommitmentReview,
     WorkCommitmentReviewCurrent,
 )
-from pdos_next.domain.work_management.constants import (
+from pdos_next.domain.projects.work.constants import (
     ACCEPT,
     ASSIGN,
     COMMIT,
@@ -35,12 +42,6 @@ from pdos_next.domain.work_management.constants import (
     START,
     SUBMIT,
 )
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from test_original_security import security_work as base_security_work  # noqa: F401
-from work_fulfillment_pg import test_workflow as fulfillment
-from work_management_pg import test_workflow as flow
-from work_management_pg.test_workflow import work as work_case  # noqa: F401
 
 
 @pytest.fixture

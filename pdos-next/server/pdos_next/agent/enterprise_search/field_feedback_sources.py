@@ -3,7 +3,7 @@
 from sqlalchemy import Text, and_, case, cast, column, func, literal, select
 from sqlalchemy.dialects.postgresql import JSONB
 
-from pdos_next.domain.field_feedback.models import (
+from pdos_next.domain.quality.field_feedback.models import (
     FieldFeedbackCurrent,
     FieldFeedbackVersion,
     FieldResponseRecord,

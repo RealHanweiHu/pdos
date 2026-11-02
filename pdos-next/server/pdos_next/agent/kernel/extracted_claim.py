@@ -7,9 +7,9 @@ have no extraction pipeline and keep the existing read-pinning path.
 
 from uuid import UUID
 
-from pdos_next.domain.preproject.access import fail
-from pdos_next.domain.preproject.claim_access import load_source
-from pdos_next.domain.preproject.schemas import Reference
+from pdos_next.domain.categories.preproject.access import fail
+from pdos_next.domain.categories.preproject.claim_access import load_source
+from pdos_next.domain.categories.preproject.schemas import Reference
 
 from .deterministic_proofs import _historical_read, canonical_hash
 from .execution import scope_for_run

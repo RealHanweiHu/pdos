@@ -386,7 +386,7 @@ def unique(items):
 
 def definition_edges(session, deps):
     """Fixed definition source edges; never quote/spec/BOM body reconstruction."""
-    from pdos_next.domain.products.models import DefinitionSource
+    from pdos_next.domain.categories.products.models import DefinitionSource
 
     ids = {UUID(item["id"]) for item in deps if item["kind"] == "definition"}
     if not ids:
@@ -454,7 +454,7 @@ def owner_snapshot(session, consumer):
         return
     from pdos_next.agent.enterprise_search.assistant_sources import human_snapshot
     from pdos_next.core.service import Context
-    from pdos_next.domain.preproject.access import human
+    from pdos_next.domain.categories.preproject.access import human
 
     from .execution import check_run_binding, scope_for_run
     from .models import AgentRun

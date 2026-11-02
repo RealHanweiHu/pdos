@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from pdos_next.core.database import require_context
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.preproject.access import human, proposal
+from pdos_next.domain.categories.preproject.access import human, proposal
 from pdos_next.errors import DomainError
 
 from .models import AgentRun, AgentSession, AgentWorkProduct

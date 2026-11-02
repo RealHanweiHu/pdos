@@ -11,13 +11,13 @@ from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Artifact, Claim, Product
 from pdos_next.core.request_proof import request_proof, scoped_rows
 from pdos_next.core.service import Context, source_for
-from pdos_next.domain.preproject import baseline
-from pdos_next.domain.preproject.access import fail, proposal
-from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.domain.preproject.claim_access import resolve, source_privacy
-from pdos_next.domain.preproject.models import ProposalSource
-from pdos_next.domain.preproject.schemas import Reference
-from pdos_next.domain.products.models import DefinitionRevision
+from pdos_next.domain.categories.preproject import baseline
+from pdos_next.domain.categories.preproject.access import fail, proposal
+from pdos_next.domain.categories.preproject.category_models import KnowledgeEntry
+from pdos_next.domain.categories.preproject.claim_access import resolve, source_privacy
+from pdos_next.domain.categories.preproject.models import ProposalSource
+from pdos_next.domain.categories.preproject.schemas import Reference
+from pdos_next.domain.categories.products.models import DefinitionRevision
 
 from .execution import check_run_binding
 from .m3_object_reads import _references

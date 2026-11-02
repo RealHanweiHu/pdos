@@ -233,7 +233,7 @@ def _target(session, ctx, session_id, proposal_id, *, lock=False):
     else:
         require_access(session, ctx, row.product_id, lock=lock)
         if row.proposal_id is not None:
-            from pdos_next.domain.preproject.access import proposal
+            from pdos_next.domain.categories.preproject.access import proposal
 
             proposal(session, ctx, row.proposal_id)
         require_project(session, ctx, row.project_id, row.product_id, lock=lock)

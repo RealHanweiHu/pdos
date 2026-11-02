@@ -16,14 +16,14 @@ from sqlalchemy import func, select
 
 from pdos_next.core.database import require_context
 from pdos_next.core.models import Artifact, Principal
-from pdos_next.domain.preproject.claim_access import source_privacy
-from pdos_next.domain.preproject.models import ProjectOpenItem
-from pdos_next.domain.project_governance import service as governance
+from pdos_next.domain.categories.preproject.claim_access import source_privacy
+from pdos_next.domain.categories.preproject.models import ProjectOpenItem
+from pdos_next.domain.projects.governance import service as governance
 from pdos_next.domain.projects.models import PlanRevision
-from pdos_next.domain.work_management.models import ProjectStatusUpdate, WorkCommitmentVersion
-from pdos_next.domain.work_management.owner import sources_current
+from pdos_next.domain.projects.work.models import ProjectStatusUpdate, WorkCommitmentVersion
+from pdos_next.domain.projects.work.owner import sources_current
 from pdos_next.errors import DomainError
-from pdos_next.features.projects.work_summaries import latest as latest_updates
+from pdos_next.domain.projects.work_summaries import latest as latest_updates
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import Context, digest, require_access, source_for
 
@@ -563,13 +563,13 @@ def checked_result(session, ctx, run, result):
             raise DomainError("FORBIDDEN_SCOPE", "项目历史回答的原依据已不可读。", 403) from None
         updated |= (actual.revision != ref["expected_revision"]
                     or actual.content_hash != ref["content_hash"])
-    from pdos_next.domain.project_governance.models import GovernanceEvent
+    from pdos_next.domain.projects.governance.models import GovernanceEvent
     from pdos_next.domain.projects.models import Project
     from pdos_next.domain.projects.models import ProjectTask
-    from pdos_next.domain.products.models import DefinitionRevision
-    from pdos_next.domain.release.models import ReleaseDecision, ReleasePackage
-    from pdos_next.domain.release_exceptions.models import ReleaseExceptionDecision
-    from pdos_next.domain.work_management.models import WorkTaskVersion
+    from pdos_next.domain.categories.products.models import DefinitionRevision
+    from pdos_next.domain.manufacturing.release.models import ReleaseDecision, ReleasePackage
+    from pdos_next.domain.manufacturing.release.exceptions.models import ReleaseExceptionDecision
+    from pdos_next.domain.projects.work.models import WorkTaskVersion
 
     models = {"project": Project, "plan": PlanRevision, "project_open_item": ProjectOpenItem,
               "project_status_update": ProjectStatusUpdate, "project_governance": GovernanceEvent,

@@ -6,11 +6,11 @@ from uuid import UUID
 from sqlalchemy import and_, select
 
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.manufacturing_baseline.publication_models import (
+from pdos_next.domain.manufacturing.baseline.publication_models import (
     ManufacturingPublicationDocument,
 )
-from pdos_next.domain.verification_front.models import FormalVerificationRequest
-from pdos_next.domain.verification_handoff.models import VerificationHandoffFact
+from pdos_next.domain.verification.handoff.models import VerificationHandoffFact
+from pdos_next.domain.verification.preparation.models import FormalVerificationRequest
 
 
 def links(session, sources):

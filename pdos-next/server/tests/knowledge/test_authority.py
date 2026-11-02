@@ -10,17 +10,18 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next.core.models import Principal
-from pdos_next.core.service import Context
-from pdos_next.domain.professional_authority import service as authority
-from pdos_next.domain.professional_authority.models import ProfessionalFact
-from pdos_next.domain.professional_authority.schemas import FactInput
-from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy import CheckConstraint
 from sqlalchemy.dialects.postgresql import dialect
 from sqlalchemy.engine import Engine
 from sqlalchemy.schema import CreateTable
+
+from pdos_next.core.models import Principal
+from pdos_next.core.service import Context
+from pdos_next.domain.builds.professional_authority import service as authority
+from pdos_next.domain.builds.professional_authority.models import ProfessionalFact
+from pdos_next.domain.builds.professional_authority.schemas import FactInput
+from pdos_next.errors import DomainError
 
 AT = datetime(2026, 10, 18, 12, tzinfo=UTC)
 OPERATION = "knowledge.rule.publish"

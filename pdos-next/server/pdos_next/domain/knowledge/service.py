@@ -5,13 +5,14 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4, uuid5
 
+from sqlalchemy import select
+
 from pdos_next.core.contracts import Command
 from pdos_next.core.models import now
 from pdos_next.core.service import command_digest, command_scope, digest
-from pdos_next.domain.preproject.access import human
-from pdos_next.domain.professional_authority import service as authority
-from pdos_next.domain.quality_execution.evidence import merge_reads
-from sqlalchemy import select
+from pdos_next.domain.builds.professional_authority import service as authority
+from pdos_next.domain.categories.preproject.access import human
+from pdos_next.domain.quality.execution.evidence import merge_reads
 
 from . import owner, provenance, rules
 from .models import (
@@ -58,7 +59,7 @@ def _target_content(s, ctx, pid, value):
         if isinstance(item, dict):
             for ref in item.get("sources", []):
                 if "artifact_id" in ref:
-                    from pdos_next.domain.quality_execution.evidence import refs_from_exact
+                    from pdos_next.domain.quality.execution.evidence import refs_from_exact
                     from pdos_next.schemas.products.definitions import DefinitionReference
 
                     ref = refs_from_exact(s, ctx, pid, [DefinitionReference.model_validate(ref)])[

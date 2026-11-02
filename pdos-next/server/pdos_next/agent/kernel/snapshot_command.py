@@ -317,7 +317,7 @@ def prepare(session, scope, spec, arguments, intent_key, bootstrap):
 @command_inputs_once
 def prepared(session, ctx, command, scope, payload):
     from pdos_next.core.contracts import Command
-    from pdos_next.domain.preproject.access import human
+    from pdos_next.domain.categories.preproject.access import human
 
     from .execution import command_call, command_run
 

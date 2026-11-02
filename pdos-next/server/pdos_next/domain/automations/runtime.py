@@ -3,13 +3,14 @@
 from types import SimpleNamespace
 from uuid import uuid4
 
+from sqlalchemy import case, func, select, text
+
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
 from pdos_next.agent.kernel.persistence import create_run
 from pdos_next.core.models import now
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.preproject.access import human
+from pdos_next.domain.categories.preproject.access import human
 from pdos_next.errors import DomainError
-from sqlalchemy import case, func, select, text
 
 from .models import AutomationRuleVersion as Version
 from .models import AutomationTriggerOccurrence as Occurrence

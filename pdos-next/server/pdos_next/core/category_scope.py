@@ -20,8 +20,12 @@ from pdos_next.core.models import (
     now,
 )
 from pdos_next.core.service import digest, receipt_view
-from pdos_next.domain.preproject.category_creation import CategoryCreate as CategoryCreate
-from pdos_next.domain.preproject.category_creation import create as create_category  # noqa: F401
+from pdos_next.domain.categories.preproject.category_creation import (
+    CategoryCreate as CategoryCreate,
+)
+from pdos_next.domain.categories.preproject.category_creation import (
+    create as create_category,  # noqa: F401
+)
 from pdos_next.errors import DomainError
 
 

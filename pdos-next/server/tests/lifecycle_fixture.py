@@ -5,20 +5,21 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
+from core.test_trusted_source_work import command
 from fastapi.testclient import TestClient
+from originals.test_durable_evidence import upload_input
+from security_fixture import synthetic_runtime
+from sqlalchemy import func, select
+
 from pdos_next.api import create_app
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Product, UploadAttempt, now
-from pdos_next.features.lifecycle.worker import configure_lifecycle
 from pdos_next.originals.access import upload, upload_contents
 from pdos_next.originals.lifecycle.types import RetentionPolicy
+from pdos_next.originals.lifecycle.worker import configure_lifecycle
 from pdos_next.originals.security import configure
 from pdos_next.originals.store import OriginalStore
 from pdos_next.originals.upload_lifecycle import reserve
-from security_fixture import synthetic_runtime
-from sqlalchemy import func, select
-from test_durable_evidence import upload_input
-from test_trusted_source_work import command
 
 
 @pytest.fixture

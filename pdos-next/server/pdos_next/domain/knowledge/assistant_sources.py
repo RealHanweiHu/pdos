@@ -4,6 +4,8 @@ from copy import deepcopy
 from types import SimpleNamespace
 from uuid import UUID
 
+from sqlalchemy import select
+
 from pdos_next.agent.enterprise_search import assistant_ledger as ledger
 from pdos_next.agent.enterprise_search.assistant_answer import checked_sources
 from pdos_next.agent.enterprise_search.assistant_sources import current
@@ -11,9 +13,8 @@ from pdos_next.agent.kernel.execution import scope_for_run
 from pdos_next.agent.kernel.models import AgentRun
 from pdos_next.agent.kernel.work_state import user_goal
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.preproject.access import human
+from pdos_next.domain.categories.preproject.access import human
 from pdos_next.errors import DomainError
-from sqlalchemy import select
 
 FIELDS = ("source_type", "source_id", "source_revision", "content_hash", "category_id")
 
@@ -140,7 +141,7 @@ def capture(session, ctx, run_id, *, expected_digest=None):
             line = locator.get("line_start")
             quote = (evidence or {}).get("quote")
             if line and quote:
-                from pdos_next.domain.quality_execution.evidence import refs_from_exact
+                from pdos_next.domain.quality.execution.evidence import refs_from_exact
 
                 exact = refs_from_exact(
                     session,

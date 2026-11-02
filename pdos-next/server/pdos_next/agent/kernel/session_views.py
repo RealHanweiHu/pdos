@@ -64,7 +64,7 @@ def _human(session, ctx, proposal_id, project_id=None):
     else:
         require_access(session, ctx, None)
         if proposal_id is not None:
-            from pdos_next.domain.preproject.access import proposal
+            from pdos_next.domain.categories.preproject.access import proposal
 
             proposal(session, ctx, proposal_id)
         if project_id is not None:
@@ -80,7 +80,7 @@ def _human(session, ctx, proposal_id, project_id=None):
 
 def _sessions(ctx, proposal_id, project_id=None):
     """Apply ordinary parent RLS before goals, counts, search or cursor reads."""
-    from pdos_next.domain.preproject.models import Proposal
+    from pdos_next.domain.categories.preproject.models import Proposal
     from pdos_next.domain.projects.models import Project
 
     current_proposal = func.coalesce(AgentSessionBinding.proposal_id, AgentSession.proposal_id)

@@ -13,34 +13,9 @@ from pathlib import Path
 
 import pytest
 from g0_fixture import create_g0_project
-from native_pilot_transactions import fixtures as helper
-from native_pilot_transactions.fixtures import native_case as native_case
-from pdos_next.core.models import (
-    Artifact,
-    Consumption,
-    Grant,
-    ObjectAudience,
-    OriginalSecurity,
-    UploadedOriginal,
-)
-from pdos_next.domain.build_execution.models import (
-    ActualConfiguration,
-    BuildLot,
-    SampleAllocation,
-    SampleUnit,
-)
-from pdos_next.domain.build_operational_facts.models import (
-    BuildOperationalCurrent,
-    BuildOperationalFact,
-    OperationalAsset,
-)
-from pdos_next.domain.builds.models import Build
-from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.domain.professional_authority.models import ProfessionalFact
-from pdos_next.domain.projects.models import Project, ProjectProductLink
-from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from quality_execution.fixtures import (  # noqa: F401
+from manufacturing.native_pilot_transactions import fixtures as helper
+from manufacturing.native_pilot_transactions.fixtures import native_case as native_case
+from quality.execution.fixtures import (  # noqa: F401
     accepted_work,
     known_configuration,
     launch_work,
@@ -51,6 +26,32 @@ from quality_execution.fixtures import (  # noqa: F401
 )
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+
+from pdos_next.core.models import (
+    Artifact,
+    Consumption,
+    Grant,
+    ObjectAudience,
+    OriginalSecurity,
+    UploadedOriginal,
+)
+from pdos_next.domain.builds.configurations.models import EngineeringConfiguration, ProcessRevision
+from pdos_next.domain.builds.execution.models import (
+    ActualConfiguration,
+    BuildLot,
+    SampleAllocation,
+    SampleUnit,
+)
+from pdos_next.domain.builds.models import Build
+from pdos_next.domain.builds.operational_facts.models import (
+    BuildOperationalCurrent,
+    BuildOperationalFact,
+    OperationalAsset,
+)
+from pdos_next.domain.builds.professional_authority.models import ProfessionalFact
+from pdos_next.domain.categories.products.models import DefinitionRevision
+from pdos_next.domain.projects.models import Project, ProjectProductLink
+from pdos_next.domain.quality.execution.models import QualityIssueCurrent, QualityIssueVersion
 
 
 def _counts(work):

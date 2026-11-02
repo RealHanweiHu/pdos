@@ -11,9 +11,10 @@ its actual source-product scope; publication-target scope cannot replace it.
 
 from collections.abc import Mapping
 
-from pdos_next.core import models as registered_models  # noqa: F401 -- register parent tables
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import AddConstraint, CreateIndex, CreateTable, DropConstraint
+
+from pdos_next.core import models as registered_models  # noqa: F401 -- register parent tables
 
 from .models import (
     ASSESSMENT,
@@ -393,7 +394,7 @@ END
 
 # Reuse only the proven direct-content loop declarations; no shared work guard is
 # replaced, invoked or granted additional subjects by this knowledge domain.
-from pdos_next.domain.work_management import storage_schema as _work_sources  # noqa: E402
+from pdos_next.domain.projects.work import storage_schema as _work_sources  # noqa: E402
 
 _SOURCE_START = " IF jsonb_typeof(v.source_basis->'artifacts')"
 _content_checks = _work_sources.WRITE_ATOM.split(_SOURCE_START, 1)[1].rsplit("\nEND", 1)[0]

@@ -111,7 +111,7 @@ def seed_corpus(person):
     """
     from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
     from pdos_next.core.safety import verify_test_target
-    from tests.enterprise_search.test_retrieval_pg import index, register, session_for
+    from tests.agent.enterprise_search.test_retrieval_pg import index, register, session_for
 
     verify_test_target(person.admin)
     verify_test_target(person.engine)

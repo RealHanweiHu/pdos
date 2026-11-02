@@ -2,7 +2,7 @@
 
 from copy import deepcopy
 
-from pdos_next.domain.work_management.rules import require
+from pdos_next.domain.projects.work.rules import require
 
 
 def semantic(payload):

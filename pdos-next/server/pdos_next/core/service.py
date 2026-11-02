@@ -372,7 +372,7 @@ def confirmation_subject(s, ctx, command, scope, payload, module):
     if hasattr(module, "confirmation_subject"):
         kind, row = module.confirmation_subject(s, ctx, command, scope, payload)
         if kind in {"parameter", "category_knowledge"}:
-            from pdos_next.domain.preproject.category_models import (
+            from pdos_next.domain.categories.preproject.category_models import (
                 KnowledgeCurrent,
                 ParameterCurrent,
             )
@@ -419,7 +419,7 @@ def _signed_product_source(s, ctx, product_id, artifact_id, revision=None):
     """
     if product_id is None:
         return False
-    from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource
+    from pdos_next.domain.categories.products.models import DefinitionRevision, DefinitionSource
 
     query = (
         select(DefinitionSource.id)
@@ -798,7 +798,7 @@ def preview_command(s, ctx, command):
         phase = module.prepare_preview(s, ctx, command, product, payload)
         snapshot = module.preview_prepared(s, ctx, command, product, payload, phase)
     elif command.operation == "test.run.plan":
-        from pdos_next.features.projects.launch_plan_preview import preview_once
+        from pdos_next.domain.projects.launch_plan_preview import preview_once
 
         snapshot = preview_once(s, ctx, command, product, payload)
     else:
@@ -884,7 +884,7 @@ def material_confirmation_for(s, ctx, command, product, payload, module):
             "quality.capa.actions.complete",
             "quality.capa.followup.link",
         }:
-            from pdos_next.features.quality.followup_host import expired_confirmation_recovery
+            from pdos_next.domain.quality.followup_host import expired_confirmation_recovery
 
             recovery = expired_confirmation_recovery(s, ctx, command, product, payload, module)
             if recovery is not None:
@@ -940,7 +940,7 @@ def consume_material_confirmation(
         "quality.capa.actions.complete",
         "quality.capa.followup.link",
     }:
-        from pdos_next.features.quality.followup_host import record_consumed_confirmation
+        from pdos_next.domain.quality.followup_host import record_consumed_confirmation
 
         record_consumed_confirmation(s, ctx, command, payload, module, confirmation)
     return confirmation
@@ -990,7 +990,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
     if module:
         semantic = module.semantic(payload)
     if isinstance(payload, DefinitionDraftPayload):
-        from pdos_next.domain.products.definitions import semantic as definition_semantic
+        from pdos_next.domain.categories.products.definitions import semantic as definition_semantic
 
         semantic = definition_semantic(payload)
     if isinstance(payload, RevertPayload):
@@ -1065,7 +1065,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
         check_command_digest(s, ctx, command.operation, request_digest)
     prove_sources(s, ctx, product.id, command.source_read_set)
     if isinstance(payload, DefinitionDraftPayload):
-        from pdos_next.domain.products.definitions import validate
+        from pdos_next.domain.categories.products.definitions import validate
 
         validate(s, ctx, command, product, payload)
     module = handler(command.operation)
@@ -1184,7 +1184,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
         if hasattr(subject, "budget_exceeded"):
             subject.action_result = {"budget_exceeded": subject.budget_exceeded}
     elif isinstance(payload, DefinitionDraftPayload):
-        from pdos_next.domain.products.definitions import apply_draft
+        from pdos_next.domain.categories.products.definitions import apply_draft
 
         subject, subject_type, visibility = apply_draft(s, ctx, command, product, payload)
     elif isinstance(payload, ArtifactPayload):
@@ -1252,7 +1252,9 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
         if module and hasattr(module, "finalize_receipt"):
             module.finalize_receipt(s, ctx, command, product, payload, subject, r)
         if isinstance(payload, DefinitionDraftPayload) and payload.mode == "inherit_parent":
-            from pdos_next.domain.products.definition_inherit import finalize_draft_receipt
+            from pdos_next.domain.categories.products.definition_inherit import (
+                finalize_draft_receipt,
+            )
 
             finalize_draft_receipt(s, ctx, command, product, payload, subject, r)
         if command.operation in {
@@ -1264,7 +1266,7 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "change.verification.record",
             "change.close",
         }:
-            from pdos_next.features.change.publication_finalization import finalize
+            from pdos_next.domain.change.publication_finalization import finalize
 
             finalize(s, ctx, command, subject)
         return receipt_view(r)
@@ -1278,6 +1280,6 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
             "change.verification.record",
             "change.close",
         }:
-            from pdos_next.features.change.publication_finalization import discard
+            from pdos_next.domain.change.publication_finalization import discard
 
             discard(subject)

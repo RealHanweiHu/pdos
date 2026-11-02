@@ -8,9 +8,9 @@ from sqlalchemy import func, select
 from pdos_next.core.contracts import PAYLOADS, Command
 from pdos_next.core.models import Receipt, RequestKey
 from pdos_next.core.service import receipt_view, require_access, source_for
-from pdos_next.domain.preproject.access import fail, proposal
-from pdos_next.domain.preproject.models import PreparedCandidate
-from pdos_next.domain.preproject.provenance import CONTENT_OPERATIONS, content
+from pdos_next.domain.categories.preproject.access import fail, proposal
+from pdos_next.domain.categories.preproject.models import PreparedCandidate
+from pdos_next.domain.categories.preproject.provenance import CONTENT_OPERATIONS, content
 from pdos_next.errors import DomainError
 
 from .execution import check_run_binding
@@ -142,12 +142,12 @@ def _pending_visible(session, ctx, run, command, event):
             "retrieved_at": proof.snapshot.retrieved_at.isoformat(),
         }
     elif command.operation == "platform.link.create":
-        from pdos_next.domain.products.platforms import target
+        from pdos_next.domain.categories.products.platforms import target
 
         variant = command.payload.get("variant_id")
         target(session, ctx, run.product_id, UUID(variant) if variant else None)
     elif command.operation == "product.definition.item.patch":
-        from pdos_next.domain.products.models import DefinitionRevision
+        from pdos_next.domain.categories.products.models import DefinitionRevision
 
         row = session.get(DefinitionRevision, UUID(command.payload["definition_id"]))
         if row is None or row.category_id != ctx.category_id or row.product_id != run.product_id:
@@ -271,7 +271,9 @@ def project_rows(session, ctx, run, page):
                 "category.knowledge.withdraw",
                 "category.parameter.publish",
             }:
-                from pdos_next.domain.preproject.material_candidate_edits import saved_receipt_id
+                from pdos_next.domain.categories.preproject.material_candidate_edits import (
+                    saved_receipt_id,
+                )
 
                 saved_id = saved_receipt_id(session, UUID(event.body["candidate_id"]))
                 receipt = session.get(Receipt, saved_id) if saved_id else None

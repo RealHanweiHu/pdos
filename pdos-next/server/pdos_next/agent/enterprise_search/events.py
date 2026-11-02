@@ -12,7 +12,7 @@ from pdos_next.core.database import tenant_session
 from pdos_next.core.dispatch.context import event_context
 from pdos_next.core.models import Artifact, OriginalScanRequest, OriginalScanResult, Outbox, Receipt
 from pdos_next.core.service import require_access
-from pdos_next.domain.preproject.category_models import KnowledgeEntry
+from pdos_next.domain.categories.preproject.category_models import KnowledgeEntry
 from pdos_next.errors import DomainError
 
 from . import business_events

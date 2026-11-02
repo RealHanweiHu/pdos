@@ -9,13 +9,13 @@ from sqlalchemy.orm import Session
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Artifact, Claim, Product, UploadedOriginal
 from pdos_next.core.service import digest, require_access
-from pdos_next.domain.preproject import spec_compare, views
-from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
-from pdos_next.domain.preproject.category_service import parameter_version
-from pdos_next.domain.preproject.models import Proposal, ProposalSource
-from pdos_next.domain.preproject.schemas import Reference
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.domain.products.variant_models import Variant
+from pdos_next.domain.categories.preproject import spec_compare, views
+from pdos_next.domain.categories.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
+from pdos_next.domain.categories.preproject.category_service import parameter_version
+from pdos_next.domain.categories.preproject.models import Proposal, ProposalSource
+from pdos_next.domain.categories.preproject.schemas import Reference
+from pdos_next.domain.categories.products.models import DefinitionRevision
+from pdos_next.domain.categories.products.variant_models import Variant
 from pdos_next.errors import DomainError
 
 from .domain_reads import _public_definition
@@ -352,7 +352,7 @@ class _RunObjects(_PublicObjects):
     def baseline_sources_current(self, view):
         """Reuse only a fixed bound definition under the current RR source proof."""
         from pdos_next.core.request_proof import request_proof
-        from pdos_next.domain.preproject.baseline import _source_references
+        from pdos_next.domain.categories.preproject.baseline import _source_references
 
         from .proposal_context import KEY, reference_key
 

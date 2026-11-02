@@ -16,8 +16,8 @@ from pydantic import BeforeValidator, Field, StrictBool, model_validator
 
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest
-from pdos_next.domain.preproject.evidence_schemas import ClaimContent
-from pdos_next.domain.preproject.schemas import Reference
+from pdos_next.domain.categories.preproject.evidence_schemas import ClaimContent
+from pdos_next.domain.categories.preproject.schemas import Reference
 
 from .deterministic_proofs import ComputeEngine
 

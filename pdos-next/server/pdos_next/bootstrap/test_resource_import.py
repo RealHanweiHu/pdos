@@ -20,8 +20,8 @@ from pdos_next.errors import DomainError
 def import_test_resource_fact(
     s, ctx, product_id, issuer, payload, *, request_key: str, command_id: UUID
 ):
-    from pdos_next.domain.test_resources.schemas import TestResourceFactInput as FactInput
-    from pdos_next.domain.test_resources.service import trusted_import
+    from pdos_next.domain.builds.test_resources.schemas import TestResourceFactInput as FactInput
+    from pdos_next.domain.builds.test_resources.service import trusted_import
 
     data = FactInput.model_validate(payload)
     if ctx.actor_id != ctx.requester_id or ctx.run_id is not None:

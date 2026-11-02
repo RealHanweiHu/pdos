@@ -40,7 +40,7 @@ def prepared(s, ctx, command, scope, payload):
             raise DomainError("VERSION_CONFLICT", "待撤回记录已变化。")
         return RevertPlan(claim, (receipt,), (claim,), None)
     from pdos_next.agent.kernel.persistence import prepare_run_revert
-    from pdos_next.domain.preproject.evidence_models import EvidenceLink
+    from pdos_next.domain.categories.preproject.evidence_models import EvidenceLink
 
     run, receipts = prepare_run_revert(s, ctx, payload.run_id, lock=True)
     if (
@@ -49,7 +49,7 @@ def prepared(s, ctx, command, scope, payload):
         or command.expected_revision != run.cancel_epoch + 1
     ):
         raise DomainError("VERSION_CONFLICT", "运行范围或撤回状态已变化，请重新核对。")
-    from pdos_next.domain.products import definition_items
+    from pdos_next.domain.categories.products import definition_items
 
     item_plan = (
         definition_items.prepare_revert(s, ctx, run, receipts)
@@ -90,8 +90,8 @@ def prepared(s, ctx, command, scope, payload):
             ):
                 raise DomainError("UNDO_BLOCKED_BY_DEPENDENCY", "关联已变化或不属于本次运行。")
             if subject.target_type == "proposal_item":
-                from pdos_next.domain.preproject.access import proposal
-                from pdos_next.domain.preproject.models import ProposalItem
+                from pdos_next.domain.categories.preproject.access import proposal
+                from pdos_next.domain.categories.preproject.models import ProposalItem
 
                 item = s.get(ProposalItem, subject.target_id)
                 owner = proposal(s, ctx, item.proposal_id, lock=True) if item else None
@@ -106,7 +106,7 @@ def prepared(s, ctx, command, scope, payload):
                         "UNDO_BLOCKED_BY_DEPENDENCY", "关联条目已有人工修改或已提交。"
                     )
             elif subject.target_type == "definition_spec":
-                from pdos_next.domain.products.models import (
+                from pdos_next.domain.categories.products.models import (
                     DefinitionRevision,
                     DefinitionSpecCurrent,
                     DefinitionSpecRow,
@@ -147,7 +147,7 @@ def prepared(s, ctx, command, scope, payload):
         subjects.extend(item_plan.original_rows)
     import json
 
-    from pdos_next.domain.products.models import DefinitionSpecRow
+    from pdos_next.domain.categories.products.models import DefinitionSpecRow
 
     if s.scalar(
         text(
@@ -210,11 +210,11 @@ def preview_view(s, ctx, command, scope, payload):
 
 def apply(s, ctx, command, scope, payload):
     plan = prepared(s, ctx, command, scope, payload)
-    from pdos_next.domain.preproject.evidence_models import EvidenceLink
+    from pdos_next.domain.categories.preproject.evidence_models import EvidenceLink
 
     receipt_id = uuid4()
-    from pdos_next.domain.products import definition_items
-    from pdos_next.domain.products.models import DefinitionSpecRow
+    from pdos_next.domain.categories.products import definition_items
+    from pdos_next.domain.categories.products.models import DefinitionSpecRow
 
     changed_rows = (
         definition_items.apply_revert(s, ctx, plan.item_plan, receipt_id) if plan.item_plan else []

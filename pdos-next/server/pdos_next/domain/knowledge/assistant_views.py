@@ -1,12 +1,13 @@
 """Actual verified answers, review reminders and native command seeds."""
 
+from sqlalchemy import select
+
 from pdos_next.core.category_scope import category_scope
 from pdos_next.core.clock import now
 from pdos_next.core.models import Grant, Principal
 from pdos_next.core.service import require_access
-from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
+from pdos_next.domain.categories.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 from pdos_next.errors import DomainError
-from sqlalchemy import select
 
 from .assistant_models import KnowledgeAnswerReview
 from .assistant_reviews import status
@@ -91,7 +92,7 @@ def draft(session, ctx, data):
         }
         operation = "category.knowledge.add"
         if source["private"] or source["customer_original"]:
-            from pdos_next.domain.preproject.access import proposal
+            from pdos_next.domain.categories.preproject.access import proposal
 
             original = proposal(session, ctx, run.proposal_id)
             operation = "category.knowledge.promote"
@@ -208,8 +209,8 @@ def reminders(session, ctx):
 
 
 def review_draft(session, ctx, data):
-    from pdos_next.domain.preproject.access import proposal
-    from pdos_next.domain.preproject.category_models import PromotionProof
+    from pdos_next.domain.categories.preproject.access import proposal
+    from pdos_next.domain.categories.preproject.category_models import PromotionProof
 
     from .assistant_sources import review_for
 

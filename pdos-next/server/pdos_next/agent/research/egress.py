@@ -10,7 +10,7 @@ from pdos_next.agent.kernel import policy
 from pdos_next.agent.kernel.models import AgentToolCall
 from pdos_next.core.models import Product, UploadedOriginal
 from pdos_next.core.service import Context, source_for
-from pdos_next.domain.preproject.deidentification import normalized, strings
+from pdos_next.domain.categories.preproject.deidentification import normalized, strings
 from pdos_next.errors import DomainError
 
 
@@ -35,8 +35,8 @@ def overlaps(query, value):
 
 
 def projected_categories(session, scope, run, text):
-    from pdos_next.domain.preproject.access import proposal
-    from pdos_next.domain.preproject.views import read
+    from pdos_next.domain.categories.preproject.access import proposal
+    from pdos_next.domain.categories.preproject.views import read
 
     query, found = compact(text), set()
     for identity in scope.customer_identities:

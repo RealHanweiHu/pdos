@@ -100,7 +100,7 @@ class KernelActivities:
                 from pdos_next.domain.automations.runtime import binding
 
                 _, rule_spec = binding(s, row)
-                from pdos_next.features.personal.summary_runtime import selected
+                from pdos_next.domain.my_work.summary_runtime import selected
 
                 summary_run = selected(rule_spec)
                 goal += (
@@ -163,7 +163,7 @@ class KernelActivities:
                 verified_checkpoint_url(self.checkpoint_url)
             ) as saver:
                 if summary_run:
-                    from pdos_next.features.personal.summary_graph import execute
+                    from pdos_next.domain.my_work.summary_graph import execute
 
                     result = execute(self.store, scope, checkpointer=saver)
                 else:

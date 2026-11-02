@@ -8,9 +8,9 @@ from sqlalchemy import and_, select, text, tuple_
 
 from pdos_next.core.models import Category, Principal, Product
 from pdos_next.core.database import require_context
-from pdos_next.domain.change_execution.models import ChangeRequestVersion
+from pdos_next.domain.change.execution.models import ChangeRequestVersion
 from pdos_next.domain.projects.models import Project
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
+from pdos_next.domain.quality.execution.models import QualityIssueVersion
 from pdos_next.errors import DomainError
 from pdos_next.core.service import digest, require_access
 
@@ -218,7 +218,7 @@ def read_title(session, ctx, product_id, data: SimilarHistoryTitleInput):
     _human(session, ctx)
     product = require_access(session, ctx, product_id)
     if data.project_id is not None:
-        from pdos_next.domain.work_management.owner import project
+        from pdos_next.domain.projects.work.owner import project
 
         project(session, ctx, product_id, data.project_id)
     # This is an unsaved form context, never an Issue/Change or source version.

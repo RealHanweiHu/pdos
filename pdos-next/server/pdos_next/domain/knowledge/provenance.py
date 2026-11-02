@@ -10,24 +10,25 @@ from collections.abc import Mapping
 from dataclasses import dataclass
 from uuid import UUID
 
+from pydantic import ValidationError
+from sqlalchemy import and_, exists, func, literal, select
+
 from pdos_next.core import (
     models as registered_models,  # noqa: F401 -- registry before domain models
 )
 from pdos_next.core.models import Artifact, Audit, Outbox, Receipt, UploadedOriginal
 from pdos_next.core.service import EVENTS, digest, require_access
-from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot
+from pdos_next.domain.builds.execution.models import ActualConfiguration, BuildLot
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.change_execution.models import ChangeRequestVersion
+from pdos_next.domain.change.execution.models import ChangeRequestVersion
+from pdos_next.domain.projects.activity import receipt_binding, source_binding
+from pdos_next.domain.projects.activity_catalog import SOURCES
 from pdos_next.domain.projects.models import Project
-from pdos_next.domain.quality_execution import evidence
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.domain.verification_launch.models import VerificationRunVersion
+from pdos_next.domain.quality.execution import evidence
+from pdos_next.domain.quality.execution.models import QualityIssueVersion
+from pdos_next.domain.verification.launch.models import VerificationRunVersion
 from pdos_next.errors import DomainError
-from pdos_next.features.projects.activity import receipt_binding, source_binding
-from pdos_next.features.projects.activity_catalog import SOURCES
 from pdos_next.schemas.verification.contracts import SourceRef
-from pydantic import ValidationError
-from sqlalchemy import and_, exists, func, literal, select
 
 
 @dataclass(frozen=True)

@@ -3,13 +3,13 @@
 from sqlalchemy import and_, select
 
 from pdos_next.core.service import EVENTS
-from pdos_next.domain.manufacturing_baseline.models import PreparationVersion
-from pdos_next.domain.manufacturing_baseline.publication_models import (
+from pdos_next.domain.manufacturing.baseline.models import PreparationVersion
+from pdos_next.domain.manufacturing.baseline.publication_models import (
     ManufacturingBaselinePublication,
     ManufacturingPublicationDocument,
 )
-from pdos_next.domain.verification_handoff.models import VerificationHandoffFact
-from pdos_next.domain.work_management.models import ProjectStatusUpdate
+from pdos_next.domain.projects.work.models import ProjectStatusUpdate
+from pdos_next.domain.verification.handoff.models import VerificationHandoffFact
 
 OPERATIONS = frozenset(
     {

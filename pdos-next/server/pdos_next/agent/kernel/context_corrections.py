@@ -185,7 +185,7 @@ def _owner_recheck(session, ctx, run, condition):
         check_run_binding(retained, scope, for_write=False)
         owner = Context(actual.tenant_id, actual.requester_id, actual.requester_id,
                         category_id=actual.category_id)
-        from pdos_next.domain.preproject.access import human
+        from pdos_next.domain.categories.preproject.access import human
 
         human(reading, owner)
         return recheck(reading, owner, retained, condition)

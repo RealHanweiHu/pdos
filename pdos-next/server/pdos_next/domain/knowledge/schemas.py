@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import AwareDatetime, Field, field_validator, model_serializer, model_validator
 
-from pdos_next.domain.work_management.schemas import DTO, SourceRef, Text, VersionRef
+from pdos_next.domain.projects.work.schemas import DTO, SourceRef, Text, VersionRef
 
 from .assistant_schemas import AnswerOrigin, KnowledgeReview
 

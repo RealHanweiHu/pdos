@@ -102,7 +102,7 @@ SCHEMAS = {
 
 
 def _outbound_unavailable():
-    from pdos_next.domain.preproject.access import fail
+    from pdos_next.domain.categories.preproject.access import fail
 
     # RLS readability alone is not authorization to introduce private customer
     # material into a model Run. No complete outbound-source binding exists yet.
@@ -131,10 +131,10 @@ def _public_definition(session, ctx, definition):
 def _public_references(session, ctx, refs, seen=None):
     """Check real source metadata without returning source bodies or taking locks."""
     from pdos_next.agent.kernel.models import PublicWebSnapshot
-    from pdos_next.domain.preproject.category_models import KnowledgeEntry
-    from pdos_next.domain.preproject.claim_access import resolve, source_privacy
-    from pdos_next.domain.preproject.schemas import Reference
-    from pdos_next.domain.products.models import DefinitionRevision
+    from pdos_next.domain.categories.preproject.category_models import KnowledgeEntry
+    from pdos_next.domain.categories.preproject.claim_access import resolve, source_privacy
+    from pdos_next.domain.categories.preproject.schemas import Reference
+    from pdos_next.domain.categories.products.models import DefinitionRevision
 
     seen = set() if seen is None else seen
     for raw in refs:
@@ -188,13 +188,13 @@ def _public_baseline_bom(session, ctx, product_id, result, *, objects=None):
     projected visibility labels never supply this authorization.
     A Run-bound checker may authorize exact private targets and already-bound sources.
     """
-    from pdos_next.domain.configurations.models import (
+    from pdos_next.domain.builds.configurations.models import (
         BomLine,
         BomRevision,
         EngineeringConfiguration,
         PartIdentity,
     )
-    from pdos_next.domain.preproject.claim_access import source_privacy
+    from pdos_next.domain.categories.preproject.claim_access import source_privacy
 
     checked_objects, checked_sources = set(), set()
     definition = result["definition"]
@@ -216,7 +216,7 @@ def _public_baseline_bom(session, ctx, product_id, result, *, objects=None):
                 version = value["expected_revision"]
                 if (identity, version) not in checked_sources:
                     if objects is not None:
-                        from pdos_next.domain.preproject.schemas import Reference
+                        from pdos_next.domain.categories.preproject.schemas import Reference
 
                         objects.refs([Reference(type="artifact", id=identity, version=version)])
                     source_for(session, ctx, product_id, identity, version)
@@ -298,7 +298,7 @@ class DomainReads:
                 "category.competitors.list",
                 "category.parameters.list",
             }:
-                from pdos_next.domain.preproject import category_reads
+                from pdos_next.domain.categories.preproject import category_reads
 
                 values = payload.model_dump()
                 if name == "category.parameters.list":
@@ -356,10 +356,10 @@ class DomainReads:
         from contextlib import nullcontext
 
         from pdos_next.core.service import digest
-        from pdos_next.domain.preproject import baseline, derivation
-        from pdos_next.domain.preproject.access import fail, proposal
-        from pdos_next.domain.preproject.service import _all_refs_from_document
-        from pdos_next.domain.preproject.views import document
+        from pdos_next.domain.categories.preproject import baseline, derivation
+        from pdos_next.domain.categories.preproject.access import fail, proposal
+        from pdos_next.domain.categories.preproject.service import _all_refs_from_document
+        from pdos_next.domain.categories.preproject.views import document
 
         from .execution import check_run_binding
         from .models import AgentRun

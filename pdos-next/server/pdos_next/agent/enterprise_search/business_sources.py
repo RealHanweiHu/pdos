@@ -4,14 +4,14 @@ from sqlalchemy import Integer, Text, and_, case, cast, column, exists, func, li
 from sqlalchemy.dialects.postgresql import JSONB, UUID, aggregate_order_by, array
 
 from pdos_next.core.models import Product
+from pdos_next.domain.builds.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
-from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
-from pdos_next.domain.external_wait.models import ExternalWaitCurrent, ExternalWaitVersion
+from pdos_next.domain.change.execution.models import ChangeCurrent, ChangeRequestVersion
+from pdos_next.domain.manufacturing.supply_execution.models import SupplyCurrent, SupplySnapshot
+from pdos_next.domain.projects.external_wait.models import ExternalWaitCurrent, ExternalWaitVersion
 from pdos_next.domain.projects.models import Project
-from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.domain.supply_execution.models import SupplyCurrent, SupplySnapshot
-from pdos_next.domain.verification_launch.models import (
+from pdos_next.domain.quality.execution.models import QualityIssueCurrent, QualityIssueVersion
+from pdos_next.domain.verification.launch.models import (
     VerificationRunCurrent,
     VerificationRunVersion,
 )

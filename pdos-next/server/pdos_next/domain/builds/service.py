@@ -1,11 +1,12 @@
 from uuid import UUID
 
+from sqlalchemy import select
+
 from pdos_next.core.models import Principal, now
 from pdos_next.core.request_proof import snapshot_get
-from pdos_next.domain.configurations.service import get_engineering, get_process
+from pdos_next.domain.builds.configurations.service import get_engineering, get_process
 from pdos_next.domain.projects.service import _project
 from pdos_next.errors import DomainError
-from sqlalchemy import select
 
 from .models import Build, BuildReadiness
 from .schemas import BuildCreatePayload
@@ -16,7 +17,7 @@ category_lifecycle_fence = True
 def _execution(payload):
     if getattr(payload, "execution_scope", None) is None:
         return None
-    from pdos_next.domain.build_start.schemas import BuildAssessmentPayload
+    from pdos_next.domain.builds.start.schemas import BuildAssessmentPayload
 
     return BuildAssessmentPayload.model_validate(payload.model_dump(mode="json"))
 
@@ -35,7 +36,7 @@ def _build(s, ctx, product_id, build_id, *, write=False):
 
 def _linked(s, ctx, product_id, value, *, write=False, new_consumption=False):
     from pdos_next.core.request_proof import request_proof
-    from pdos_next.domain.preproject.baseline import validate_sources
+    from pdos_next.domain.categories.preproject.baseline import validate_sources
 
     project, link, definition = _project(s, ctx, product_id, value.project_id, write=write)
     if new_consumption:
@@ -82,7 +83,7 @@ def _linked(s, ctx, product_id, value, *, write=False, new_consumption=False):
 def validate(s, ctx, command, product, payload):
     execution = _execution(payload)
     if execution is not None:
-        from pdos_next.domain.build_start.service import validate as validate_execution
+        from pdos_next.domain.builds.start.service import validate as validate_execution
 
         return validate_execution(s, ctx, command, product, execution)
     from pdos_next.core.service import source_for
@@ -110,7 +111,7 @@ def validate(s, ctx, command, product, payload):
 def semantic(payload):
     execution = _execution(payload)
     if execution is not None:
-        from pdos_next.domain.build_start.service import semantic as execution_semantic
+        from pdos_next.domain.builds.start.service import semantic as execution_semantic
 
         return execution_semantic(execution)
     value = payload.model_dump(mode="json")
@@ -151,7 +152,7 @@ def preview_view(s, ctx, command, product, payload):
 def apply(s, ctx, command, product, payload):
     execution = _execution(payload)
     if execution is not None:
-        from pdos_next.domain.build_start.service import apply as apply_execution
+        from pdos_next.domain.builds.start.service import apply as apply_execution
 
         return apply_execution(s, ctx, command, product, execution)
     if command.expected_revision != product.revision:

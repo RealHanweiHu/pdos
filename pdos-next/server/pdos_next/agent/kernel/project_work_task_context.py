@@ -16,14 +16,14 @@ from sqlalchemy import String, and_, cast, func, select
 from sqlalchemy.orm import load_only
 
 from pdos_next.core.database import require_context
-from pdos_next.domain.preproject.models import ProjectOpenItem
+from pdos_next.domain.categories.preproject.models import ProjectOpenItem
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
-from pdos_next.domain.work_management import g0_sources
-from pdos_next.domain.work_management.constants import OPERATIONS
-from pdos_next.domain.work_management.models import (
+from pdos_next.domain.projects.work import g0_sources
+from pdos_next.domain.projects.work.constants import OPERATIONS
+from pdos_next.domain.projects.work.models import (
     WorkCommitmentCurrent, WorkCommitmentVersion, WorkTaskCurrent, WorkTaskVersion,
 )
-from pdos_next.domain.work_management.schemas import CommitmentSnapshot, TaskSnapshot
+from pdos_next.domain.projects.work.schemas import CommitmentSnapshot, TaskSnapshot
 from pdos_next.agent.enterprise_search.safety import safe_originals
 from pdos_next.errors import DomainError
 from pdos_next.core.models import Artifact, Audit, OriginalSecurity, Outbox, Principal, Product

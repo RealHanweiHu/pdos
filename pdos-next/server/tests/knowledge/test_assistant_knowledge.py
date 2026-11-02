@@ -6,18 +6,19 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from pydantic import ValidationError
+from sqlalchemy import select
+from sqlalchemy.dialects.postgresql import dialect
+
 from pdos_next.agent.enterprise_search.sources import catalog, retrieval_catalog
+from pdos_next.domain.categories.preproject.category_schemas import KnowledgeAdd, KnowledgePromote
 from pdos_next.domain.knowledge import assistant_reviews as reviews
 from pdos_next.domain.knowledge import assistant_sources as sources
 from pdos_next.domain.knowledge.assistant_gaps import week_bounds
 from pdos_next.domain.knowledge.assistant_schemas import AnswerOrigin, GapInput, KnowledgeReview
 from pdos_next.domain.knowledge.assistant_storage import downgrade_sql, upgrade_sql
 from pdos_next.domain.knowledge.schemas import CandidatePayload
-from pdos_next.domain.preproject.category_schemas import KnowledgeAdd, KnowledgePromote
 from pdos_next.errors import DomainError
-from pydantic import ValidationError
-from sqlalchemy import select
-from sqlalchemy.dialects.postgresql import dialect
 
 
 @pytest.fixture
@@ -68,7 +69,7 @@ def source(monkeypatch):
     monkeypatch.setattr(sources, "scope_for_run", lambda run: run)
     monkeypatch.setattr(sources, "checked_sources", lambda *_: {str(cid): actual})
     monkeypatch.setattr(sources.ledger, "carried", lambda *_: ({str(cid): ref}, {}))
-    from pdos_next.domain.quality_execution import evidence
+    from pdos_next.domain.quality.execution import evidence
 
     monkeypatch.setattr(
         evidence, "source_for", lambda *_: NS(id=identity, revision=1, content="完整行原文\n下一行")

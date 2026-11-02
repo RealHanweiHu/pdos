@@ -4,12 +4,13 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
+from sqlalchemy import or_, select, text
+
 from pdos_next.core.models import Grant, Principal, now
 from pdos_next.core.service import digest
-from pdos_next.domain.build_operational_facts.models import OperationalAsset
-from pdos_next.domain.external_wait import calendar_owner
+from pdos_next.domain.builds.operational_facts.models import OperationalAsset
+from pdos_next.domain.projects.external_wait import calendar_owner
 from pdos_next.errors import DomainError
-from sqlalchemy import or_, select, text
 
 from .models import ProjectTask
 

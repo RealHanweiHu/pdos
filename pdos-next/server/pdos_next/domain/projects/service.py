@@ -1,13 +1,14 @@
 from uuid import UUID, uuid4
 
+from sqlalchemy import func, select
+
 from pdos_next.core.models import Principal, Product
 from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
-from pdos_next.domain.planning.calendar import ScheduleError
-from pdos_next.domain.planning.scheduling import schedule
-from pdos_next.domain.products.definitions import definition_view
-from pdos_next.domain.products.models import DefinitionRevision
+from pdos_next.domain.categories.products.definitions import definition_view
+from pdos_next.domain.categories.products.models import DefinitionRevision
+from pdos_next.domain.projects.planning.calendar import ScheduleError
+from pdos_next.domain.projects.planning.scheduling import schedule
 from pdos_next.errors import DomainError
-from sqlalchemy import func, select
 
 from .models import (
     PlanProposal,
@@ -70,7 +71,7 @@ def _proposal(s, ctx, product_id, payload):
 
 def validate(s, ctx, command, product, payload):
     from pdos_next.core.service import source_for
-    from pdos_next.domain.preproject.baseline import validate_sources
+    from pdos_next.domain.categories.preproject.baseline import validate_sources
 
     actor = s.get(Principal, ctx.actor_id)
     if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
@@ -175,9 +176,13 @@ def create_project(
     decision,
     variant_id=None,
 ):
-    from pdos_next.domain.preproject.models import Proposal, ProposalDecision, ProposalSubmission
-    from pdos_next.domain.products.service import require_creation
-    from pdos_next.domain.products.variant_models import Variant
+    from pdos_next.domain.categories.preproject.models import (
+        Proposal,
+        ProposalDecision,
+        ProposalSubmission,
+    )
+    from pdos_next.domain.categories.products.service import require_creation
+    from pdos_next.domain.categories.products.variant_models import Variant
 
     if decision is None or not project_id or not getattr(decision, "id", None):
         raise DomainError("NAMED_DECISION_REQUIRED", "项目只随实际 G0 批准建立。", 403)
@@ -443,7 +448,7 @@ def list_projects(s, ctx, product_id, *, project_id=None):
         plan = s.get(PlanRevision, row.current_plan_id) if row.current_plan_id else None
         if project_id is not None and row.current_plan_id and plan is None:
             raise DomainError("SOURCE_UNAVAILABLE", "当前计划暂不可读，请核对权限后刷新。", 403)
-        from pdos_next.domain.project_governance.projection import summary as governance_summary
+        from pdos_next.domain.projects.governance.projection import summary as governance_summary
 
         from .resources import lineage
 

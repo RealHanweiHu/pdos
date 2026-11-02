@@ -6,7 +6,7 @@ from sqlalchemy import select
 from pdos_next.core.contracts import Command
 from pdos_next.core.models import Receipt, RequestKey
 from pdos_next.core.service import receipt_view
-from pdos_next.domain.verification_execution.service import get_preparation
+from pdos_next.domain.verification.execution.service import get_preparation
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import BuildRef
 

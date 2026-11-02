@@ -3,9 +3,9 @@
 from sqlalchemy import Integer, and_, cast, column, func, literal, select
 from sqlalchemy.dialects.postgresql import JSONB, UUID
 
-from pdos_next.domain.build_execution.models import BuildLot
-from pdos_next.domain.change_execution.models import ChangeRequestVersion
-from pdos_next.domain.field_feedback.models import FieldFeedbackVersion, FieldResponseRecord
+from pdos_next.domain.builds.execution.models import BuildLot
+from pdos_next.domain.change.execution.models import ChangeRequestVersion
+from pdos_next.domain.quality.field_feedback.models import FieldFeedbackVersion, FieldResponseRecord
 
 from .readable_sources import readable
 

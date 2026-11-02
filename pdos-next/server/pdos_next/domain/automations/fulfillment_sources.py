@@ -2,9 +2,9 @@
 
 from sqlalchemy import and_, select
 
-from pdos_next.domain.work_fulfillment.models import WorkCommitmentReview as Review
-from pdos_next.domain.work_fulfillment.models import WorkCommitmentReviewCurrent as Current
-from pdos_next.domain.work_management.models import BINDING
+from pdos_next.domain.projects.fulfillment.models import WorkCommitmentReview as Review
+from pdos_next.domain.projects.fulfillment.models import WorkCommitmentReviewCurrent as Current
+from pdos_next.domain.projects.work.models import BINDING
 from pdos_next.errors import DomainError
 
 

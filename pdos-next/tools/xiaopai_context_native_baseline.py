@@ -14,9 +14,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 QUESTIONS = ROOT.parent / "docs/evaluations/xiaopai-v0/context-questions.json"
 TESTS = (
-    "tests/agent_kernel/test_eval_v0_history_state_pg.py",
-    "tests/enterprise_search/test_eval_v0_source_context_pg.py",
-    "tests/agent_kernel/test_eval_v0_handle_candidate_pg.py",
+    "tests/agent/kernel/test_eval_v0_history_state_pg.py",
+    "tests/agent/enterprise_search/test_eval_v0_source_context_pg.py",
+    "tests/agent/kernel/test_eval_v0_handle_candidate_pg.py",
 )
 UNSCORED = {"answer_correctness", "citation_semantics", "real_usage_latency_cost"}
 

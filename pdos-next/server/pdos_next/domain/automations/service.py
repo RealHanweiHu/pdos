@@ -5,14 +5,15 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
+from sqlalchemy import select
+
 from pdos_next.agent.kernel.models import TenantSkillEnablement, ValidationBudget
 from pdos_next.agent.kernel.skills import SkillCatalog
 from pdos_next.core.models import now
 from pdos_next.core.request_proof import command_inputs_once
 from pdos_next.core.service import EVENTS, command_digest, digest, require_access
-from pdos_next.domain.preproject.access import human
+from pdos_next.domain.categories.preproject.access import human
 from pdos_next.errors import DomainError
-from sqlalchemy import select
 
 from .models import AutomationRuleCurrent as Current
 from .models import AutomationRuleVersion as Version
@@ -74,7 +75,7 @@ def spec_current(s, ctx, spec, *, enabled=False):
             s, ctx, SimpleNamespace(product_id=spec.product_id, proposal_id=None, sources=[])
         )
     if spec.personal_summary is not None and spec.personal_summary.dingtalk_binding_id is not None:
-        from pdos_next.features.personal.summary_channels import selected
+        from pdos_next.domain.my_work.summary_channels import selected
 
         selected(s, ctx, spec.personal_summary.dingtalk_binding_id)
     if spec.walletless_summary:

@@ -852,20 +852,20 @@ class LifecycleRequest(Row, Base):
 
 
 # Independent product entities share this metadata, never the legacy schema.
-from pdos_next.domain.build_execution.models import (  # noqa: E402,F401
+from pdos_next.domain.builds.execution.models import (  # noqa: E402,F401
     ActualConfiguration,
     BuildLot,
     SampleAllocation,
     SampleUnit,
 )
-from pdos_next.domain.build_operational_facts.models import (  # noqa: E402,F401
+from pdos_next.domain.builds.operational_facts.models import (  # noqa: E402,F401
     BuildOperationalCurrent,
     BuildOperationalFact,
     MaterialHold,
     OperationalAsset,
     ResourceOccupancy,
 )
-from pdos_next.domain.build_start.models import (  # noqa: E402,F401
+from pdos_next.domain.builds.start.models import (  # noqa: E402,F401
     BuildAssessmentCurrent,
     BuildAuthorizationCurrent,
     BuildAuthorizationDecision,
@@ -873,26 +873,26 @@ from pdos_next.domain.build_start.models import (  # noqa: E402,F401
     BuildStart,
 )
 from pdos_next.domain.builds.models import Build, BuildReadiness  # noqa: E402,F401
-from pdos_next.domain.configurations.models import (  # noqa: E402,F401
+from pdos_next.domain.builds.configurations.models import (  # noqa: E402,F401
     BomLine,
     BomRevision,
     EngineeringConfiguration,
     PartIdentity,
     ProcessRevision,
 )
-from pdos_next.domain.cost_execution.models import (  # noqa: E402,F401
+from pdos_next.domain.manufacturing.cost_execution.models import (  # noqa: E402,F401
     CostCapture,
     CostCurrent,
     CostEstimate,
     CostInputSnapshot,
 )
-from pdos_next.domain.products.models import (  # noqa: E402,F401
+from pdos_next.domain.categories.products.models import (  # noqa: E402,F401
     DefinitionRevision,
     DefinitionSource,
     DefinitionSpecRow,
 )
-from pdos_next.domain.products.variant_models import Variant, VariantRevision  # noqa: E402,F401
-from pdos_next.domain.professional_authority.models import (  # noqa: E402,F401
+from pdos_next.domain.categories.products.variant_models import Variant, VariantRevision  # noqa: E402,F401
+from pdos_next.domain.builds.professional_authority.models import (  # noqa: E402,F401
     ProfessionalCurrent,
     ProfessionalFact,
 )
@@ -905,46 +905,46 @@ from pdos_next.domain.projects.models import (  # noqa: E402,F401
     ProjectWorkPackage,
     TaskDependency,
 )
-from pdos_next.domain.sample_handoff.models import (  # noqa: E402,F401
+from pdos_next.domain.builds.sample_handoff.models import (  # noqa: E402,F401
     SampleReadinessCurrent,
     SampleReadinessFact,
 )
-from pdos_next.domain.supply_execution.models import (  # noqa: E402,F401
+from pdos_next.domain.manufacturing.supply_execution.models import (  # noqa: E402,F401
     KitProjection,
     SupplyCapture,
     SupplyCurrent,
     SupplySnapshot,
 )
-from pdos_next.domain.test_resources.models import (  # noqa: E402,F401
+from pdos_next.domain.builds.test_resources.models import (  # noqa: E402,F401
     SampleRunUsage,
     SampleUsageSentinel,
     TestResourceCurrent,
     TestResourceFact,
     TestResourceReservation,
 )
-from pdos_next.domain.verification_execution.models import (  # noqa: E402,F401
+from pdos_next.domain.verification.execution.models import (  # noqa: E402,F401
     VerificationCurrent,
     VerificationPreparation,
 )
-from pdos_next.domain.verification_front.models import (  # noqa: E402,F401
+from pdos_next.domain.verification.preparation.models import (  # noqa: E402,F401
     FormalVerificationCurrent,
     FormalVerificationRequest,
     MethodApplicability,
     VerificationWindowProposal,
 )
-from pdos_next.domain.verification_handoff.models import (  # noqa: E402,F401
+from pdos_next.domain.verification.handoff.models import (  # noqa: E402,F401
     ActualMethodApplicability,
     ActualMethodBatch,
     ActualMethodCurrent,
     VerificationHandoffFact,
 )
-from pdos_next.domain.verification_launch.models import (  # noqa: E402,F401
+from pdos_next.domain.verification.launch.models import (  # noqa: E402,F401
     VerificationLaunchFact,
     VerificationRunCurrent,
     VerificationRunIdentity,
     VerificationRunVersion,
 )
-from pdos_next.domain.verification_results.models import (  # noqa: E402,F401
+from pdos_next.domain.verification.results.models import (  # noqa: E402,F401
     MeasurementImportCapture,
     MeasurementRecord,
     TestResultActionFact,
@@ -966,16 +966,16 @@ for _parent in (VerificationRunVersion, MeasurementRecord, TestResultProjection)
         )
     )
 
-from pdos_next.domain.capa_verification.models import (  # noqa: E402,F401
+from pdos_next.domain.quality.capa.verification.models import (  # noqa: E402,F401
     CapaVerificationEvidence,
     RemediationLinkRecord,
 )
-from pdos_next.domain.change_execution.models import (  # noqa: E402,F401
+from pdos_next.domain.change.execution.models import (  # noqa: E402,F401
     ChangeCurrent,
     ChangeGraphCapture,
     ChangeRequestVersion,
 )
-from pdos_next.domain.quality_execution.models import (  # noqa: E402,F401
+from pdos_next.domain.quality.execution.models import (  # noqa: E402,F401
     QualityEventFailureLink,
     QualityFailureMap,
     QualityIssueCurrent,
@@ -984,7 +984,7 @@ from pdos_next.domain.quality_execution.models import (  # noqa: E402,F401
     QualityPolicyFact,
 )
 
-from pdos_next.domain.capa_effectiveness.models import (  # noqa: E402,F401
+from pdos_next.domain.quality.capa.models import (  # noqa: E402,F401
     NamedReviewRecord,
     ObservationCurrent,
     ObservationFact,
@@ -994,18 +994,18 @@ from pdos_next.domain.capa_effectiveness.models import (  # noqa: E402,F401
 
 
 # Proposed change host atoms: register modules without requiring partially-loaded classes.
-import pdos_next.features.change.order_store  # noqa: E402,F401
-import pdos_next.features.change.controlled_store  # noqa: E402,F401
+import pdos_next.domain.change.order_store  # noqa: E402,F401
+import pdos_next.domain.change.controlled_store  # noqa: E402,F401
 
-from pdos_next.domain.manufacturing_baseline.models import (  # noqa: E402,F401
+from pdos_next.domain.manufacturing.baseline.models import (  # noqa: E402,F401
     BaselineDocumentLink,
     PreparationCurrent,
     PreparationVersion,
 )
 
-import pdos_next.features.change.dependency_clock  # noqa: E402,F401
+import pdos_next.domain.change.dependency_clock  # noqa: E402,F401
 
-import pdos_next.domain.change_coverage_owner.models  # noqa: E402,F401
+import pdos_next.domain.change.coverage.models  # noqa: E402,F401
 
 # Every model-scoped row uses the same tenant/category/product foreign key.
 # Scope metadata is part of the mapped schema, never a client-selected ACL.
@@ -1132,20 +1132,20 @@ import pdos_next.agent.model_configuration.persistence  # noqa: E402,F401
 Base.metadata.tables["definition_revisions"].append_constraint(
     UniqueConstraint("tenant_id", "category_id", "id", name="definition_category_identity")
 )
-import pdos_next.domain.preproject.category_models  # noqa: E402,F401
-import pdos_next.domain.preproject.category_creation_models  # noqa: E402,F401
-import pdos_next.domain.preproject.evidence_models  # noqa: E402,F401
-import pdos_next.domain.products.platform_models  # noqa: E402,F401
-import pdos_next.domain.manufacturing_baseline.publication_models  # noqa: E402,F401
+import pdos_next.domain.categories.preproject.category_models  # noqa: E402,F401
+import pdos_next.domain.categories.preproject.category_creation_models  # noqa: E402,F401
+import pdos_next.domain.categories.preproject.evidence_models  # noqa: E402,F401
+import pdos_next.domain.categories.products.platform_models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.baseline.publication_models  # noqa: E402,F401
 
-import pdos_next.domain.manufacturing_trials.native_models  # noqa: E402,F401
-import pdos_next.domain.release.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.trials.native_models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.release.models  # noqa: E402,F401
 
-from pdos_next.domain.release import policy_models as _release_policy_models  # noqa: F401, E402
+from pdos_next.domain.manufacturing.release import policy_models as _release_policy_models  # noqa: F401, E402
 
-import pdos_next.domain.external_handoff.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.external_handoff.models  # noqa: E402,F401
 
-from pdos_next.domain.release_exceptions.models import (  # noqa: E402,F401
+from pdos_next.domain.manufacturing.release.exceptions.models import (  # noqa: E402,F401
     ReleaseExceptionDecision,
     ReleaseExceptionCurrent,
 )
@@ -1157,7 +1157,7 @@ from pdos_next.domain.knowledge.models import (  # noqa: E402,F401
     KnowledgeCandidateCurrent,
     KnowledgeCandidateVersion,
 )
-from pdos_next.domain.work_management.models import (  # noqa: E402,F401
+from pdos_next.domain.projects.work.models import (  # noqa: E402,F401
     ProjectStatusUpdate,
     WorkTaskVersion,
     WorkTaskCurrent,
@@ -1169,22 +1169,22 @@ import pdos_next.domain.automations.models  # noqa: E402,F401
 
 import pdos_next.domain.automations.service_models  # noqa: E402,F401
 
-import pdos_next.domain.work_fulfillment.models  # noqa: E402,F401
+import pdos_next.domain.projects.fulfillment.models  # noqa: E402,F401
 
-import pdos_next.domain.external_wait.models  # noqa: E402,F401
-import pdos_next.domain.project_risk.models  # noqa: E402,F401
+import pdos_next.domain.projects.external_wait.models  # noqa: E402,F401
+import pdos_next.domain.projects.risk.models  # noqa: E402,F401
 
-from pdos_next.domain.field_feedback.models import (  # noqa: E402,F401
+from pdos_next.domain.quality.field_feedback.models import (  # noqa: E402,F401
     FieldFeedbackVersion, FieldFeedbackCurrent, FieldResponseRecord,
 )
 
-import pdos_next.features.inbox.models  # noqa: E402,F401
+import pdos_next.domain.my_work.inbox.models  # noqa: E402,F401
 
-import pdos_next.features.projects.sets.models  # noqa: E402,F401
+import pdos_next.domain.projects.sets.models  # noqa: E402,F401
 
-from pdos_next.domain.project_governance import models as _governance_models  # noqa: F401, E402
+from pdos_next.domain.projects.governance import models as _governance_models  # noqa: F401, E402
 
-import pdos_next.features.personal.preference_models  # noqa: E402,F401
+import pdos_next.domain.my_work.preference_models  # noqa: E402,F401
 
 import pdos_next.agent.enterprise_search.similar_history_models  # noqa: E402,F401
 

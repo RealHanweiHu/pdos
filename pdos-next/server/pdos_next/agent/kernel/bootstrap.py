@@ -181,8 +181,8 @@ class Bootstrap:
         ):
             raise DomainError("FORBIDDEN_SCOPE", "个人入口不能绑定业务对象。", 403)
         if data.proposal_id is not None:
-            from pdos_next.domain.preproject.access import proposal
-            from pdos_next.domain.preproject.views import read
+            from pdos_next.domain.categories.preproject.access import proposal
+            from pdos_next.domain.categories.preproject.views import read
 
             from .proposal_context import binding, collect
 
@@ -199,7 +199,7 @@ class Bootstrap:
             )
         reads = {}
         for artifact in refs:
-            from pdos_next.domain.preproject.claim_access import source_privacy
+            from pdos_next.domain.categories.preproject.claim_access import source_privacy
 
             source_for(session, ctx, artifact.product_id, artifact.id, artifact.revision)
             private = private or source_privacy(
@@ -269,8 +269,8 @@ class Bootstrap:
                     "visibility": product.visibility,
                 }
             if scope.proposal_id:
-                from pdos_next.domain.preproject.access import proposal
-                from pdos_next.domain.preproject.views import read
+                from pdos_next.domain.categories.preproject.access import proposal
+                from pdos_next.domain.categories.preproject.views import read
 
                 from .proposal_context import bound_head, validate
 
@@ -471,7 +471,7 @@ class Bootstrap:
 
                 session.info["domain_command_owner"] = self.commands
                 return prepare(session, scope, spec, arguments, intent_key, self)
-            from pdos_next.domain.preproject.provenance import (
+            from pdos_next.domain.categories.preproject.provenance import (
                 CONTENT_OPERATIONS,
                 prepare_from_intent,
             )
@@ -591,7 +591,7 @@ class Bootstrap:
                     # entry and skill.load decides, under the server's own scope check.
                     return ()
                 return ("proposal_drafting",)
-            from pdos_next.domain.preproject.models import Proposal, ProposalSubmission
+            from pdos_next.domain.categories.preproject.models import Proposal, ProposalSubmission
 
             proposal = session.get(Proposal, scope.proposal_id)
             if not proposal:
@@ -814,7 +814,7 @@ class Bootstrap:
 
     def research_parameters(self, scope):
         from pdos_next.agent.research.types import ParameterVersion
-        from pdos_next.domain.preproject.category_models import ParameterCurrent
+        from pdos_next.domain.categories.preproject.category_models import ParameterCurrent
 
         with self.store.transaction(scope) as (session, _):
             return tuple(ParameterVersion(row.parameter_id, row.current_version) for row in

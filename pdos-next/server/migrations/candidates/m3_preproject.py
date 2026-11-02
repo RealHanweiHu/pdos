@@ -13,8 +13,8 @@ from sqlalchemy.schema import CreateIndex, CreateTable
 
 from migrations.versions.s0_0010_audience_fence import OWNERS as AUDIENCE_OWNERS
 from migrations.versions.s0_0010_audience_fence import SQL as AUDIENCE_SQL
-from pdos_next.domain.preproject.category_models import TABLES as CATEGORY_TABLES
-from pdos_next.domain.preproject.models import TABLES
+from pdos_next.domain.categories.preproject.category_models import TABLES as CATEGORY_TABLES
+from pdos_next.domain.categories.preproject.models import TABLES
 
 DELTA = """
 -- The current common T2 confirmation policy permits no deadline. B7 must

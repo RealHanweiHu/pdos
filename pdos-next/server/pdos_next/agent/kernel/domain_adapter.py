@@ -17,7 +17,7 @@ from pdos_next.core.service import (
     receipt_view,
     require_access,
 )
-from pdos_next.domain.preproject.access import fail
+from pdos_next.domain.categories.preproject.access import fail
 from pdos_next.errors import DomainError
 
 from .bindings import DomainBinding, WriteSource, execution_key

@@ -7,7 +7,7 @@ from uuid import UUID
 from pydantic import ConfigDict, Field, create_model, field_validator, model_validator
 
 from pdos_next.core.schema_base import StrictModel
-from pdos_next.domain.preproject.schemas import Reference, SpecItem
+from pdos_next.domain.categories.preproject.schemas import Reference, SpecItem
 
 NonBlank = Annotated[str, Field(min_length=1)]
 

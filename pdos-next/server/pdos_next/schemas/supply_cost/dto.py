@@ -9,8 +9,13 @@ from typing import Annotated, Literal, Self
 
 from pydantic import Field, JsonValue, field_validator, model_validator
 
-from pdos_next.domain.engines.supply_cost.common import FrozenDTO, Quantity, SnapshotRef, Text
-from pdos_next.domain.engines.supply_cost.dto import (
+from pdos_next.domain.manufacturing.supply_cost.engine.common import (
+    FrozenDTO,
+    Quantity,
+    SnapshotRef,
+    Text,
+)
+from pdos_next.domain.manufacturing.supply_cost.engine.dto import (
     AlternateQualification,
     CostResult,
     CostScope,

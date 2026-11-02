@@ -7,10 +7,10 @@ from sqlalchemy import and_, cast, select, union_all
 from sqlalchemy.dialects.postgresql import UUID as PGUUID
 
 from pdos_next.domain.builds.models import Build
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.domain.supply_execution.models import SupplySnapshot
-from pdos_next.domain.verification_launch.models import VerificationRunVersion
-from pdos_next.domain.verification_results.models import TestResultActionFact
+from pdos_next.domain.manufacturing.supply_execution.models import SupplySnapshot
+from pdos_next.domain.quality.execution.models import QualityIssueVersion
+from pdos_next.domain.verification.launch.models import VerificationRunVersion
+from pdos_next.domain.verification.results.models import TestResultActionFact
 
 
 def links(session, sources):

@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import ValidationError
 
-from pdos_next.domain.preproject.access import fail
+from pdos_next.domain.categories.preproject.access import fail
 
 from .deterministic_proofs import _historical_read
 from .models import PublicWebSnapshot

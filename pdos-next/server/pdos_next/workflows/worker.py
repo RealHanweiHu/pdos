@@ -99,8 +99,8 @@ class Activities:
 
     @activity.defn(name="advance_original_lifecycle")
     def lifecycle(self, reference: dict):
-        from pdos_next.features.lifecycle.worker import process
         from pdos_next.originals.lifecycle.types import LifecycleFailure
+        from pdos_next.originals.lifecycle.worker import process
 
         try:
             return process(self.engine, reference)
@@ -164,7 +164,7 @@ async def main(
         technical_engine=dispatch_engine,
     )
     store = OriginalStore(os.environ["PDOS_OBJECT_ROOT"])
-    from pdos_next.features.lifecycle.worker import configure_lifecycle
+    from pdos_next.originals.lifecycle.worker import configure_lifecycle
 
     configure_lifecycle(engine, store, allow_local_profile=True)
     from pdos_next.bootstrap.security import local_runtime

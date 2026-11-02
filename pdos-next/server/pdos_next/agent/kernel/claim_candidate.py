@@ -132,8 +132,8 @@ class PreparedClaim:
 
 
 def _reference(command, payload):
-    from pdos_next.domain.preproject.access import fail
-    from pdos_next.domain.preproject.schemas import Reference
+    from pdos_next.domain.categories.preproject.access import fail
+    from pdos_next.domain.categories.preproject.schemas import Reference
 
     if payload.source is not None:
         source = payload.source
@@ -161,8 +161,8 @@ def _reference(command, payload):
 
 def _candidate_run(session, ctx, command, scope, payload):
     from pdos_next.core.service import digest
-    from pdos_next.domain.preproject.access import fail, human
-    from pdos_next.domain.preproject.evidence_schemas import ClaimRecord
+    from pdos_next.domain.categories.preproject.access import fail, human
+    from pdos_next.domain.categories.preproject.evidence_schemas import ClaimRecord
 
     if ctx.agent_run_id:
         from .execution import command_call, command_run
@@ -223,7 +223,7 @@ def _candidate_run(session, ctx, command, scope, payload):
 
 
 def _nature(payload, run, *, session=None, ctx=None):
-    from pdos_next.domain.preproject.access import fail
+    from pdos_next.domain.categories.preproject.access import fail
 
     if run and payload.nature in {"observed", "decided"}:
         fail("FORBIDDEN_SCOPE", "human_fact_required", "AI 不能冒充亲历观察或具名人工决定。", 403)
@@ -252,8 +252,8 @@ def _nature(payload, run, *, session=None, ctx=None):
 
 
 def _placement(session, ctx, scope, payload, reference, run):
-    from pdos_next.domain.preproject.access import fail, proposal
-    from pdos_next.domain.preproject.claim_access import source_privacy
+    from pdos_next.domain.categories.preproject.access import fail, proposal
+    from pdos_next.domain.categories.preproject.claim_access import source_privacy
 
     identity = run.proposal_id if run else payload.proposal_id
     if run and payload.proposal_id is not None and payload.proposal_id != identity:
@@ -290,7 +290,7 @@ def _placement(session, ctx, scope, payload, reference, run):
 
 @command_inputs_once
 def prepared(session, ctx, command, scope, payload):
-    from pdos_next.domain.preproject.claim_access import load_source
+    from pdos_next.domain.categories.preproject.claim_access import load_source
 
     if command.expected_revision != scope.revision:
         raise DomainError("VERSION_CONFLICT", "当前范围版本已变化。")
@@ -300,7 +300,7 @@ def prepared(session, ctx, command, scope, payload):
     source = load_source(session, ctx, reference, product_id=scope.id, lock=True)
     identity, privacy, visibility = _placement(session, ctx, scope, payload, reference, run)
     if payload.content.get("parameter_id"):
-        from pdos_next.domain.preproject.category_service import check_parameter
+        from pdos_next.domain.categories.preproject.category_service import check_parameter
 
         check_parameter(
             session,

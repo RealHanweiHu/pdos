@@ -202,7 +202,7 @@ def _record_finish(session, run, result):
     focus = {
         (item["kind"], item["id"], item.get("version")): item for item in body["focus_objects"]
     }
-    from pdos_next.domain.preproject.models import Proposal
+    from pdos_next.domain.categories.preproject.models import Proposal
     from pdos_next.domain.projects.models import Project
 
     models = {"category": Category, "product": Product, "proposal": Proposal, "project": Project}
@@ -322,7 +322,7 @@ def _project(session, ctx, row, *, current_run=None):
     ) == "hidden"):
         hidden += 1
     from pdos_next.core.service import require_access, source_for
-    from pdos_next.domain.preproject.access import proposal
+    from pdos_next.domain.categories.preproject.access import proposal
 
     from .project_scope import require_project
 

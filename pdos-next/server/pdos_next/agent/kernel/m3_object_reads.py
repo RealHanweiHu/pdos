@@ -13,17 +13,20 @@ from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Category, Grant, Principal, Product
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import require_access
-from pdos_next.domain.preproject import views
-from pdos_next.domain.preproject.access import fail, proposal
-from pdos_next.domain.preproject.category_models import KnowledgeCurrent, ParameterCurrent
-from pdos_next.domain.preproject.models import (
+from pdos_next.domain.categories.preproject import views
+from pdos_next.domain.categories.preproject.access import fail, proposal
+from pdos_next.domain.categories.preproject.category_models import (
+    KnowledgeCurrent,
+    ParameterCurrent,
+)
+from pdos_next.domain.categories.preproject.models import (
     ProposalDecision,
     ProposalItem,
     ProposalItemVersion,
     ProposalSource,
     ProposalSubmission,
 )
-from pdos_next.domain.preproject.schemas import ItemInput, Reference
+from pdos_next.domain.categories.preproject.schemas import ItemInput, Reference
 from pdos_next.errors import DomainError
 
 from .execution import check_run_binding
@@ -138,8 +141,8 @@ def _references(value):
 def _public_sources(session, ctx, refs, seen=None):
     from pdos_next.core.models import Artifact
     from pdos_next.core.service import source_for
-    from pdos_next.domain.preproject.category_models import KnowledgeEntry
-    from pdos_next.domain.preproject.claim_access import source_privacy
+    from pdos_next.domain.categories.preproject.category_models import KnowledgeEntry
+    from pdos_next.domain.categories.preproject.claim_access import source_privacy
 
     from .domain_reads import _outbound_unavailable, _public_references
 
@@ -221,7 +224,7 @@ def _public_proposal(session, ctx, row, document):
 
 
 def _item_views(session, ctx, row, payload):
-    from pdos_next.domain.preproject.root_sources import project_items
+    from pdos_next.domain.categories.preproject.root_sources import project_items
 
     query = (
         select(ProposalItem, ProposalItemVersion)

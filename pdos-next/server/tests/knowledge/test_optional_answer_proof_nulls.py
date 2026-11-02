@@ -2,11 +2,12 @@
 
 import re
 
+from sqlalchemy.dialects.postgresql import JSONB, dialect
+
 from migrations.candidates import knowledge_optional_proof as proposal
 from migrations.candidates.dingtalk_lifecycle import NATIVE_FUNCTIONS as installed_g
 from migrations.schema_s0_0844 import SCHEMA_SQL as strict_resolver_sql
-from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from sqlalchemy.dialects.postgresql import JSONB, dialect
+from pdos_next.domain.categories.preproject.category_models import KnowledgeEntry
 
 OPTIONAL = {
     "category_knowledge_entries",

@@ -8,8 +8,8 @@ from sqlalchemy import select
 from pdos_next.core.contracts import Command
 from pdos_next.core.models import Principal, Product, Receipt, RequestKey
 from pdos_next.core.service import append_receipt, digest, receipt_view, require_access
-from pdos_next.domain.quality_execution.policy import _issuer, trusted_import
-from pdos_next.domain.quality_execution.schemas import PolicyInput
+from pdos_next.domain.quality.execution.policy import _issuer, trusted_import
+from pdos_next.domain.quality.execution.schemas import PolicyInput
 from pdos_next.errors import DomainError
 
 

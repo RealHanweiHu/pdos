@@ -10,9 +10,9 @@ LIMIT = 20
 
 
 def statement(identities):
-    from pdos_next.domain.project_governance.models import GovernanceEvent
+    from pdos_next.domain.projects.governance.models import GovernanceEvent
     from pdos_next.domain.projects.models import Project
-    from pdos_next.domain.work_management.models import (
+    from pdos_next.domain.projects.work.models import (
         ProjectStatusUpdate,
         WorkCommitmentCurrent,
         WorkTaskCurrent,
