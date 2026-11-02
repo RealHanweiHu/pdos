@@ -12,7 +12,7 @@
 本稿细化以下既有设计，不取代、不放宽其规则：
 
 - [完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §06.3.3（渐进披露）、§06.7（上下文构建）、§06.8（Memory）、§07.3（查询投影）与 I24；
-- [上下文、工具与 Harness 合同](2026-09-10-ai-context-tools-harness-contract.md) §3.4：当前工作记忆不随窗口滑动静默丢失；预算先预留输出与下一次工具反馈；必需约束装不下时返回 `context_incomplete`；截短、分页、漏项分别给标志与续读方式；发送前复核派生内容的当前权限；
+- 上下文、工具与 Harness 合同（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-09-10-ai-context-tools-harness-contract.md`） §3.4：当前工作记忆不随窗口滑动静默丢失；预算先预留输出与下一次工具反馈；必需约束装不下时返回 `context_incomplete`；截短、分页、漏项分别给标志与续读方式；发送前复核派生内容的当前权限；
 - [M2 工具面决策](2026-10-17-m2-tool-surface-decision.md)：方案 C（按技能组固定工具）已于 2026-10-18 实施，方案 B 待协议与模型条件；
 - [小Pai日常问答与企业 RAG 设计 v0.4](2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md)：快慢两档（§6.4）、隔离子任务与证据行（§7.4）、资料比较（§7.9）、回答依据状态（§8.2）、跨轮引用（§10.1）、当场纠正（§11.11）；
 - [设计确认稿 P32](2026-10-08-pdos-next-design-confirmation.md#p32-会话记录按历史运行记录保留撤权才隐藏更新只标注运行内冻结历史用户-2026-10-28)：会话历史在来源变化时的保留语义。

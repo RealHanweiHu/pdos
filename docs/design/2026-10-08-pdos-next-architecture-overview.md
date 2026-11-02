@@ -7,7 +7,7 @@
 
 ## 0. PDOS-next 是什么
 
-PDOS 是 AI-native 的产品开发与 NPI（新产品制造导入）操作系统，面向消费电子的自主品牌、OEM/ODM、派生、降本、质量改进、客户变更、制造转移与认证开发。**pdos-next（`pdos-next/`）是为这个完整目标新建的独立工程**：拥有独立 Python 包、Next.js 应用、依赖锁、Alembic 迁移链（`next_00xx` 独立编号）、数据库与运行配置；不以旧 PDOS 代码、表结构、合同编号或已完成任务为约束。旧工程（`server/` + `web/`）的纯运行框架、协议算法、UI 资产按[复用矩阵](2026-10-02-pdos-next-reuse-and-parallel-plan.md)复制或抽取，但**业务模块、表、状态机、角色、正式决定与资格不继承**。两线并行、互不继承资格。
+PDOS 是 AI-native 的产品开发与 NPI（新产品制造导入）操作系统，面向消费电子的自主品牌、OEM/ODM、派生、降本、质量改进、客户变更、制造转移与认证开发。**pdos-next（`pdos-next/`）是为这个完整目标新建的独立工程**：拥有独立 Python 包、Next.js 应用、依赖锁、Alembic 迁移链（`next_00xx` 独立编号）、数据库与运行配置；不以旧 PDOS 代码、表结构、合同编号或已完成任务为约束。旧工程（`server/` + `web/`）的纯运行框架、协议算法、UI 资产按复用矩阵（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md`）复制或抽取，但**业务模块、表、状态机、角色、正式决定与资格不继承**。两线并行、互不继承资格。
 
 一句话定位（目标架构 §1 核心决定）：**产品/工程开发与制造导入两条主线，在每轮实物活动（Build）汇合；一套领域事实与证据内核，同时服务人员操作、确定性流程和自主 AI 执行。**
 
@@ -230,13 +230,13 @@ UI：shadcn/ui + Tailwind v4 + Geist + Phosphor，橙 `#c2410c`/`#fb923c`，8px 
 |---|---|
 | [完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md)（v1.0 已被取代） | pdos-next 目标权威：12 分册、领域/状态契约、体验/技术/集成、66 操作、65 事件、AT-01～48 |
 | [pdos-next 执行方案](2026-10-02-pdos-next-execution-plan.md) | G0–G5 切片、依赖、验收映射与 §3.1 收口规则；§4 首轮窄路径、§8–13 各波施工前合同 |
-| [复用与并行方案](2026-10-02-pdos-next-reuse-and-parallel-plan.md) | 新旧工程复用矩阵：可复制资产/可抽取算法 vs 不继承的表/状态机/资格 |
+| 复用与并行方案（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-02-pdos-next-reuse-and-parallel-plan.md`） | 新旧工程复用矩阵：可复制资产/可抽取算法 vs 不继承的表/状态机/资格 |
 | wave14–18 冻结实施合同 | 结果返回、品质闭环、品质整改后续、CAPA 有效性首段、专业事实（具名复核） |
 | [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md) | LangGraph + Temporal 边界，已实施，两线共用 |
-| [设计确认稿](2026-10-08-pdos-next-design-confirmation.md) / [执行计划](2026-10-07-xiaopai-product-execution-plan.md) | v1.1 的决策记录（K1–K9、C1–C14）与 pdos-next 里程碑；[单 Agent 方案](2026-10-07-xiaopai-single-agent-runtime-plan.md) 已被取代，仅作决策记录 |
+| [设计确认稿](2026-10-08-pdos-next-design-confirmation.md) / [执行计划](2026-10-07-xiaopai-product-execution-plan.md) | v1.1 的决策记录（K1–K9、C1–C14）与 pdos-next 里程碑；单 Agent 方案（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md`） 已被取代，仅作决策记录 |
 | [DC-11 T0/T1/T2 政策](2026-09-20-ai-direct-write-tier-policy.md) | AI 写入分级的原批准政策（两线共同遵循） |
-| [完整设计合同 v1.1](2026-09-10-pdos-complete-design-contract.md) | 原工程领域基线，非 pdos-next 约束（术语与领域背景可参照） |
-| [对象合同 `docs/contracts/pdos-v1/`](../../contracts/pdos-v1/) 与 [运行政策 `docs/contracts/pdos-runtime-v1/`](../../contracts/pdos-runtime-v1/) | 原工程冻结合同与 DC 冻结登记台账 |
+| 完整设计合同 v1.1（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-09-10-pdos-complete-design-contract.md`） | 原工程领域基线，非 pdos-next 约束（术语与领域背景可参照） |
+| 对象合同 `docs/contracts/pdos-v1/`（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/contracts/pdos-v1/`） 与 运行政策 `docs/contracts/pdos-runtime-v1/`（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/contracts/pdos-runtime-v1/`） | 原工程冻结合同与 DC 冻结登记台账 |
 | [唯一清单 pdos-next 队列](../../tasks/ai-native-integrated-todo.md#pdos-next-queue) | 活动状态唯一来源；wave2–25 详情在只读留存 |
 
 注：[立项前改造](2026-10-05-preproject-redesign.md)（品类/立项提案/AI 先起草/小Pai 入口）原在原工程实施；v1.1 已把这些决定并入 pdos-next 设计（§02.3a、§03.14、§05），原工程实现只作复用参考。

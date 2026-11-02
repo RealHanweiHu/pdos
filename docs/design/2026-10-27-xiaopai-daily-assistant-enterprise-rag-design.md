@@ -17,7 +17,7 @@
 - [唯一活动清单](../../tasks/ai-native-integrated-todo.md#current-queue)中的实际实现状态和验证边界。
 - [小Pai上下文设计](2026-10-28-xiaopai-context-design.md)：上下文的加载、保留、压缩与聚焦；本稿 §6.4 快慢两档、§10.1 跨轮引用与之配套。
 
-[原工程 S4-2 Memory + 向量检索合同](2026-08-12-s4-2-memory-search-contract.md)已随原工程归档，不作为本稿业务依据；仅复用其中原始向量不外传、embedding 维度与有限数值校验、不可用不冒充零结果等纯技术约束，不继承旧 Memory 状态机、RBAC 或 API。
+原工程 S4-2 Memory + 向量检索合同（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-08-12-s4-2-memory-search-contract.md`）已随原工程归档，不作为本稿业务依据；仅复用其中原始向量不外传、embedding 维度与有限数值校验、不可用不冒充零结果等纯技术约束，不继承旧 Memory 状态机、RBAC 或 API。
 
 若本稿与已冻结 v1.1 或后续已确认决策冲突，以既有权威设计为准；需要改变范围、权限、写入档位或技术栈时，先形成新的用户决策记录。本稿不授予 T0/T2 资格，不代表真实模型质量、完整 S1–S5、生产启用或真实业务外发通过。
 
@@ -77,7 +77,7 @@
 - 现有操作中：`quality.issue.merge`（T1）可合并重复问题；`category.knowledge.add`（T0，AI 来源标 ai_draft）/`category.knowledge.promote`（T1，须人工确认已去标识）与 `knowledge.candidate.create`（T0）/`knowledge.rule.publish`（T2）构成现有知识沉淀流程；AutomationRule 已支持定时、领域事件与相对里程碑触发（`domain/automations/schemas.py:106`），启用为 `ai.automation.activate`（T1）。
 - 个人关注读模型（`personal_attention*.py`）已汇集本人工作、外部等待、项目风险、验证与待决定事项，可作为定时摘要的事实来源。
 - 已有本人私有的工作成果（`agent_kernel/work_products.py`，2026-10-28 工作树）：可把实际 Run 的结果保存为文档或表格并追加修订，可复用为“保存结果”。质量问题已有根因、临时措施、CAPA 措施与有效性记录（`domain/quality_issues`、`domain/capa_effectiveness`），可直接用于相似历史卡片。
-- 当前没有钉钉连接；[原工程 S5-1 钉钉连接器合同](2026-08-12-s5-1-dingtalk-connector-contract.md)已随原工程归档，只参考技术约束。钉钉只读入口按 P31 设计（§11.9）。
+- 当前没有钉钉连接；原工程 S5-1 钉钉连接器合同（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-08-12-s5-1-dingtalk-connector-contract.md`）已随原工程归档，只参考技术约束。钉钉只读入口按 P31 设计（§11.9）。
 - 前端已有回复、研究来源、候选确认、运行详情、来源绑定和反馈组件，可扩展复用。
 
 ## 2. 目标与非目标

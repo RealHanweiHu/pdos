@@ -10,7 +10,7 @@
 
 **流程**：
 1. 用户按 §2 的顺序逐项拍板，每项结果记在该项下面。
-2. 全部确认后，把结果并入[完整目标架构](2026-10-02-pdos-complete-target-architecture-v1.md)，形成 v1.1 冻结版；同步更新 AGENTS.md、[设计索引](README.md)和[唯一清单](../../tasks/ai-native-integrated-todo.md)。
+2. 全部确认后，把结果并入完整目标架构（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-02-pdos-complete-target-architecture-v1.md`），形成 v1.1 冻结版；同步更新 AGENTS.md、[设计索引](README.md)和[唯一清单](../../tasks/ai-native-integrated-todo.md)。
 3. 冻结之后，设计变更只能走明确的决策记录。不允许波次合同像这次一样悄悄把规则加严（见 §4）。
 
 **依据**：10/08 的四路只读审计，分别是设计与决定对照、性能与形式化成因、后端复用、前端复用。关键结论已对照源码抽查。
@@ -27,7 +27,7 @@
 | K4 | 规格字典：参数版本不可改，竞品指标、提案条目、测试模板都引用同一参数 ID 和版本 | 同上 §3.5 |
 | K5 | 客户资料私有；只有经人工去标识的内容才能沉淀到品类 | 同上 §3.6 |
 | K6 | LangGraph + Temporal 是固定运行架构 | AGENTS.md 不可协商项 6 |
-| K7 | 只有一个 Agent，即小Pai，通过工具、MCP 和技能包完成工作；不再按六领域 Agent 组织；技能包三要素是工具、数据语义、使用原则，渐进披露 | AGENTS.md 不可协商项 6；[单 Agent 方案](2026-10-07-xiaopai-single-agent-runtime-plan.md) §4.3、§5.1 |
+| K7 | 只有一个 Agent，即小Pai，通过工具、MCP 和技能包完成工作；不再按六领域 Agent 组织；技能包三要素是工具、数据语义、使用原则，渐进披露 | AGENTS.md 不可协商项 6；单 Agent 方案（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md`） §4.3、§5.1 |
 | K8 | 主线工程是 pdos-next；原工程停用关闭 | 用户 10/08 |
 | K9 | 暂无真实用户，先把产品做好；无用户期默认只用合成或自有资料 | [小Pai 产品执行计划](2026-10-07-xiaopai-product-execution-plan.md)"策略前提" |
 
@@ -257,7 +257,7 @@
   - pdos-next 架构整理稿按 v1.1 更新；
   - "产品蓝图"从索引和所有引用中删除；
   - 唯一清单当前队列重写为：停用步骤 S1–S7 → v1.1 冻结 → 整体重构（C5/C6/C10 加 C1 范围根迁移）→ 第一个闭环（C4）；
-  - [单 Agent 方案](2026-10-07-xiaopai-single-agent-runtime-plan.md)标为"已被本确认稿取代"，保留作为决策记录。
+  - 单 Agent 方案（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md`）标为"已被本确认稿取代"，保留作为决策记录。
 
 ## 3. 目标架构与决定的冲突、缺口（审计摘要）
 
@@ -677,7 +677,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
 
 ### P32 会话记录按历史运行记录保留：撤权才隐藏、更新只标注，运行内冻结历史（用户 2026-10-28）
 
-- 起因：[小Pai上下文设计](2026-10-28-xiaopai-context-design.md) §3 对照代码发现：上一轮只要准备过 T1/T2 候选、读取结果有变化或用过未登记历史复核器的读工具，整轮回答就不进入下一轮；运行中途历史变化即报 `SOURCE_STALE`。v1.1 §06.8 要求撤权传播到摘要与缓存，未要求内容变化即丢弃；[Harness 合同](2026-09-10-ai-context-tools-harness-contract.md) §3.4 的“来源变更后不得沿用旧可见内容”写在缓存行。用户确认设计稿 §13 选项（a）。
+- 起因：[小Pai上下文设计](2026-10-28-xiaopai-context-design.md) §3 对照代码发现：上一轮只要准备过 T1/T2 候选、读取结果有变化或用过未登记历史复核器的读工具，整轮回答就不进入下一轮；运行中途历史变化即报 `SOURCE_STALE`。v1.1 §06.8 要求撤权传播到摘要与缓存，未要求内容变化即丢弃；Harness 合同（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-09-10-ai-context-tools-harness-contract.md`） §3.4 的“来源变更后不得沿用旧可见内容”写在缓存行。用户确认设计稿 §13 选项（a）。
 - 采纳：
   1. 每轮用户原话与小Pai回答作为带时间与 as_of 的历史运行记录保留，不作为当前事实；涉及当前事实时须重读。
   2. 来源撤权、撤回或扫描失效时，隐藏该轮回答正文，保留用户原话与原因提示；来源仅有新版本或读取结果变化时，保留回答并标“资料已更新”。上一轮准备过的候选按当前状态标注，载荷不进入上下文。

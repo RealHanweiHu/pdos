@@ -29,4 +29,4 @@ flowchart LR
 
 开发启动：`scripts/dev.sh` 同时启动 API、Agent Worker 和原确定性调度器；`scripts.agent_runtime_environment start` 创建并验证本机独立状态服务，私有配置存于忽略目录 `.local/agent-runtime/`。缺少服务不回退进程内正式执行。`pdos-next` 的 API/ASGI 默认开启持久队列；本地直执行仅允许经过目标核对的显式合成测试。下一工程的 Worker 缺少独立配置/资格/出站接口时记录 `MODEL_RUNTIME_PORTS_MISSING`，保留工作与人工办理能力。
 
-本地 Temporal 使用开发服务器及 SQLite 历史，LangGraph 使用 PostgreSQL 检查点。生产 Temporal PostgreSQL、完整主协调器/Skills/长期记忆、真实模型资格及人工出口仍是原计划余项；本次不改变这些状态。验证与已知限制见[收口证据](../reports/evidence/agent-runtime-convergence-20261007/result.md)。
+本地 Temporal 使用开发服务器及 SQLite 历史，LangGraph 使用 PostgreSQL 检查点。生产 Temporal PostgreSQL、完整主协调器/Skills/长期记忆、真实模型资格及人工出口仍是原计划余项；本次不改变这些状态。验证与已知限制见收口证据（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/reports/evidence/agent-runtime-convergence-20261007/result.md`）。
