@@ -32,7 +32,7 @@
 外部动作（D60–D68）随时可做。整仓重组原定排在 W1 提交和迁出 iCloud 之后，实际已提前开始，现状见 D02。
 
 **W0 立即处理**
-- D01 〔你〕Codex 真实评测和本地预览共用同一个库（64387 `pdos-comprehensive-c351c0ca`）和同一个 Temporal 命名空间（`pdos-next-comprehensive-20261023`）。预览的 `dev_reload.py` 又在监视 `tools`，评测每写一次文件都会让预览的 API 和 Worker 重启，可能续派积压的历史运行，产生真实 MiniMax 调用（10-27 曾因此刻意不重启 Worker）。评测结束前，去掉 `.claude/launch.json` 里的 `--watch tools`，或者暂停使用预览；然后核对预览库里积压的运行。
+- D01 ✅ 11-01 晚只读核对完毕，[核对记录](../docs/reports/evidence/debt-consolidation-20261101/d01-preview-eval-isolation-check.md)。原来担心的“预览重启后续派积压运行、产生 MiniMax 调用”不成立：派发只在 Worker 里做，而且只处理预览租户；预览没有配 Worker，API 启动时不派发；预览租户排队中的运行和没派发的出站记录都是 0。库里有 10-11 到 10-22 克隆来的约 5000 个运行中/排队中的运行，分属 4394 个测试租户，预览碰不到。已改两处本机配置：`.claude/launch.json` 去掉了 `--watch tools`，下次启动预览时生效（当前 API 由重组会话 22:15 启动，仍按旧参数跑，没有重启）；`.local/agent-runtime/environment.json` 的 Temporal 程序路径改到 `.local/tools/temporal`（原路径在整仓重组中失效，Temporal 一旦重启就会找不到程序）。余项：评测和预览仍然共用库、租户和命名空间，评测的 37 个运行出现在预览历史里，隔离归 D59；还开着的评测工作流归 D08。原记录：Codex 真实评测和本地预览共用同一个库（64387 `pdos-comprehensive-c351c0ca`）和同一个 Temporal 命名空间（`pdos-next-comprehensive-20261023`），预览的 `dev_reload.py` 又监视 `tools`。
 - D02 ✅ 「项目代码结构优化」会话已完成整仓重组（没有等 D60），全部为本地提交、未推送：
   - 392341ee：删除原工程、旧设计和本清单的历史段，全部留在标签 `archive/pre-restructure-2026-11-01`；
   - f733edc9：前端按产品区重组；
@@ -60,7 +60,7 @@
 - D08 收尾：
   - 评测文件分组本地提交〔你〕；
   - 写入本清单；
-  - 停掉临时 API 和 Temporal，清理临时登录；
+  - 停掉临时 API 和 Temporal，清理临时登录；关掉评测队列 `pdos-real-eval-20261101` 上还开着的 1 个 `XiaopaiWork`（预览租户，UTC 11-01 18:35 起等输入，见 D01 核对记录）；
   - 把陈旧状态改为“已实施，余项见本节”：设计索引 L105–108、x1 handoff 文件头、本清单原 10-28/10-30 段里的“切片 B…仍待”和“90≠86”。
 
 **W2 仓库整理（工程卫生；一个会话，删除类逐项经你同意；前置 D60）**
