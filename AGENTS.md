@@ -2,7 +2,7 @@
 
 **主线是 `pdos-next/`**，按[完整目标架构 v1.1](docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md)（用户 2026-10-08 批准并冻结）建设；决策背景见[设计确认稿](docs/design/2026-10-08-pdos-next-design-confirmation.md)。[整合清单](tasks/ai-native-integrated-todo.md)仍是唯一活动状态来源。
 
-**原工程（`server/` + `web/`）已于 2026-10-08 停用归档**：代码在标签 `original-final-2026-10-08`；数据已备份、不迁移；原 N/P/Q 义务、Sprint、原版生产与 Q0–Q6 人工出口随之归档，所需业务范围由 v1.1 验收场景承接。原工程只作复用来源（清单见确认稿 §5），不再施工。
+**原工程（`server/` + `web/`）已于 2026-10-08 停用归档**：代码在标签 `original-final-2026-10-08`；2026-11-01 起仓库只保留 pdos-next，原工程遗留文件与旧设计已从当前目录删除（删除前内容在标签 `archive/pre-restructure-2026-11-01`）；数据已备份、不迁移；原 N/P/Q 义务、Sprint、原版生产与 Q0–Q6 人工出口随之归档，所需业务范围由 v1.1 验收场景承接。原工程只作复用来源（清单见确认稿 §5），不再施工。
 
 ## 当前执行节奏：加速建设、按影响验证（2026-09-27 用户再次明确）
 
@@ -16,10 +16,10 @@
 
 ## 续接入口与按需阅读
 
-1. 先读[清单当前队列](tasks/ai-native-integrated-todo.md#current-queue)，再读 v1.1 中本闭环涉及的章节、操作（附录 A）和验收场景（附录 B）；不全文重读历史日志。
+1. 代码目录地图见 [pdos-next/README.md](pdos-next/README.md)。先读[清单当前队列](tasks/ai-native-integrated-todo.md#current-queue)，再读 v1.1 中本闭环涉及的章节、操作（附录 A）和验收场景（附录 B）；不全文重读历史日志。
 2. 设计依据：v1.1 §00–§09 与[设计确认稿](docs/design/2026-10-08-pdos-next-design-confirmation.md)。全部设计文档的权威链、生效合同与被取代稿分类见[设计文档索引](docs/design/README.md)。v1.0 与原工程的设计合同只作历史对照。
 3. 前端遵循[UI 基线](docs/design/2026-08-09-ui-baseline.md)与[原稿](docs/design/ui-baseline-mockup.html)：shadcn/ui + Tailwind v4 + Geist，橙色亮 `#c2410c` / 暗 `#fb923c`，圆角 8px，双主题，Phosphor 图标。不换栈或新增第二套 UI 库。
-4. 只有追溯特定旧结论时读取[入口历史](AGENTS.history-2026-09-27.md)或清单对应历史锚点。归档中的旧“当前/下一步”不是执行命令。
+4. 只有追溯特定旧结论时，从标签 `archive/pre-restructure-2026-11-01` 读取入口历史 `AGENTS.history-2026-09-27.md` 或清单的历史段落。归档中的旧“当前/下一步”不是执行命令。
 
 ## 当前状态指针
 
@@ -39,8 +39,8 @@
 ## 环境与资产
 
 - `.env` 由用户依 `.env.example` 填写。模型为租户级功能，凭据不暴露，白名单须 golden-case 通过；缺凭据只阻塞依赖模型的实际调用，不阻塞本地实现。协议支持 OpenAI 兼容与 Anthropic 原生。
-- pdos-next 的本地环境由 `pdos-next/tools/` 建立；共用运行时状态库（`pdos-agent-state-*`）与 Temporal 开发服务由 `server/scripts/agent_runtime_environment.py` 管理，`pdos-searxng-1` 提供本地搜索。每次数据库操作前核对实际目标。原工程本地 compose（55432、MinIO 9000）已停用。
-- `certs/ApsaraDB-CA-Chain.pem` 与 `assets/cehub/deliverable-guide-manifest.json`（687 条 checkItems）沿用；直接消费清单，不解析 xlsx 反推。
+- pdos-next 的本地环境由 `pdos-next/tools/` 建立；共用运行时状态库（`pdos-agent-state-*`）与 Temporal 开发服务由 `pdos-next/tools/agent_runtime_environment.py` 管理，`pdos-searxng-1` 提供本地搜索（`pdos-next/infra/compose.yaml`）。每次数据库操作前核对实际目标。原工程本地 compose（55432、MinIO 9000）已停用。
+- `pdos-next/infra/certs/ApsaraDB-CA-Chain.pem` 与 `pdos-next/assets/cehub/deliverable-guide-manifest.json`（687 条 checkItems）沿用；直接消费清单，不解析 xlsx 反推。
 - 老 CEHub `~/Desktop/ce-project-hub` 仅为可选参考；无法访问时依合同实现，不形成阻塞。
 
 ## 必须保留的批准与验收边界

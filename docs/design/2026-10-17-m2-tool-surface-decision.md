@@ -72,7 +72,7 @@ B 与 v1.1 的契合度高于 A 和 C：
 - **前缀冻结（AGENTS.md 不可协商项 4）**：顶层 `tools` 与 system 字节恒定，动态状态按 §06.7 追加到末尾——这正是该条要求的形状。
 - **渐进披露（§06.3.3）**：`skill.load` → 服务器校验租户启用与范围 → 服务器发 `tool_addition` 浮出该技能的工具。服务器仍是唯一决定者，与"未加载对应技能时服务器拒绝写工具调用"同构，且现在**模型连看都看不到**，而不只是被事后拒绝。
 - **撤权**：`tool_removal` 给了权限撤销一个协议级落点，当前只能靠执行前拒绝。
-- **附带修正一处注入面**：B 的追加块必须走 `role: "system"` 消息，而该通道是**不可伪造的 operator 通道**（供应商文档明确：用户/工具内容里的文字可被任何能写入用户可见输入的东西伪造）。当前实现把技能正文和服务器上下文都作为 `{"role": "user"}` 消息注入（[graph.py:196](../../pdos-next/server/pdos_next/agent_kernel/graph.py:196)）——在一个以"外部内容是数据不是指令"为前提的系统里，操作者指令和用户输入同处一个不可区分的通道，是值得单独修的。接 B 顺带解决。
+- **附带修正一处注入面**：B 的追加块必须走 `role: "system"` 消息，而该通道是**不可伪造的 operator 通道**（供应商文档明确：用户/工具内容里的文字可被任何能写入用户可见输入的东西伪造）。当前实现把技能正文和服务器上下文都作为 `{"role": "user"}` 消息注入（[graph.py:196](../../pdos-next/server/pdos_next/agent/kernel/graph.py:196)）——在一个以"外部内容是数据不是指令"为前提的系统里，操作者指令和用户输入同处一个不可区分的通道，是值得单独修的。接 B 顺带解决。
 
 **B 的两个硬约束，必须一起定**：
 1. **协议**：仅 Anthropic 原生。而 `.env.example` 的默认是 `PDOS_LLM_MODEL=MiniMax-M3` 走 `openai-compatible`。B 对默认路线不可用。
@@ -85,7 +85,7 @@ B 与 v1.1 的契合度高于 A 和 C：
 
 你专门问了这一条。先把现状说准，避免高估也避免低估。
 
-**4.0 现状基线**：今天每个工具发的是 `{name, description, parameters}`（[registry.py:82](../../pdos-next/server/pdos_next/agent_kernel/registry.py:82)），**没有任何工具设置 `strict: true`**；`strict` 只用在输出 schema 的 `response_format` 上（[agent_client.py:70](../../pdos-next/server/pdos_next/providers/agent_client.py:70)）。所以现在并不存在"供应商侧保证"，只有**供应商侧尽力约束 + 服务器校验**。这也正是 §09 把 schema 遵从度写成**评测项**而不是保证的原因。
+**4.0 现状基线**：今天每个工具发的是 `{name, description, parameters}`（[registry.py:82](../../pdos-next/server/pdos_next/agent/kernel/registry.py:82)），**没有任何工具设置 `strict: true`**；`strict` 只用在输出 schema 的 `response_format` 上（[agent_client.py:70](../../pdos-next/server/pdos_next/providers/agent_client.py:70)）。所以现在并不存在"供应商侧保证"，只有**供应商侧尽力约束 + 服务器校验**。这也正是 §09 把 schema 遵从度写成**评测项**而不是保证的原因。
 
 据此，A 的风险要精确表述为下面五条：
 
@@ -95,7 +95,7 @@ B 与 v1.1 的契合度高于 A 和 C：
 
 **4.3 它会拆掉 T0 资格阶梯所依赖的测量。** §09 写明"原生工具调用和 schema 遵从度是模型资格的评测项"，§06.12 的 T0 阶梯要以此为证据。A 之后所有工具调用都走同一个信封，**按操作测量 schema 遵从度这件事本身不再可能**——你会在正式启用资格阶梯之前，先把该阶梯要用的度量拆掉。这是 A 最被低估的代价：它不是性能问题，是**资格证据链**问题。
 
-**4.4 它要求重建唯一的写入安全边界上的证明路径。** [execution.py:277](../../pdos-next/server/pdos_next/agent_kernel/execution.py:277) 断言 `digest(registry.definitions()) == model.tool_definitions_digest`，并逐项核对模型回复里的 `name`/`arguments` 等于实际领域工具调用。A 之后模型回复是窄入口，必须按固定解析规则从入口参数**重新推导目标工具**，才能接回 `WriteSource(skill, model_call_id, response_index)` 与幂等键。方案稿 §6 已经点明"只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明"。对比之下 **B 的第 4 类事实（实际调用来源）零改动**，因为回复里仍是真实工具名和原生参数。把新解析代码放在全系统唯一的写入边界上，是风险最不该增加的位置。
+**4.4 它要求重建唯一的写入安全边界上的证明路径。** [execution.py:277](../../pdos-next/server/pdos_next/agent/kernel/execution.py:277) 断言 `digest(registry.definitions()) == model.tool_definitions_digest`，并逐项核对模型回复里的 `name`/`arguments` 等于实际领域工具调用。A 之后模型回复是窄入口，必须按固定解析规则从入口参数**重新推导目标工具**，才能接回 `WriteSource(skill, model_call_id, response_index)` 与幂等键。方案稿 §6 已经点明"只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明"。对比之下 **B 的第 4 类事实（实际调用来源）零改动**，因为回复里仍是真实工具名和原生参数。把新解析代码放在全系统唯一的写入边界上，是风险最不该增加的位置。
 
 **4.5 它买的收益在实际配置的路线上未经测量。** A 的全部正当性是"跨组前缀稳定以命中缓存"。但本项目默认路线是 MiniMax over OpenAI 兼容，而该分支**没有设置任何缓存断点**（`cache_control` 只在 Anthropic 分支），第三方 OpenAI 兼容服务的缓存行为方案稿自己也要求"按实际服务商与模型验证"，至今未测；MiniMax codec 还会往 `tools` 里追加一个 `finish_tool`。**在未证实该路线存在可利用缓存之前，A 是用 4.1–4.4 的确定损失，换一个未验证的收益。**
 

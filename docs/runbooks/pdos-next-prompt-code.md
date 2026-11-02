@@ -1,6 +1,6 @@
 # 小Pai Prompt 代码工作流
 
-主提示词是随代码评审的版本化资产，位于 `pdos-next/server/pdos_next/prompt_packages/`。运行时只读取 `registry.json` 的 `active` 版本；动态上下文、权限、租户和资料仍由服务器按 Run 追加，不能写入固定前缀。
+主提示词是随代码评审的版本化资产，位于 `pdos-next/server/pdos_next/agent/prompt_packages/`。运行时只读取 `registry.json` 的 `active` 版本；动态上下文、权限、租户和资料仍由服务器按 Run 追加，不能写入固定前缀。
 
 ## 可见
 
@@ -17,7 +17,7 @@ pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py show 1.0.0
 
 ```sh
 pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py new 1.0.1-draft --source 1.0.0
-# 编辑 pdos-next/server/pdos_next/prompt_packages/versions/1.0.1-draft.md
+# 编辑 pdos-next/server/pdos_next/agent/prompt_packages/versions/1.0.1-draft.md
 pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py register 1.0.1-draft
 pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py diff 1.0.0 1.0.1-draft
 ```

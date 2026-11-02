@@ -8,7 +8,7 @@
 
 ## 1 已核实的下发路径与载荷
 
-[AgentKernel](../../pdos-next/server/pdos_next/agent_kernel/graph.py) 的 `compile()` 从 `registry.definitions(scope.isolation)` 捕获列表，`model()` 每轮原样传给网关。`skill.load` 只追加技能正文和加载绑定，不改变此列表。[注册表](../../pdos-next/server/pdos_next/agent_kernel/registry.py)的 `definitions("main")` 按名称排序，只排除必须隔离读取的工具，没有按技能过滤。
+[AgentKernel](../../pdos-next/server/pdos_next/agent/kernel/graph.py) 的 `compile()` 从 `registry.definitions(scope.isolation)` 捕获列表，`model()` 每轮原样传给网关。`skill.load` 只追加技能正文和加载绑定，不改变此列表。[注册表](../../pdos-next/server/pdos_next/agent/kernel/registry.py)的 `definitions("main")` 按名称排序，只排除必须隔离读取的工具，没有按技能过滤。
 
 [协议适配器](../../pdos-next/server/pdos_next/providers/agent_client.py)将所传定义全部放入请求：OpenAI 兼容协议的 `tools[].function`，或 Anthropic 原生协议的 `tools[].input_schema`。因此准确范围是“主循环的每次模型调用下发 106 个工具”；研究和原件提取子任务已有独立的小列表。
 
@@ -110,7 +110,7 @@ Anthropic 现有 system 缓存断点可以保留；若希望已加载技能和�
 
 ## 6 可信调用证明必须一起调整
 
-当前[网关](../../pdos-next/server/pdos_next/agent_kernel/gateway.py)按 `run × isolation` 固定 `tool_definitions` 摘要；[执行证明](../../pdos-next/server/pdos_next/agent_kernel/execution.py)还要求该摘要等于完整 `registry.definitions()`，并逐项检查实际模型回复中的 `name/arguments` 等于领域工具调用。A 路径下实际回复会是窄入口，B 路径下初始 tools 与已追加工具也不再等于完整注册表。**只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明。**
+当前[网关](../../pdos-next/server/pdos_next/agent/kernel/gateway.py)按 `run × isolation` 固定 `tool_definitions` 摘要；[执行证明](../../pdos-next/server/pdos_next/agent/kernel/execution.py)还要求该摘要等于完整 `registry.definitions()`，并逐项检查实际模型回复中的 `name/arguments` 等于领域工具调用。A 路径下实际回复会是窄入口，B 路径下初始 tools 与已追加工具也不再等于完整注册表。**只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明。**
 
 需要分别保存与验证四类事实，字段放在运行、调用和检查点已有版本化记录中；不把提示词、技能或工具集版本写入数据库约束：
 

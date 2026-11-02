@@ -53,21 +53,18 @@ AI 写入按操作分级：
 ## 仓库结构
 
 ```text
-pdos-next/
-  web/                         Next.js 应用与前端测试
-  server/                      FastAPI 服务、领域模块、迁移与后端测试
+pdos-next/                     现行工程（目录地图见 pdos-next/README.md）
+  web/                         Next.js 前端：src/app 路由，src/features/<领域> 组件，src/lib 共用逻辑
+  server/                      FastAPI 领域服务（pdos_next 包）、Alembic 迁移与后端测试
+  packages/pdos-agent-runtime/ 共用 Agent 持久运行框架
   contracts/                   操作、载荷、事件、接口与验收契约
-  config/                      运行时元数据示例
-  tools/                       本地环境、检查和受控演练工具
-packages/pdos-agent-runtime/    共用 Agent 持久运行框架
-server/scripts/                保留的共用运行环境管理入口
-server/golden/                 原资格材料，仅作可信历史留存
-infra/                         数据库安全与本地搜索等设施配置
-assets/                        可复用业务资产
-certs/                         公共证书链
-scripts/pnpm.sh                pnpm / Corepack 调用入口
-docs/                          架构、决策、运行手册与验证证据
-tasks/                         唯一活动状态清单及历史记录
+  config/                      运行时配置示例
+  containers/                  原件解析容器
+  infra/                       本地设施：searxng、RDS CA 证书
+  assets/                      CEHub 交付物指南清单
+  tools/                       本地环境、评测与契约工具
+docs/                          设计、运行手册、评测题集与验证证据
+tasks/                         唯一活动状态清单
 ```
 
 ## 开始开发
@@ -86,7 +83,7 @@ cd ../web
 pnpm install --frozen-lockfile
 ```
 
-后端通过本地路径依赖 `packages/pdos-agent-runtime/`，请保留仓库目录结构。
+后端通过本地路径依赖 `pdos-next/packages/pdos-agent-runtime/`，请保留仓库目录结构。
 
 ### 2. 配置独立环境
 
@@ -103,7 +100,7 @@ pnpm install --frozen-lockfile
 |---|---|
 | [`local_environment.py`](pdos-next/tools/local_environment.py) | 建立或核对带身份标记的独立合成 `pdos_test` 环境，启动 API 与 Web 预览 |
 | [`workflow_environment.py`](pdos-next/tools/workflow_environment.py) | 管理独立工作流状态库、Temporal 开发服务、健康检查与 Worker |
-| [`agent_runtime_environment.py`](server/scripts/agent_runtime_environment.py) | 管理共用 Agent 状态库与 Temporal 开发服务 |
+| [`agent_runtime_environment.py`](pdos-next/tools/agent_runtime_environment.py) | 管理共用 Agent 状态库与 Temporal 开发服务 |
 
 首次环境建立会创建临时资源并执行迁移。已有环境应先核对实例、端口、身份标记和真实迁移 head，再按当前候选的检查工具续接。候选专用的 `wave*` 工具与私有 `.local/` 文件不作为通用生产启动入口。
 
@@ -134,7 +131,7 @@ pnpm build
 
 ## 版本、分支与归档
 
-`pdos-next/` 是当前开发主线。原 `server/` + `web/` 业务工程已停用，旧业务源码、旧迁移、旧测试与旧 CI 已从当前目录移除；仍需使用的运行框架、golden 材料和复用资产继续保留。
+`pdos-next/` 是当前开发主线，也是仓库里唯一的工程。2026-11-01 整仓重组删除了原 `server/` + `web/` 工程的遗留文件、原生产部署脚本、旧设计与历史证据，删除前的内容在本地标签 `archive/pre-restructure-2026-11-01`。
 
 | 用途 | 分支 | 使用边界 |
 |---|---|---|
@@ -142,4 +139,4 @@ pnpm build
 | 公开发布快照 | `codex/pdos-next-snapshot-20261022` | 仅在获得推送授权后发布选定本地提交的文件树；不把快照历史合回开发主线 |
 | 历史与实验分支 | `main`、`archive/original-2026-10-08`、`codex/s0-*`、`codex/sprint-*`、`ui/linear-restyle` 等 | 只作历史追溯或旧实验对照，不作为新功能起点，也不因存在未合并提交而重新接入现行工程 |
 
-GitHub 上的清理后快照不携带原工程提交历史，快照发布方法见[2026-10-31 发布记录](docs/reports/evidence/repository-sync-20261031/snapshot-publication.md)。旧工程归档标签 `original-final-2026-10-08` 仅保留在开发机器，原资格材料不自动授予新工程资格。根目录仍保留的旧生产 compose 与部署脚本服务于[原生产环境下线](docs/runbooks/original-production-decommission.md)，现行应用使用 `pdos-next/` 的独立环境。
+GitHub 上的清理后快照不携带原工程提交历史，快照发布方法见[2026-10-31 发布记录](docs/reports/evidence/repository-sync-20261031/snapshot-publication.md)。旧工程归档标签 `original-final-2026-10-08` 仅保留在开发机器，原资格材料不自动授予新工程资格。[原生产环境下线](docs/runbooks/original-production-decommission.md)所需的部署脚本与 compose 文件从标签 `original-final-2026-10-08` 检出使用，手册里写明了步骤。

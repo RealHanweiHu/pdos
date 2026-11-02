@@ -48,7 +48,7 @@ X1-3 与 X1-4 改同一个函数，必须一起做；X1-2 依赖 X1-1 的新字�
 4. **数据库测试**：只用显式的 `TEST_DATABASE_URL`（以及 `DATABASE_URL`、`AUTH_DATABASE_URL`、`DISPATCH_DATABASE_URL`）指向已核对的独立临时 `pdos_test` 库，不得读取或回退 `.env`。没有可用的测试库时，只跑纯测试，把数据库测试列为“未运行”，不要自己建库或改连接串。
 5. **不改冻结文件**：不改 `docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md`、确认稿、`pdos-next/contracts/operations.json`、`events.json`、`acceptance.json`。`openapi.json`、`payloads.schema.json` 只能通过导出脚本重新生成（X1-1）。
 6. **不新增依赖**，不新增数据库迁移（本批任务都不需要迁移；如果你认为需要，停下来报告）。
-7. **错误码**：新的错误原因只能在 `pdos_next/error_catalog.py` 的 `REASONS` 中登记并映射到已有分类，不新增分类。
+7. **错误码**：新的错误原因只能在 `pdos_next/core/error_catalog.py` 的 `REASONS` 中登记并映射到已有分类，不新增分类。
 8. **前缀冻结**：系统提示与工具定义里不放动态内容（AGENTS.md 不可协商项 4）。
 9. 每完成一个任务，跑该任务列出的检查；全部完成后跑 §12 的总检查。
 
@@ -68,14 +68,14 @@ X1-3 与 X1-4 改同一个函数，必须一起做；X1-2 依赖 X1-1 的新字�
 cd ai-native-R\&D-platform
 git status --short
 git diff --stat -- \
-  pdos-next/server/pdos_next/agent_kernel/bootstrap.py \
-  pdos-next/server/pdos_next/agent_kernel/conversation.py \
-  pdos-next/server/pdos_next/agent_kernel/graph.py \
-  pdos-next/server/pdos_next/agent_kernel/requested_skills.py \
-  pdos-next/server/pdos_next/agent_kernel/gateway.py \
+  pdos-next/server/pdos_next/agent/kernel/bootstrap.py \
+  pdos-next/server/pdos_next/agent/kernel/conversation.py \
+  pdos-next/server/pdos_next/agent/kernel/graph.py \
+  pdos-next/server/pdos_next/agent/kernel/requested_skills.py \
+  pdos-next/server/pdos_next/agent/kernel/gateway.py \
   pdos-next/server/pdos_next/providers/agent_client.py \
   pdos-next/server/pdos_next/providers/types.py \
-  pdos-next/server/pdos_next/model_configuration/host.py \
+  pdos-next/server/pdos_next/agent/model_configuration/host.py \
   pdos-next/server/pdos_next/schemas/model_configuration/dto.py \
   pdos-next/web/src/features/categories/create/personal-xiaopai.tsx \
   pdos-next/web/src/features/xiaopai/pai-conversation.tsx
@@ -93,7 +93,7 @@ git diff --stat -- \
 
 ### 3.1 后端
 
-文件：`pdos-next/server/pdos_next/agent_kernel/bootstrap.py`，方法 `default_preload`（约 464 行）。
+文件：`pdos-next/server/pdos_next/agent/kernel/bootstrap.py`，方法 `default_preload`（约 464 行）。
 
 现在：
 
@@ -136,7 +136,7 @@ if scope.category_id is None:
 ### 3.4 检查与完成判据
 
 ```bash
-cd pdos-next/server && uv run ruff check pdos_next/agent_kernel/bootstrap.py
+cd pdos-next/server && uv run ruff check pdos_next/agent/kernel/bootstrap.py
 cd pdos-next/web && npm run typecheck && npm run lint
 ```
 
@@ -148,7 +148,7 @@ cd pdos-next/web && npm run typecheck && npm run lint
 
 ## 4. 任务 A2：固定系统提示补充规则
 
-文件：`pdos-next/server/pdos_next/agent_kernel/graph.py`，常量 `SYSTEM_BASE`（约 25 行）。
+文件：`pdos-next/server/pdos_next/agent/kernel/graph.py`，常量 `SYSTEM_BASE`（约 25 行）。
 
 在 `SYSTEM_BASE` 中 “internal IDs or workflow terminology unless the user asks for them.” 这一行**之后**、“Respond to the latest human message; …” 这一行**之前**，插入以下三行（原样复制，英文；每行末尾照原有风格换行）：
 
@@ -180,7 +180,7 @@ cd pdos-next/server && uv run pytest tests/agent_kernel/test_graph.py -q
 
 ### 5.1 后端
 
-1. 新建文件 `pdos-next/server/pdos_next/agent_kernel/assistant_result.py`：
+1. 新建文件 `pdos-next/server/pdos_next/agent/kernel/assistant_result.py`：
 
 ```python
 """Server-attached answer grounding for ordinary replies (RAG design v0.4 §8.2)."""
@@ -305,7 +305,7 @@ cd pdos-next/web && npm run typecheck && npm run lint && node --test src/feature
 
 **目的**：知道每次调用里各部分占了多少，后续才能按预算缩减。本任务**只记录，不缩减、不拦截**。
 
-### 7.1 新建 `pdos-next/server/pdos_next/agent_kernel/context_budget.py`
+### 7.1 新建 `pdos-next/server/pdos_next/agent/kernel/context_budget.py`
 
 ```python
 """Per-call context size estimates (context design §4.2, §9). Recording only."""
@@ -473,7 +473,7 @@ Historical answers are dated records, not current domain facts. outcome_state "u
 
 ### 8.2 修改上下文字段合同
 
-文件：`pdos-next/server/pdos_next/skill_packages/context-schemas.json`，`$defs.outcome`：
+文件：`pdos-next/server/pdos_next/agent/skill_packages/context-schemas.json`，`$defs.outcome`：
 
 - 在 `properties` 中增加 `"notes": {"type": "array", "items": {"type": "string"}}` 与 `"truncated": {"type": "boolean"}`；
 - **不要**把它们加进 `required`；不要改 `additionalProperties`。
@@ -515,7 +515,7 @@ Historical answers are dated records, not current domain facts. outcome_state "u
 
 ### 9.1 新错误原因
 
-文件：`pdos_next/error_catalog.py`，在 `REASONS` 中加入：
+文件：`pdos_next/core/error_catalog.py`，在 `REASONS` 中加入：
 
 ```python
 "CONVERSATION_HISTORY_REVOKED": "FORBIDDEN_SCOPE",
@@ -729,12 +729,12 @@ cd pdos-next/server && uv run pytest tests/agent_kernel/test_native_protocols.py
 ```bash
 # 后端静态检查（只检查改动文件）
 cd pdos-next/server
-uv run ruff check pdos_next/agent_kernel/assistant_result.py pdos_next/agent_kernel/context_budget.py \
-  pdos_next/agent_kernel/bootstrap.py pdos_next/agent_kernel/conversation.py \
-  pdos_next/agent_kernel/graph.py pdos_next/agent_kernel/gateway.py \
-  pdos_next/agent_kernel/requested_skills.py pdos_next/providers/agent_client.py \
-  pdos_next/providers/types.py pdos_next/model_configuration/host.py \
-  pdos_next/schemas/model_configuration/dto.py pdos_next/error_catalog.py
+uv run ruff check pdos_next/agent/kernel/assistant_result.py pdos_next/agent/kernel/context_budget.py \
+  pdos_next/agent/kernel/bootstrap.py pdos_next/agent/kernel/conversation.py \
+  pdos_next/agent/kernel/graph.py pdos_next/agent/kernel/gateway.py \
+  pdos_next/agent/kernel/requested_skills.py pdos_next/providers/agent_client.py \
+  pdos_next/providers/types.py pdos_next/agent/model_configuration/host.py \
+  pdos_next/schemas/model_configuration/dto.py pdos_next/core/error_catalog.py
 
 # 纯测试（不需要数据库）
 uv run pytest -q tests/agent_kernel/test_assistant_result.py tests/agent_kernel/test_context_budget.py \

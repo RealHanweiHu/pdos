@@ -64,13 +64,13 @@
 
 当前实现起点：
 
-- 普通对话已由同一张 Agent 图支持。`pdos-next/server/pdos_next/agent_kernel/graph.py:25` 的固定提示要求一般讨论直接回答，无需业务查询时不查资料。
+- 普通对话已由同一张 Agent 图支持。`pdos-next/server/pdos_next/agent/kernel/graph.py:25` 的固定提示要求一般讨论直接回答，无需业务查询时不查资料。
 - 个人全局入口默认预载 `category_framing`，品类/提案入口也有默认业务技能，见 `agent_kernel/bootstrap.py:464`。日常问答需要减少不必要的技能与业务上下文。
 - `agent_kernel/domain_reads.py:315` 的 `evidence.search` 只对本次 Run 显式绑定原件做标题包含查询，不是企业全文或向量检索。
 - 上传原件和导入文件按不可信内容处理：`evidence.artifact.read` 只登记在 `extract` 隔离（`agent_kernel/registry.py:23`），主循环读取原文会被拒绝（`domain_reads.py:333`）；`evidence.extract`（`extract_service.py:124`）按来源派发只读子任务，主循环只拿到核对过的台账行。企业问答沿用这一结构。
 - `personal_search.py:14` 已有本人权限内的跨品类对象元数据查找；`personal_views.py:90` 已有项目、定义、计划、门禁和状态更新的权威读模型。两者目前都没有登记为小Pai工具。
 - 原件已有解析、内容哈希、扫描状态和行/页/单元格定位；`agent_kernel/extract_sources.py:34`、`extract_pages.py:56` 可复用为固定版本原文核对。
-- `source_for`（`pdos_next/service.py:446`）按单个型号做访问检查，不能直接用于跨型号批量复核。
+- `source_for`（`pdos_next/core/service.py:446`）按单个型号做访问检查，不能直接用于跨型号批量复核。
 - 续接对话时，`conversation.prepare`（`agent_kernel/conversation.py:26`）让子 Run 继承父 Run 的 `read_sources` 固定版本，并沿用会话、型号、提案和项目范围；跨轮引用继承按同一模式设计。
 - 当前代码没有 embedding 或向量召回实现，依赖中也没有 v1.1 §07.2 指定的 jieba，数据库没有全文索引。本地环境已使用 pgvector 0.8.6 镜像，但扩展、迁移、索引与真实 embedding 配置均未形成企业问答能力。
 - v1.1 R14 写作“jieba……进隔离解析”，§07.2 正文只把 Office/PDF 解析限定在隔离环境。本稿需要对查询串分词，按 §07.2 正文理解；R14 已于 2026-10-28 按此加注（§19 Q3）。
