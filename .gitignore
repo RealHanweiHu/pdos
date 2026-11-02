@@ -49,3 +49,16 @@ graphify-out/
 
 # 临时工作区（日志、草稿、模型资产等，不入库）
 tmp/
+
+# 原 pdos-next/.gitignore（2026-11-01 并入）
+**/.venv/
+**/__pycache__/
+**/.pytest_cache/
+**/.ruff_cache/
+web/node_modules/
+web/.next/
+web/.next-dev/
+web/*.tsbuildinfo
+**/.env
+**/.env.local
+server/openapi.json
