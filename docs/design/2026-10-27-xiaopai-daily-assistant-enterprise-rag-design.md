@@ -64,7 +64,7 @@
 
 当前实现起点：
 
-- 普通对话已由同一张 Agent 图支持。`pdos-next/server/pdos_next/agent/kernel/graph.py:25` 的固定提示要求一般讨论直接回答，无需业务查询时不查资料。
+- 普通对话已由同一张 Agent 图支持。`server/pdos_next/agent/kernel/graph.py:25` 的固定提示要求一般讨论直接回答，无需业务查询时不查资料。
 - 个人全局入口默认预载 `category_framing`，品类/提案入口也有默认业务技能，见 `agent_kernel/bootstrap.py:464`。日常问答需要减少不必要的技能与业务上下文。
 - `agent_kernel/domain_reads.py:315` 的 `evidence.search` 只对本次 Run 显式绑定原件做标题包含查询，不是企业全文或向量检索。
 - 上传原件和导入文件按不可信内容处理：`evidence.artifact.read` 只登记在 `extract` 隔离（`agent_kernel/registry.py:23`），主循环读取原文会被拒绝（`domain_reads.py:333`）；`evidence.extract`（`extract_service.py:124`）按来源派发只读子任务，主循环只拿到核对过的台账行。企业问答沿用这一结构。
@@ -760,7 +760,7 @@ source_type + source_id + source_revision + content_hash
 | 继续处理与纠正（B） | `verification.request.create`、`work.task.create`、`work.task.assign`、RunCandidates | 动作到候选的续接启动、纠正条件 |
 | 保存与找回（B） | `work_products.py`、会话列表 | 收藏、项目页最近讨论、查看当时或按最新更新 |
 | 前端 | `pai-conversation.tsx`、`xiaopai.tsx`、`research-result.tsx`、RunCandidates、RunFeedback | 新增 AnswerSources、依据状态标注、深入查与回答后预填；相似历史侧栏与摘要条目，复用现有运行和确认链 |
-| 测试与证据 | `tests/agent_kernel`、personal/evidence/knowledge PG 测试、前端组件测试 | 新增 assistant/retrieval 纯测试、编号与召回评估、隔离与注入、PG/RLS、恢复、浏览器与评价证据 |
+| 测试与证据 | `tests/agent/kernel`、personal/evidence/knowledge PG 测试、前端组件测试 | 新增 assistant/retrieval 纯测试、编号与召回评估、隔离与注入、PG/RLS、恢复、浏览器与评价证据 |
 
 实施时同步实际触及的工具说明、OpenAPI/事件/合同导出和运行手册。READ 工具不伪装成领域写命令；新增索引事件、embedding profile 操作、偏好、检索反馈或 HTTP 接口时才更新相应操作/事件/API 合同。Alembic 按实施时真实 head 单调分配，不复用预留号。
 

@@ -8,9 +8,9 @@
 
 ## 1 已核实的下发路径与载荷
 
-[AgentKernel](../../pdos-next/server/pdos_next/agent/kernel/graph.py) 的 `compile()` 从 `registry.definitions(scope.isolation)` 捕获列表，`model()` 每轮原样传给网关。`skill.load` 只追加技能正文和加载绑定，不改变此列表。[注册表](../../pdos-next/server/pdos_next/agent/kernel/registry.py)的 `definitions("main")` 按名称排序，只排除必须隔离读取的工具，没有按技能过滤。
+[AgentKernel](../../server/pdos_next/agent/kernel/graph.py) 的 `compile()` 从 `registry.definitions(scope.isolation)` 捕获列表，`model()` 每轮原样传给网关。`skill.load` 只追加技能正文和加载绑定，不改变此列表。[注册表](../../server/pdos_next/agent/kernel/registry.py)的 `definitions("main")` 按名称排序，只排除必须隔离读取的工具，没有按技能过滤。
 
-[协议适配器](../../pdos-next/server/pdos_next/providers/agent_client.py)将所传定义全部放入请求：OpenAI 兼容协议的 `tools[].function`，或 Anthropic 原生协议的 `tools[].input_schema`。因此准确范围是“主循环的每次模型调用下发 106 个工具”；研究和原件提取子任务已有独立的小列表。
+[协议适配器](../../server/pdos_next/providers/agent_client.py)将所传定义全部放入请求：OpenAI 兼容协议的 `tools[].function`，或 Anthropic 原生协议的 `tools[].input_schema`。因此准确范围是“主循环的每次模型调用下发 106 个工具”；研究和原件提取子任务已有独立的小列表。
 
 2026-10-08 离线执行 `default_registry()` 与 `SkillCatalog()`，按 `json.dumps(definitions, ensure_ascii=False).encode()` 统计如下。没有连接数据库、读取凭据或调用模型。
 
@@ -110,7 +110,7 @@ Anthropic 现有 system 缓存断点可以保留；若希望已加载技能和�
 
 ## 6 可信调用证明必须一起调整
 
-当前[网关](../../pdos-next/server/pdos_next/agent/kernel/gateway.py)按 `run × isolation` 固定 `tool_definitions` 摘要；[执行证明](../../pdos-next/server/pdos_next/agent/kernel/execution.py)还要求该摘要等于完整 `registry.definitions()`，并逐项检查实际模型回复中的 `name/arguments` 等于领域工具调用。A 路径下实际回复会是窄入口，B 路径下初始 tools 与已追加工具也不再等于完整注册表。**只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明。**
+当前[网关](../../server/pdos_next/agent/kernel/gateway.py)按 `run × isolation` 固定 `tool_definitions` 摘要；[执行证明](../../server/pdos_next/agent/kernel/execution.py)还要求该摘要等于完整 `registry.definitions()`，并逐项检查实际模型回复中的 `name/arguments` 等于领域工具调用。A 路径下实际回复会是窄入口，B 路径下初始 tools 与已追加工具也不再等于完整注册表。**只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明。**
 
 需要分别保存与验证四类事实，字段放在运行、调用和检查点已有版本化记录中；不把提示词、技能或工具集版本写入数据库约束：
 
@@ -141,7 +141,7 @@ T0 的校验仍绑定实际模型账本、技能加载事件、当前资格、ca
 
 ## 8 验证与采用判据
 
-现有[图渐进加载测试](../../pdos-next/server/tests/agent_kernel/test_graph.py)和[网关前缀测试](../../pdos-next/server/tests/agent_kernel/test_gateway.py)能证明“列表不变”，尚不能证明“仅披露相关工具”。后续检查应覆盖下列不同失效模式：
+现有[图渐进加载测试](../../server/tests/agent/kernel/test_graph.py)和[网关前缀测试](../../server/tests/agent/kernel/test_gateway.py)能证明“列表不变”，尚不能证明“仅披露相关工具”。后续检查应覆盖下列不同失效模式：
 
 | 范围 | 必要判据 |
 |---|---|

@@ -1,14 +1,14 @@
 # 小Pai Prompt 代码工作流
 
-主提示词是随代码评审的版本化资产，位于 `pdos-next/server/pdos_next/agent/prompt_packages/`。运行时只读取 `registry.json` 的 `active` 版本；动态上下文、权限、租户和资料仍由服务器按 Run 追加，不能写入固定前缀。
+主提示词是随代码评审的版本化资产，位于 `server/pdos_next/agent/prompt_packages/`。运行时只读取 `registry.json` 的 `active` 版本；动态上下文、权限、租户和资料仍由服务器按 Run 追加，不能写入固定前缀。
 
 ## 可见
 
 在仓库根目录执行：
 
 ```sh
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py list
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py show 1.0.0
+server/.venv/bin/python tools/xiaopai_prompt.py list
+server/.venv/bin/python tools/xiaopai_prompt.py show 1.0.0
 ```
 
 平台设置的“小Pai / 技能”页也展示当前主提示词、技能正文、内容 digest 和实际系统前缀 digest。主提示词正文、技能目录、技能正文和动态上下文是不同部分，不把最终私有上下文当作公共代码展示。
@@ -16,10 +16,10 @@ pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py show 1.0.0
 ## 修改：草稿 → 登记 → diff
 
 ```sh
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py new 1.0.1-draft --source 1.0.0
-# 编辑 pdos-next/server/pdos_next/agent/prompt_packages/versions/1.0.1-draft.md
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py register 1.0.1-draft
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py diff 1.0.0 1.0.1-draft
+server/.venv/bin/python tools/xiaopai_prompt.py new 1.0.1-draft --source 1.0.0
+# 编辑 server/pdos_next/agent/prompt_packages/versions/1.0.1-draft.md
+server/.venv/bin/python tools/xiaopai_prompt.py register 1.0.1-draft
+server/.venv/bin/python tools/xiaopai_prompt.py diff 1.0.0 1.0.1-draft
 ```
 
 草稿只有在 `register` 后才可被评估。未登记草稿不影响当前激活版本；`active` 和曾经发布的 `published` 版本不能原地重新登记。版本文件和注册表一起进入代码评审，不需要数据库迁移。
@@ -27,7 +27,7 @@ pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py diff 1.0.0 1
 ## 同题 A/B
 
 ```sh
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py evaluate \
+server/.venv/bin/python tools/xiaopai_prompt.py evaluate \
   --baseline 1.0.0 --candidate 1.0.1-draft \
   --output-dir docs/reports/evidence/pdos-next-prompt-1.0.1-control
 ```
@@ -41,12 +41,12 @@ pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py evaluate \
 ## 激活与回滚
 
 ```sh
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py activate 1.0.1-draft \
+server/.venv/bin/python tools/xiaopai_prompt.py activate 1.0.1-draft \
   --expected-active 1.0.0 \
   --evaluation docs/reports/evidence/pdos-next-prompt-1.0.1-control/report.json \
   --reviewer "实际代码评审人"
 
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_prompt.py rollback 1.0.0 \
+server/.venv/bin/python tools/xiaopai_prompt.py rollback 1.0.0 \
   --expected-active 1.0.1-draft \
   --reviewer "实际代码评审人" --reason "核对到回归，恢复原版本"
 ```

@@ -19,9 +19,9 @@ CTX-09原题的精确3→6/9不是产品分页合同：冻结自然目录为9325
 在仓库根目录使用既有已核对本地pdos_test运行新一轮：
 
 ```sh
-pdos-next/server/.venv/bin/python pdos-next/tools/xiaopai_recall_baseline.py --output-dir /tmp/xiaopai-eval-new-run
+server/.venv/bin/python tools/xiaopai_recall_baseline.py --output-dir /tmp/xiaopai-eval-new-run
 ```
 
-输出目录须不存在；资料经原生命令登记到新的合成租户，查询沿普通权限接口。此工具不调用模型。独立复算计分可使用`pdos-next/tools/xiaopai_recall_metrics.py`，输入岗位题JSON及该轮的`bound-sources.json`、`observations.json`。
+输出目录须不存在；资料经原生命令登记到新的合成租户，查询沿普通权限接口。此工具不调用模型。独立复算计分可使用`tools/xiaopai_recall_metrics.py`，输入岗位题JSON及该轮的`bound-sources.json`、`observations.json`。
 
 本批仍为候选题，未登记为人工审阅的可信题集；真实模型、embedding和外部渠道保持关闭。

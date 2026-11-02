@@ -41,7 +41,7 @@
 
 方案稿把两件事合成一个"载荷与选择问题"。它们的解法不同：
 
-**P1 每轮重发 227,803 字节的费用与时延。** 这个问题**基本由缓存解决，前提是前缀稳定**。按已核对的 Anthropic 定价，Opus 5.5 的缓存读是输入价的 0.05×（$0.20 / $4.00 每 MTok），写是 1.25×（5 分钟 TTL）；渲染顺序为 `tools → system → messages`，而**现有适配器把唯一的 `cache_control` 放在 system 文本块上，恰好把 tools+system 一并缓存**（[agent_client.py:111](../../pdos-next/server/pdos_next/providers/agent_client.py:111)）；`registry.definitions()` 也已按名称排序，没有静默失效源。也就是说：在 Anthropic 路线上这件事今天已经做对了，P1 在命中缓存时的边际成本只有标价的 5%。
+**P1 每轮重发 227,803 字节的费用与时延。** 这个问题**基本由缓存解决，前提是前缀稳定**。按已核对的 Anthropic 定价，Opus 5.5 的缓存读是输入价的 0.05×（$0.20 / $4.00 每 MTok），写是 1.25×（5 分钟 TTL）；渲染顺序为 `tools → system → messages`，而**现有适配器把唯一的 `cache_control` 放在 system 文本块上，恰好把 tools+system 一并缓存**（[agent_client.py:111](../../server/pdos_next/providers/agent_client.py:111)）；`registry.definitions()` 也已按名称排序，没有静默失效源。也就是说：在 Anthropic 路线上这件事今天已经做对了，P1 在命中缓存时的边际成本只有标价的 5%。
 
 **P2 模型可见面 115 个工具（其中 82 个当前无权调用）带来的选择准确度与上下文占用。** **缓存完全不解决 P2**：缓存只降低重复传输的计价，不会把无关工具从模型视野里拿走。方案稿自己写了这一点（"即使缓存命中，全量工具仍需传输并占用模型可见上下文"）。
 
@@ -72,7 +72,7 @@ B 与 v1.1 的契合度高于 A 和 C：
 - **前缀冻结（AGENTS.md 不可协商项 4）**：顶层 `tools` 与 system 字节恒定，动态状态按 §06.7 追加到末尾——这正是该条要求的形状。
 - **渐进披露（§06.3.3）**：`skill.load` → 服务器校验租户启用与范围 → 服务器发 `tool_addition` 浮出该技能的工具。服务器仍是唯一决定者，与"未加载对应技能时服务器拒绝写工具调用"同构，且现在**模型连看都看不到**，而不只是被事后拒绝。
 - **撤权**：`tool_removal` 给了权限撤销一个协议级落点，当前只能靠执行前拒绝。
-- **附带修正一处注入面**：B 的追加块必须走 `role: "system"` 消息，而该通道是**不可伪造的 operator 通道**（供应商文档明确：用户/工具内容里的文字可被任何能写入用户可见输入的东西伪造）。当前实现把技能正文和服务器上下文都作为 `{"role": "user"}` 消息注入（[graph.py:196](../../pdos-next/server/pdos_next/agent/kernel/graph.py:196)）——在一个以"外部内容是数据不是指令"为前提的系统里，操作者指令和用户输入同处一个不可区分的通道，是值得单独修的。接 B 顺带解决。
+- **附带修正一处注入面**：B 的追加块必须走 `role: "system"` 消息，而该通道是**不可伪造的 operator 通道**（供应商文档明确：用户/工具内容里的文字可被任何能写入用户可见输入的东西伪造）。当前实现把技能正文和服务器上下文都作为 `{"role": "user"}` 消息注入（[graph.py:196](../../server/pdos_next/agent/kernel/graph.py:196)）——在一个以"外部内容是数据不是指令"为前提的系统里，操作者指令和用户输入同处一个不可区分的通道，是值得单独修的。接 B 顺带解决。
 
 **B 的两个硬约束，必须一起定**：
 1. **协议**：仅 Anthropic 原生。而 `.env.example` 的默认是 `PDOS_LLM_MODEL=MiniMax-M3` 走 `openai-compatible`。B 对默认路线不可用。
@@ -85,7 +85,7 @@ B 与 v1.1 的契合度高于 A 和 C：
 
 你专门问了这一条。先把现状说准，避免高估也避免低估。
 
-**4.0 现状基线**：今天每个工具发的是 `{name, description, parameters}`（[registry.py:82](../../pdos-next/server/pdos_next/agent/kernel/registry.py:82)），**没有任何工具设置 `strict: true`**；`strict` 只用在输出 schema 的 `response_format` 上（[agent_client.py:70](../../pdos-next/server/pdos_next/providers/agent_client.py:70)）。所以现在并不存在"供应商侧保证"，只有**供应商侧尽力约束 + 服务器校验**。这也正是 §09 把 schema 遵从度写成**评测项**而不是保证的原因。
+**4.0 现状基线**：今天每个工具发的是 `{name, description, parameters}`（[registry.py:82](../../server/pdos_next/agent/kernel/registry.py:82)），**没有任何工具设置 `strict: true`**；`strict` 只用在输出 schema 的 `response_format` 上（[agent_client.py:70](../../server/pdos_next/providers/agent_client.py:70)）。所以现在并不存在"供应商侧保证"，只有**供应商侧尽力约束 + 服务器校验**。这也正是 §09 把 schema 遵从度写成**评测项**而不是保证的原因。
 
 据此，A 的风险要精确表述为下面五条：
 
@@ -95,7 +95,7 @@ B 与 v1.1 的契合度高于 A 和 C：
 
 **4.3 它会拆掉 T0 资格阶梯所依赖的测量。** §09 写明"原生工具调用和 schema 遵从度是模型资格的评测项"，§06.12 的 T0 阶梯要以此为证据。A 之后所有工具调用都走同一个信封，**按操作测量 schema 遵从度这件事本身不再可能**——你会在正式启用资格阶梯之前，先把该阶梯要用的度量拆掉。这是 A 最被低估的代价：它不是性能问题，是**资格证据链**问题。
 
-**4.4 它要求重建唯一的写入安全边界上的证明路径。** [execution.py:277](../../pdos-next/server/pdos_next/agent/kernel/execution.py:277) 断言 `digest(registry.definitions()) == model.tool_definitions_digest`，并逐项核对模型回复里的 `name`/`arguments` 等于实际领域工具调用。A 之后模型回复是窄入口，必须按固定解析规则从入口参数**重新推导目标工具**，才能接回 `WriteSource(skill, model_call_id, response_index)` 与幂等键。方案稿 §6 已经点明"只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明"。对比之下 **B 的第 4 类事实（实际调用来源）零改动**，因为回复里仍是真实工具名和原生参数。把新解析代码放在全系统唯一的写入边界上，是风险最不该增加的位置。
+**4.4 它要求重建唯一的写入安全边界上的证明路径。** [execution.py:277](../../server/pdos_next/agent/kernel/execution.py:277) 断言 `digest(registry.definitions()) == model.tool_definitions_digest`，并逐项核对模型回复里的 `name`/`arguments` 等于实际领域工具调用。A 之后模型回复是窄入口，必须按固定解析规则从入口参数**重新推导目标工具**，才能接回 `WriteSource(skill, model_call_id, response_index)` 与幂等键。方案稿 §6 已经点明"只筛选 tools、只放宽摘要比较或改写模型回复名称，都会破坏既有证明"。对比之下 **B 的第 4 类事实（实际调用来源）零改动**，因为回复里仍是真实工具名和原生参数。把新解析代码放在全系统唯一的写入边界上，是风险最不该增加的位置。
 
 **4.5 它买的收益在实际配置的路线上未经测量。** A 的全部正当性是"跨组前缀稳定以命中缓存"。但本项目默认路线是 MiniMax over OpenAI 兼容，而该分支**没有设置任何缓存断点**（`cache_control` 只在 Anthropic 分支），第三方 OpenAI 兼容服务的缓存行为方案稿自己也要求"按实际服务商与模型验证"，至今未测；MiniMax codec 还会往 `tools` 里追加一个 `finish_tool`。**在未证实该路线存在可利用缓存之前，A 是用 4.1–4.4 的确定损失，换一个未验证的收益。**
 
@@ -185,7 +185,7 @@ spec.kind == "write" 且 spec.tier != "T2-prepare-only"  →  才要求已加载
 两处测试契约更新，均比原断言更强：`test_graph.py` 由"三次调用工具列表完全相同"改为"system 前缀不变 + 列表单调增长 + 增量是该技能 allowed_operations 子集 + 首轮根本看不见该写入命令"；`test_execution_binding.py` 夹具由全量摘要改为披露摘要。
 
 **证据边界（不得冒充完整回归）**：
-- `tests/agent_kernel` 1472 通过、11 跳过、1 失败；该失败为 `test_project_skills_cover_the_registered_manufacturing_chain`，原因是工作树中未提交的 `contracts.py` 新增 `change.effectivity.record`/`change.verification.record`/`change.close` 三个命令尚无技能包授权（`git show HEAD` 对三者 0 命中），非本改动。
+- `tests/agent/kernel` 1472 通过、11 跳过、1 失败；该失败为 `test_project_skills_cover_the_registered_manufacturing_chain`，原因是工作树中未提交的 `contracts.py` 新增 `change.effectivity.record`/`change.verification.record`/`change.close` 三个命令尚无技能包授权（`git show HEAD` 对三者 0 命中），非本改动。
 - 整仓 8889 通过、140 失败；140 项全在 capa/launch_plan/change/quality 域，形态为 SQLAlchemy 测试替身层问题，不经过 agent_kernel，相关领域文件在本轮开工前即为 modified。
 - 419 个 DB 用例未设 `TEST_DATABASE_URL` 未跑；`test_checkpoint.py` 缺 `M2_TEST_CHECKPOINT_URL`（既有环境前置，HEAD 上同样失败）。
 - **耗时数据不入账**：同范围 `agent_kernel` 从 117 秒波动到 166 秒以上，系多会话并行抢 CPU。

@@ -2,7 +2,7 @@
 
 日期：2026-11-01。**状态：设计草案；§10 P33 已由用户确认（2026-11-01），原文见设计确认稿，v1.1 已加注；未实施，未改代码或迁移。**
 
-依据：[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §03.2、§03.4–§03.6、§03.13、§06.5、§06.12、附录 A；[DC-11 写入分级政策](2026-09-20-ai-direct-write-tier-policy.md) §3、§6、§7、§11；[S5 项目工作合同](2026-10-18-pdos-next-s5-project-work-contract.md)；技能包 `pdos-next/server/pdos_next/agent/skill_packages/work_management.md`。
+依据：[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §03.2、§03.4–§03.6、§03.13、§06.5、§06.12、附录 A；[DC-11 写入分级政策](2026-09-20-ai-direct-write-tier-policy.md) §3、§6、§7、§11；[S5 项目工作合同](2026-10-18-pdos-next-s5-project-work-contract.md)；技能包 `server/pdos_next/agent/skill_packages/work_management.md`。
 
 ## 1. 起因
 

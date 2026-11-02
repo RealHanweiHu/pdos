@@ -34,7 +34,7 @@ API Key 只在专用密码字段中提交，页面不读取原值，也不写入
 
 ### 服务器初始配置
 
-1. 为 API、Worker 设置相同的 `PDOS_TENANT_RUNTIME_CONFIG` **绝对路径**。参考 [元数据示例](../../pdos-next/config/tenant-runtime.example.json)，在服务器私有目录保存实际文件，通过原子替换更新。未设置时维持 AI 未配置状态；不存在、格式错误、超过 2 MiB 或相对路径均显示配置不可用。显式注入的测试端口优先于默认宿主。
+1. 为 API、Worker 设置相同的 `PDOS_TENANT_RUNTIME_CONFIG` **绝对路径**。参考 [元数据示例](../../config/tenant-runtime.example.json)，在服务器私有目录保存实际文件，通过原子替换更新。未设置时维持 AI 未配置状态；不存在、格式错误、超过 2 MiB 或相对路径均显示配置不可用。显式注入的测试端口优先于默认宿主。
 2. 使用已获授权的 KMS 通用文本凭据。`secret_arn` 必须是完整的账号/地域 ARN；同一文件的凭据地域必须与 `kms.region` 一致。`reference` 是管理员分配并保持稳定的 UUID，原服务器配置每个“租户 × 协议”一个默认槽位，页面新增连接各有独立引用。值仅包含服务商要求的 API key，不包含 JSON 包装。密钥只可在专用 API Key 输入框提交；不要粘贴进普通元数据、源码、日志或本手册。
 3. 为进程提供阿里云官方凭据链支持的访问身份。部署在 ECS 时可使用实例 RAM 角色，授予所需凭据的 `kms:ListSecretVersionIds`、`kms:GetSecretValue` 权限；跨账号访问还需相应资源授权。SDK 默认凭据链也可消费已获授权的开发身份。该文件不保存云 AccessKey，也不自行创建角色、授权或云资源。参考 [官方凭据链](https://help.aliyun.com/en/sdk/developer-reference/v2-manage-python-access-credentials)。
 4. `kms.endpoint` 支持与地域精确对应的共享公网 `kms.<region>.aliyuncs.com` 或共享 VPC `kms-vpc.<region>.aliyuncs.com`，均通过 HTTPS。专属实例网关和自定义 CA 尚未接入，不要填入此示例冒充支持。部署应按实际网络选取地址，见 [官方客户端初始化说明](https://www.alibabacloud.com/help/en/kms/key-management-service/developer-reference/initialize-the-client-1)。

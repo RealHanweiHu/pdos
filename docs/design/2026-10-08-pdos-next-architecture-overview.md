@@ -62,7 +62,7 @@ PDOS 是 AI-native 的产品开发与 NPI（新产品制造导入）操作系统
 | 智能工作 | WorkRequest、ProposalBatch、SkillVersion、AutomationRule、Run、ActionReceipt、AttentionItem |
 | 平台与身份 | Principal、Grant、PolicyVersion、IntegrationMapping、Inbox、Outbox、Audit |
 
-每个正式字段只有一个权威写入口；对象不必一对一对应表。`pdos-next/server/pdos_next/domain/` 现有 35 个领域子包即按此分工落地。
+每个正式字段只有一个权威写入口；对象不必一对一对应表。`server/pdos_next/domain/` 现有 35 个领域子包即按此分工落地。
 
 ### 2.2 关键领域概念
 
@@ -168,7 +168,7 @@ UI：shadcn/ui + Tailwind v4 + Geist + Phosphor，橙 `#c2410c`/`#fb923c`，8px 
 
 ### 5.3 命令、事件与一致性
 
-- **单一领域命令入口**：页面/聊天/自动化/集成共用同一命令；`pdos-next/contracts/operations.json` 是 66 项关键操作目录（重建自合订本，标记 derived），涉及自主级别/正式状态/外部动作的命令必须显式注册。
+- **单一领域命令入口**：页面/聊天/自动化/集成共用同一命令；`contracts/operations.json` 是 66 项关键操作目录（重建自合订本，标记 derived），涉及自主级别/正式状态/外部动作的命令必须显式注册。
 - **可信上下文服务端绑定**：tenant、actor、grant、run、cancel_epoch、出站政策由服务器认证与运行上下文绑定，模型同名传参不成为授权（不可协商项 2）。
 - **命令事务**：核身份/授权/取消标记→校验版本与关键读集→单事务写事实+ActionReceipt+Audit+Outbox→返回真实结果→异步更新投影；事务内不等 LLM/ERP 网络。
 - **幂等**：同幂等键同载荷返回原结果，同键不同载荷冲突（AT-40）；稳定意图指纹由服务端按来源事件/目标/操作生成，不依赖模型自填 key。

@@ -13,7 +13,7 @@
 - [小Pai上下文设计 v0.2](2026-10-28-xiaopai-context-design.md) §5.1、§5.2、§5.4、§5.5、§6.1、§8、§9、§11 切片 X1；
 - [设计确认稿](2026-10-08-pdos-next-design-confirmation.md) P30、P32。
 
-所有路径相对仓库根目录 `ai-native-R&D-platform/`。后端代码在 `pdos-next/server/pdos_next/`，后端测试在 `pdos-next/server/tests/`，前端在 `pdos-next/web/src/`。文中行号按 2026-10-28 工作树，仅供定位，以函数名为准。
+所有路径相对仓库根目录 `ai-native-R&D-platform/`。后端代码在 `server/pdos_next/`，后端测试在 `server/tests/`，前端在 `web/src/`。文中行号按 2026-10-28 工作树，仅供定位，以函数名为准。
 
 ---
 
@@ -44,9 +44,9 @@ X1-3 与 X1-4 改同一个函数，必须一起做；X1-2 依赖 X1-1 的新字�
 
 1. **不提交、不推送**：除非用户明确要求，不执行 `git commit`、`git push`。
 2. **不动别人的在途修改**：工作树里有其他会话尚未提交的改动。不要回退、重排、格式化或“顺手修复”你没有被要求改的代码。
-3. **不调用真实模型或服务商**：测试一律用现有的合成客户端（如 `tests/agent_kernel/test_gateway.py` 里的 `Client`、`configured_route`）。
+3. **不调用真实模型或服务商**：测试一律用现有的合成客户端（如 `tests/agent/kernel/test_gateway.py` 里的 `Client`、`configured_route`）。
 4. **数据库测试**：只用显式的 `TEST_DATABASE_URL`（以及 `DATABASE_URL`、`AUTH_DATABASE_URL`、`DISPATCH_DATABASE_URL`）指向已核对的独立临时 `pdos_test` 库，不得读取或回退 `.env`。没有可用的测试库时，只跑纯测试，把数据库测试列为“未运行”，不要自己建库或改连接串。
-5. **不改冻结文件**：不改 `docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md`、确认稿、`pdos-next/contracts/operations.json`、`events.json`、`acceptance.json`。`openapi.json`、`payloads.schema.json` 只能通过导出脚本重新生成（X1-1）。
+5. **不改冻结文件**：不改 `docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md`、确认稿、`contracts/operations.json`、`events.json`、`acceptance.json`。`openapi.json`、`payloads.schema.json` 只能通过导出脚本重新生成（X1-1）。
 6. **不新增依赖**，不新增数据库迁移（本批任务都不需要迁移；如果你认为需要，停下来报告）。
 7. **错误码**：新的错误原因只能在 `pdos_next/core/error_catalog.py` 的 `REASONS` 中登记并映射到已有分类，不新增分类。
 8. **前缀冻结**：系统提示与工具定义里不放动态内容（AGENTS.md 不可协商项 4）。
@@ -68,22 +68,22 @@ X1-3 与 X1-4 改同一个函数，必须一起做；X1-2 依赖 X1-1 的新字�
 cd ai-native-R\&D-platform
 git status --short
 git diff --stat -- \
-  pdos-next/server/pdos_next/agent/kernel/bootstrap.py \
-  pdos-next/server/pdos_next/agent/kernel/conversation.py \
-  pdos-next/server/pdos_next/agent/kernel/graph.py \
-  pdos-next/server/pdos_next/agent/kernel/requested_skills.py \
-  pdos-next/server/pdos_next/agent/kernel/gateway.py \
-  pdos-next/server/pdos_next/providers/agent_client.py \
-  pdos-next/server/pdos_next/providers/types.py \
-  pdos-next/server/pdos_next/agent/model_configuration/host.py \
-  pdos-next/server/pdos_next/schemas/model_configuration/dto.py \
-  pdos-next/web/src/features/categories/create/personal-xiaopai.tsx \
-  pdos-next/web/src/features/xiaopai/pai-conversation.tsx
+  server/pdos_next/agent/kernel/bootstrap.py \
+  server/pdos_next/agent/kernel/conversation.py \
+  server/pdos_next/agent/kernel/graph.py \
+  server/pdos_next/agent/kernel/requested_skills.py \
+  server/pdos_next/agent/kernel/gateway.py \
+  server/pdos_next/providers/agent_client.py \
+  server/pdos_next/providers/types.py \
+  server/pdos_next/agent/model_configuration/host.py \
+  server/pdos_next/schemas/model_configuration/dto.py \
+  web/src/features/categories/create/personal-xiaopai.tsx \
+  web/src/features/xiaopai/pai-conversation.tsx
 ```
 
 - 记录哪些目标文件已有未提交改动（2026-10-28 已知 `conversation.py` 当天有在途修改）。
 - **对已有在途改动的文件**：先把清单报告给用户，确认这些改动已完成、可以在其上继续，再开始对应任务。
-- 记录基线：在 `pdos-next/server` 下跑一次 §12 的纯测试命令，保存失败清单，作为“改动前已失败”的基线。
+- 记录基线：在 `server` 下跑一次 §12 的纯测试命令，保存失败清单，作为“改动前已失败”的基线。
 
 ---
 
@@ -93,7 +93,7 @@ git diff --stat -- \
 
 ### 3.1 后端
 
-文件：`pdos-next/server/pdos_next/agent/kernel/bootstrap.py`，方法 `default_preload`（约 464 行）。
+文件：`server/pdos_next/agent/kernel/bootstrap.py`，方法 `default_preload`（约 464 行）。
 
 现在：
 
@@ -115,13 +115,13 @@ if scope.category_id is None:
 
 ### 3.2 前端
 
-“与小Pai一起创建”按钮在 `pdos-next/web/src/features/categories/category-workspace.tsx`（约 69 行，`新建品类` 对话框里，调用 `onOpenPai()`）。它打开的是 `PaiRail` 里的 `PersonalXiaopai`（`components/category-create/personal-xiaopai.tsx`）。
+“与小Pai一起创建”按钮在 `web/src/features/categories/category-workspace.tsx`（约 69 行，`新建品类` 对话框里，调用 `onOpenPai()`）。它打开的是 `PaiRail` 里的 `PersonalXiaopai`（`components/category-create/personal-xiaopai.tsx`）。
 
 步骤：
 
 1. 把 `onOpenPai` 的类型从 `() => void` 改为 `(options?: { presetSkillKeys?: string[] }) => void`。
 2. 只在“与小Pai一起创建”这个按钮上传入：`onOpenPai({ presetSkillKeys: ["category_framing"] })`。其他调用点不传参数，行为不变。
-3. 用 `grep -rn "onOpenPai=" pdos-next/web/src` 找到传入 `onOpenPai` 的上层组件，把 `presetSkillKeys` 存进打开小Pai时的状态，经 `PaiRail` 传给 `PersonalXiaopai`。在 `PaiRail` 和 `PersonalXiaopai` 的 Props 上各加一个可选属性 `presetSkillKeys?: string[]`。
+3. 用 `grep -rn "onOpenPai=" web/src` 找到传入 `onOpenPai` 的上层组件，把 `presetSkillKeys` 存进打开小Pai时的状态，经 `PaiRail` 传给 `PersonalXiaopai`。在 `PaiRail` 和 `PersonalXiaopai` 的 Props 上各加一个可选属性 `presetSkillKeys?: string[]`。
 4. 在 `ScopedPersonalXiaopai` 里：当 `presetSkillKeys` 非空、当前没有 `run`、`requestedSkills` 为空时，在 `useEffect` 中请求 `const reading = await api<{ items: SkillChoice[] }>("v1/personal/agent-skills")`（写法与 `components/pai/skill-picker.tsx` 第 25 行相同，`SkillChoice` 类型从该文件导出或照其字段在本文件声明），把返回 `items` 中 `skill_key` 在 `presetSkillKeys` 里且 `enabled === true` 的项转换为 `{ key: item.skill_key, version: item.skill_version, digest: item.skill_digest }`，调用 `setRequestedSkills`。已存在的发送逻辑（约 307 行）会把 `requested_skills` 带上，不需要再改发送代码。
 5. 技能未启用或取不到时不报错、不阻止发送（模型仍可用 `skill.load`）。
 
@@ -129,15 +129,15 @@ if scope.category_id is None:
 
 ### 3.3 测试
 
-- 修改 `pdos-next/server/tests/agent_kernel/test_m3_default_preload.py` 中 `test_personal_entry_preloads_category_framing_without_business_scope`：改名为 `test_personal_entry_has_no_default_business_skill`，断言 `f.owner.default_preload(f.scope) == ()`。
-- 执行 `grep -rn "category_framing" pdos-next/server/tests`，找出依赖“个人范围默认预载 category_framing”的其他测试，只改这一假设（改为显式 `requested_skills` 或断言空预载），不要改与默认预载无关的断言。
+- 修改 `server/tests/agent/kernel/test_m3_default_preload.py` 中 `test_personal_entry_preloads_category_framing_without_business_scope`：改名为 `test_personal_entry_has_no_default_business_skill`，断言 `f.owner.default_preload(f.scope) == ()`。
+- 执行 `grep -rn "category_framing" server/tests`，找出依赖“个人范围默认预载 category_framing”的其他测试，只改这一假设（改为显式 `requested_skills` 或断言空预载），不要改与默认预载无关的断言。
 - 前端：如果已有渲染 `PersonalXiaopai` 的测试文件，在其中加一个用例，断言传入 `presetSkillKeys` 时会把对应技能放入请求；没有现成的渲染测试就不新建，在报告里写明“前端由类型检查和 lint 覆盖”。
 
 ### 3.4 检查与完成判据
 
 ```bash
-cd pdos-next/server && uv run ruff check pdos_next/agent/kernel/bootstrap.py
-cd pdos-next/web && npm run typecheck && npm run lint
+cd server && uv run ruff check pdos_next/agent/kernel/bootstrap.py
+cd web && npm run typecheck && npm run lint
 ```
 
 - [ ] 个人全局对话（无品类）默认预载为空；
@@ -148,7 +148,7 @@ cd pdos-next/web && npm run typecheck && npm run lint
 
 ## 4. 任务 A2：固定系统提示补充规则
 
-文件：`pdos-next/server/pdos_next/agent/kernel/graph.py`，常量 `SYSTEM_BASE`（约 25 行）。
+文件：`server/pdos_next/agent/kernel/graph.py`，常量 `SYSTEM_BASE`（约 25 行）。
 
 在 `SYSTEM_BASE` 中 “internal IDs or workflow terminology unless the user asks for them.” 这一行**之后**、“Respond to the latest human message; …” 这一行**之前**，插入以下三行（原样复制，英文；每行末尾照原有风格换行）：
 
@@ -166,7 +166,7 @@ If a lookup finds nothing, say it was not found in the searched scope; never con
 检查：
 
 ```bash
-cd pdos-next/server && uv run pytest tests/agent_kernel/test_graph.py -q
+cd server && uv run pytest tests/agent/kernel/test_graph.py -q
 ```
 
 - [ ] 三行规则已加入，`SYSTEM_BASE` 其余文字不变；
@@ -180,7 +180,7 @@ cd pdos-next/server && uv run pytest tests/agent_kernel/test_graph.py -q
 
 ### 5.1 后端
 
-1. 新建文件 `pdos-next/server/pdos_next/agent/kernel/assistant_result.py`：
+1. 新建文件 `server/pdos_next/agent/kernel/assistant_result.py`：
 
 ```python
 """Server-attached answer grounding for ordinary replies (RAG design v0.4 §8.2)."""
@@ -220,7 +220,7 @@ return attach_assistant(attach(result, tool_results), tool_results)
 
 ### 5.2 前端
 
-文件：`pdos-next/web/src/features/xiaopai/pai-conversation.tsx`，组件 `PaiResponse`（约 62 行）。
+文件：`web/src/features/xiaopai/pai-conversation.tsx`，组件 `PaiResponse`（约 62 行）。
 
 1. Props 类型中 `result?: { summary?: string } | null` 扩展为 `result?: { summary?: string; result?: { assistant?: { lookup?: string } } | null } | null`。
 2. 计算 `const notLooked = run.status === "completed" && run.result?.result?.assistant?.lookup === "not_run";`。
@@ -235,7 +235,7 @@ return attach_assistant(attach(result, tool_results), tool_results)
 
 ### 5.3 测试
 
-新建 `pdos-next/server/tests/agent_kernel/test_assistant_result.py`（纯测试，不用数据库），至少五个用例：
+新建 `server/tests/agent/kernel/test_assistant_result.py`（纯测试，不用数据库），至少五个用例：
 
 | 用例 | 输入 | 断言 |
 |---|---|---|
@@ -248,8 +248,8 @@ return attach_assistant(attach(result, tool_results), tool_results)
 检查：
 
 ```bash
-cd pdos-next/server && uv run pytest tests/agent_kernel/test_assistant_result.py tests/agent_kernel/test_verification.py -q
-cd pdos-next/web && npm run typecheck && npm run lint
+cd server && uv run pytest tests/agent/kernel/test_assistant_result.py tests/agent/kernel/test_verification.py -q
+cd web && npm run typecheck && npm run lint
 ```
 
 - [ ] 纯对话回答下方显示“未查公司资料”；有任何业务读取、研究或候选的回答不显示；
@@ -271,18 +271,18 @@ cd pdos-next/web && npm run typecheck && npm run lint
 | `web/src/features/settings/model-configuration/settings.tsx` | 连接详情里显示该值，空值显示“未填写（按 32,000 估算）” |
 | `web/src/features/settings/model-configuration/render.test.mjs` | 按现有用例风格，增加该字段的渲染断言 |
 
-上表是已核实的位置。动手前再执行 `grep -rn "max_output_tokens" pdos-next/server/pdos_next pdos-next/web/src`，凡是保存、校验、传递 `max_output_tokens` 的地方都要同样处理 `context_window_tokens`（`providers/types.py` 的 `digest` 按上表条件加入；`agent_client.py`、`client.py`、`gateway.py` 里把它当输出上限用的地方不需要加）。
+上表是已核实的位置。动手前再执行 `grep -rn "max_output_tokens" server/pdos_next web/src`，凡是保存、校验、传递 `max_output_tokens` 的地方都要同样处理 `context_window_tokens`（`providers/types.py` 的 `digest` 按上表条件加入；`agent_client.py`、`client.py`、`gateway.py` 里把它当输出上限用的地方不需要加）。
 
 **合同导出**（只用脚本生成，不手改）：
 
 ```bash
-cd pdos-next/server && uv run python ../tools/export_contracts.py
+cd server && uv run python ../tools/export_contracts.py
 cd pdos-next && git diff --stat -- contracts/openapi.json contracts/payloads.schema.json
 ```
 
 差异应只包含 `context_window_tokens`。出现其他大段差异时，**停止**并报告（可能是其他在途改动尚未导出）。导出脚本因缺少环境变量或数据库而无法运行时，也停止并报告，不要手改合同文件。
 
-**测试**：在 `tests/model_configuration/` 或 `tests/agent_kernel/test_model_configuration_transactions.py`、`test_model_connections_pg.py` 中找到保存/读取 `max_output_tokens` 的用例，仿写：
+**测试**：在 `tests/agent/model_configuration/` 或 `tests/agent/kernel/test_model_configuration_transactions.py`、`test_model_connections_pg.py` 中找到保存/读取 `max_output_tokens` 的用例，仿写：
 
 - 保存 `context_window_tokens=200000` 后读回一致；
 - `context_window_tokens=512` 被拒绝；
@@ -291,8 +291,8 @@ cd pdos-next && git diff --stat -- contracts/openapi.json contracts/payloads.sch
 检查：
 
 ```bash
-cd pdos-next/server && uv run pytest tests/agent_kernel/test_native_protocols.py tests/agent_kernel/test_openai_compatible.py tests/agent_kernel/test_gateway.py -q
-cd pdos-next/web && npm run typecheck && npm run lint && node --test src/features/settings/model-configuration/render.test.mjs
+cd server && uv run pytest tests/agent/kernel/test_native_protocols.py tests/agent/kernel/test_openai_compatible.py tests/agent/kernel/test_gateway.py -q
+cd web && npm run typecheck && npm run lint && node --test src/features/settings/model-configuration/render.test.mjs
 ```
 
 - [ ] 配置页可填写、可留空；
@@ -305,7 +305,7 @@ cd pdos-next/web && npm run typecheck && npm run lint && node --test src/feature
 
 **目的**：知道每次调用里各部分占了多少，后续才能按预算缩减。本任务**只记录，不缩减、不拦截**。
 
-### 7.1 新建 `pdos-next/server/pdos_next/agent/kernel/context_budget.py`
+### 7.1 新建 `server/pdos_next/agent/kernel/context_budget.py`
 
 ```python
 """Per-call context size estimates (context design §4.2, §9). Recording only."""
@@ -399,16 +399,16 @@ context_budget["over_focus"] = context_budget["estimated_total"] > context_budge
 
 ### 7.3 测试
 
-- 新建 `tests/agent_kernel/test_context_budget.py`（纯测试）：
+- 新建 `tests/agent/kernel/test_context_budget.py`（纯测试）：
   - `estimate_tokens("")==0`；`estimate_tokens("abcd")==1`；`estimate_tokens("充气泵")==3`；中英混合按规则计算；
   - `budget_for` 在未配置窗口时 `window==32000`、`window_configured is False`，`focus == 32000 - (max_output_tokens + 4000)`；配置 200000 时 `focus == 64000`；
   - `segments`：构造“首条信封（含 context.conversation）+ 两条技能 user 消息 + assistant + tool”的消息列表，断言 `history>0`、`skills` 只统计两条技能、`loop` 统计 assistant 之后的消息。
-- 在 `tests/agent_kernel/test_gateway.py` 找到断言保存结果的用例，仿写一个：成功调用后保存的结果含 `context_budget`，且 `segments` 有六个键。
+- 在 `tests/agent/kernel/test_gateway.py` 找到断言保存结果的用例，仿写一个：成功调用后保存的结果含 `context_budget`，且 `segments` 有六个键。
 
 检查：
 
 ```bash
-cd pdos-next/server && uv run pytest tests/agent_kernel/test_context_budget.py tests/agent_kernel/test_gateway.py -q
+cd server && uv run pytest tests/agent/kernel/test_context_budget.py tests/agent/kernel/test_gateway.py -q
 ```
 
 - [ ] 每次成功的模型调用都保存了 `context_budget`；
@@ -473,7 +473,7 @@ Historical answers are dated records, not current domain facts. outcome_state "u
 
 ### 8.2 修改上下文字段合同
 
-文件：`pdos-next/server/pdos_next/agent/skill_packages/context-schemas.json`，`$defs.outcome`：
+文件：`server/pdos_next/agent/skill_packages/context-schemas.json`，`$defs.outcome`：
 
 - 在 `properties` 中增加 `"notes": {"type": "array", "items": {"type": "string"}}` 与 `"truncated": {"type": "boolean"}`；
 - **不要**把它们加进 `required`；不要改 `additionalProperties`。
@@ -486,7 +486,7 @@ Historical answers are dated records, not current domain facts. outcome_state "u
 
 ### 8.4 测试
 
-文件：`tests/agent_kernel/test_run_continuation.py`（需要数据库）。
+文件：`tests/agent/kernel/test_run_continuation.py`（需要数据库）。
 
 - **改写** `test_cached_read_summary_requires_actual_local_result_and_guard_rechecks_it`：
   - 第一次 `project_context` 后 `outcome_state == "current"`；
@@ -499,7 +499,7 @@ Historical answers are dated records, not current domain facts. outcome_state "u
   - `test_history_tool_returns_full_answers`：`memory(..., layered=False)` 下每轮 `summary` 为原文（≤ 8000 字）；
   - `test_thirty_turn_history_stays_bounded`：30 轮、每轮 1000 字回答 → `estimate_tokens(json.dumps(memory_value, ensure_ascii=False))` ≤ 4000（用 X1-2 的 `estimate_tokens`）。
 - 同文件 `test_registered_graph_receives_persisted_task_memory_and_replay_does_not_call_model` 中的断言 `turns[0]["historical_outcome"]["unfinished"] == ["核对适用工况"]` 应仍成立；如因新增键失败，只调整断言，不改被测行为。
-- 运行 `tests/agent_kernel/test_context_projection.py`、`test_context_projection_entries.py`、`test_context_projection_pg.py`，确认字段合同修改后通过。
+- 运行 `tests/agent/kernel/test_context_projection.py`、`test_context_projection_entries.py`、`test_context_projection_pg.py`，确认字段合同修改后通过。
 
 完成判据：
 
@@ -591,11 +591,11 @@ if error.reason == "CONVERSATION_HISTORY_REVOKED":
 
 ### 9.5 测试
 
-- `tests/agent_kernel/test_run_continuation.py::test_revoking_parent_scope_hides_memory_before_model_egress`：应仍通过（删除品类授权后 `check_conversation` 抛 `DomainError`）；补一个断言：`failure.value.reason == "CONVERSATION_HISTORY_REVOKED"`。
+- `tests/agent/kernel/test_run_continuation.py::test_revoking_parent_scope_hides_memory_before_model_egress`：应仍通过（删除品类授权后 `check_conversation` 抛 `DomainError`）；补一个断言：`failure.value.reason == "CONVERSATION_HISTORY_REVOKED"`。
 - 新增 `test_content_change_does_not_interrupt_running_turn`：组装上下文后改变复核器结果为“内容变化”，`check_conversation` 不抛错，再次组装上下文得到的 `conversation` 与第一次完全相同（冻结）。
 - 新增 `test_newly_revoked_turn_stops_with_revoked_reason`：组装上下文后把复核器改为抛 `FORBIDDEN_SCOPE` → `check_conversation` 抛错且 `reason == "CONVERSATION_HISTORY_REVOKED"`。
-- 在 `tests/agent_kernel/test_graph.py` 增加：宿主的 `model` 抛 `DomainError("CONVERSATION_HISTORY_REVOKED", "x")` 时，图输出 `status == "partial"`，`summary` 为上面的提示文字（仿照已有的 `RATE_LIMITED` 用例写法）。
-- 跑 `uv run pytest tests/command_catalog -q`，确认新错误原因登记无误。
+- 在 `tests/agent/kernel/test_graph.py` 增加：宿主的 `model` 抛 `DomainError("CONVERSATION_HISTORY_REVOKED", "x")` 时，图输出 `status == "partial"`，`summary` 为上面的提示文字（仿照已有的 `RATE_LIMITED` 用例写法）。
+- 跑 `uv run pytest tests/core/command_catalog -q`，确认新错误原因登记无误。
 
 完成判据：
 
@@ -663,7 +663,7 @@ def continued(session, scope, run, *, exclude):
 - 延续的技能按**当前启用版本**加载（新运行，不要求与父运行版本一致）；
 - 自动化触发的运行不受影响（函数开头的 `trigger` 判断保持）。
 
-**测试**：在 `tests/agent_kernel/test_requested_skills_pg.py`（需要数据库）中，仿照现有用例插入父运行的 `AgentEvent`：
+**测试**：在 `tests/agent/kernel/test_requested_skills_pg.py`（需要数据库）中，仿照现有用例插入父运行的 `AgentEvent`：
 
 - 父运行加载过 `proposal_drafting` → 子运行（无 `requested_skills`）预载包含它；
 - 父运行加载过 3 个技能 → 只带最近 2 个；
@@ -706,7 +706,7 @@ if history:
 
 **不要**改 OpenAI 兼容分支；用量中的缓存字段（`prompt_tokens_details.cached_tokens`）已由 `providers/client.py` 解析并保存在 `usage` 里。
 
-**测试**：在 `tests/agent_kernel/test_native_protocols.py`（或现有断言 Anthropic 请求体的测试文件）中增加：
+**测试**：在 `tests/agent/kernel/test_native_protocols.py`（或现有断言 Anthropic 请求体的测试文件）中增加：
 
 - 多条消息时：system、首条消息最后一个块、末条消息最后一个块都有 `cache_control`；中间消息没有；
 - 只有一条消息时：该消息有且只有一处 `cache_control`；
@@ -717,7 +717,7 @@ if history:
 检查：
 
 ```bash
-cd pdos-next/server && uv run pytest tests/agent_kernel/test_native_protocols.py tests/agent_kernel/test_gateway.py -q
+cd server && uv run pytest tests/agent/kernel/test_native_protocols.py tests/agent/kernel/test_gateway.py -q
 ```
 
 **真实缓存命中的实测**（两条路线）需要真实模型调用授权，**不由你执行**；在报告里列为“待用户授权后实测”。
@@ -728,7 +728,7 @@ cd pdos-next/server && uv run pytest tests/agent_kernel/test_native_protocols.py
 
 ```bash
 # 后端静态检查（只检查改动文件）
-cd pdos-next/server
+cd server
 uv run ruff check pdos_next/agent/kernel/assistant_result.py pdos_next/agent/kernel/context_budget.py \
   pdos_next/agent/kernel/bootstrap.py pdos_next/agent/kernel/conversation.py \
   pdos_next/agent/kernel/graph.py pdos_next/agent/kernel/gateway.py \
@@ -737,17 +737,17 @@ uv run ruff check pdos_next/agent/kernel/assistant_result.py pdos_next/agent/ker
   pdos_next/schemas/model_configuration/dto.py pdos_next/core/error_catalog.py
 
 # 纯测试（不需要数据库）
-uv run pytest -q tests/agent_kernel/test_assistant_result.py tests/agent_kernel/test_context_budget.py \
-  tests/agent_kernel/test_graph.py tests/agent_kernel/test_gateway.py \
-  tests/agent_kernel/test_native_protocols.py tests/agent_kernel/test_openai_compatible.py \
-  tests/agent_kernel/test_context_projection.py tests/agent_kernel/test_context_projection_entries.py \
-  tests/agent_kernel/test_verification.py tests/agent_kernel/test_m3_default_preload.py tests/command_catalog
+uv run pytest -q tests/agent/kernel/test_assistant_result.py tests/agent/kernel/test_context_budget.py \
+  tests/agent/kernel/test_graph.py tests/agent/kernel/test_gateway.py \
+  tests/agent/kernel/test_native_protocols.py tests/agent/kernel/test_openai_compatible.py \
+  tests/agent/kernel/test_context_projection.py tests/agent/kernel/test_context_projection_entries.py \
+  tests/agent/kernel/test_verification.py tests/agent/kernel/test_m3_default_preload.py tests/core/command_catalog
 
 # 数据库测试（仅在已核对的独立 pdos_test 可用时；四个连接串都须显式给出）
 TEST_DATABASE_URL=… DATABASE_URL=… AUTH_DATABASE_URL=… DISPATCH_DATABASE_URL=… \
-uv run pytest -q tests/agent_kernel/test_run_continuation.py \
-  tests/agent_kernel/test_requested_skills_pg.py tests/agent_kernel/test_context_projection_pg.py \
-  tests/agent_kernel/test_model_configuration_transactions.py tests/agent_kernel/test_model_connections_pg.py
+uv run pytest -q tests/agent/kernel/test_run_continuation.py \
+  tests/agent/kernel/test_requested_skills_pg.py tests/agent/kernel/test_context_projection_pg.py \
+  tests/agent/kernel/test_model_configuration_transactions.py tests/agent/kernel/test_model_connections_pg.py
 
 # 前端
 cd ../web && npm run typecheck && npm run lint && \
@@ -796,7 +796,7 @@ cd .. && python3 tools/validate_contracts.py
 
 ## 14. 常见坑
 
-- `cached_outcome` 改名后，全仓 `grep -rn "cached_outcome" pdos-next/server` 确认没有遗漏的调用点。
+- `cached_outcome` 改名后，全仓 `grep -rn "cached_outcome" server` 确认没有遗漏的调用点。
 - `memory()` 新增的 `layered` 参数要有默认值 `True`，避免打断其他调用方。
 - `context-schemas.json` 改动后，开发与测试环境里字段被投影删除会直接报错；如果出现 `context_schema_mismatch`，检查 `notes`、`truncated` 是否加在 `$defs.outcome.properties` 里。
 - `ProviderRoute.digest` 只在 `context_window_tokens` 不为 `None` 时加入，否则所有现有运行都会因路由摘要变化而 `VERSION_CONFLICT`。

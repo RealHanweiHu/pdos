@@ -1,6 +1,6 @@
 # 小Pai按方法提供资料
 
-实现 v1.1 §06.3、§06.7–8。十二个技能包分别声明 `context_schema`，引用同目录 [context-schemas.json](../../pdos-next/server/pdos_next/agent/skill_packages/context-schemas.json)。配置加载时只解析登记的本地 schema，展开内容计入技能 digest；不访问网络或任意文件，不将版本写进数据库约束。
+实现 v1.1 §06.3、§06.7–8。十二个技能包分别声明 `context_schema`，引用同目录 [context-schemas.json](../../server/pdos_next/agent/skill_packages/context-schemas.json)。配置加载时只解析登记的本地 schema，展开内容计入技能 digest；不访问网络或任意文件，不将版本写进数据库约束。
 
 ## 使用与查看
 

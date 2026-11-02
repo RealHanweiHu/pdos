@@ -6,7 +6,7 @@ PDOS 面向消费电子与硬件研发团队，以项目为工作中心，将产
 
 小Pai是系统唯一的 AI Agent，帮助团队研究资料、起草内容、核对缺项和跟进工作。它通过受控工具使用业务数据，产生的候选、来源和运行回执可供人员核对。
 
-> **项目正在建设与试点验证中。** 现行代码位于 [`pdos-next/`](pdos-next/)。下文介绍产品方向与开发入口；各项能力的实际覆盖、验证证据和剩余缺口，以[当前执行清单](tasks/ai-native-integrated-todo.md#current-queue)为准。
+> **项目正在建设与试点验证中。** 代码结构见下文[仓库结构](#仓库结构)。下文介绍产品方向与开发入口；各项能力的实际覆盖、验证证据和剩余缺口，以[当前执行清单](tasks/ai-native-integrated-todo.md#current-queue)为准。
 
 ## 围绕项目开展工作
 
@@ -52,63 +52,117 @@ AI 写入按操作分级：
 
 ## 仓库结构
 
+本仓库就是 pdos-next 工程（代号沿用），代码直接位于仓库根目录。
+
 ```text
-pdos-next/                     现行工程（目录地图见 pdos-next/README.md）
-  web/                         Next.js 前端：src/app 路由，src/features/<领域> 组件，src/lib 共用逻辑
-  server/                      FastAPI 领域服务（pdos_next 包）、Alembic 迁移与后端测试
-  packages/pdos-agent-runtime/ 共用 Agent 持久运行框架
-  contracts/                   操作、载荷、事件、接口与验收契约
-  config/                      运行时配置示例
-  containers/                  原件解析容器
-  infra/                       本地设施：searxng、RDS CA 证书
-  assets/                      CEHub 交付物指南清单
-  tools/                       本地环境、评测与契约工具
-docs/                          设计、运行手册、评测题集与验证证据
-tasks/                         唯一活动状态清单
+web/                          Next.js 前端（页面与 BFF）
+  src/app/                    路由：页面与 /api 代理
+  src/features/<产品区>/       按产品区组织的组件与该区专用逻辑
+  src/components/ui/          shadcn/ui 基础组件
+  src/lib/                    跨产品区共用的视图模型与 API 客户端；src/lib/server/ 为服务端 BFF 代理
+server/                       FastAPI 领域服务（Python 包 pdos_next）
+  pdos_next/                  见下表
+  migrations/                 Alembic 迁移链（只增不改）
+  tests/                      后端测试，按与 pdos_next 相同的产品区分组
+packages/pdos-agent-runtime/  共用 Agent 持久运行框架（LangGraph + Temporal）
+contracts/                    机器可读契约：操作、载荷、事件、接口与验收
+config/                       租户运行配置示例
+containers/                   受隔离的原件解析容器
+infra/                        本地设施：searxng（compose.yaml）、RDS CA 证书
+assets/cehub/                 CEHub 交付物指南清单（工作模板直接读取）
+tools/                        本地环境、评测与契约工具
+docs/                         设计、运行手册、评测题集与验证证据
+tasks/                        唯一活动状态清单
 ```
+
+### 后端 `server/pdos_next/`
+
+| 目录 | 内容 |
+|---|---|
+| `asgi.py`、`api.py` | ASGI 入口（`uvicorn pdos_next.asgi:app`）与 HTTP 路由装配 |
+| `core/` | 共用内核：数据库与 ORM 注册、通用命令与回执、错误目录、时钟、请求证明、运行撤回、品类权限范围、事件外发（`dispatch/`） |
+| `domain/` | 业务领域，按产品区分组，见下表 |
+| `agent/` | 小Pai：`kernel/`（唯一注册执行图、工具、技能管理、上下文）、`skill_packages/`、`prompt_packages/`、`model_gateway/`、`model_configuration/`、`research/`、`enterprise_search/` |
+| `providers/` | 模型服务商传输（OpenAI 兼容、Anthropic 原生） |
+| `originals/` | 原件：授权读取、上传、撤回、对象存储与日志、生命周期规则与执行 |
+| `evidence_processing/`、`evidence_security/`、`security_runtime/` | 原件解析、扫描与解析容器运行时 |
+| `integrations/` | 外部渠道，目前是钉钉（`dingtalk/`） |
+| `workflows/` | Temporal 工作流、Worker 与检查点 |
+| `bootstrap/` | 仅供本地标记宿主使用的合成配置与受信导入 |
+| `schemas/` | 跨领域共享的冻结 DTO |
+| `errors.py` | `DomainError` |
+
+`domain/` 的产品区与前端 `web/src/features/` 同名。每个产品区的根目录放该区的主体代码，子目录放具体环节：
+
+| 产品区 | 子目录 |
+|---|---|
+| `categories/` 品类与立项前 | `preproject/`（品类、提案、G0）、`products/`（产品定义）、`discovery/` |
+| `projects/` 项目 | `governance/`（阶段治理）、`planning/`（计划与 `engine/` 计算）、`work/`（工作与承诺）、`fulfillment/`、`risk/`、`external_wait/`、`sets/`（项目集） |
+| `builds/` 样机构建 | `start/`、`execution/`、`operational_facts/`、`configurations/`、`sample_handoff/`、`resource_readiness/`、`test_resources/`、`professional_authority/` |
+| `verification/` 测试验证 | 根目录是验证内核与规则；`preparation/`、`execution/`、`handoff/`、`launch/`、`results/`、`measurement/` |
+| `quality/` 品质 | `issues/`、`execution/`、`followup/`、`field_feedback/`、`capa/`（含 `verification/`） |
+| `change/` 变更 | 根目录是变更单、选择与完成流程；`control/`、`coverage/`、`execution/` |
+| `manufacturing/` 制造交付 | `baseline/`、`trials/`、`resources/`、`supply_cost/`（含 `engine/` 计算）、`supply_execution/`、`cost_execution/`、`release/`（含 `exceptions/`）、`external_handoff/` |
+| `knowledge/` 知识 | 经验、助手资料与来源 |
+| `automations/` 工作规则 | 小Pai 工作规则、触发与摘要设置 |
+| `my_work/` 我的工作 | 关注、摘要、偏好、搜索、`inbox/`（收件箱） |
+
+前端把测试验证放在 `builds/verification/`、把变更放在 `quality/change-control/`，后端各自独立成区；前端 `xiaopai/` 与 `settings/` 对应后端 `agent/`。
+
+几处位置是有意固定的：`errors.py` 留在包根，因为 `domain/verification/rules.py` 的内容哈希会写进验证结果；`providers/` 和 `schemas/` 受规格冻结测试约束；`evidence_processing/` 的两个源文件哈希固定在 `security_runtime/parser-image.json`；`contracts/` 固定了 v1.1 设计稿的 SHA-256，修改该设计稿前先重新生成契约。
+
+### 工具 `tools/`
+
+| 用途 | 脚本 |
+|---|---|
+| 本地环境 | `local_environment.py`（独立 `pdos_test` 与 API/Web 预览）、`workflow_environment.py`（Temporal 与检查点库）、`agent_runtime_environment.py`（共用 Agent 状态库与 Temporal 开发服务）、`comprehensive_preview.py`（完整预览）、`acceptance_account.py` |
+| 小Pai 评测 | `xiaopai_prompt.py`（提示词版本与 A/B）、`xiaopai_recall_*`、`xiaopai_context_*`、`xiaopai_real_*`（真实服务商评测） |
+| 契约与性能 | `export_contracts.py`、`validate_contracts.py`、`current_read_profiler.py` |
+
+历次 wave/m2/m3/s0 检查点脚本已于 2026-11-01 删除，可在标签 `archive/pre-restructure-2026-11-01` 中查看。私有状态、预览配置与本地工具二进制放在被忽略的根目录 `.local/`。
 
 ## 开始开发
 
 ### 1. 准备依赖
 
-使用 Node.js 22（见 [`.nvmrc`](.nvmrc)）、Python 3.12（见 [`.python-version`](.python-version)）、pnpm 11.16.0 和 uv。完整本地环境还需要 Docker，以及 PostgreSQL、Temporal、文件解析与安全检查所需的运行组件；相关环境由 `pdos-next/tools/` 管理。
+使用 Node.js 22（见 [`.nvmrc`](.nvmrc)）、Python 3.12（见 [`.python-version`](.python-version)）、pnpm 11.16.0 和 uv。完整本地环境还需要 Docker，以及 PostgreSQL、Temporal、文件解析与安全检查所需的运行组件；相关环境由 `tools/` 管理。
 
 在仓库根目录开始安装：
 
 ```bash
-cd pdos-next/server
+cd server
 uv sync --locked
 
 cd ../web
 pnpm install --frozen-lockfile
 ```
 
-后端通过本地路径依赖 `pdos-next/packages/pdos-agent-runtime/`，请保留仓库目录结构。
+后端通过本地路径依赖 `packages/pdos-agent-runtime/`，请保留仓库目录结构。
 
 ### 2. 配置独立环境
 
-以 [`pdos-next/.env.example`](pdos-next/.env.example) 为配置清单，由启动进程显式提供环境变量；现行工具不会继承旧工程根目录的 `.env`。
+以 [`.env.example`](.env.example) 为配置清单，由启动进程显式提供环境变量；现行工具不会读取根目录里原工程留下的 `.env` 与 `.env.production`。
 
 - **数据库**：应用、认证、派发与迁移使用分离的连接身份。应用连接使用非属主、非超级用户、无 `BYPASSRLS` 的角色；迁移凭据仅供迁移进程使用。
 - **工作流**：API 与 Worker 连接一致的 Temporal 命名空间，并使用独立的检查点存储。
 - **原件**：配置服务端私有文件目录和适用的扫描、解析运行组件。
 - **模型**：API 与 Worker 使用同一份 `PDOS_TENANT_RUNTIME_CONFIG` 元数据。密钥由凭据后端保存，元数据只放引用；模型配置还需实际预算、技能启用及适用资格。
 
-常用环境入口如下，均使用 `pdos-next/server/.venv/bin/python` 从仓库根目录执行对应脚本：
+常用环境入口如下，均使用 `server/.venv/bin/python` 从仓库根目录执行对应脚本：
 
 | 入口 | 用途 |
 |---|---|
-| [`local_environment.py`](pdos-next/tools/local_environment.py) | 建立或核对带身份标记的独立合成 `pdos_test` 环境，启动 API 与 Web 预览 |
-| [`workflow_environment.py`](pdos-next/tools/workflow_environment.py) | 管理独立工作流状态库、Temporal 开发服务、健康检查与 Worker |
-| [`agent_runtime_environment.py`](pdos-next/tools/agent_runtime_environment.py) | 管理共用 Agent 状态库与 Temporal 开发服务 |
+| [`local_environment.py`](tools/local_environment.py) | 建立或核对带身份标记的独立合成 `pdos_test` 环境，启动 API 与 Web 预览 |
+| [`workflow_environment.py`](tools/workflow_environment.py) | 管理独立工作流状态库、Temporal 开发服务、健康检查与 Worker |
+| [`agent_runtime_environment.py`](tools/agent_runtime_environment.py) | 管理共用 Agent 状态库与 Temporal 开发服务 |
 
-首次环境建立会创建临时资源并执行迁移。已有环境应先核对实例、端口、身份标记和真实迁移 head，再按当前候选的检查工具续接。候选专用的 `wave*` 工具与私有 `.local/` 文件不作为通用生产启动入口。
+首次环境建立会创建临时资源并执行迁移。已有环境应先核对实例、端口、身份标记和真实迁移 head，再按当前候选的检查工具续接。私有 `.local/` 文件不作为通用生产启动入口。
 
 模型与研究接线见[租户模型运行配置](docs/runbooks/pdos-next-tenant-model-runtime.md)和[公开研究运行配置](docs/runbooks/pdos-next-public-research-runtime.md)。基础 LLM 按[确认稿 P28/P29](docs/design/2026-10-08-pdos-next-design-confirmation.md#p29-在界面添加密钥与切换模型服务商用户-2026-10-26)支持任意 OpenAI 兼容 Chat Completions API，不限 MiniMax；页面可填写 API Key、Base URL 和模型名称，保存多份独立连接并确认切换，密钥进入 KMS/Keychain。出站仍执行 P26：服务商协议是可选治理工具，服务器逐次判定并记录服务商与资料类别，已登记的有效协议按类别限制执行。
 
 ### 3. 执行检查
 
-在 `pdos-next/web/` 中执行：
+在 `web/` 中执行：
 
 ```bash
 pnpm typecheck
@@ -126,12 +180,12 @@ pnpm build
 - [设计确认与决策记录](docs/design/2026-10-08-pdos-next-design-confirmation.md)：冻结设计之后的已确认变更。
 - [当前执行清单](tasks/ai-native-integrated-todo.md#current-queue)：可用能力、证据、剩余缺口与下一步。
 - [设计文档索引](docs/design/README.md)：现行合同与历史材料的权威关系。
-- [接口契约](pdos-next/contracts/openapi.json)与[操作目录](pdos-next/contracts/operations.json)：机器可读定义。
+- [接口契约](contracts/openapi.json)与[操作目录](contracts/operations.json)：机器可读定义。
 - [编码协作约定](AGENTS.md)：实现、验证、迁移和授权边界。
 
 ## 版本、分支与归档
 
-`pdos-next/` 是当前开发主线，也是仓库里唯一的工程。2026-11-01 整仓重组删除了原 `server/` + `web/` 工程的遗留文件、原生产部署脚本、旧设计与历史证据，删除前的内容在本地标签 `archive/pre-restructure-2026-11-01`。
+本仓库只有 pdos-next 一个工程。2026-11-01 整仓重组先删除了原工程（当时同样位于根目录的 `server/` + `web/`）的遗留文件、原生产部署脚本、旧设计与历史证据，删除前的内容在本地标签 `archive/pre-restructure-2026-11-01`；随后把原 `pdos-next/` 目录下的代码提到仓库根目录，后端与测试按产品区重新分组。历史文档与证据里出现的 `pdos-next/…` 路径，对应现在去掉该前缀后的位置。
 
 | 用途 | 分支 | 使用边界 |
 |---|---|---|

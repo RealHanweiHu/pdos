@@ -2,7 +2,7 @@
 
 日期：2026-10-23。范围：S0–S5 的最终产品体验，供预览与选择。此稿细化展示与交互，不修改已冻结的 v1.1 业务规则，不代表阶段验收通过。
 
-交互入口：[完整体验预览](http://localhost:57859/ui-lab/platform)。代码在 `pdos-next/web/src/app/ui-lab/platform/`；验证、截图与恢复方法见[本轮证据](../reports/evidence/pdos-next-platform-ui-20261023/result.md)。
+交互入口：[完整体验预览](http://localhost:57859/ui-lab/platform)。代码在 `web/src/app/ui-lab/platform/`；验证、截图与恢复方法见[本轮证据](../reports/evidence/pdos-next-platform-ui-20261023/result.md)。
 
 **2026-10-25 设计定稿，正式功能部分迁移**：完整覆盖尚未完成，具体差异以[功能覆盖核对](../reports/evidence/pdos-next-platform-ui-20261023/formal-rollout-20261025/functional-coverage.md)为准。用户确认目前UI后，按此方向迁移正式前端，入口为[我的工作](http://localhost:57859/?area=work)。已接入范围、实际验证与仍缺后端能力见[正式迁移记录](../reports/evidence/pdos-next-platform-ui-20261023/formal-rollout-20261025/result.md)。组织聊天、品类元数据和项目集维护已分批接入正式服务。最新知识／项目集／项目计划／收件箱对齐及剩余差异见[四页迁移记录](../reports/evidence/pdos-next-platform-ui-20261023/four-page-parity-20261025/result.md)。完整阶段验收仍未完成。
 
