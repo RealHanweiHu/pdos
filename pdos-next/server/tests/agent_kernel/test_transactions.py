@@ -3,22 +3,21 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import (
     AgentRun,
     AgentToolCall,
     ProviderDataAgreement,
     TenantAdministrator,
 )
-from pdos_next.agent_kernel.persistence import KernelStore, cancel_run, create_run
-from pdos_next.agent_kernel.policy import egress
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.persistence import KernelStore, cancel_run, create_run
+from pdos_next.agent.kernel.policy import egress
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 def human_session(setup):
@@ -237,8 +236,8 @@ def test_management_direct_write_without_receipt_atom_rolls_back(setup):
 
 
 def test_run_and_process_events_hide_after_source_audience_revocation(setup):
-    from pdos_next.models import Artifact, ObjectAudience
-    from pdos_next.service import digest
+    from pdos_next.core.models import Artifact, ObjectAudience
+    from pdos_next.core.service import digest
 
     source_id = uuid4()
     with Session(setup.admin) as s, s.begin():

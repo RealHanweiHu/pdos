@@ -8,14 +8,10 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_build_execution import actual_command
-from test_project_first_plan import accepted, post
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.core.service import Context, digest, execute
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.verification_front.models import FormalVerificationRequest
 from pdos_next.domain.verification_handoff.models import (
@@ -25,8 +21,12 @@ from pdos_next.domain.verification_handoff.models import (
     VerificationHandoffFact,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey
-from pdos_next.service import Context, digest, execute
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_build_execution import actual_command
+from test_project_first_plan import accepted, post
+
 from verification_handoff.fixtures import (
     actual_method,
     artifact,
@@ -280,7 +280,7 @@ def test_method_pair_concurrent_cas_has_one_batch_and_one_common_receipt(handoff
 def test_terminal_common_receipt_failure_rolls_back_actual_facts_pointer_and_confirmation(
     handoff_work, monkeypatch
 ):
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     work = handoff_work
     prepared = review(work.quality, actual_method(work))["command"]
@@ -471,7 +471,7 @@ def test_stale_actual_qualification_keeps_real_pair_pointer_and_can_be_renewed(h
 
 
 def test_withdrawn_new_same_plan_actual_observation_blocks_acceptance(handoff_work):
-    from pdos_next.models import now
+    from pdos_next.core.models import now
 
     work = handoff_work
     methods(work)

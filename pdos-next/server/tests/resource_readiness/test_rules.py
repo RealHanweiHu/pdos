@@ -3,8 +3,6 @@ from decimal import Decimal, localcontext
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-
 from pdos_next.domain.resource_readiness.rules import capacity_exceeded, evaluate, semantic_digest
 from pdos_next.schemas.resource_readiness.contracts import (
     ExecutionWindow,
@@ -13,6 +11,7 @@ from pdos_next.schemas.resource_readiness.contracts import (
     QualificationFact,
     ReservationRequest,
 )
+from pydantic import ValidationError
 
 from .support import NOW, context, request, snapshot, source, window
 
@@ -314,7 +313,7 @@ def test_semantic_decimal_quantity_is_canonical_despite_text_and_global_precisio
 def test_resource_continuous_calendar_across_la_dst_days(start, finish):
     from datetime import datetime
 
-    from pdos_next.engines.planning.calendar import frozen_timezone
+    from pdos_next.domain.engines.planning.calendar import frozen_timezone
 
     req = request()
     interval = ExecutionWindow(start=start, finish=finish, original_timezone="America/Los_Angeles")

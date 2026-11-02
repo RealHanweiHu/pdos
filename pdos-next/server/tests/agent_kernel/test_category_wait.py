@@ -5,10 +5,9 @@ from uuid import uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel.graph import AgentKernel, VerifiedCategoryAdoption
-from pdos_next.agent_kernel.registry import ToolRegistry, ToolSpec
-from pdos_next.agent_kernel.types import ModelTurn, RunScope, ToolCall
+from pdos_next.agent.kernel.graph import AgentKernel, VerifiedCategoryAdoption
+from pdos_next.agent.kernel.registry import ToolRegistry, ToolSpec
+from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_graph import Host, final
 

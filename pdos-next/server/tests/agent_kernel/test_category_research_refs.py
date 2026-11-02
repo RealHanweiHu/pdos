@@ -8,18 +8,17 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.category_research_refs import CategoryResearchRefs
-from pdos_next.agent_kernel.execution import check_run_binding, scope_for_run
-from pdos_next.agent_kernel.models import AgentToolCall, PublicWebSnapshot
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.research_read_ledger import page_result as ordinary_page
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.category_research_refs import CategoryResearchRefs
+from pdos_next.agent.kernel.execution import check_run_binding, scope_for_run
+from pdos_next.agent.kernel.models import AgentToolCall, PublicWebSnapshot
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.research_read_ledger import page_result as ordinary_page
+from pdos_next.agent.research.types import ReadPage, Snapshot
+from pdos_next.core.models import Grant, Principal
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
-from pdos_next.research.types import ReadPage, Snapshot
-from pdos_next.service import digest
 from tests.agent_kernel.test_snapshot_command import proof as ordinary_ledger  # noqa: F401
 from tests.agent_kernel.test_snapshot_read_ledger import ledger as registered_ledger  # noqa: F401
 

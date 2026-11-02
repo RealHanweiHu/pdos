@@ -6,21 +6,8 @@ real source artifacts. Only the root checkpoint executes this PostgreSQL module.
 
 # ruff: noqa: F811 - imported fixtures intentionally register their dependency tree
 
-from sqlalchemy import event, select
-from sqlalchemy.orm import Session
-from test_project_first_plan import accepted
-from verification_handoff import fixtures as physical
-from verification_handoff.fixtures import handoff_work  # noqa: F401
-from verification_results import fixtures as results
-from verification_results.fixtures import (  # noqa: F401
-    accepted_work,
-    known_configuration,
-    launch_work,
-    operational_work,
-    ready_work,
-    results_work,
-)
-
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.core.service import digest
 from pdos_next.domain.verification_front.models import (
     FormalVerificationCurrent,
     FormalVerificationRequest,
@@ -41,8 +28,20 @@ from pdos_next.domain.verification_results.models import (
     TestResultActionFact,
     TestResultProjection,
 )
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey
-from pdos_next.service import digest
+from sqlalchemy import event, select
+from sqlalchemy.orm import Session
+from test_project_first_plan import accepted
+from verification_handoff import fixtures as physical
+from verification_handoff.fixtures import handoff_work  # noqa: F401
+from verification_results import fixtures as results
+from verification_results.fixtures import (  # noqa: F401
+    accepted_work,
+    known_configuration,
+    launch_work,
+    operational_work,
+    ready_work,
+    results_work,
+)
 
 
 def _snapshot(work):

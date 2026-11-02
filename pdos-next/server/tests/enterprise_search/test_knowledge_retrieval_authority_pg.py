@@ -7,12 +7,11 @@ from dataclasses import replace
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.enterprise_search.query import SearchInput, search
+from pdos_next.core.models import Artifact
+from pdos_next.originals.security import configure
 from sqlalchemy import event
 from sqlalchemy.orm import Session
-
-from pdos_next.enterprise_search.query import SearchInput, search
-from pdos_next.models import Artifact
-from pdos_next.original_security import configure
 from tests.enterprise_search.test_knowledge_dependencies_pg import indexed_knowledge
 from tests.enterprise_search.test_retrieval_pg import index, query, register, session_for
 from tests.preproject.test_g0 import post, request

@@ -12,16 +12,10 @@ from datetime import UTC, datetime
 from inspect import signature
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.exc import DBAPIError
-
-from pdos_next.change_graph_closure import (
-    _fresh_selects,
-    _pending_dependencies,
-    closure_stamp,
-    lock_dependency_clock,
-)
-from pdos_next.clock import deadline_current, earliest_deadline
+from pdos_next.core.clock import deadline_current, earliest_deadline
+from pdos_next.core.models import Product
+from pdos_next.core.service import Context
+from pdos_next.core.service import digest as caller_digest
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import BuildOperationalFact, OperationalAsset
 from pdos_next.domain.build_operational_facts.schemas import FactInput
@@ -33,9 +27,14 @@ from pdos_next.domain.change_coverage_owner.owner import (
 from pdos_next.domain.change_execution import service as change
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
-from pdos_next.service import Context
-from pdos_next.service import digest as caller_digest
+from pdos_next.features.change.graph_closure import (
+    _fresh_selects,
+    _pending_dependencies,
+    closure_stamp,
+    lock_dependency_clock,
+)
+from sqlalchemy import select
+from sqlalchemy.exc import DBAPIError
 
 from .relations import project
 from .schemas import ResourceRequest, ResourceView, VersionRef

@@ -6,18 +6,17 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.service import Context, digest
+from pdos_next.errors import DomainError
+from pdos_next.features.personal import summary as personal_summary
+from pdos_next.features.personal import summary_quality as quality
+from pdos_next.features.personal import summary_runtime as runtime
+from pdos_next.features.personal import summary_templates as templates
+from pdos_next.features.personal.summary_schemas import Selection
+from pdos_next.schemas.quality_issues.contracts import CapaDraft, IssueTriage
 from quality_issues.helpers import NOW, Harness, source, uid
 from sqlalchemy import Engine
 from sqlalchemy.dialects.postgresql import dialect
-
-from pdos_next import personal_summary
-from pdos_next import personal_summary_quality as quality
-from pdos_next import personal_summary_runtime as runtime
-from pdos_next import personal_summary_templates as templates
-from pdos_next.errors import DomainError
-from pdos_next.personal_summary_schemas import Selection
-from pdos_next.schemas.quality_issues.contracts import CapaDraft, IssueTriage
-from pdos_next.service import Context, digest
 
 
 @pytest.fixture(autouse=True)
@@ -223,9 +222,8 @@ def test_templates_only_use_existing_selection_filters_without_new_authority_fie
 
 
 def test_template_options_query_rejects_identity_and_role_fields():
+    from pdos_next.features.personal.summary_delivery import OptionsQuery
     from pydantic import ValidationError
-
-    from pdos_next.personal_summary_delivery import OptionsQuery
 
     category = uuid4()
     assert OptionsQuery(category_id=category).product_id is None
@@ -269,7 +267,7 @@ def test_quality_history_readback_keeps_exact_version_and_never_substitutes_late
 
 
 def test_template_read_uses_ordinary_human_saved_role_and_current_scope_only():
-    from pdos_next.models import Category, Principal, Product
+    from pdos_next.core.models import Category, Principal, Product
 
     tenant, owner, category, product = (uuid4() for _ in range(4))
     ctx = Context(tenant, owner, owner)

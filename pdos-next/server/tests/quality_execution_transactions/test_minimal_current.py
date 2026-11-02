@@ -6,6 +6,15 @@ from copy import deepcopy
 from uuid import uuid4
 
 import pytest
+from pdos_next.core import request_proof
+from pdos_next.core.models import Artifact, Outbox, now
+from pdos_next.domain.quality_execution import service
+from pdos_next.domain.sample_handoff import service as samples
+from pdos_next.domain.test_resources import retained
+from pdos_next.domain.test_resources import service as resources
+from pdos_next.domain.verification_launch.models import VerificationRunVersion
+from pdos_next.domain.verification_results.models import MeasurementRecord
+from pdos_next.features.quality import result_bridge as quality_result_bridge
 from quality_execution.fixtures import (
     accepted_work,
     command,
@@ -25,15 +34,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.attributes import set_committed_value
 from test_project_first_plan import post
 from test_resource_dependency_execution import engines
-
-from pdos_next import quality_result_bridge, request_proof
-from pdos_next.domain.quality_execution import service
-from pdos_next.domain.sample_handoff import service as samples
-from pdos_next.domain.test_resources import retained
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.domain.verification_launch.models import VerificationRunVersion
-from pdos_next.domain.verification_results.models import MeasurementRecord
-from pdos_next.models import Artifact, Outbox, now
 
 
 def _ready(work):

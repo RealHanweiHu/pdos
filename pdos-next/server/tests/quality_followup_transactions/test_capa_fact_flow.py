@@ -9,14 +9,10 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
-from sqlalchemy import func, select
-from test_project_first_plan import accepted, cmd, post
-from verification_handoff.fixtures import artifact
-
-from pdos_next.capa_rule_import import publish_rule
-from pdos_next.capa_rule_publisher import configure_local_profile
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.capa_rule_import import publish_rule
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Outbox, Receipt, now
 from pdos_next.domain.capa_effectiveness import candidate_commands, fact_commands, fact_service
 from pdos_next.domain.capa_effectiveness import service as candidates
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import read_fact_atom
@@ -28,7 +24,11 @@ from pdos_next.domain.capa_effectiveness.fact_storage_models import (
 )
 from pdos_next.domain.capa_effectiveness.fact_write import prepare_fact
 from pdos_next.domain.quality_execution import policy
-from pdos_next.models import Audit, Outbox, Receipt, now
+from pdos_next.features.capa.rule_publisher import configure_local_profile
+from sqlalchemy import func, select
+from test_project_first_plan import accepted, cmd, post
+from verification_handoff.fixtures import artifact
+
 from quality_followup_transactions.fixtures import (
     accepted_work,
     complete_command,
@@ -68,21 +68,20 @@ def actual_counts(work):
 def test_candidate_snapshot_reads_once_preserves_deadlines_and_rechecks_next_request(
     followup_work, monkeypatch
 ):
-    from sqlalchemy import event, text
-
-    from pdos_next import capa_candidate_api
-    from pdos_next.domain.capa_effectiveness import anchor_owner, candidate_prepare
-    from pdos_next.domain.capa_verification import service as verification
-    from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
-    from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-    from pdos_next.models import (
+    from pdos_next.core.models import (
         Artifact,
         Confirmation,
         OriginalSecurity,
         RequestKey,
         UploadedOriginal,
     )
-    from pdos_next.originals import object_reference
+    from pdos_next.domain.capa_effectiveness import anchor_owner, candidate_prepare
+    from pdos_next.domain.capa_verification import service as verification
+    from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
+    from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
+    from pdos_next.features.capa import candidate_api as capa_candidate_api
+    from pdos_next.originals.access import object_reference
+    from sqlalchemy import event, text
 
     work = followup_work
     accepted(work.quality, root_command(work))

@@ -6,15 +6,14 @@ from uuid import uuid4
 import httpx
 import pytest
 from mcp.server.fastmcp import FastMCP
-from pydantic import BaseModel, SecretStr
-
-from pdos_next.agent_kernel.mcp_binding import validate_result
-from pdos_next.agent_kernel.mcp_schemas import McpReadInput
-from pdos_next.agent_kernel.mcp_transport import StreamableMcpTransport
-from pdos_next.agent_kernel.registry import ToolRegistry
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.mcp_binding import validate_result
+from pdos_next.agent.kernel.mcp_schemas import McpReadInput
+from pdos_next.agent.kernel.mcp_transport import StreamableMcpTransport
+from pdos_next.agent.kernel.registry import ToolRegistry
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import RunScope
 from pdos_next.errors import DomainError
+from pydantic import BaseModel, SecretStr
 
 
 class LookupResult(BaseModel):

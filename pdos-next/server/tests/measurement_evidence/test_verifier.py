@@ -8,7 +8,6 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
 from pdos_next.domain.measurement_evidence.schemas import (
     FORMAT_VERSION,
     ObservationSelection,
@@ -208,7 +207,7 @@ def assert_failure(code, fn):
     with pytest.raises(DomainError) as failed:
         fn()
     assert failed.value.reason == code
-    from pdos_next.error_catalog import CATEGORIES
+    from pdos_next.core.error_catalog import CATEGORIES
 
     assert failed.value.code in CATEGORIES
     # Failure messages are bounded and do not include the actual report values.

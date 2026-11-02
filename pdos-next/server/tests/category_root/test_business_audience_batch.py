@@ -4,13 +4,12 @@ import json
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, ObjectAudience
+from pdos_next.core.service import digest
+from pdos_next.domain.configurations.models import BomRevision
 from sqlalchemy import delete, select, text
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.configurations.models import BomRevision
-from pdos_next.models import Artifact, ObjectAudience
-from pdos_next.service import digest
 
 
 def scoped(setup, actor):

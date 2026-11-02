@@ -4,8 +4,6 @@ from uuid import UUID, uuid4
 from uuid import UUID as CategoryUUID
 
 import pytest
-from pydantic import ValidationError
-
 from pdos_next.domain.change_control.ports import Authority, Invocation, Outcome
 from pdos_next.domain.change_control.rules import compute_impact, digest
 from pdos_next.domain.change_execution import adapters, graph, service
@@ -17,6 +15,7 @@ from pdos_next.domain.change_execution.schemas import (
 from pdos_next.errors import DomainError
 from pdos_next.schemas.change_control.contracts import ChangeRequest, Ref, RequestCreate
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 2, 12, tzinfo=UTC)
 
@@ -363,11 +362,10 @@ def test_io_refresh_checks_sources_after_owner_io_not_before(monkeypatch):
 
 @pytest.mark.parametrize("kind", ["build", "sample"])
 def test_current_run_discovery_joins_exact_pointer_and_keeps_fixed_failure_edges(kind):
-    from sqlalchemy.sql import visitors
-    from sqlalchemy.sql.elements import BinaryExpression
-
     from pdos_next.domain.build_execution.models import SampleUnit
     from pdos_next.domain.verification_launch.models import VerificationRunVersion
+    from sqlalchemy.sql import visitors
+    from sqlalchemy.sql.elements import BinaryExpression
 
     work = fixture()
     build_id, run_id, sample_id = uuid4(), uuid4(), uuid4()
@@ -466,10 +464,9 @@ def test_current_run_discovery_joins_exact_pointer_and_keeps_fixed_failure_edges
 
 
 def test_current_planned_run_is_not_given_retained_execution_or_plan_port(monkeypatch):
-    from sqlalchemy.orm import Session
-
+    from pdos_next.core.service import Context
     from pdos_next.domain.test_resources import retained
-    from pdos_next.service import Context
+    from sqlalchemy.orm import Session
 
     work = fixture()
     run_ref = Ref(id=uuid4(), revision=1, kind="test_run")
@@ -737,14 +734,13 @@ def test_post_io_fresh_reader_rejects_policy_aba_or_invalid_owner(monkeypatch, c
 
 
 def lean_quality_fixture(monkeypatch):
-    from quality_issues.helpers import fixed_run
-
+    from pdos_next.core.service import digest as saved_digest
     from pdos_next.domain.quality_execution import service as quality
     from pdos_next.domain.quality_execution.direct import issue_refs
     from pdos_next.domain.quality_issues.ports import VerifiedRun
     from pdos_next.domain.quality_issues.rules import failure_ref
     from pdos_next.schemas.quality_issues.contracts import Issue
-    from pdos_next.service import digest as saved_digest
+    from quality_issues.helpers import fixed_run
 
     run = fixed_run()
     verified = VerifiedRun(run=run, nature="synthetic")
@@ -802,7 +798,8 @@ def lean_quality_fixture(monkeypatch):
         calls["authority"].append(args[4])
         return {"authorized": True, "qualified": True, "required_source_read_set": []}
 
-    from pdos_next import quality_result_bridge, source_current
+    from pdos_next.core import source_current
+    from pdos_next.features.quality import result_bridge as quality_result_bridge
 
     monkeypatch.setattr(source_current, "direct_source_basis", sources)
     monkeypatch.setattr(quality_result_bridge, "direct_issue_failure", bridge)

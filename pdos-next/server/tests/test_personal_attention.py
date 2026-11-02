@@ -6,15 +6,14 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.service import Context
+from pdos_next.features.personal import attention as projection
+from pdos_next.features.personal.attention_api import AttentionPage
+from pdos_next.features.personal.attention_common import columns
+from pdos_next.features.personal.attention_work import queries
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
-
-from pdos_next import personal_attention as projection
-from pdos_next.personal_attention_api import AttentionPage
-from pdos_next.personal_attention_common import columns
-from pdos_next.personal_attention_work import queries
-from pdos_next.service import Context
 
 AT = datetime(2026, 10, 18, 10, tzinfo=UTC)
 
@@ -241,9 +240,8 @@ def test_attention_does_not_expose_a_personal_queue_to_agent_execution(world, fi
 
 def test_connection_failure_is_retryable_unavailable_and_never_an_empty_page(world, monkeypatch):
     from fastapi import FastAPI
+    from pdos_next.features.personal import attention_api as api
     from sqlalchemy.exc import OperationalError
-
-    from pdos_next import personal_attention_api as api
 
     def unavailable(*_args, **_kwargs):
         raise OperationalError("", {}, Exception("synthetic connection exhaustion"))

@@ -4,14 +4,13 @@
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant
+from pdos_next.features.projects.sets.models import ProjectSet, ProjectSetLink
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from work_management_pg import test_workflow as flow
 from work_management_pg.test_workflow import original_security_work, work  # noqa: F401
-
-from pdos_next.database import tenant_session
-from pdos_next.models import Grant
-from pdos_next.project_sets.models import ProjectSet, ProjectSetLink
 
 ROOT = "/v1/project-sets"
 
@@ -161,11 +160,10 @@ def test_project_follow_is_private_and_uses_actual_project_update(work):
 
 
 def test_database_no_agent_access_and_history_immutable(setup):
+    from pdos_next.core.service import Context
+    from pdos_next.features.projects.sets.api import SaveSet
+    from pdos_next.features.projects.sets.api import save as save_domain
     from sqlalchemy.exc import DBAPIError
-
-    from pdos_next.project_sets.api import SaveSet
-    from pdos_next.project_sets.api import save as save_domain
-    from pdos_next.service import Context
 
     request = save(setup)
     setup.client.post(ROOT, headers=setup.headers, json=request).raise_for_status()

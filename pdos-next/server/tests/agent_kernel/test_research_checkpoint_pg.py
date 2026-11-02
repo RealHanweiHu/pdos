@@ -4,16 +4,15 @@ from copy import deepcopy
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.research_checkpoint import restore_reads
+from pdos_next.agent.kernel.research_read_ledger import restore_page
+from pdos_next.agent.research.service import ResearchChild
+from pdos_next.agent.research.tools import ReadInput
+from pdos_next.agent.research.types import ResearchTask
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.research_checkpoint import restore_reads
-from pdos_next.agent_kernel.research_read_ledger import restore_page
-from pdos_next.errors import DomainError
-from pdos_next.research.service import ResearchChild
-from pdos_next.research.tools import ReadInput
-from pdos_next.research.types import ResearchTask
 from tests.agent_kernel.research.test_research import service
 from tests.agent_kernel.test_snapshot_candidates_pg import fixture
 
@@ -78,7 +77,7 @@ def test_composition_fence_is_exclusive_and_released(setup, tmp_path):
 
 @pytest.mark.parametrize("tool", ["research.search", "research.read", "model"])
 def test_resumable_orchestrator_flag_cannot_reissue_external_calls(setup, tool):
-    from pdos_next.agent_kernel.persistence import KernelStore
+    from pdos_next.agent.kernel.persistence import KernelStore
 
     with pytest.raises(DomainError) as error:
         KernelStore(None).claim(None, "key", tool, {}, resume_started=True, execution_binding={

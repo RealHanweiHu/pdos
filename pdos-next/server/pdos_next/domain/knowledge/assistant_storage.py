@@ -316,7 +316,7 @@ END
 
 
 def upgrade_sql():
-    from pdos_next.agent_kernel import models as _kernel_models  # noqa: F401
+    from pdos_next.agent.kernel import models as _kernel_models  # noqa: F401
 
     from .models import KnowledgeCandidateVersion
 

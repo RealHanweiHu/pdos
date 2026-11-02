@@ -1,12 +1,11 @@
 from datetime import timedelta
 
 import pytest
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.core.models import Grant, Principal, now
+from pdos_next.errors import DomainError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, now
 from tests.agent_kernel.test_revoked_terminal import close
 from tests.agent_kernel.test_transactions import run
 

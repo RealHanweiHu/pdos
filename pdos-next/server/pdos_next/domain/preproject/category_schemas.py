@@ -4,14 +4,13 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
-from pydantic import Field, model_serializer, model_validator
-
+from pdos_next.core.schema_base import StrictModel
 from pdos_next.domain.knowledge.assistant_schemas import (
     AnswerOrigin,
     KnowledgeReview,
     VerifiedAnswerContent,
 )
-from pdos_next.schema_base import StrictModel
+from pydantic import Field, model_serializer, model_validator
 
 from .schemas import Reference
 

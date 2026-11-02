@@ -11,15 +11,14 @@ from datetime import timedelta
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
+from pdos_next.agent.enterprise_search.sources import prepare_read, retrieval_catalog
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, OriginalSecurity, UploadedOriginal, now
+from pdos_next.domain.preproject.category_models import KnowledgeEntry
+from pdos_next.originals.security import configure
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.enterprise_search.schemas import SOURCE_TYPES
-from pdos_next.enterprise_search.sources import prepare_read, retrieval_catalog
-from pdos_next.models import Grant, OriginalSecurity, UploadedOriginal, now
-from pdos_next.original_security import configure
 from tests.agent_kernel.test_context_corrections_pg import finish, work_path
 from tests.agent_kernel.test_run_continuation import start
 from tests.enterprise_search.test_retrieval_pg import register

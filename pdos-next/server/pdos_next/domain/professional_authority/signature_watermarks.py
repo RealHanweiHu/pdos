@@ -8,8 +8,8 @@ that a new dependent action needs review; it never erases the original signature
 from datetime import datetime
 from uuid import UUID
 
-from pdos_next.database import require_context
-from pdos_next.models import now
+from pdos_next.core.database import require_context
+from pdos_next.core.models import now
 
 from . import service
 

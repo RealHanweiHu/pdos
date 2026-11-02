@@ -3,9 +3,7 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
 from pdos_next.domain.build_operational_facts.schemas import (
     DTO,
     Hash,
@@ -16,6 +14,7 @@ from pdos_next.domain.build_operational_facts.schemas import (
 from pdos_next.domain.professional_authority.schemas import DefinitionReference
 from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic import AwareDatetime, Field
 
 Key = Annotated[str, Field(min_length=1, max_length=80, pattern=r"^[a-zA-Z0-9_-]+$")]
 

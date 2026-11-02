@@ -7,13 +7,12 @@ from threading import Event
 from uuid import UUID
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Product
+from pdos_next.core.service import require_access, source_for
+from pdos_next.domain.projects.service import _project
 from sqlalchemy import select, text
 from test_project_first_plan import definition, project  # noqa: F401
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.projects.service import _project
-from pdos_next.models import Product
-from pdos_next.service import require_access, source_for
 
 
 @pytest.mark.parametrize("read_entry", ["project", "locked_access"])

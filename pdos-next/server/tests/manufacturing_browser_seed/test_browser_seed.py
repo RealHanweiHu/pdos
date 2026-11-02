@@ -20,16 +20,15 @@ from manufacturing_preparation_transactions.test_transactions import (
     reference,
     save,
 )
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant, LoginSession, Product, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.manufacturing_baseline.models import BaselineDocumentLink
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
-from pdos_next.models import Artifact, Grant, LoginSession, Product, now
-from pdos_next.object_storage import LocalPrivateObjectStore
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 
 def _write_private_new(path: Path, value):

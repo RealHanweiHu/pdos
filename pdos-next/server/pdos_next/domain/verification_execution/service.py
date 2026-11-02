@@ -6,9 +6,10 @@ from copy import deepcopy
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Grant, now
+from pdos_next.core.request_proof import snapshot_scalar
+from pdos_next.core.service import require_access
 from pdos_next.domain.configurations.service import _decimal, _merge_reads
 from pdos_next.domain.supply_execution.service import (
     _build,
@@ -19,8 +20,6 @@ from pdos_next.domain.supply_execution.service import (
 )
 from pdos_next.domain.verification.rules import coverage_gaps, document_gaps
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
-from pdos_next.request_proof import snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
     BuildRef,
     ConfigurationRef,
@@ -34,7 +33,7 @@ from pdos_next.schemas.verification.contracts import (
     Timeline,
     VerificationRequest,
 )
-from pdos_next.service import require_access
+from sqlalchemy import select
 
 from .models import VerificationCurrent, VerificationPreparation
 from .schemas import PreparationRecordPayload
@@ -160,7 +159,7 @@ def _current(s, ctx, product_id, request_id, *, lock=False):
 
 
 def _snapshot(row):
-    from pdos_next.service import digest
+    from pdos_next.core.service import digest
 
     value = VerificationRequest.model_validate(row.request_snapshot)
     if (
@@ -226,7 +225,7 @@ def _inputs(s, ctx, command, product, payload):
     require_access(s, ctx, product.id, write=True, lock=write)
     if product.tenant_id != ctx.tenant_id or command.product_id != product.id:
         raise DomainError("FORBIDDEN_SCOPE", "验证准备不在当前型号范围。", 403)
-    from pdos_next.enterprise_search.verification_adoption import recheck_preparation
+    from pdos_next.agent.enterprise_search.verification_adoption import recheck_preparation
 
     recheck_preparation(s, ctx, command)
     build = _build(s, ctx, product.id, payload.build_id)
@@ -520,7 +519,7 @@ def preview_view(s, ctx, command, product, payload):
 
 
 def apply(s, ctx, command, product, payload):
-    from pdos_next.service import digest
+    from pdos_next.core.service import digest
 
     values = _inputs(s, ctx, command, product, payload)
     pointer = _new_write(s, ctx, command, product, payload, values)

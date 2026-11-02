@@ -5,20 +5,19 @@ from uuid import UUID, uuid4
 
 from fastapi.testclient import TestClient
 from pdos_agent_runtime.graph import in_registered_agent_graph
-from pydantic import SecretStr
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import TenantAdministrator
-from pdos_next.api import create_app
-from pdos_next.enterprise_search.embedding_activities import EmbeddingPorts
-from pdos_next.enterprise_search.embedding_schemas import (
+from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingPorts
+from pdos_next.agent.enterprise_search.embedding_schemas import (
     EmbeddingMetadata,
     EmbeddingResponse,
 )
-from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
-from pdos_next.models import Category, Outbox, Receipt
-from pdos_next.service import digest
+from pdos_next.agent.kernel.models import TenantAdministrator
+from pdos_next.agent.model_configuration.ports import SecretBinding, SecretMaterial
+from pdos_next.api import create_app
+from pdos_next.core.models import Category, Outbox, Receipt
+from pdos_next.core.service import digest
+from pydantic import SecretStr
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_cost_budget import rate
 
 

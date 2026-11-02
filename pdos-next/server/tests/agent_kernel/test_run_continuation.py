@@ -4,18 +4,17 @@ from concurrent.futures import ThreadPoolExecutor
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.conversation import memory
+from pdos_next.agent.kernel.models import AgentRun, AgentSession
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
 from sqlalchemy import event, func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.conversation import memory
-from pdos_next.agent_kernel.models import AgentRun, AgentSession
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.database import tenant_session
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant
-from pdos_next.service import digest
 from tests.preproject.test_g0 import post, request
 
 
@@ -246,10 +245,9 @@ def test_registered_graph_receives_persisted_task_memory_and_replay_does_not_cal
     from dataclasses import replace
 
     from langgraph.checkpoint.memory import MemorySaver
-
-    from pdos_next.agent_kernel.graph import AgentKernel
-    from pdos_next.agent_kernel.host import BoundHost
-    from pdos_next.agent_kernel.types import ModelTurn
+    from pdos_next.agent.kernel.graph import AgentKernel
+    from pdos_next.agent.kernel.host import BoundHost
+    from pdos_next.agent.kernel.types import ModelTurn
     from pdos_next.providers.types import ProviderUsage
     from tests.agent_kernel.test_api import client
     from tests.agent_kernel.test_gateway import Client, configured_route
@@ -288,7 +286,7 @@ def test_registered_graph_receives_persisted_task_memory_and_replay_does_not_cal
 
 
 def test_cached_read_summary_keeps_frozen_view_and_next_history_observes_metadata_update(setup):
-    from pdos_next.models import Artifact
+    from pdos_next.core.models import Artifact
 
     identity = synthetic_artifact(setup, "历史metadata更新，不重放读工具")
     parent, _ = start(setup, sources=[{"artifact_id": identity, "expected_revision": 1}])
@@ -314,7 +312,7 @@ def test_cached_read_summary_keeps_frozen_view_and_next_history_observes_metadat
 
 
 def test_newly_revoked_actual_private_source_hides_answer_and_stops_frozen_history(setup):
-    from pdos_next.models import ObjectAudience
+    from pdos_next.core.models import ObjectAudience
 
     registered = post(setup, request(setup, "evidence.artifact.register", {
         "title": "别人按受众共享的历史资料", "content": "只用于授权撤回验证。",
@@ -360,8 +358,8 @@ def test_newly_revoked_actual_private_source_hides_answer_and_stops_frozen_histo
 
 
 def test_prepared_candidate_turn_keeps_answer(setup):
-    from pdos_next.agent_kernel.models import AgentToolCall
-    from pdos_next.service import digest
+    from pdos_next.agent.kernel.models import AgentToolCall
+    from pdos_next.core.service import digest
 
     parent, _ = start(setup)
     with Session(setup.admin) as session, session.begin():
@@ -382,7 +380,7 @@ def test_prepared_candidate_turn_keeps_answer(setup):
 def test_thirty_turn_history_stays_bounded_and_full_history_is_available(setup):
     import json
 
-    from pdos_next.agent_kernel.context_budget import estimate_tokens
+    from pdos_next.agent.kernel.context_budget import estimate_tokens
 
     previous, _ = start(setup)
     for _ in range(30):

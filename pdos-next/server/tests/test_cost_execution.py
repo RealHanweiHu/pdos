@@ -12,25 +12,9 @@ from decimal import Decimal
 from uuid import UUID, uuid4
 
 import pytest
-from security_fixture import ensure_scanned, secured_runtime  # noqa: F401 - local fixture
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_build_demand import demand_work  # noqa: F401 - imported fixed-demand fixture
-from test_builds import configuration, definition, project  # noqa: F401 - fixture dependencies
-from test_project_first_plan import accepted, cmd, post
-from test_supply_execution import confirmation_consumed, count, expire_grant, withdraw
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.cost_execution.models import (
-    CostCapture,
-    CostCurrent,
-    CostEstimate,
-    CostInputSnapshot,
-)
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Confirmation,
@@ -41,7 +25,22 @@ from pdos_next.models import (
     UploadedOriginal,
     now,
 )
-from pdos_next.service import Context, digest, execute
+from pdos_next.core.service import Context, digest, execute
+from pdos_next.domain.cost_execution.models import (
+    CostCapture,
+    CostCurrent,
+    CostEstimate,
+    CostInputSnapshot,
+)
+from pdos_next.errors import DomainError
+from security_fixture import ensure_scanned, secured_runtime  # noqa: F401 - local fixture
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_build_demand import demand_work  # noqa: F401 - imported fixed-demand fixture
+from test_builds import configuration, definition, project  # noqa: F401 - fixture dependencies
+from test_project_first_plan import accepted, cmd, post
+from test_supply_execution import confirmation_consumed, count, expire_grant, withdraw
 
 INPUTS = "cost.inputs.record"
 ESTIMATE = "cost.estimate.compute"
@@ -742,7 +741,7 @@ def test_quote_end_drift_requires_new_review_then_can_save_explicit_unknown(
 def test_final_receipt_failure_rolls_back_cost_pointer_confirmation_and_outbox(
     setup, cost_work, monkeypatch, operation
 ):
-    from pdos_next import service
+    from pdos_next.core import service
 
     if operation == INPUTS:
         capture = captured(setup, cost_work, capture_input(cost_work))

@@ -7,14 +7,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
+from pdos_next.core.models import Principal
+from pdos_next.core.service import Context
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.professional_authority.schemas import FactInput
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 2, 12, tzinfo=UTC)
 OP, PURPOSE = "verification.request.create", "Synthetic dimensional request"

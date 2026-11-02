@@ -13,12 +13,11 @@ from hashlib import sha256
 from uuid import UUID
 from weakref import WeakKeyDictionary, ref
 
-from pydantic import BaseModel
-from pydantic_core import to_jsonable_python
-from sqlalchemy import and_, func, inspect, or_, select
-
-from pdos_next.contracts import SourceRead
-from pdos_next.database import require_context
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Artifact, Product, now
+from pdos_next.core.request_proof import snapshot_get, snapshot_mappings, snapshot_rows
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import (
@@ -59,10 +58,10 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Product, now
-from pdos_next.request_proof import snapshot_get, snapshot_mappings, snapshot_rows
 from pdos_next.schemas.verification.contracts import Scope, SourceRef, TestRun
-from pdos_next.service import digest, require_access
+from pydantic import BaseModel
+from pydantic_core import to_jsonable_python
+from sqlalchemy import and_, func, inspect, or_, select
 
 from . import rules
 from .policy_owner import ActualReleasePolicyOwner

@@ -10,26 +10,25 @@ from time import perf_counter
 from uuid import UUID
 
 import pytest
-from sqlalchemy import event, func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.m3_object_reads import M3ObjectReads
-from pdos_next.agent_kernel.management import register_agreement
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.m3_object_reads import M3ObjectReads
+from pdos_next.agent.kernel.management import register_agreement
+from pdos_next.agent.kernel.models import (
     AgentRun,
     AgentToolCall,
     TenantAdministrator,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.proposal_context import KEY
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.proposal_context import KEY
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.models import Artifact, Grant, now
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, now
 from pdos_next.providers.types import ProviderUsage
+from sqlalchemy import event, func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_gateway import Client, configured_route, turn
 from tests.agent_kernel.test_m3_original_binding_pg import QUOTE, actual_run, uploaded
 from tests.agent_kernel.test_transactions import agreement, human_session
@@ -344,7 +343,7 @@ def test_source_revocation_while_model_runs_does_not_release_result_and_frees_re
 def test_bound_egress_check_compares_metadata_without_reopening_upstream_body(
     work, security_work, monkeypatch
 ):
-    from pdos_next.agent_kernel import proposal_context
+    from pdos_next.agent.kernel import proposal_context
     from pdos_next.domain.preproject import views
 
     owner, scope = start(work, security_work, "customer_request")

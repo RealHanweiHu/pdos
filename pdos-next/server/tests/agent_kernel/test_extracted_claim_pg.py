@@ -4,12 +4,11 @@
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.models import AgentEvent, AgentToolCall
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.models import AgentEvent, AgentToolCall
+from pdos_next.core.models import Claim, Receipt
 from pdos_next.errors import DomainError
-from pdos_next.models import Claim, Receipt
+from sqlalchemy import select
 from tests.agent_kernel.test_extract_dispatch_pg import (
     extract as dispatch_extract,
 )

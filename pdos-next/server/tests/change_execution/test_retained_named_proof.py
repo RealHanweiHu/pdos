@@ -6,12 +6,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import change_implementation_owner as owner
-from pdos_next import change_order_service
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation
-from pdos_next.service import Context, digest
+from pdos_next.features.change import implementation_owner as owner
+from pdos_next.features.change import order_service as change_order_service
 
 OPERATIONS = (
     "change.selection.decide",

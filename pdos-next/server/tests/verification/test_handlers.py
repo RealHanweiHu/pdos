@@ -1,10 +1,9 @@
 """Synthetic command consumers; actual locks/proofs/rollback remain host acceptance."""
 
 import pytest
-
+from pdos_next.core.error_catalog import REASONS
 from pdos_next.domain.verification.handlers import VerificationHandler, semantic_digest
 from pdos_next.domain.verification.ports import Invocation, Ports, SampleAvailability
-from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import (
     Acceptance,

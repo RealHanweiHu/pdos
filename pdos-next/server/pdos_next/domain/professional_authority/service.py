@@ -8,13 +8,12 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Artifact, Grant, Principal, Product, now
+from pdos_next.errors import DomainError
+from pdos_next.originals.lifecycle.rules import digest
 from sqlalchemy import inspect, select, true
 from sqlalchemy.orm import Session, aliased
-
-from pdos_next.database import category_for_product
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, Principal, Product, now
-from pdos_next.original_lifecycle.rules import digest
 
 from .models import ProfessionalCurrent, ProfessionalFact
 from .schemas import FactInput
@@ -326,9 +325,9 @@ def _issuer(engine, issuer, tenant_id, product_id, project_id):
 
 
 def _project(s, ctx, product_id, project_id, *, write=False):
+    from pdos_next.core.request_proof import scoped_rows, snapshot_get
+    from pdos_next.core.service import require_access
     from pdos_next.domain.projects.models import Project
-    from pdos_next.request_proof import scoped_rows, snapshot_get
-    from pdos_next.service import require_access
 
     query = select(Product).where(Product.id == product_id, Product.tenant_id == ctx.tenant_id)
     snapshot = s.info.get("read_snapshot") and not write
@@ -409,11 +408,10 @@ def _current_fact_refresh_safe(s, selected=None):
 
 def _current_fact_writer_owner(s, ctx, product_id):
     """Pure provenance of the existing Product gate, with no connection enlistment."""
+    from pdos_next.core.database import require_context
+    from pdos_next.core.request_proof import request_proof
     from sqlalchemy.engine import Connection, Engine
     from sqlalchemy.orm import SessionTransaction
-
-    from pdos_next.database import require_context
-    from pdos_next.request_proof import request_proof
 
     if (
         not isinstance(s, Session)
@@ -516,7 +514,7 @@ def _joined_current_fact_rows(s, ctx, product_id, project_id, subject_id, query,
     owner = _current_fact_writer_owner(s, ctx, product_id)
     if owner is None:
         return None
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.request_proof import request_proof
 
     proof = request_proof(s)
     key = ("query", (ProfessionalCurrent, product_id, project_id, subject_id))
@@ -581,7 +579,7 @@ def _current_fact_rows(s, pointers):
     if not _current_fact_refresh_safe(s, set(identities)):
         return None
     if isinstance(s, Session):
-        from pdos_next.request_proof import batch_read
+        from pdos_next.core.request_proof import batch_read
 
         with s.no_autoflush:
             return batch_read(s, ProfessionalFact, identities)
@@ -609,8 +607,8 @@ def _evidence(s, ctx, product_id, sources):
     for read in reads:
         source = s.get(Artifact, UUID(read["artifact_id"]))
         if source.original_id is not None:
-            from pdos_next.original_security import security_row
-            from pdos_next.originals import require_original
+            from pdos_next.originals.access import require_original
+            from pdos_next.originals.security import security_row
 
             original = require_original(s, ctx, product_id, source.original_id)
             safety = security_row(s, original, lock=False)
@@ -878,7 +876,7 @@ def _reduce(facts, operation, purpose, at, *, synthetic_enabled):
 
 def _subject_access(s, ctx, product_id, subject_id):
     if isinstance(s, Session):
-        from pdos_next.request_proof import request_proof
+        from pdos_next.core.request_proof import request_proof
 
         proof = request_proof(s)
         for entry in proof.authority.values():
@@ -1051,7 +1049,7 @@ def assess(
     if joined is not None:
         pointers, joined_facts = joined
     elif isinstance(s, Session):
-        from pdos_next.request_proof import scoped_rows
+        from pdos_next.core.request_proof import scoped_rows
 
         pointers = scoped_rows(
             s, (ProfessionalCurrent, product_id, project_id, subject_id), query, lock=write
@@ -1214,7 +1212,7 @@ def authority_time_current(value, at):
 def _historical_facts(s, ctx, product_id, project_id, subject_id, identities):
     if not isinstance(s, Session):
         return {identity: s.get(ProfessionalFact, identity) for identity in identities}
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.request_proof import request_proof
 
     proof = request_proof(s)
     key = ("professional-signature", product_id, project_id, subject_id, frozenset(identities))
@@ -1264,7 +1262,7 @@ def _signature_currents(s, ctx, product_id, project_id, subject_id, *, write=Fal
         .order_by(ProfessionalCurrent.id)
     )
     if isinstance(s, Session):
-        from pdos_next.request_proof import scoped_rows
+        from pdos_next.core.request_proof import scoped_rows
 
         return scoped_rows(
             s, (ProfessionalCurrent, product_id, project_id, subject_id), query, lock=write

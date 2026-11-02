@@ -7,10 +7,10 @@ from dataclasses import replace
 from pathlib import Path
 from uuid import UUID
 
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import configured_engines
-from pdos_next.model_configuration.ports import SecretBinding
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.model_configuration.ports import SecretBinding
+from pdos_next.core.database import configured_engines
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.workflows.worker import main
 from tests.agent_kernel.test_model_configuration_transactions import SyntheticSecrets

@@ -8,11 +8,10 @@ root's isolated-database checkpoint; structural checks cannot prove those.
 import re
 
 import pytest
+from pdos_next.core import models
+from pdos_next.domain.manufacturing_baseline import publication_storage_schema as storage
 from sqlalchemy import CheckConstraint, ForeignKeyConstraint, UniqueConstraint, text
 from sqlalchemy.engine import Engine
-
-from pdos_next import models
-from pdos_next.domain.manufacturing_baseline import publication_storage_schema as storage
 
 
 @pytest.fixture(autouse=True)

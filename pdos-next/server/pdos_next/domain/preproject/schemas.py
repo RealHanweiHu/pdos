@@ -3,10 +3,9 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
-from pydantic import Field, model_validator
-
-from pdos_next.schema_base import StrictModel
+from pdos_next.core.schema_base import StrictModel
 from pdos_next.schemas.spec_values import numeric_value_shape
+from pydantic import Field, model_validator
 
 
 class Reference(StrictModel):

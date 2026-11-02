@@ -9,14 +9,13 @@ from copy import deepcopy
 from datetime import datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import inspect, select
-
-from pdos_next import quality_followup_host as host
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import digest, material_digest
 from pdos_next.domain.capa_verification import commands as link
 from pdos_next.domain.capa_verification.models import RemediationLinkRecord
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation
-from pdos_next.service import digest, material_digest
+from pdos_next.features.quality import followup_host as host
+from sqlalchemy import inspect, select
 
 from . import preview_phase as preview
 

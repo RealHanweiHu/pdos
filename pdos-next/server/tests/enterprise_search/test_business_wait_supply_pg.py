@@ -12,6 +12,9 @@ from external_wait_pg.test_workflow import (
 from external_wait_pg.test_workflow import (
     execute as wait_execute,
 )
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.core.models import now
+from pdos_next.domain.external_wait.models import ExternalWaitVersion
 from sqlalchemy import select
 from test_supply_execution import (
     build_command,
@@ -25,10 +28,6 @@ from test_supply_execution import (
 from test_supply_execution import (
     project as project_fixture,
 )
-
-from pdos_next.domain.external_wait.models import ExternalWaitVersion
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
-from pdos_next.models import now
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 from tests.enterprise_search.test_business_sources_pg import (
     NativeClient,

@@ -13,12 +13,11 @@ import pytest
 from capa_effectiveness.test_participants_owner import work as work
 from capa_verification.test_pure import basis as original_basis  # noqa: F401 - pytest fixture
 from capa_verification.test_pure import output
-
-from pdos_next import paired_followup_adapter as adapter
 from pdos_next.domain.capa_verification import service
 from pdos_next.domain.verification_front import service as front
 from pdos_next.domain.verification_front.models import FormalVerificationRequest
 from pdos_next.errors import DomainError
+from pdos_next.features.quality import paired_followup_adapter as adapter
 
 
 @pytest.fixture

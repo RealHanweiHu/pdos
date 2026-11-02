@@ -15,7 +15,7 @@ from hashlib import sha256
 from pathlib import Path
 from uuid import UUID
 
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from tests.enterprise_search.test_retrieval_pg import index, register, session_for

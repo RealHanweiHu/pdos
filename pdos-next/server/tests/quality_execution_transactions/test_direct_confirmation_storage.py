@@ -7,6 +7,17 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import digest
+from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
+from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
+from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
+from pdos_next.domain.verification_front.models import FormalVerificationRequest
+from pdos_next.domain.verification_launch.models import (
+    VerificationRunCurrent,
+    VerificationRunVersion,
+)
 from quality_execution.fixtures import (
     accepted_work,
     command,
@@ -24,18 +35,6 @@ from sqlalchemy.exc import DBAPIError
 from test_project_first_plan import cmd, post
 from test_resource_dependency_execution import engines
 from verification_launch import fixtures as launch
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
-from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
-from pdos_next.domain.verification_front.models import FormalVerificationRequest
-from pdos_next.domain.verification_launch.models import (
-    VerificationRunCurrent,
-    VerificationRunVersion,
-)
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
-from pdos_next.service import digest
 
 OPERATIONS = (
     "quality.issue.triage",

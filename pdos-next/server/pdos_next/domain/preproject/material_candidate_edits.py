@@ -59,7 +59,7 @@ def saved_receipt_id(session, candidate_id):
         )
         if receipt:
             return receipt
-    from pdos_next.models import Receipt
+    from pdos_next.core.models import Receipt
 
     return session.scalar(
         select(Receipt.id).where(

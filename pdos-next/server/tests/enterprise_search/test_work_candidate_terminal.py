@@ -4,9 +4,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next.enterprise_search import work_followup_candidates as candidates
+from pdos_next.agent.enterprise_search import work_followup_candidates as candidates
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 
 @pytest.fixture

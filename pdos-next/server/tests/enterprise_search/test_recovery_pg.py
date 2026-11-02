@@ -22,19 +22,28 @@ from change_execution.test_transactions import command as change_command
 from change_execution.test_transactions import create_payload as change_payload
 from external_wait_pg.test_workflow import create_record
 from external_wait_pg.test_workflow import execute as wait_execute
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search import indexing
-from pdos_next.enterprise_search.assistant_sources import current
-from pdos_next.enterprise_search.events import EVENTS, process_event
-from pdos_next.enterprise_search.models import SearchChunk, SearchCorpus, SearchSource, SearchTerm
-from pdos_next.enterprise_search.query import SearchInput, search
-from pdos_next.enterprise_search.recovery import context_reference, plan_rebuild, rebuild_batch
-from pdos_next.enterprise_search.recovery_workflow import finish_rebuild
-from pdos_next.enterprise_search.schemas import SOURCE_TYPES
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.agent.enterprise_search import indexing
+from pdos_next.agent.enterprise_search.assistant_sources import current
+from pdos_next.agent.enterprise_search.events import EVENTS, process_event
+from pdos_next.agent.enterprise_search.models import (
+    SearchChunk,
+    SearchCorpus,
+    SearchSource,
+    SearchTerm,
+)
+from pdos_next.agent.enterprise_search.query import SearchInput, search
+from pdos_next.agent.enterprise_search.recovery import (
+    context_reference,
+    plan_rebuild,
+    rebuild_batch,
+)
+from pdos_next.agent.enterprise_search.recovery_workflow import finish_rebuild
+from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant, Outbox, Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, Outbox, Receipt, now
-from pdos_next.service import digest
 from sqlalchemy import delete, event, func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -696,7 +705,7 @@ def test_mixed_fixture_preserves_outer_report_bytes_until_issuer_teardown(
 ):
     """No DB: compose fixture lifetimes with real private stores and report bytes."""
     from pdos_next.domain.change_execution.service import configure_store
-    from pdos_next.object_storage import LocalPrivateObjectStore, StorageFailure
+    from pdos_next.originals.object_storage import LocalPrivateObjectStore, StorageFailure
     from tests.enterprise_search import role_native_source_harness as harness
 
     outer = LocalPrivateObjectStore(tmp_path / "outer-change-reports")

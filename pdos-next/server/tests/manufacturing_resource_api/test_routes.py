@@ -10,7 +10,7 @@ from fastapi import Depends, FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-
+from pdos_next.core.service import Context
 from pdos_next.domain.manufacturing_resource_owner import api
 from pdos_next.domain.manufacturing_resource_owner.schemas import (
     ResourceProjection,
@@ -20,7 +20,6 @@ from pdos_next.domain.manufacturing_resource_owner.schemas import (
     VersionRef,
 )
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 TENANT, PRODUCT, BUILD, PROJECT, PROCESS, ACTOR, FACT, RESOURCE = (
     UUID(int=index) for index in range(1, 9)

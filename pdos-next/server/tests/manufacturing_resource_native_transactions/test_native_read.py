@@ -10,9 +10,9 @@ from datetime import timedelta
 from uuid import UUID
 
 import pytest
-from sqlalchemy import select
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Outbox, Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import (
     BuildOperationalCurrent,
@@ -24,8 +24,7 @@ from pdos_next.domain.build_operational_facts.models import (
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.manufacturing_resource_owner import owner
 from pdos_next.domain.manufacturing_resource_owner.schemas import ResourceView
-from pdos_next.models import Artifact, Audit, Outbox, Receipt, now
-from pdos_next.service import digest
+from sqlalchemy import select
 
 from .fixtures import SOURCE_TEXT, observe_direct_named_verifier, read_effect_hashes
 

@@ -14,8 +14,8 @@ import pytest
 from capa_effectiveness.test_participants_owner import work as work
 from capa_verification.test_pure import basis as original_basis  # noqa: F401 - pytest fixture
 from capa_verification.test_pure import output
-
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import Grant, Principal
 from pdos_next.domain.capa_verification import service
 from pdos_next.domain.capa_verification.models import RemediationLinkRecord
 from pdos_next.domain.capa_verification.schemas import FixedRef
@@ -23,7 +23,6 @@ from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.quality_execution import policy
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
 
 
 @pytest.fixture

@@ -4,11 +4,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.contracts import BuildReadinessPayload
+from pdos_next.core.contracts import BuildReadinessPayload
+from pdos_next.core.service import Context, check_qualification, digest
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, check_qualification, digest
+from pydantic import ValidationError
 
 
 def test_preparation_readiness_keeps_original_serialization_and_identity():
@@ -41,7 +40,7 @@ def test_host_synthetic_ledger_cannot_qualify_a_different_claim_with_same_named_
     from copy import deepcopy
     from datetime import UTC, datetime, timedelta
 
-    from pdos_next import operational_bootstrap
+    from pdos_next.bootstrap import operational as operational_bootstrap
     from pdos_next.domain.build_operational_facts.schemas import DecisionInput
     from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 

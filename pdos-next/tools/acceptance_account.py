@@ -34,8 +34,8 @@ SERVER = ROOT / "server"
 VERSIONS = SERVER / "migrations" / "versions"
 sys.path.insert(0, str(SERVER))
 
-from pdos_next.database import engine_for  # noqa: E402
-from pdos_next.models import (  # noqa: E402
+from pdos_next.core.database import engine_for  # noqa: E402
+from pdos_next.core.models import (  # noqa: E402
     Category,
     Grant,
     LoginSession,
@@ -43,7 +43,7 @@ from pdos_next.models import (  # noqa: E402
     Product,
     now,
 )
-from pdos_next.service import digest  # noqa: E402
+from pdos_next.core.service import digest  # noqa: E402
 
 
 def repo_head():
@@ -67,7 +67,7 @@ def verified_state(path):
     """Reuse the shared target guard; no .env fallback and no unmarked database."""
     import os
 
-    from pdos_next.safety import verify_test_target
+    from pdos_next.core.safety import verify_test_target
 
     state = json.loads(Path(path).read_text())
     os.environ.update(
@@ -106,8 +106,8 @@ def _scope(session, state):
         assert found is not None, "This environment's category is gone"
         return tenant, category, False
     # Imported here: the kernel models resolve their FK metadata through
-    # pdos_next.models, so they cannot be imported before it.
-    from pdos_next.agent_kernel.models import TenantPilotAdmission
+    # pdos_next.core.models, so they cannot be imported before it.
+    from pdos_next.agent.kernel.models import TenantPilotAdmission
 
     tenant, category, person = uuid4(), uuid4(), uuid4()
     session.add(Principal(id=person, tenant_id=tenant, name="验收环境负责人", kind="human"))
@@ -252,7 +252,7 @@ def admit(args):
     synthetic local environment holds no real pilot approval, and the reference
     says exactly that; it never stands in for one.
     """
-    from pdos_next.agent_kernel.models import TenantPilotAdmission
+    from pdos_next.agent.kernel.models import TenantPilotAdmission
 
     state, admin = verified_state(args.state)
     at_head(admin)

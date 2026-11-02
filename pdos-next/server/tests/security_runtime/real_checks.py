@@ -15,9 +15,6 @@ from pathlib import Path
 from uuid import uuid4
 
 from openpyxl import Workbook
-from pypdf import PdfWriter
-from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
-
 from pdos_next.evidence_processing.types import ParseFailure, ParseLimits
 from pdos_next.evidence_security.types import (
     ScanBinding,
@@ -26,10 +23,12 @@ from pdos_next.evidence_security.types import (
     ScanRequest,
     ScanStatus,
 )
-from pdos_next.object_storage.types import ObjectRef
+from pdos_next.originals.object_storage.types import ObjectRef
 from pdos_next.security_runtime import DockerClamAVTransport, DockerParserRunner
 from pdos_next.security_runtime.docker import DockerFailure, run_container
 from pdos_next.security_runtime.parser import _image_id
+from pypdf import PdfWriter
+from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 
 
 def _request(content, config):

@@ -28,19 +28,10 @@ from lifecycle_fixture import (  # noqa: F401
     worker_reference,
 )
 from lifecycle_fixture import lifecycle_work as _lifecycle_work
-from sqlalchemy import event, func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_durable_evidence import upload_input
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.dispatch.outbox import CONSUMER, acknowledge, claim_events
-from pdos_next.domain.original_lifecycle_execution.codec import decode_intent
-from pdos_next.errors import DomainError
-from pdos_next.lifecycle_access import References, schema_covered
-from pdos_next.lifecycle_worker import process
-from pdos_next.models import (
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.dispatch.outbox import CONSUMER, acknowledge, claim_events
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Claim,
@@ -59,13 +50,21 @@ from pdos_next.models import (
     UploadedOriginal,
     now,
 )
-from pdos_next.object_journal import InventoryPage
-from pdos_next.object_storage import StorageFailure
-from pdos_next.original_lifecycle.types import IntentState
-from pdos_next.original_security import request_scan, scan_requested
-from pdos_next.originals import parse_uploaded, upload
-from pdos_next.service import Context, digest
-from pdos_next.service import execute as domain_execute
+from pdos_next.core.service import Context, digest
+from pdos_next.core.service import execute as domain_execute
+from pdos_next.domain.original_lifecycle_execution.codec import decode_intent
+from pdos_next.errors import DomainError
+from pdos_next.features.lifecycle.access import References, schema_covered
+from pdos_next.features.lifecycle.worker import process
+from pdos_next.originals.access import parse_uploaded, upload
+from pdos_next.originals.lifecycle.types import IntentState
+from pdos_next.originals.object_journal import InventoryPage
+from pdos_next.originals.object_storage import StorageFailure
+from pdos_next.originals.security import request_scan, scan_requested
+from sqlalchemy import event, func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_durable_evidence import upload_input
 
 lifecycle_work = _lifecycle_work
 

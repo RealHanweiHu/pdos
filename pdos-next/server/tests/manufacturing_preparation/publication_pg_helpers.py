@@ -16,14 +16,25 @@ from change_execution.approved_configuration_helpers import initial_configuratio
 from fastapi.testclient import TestClient
 from manufacturing_preparation_transactions import fixtures as preparation_fixture
 from manufacturing_preparation_transactions.test_transactions import reference, save
-from security_fixture import secured_parse, synthetic_runtime
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-from test_durable_evidence import upload_input
-from test_project_first_plan import accepted, cmd, post
-
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Category,
+    Confirmation,
+    Consumption,
+    OriginalSecurity,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
+    UploadedOriginal,
+    now,
+)
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
 from pdos_next.domain.configurations.models import EngineeringConfiguration
@@ -44,26 +55,14 @@ from pdos_next.domain.manufacturing_baseline.publication_models import (
 from pdos_next.domain.manufacturing_baseline.publication_schemas import OPERATION
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.projects import service as projects
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Category,
-    Confirmation,
-    Consumption,
-    OriginalSecurity,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
-    UploadedOriginal,
-    now,
-)
-from pdos_next.object_storage import LocalPrivateObjectStore
-from pdos_next.original_security import configure as configure_security
-from pdos_next.originals import object_reference
-from pdos_next.professional_import import import_professional_fact
-from pdos_next.safety import verify_test_target
-from pdos_next.service import Context, digest
+from pdos_next.originals.access import object_reference
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
+from pdos_next.originals.security import configure as configure_security
+from security_fixture import secured_parse, synthetic_runtime
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from test_durable_evidence import upload_input
+from test_project_first_plan import accepted, cmd, post
 
 OPERATIONS = (*preparation_fixture.OPERATIONS, OPERATION)
 EXTRA_LINES = (

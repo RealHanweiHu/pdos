@@ -4,13 +4,12 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, Grant, ObjectAudience, Product, now
+from pdos_next.core.service import digest
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.models import Artifact, Category, Grant, ObjectAudience, Product, now
-from pdos_next.service import digest
 
 
 def scoped(setup, actor=None, *, category=None, tenant=None):

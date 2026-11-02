@@ -5,10 +5,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.features.personal.attention_decisions import external_pending, queries
 from sqlalchemy import union_all
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.personal_attention_decisions import external_pending, queries
 
 
 def _compile(value):

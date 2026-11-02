@@ -5,10 +5,10 @@ from uuid import uuid4
 
 import pytest
 from migrations.candidates.dingtalk_fence import DOWNGRADE_SQL, SCHEMA_SQL
-from pdos_next.dingtalk.guards import message_binding
-from pdos_next.dingtalk.models import Binding
+from pdos_next.core.models import Principal
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal
+from pdos_next.integrations.dingtalk.guards import message_binding
+from pdos_next.integrations.dingtalk.models import Binding
 
 
 class MetadataSession:

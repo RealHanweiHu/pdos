@@ -8,9 +8,8 @@ read today. The old window becoming past does not erase its performed history.
 import json
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import now
+from pdos_next.core.service import Context
 from pdos_next.domain.build_operational_facts.service import digest
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.measurement_evidence.verifier import fixed_run_sha256
@@ -19,9 +18,9 @@ from pdos_next.domain.verification_front import service as front
 from pdos_next.domain.verification_handoff import service as physical
 from pdos_next.domain.verification_launch import service as launch
 from pdos_next.errors import DomainError
-from pdos_next.models import now
 from pdos_next.schemas.resource_readiness.contracts import Reservation
-from pdos_next.service import Context
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from . import service as resources
 from .fingerprint_compatibility import FixedIssuerDependency, diagnose_legacy_single_dependency
@@ -59,8 +58,8 @@ def _one(s, ctx, model, *where, scope_id=None, fresh=False):
     )
     held = False
     if isinstance(s, Session):
-        from pdos_next.database import require_context
-        from pdos_next.request_proof import scope_is_held
+        from pdos_next.core.database import require_context
+        from pdos_next.core.request_proof import scope_is_held
 
         require_context(s, ctx)
         if s.is_active is True and s.in_transaction():
@@ -68,7 +67,7 @@ def _one(s, ctx, model, *where, scope_id=None, fresh=False):
             # pending ORM state falls back to its original actual SQL.
             held = scope_is_held(s, scope_id)
     if held and not fresh:
-        from pdos_next.request_proof import snapshot_rows
+        from pdos_next.core.request_proof import snapshot_rows
 
         # The same exact dependency is checked repeatedly by retained and
         # result owners. RR fixes its rows; the actual Product gate fences all
@@ -94,8 +93,8 @@ def _caller(s, ctx, product_id, *, write):
         isinstance(ctx, Context) and ctx.actor_id == ctx.requester_id and ctx.run_id is None,
         "NAMED_DECISION_REQUIRED",
     )
+    from pdos_next.core.service import require_access
     from pdos_next.domain.professional_authority.service import _subject_access
-    from pdos_next.service import require_access
 
     product = require_access(s, ctx, product_id, write=write, lock=write)
     person, grant = _subject_access(s, ctx, product_id, ctx.requester_id)
@@ -141,7 +140,7 @@ def _caller(s, ctx, product_id, *, write):
 def _runtime(s):
     # quality_result_bridge imports retained itself; resolve its actual complete
     # registry/security/store/bridge stamp lazily after startup is initialized.
-    from pdos_next.quality_result_bridge import _runtime_stamp
+    from pdos_next.features.quality.result_bridge import _runtime_stamp
 
     return _runtime_stamp(s)
 
@@ -655,9 +654,9 @@ def _direct_material(original, run_row):
 
 
 def _direct_sources(s, ctx, product_id, original):
+    from pdos_next.core.source_current import direct_source_basis
     from pdos_next.domain.professional_authority.schemas import DefinitionReference
     from pdos_next.domain.quality_execution.evidence import merge_reads, refs_from_exact
-    from pdos_next.source_current import direct_source_basis
 
     refs = refs_from_exact(
         s, ctx, product_id, tuple(DefinitionReference.model_validate(v) for v in original.sources)
@@ -682,10 +681,11 @@ def _direct_sources(s, ctx, product_id, original):
 
 
 def _direct_runtime(s, *, originals):
-    from pdos_next import original_security, source_current
-    from pdos_next import originals as original_owner
-    from pdos_next import service as common
+    from pdos_next.core import service as common
+    from pdos_next.core import source_current
     from pdos_next.domain.quality_execution import evidence
+    from pdos_next.originals import access as original_owner
+    from pdos_next.originals import security as original_security
 
     ports = (
         launch._snapshot,
@@ -713,7 +713,7 @@ def _direct_runtime(s, *, originals):
 
 def _direct_caller(s, ctx, product_id, *, write, fresh=False):
     if fresh:
-        from pdos_next.models import Grant, Principal, Product
+        from pdos_next.core.models import Grant, Principal, Product
 
         product = _one(
             s,
@@ -1032,7 +1032,7 @@ def _inspect_retained_direct(
     s, ctx, product_id, run_row, result, *, checked_at, write, original=None
 ):
     """Current consumer of fixed execution, without historical closure reproof."""
-    from pdos_next.database import require_context
+    from pdos_next.core.database import require_context
 
     from .models import TestResourceReservation
 

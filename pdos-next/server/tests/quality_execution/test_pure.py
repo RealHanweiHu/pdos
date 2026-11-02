@@ -13,9 +13,8 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-from quality_issues.helpers import NOW, fixed_run, source, uid
-
+from pdos_next.core.models import Grant, Principal
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.quality_execution import evidence, policy, service
 from pdos_next.domain.quality_execution.adapters import TransactionCommands
 from pdos_next.domain.quality_execution.models import (
@@ -37,9 +36,9 @@ from pdos_next.domain.quality_execution.schemas import (
 from pdos_next.domain.quality_issues.ports import VerifiedRun
 from pdos_next.domain.quality_issues.rules import replace
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
+from quality_issues.helpers import NOW, fixed_run, source, uid
 
 
 def assert_code(code, fn):
@@ -223,7 +222,8 @@ def host(monkeypatch):
     monkeypatch.setattr(service.policy, "assess", lambda *a, **k: deepcopy(publication))
     monkeypatch.setattr(service, "source_basis", basis)
     monkeypatch.setattr(service, "check_source", lambda *a: ([], [], False))
-    from pdos_next import quality_result_bridge, source_current
+    from pdos_next.core import source_current
+    from pdos_next.features.quality import result_bridge as quality_result_bridge
 
     def fixed_failure(s, context, pid, issue, failure, *, purpose):
         fixed = state.get("values", {}).get(failure.run.id, result())

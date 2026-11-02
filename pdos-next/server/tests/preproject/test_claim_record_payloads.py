@@ -5,16 +5,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import claim_candidate as candidate
-from pdos_next.agent_kernel.models import AgentEvent, PublicWebSnapshot
-from pdos_next.contracts import Command
+from pdos_next.agent.kernel import claim_candidate as candidate
+from pdos_next.agent.kernel.models import AgentEvent, PublicWebSnapshot
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Artifact, Principal, Product, UploadedOriginal
+from pdos_next.core.service import Context
 from pdos_next.domain.preproject import claim_access
 from pdos_next.domain.preproject.evidence_schemas import ClaimRecord
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Principal, Product, UploadedOriginal
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 
 class MemorySession:

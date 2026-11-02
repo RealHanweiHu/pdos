@@ -7,7 +7,7 @@ import pytest
 from sqlalchemy import CheckConstraint, UniqueConstraint, text
 from sqlalchemy.engine import Engine
 
-from pdos_next.models import Base
+from pdos_next.core.models import Base
 from pdos_next.domain.work_fulfillment import storage_sql as storage
 from pdos_next.domain.work_fulfillment.models import (
     WorkCommitmentReview,

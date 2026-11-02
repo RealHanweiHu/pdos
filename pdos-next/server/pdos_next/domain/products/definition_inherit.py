@@ -8,11 +8,10 @@ credentials become credentials for the new draft.
 from copy import deepcopy
 from dataclasses import dataclass
 
-from sqlalchemy import select
-
+from pdos_next.core.service import require_access
 from pdos_next.domain.preproject.access import fail, human
 from pdos_next.domain.preproject.baseline import validate_sources
-from pdos_next.service import require_access
+from sqlalchemy import select
 
 from .models import DefinitionRevision, DefinitionSource, DefinitionSpecCurrent, DefinitionSpecRow
 

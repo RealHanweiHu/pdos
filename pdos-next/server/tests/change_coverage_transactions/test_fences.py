@@ -5,15 +5,14 @@ from copy import deepcopy
 from datetime import timedelta
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, Principal, Product, now
+from pdos_next.core.service import Context
+from pdos_next.domain.change_coverage_owner import owner
+from pdos_next.errors import DomainError
 from sqlalchemy import select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.change_coverage_owner import owner
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product, now
-from pdos_next.service import Context
 
 
 def test_actual_publisher_a_reader_b_fenced_until_transaction_end(setup):

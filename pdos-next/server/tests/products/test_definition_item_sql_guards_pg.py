@@ -8,12 +8,11 @@ from copy import deepcopy
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.domain.products.models import DefinitionSpecRow
 from sqlalchemy import insert, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionSpecRow
 from tests.products.test_definition_item_commands_pg import current_items, draft, patch, upsert
 from tests.products.test_definition_transactions import post
 

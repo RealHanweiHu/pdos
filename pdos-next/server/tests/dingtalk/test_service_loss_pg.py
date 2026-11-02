@@ -8,11 +8,11 @@ from threading import Event
 from uuid import UUID
 
 import pytest
-from pdos_next import models
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.dingtalk.models import Application, Delivery, Message
-from pdos_next.dingtalk.runtime import ChannelService, delivery_key
-from pdos_next.dingtalk.workflow import ChannelActivities
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core import models
+from pdos_next.integrations.dingtalk.models import Application, Delivery, Message
+from pdos_next.integrations.dingtalk.runtime import ChannelService, delivery_key
+from pdos_next.integrations.dingtalk.workflow import ChannelActivities
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session
 from tests.dingtalk.test_channel_pg import bind, channel, incoming

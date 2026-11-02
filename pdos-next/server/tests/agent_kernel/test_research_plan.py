@@ -3,11 +3,10 @@
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts, ResearchReadAdapter
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts, ResearchReadAdapter
+from pdos_next.agent.research.tools import ResearchToolHost
+from pdos_next.agent.research.types import LedgerDraft, ParameterVersion
 from pdos_next.errors import DomainError
-from pdos_next.research.tools import ResearchToolHost
-from pdos_next.research.types import LedgerDraft, ParameterVersion
 from tests.agent_kernel.research.test_research import scope, service
 
 
@@ -72,9 +71,8 @@ def test_identical_tasks_in_different_jobs_have_independent_child_checkpoints():
     from types import SimpleNamespace
 
     from langgraph.checkpoint.memory import InMemorySaver
-
-    from pdos_next.agent_kernel.research_graph import ResearchGraph
-    from pdos_next.research.types import ResearchTask
+    from pdos_next.agent.kernel.research_graph import ResearchGraph
+    from pdos_next.agent.research.types import ResearchTask
     from tests.agent_kernel.test_research_instruction import Host
 
     host, saver = Host(), InMemorySaver()

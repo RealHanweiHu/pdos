@@ -4,13 +4,12 @@ import json
 from uuid import UUID
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact
+from pdos_next.domain.products.models import DefinitionSource
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionSource
-from pdos_next.models import Artifact
 from tests.products.test_definition_inherit_pg import inherit
 from tests.products.test_definition_item_commands_pg import draft
 from tests.products.test_definition_transactions import post

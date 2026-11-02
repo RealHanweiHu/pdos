@@ -10,26 +10,25 @@ from uuid import uuid4
 import httpx
 import psycopg
 import pytest
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
-
-from pdos_next import change_completion_adapter as completion
-from pdos_next import change_order_integration as order
-from pdos_next import change_order_service as owner
-from pdos_next import change_public_integration as startup
-from pdos_next import change_selection_integration as selection
-from pdos_next import change_selection_service
-from pdos_next.command_handlers import (
+from pdos_next.core.command_handlers import (
     LIVE_CONSUMPTION_OPERATIONS,
     PHASED_MATERIAL_OPERATIONS,
     T1_OPERATIONS,
     T2_OPERATIONS,
     handler,
 )
-from pdos_next.contracts import PAYLOADS, Command
+from pdos_next.core.contracts import PAYLOADS, Command
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution import service as old
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.change import completion_adapter as completion
+from pdos_next.features.change import order_integration as order
+from pdos_next.features.change import order_service as owner
+from pdos_next.features.change import public_integration as startup
+from pdos_next.features.change import selection_integration as selection
+from pdos_next.features.change import selection_service as change_selection_service
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
 
 from . import kernel_helpers as helper
 

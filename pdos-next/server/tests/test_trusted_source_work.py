@@ -5,12 +5,8 @@ from uuid import UUID, uuid4
 import pytest
 from alembic.autogenerate import compare_metadata
 from alembic.migration import MigrationContext
-from sqlalchemy import func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.models import (
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Base,
@@ -21,7 +17,10 @@ from pdos_next.models import (
     Receipt,
     now,
 )
-from pdos_next.service import digest
+from pdos_next.core.service import digest
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 def command(setup, op, payload, *, key=None, revision=1, source=None):
@@ -340,7 +339,7 @@ def test_migration_matches_orm_and_test_guard(setup, monkeypatch):
             },
         )
         assert compare_metadata(context, Base.metadata) == []
-    from pdos_next.safety import verify_test_target
+    from pdos_next.core.safety import verify_test_target
 
     monkeypatch.delenv("TEST_DATABASE_URL")
     with pytest.raises(RuntimeError, match="unverified"):

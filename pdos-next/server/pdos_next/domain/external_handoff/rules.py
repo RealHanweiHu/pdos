@@ -2,10 +2,10 @@
 
 from datetime import datetime
 
+from pdos_next.core.service import Context
 from pdos_next.domain.release import rules as release
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context
 
 from .schemas import (
     ActualData,

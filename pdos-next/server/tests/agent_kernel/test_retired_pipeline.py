@@ -4,10 +4,9 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import execute
 from pdos_next.errors import DomainError
-from pdos_next.service import execute
 from tests.agent_kernel.test_domain_adapter_transactions import counts, fixture
 
 

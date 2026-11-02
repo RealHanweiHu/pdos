@@ -12,15 +12,14 @@ from time import monotonic
 from uuid import UUID
 
 from lifecycle_fixture import item_for, lifecycle_work  # noqa: F401
-from sqlalchemy import select, text
-
-from pdos_next import service
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core import service
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, Product, UploadedOriginal
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.preproject.models import Proposal, ProposalItemVersion
 from pdos_next.domain.products.models import DefinitionSpecRow
-from pdos_next.models import Artifact, Category, Product, UploadedOriginal
+from sqlalchemy import select, text
 from tests.preproject.test_evidence_commands_pg import claim_body
 from tests.preproject.test_g0 import create, post, read, request
 from tests.preproject.test_m3_lifecycle_catalog import scoped, uploaded

@@ -11,15 +11,13 @@ import httpx
 import pytest
 from build_operational_facts.fixtures import configuration, definition, operational_work, project
 from build_start.test_transactions import ready_work
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from verification_handoff.fixtures import artifact, handoff_work, known_configuration
-
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantSkillEnablement
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt
 from pdos_next.domain.verification_execution.models import VerificationPreparation
 from pdos_next.domain.verification_front.models import FormalVerificationRequest
-from pdos_next.models import Receipt
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.enterprise_search.test_retrieval_pg import index
 from tests.enterprise_search.verification_action_harness import (
     PREPARATION,
@@ -37,6 +35,7 @@ from tests.enterprise_search.verification_negative_fixture import (
     restricted_materials,
     revoke_auxiliary,
 )
+from verification_handoff.fixtures import artifact, handoff_work, known_configuration
 
 pytestmark = pytest.mark.skipif(
     not os.environ.get("PDOS_TEMPORAL_ADDRESS")

@@ -13,9 +13,10 @@ from datetime import datetime
 from types import SimpleNamespace
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
-from sqlalchemy import select
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Artifact, Grant, OriginalSecurity, Principal, now
+from pdos_next.core.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.supply_execution.service import _human, _read_evidence, _sources
 from pdos_next.domain.verification.ports import Invocation
@@ -38,15 +39,13 @@ from pdos_next.domain.verification_front.models import (
     MethodApplicability,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, OriginalSecurity, Principal, now
-from pdos_next.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
     Coverage,
     HandoffAccept,
     HandoffOffer,
     HandoffReturn,
 )
-from pdos_next.service import digest, require_access
+from sqlalchemy import select
 
 from .adapters import HandoffCommands, InspectedSamples, kernel
 from .models import (
@@ -131,7 +130,7 @@ def _basis(s, ctx, product_id, reads, references):
                 and s.in_transaction()
                 and not (s.new or s.dirty or s.deleted)
             ):
-                from pdos_next.database import require_context
+                from pdos_next.core.database import require_context
 
                 require_context(s, ctx)
                 # Only this exact RLS-loaded row is fixed in the RR read.
@@ -279,10 +278,10 @@ class Bound:
 
 def _proof_stamp(s, ctx, product_id, row):
     """Current reader and referenced authority watermarks, held by this transaction."""
+    from pdos_next.core.request_proof import request_proof, scoped_rows
     from pdos_next.domain.professional_authority.models import ProfessionalCurrent
     from pdos_next.domain.professional_authority.service import _subject_access
     from pdos_next.domain.sample_handoff.service import ReadContext
-    from pdos_next.request_proof import request_proof, scoped_rows
 
     product = require_access(s, ctx, product_id)
     principal, grant = _subject_access(s, ctx, product_id, ctx.requester_id)
@@ -692,8 +691,8 @@ def _assignee(s, ctx, product_id, project_id, owner):
         or not principal.active
     ):
         raise DomainError("INVALID_ASSIGNEE", "下一责任人须当前租户有效具名人员。", 403)
+    from pdos_next.core.models import ObjectAudience
     from pdos_next.domain.professional_authority.service import _subject_access
-    from pdos_next.models import ObjectAudience
 
     product = require_access(s, ctx, product_id)
     project, _, _ = _project(s, ctx, product_id, project_id)

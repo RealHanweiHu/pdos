@@ -22,16 +22,15 @@ from manufacturing_preparation_transactions.fixtures import (
 )
 from manufacturing_preparation_transactions.fixtures import manufacturing_case as manufacturing_case
 from manufacturing_preparation_transactions.test_transactions import reference, save
+from pdos_next.core.models import Artifact, Confirmation, Grant, ObjectAudience
+from pdos_next.core.service import digest
+from pdos_next.domain.professional_authority.models import ProfessionalFact
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from test_build_project_scope import second_project_configuration
 from test_builds import configuration as configuration
 from test_project_first_plan import definition as definition
 from test_project_first_plan import project as project
-
-from pdos_next.domain.professional_authority.models import ProfessionalFact
-from pdos_next.models import Artifact, Confirmation, Grant, ObjectAudience
-from pdos_next.service import digest
 
 
 def _counts(work):

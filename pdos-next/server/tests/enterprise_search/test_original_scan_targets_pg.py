@@ -3,10 +3,10 @@
 # ruff: noqa: F401,F811 -- register the original upload/scan/parse fixture
 from dataclasses import replace
 
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.models import SearchSource
-from pdos_next.enterprise_search.query import SearchInput, search
-from pdos_next.models import OriginalSecurity
+from pdos_next.agent.enterprise_search.models import SearchSource
+from pdos_next.agent.enterprise_search.query import SearchInput, search
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import OriginalSecurity
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session
 from tests.enterprise_search.test_retrieval_pg import index

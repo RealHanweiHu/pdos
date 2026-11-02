@@ -9,15 +9,13 @@ from copy import deepcopy
 from dataclasses import dataclass
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
-from sqlalchemy import exists, select
-
-from pdos_next.clock import deadline_current
+from pdos_next.core.clock import deadline_current
+from pdos_next.core.models import Artifact, Principal, Product, Receipt, Run, now
 from pdos_next.domain.change_control.ports import Invocation
 from pdos_next.domain.change_control.rules import digest, graph_sources
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Principal, Product, Receipt, Run, now
 from pdos_next.schemas.change_control.contracts import (
     ChangeRequest,
     ImpactCompute,
@@ -25,6 +23,7 @@ from pdos_next.schemas.change_control.contracts import (
     RequestCreate,
 )
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from sqlalchemy import exists, select
 
 from .adapters import authority_dto, kernel
 from .graph import CapturedInputReader, OwnerReader, audience, capture_graph
@@ -156,7 +155,7 @@ def _snapshot(row):
         "change.verification.record",
         "change.close",
     }:
-        from pdos_next.change_order_service import snapshot
+        from pdos_next.features.change.order_service import snapshot
 
         return snapshot(row)
     value = ChangeRequest.model_validate(row.request_snapshot)
@@ -363,11 +362,11 @@ def _native_registration(s, ctx, pid, source):
 
 
 def _evidence(s, ctx, pid, reads, sources=(), *, io=True):
-    from pdos_next.object_storage import StorageFailure
-    from pdos_next.original_security import require_safe
-    from pdos_next.originals import object_reference, read_registered_bytes, require_original
-    from pdos_next.service import digest as content_digest
-    from pdos_next.service import source_for
+    from pdos_next.core.service import digest as content_digest
+    from pdos_next.core.service import source_for
+    from pdos_next.originals.access import object_reference, read_registered_bytes, require_original
+    from pdos_next.originals.object_storage import StorageFailure
+    from pdos_next.originals.security import require_safe
 
     basis, lines, private = {}, {}, False
     store = getattr(s.get_bind(), "_pdos_change_store", None)
@@ -517,7 +516,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
             *(v for v in graph_sources(graph) if v.kind == "artifact"),
         )
     if graph is not None and "closure" in capture.source_basis:
-        from pdos_next.change_graph_closure import lock_dependency_clock
+        from pdos_next.features.change.graph_closure import lock_dependency_clock
 
         lock_dependency_clock(s, ctx, scope=scope, audience=target)
     authority = _authority(s, ctx, product.id, scope, command.operation, purpose, write=True)
@@ -528,7 +527,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
             raise DomainError("RECHECK_REQUIRED", "固定Issue、配置或执行证明待重核。")
     coverage = None
     if graph is not None and any(v.status == "complete" for v in graph.coverage):
-        from pdos_next.change_coverage_binding import read_graph
+        from pdos_next.features.change.coverage_binding import read_graph
 
         coverage = read_graph(
             s,
@@ -575,7 +574,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
         bound.source_basis["coverage"] = coverage.source_basis
     if graph is not None:
         if "closure" in capture.source_basis:
-            from pdos_next.change_graph_closure import closure_stamp
+            from pdos_next.features.change.graph_closure import closure_stamp
 
             bound.source_basis["closure"] = closure_stamp(s, ctx, scope=scope, audience=target)
         _capture_valid(s, ctx, product.id, bound)
@@ -616,7 +615,7 @@ def _refresh(s, ctx, pid, operation, bound):
 
         recheck_access(s, ctx, pid, bound.coverage, request=bound.request, purpose=bound.purpose)
     if "closure" in bound.source_basis:
-        from pdos_next.change_graph_closure import closure_stamp
+        from pdos_next.features.change.graph_closure import closure_stamp
 
         if (
             closure_stamp(s, ctx, scope=bound.scope, audience=bound.target)
@@ -665,7 +664,7 @@ def _capture_valid(s, ctx, pid, bound):
         sources=graph.sources,
     )
     if bound.coverage is not None:
-        from pdos_next.change_coverage_binding import covered_graph, require_saved
+        from pdos_next.features.change.coverage_binding import covered_graph, require_saved
 
         require_saved(captured_basis.get("coverage"), bound.coverage)
         rebuilt = covered_graph(rebuilt, bound.coverage)
@@ -818,7 +817,7 @@ def apply(s, ctx, command, product, payload):
     )
     _kernel(ctx, bound, at, save).execute(s, invocation, parsed.model_dump(mode="json"))
     if command.operation == "change.impact.compute":
-        from pdos_next.change_publication_finalization import attach_impact
+        from pdos_next.features.change.publication_finalization import attach_impact
 
         attach_impact(s, ctx, command, result[0], bound)
     return result[0], "change_request", result[0].visibility
@@ -849,9 +848,9 @@ def _input_bound(s, ctx, command, product, payload):
     Actual command validation/preview/application keep their existing writer
     readers. Only this HTTP input projection uses the persisted graph proof.
     """
-    from pdos_next.change_graph_closure import lock_dependency_clock
+    from pdos_next.core.service import digest as caller_digest
     from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
-    from pdos_next.service import digest as caller_digest
+    from pdos_next.features.change.graph_closure import lock_dependency_clock
 
     if (
         not isinstance(payload, ImpactComputePayload)
@@ -1043,7 +1042,7 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
     scope, purpose = _scope_seed(s, ctx, product_id, (*request.roots, *request.references))
     authority = _authority(s, ctx, product_id, scope, "change.impact.compute", purpose, write=True)
     stamp = _runtime_stamp(s)
-    from pdos_next.change_graph_closure import closure_stamp, lock_dependency_clock
+    from pdos_next.features.change.graph_closure import closure_stamp, lock_dependency_clock
 
     lock_dependency_clock(s, ctx, scope=scope, audience=request.audience)
     dependency_closure = closure_stamp(s, ctx, scope=scope, audience=request.audience)
@@ -1062,7 +1061,7 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
         nature="synthetic" if authority["synthetic"] else "real",
         sources=request.sources,
     )
-    from pdos_next.change_coverage_binding import covered_graph, read_graph
+    from pdos_next.features.change.coverage_binding import covered_graph, read_graph
 
     coverage = read_graph(
         s,
@@ -1113,7 +1112,7 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
     if closure_stamp(s, ctx, scope=scope, audience=request.audience) != dependency_closure:
         raise DomainError("RECHECK_REQUIRED", "图读取期间依赖范围变化，请重新捕获。")
     if old is not None:
-        from pdos_next.change_coverage_binding import same_capture_basis
+        from pdos_next.features.change.coverage_binding import same_capture_basis
 
         if (
             old.graph_sha256 != digest(graph)
@@ -1164,7 +1163,7 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
     # The final owner access check also performs trusted SQL in this UOW.
     # Compare scalar Current and dependency watermarks after it; row locks
     # cannot protect against this Session's own writes. No graph is rebuilt.
-    from pdos_next.change_order_service import current_fixed
+    from pdos_next.features.change.order_service import current_fixed
 
     _, latest = current_fixed(s, ctx, product_id, row.change_id, lock=True)
     if (latest.id, latest.revision) != (row.id, row.revision):
@@ -1178,7 +1177,7 @@ def prepare_capture(s, ctx, product_id, input: GraphCaptureInput):
 
 
 def _history_sources(s, ctx, pid, reads):
-    from pdos_next.original_security import source_status
+    from pdos_next.originals.security import source_status
 
     current = True
     for read in reads:
@@ -1201,9 +1200,9 @@ def _history_sources(s, ctx, pid, reads):
 
 
 def _source_options(s, ctx, pid, reads, *, include_registered_native=False):
-    from pdos_next.original_security import require_safe
-    from pdos_next.originals import require_original
-    from pdos_next.service import source_for
+    from pdos_next.core.service import source_for
+    from pdos_next.originals.access import require_original
+    from pdos_next.originals.security import require_safe
 
     options = []
     for read in reads:
@@ -1243,7 +1242,7 @@ def _source_options(s, ctx, pid, reads, *, include_registered_native=False):
 
 def _capture_is_current(s, ctx, pid, capture, request, purpose, authority):
     """Current watermarks and real intervals; GET never rebuilds owner closure."""
-    from pdos_next.change_graph_closure import closure_stamp
+    from pdos_next.features.change.graph_closure import closure_stamp
 
     basis = capture.source_basis
     if (
@@ -1303,8 +1302,8 @@ def list_changes(
     history_cursor=None,
     capture_cursor=None,
 ):
-    from pdos_next.capa_history import page_query, page_rows
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
+    from pdos_next.features.capa.history import page_query, page_rows
 
     _human(s, ctx, product_id)
     if issue_id is not None and field_feedback_id is not None:

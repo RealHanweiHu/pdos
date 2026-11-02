@@ -8,13 +8,14 @@ owns head allocation, subject/lifecycle visibility, and ordinary function owners
 
 from collections.abc import Mapping
 
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.schema import CreateIndex, CreateTable
-
-from pdos_next import models as registered_models  # noqa: F401 -- full registry before child DDL
+from pdos_next.core import (
+    models as registered_models,  # noqa: F401 -- full registry before child DDL
+)
 from pdos_next.domain.external_wait.models import OPERATION as WAIT_OPERATION
 from pdos_next.domain.external_wait.models import SUBJECT as WAIT_SUBJECT
 from pdos_next.domain.work_management import storage_schema as work_storage
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.schema import CreateIndex, CreateTable
 
 from .models import (
     CURRENT,

@@ -4,13 +4,8 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from security_fixture import ensure_scanned, secured_runtime  # noqa: F401
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import (
     Artifact,
     Grant,
     ObjectAudience,
@@ -18,7 +13,11 @@ from pdos_next.models import (
     UploadedOriginal,
     now,
 )
-from pdos_next.service import digest
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
+from security_fixture import ensure_scanned, secured_runtime  # noqa: F401
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_revoked_terminal import close
 from tests.agent_kernel.test_transactions import human_session, run
 

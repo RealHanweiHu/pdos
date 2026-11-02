@@ -16,9 +16,9 @@ from uuid import UUID, uuid4
 import pytest
 from build_operational_facts.fixtures import configuration, definition, operational_work, project
 from build_start.test_transactions import ready_work
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
 from pdos_next.domain.builds.models import Build
 from pdos_next.domain.verification_execution.models import VerificationPreparation
 from pdos_next.providers.types import ProviderUsage

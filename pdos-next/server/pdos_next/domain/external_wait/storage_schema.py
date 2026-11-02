@@ -8,11 +8,12 @@ registration and the ordinary-owner installation of these finite guards.
 
 from collections.abc import Mapping
 
+from pdos_next.core import (
+    models as registered_models,  # noqa: F401 -- full registry before child DDL
+)
+from pdos_next.domain.work_management import storage_schema as work_storage
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateIndex, CreateTable
-
-from pdos_next import models as registered_models  # noqa: F401 -- full registry before child DDL
-from pdos_next.domain.work_management import storage_schema as work_storage
 
 from .models import CURRENT, OPERATION, SUBJECT, WAIT, ExternalWaitCurrent, ExternalWaitVersion
 

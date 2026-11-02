@@ -9,8 +9,8 @@ Build basis, never today's quantities presented under an old snapshot heading.
 import json
 from datetime import datetime
 
-from pdos_next.engines.supply_cost.common import digest
-from pdos_next.engines.supply_cost.dto import FixedBasis
+from pdos_next.domain.engines.supply_cost.common import digest
+from pdos_next.domain.engines.supply_cost.dto import FixedBasis
 from pdos_next.schemas.supply_cost.dto import (
     BasisBinding,
     CostProjection,

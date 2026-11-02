@@ -23,20 +23,19 @@ from manufacturing_resource_native_transactions.conftest import (  # noqa: F401
     project,
 )
 from manufacturing_resource_native_transactions.fixtures import native_resource_case  # noqa: F401
-from sqlalchemy import select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.change_dependency_clock import ChangeDependencyClock
-from pdos_next.change_graph_closure import closure_stamp, lock_dependency_clock
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Product
+from pdos_next.core.service import Context, digest, require_access
 from pdos_next.domain.build_operational_facts.models import OperationalAsset
 from pdos_next.domain.change_execution.graph import audience
 from pdos_next.domain.manufacturing_resource_owner import owner
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
+from pdos_next.features.change.graph_closure import closure_stamp, lock_dependency_clock
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import Context, digest, require_access
+from sqlalchemy import select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 @pytest.fixture

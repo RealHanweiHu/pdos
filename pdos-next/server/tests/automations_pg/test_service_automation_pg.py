@@ -10,13 +10,13 @@ from dataclasses import replace
 from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, text
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.dispatch.outbox import acknowledge, claim_events
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.dispatch.outbox import acknowledge, claim_events
+from pdos_next.core.models import Confirmation, Grant, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import EVENTS, digest
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.models import AutomationRuleCurrent
 from pdos_next.domain.automations.schemas import ACTIVATE, DRAFT_SAVE, PAUSE
@@ -25,9 +25,8 @@ from pdos_next.domain.automations.service_models import (
     AutomationServiceAttempt,
     AutomationServiceGrant,
 )
-from pdos_next.models import Confirmation, Grant, now
-from pdos_next.safety import verify_test_target
-from pdos_next.service import EVENTS, digest
+from sqlalchemy import select, text
+from sqlalchemy.orm import Session
 from tests.agent_kernel import test_budget_management as budgets
 from tests.agent_kernel import test_skill_management as skills
 from tests.automations_pg.test_manual_workflow import (
@@ -264,8 +263,8 @@ def test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run(set
     # stored agent actor. Missing adapters remain visible without a model call.
     import asyncio
 
-    from pdos_next.agent_kernel.activities import KernelActivities
-    from pdos_next.agent_kernel.temporal_port import dispatch_pending_runs
+    from pdos_next.agent.kernel.activities import KernelActivities
+    from pdos_next.agent.kernel.temporal_port import dispatch_pending_runs
 
     references = []
 

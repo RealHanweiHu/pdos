@@ -3,9 +3,8 @@
 from types import SimpleNamespace
 
 import pytest
-
-from pdos_next.agent_kernel.extract_read_ledger import LocatorEntry, SourceLocation
-from pdos_next.enterprise_search.comparison import MAX_CHARS, align
+from pdos_next.agent.enterprise_search.comparison import MAX_CHARS, align
+from pdos_next.agent.kernel.extract_read_ledger import LocatorEntry, SourceLocation
 
 
 def text(body):
@@ -110,8 +109,8 @@ def test_formulas_are_literal_not_calculated_and_parse_gaps_stay_explicit():
 def test_comparison_child_has_one_read_surface_and_no_search_or_write_authority():
     from uuid import uuid4
 
-    from pdos_next.agent_kernel.tools import default_registry
-    from pdos_next.agent_kernel.types import RunScope
+    from pdos_next.agent.kernel.tools import default_registry
+    from pdos_next.agent.kernel.types import RunScope
     from pdos_next.errors import DomainError
 
     registry = default_registry()

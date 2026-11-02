@@ -2,8 +2,7 @@ from copy import deepcopy
 from decimal import Decimal
 
 import pytest
-
-from pdos_next.engines.supply_cost import CostRequest, calculate_cost
+from pdos_next.domain.engines.supply_cost import CostRequest, calculate_cost
 
 from .helpers import bom_item, price, ref
 

@@ -12,18 +12,17 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, event, select, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next import service as host
-from pdos_next.contracts import Command
+from pdos_next.core import service as host
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Category, Product
+from pdos_next.core.request_proof import request_proof
 from pdos_next.domain.build_start import service as starts
 from pdos_next.domain.builds import service as builds
 from pdos_next.domain.builds.models import Build
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Product
-from pdos_next.request_proof import request_proof
+from sqlalchemy import create_engine, event, select, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 AT = datetime(2026, 10, 9, 12, tzinfo=UTC)
 

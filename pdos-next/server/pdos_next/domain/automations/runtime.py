@@ -3,12 +3,12 @@
 from types import SimpleNamespace
 from uuid import uuid4
 
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent_kernel.persistence import create_run
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.persistence import create_run
+from pdos_next.core.models import now
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.preproject.access import human
 from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.service import digest, require_access
 from sqlalchemy import case, func, select, text
 
 from .models import AutomationRuleVersion as Version

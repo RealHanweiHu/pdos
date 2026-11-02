@@ -18,7 +18,7 @@ TEXT = "Synthetic named project status basis; current gaps remain explicitly unk
 
 def assert_native_proof_ports(person, row, *, parents=()):
     """Exercise installed visibility and the one existing typed lifecycle resolver."""
-    from pdos_next.enterprise_search.sources import prepare_read
+    from pdos_next.agent.enterprise_search.sources import prepare_read
     from tests.enterprise_search.test_business_sources_pg import native_session
 
     proof = [

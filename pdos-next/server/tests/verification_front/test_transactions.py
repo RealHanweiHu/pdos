@@ -7,15 +7,10 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_build_execution import actual, lot, planned  # noqa: F401
-from test_builds import configuration, definition, project  # noqa: F401
-from test_verification_execution import verification_work  # noqa: F401
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Outbox, Receipt
+from pdos_next.core.service import Context, execute
 from pdos_next.domain.professional_authority.service import disable_issuer
 from pdos_next.domain.verification_front.models import (
     FormalVerificationCurrent,
@@ -24,8 +19,13 @@ from pdos_next.domain.verification_front.models import (
     VerificationWindowProposal,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Outbox, Receipt
-from pdos_next.service import Context, execute
+from sqlalchemy import event, func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_build_execution import actual, lot, planned  # noqa: F401
+from test_builds import configuration, definition, project  # noqa: F401
+from test_verification_execution import verification_work  # noqa: F401
+
 from verification_front.fixtures import (
     create_command,
     created,

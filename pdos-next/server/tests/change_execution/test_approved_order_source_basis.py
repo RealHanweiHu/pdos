@@ -10,13 +10,12 @@ from datetime import timedelta
 from types import SimpleNamespace
 
 import pytest
-
-from pdos_next import change_controlled_owner as controlled
-from pdos_next import change_order_store as store
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
 from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change import order_store as store
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context
 
 from . import kernel_helpers as helper
 from .test_change_order import no_connection  # noqa: F401 - forbid DB/HTTP in this pure file

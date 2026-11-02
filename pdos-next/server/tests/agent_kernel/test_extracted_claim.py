@@ -1,8 +1,7 @@
 """Extraction-consumption proof projections; pure shape checks, no database."""
 
 import pytest
-
-from pdos_next.agent_kernel.extracted_claim import expected_availability, expected_content
+from pdos_next.agent.kernel.extracted_claim import expected_availability, expected_content
 from pdos_next.errors import DomainError
 
 

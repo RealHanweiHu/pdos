@@ -13,21 +13,20 @@ from uuid import UUID, uuid4
 
 import pytest
 from g0_fixture import create_g0_project
-from sqlalchemy import func, select, update
-from sqlalchemy.orm import Session
-
-from pdos_next import personal_summary_runtime
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
+from pdos_next.core.service import digest
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.service_models import AutomationServiceAttempt
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.work_management.constants import STATUS
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
-from pdos_next.service import digest
+from pdos_next.features.personal import summary_runtime as personal_summary_runtime
+from sqlalchemy import func, select, update
+from sqlalchemy.orm import Session
 from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec
 from tests.work_management_pg import test_workflow as flow
 from tests.work_management_pg.test_workflow import original_security_work
@@ -169,7 +168,7 @@ def test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_re
                         requester_id=setup.agent, category_id=setup.category) as session:
         assert session.scalar(select(Project.id).where(Project.id == work.project_id)) is None
     worker = kernel(summary_work, monkeypatch)
-    monkeypatch.setattr("pdos_next.agent_kernel.activities.activity.heartbeat", lambda *_a: None)
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
     first = worker.advance(envelope)
     assert first == {"run_id": envelope["subject_id"], "status": "completed"}
     result, events = saved(summary_work, envelope)
@@ -213,7 +212,7 @@ def test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_re
 def test_actual_owner_revocation_hides_persisted_summary(summary_work, monkeypatch):
     _rule, envelope = admit(summary_work)
     worker = kernel(summary_work, monkeypatch)
-    monkeypatch.setattr("pdos_next.agent_kernel.activities.activity.heartbeat", lambda *_a: None)
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
     assert worker.advance(envelope)["status"] == "completed"
     result, _events = saved(summary_work, envelope)
     setup = summary_work.setup

@@ -3,9 +3,8 @@
 from types import SimpleNamespace
 
 import pytest
+from pdos_next.core.database import _semantic_custom_plan, engine_for
 from sqlalchemy import column, create_engine, event, select, table, text
-
-from pdos_next.database import _semantic_custom_plan, engine_for
 
 OPTION = "pdos_semantic_custom_plan"
 

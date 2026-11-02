@@ -5,7 +5,7 @@ They do not attest confirmation consumption, seven effectiveness gates or a
 public preview-to-write handoff. That handoff needs the real saved proof anchor.
 """
 
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
 
 
 # Initialize actual registry before importing its domain children.
@@ -16,7 +16,7 @@ from datetime import UTC, datetime
 from weakref import WeakKeyDictionary, ref
 from uuid import UUID
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from . import anchor as anchors
 from . import anchor_owner
@@ -32,10 +32,10 @@ from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.quality_execution import evidence, policy
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product
-from pdos_next.request_proof import batch_read, scope_is_held
-from pdos_next.contracts import Command
-from pdos_next.quality_result_bridge import _runtime_stamp
+from pdos_next.core.models import Grant, Principal, Product
+from pdos_next.core.request_proof import batch_read, scope_is_held
+from pdos_next.core.contracts import Command
+from pdos_next.features.quality.result_bridge import _runtime_stamp
 from sqlalchemy import select
 
 

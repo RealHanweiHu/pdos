@@ -10,8 +10,8 @@ from copy import deepcopy
 from pathlib import Path
 
 import pytest
-from pdos_next.agent_kernel.models import AgentEvent, AgentToolCall
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.models import AgentEvent, AgentToolCall
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select, text
 from sqlalchemy.engine import make_url

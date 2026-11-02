@@ -3,10 +3,9 @@ import json
 from dataclasses import replace
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.context_budget import budget_for, estimate_tokens, segments
+from pdos_next.agent.kernel.context_budget import budget_for, estimate_tokens, segments
 from pdos_next.schemas.model_configuration import ModelMetadata
+from pydantic import ValidationError
 from tests.agent_kernel.test_gateway import configured_route
 
 

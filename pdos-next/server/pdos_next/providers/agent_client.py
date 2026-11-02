@@ -16,7 +16,7 @@ from contextvars import ContextVar
 
 import httpx
 
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
 from pdos_next.providers.agent_wire import (
     FINISH_TOOL,

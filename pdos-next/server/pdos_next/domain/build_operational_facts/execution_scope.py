@@ -3,10 +3,9 @@
 from decimal import Decimal
 from typing import Annotated
 
-from pydantic import BeforeValidator, Field, field_serializer
-
-from pdos_next.engines.supply_cost.common import FrozenDTO, bounded_decimal
+from pdos_next.domain.engines.supply_cost.common import FrozenDTO, bounded_decimal
 from pdos_next.schemas.resource_readiness.contracts import ExecutionWindow
+from pydantic import BeforeValidator, Field, field_serializer
 
 Key = Annotated[str, Field(min_length=1, max_length=160)]
 Positive = Annotated[

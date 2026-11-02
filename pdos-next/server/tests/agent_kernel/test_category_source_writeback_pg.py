@@ -8,26 +8,25 @@ from uuid import UUID, uuid4
 
 import pytest
 from lifecycle_fixture import lifecycle_work  # noqa: F401
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.disclosure import binding_operations, disclosure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import TenantSkillEnablement
+from pdos_next.agent.kernel.prompts import PromptCatalog
+from pdos_next.agent.kernel.proposal_context import KEY
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Artifact, Claim, Confirmation, LifecycleObject, Receipt, now
+from pdos_next.core.service import digest, execute
+from pdos_next.domain.preproject.models import ProposalItemVersion
+from pdos_next.errors import DomainError
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import event, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import TenantSkillEnablement
-from pdos_next.agent_kernel.prompts import PromptCatalog
-from pdos_next.agent_kernel.proposal_context import KEY
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.contracts import Command
-from pdos_next.domain.preproject.models import ProposalItemVersion
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Claim, Confirmation, LifecycleObject, Receipt, now
-from pdos_next.providers.types import ProviderUsage
-from pdos_next.service import digest, execute
 from tests.agent_kernel.test_domain_adapter_transactions import counts
 from tests.agent_kernel.test_gateway import Client, configured_route
 from tests.agent_kernel.test_m3_original_binding_pg import actual_run

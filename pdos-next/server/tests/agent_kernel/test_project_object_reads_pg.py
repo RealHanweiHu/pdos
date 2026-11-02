@@ -7,6 +7,23 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.policy import egress
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.core.models import Audit, Grant, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import digest
+from pdos_next.domain.build_execution.models import BuildLot, SampleUnit
+from pdos_next.domain.builds.models import Build
+from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
+from pdos_next.domain.verification_launch.models import (
+    VerificationRunCurrent,
+    VerificationRunVersion,
+)
+from pdos_next.errors import DomainError
 from quality_execution.fixtures import (  # noqa: F401
     accepted_work,
     create_issue,
@@ -21,24 +38,6 @@ from quality_execution.fixtures import (  # noqa: F401
 )
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.policy import egress
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.domain.build_execution.models import BuildLot, SampleUnit
-from pdos_next.domain.builds.models import Build
-from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.domain.verification_launch.models import (
-    VerificationRunCurrent,
-    VerificationRunVersion,
-)
-from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Grant, Outbox, Receipt, RequestKey, now
-from pdos_next.service import digest
 from tests.agent_kernel.test_transactions import run as create_read_run
 
 
@@ -205,10 +204,9 @@ def test_five_registered_reads_current_pointers_replay_and_revoked_access(qualit
 
 def test_internal_metadata_cannot_leave_provider_with_public_only_agreement(setup):
     from pdos_agent_runtime.graph import registered_graph_context
-
-    from pdos_next.agent_kernel.gateway import AgentGateway
-    from pdos_next.agent_kernel.management import register_agreement
-    from pdos_next.agent_kernel.models import TenantAdministrator
+    from pdos_next.agent.kernel.gateway import AgentGateway
+    from pdos_next.agent.kernel.management import register_agreement
+    from pdos_next.agent.kernel.models import TenantAdministrator
     from tests.agent_kernel.test_gateway import Client, configured_route
     from tests.agent_kernel.test_transactions import agreement, human_session
 

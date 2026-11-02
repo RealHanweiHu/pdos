@@ -7,23 +7,22 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.bindings import WriteSource, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import PublicWebSnapshot
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.prompts import PromptCatalog
+from pdos_next.agent.kernel.proposal_context import KEY
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.research_read_ledger import page_result
+from pdos_next.agent.research.types import ReadPage, Snapshot
+from pdos_next.core.models import Claim, Confirmation, Receipt, now
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import WriteSource, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import PublicWebSnapshot
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.prompts import PromptCatalog
-from pdos_next.agent_kernel.proposal_context import KEY
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.research_read_ledger import page_result
-from pdos_next.errors import DomainError
-from pdos_next.models import Claim, Confirmation, Receipt, now
-from pdos_next.research.types import ReadPage, Snapshot
-from pdos_next.service import digest
 from tests.agent_kernel import test_domain_adapter_transactions as domain_fixture
 from tests.agent_kernel.test_domain_adapter_transactions import counts
 from tests.agent_kernel.test_proposal_context_pg import read
@@ -52,7 +51,7 @@ def bound(work, monkeypatch):
     f.store = KernelStore(work.engine)
     f.owner = Bootstrap(work.engine)
     f.owner.route = lambda *_: f.route
-    from pdos_next.agent_kernel.api import StartInput
+    from pdos_next.agent.kernel.api import StartInput
 
     with human_session(work) as session:
         facts = f.owner.binding_for(
@@ -161,7 +160,7 @@ def test_new_claim_can_be_adopted_read_and_replayed_in_original_run(work, monkey
         row = session.get(Claim, identity)
         assert row.run_id == f.scope.run_id and row.writer_id == f.scope.writer_id
         assert row.confirmed_by == (work.human if human else None)
-    from pdos_next.agent_kernel.proposal_context import check
+    from pdos_next.agent.kernel.proposal_context import check
 
     check(f.store, f.scope)
 
@@ -303,11 +302,11 @@ def test_registered_graph_records_new_claim_adopts_it_and_finishes_without_new_r
 ):
     import json
 
-    from pdos_next.agent_kernel.api import StartInput
-    from pdos_next.agent_kernel.graph import AgentKernel
-    from pdos_next.agent_kernel.models import TenantSkillEnablement
-    from pdos_next.agent_kernel.persistence import create_run
-    from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+    from pdos_next.agent.kernel.api import StartInput
+    from pdos_next.agent.kernel.graph import AgentKernel
+    from pdos_next.agent.kernel.models import TenantSkillEnablement
+    from pdos_next.agent.kernel.persistence import create_run
+    from pdos_next.agent.kernel.types import ModelTurn, ToolCall
     from pdos_next.providers.types import ProviderUsage
     from tests.agent_kernel.test_gateway import Client, configured_route
     from tests.agent_kernel.test_proposal_context_pg import agree

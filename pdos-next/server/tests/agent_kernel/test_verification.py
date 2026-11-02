@@ -1,6 +1,5 @@
 import pytest
-
-from pdos_next.agent_kernel.verification import fill_counts
+from pdos_next.agent.kernel.verification import fill_counts
 from pdos_next.errors import DomainError
 
 

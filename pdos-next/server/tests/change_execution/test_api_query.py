@@ -8,11 +8,10 @@ import pytest
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution import api, service
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 
 @pytest.fixture

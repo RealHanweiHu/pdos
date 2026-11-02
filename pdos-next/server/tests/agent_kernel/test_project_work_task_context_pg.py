@@ -13,6 +13,17 @@ from uuid import UUID
 
 import pytest
 from g0_fixture import create_g0_project
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.project_current_context import KEY, KIND, _link, checked_result
+from pdos_next.agent.kernel.project_work_task_context import collect
+from pdos_next.agent.kernel.types import AgentOutput
+from pdos_next.core.models import Grant, now
+from pdos_next.domain.projects.models import ProjectTask
+from pdos_next.domain.work_management import owner
+from pdos_next.domain.work_management.models import WorkTaskVersion
+from pdos_next.errors import DomainError
 from sqlalchemy import event, select, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -20,18 +31,6 @@ from test_original_security import execute as original_post
 from test_original_security import preview as original_preview
 from test_original_security import withdraw_command
 from test_project_first_plan import accepted, cmd, post
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.project_current_context import KEY, KIND, _link, checked_result
-from pdos_next.agent_kernel.project_work_task_context import collect
-from pdos_next.agent_kernel.types import AgentOutput
-from pdos_next.domain.projects.models import ProjectTask
-from pdos_next.domain.work_management import owner
-from pdos_next.domain.work_management.models import WorkTaskVersion
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
 from tests.agent_kernel.test_run_continuation import scope as api_scope
 from tests.agent_kernel.test_run_continuation import start as api_start
 from tests.work_management_pg import test_workflow as flow

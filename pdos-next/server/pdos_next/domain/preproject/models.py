@@ -3,6 +3,8 @@
 from datetime import date
 from uuid import UUID
 
+from pdos_next.agent.kernel.models import AgentRun  # noqa: F401 -- lazy FK metadata
+from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
@@ -14,9 +16,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.agent_kernel.models import AgentRun  # noqa: F401 -- lazy FK metadata
-from pdos_next.models import Base, Row
 
 
 class PreparedCandidate(Row, Base):

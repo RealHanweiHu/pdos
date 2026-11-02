@@ -8,6 +8,18 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Outbox, Product, Receipt, now
+from pdos_next.core.request_proof import request_proof, scope_is_held
+from pdos_next.core.service import command_scope, digest, execute
+from pdos_next.domain.build_execution.models import SampleUnit
+from pdos_next.domain.build_start import service as starts
+from pdos_next.domain.build_start.service import execution_projection, list_execution
+from pdos_next.domain.configurations.service import _merge_reads
+from pdos_next.domain.sample_handoff.models import SampleReadinessCurrent, SampleReadinessFact
+from pdos_next.domain.sample_handoff.service import inspect_sample
+from pdos_next.errors import DomainError
 from sqlalchemy import event, func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -21,19 +33,6 @@ from verification_handoff.fixtures import (  # noqa: F401 - fixture dependency e
     readiness,
     ready_work,
 )
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_execution.models import SampleUnit
-from pdos_next.domain.build_start import service as starts
-from pdos_next.domain.build_start.service import execution_projection, list_execution
-from pdos_next.domain.configurations.service import _merge_reads
-from pdos_next.domain.sample_handoff.models import SampleReadinessCurrent, SampleReadinessFact
-from pdos_next.domain.sample_handoff.service import inspect_sample
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Product, Receipt, now
-from pdos_next.request_proof import request_proof, scope_is_held
-from pdos_next.service import command_scope, digest, execute
 
 
 def listing(work, *, caller=None, purpose=None):
@@ -628,7 +627,7 @@ def test_physical_fact_and_current_pointer_immutable_history_cannot_be_overwritt
 def test_shared_transaction_failure_rolls_back_fact_pointer_receipt_and_confirmation(
     handoff_work, monkeypatch
 ):
-    from pdos_next import service as common
+    from pdos_next.core import service as common
 
     work, sample = handoff_work, handoff_work.samples[0]
     before = listing(work)["current_by_sample"][sample["id"]]

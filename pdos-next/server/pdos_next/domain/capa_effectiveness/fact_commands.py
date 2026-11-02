@@ -11,12 +11,11 @@ from types import MappingProxyType
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, JsonValue, model_validator
-
-from pdos_next import models as _model_registry  # noqa: F401
+from pdos_next.core import models as _model_registry  # noqa: F401
 from pdos_next.domain.capa_verification.schemas import FailurePairMapping
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import EventTime, SourceRef
+from pydantic import AwareDatetime, Field, JsonValue, model_validator
 
 from .anchor import VersionRef
 from .candidate_commands import _attributes

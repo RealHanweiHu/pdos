@@ -13,17 +13,17 @@ sys.path.insert(0, str(SERVER))
 sys.path.insert(0, str(ROOT / "packages/pdos-agent-runtime/src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
-from pdos_next.agent_kernel.prompt_admin import (  # noqa: E402
+from pdos_next.agent.kernel.prompt_admin import (  # noqa: E402
     activate,
     create_draft,
     diff,
     register_draft,
     rollback,
 )
-from pdos_next.agent_kernel.prompts import PromptCatalog  # noqa: E402
+from pdos_next.agent.kernel.prompts import PromptCatalog  # noqa: E402
 from xiaopai_context_admission_baseline import evaluate as evaluate_admission  # noqa: E402
 
-PACKAGE = SERVER / "pdos_next/prompt_packages"
+PACKAGE = SERVER / "pdos_next/agent/prompt_packages"
 QUESTIONS = ROOT / "docs/evaluations/xiaopai-v0/context-questions.json"
 EXPANDED = ROOT / "docs/reports/evidence/pdos-next-eval-v0-20261029/context-expanded-inputs.json"
 
@@ -35,25 +35,25 @@ def sha256(path):
 def source_hashes(package, questions, expanded):
     paths = [
         Path(questions), Path(expanded), Path(__file__).resolve(),
-        SERVER / "pdos_next/agent_kernel/graph.py",
-        SERVER / "pdos_next/agent_kernel/gateway.py",
-        SERVER / "pdos_next/agent_kernel/host.py",
-        SERVER / "pdos_next/agent_kernel/execution.py",
-        SERVER / "pdos_next/agent_kernel/policy.py",
-        SERVER / "pdos_next/agent_kernel/skill_management.py",
-        SERVER / "pdos_next/agent_kernel/skill_qualification.py",
-        SERVER / "pdos_next/agent_kernel/prompts.py",
-        SERVER / "pdos_next/agent_kernel/prompt_admin.py",
-        SERVER / "pdos_next/agent_kernel/context_budget.py",
-        SERVER / "pdos_next/agent_kernel/context_runtime.py",
-        SERVER / "pdos_next/agent_kernel/disclosure.py",
-        SERVER / "pdos_next/agent_kernel/tools.py",
-        SERVER / "pdos_next/agent_kernel/registry.py",
-        SERVER / "pdos_next/agent_kernel/types.py",
-        SERVER / "pdos_next/agent_kernel/skills.py",
+        SERVER / "pdos_next/agent/kernel/graph.py",
+        SERVER / "pdos_next/agent/kernel/gateway.py",
+        SERVER / "pdos_next/agent/kernel/host.py",
+        SERVER / "pdos_next/agent/kernel/execution.py",
+        SERVER / "pdos_next/agent/kernel/policy.py",
+        SERVER / "pdos_next/agent/kernel/skill_management.py",
+        SERVER / "pdos_next/agent/kernel/skill_qualification.py",
+        SERVER / "pdos_next/agent/kernel/prompts.py",
+        SERVER / "pdos_next/agent/kernel/prompt_admin.py",
+        SERVER / "pdos_next/agent/kernel/context_budget.py",
+        SERVER / "pdos_next/agent/kernel/context_runtime.py",
+        SERVER / "pdos_next/agent/kernel/disclosure.py",
+        SERVER / "pdos_next/agent/kernel/tools.py",
+        SERVER / "pdos_next/agent/kernel/registry.py",
+        SERVER / "pdos_next/agent/kernel/types.py",
+        SERVER / "pdos_next/agent/kernel/skills.py",
         ROOT / "pdos-next/tools/xiaopai_context_admission_baseline.py",
     ]
-    paths.extend((SERVER / "pdos_next/skill_packages").rglob("*"))
+    paths.extend((SERVER / "pdos_next/agent/skill_packages").rglob("*"))
     paths.extend(Path(package).rglob("*"))
     paths.extend((ROOT / "packages/pdos-agent-runtime/src").rglob("*.py"))
 

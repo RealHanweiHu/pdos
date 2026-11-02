@@ -5,11 +5,11 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
+from pdos_next.core.models import now
+from pdos_next.core.service import command_digest, digest
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.preproject.access import human, member
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
-from pdos_next.models import now
-from pdos_next.service import command_digest, digest
-from pdos_next.source_current import direct_source_basis
 from sqlalchemy import select
 
 from . import g0_sources, owner, rules
@@ -77,7 +77,7 @@ def _merge_basis(*groups):
 
 def validate(s, ctx, command, product, payload):
     if command.operation == CREATE and not ctx.agent_run_id:
-        from pdos_next.enterprise_search.work_followup_candidates import check_command
+        from pdos_next.agent.enterprise_search.work_followup_candidates import check_command
 
         check_command(s, ctx, command)
     key = _cache_key(ctx, command)
@@ -286,7 +286,7 @@ def preview_view(s, ctx, command, product, payload):
 
 
 def inputs(s, ctx, pid, command):
-    from pdos_next.service import command_scope
+    from pdos_next.core.service import command_scope
 
     rules.require(
         command.product_id == pid and command.category_id == ctx.category_id,
@@ -305,7 +305,7 @@ def inputs(s, ctx, pid, command):
         [{"artifact_id": str(ref.id), "expected_revision": ref.revision} for ref in refs]
     )
     prepared = command.model_copy(update={"source_read_set": []})
-    from pdos_next.contracts import Command
+    from pdos_next.core.contracts import Command
 
     prepared = Command.model_validate(
         {**prepared.model_dump(mode="json"), "source_read_set": reads}

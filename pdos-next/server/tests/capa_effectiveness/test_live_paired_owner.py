@@ -15,10 +15,7 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy.orm import Session
-from sqlalchemy.sql import operators
-
-from pdos_next import paired_output_bridge as bridge
+from pdos_next.core.models import Grant, Principal
 from pdos_next.domain.capa_effectiveness import paired, paired_storage
 from pdos_next.domain.verification_launch.models import (
     VerificationLaunchFact,
@@ -27,7 +24,9 @@ from pdos_next.domain.verification_launch.models import (
 )
 from pdos_next.domain.verification_results.models import TestResultActionFact as ResultActionORM
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
+from pdos_next.features.quality import paired_output_bridge as bridge
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import operators
 
 
 def load_fixture_module(name, filename, aliases):
@@ -337,7 +336,7 @@ def test_current_pair_event_original_remains_required(operation):
 
 @pytest.mark.parametrize("change", (None, "changed_basis", "detached_fact"))
 def test_direct_start_basis_keeps_saved_contract_and_exact_launch_binding(monkeypatch, change):
-    from pdos_next import source_current
+    from pdos_next.core import source_current
 
     source = structural.exact("actual-start")
     direct_basis = [{"id": str(source.artifact_id), "revision": 1}]

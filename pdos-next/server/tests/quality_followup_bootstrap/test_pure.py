@@ -8,16 +8,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-from quality_followup.test_pure import completion, issue, line
-from quality_issues.helpers import NOW, uid
-
-from pdos_next import quality_followup_bootstrap as bootstrap
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.quality_followup import service
 from pdos_next.domain.quality_followup.ports import Runtime
 from pdos_next.domain.quality_followup.schemas import CompletionFact
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
+from pdos_next.features.quality import followup_bootstrap as bootstrap
+from pydantic import ValidationError
+from quality_followup.test_pure import completion, issue, line
+from quality_issues.helpers import NOW, uid
 
 
 def code(expected, callback):

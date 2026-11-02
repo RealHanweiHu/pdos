@@ -11,12 +11,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next import quality_followup_bootstrap as bootstrap
-from pdos_next import quality_followup_integration as integration
+from pdos_next.core.service import Context
 from pdos_next.domain.quality_followup.service import _runtime
 from pdos_next.errors import DomainError
+from pdos_next.features.quality import followup_bootstrap as bootstrap
+from pdos_next.features.quality import followup_integration as integration
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import Context
 from quality_followup_bootstrap.test_pure import work as legacy_work  # noqa: F401
 from sqlalchemy import create_engine, event
 from sqlalchemy.engine import Engine
@@ -116,7 +116,7 @@ def assert_error(code, call):
 
 def test_integration_and_bootstrap_use_one_actual_package_namespace():
     assert Path(integration.__file__).parent == Path(bootstrap.__file__).parent
-    assert Path(integration.__file__).parent.name == "pdos_next"
+    assert Path(integration.__file__).parent.name == "quality"
 
 
 def test_old_single_profile_keeps_real_exact_bootstrap_contract(legacy_work):  # noqa: F811

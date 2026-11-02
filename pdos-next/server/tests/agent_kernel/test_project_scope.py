@@ -6,10 +6,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.execution import check_run_binding, scope_for_run
-from pdos_next.agent_kernel.project_scope import require_project
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.execution import check_run_binding, scope_for_run
+from pdos_next.agent.kernel.project_scope import require_project
+from pdos_next.agent.kernel.types import RunScope
 from pdos_next.errors import DomainError
 
 
@@ -82,8 +81,8 @@ def test_unbound_project_does_not_read_or_infer_a_project():
 
 
 def test_registered_context_profiles_carry_only_checked_project_metadata():
-    from pdos_next.agent_kernel.context_projection import combine_contracts, project
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel.context_projection import combine_contracts, project
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     catalog = SkillCatalog()
     actual = {

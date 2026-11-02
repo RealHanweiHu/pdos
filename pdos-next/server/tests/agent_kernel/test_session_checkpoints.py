@@ -8,15 +8,14 @@ from uuid import uuid4
 import pytest
 from langgraph.checkpoint.base import empty_checkpoint
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.session_checkpoints import (
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.session_checkpoints import (
     SESSION_LAYOUT,
     SessionRunSaver,
     main_checkpoint_config,
 )
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_graph import Host, final, scope
 

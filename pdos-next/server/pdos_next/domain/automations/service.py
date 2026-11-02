@@ -5,13 +5,13 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
-from pdos_next.agent_kernel.models import TenantSkillEnablement, ValidationBudget
-from pdos_next.agent_kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.models import TenantSkillEnablement, ValidationBudget
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.models import now
+from pdos_next.core.request_proof import command_inputs_once
+from pdos_next.core.service import EVENTS, command_digest, digest, require_access
 from pdos_next.domain.preproject.access import human
 from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.request_proof import command_inputs_once
-from pdos_next.service import EVENTS, command_digest, digest, require_access
 from sqlalchemy import select
 
 from .models import AutomationRuleCurrent as Current
@@ -56,7 +56,7 @@ def spec_current(s, ctx, spec, *, enabled=False):
     if enabled and spec.trigger_kind != "manual":
         from types import SimpleNamespace
 
-        from pdos_next.agent_kernel.bootstrap import Bootstrap
+        from pdos_next.agent.kernel.bootstrap import Bootstrap
 
         from .trigger_time import Schedule
 
@@ -74,7 +74,7 @@ def spec_current(s, ctx, spec, *, enabled=False):
             s, ctx, SimpleNamespace(product_id=spec.product_id, proposal_id=None, sources=[])
         )
     if spec.personal_summary is not None and spec.personal_summary.dingtalk_binding_id is not None:
-        from pdos_next.personal_summary_channels import selected
+        from pdos_next.features.personal.summary_channels import selected
 
         selected(s, ctx, spec.personal_summary.dingtalk_binding_id)
     if spec.walletless_summary:
@@ -185,7 +185,7 @@ def prepared(s, ctx, command, scope, payload):
             "cooldown_seconds": spec.cooldown_seconds,
         }
     if command.operation == ACTIVATE and spec.trigger_kind != "manual":
-        from pdos_next.agent_kernel.bootstrap import Bootstrap
+        from pdos_next.agent.kernel.bootstrap import Bootstrap
 
         review["service_authorization"] = {
             "service_principal_id": str(Bootstrap.writer_for(s, ctx)),
@@ -382,7 +382,7 @@ def workspace(s, ctx):
 
 
 def detail(s, ctx, rule_id):
-    from pdos_next.agent_kernel.models import AgentRun
+    from pdos_next.agent.kernel.models import AgentRun
 
     from .models import AutomationTriggerOccurrence as Occurrence
 

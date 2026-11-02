@@ -3,9 +3,7 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, JsonValue, model_validator
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
 from pdos_next.domain.release.policy_schemas import PolicyMaterial
 from pdos_next.domain.release.schemas import (
     DTO,
@@ -20,6 +18,7 @@ from pdos_next.domain.release.schemas import (
     VersionRef,
 )
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic import AwareDatetime, Field, JsonValue, model_validator
 
 from .constants import DECIDE, WITHDRAW
 

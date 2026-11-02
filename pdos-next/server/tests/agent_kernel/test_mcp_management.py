@@ -6,18 +6,17 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.mcp import McpPorts, McpService
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.mcp import McpPorts, McpService
+from pdos_next.agent.kernel.models import (
     McpControlRecord,
     McpToolGrant,
     TenantAdministrator,
 )
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, now
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, now
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_skill_management import promote
 from tests.agent_kernel.test_transactions import human_session, run
 
@@ -418,7 +417,7 @@ def test_legacy_zero_revision_grant_can_be_revoked_without_inheriting_access(set
 
 
 def test_failed_control_write_rolls_back_state_proof_receipt_and_history(admitted, monkeypatch):
-    from pdos_next.agent_kernel import mcp_management
+    from pdos_next.agent.kernel import mcp_management
 
     s = admitted.setup
     original = prepared(s, allow(s, revision=1, active=False, tools=[]))["command"]

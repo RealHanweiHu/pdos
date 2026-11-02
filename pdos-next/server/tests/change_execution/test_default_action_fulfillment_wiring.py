@@ -8,24 +8,23 @@ import httpx
 import psycopg
 import pytest
 from fastapi import FastAPI
+from pdos_next.api import create_app
+from pdos_next.domain.capa_effectiveness import fact_service
+from pdos_next.domain.capa_effectiveness.candidate_commands import semantic_owner
+from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
+from pdos_next.features.capa.applicability_owner import (
+    ActualActionFulfillmentOwner,
+    ActualApplicabilityOwner,
+)
+from pdos_next.features.capa.fact_owner import ActualFactOwner
+from pdos_next.features.change.action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
+from pdos_next.features.change.controlled_owner import ApprovedActionIntentOwner
+from pdos_next.features.change.implementation_owner import ApprovedImplementationOwner
+from pdos_next.features.quality.paired_output_bridge import LivePairedOwner
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 from temporalio.client import Client
-
-from pdos_next.api import create_app
-from pdos_next.capa_applicability_owner import (
-    ActualActionFulfillmentOwner,
-    ActualApplicabilityOwner,
-)
-from pdos_next.capa_fact_owner import ActualFactOwner
-from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
-from pdos_next.change_controlled_owner import ApprovedActionIntentOwner
-from pdos_next.change_implementation_owner import ApprovedImplementationOwner
-from pdos_next.domain.capa_effectiveness import fact_service
-from pdos_next.domain.capa_effectiveness.candidate_commands import semantic_owner
-from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
-from pdos_next.paired_output_bridge import LivePairedOwner
 
 
 @pytest.fixture

@@ -6,13 +6,12 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import management_api, policy
-from pdos_next.agent_kernel.management import AgreementInput
-from pdos_next.agent_kernel.models import ProviderDataAgreement
+from pdos_next.agent.kernel import management_api, policy
+from pdos_next.agent.kernel.management import AgreementInput
+from pdos_next.agent.kernel.models import ProviderDataAgreement
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from pydantic import ValidationError
 
 
 def legacy_request():
@@ -144,7 +143,7 @@ def test_list_exposes_tenant_policy_without_reading_private_administrator_receip
 
 def test_nullable_cache_metadata_and_downgrade_keep_old_unknown_and_named_history_separate():
     from migrations import schema_s0_0853 as ddl
-    from pdos_next.lifecycle_catalog import COVERED_COLUMNS
+    from pdos_next.features.lifecycle.catalog import COVERED_COLUMNS
 
     column = ProviderDataAgreement.__table__.c.prompt_cache_allowed
     assert column.nullable and column.default is None and column.server_default is None

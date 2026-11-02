@@ -3,16 +3,14 @@
 
 from contextlib import contextmanager
 from copy import deepcopy
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, select, text
-from sqlalchemy.exc import DBAPIError
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Confirmation, Receipt
+from pdos_next.core.service import Context, digest, execute
 from pdos_next.domain.preproject import category_creation as creation
 from pdos_next.domain.preproject.category_models import (
     KnowledgeCurrent,
@@ -21,8 +19,8 @@ from pdos_next.domain.preproject.category_models import (
     ParameterVersion,
 )
 from pdos_next.domain.preproject.provenance import prepare_candidate
-from pdos_next.models import Confirmation, Receipt
-from pdos_next.service import Context, digest, execute
+from sqlalchemy import event, select, text
+from sqlalchemy.exc import DBAPIError
 from tests.preproject import test_review_fixes as fixtures
 from tests.preproject.test_g0 import post, request
 from tests.preproject.test_g0 import work as work
@@ -406,7 +404,7 @@ def t0_material_fixture(work, monkeypatch, arguments, *, private_context=False):
 
 
 def execute_t0_material(fixture, arguments, source=None):
-    from pdos_next.agent_kernel.bindings import execution_key
+    from pdos_next.agent.kernel.bindings import execution_key
 
     source = source or fixture.source
     return fixture.adapter.execute(
@@ -419,7 +417,7 @@ def execute_t0_material(fixture, arguments, source=None):
 
 
 def assert_no_t0_material_write(work, fixture):
-    from pdos_next.agent_kernel.models import AgentToolCall
+    from pdos_next.agent.kernel.models import AgentToolCall
 
     with human_session(work) as session:
         assert (
@@ -444,7 +442,7 @@ def assert_no_t0_material_write(work, fixture):
 
 
 def test_t0_material_actual_controlled_call_adds_replays_and_supersedes_ai_draft(work, monkeypatch):
-    from pdos_next.agent_kernel.models import AgentToolCall
+    from pdos_next.agent.kernel.models import AgentToolCall
 
     arguments = knowledge()
     fixture = t0_material_fixture(work, monkeypatch, arguments)
@@ -502,7 +500,7 @@ def imported_material_work(work):
     """Use the public seed admission and named member grant, never forged origin rows."""
     from copy import copy
 
-    from pdos_next.category_scope import MemberGrant, grant_member
+    from pdos_next.core.category_scope import MemberGrant, grant_member
 
     seed = creation.load_seed(creation.SEED_KEYS[0])
     boundary_index = next(

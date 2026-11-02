@@ -6,11 +6,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects.postgresql import dialect
-
-from pdos_next import personal_summary_delivery as feed
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.personal import summary_delivery as feed
+from sqlalchemy.dialects.postgresql import dialect
 
 
 def test_feed_sql_binds_actual_owner_attempt_grant_publication_and_t1_without_body():

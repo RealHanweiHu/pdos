@@ -5,18 +5,17 @@ from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import pytest
-
-from pdos_next.agent_kernel.prompt_admin import (
+from pdos_next.agent.kernel.prompt_admin import (
     activate,
     assert_evaluation_current,
     create_draft,
     register_draft,
     rollback,
 )
-from pdos_next.agent_kernel.prompts import PromptCatalog
-from pdos_next.agent_kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.prompts import PromptCatalog
+from pdos_next.agent.kernel.skills import SkillCatalog
 
-PACKAGE = Path(__file__).resolve().parents[2] / "pdos_next/prompt_packages"
+PACKAGE = Path(__file__).resolve().parents[2] / "pdos_next/agent/prompt_packages"
 
 
 def package(tmp_path):

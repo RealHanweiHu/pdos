@@ -9,7 +9,6 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-
 from pdos_next.evidence_security import (
     ObjectStoreScannerAdapter,
     ScanBinding,
@@ -28,7 +27,7 @@ from pdos_next.evidence_security import (
     parsing_gate,
 )
 from pdos_next.evidence_security.preflight import XLSX
-from pdos_next.object_storage import LocalPrivateObjectStore, ObjectRef, StorageFailure
+from pdos_next.originals.object_storage import LocalPrivateObjectStore, ObjectRef, StorageFailure
 
 NOW = datetime(2026, 10, 2, 12, tzinfo=UTC)
 IDENTITY = ScannerIdentity("fake-local-unit-check", "engine-v1", "rules-v1")

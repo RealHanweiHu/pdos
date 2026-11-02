@@ -5,8 +5,7 @@ from threading import Barrier, Event
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.original_lifecycle import (
+from pdos_next.originals.lifecycle import (
     ActorKind,
     DecisionReason,
     Disposition,

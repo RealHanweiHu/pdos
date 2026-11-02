@@ -9,25 +9,24 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
-from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import SkillBinding, execution_key
+from pdos_next.agent.kernel.disclosure import disclosure, skill_operations
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import (
     AgentRun,
     AgentSession,
     AgentToolCall,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Confirmation, Receipt
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.provenance import prepare_candidate
 from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Receipt
-from pdos_next.service import digest
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_execution_binding import ledger
 from tests.products.test_definition_item_commands_pg import (
     OPERATION,
@@ -382,7 +381,7 @@ def test_revert_keeps_human_changed_item_and_reverts_unmodified_sibling(setup):
 
 
 def test_revert_receipt_failure_is_atomic_and_confirmation_reusable(setup, monkeypatch):
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     definition_id, _ = draft(setup)
     fixture = agent_fixture(

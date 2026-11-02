@@ -9,16 +9,15 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.models import AgentRun
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Principal
+from pdos_next.core.request_proof import command_inputs_once
+from pdos_next.core.service import require_access, source_for
 from pdos_next.domain.preproject.access import fail, human, member
 from pdos_next.domain.preproject.category_service import check_parameter
 from pdos_next.domain.preproject.models import PreparedCandidate
-from pdos_next.models import Principal
-from pdos_next.request_proof import command_inputs_once
 from pdos_next.schemas.products.definition_items import DefinitionItemPatch
-from pdos_next.service import require_access, source_for
+from sqlalchemy import select
 
 from .definition_item_consumers import ensure_unconsumed
 from .models import DefinitionRevision, DefinitionSpecRow
@@ -95,7 +94,7 @@ def _definition(s, ctx, product, identity, *, reverting=False):
 
 def _writing_path(s, ctx, command, product, payload):
     if ctx.agent_run_id:
-        from pdos_next.agent_kernel.execution import command_call, command_run
+        from pdos_next.agent.kernel.execution import command_call, command_run
 
         run = command_run(s, ctx, product.id)
         command_call(s, ctx, command.operation)
@@ -411,7 +410,7 @@ def finalize_receipt(s, ctx, command, product, payload, subject, receipt):
 
 def prepare_revert(s, ctx, run, receipts):
     """Prepare all this run's definition patches together, including repeated edits."""
-    from pdos_next.models import Product
+    from pdos_next.core.models import Product
 
     human(s, ctx)
     if (

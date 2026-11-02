@@ -336,7 +336,7 @@ def apply_control(setup, spec, action, previous):
             "S7-A；复验观察窗口45秒；生效日期2026-10-21。", previous=source, label="S7-A v2")
         return {"action": action, "old_source": source, "new_source": bindings["new_source"]}
     if action == "revoke_private_audience":
-        from pdos_next.models import ObjectAudience
+        from pdos_next.core.models import ObjectAudience
         from sqlalchemy.orm import Session
 
         private = bindings["sources"]["S8-B"]["artifact_id"]
@@ -357,7 +357,7 @@ def apply_control(setup, spec, action, previous):
                 "audience_id": bindings["private_audience_id"], "withdrawn": True,
                 "basis": "same isolated synthetic ObjectAudience fixture as old native controls"}
     if action == "require_all_24_constraints":
-        from pdos_next.agent_kernel.work_state import STATE_TOKENS
+        from pdos_next.agent.kernel.work_state import STATE_TOKENS
 
         state = read_state(setup, session_id)
         expected = cases()["CTX-10"]["turns"][0]["content"].splitlines()[1:]

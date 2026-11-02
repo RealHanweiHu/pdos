@@ -10,6 +10,10 @@ from uuid import uuid4
 
 import httpx
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.service import digest
+from pdos_next.domain.test_resources import service as resources
+from pdos_next.domain.test_resources.models import TestResourceReservation as ResourceReservation
 from resource_dependency_faults.faults import (
     FAULT_CODE,
     fail_after_final_common_flush,
@@ -34,11 +38,6 @@ from test_resource_dependency_execution import (  # noqa: F401
 from test_retained_execution import _proof
 from test_retained_registry_compatibility import add_unrelated_scope
 from verification_launch import fixtures as launch_fixtures
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.domain.test_resources.models import TestResourceReservation as ResourceReservation
-from pdos_next.service import digest
 
 
 @pytest.mark.parametrize("launch_work", [{"window_minutes": 45, "fact_minutes": 60}], indirect=True)

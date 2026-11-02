@@ -2,14 +2,14 @@
 
 # ruff: noqa: F811 - imported fixtures register the shared real dependency tree
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import digest
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.test_resources import service as resources
 from sqlalchemy import select
 from test_project_first_plan import accepted, post
 
-from pdos_next.database import tenant_session
-from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.models import Confirmation
-from pdos_next.service import digest
 from verification_results.fixtures import (  # noqa: F401
     accepted_work,
     capture,
@@ -28,11 +28,11 @@ from verification_results.test_transactions import counts
 def test_store_io_rechecks_import_issuer_and_preserves_fixed_start_issuer(
     results_work, monkeypatch, issuer
 ):
+    from pdos_next.core.models import Receipt
     from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
     from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
     from pdos_next.domain.verification_launch.models import VerificationRunVersion
     from pdos_next.domain.verification_results.models import MeasurementRecord, TestResultActionFact
-    from pdos_next.models import Receipt
 
     work = results_work
     captured, _ = capture(work, (0,))

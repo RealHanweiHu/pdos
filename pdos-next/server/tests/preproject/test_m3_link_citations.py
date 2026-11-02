@@ -6,17 +6,16 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.models import PublicWebSnapshot
+from pdos_next.agent.kernel.models import PublicWebSnapshot
+from pdos_next.core.models import Artifact, Product
+from pdos_next.core.service import Context
 from pdos_next.domain.preproject import root_sources
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.preproject.models import ProposalSource, ProposalSubmission
 from pdos_next.domain.preproject.schemas import Reference
 from pdos_next.domain.products.models import DefinitionSource, DefinitionSpecRow
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Product
-from pdos_next.service import Context
+from sqlalchemy import select
 from tests.agent_kernel.test_transactions import human_session
 from tests.preproject.test_evidence_commands_pg import artifact, evidence_request
 from tests.preproject.test_g0 import create, decide_request, post, read, save, submit
@@ -81,7 +80,7 @@ class ProjectionSession:
 
 @pytest.fixture
 def projection(monkeypatch):
-    from pdos_next import request_proof
+    from pdos_next.core import request_proof
 
     ctx = Context(uuid4(), uuid4(), uuid4(), category_id=uuid4())
     source = NS(
@@ -171,7 +170,8 @@ def test_stale_projection_keeps_link_identity_without_quote_or_derived_ref(proje
 
 
 def test_original_security_failure_does_not_expose_canonical_quote(projection, monkeypatch):
-    from pdos_next import original_security, originals
+    from pdos_next.originals import access as originals
+    from pdos_next.originals import security as original_security
 
     f = projection
     f.source.original_id = uuid4()

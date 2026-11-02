@@ -12,9 +12,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Product
+from pdos_next.core.service import Context
 from pdos_next.domain.capa_verification import preview_phase as phase
 from pdos_next.domain.capa_verification.schemas import (
     ActionBinding,
@@ -26,10 +26,9 @@ from pdos_next.domain.capa_verification.schemas import (
     SourceRead,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
 from pdos_next.schemas.quality_issues.contracts import EffectivenessRequirement
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import Context
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 NOW = datetime(2026, 10, 3, 12, tzinfo=UTC)
 

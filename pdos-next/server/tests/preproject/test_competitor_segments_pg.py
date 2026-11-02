@@ -14,16 +14,15 @@ from decimal import Decimal
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Category, Grant, RequestKey, now
 from pdos_next.domain.preproject.category_models import (
     KnowledgeCurrent,
     KnowledgeEntry,
     PromotionProof,
 )
 from pdos_next.domain.preproject.schemas import Reference
-from pdos_next.models import Category, Grant, RequestKey, now
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.preproject.test_category_context_pg import add_knowledge
 from tests.preproject.test_category_matrix_pg import counts, matrix
 from tests.preproject.test_evidence_commands_pg import artifact, record_claim, withdraw_request

@@ -11,13 +11,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.core import service as common
+from pdos_next.core.models import Artifact, Category, Confirmation, Grant, Principal, Product
+from pdos_next.errors import DomainError
+from pdos_next.features.projects import launch_plan_preview as seam
 from sqlalchemy.orm import make_transient_to_detached
 from test_launch_plan_preview import no_io, work  # noqa: F401
-
-from pdos_next import launch_plan_preview as seam
-from pdos_next import service as common
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Category, Confirmation, Grant, Principal, Product
 
 
 def proposed_preview():

@@ -16,8 +16,8 @@ from manufacturing_preparation.test_publication_material_owner import (
 )
 from manufacturing_preparation.test_publication_rules import case as publication_case  # noqa: F401
 from manufacturing_trials.test_native_statistics_owner import original
-from sqlalchemy import select
-
+from pdos_next.core.models import Artifact
+from pdos_next.core.service import digest
 from pdos_next.domain.external_handoff import evidence_owner as owner
 from pdos_next.domain.external_handoff.evidence_schemas import HandoffContract
 from pdos_next.domain.external_handoff.schemas import (
@@ -31,9 +31,8 @@ from pdos_next.domain.external_handoff.schemas import (
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.release.schemas import SubjectConfiguration, VersionRef
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import digest
+from sqlalchemy import select
 
 
 @pytest.fixture

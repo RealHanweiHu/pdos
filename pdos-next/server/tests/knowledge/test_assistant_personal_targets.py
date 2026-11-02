@@ -6,12 +6,11 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.service import digest
 from pdos_next.domain.knowledge import assistant_gaps as gaps
 from pdos_next.domain.knowledge import assistant_sources as sources
 from pdos_next.domain.knowledge.assistant_schemas import GapInput
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 from tests.knowledge.test_assistant_knowledge import source  # noqa: F401
 
 

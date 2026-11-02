@@ -2,9 +2,8 @@
 # ruff: noqa: F811 -- explicitly imported marked PG fixtures
 
 import pytest
-
-from pdos_next.agent_kernel.context_projection import combine_contracts, project
-from pdos_next.agent_kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.context_projection import combine_contracts, project
+from pdos_next.agent.kernel.skills import SkillCatalog
 from tests.agent_kernel.test_proposal_context_pg import start
 from tests.confirmation_fixture import confirmation_clock  # noqa: F401
 from tests.preproject.test_g0 import work as work

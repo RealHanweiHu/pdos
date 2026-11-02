@@ -8,15 +8,14 @@ from threading import Barrier
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search.events import process_event
+from pdos_next.agent.enterprise_search.indexing import project, rebuild
+from pdos_next.agent.enterprise_search.models import SearchChunk, SearchCorpus, SearchTerm
+from pdos_next.agent.enterprise_search.query import SearchInput, search
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant, Outbox, Receipt
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.events import process_event
-from pdos_next.enterprise_search.indexing import project, rebuild
-from pdos_next.enterprise_search.models import SearchChunk, SearchCorpus, SearchTerm
-from pdos_next.enterprise_search.query import SearchInput, search
-from pdos_next.models import Artifact, Grant, Outbox, Receipt
 from tests.preproject.test_g0 import post, request
 
 
@@ -319,8 +318,8 @@ def test_knowledge_versions_are_fixed_and_withdrawal_invalidates_history_without
 
 
 def test_projection_failure_is_recorded_then_same_event_recovers(setup, monkeypatch):
-    from pdos_next.enterprise_search import indexing
-    from pdos_next.enterprise_search.models import SearchSource
+    from pdos_next.agent.enterprise_search import indexing
+    from pdos_next.agent.enterprise_search.models import SearchSource
     from pdos_next.errors import DomainError
 
     identity = register(setup, "气密投影恢复", "漏气复验。")
@@ -362,7 +361,7 @@ def test_projection_failure_is_recorded_then_same_event_recovers(setup, monkeypa
 
 
 def test_projection_rejects_forged_envelopes_and_revoked_background_actor(setup):
-    from pdos_next.enterprise_search.models import SearchSource
+    from pdos_next.agent.enterprise_search.models import SearchSource
     from pdos_next.errors import DomainError
 
     identity = register(setup, "不能伪造的实际来源", "漏气复验。")

@@ -3,13 +3,12 @@
 from datetime import timedelta
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, text
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Outbox, Receipt, now
+from pdos_next.core.service import Context, digest, require_access
 from pdos_next.errors import DomainError
-from pdos_next.models import Outbox, Receipt, now
-from pdos_next.service import Context, digest, require_access
+from sqlalchemy import select, text
 
 from .models import AutomationRuleCurrent as Current
 from .models import AutomationRuleVersion as Version

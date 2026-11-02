@@ -15,20 +15,10 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
-from sqlalchemy import event, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session, make_transient_to_detached
-from test_build_execution import actual_command, actual_comparison, alternate_configurations
-from test_project_first_plan import accepted
-from verification_handoff import fixtures as handoff_fixtures
-from verification_launch import fixtures as launch_fixtures
-from verification_launch.fixtures import (  # noqa: F401 - required pytest fixture registrations
-    known_configuration,
-    operational_work,
-    ready_work,
-)
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Outbox, Product, Receipt, RequestKey, now
+from pdos_next.core.request_proof import request_proof
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.build_operational_facts.models import (
     MaterialHold,
     OperationalAsset,
@@ -59,10 +49,19 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Outbox, Product, Receipt, RequestKey, now
-from pdos_next.request_proof import request_proof
 from pdos_next.schemas.verification.contracts import TestRun as RunDTO
-from pdos_next.service import Context, digest
+from sqlalchemy import event, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session, make_transient_to_detached
+from test_build_execution import actual_command, actual_comparison, alternate_configurations
+from test_project_first_plan import accepted
+from verification_handoff import fixtures as handoff_fixtures
+from verification_launch import fixtures as launch_fixtures
+from verification_launch.fixtures import (  # noqa: F401 - required pytest fixture registrations
+    known_configuration,
+    operational_work,
+    ready_work,
+)
 
 RESULT_OPERATIONS = (
     "test.results.import",
@@ -892,7 +891,7 @@ def test_retained_held_writer_keeps_fixed_fact_after_late_current_successor(
 ):
     """Actual PG lineage/trigger checks; root alone executes this guarded test."""
     work = retained_started_work
-    from pdos_next import source_current
+    from pdos_next.core import source_current
 
     ordinary_effects, ordinary_basis = launch._saved_effects, source_current.direct_source_basis
     with _scoped(work) as session:

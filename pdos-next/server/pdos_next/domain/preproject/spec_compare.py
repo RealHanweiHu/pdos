@@ -10,15 +10,14 @@ from types import SimpleNamespace
 from typing import Literal
 from uuid import UUID
 
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.models import Artifact, Product
+from pdos_next.core.schema_base import StrictModel
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
+from pdos_next.schemas.spec_values import numeric_value_shape
 from pydantic import Field, model_validator
 from sqlalchemy import select
-
-from pdos_next.category_scope import category_scope
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Product
-from pdos_next.schema_base import StrictModel
-from pdos_next.schemas.spec_values import numeric_value_shape
-from pdos_next.service import digest
 
 from . import baseline, category_reads, category_service, root_sources
 from .access import fail

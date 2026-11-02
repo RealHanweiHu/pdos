@@ -1,13 +1,12 @@
 """Readable current knowledge, fixed version history and explicit new-use status."""
 
-from sqlalchemy import or_, select
-
+from pdos_next.core.models import Principal, now
+from pdos_next.core.service import require_access
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, now
-from pdos_next.service import require_access
+from sqlalchemy import or_, select
 
 from . import owner, provenance, rules
 from .models import (

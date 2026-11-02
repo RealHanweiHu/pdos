@@ -3,17 +3,16 @@
 from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
-from sqlalchemy import select, text
-
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun
-from pdos_next.agent_kernel.work_state import user_goal
-from pdos_next.category_scope import category_scope
-from pdos_next.clock import now
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun
+from pdos_next.agent.kernel.work_state import user_goal
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.clock import now
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Category, Principal
+from pdos_next.core.service import Context, digest, require_access
 from pdos_next.domain.preproject.access import human, proposal
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Principal
-from pdos_next.service import Context, digest, require_access
+from sqlalchemy import select, text
 
 from .assistant_models import KnowledgeGapAttribution, KnowledgeGapSubmission
 from .assistant_sources import answer_body, bound_proof, recheck, require
@@ -53,7 +52,7 @@ def _run(session, ctx, identity):
     )
     require_access(session, ctx, run.product_id, write=False)
     if run.project_id:
-        from pdos_next.agent_kernel.project_scope import require_project
+        from pdos_next.agent.kernel.project_scope import require_project
 
         require_project(session, ctx, run.project_id, run.product_id)
     if run.proposal_id:
@@ -81,9 +80,9 @@ def preview(session, ctx, data, *, engine):
             "FORBIDDEN_SCOPE",
             403,
         )
-        from pdos_next.agent_kernel.execution import scope_for_run
-        from pdos_next.enterprise_search import assistant_ledger as ledger
-        from pdos_next.enterprise_search.assistant_answer import checked_sources
+        from pdos_next.agent.enterprise_search import assistant_ledger as ledger
+        from pdos_next.agent.enterprise_search.assistant_answer import checked_sources
+        from pdos_next.agent.kernel.execution import scope_for_run
 
         actual = checked_sources(session, run)
         issued, _ = ledger.carried(session, scope_for_run(run))
@@ -115,7 +114,7 @@ def preview(session, ctx, data, *, engine):
             )
             require_access(reading, recipient_ctx, run.product_id, write=False)
             if run.project_id:
-                from pdos_next.agent_kernel.project_scope import require_project
+                from pdos_next.agent.kernel.project_scope import require_project
 
                 require_project(reading, recipient_ctx, run.project_id, run.product_id)
             if run.proposal_id:
@@ -123,9 +122,9 @@ def preview(session, ctx, data, *, engine):
             recheck(reading, proof)
         answer = answer_body(run)
         require(bool(answer), "原反馈尚无可分享的回答正文。", "MISSING_REQUIRED_EVIDENCE", 422)
+    from pdos_next.core.models import Product
     from pdos_next.domain.preproject.models import Proposal
     from pdos_next.domain.projects.models import Project
-    from pdos_next.models import Product
 
     product = session.get(Product, run.product_id) if run.product_id else None
     project = session.get(Project, run.project_id) if run.project_id else None

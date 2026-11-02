@@ -7,6 +7,11 @@ from datetime import timedelta
 from types import SimpleNamespace
 
 import pytest
+from pdos_next.core.models import now
+from pdos_next.core.request_proof import request_proof, scope_is_held
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.quality_execution import service
+from pdos_next.errors import DomainError
 from quality_execution.fixtures import (
     accepted_work,
     command,
@@ -24,12 +29,6 @@ from quality_execution.fixtures import (
 from sqlalchemy import event
 from test_project_first_plan import post
 from test_resource_dependency_execution import engines
-
-from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.quality_execution import service
-from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.request_proof import request_proof, scope_is_held
 
 
 def test_quality_reading_terminal_error_prevents_returning_built_current_view(monkeypatch):
@@ -82,9 +81,9 @@ def test_actual_multi_failure_reading_shares_retained_and_rejects_late_byte_revo
 ):
     from uuid import UUID
 
-    from pdos_next import quality_result_bridge as bridge
+    from pdos_next.core.models import Artifact
     from pdos_next.domain.quality_execution import evidence, policy
-    from pdos_next.models import Artifact
+    from pdos_next.features.quality import result_bridge as bridge
 
     work = quality_work
     publish_policy(work)
@@ -266,9 +265,9 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
     import re
     from uuid import UUID, uuid4
 
-    from pdos_next import quality_result_bridge as bridge
+    from pdos_next.core.models import Artifact, Receipt
     from pdos_next.domain.quality_execution import evidence
-    from pdos_next.models import Artifact, Receipt
+    from pdos_next.features.quality import result_bridge as bridge
 
     work = quality_work
     publish_policy(work)
@@ -465,8 +464,8 @@ def test_actual_writer_preparation_keeps_record_fresh_and_seals_qualification_af
 def test_actual_writer_late_access_io_cannot_revoke_original_run_issuer_and_return_preview(
     quality_work, monkeypatch
 ):
-    from pdos_next import quality_result_bridge as bridge
     from pdos_next.domain.test_resources import service as resources
+    from pdos_next.features.quality import result_bridge as bridge
 
     work = quality_work
     publish_policy(work)

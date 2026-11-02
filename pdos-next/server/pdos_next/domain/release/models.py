@@ -7,6 +7,7 @@ separate named T2 records for one exact package; neither record rewrites it.
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -18,8 +19,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.models import Base, Row
 
 from .constants import ASSEMBLE, ENGINEERING_APPROVE, MANUFACTURING_APPROVE
 

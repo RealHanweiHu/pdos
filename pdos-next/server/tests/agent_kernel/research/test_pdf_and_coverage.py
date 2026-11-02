@@ -4,17 +4,16 @@ from io import BytesIO
 from uuid import uuid4
 
 import pytest
-from pypdf import PdfWriter
-from pypdf.generic import DictionaryObject, NameObject, StreamObject
-
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.agent.research import ContainerPDFAdapter, HTTPResponse, ResearchError, ResearchTask
 from pdos_next.evidence_processing.types import (
     ParseFailure,
     ParseResult,
     SourceLocation,
     TextSegment,
 )
-from pdos_next.research import ContainerPDFAdapter, HTTPResponse, ResearchError, ResearchTask
+from pypdf import PdfWriter
+from pypdf.generic import DictionaryObject, NameObject, StreamObject
 
 from .test_research import Transport, draft, run, scope, service
 
@@ -126,7 +125,7 @@ def test_batched_concurrent_reads_reuse_one_snapshot_and_store_once():
 
 
 def test_coverage_lists_exact_unread_character_ranges_and_json_is_persistable():
-    from pdos_next.research import ResourceLimits
+    from pdos_next.agent.research import ResourceLimits
 
     instance, bound = service(limits=ResourceLimits(page_chars=5)), scope()
 

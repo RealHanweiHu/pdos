@@ -7,13 +7,12 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Audit, LoginSession, Outbox, Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import Proposal
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import Audit, LoginSession, Outbox, Receipt, now
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.preproject.test_category_context_pg import publish
 from tests.preproject.test_derivation_transactions import synthetic_parent
 from tests.preproject.test_evidence_commands_pg import artifact, record_claim, withdraw_request

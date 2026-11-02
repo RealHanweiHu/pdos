@@ -4,19 +4,18 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
-from pdos_next.agent_kernel.persistence import (
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
+from pdos_next.agent.kernel.persistence import (
     finish_run_revert,
     prepare_run_revert,
     record_answers,
 )
+from pdos_next.core.models import Grant, Receipt
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Receipt
+from sqlalchemy import select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_api import client
 from tests.agent_kernel.test_cost_budget import rate, wallet
 from tests.agent_kernel.test_revoked_terminal import close

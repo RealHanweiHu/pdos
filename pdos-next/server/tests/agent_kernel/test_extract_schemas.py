@@ -5,9 +5,7 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.extract_schemas import (
+from pdos_next.agent.kernel.extract_schemas import (
     SCHEMAS,
     ArtifactReadInput,
     CitationDraft,
@@ -20,6 +18,7 @@ from pdos_next.agent_kernel.extract_schemas import (
     draft_registry,
 )
 from pdos_next.domain.preproject.schemas import SpecItem
+from pydantic import ValidationError
 
 RFQ = {"kind": "rfq_requirement", "version": "1"}
 

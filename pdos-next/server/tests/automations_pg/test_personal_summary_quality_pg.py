@@ -11,6 +11,14 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
+from pdos_next.core.service import Context
+from pdos_next.domain.quality_execution.models import QualityIssueVersion
+from pdos_next.features.personal import summary as personal_summary
+from pdos_next.features.personal import summary_runtime as personal_summary_runtime
+from pdos_next.features.personal import summary_templates as personal_summary_templates
+from pdos_next.features.personal.summary_schemas import Selection
 from quality_execution.fixtures import (
     accepted_work,
     command,
@@ -30,13 +38,6 @@ from quality_execution.fixtures import (
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 from test_project_first_plan import post
-
-from pdos_next import personal_summary, personal_summary_runtime, personal_summary_templates
-from pdos_next.database import tenant_session
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.models import Grant, now
-from pdos_next.personal_summary_schemas import Selection
-from pdos_next.service import Context
 
 
 @pytest.fixture

@@ -7,15 +7,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import update
-from sqlalchemy.exc import UnboundExecutionError
-from sqlalchemy.orm import Session
-from verification_results.test_pure import execute, import_payload, report
-from verification_results.test_pure import work as result_work
-
-from pdos_next import quality_result_bridge as bridge
-from pdos_next import service as common
-from pdos_next.contracts import Command
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Category, Grant, Outbox, Principal, Product, Receipt
+from pdos_next.core.request_proof import request_proof
+from pdos_next.core.service import EVENTS, Context, digest
 from pdos_next.domain.verification_front.adapters import METHOD_POSITION, professional_documents
 from pdos_next.domain.verification_launch.models import VerificationRunVersion
 from pdos_next.domain.verification_results import service as results
@@ -25,10 +21,13 @@ from pdos_next.domain.verification_results.models import (
 )
 from pdos_next.domain.verification_results.models import TestResultProjection as ResultProjection
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Grant, Outbox, Principal, Product, Receipt
-from pdos_next.request_proof import request_proof
+from pdos_next.features.quality import result_bridge as bridge
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import EVENTS, Context, digest
+from sqlalchemy import update
+from sqlalchemy.exc import UnboundExecutionError
+from sqlalchemy.orm import Session
+from verification_results.test_pure import execute, import_payload, report
+from verification_results.test_pure import work as result_work
 
 
 @pytest.fixture

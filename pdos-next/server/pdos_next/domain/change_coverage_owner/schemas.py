@@ -3,11 +3,10 @@
 from typing import Literal, get_args
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, model_validator
-
-from pdos_next.change_controlled_schemas import Exact, UnitBinding
+from pdos_next.features.change.controlled_schemas import Exact, UnitBinding
 from pdos_next.schemas.change_control.contracts import Facet, Kind, Ref
 from pdos_next.schemas.verification.contracts import Scope, SourceRef, Text
+from pydantic import AwareDatetime, Field, model_validator
 
 OPERATION = "change.coverage.import"
 EVENT = "change.coverage_imported"

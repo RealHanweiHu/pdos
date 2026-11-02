@@ -13,11 +13,21 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import delete, select
-from sqlalchemy.orm import Session
-
-from pdos_next.clock import using_clock
-from pdos_next.database import tenant_session
+from pdos_next.core.clock import using_clock
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Audit,
+    Category,
+    Confirmation,
+    Grant,
+    ObjectAudience,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
+)
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import (
     ProjectOpenItem,
     Proposal,
@@ -30,32 +40,21 @@ from pdos_next.domain.preproject.models import (
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Audit,
-    Category,
-    Confirmation,
-    Grant,
-    ObjectAudience,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
-)
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from sqlalchemy import delete, select
+from sqlalchemy.orm import Session
 
 # Initialize common business models before kernel children.
 # isort: split
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentInput,
     AgentRun,
     AgentSession,
     AgentToolCall,
 )
-from pdos_next.agent_kernel.persistence import cancel_run, create_run
-from pdos_next.agent_kernel.session_presentation import PresentationInput, change
-from pdos_next.agent_kernel.session_presentation_models import AgentSessionPresentation
+from pdos_next.agent.kernel.persistence import cancel_run, create_run
+from pdos_next.agent.kernel.session_presentation import PresentationInput, change
+from pdos_next.agent.kernel.session_presentation_models import AgentSessionPresentation
 from tests.g0_fixture import create_g0_project
 
 PROTECTED_MODELS = (

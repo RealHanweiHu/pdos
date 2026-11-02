@@ -2,17 +2,17 @@
 
 import argparse
 import asyncio
+import json
+import os
+import socket
+import threading
+import time
 from concurrent.futures import ThreadPoolExecutor
 from contextvars import ContextVar
 from copy import deepcopy
 from dataclasses import replace
 from datetime import UTC, datetime
-import json
-import os
 from pathlib import Path
-import socket
-import threading
-import time
 from uuid import UUID
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -28,7 +28,7 @@ def append_json(path, value):
 
 
 def observe_provider(evidence):
-    from pdos_next.agent_kernel.gateway import AgentGateway
+    from pdos_next.agent.kernel.gateway import AgentGateway
     from pdos_next.providers import agent_client
 
     original_gateway = AgentGateway.turn
@@ -137,12 +137,12 @@ def observe_provider(evidence):
 
 async def serve(args):
     import local_environment as local
-    from sqlalchemy.engine import make_url
-    from pdos_next.database import engine_for
+    import uvicorn
+    from pdos_next.core.database import engine_for
     from pdos_next.workflows.checkpoints import verified_checkpoint_url
+    from sqlalchemy.engine import make_url
     from temporalio.client import Client
     from temporalio.worker import Worker
-    import uvicorn
 
     local.STATE = ROOT / 'pdos-next/.local/comprehensive-runtime-20261022.json'
     state = local.verified(local.read_state())
@@ -158,12 +158,12 @@ async def serve(args):
     args.evidence.mkdir(parents=True, exist_ok=True)
     client = await asyncio.wait_for(Client.connect(args.temporal, namespace=args.namespace), 10)
     engine, auth, dispatch = (engine_for(state[key]) for key in ('app_url','auth_url','dispatch_url'))
-    from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
-    from pdos_next.agent_kernel.temporal_port import TemporalPort
-    from pdos_next.model_configuration.host import runtime_ports
-    from pdos_next.workflows.xiaopai import XiaopaiWork
+    from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.temporal_port import TemporalPort
+    from pdos_next.agent.model_configuration.host import runtime_ports
     from pdos_next.api import create_app
+    from pdos_next.workflows.xiaopai import XiaopaiWork
 
     provider = observe_provider(args.evidence)
     ports = replace(runtime_ports(engine), provider_client=provider)

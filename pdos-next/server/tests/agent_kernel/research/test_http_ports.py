@@ -11,8 +11,7 @@ from urllib.parse import parse_qs, urlsplit
 
 import httpx
 import pytest
-
-from pdos_next.research import (
+from pdos_next.agent.research import (
     PinnedHTTPTransport,
     ResearchError,
     ResourceLimits,

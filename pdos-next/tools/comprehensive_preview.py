@@ -25,7 +25,7 @@ def main():
     catalog = json.loads(args.catalog.read_text())
     enabled = args.model_runtime is not None
     if enabled:
-        from pdos_next.model_configuration.host import TenantRuntime
+        from pdos_next.agent.model_configuration.host import TenantRuntime
 
         runtime_path = args.model_runtime.resolve()
         configuration = TenantRuntime(runtime_path).configuration()
@@ -62,7 +62,7 @@ def main():
             os.environ.pop("PDOS_TENANT_RUNTIME_CONFIG", None)
         import uvicorn
         from pdos_next.api import create_app
-        from pdos_next.database import engine_for
+        from pdos_next.core.database import engine_for
         from starlette.responses import JSONResponse
 
         app = create_app(

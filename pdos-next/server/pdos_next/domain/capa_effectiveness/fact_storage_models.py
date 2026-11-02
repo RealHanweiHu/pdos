@@ -8,6 +8,9 @@ future Receipt/transaction proof UUIDs are allocated in these declarations.
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
+from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
+from pdos_next.domain.quality_execution.models import QualityIssueVersion
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -19,10 +22,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.models import Base, Row
 
 from .fact_storage_codec import BODY_FIELDS, SCHEMA_VERSION
 

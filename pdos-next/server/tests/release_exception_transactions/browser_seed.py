@@ -16,24 +16,7 @@ from uuid import UUID
 
 import uvicorn
 from manufacturing_preparation import publication_pg_helpers as upstream
-from pydantic_core import to_jsonable_python
-from release_policy_browser_seed.harness import _write_private_new
-from sqlalchemy import select, text
-from sqlalchemy.engine import make_url
-from sqlalchemy.orm import Session
-
-from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
-from pdos_next.domain.release.models import ReleasePackage
-from pdos_next.domain.release_exceptions import rules
-from pdos_next.domain.release_exceptions.constants import DECIDE, OPERATIONS, WITHDRAW
-from pdos_next.domain.release_exceptions.models import (
-    ReleaseExceptionCurrent as Current,
-)
-from pdos_next.domain.release_exceptions.models import (
-    ReleaseExceptionDecision as Decision,
-)
-from pdos_next.domain.release_exceptions.schemas import DecidePayload
-from pdos_next.models import (
+from pdos_next.core.models import (
     Audit,
     Confirmation,
     Grant,
@@ -45,9 +28,25 @@ from pdos_next.models import (
     RequestKey,
     now,
 )
-from pdos_next.safety import verify_test_target
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
+from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
+from pdos_next.domain.release.models import ReleasePackage
+from pdos_next.domain.release_exceptions import rules
+from pdos_next.domain.release_exceptions.constants import DECIDE, OPERATIONS, WITHDRAW
+from pdos_next.domain.release_exceptions.models import (
+    ReleaseExceptionCurrent as Current,
+)
+from pdos_next.domain.release_exceptions.models import (
+    ReleaseExceptionDecision as Decision,
+)
+from pdos_next.domain.release_exceptions.schemas import DecidePayload
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest
+from pydantic_core import to_jsonable_python
+from release_policy_browser_seed.harness import _write_private_new
+from sqlalchemy import select, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.orm import Session
 
 _HEAD = "s0_0784"
 _MAXIMUM_WAIT_SECONDS = 1200

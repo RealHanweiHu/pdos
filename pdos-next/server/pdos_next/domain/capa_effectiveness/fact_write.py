@@ -5,13 +5,13 @@ Only the actual owner may supply source/issuer/participant/qualification facts.
 The opaque phase retains this Session and active UOW, never a cross-phase cache.
 """
 
-from pdos_next.database import category_for_product
-from pdos_next.clock import proof_deadline_current
+from pdos_next.core.database import category_for_product
+from pdos_next.core.clock import proof_deadline_current
 
 
 # Common initialization must precede model declarations used by the actual host.
 # ruff: noqa: I001
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from copy import deepcopy
 from dataclasses import dataclass
@@ -23,11 +23,11 @@ from weakref import WeakKeyDictionary
 from pydantic import AwareDatetime, Field, JsonValue, create_model
 from sqlalchemy import inspect, select
 
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product
+from pdos_next.core.models import Grant, Principal, Product
 
 from . import anchor
 from . import fact_atom_storage as guards

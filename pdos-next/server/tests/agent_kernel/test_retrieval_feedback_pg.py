@@ -9,17 +9,16 @@ from threading import Event, current_thread
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel import work_state
+from pdos_next.agent.kernel.models import AgentEvent, AgentToolCall
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.retrieval_feedback import KIND
+from pdos_next.agent.kernel.work_state_models import AgentWorkState
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt
 from sqlalchemy import event, func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel import work_state
-from pdos_next.agent_kernel.models import AgentEvent, AgentToolCall
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.retrieval_feedback import KIND
-from pdos_next.agent_kernel.work_state_models import AgentWorkState
-from pdos_next.database import tenant_session
-from pdos_next.models import Receipt
 from tests.agent_kernel.test_run_continuation import scope, start, synthetic_artifact
 from tests.agent_kernel.test_work_state_pg import complete, path, read
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
@@ -219,7 +218,7 @@ def test_exclusion_does_not_change_process_business_truth_or_model_context(setup
         assert after[field] == before[field]
     assert all(step["kind"] != KIND for step in after["steps"])
     child, _response = start(setup, continue_from_run_id=str(run_id), goal="继续核对。")
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
 
     context = Bootstrap(setup.engine).project_context(scope(setup, child), "继续核对。")
     assert context["work_state"]["exclusions"][0]["id"] == artifact

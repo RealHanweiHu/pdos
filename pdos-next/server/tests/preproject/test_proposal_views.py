@@ -5,10 +5,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject import proposal_views as service
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def comparison():

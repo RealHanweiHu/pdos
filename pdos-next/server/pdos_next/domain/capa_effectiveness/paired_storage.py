@@ -5,7 +5,7 @@ existing owners, but original bytes, historical authority and retained effects
 still need the future trusted reader's independent refresh/attest.
 """
 
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
 
 
 # Initialize the actual common registry before importing its domain children.
@@ -14,7 +14,7 @@ from pdos_next.database import category_for_product
 from datetime import UTC, datetime
 from uuid import UUID
 
-from pdos_next.service import Context, digest, require_access
+from pdos_next.core.service import Context, digest, require_access
 
 from . import paired as p
 from pdos_next.domain.builds import service as builds
@@ -31,8 +31,8 @@ from pdos_next.domain.verification_launch.models import (
 from pdos_next.domain.verification_results import service as results
 from pdos_next.domain.verification_results.models import TestResultActionFact, TestResultProjection
 from pdos_next.errors import DomainError
-from pdos_next.receipt_request_binding import readable_receipt_request_bound
-from pdos_next.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey, now
+from pdos_next.core.receipt_request_binding import readable_receipt_request_bound
+from pdos_next.core.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey, now
 from pydantic import ValidationError
 from sqlalchemy import and_, select
 from sqlalchemy.exc import UnboundExecutionError

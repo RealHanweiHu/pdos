@@ -6,11 +6,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import operational_bootstrap as bootstrap
+from pdos_next.bootstrap import operational as bootstrap
+from pdos_next.core.error_catalog import REASONS
 from pdos_next.domain.build_operational_facts import service as domain
 from pdos_next.domain.build_operational_facts.schemas import DecisionInput
-from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.schemas.resource_readiness.contracts import ResourceRef
 

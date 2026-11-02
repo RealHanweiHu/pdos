@@ -5,13 +5,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.contracts import Command
-from pdos_next.enterprise_search import verification_adoption as adoption
+from pdos_next.agent.enterprise_search import verification_adoption as adoption
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from sqlalchemy.dialects import postgresql
 from tests.enterprise_search.test_verification_candidates import fixture
 
 

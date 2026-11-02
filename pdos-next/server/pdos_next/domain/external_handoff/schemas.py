@@ -8,9 +8,7 @@ matching digest alone prove none of these facts and grant no external action.
 from typing import Literal
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, model_validator
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
 from pdos_next.domain.release.schemas import (
     DTO,
     DecisionPlan,
@@ -24,6 +22,7 @@ from pdos_next.domain.release.schemas import (
     VersionRef,
 )
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic import AwareDatetime, Field, model_validator
 
 
 class Destination(DTO):

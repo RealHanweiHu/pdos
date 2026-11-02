@@ -6,11 +6,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import digest
 from pdos_next.domain.release import rules, schemas, service
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 from . import test_rules
 

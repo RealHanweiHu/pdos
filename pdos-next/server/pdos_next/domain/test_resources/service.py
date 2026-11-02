@@ -26,7 +26,7 @@ from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.exc import UnboundExecutionError
 from sqlalchemy.orm import Session, SessionTransaction
 
-from pdos_next.models import Product, now
+from pdos_next.core.models import Product, now
 
 from pdos_next.domain.build_operational_facts.models import (
     BuildOperationalCurrent,
@@ -227,7 +227,7 @@ def _parent_locks(s, ctx, product_id, binding, *, write=False):
     binding = TestPlanBinding.model_validate(binding)
     if len(binding.purpose) > 160:
         raise DomainError("RESOURCE_PURPOSE_LIMIT", "资源核支持的精确用途长度上限为160。", 422)
-    from pdos_next.request_proof import scoped_rows, snapshot_get, snapshot_scalar
+    from pdos_next.core.request_proof import scoped_rows, snapshot_get, snapshot_scalar
 
     if getattr(s, "info", {}).get("read_snapshot") and not write:
         product = snapshot_get(s, Product, product_id, scope_id=product_id)
@@ -290,7 +290,7 @@ def _parent_locks(s, ctx, product_id, binding, *, write=False):
 
 def _lock_union(s, ctx, product_id, binding, data, *, create=False, lock=True):
     """Complete Build/Test asset union before any Start or physical sample inspector."""
-    from pdos_next.request_proof import snapshot_get, snapshot_scalar
+    from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
 
     if s.info.get("read_snapshot"):
         from pdos_next.domain.build_operational_facts.service import _pointer
@@ -541,8 +541,8 @@ def _held_owner_scope(s, ctx, pid):
         or s.deleted
     ):
         return None
-    from pdos_next.database import require_context
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.database import require_context
+    from pdos_next.core.request_proof import request_proof
 
     require_context(s, ctx)
     scope = s.info.get("scope")
@@ -627,7 +627,7 @@ def _remember_maker_fact(s, ctx, pid, run_id, row, *, identity, revision):
 
 
 def _current_fact(s, ctx, pid, run_id, pointer, *, lock=False):
-    from pdos_next.request_proof import batch_read, request_proof
+    from pdos_next.core.request_proof import batch_read, request_proof
 
     if pointer is None:
         return None
@@ -668,7 +668,7 @@ def _current_fact(s, ctx, pid, run_id, pointer, *, lock=False):
 
 
 def _current_rows(s, ctx, pid, run_id, *, lock=False):
-    from pdos_next.request_proof import scoped_rows
+    from pdos_next.core.request_proof import scoped_rows
 
     query = select(TestResourceCurrent).where(
         TestResourceCurrent.tenant_id == ctx.tenant_id,
@@ -681,7 +681,7 @@ def _current_rows(s, ctx, pid, run_id, *, lock=False):
         return _owned_rows(s, ctx, pid, query)
     scope = None if lock else _held_owner_scope(s, ctx, pid)
     if scope is not None:
-        from pdos_next.request_proof import snapshot_rows
+        from pdos_next.core.request_proof import snapshot_rows
 
         compiled = query.compile()
         return snapshot_rows(
@@ -841,7 +841,7 @@ def _fact_view(row, epoch, *, current=True, source_status="current"):
 
 
 def _reservation(s, ctx, pid, binding):
-    from pdos_next.request_proof import snapshot_scalar
+    from pdos_next.core.request_proof import snapshot_scalar
 
     row = snapshot_scalar(
         s,
@@ -863,7 +863,7 @@ def _reservation(s, ctx, pid, binding):
 
 
 def _sample_sentinels(s, ctx, pid, binding, *, create=False, lock=True):
-    from pdos_next.request_proof import scoped_rows
+    from pdos_next.core.request_proof import scoped_rows
 
     sample_ids = sorted({p.sample.id for p in binding.pairs}, key=lambda v: v.bytes)
     if create and sample_ids:
@@ -1649,7 +1649,7 @@ def _owned_read_snapshot(s, pid=None, *, write=False):
         return False
     if not write and s.info.get("read_snapshot") is True:
         return True
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.request_proof import request_proof
 
     return pid is not None and pid in request_proof(s).scope_locks
 
@@ -1662,8 +1662,8 @@ def _owned_rows(s, ctx, pid, query, *, write=False, fresh=False):
     run for every caller; the terminal owner uses fresh=True to catch writes
     in this Session, including raw SQL that bypassed ORM invalidation.
     """
-    from pdos_next.database import require_context
-    from pdos_next.request_proof import snapshot_rows
+    from pdos_next.core.database import require_context
+    from pdos_next.core.request_proof import snapshot_rows
 
     if isinstance(s, Session):
         require_context(s, ctx)
@@ -1870,7 +1870,7 @@ class _Ports:
 
     def _stamp(self):
         from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
-        from pdos_next.request_proof import request_proof
+        from pdos_next.core.request_proof import request_proof
 
         return (
             _uow(self.s),
@@ -1904,7 +1904,7 @@ class _Ports:
         # locks. The kernel's context/lock/stage callbacks share that same UOW.
         # Changes or mutations rebuild it; every hit still closes real time and
         # issuer state. This private port never survives this one Start.
-        from pdos_next.request_proof import request_proof
+        from pdos_next.core.request_proof import request_proof
 
         memo = (
             isinstance(self.s, Session)
@@ -2370,7 +2370,7 @@ def recheck_running(
 
 
 def list_resources(s, ctx, product_id, *, request_id=None, build_id=None):
-    from pdos_next.request_proof import snapshot_get
+    from pdos_next.core.request_proof import snapshot_get
 
     _human(s, ctx, product_id)
     product = snapshot_get(s, Product, product_id, scope_id=product_id)
@@ -2406,8 +2406,8 @@ _DIRECT_START_CONTRACT = "s0-direct-v1"
 
 def _direct_start_inputs(s, ctx, pid, binding, fact_id, revision, *, write):
     """One direct Current and the physical capacity watermarks, never their ancestors."""
-    from pdos_next.database import require_context
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.database import require_context
+    from pdos_next.core.request_proof import request_proof
 
     if not isinstance(s, Session) or not s.is_active or not s.in_transaction():
         raise DomainError("INVALID_READ_CONTEXT", "开测材料须来自实际调用事务。")
@@ -2479,7 +2479,7 @@ def prepare_start_direct(
 ):
     """Prepare the resource rule once from signed summaries and direct capacity rows."""
     from pdos_next.domain.build_operational_facts.physical_summary import capacity_summary
-    from pdos_next.engines.supply_cost.common import SnapshotRef
+    from pdos_next.domain.engines.supply_cost.common import SnapshotRef
 
     binding = TestPlanBinding.model_validate(binding)
     write = not s.info.get("read_snapshot", False)

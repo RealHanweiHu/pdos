@@ -5,18 +5,17 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import assistant_ledger as ledger
+from pdos_next.agent.enterprise_search.assistant_inheritance import page
+from pdos_next.agent.enterprise_search.assistant_schemas import CitationsInput
+from pdos_next.agent.enterprise_search.assistant_sources import human_snapshot
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.models import Artifact
+from pdos_next.errors import DomainError
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.enterprise_search import assistant_ledger as ledger
-from pdos_next.enterprise_search.assistant_inheritance import page
-from pdos_next.enterprise_search.assistant_schemas import CitationsInput
-from pdos_next.enterprise_search.assistant_sources import human_snapshot
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
-from pdos_next.providers.types import ProviderUsage
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
 from tests.enterprise_search.test_retrieval_pg import index, register
 from tests.preproject.test_g0 import post, request
@@ -146,7 +145,7 @@ def test_bounded_preview_and_pages_preserve_older_refs_without_research(setup):
     directory = state["citation_directory"]
     assert directory["has_more"] and directory["next_cursor"]
     # A derivable CID outside the delivered preview is not an issued read.
-    from pdos_next.enterprise_search.assistant_inheritance import fixed, registry
+    from pdos_next.agent.enterprise_search.assistant_inheritance import fixed, registry
 
     with child_owner.store.transaction(child) as (session, run):
         roots, _rows = registry(session, run)
@@ -265,8 +264,8 @@ def test_explicit_exclusion_is_versioned_and_keeps_refs_out_of_next_turn(setup):
 
 
 def test_real_new_knowledge_version_preserves_old_fixed_citation_and_labels_history(setup):
+    from pdos_next.agent.enterprise_search.indexing import project
     from pdos_next.domain.preproject.category_models import KnowledgeEntry
-    from pdos_next.enterprise_search.indexing import project
     from tests.enterprise_search.test_retrieval_pg import session_for
 
     created = post(

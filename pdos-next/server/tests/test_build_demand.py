@@ -10,6 +10,17 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.error_catalog import REASONS
+from pdos_next.core.models import Artifact, Grant, OriginalSecurity, Receipt, UploadedOriginal, now
+from pdos_next.core.service import Context
+from pdos_next.core.service import digest as source_digest
+from pdos_next.domain.builds.demand import DatabaseBuildDemandPort, load_bound_demand
+from pdos_next.domain.builds.models import BuildReadiness
+from pdos_next.domain.engines.supply_cost.common import digest
+from pdos_next.domain.supply_cost.rules import basis_binding
+from pdos_next.errors import DomainError
+from pdos_next.schemas.supply_cost.dto import Scope
 from security_fixture import ensure_scanned, secured_runtime  # noqa: F401 - local fixture
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
@@ -21,18 +32,6 @@ from test_builds import (  # noqa: F401 - imported fixtures
     project,
 )
 from test_project_first_plan import cmd, post
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.builds.demand import DatabaseBuildDemandPort, load_bound_demand
-from pdos_next.domain.builds.models import BuildReadiness
-from pdos_next.domain.supply_cost.rules import basis_binding
-from pdos_next.engines.supply_cost.common import digest
-from pdos_next.error_catalog import REASONS
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, OriginalSecurity, Receipt, UploadedOriginal, now
-from pdos_next.schemas.supply_cost.dto import Scope
-from pdos_next.service import Context
-from pdos_next.service import digest as source_digest
 
 TEXT = "Synthetic requirement is unverified"
 
@@ -274,7 +273,7 @@ def test_incomplete_saved_bundle_never_rebuilds_demand_from_live_bom(setup, dema
 def test_source_content_hash_uses_the_existing_source_algorithm(setup, demand_work, monkeypatch):
     bound = load(setup, demand_work)
     assert bound.source_read_set[0].sha256 == source_digest(TEXT)
-    monkeypatch.setattr("pdos_next.service.digest", lambda value: "0" * 64)
+    monkeypatch.setattr("pdos_next.core.service.digest", lambda value: "0" * 64)
     with pytest.raises(DomainError) as refused:
         load(setup, demand_work)
     assert refused.value.reason == "INTEGRITY_MISMATCH"

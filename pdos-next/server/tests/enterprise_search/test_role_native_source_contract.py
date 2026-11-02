@@ -4,17 +4,17 @@ from importlib import import_module
 from uuid import uuid4
 
 import pytest
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.enterprise_search import business_events
-from pdos_next.enterprise_search.presence import MODELS
-from pdos_next.enterprise_search.relations import edges
-from pdos_next.enterprise_search.role_native_audience import PARENT_FIELDS
-from pdos_next.enterprise_search.role_native_events import OPERATIONS
-from pdos_next.enterprise_search.role_native_sources import FAMILIES
-from pdos_next.enterprise_search.schemas import SOURCE_TYPES, SearchInput
-from pdos_next.enterprise_search.sources import catalog, identity_keys
-from pdos_next.service import EVENTS
+from pdos_next.agent.enterprise_search import business_events
+from pdos_next.agent.enterprise_search.presence import MODELS
+from pdos_next.agent.enterprise_search.relations import edges
+from pdos_next.agent.enterprise_search.role_native_audience import PARENT_FIELDS
+from pdos_next.agent.enterprise_search.role_native_events import OPERATIONS
+from pdos_next.agent.enterprise_search.role_native_sources import FAMILIES
+from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES, SearchInput
+from pdos_next.agent.enterprise_search.sources import catalog, identity_keys
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.core.service import EVENTS
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
 
@@ -53,8 +53,8 @@ def test_publication_identity_and_current_pointers_remain_native():
     assert "manufacturing_baseline_publications" in statement
     assert "仅为原生制造草稿" in statement and "该正式发布固定引用此文档版本" in statement
     assert "source_refs" in statement and "not_evaluated" in statement
+    from pdos_next.agent.enterprise_search.role_native_sources import document_facts
     from pdos_next.domain.manufacturing_baseline.models import PreparationVersion
-    from pdos_next.enterprise_search.role_native_sources import document_facts
 
     projected = sql(document_facts(PreparationVersion))
     for forbidden in ("input_snapshot", "kernel_event", "command_sha256"):

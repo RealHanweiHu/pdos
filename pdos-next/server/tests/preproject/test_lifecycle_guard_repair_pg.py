@@ -1,11 +1,10 @@
 """Actual source guards on the existing consuming tables; no permission waiver."""
 
+from migrations.schema_s0_0827 import TABLES
+from pdos_next.features.lifecycle.access import schema_covered
+from pdos_next.features.lifecycle.catalog import GUARDED
 from sqlalchemy import text
 from sqlalchemy.orm import Session
-
-from migrations.schema_s0_0827 import TABLES
-from pdos_next.lifecycle_access import schema_covered
-from pdos_next.lifecycle_catalog import GUARDED
 
 
 def test_restored_guards_are_enabled_and_keep_original_before_after_timing(engines):

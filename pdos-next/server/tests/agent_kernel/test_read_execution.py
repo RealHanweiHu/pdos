@@ -6,20 +6,19 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.read_execution import (
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.read_execution import (
     ReadBinding,
     ReadSource,
     build_read_binding,
     verify_read_source,
 )
-from pdos_next.agent_kernel.registry import ToolRegistry, ToolSpec
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.registry import ToolRegistry, ToolSpec
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from pydantic import ValidationError
 
 
 class MemorySession:

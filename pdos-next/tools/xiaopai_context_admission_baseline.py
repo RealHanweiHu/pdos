@@ -11,11 +11,11 @@ from copy import deepcopy
 from pathlib import Path
 from types import SimpleNamespace
 
-from pdos_next.agent_kernel.context_budget import estimate_tokens, fit_messages, measure
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import WireAgentOutput
+from pdos_next.agent.kernel.context_budget import estimate_tokens, fit_messages, measure
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import WireAgentOutput
 from pdos_next.errors import DomainError
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -212,7 +212,7 @@ def main():
         "questions_sha256": sha256(questions_bytes),
         "expanded_inputs_sha256": sha256(expanded_bytes),
         "production_source_sha256": {name: sha256((
-            ROOT / "pdos-next/server/pdos_next/agent_kernel" / name
+            ROOT / "pdos-next/server/pdos_next/agent/kernel" / name
         ).read_bytes()) for name in production_files},
     }
     args.output_dir.mkdir(parents=True, exist_ok=True)

@@ -3,11 +3,10 @@
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.domain.projects.models import Project
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.projects.models import Project
 from tests.g0_fixture import create_g0_project
 
 

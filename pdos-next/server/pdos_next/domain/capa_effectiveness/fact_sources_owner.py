@@ -5,7 +5,7 @@ source declarations and booleans never replace current ACL/security or bytes.
 Commands hold source locks in their UOW; GET uses its actual read snapshot.
 """
 
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
 
 
 # Initialize the common registry before domain children.
@@ -17,12 +17,12 @@ from hashlib import sha256
 from uuid import UUID
 
 
-from pdos_next.service import Context, digest, source_for
+from pdos_next.core.service import Context, digest, source_for
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
-from pdos_next.original_security import require_safe
-from pdos_next.originals import object_reference, read_registered_bytes, require_original
-from pdos_next.object_storage import StorageFailure
+from pdos_next.core.models import Grant, Principal
+from pdos_next.originals.security import require_safe
+from pdos_next.originals.access import object_reference, read_registered_bytes, require_original
+from pdos_next.originals.object_storage import StorageFailure
 from pdos_next.domain.quality_execution import evidence, policy
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalFact

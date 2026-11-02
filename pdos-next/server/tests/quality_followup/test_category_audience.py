@@ -1,13 +1,13 @@
 """Pure saved-Issue reading: actual DTO/ORM, without DB or permission-grant claims."""
 
 import pytest
-from quality_issues.helpers import uid
-
+from pdos_next.core.service import digest
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
 from pdos_next.domain.quality_followup import service
 from pdos_next.errors import DomainError
 from pdos_next.schemas.quality_issues.contracts import Issue
-from pdos_next.service import digest
+from quality_issues.helpers import uid
+
 from quality_followup.test_pure import issue
 
 

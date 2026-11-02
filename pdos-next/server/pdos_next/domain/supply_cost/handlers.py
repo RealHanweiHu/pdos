@@ -2,7 +2,7 @@
 
 from datetime import timedelta
 
-from pdos_next.engines.supply_cost.common import digest, source_issues
+from pdos_next.domain.engines.supply_cost.common import digest, source_issues
 from pdos_next.schemas.supply_cost.dto import (
     CalculateCoveragePayload,
     CommandBinding,

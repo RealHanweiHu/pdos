@@ -5,15 +5,14 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, TenantSkillEnablement
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.requested_skills import preload
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, TenantSkillEnablement
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.requested_skills import preload
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.errors import DomainError
 from tests.agent_kernel.test_api import client
 
 

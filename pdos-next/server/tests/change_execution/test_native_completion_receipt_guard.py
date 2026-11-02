@@ -9,10 +9,9 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.safety import verify_test_target
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
-
-from pdos_next.safety import verify_test_target
 
 OPERATIONS = (
     "change.effectivity.record",

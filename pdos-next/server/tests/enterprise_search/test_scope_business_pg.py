@@ -5,11 +5,11 @@ import json
 from types import SimpleNamespace
 from uuid import UUID
 
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.search_preferences import SearchPreferences, configure_start
-from pdos_next.enterprise_search.assistant_scope import retrieve
-from pdos_next.enterprise_search.assistant_sources import human_snapshot
-from pdos_next.enterprise_search.schemas import SearchInput
+from pdos_next.agent.enterprise_search.assistant_scope import retrieve
+from pdos_next.agent.enterprise_search.assistant_sources import human_snapshot
+from pdos_next.agent.enterprise_search.schemas import SearchInput
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.search_preferences import SearchPreferences, configure_start
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 from tests.enterprise_search.test_business_sources_pg import (
     NativeClient,
@@ -46,7 +46,7 @@ def test_actual_other_project_issue_uses_its_own_source_and_current_object_scope
     assert before["items"][0]["private"] and before["items"][0]["customer_original"], before
     assert preflight["returned"] == 0
     assert preflight["scope_policy"]["fallback_performed"]
-    from pdos_next.database import tenant_session
+    from pdos_next.core.database import tenant_session
 
     with tenant_session(person.engine, person.tenant, actor_id=person.human,
                         requester_id=person.human, category_id=person.ctx.category_id) as session:

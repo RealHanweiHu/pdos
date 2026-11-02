@@ -4,11 +4,10 @@ from copy import deepcopy
 from types import SimpleNamespace
 from uuid import UUID
 
-from sqlalchemy import select
-
-from pdos_next.category_scope import category_scope
-from pdos_next.clock import now
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.clock import now
 from pdos_next.errors import DomainError
+from sqlalchemy import select
 
 from . import category_reads, root_sources
 from .access import fail, human

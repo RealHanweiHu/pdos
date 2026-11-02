@@ -3,11 +3,10 @@
 from uuid import UUID
 
 from fastapi import FastAPI, Request
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 from .schemas import GraphCaptureInput
 
@@ -71,7 +70,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     def change_order_context(
         request: Request, product_id: UUID, change_id: UUID, ctx: Context = auth_dependency
     ):
-        from pdos_next.change_preparation_view import order_context
+        from pdos_next.features.change.preparation_view import order_context
 
         _query(request, {"change_id"})
         with tenant_session(
@@ -84,7 +83,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
         ) as session:
             return order_context(session, ctx, product_id, change_id)
 
-    from pdos_next.change_preparation_view import SelectionMaterialInput
+    from pdos_next.features.change.preparation_view import SelectionMaterialInput
 
     @app.post(
         "/v1/categories/{category_id}/products/{product_id}/change-execution/selection-material"
@@ -95,7 +94,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
         data: SelectionMaterialInput,
         ctx: Context = auth_dependency,
     ):
-        from pdos_next.change_preparation_view import selection_material
+        from pdos_next.features.change.preparation_view import selection_material
 
         _query(request, set())
         # Candidate preparation performs no business writes or T2 consumption.
@@ -113,7 +112,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     def change_execution_inputs(
         request: Request, product_id: UUID, data: Command, ctx: Context = auth_dependency
     ):
-        from pdos_next.command_handlers import handler
+        from pdos_next.core.command_handlers import handler
 
         from .service import inputs
 
@@ -158,7 +157,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
         ) as session:
             return prepare_capture(session, ctx, product_id, data)
 
-    from pdos_next.change_order_store import CaptureInput
+    from pdos_next.features.change.order_store import CaptureInput
 
     @app.post(
         "/v1/categories/{category_id}/products/{product_id}/change-execution/implementation-captures"
@@ -166,7 +165,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     def implementation_capture(
         product_id: UUID, data: CaptureInput, ctx: Context = auth_dependency
     ):
-        from pdos_next.change_implementation_owner import capture_view, prepare_capture
+        from pdos_next.features.change.implementation_owner import capture_view, prepare_capture
 
         with tenant_session(
             engine,
@@ -178,12 +177,12 @@ def register_routes(app: FastAPI, engine, auth_dependency):
             return capture_view(prepare_capture(session, ctx, product_id, data))
 
 
-    from pdos_next.change_completion_schemas import CompletionMaterial
+    from pdos_next.features.change.completion_schemas import CompletionMaterial
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/change-execution/completion-context")
     def completion_context(request: Request, product_id: UUID, change_id: UUID,
                            ctx: Context = auth_dependency):
-        from pdos_next.change_completion_view import completion_context as read
+        from pdos_next.features.change.completion_view import completion_context as read
 
         _query(request, {"change_id"})
         with tenant_session(engine, ctx.tenant_id, actor_id=ctx.actor_id,
@@ -194,7 +193,7 @@ def register_routes(app: FastAPI, engine, auth_dependency):
     @app.post("/v1/categories/{category_id}/products/{product_id}/change-execution/completion-material")
     def completion_material(request: Request, product_id: UUID, data: CompletionMaterial,
                             ctx: Context = auth_dependency):
-        from pdos_next.change_completion_view import completion_material as prepare
+        from pdos_next.features.change.completion_view import completion_material as prepare
 
         _query(request, set())
         with tenant_session(engine, ctx.tenant_id, actor_id=ctx.actor_id,

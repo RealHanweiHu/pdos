@@ -6,14 +6,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.service import Context
 from pdos_next.domain.release import rules
 from pdos_next.domain.release import schemas as dto
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 17, 18, tzinfo=UTC)
 

@@ -6,8 +6,6 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from pydantic import ValidationError
-
 from pdos_next.domain.products import variants
 from pdos_next.schemas.products.derivation import (
     AdoptionSelection,
@@ -18,6 +16,7 @@ from pdos_next.schemas.products.derivation import (
     SpecSnapshot,
 )
 from pdos_next.schemas.products.variants import RebaseChoice
+from pydantic import ValidationError
 
 
 def object_ref(kind="claim", number=30):
@@ -302,7 +301,7 @@ def test_dictionary_keys_remain_lossless_and_paths_escape_nested_syntax():
 
 
 def test_production_comparison_calls_rich_engine_without_database(monkeypatch):
-    from pdos_next import service
+    from pdos_next.core import service
     from pdos_next.domain.preproject import baseline
 
     monkeypatch.setattr(baseline, "validate_sources", lambda *a, **kw: ())
@@ -515,7 +514,7 @@ def test_g0_invalid_difference_path_is_not_reinterpreted():
 @pytest.fixture
 def g0_comparison(monkeypatch):
     monkeypatch.setattr(variants, "_validate_g0_comparison", lambda *a: None)
-    from pdos_next import service
+    from pdos_next.core import service
     from pdos_next.domain.preproject import baseline
 
     old, child = view(), view(70, 3, variant_id=str(UUID(int=50)))
@@ -578,9 +577,9 @@ def test_compare_g0_unreadable_source_stops_before_calculation(g0_comparison, mo
 
 @pytest.fixture
 def signed_g0_trace(monkeypatch):
+    from pdos_next.core.service import digest
     from pdos_next.domain.preproject import baseline, derivation
     from pdos_next.domain.preproject.schemas import SpecItem
-    from pdos_next.service import digest
 
     context = SimpleNamespace(tenant_id=UUID(int=400), category_id=UUID(int=100))
     proposal_id, submission_id, decision_id = (UUID(int=i) for i in (401, 402, 403))

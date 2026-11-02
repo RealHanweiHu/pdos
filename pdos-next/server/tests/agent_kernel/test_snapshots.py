@@ -3,16 +3,15 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.models import PublicWebSnapshot
+from pdos_next.agent.kernel.persistence import KernelStore, create_run
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.snapshots import register_snapshot
+from pdos_next.agent.research.types import Snapshot
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt, now
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import PublicWebSnapshot
-from pdos_next.agent_kernel.persistence import KernelStore, create_run
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.snapshots import register_snapshot
-from pdos_next.database import tenant_session
-from pdos_next.models import Receipt, now
-from pdos_next.research.types import Snapshot
 from tests.agent_kernel.test_transactions import human_session, run
 
 

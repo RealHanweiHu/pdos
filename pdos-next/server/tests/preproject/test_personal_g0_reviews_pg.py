@@ -14,13 +14,12 @@ from datetime import timedelta
 from pathlib import Path
 from uuid import UUID, uuid4
 
+from pdos_next.core.clock import now, using_clock
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant
+from pdos_next.domain.preproject.models import Proposal, ProposalSubmission
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session
-
-from pdos_next.clock import now, using_clock
-from pdos_next.database import tenant_session
-from pdos_next.domain.preproject.models import Proposal, ProposalSubmission
-from pdos_next.models import Grant
 from tests.preproject.test_category_matrix_pg import counts, unrelated_member
 from tests.preproject.test_evidence_commands_pg import share_request
 from tests.preproject.test_frozen_source_audience_pg import expert_login

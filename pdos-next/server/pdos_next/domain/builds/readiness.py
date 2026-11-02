@@ -9,10 +9,8 @@ The caller owns scope, source validity and the immutable server-supplied as_of.
 from datetime import datetime
 from typing import Literal
 
-from pydantic import ConfigDict, Field, JsonValue, field_validator
-
-from pdos_next.engines.supply_cost import calculate_coverage, expand_bom
-from pdos_next.engines.supply_cost.common import (
+from pdos_next.domain.engines.supply_cost import calculate_coverage, expand_bom
+from pdos_next.domain.engines.supply_cost.common import (
     FrozenDTO,
     Positive,
     Quantity,
@@ -23,13 +21,14 @@ from pdos_next.engines.supply_cost.common import (
     sorted_issues,
     source_issues,
 )
-from pdos_next.engines.supply_cost.dto import (
+from pdos_next.domain.engines.supply_cost.dto import (
     BomItem,
     BomSnapshot,
     BuildSnapshot,
     CoverageRequest,
     FixedBasis,
 )
+from pydantic import ConfigDict, Field, JsonValue, field_validator
 
 
 class _Versioned(FrozenDTO):

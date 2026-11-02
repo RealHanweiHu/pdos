@@ -1,9 +1,8 @@
 import os
 
 from alembic import context
+from pdos_next.core.models import Base
 from sqlalchemy import create_engine
-
-from pdos_next.models import Base
 
 engine = create_engine(os.environ["MIGRATION_DATABASE_URL"])
 with engine.connect() as connection:

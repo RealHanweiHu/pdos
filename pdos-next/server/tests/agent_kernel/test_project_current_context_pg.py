@@ -6,16 +6,16 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.domain_reads import DomainReads
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.project_current_context import KEY
-from pdos_next.agent_kernel.types import AgentOutput
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.domain_reads import DomainReads
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.project_current_context import KEY
+from pdos_next.agent.kernel.types import AgentOutput
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
 from pdos_next.domain.work_management.constants import STATUS
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, cmd, post
@@ -120,7 +120,7 @@ def test_native_project_footprint_does_not_expand_d3_explicit_evidence_search(
 
 
 def test_actual_native_update_requires_fresh_current_context_but_history_is_preserved(project_work):
-    from pdos_next.agent_kernel.project_current_context import checked_result
+    from pdos_next.agent.kernel.project_current_context import checked_result
 
     work, setup = project_work, project_work.setup
     prepare(work)

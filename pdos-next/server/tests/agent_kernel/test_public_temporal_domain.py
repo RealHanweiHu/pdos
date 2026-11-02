@@ -6,28 +6,26 @@ from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import timedelta
 from pathlib import Path
-from pdos_next.agent_kernel.qualification_binding import model_identity
-
 from uuid import UUID, uuid4
 
 import httpx
 import pytest
+from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.qualification_binding import model_identity
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.api import create_app
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Claim, Receipt, now
+from pdos_next.providers.types import ProviderUsage
+from pdos_next.workflows.xiaopai import XiaopaiWork
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio.testing import WorkflowEnvironment
 from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.models import Claim, Receipt, now
-from pdos_next.providers.types import ProviderUsage
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 
@@ -43,7 +41,7 @@ def test_actual_authenticated_run_uses_temporal_graph_and_common_claim_owner(
     bootstrap = Bootstrap(setup.engine, ports=runtime_ports)
     f.route = bootstrap.route_for(f.scope)
     with Session(setup.admin) as session, session.begin():
-        from pdos_next.agent_kernel.models import TenantSkillEnablement
+        from pdos_next.agent.kernel.models import TenantSkillEnablement
 
         qualification = session.get(TenantSkillEnablement, f.qualification.id)
         qualification.qualified_model_version = f.route.version if qualified else None

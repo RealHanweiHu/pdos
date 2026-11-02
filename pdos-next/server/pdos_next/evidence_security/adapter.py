@@ -5,7 +5,7 @@ import time
 from collections.abc import Callable
 from datetime import UTC, datetime
 
-from pdos_next.object_storage.types import ObjectStore, StorageFailure
+from pdos_next.originals.object_storage.types import ObjectStore, StorageFailure
 
 from .preflight import SUPPORTED_MEDIA, check_content
 from .types import (

@@ -4,11 +4,10 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 from uuid import uuid4
 
+from pdos_next.core.clock import now
+from pdos_next.core.models import Artifact, Category, Principal, Product, UploadedOriginal
+from pdos_next.core.service import source_for
 from sqlalchemy import or_, select
-
-from pdos_next.clock import now
-from pdos_next.models import Artifact, Category, Principal, Product, UploadedOriginal
-from pdos_next.service import source_for
 
 from .access import fail, human, proposal
 from .category_models import (
@@ -106,7 +105,7 @@ def _references(payload):
 
 
 def check_shared_sources(s, ctx, refs):
-    from pdos_next.agent_kernel.models import PublicWebSnapshot
+    from pdos_next.agent.kernel.models import PublicWebSnapshot
 
     for ref in refs:
         if ref.type == "claim":
@@ -183,8 +182,8 @@ def check_shared_sources(s, ctx, refs):
 def _private_checks(s, ctx, row, content):
     from uuid import UUID
 
-    from pdos_next.agent_kernel.models import AgentRun
-    from pdos_next.models import Claim
+    from pdos_next.agent.kernel.models import AgentRun
+    from pdos_next.core.models import Claim
 
     from .evidence_models import EvidenceLink
     from .models import ProposalRevision, ProposalSubmission
@@ -318,8 +317,8 @@ def _private_checks(s, ctx, row, content):
 
 
 def validate(s, ctx, command, scope, payload):
-    from pdos_next.agent_kernel.models import AgentRun
-    from pdos_next.category_scope import category_scope
+    from pdos_next.agent.kernel.models import AgentRun
+    from pdos_next.core.category_scope import category_scope
 
     from .provenance import writing_path
 

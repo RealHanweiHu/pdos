@@ -11,15 +11,14 @@ from collections import Counter
 from contextlib import contextmanager
 from uuid import UUID, uuid4
 
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant, now
+from pdos_next.core.service import Context
+from pdos_next.domain.professional_authority import service as authority
+from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
 from sqlalchemy import event, func, select, update
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import Select
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.professional_authority import service as authority
-from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
-from pdos_next.models import Artifact, Grant, now
-from pdos_next.service import Context
 from tests.professional_authority.test_transactions import (
     OP,
     PURPOSE,

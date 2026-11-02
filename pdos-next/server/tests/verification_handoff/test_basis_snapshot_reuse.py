@@ -5,14 +5,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session, make_transient_to_detached
-
+from pdos_next.core.models import Artifact, OriginalSecurity
+from pdos_next.core.request_proof import request_proof
+from pdos_next.core.service import Context
+from pdos_next.domain.engines.supply_cost.common import SnapshotRef
 from pdos_next.domain.verification_handoff import service
-from pdos_next.engines.supply_cost.common import SnapshotRef
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, OriginalSecurity
-from pdos_next.request_proof import request_proof
-from pdos_next.service import Context
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 
 @pytest.fixture

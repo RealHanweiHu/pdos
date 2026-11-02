@@ -9,21 +9,21 @@ from uuid import uuid4
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 from pdos_agent_runtime.graph import in_registered_agent_graph
-from pydantic import ValidationError
-from sqlalchemy.dialects.postgresql import dialect
-from sqlalchemy.exc import OperationalError
-
-from pdos_next import personal_summary, personal_summary_graph
-from pdos_next import personal_summary_runtime as runtime
-from pdos_next.agent_kernel import activities
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import activities
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Principal, Receipt
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.schemas import AutomationSpec
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Receipt
-from pdos_next.personal_summary_schemas import ObjectRef, Selection
-from pdos_next.service import Context, digest
+from pdos_next.features.personal import summary as personal_summary
+from pdos_next.features.personal import summary_graph as personal_summary_graph
+from pdos_next.features.personal import summary_runtime as runtime
+from pdos_next.features.personal.summary_schemas import ObjectRef, Selection
+from pydantic import ValidationError
+from sqlalchemy.dialects.postgresql import dialect
+from sqlalchemy.exc import OperationalError
 
 AT = datetime(2026, 10, 29, tzinfo=UTC)
 
@@ -124,7 +124,7 @@ def bound(monkeypatch):
     monkeypatch.setattr(runtime, "tenant_session", snapshot)
     monkeypatch.setattr(runtime, "require_access", lambda *_a, **_k: None)
     monkeypatch.setattr(runtime, "_previous", lambda *_a: None)
-    monkeypatch.setattr("pdos_next.agent_kernel.process_view.record_state", lambda *_a: None)
+    monkeypatch.setattr("pdos_next.agent.kernel.process_view.record_state", lambda *_a: None)
     return NS(scope=scope, run=run, session=session, store=store, spec=spec,
               calls=calls, snapshots=snapshots, owner=owner)
 

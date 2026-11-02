@@ -11,16 +11,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session
-
-from pdos_next import change_completion_adapter as adapter
-from pdos_next.change_implementation_owner import ApprovedImplementationRead
 from pdos_next.domain.change_execution.graph import OwnedObject
 from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
 from pdos_next.domain.quality_followup import service as followup
 from pdos_next.domain.quality_followup.schemas import Completion, CompletionAssessment
 from pdos_next.errors import DomainError
+from pdos_next.features.change import completion_adapter as adapter
+from pdos_next.features.change.implementation_owner import ApprovedImplementationRead
 from pdos_next.schemas.change_control.contracts import Ref
+from sqlalchemy.orm import Session
 
 from . import kernel_helpers as helper
 from .test_change_order import no_connection  # noqa: F401 - denies DB/HTTP, keeps live helper clock

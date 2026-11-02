@@ -7,11 +7,10 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.context_budget import fit_messages
-from pdos_next.agent_kernel.context_observability import record_incomplete
-from pdos_next.agent_kernel.models import AgentEvent
-from pdos_next.agent_kernel.process_view import public_context_metrics
+from pdos_next.agent.kernel.context_budget import fit_messages
+from pdos_next.agent.kernel.context_observability import record_incomplete
+from pdos_next.agent.kernel.models import AgentEvent
+from pdos_next.agent.kernel.process_view import public_context_metrics
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_graph import scope

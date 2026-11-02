@@ -7,21 +7,20 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.context_budget import estimate_tokens
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.registry import ToolRegistry
-from pdos_next.agent_kernel.result_continuation import (
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.context_budget import estimate_tokens
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.registry import ToolRegistry
+from pdos_next.agent.kernel.result_continuation import (
     ResultReadInput,
     handle_for,
     page_view,
     serialized,
 )
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 from tests.agent_kernel.test_bound_read_host import make_host, read
 
 
@@ -176,8 +175,8 @@ def test_isolated_original_text_never_appears_in_main_disclosure():
 def test_history_continuation_rechecks_parent_metadata_once_without_replaying_reader(
     source_status, monkeypatch
 ):
-    from pdos_next.agent_kernel import conversation_acl
-    from pdos_next.agent_kernel.conversation import classify_turn
+    from pdos_next.agent.kernel import conversation_acl
+    from pdos_next.agent.kernel.conversation import classify_turn
 
     f = host()
     full = read(f)
@@ -206,8 +205,8 @@ def test_history_continuation_rechecks_parent_metadata_once_without_replaying_re
 
 @pytest.mark.parametrize("complete", [False, True])
 def test_isolated_graph_requires_delivered_fragments_before_source_verification(complete):
-    from pdos_next.agent_kernel.graph import AgentKernel
-    from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+    from pdos_next.agent.kernel.graph import AgentKernel
+    from pdos_next.agent.kernel.types import ModelTurn, ToolCall
     from tests.agent_kernel.test_graph import Host, final, scope
 
     turns = [ModelTurn(calls=(ToolCall(id="raw", name="evidence.artifact.read", arguments={}),))]

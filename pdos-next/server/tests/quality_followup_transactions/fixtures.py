@@ -15,6 +15,24 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
+from pdos_next.core.command_handlers import T1_OPERATIONS, T2_OPERATIONS, handler
+from pdos_next.core.contracts import PAYLOADS
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import digest
+from pdos_next.domain.capa_verification.models import RemediationLinkRecord
+from pdos_next.domain.professional_authority.service import OPERATION_ROLES
+from pdos_next.domain.quality_execution.models import (
+    QualityIssueCurrent,
+    QualityIssueVersion,
+    QualityPolicyCurrent,
+    QualityPolicyFact,
+)
+from pdos_next.domain.quality_followup import service as followup
+from pdos_next.domain.quality_followup.schemas import ExactSource
+from pdos_next.domain.verification_results.models import MeasurementRecord, TestResultProjection
+from pdos_next.features.quality.followup_bootstrap import disable_local_profile
+from pdos_next.features.quality.followup_integration import configure_integration
 from quality_execution.fixtures import (  # noqa: F401
     accepted_work,
     create_issue,
@@ -34,25 +52,6 @@ from quality_execution.fixtures import command as quality_command
 from sqlalchemy import func, select
 from test_project_first_plan import accepted, cmd, post
 from verification_handoff.fixtures import artifact
-
-from pdos_next.command_handlers import T1_OPERATIONS, T2_OPERATIONS, handler
-from pdos_next.contracts import PAYLOADS
-from pdos_next.database import tenant_session
-from pdos_next.domain.capa_verification.models import RemediationLinkRecord
-from pdos_next.domain.professional_authority.service import OPERATION_ROLES
-from pdos_next.domain.quality_execution.models import (
-    QualityIssueCurrent,
-    QualityIssueVersion,
-    QualityPolicyCurrent,
-    QualityPolicyFact,
-)
-from pdos_next.domain.quality_followup import service as followup
-from pdos_next.domain.quality_followup.schemas import ExactSource
-from pdos_next.domain.verification_results.models import MeasurementRecord, TestResultProjection
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
-from pdos_next.quality_followup_bootstrap import disable_local_profile
-from pdos_next.quality_followup_integration import configure_integration
-from pdos_next.service import digest
 
 LINK = "quality.capa.followup.link"
 OPERATIONS = (followup.ROOT_CAUSE, followup.COMPLETE, LINK)

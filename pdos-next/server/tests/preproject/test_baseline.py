@@ -6,10 +6,9 @@ from types import SimpleNamespace as NS
 from uuid import UUID
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
 from pdos_next.domain.preproject import baseline
 from pdos_next.errors import DomainError
+from sqlalchemy.dialects import postgresql
 
 REAL_VALIDATE_SOURCES = baseline.validate_sources
 
@@ -105,7 +104,7 @@ class Session:
 
 @pytest.fixture
 def fixture(monkeypatch):
-    from pdos_next import service
+    from pdos_next.core import service
 
     ctx = NS(
         tenant_id=TENANT,

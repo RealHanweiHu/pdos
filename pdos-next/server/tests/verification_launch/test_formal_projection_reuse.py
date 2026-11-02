@@ -4,9 +4,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session, make_transient, make_transient_to_detached
-from verification_handoff.test_pure import work as initial_work
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.verification_front import service as front
 from pdos_next.domain.verification_front.adapters import (
     METHOD_POSITION,
@@ -19,7 +17,8 @@ from pdos_next.domain.verification_front.models import (
 from pdos_next.domain.verification_launch import service
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context, digest
+from sqlalchemy.orm import Session, make_transient, make_transient_to_detached
+from verification_handoff.test_pure import work as initial_work
 
 
 def detached(row):

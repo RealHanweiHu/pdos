@@ -4,7 +4,7 @@ This is not a StableCapaAnchor builder or a current-authorization host. Stored
 SourceSafety fields are original declarations, never fresh byte/security proof.
 """
 
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
 
 
 # Initialize the actual common registry before its domain children.
@@ -15,7 +15,7 @@ import re
 from typing import Literal
 from uuid import UUID
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from . import anchor as a
 from . import fact_atom_storage as guards
@@ -24,8 +24,8 @@ from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_followup import service as followup
 from pdos_next.domain.quality_followup.schemas import ActionsCompletePayload
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Grant, Outbox, Principal, Receipt, RequestKey
-from pdos_next.receipt_request_binding import readable_receipt_request_bound
+from pdos_next.core.models import Audit, Confirmation, Grant, Outbox, Principal, Receipt, RequestKey
+from pdos_next.core.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.schemas.quality_issues.contracts import Issue
 from pdos_next.schemas.verification.contracts import DTO
 from pydantic import AwareDatetime, ValidationError

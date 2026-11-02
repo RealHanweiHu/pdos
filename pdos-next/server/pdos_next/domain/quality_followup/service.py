@@ -9,10 +9,9 @@ from copy import deepcopy
 from dataclasses import dataclass
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Grant, Principal, Product, now
+from pdos_next.core.service import digest, require_access, source_for
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_execution import policy
 from pdos_next.domain.quality_execution.evidence import (
@@ -31,10 +30,10 @@ from pdos_next.domain.quality_execution.ports import FixedQualityResult
 from pdos_next.domain.quality_issues.ports import Authority, Invocation
 from pdos_next.domain.quality_issues.rules import failure_ref, issue_sources, semantic_digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product, now
 from pdos_next.schemas.quality_issues.contracts import ActionsComplete, Issue, RootCauseDecide
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import digest, require_access, source_for
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from .adapters import TransactionCommands, kernel
 from .evidence import completion_observation

@@ -8,22 +8,13 @@ from uuid import uuid4
 
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-from pydantic import SecretStr, ValidationError
-
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.read_execution import (
-    ReadBinding,
-    build_read_binding,
-)
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.enterprise_search import embedding_query as query_module
-from pdos_next.enterprise_search.embedding_query import (
+from pdos_next.agent.enterprise_search import embedding_query as query_module
+from pdos_next.agent.enterprise_search.embedding_query import (
     QueryEmbedding,
     QueryPorts,
     QueryResult,
 )
-from pdos_next.enterprise_search.embedding_query_binding import (
+from pdos_next.agent.enterprise_search.embedding_query_binding import (
     SNAPSHOT,
     TOOL,
     QueryBinding,
@@ -33,10 +24,18 @@ from pdos_next.enterprise_search.embedding_query_binding import (
     payload,
     source,
 )
-from pdos_next.enterprise_search.embedding_schemas import EmbeddingResponse
+from pdos_next.agent.enterprise_search.embedding_schemas import EmbeddingResponse
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.read_execution import (
+    ReadBinding,
+    build_read_binding,
+)
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.model_configuration.ports import SecretBinding, SecretMaterial
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
-from pdos_next.service import digest
+from pydantic import SecretStr, ValidationError
 from tests.agent_kernel.test_read_execution import MemorySession, fixture
 from tests.enterprise_search.test_embedding_hybrid import card, metadata
 
@@ -185,8 +184,8 @@ def configured(monkeypatch, *, response=None, error=None):
         return profile, meta
 
     monkeypatch.setattr(query_module, "active", active)
-    from pdos_next.agent_kernel.policy import EgressDecision
-    from pdos_next.clock import now
+    from pdos_next.agent.kernel.policy import EgressDecision
+    from pdos_next.core.clock import now
 
     monkeypatch.setattr(
         query_module.policy,
@@ -454,8 +453,8 @@ def test_unknown_or_excess_usage_is_never_recorded_as_actual(monkeypatch):
 
 
 def test_actual_scope_orchestration_keeps_frozen_filters_in_both_hybrid_searches(monkeypatch):
-    from pdos_next.enterprise_search import assistant_scope
-    from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput
+    from pdos_next.agent.enterprise_search import assistant_scope
+    from pdos_next.agent.enterprise_search.assistant_schemas import AssistantSearchInput
     from tests.agent_kernel.test_context_corrections import case, selection
 
     current_run, ctx, ref = case()
@@ -475,7 +474,7 @@ def test_actual_scope_orchestration_keeps_frozen_filters_in_both_hybrid_searches
     scope = NS(run_id=current_run.id, project_id=uuid4(), proposal_id=None)
     denied = ("artifact", str(uuid4()))
     monkeypatch.setattr(assistant_scope, "excluded_sources", lambda *_: (denied,))
-    monkeypatch.setattr("pdos_next.agent_kernel.context_corrections.recheck", lambda *_: condition)
+    monkeypatch.setattr("pdos_next.agent.kernel.context_corrections.recheck", lambda *_: condition)
     monkeypatch.setattr(assistant_scope, "_verified", lambda _session, value: value)
     monkeypatch.setattr(assistant_scope, "search", lambda *_a, **_kw: pytest.fail("Wrong searcher"))
     calls = []

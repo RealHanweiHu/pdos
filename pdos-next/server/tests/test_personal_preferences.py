@@ -6,21 +6,20 @@ from uuid import uuid4
 
 import pytest
 from jsonschema import Draft202012Validator
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.types import RunScope
-from pdos_next.clock import now
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.clock import now
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.personal_preference_models import PersonalPreference
-from pdos_next.personal_preference_schemas import Preferences, PreferenceSave
-from pdos_next.personal_preferences import (
+from pdos_next.features.personal.preference_models import PersonalPreference
+from pdos_next.features.personal.preference_schemas import Preferences, PreferenceSave
+from pdos_next.features.personal.preferences import (
     CONTEXT_SCHEMA,
     context_preferences,
     read,
     recheck_context_preferences,
     role_defaults,
 )
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 
 @pytest.mark.parametrize("body", [

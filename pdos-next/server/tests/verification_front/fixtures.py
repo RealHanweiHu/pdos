@@ -6,6 +6,12 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
+from pdos_next.domain.professional_authority.service import (
+    configure_local_synthetic,
+    trusted_import,
+)
 from test_build_execution import actual, lot, planned  # noqa: F401
 from test_builds import configuration, definition, project  # noqa: F401
 from test_project_first_plan import accepted, cmd
@@ -20,13 +26,6 @@ from test_verification_execution import (
     row_for,
     verification_work,  # noqa: F401
 )
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.professional_authority.service import (
-    configure_local_synthetic,
-    trusted_import,
-)
-from pdos_next.models import now
 
 
 @pytest.fixture

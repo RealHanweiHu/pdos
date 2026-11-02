@@ -4,14 +4,13 @@ from datetime import timedelta
 from threading import Barrier
 from uuid import UUID, uuid4
 
+from pdos_next.agent.kernel import skill_management
+from pdos_next.agent.kernel.models import TenantAdministrator, TenantSkillEnablement
+from pdos_next.agent.kernel.policy import qualified, skill_enabled
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.models import Audit, Category, Confirmation, Grant, Outbox, Receipt, now
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel import skill_management
-from pdos_next.agent_kernel.models import TenantAdministrator, TenantSkillEnablement
-from pdos_next.agent_kernel.policy import qualified, skill_enabled
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.models import Audit, Category, Confirmation, Grant, Outbox, Receipt, now
 from tests.agent_kernel.test_transactions import run
 
 
@@ -230,10 +229,10 @@ def test_removed_skill_can_be_seen_and_disabled_without_loading_it(setup, monkey
 
 
 def test_concurrent_first_toggles_from_two_categories_share_one_tenant_revision(setup):
-    from pdos_next.contracts import Command
-    from pdos_next.database import category_transaction
+    from pdos_next.core.contracts import Command
+    from pdos_next.core.database import category_transaction
+    from pdos_next.core.service import execute, preview_command
     from pdos_next.errors import DomainError
-    from pdos_next.service import execute, preview_command
 
     promote(setup)
     category = uuid4()

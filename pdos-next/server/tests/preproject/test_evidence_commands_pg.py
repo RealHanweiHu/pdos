@@ -3,21 +3,19 @@
 
 from copy import copy, deepcopy
 from dataclasses import replace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.category_scope import MemberGrant, grant_member
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.core.category_scope import MemberGrant, grant_member
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Category, Claim, Consumption
+from pdos_next.core.service import Context
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.preproject.models import ProposalSource
-from pdos_next.models import Category, Claim, Consumption
-from pdos_next.service import Context
+from sqlalchemy import select
 from tests.preproject import test_review_fixes as fixtures
 from tests.preproject.test_g0 import (
     create,
@@ -288,7 +286,7 @@ def test_claim_withdraw_confirmation_replay_and_source_projection(work):
 def test_claim_withdraw_failure_rolls_back_status_link_projections_and_confirmation(
     work, monkeypatch
 ):
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     source = artifact(work)
     claim = record_claim(work, source)
@@ -551,12 +549,11 @@ def private_filename_source(work, tmp_path):
     from io import BytesIO
 
     from openpyxl import Workbook
+    from pdos_next.core.models import Artifact
+    from pdos_next.originals.access import upload
+    from pdos_next.originals.object_storage import LocalPrivateObjectStore
+    from pdos_next.originals.security import configure
     from security_fixture import secured_parse, synthetic_runtime
-
-    from pdos_next.models import Artifact
-    from pdos_next.object_storage import LocalPrivateObjectStore
-    from pdos_next.original_security import configure
-    from pdos_next.originals import upload
     from tests.test_durable_evidence import upload_input
 
     filename = "客户X需求.xlsx"

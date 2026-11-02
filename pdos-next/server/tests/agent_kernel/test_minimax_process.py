@@ -11,12 +11,9 @@ import httpx
 import pytest
 from fastapi.testclient import TestClient
 from langgraph.checkpoint.postgres import PostgresSaver
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.execution import scope_for_run
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.execution import scope_for_run
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentToolCall,
@@ -24,13 +21,15 @@ from pdos_next.agent_kernel.models import (
     TenantSkillEnablement,
     ValidationBudget,
 )
-from pdos_next.agent_kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
+from pdos_next.agent.kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
+from pdos_next.agent.model_configuration.kms import AliyunKms
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.model_configuration.kms import AliyunKms
-from pdos_next.models import Receipt, now
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt, now
 from pdos_next.providers.agent_client import AgentProviderClient, tool_name
 from pdos_next.providers.agent_wire import FINISH_TOOL
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_cost_budget import wallet
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_worker_process_recovery import (
@@ -441,7 +440,7 @@ def test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_propos
 if __name__ == "__main__":
     import asyncio
 
-    from pdos_next.agent_kernel import gateway
+    from pdos_next.agent.kernel import gateway
     from pdos_next.workflows.worker import main
 
     assert os.environ.get("PDOS_WORKER_PROCESS_CHECK") == "verified-local-synthetic"

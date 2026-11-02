@@ -2,15 +2,14 @@
 
 from uuid import uuid4
 
-from sqlalchemy import text
-
-from pdos_next.database import require_context
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Product
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
+from sqlalchemy import text
 
 
 def require_creation(s, ctx, *, product_id=None, decision=None):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_context(s, ctx)
     if decision is None:

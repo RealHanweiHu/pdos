@@ -11,6 +11,14 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import engine_for, tenant_session
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
+from pdos_next.domain.test_resources import retained
+from pdos_next.domain.test_resources import service as resources
+from pdos_next.domain.test_resources.models import TestResourceReservation as ResourceReservation
+from pdos_next.domain.verification_front import service as front
+from pdos_next.domain.verification_handoff import service as physical
 from sqlalchemy import insert, select
 from sqlalchemy.engine import make_url
 from sqlalchemy.exc import DBAPIError
@@ -25,15 +33,6 @@ from verification_launch.fixtures import (  # noqa: F401
     operational_work,
     ready_work,
 )
-
-from pdos_next.database import engine_for, tenant_session
-from pdos_next.domain.test_resources import retained
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.domain.test_resources.models import TestResourceReservation as ResourceReservation
-from pdos_next.domain.verification_front import service as front
-from pdos_next.domain.verification_handoff import service as physical
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "tools"))
 from current_read_profiler import CurrentReadProfiler, OwnerTarget

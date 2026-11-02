@@ -5,23 +5,7 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource
-from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
-from pdos_next.agent_kernel.models import (
-    AgentEvent,
-    AgentRun,
-    AgentToolCall,
-    TenantSkillEnablement,
-)
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.domain.verification_execution.schemas import PreparationRecordPayload
-from pdos_next.domain.verification_execution.service import semantic
-from pdos_next.domain.verification_front.schemas import RequestCreatePayload
-from pdos_next.enterprise_search.verification_candidates import (
+from pdos_next.agent.enterprise_search.verification_candidates import (
     PREPARATION,
     _command,
     _model_binding,
@@ -30,10 +14,25 @@ from pdos_next.enterprise_search.verification_candidates import (
     preparation_binding,
     resolve_draft,
 )
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource
+from pdos_next.agent.kernel.disclosure import disclosure, skill_operations
+from pdos_next.agent.kernel.models import (
+    AgentEvent,
+    AgentRun,
+    AgentToolCall,
+    TenantSkillEnablement,
+)
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.core.models import Principal, Receipt
+from pdos_next.core.service import Context, digest
+from pdos_next.domain.verification_execution.schemas import PreparationRecordPayload
+from pdos_next.domain.verification_execution.service import semantic
+from pdos_next.domain.verification_front.schemas import RequestCreatePayload
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Receipt
 from pdos_next.schemas.verification.contracts import BuildRef
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
+from sqlalchemy.dialects import postgresql
 from tests.agent_kernel.test_gateway import configured_route
 
 
@@ -107,7 +106,7 @@ def test_draft_criterion_text_without_an_exact_source_stays_unconfirmed():
 
 
 def test_bridge_does_not_offer_t2_or_general_command_authority():
-    from pdos_next.enterprise_search.verification_candidates import record
+    from pdos_next.agent.enterprise_search.verification_candidates import record
 
     with pytest.raises(DomainError) as error:
         record(None, None, uuid4(), operation="test.run.review", arguments={}, source=None,
@@ -248,8 +247,8 @@ def test_event_bridge_replays_actual_model_sources_then_requires_saved_preparati
     This does not replace the later PostgreSQL/HTTP audience or confirmation
     checks. There is no command executor in this module or this harness.
     """
-    from pdos_next.enterprise_search import action_sources
-    from pdos_next.enterprise_search import verification_candidates as bridge
+    from pdos_next.agent.enterprise_search import action_sources
+    from pdos_next.agent.enterprise_search import verification_candidates as bridge
 
     run, selected, _command_row, preparation, receipt = fixture()
     run = AgentRun(

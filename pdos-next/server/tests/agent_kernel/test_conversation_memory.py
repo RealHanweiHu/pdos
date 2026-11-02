@@ -6,10 +6,9 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import conversation
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.context_budget import estimate_tokens
+from pdos_next.agent.kernel import conversation
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.context_budget import estimate_tokens
 from pdos_next.errors import DomainError
 
 
@@ -71,7 +70,7 @@ def test_candidate_and_unverified_read_keep_answer():
 def test_thirty_turn_layering_full_history_and_hidden_sources(monkeypatch):
     rows = [row() for _ in range(30)]
     monkeypatch.setattr(conversation, "lineage", lambda *_: rows)
-    from pdos_next.agent_kernel import conversation_acl
+    from pdos_next.agent.kernel import conversation_acl
     monkeypatch.setattr(conversation_acl, "manifests", lambda _s, selected, **_k: {
         str(item.id): {"prepared": False, "unverified": [], "research": []}
         for item in selected})
@@ -89,8 +88,8 @@ def test_thirty_turn_layering_full_history_and_hidden_sources(monkeypatch):
         assert "仅显示目录" in turn["historical_outcome"]["notes"]
         assert turn["historical_outcome"]["unfinished"] == []
     assert estimate_tokens(json.dumps(value, ensure_ascii=False)) <= 4000
-    from pdos_next.agent_kernel.context_projection import combine_contracts, project
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel.context_projection import combine_contracts, project
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     raw = {"goal": "继续", "sources": [], "conversation": value}
     projected, omitted, issues = project(raw, combine_contracts(SkillCatalog(), []))
@@ -121,7 +120,7 @@ def test_running_guard_only_stops_newly_hidden_turns(monkeypatch, state, revoked
         yield None, run
 
     host.store = NS(transaction=transaction)
-    from pdos_next.agent_kernel import conversation_acl
+    from pdos_next.agent.kernel import conversation_acl
     monkeypatch.setattr(conversation_acl, "classify", lambda *_a, **_k: {"parent": state})
     if revoked:
         with pytest.raises(DomainError) as failure:
@@ -147,7 +146,7 @@ def test_scope_revoked_before_transaction_yields_is_mapped():
 
 @pytest.mark.parametrize("state", ["running", "completed"])
 def test_history_freezes_active_context_once_and_never_rewrites_terminal_run(monkeypatch, state):
-    from pdos_next.agent_kernel import bootstrap, execution, work_state
+    from pdos_next.agent.kernel import bootstrap, execution, work_state
 
     host = Bootstrap.__new__(Bootstrap)
     run = NS(continued_from_id=uuid4(), versions={}, read_sources=[], trigger="conversation",
@@ -208,7 +207,7 @@ def test_paged_history_revocation_is_checked_beyond_initial_window(monkeypatch):
         return {"turns": [] if kwargs.get("layered", True) else [
             {"run_id": "older", "outcome_state": "hidden"}]}
 
-    from pdos_next.agent_kernel import conversation_acl
+    from pdos_next.agent.kernel import conversation_acl
     monkeypatch.setattr(conversation_acl, "classify", lambda *_a, **_k: {"older": "hidden"})
     monkeypatch.setattr(conversation, "memory", lambda *_a, **_k: pytest.fail("history rebuilt"))
     with pytest.raises(DomainError) as failure:
@@ -224,8 +223,8 @@ def test_paged_history_revocation_is_checked_beyond_initial_window(monkeypatch):
 def test_continued_skills_are_bounded_deduplicated_and_currently_enabled(
     monkeypatch, enabled, exclude, expected
 ):
-    from pdos_next.agent_kernel import requested_skills
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel import requested_skills
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     keys = ["option_comparison", "public_research", "public_research", "gap_check",
             "proposal_drafting"]

@@ -2,12 +2,11 @@
 
 from uuid import UUID
 
+from pdos_next.agent.kernel.models import TenantPilotAdmission
+from pdos_next.core.models import Grant
+from pdos_next.domain.preproject.models import ProposalDecision
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import TenantPilotAdmission
-from pdos_next.domain.preproject.models import ProposalDecision
-from pdos_next.models import Grant
 from tests.preproject.test_g0 import create, post, read, request, save
 from tests.preproject.test_g0 import work as work  # noqa: F401
 

@@ -4,15 +4,14 @@ from copy import deepcopy
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
+from pdos_next.core.models import now
+from pdos_next.core.service import digest, source_for
 from pdos_next.domain.preproject.access import human
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
 from pdos_next.domain.projects.service import _project
 from pdos_next.domain.work_management.rules import require
 from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.service import digest, source_for
+from sqlalchemy import select
 
 from .models import GovernanceEvent
 from .rules import LABELS, aggregate, health, stable, templates
@@ -62,8 +61,8 @@ def release_evidence(s, ctx, pid, project_id, reference):
     )
     # A stage is visible to its project's audience. A private release packet
     # cannot be copied into a wider stage review or directory projection.
+    from pdos_next.core.models import ObjectAudience
     from pdos_next.domain.projects.models import Project
-    from pdos_next.models import ObjectAudience
 
     project = s.get(Project, project_id)
     safe = project.visibility == "private" or row.visibility == "category"

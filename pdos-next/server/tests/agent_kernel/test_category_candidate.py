@@ -8,27 +8,26 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import category_candidate as candidate
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, execution_key
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel import category_candidate as candidate
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, execution_key
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentSession,
     AgentToolCall,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.read_execution import ReadBinding
-from pdos_next.agent_kernel.registry import ToolRegistry, ToolSpec
-from pdos_next.agent_kernel.research_read_ledger import page_result
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.read_execution import ReadBinding
+from pdos_next.agent.kernel.registry import ToolRegistry, ToolSpec
+from pdos_next.agent.kernel.research_read_ledger import page_result
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.agent.research.types import ReadPage, Snapshot
+from pdos_next.core.models import Principal
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.preproject.category_creation import CategoryCreate
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal
-from pdos_next.research.types import ReadPage, Snapshot
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
 
 
 class MemorySession:
@@ -508,7 +507,7 @@ def test_human_adoption_context_cannot_borrow_other_identity(ledger, change):
 def test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_tools(
     ledger, whole_registry
 ):
-    from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
+    from pdos_next.agent.kernel.disclosure import binding_operations, disclosure
 
     f = ledger
     f.owner.registry.add(ToolSpec('proposal.create', 'Unloaded write', {}, {}, 'write', 'T1'))

@@ -3,15 +3,14 @@
 
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Artifact
 from pdos_next.domain.knowledge.assistant_models import (
     KnowledgeAnswerReview,
     KnowledgeGapSubmission,
 )
-from pdos_next.models import Artifact
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
 from tests.enterprise_search.test_retrieval_pg import index, register
 from tests.knowledge_pg.test_assistant_knowledge import answer, from_seed, root, seed, submit

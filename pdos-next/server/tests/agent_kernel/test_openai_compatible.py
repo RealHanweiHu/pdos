@@ -8,17 +8,16 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from pydantic import SecretStr, ValidationError
-
-from pdos_next.agent_kernel.qualification_binding import model_identity
+from pdos_next.agent.kernel.qualification_binding import model_identity
+from pdos_next.agent.model_configuration.persistence import decode
+from pdos_next.agent.model_configuration.service import digest
+from pdos_next.core.models import now
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.persistence import decode
-from pdos_next.model_configuration.service import digest
-from pdos_next.models import now
 from pdos_next.providers.agent_client import AgentProviderClient, request_body
 from pdos_next.providers.agent_wire import FINISH_TOOL
 from pdos_next.providers.types import ProviderError
 from pdos_next.schemas.model_configuration import ModelMetadata
+from pydantic import SecretStr, ValidationError
 from tests.agent_kernel.test_native_protocols import SCHEMA, TOOLS, reply, route
 
 

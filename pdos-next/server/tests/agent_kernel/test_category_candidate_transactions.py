@@ -7,30 +7,29 @@ from hashlib import sha256
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, func, select
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.disclosure import disclosure, skill_operations
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentSession,
     PublicWebSnapshot,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.research_read_ledger import page_result
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.research_read_ledger import page_result
+from pdos_next.agent.research.types import ReadPage, Snapshot
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Category, Grant, Outbox, Receipt, RequestKey
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.category_creation_models import CategoryCreationConfirmation
 from pdos_next.domain.preproject.category_models import KnowledgeEntry, ParameterVersion
-from pdos_next.models import Audit, Category, Grant, Outbox, Receipt, RequestKey
-from pdos_next.research.types import ReadPage, Snapshot
-from pdos_next.service import digest
+from sqlalchemy import event, func, select
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_execution_binding import ledger
 
 

@@ -5,14 +5,14 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.proposal_context import KEY
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.proposal_context import KEY
+from pdos_next.core.models import Grant, Receipt, now
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Receipt, now
-from pdos_next.original_security import security_row
-from pdos_next.originals import require_original
+from pdos_next.originals.access import require_original
+from pdos_next.originals.security import security_row
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from tests.agent_kernel.test_m3_original_binding_pg import QUOTE, actual_run, binding, uploaded

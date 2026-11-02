@@ -1,9 +1,8 @@
 from typing import Literal
 from uuid import UUID
 
+from pdos_next.core.schema_base import StrictModel
 from pydantic import Field
-
-from pdos_next.schema_base import StrictModel
 
 
 class Ref(StrictModel):

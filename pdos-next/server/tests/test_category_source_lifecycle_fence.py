@@ -4,13 +4,8 @@ from datetime import timedelta
 
 import pytest
 from lifecycle_fixture import lifecycle_work  # noqa: F401 - retained-byte fixture
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from test_durable_evidence import upload_input
-from test_trusted_source_work import claim_cmd, command, post
-
-from pdos_next.database import tenant_session
-from pdos_next.models import (
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Audit,
     Category,
     Claim,
@@ -20,8 +15,12 @@ from pdos_next.models import (
     UploadAttempt,
     now,
 )
-from pdos_next.originals import upload, upload_contents
-from pdos_next.upload_lifecycle import reserve
+from pdos_next.originals.access import upload, upload_contents
+from pdos_next.originals.upload_lifecycle import reserve
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+from test_durable_evidence import upload_input
+from test_trusted_source_work import claim_cmd, command, post
 
 
 def test_pending_private_category_original_blocks_model_reference_atomically(lifecycle_work):  # noqa: F811

@@ -16,18 +16,17 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session, make_transient_to_detached
-from verification_launch import test_pure as delivered
-
-from pdos_next import launch_plan_preview as seam
-from pdos_next.contracts import Command, SourceRead
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.models import Product
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.configurations.schemas import DefinitionReference
 from pdos_next.domain.verification_handoff import service as physical
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
+from pdos_next.features.projects import launch_plan_preview as seam
 from pdos_next.schemas.verification.contracts import EventTime
-from pdos_next.service import Context, digest
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, make_transient_to_detached
+from verification_launch import test_pure as delivered
 
 
 @pytest.fixture(autouse=True)
@@ -518,7 +517,7 @@ def test_delivered_validate_guards_are_present_in_unchanged_preview():
 
 
 def test_applied_exact_seam_cannot_affect_execute_or_phased_consume():
-    from pdos_next import service as common
+    from pdos_next.core import service as common
 
     text = inspect.getsource(common.preview_command)
     assert 'elif command.operation == "test.run.plan":' in text

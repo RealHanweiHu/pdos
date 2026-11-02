@@ -9,15 +9,14 @@ from unittest.mock import Mock
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.service import Context
 from pdos_next.domain.automations import runtime
 from pdos_next.domain.automations.schemas import AutomationSpec, Trigger
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 AT = datetime(2026, 10, 18, 10, tzinfo=UTC)
 
@@ -323,7 +322,7 @@ def test_normal_conversation_keeps_existing_runtime_policy_and_fallbacks():
 
 
 def test_common_store_rejects_changed_scope_trigger_before_authority_or_callback(monkeypatch):
-    from pdos_next.agent_kernel import persistence
+    from pdos_next.agent.kernel import persistence
 
     scope = RunScope(
         tenant_id=uuid4(),

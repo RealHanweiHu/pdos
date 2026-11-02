@@ -5,10 +5,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import requested_skills
-from pdos_next.agent_kernel.requested_skills import RequestedSkill
-from pdos_next.agent_kernel.skills import SkillCatalog
+from pdos_next.agent.kernel import requested_skills
+from pdos_next.agent.kernel.requested_skills import RequestedSkill
+from pdos_next.agent.kernel.skills import SkillCatalog
 from pdos_next.errors import DomainError
 
 

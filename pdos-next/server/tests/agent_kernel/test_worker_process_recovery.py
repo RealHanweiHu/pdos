@@ -12,19 +12,18 @@ from uuid import UUID, uuid4
 import pytest
 from fastapi.testclient import TestClient
 from langgraph.checkpoint.postgres import PostgresSaver
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.execution import scope_for_run
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import AgentRun, TenantSkillEnablement
+from pdos_next.agent.kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
+from pdos_next.agent.kernel.temporal_port import workflow_id
+from pdos_next.api import create_app
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Claim, Receipt, now
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio.client import Client
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.execution import scope_for_run
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import AgentRun, TenantSkillEnablement
-from pdos_next.agent_kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
-from pdos_next.agent_kernel.temporal_port import workflow_id
-from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.models import Claim, Receipt, now
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 

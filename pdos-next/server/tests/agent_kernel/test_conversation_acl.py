@@ -7,13 +7,12 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import conversation
-from pdos_next.agent_kernel import conversation_acl as acl
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.kernel import conversation
+from pdos_next.agent.kernel import conversation_acl as acl
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.errors import DomainError
+from sqlalchemy.dialects import postgresql
 
 
 def run():
@@ -129,7 +128,7 @@ def test_actual_revocation_states_hide_historical_answer(monkeypatch, kind, row)
     original, identity = run(), str(uuid4())
     access = {str(original.id): manifest(original, dependencies=[acl.dependency(kind, identity)])}
     monkeypatch.setattr(acl, "metadata", lambda *_: {(kind, identity): [row]})
-    from pdos_next.enterprise_search import safety
+    from pdos_next.agent.enterprise_search import safety
     monkeypatch.setattr(safety, "safe_originals", lambda *_: set())
     assert acl.classify(None, access) == {str(original.id): "hidden"}
 
@@ -309,8 +308,8 @@ def test_frozen_history_preserves_old_root_ids_instead_of_current_replacement(mo
 
 
 def test_writer_opens_a_separate_snapshot_of_the_actual_persisted_human_owner(monkeypatch):
+    from pdos_next.agent.enterprise_search import assistant_sources
     from pdos_next.domain.preproject import access
-    from pdos_next.enterprise_search import assistant_sources
     from tests.agent_kernel.test_read_execution import fixture
 
     f = fixture()
@@ -339,7 +338,7 @@ def test_writer_opens_a_separate_snapshot_of_the_actual_persisted_human_owner(mo
 def test_mcp_current_grants_and_connector_digest_revoke_without_transport(changed):
     from datetime import UTC, datetime, timedelta
 
-    from pdos_next.agent_kernel.mcp_binding import connector_binding
+    from pdos_next.agent.kernel.mcp_binding import connector_binding
 
     connector = NS(id=uuid4(), active=True, key="local-test", endpoint="https://example.test/mcp",
                    secret_ref="server-only-reference", tools={"parts.read": {"kind": "read"}})

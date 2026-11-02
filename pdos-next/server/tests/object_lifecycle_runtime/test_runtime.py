@@ -15,13 +15,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.object_journal import JournaledLocalObjectStore
-from pdos_next.object_lifecycle_runtime import LocalReversibleLifecycleAdapter
-from pdos_next.object_lifecycle_runtime.files import PrivateFiles, seal
-from pdos_next.object_storage.adapters import LocalPrivateObjectStore
-from pdos_next.object_storage.types import StorageFailure
-from pdos_next.original_lifecycle.types import (
+from pdos_next.originals.lifecycle.types import (
     Disposition,
     EffectOutcome,
     EffectPermit,
@@ -29,6 +23,11 @@ from pdos_next.original_lifecycle.types import (
     LifecycleFailure,
     LifecycleScope,
 )
+from pdos_next.originals.object_journal import JournaledLocalObjectStore
+from pdos_next.originals.object_lifecycle_runtime import LocalReversibleLifecycleAdapter
+from pdos_next.originals.object_lifecycle_runtime.files import PrivateFiles, seal
+from pdos_next.originals.object_storage.adapters import LocalPrivateObjectStore
+from pdos_next.originals.object_storage.types import StorageFailure
 
 
 class TestGate:
@@ -249,11 +248,11 @@ class CrashAdapter(LocalReversibleLifecycleAdapter):
         package_root = str(__import__("pathlib").Path(__file__).resolve().parents[2])
         return (
             "import sys,os; sys.path.insert(0," + repr(package_root) + "); "
-            "from pdos_next.object_lifecycle_runtime.effects import EffectFiles; "
+            "from pdos_next.originals.object_lifecycle_runtime.effects import EffectFiles; "
             "EffectFiles._checkpoint=lambda self,stage: os._exit(88) if stage=="
             + repr(self.stage)
             + " else None; "
-            "from pdos_next.object_lifecycle_runtime.worker import main; main()"
+            "from pdos_next.originals.object_lifecycle_runtime.worker import main; main()"
         )
 
 
@@ -435,10 +434,10 @@ def test_worker_deadline_kills_reaps_and_keeps_gate_until_exit(work):
             package_root = str(__import__("pathlib").Path(__file__).resolve().parents[2])
             return (
                 "import sys,time; sys.path.insert(0," + repr(package_root) + "); "
-                "from pdos_next.object_lifecycle_runtime.effects import EffectFiles; "
+                "from pdos_next.originals.object_lifecycle_runtime.effects import EffectFiles; "
                 "EffectFiles._checkpoint=lambda self,stage: "
                 "time.sleep(30) if stage=='after_attempt' else None; "
-                "from pdos_next.object_lifecycle_runtime.worker import main; main()"
+                "from pdos_next.originals.object_lifecycle_runtime.worker import main; main()"
             )
 
     start = time.monotonic()

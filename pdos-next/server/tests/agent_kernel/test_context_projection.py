@@ -4,9 +4,8 @@ from copy import deepcopy
 from dataclasses import replace
 
 import pytest
-
-from pdos_next.agent_kernel.context_projection import combine_contracts, declared_contract, project
-from pdos_next.agent_kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.context_projection import combine_contracts, declared_contract, project
+from pdos_next.agent.kernel.skills import SkillCatalog
 
 
 def test_every_registered_skill_has_a_resolved_closed_context_contract_and_digest():

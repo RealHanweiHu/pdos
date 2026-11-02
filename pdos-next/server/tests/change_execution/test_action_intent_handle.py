@@ -10,15 +10,14 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy.orm import Session
-
-from pdos_next import change_controlled_owner as controlled
-from pdos_next.change_controlled_schemas import SelectionMaterial
-from pdos_next.change_controlled_store import ChangeSelectionFact
-from pdos_next.change_order_store import SelectionProof
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change.controlled_schemas import SelectionMaterial
+from pdos_next.features.change.controlled_store import ChangeSelectionFact
+from pdos_next.features.change.order_store import SelectionProof
+from sqlalchemy.orm import Session
 
 from . import kernel_helpers as helper
 from .test_change_order import no_connection  # noqa: F401 - pure fixture denies DB/HTTP

@@ -7,14 +7,13 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import category_adoption, category_candidate, domain_candidates
-from pdos_next.agent_kernel import work_state_candidates as metadata
-from pdos_next.agent_kernel.models import AgentInput, AgentRun
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import category_adoption, category_candidate, domain_candidates
+from pdos_next.agent.kernel import work_state_candidates as metadata
+from pdos_next.agent.kernel.models import AgentInput, AgentRun
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Principal
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal
-from pdos_next.service import Context
 from tests.agent_kernel.test_category_adoption import ledger as adopted_ledger  # noqa: F401
 from tests.agent_kernel.test_category_candidate import ledger as pending_ledger  # noqa: F401
 from tests.agent_kernel.test_category_candidate import prepare
@@ -132,7 +131,7 @@ def test_agent_owner_read_snapshot_is_derived_only_from_its_actual_run(monkeypat
     outer.scope, outer.run = reading.scope, reading.run
     outer.info["scope"] = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
     outer.get_bind = lambda: "same-engine"
-    from pdos_next.enterprise_search import assistant_sources
+    from pdos_next.agent.enterprise_search import assistant_sources
 
     observed = []
 
@@ -207,7 +206,7 @@ def test_readonly_category_adoption_never_trusts_an_event_label_without_native_f
     f = adopted_ledger
     monkeypatch.setattr(f.s, "scalar", lambda _query: f.entry)
     if change == "receipt":
-        from pdos_next.models import Receipt
+        from pdos_next.core.models import Receipt
 
         del f.s.rows[Receipt, f.receipt.id]
     elif change == "receipt_operation":
@@ -222,7 +221,7 @@ def test_readonly_category_adoption_never_trusts_an_event_label_without_native_f
 
 @pytest.mark.parametrize("state", ["adopted", "cancelled", "unavailable"])
 def test_current_native_status_does_not_rewrite_the_running_frozen_snapshot(monkeypatch, state):
-    from pdos_next.agent_kernel import work_state
+    from pdos_next.agent.kernel import work_state
 
     ref = {"event_id": str(uuid4()), "run_id": str(uuid4()), "state": "pending"}
     frozen = {"revision": 1, "focus_objects": [], "candidates": [ref]}

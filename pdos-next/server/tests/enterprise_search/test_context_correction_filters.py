@@ -5,12 +5,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import assistant_inheritance as inheritance
+from pdos_next.agent.enterprise_search import assistant_scope, query
+from pdos_next.agent.enterprise_search.assistant_schemas import AssistantSearchInput, CitationsInput
+from pdos_next.core.service import digest
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.enterprise_search import assistant_inheritance as inheritance
-from pdos_next.enterprise_search import assistant_scope, query
-from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput, CitationsInput
-from pdos_next.service import digest
 from tests.agent_kernel.test_context_corrections import case, selection
 
 
@@ -85,7 +84,7 @@ def test_empty_intersection_is_an_empty_sql_allowlist_not_omission(monkeypatch):
     captured = []
     session = SimpleNamespace(get=lambda *_: run)
     scope = SimpleNamespace(run_id=run.id, project_id=None, proposal_id=None)
-    monkeypatch.setattr("pdos_next.agent_kernel.context_corrections.recheck", lambda *_: condition)
+    monkeypatch.setattr("pdos_next.agent.kernel.context_corrections.recheck", lambda *_: condition)
     monkeypatch.setattr(assistant_scope, "_verified", lambda _session, value: value)
     monkeypatch.setattr(
         assistant_scope, "search", lambda *_args, **kwargs: captured.append(kwargs) or {"items": []}

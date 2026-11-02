@@ -3,8 +3,7 @@
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
+from pdos_next.core.service import digest
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_execution import policy
 from pdos_next.domain.quality_execution.evidence import (
@@ -14,7 +13,7 @@ from pdos_next.domain.quality_execution.evidence import (
     union_sources,
 )
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from sqlalchemy import select
 
 from . import service as owners
 from .models import RemediationLinkRecord
@@ -286,7 +285,7 @@ def apply_prepared_write(s, ctx, command, product, payload, phase):
 
 
 def inputs(s, ctx, product_id, command):
-    from pdos_next.models import Product
+    from pdos_next.core.models import Product
 
     product = s.get(Product, product_id)
     if product is None or product.tenant_id != ctx.tenant_id or command.product_id != product_id:

@@ -1,7 +1,7 @@
 """Short natural-language messages work; empty or oversized requests stay invalid."""
 
 import pytest
-from pdos_next.agent_kernel.api import StartInput
+from pdos_next.agent.kernel.api import StartInput
 from pydantic import ValidationError
 
 

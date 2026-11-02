@@ -5,18 +5,17 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.bindings import WriteSource, execution_key
+from pdos_next.agent.kernel.deterministic_proofs import resolve_compute_proof
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.m3_calculators import ENGINES, handlers
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.persistence import KernelStore, cancel_run
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.errors import DomainError
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import WriteSource, execution_key
-from pdos_next.agent_kernel.deterministic_proofs import resolve_compute_proof
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.m3_calculators import ENGINES, handlers
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.persistence import KernelStore, cancel_run
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.errors import DomainError
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_transactions import human_session
 
@@ -84,9 +83,9 @@ def test_real_compute_call_retains_complete_digest_and_exact_replay(setup):
 ])
 def test_sql_cannot_accept_forged_read_binding(setup, field, value):
     f = read_fixture(setup)
-    from pdos_next.agent_kernel.bindings import ModelBinding
-    from pdos_next.agent_kernel.deterministic_proofs import canonical_hash
-    from pdos_next.agent_kernel.read_execution import build_read_binding
+    from pdos_next.agent.kernel.bindings import ModelBinding
+    from pdos_next.agent.kernel.deterministic_proofs import canonical_hash
+    from pdos_next.agent.kernel.read_execution import build_read_binding
 
     computed = ENGINES[f.read_spec.name].calculate(f.read_arguments)
     with f.store.transaction(f.scope) as (_, run):
@@ -145,7 +144,7 @@ def test_original_agent_authority_is_rechecked_when_human_consumes_compute_proof
         session.execute(text("DELETE FROM grants WHERE tenant_id=:tenant AND principal_id=:agent"),
                         {"tenant": setup.tenant, "agent": setup.agent})
     with human_session(setup) as session:
-        from pdos_next.agent_kernel.models import AgentRun
+        from pdos_next.agent.kernel.models import AgentRun
 
         run = session.get(AgentRun, f.scope.run_id)
         with pytest.raises(DomainError):
@@ -185,7 +184,7 @@ def test_actual_domain_computed_claim_uses_complete_server_result(setup):
     saved = f.adapter.execute(
         f.scope, f.spec.name, f.arguments, f.write_key, source=f.source,
     )
-    from pdos_next.models import Claim, Receipt
+    from pdos_next.core.models import Claim, Receipt
 
     with Session(setup.admin) as session:
         receipt = session.get(Receipt, UUID(saved["id"]))
@@ -201,9 +200,9 @@ def test_actual_domain_computed_claim_uses_complete_server_result(setup):
 
 def test_actual_computed_candidate_can_be_adopted_once_without_t0_qualification(setup):
     f = computed_candidate(setup)
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
-    from pdos_next.agent_kernel.models import TenantSkillEnablement
-    from pdos_next.models import Claim, Receipt
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.models import TenantSkillEnablement
+    from pdos_next.core.models import Claim, Receipt
 
     with Session(setup.admin) as session, session.begin():
         session.get(TenantSkillEnablement, f.qualification.id).qualification_revoked = True
@@ -231,7 +230,7 @@ def test_actual_computed_candidate_can_be_adopted_once_without_t0_qualification(
 def test_actual_postgres_canonical_json_matches_server_digest(setup, value):
     import json
 
-    from pdos_next.service import digest
+    from pdos_next.core.service import digest
 
     with setup.admin.connect() as connection:
         actual = connection.scalar(text(

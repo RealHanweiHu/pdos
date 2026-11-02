@@ -1,10 +1,9 @@
 from typing import Literal, Self
 from uuid import UUID
 
-from pydantic import Field, model_validator
-
-from pdos_next.schema_base import StrictModel
+from pdos_next.core.schema_base import StrictModel
 from pdos_next.schemas.planning import ScheduleInput
+from pydantic import Field, model_validator
 
 
 class ResourceDemand(StrictModel):

@@ -3,8 +3,6 @@
 from copy import deepcopy
 from uuid import UUID
 
-from pydantic import BaseModel
-
 from pdos_next.domain.products import variants
 from pdos_next.schemas.products.derivation import (
     ApplicabilityScope,
@@ -13,6 +11,7 @@ from pdos_next.schemas.products.derivation import (
     Override,
     SpecSnapshot,
 )
+from pydantic import BaseModel
 
 from .access import fail
 from .baseline import published_baseline
@@ -309,7 +308,7 @@ def _calculation_overrides(parent, child, document):
 
 def calculation(baseline_view, doc, *, proposal_id=None, revision=None):
     """Compare a real proposal revision to its fixed parent with the unique engine."""
-    from pdos_next.service import digest
+    from pdos_next.core.service import digest
 
     document = _dict(doc)
     document["items"] = [_dict(item) for item in document.get("items", [])]

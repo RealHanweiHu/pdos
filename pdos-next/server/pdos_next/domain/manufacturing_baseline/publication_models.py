@@ -8,6 +8,7 @@ actual owner. Existing preparation rows remain immutable draft records.
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -19,8 +20,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.models import Base, Row
 
 from .models import FIXED as PREPARATION_FIXED
 from .models import TABLE as PREPARATION_TABLE

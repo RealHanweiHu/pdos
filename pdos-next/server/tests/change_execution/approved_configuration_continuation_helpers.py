@@ -17,6 +17,28 @@ from uuid import UUID, uuid4
 
 from build_operational_facts import fixtures as operational
 from build_start import test_transactions as start
+from pdos_next.bootstrap.test_resource_import import import_test_resource_fact
+from pdos_next.core.models import Receipt, now
+from pdos_next.core.service import digest
+from pdos_next.domain.build_operational_facts import service as operational_owner
+from pdos_next.domain.build_operational_facts.models import OperationalAsset
+from pdos_next.domain.build_operational_facts.schemas import (
+    DecisionProof,
+    OperationalScope,
+    ResourceInput,
+)
+from pdos_next.domain.builds import service as build_owner
+from pdos_next.domain.builds.schemas import BuildCreatePayload
+from pdos_next.domain.configurations.service import _merge_reads
+from pdos_next.domain.quality_followup.schemas import CompletionFact
+from pdos_next.domain.test_resources import service as test_resources
+from pdos_next.domain.test_resources.models import TestResourceFact
+from pdos_next.domain.test_resources.schemas import TestPlanBinding, TestResourceFactInput
+from pdos_next.domain.verification_handoff.models import ActualMethodApplicability
+from pdos_next.domain.verification_launch.schemas import ExecutionPlan
+from pdos_next.features.change.implementation_owner import Occurrence, original_occurrence
+from pdos_next.features.change.order_store import ChangeImplementationRecord, ImplementationCapture
+from pdos_next.schemas.verification.contracts import SourceRef
 from quality_execution import fixtures as quality
 from quality_followup_transactions import fixtures as followup
 from sqlalchemy import select
@@ -39,28 +61,6 @@ from verification_launch.test_multi_run_quality_chain import measurement_rows
 from verification_results import fixtures as results
 
 from change_execution import approved_configuration_helpers as approved
-from pdos_next.change_implementation_owner import Occurrence, original_occurrence
-from pdos_next.change_order_store import ChangeImplementationRecord, ImplementationCapture
-from pdos_next.domain.build_operational_facts import service as operational_owner
-from pdos_next.domain.build_operational_facts.models import OperationalAsset
-from pdos_next.domain.build_operational_facts.schemas import (
-    DecisionProof,
-    OperationalScope,
-    ResourceInput,
-)
-from pdos_next.domain.builds import service as build_owner
-from pdos_next.domain.builds.schemas import BuildCreatePayload
-from pdos_next.domain.configurations.service import _merge_reads
-from pdos_next.domain.quality_followup.schemas import CompletionFact
-from pdos_next.domain.test_resources import service as test_resources
-from pdos_next.domain.test_resources.models import TestResourceFact
-from pdos_next.domain.test_resources.schemas import TestPlanBinding, TestResourceFactInput
-from pdos_next.domain.verification_handoff.models import ActualMethodApplicability
-from pdos_next.domain.verification_launch.schemas import ExecutionPlan
-from pdos_next.models import Receipt, now
-from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest
-from pdos_next.test_resource_import import import_test_resource_fact
 
 
 def _stamp(value):
@@ -560,7 +560,7 @@ def _prepare_new_run(work, monkeypatch, cleanup, *, test_person_resource):
     exactly. Occupancy stays intact and Start still uses the actual capacity
     owner. Receiving old results implies no release or greater capacity.
     """
-    from pdos_next import clock
+    from pdos_next.core import clock
 
     person_resource = ResourceInput.model_validate(
         test_person_resource.model_dump(mode="python")

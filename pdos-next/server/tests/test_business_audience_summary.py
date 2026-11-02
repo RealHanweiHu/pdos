@@ -3,13 +3,12 @@
 # ruff: noqa: F811 -- register the existing configuration fixture and its dependencies
 from uuid import UUID
 
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import ObjectAudience
+from pdos_next.domain.builds.models import Build
 from sqlalchemy import delete, select, text
 from sqlalchemy.orm import Session
 from test_builds import accepted, build_command, configuration, definition, project  # noqa: F401
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.builds.models import Build
-from pdos_next.models import ObjectAudience
 
 
 def test_summary_cannot_expand_ancestor_audience_and_source_revoke_hides_build(

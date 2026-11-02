@@ -7,10 +7,9 @@ from time import perf_counter
 from uuid import UUID, uuid4
 
 from g0_fixture import create_g0_project
+from pdos_next.core.models import Category, Grant, Product, Receipt, now
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.models import Category, Grant, Product, Receipt, now
 from tests.preproject.test_g0 import create, payload
 from tests.test_personal_views import second_category
 

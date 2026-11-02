@@ -9,12 +9,11 @@ from decimal import Decimal
 from uuid import UUID
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Artifact, Grant, Receipt
 from pdos_next.domain.preproject.schemas import Reference
 from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource, DefinitionSpecRow
-from pdos_next.models import Artifact, Grant, Receipt
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.preproject.test_evidence_commands_pg import artifact as category_artifact
 from tests.preproject.test_g0 import create, decide_request, request, save, submit
 from tests.preproject.test_g0 import payload as proposal_payload

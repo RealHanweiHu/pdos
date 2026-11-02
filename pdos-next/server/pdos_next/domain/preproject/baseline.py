@@ -6,14 +6,13 @@ from datetime import date, datetime
 from decimal import Decimal
 from uuid import UUID
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Principal, Product, Receipt
 from pdos_next.domain.products.definitions import definition_view
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.products.variant_models import Variant
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Product, Receipt
 from pdos_next.schemas.products.derivation import ObjectReference, SourceReference, SpecSnapshot
+from sqlalchemy import select
 
 from .access import fail
 from .baseline_blocks import read_blocks
@@ -123,7 +122,7 @@ def _unavailable(message="所选基线没有可核对的具名发布事实。", 
 
 
 def _scope(s, ctx, product_id, variant_id):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     product = s.scalar(
@@ -291,12 +290,11 @@ def _source_references(view):
 
 def _historical_source_access(s, ctx, product_id, ref):
     """Prove body access independently of active status; never use metadata helpers."""
+    from pdos_next.agent.kernel.models import PublicWebSnapshot
+    from pdos_next.core.models import Artifact
+    from pdos_next.core.service import require_access
+    from pdos_next.originals.access import require_original
     from sqlalchemy.orm import load_only
-
-    from pdos_next.agent_kernel.models import PublicWebSnapshot
-    from pdos_next.models import Artifact
-    from pdos_next.originals import require_original
-    from pdos_next.service import require_access
 
     model = PublicWebSnapshot if ref.type == "snapshot" else Artifact
     columns = [model.id, model.tenant_id, model.category_id]
@@ -504,9 +502,8 @@ def validate_sources(
         elif history_permissions and ref.type in {"artifact", "original", "snapshot"}:
             _historical_source_access(s, ctx, product_id, ref)
         elif ref.type in {"artifact", "original"}:
+            from pdos_next.core.models import Artifact
             from sqlalchemy.orm import load_only
-
-            from pdos_next.models import Artifact
 
             # Typed fixed references may originate in a different readable
             # Product, through Knowledge or an actual signed EvidenceLink.

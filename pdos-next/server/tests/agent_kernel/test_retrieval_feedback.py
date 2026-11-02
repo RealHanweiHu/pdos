@@ -5,15 +5,14 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import retrieval_feedback as feedback
-from pdos_next.agent_kernel import work_state
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.process_view import KINDS
-from pdos_next.enterprise_search import assistant_inheritance as inheritance
-from pdos_next.enterprise_search import assistant_ledger as ledger
+from pdos_next.agent.enterprise_search import assistant_inheritance as inheritance
+from pdos_next.agent.enterprise_search import assistant_ledger as ledger
+from pdos_next.agent.kernel import retrieval_feedback as feedback
+from pdos_next.agent.kernel import work_state
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.process_view import KINDS
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def sample():

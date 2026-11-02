@@ -13,21 +13,21 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
-from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
-from pdos_next.dingtalk.models import Delivery, Message
-from pdos_next.dingtalk.summary_delivery import SummaryDeliveryService
-from pdos_next.dingtalk.summary_models import SummaryDelivery
-from pdos_next.dingtalk.summary_workflow import (
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
+from pdos_next.core.models import Grant, now
+from pdos_next.domain.automations import service_runtime
+from pdos_next.domain.automations.schemas import ZERO_MODEL_BUDGET
+from pdos_next.domain.automations.service_models import AutomationServiceAttempt
+from pdos_next.integrations.dingtalk.models import Delivery, Message
+from pdos_next.integrations.dingtalk.summary_delivery import SummaryDeliveryService
+from pdos_next.integrations.dingtalk.summary_models import SummaryDelivery
+from pdos_next.integrations.dingtalk.summary_workflow import (
     DingTalkSummaryDelivery,
     SummaryActivities,
     SummarySender,
 )
-from pdos_next.domain.automations import service_runtime
-from pdos_next.domain.automations.schemas import ZERO_MODEL_BUDGET
-from pdos_next.domain.automations.service_models import AutomationServiceAttempt
-from pdos_next.models import Grant, now
 from pdos_next.workflows.xiaopai import XiaopaiWork
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
@@ -99,7 +99,7 @@ def summary_channel(summary_work, request, monkeypatch):
             "subject_id": str(run.id),
         }
     monkeypatch.setattr(setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
-    monkeypatch.setattr("pdos_next.agent_kernel.activities.activity.heartbeat", lambda *_a: None)
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
     activity = KernelActivities(
         setup.engine,
         checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],

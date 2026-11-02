@@ -6,9 +6,10 @@ from datetime import timedelta
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Product, now
 from pdos_next.domain.configurations.service import _decimal, _merge_reads
+from pdos_next.domain.engines.supply_cost.common import SnapshotRef, digest
+from pdos_next.domain.engines.supply_cost.dto import ExchangeRate, PriceSnapshot, ProcessSnapshot
 from pdos_next.domain.supply_cost.adapters import cost_candidate
 from pdos_next.domain.supply_cost.read_models import binding_view, projection_view
 from pdos_next.domain.supply_cost.rules import (
@@ -30,11 +31,9 @@ from pdos_next.domain.supply_execution.service import (
     _sources,
     _visibility,
 )
-from pdos_next.engines.supply_cost.common import SnapshotRef, digest
-from pdos_next.engines.supply_cost.dto import ExchangeRate, PriceSnapshot, ProcessSnapshot
 from pdos_next.errors import DomainError
-from pdos_next.models import Product, now
 from pdos_next.schemas.supply_cost.dto import BoundDemand, CostInputs, CostProjection, Freshness
+from sqlalchemy import select
 
 from .models import CostCapture, CostCurrent, CostEstimate, CostInputSnapshot
 from .schemas import CostCaptureInput, InputsRecordPayload
@@ -182,7 +181,7 @@ def _bindings(data, bound, captured_at):
 
 
 def _proposed(data, bound, refs, input_id, captured_at, previous):
-    from pdos_next.service import digest as content_digest
+    from pdos_next.core.service import digest as content_digest
 
     binding = _rule(basis_binding, bound, captured_at)
     revision = previous.revision + 1 if previous is not None else 1
@@ -290,8 +289,8 @@ def _capture_view(s, ctx, product_id, row):
 
 
 def prepare_capture(s, ctx, product_id, data: CostCaptureInput):
-    from pdos_next.database import require_context
-    from pdos_next.service import digest as request_digest
+    from pdos_next.core.database import require_context
+    from pdos_next.core.service import digest as request_digest
 
     require_context(s, ctx)
     raw = _normalized_input(data)

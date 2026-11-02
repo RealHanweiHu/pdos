@@ -6,10 +6,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-from verification_handoff.test_pure import AT, handler, offer
-from verification_handoff.test_pure import work as initial_work
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.verification.handlers import semantic_digest
 from pdos_next.domain.verification.ports import Invocation
 from pdos_next.domain.verification_front.adapters import authority_dto
@@ -24,7 +21,9 @@ from pdos_next.schemas.verification.contracts import (
     RunStart,
     SchedulePromise,
 )
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
+from verification_handoff.test_pure import AT, handler, offer
+from verification_handoff.test_pure import work as initial_work
 
 
 @pytest.fixture
@@ -633,7 +632,7 @@ def test_event_rejects_ambiguous_or_unaware_source_clock(work, monkeypatch, inva
 
 
 def test_inputs_return_complete_sources_and_never_call_apply_or_effect(work, monkeypatch):
-    from pdos_next.contracts import Command
+    from pdos_next.core.contracts import Command
 
     payload = public_plan(work)
     ctx = Context(work.request.scope.tenant_id, work.actor, work.actor)

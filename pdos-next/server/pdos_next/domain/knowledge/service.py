@@ -5,14 +5,13 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4, uuid5
 
-from sqlalchemy import select
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import now
+from pdos_next.core.service import command_digest, command_scope, digest
 from pdos_next.domain.preproject.access import human
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.domain.quality_execution.evidence import merge_reads
-from pdos_next.models import now
-from pdos_next.service import command_digest, command_scope, digest
+from sqlalchemy import select
 
 from . import owner, provenance, rules
 from .models import (

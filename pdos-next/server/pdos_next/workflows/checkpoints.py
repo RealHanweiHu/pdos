@@ -3,7 +3,7 @@ import os
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
 
-from pdos_next.database import engine_for
+from pdos_next.core.database import engine_for
 
 
 def verified_checkpoint_url(url: str) -> str:

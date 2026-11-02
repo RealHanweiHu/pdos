@@ -4,15 +4,14 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy.orm import Session
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.build_operational_facts.models import OperationalAsset
 from pdos_next.domain.test_resources import service
 from pdos_next.domain.test_resources.schemas import TestPlanBinding as Binding
 from pdos_next.domain.test_resources.schemas import TestResourceFactInput as FactInput
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
+from sqlalchemy.orm import Session
 
 
 def reference():

@@ -5,14 +5,13 @@ from hashlib import sha256
 from uuid import UUID, uuid4
 
 from g0_fixture import add_category_human
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
 from pdos_next.domain.preproject.models import ProjectOpenItem
 from pdos_next.domain.work_management import service
 from pdos_next.domain.work_management.models import WorkTaskCurrent, WorkTaskVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.preproject.test_g0 import create, decide_request, payload, read, save, submit
 from tests.preproject.test_g0 import work as work  # noqa: F401
 

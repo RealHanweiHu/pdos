@@ -16,12 +16,12 @@ from urllib.parse import parse_qs, urlsplit
 from uuid import UUID
 
 import httpx
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.dingtalk.accounts import credential
-from pdos_next.dingtalk.models import Delivery, Message
-from pdos_next.dingtalk.official import OfficialAdapter
-from pdos_next.dingtalk.runtime import ChannelService, configure
-from pdos_next.dingtalk.schemas import DeliveryReference
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.integrations.dingtalk.accounts import credential
+from pdos_next.integrations.dingtalk.models import Delivery, Message
+from pdos_next.integrations.dingtalk.official import OfficialAdapter
+from pdos_next.integrations.dingtalk.runtime import ChannelService, configure
+from pdos_next.integrations.dingtalk.schemas import DeliveryReference
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from tests.dingtalk.test_channel_pg import channel as channel

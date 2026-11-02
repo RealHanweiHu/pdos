@@ -14,18 +14,15 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from security_fixture import synthetic_runtime
-from sqlalchemy import func, select, text
-from sqlalchemy.exc import DBAPIError
-from test_project_first_plan import accepted, cmd, post
-from verification_handoff import fixtures as handoff
-from verification_results import fixtures as results
-
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.test_resource_import import import_test_resource_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Outbox, Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.domain.build_execution.models import SampleUnit
 from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
 from pdos_next.domain.build_operational_facts.schemas import DecisionProof
+from pdos_next.domain.engines.planning.calendar import frozen_timezone
 from pdos_next.domain.test_resources import service as resources
 from pdos_next.domain.test_resources.models import (
     SampleRunUsage,
@@ -50,11 +47,14 @@ from pdos_next.domain.verification_results.models import (
     TestResultActionFact,
     TestResultProjection,
 )
-from pdos_next.engines.planning.calendar import frozen_timezone
-from pdos_next.models import Audit, Outbox, Receipt, now
-from pdos_next.object_storage import LocalPrivateObjectStore
-from pdos_next.service import digest
-from pdos_next.test_resource_import import import_test_resource_fact
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
+from security_fixture import synthetic_runtime
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from test_project_first_plan import accepted, cmd, post
+from verification_handoff import fixtures as handoff
+from verification_results import fixtures as results
+
 from verification_launch import fixtures as launch
 from verification_launch.fixtures import (  # noqa: F401
     known_configuration,
@@ -105,7 +105,7 @@ def multi_work(ready_work, monkeypatch, tmp_path):
         for name, previous in original_clients.items():
             getattr(work, name).client = previous
         result_service.configure_store(work.setup.engine, prior_store)
-        from pdos_next.original_security import configure
+        from pdos_next.originals.security import configure
 
         configure(work.setup.engine, prior_security)
         fixture.close()
@@ -113,7 +113,7 @@ def multi_work(ready_work, monkeypatch, tmp_path):
 
 def prepare_run(work, coverage, monkeypatch):
     """Import a distinct exact subset binding, without replacing a production DTO."""
-    from pdos_next import clock
+    from pdos_next.core import clock
 
     run_work = SimpleNamespace(**vars(work))
     view, row = handoff.listing(work), handoff.current(work)

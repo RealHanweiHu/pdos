@@ -4,7 +4,7 @@ from concurrent.futures import ThreadPoolExecutor
 from threading import Event
 from uuid import UUID, uuid4
 
-from pdos_next.agent_kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.bootstrap import Bootstrap
 from tests.agent_kernel.test_run_continuation import path as run_path
 from tests.agent_kernel.test_run_continuation import scope, start
 from tests.agent_kernel.test_work_state_pg import complete, path, read
@@ -44,7 +44,7 @@ def test_scope_choice_freezes_and_human_edits_win_over_finish_and_model_proposal
     denied = setup.client.post(path(setup, session_id), json={**body, "request_key": str(uuid4())},
                               headers={"Authorization": f"Bearer {setup.tokens[setup.peer]}"})
     assert denied.status_code in {403, 404}
-    from pdos_next.agent_kernel.persistence import KernelStore
+    from pdos_next.agent.kernel.persistence import KernelStore
 
     KernelStore(setup.engine).finish(scope(setup, child), {
         "status": "completed", "summary": "合成完成", "questions": [], "unfinished": [],
@@ -55,7 +55,7 @@ def test_scope_choice_freezes_and_human_edits_win_over_finish_and_model_proposal
 
 
 def test_scope_edit_and_continuation_do_not_deadlock_on_the_session_foreign_key(setup, monkeypatch):
-    from pdos_next.agent_kernel import work_state
+    from pdos_next.agent.kernel import work_state
 
     parent, accepted = start(setup)
     complete(setup, parent)

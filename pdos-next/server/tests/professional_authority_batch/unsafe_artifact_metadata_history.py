@@ -7,11 +7,10 @@ always imported directly; no candidate production body is loaded.
 
 from uuid import UUID
 
-from sqlalchemy import inspect, select
-
+from pdos_next.core.models import Artifact, OriginalSecurity
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.professional_authority.service import _HASH_FIELDS, _material, _reads, digest
-from pdos_next.models import Artifact, OriginalSecurity
+from sqlalchemy import inspect, select
 
 
 def _batch_identity_rows(s, model, identities):

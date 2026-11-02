@@ -7,17 +7,16 @@ from uuid import uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel.context_budget import estimate_tokens, fit_messages
-from pdos_next.agent_kernel.context_runtime import (
+from pdos_next.agent.kernel.context_budget import estimate_tokens, fit_messages
+from pdos_next.agent.kernel.context_runtime import (
     cleanup_tools,
     encoded,
     progress_message,
     protected_result,
 )
-from pdos_next.agent_kernel.graph import AgentKernel, Budget
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.graph import AgentKernel, Budget
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_graph import Host, final, scope
@@ -219,7 +218,7 @@ def test_graph_checkpoints_actual_admitted_messages_and_keeps_complete_verificat
 
 
 def test_controlled_fragment_cleanup_uses_real_host_read_ledger_and_restores_exact_page():
-    from pdos_next.agent_kernel.context_runtime import compact_fragment_view
+    from pdos_next.agent.kernel.context_runtime import compact_fragment_view
     from tests.agent_kernel.test_bound_read_host import make_host, read
 
     f = make_host()
@@ -240,7 +239,7 @@ def test_controlled_fragment_cleanup_uses_real_host_read_ledger_and_restores_exa
 
 
 def test_unparsed_fragment_of_receipt_or_evidence_is_protected_using_full_ledger_shape():
-    from pdos_next.agent_kernel.context_runtime import compact_fragment_view
+    from pdos_next.agent.kernel.context_runtime import compact_fragment_view
     from tests.agent_kernel.test_bound_read_host import make_host, read
 
     f = make_host()
@@ -253,7 +252,7 @@ def test_unparsed_fragment_of_receipt_or_evidence_is_protected_using_full_ledger
 
 
 def test_altered_or_cross_isolation_fragment_cannot_become_trusted_cleanup_placeholder():
-    from pdos_next.agent_kernel.context_runtime import compact_fragment_view
+    from pdos_next.agent.kernel.context_runtime import compact_fragment_view
     from tests.agent_kernel.test_bound_read_host import make_host, read
 
     f = make_host()

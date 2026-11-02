@@ -10,13 +10,12 @@ import pytest
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-
-from pdos_next import change_preparation_view as view
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution import api, service
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.change import preparation_view as view
 
 from . import kernel_helpers as helper
 

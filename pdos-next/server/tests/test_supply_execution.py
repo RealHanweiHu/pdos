@@ -11,29 +11,9 @@ from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_build_demand import demand_work  # noqa: F401 - imported fixture
-from test_builds import (  # noqa: F401 - fixture dependencies
-    build_command,
-    configuration,
-    definition,
-    project,
-)
-from test_project_first_plan import accepted, cmd, post
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.builds.models import Build
-from pdos_next.domain.supply_execution.models import (
-    KitProjection,
-    SupplyCapture,
-    SupplyCurrent,
-    SupplySnapshot,
-)
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Confirmation,
@@ -45,7 +25,26 @@ from pdos_next.models import (
     RequestKey,
     now,
 )
-from pdos_next.service import Context, digest, execute
+from pdos_next.core.service import Context, digest, execute
+from pdos_next.domain.builds.models import Build
+from pdos_next.domain.supply_execution.models import (
+    KitProjection,
+    SupplyCapture,
+    SupplyCurrent,
+    SupplySnapshot,
+)
+from pdos_next.errors import DomainError
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_build_demand import demand_work  # noqa: F401 - imported fixture
+from test_builds import (  # noqa: F401 - fixture dependencies
+    build_command,
+    configuration,
+    definition,
+    project,
+)
+from test_project_first_plan import accepted, cmd, post
 
 SNAPSHOT = "supply.snapshot.record"
 KIT = "supply.kit.compute"
@@ -376,7 +375,7 @@ def test_snapshot_confirmation_does_not_cover_changed_command_scope(setup, suppl
 
 
 def test_capture_has_no_material_deadline_but_confirmation_still_expires(setup, supply_work):
-    from pdos_next.clock import using_clock
+    from pdos_next.core.clock import using_clock
 
     payload = capture_input(supply_work)
     capture = captured(setup, supply_work, payload=payload)
@@ -633,7 +632,7 @@ def test_source_quote_must_locate_actual_original_text(setup, supply_work):
 def test_final_receipt_failure_rolls_back_domain_pointer_token_and_outbox(
     setup, supply_work, monkeypatch, operation
 ):
-    from pdos_next import service
+    from pdos_next.core import service
 
     if operation == SNAPSHOT:
         capture = captured(setup, supply_work)

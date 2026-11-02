@@ -5,6 +5,9 @@ import os
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import engine_for
+from pdos_next.core.safety import verify_test_target
+from pdos_next.domain.test_resources import service as resources
 from test_retained_execution import (  # noqa: F401
     _current,
     _proof,
@@ -17,10 +20,6 @@ from test_retained_execution import (  # noqa: F401
     retained_started_work,
 )
 from verification_launch import fixtures as launch_fixtures
-
-from pdos_next.database import engine_for
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.safety import verify_test_target
 
 
 @pytest.fixture

@@ -3,10 +3,7 @@
 import re
 
 import pytest
-from sqlalchemy import CheckConstraint, UniqueConstraint
-from sqlalchemy.engine import Engine
-
-from pdos_next import models as registered_models
+from pdos_next.core import models as registered_models
 from pdos_next.domain.field_feedback import storage
 from pdos_next.domain.field_feedback.models import (
     CURRENT,
@@ -15,6 +12,8 @@ from pdos_next.domain.field_feedback.models import (
     FieldFeedbackVersion,
     FieldResponseRecord,
 )
+from sqlalchemy import CheckConstraint, UniqueConstraint
+from sqlalchemy.engine import Engine
 
 
 @pytest.fixture(autouse=True)

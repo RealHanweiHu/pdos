@@ -4,19 +4,27 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    Outbox,
+    Product,
+    Receipt,
+    now,
+)
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.products.variant_models import Variant, VariantRevision
 from pdos_next.domain.products.variants import validate
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Grant, Outbox, Product, Receipt, now
 from pdos_next.schemas.products.variants import VariantDerivePayload
-from pdos_next.service import Context, digest
+from sqlalchemy import func, select, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 def command(setup, operation, payload, artifact):
@@ -441,7 +449,7 @@ def test_receipt_failure_rolls_back_variant_revision_and_confirmation(setup, mon
     def fail(*_args, **_kwargs):
         raise RuntimeError("Synthetic variant receipt failure")
 
-    monkeypatch.setattr("pdos_next.service.append_receipt", fail)
+    monkeypatch.setattr("pdos_next.core.service.append_receipt", fail)
     with pytest.raises(RuntimeError, match="Synthetic variant receipt failure"):
         post(setup, prepared["command"])
     assert_no_variants(setup)

@@ -11,11 +11,10 @@ from uuid import uuid4
 import httpx
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-from pydantic import SecretStr
-
-from pdos_next.agent_kernel import gateway as gateway_module
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.types import ModelTurn, RunScope
+from pdos_next.agent.kernel import gateway as gateway_module
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.types import ModelTurn, RunScope
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 from pdos_next.providers.agent_client import (
     AgentProviderClient,
@@ -23,7 +22,7 @@ from pdos_next.providers.agent_client import (
     request_body,
 )
 from pdos_next.providers.types import ProviderError, ProviderRoute, ProviderUsage
-from pdos_next.service import digest
+from pydantic import SecretStr
 
 SYSTEM = "a" * 3000
 MESSAGES = [{"role": "user", "content": "q" * 200}]
@@ -103,7 +102,7 @@ class Store:
 @pytest.fixture
 def harness(monkeypatch):
     monkeypatch.setattr("pdos_next.domain.automations.runtime.guard_tool", lambda *_: None)
-    monkeypatch.setattr("pdos_next.agent_kernel.proposal_context.check", lambda *_: None)
+    monkeypatch.setattr("pdos_next.agent.kernel.proposal_context.check", lambda *_: None)
     decision, store, configured = Decision(), Store(), [route()]
     monkeypatch.setattr(gateway_module, "egress", lambda *_, **__: replace(decision))
     scope = RunScope(*(uuid4() for _ in range(6)), data_categories=frozenset({"synthetic"}))

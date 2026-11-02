@@ -15,13 +15,11 @@ from build_operational_facts.fixtures import (  # noqa: F401 - required imported
     operational_work,
     project,
 )
-from sqlalchemy import func, select, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_project_first_plan import accepted, cmd, post
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import Context, execute
 from pdos_next.domain.build_operational_facts.models import (
     MaterialHold,
     OperationalAsset,
@@ -39,9 +37,10 @@ from pdos_next.domain.build_start.service import assessment_inputs
 from pdos_next.domain.builds.models import Build
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
-from pdos_next.professional_import import import_professional_fact
-from pdos_next.service import Context, execute
+from sqlalchemy import func, select, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_project_first_plan import accepted, cmd, post
 from tests.g0_fixture import create_g0_project
 
 
@@ -641,7 +640,7 @@ def test_end_of_outbox_rollback_leaves_no_start_holds_epoch_or_confirmation_cons
     review = post(ready_work.setup, start_command(ready_work, engineering, manufacturing), True)
     assert review.status_code == 200, review.text
     before = counts(ready_work)
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     original = common.append_receipt
 
@@ -850,12 +849,11 @@ def test_shared_build_three_named_people_and_distinct_grant_expiries(setup):
     from types import SimpleNamespace
 
     from build_operational_facts.fixtures import fact_payload
-    from test_build_demand import compute
-
+    from pdos_next.core.models import Grant, LoginSession, Principal
+    from pdos_next.core.service import digest
     from pdos_next.domain.build_operational_facts import service as operational
     from pdos_next.domain.build_operational_facts.schemas import DecisionProof, OperationalScope
-    from pdos_next.models import Grant, LoginSession, Principal
-    from pdos_next.service import digest
+    from test_build_demand import compute
 
     at, manufacturer, token = now(), uuid4(), secrets.token_urlsafe(32)
     with Session(setup.admin) as session, session.begin():

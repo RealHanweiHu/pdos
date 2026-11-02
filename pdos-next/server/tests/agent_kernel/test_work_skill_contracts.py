@@ -7,16 +7,15 @@ from hashlib import sha256
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.command_usage import registry as usage
-from pdos_next.agent_kernel.disclosure import disclosed_names
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import RunScope, WireAgentOutput
-from pdos_next.contracts import PAYLOADS
+from pdos_next.agent.kernel.command_usage import registry as usage
+from pdos_next.agent.kernel.disclosure import disclosed_names
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import RunScope, WireAgentOutput
+from pdos_next.core.contracts import PAYLOADS
 from pdos_next.domain.quality_execution.evidence import POSITION
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 WORK = {name for name in PAYLOADS if name.startswith("work.")}
 

@@ -4,11 +4,10 @@ import asyncio
 from uuid import UUID
 
 from fastapi import Request
-
-from pdos_next.agent_kernel.api import reference
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.api import reference
+from pdos_next.core.database import tenant_session
+from pdos_next.core.service import Context
 from pdos_next.domain.manufacturing_baseline.api import _query
-from pdos_next.service import Context
 
 from .schemas import Trigger
 

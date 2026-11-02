@@ -7,15 +7,14 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Artifact, Grant, now
 from pdos_next.domain.preproject import baseline
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, now
-from pdos_next.original_security import security_row
-from pdos_next.originals import require_original
+from pdos_next.originals.access import require_original
+from pdos_next.originals.security import security_row
+from sqlalchemy import event, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_m3_definition_diff_pg import three_way
 from tests.agent_kernel.test_m3_original_binding_pg import uploaded
 from tests.agent_kernel.test_private_analysis_pg import bound, call, definition_ref

@@ -7,12 +7,11 @@ from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import make_transient_to_detached
-from sqlalchemy.orm.attributes import set_committed_value
-
+from pdos_next.core.models import Artifact, Product
 from pdos_next.domain.manufacturing_baseline import service
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Product
+from sqlalchemy.orm import make_transient_to_detached
+from sqlalchemy.orm.attributes import set_committed_value
 
 from .test_preparation import frame
 

@@ -1,11 +1,10 @@
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.types import ModelTurn
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.types import ModelTurn
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 from pdos_next.providers.types import ProviderUsage
-from pdos_next.service import digest
 from tests.agent_kernel.test_gateway import Client, configured_route
 from tests.agent_kernel.test_transactions import run
 

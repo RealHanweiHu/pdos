@@ -12,12 +12,8 @@ from uuid import UUID
 from uuid import UUID as CategoryUUID
 
 import pytest
-from psycopg.errors import DeadlockDetected, LockNotAvailable, SerializationFailure
-from pydantic import ValidationError
-from sqlalchemy import create_engine
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session, make_transient_to_detached
-
+from pdos_next.core.models import Confirmation, Grant, Principal, Product
+from pdos_next.core.service import Context
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import (
     BuildOperationalCurrent,
@@ -30,8 +26,11 @@ from pdos_next.domain.manufacturing_resource_owner import owner
 from pdos_next.domain.manufacturing_resource_owner.relations import project
 from pdos_next.domain.manufacturing_resource_owner.schemas import ResourceRequest
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Grant, Principal, Product
-from pdos_next.service import Context
+from psycopg.errors import DeadlockDetected, LockNotAvailable, SerializationFailure
+from pydantic import ValidationError
+from sqlalchemy import create_engine
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 AT = datetime(2026, 10, 5, 8, tzinfo=UTC)
 REF = {

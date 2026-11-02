@@ -6,8 +6,6 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
 from pdos_next.domain.original_lifecycle_execution.codec import (
     decode_candidate,
     decode_intent,
@@ -21,7 +19,8 @@ from pdos_next.domain.original_lifecycle_execution.schemas import (
     LifecycleCommandPayload,
     LifecycleProtectionPayload,
 )
-from pdos_next.original_lifecycle.types import LifecycleFailure
+from pdos_next.originals.lifecycle.types import LifecycleFailure
+from pydantic import ValidationError
 from tests.original_lifecycle.helpers import confirm, fixture, preview, record, start
 
 pytestmark = pytest.mark.usefixtures("pure_guard")

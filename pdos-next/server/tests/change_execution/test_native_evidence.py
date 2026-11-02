@@ -4,16 +4,15 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
+from pdos_next.core.models import Principal, Run
 from pdos_next.domain.change_execution import service
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Run
 
 from .test_evidence import evidence
 
 
 def native(monkeypatch, *, agent=False):
-    from pdos_next import service as common
+    from pdos_next.core import service as common
 
     s, ctx, pid, reads, exact, store = evidence(monkeypatch, no_original=True)
     source = common.source_for(s, ctx, pid, exact.id, exact.revision)
@@ -153,7 +152,7 @@ def test_uploaded_byte_io_still_requires_actual_object_store(monkeypatch):
 
 
 def test_uploaded_metadata_refresh_keeps_safety_check_without_store_or_byte_io(monkeypatch):
-    from pdos_next import original_security
+    from pdos_next.originals import security as original_security
 
     s, ctx, pid, reads, exact, store = evidence(monkeypatch)
     s.get_bind = SimpleNamespace

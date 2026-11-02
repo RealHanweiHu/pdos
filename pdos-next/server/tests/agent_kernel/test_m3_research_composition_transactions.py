@@ -6,13 +6,12 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.category_research_refs import CategoryResearchRefs
+from pdos_next.agent.kernel.models import AgentEvent, AgentToolCall, TenantSkillEnablement
+from pdos_next.agent.kernel.research_instruction import ResearchInstruction
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.category_research_refs import CategoryResearchRefs
-from pdos_next.agent_kernel.models import AgentEvent, AgentToolCall, TenantSkillEnablement
-from pdos_next.agent_kernel.research_instruction import ResearchInstruction
-from pdos_next.errors import DomainError
 from tests.agent_kernel.test_category_candidate_transactions import personal_fixture
 from tests.agent_kernel.test_snapshot_proof_transactions import registered_page, registration
 

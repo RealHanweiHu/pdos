@@ -8,15 +8,14 @@ from pathlib import Path
 from typing import Literal
 from uuid import UUID, uuid4
 
+from pdos_next.core.clock import now, proof_deadline_current
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Audit, Category, Grant, Outbox, Principal, Receipt, RequestKey
+from pdos_next.core.schema_base import StrictModel
+from pdos_next.core.service import digest, receipt_view
 from pydantic import Field, model_validator
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
-
-from pdos_next.clock import now, proof_deadline_current
-from pdos_next.database import require_context
-from pdos_next.models import Audit, Category, Grant, Outbox, Principal, Receipt, RequestKey
-from pdos_next.schema_base import StrictModel
-from pdos_next.service import digest, receipt_view
 
 from .access import fail
 from .category_creation_models import CategoryCreationConfirmation
@@ -253,7 +252,7 @@ def _validate(s, ctx, data):
     if not data.deidentified_confirmed:
         fail("CONFIRMATION_REQUIRED", "deidentification_not_confirmed", "请确认已去除客户身份。")
     if data.prepared_by_run_id:
-        from pdos_next.agent_kernel.category_candidate import validate
+        from pdos_next.agent.kernel.category_candidate import validate
 
         candidate = validate(s, ctx, data)
         for item in data.groups.knowledge:
@@ -420,7 +419,7 @@ def preview(s, ctx, data):
 
 
 def _read_prior(s, ctx, receipt):
-    from pdos_next.category_scope import category_scope
+    from pdos_next.core.category_scope import category_scope
 
     if (
         not receipt
@@ -482,7 +481,7 @@ def create(s, ctx, data):
         .with_for_update()
     )
     if proof and proof.consumed and proof.payload_digest == semantic:
-        from pdos_next.category_scope import category_scope
+        from pdos_next.core.category_scope import category_scope
 
         # A completed preview remains visible to its creator after revocation;
         # its old request key and receipt are correctly hidden by category RLS.
@@ -551,7 +550,7 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
     )
     snapshot_refs = _snapshot_manifest(candidate)
     if candidate:
-        from pdos_next.agent_kernel.models import PublicWebSnapshot
+        from pdos_next.agent.kernel.models import PublicWebSnapshot
 
         registered = set()
         for item in candidate.snapshots:
@@ -679,7 +678,7 @@ def _apply(s, ctx, data, proof, semantic, intent, material):
         },
     )
     if candidate:
-        from pdos_next.agent_kernel.category_adoption import record
+        from pdos_next.agent.kernel.category_adoption import record
 
         record(s, candidate, receipt)
     s.add(receipt)

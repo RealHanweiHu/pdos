@@ -6,16 +6,15 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects.postgresql import dialect
-from sqlalchemy.engine import Engine
-
+from pdos_next.core.service import Context, digest
+from pdos_next.domain.engines.planning.calendar import WorkingTime
+from pdos_next.domain.engines.planning.dto import CalendarSnapshot
 from pdos_next.domain.external_wait import calendar_owner as owner
 from pdos_next.domain.planning.calendar import WorkingCalendar
-from pdos_next.engines.planning.calendar import WorkingTime
-from pdos_next.engines.planning.dto import CalendarSnapshot
 from pdos_next.errors import DomainError
 from pdos_next.schemas.planning import Calendar
-from pdos_next.service import Context, digest
+from sqlalchemy.dialects.postgresql import dialect
+from sqlalchemy.engine import Engine
 
 AT = datetime(2026, 10, 19, 9, tzinfo=UTC)
 SOURCE_RECHECK = owner._sources

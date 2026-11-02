@@ -10,6 +10,17 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start import test_transactions as start_fixtures
+from pdos_next.bootstrap.test_resource_import import import_test_resource_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, LoginSession, now
+from pdos_next.core.service import digest
+from pdos_next.domain.build_operational_facts.schemas import DecisionProof
+from pdos_next.domain.engines.planning.calendar import frozen_timezone
+from pdos_next.domain.test_resources import service as resources
+from pdos_next.domain.test_resources.schemas import TestPlanBinding, TestResourceFactInput
+from pdos_next.domain.verification_handoff.models import ActualMethodApplicability
+from pdos_next.domain.verification_handoff.service import event_source
+from pdos_next.domain.verification_launch.schemas import ExecutionPlan
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, cmd
@@ -18,18 +29,6 @@ from verification_handoff.fixtures import (  # noqa: F401
     known_configuration,
     operational_work,
 )
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_operational_facts.schemas import DecisionProof
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.domain.test_resources.schemas import TestPlanBinding, TestResourceFactInput
-from pdos_next.domain.verification_handoff.models import ActualMethodApplicability
-from pdos_next.domain.verification_handoff.service import event_source
-from pdos_next.domain.verification_launch.schemas import ExecutionPlan
-from pdos_next.engines.planning.calendar import frozen_timezone
-from pdos_next.models import Grant, LoginSession, now
-from pdos_next.service import digest
-from pdos_next.test_resource_import import import_test_resource_fact
 
 OPERATIONS = ("test.run.plan", "verification.schedule.promise", "test.run.start")
 
@@ -158,7 +157,7 @@ def launch_work(accepted_work, request, monkeypatch):
     raw = row["request_snapshot"]
     run_id = uuid4()
     at = now()
-    from pdos_next import clock
+    from pdos_next.core import clock
 
     # The plan/promise use a frozen server clock at an already real instant.
     # Start restores real UTC; the database's future-event guard stays active.
@@ -451,7 +450,7 @@ def promised(work):
 
 
 def advance_clock(work, monkeypatch):
-    from pdos_next import clock
+    from pdos_next.core import clock
 
     # The stored plan/promise precede this real instant. Never move Python
     # ahead of PostgreSQL or bypass its actual-start storage guard.

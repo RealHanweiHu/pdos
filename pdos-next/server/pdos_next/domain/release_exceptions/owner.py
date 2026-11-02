@@ -3,18 +3,17 @@
 from copy import deepcopy
 from uuid import UUID
 
-from sqlalchemy import select
-
-from pdos_next.change_implementation_owner import common_group
-from pdos_next.database import require_context
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Receipt, now
+from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
+from pdos_next.core.service import require_access
 from pdos_next.domain.manufacturing_trials import native_material_owner as direct
 from pdos_next.domain.professional_authority.signature_watermarks import signature_current
 from pdos_next.domain.release import rules as release_rules
 from pdos_next.domain.release.schemas import ExceptionBasis
 from pdos_next.errors import DomainError
-from pdos_next.models import Receipt, now
-from pdos_next.request_proof import snapshot_get, snapshot_scalar
-from pdos_next.service import require_access
+from pdos_next.features.change.implementation_owner import common_group
+from sqlalchemy import select
 
 from .constants import DECIDE, WITHDRAW
 from .models import ReleaseExceptionCurrent as Current

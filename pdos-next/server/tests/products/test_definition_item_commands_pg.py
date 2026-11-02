@@ -5,12 +5,11 @@ from copy import copy
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, Grant, Product, Receipt
+from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
-from pdos_next.models import Artifact, Category, Grant, Product, Receipt
 from tests.products.test_definition_transactions import command, payload, post, source
 
 OPERATION = "product.definition.item.patch"
@@ -253,7 +252,7 @@ def test_bad_quote_and_dictionary_scope_key_unit_reject_atomically(setup):
 
 
 def test_receipt_failure_rolls_back_rows_and_trigger_current(setup, monkeypatch):
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     definition_id, _ = draft(setup)
     before = current_items(setup, definition_id)["pressure"]

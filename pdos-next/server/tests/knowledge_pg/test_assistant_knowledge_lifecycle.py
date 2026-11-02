@@ -11,8 +11,10 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.database import tenant_session
+from pdos_next.agent.enterprise_search.indexing import project as project_source
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, LifecycleObject, Principal, Product
 from pdos_next.domain.knowledge.assistant_models import (
     KnowledgeAnswerReview,
     KnowledgeGapAttribution,
@@ -20,8 +22,6 @@ from pdos_next.domain.knowledge.assistant_models import (
 )
 from pdos_next.domain.knowledge.models import KnowledgeCandidateVersion
 from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.enterprise_search.indexing import project as project_source
-from pdos_next.models import Artifact, Category, LifecycleObject, Principal, Product
 from sqlalchemy import func, insert, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session

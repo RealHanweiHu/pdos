@@ -13,13 +13,12 @@ from urllib.parse import urlsplit
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.temporal_port import TemporalPort
+from pdos_next.workflows.xiaopai import XiaopaiWork
 from temporalio import activity
 from temporalio.client import Client, WorkflowExecutionStatus
 from temporalio.exceptions import ApplicationError
 from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.temporal_port import TemporalPort
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.automations_pg.test_personal_summary_pg import (
     admit,
     checked,

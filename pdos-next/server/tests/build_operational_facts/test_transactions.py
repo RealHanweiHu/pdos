@@ -8,13 +8,9 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_builds import accepted, build_command, configuration, definition, project  # noqa: F401
-from test_project_first_plan import cmd, post
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Grant, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import Context
 from pdos_next.domain.build_operational_facts.models import (
     BuildOperationalCurrent,
     BuildOperationalFact,
@@ -26,8 +22,11 @@ from pdos_next.domain.build_operational_facts.schemas import FactInput
 from pdos_next.domain.build_operational_facts.service import disable_issuer, load_bundle, reserve
 from pdos_next.domain.builds.models import BuildReadiness
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Grant, Outbox, Receipt, RequestKey, now
-from pdos_next.service import Context
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_builds import accepted, build_command, configuration, definition, project  # noqa: F401
+from test_project_first_plan import cmd, post
 
 from .fixtures import (  # noqa: F401
     bundle,
@@ -303,7 +302,7 @@ def test_concurrent_successor_cas_keeps_one_complete_atomic_global_version(opera
 def test_terminal_outbox_failure_rolls_back_facts_assets_pointer_and_requestkey(
     operational_work, monkeypatch
 ):
-    from pdos_next import operational_import
+    from pdos_next.bootstrap import operational_import
 
     work = operational_work
     models = (

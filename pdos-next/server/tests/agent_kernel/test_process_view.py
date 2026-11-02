@@ -4,16 +4,15 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.agent.kernel.process_view import read_process, record_state
+from pdos_next.core.clock import now, using_clock
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant
+from pdos_next.core.service import digest
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.agent_kernel.process_view import read_process, record_state
-from pdos_next.clock import now, using_clock
-from pdos_next.database import tenant_session
-from pdos_next.models import Artifact, Grant
-from pdos_next.service import digest
 from tests.agent_kernel.test_revert import receipt
 from tests.agent_kernel.test_transactions import human_session, run
 
@@ -231,7 +230,7 @@ def test_state_and_record_rollback_as_one_transaction(setup):
 def test_personal_run_process_is_readable_only_in_its_personal_entry(setup):
     from dataclasses import replace
 
-    from pdos_next.agent_kernel.persistence import create_run
+    from pdos_next.agent.kernel.persistence import create_run
 
     ctx = replace(setup.ctx, category_id=None)
     with tenant_session(

@@ -6,11 +6,10 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
+from pdos_next.core.models import Product
 from pdos_next.domain.preproject import spec_compare as service
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
+from pydantic import ValidationError
 
 
 @pytest.fixture
@@ -467,7 +466,7 @@ def test_claim_reference_uses_actual_resolver_and_compares_location(monkeypatch)
 
 @pytest.mark.parametrize("current_status", ["active", "withdrawn", None])
 def test_fixed_knowledge_preserves_version_and_actual_product_source(monkeypatch, current_status):
-    from pdos_next import service as sources
+    from pdos_next.core import service as sources
     from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
     from pdos_next.domain.preproject.schemas import Reference
 
@@ -521,7 +520,7 @@ def test_fixed_knowledge_preserves_version_and_actual_product_source(monkeypatch
 
 @pytest.mark.parametrize("unavailable", ["head", "original", "quote"])
 def test_product_artifact_scope_does_not_bypass_source_guards(monkeypatch, unavailable):
-    from pdos_next import service as sources
+    from pdos_next.core import service as sources
     from pdos_next.domain.preproject.schemas import Reference
 
     ctx = NS(tenant_id=uuid4(), category_id=uuid4())

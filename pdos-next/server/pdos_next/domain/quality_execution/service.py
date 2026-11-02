@@ -4,10 +4,10 @@ from contextlib import nullcontext
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session, load_only
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Grant, Principal, Product, RemediationLinkRecord, now
+from pdos_next.core.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_issues.ports import Authority, Invocation
 from pdos_next.domain.quality_issues.rules import (
@@ -17,8 +17,6 @@ from pdos_next.domain.quality_issues.rules import (
     semantic_digest,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product, RemediationLinkRecord, now
-from pdos_next.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.quality_issues.contracts import (
     CapaDraft,
     ContainmentRecord,
@@ -28,7 +26,8 @@ from pdos_next.schemas.quality_issues.contracts import (
     IssueTriage,
 )
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import digest, require_access
+from sqlalchemy import select
+from sqlalchemy.orm import Session, load_only
 
 from . import policy
 from .adapters import TransactionCommands, kernel
@@ -193,7 +192,7 @@ def _row(s, ctx, pid, issue_id, revision=None):
 
 def read_current_rows(s, ctx, pid, rows):
     """Read all selected Issue watermarks once inside an actual GET snapshot."""
-    from pdos_next.request_proof import snapshot_rows
+    from pdos_next.core.request_proof import snapshot_rows
 
     identities = {row.issue_id for row in rows}
     pointers = (
@@ -970,8 +969,8 @@ def _inputs(s, ctx, pid, command):
 
 
 def _view(s, ctx, pid, row, *, current, assess_capabilities=True):
-    from pdos_next.quality_result_bridge import direct_issue_failure
-    from pdos_next.source_current import direct_source_basis
+    from pdos_next.core.source_current import direct_source_basis
+    from pdos_next.features.quality.result_bridge import direct_issue_failure
 
     from .direct import issue_refs
 
@@ -1194,9 +1193,9 @@ def _change_scope_for_change(s, ctx, pid, ref):
     No failure, source, policy or professional proof is returned or reused. The
     Change host follows this with initial AND final fresh complete owner reads.
     """
+    from pdos_next.core.service import Context
     from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
     from pdos_next.schemas.change_control.contracts import Ref
-    from pdos_next.service import Context
 
     uow = _uow(s)
     if (
@@ -1460,12 +1459,12 @@ def _list_quality(s, ctx, pid, *, issue_id=None, run_id=None, build_id=None):
 
 
 def _failure_candidates(s, ctx, pid, run_id, build_id, *, known=(), issue_rows=()):
+    from pdos_next.core.models import Outbox
     from pdos_next.domain.verification_launch.models import (
         VerificationRunCurrent,
         VerificationRunVersion,
     )
     from pdos_next.domain.verification_results.models import TestResultProjection
-    from pdos_next.models import Outbox
 
     pointer = s.scalar(
         select(VerificationRunCurrent).where(

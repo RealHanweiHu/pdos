@@ -4,11 +4,10 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.project_activity import _cursor, _decode, _refs, activity_records
-from pdos_next.service import Context
+from pdos_next.features.projects.activity import _cursor, _decode, _refs, activity_records
+from sqlalchemy.dialects import postgresql
 
 
 def test_cursor_preserves_watermark_and_rejects_rebinding_and_future():
@@ -76,8 +75,8 @@ def test_union_selects_no_complete_documents_or_conversations():
 
 
 def test_registered_activity_links_name_real_workspaces_not_fixed_record_details():
-    from pdos_next.project_activity import LINK_LABELS
-    from pdos_next.project_activity_catalog import SOURCES
+    from pdos_next.features.projects.activity import LINK_LABELS
+    from pdos_next.features.projects.activity_catalog import SOURCES
 
     assert {source.view for source in SOURCES} <= set(LINK_LABELS)
     assert all(label.startswith("打开") for label in LINK_LABELS.values())

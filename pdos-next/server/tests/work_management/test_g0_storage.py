@@ -3,12 +3,7 @@
 import re
 
 import pytest
-from sqlalchemy import CheckConstraint, text
-from sqlalchemy.dialects.postgresql import dialect
-from sqlalchemy.engine import Engine
-from sqlalchemy.schema import CreateIndex, CreateTable
-
-from pdos_next import models as registered_models  # noqa: F401 -- standalone registry
+from pdos_next.core import models as registered_models  # noqa: F401 -- standalone registry
 from pdos_next.domain.preproject.models import ProjectOpenItem
 from pdos_next.domain.work_management import g0_storage as g0
 from pdos_next.domain.work_management import storage_schema as predecessor
@@ -17,6 +12,10 @@ from pdos_next.domain.work_management.models import (
     WorkCommitmentVersion,
     WorkTaskVersion,
 )
+from sqlalchemy import CheckConstraint, text
+from sqlalchemy.dialects.postgresql import dialect
+from sqlalchemy.engine import Engine
+from sqlalchemy.schema import CreateIndex, CreateTable
 
 
 @pytest.fixture(autouse=True)

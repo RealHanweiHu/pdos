@@ -7,13 +7,13 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pdos_next.agent_kernel import host, work_state_candidates
+from pdos_next.agent.enterprise_search import action_sources as carry
+from pdos_next.agent.enterprise_search import work_followup_actions as actions
+from pdos_next.agent.enterprise_search import work_followup_candidates as candidates
+from pdos_next.agent.kernel import host, work_state_candidates
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.work_management import owner
-from pdos_next.enterprise_search import action_sources as carry
-from pdos_next.enterprise_search import work_followup_actions as actions
-from pdos_next.enterprise_search import work_followup_candidates as candidates
 from pdos_next.errors import DomainError
-from pdos_next.source_current import direct_source_basis
 from pydantic import ValidationError
 from tests.enterprise_search.test_action_sources import case  # noqa: F401
 
@@ -107,7 +107,7 @@ def test_original_line_check_stays_with_native_work_source_owner(task_case, monk
         calls.append((refs, reads))
         raise DomainError("MISSING_REQUIRED_EVIDENCE", "原件逐字行校验失败")
 
-    monkeypatch.setattr("pdos_next.source_current.direct_source_basis", line_guard)
+    monkeypatch.setattr("pdos_next.core.source_current.direct_source_basis", line_guard)
     with pytest.raises(DomainError, match="逐字行"):
         carry.capture_work(case.session, case.ctx, case.run, [cid], execution_references=references)
     assert calls and direct_source_basis is not line_guard
@@ -225,9 +225,9 @@ def test_task_action_has_no_t0_write_even_if_policy_would_qualify(monkeypatch):
     bound.current = lambda _scope: None
     assert bound.qualified(NS(), NS(), actions.OPERATION) is False
     monkeypatch.setattr("pdos_next.domain.automations.runtime.guard_tool", lambda *_a, **_kw: None)
-    monkeypatch.setattr("pdos_next.dingtalk.guards.guard_writing", lambda *_a, **_kw: None)
+    monkeypatch.setattr("pdos_next.integrations.dingtalk.guards.guard_writing", lambda *_a, **_kw: None)
     with pytest.raises(DomainError) as failed:
-        from pdos_next.agent_kernel.bindings import SkillBinding, WriteSource, execution_key
+        from pdos_next.agent.kernel.bindings import SkillBinding, WriteSource, execution_key
 
         scope = NS(isolation="main", run_id=uuid4())
         source = WriteSource(
@@ -290,7 +290,7 @@ def test_readonly_action_check_does_not_lock_future_assignment_members(task_case
 
 
 def test_server_candidate_command_cannot_change_payload_before_native_create(monkeypatch):
-    from pdos_next.contracts import Command
+    from pdos_next.core.contracts import Command
 
     command = Command(command_id=uuid4(), idempotency_key=str(uuid4()),
                       operation=actions.OPERATION, category_id=uuid4(), product_id=uuid4(),

@@ -10,20 +10,19 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 from pdos_agent_runtime.graph import in_registered_agent_graph
+from pdos_next.agent.enterprise_search.indexing import project
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall, WireAgentOutput
+from pdos_next.core.models import Artifact
+from pdos_next.domain.preproject.category_models import KnowledgeEntry
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall, WireAgentOutput
-from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.enterprise_search.indexing import project
-from pdos_next.models import Artifact
-from pdos_next.providers.types import ProviderUsage
 from tests.agent_kernel.test_context_corrections_pg import edit, read_state, work_path
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_run_continuation import scope

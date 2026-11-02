@@ -10,12 +10,11 @@ RLS and PostgreSQL atom guards execute unchanged.
 from copy import deepcopy
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
+from pdos_next.core.models import RequestKey
 from pdos_next.domain.manufacturing_baseline import publication_service
 from pdos_next.domain.manufacturing_baseline.publication_schemas import OPERATION
 from pdos_next.errors import DomainError
-from pdos_next.models import RequestKey
+from sqlalchemy import select
 
 from . import publication_pg_helpers as helper
 from .publication_pg_helpers import publication_case  # noqa: F401 -- explicit actual fixture

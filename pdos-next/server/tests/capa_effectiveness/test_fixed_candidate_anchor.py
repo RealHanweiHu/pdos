@@ -10,11 +10,8 @@ from datetime import datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
-from quality_issues.helpers import NOW, fixed_run, source, uid
-from sqlalchemy import create_engine, event
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Grant, Principal, Product
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.capa_effectiveness import anchor as a
 from pdos_next.domain.capa_effectiveness import candidate_commands as commands
 from pdos_next.domain.capa_effectiveness import candidate_prepare as preparation
@@ -34,7 +31,6 @@ from pdos_next.domain.quality_execution.ports import FixedQualityResult
 from pdos_next.domain.quality_issues.ports import VerifiedRun
 from pdos_next.domain.quality_issues.rules import failure_ref
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product
 from pdos_next.schemas.quality_issues.contracts import (
     Capa,
     CapaAction,
@@ -46,7 +42,10 @@ from pdos_next.schemas.quality_issues.contracts import (
     NamedConclusion,
 )
 from pdos_next.schemas.verification.contracts import EventTime
-from pdos_next.service import Context, digest
+from quality_issues.helpers import NOW, fixed_run, source, uid
+from sqlalchemy import create_engine, event
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.orm import Session
 
 SourceSafety = a.SourceSafety
 IssueVersionEvidence = a.IssueVersionEvidence

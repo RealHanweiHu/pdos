@@ -1,9 +1,8 @@
 from typing import Literal, Self
 from uuid import UUID
 
+from pdos_next.domain.engines.supply_cost.common import Loss, Positive
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, model_validator
-
-from pdos_next.engines.supply_cost.common import Loss, Positive
 
 
 class StrictModel(BaseModel):

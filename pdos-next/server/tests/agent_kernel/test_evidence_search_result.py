@@ -5,8 +5,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import domain_reads
+from pdos_next.agent.kernel import domain_reads
 
 
 @pytest.mark.parametrize("query,expected", [("", 2), ("pump", 1), ("missing", 0)])

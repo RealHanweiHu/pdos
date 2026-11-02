@@ -5,7 +5,7 @@ import unittest
 from copy import deepcopy
 from uuid import uuid4
 
-from pdos_next.agent_kernel.extract_read_ledger import (
+from pdos_next.agent.kernel.extract_read_ledger import (
     ArtifactSeal,
     ExtractReadLedger,
     ParseManifest,

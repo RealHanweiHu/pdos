@@ -15,14 +15,23 @@ from pathlib import Path
 from uuid import UUID
 
 import uvicorn
-from pydantic_core import to_jsonable_python
-from release_policy_browser_seed.harness import _write_private_new
-from sqlalchemy import select, text
-from sqlalchemy.engine import make_url
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    LoginSession,
+    Outbox,
+    Principal,
+    Product,
+    Receipt,
+    RequestKey,
+    now,
+)
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import Context, digest, material_digest
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.work_management import service
 from pdos_next.domain.work_management.constants import (
@@ -39,22 +48,12 @@ from pdos_next.domain.work_management.models import (
     WorkTaskVersion,
 )
 from pdos_next.domain.work_management.schemas import PAYLOADS, TaskSnapshot
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    LoginSession,
-    Outbox,
-    Principal,
-    Product,
-    Receipt,
-    RequestKey,
-    now,
-)
-from pdos_next.safety import verify_test_target
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context, digest, material_digest
+from pydantic_core import to_jsonable_python
+from release_policy_browser_seed.harness import _write_private_new
+from sqlalchemy import select, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.orm import Session
 
 _HEAD = "s0_0785"
 _MAXIMUM_WAIT_SECONDS = 1200

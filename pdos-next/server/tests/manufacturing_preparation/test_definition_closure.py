@@ -8,9 +8,8 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from sqlalchemy.engine import Connection, Engine
-
 from pdos_next.domain.manufacturing_baseline import service as m
+from sqlalchemy.engine import Connection, Engine
 
 
 @pytest.fixture(autouse=True)
@@ -26,9 +25,10 @@ def no_io(monkeypatch):
 
 @pytest.fixture
 def actual_definition_dto(monkeypatch, request):
-    from pdos_next import original_security, service
+    from pdos_next.core import service
     from pdos_next.domain.products import definitions
     from pdos_next.domain.products.definitions import definition_view
+    from pdos_next.originals import security as original_security
 
     monkeypatch.setattr(service, "require_access", lambda *_args, **_kw: None)
     monkeypatch.setattr(
@@ -223,8 +223,8 @@ def test_actual_load_fixed_reaches_unchanged_negative_authority_not_keyerror(
     monkeypatch,
     operation,
 ):
-    from pdos_next.models import Artifact
-    from pdos_next.service import Context
+    from pdos_next.core.models import Artifact
+    from pdos_next.core.service import Context
 
     tenant, actor, product, project_id, process_id, engineering_id = (uuid4() for _ in range(6))
     product = CategoryUUID(actual_definition_dto["product_id"])

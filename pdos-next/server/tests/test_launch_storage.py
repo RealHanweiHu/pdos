@@ -11,23 +11,10 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import event, func, select, text
-from sqlalchemy.exc import DBAPIError
-from test_project_first_plan import post
-from verification_launch.fixtures import (  # noqa: F401
-    accepted_work,
-    advance_clock,
-    command,
-    known_configuration,
-    launch_work,
-    operational_work,
-    planned,
-    promised,
-    ready_work,
-)
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey
+from pdos_next.core.service import digest, execute
 from pdos_next.domain.build_execution.models import ActualConfiguration, SampleUnit
 from pdos_next.domain.build_operational_facts.models import OperationalAsset, ResourceOccupancy
 from pdos_next.domain.test_resources import service as resources
@@ -46,8 +33,20 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunIdentity,
     VerificationRunVersion,
 )
-from pdos_next.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey
-from pdos_next.service import digest, execute
+from sqlalchemy import event, func, select, text
+from sqlalchemy.exc import DBAPIError
+from test_project_first_plan import post
+from verification_launch.fixtures import (  # noqa: F401
+    accepted_work,
+    advance_clock,
+    command,
+    known_configuration,
+    launch_work,
+    operational_work,
+    planned,
+    promised,
+    ready_work,
+)
 
 
 def storage_snapshot(work):

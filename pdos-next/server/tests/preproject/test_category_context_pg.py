@@ -7,12 +7,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Category, Grant, now
+from pdos_next.domain.preproject import category_reads
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.preproject import category_reads
-from pdos_next.models import Category, Grant, now
 from tests.preproject.test_g0 import (
     create,
     decide_request,

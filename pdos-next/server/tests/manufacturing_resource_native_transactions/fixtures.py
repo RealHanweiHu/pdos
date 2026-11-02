@@ -18,11 +18,10 @@ from manufacturing_preparation_transactions.fixtures import (
     registered_text,
     source_ref,
 )
-from sqlalchemy import select, text
-from sqlalchemy.orm import Session
-
-from pdos_next.change_dependency_clock import ChangeDependencyClock
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant, LoginSession, Principal, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.build_operational_facts.models import (
     BuildOperationalCurrent,
     BuildOperationalFact,
@@ -35,10 +34,10 @@ from pdos_next.domain.builds.models import Build, BuildReadiness
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.manufacturing_resource_owner import owner
 from pdos_next.domain.manufacturing_resource_owner.schemas import ResourceRequest, VersionRef
-from pdos_next.models import Artifact, Grant, LoginSession, Principal, now
-from pdos_next.object_storage import LocalPrivateObjectStore
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
+from sqlalchemy import select, text
+from sqlalchemy.orm import Session
 
 SOURCE_TEXT = (
     "Synthetic isolated resource mirror and exact Build assembly relation; "

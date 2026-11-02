@@ -4,8 +4,8 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.models import AgentRun
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Artifact, Claim, UploadedOriginal
 from pdos_next.domain.preproject.category_service import _private_checks
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.preproject.models import (
@@ -14,7 +14,6 @@ from pdos_next.domain.preproject.models import (
     ProposalSource,
     ProposalSubmission,
 )
-from pdos_next.models import Artifact, Claim, UploadedOriginal
 
 
 class ReadableRows:

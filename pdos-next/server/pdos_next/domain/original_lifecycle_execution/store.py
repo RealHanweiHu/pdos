@@ -3,11 +3,10 @@
 from dataclasses import asdict, replace
 from uuid import uuid4
 
-from sqlalchemy import select
-
-from pdos_next import models
-from pdos_next.original_lifecycle.rules import digest
-from pdos_next.original_lifecycle.types import (
+from pdos_next.core import models
+from pdos_next.core.request_proof import request_proof
+from pdos_next.originals.lifecycle.rules import digest
+from pdos_next.originals.lifecycle.types import (
     ActorKind,
     CurrentAuthorization,
     IntentState,
@@ -16,7 +15,7 @@ from pdos_next.original_lifecycle.types import (
     LifecycleScope,
     RequestBinding,
 )
-from pdos_next.request_proof import request_proof
+from sqlalchemy import select
 
 from .codec import (
     decode_candidate,
@@ -55,7 +54,7 @@ class SqlLifecycleStore:
         if key in proof.read_rows:
             return proof.read_rows[key]
         if self.product_id is None:
-            from pdos_next.service import require_access
+            from pdos_next.core.service import require_access
 
             return require_access(self.s, self.ctx, None, write=True, lock=True)
         product = self.s.scalar(

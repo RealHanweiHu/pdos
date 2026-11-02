@@ -12,10 +12,15 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Principal, Product, now
+from pdos_next.core.request_proof import (
+    batch_read,
+    command_inputs_once,
+    snapshot_get,
+    snapshot_scalar,
+)
+from pdos_next.core.service import digest, require_access, source_for
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.professional_authority.service import authority_time_current
 from pdos_next.domain.supply_execution.service import _human, _read_evidence, _sources
@@ -41,8 +46,6 @@ from pdos_next.domain.verification_front.models import (
 )
 from pdos_next.domain.verification_handoff import service as physical
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Product, now
-from pdos_next.request_proof import batch_read, command_inputs_once, snapshot_get, snapshot_scalar
 from pdos_next.schemas.verification.contracts import (
     Coverage,
     ExecutionConditions,
@@ -51,7 +54,8 @@ from pdos_next.schemas.verification.contracts import (
     SchedulePromise,
     TestRun,
 )
-from pdos_next.service import digest, require_access, source_for
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from .adapters import LaunchCommands, LaunchSamples, kernel
 from .models import (
@@ -139,7 +143,7 @@ def _current(s, ctx, product_id, run_id, *, lock=False):
 
 
 def _currents_for_request(s, ctx, product_id, request_id, *, lock=False):
-    from pdos_next.request_proof import snapshot_rows
+    from pdos_next.core.request_proof import snapshot_rows
 
     query = (
         select(VerificationRunCurrent)
@@ -1440,7 +1444,7 @@ def _saved_effects(s, ctx, product_id, row, *, fresh=False):
         TestResourceReservation.product_id == product_id,
         TestResourceReservation.run_id == row.run_id,
     )
-    from pdos_next.database import require_context
+    from pdos_next.core.database import require_context
 
     if isinstance(s, Session):
         require_context(s, ctx)
@@ -1782,7 +1786,7 @@ def list_launch(s, ctx, product_id, *, build_id=None):
             )
             if is_current:
                 if s.info.get("read_snapshot"):
-                    from pdos_next.request_proof import batch_read
+                    from pdos_next.core.request_proof import batch_read
 
                     sample_ids = {sample.id for sample in request.samples}
                     batch_read(s, SampleUnit, sample_ids)
@@ -2238,11 +2242,11 @@ def _direct_start_summaries(s, ctx, pid, request, binding, *, write):
 def _load_start_direct(
     s, ctx, command, product, payload, *, require_reads=True, verify_event=True, owner_material=None
 ):
+    from pdos_next.core.source_current import direct_source_basis
     from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
     from pdos_next.domain.configurations.schemas import DefinitionReference
     from pdos_next.domain.quality_execution.evidence import refs_from_exact
     from pdos_next.domain.test_resources import service as resources
-    from pdos_next.source_current import direct_source_basis
 
     caller_uow, caller_digest = _uow(s), digest(vars(ctx))
     write = not s.info.get("read_snapshot", False)

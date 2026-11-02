@@ -25,10 +25,9 @@ from knowledge_pg.test_publication import (
 from knowledge_pg.test_publication import (
     snapshot as native_snapshot,
 )
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import digest
 from pdos_next.domain.change_execution.models import (
     ChangeCurrent,
     ChangeGraphCapture,
@@ -46,9 +45,9 @@ from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
 from pdos_next.domain.verification_launch.models import VerificationRunVersion
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Receipt, RequestKey, now
-from pdos_next.professional_import import import_professional_fact
-from pdos_next.service import digest
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 PURPOSE = "Investigate one synthetic customer feedback against its actual fixed configuration"
 AUTHORITY = "Synthetic engineering responsibility and qualification for Field change preparation."

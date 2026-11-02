@@ -7,13 +7,12 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from temporalio.common import WorkflowIDConflictPolicy, WorkflowIDReusePolicy
-from temporalio.exceptions import WorkflowAlreadyStartedError
-
-from pdos_next.dispatch.outbox import Envelope
+from pdos_next.core.dispatch.outbox import Envelope
 from pdos_next.domain.automations import transport
 from pdos_next.errors import DomainError
 from pdos_next.workflows.automation import AutomationRuleWork
+from temporalio.common import WorkflowIDConflictPolicy, WorkflowIDReusePolicy
+from temporalio.exceptions import WorkflowAlreadyStartedError
 
 
 class Handle:

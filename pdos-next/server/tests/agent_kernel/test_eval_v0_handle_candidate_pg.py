@@ -19,26 +19,25 @@ from uuid import UUID, uuid4
 import pytest
 from fastapi.testclient import TestClient
 from g0_fixture import create_g0_project
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.context_budget import TOOL_RESULT_RESERVE, budget_for
-from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentEvent, AgentToolCall, TenantSkillEnablement
-from pdos_next.agent_kernel.read_execution import ReadBinding
-from pdos_next.agent_kernel.result_continuation import parse_handle
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall, WireAgentOutput
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.context_budget import TOOL_RESULT_RESERVE, budget_for
+from pdos_next.agent.kernel.disclosure import disclosure, skill_operations
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentEvent, AgentToolCall, TenantSkillEnablement
+from pdos_next.agent.kernel.read_execution import ReadBinding
+from pdos_next.agent.kernel.result_continuation import parse_handle
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall, WireAgentOutput
 from pdos_next.api import create_app
+from pdos_next.core.models import Artifact, Receipt
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject import category_service
 from pdos_next.domain.preproject.schemas import Reference
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Receipt
 from pdos_next.providers.types import ProviderUsage
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.eval_v0_ctx09_directory_support import (
     DIRECTORY_REGION,
     MECHANICS_REGION,
@@ -208,7 +207,7 @@ def native_runtime(setup, provider, focus):
         host = BoundHost(owner.store, adapters)
         # Keep original registered child tools/graphs, replacing only accounting's
         # cost requirement and injecting this same offline provider into the host.
-        from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
+        from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
 
         owner._assistant_adapter.graph = AssistantExtractGraph(host, owner._assistant_adapter)
         workflow_starts = []

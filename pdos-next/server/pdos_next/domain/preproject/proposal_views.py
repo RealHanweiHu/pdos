@@ -4,7 +4,7 @@ from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 from uuid import UUID
 
-from pdos_next.service import digest
+from pdos_next.core.service import digest
 
 from . import views
 from .access import fail

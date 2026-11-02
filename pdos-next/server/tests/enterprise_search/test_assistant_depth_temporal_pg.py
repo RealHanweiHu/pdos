@@ -7,12 +7,11 @@ from collections import Counter
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
 from pdos_next.providers.types import ProviderUsage
+from sqlalchemy import select
 from tests.enterprise_search.test_assistant_pg import SyntheticClient
 from tests.enterprise_search.test_retrieval_pg import index, register
 from tests.enterprise_search.verification_action_harness import actual_runtime, start

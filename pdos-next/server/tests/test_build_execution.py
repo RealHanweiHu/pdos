@@ -10,6 +10,28 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.command_handlers import handler
+from pdos_next.core.contracts import PAYLOADS, Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
+    now,
+)
+from pdos_next.core.service import Context, digest
+from pdos_next.domain.build_execution.models import (
+    ActualConfiguration,
+    BuildLot,
+    SampleAllocation,
+    SampleUnit,
+)
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -24,29 +46,6 @@ from test_builds import (
     listed as listed_builds,
 )
 from test_project_first_plan import cmd, post
-
-from pdos_next.command_handlers import handler
-from pdos_next.contracts import PAYLOADS, Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_execution.models import (
-    ActualConfiguration,
-    BuildLot,
-    SampleAllocation,
-    SampleUnit,
-)
-from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
-    now,
-)
-from pdos_next.service import Context, digest
 
 OPERATIONS = (
     "build.configuration.actual.record",
@@ -700,7 +699,7 @@ def test_factual_sources_must_be_exact_and_cannot_be_omitted_from_the_read_set(s
 def test_end_of_transaction_failure_rolls_back_all_facts_and_t1_consumption(
     setup, planned, actual, lot, operation, monkeypatch
 ):
-    import pdos_next.service as commands
+    import pdos_next.core.service as commands
 
     reviewed = prepared(setup, command_for(setup, planned, actual, lot, operation))
     before = {model: count(setup, model) for model in (*MODELS, Receipt, Audit, Outbox, RequestKey)}

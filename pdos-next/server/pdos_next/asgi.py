@@ -2,8 +2,8 @@ import json
 import os
 
 from pdos_next.api import create_app
-from pdos_next.original_store import OriginalStore
-from pdos_next.security_bootstrap import local_runtime
+from pdos_next.bootstrap.security import local_runtime
+from pdos_next.originals.store import OriginalStore
 
 root = os.environ.get("PDOS_OBJECT_ROOT")
 store = OriginalStore(root) if root else None

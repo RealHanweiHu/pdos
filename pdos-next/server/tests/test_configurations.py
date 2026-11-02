@@ -6,13 +6,19 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy import func, select, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    Outbox,
+    Product,
+    Receipt,
+    now,
+)
+from pdos_next.core.service import Context
 from pdos_next.domain.configurations import service
 from pdos_next.domain.configurations.models import (
     BomLine,
@@ -26,8 +32,10 @@ from pdos_next.domain.configurations.schemas import (
     NpiProcessRevisePayload,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Grant, Outbox, Product, Receipt, now
-from pdos_next.service import Context
+from pydantic import ValidationError
+from sqlalchemy import func, select, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 OPERATIONS = {"engineering.bom.revise", "engineering.configuration.create", "npi.process.revise"}
 TEXT = "Synthetic component and operation are unverified."
@@ -669,7 +677,7 @@ def test_receipt_failure_rolls_back_bom_material_and_confirmation(setup, monkeyp
     def fail(*args, **kwargs):
         raise DomainError("SYNTHETIC_RECEIPT_FAILURE", "Injected transaction failure")
 
-    monkeypatch.setattr("pdos_next.service.append_receipt", fail)
+    monkeypatch.setattr("pdos_next.core.service.append_receipt", fail)
     response = post(setup, reviewed.json()["command"])
     assert response.status_code == 500
     with tenant_session(
@@ -725,9 +733,8 @@ def test_all_twenty_one_sources_are_preserved_after_inheriting_previous_pin(setu
 
 
 def test_designated_reviewer_can_read_bom_only_while_direct_sources_remain_visible(setup):
+    from pdos_next.core.models import ObjectAudience
     from sqlalchemy import delete
-
-    from pdos_next.models import ObjectAudience
 
     chain = configuration_chain(setup)
     own = listed(setup)["boms"][0]

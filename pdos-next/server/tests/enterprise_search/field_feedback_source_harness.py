@@ -3,8 +3,8 @@
 from types import SimpleNamespace
 from uuid import UUID
 
+from pdos_next.core.models import now
 from pdos_next.domain.field_feedback.schemas import ACTION, CREATE, LOCATE
-from pdos_next.models import now
 from tests.field_feedback_pg.test_field_chain import confirmed, prepare
 from tests.knowledge_pg.test_publication import command, register, send
 

@@ -10,10 +10,8 @@ from datetime import datetime, timedelta
 from uuid import UUID
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import now
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.service_models import AutomationServiceAttempt
 from pdos_next.domain.work_management.constants import (
@@ -26,7 +24,8 @@ from pdos_next.domain.work_management.constants import (
     SUBMIT,
 )
 from pdos_next.domain.work_management.models import WorkCommitmentCurrent, WorkCommitmentVersion
-from pdos_next.models import now
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.automations_pg.test_manual_workflow import reading
 from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec, _state
 from tests.work_management_pg import test_workflow as flow

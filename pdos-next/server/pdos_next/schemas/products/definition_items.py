@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import Field, model_validator
 
 from pdos_next.domain.preproject.schemas import PreparedContent, Reference, SpecItem
-from pdos_next.schema_base import StrictModel
+from pdos_next.core.schema_base import StrictModel
 
 
 class DefinitionItemOp(StrictModel):

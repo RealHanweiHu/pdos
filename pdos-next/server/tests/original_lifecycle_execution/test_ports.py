@@ -6,8 +6,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import models
+from pdos_next.core import models
+from pdos_next.core.error_catalog import REASONS
+from pdos_next.core.service import Context
 from pdos_next.domain.original_lifecycle_execution import service as commands
 from pdos_next.domain.original_lifecycle_execution.codec import decode_intent, encode_state
 from pdos_next.domain.original_lifecycle_execution.runtime import BoundFacts, LifecycleRuntime
@@ -19,17 +20,15 @@ from pdos_next.domain.original_lifecycle_execution.store import (
     SqlLifecycleAuthority,
     SqlLifecycleStore,
 )
-from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
-from pdos_next.original_lifecycle.service import LifecycleService
-from pdos_next.original_lifecycle.types import (
+from pdos_next.originals.lifecycle.service import LifecycleService
+from pdos_next.originals.lifecycle.types import (
     ActorKind,
     DecisionReason,
     IntentState,
     LifecycleAction,
     LifecycleFailure,
 )
-from pdos_next.service import Context
 from tests.original_lifecycle.helpers import fixture
 
 pytestmark = pytest.mark.usefixtures("pure_guard")

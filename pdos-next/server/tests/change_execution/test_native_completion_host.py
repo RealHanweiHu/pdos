@@ -1,14 +1,13 @@
 """Common human consumption and historical reads across native completion states."""
 
 import pytest
-
-from pdos_next import change_order_integration as integration
-from pdos_next import change_order_service as orders
-from pdos_next import command_handlers as commands
-from pdos_next import contracts, service
-from pdos_next.change_order_consumption import TIERS
+from pdos_next.core import command_handlers as commands
+from pdos_next.core import contracts, service
 from pdos_next.domain.change_control.rules import replace
 from pdos_next.errors import DomainError
+from pdos_next.features.change import order_integration as integration
+from pdos_next.features.change import order_service as orders
+from pdos_next.features.change.order_consumption import TIERS
 
 from . import kernel_helpers as helper
 from .test_field_implementation_owner import bind_substitute, case
@@ -35,7 +34,7 @@ def test_later_state_can_reprove_old_implementation_but_cannot_create_another(mo
     value = case()
     value.request = replace(value.request, status=status)
     calls = bind_substitute(monkeypatch, value)
-    from pdos_next import change_implementation_owner as owner
+    from pdos_next.features.change import implementation_owner as owner
 
     basis, item = owner.validate_binding(
         None,
@@ -94,8 +93,8 @@ def test_completion_directory_checks_write_access_without_mutation_locks(monkeyp
     from types import SimpleNamespace
     from uuid import uuid4
 
-    from pdos_next import change_completion_view as view
-    from pdos_next import change_controlled_owner as controlled
+    from pdos_next.features.change import completion_view as view
+    from pdos_next.features.change import controlled_owner as controlled
 
     identity, product = uuid4(), uuid4()
     request = SimpleNamespace(

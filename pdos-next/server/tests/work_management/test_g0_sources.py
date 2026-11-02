@@ -6,13 +6,12 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.service import Context, digest
+from pdos_next.domain.work_management import g0_sources as sources
+from pdos_next.errors import DomainError
 from pydantic import BaseModel
 from sqlalchemy.dialects.postgresql import dialect
 from sqlalchemy.engine import Engine
-
-from pdos_next.domain.work_management import g0_sources as sources
-from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 
 
 class Reference(BaseModel):

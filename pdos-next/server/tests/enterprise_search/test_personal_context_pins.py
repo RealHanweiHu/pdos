@@ -5,12 +5,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import context_corrections as corrections
-from pdos_next.enterprise_search import assistant_materials as materials
-from pdos_next.enterprise_search.assistant_schemas import MaterialsInput
+from pdos_next.agent.enterprise_search import assistant_materials as materials
+from pdos_next.agent.enterprise_search.assistant_schemas import MaterialsInput
+from pdos_next.agent.kernel import context_corrections as corrections
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 from tests.agent_kernel.test_context_corrections import case, selection
 
 
@@ -48,7 +47,7 @@ def fixture(monkeypatch):
         checked.append(candidates)
         return {key: row for key in candidates}, {}
 
-    monkeypatch.setattr("pdos_next.enterprise_search.assistant_sources.current", current)
+    monkeypatch.setattr("pdos_next.agent.enterprise_search.assistant_sources.current", current)
     monkeypatch.setattr(materials, "current", current)
     return SimpleNamespace(
         run=run,
@@ -79,7 +78,7 @@ def test_personal_fixed_source_is_readable_without_forging_a_business_read_set(m
 def test_changed_revoked_or_scan_invalid_pin_stops_before_material_body_query(monkeypatch, reason):
     f = fixture(monkeypatch)
     monkeypatch.setattr(
-        "pdos_next.enterprise_search.assistant_sources.current", lambda *_: ({}, {"0": reason})
+        "pdos_next.agent.enterprise_search.assistant_sources.current", lambda *_: ({}, {"0": reason})
     )
     with pytest.raises(DomainError):
         materials.read(
@@ -100,7 +99,7 @@ def test_frozen_classification_cannot_silently_understate_new_source_taint(monke
     f.run.versions["work_state"]["context_selection"]["sources"][0]["customer_original"] = False
     f.run.versions["work_state_digest"] = digest(f.run.versions["work_state"])
     monkeypatch.setattr(
-        "pdos_next.enterprise_search.assistant_sources.current",
+        "pdos_next.agent.enterprise_search.assistant_sources.current",
         lambda _session, candidates: (
             {key: {**f.row, "customer_original": True} for key in candidates},
             {},

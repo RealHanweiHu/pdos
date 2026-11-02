@@ -3,7 +3,7 @@
 
 from uuid import UUID
 
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
 from tests.enterprise_search.role_native_source_harness import assert_native_proof_ports
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 from tests.enterprise_search.test_business_sources_pg import (

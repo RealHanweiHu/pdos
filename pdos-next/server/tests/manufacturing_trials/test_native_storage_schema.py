@@ -13,7 +13,7 @@ from sqlalchemy.dialects.postgresql import dialect
 from sqlalchemy.engine import Engine
 from sqlalchemy.schema import AddConstraint, DropConstraint
 
-from pdos_next import models
+from pdos_next.core import models
 from pdos_next.domain.manufacturing_trials import native_storage_schema as storage
 from pdos_next.domain.manufacturing_trials.native_models import BINDING
 

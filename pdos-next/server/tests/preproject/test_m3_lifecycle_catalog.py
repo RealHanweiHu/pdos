@@ -7,10 +7,10 @@ from uuid import UUID, uuid4
 import pytest
 from lifecycle_fixture import lifecycle_work  # noqa: F401
 from migrations import schema_s0_0749 as migration
-from pdos_next import models
-from pdos_next.database import tenant_session
-from pdos_next.lifecycle_access import NON_CONSUMING, schema_covered
-from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED, M3_GUARDED
+from pdos_next.core import models
+from pdos_next.core.database import tenant_session
+from pdos_next.features.lifecycle.access import NON_CONSUMING, schema_covered
+from pdos_next.features.lifecycle.catalog import COVERED_COLUMNS, GUARDED, M3_GUARDED
 from security_fixture import secured_parse
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError

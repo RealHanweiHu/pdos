@@ -11,11 +11,10 @@ import os
 from dataclasses import replace
 
 import pytest
+from pdos_next.agent.enterprise_search.embedding_sources import readable_chunks
+from pdos_next.agent.enterprise_search.schemas import SearchInput
+from pdos_next.core.database import tenant_session
 from sqlalchemy import select, text
-
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.embedding_sources import readable_chunks
-from pdos_next.enterprise_search.schemas import SearchInput
 from tests.enterprise_search.embedding_ann_fixture import (
     CHUNKS_PER_SOURCE,
     DIMENSIONS,
@@ -272,7 +271,7 @@ def test_synthetic_vectors_are_dense_distinct_unit_and_text_independent():
 
 
 def test_all_source_paragraphs_are_real_projector_chunks_with_exact_locators():
-    from pdos_next.enterprise_search.indexing import chunks
+    from pdos_next.agent.enterprise_search.indexing import chunks
 
     body = source_body(127)
     projected = list(chunks(body))

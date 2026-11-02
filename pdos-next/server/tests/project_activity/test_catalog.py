@@ -6,13 +6,8 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.sql.elements import BindParameter
-
-from pdos_next import (  # initialize shared model relationships for independent collection
-    models as registered_models,  # noqa: F401
-)
+from pdos_next.core import models as registered_models  # noqa: F401
+from pdos_next.core.service import EVENTS
 from pdos_next.domain.build_execution.models import ActualConfiguration, SampleUnit
 from pdos_next.domain.builds.models import BuildReadiness
 from pdos_next.domain.configurations.models import (
@@ -26,8 +21,10 @@ from pdos_next.domain.projects.models import TaskDependency
 from pdos_next.domain.verification_launch.models import VerificationLaunchFact
 from pdos_next.domain.verification_results.models import MeasurementRecord
 from pdos_next.domain.work_management.models import ProjectStatusUpdate, WorkTaskVersion
-from pdos_next.project_activity_catalog import OPERATION_LABELS, SOURCES, ActivitySource
-from pdos_next.service import EVENTS
+from pdos_next.features.projects.activity_catalog import OPERATION_LABELS, SOURCES, ActivitySource
+from sqlalchemy import select
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.sql.elements import BindParameter
 
 
 def _source(model):

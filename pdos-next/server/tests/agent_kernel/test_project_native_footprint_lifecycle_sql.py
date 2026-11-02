@@ -6,8 +6,8 @@ from pathlib import Path
 
 from migrations.candidates import project_native_footprint_lifecycle as candidate
 from migrations.schema_s0_0761 import GATE
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.models import Artifact, LifecycleObject
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Artifact, LifecycleObject
 
 
 def test_native_candidate_pins_exact_existing_kernel_bodies_and_restore_is_replacing():

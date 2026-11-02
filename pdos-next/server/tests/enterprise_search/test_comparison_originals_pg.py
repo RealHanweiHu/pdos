@@ -6,9 +6,8 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
-
 from pdos_next.errors import DomainError
-from pdos_next.original_security import configure
+from pdos_next.originals.security import configure
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 from tests.enterprise_search.test_comparison_pg import CompareClient
 from tests.test_original_security import parsed, uploaded

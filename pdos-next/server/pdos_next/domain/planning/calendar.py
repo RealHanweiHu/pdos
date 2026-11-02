@@ -2,9 +2,9 @@
 
 from datetime import date, datetime
 
-from pdos_next.engines.planning.calendar import CalendarError, WorkingTime
-from pdos_next.engines.planning.calendar import ceil_minute as engine_ceil_minute
-from pdos_next.engines.planning.dto import (
+from pdos_next.domain.engines.planning.calendar import CalendarError, WorkingTime
+from pdos_next.domain.engines.planning.calendar import ceil_minute as engine_ceil_minute
+from pdos_next.domain.engines.planning.dto import (
     CalendarException,
     CalendarSnapshot,
     Reference,

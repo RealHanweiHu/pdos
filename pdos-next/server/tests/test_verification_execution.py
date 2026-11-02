@@ -10,6 +10,17 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.command_handlers import T1_OPERATIONS, handler
+from pdos_next.core.contracts import PAYLOADS, Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Grant, Outbox, Product, Receipt, RequestKey
+from pdos_next.core.service import Context, digest, execute
+from pdos_next.domain.verification_execution.models import (
+    VerificationCurrent,
+    VerificationPreparation,
+)
+from pdos_next.domain.verification_execution.schemas import PreparationRecordPayload
+from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy import func, insert, select, text, update
 from sqlalchemy.exc import DBAPIError
@@ -25,18 +36,6 @@ from test_build_execution import (  # noqa: F401 - imported fixture dependencies
 from test_builds import build_command, configuration, definition, project  # noqa: F401
 from test_project_first_plan import accepted, cmd, post
 from test_supply_execution import confirmation_consumed, count, expire_grant, withdraw
-
-from pdos_next.command_handlers import T1_OPERATIONS, handler
-from pdos_next.contracts import PAYLOADS, Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.verification_execution.models import (
-    VerificationCurrent,
-    VerificationPreparation,
-)
-from pdos_next.domain.verification_execution.schemas import PreparationRecordPayload
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Grant, Outbox, Product, Receipt, RequestKey
-from pdos_next.service import Context, digest, execute
 
 RECORD = "verification.preparation.record"
 TEXT = (
@@ -489,7 +488,7 @@ def test_saved_receipt_replay_survives_source_drift_and_requires_current_read_ac
 def test_final_receipt_failure_rolls_back_version_pointer_confirmation_and_outbox(
     setup, verification_work, monkeypatch
 ):
-    from pdos_next import service
+    from pdos_next.core import service
 
     request = command(setup, verification_work)
     preview = post(setup, request, True)

@@ -7,10 +7,9 @@ Polymorphic source and target references are validated by the command transactio
 
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
 from sqlalchemy import CheckConstraint, ForeignKeyConstraint, Index, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.models import Base, Row
 
 
 def _receipt_fk(column):

@@ -7,12 +7,11 @@ from uuid import uuid4
 import pytest
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
+from pdos_next.agent.kernel import source_views as views
+from pdos_next.core.service import Context
+from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import source_views as views
-from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 
 def context():

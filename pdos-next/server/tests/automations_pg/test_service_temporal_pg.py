@@ -12,20 +12,19 @@ from urllib.parse import urlsplit
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core.models import now
+from pdos_next.core.service import digest
+from pdos_next.domain.automations import service_runtime
+from pdos_next.domain.automations.schemas import PAUSE
+from pdos_next.domain.automations.service_models import AutomationServiceAttempt
+from pdos_next.workflows.automation import AutomationRuleWork
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio import activity
 from temporalio.client import Client
 from temporalio.service import RPCError
 from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.domain.automations import service_runtime
-from pdos_next.domain.automations.schemas import PAUSE
-from pdos_next.domain.automations.service_models import AutomationServiceAttempt
-from pdos_next.models import now
-from pdos_next.service import digest
-from pdos_next.workflows.automation import AutomationRuleWork
 from tests.automations_pg.test_manual_workflow import assert_common_group, reading, save
 from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec
 

@@ -4,9 +4,9 @@ from copy import deepcopy
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, or_, select
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Grant, Principal, now
+from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
 from pdos_next.domain.configurations.service import (
     _merge_reads,
     _source_state,
@@ -14,8 +14,7 @@ from pdos_next.domain.configurations.service import (
     get_process,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, now
-from pdos_next.request_proof import snapshot_get, snapshot_scalar
+from sqlalchemy import func, or_, select
 
 from .comparison import compare_configurations
 from .models import ActualConfiguration, BuildLot, SampleAllocation, SampleUnit
@@ -33,7 +32,7 @@ EFFECT = (
 
 
 def _human(s, ctx, product_id, *, write=False):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id, write=write, lock=write)
     actor = s.get(Principal, ctx.actor_id)
@@ -71,7 +70,7 @@ def _build_context(s, ctx, product_id, build_id, *, write=False):
 
 
 def _visibility(s, ctx, product_id, rows, reads):
-    from pdos_next.models import Artifact
+    from pdos_next.core.models import Artifact
 
     private = any(
         row.visibility != "category"
@@ -409,7 +408,7 @@ def _inputs(s, ctx, product_id, payload):
 
 
 def _checked_inputs(s, ctx, command, product, payload):
-    from pdos_next.service import source_for
+    from pdos_next.core.service import source_for
 
     _human(s, ctx, product.id, write=True)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:

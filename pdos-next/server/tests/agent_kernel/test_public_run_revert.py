@@ -1,22 +1,20 @@
 """Real common HTTP owner with explicitly synthetic AI history; no model is called."""
 
 from dataclasses import replace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel import persistence
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentSession
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Claim, Confirmation, Consumption, Outbox, Receipt
+from pdos_next.core.service import digest
+from pdos_next.domain.products.models import DefinitionRevision
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel import persistence
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentSession
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.models import Artifact, Audit, Claim, Confirmation, Consumption, Outbox, Receipt
-from pdos_next.service import digest
 from tests.agent_kernel.test_execution_binding import ledger
 from tests.agent_kernel.test_transactions import run
 

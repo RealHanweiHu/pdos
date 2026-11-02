@@ -11,10 +11,9 @@ its actual source-product scope; publication-target scope cannot replace it.
 
 from collections.abc import Mapping
 
+from pdos_next.core import models as registered_models  # noqa: F401 -- register parent tables
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import AddConstraint, CreateIndex, CreateTable, DropConstraint
-
-from pdos_next import models as registered_models  # noqa: F401 -- register parent tables
 
 from .models import (
     ASSESSMENT,

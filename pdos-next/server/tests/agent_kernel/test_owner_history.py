@@ -9,13 +9,12 @@ import pytest
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
+from pdos_next.agent.kernel import api, owner_history, session_views
+from pdos_next.agent.kernel.work_state import PAGE_MATERIAL_BOUNDARY
+from pdos_next.core.service import Context
+from pdos_next.errors import DomainError
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import api, owner_history, session_views
-from pdos_next.agent_kernel.work_state import PAGE_MATERIAL_BOUNDARY
-from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 
 def recorded():

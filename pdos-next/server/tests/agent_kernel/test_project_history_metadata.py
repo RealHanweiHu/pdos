@@ -5,11 +5,10 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel import conversation_acl as acl
+from pdos_next.agent.kernel import project_history_metadata as pointers
+from pdos_next.core.service import digest
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import conversation_acl as acl
-from pdos_next.agent_kernel import project_history_metadata as pointers
-from pdos_next.service import digest
 
 
 def binding():

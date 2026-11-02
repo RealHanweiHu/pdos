@@ -6,10 +6,9 @@ source does not prevent recording a newly evidenced containment fact.
 
 # ruff: noqa: E501 -- complete PostgreSQL predicates remain readable.
 
+from pdos_next.core import models as registered_models  # noqa: F401 -- parent metadata
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateIndex, CreateTable
-
-from pdos_next import models as registered_models  # noqa: F401 -- parent metadata
 
 from .models import (
     CURRENT,

@@ -10,15 +10,14 @@ import re
 from copy import deepcopy
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact
 from pdos_next.domain.preproject import category_reads
 from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 from pdos_next.domain.preproject.schemas import Reference
-from pdos_next.models import Artifact
 from pdos_next.providers.types import ProviderUsage
+from sqlalchemy import select
 from tests.preproject.test_g0 import post, request
 
 DIRECTORY_REGION = "eval-v0-ctx09-directory"

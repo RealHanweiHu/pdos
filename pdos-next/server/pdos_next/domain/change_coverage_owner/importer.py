@@ -3,20 +3,19 @@
 from copy import deepcopy
 from uuid import uuid4
 
-from sqlalchemy import select
-
-import pdos_next.models  # noqa: F401 - complete model registration before runtime imports
-from pdos_next import change_controlled_owner as controlled
-from pdos_next import service as common
-from pdos_next.change_implementation_owner import common_group
-from pdos_next.change_order_service import _one
-from pdos_next.clock import earliest_deadline
-from pdos_next.contracts import Command
+import pdos_next.core.models  # noqa: F401 - complete model registration before runtime imports
+from pdos_next.core import service as common
+from pdos_next.core.clock import earliest_deadline
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Product, Receipt, RequestKey
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_execution import service as old
-from pdos_next.models import Product, Receipt, RequestKey
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change.implementation_owner import common_group
+from pdos_next.features.change.order_service import _one
 from pdos_next.schemas.verification.contracts import Scope
+from sqlalchemy import select
 
 from . import models, owner, registry, trust
 from .schemas import EVENT, FAMILY, OPERATION, CoverageImport, CoverageMaterial

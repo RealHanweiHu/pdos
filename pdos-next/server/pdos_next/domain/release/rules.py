@@ -10,12 +10,11 @@ from datetime import datetime
 from hashlib import sha256
 from uuid import UUID
 
-from pydantic import BaseModel
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context
+from pydantic import BaseModel
 
 from .schemas import (
     ENGINEERING_APPROVE,

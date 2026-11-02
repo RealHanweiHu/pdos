@@ -11,11 +11,10 @@ import os
 from pathlib import Path
 from uuid import UUID
 
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Product
 from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.models import Artifact, Product
+from sqlalchemy.orm import Session
 from tests.preproject.test_category_context_pg import add_knowledge
 from tests.preproject.test_category_matrix_pg import counts
 from tests.preproject.test_evidence_commands_pg import (

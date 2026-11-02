@@ -4,15 +4,14 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun, AgentSession, AgentSessionBinding
-from pdos_next.agent_kernel.persistence import KernelStore
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun, AgentSession, AgentSessionBinding
+from pdos_next.agent.kernel.persistence import KernelStore
 from pdos_next.domain.preproject.category_models import KnowledgeEntry, ParameterVersion
 from pdos_next.domain.preproject.models import PreparedCandidate
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_domain_candidates_pg import read
 from tests.preproject.test_material_commands_pg import parameter
 from tests.products.test_definition_item_commands_pg import confirmed
@@ -150,7 +149,6 @@ def test_original_tampering_cancel_and_permission_change_still_deny(setup):
 def test_downgrade_preserves_named_human_edit_history(setup):
     from alembic.migration import MigrationContext
     from alembic.operations import Operations
-
     from migrations.versions import s0_0815_material_candidate_edits as migration
 
     _, _, command = candidate(setup, "parameter")

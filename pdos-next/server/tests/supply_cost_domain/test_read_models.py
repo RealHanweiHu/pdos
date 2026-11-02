@@ -2,7 +2,7 @@ from datetime import timedelta
 from decimal import Decimal
 
 import pytest
-
+from pdos_next.domain.engines.supply_cost.common import digest
 from pdos_next.domain.supply_cost import (
     SupplyBusinessError,
     cost_candidate,
@@ -15,7 +15,6 @@ from pdos_next.domain.supply_cost.read_models import (
     reconciliation_view,
     snapshot_view,
 )
-from pdos_next.engines.supply_cost.common import digest
 from pdos_next.schemas.supply_cost.dto import Freshness, SupplyCommitment
 
 from .helpers import AS_OF, bound_demand, ref

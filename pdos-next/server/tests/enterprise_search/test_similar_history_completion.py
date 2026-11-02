@@ -8,15 +8,17 @@ import pytest
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
 from migrations.candidates import similar_history_change_origin as ddl
-from pdos_next.enterprise_search import similar_history as history
-from pdos_next.enterprise_search import similar_history_api as api
-from pdos_next.enterprise_search.similar_history_models import SimilarHistoryFeedback as FeedbackRow
-from pdos_next.enterprise_search.similar_history_schemas import (
+from pdos_next.agent.enterprise_search import similar_history as history
+from pdos_next.agent.enterprise_search import similar_history_api as api
+from pdos_next.agent.enterprise_search.similar_history_models import (
+    SimilarHistoryFeedback as FeedbackRow,
+)
+from pdos_next.agent.enterprise_search.similar_history_schemas import (
     SimilarHistoryFeedback,
     SimilarHistoryTitleInput,
 )
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 from pydantic import ValidationError
 
 

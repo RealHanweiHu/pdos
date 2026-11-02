@@ -6,20 +6,28 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentToolCall,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Claim,
+    Confirmation,
+    Consumption,
+    Outbox,
+    Receipt,
+    now,
+)
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
-from pdos_next.models import Artifact, Audit, Claim, Confirmation, Consumption, Outbox, Receipt, now
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.preproject.test_evidence_commands_pg import (
     artifact,
     claim_fixture,
@@ -334,7 +342,7 @@ def test_whole_run_revert_blocks_changed_or_frozen_target_without_partial_undo(
 
 
 def test_whole_run_revert_tail_failure_rolls_back_claim_link_counter_and_proof(work, monkeypatch):
-    from pdos_next.agent_kernel import persistence
+    from pdos_next.agent.kernel import persistence
 
     evidence = ai_evidence_run(work, monkeypatch)
     checked = revert_preview(work, evidence)

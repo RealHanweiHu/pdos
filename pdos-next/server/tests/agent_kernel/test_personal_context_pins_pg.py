@@ -10,17 +10,16 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search.assistant_materials import read
+from pdos_next.agent.enterprise_search.assistant_schemas import MaterialsInput
+from pdos_next.agent.enterprise_search.assistant_sources import human_snapshot
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Artifact, Category, Grant
+from pdos_next.errors import DomainError
+from pdos_next.originals.security import configure
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.enterprise_search.assistant_materials import read
-from pdos_next.enterprise_search.assistant_schemas import MaterialsInput
-from pdos_next.enterprise_search.assistant_sources import human_snapshot
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Category, Grant
-from pdos_next.original_security import configure
 from tests.agent_kernel.test_context_corrections_pg import finish
 from tests.agent_kernel.test_run_continuation import scope, start, synthetic_artifact
 from tests.test_original_security import parsed, uploaded

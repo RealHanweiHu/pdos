@@ -2,9 +2,9 @@
 
 from uuid import uuid4
 
+from pdos_next.domain.engines.planning.calendar import CalendarError, WorkingTime
+from pdos_next.domain.engines.planning.dto import CalendarSnapshot
 from pdos_next.domain.work_management.rules import require
-from pdos_next.engines.planning.calendar import CalendarError, WorkingTime
-from pdos_next.engines.planning.dto import CalendarSnapshot
 
 from .schemas import (
     Closure,

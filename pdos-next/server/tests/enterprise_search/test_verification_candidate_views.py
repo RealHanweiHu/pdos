@@ -6,11 +6,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.enterprise_search import verification_candidate_views as views
+from pdos_next.agent.enterprise_search import verification_candidate_views as views
+from pdos_next.core.models import Receipt
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.models import Receipt
-from pdos_next.service import Context
 from tests.enterprise_search.test_verification_candidates import fixture as candidate_fixture
 
 

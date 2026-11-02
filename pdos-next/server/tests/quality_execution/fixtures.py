@@ -15,6 +15,27 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, now
+from pdos_next.core.service import digest
+from pdos_next.domain.professional_authority.schemas import DefinitionReference
+from pdos_next.domain.quality_execution import policy, service
+from pdos_next.domain.quality_execution.evidence import refs_from_exact
+from pdos_next.domain.quality_execution.models import (
+    QualityEventFailureLink,
+    QualityFailureMap,
+    QualityIssueCurrent,
+    QualityIssueVersion,
+    QualityPolicyCurrent,
+    QualityPolicyFact,
+)
+from pdos_next.domain.verification_results.models import MeasurementRecord
+from pdos_next.features.quality.result_bridge import (
+    fixed_failure_result,
+    fixed_failure_scope,
+    read_failure_batch,
+    recheck_fixed_failure_result,
+)
 from sqlalchemy import func, select
 from test_project_first_plan import accepted, cmd, post
 from verification_handoff import fixtures as handoff
@@ -32,28 +53,6 @@ from verification_results.fixtures import (  # noqa: F401
 from verification_results.fixtures import (
     command as result_command,
 )
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.professional_authority.schemas import DefinitionReference
-from pdos_next.domain.quality_execution import policy, service
-from pdos_next.domain.quality_execution.evidence import refs_from_exact
-from pdos_next.domain.quality_execution.models import (
-    QualityEventFailureLink,
-    QualityFailureMap,
-    QualityIssueCurrent,
-    QualityIssueVersion,
-    QualityPolicyCurrent,
-    QualityPolicyFact,
-)
-from pdos_next.domain.verification_results.models import MeasurementRecord
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, now
-from pdos_next.quality_result_bridge import (
-    fixed_failure_result,
-    fixed_failure_scope,
-    read_failure_batch,
-    recheck_fixed_failure_result,
-)
-from pdos_next.service import digest
 
 
 @pytest.fixture
@@ -133,7 +132,7 @@ def quality_work(results_work):
 
 
 def publish_policy(work, *, previous=None, risk="high", independent=True, state="active", key=None):
-    from pdos_next.quality_policy_import import import_quality_policy_fact
+    from pdos_next.bootstrap.quality_policy_import import import_quality_policy_fact
 
     at = now()
     publication = {

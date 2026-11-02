@@ -4,9 +4,8 @@ from datetime import UTC
 from typing import Literal
 from uuid import UUID
 
+from pdos_next.core.schema_base import StrictModel
 from pydantic import AwareDatetime, Field, field_validator
-
-from pdos_next.schema_base import StrictModel
 
 
 class AnswerOrigin(StrictModel):

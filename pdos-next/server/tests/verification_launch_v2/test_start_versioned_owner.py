@@ -10,16 +10,15 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session
-from test_fingerprint_compatibility import materials  # noqa: F401
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.test_resources import service as codec
 from pdos_next.domain.test_resources import service as resources
 from pdos_next.domain.test_resources.schemas import TestReservationResult as Result
 from pdos_next.domain.verification_launch import service as launch
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session
+from test_fingerprint_compatibility import materials  # noqa: F401
 
 
 def uid(n):
@@ -347,8 +346,8 @@ def test_unrelated_registry_mutation_during_whole_launch_owner_io_rejected(work,
 
 def owner_load(w, monkeypatch, *, original=False, verify_event=True):
     """Real direct loader/UOW with explicit SQL, source and qualification transports."""
-    from pdos_next import source_current
-    from pdos_next.contracts import Command
+    from pdos_next.core import source_current
+    from pdos_next.core.contracts import Command
     from pdos_next.domain.professional_authority import service as professional
     from pdos_next.domain.quality_execution import evidence
     from pdos_next.domain.verification_launch.schemas import ExecutionPlan, StartPayload

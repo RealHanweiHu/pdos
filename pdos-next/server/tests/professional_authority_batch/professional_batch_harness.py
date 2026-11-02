@@ -4,9 +4,9 @@ from contextlib import nullcontext
 from copy import deepcopy
 from pathlib import Path
 
+from pdos_next.core.models import Artifact
 from pdos_next.domain.professional_authority import service as actual
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
-from pdos_next.models import Artifact
 from tests.professional_authority.test_assessment import FakeSession
 
 STAGE = Path(__file__).resolve().parent

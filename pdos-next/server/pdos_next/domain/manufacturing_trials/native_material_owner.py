@@ -13,13 +13,11 @@ from typing import Literal
 from uuid import UUID
 from weakref import WeakKeyDictionary, ref
 
-from pydantic import JsonValue
-from pydantic_core import to_jsonable_python
-from sqlalchemy import select
-from sqlalchemy.types import JSON
-
-from pdos_next.contracts import SourceRead
-from pdos_next.database import require_context
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Artifact, OriginalSecurity, Product, UploadedOriginal, now
+from pdos_next.core.request_proof import snapshot_mappings
+from pdos_next.core.service import Context, digest, require_access
 from pdos_next.domain.build_execution import service as execution
 from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot, SampleUnit
 from pdos_next.domain.build_operational_facts.models import (
@@ -47,11 +45,12 @@ from pdos_next.domain.projects import service as projects
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, OriginalSecurity, Product, UploadedOriginal, now
-from pdos_next.request_proof import snapshot_mappings
 from pdos_next.schemas.manufacturing_trials.contracts import DTO, Gap, LotBasis, PilotCreate
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import Context, digest, require_access
+from pydantic import JsonValue
+from pydantic_core import to_jsonable_python
+from sqlalchemy import select
+from sqlalchemy.types import JSON
 
 
 class NativePilotMaterial(DTO):

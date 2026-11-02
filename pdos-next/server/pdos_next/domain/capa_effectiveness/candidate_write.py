@@ -10,7 +10,7 @@ from copy import deepcopy
 from datetime import UTC, datetime
 from uuid import uuid4
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from . import anchor
 from . import candidate_commands as commands
@@ -18,10 +18,10 @@ from . import candidate_prepare as preparation
 from . import fact_atom_storage as guards
 from . import fact_consumption as consumption
 from .fact_consumption import ConsumptionHost, LiveConsumption
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
 from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
+from pdos_next.core.models import Product
 from pdos_next.schemas.verification.contracts import DTO
 from sqlalchemy import inspect
 

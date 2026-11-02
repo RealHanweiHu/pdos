@@ -2,10 +2,9 @@
 
 from uuid import UUID
 
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.models import Claim
 from sqlalchemy import select, text
-
-from pdos_next.category_scope import category_scope
-from pdos_next.models import Claim
 
 from .access import fail, proposal
 

@@ -1,7 +1,7 @@
 """Actual promise and review heads under the caller's ordinary project scope."""
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Grant, now
+from pdos_next.core.service import require_access
 from pdos_next.domain.work_management import owner
 from pdos_next.domain.work_management.models import (
     WorkCommitmentCurrent,
@@ -10,8 +10,7 @@ from pdos_next.domain.work_management.models import (
 )
 from pdos_next.domain.work_management.schemas import TaskSnapshot
 from pdos_next.domain.work_management.views import commitment_view
-from pdos_next.models import Grant, now
-from pdos_next.service import require_access
+from sqlalchemy import select
 
 from .models import WorkCommitmentReview, WorkCommitmentReviewCurrent
 from .service import retained

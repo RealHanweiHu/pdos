@@ -6,12 +6,11 @@ from uuid import uuid4
 
 from fastapi import Depends, FastAPI
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next import change_implementation_owner as implementation
-from pdos_next.change_order_store import ImplementationCapture
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution import api
-from pdos_next.service import Context
+from pdos_next.features.change import implementation_owner as implementation
+from pdos_next.features.change.order_store import ImplementationCapture
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 
 def test_capture_response_materialized_before_commit_expiry(monkeypatch):

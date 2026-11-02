@@ -7,11 +7,11 @@ from decimal import Decimal
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.enterprise_search.embedding_provider import HostEmbeddingSecrets
-from pdos_next.enterprise_search.embedding_schemas import EmbeddingMetadata
+from pdos_next.agent.enterprise_search.embedding_provider import HostEmbeddingSecrets
+from pdos_next.agent.enterprise_search.embedding_schemas import EmbeddingMetadata
+from pdos_next.agent.model_configuration.connections import AddConnection, add, readings
+from pdos_next.agent.model_configuration.host import TenantRuntime
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.connections import AddConnection, add, readings
-from pdos_next.model_configuration.host import TenantRuntime
 from pdos_next.schemas.model_configuration import ModelMetadata
 from pydantic import SecretStr
 

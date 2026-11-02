@@ -1,8 +1,7 @@
-from sqlalchemy import select, text
-
-from pdos_next.clock import now
+from pdos_next.core.clock import now
+from pdos_next.core.models import Grant, Principal
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
+from sqlalchemy import select, text
 
 
 def fail(code, reason, message, status=409, **detail):
@@ -12,7 +11,7 @@ def fail(code, reason, message, status=409, **detail):
 
 
 def installed(s):
-    from pdos_next.request_proof import snapshot_scalar
+    from pdos_next.core.request_proof import snapshot_scalar
 
     if not snapshot_scalar(
         s, ("m3", "installed"), text("SELECT to_regclass('public.proposals') IS NOT NULL")

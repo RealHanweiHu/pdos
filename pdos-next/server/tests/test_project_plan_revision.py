@@ -1,6 +1,7 @@
 # ruff: noqa: F811 -- pytest imports fixtures by name
 from copy import deepcopy
 
+from pdos_next.domain.projects.resources import conflicts_for
 from test_project_first_plan import (  # noqa: F401
     accepted,
     cmd,
@@ -9,8 +10,6 @@ from test_project_first_plan import (  # noqa: F401
     project,
     proposal_command,
 )
-
-from pdos_next.domain.projects.resources import conflicts_for
 
 
 def test_revision_requires_current_base_and_preserves_history(setup, definition, project, engines):
@@ -94,8 +93,7 @@ def test_resource_alternatives_detect_hidden_project_without_leaking_name(
     from copy import copy
 
     from g0_fixture import create_g0_project
-
-    from pdos_next.service import Context
+    from pdos_next.core.service import Context
 
     def proposal(actor, identity, reads, base=None, revision=1, second=False):
         value = proposal_command(actor, definition, identity)

@@ -4,13 +4,12 @@ The explicit seven-day calendar is a fixture estimate, not a real organization
 calendar or a commitment. Source prose never becomes a fabricated tool result.
 """
 
-from sqlalchemy import func, select
-from test_project_first_plan import accepted, cmd, post
-
+from pdos_next.core.models import Principal
 from pdos_next.domain.projects.schemas import PlanProposePayload
 from pdos_next.domain.projects.service import calculate
 from pdos_next.domain.work_management.models import WorkCommitmentVersion
-from pdos_next.models import Principal
+from sqlalchemy import func, select
+from test_project_first_plan import accepted, cmd, post
 from tests.work_management_pg import test_workflow as flow
 
 TITLES = {"pressure": "接头耐压复验", "humidity": "密封圈湿热复验"}

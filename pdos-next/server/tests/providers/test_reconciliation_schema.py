@@ -1,10 +1,12 @@
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.model_gateway.reconciliation import semantic
+from pdos_next.agent.model_gateway.reconciliation_schema import (
+    NormalizedUsage,
+    ReconciliationPayload,
+)
 from pydantic import ValidationError
-
-from pdos_next.model_gateway.reconciliation import semantic
-from pdos_next.model_gateway.reconciliation_schema import NormalizedUsage, ReconciliationPayload
 
 
 def payload(**changes):

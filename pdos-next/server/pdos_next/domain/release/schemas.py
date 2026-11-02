@@ -9,11 +9,10 @@ from decimal import Decimal
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import AwareDatetime, ConfigDict, Field, JsonValue, model_validator
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
 from pdos_next.schemas.verification.contracts import DTO as VerificationDTO
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic import AwareDatetime, ConfigDict, Field, JsonValue, model_validator
 
 from .constants import ASSEMBLE, ENGINEERING_APPROVE, MANUFACTURING_APPROVE
 from .constants import SCHEMA_VERSION as SCHEMA_VERSION

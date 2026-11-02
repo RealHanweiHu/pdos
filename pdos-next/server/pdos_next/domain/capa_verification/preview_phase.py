@@ -8,17 +8,16 @@ path, and checks the caller/UOW/material again after that owner I/O.
 
 from datetime import UTC, datetime
 
-from sqlalchemy import inspect
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Product
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.capa_verification import commands as link
 from pdos_next.domain.capa_verification.models import RemediationLinkRecord
 from pdos_next.domain.capa_verification.schemas import FollowupLinkPayload, ResolvedOutputs
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
-from pdos_next.quality_result_bridge import _runtime_stamp
-from pdos_next.service import Context, digest
+from pdos_next.features.quality.result_bridge import _runtime_stamp
+from sqlalchemy import inspect
+from sqlalchemy.orm import Session
 
 OPERATION = "quality.capa.followup.link"
 

@@ -16,18 +16,20 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_builds import (  # noqa: F401 -- pytest fixtures
-    accepted,
-    build_command,
-    configuration,
-    definition,
-    project,
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Category,
+    Confirmation,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
+    now,
 )
-
-from pdos_next.database import tenant_session
+from pdos_next.core.service import digest
 from pdos_next.domain.builds.models import Build
 from pdos_next.domain.knowledge.models import (
     CANDIDATE_EVENT,
@@ -45,19 +47,16 @@ from pdos_next.domain.knowledge.models import (
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Category,
-    Confirmation,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
-    now,
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_builds import (  # noqa: F401 -- pytest fixtures
+    accepted,
+    build_command,
+    configuration,
+    definition,
+    project,
 )
-from pdos_next.professional_import import import_professional_fact
-from pdos_next.service import digest
 
 CONTENT = "Synthetic field experience: identify the actual configuration before reusing a result."
 AUTHORITY = (

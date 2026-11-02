@@ -12,21 +12,21 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.api import StartInput
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.persistence import create_run
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.enterprise_search.assistant_ledger import carried
+from pdos_next.agent.kernel.api import StartInput
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.persistence import create_run
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Receipt
 from pdos_next.domain.knowledge import assistant_sources
 from pdos_next.domain.knowledge.assistant_models import KnowledgeAnswerReview
 from pdos_next.domain.knowledge.models import KnowledgeCandidateVersion
 from pdos_next.domain.preproject.category_models import KnowledgeEntry, PromotionProof
-from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.enterprise_search.assistant_ledger import carried
-from pdos_next.models import Artifact, Receipt
 from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session

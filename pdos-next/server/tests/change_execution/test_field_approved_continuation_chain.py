@@ -13,18 +13,15 @@ from pathlib import Path
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
-from test_project_first_plan import accepted, cmd, post
-
-from pdos_next import change_controlled_owner as controlled
-from pdos_next.change_controlled_schemas import PolicyImport, PolicyMaterial
-from pdos_next.change_controlled_store import ChangeSelectionFact
-from pdos_next.change_implementation_owner import FieldOccurrence
-from pdos_next.change_order_store import ImplementationCapture
+from pdos_next.core.models import Confirmation, now
 from pdos_next.domain.change_coverage_owner import trust
 from pdos_next.domain.field_feedback.models import FieldFeedbackVersion, FieldResponseRecord
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.models import Confirmation, now
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change.controlled_schemas import PolicyImport, PolicyMaterial
+from pdos_next.features.change.controlled_store import ChangeSelectionFact
+from pdos_next.features.change.implementation_owner import FieldOccurrence
+from pdos_next.features.change.order_store import ImplementationCapture
 from pdos_next.schemas.change_control.contracts import (
     ControlledIntent,
     Disposition,
@@ -36,6 +33,8 @@ from pdos_next.schemas.change_control.contracts import (
     Selection,
 )
 from pdos_next.schemas.verification.contracts import Scope, VerificationRequest
+from sqlalchemy import func, select
+from test_project_first_plan import accepted, cmd, post
 
 from . import approved_configuration_continuation_helpers as next_round
 from . import approved_configuration_helpers as helper

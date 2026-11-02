@@ -8,7 +8,6 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
-
 from pdos_next.evidence_processing.parsers import parse_in_worker
 from pdos_next.evidence_processing.types import ParseFailure, ParseLimits
 from pdos_next.evidence_security.types import (
@@ -20,7 +19,7 @@ from pdos_next.evidence_security.types import (
     ScanStatus,
     SecurityFailure,
 )
-from pdos_next.object_storage.types import ObjectRef
+from pdos_next.originals.object_storage.types import ObjectRef
 from pdos_next.security_runtime import docker, parser, scanner
 
 

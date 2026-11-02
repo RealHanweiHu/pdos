@@ -4,15 +4,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.enterprise_search import business_events
+from pdos_next.agent.enterprise_search.action_sources import _source_roots
+from pdos_next.agent.enterprise_search.presence import MODELS
+from pdos_next.agent.enterprise_search.relations import edges
+from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES, SearchInput
+from pdos_next.agent.enterprise_search.sources import catalog, identity_keys
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.domain.field_feedback.models import EVENTS
-from pdos_next.enterprise_search import business_events
-from pdos_next.enterprise_search.action_sources import _source_roots
-from pdos_next.enterprise_search.presence import MODELS
-from pdos_next.enterprise_search.relations import edges
-from pdos_next.enterprise_search.schemas import SOURCE_TYPES, SearchInput
-from pdos_next.enterprise_search.sources import catalog, identity_keys
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
 

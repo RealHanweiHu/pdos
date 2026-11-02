@@ -8,10 +8,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-from verification_launch.test_pure import started
-from verification_launch.test_pure import work as launch_work
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.measurement_evidence.schemas import ReportBinding
 from pdos_next.domain.measurement_evidence.verifier import (
     extract_observations,
@@ -39,7 +36,9 @@ from pdos_next.schemas.verification.contracts import (
     RunDisposition,
     RunReview,
 )
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
+from verification_launch.test_pure import started
+from verification_launch.test_pure import work as launch_work
 
 
 @pytest.fixture
@@ -238,7 +237,7 @@ def test_final_run_does_not_complete_unaccepted_request_gap(work):
 
 
 def test_original_read_failure_does_not_expose_storage_path(work, monkeypatch):
-    from pdos_next.object_storage import StorageFailure
+    from pdos_next.originals.object_storage import StorageFailure
 
     def unavailable(*_):
         raise StorageFailure(
@@ -253,7 +252,7 @@ def test_original_read_failure_does_not_expose_storage_path(work, monkeypatch):
 
 
 def test_report_binding_uses_real_original_bytes_and_security_epoch(work, tmp_path, monkeypatch):
-    from pdos_next.object_storage import LocalPrivateObjectStore
+    from pdos_next.originals.object_storage import LocalPrivateObjectStore
 
     content, _, _, _ = report(work)
     store = LocalPrivateObjectStore(tmp_path / "pure-originals")
@@ -473,7 +472,7 @@ def test_new_capture_requires_both_current_version_pointers(work, monkeypatch, c
 def test_original_store_callback_epoch_drift_is_rejected_before_proof_use(
     work, monkeypatch, change
 ):
-    from pdos_next.object_storage import ObjectRef
+    from pdos_next.originals.object_storage import ObjectRef
 
     state = {
         "authority_epoch": 1,

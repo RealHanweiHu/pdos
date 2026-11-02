@@ -4,12 +4,11 @@ import json
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.context_budget import estimate_tokens
-from pdos_next.agent_kernel.result_continuation import handle_for, page_view, serialized
+from pdos_next.agent.enterprise_search.assistant_adapter import structured_quote
+from pdos_next.agent.kernel.context_budget import estimate_tokens
+from pdos_next.agent.kernel.result_continuation import handle_for, page_view, serialized
 from pdos_next.domain.external_wait.schemas import Create
-from pdos_next.enterprise_search.assistant_adapter import structured_quote
+from pydantic import ValidationError
 
 
 def record():

@@ -4,15 +4,14 @@ import json
 from datetime import date
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, text
-from sqlalchemy.dialects.postgresql import insert
-
+from pdos_next.core.models import Artifact
+from pdos_next.core.models import ObjectAudience as Audience
+from pdos_next.core.models import UploadedOriginal as Original
 from pdos_next.domain.products import definitions
 from pdos_next.domain.products.service import create_product, set_g0_targets
 from pdos_next.domain.projects.service import create_project
-from pdos_next.models import Artifact
-from pdos_next.models import ObjectAudience as Audience
-from pdos_next.models import UploadedOriginal as Original
+from sqlalchemy import select, text
+from sqlalchemy.dialects.postgresql import insert
 
 from .category_models import KnowledgeEntry
 from .models import ProjectOpenItem, ProposalSource
@@ -71,8 +70,8 @@ def approve(s, ctx, row, sub, decision, *, provenance, baseline=None):
     }
     variant = None
     if decision.created_variant_id:
+        from pdos_next.core.models import Product
         from pdos_next.domain.products.variants import create_g0_variant
-        from pdos_next.models import Product
 
         product = s.get(Product, decision.created_product_id)
         variant = create_g0_variant(

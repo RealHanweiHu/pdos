@@ -4,12 +4,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import inspect, select
-
+from pdos_next.core.models import Artifact, OriginalSecurity
+from pdos_next.domain.engines.supply_cost.common import SnapshotRef
 from pdos_next.domain.professional_authority import service as actual
 from pdos_next.domain.supply_execution import service as supply
-from pdos_next.engines.supply_cost.common import SnapshotRef
-from pdos_next.models import Artifact, OriginalSecurity
+from sqlalchemy import inspect, select
 from tests.professional_authority.test_assessment import AT
 
 from .professional_batch_harness import STAGE, BatchSession, clone
@@ -18,8 +17,8 @@ from .professional_batch_harness import STAGE, BatchSession, clone
 @pytest.fixture(autouse=True)
 def original_security_ports(monkeypatch):
     # This suite substitutes source IO; actual RLS/source binding is covered in PG tests.
-    import pdos_next.original_security as security
-    import pdos_next.originals as originals
+    import pdos_next.originals.access as originals
+    import pdos_next.originals.security as security
 
     monkeypatch.setattr(
         originals,

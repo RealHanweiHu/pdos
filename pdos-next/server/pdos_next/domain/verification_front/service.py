@@ -12,8 +12,9 @@ from datetime import datetime
 from types import SimpleNamespace
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
-from sqlalchemy import select
-
+from pdos_next.core.models import now
+from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.supply_execution.service import (
     _build,
@@ -26,8 +27,6 @@ from pdos_next.domain.verification.ports import Invocation
 from pdos_next.domain.verification.rules import accepted_coverage, coverage_gaps, document_gaps
 from pdos_next.domain.verification_execution import service as preparation_service
 from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.request_proof import snapshot_get, snapshot_scalar
 from pdos_next.schemas.resource_readiness.contracts import ExecutionWindow
 from pdos_next.schemas.verification.contracts import (
     EventTime,
@@ -37,7 +36,7 @@ from pdos_next.schemas.verification.contracts import (
     SourceRef,
     VerificationRequest,
 )
-from pdos_next.service import digest, require_access
+from sqlalchemy import select
 
 from .adapters import (
     METHOD_POSITION,
@@ -341,7 +340,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
             prep.snapshot_sha256 != payload.preparation_sha256
         ):
             raise DomainError("VERSION_CONFLICT", "指定准备版与摘要不一致。")
-        from pdos_next.enterprise_search.verification_adoption import recheck_request
+        from pdos_next.agent.enterprise_search.verification_adoption import recheck_request
 
         recheck_request(s, ctx, prep)
         base, previous = preparation_service._snapshot(prep), None

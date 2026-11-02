@@ -6,16 +6,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import Context, digest, material_digest
 from pdos_next.domain.release import service as releases
 from pdos_next.domain.release_exceptions import rules, service
 from pdos_next.domain.release_exceptions.constants import DECIDE, WITHDRAW
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation
-from pdos_next.service import Context, digest, material_digest
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 from .test_rules import case as rule_case  # noqa: F401
 from .test_rules import release_case  # noqa: F401

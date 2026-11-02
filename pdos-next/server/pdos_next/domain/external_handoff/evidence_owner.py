@@ -12,12 +12,12 @@ from hashlib import sha256
 from uuid import UUID
 from weakref import WeakKeyDictionary, ref
 
-from pydantic_core import to_jsonable_python
-from sqlalchemy import select
-
-from pdos_next import service as common
-from pdos_next.contracts import SourceRead
-from pdos_next.database import require_context
+from pdos_next.core import service as common
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Artifact, OriginalSecurity, Product, UploadedOriginal
+from pdos_next.core.request_proof import snapshot_get, snapshot_mappings, snapshot_rows
+from pdos_next.core.safety import verify_test_target
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_execution import service as originals
 from pdos_next.domain.configurations.models import (
@@ -34,10 +34,9 @@ from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_followup.evidence import _constant, _pairs
 from pdos_next.domain.release import rules as release
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, OriginalSecurity, Product, UploadedOriginal
-from pdos_next.request_proof import snapshot_get, snapshot_mappings, snapshot_rows
-from pdos_next.safety import verify_test_target
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic_core import to_jsonable_python
+from sqlalchemy import select
 
 from . import rules
 from .evidence_schemas import HandoffContract

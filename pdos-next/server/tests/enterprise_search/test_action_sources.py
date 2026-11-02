@@ -5,11 +5,10 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.enterprise_search import action_sources as carry
+from pdos_next.agent.enterprise_search import action_sources as carry
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 
 ROOT_READ = carry._root_read
 

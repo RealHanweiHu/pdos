@@ -5,14 +5,13 @@ from threading import Barrier
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.api import StartInput
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import TenantAdministrator, ValidationBudget
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.core.models import Audit, Category, Confirmation, Grant, Outbox, Receipt, now
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.api import StartInput
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import TenantAdministrator, ValidationBudget
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.models import Audit, Category, Confirmation, Grant, Outbox, Receipt, now
 from tests.agent_kernel.test_cost_budget import rate
 from tests.agent_kernel.test_skill_management import promote
 from tests.agent_kernel.test_transactions import human_session, run
@@ -249,10 +248,10 @@ def test_budget_history_pages_and_zero_cost_limit_remain_explicit(setup):
 
 
 def test_two_categories_cannot_concurrently_create_different_current_wallets(setup):
-    from pdos_next.contracts import Command
-    from pdos_next.database import category_transaction
+    from pdos_next.core.contracts import Command
+    from pdos_next.core.database import category_transaction
+    from pdos_next.core.service import execute, preview_command
     from pdos_next.errors import DomainError
-    from pdos_next.service import execute, preview_command
 
     promote(setup)
     other = uuid4()

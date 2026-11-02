@@ -10,19 +10,25 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from pdos_next.agent_kernel.bootstrap import RuntimePorts
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, TenantAdministrator
-from pdos_next.agent_kernel.persistence import KernelStore
+from pdos_next.agent.kernel.bootstrap import RuntimePorts
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, TenantAdministrator
+from pdos_next.agent.kernel.persistence import KernelStore
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.dingtalk.accounts import credential
-from pdos_next.dingtalk.graph import execute
-from pdos_next.dingtalk.models import Application, Binding, BindingNonce, Delivery, Message
-from pdos_next.dingtalk.ports import ChannelRuntime
-from pdos_next.dingtalk.runtime import ChannelService, configure, delivery_key
-from pdos_next.dingtalk.schemas import ChannelReference, DeliveryReference
-from pdos_next.dingtalk.synthetic import SyntheticAdapter, SyntheticKms
+from pdos_next.core.database import tenant_session
 from pdos_next.errors import DomainError
+from pdos_next.integrations.dingtalk.accounts import credential
+from pdos_next.integrations.dingtalk.graph import execute
+from pdos_next.integrations.dingtalk.models import (
+    Application,
+    Binding,
+    BindingNonce,
+    Delivery,
+    Message,
+)
+from pdos_next.integrations.dingtalk.ports import ChannelRuntime
+from pdos_next.integrations.dingtalk.runtime import ChannelService, configure, delivery_key
+from pdos_next.integrations.dingtalk.schemas import ChannelReference, DeliveryReference
+from pdos_next.integrations.dingtalk.synthetic import SyntheticAdapter, SyntheticKms
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 

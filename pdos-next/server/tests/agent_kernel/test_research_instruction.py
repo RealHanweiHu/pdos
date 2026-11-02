@@ -11,17 +11,16 @@ from uuid import uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel import research_graph
-from pdos_next.agent_kernel.models import AgentEvent
-from pdos_next.agent_kernel.research_graph import ResearchGraph
-from pdos_next.agent_kernel.research_instruction import ResearchInstruction
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, RunScope
+from pdos_next.agent.kernel import research_graph
+from pdos_next.agent.kernel.models import AgentEvent
+from pdos_next.agent.kernel.research_graph import ResearchGraph
+from pdos_next.agent.kernel.research_instruction import ResearchInstruction
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, RunScope
+from pdos_next.agent.research.types import ResearchTask
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.research.types import ResearchTask
-from pdos_next.service import digest
 
 
 class Session:

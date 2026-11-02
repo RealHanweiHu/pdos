@@ -10,21 +10,20 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import UUID, uuid4
 
-from pydantic_core import to_jsonable_python
-from sqlalchemy import inspect, select
-
-from pdos_next.contracts import Command, SourceRead
-from pdos_next.database import require_context
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.database import require_context
+from pdos_next.core.models import Product, now
+from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
+from pdos_next.core.service import command_digest, digest, require_access
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.manufacturing_baseline.consumption import ConsumptionHost
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.signature_watermarks import signature_current
 from pdos_next.errors import DomainError
-from pdos_next.models import Product, now
-from pdos_next.request_proof import snapshot_get, snapshot_scalar
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import command_digest, digest, require_access
+from pydantic_core import to_jsonable_python
+from sqlalchemy import inspect, select
 
 from . import rules
 from .material_owner import ActualReleaseMaterialOwner

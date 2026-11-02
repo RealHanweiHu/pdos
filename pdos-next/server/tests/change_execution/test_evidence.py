@@ -4,18 +4,18 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
 from pdos_next.domain.change_execution import service
 from pdos_next.errors import DomainError
-from pdos_next.object_storage import ObjectRef
+from pdos_next.originals.object_storage import ObjectRef
 from pdos_next.schemas.verification.contracts import SourceRef
 
 from .test_pure import AT, fixture
 
 
 def evidence(monkeypatch, *, tamper=False, no_original=False, too_large=False):
-    from pdos_next import original_security, originals
-    from pdos_next import service as common
+    from pdos_next.core import service as common
+    from pdos_next.originals import access as originals
+    from pdos_next.originals import security as original_security
 
     content = "  exact original line  \n第二行\n"
     raw = content.encode()

@@ -18,16 +18,15 @@ from manufacturing_preparation.test_publication_material_owner import (
 from manufacturing_preparation.test_publication_rules import case as publication_case  # noqa: F401
 from manufacturing_trials.test_native_material_owner import work as native_work  # noqa: F401
 from manufacturing_trials.test_native_statistics_owner import work as statistics_work  # noqa: F401
-from release.test_material_owner import work as release_work  # noqa: F401
-
+from pdos_next.core.models import Audit, Outbox, Receipt, RequestKey
+from pdos_next.core.service import digest
 from pdos_next.domain.external_handoff import material_owner as owner
 from pdos_next.domain.external_handoff import rules, schemas
 from pdos_next.domain.release import rules as release_rules
 from pdos_next.domain.release import schemas as release_schemas
 from pdos_next.domain.release.models import ReleaseDecision, ReleasePackage, ReleasePackageCurrent
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Outbox, Receipt, RequestKey
-from pdos_next.service import digest
+from release.test_material_owner import work as release_work  # noqa: F401
 
 
 def _common(work, row, *, decision=False):

@@ -13,24 +13,23 @@ from uuid import UUID, uuid4
 
 import httpx
 from langgraph.checkpoint.postgres import PostgresSaver
-from temporalio.client import Client
-from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.enterprise_search.comparison_graph import AssistantComparisonGraph
+from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
 from pdos_next.domain.builds.service import _build, _linked
-from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.enterprise_search.comparison_graph import AssistantComparisonGraph
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.schemas.verification.contracts import BuildRef, ConfigurationRef
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from pdos_next.workflows.xiaopai import XiaopaiWork
+from temporalio.client import Client
+from temporalio.worker import Worker
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 from tests.enterprise_search.test_assistant_pg import SyntheticClient
 

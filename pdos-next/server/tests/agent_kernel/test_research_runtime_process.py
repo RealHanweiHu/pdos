@@ -11,12 +11,9 @@ from uuid import UUID, uuid4, uuid5
 import pytest
 from fastapi.testclient import TestClient
 from langgraph.checkpoint.postgres import PostgresSaver
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import (
     AgentRun,
     AgentToolCall,
     PublicWebSnapshot,
@@ -24,12 +21,14 @@ from pdos_next.agent_kernel.models import (
     TenantSkillEnablement,
     ValidationBudget,
 )
+from pdos_next.agent.model_configuration.kms import AliyunKms
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.model_configuration.kms import AliyunKms
-from pdos_next.models import Receipt, now
-from pdos_next.service import digest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_cost_budget import wallet
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_model_configuration_transactions import submit
@@ -51,8 +50,7 @@ class OfflineResearchClient:
 
     def turn(self, route, **kwargs):
         from pdos_agent_runtime.graph import in_registered_agent_graph
-
-        from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+        from pdos_next.agent.kernel.types import ModelTurn, ToolCall
         from pdos_next.providers.types import ProviderUsage
 
         assert in_registered_agent_graph()
@@ -384,7 +382,7 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                 def no_model(*_args, **_kwargs):
                     pytest.fail("Completed fanout replay must not make a new model request")
 
-                from pdos_next.agent_kernel import gateway
+                from pdos_next.agent.kernel import gateway
 
                 monkeypatch.setattr(gateway.AgentProviderClient, "turn", no_model)
                 scope = owner.store.scope(
@@ -443,10 +441,9 @@ if __name__ == "__main__":
     import asyncio
 
     import httpx
-
-    from pdos_next.agent_kernel import gateway
-    from pdos_next.research import search, service
-    from pdos_next.research.web import HTTPResponse
+    from pdos_next.agent.kernel import gateway
+    from pdos_next.agent.research import search, service
+    from pdos_next.agent.research.web import HTTPResponse
     from pdos_next.workflows.worker import main
 
     real_search, real_service = search.SearxSearchAdapter, service.ResearchService

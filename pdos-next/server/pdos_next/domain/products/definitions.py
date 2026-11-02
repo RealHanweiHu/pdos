@@ -3,19 +3,18 @@ from types import SimpleNamespace
 from typing import TYPE_CHECKING
 from uuid import uuid4
 
-from sqlalchemy import func, select
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Artifact, Grant, Principal, now
+from pdos_next.core.request_proof import batch_read
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, Principal, now
-from pdos_next.request_proof import batch_read
 from pdos_next.schemas.products.definitions import DefinitionDraftPayload
+from sqlalchemy import func, select
 
 from .models import DefinitionRevision, DefinitionSource, DefinitionSpecCurrent, DefinitionSpecRow
 
 if TYPE_CHECKING:
-    from pdos_next.contracts import Command
-    from pdos_next.service import Context
+    from pdos_next.core.contracts import Command
+    from pdos_next.core.service import Context
 
 
 def semantic(payload: DefinitionDraftPayload) -> dict:
@@ -41,7 +40,7 @@ def validate(s, ctx: "Context", command: "Command", product, payload: Definition
         from . import definition_inherit
 
         return definition_inherit.validate(s, ctx, command, product, payload)
-    from pdos_next.service import require_access, source_for
+    from pdos_next.core.service import require_access, source_for
 
     require_access(s, ctx, product.id, write=True, lock=True)
     actor = s.get(Principal, ctx.actor_id)
@@ -279,12 +278,11 @@ def difference(previous: dict, current: dict) -> list[dict]:
 
 
 def definition_view(s, ctx, row) -> dict:
+    from pdos_next.core.request_proof import snapshot_rows
+    from pdos_next.core.service import require_access
+    from pdos_next.originals.security import source_status
     from sqlalchemy import inspect
     from sqlalchemy.orm import Session, load_only
-
-    from pdos_next.original_security import source_status
-    from pdos_next.request_proof import snapshot_rows
-    from pdos_next.service import require_access
 
     require_access(s, ctx, row.product_id)
     if isinstance(s, Session) and s.info.get("read_snapshot") and inspect(row).unloaded:
@@ -449,7 +447,7 @@ def definition_view(s, ctx, row) -> dict:
 
 
 def list_definitions(s, ctx, product_id):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     rows = s.scalars(

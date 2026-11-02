@@ -5,7 +5,13 @@ import math
 from types import SimpleNamespace
 
 import pytest
-from pdos_next.agent_kernel.context_runtime import progress_message, protected_result
+from pdos_next.agent.kernel.context_budget import fit_messages
+from pdos_next.agent.kernel.context_runtime import progress_message, protected_result
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.result_continuation import page_view
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.errors import DomainError
 from tests.agent_kernel.context_x3_capacity import (
     ROUTE,
     SCHEMA,
@@ -18,13 +24,6 @@ from tests.agent_kernel.context_x3_capacity import (
     registry,
     sizing_plan,
 )
-
-from pdos_next.agent_kernel.context_budget import fit_messages
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.result_continuation import page_view
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.errors import DomainError
 
 
 def test_restricted_face_reuses_exact_existing_read_specs_and_fixed_system():

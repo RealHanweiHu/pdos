@@ -3,7 +3,7 @@
 from threading import Lock
 
 import pytest
-
+from pdos_next.core.models import now
 from pdos_next.evidence_processing import parse_original
 from pdos_next.evidence_security.types import (
     ScanConfiguration,
@@ -12,9 +12,8 @@ from pdos_next.evidence_security.types import (
     ScanReceipt,
     ScanStatus,
 )
-from pdos_next.models import now
-from pdos_next.original_security import SecurityRuntime, configure, queue_uploaded, scan_requested
-from pdos_next.originals import parse_uploaded
+from pdos_next.originals.access import parse_uploaded
+from pdos_next.originals.security import SecurityRuntime, configure, queue_uploaded, scan_requested
 
 
 class SyntheticScanner:

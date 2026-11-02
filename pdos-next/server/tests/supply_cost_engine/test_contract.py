@@ -2,9 +2,7 @@ from copy import deepcopy
 from decimal import ROUND_DOWN, Decimal, localcontext
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.engines.supply_cost import (
+from pdos_next.domain.engines.supply_cost import (
     CostRequest,
     CostResult,
     CoverageRequest,
@@ -13,6 +11,7 @@ from pdos_next.engines.supply_cost import (
     calculate_coverage,
     expand_bom,
 )
+from pydantic import ValidationError
 
 from .helpers import bom_item
 

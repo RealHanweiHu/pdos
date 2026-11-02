@@ -4,11 +4,10 @@ import asyncio
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.temporal_port import dispatch_pending_runs
+from pdos_next.core.database import tenant_session
 from sqlalchemy import text
 from sqlalchemy.exc import DBAPIError
-
-from pdos_next.agent_kernel.temporal_port import dispatch_pending_runs
-from pdos_next.database import tenant_session
 
 
 def test_pending_dispatch_recovers_committed_start_and_keeps_roles_and_tenant_scope(setup):

@@ -5,8 +5,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
 
+# Load host model registry first; production performs the same ordered registration.
+from pdos_next.core.models import Base  # noqa: F401
 from pdos_next.domain.verification.ports import Invocation
 from pdos_next.domain.verification_front import service
 from pdos_next.domain.verification_front.adapters import (
@@ -23,9 +24,6 @@ from pdos_next.domain.verification_front.schemas import (
     ScheduleProposePayload,
 )
 from pdos_next.errors import DomainError
-
-# Load host model registry first; production performs the same ordered registration.
-from pdos_next.models import Base  # noqa: F401
 from pdos_next.schemas.verification.contracts import (
     BuildRef,
     ConfigurationRef,
@@ -37,6 +35,7 @@ from pdos_next.schemas.verification.contracts import (
 from pdos_next.schemas.verification.contracts import (
     TestItem as ItemDTO,
 )
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 2, 1, tzinfo=UTC)
 

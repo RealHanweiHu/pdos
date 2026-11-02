@@ -8,12 +8,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bootstrap import RuntimePorts
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts, ResearchReadAdapter
+from pdos_next.agent.kernel.bootstrap import RuntimePorts
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts, ResearchReadAdapter
+from pdos_next.agent.research import HTTPResponse, ResearchToolHost, ResourceLimits
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.research import HTTPResponse, ResearchToolHost, ResourceLimits
-from pdos_next.service import digest
 from tests.agent_kernel.research.test_research import Transport, scope, service
 
 

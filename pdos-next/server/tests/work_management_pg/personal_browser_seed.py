@@ -6,9 +6,8 @@ import time
 from datetime import datetime
 
 import uvicorn
+from pdos_next.core.models import now
 from release_policy_browser_seed.harness import _write_private_new
-
-from pdos_next.models import now
 
 from . import test_workflow as flow
 from .browser_seed import _environment, _finished, _participants

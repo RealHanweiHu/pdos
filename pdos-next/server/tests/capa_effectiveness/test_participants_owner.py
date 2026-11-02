@@ -11,10 +11,18 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session
-
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Grant,
+    Outbox,
+    Principal,
+    Product,
+    Receipt,
+    RequestKey,
+    UploadedOriginal,
+)
 from pdos_next.domain.capa_effectiveness import participants_owner as owner
 from pdos_next.domain.configurations.schemas import DefinitionReference
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
@@ -31,18 +39,9 @@ from pdos_next.domain.verification_results.models import (
     TestResultActionFact as ResultActionFact,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Grant,
-    Outbox,
-    Principal,
-    Product,
-    Receipt,
-    RequestKey,
-    UploadedOriginal,
-)
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session
 
 
 class RawSession(Session):

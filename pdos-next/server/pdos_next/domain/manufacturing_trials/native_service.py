@@ -13,11 +13,15 @@ from hashlib import sha256
 from types import MappingProxyType
 from uuid import UUID, uuid4
 
-from pydantic import ValidationError
-from sqlalchemy import select
-
-from pdos_next.clock import proof_deadline_current
-from pdos_next.contracts import Command, SourceRead
+from pdos_next.core.clock import proof_deadline_current
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.models import (
+    Confirmation,
+    Product,
+    now,
+)
+from pdos_next.core.request_proof import snapshot_get, snapshot_rows, snapshot_scalar
+from pdos_next.core.service import Context, digest, material_digest, require_access
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
@@ -28,16 +32,11 @@ from pdos_next.domain.manufacturing_baseline.rules import require
 from pdos_next.domain.professional_authority.signature_watermarks import signature_current
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Confirmation,
-    Product,
-    now,
-)
-from pdos_next.request_proof import snapshot_get, snapshot_rows, snapshot_scalar
 from pdos_next.schemas.manufacturing_trials.contracts import Gap
 from pdos_next.schemas.manufacturing_trials.pilot_results import FixedPilotScope, RecordedBatch
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context, digest, material_digest, require_access
+from pydantic import ValidationError
+from sqlalchemy import select
 
 from . import pilot_result_rules
 from .native_models import NativePilotCurrent as Current

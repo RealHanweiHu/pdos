@@ -4,8 +4,7 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.research_adapter import ResearchReadAdapter
+from pdos_next.agent.kernel.research_adapter import ResearchReadAdapter
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_research_adapter_restore import (
     fixture,

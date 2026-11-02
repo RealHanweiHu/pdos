@@ -8,18 +8,9 @@ from datetime import datetime, timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, select, update
-
-from pdos_next import quality_followup_host as host
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.capa_verification.models import RemediationLinkRecord
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.domain.quality_followup import service as followup
-from pdos_next.domain.quality_followup.adapters import TransactionCommands
-from pdos_next.domain.quality_followup.schemas import RootCausePayload
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Confirmation,
@@ -29,8 +20,17 @@ from pdos_next.models import (
     RequestKey,
     now,
 )
-from pdos_next.originals import object_reference
-from pdos_next.service import digest
+from pdos_next.core.service import digest
+from pdos_next.domain.capa_verification.models import RemediationLinkRecord
+from pdos_next.domain.quality_execution.models import QualityIssueVersion
+from pdos_next.domain.quality_followup import service as followup
+from pdos_next.domain.quality_followup.adapters import TransactionCommands
+from pdos_next.domain.quality_followup.schemas import RootCausePayload
+from pdos_next.errors import DomainError
+from pdos_next.features.quality import followup_host as host
+from pdos_next.originals.access import object_reference
+from sqlalchemy import event, select, update
+
 from quality_followup_transactions.fixtures import (  # noqa: F401
     LINK,
     PATH,
@@ -288,9 +288,8 @@ def test_source_withdrawal_blocks_prepared_completion_and_preserves_raw_bytes_an
     approved = prepared(work, complete_command(work))
     old = fixed_issue(work)
     if source == "completion_original":
+        from pdos_next.core.models import UploadedOriginal
         from test_project_first_plan import cmd
-
-        from pdos_next.models import UploadedOriginal
 
         with tenant_session(
             work.setup.engine,
@@ -391,7 +390,7 @@ def test_mid_phase_aba_versions_are_rechecked_after_completion_assessment(follow
                     row.epoch += 1
                     s.flush()
             else:
-                from pdos_next.quality_policy_import import import_quality_policy_fact
+                from pdos_next.bootstrap.quality_policy_import import import_quality_policy_fact
 
                 previous = work.policy_receipt
                 for data in policy_versions:
@@ -474,7 +473,7 @@ def test_link_t1_preserves_issue_pointer_and_records_exact_scoped_owner_output(f
 def test_classification_profile_aba_during_actual_source_checks_cannot_reuse_old_closure(
     followup_work, monkeypatch
 ):
-    from pdos_next import quality_followup_bootstrap as bootstrap
+    from pdos_next.features.quality import followup_bootstrap as bootstrap
 
     work = followup_work
     approved = prepared(work, complete_command(work))

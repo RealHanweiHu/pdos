@@ -5,14 +5,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import change_implementation_owner as owner
-from pdos_next import change_order_service
+from pdos_next.core.service import Context
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.errors import DomainError
+from pdos_next.features.change import implementation_owner as owner
+from pdos_next.features.change import order_service as change_order_service
 from pdos_next.schemas.change_control.contracts import ImplementationFact, PlanItem, Ref
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import Context
 
 
 @pytest.fixture(params=["engineering_configuration", "manufacturing_configuration"])

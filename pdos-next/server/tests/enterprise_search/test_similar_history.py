@@ -5,12 +5,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.enterprise_search import similar_history as history
-from pdos_next.enterprise_search.similar_history_schemas import SimilarHistoryFeedback
+from pdos_next.agent.enterprise_search import similar_history as history
+from pdos_next.agent.enterprise_search.similar_history_schemas import SimilarHistoryFeedback
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 
 def test_structured_quality_fields_do_not_promote_hypotheses_or_action_completion():

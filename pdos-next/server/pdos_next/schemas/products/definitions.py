@@ -4,7 +4,7 @@ from uuid import UUID
 
 from pydantic import Field, field_validator, model_validator
 
-from pdos_next.schema_base import StrictModel
+from pdos_next.core.schema_base import StrictModel
 from pdos_next.schemas.spec_values import numeric_value_shape
 
 

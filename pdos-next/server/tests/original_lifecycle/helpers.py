@@ -7,8 +7,7 @@ from datetime import UTC, datetime, timedelta
 from threading import RLock, local
 from uuid import uuid4
 
-from pdos_next.object_storage.types import ObjectRef
-from pdos_next.original_lifecycle import (
+from pdos_next.originals.lifecycle import (
     ActorKind,
     CurrentAuthorization,
     Disposition,
@@ -24,6 +23,7 @@ from pdos_next.original_lifecycle import (
     RetentionPolicy,
     UploadState,
 )
+from pdos_next.originals.object_storage.types import ObjectRef
 
 
 class FrozenClock:

@@ -5,10 +5,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next import service
-from pdos_next.agent_kernel import proposal_context
-from pdos_next.agent_kernel.m3_object_reads import _references
-from pdos_next.agent_kernel.proposal_context import _projected_references, collect
+from pdos_next.agent.kernel import proposal_context
+from pdos_next.agent.kernel.m3_object_reads import _references
+from pdos_next.agent.kernel.proposal_context import _projected_references, collect
+from pdos_next.core import service
 from pdos_next.domain.preproject.evidence_schemas import EvidenceLinkCreate
 from pdos_next.domain.preproject.root_sources import _canonical_citation
 from pdos_next.errors import DomainError

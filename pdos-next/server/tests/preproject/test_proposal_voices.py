@@ -5,11 +5,10 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject import proposal_voices as service
 from pdos_next.domain.preproject.category_models import KnowledgeEntry
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def ref(identity=None, version=1, **fields):

@@ -7,13 +7,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.policy import egress as native_egress
-from pdos_next.clock import now
-from pdos_next.enterprise_search.embedding_identity import canonical_provider
-from pdos_next.enterprise_search.embedding_provider import HostEmbeddingSecrets
+from pdos_next.agent.enterprise_search.embedding_identity import canonical_provider
+from pdos_next.agent.enterprise_search.embedding_provider import HostEmbeddingSecrets
+from pdos_next.agent.kernel.policy import egress as native_egress
+from pdos_next.agent.model_configuration.connections import add
+from pdos_next.core.clock import now
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.connections import add
 from tests.enterprise_search.test_embedding_managed_connections import configured, profile, request
 from tests.enterprise_search.test_embedding_query import configured as query_configured
 from tests.enterprise_search.test_embedding_query import run as run_query
@@ -86,7 +85,7 @@ def test_query_uses_canonical_agreement_and_denies_before_claim_or_embedding(mon
     backend.pricing_for = lambda *_: card
     agreement = AgreementSession("registered-provider", ["public"])
     monkeypatch.setattr(
-        "pdos_next.enterprise_search.embedding_query.policy.egress",
+        "pdos_next.agent.enterprise_search.embedding_query.policy.egress",
         lambda _session, scope, provider, **options: native_egress(
             agreement, scope, provider, **options
         ),

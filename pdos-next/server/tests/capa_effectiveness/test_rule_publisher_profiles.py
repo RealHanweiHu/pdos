@@ -9,10 +9,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next import capa_rule_publisher as rules
-from pdos_next.capa_fact_owner import ActualFactOwner
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.capa import rule_publisher as rules
+from pdos_next.features.capa.fact_owner import ActualFactOwner
 
 
 def profile(**changes):

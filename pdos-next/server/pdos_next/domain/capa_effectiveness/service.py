@@ -11,13 +11,12 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from weakref import WeakKeyDictionary
 
-from sqlalchemy import inspect
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Product
+from pdos_next.core.service import Context, confirmation_for, digest
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
-from pdos_next.service import Context, confirmation_for, digest
+from sqlalchemy import inspect
 
 from . import anchor, candidate_commands, candidate_prepare, candidate_write, fact_atom_storage
 from .candidate_anchor_restore import CandidateAnchorRestoreHost

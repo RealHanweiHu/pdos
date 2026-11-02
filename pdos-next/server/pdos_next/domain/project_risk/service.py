@@ -4,15 +4,15 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import command_digest, command_scope, digest
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.preproject.access import human
 from pdos_next.domain.quality_execution.evidence import merge_reads
 from pdos_next.domain.work_management import g0_sources
 from pdos_next.domain.work_management import owner as work_owner
 from pdos_next.domain.work_management.rules import require, semantic
 from pdos_next.domain.work_management.service import _merge_basis
-from pdos_next.service import command_digest, command_scope, digest
-from pdos_next.source_current import direct_source_basis
 
 from . import owner
 from .models import OPERATION, SUBJECT, ProjectRiskFollowup, ProjectRiskFollowupCurrent

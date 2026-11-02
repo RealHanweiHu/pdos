@@ -12,12 +12,19 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session
-from sqlalchemy.sql import operators
-from sqlalchemy.sql.elements import Null
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    Outbox,
+    Principal,
+    Product,
+    Receipt,
+    RequestKey,
+)
+from pdos_next.core.service import Context, digest, material_digest
 from pdos_next.domain.configurations.models import (
     BomRevision,
     EngineeringConfiguration,
@@ -30,18 +37,10 @@ from pdos_next.domain.manufacturing_baseline.publication_material_owner import (
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    Outbox,
-    Principal,
-    Product,
-    Receipt,
-    RequestKey,
-)
-from pdos_next.service import Context, digest, material_digest
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session
+from sqlalchemy.sql import operators
+from sqlalchemy.sql.elements import Null
 
 from .test_publication_rules import case as publication_case  # noqa: F401
 

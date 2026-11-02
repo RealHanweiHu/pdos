@@ -6,13 +6,12 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy.orm import Session
-
 from pdos_next.api import create_app
-from pdos_next.database import engine_for
-from pdos_next.models import Category, Grant, LoginSession, Principal, Product, now
-from pdos_next.safety import verify_test_target
-from pdos_next.service import Context, digest
+from pdos_next.core.database import engine_for
+from pdos_next.core.models import Category, Grant, LoginSession, Principal, Product, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import Context, digest
+from sqlalchemy.orm import Session
 
 
 class IsolatedFixture(SimpleNamespace):
@@ -37,7 +36,7 @@ def engines():
 
 @pytest.fixture
 def setup(engines, request):
-    from pdos_next.agent_kernel.models import TenantPilotAdmission
+    from pdos_next.agent.kernel.models import TenantPilotAdmission
 
     parameters = getattr(request, "param", None)
     if parameters is not None:

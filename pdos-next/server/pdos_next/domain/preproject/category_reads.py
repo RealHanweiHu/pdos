@@ -2,10 +2,9 @@
 
 from uuid import UUID
 
+from pdos_next.core.clock import now
 from sqlalchemy import any_, column, func, literal, select, tuple_
 from sqlalchemy.dialects.postgresql import JSONB
-
-from pdos_next.clock import now
 
 from .access import fail, proposal
 from .category_models import (
@@ -18,7 +17,7 @@ from .category_models import (
 
 
 def _scope(s, ctx, page_size):
-    from pdos_next.category_scope import category_scope
+    from pdos_next.core.category_scope import category_scope
 
     category_scope(s, ctx)
     if not 1 <= page_size <= 200:

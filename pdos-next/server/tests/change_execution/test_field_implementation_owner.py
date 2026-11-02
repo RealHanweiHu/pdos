@@ -5,18 +5,17 @@ from types import SimpleNamespace
 import httpx
 import psycopg
 import pytest
+from pdos_next.domain.change_control.rules import digest
+from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change import field_selection as field
+from pdos_next.features.change import implementation_owner as owner
+from pdos_next.features.change.controlled_schemas import FieldSelectionMaterial
+from pdos_next.features.change.controlled_store import ChangeSelectionFact
+from pdos_next.schemas.change_control.contracts import Ref
 from pydantic import ValidationError
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.engine import Engine
-
-from pdos_next import change_controlled_owner as controlled
-from pdos_next import change_implementation_owner as owner
-from pdos_next import field_change_selection as field
-from pdos_next.change_controlled_schemas import FieldSelectionMaterial
-from pdos_next.change_controlled_store import ChangeSelectionFact
-from pdos_next.domain.change_control.rules import digest
-from pdos_next.errors import DomainError
-from pdos_next.schemas.change_control.contracts import Ref
 
 from . import kernel_helpers as helper
 

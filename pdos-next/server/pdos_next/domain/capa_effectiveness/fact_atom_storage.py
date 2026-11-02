@@ -5,8 +5,8 @@ new fact targets do not exist in the public candidate yet. A returned FactAtom
 describes stored associations, and cannot replace the seven owner gates.
 """
 
-from pdos_next.database import category_for_product
-from pdos_next.clock import proof_deadline_current
+from pdos_next.core.database import category_for_product
+from pdos_next.core.clock import proof_deadline_current
 
 
 # Initialize the common registry before staged domain imports.
@@ -18,13 +18,13 @@ from datetime import UTC, datetime
 from typing import Literal
 from uuid import UUID
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from . import fact_storage_models  # noqa: F401 -- staged registration, never public import
 from .fact_storage_codec import body_payload_sha256, decode_fact_body
 from .facts import AuditBinding, FactAtom, FixedRef, OutboxBinding, canonical_reads, json_value
 from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.models import (
     Audit,
     Base,
     Confirmation,
@@ -35,8 +35,8 @@ from pdos_next.models import (
     Receipt,
     RequestKey,
 )
-from pdos_next.request_proof import snapshot_rows
-from pdos_next.receipt_request_binding import readable_receipt_request_bound
+from pdos_next.core.request_proof import snapshot_rows
+from pdos_next.core.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.schemas.verification.contracts import Scope
 from sqlalchemy import select
 from sqlalchemy.orm import Session, SessionTransaction

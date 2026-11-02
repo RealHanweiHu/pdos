@@ -8,17 +8,16 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import ModelBinding
-from pdos_next.agent_kernel.context_observability import (
+from pdos_next.agent.kernel.bindings import ModelBinding
+from pdos_next.agent.kernel.context_observability import (
     RUNTIME_KEY,
     call_metrics,
     carried_counts,
     record_call,
     record_incomplete,
 )
-from pdos_next.agent_kernel.models import AgentEvent, AgentToolCall
-from pdos_next.agent_kernel.types import ModelTurn
+from pdos_next.agent.kernel.models import AgentEvent, AgentToolCall
+from pdos_next.agent.kernel.types import ModelTurn
 from pdos_next.errors import DomainError
 from pdos_next.providers.types import ProviderUsage
 from tests.agent_kernel.test_graph import scope
@@ -207,8 +206,8 @@ def test_context_incomplete_observes_no_provider_and_same_failed_admission_is_id
 
 
 def test_actual_host_model_step_captures_admission_and_records_ledger_observation():
-    from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-    from pdos_next.service import digest
+    from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+    from pdos_next.core.service import digest
     from tests.agent_kernel.test_gateway import configured_route
 
     bound = scope()
@@ -250,7 +249,7 @@ def test_actual_host_model_step_captures_admission_and_records_ledger_observatio
 def test_actual_host_incomplete_admission_records_metrics_without_starting_model():
     from dataclasses import replace
 
-    from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
+    from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
     from tests.agent_kernel.test_gateway import configured_route
 
     bound = scope()
@@ -274,7 +273,7 @@ def test_actual_host_incomplete_admission_records_metrics_without_starting_model
 
 @pytest.mark.parametrize("known,state", [(False, "unknown"), (False, "failed"), (True, "failed")])
 def test_failed_calls_use_only_actual_ledger_usage_and_unknown_cache_stays_unknown(known, state):
-    from pdos_next.agent_kernel.context_observability import record_failed
+    from pdos_next.agent.kernel.context_observability import record_failed
 
     bound = scope()
     store = Store(bound)
@@ -299,7 +298,7 @@ def test_failed_calls_use_only_actual_ledger_usage_and_unknown_cache_stays_unkno
 
 
 def test_failed_preclaim_error_never_fabricates_model_call_observation():
-    from pdos_next.agent_kernel.context_observability import record_failed
+    from pdos_next.agent.kernel.context_observability import record_failed
 
     bound = scope()
     store = Store(bound)

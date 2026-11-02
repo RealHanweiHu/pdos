@@ -1,13 +1,12 @@
 from uuid import UUID, uuid4
 
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import ObjectAudience
+from pdos_next.core.service import Context
+from pdos_next.domain.products.models import DefinitionRevision
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
 from test_definition_transactions import command, definitions, payload, post, source
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.models import ObjectAudience
-from pdos_next.service import Context
 
 
 def named_review(setup, object_type, identity):
@@ -126,11 +125,10 @@ def test_audience_revoke_waits_for_new_command_then_hides_private_derived_claim(
     from threading import Event
 
     import pytest
+    from pdos_next.core.models import Claim, Receipt
     from sqlalchemy import event, text
     from sqlalchemy.exc import DBAPIError
     from test_trusted_source_work import claim_cmd
-
-    from pdos_next.models import Claim, Receipt
 
     artifact = source(setup)
     named_review(setup, "artifact_versions", artifact)

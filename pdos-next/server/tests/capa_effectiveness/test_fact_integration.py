@@ -12,23 +12,23 @@ from hashlib import sha256
 from types import SimpleNamespace
 
 import pytest
-from quality_issues.helpers import uid
-from sqlalchemy.orm import make_transient_to_detached
-from test_fact_write import make_world
-
-from pdos_next import capa_fact_owner as owner
-from pdos_next import capa_rule_import, capa_rule_publisher
-from pdos_next import service as common
-from pdos_next.command_handlers import T1_OPERATIONS, T2_OPERATIONS
-from pdos_next.contracts import PAYLOADS
+from pdos_next.bootstrap import capa_rule_import
+from pdos_next.core import service as common
+from pdos_next.core.command_handlers import T1_OPERATIONS, T2_OPERATIONS
+from pdos_next.core.contracts import PAYLOADS
+from pdos_next.core.models import Category, Confirmation, Product
+from pdos_next.core.service import digest
 from pdos_next.domain.capa_effectiveness import fact_commands as commands
 from pdos_next.domain.capa_effectiveness import fact_consumption, fact_service
 from pdos_next.domain.professional_authority.schemas import DefinitionReference
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Confirmation, Product
+from pdos_next.features.capa import fact_owner as owner
+from pdos_next.features.capa import rule_publisher as capa_rule_publisher
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest
+from quality_issues.helpers import uid
+from sqlalchemy.orm import make_transient_to_detached
+from test_fact_write import make_world
 
 
 def rejects(code, fn):

@@ -3,13 +3,12 @@
 from types import SimpleNamespace
 
 import pytest
-from verification_handoff.test_pure import offered, work  # noqa: F401
-
+from pdos_next.core.error_catalog import REASONS
+from pdos_next.core.service import digest
 from pdos_next.domain.verification_front.service import _snapshot, professional_key
-from pdos_next.error_catalog import REASONS
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import DocumentRequirement
-from pdos_next.service import digest
+from verification_handoff.test_pure import offered, work  # noqa: F401
 
 
 def row_for(request):

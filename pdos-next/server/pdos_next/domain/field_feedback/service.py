@@ -5,14 +5,14 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4, uuid5
 
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Category
+from pdos_next.core.service import command_digest, command_scope, digest
 from pdos_next.domain.knowledge import provenance
 from pdos_next.domain.knowledge.rules import merge_artifacts
 from pdos_next.domain.preproject.access import human
 from pdos_next.domain.quality_execution.evidence import merge_reads
 from pdos_next.domain.work_management.rules import require
-from pdos_next.models import Category
-from pdos_next.service import command_digest, command_scope, digest
 
 from . import owner
 from .models import FieldFeedbackCurrent, FieldFeedbackVersion, FieldResponseRecord

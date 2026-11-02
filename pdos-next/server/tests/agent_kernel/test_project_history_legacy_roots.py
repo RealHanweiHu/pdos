@@ -3,8 +3,7 @@
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import conversation_acl as acl
+from pdos_next.agent.kernel import conversation_acl as acl
 from tests.agent_kernel.test_conversation_acl import batch_session, manifest, native_ledger
 
 
@@ -72,7 +71,7 @@ def test_legacy_project_upgrade_checks_original_scan_and_retains_frozen_read_roo
         checked.append({str(identity) for identity in identities})
         return set()
 
-    monkeypatch.setattr("pdos_next.enterprise_search.safety.safe_originals", scan_unavailable)
+    monkeypatch.setattr("pdos_next.agent.enterprise_search.safety.safe_originals", scan_unavailable)
     assert acl.classify(None, {str(run.id): upgraded}) == {str(run.id): "hidden"}
     assert checked == [{project_original}]
     # Original.status and scan_status alone remain clean. The actual scan gate,

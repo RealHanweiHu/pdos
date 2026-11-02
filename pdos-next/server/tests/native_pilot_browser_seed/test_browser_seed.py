@@ -18,14 +18,11 @@ from uuid import UUID, uuid4
 import pytest
 import uvicorn
 from native_pilot_transactions import fixtures as native
-from pydantic import BaseModel
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Grant, LoginSession, Product, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.quality_execution import service as issue_owner
-from pdos_next.models import Grant, LoginSession, Product, now
-from pdos_next.safety import verify_test_target
 from pdos_next.schemas.manufacturing_trials.contracts import (
     Counts,
     ExceptionFact,
@@ -34,7 +31,9 @@ from pdos_next.schemas.manufacturing_trials.contracts import (
     YieldScope,
 )
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest
+from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 
 def _write_private_new(path: Path, value):

@@ -4,18 +4,17 @@ from datetime import UTC, datetime
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.errors import DomainError
-from pdos_next.model_configuration.persistence import (
+from pdos_next.agent.model_configuration.persistence import (
     ModelConfigurationHead,
     ModelConfigurationVersion,
     SessionConfigurationStore,
     decode,
 )
-from pdos_next.model_configuration.ports import SecretBinding
-from pdos_next.model_configuration.service import ConfigurationVersion
+from pdos_next.agent.model_configuration.ports import SecretBinding
+from pdos_next.agent.model_configuration.service import ConfigurationVersion
+from pdos_next.errors import DomainError
 from pdos_next.schemas.model_configuration import ModelMetadata
+from sqlalchemy.dialects import postgresql
 
 
 class SyntheticSession:

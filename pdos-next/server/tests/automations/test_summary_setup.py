@@ -6,11 +6,11 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pdos_next.agent_kernel import gateway
+from pdos_next.agent.kernel import gateway
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.automations import runtime, service
 from pdos_next.domain.automations.schemas import ZERO_MODEL_BUDGET, AutomationSpec
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 from pydantic import ValidationError
 from sqlalchemy import Engine
 
@@ -103,7 +103,7 @@ def test_original_model_and_legacy_summary_canonical_versions_keep_their_exact_d
 def test_native_scope_and_actual_writer_are_still_checked_before_skipping_model_requirements(
     monkeypatch,
 ):
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
     from pdos_next.domain.automations import trigger_sources
 
     observed = []

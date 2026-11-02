@@ -6,16 +6,15 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import project_current_context as facts
-from pdos_next.agent_kernel import project_work_task_context as work
+from pdos_next.agent.kernel import project_current_context as facts
+from pdos_next.agent.kernel import project_work_task_context as work
+from pdos_next.core.models import Artifact, OriginalSecurity, Product, UploadedOriginal
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.preproject.models import ProjectOpenItem
 from pdos_next.domain.projects.models import ProjectTask
 from pdos_next.domain.work_management.models import WorkTaskVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, OriginalSecurity, Product, UploadedOriginal
-from pdos_next.service import Context, digest
+from sqlalchemy.dialects import postgresql
 
 
 class Rows:

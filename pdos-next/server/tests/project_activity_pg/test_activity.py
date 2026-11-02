@@ -18,6 +18,24 @@ from uuid import UUID, uuid4
 import pytest
 from g0_fixture import create_g0_project
 from manufacturing_preparation.publication_pg_helpers import publication_case  # noqa: F401
+from pdos_next.core import models as registered_models
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    Outbox,
+    Receipt,
+    RequestKey,
+    now,
+)
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import EVENTS, digest
+from pdos_next.domain.preproject.models import ProposalDecision
+from pdos_next.domain.projects.models import ProjectProductLink
+from pdos_next.domain.release.models import ReleaseDecision, ReleasePackage
+from pdos_next.domain.work_management.constants import ACCEPT, ASSIGN, CREATE, STATUS
+from pdos_next.features.projects.activity_catalog import SOURCES
 from release_policy_transactions import test_decisions as release_chain
 from sqlalchemy import event, select, update
 from sqlalchemy.orm import Session
@@ -34,16 +52,6 @@ from test_project_first_plan import accepted, application, cmd, post, proposal_c
 from work_management_pg import test_workflow as flow
 from work_management_pg.test_workflow import original_security_work  # noqa: F401
 from work_management_pg.test_workflow import work as work_case  # noqa: F401
-
-from pdos_next import models as registered_models
-from pdos_next.domain.preproject.models import ProposalDecision
-from pdos_next.domain.projects.models import ProjectProductLink
-from pdos_next.domain.release.models import ReleaseDecision, ReleasePackage
-from pdos_next.domain.work_management.constants import ACCEPT, ASSIGN, CREATE, STATUS
-from pdos_next.models import Artifact, Audit, Confirmation, Grant, Outbox, Receipt, RequestKey, now
-from pdos_next.project_activity_catalog import SOURCES
-from pdos_next.safety import verify_test_target
-from pdos_next.service import EVENTS, digest
 
 _PRIVATE_COLUMN = re.compile(
     r'\b[\w"]+\.(?:body|command|source_basis|snapshot|material|input_snapshot)\s*'

@@ -13,21 +13,9 @@ from hashlib import sha256
 from types import MappingProxyType
 from uuid import UUID, uuid4
 
-from pydantic import ValidationError
-from pydantic_core import to_jsonable_python
-from sqlalchemy import exists, select
-
-from pdos_next.clock import proof_deadline_current
-from pdos_next.contracts import Command, SourceRead
-from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
-from pdos_next.domain.capa_effectiveness.facts import canonical_reads, json_value
-from pdos_next.domain.change_execution import service as evidence
-from pdos_next.domain.configurations import service as configurations
-from pdos_next.domain.professional_authority.signature_watermarks import signature_current
-from pdos_next.domain.projects import service as projects
-from pdos_next.domain.verification_front.service import _recheck
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.clock import proof_deadline_current
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.models import (
     Audit,
     Confirmation,
     Outbox,
@@ -37,8 +25,19 @@ from pdos_next.models import (
     RequestKey,
     now,
 )
-from pdos_next.receipt_request_binding import readable_receipt_request_bound
-from pdos_next.service import Context, digest, material_digest, require_access
+from pdos_next.core.receipt_request_binding import readable_receipt_request_bound
+from pdos_next.core.service import Context, digest, material_digest, require_access
+from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
+from pdos_next.domain.capa_effectiveness.facts import canonical_reads, json_value
+from pdos_next.domain.change_execution import service as evidence
+from pdos_next.domain.configurations import service as configurations
+from pdos_next.domain.professional_authority.signature_watermarks import signature_current
+from pdos_next.domain.projects import service as projects
+from pdos_next.domain.verification_front.service import _recheck
+from pdos_next.errors import DomainError
+from pydantic import ValidationError
+from pydantic_core import to_jsonable_python
+from sqlalchemy import exists, select
 
 from . import publication_rules as rules
 from . import service as preparation
@@ -528,7 +527,7 @@ def get_publication_fact(s, ctx, pid, publication_id, revision=None):
     source metadata; it does not re-run publication preparation or requalify the
     original signer. The caller holds a model gate or a read snapshot.
     """
-    from pdos_next.request_proof import snapshot_get, snapshot_scalar
+    from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
 
     require_access(s, ctx, pid)
     row = snapshot_get(s, Publication, publication_id, scope_id=pid)
@@ -1113,7 +1112,7 @@ def inputs(s, ctx, pid, command):
 
 
 def list_publications(s, ctx, pid, *, project_id, history_cursor=None):
-    from pdos_next.capa_history import page_query, page_rows
+    from pdos_next.features.capa.history import page_query, page_rows
 
     require_access(s, ctx, pid)
     projects._project(s, ctx, pid, project_id)

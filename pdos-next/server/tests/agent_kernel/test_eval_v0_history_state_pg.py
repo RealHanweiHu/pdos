@@ -13,10 +13,9 @@ from uuid import UUID
 
 import pytest
 from g0_fixture import create_g0_project
-
-from pdos_next.agent_kernel.work_state import STATE_TOKENS
-from pdos_next.database import tenant_session
-from pdos_next.models import Artifact
+from pdos_next.agent.kernel.work_state import STATE_TOKENS
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact
 from tests.agent_kernel.eval_v0_ctx04_plan_support import (
     TITLES,
     assert_native_tasks,

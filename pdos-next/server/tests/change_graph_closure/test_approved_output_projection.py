@@ -7,12 +7,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import change_graph_closure as closure
-from pdos_next.change_implementation_owner import CaptureRead
 from pdos_next.domain.change_coverage_owner import registry
 from pdos_next.domain.change_execution import graph as graph_owner
 from pdos_next.errors import DomainError
+from pdos_next.features.change import graph_closure as closure
+from pdos_next.features.change.implementation_owner import CaptureRead
 from pdos_next.schemas.change_control.contracts import (
     ChangeRequest,
     GraphSnapshot,

@@ -9,20 +9,9 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from security_fixture import SyntheticScanner, synthetic_runtime
-from sqlalchemy import event, func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_durable_evidence import upload_input
-from test_trusted_source_work import claim_cmd, command
-
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource
-from pdos_next.errors import DomainError
-from pdos_next.evidence_processing import parse_original
-from pdos_next.evidence_security.types import ScanConfiguration, ScannerIdentity, ScanStatus
-from pdos_next.models import (
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Claim,
@@ -38,10 +27,20 @@ from pdos_next.models import (
     UploadedOriginal,
     now,
 )
-from pdos_next.object_journal import JournaledLocalObjectStore
-from pdos_next.original_security import configure, request_scan, scan_requested
-from pdos_next.originals import object_reference, parse_uploaded
-from pdos_next.service import Context, source_for
+from pdos_next.core.service import Context, source_for
+from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource
+from pdos_next.errors import DomainError
+from pdos_next.evidence_processing import parse_original
+from pdos_next.evidence_security.types import ScanConfiguration, ScannerIdentity, ScanStatus
+from pdos_next.originals.access import object_reference, parse_uploaded
+from pdos_next.originals.object_journal import JournaledLocalObjectStore
+from pdos_next.originals.security import configure, request_scan, scan_requested
+from security_fixture import SyntheticScanner, synthetic_runtime
+from sqlalchemy import event, func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_durable_evidence import upload_input
+from test_trusted_source_work import claim_cmd, command
 
 
 @pytest.fixture
@@ -502,7 +501,7 @@ def test_configuration_or_expiry_drift_blocks_old_clean_derived_source_and_downl
     artifact = parsed(work, original)
     assert download(work, original).status_code == 200
     later = now() + timedelta(days=2)
-    monkeypatch.setattr("pdos_next.original_security.now", lambda: later)
+    monkeypatch.setattr("pdos_next.originals.security.now", lambda: later)
     assert download(work, original).json()["code"] == "SOURCE_UNAVAILABLE"
     with (
         pytest.raises(DomainError),

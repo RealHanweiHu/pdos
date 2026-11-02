@@ -13,14 +13,13 @@ from urllib.parse import urlencode, urlsplit
 import httpx
 import pytest
 import uvicorn
+from pdos_next.agent.kernel.bootstrap import RuntimePorts
+from pdos_next.agent.kernel.models import ProviderDataAgreement
+from pdos_next.api import create_app
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Outbox, Receipt, now
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import RuntimePorts
-from pdos_next.agent_kernel.models import ProviderDataAgreement
-from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.models import Audit, Outbox, Receipt, now
 from tests.agent_kernel.test_management_api import promote
 from tests.conftest import engines, setup
 

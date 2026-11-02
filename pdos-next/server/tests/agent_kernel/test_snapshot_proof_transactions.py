@@ -6,25 +6,24 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.bindings import ModelBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.disclosure import binding_operations, disclosure_digest
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.m3_calculators import ENGINES
+from pdos_next.agent.kernel.models import AgentRun, PublicWebSnapshot, TenantSkillEnablement
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.registered_snapshot_reads import RegisteredSnapshotReads
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.research_read_ledger import page_result as raw_page_result
+from pdos_next.agent.kernel.snapshot_read_ledger import validate_snapshot_read
+from pdos_next.agent.research.service import ResearchChild, ResearchService
+from pdos_next.agent.research.types import ReadPage, ResearchTask, Snapshot
+from pdos_next.agent.research.web import ResourceLimits
+from pdos_next.core.models import Receipt, now
+from pdos_next.errors import DomainError
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import ModelBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.disclosure import binding_operations, disclosure_digest
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.m3_calculators import ENGINES
-from pdos_next.agent_kernel.models import AgentRun, PublicWebSnapshot, TenantSkillEnablement
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.registered_snapshot_reads import RegisteredSnapshotReads
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.research_read_ledger import page_result as raw_page_result
-from pdos_next.agent_kernel.snapshot_read_ledger import validate_snapshot_read
-from pdos_next.errors import DomainError
-from pdos_next.models import Receipt, now
-from pdos_next.research.service import ResearchChild, ResearchService
-from pdos_next.research.types import ReadPage, ResearchTask, Snapshot
-from pdos_next.research.web import ResourceLimits
 from tests.agent_kernel.research.test_research import service as synthetic_service
 from tests.agent_kernel.test_read_proof_transactions import read_fixture
 from tests.preproject.test_g0 import create
@@ -190,7 +189,7 @@ def test_cross_run_snapshot_claim_needs_actual_current_run_page(setup, tmp_path)
         source=WriteSource(skill=f.source.skill, model_call_id=source.model_call_id,
                            response_index=0),
     )
-    from pdos_next.models import Claim
+    from pdos_next.core.models import Claim
 
     with Session(setup.admin) as session:
         receipt = session.get(Receipt, UUID(saved["id"]))
@@ -277,7 +276,7 @@ def test_computed_claim_can_consume_proven_cross_run_snapshot(setup, tmp_path):
                            response_index=0),
     )
     with Session(setup.admin) as session:
-        from pdos_next.models import Claim
+        from pdos_next.core.models import Claim
 
         receipt = session.get(Receipt, UUID(saved["id"]))
         actual = session.get(Claim, receipt.subject_id)

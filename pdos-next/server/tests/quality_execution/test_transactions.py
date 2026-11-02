@@ -8,13 +8,10 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_project_first_plan import accepted, post
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Outbox, Receipt, now
+from pdos_next.core.service import Context, execute
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_execution.models import (
     QualityEventFailureLink,
@@ -26,8 +23,11 @@ from pdos_next.domain.quality_execution.models import (
 )
 from pdos_next.domain.verification_results.models import TestResultProjection
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Outbox, Receipt, now
-from pdos_next.service import Context, execute
+from sqlalchemy import event, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_project_first_plan import accepted, post
+
 from quality_execution.fixtures import (  # noqa: F401
     accepted_work,
     command,
@@ -340,7 +340,7 @@ def test_outbox_failure_rolls_back_issue_version_pointer_and_common_confirmation
 def test_source_revocation_and_named_scope_apply_before_successful_receipt_replay(
     quality_work, monkeypatch
 ):
-    from pdos_next import quality_result_bridge
+    from pdos_next.features.quality import result_bridge as quality_result_bridge
 
     work = quality_work
     first, value = create_issue(work)

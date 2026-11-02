@@ -1,14 +1,13 @@
 """M3 admission ports over M2's actual model/tool ledger; no model-supplied authority."""
 
-from pydantic import ValidationError
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.execution import (
+from pdos_next.agent.kernel.execution import (
     verify_source,
 )
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.models import Principal
-from pdos_next.service import digest
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core.models import Principal
+from pdos_next.core.service import digest
+from pydantic import ValidationError
+from sqlalchemy import select
 
 from .access import fail, human
 from .models import PreparedCandidate
@@ -54,8 +53,8 @@ def content(payload):
 
 def prepare_candidate(s, scope, operation, arguments, source, *, catalog, registry, route):
     """Trusted host port. The candidate must equal one actual completed model response."""
-    from pdos_next.agent_kernel.execution import _check_session
-    from pdos_next.contracts import PAYLOADS
+    from pdos_next.agent.kernel.execution import _check_session
+    from pdos_next.core.contracts import PAYLOADS
 
     _check_session(s, scope)
     if operation not in CONTENT_OPERATIONS:
@@ -140,8 +139,8 @@ def prepare_from_intent(s, scope, operation, arguments, intent_key, *, catalog, 
     """The registered host receives the graph's server key, never a model identity."""
     from uuid import UUID
 
-    from pdos_next.agent_kernel import policy
-    from pdos_next.agent_kernel.bindings import ModelBinding, WriteSource, execution_key
+    from pdos_next.agent.kernel import policy
+    from pdos_next.agent.kernel.bindings import ModelBinding, WriteSource, execution_key
 
     try:
         prefix, run_id, kind, model_id, index = intent_key.split(":")
@@ -184,7 +183,7 @@ def prepare_from_intent(s, scope, operation, arguments, intent_key, *, catalog, 
 def _t0(s, ctx, command, payload):
     # The one common command path has already checked the current model, actual
     # call, qualification and command digest. Resolve provenance from that ledger.
-    from pdos_next.agent_kernel.execution import command_call, command_run
+    from pdos_next.agent.kernel.execution import command_call, command_run
 
     run = command_run(s, ctx, None)
     command_call(s, ctx, command.operation)
@@ -264,7 +263,7 @@ def writing_path(s, ctx, command, payload):
                 "此候选已保存，请继续编辑已保存资料。",
             )
     if command.operation in {"proposal.create", "proposal.item.patch"}:
-        from pdos_next.models import Receipt
+        from pdos_next.core.models import Receipt
 
         if s.scalar(
             select(Receipt.id).where(

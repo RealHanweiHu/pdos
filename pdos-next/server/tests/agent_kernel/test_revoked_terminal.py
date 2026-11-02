@@ -2,14 +2,13 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Grant, Outbox, Product, now
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
-from pdos_next.database import tenant_session
-from pdos_next.models import Audit, Grant, Outbox, Product, now
 from tests.agent_kernel.test_cost_budget import rate, wallet
 from tests.agent_kernel.test_transactions import run
 

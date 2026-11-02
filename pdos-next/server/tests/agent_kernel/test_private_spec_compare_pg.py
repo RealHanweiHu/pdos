@@ -9,22 +9,21 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel import m3_spec_compare
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, TenantSkillEnablement
+from pdos_next.agent.kernel.proposal_context import KEY
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.models import Artifact
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel import m3_spec_compare
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, TenantSkillEnablement
-from pdos_next.agent_kernel.proposal_context import KEY
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
-from pdos_next.providers.types import ProviderUsage
-from pdos_next.service import digest
 from tests.agent_kernel.test_gateway import Client, configured_route
 from tests.agent_kernel.test_m3_original_binding_pg import QUOTE, actual_run, uploaded
 from tests.agent_kernel.test_proposal_context_pg import agree

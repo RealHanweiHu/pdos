@@ -5,11 +5,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.model_configuration.host import TenantRuntime
+from pdos_next.agent.research.runtime import checkpoints
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.host import TenantRuntime
-from pdos_next.research.runtime import checkpoints
 from tests.model_configuration.test_host_runtime import document, write_config
 
 

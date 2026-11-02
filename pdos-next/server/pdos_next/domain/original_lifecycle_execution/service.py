@@ -4,9 +4,9 @@ from dataclasses import replace
 from uuid import UUID
 
 from pdos_next.errors import DomainError
-from pdos_next.original_lifecycle.rules import digest, facts_digest
-from pdos_next.original_lifecycle.service import LifecycleService
-from pdos_next.original_lifecycle.types import (
+from pdos_next.originals.lifecycle.rules import digest, facts_digest
+from pdos_next.originals.lifecycle.service import LifecycleService
+from pdos_next.originals.lifecycle.types import (
     IntentState,
     LifecycleAction,
     LifecycleFailure,

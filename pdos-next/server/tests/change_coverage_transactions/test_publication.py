@@ -31,14 +31,21 @@ from change_execution.test_transactions import (  # noqa: F401
     ready_work,
     results_work,
 )
-from sqlalchemy import event, func, select, update
-from test_project_first_plan import cmd, post
-from test_resource_dependency_execution import engines  # noqa: F401 - verified exact target fixture
-
-from pdos_next.change_dependency_clock import ChangeDependencyClock
-from pdos_next.change_order_service import current_fixed
-from pdos_next.change_order_service import snapshot as change_snapshot
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    Outbox,
+    Principal,
+    Product,
+    Receipt,
+    RequestKey,
+    UploadedOriginal,
+    now,
+)
+from pdos_next.core.service import digest as common_digest
 from pdos_next.domain.build_operational_facts.models import OperationalAsset, ResourceOccupancy
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_coverage_owner import importer, models, owner, registry, schemas, trust
@@ -64,22 +71,14 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    Outbox,
-    Principal,
-    Product,
-    Receipt,
-    RequestKey,
-    UploadedOriginal,
-    now,
-)
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
+from pdos_next.features.change.order_service import current_fixed
+from pdos_next.features.change.order_service import snapshot as change_snapshot
 from pdos_next.schemas.change_control.contracts import GraphSnapshot
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest as common_digest
+from sqlalchemy import event, func, select, update
+from test_project_first_plan import cmd, post
+from test_resource_dependency_execution import engines  # noqa: F401 - verified exact target fixture
 
 CASE_NODE_LIMIT = 32  # Only this synthetic fixture's expected topology.
 SOURCE_LIMIT = 20

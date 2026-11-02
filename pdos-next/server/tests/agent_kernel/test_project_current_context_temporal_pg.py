@@ -18,16 +18,16 @@ from uuid import UUID, uuid4
 
 import httpx
 import pytest
-from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent_kernel.project_current_context import KEY
-from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
-from pdos_next.agent_kernel.types import ModelTurn
+from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.project_current_context import KEY
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
+from pdos_next.agent.kernel.types import ModelTurn
 from pdos_next.api import create_app
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
 from pdos_next.domain.work_management.constants import STATUS
-from pdos_next.models import Grant, now
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from pdos_next.workflows.xiaopai import XiaopaiWork

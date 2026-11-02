@@ -9,8 +9,9 @@ from dataclasses import asdict, is_dataclass
 from datetime import datetime
 from uuid import NAMESPACE_URL, UUID, uuid5
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Artifact, now
+from pdos_next.core.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
+from pdos_next.core.service import digest
 from pdos_next.domain.configurations.service import _merge_reads
 from pdos_next.domain.supply_execution.service import (
     _build,
@@ -20,9 +21,7 @@ from pdos_next.domain.supply_execution.service import (
     _sources,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, now
-from pdos_next.request_proof import command_inputs_once, snapshot_get, snapshot_scalar
-from pdos_next.service import digest
+from sqlalchemy import select
 
 from .models import (
     BuildAssessmentCurrent,
@@ -346,10 +345,9 @@ def _bundle(s, ctx, product_id, build, scope, at, *, write=False, saved_start=No
 
 
 def _actual_binding(s, ctx, product_id, build):
-    from sqlalchemy import func
-
+    from pdos_next.core.request_proof import request_proof, scoped_rows
     from pdos_next.domain.build_execution.models import ActualConfiguration
-    from pdos_next.request_proof import request_proof, scoped_rows
+    from sqlalchemy import func
 
     rows = scoped_rows(
         s,
@@ -1175,7 +1173,7 @@ def _saved_capabilities(
             raise
         caps["blockers"].append({"code": error.reason, "detail": error.message})
     if include_actions and as_of is None and assessment is not None:
-        from pdos_next.service import require_access
+        from pdos_next.core.service import require_access
 
         try:
             require_access(s, ctx, product_id, write=True)
@@ -1201,7 +1199,7 @@ def _saved_capabilities(
 
 
 def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as_of=None):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     if saved is not None:
         return _saved_capabilities(
@@ -1365,8 +1363,8 @@ def _capabilities(s, ctx, product_id, build, assessment, decisions, saved, *, as
 
 
 def list_execution(s, ctx, product_id):
+    from pdos_next.core.service import require_access
     from pdos_next.domain.builds.models import Build
-    from pdos_next.service import require_access
 
     require_access(s, ctx, product_id)
     result = {
@@ -1447,10 +1445,9 @@ def get_assessment(s, ctx, product_id, identity):
 
 def _projection_current(s, ctx, product_id, build):
     """Read this Build's complete Current set in one RLS snapshot query."""
+    from pdos_next.core.request_proof import request_proof
     from sqlalchemy import literal
     from sqlalchemy.orm import aliased
-
-    from pdos_next.request_proof import request_proof
 
     if build.tenant_id != ctx.tenant_id or build.product_id != product_id:
         raise DomainError("FORBIDDEN_SCOPE", "执行投影不在当前构建范围。", 403)
@@ -1529,13 +1526,12 @@ def _projection_current(s, ctx, product_id, build):
 
 def _writer_projection_scope(s, ctx, product_id):
     """Actual clean held Product scope; a marker alone never proves raw rows."""
+    from pdos_next.core.database import require_context
+    from pdos_next.core.models import Product
+    from pdos_next.core.request_proof import request_proof
+    from pdos_next.domain.builds.models import Build
     from sqlalchemy.engine import Connection, Engine
     from sqlalchemy.orm import Session, SessionTransaction
-
-    from pdos_next.database import require_context
-    from pdos_next.domain.builds.models import Build
-    from pdos_next.models import Product
-    from pdos_next.request_proof import request_proof
 
     if (
         not isinstance(s, Session)
@@ -1707,9 +1703,8 @@ def _writer_projection_stamp(s, ctx, product_id, token):
     keeps malformed or missing GUCs out of category_access's UUID casts; the
     returned DB scope is still rejected explicitly instead of borrowing info.
     """
+    from pdos_next.core.models import Product
     from sqlalchemy import and_, case, func
-
-    from pdos_next.models import Product
 
     names = ("tenant_id", "actor_id", "requester_id", "category_id")
     expected = (ctx.tenant_id, ctx.actor_id, ctx.requester_id, ctx.category_id)
@@ -1760,9 +1755,8 @@ def _projection_writer(s, ctx, product_id, build):
     scope/hash guards; source, issuer, clock and execution guards run later
     as before. Nothing here caches an affirmative execution projection.
     """
+    from pdos_next.core.request_proof import request_proof
     from sqlalchemy.exc import DBAPIError
-
-    from pdos_next.request_proof import request_proof
 
     if not all(
         isinstance(value, UUID)
@@ -1881,7 +1875,7 @@ def _projection_writer(s, ctx, product_id, build):
 
 def execution_projection(s, ctx, product_id, build_id, *, retained_at=None):
     """Historical start stays executing; current authority/fact drift requires stop/recheck."""
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     build = _build(s, ctx, product_id, build_id)

@@ -6,17 +6,14 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.computed_claim import verify_computed_claim
-from pdos_next.agent_kernel.deterministic_proofs import canonical_hash
-from pdos_next.agent_kernel.m3_calculators import VERSION, cost_subtotal
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
-from pdos_next.agent_kernel.read_execution import ReadBinding
-from pdos_next.agent_kernel.snapshot_read_ledger import page_result
-from pdos_next.domain.preproject.evidence_schemas import ClaimRecord
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.computed_claim import verify_computed_claim
+from pdos_next.agent.kernel.deterministic_proofs import canonical_hash
+from pdos_next.agent.kernel.m3_calculators import VERSION, cost_subtotal
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
+from pdos_next.agent.kernel.read_execution import ReadBinding
+from pdos_next.agent.kernel.snapshot_read_ledger import page_result
+from pdos_next.core.models import (
     Artifact,
     Category,
     Claim,
@@ -26,7 +23,9 @@ from pdos_next.models import (
     Receipt,
     UploadedOriginal,
 )
-from pdos_next.service import digest
+from pdos_next.core.service import digest
+from pdos_next.domain.preproject.evidence_schemas import ClaimRecord
+from pdos_next.errors import DomainError
 
 
 class MemorySession:

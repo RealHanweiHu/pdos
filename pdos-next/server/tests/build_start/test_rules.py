@@ -6,10 +6,8 @@ from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import uuid4
 
+import pdos_next.core.models  # noqa: F401 - initialize shared metadata first
 import pytest
-from pydantic import ValidationError
-
-import pdos_next.models  # noqa: F401 - initialize shared metadata first
 from pdos_next.domain.build_start import service
 from pdos_next.domain.build_start.rules import (
     CONTROLS,
@@ -27,6 +25,7 @@ from pdos_next.domain.build_start.schemas import (
     BuildExecutionScope,
 )
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 2, 15, tzinfo=UTC)
 PID, BID, ENG, MFG, SOURCE = [uuid4() for _ in range(5)]

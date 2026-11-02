@@ -3,13 +3,12 @@
 import re
 from uuid import uuid4
 
+from migrations.schema_s0_0836 import SCHEMA_SQL
+from pdos_next.agent.enterprise_search import embedding_models
+from pdos_next.agent.enterprise_search.embedding_models import EmbeddingBatch, EmbeddingCall
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateTable
-
-from migrations.schema_s0_0836 import SCHEMA_SQL
-from pdos_next.enterprise_search import embedding_models
-from pdos_next.enterprise_search.embedding_models import EmbeddingBatch, EmbeddingCall
 
 
 def test_all_actual_orm_columns_types_checks_and_declared_fields_match_create_table():
@@ -46,8 +45,8 @@ def test_scope_columns_are_real_nonnull_columns_and_not_inherited_none_attribute
 def test_disabling_never_reads_potentially_unavailable_source_projection(monkeypatch):
     from types import SimpleNamespace as NS
 
-    from pdos_next.enterprise_search import embedding_profiles, embedding_sources
-    from pdos_next.enterprise_search.embedding_schemas import SaveEmbeddingProfile
+    from pdos_next.agent.enterprise_search import embedding_profiles, embedding_sources
+    from pdos_next.agent.enterprise_search.embedding_schemas import SaveEmbeddingProfile
     from tests.enterprise_search.test_embedding_hybrid import metadata
 
     monkeypatch.setattr(embedding_profiles, "admin", lambda *_: None)

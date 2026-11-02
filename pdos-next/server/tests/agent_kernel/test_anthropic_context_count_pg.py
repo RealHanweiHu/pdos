@@ -3,12 +3,11 @@
 from uuid import uuid4
 
 from pdos_agent_runtime.graph import registered_graph_context
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.management import register_agreement
+from pdos_next.agent.kernel.models import AgentToolCall, TenantAdministrator
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.management import register_agreement
-from pdos_next.agent_kernel.models import AgentToolCall, TenantAdministrator
 from tests.agent_kernel.test_anthropic_context_count import (
     MESSAGES,
     SCHEMA,

@@ -6,14 +6,13 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.engine import Engine
-
-from pdos_next.command_handlers import PHASED_MATERIAL_OPERATIONS, T1_OPERATIONS, handler
+from pdos_next.core.command_handlers import PHASED_MATERIAL_OPERATIONS, T1_OPERATIONS, handler
 from pdos_next.domain.build_operational_facts.execution_scope import OperationalScope
 from pdos_next.domain.build_operational_facts.schemas import OperationalScope as ReexportedScope
 from pdos_next.domain.manufacturing_trials import native_service as native
 from pdos_next.errors import DomainError
 from pdos_next.schemas.manufacturing_trials.pilot_results import RecordedBatch
+from sqlalchemy.engine import Engine
 
 from .test_pilot_results import AT, batch
 
@@ -41,7 +40,7 @@ def test_actual_common_registry_uses_one_phased_t1_handler(operation):
         "pdos_next.domain.build_operational_facts.schemas",
         "pdos_next.domain.manufacturing_trials.native_schemas",
         "pdos_next.domain.manufacturing_trials.native_models",
-        "pdos_next.contracts",
+        "pdos_next.core.contracts",
     ],
 )
 def test_public_schema_entry_points_finish_the_same_registry(entry):
@@ -49,7 +48,7 @@ def test_public_schema_entry_points_finish_the_same_registry(entry):
         [
             sys.executable,
             "-c",
-            f"import {entry}; from pdos_next.contracts import PAYLOADS; "
+            f"import {entry}; from pdos_next.core.contracts import PAYLOADS; "
             "assert 'npi.pilot.create' in PAYLOADS; "
             "assert 'npi.pilot.result.record' in PAYLOADS",
         ],

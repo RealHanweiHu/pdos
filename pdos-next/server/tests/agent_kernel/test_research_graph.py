@@ -3,10 +3,9 @@ import json
 from contextlib import nullcontext
 
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel.research_graph import ResearchGraph
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.research import ResearchTask
+from pdos_next.agent.kernel.research_graph import ResearchGraph
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.research import ResearchTask
 from tests.agent_kernel.research.test_research import scope, service
 from tests.agent_kernel.test_graph import Host
 

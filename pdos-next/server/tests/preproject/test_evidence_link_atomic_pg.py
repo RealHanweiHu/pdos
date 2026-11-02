@@ -5,14 +5,13 @@ from copy import deepcopy
 from uuid import UUID
 
 import pytest
-from sqlalchemy import event, func, select, text
-from sqlalchemy.exc import DBAPIError
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Artifact, Receipt
+from pdos_next.core.service import Context, execute
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.preproject.models import Proposal, ProposalRevision, ProposalSource
-from pdos_next.models import Artifact, Receipt
-from pdos_next.service import Context, execute
+from sqlalchemy import event, func, select, text
+from sqlalchemy.exc import DBAPIError
 from tests.preproject.test_evidence_commands_pg import artifact, evidence_request, source_rows
 from tests.preproject.test_g0 import create, read
 from tests.preproject.test_g0 import work as work

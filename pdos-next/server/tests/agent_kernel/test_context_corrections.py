@@ -5,15 +5,14 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel import context_corrections as corrections
+from pdos_next.agent.kernel import work_state
+from pdos_next.agent.kernel.conversation import merge_binding
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import context_corrections as corrections
-from pdos_next.agent_kernel import work_state
-from pdos_next.agent_kernel.conversation import merge_binding
-from pdos_next.contracts import SourceRead
-from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def case():
@@ -116,7 +115,7 @@ def test_catalog_lookup_keeps_scope_and_exact_version_under_ordinary_rls(monkeyp
     run, _ctx, ref = case()
     run.product_id, run.project_id = uuid4(), uuid4()
     statements = []
-    monkeypatch.setattr("pdos_next.enterprise_search.sources.prepare_read", lambda *_: None)
+    monkeypatch.setattr("pdos_next.agent.enterprise_search.sources.prepare_read", lambda *_: None)
     session = SimpleNamespace(
         execute=lambda query: (
             statements.append(query)
@@ -150,13 +149,13 @@ def test_resolution_reloads_real_rows_and_dependencies_not_browser_titles(monkey
         seen.append(rows)
         return {"0": {"private": True, "customer_original": True}}, {}
 
-    monkeypatch.setattr("pdos_next.enterprise_search.assistant_sources.current", current)
+    monkeypatch.setattr("pdos_next.agent.enterprise_search.assistant_sources.current", current)
     result = corrections.resolve(None, ctx, run, change(ref).sources)
     assert result[0]["title"] == ref["title"] and result[0]["content_hash"] == ref["content_hash"]
     assert result[0]["private"] and result[0]["customer_original"]
     assert len(seen) == 1
     monkeypatch.setattr(
-        "pdos_next.enterprise_search.assistant_sources.current",
+        "pdos_next.agent.enterprise_search.assistant_sources.current",
         lambda *_: ({}, {"0": "source_dependency_unavailable"}),
     )
     with pytest.raises(DomainError):
@@ -352,8 +351,8 @@ def test_real_finish_does_not_resurrect_a_later_human_clear_or_deleted_literal(m
 
 
 def test_registered_context_schema_retains_exact_human_selection_without_new_authority():
-    from pdos_next.agent_kernel.context_projection import project
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel.context_projection import project
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     _run, _ctx, ref = case()
     registered = SkillCatalog().contexts

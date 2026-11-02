@@ -13,20 +13,19 @@ from urllib.parse import urlsplit
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingActivities
+from pdos_next.agent.enterprise_search.embedding_models import ChunkEmbedding, EmbeddingCall
+from pdos_next.agent.enterprise_search.embedding_workflow import (
+    EnterpriseEmbedding,
+    EnterpriseEmbeddingProjection,
+)
+from pdos_next.agent.enterprise_search.events import ProjectionSender
+from pdos_next.core.dispatch.outbox import Envelope
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from temporalio.client import Client
 from temporalio.worker import Worker
-
-from pdos_next.dispatch.outbox import Envelope
-from pdos_next.enterprise_search.embedding_activities import EmbeddingActivities
-from pdos_next.enterprise_search.embedding_models import ChunkEmbedding, EmbeddingCall
-from pdos_next.enterprise_search.embedding_workflow import (
-    EnterpriseEmbedding,
-    EnterpriseEmbeddingProjection,
-)
-from pdos_next.enterprise_search.events import ProjectionSender
-from pdos_next.errors import DomainError
 from tests.enterprise_search.embedding_harness import (
     command_for,
     ports_for,
@@ -60,7 +59,7 @@ def test_confirmed_embedding_committed_batch_recovers_without_provider_reissue(s
     address, namespace = os.environ["PDOS_TEMPORAL_ADDRESS"], os.environ["PDOS_TEMPORAL_NAMESPACE"]
     endpoint = urlsplit("//" + address)
     assert endpoint.hostname in {"localhost", "127.0.0.1", "::1"} and endpoint.port
-    import pdos_next.enterprise_search.embedding_activities as module
+    import pdos_next.agent.enterprise_search.embedding_activities as module
 
     original = module.execute_batch
     attempts = []

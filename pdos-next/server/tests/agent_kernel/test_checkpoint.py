@@ -1,10 +1,9 @@
 import os
 
 from langgraph.checkpoint.postgres import PostgresSaver
-
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from tests.agent_kernel.test_graph import Host, final, scope
 

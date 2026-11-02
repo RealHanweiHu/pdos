@@ -2,8 +2,6 @@ import json
 
 import httpx
 import pytest
-from pydantic import SecretStr
-
 from pdos_next.providers.agent_client import (
     AgentProviderClient,
     parse_turn,
@@ -11,6 +9,7 @@ from pdos_next.providers.agent_client import (
     tool_name,
 )
 from pdos_next.providers.types import ProviderError, ProviderRoute
+from pydantic import SecretStr
 
 SCHEMA = {
     "type": "object",
@@ -238,7 +237,7 @@ def test_transport_never_repeats_unknown_or_redirect(status, code, unknown):
 
 
 def test_native_wire_schema_has_finite_strict_objects_and_decodes_domain_json():
-    from pdos_next.agent_kernel.types import WireAgentOutput
+    from pdos_next.agent.kernel.types import WireAgentOutput
     from pdos_next.providers.agent_client import parse_turn
 
     schema = WireAgentOutput.model_json_schema()

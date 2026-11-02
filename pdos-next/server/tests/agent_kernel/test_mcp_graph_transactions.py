@@ -7,20 +7,19 @@ from uuid import UUID
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentToolCall, TenantSkillEnablement
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentToolCall, TenantSkillEnablement
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
 from pdos_next.providers.types import ProviderUsage
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_cost_budget import rate, wallet
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_mcp_management import allow, grant, save
@@ -342,7 +341,7 @@ def test_crash_after_network_never_repeats_dispatch_and_saved_reply_can_resume(
     monkeypatch,
     raw_saved,
 ):
-    from pdos_next.agent_kernel.mcp_graph import McpGraph
+    from pdos_next.agent.kernel.mcp_graph import McpGraph
 
     f = fixture(setup, tmp_path)
     original_graph, original_put = McpGraph.__call__, f.artifacts.put

@@ -16,20 +16,19 @@ from uuid import UUID
 
 import uvicorn
 from manufacturing_preparation import publication_pg_helpers as upstream
-from sqlalchemy import select, text
-from sqlalchemy.engine import make_url
-from sqlalchemy.orm import Session
-from starlette.responses import JSONResponse
-
+from pdos_next.core.models import Grant, LoginSession, Principal, Product, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.external_handoff.models import (
     ExternalDeliveryIntent,
     ExternalHandoffAuthorization,
     ExternalHandoffCurrent,
     ExternalReceipt,
 )
-from pdos_next.models import Grant, LoginSession, Principal, Product, now
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from sqlalchemy import select, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.orm import Session
+from starlette.responses import JSONResponse
 
 _MODELS = (
     ExternalHandoffAuthorization,

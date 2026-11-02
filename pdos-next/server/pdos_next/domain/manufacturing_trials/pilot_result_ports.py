@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Protocol
 
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
 from pdos_next.errors import DomainError
 from pdos_next.schemas.manufacturing_trials.contracts import PilotCreate, ResultRecord
 from pdos_next.schemas.manufacturing_trials.pilot_results import FixedPilotScope, RecordedBatch

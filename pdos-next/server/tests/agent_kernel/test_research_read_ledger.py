@@ -11,21 +11,20 @@ from types import SimpleNamespace as NS
 from uuid import uuid4, uuid5
 
 import pytest
-
-from pdos_next.agent_kernel.execution import check_run_binding
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.research_graph import ResearchGraph
-from pdos_next.agent_kernel.research_read_ledger import page_result, restore_page
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.execution import check_run_binding
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.research_graph import ResearchGraph
+from pdos_next.agent.kernel.research_read_ledger import page_result, restore_page
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.research.service import ResearchChild
+from pdos_next.agent.research.tools import ReadInput
+from pdos_next.agent.research.types import LedgerDraft, ReadPage, ResearchTask, Snapshot
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.research.service import ResearchChild
-from pdos_next.research.tools import ReadInput
-from pdos_next.research.types import LedgerDraft, ReadPage, ResearchTask, Snapshot
-from pdos_next.service import digest
 from tests.agent_kernel.research.test_research import service
 from tests.agent_kernel.test_read_execution import fixture
 
@@ -223,7 +222,7 @@ def test_actual_bound_host_rejects_unbound_read_before_any_fetch(tmp_path, monke
             return self.host.read(scope, f.registry.get("research.search"),
                                   {"query": "pump"}, "unbound")
 
-    monkeypatch.setattr("pdos_next.agent_kernel.research_graph.AgentKernel", ProbeKernel)
+    monkeypatch.setattr("pdos_next.agent.kernel.research_graph.AgentKernel", ProbeKernel)
     with pytest.raises(DomainError, match="读取须绑定"):
         asyncio.run(graph(child.task, child))
     assert not store.calls and not child._service.search_adapter.queries
@@ -250,7 +249,7 @@ def test_completed_bound_read_without_artifacts_never_falls_back_to_network(tmp_
                 {"url": "https://maker.example/specs"}, call.call_key, source=source,
             )
 
-    monkeypatch.setattr("pdos_next.agent_kernel.research_graph.AgentKernel", ProbeKernel)
+    monkeypatch.setattr("pdos_next.agent.kernel.research_graph.AgentKernel", ProbeKernel)
     with pytest.raises(DomainError, match="原运行快照文件"):
         asyncio.run(graph(task, replay))
     assert not replay.pages and not replay._service.transport.requests
@@ -275,7 +274,7 @@ def test_unbound_harness_is_not_promoted_to_execution_authority(tmp_path, monkey
                                {"query": "pump"}, "unbound", source=f.source)
             return {"output": {"status": "completed", "result": {"rows": []}}}
 
-    monkeypatch.setattr("pdos_next.agent_kernel.research_graph.AgentKernel", ProbeKernel)
+    monkeypatch.setattr("pdos_next.agent.kernel.research_graph.AgentKernel", ProbeKernel)
     assert asyncio.run(graph(child.task, child)) == []
 
 
@@ -302,7 +301,7 @@ def test_registered_port_dispatch_precedes_raw_fetch(tmp_path, monkeypatch):
             assert result is sentinel
             return {"output": {"status": "completed", "result": {"rows": []}}}
 
-    monkeypatch.setattr("pdos_next.agent_kernel.research_graph.AgentKernel", ProbeKernel)
+    monkeypatch.setattr("pdos_next.agent.kernel.research_graph.AgentKernel", ProbeKernel)
     assert asyncio.run(graph(child.task, child)) == []
     assert seen == [(graph.host, child, "research.read",
                      {"url": "https://maker.example/specs"}, "dispatch-test", f.source)]
@@ -347,6 +346,6 @@ def test_registered_port_does_not_promote_pure_harness(tmp_path, monkeypatch):
             assert "execution_ref" not in raw and "execution_binding" not in raw
             return {"output": {"status": "completed", "result": {"rows": []}}}
 
-    monkeypatch.setattr("pdos_next.agent_kernel.research_graph.AgentKernel", ProbeKernel)
+    monkeypatch.setattr("pdos_next.agent.kernel.research_graph.AgentKernel", ProbeKernel)
     assert asyncio.run(graph(child.task, child)) == []
     assert len(child._service.transport.requests) == 1

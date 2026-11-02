@@ -3,8 +3,8 @@
 import re
 
 import pytest
-from pdos_next.enterprise_search.schemas import SOURCE_TYPES
-from pdos_next.enterprise_search.sources import retrieval_catalog
+from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
+from pdos_next.agent.enterprise_search.sources import retrieval_catalog
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
 

@@ -6,10 +6,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.service import Context
 from pdos_next.domain.sample_handoff import service
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 AT = datetime(2026, 10, 2, 16, tzinfo=UTC)
 

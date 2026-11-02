@@ -2,7 +2,7 @@
 # ruff: noqa: F811 -- existing pure source fixture
 
 import pytest
-from pdos_next.enterprise_search import action_sources as carry
+from pdos_next.agent.enterprise_search import action_sources as carry
 from pdos_next.errors import DomainError
 from tests.enterprise_search.test_action_sources import case  # noqa: F401
 

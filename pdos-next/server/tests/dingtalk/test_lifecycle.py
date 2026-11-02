@@ -3,9 +3,9 @@
 from uuid import uuid4
 
 import pytest
-from pdos_next.dingtalk.lifecycle import capture, grouped
-from pdos_next.dingtalk.projection import Answer, whole_answer
 from pdos_next.errors import DomainError
+from pdos_next.integrations.dingtalk.lifecycle import capture, grouped
+from pdos_next.integrations.dingtalk.projection import Answer, whole_answer
 
 
 def dependency(**changes):
@@ -85,7 +85,7 @@ def test_current_revision_never_replaces_old_answer_dependency_for_external_copy
 def test_delivery_receipt_keeps_metadata_only_even_if_adapter_returns_an_echo():
     from types import SimpleNamespace
 
-    from pdos_next.dingtalk.runtime import ChannelService
+    from pdos_next.integrations.dingtalk.runtime import ChannelService
 
     row = SimpleNamespace(payload_sha256="a" * 64, state="sending", error_code=None)
     ChannelService.accept_receipt(

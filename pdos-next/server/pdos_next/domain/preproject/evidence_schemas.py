@@ -4,9 +4,8 @@ from decimal import Decimal
 from typing import Literal
 from uuid import UUID
 
+from pdos_next.core.schema_base import StrictModel
 from pydantic import ConfigDict, Field, StrictBool, model_serializer, model_validator
-
-from pdos_next.schema_base import StrictModel
 
 ClaimNature = Literal["observed", "extracted", "computed", "inferred", "decided"]
 Availability = Literal["known", "unknown", "conflicted", "not_applicable"]

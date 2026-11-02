@@ -15,16 +15,15 @@ from change_execution.test_transactions import (
     ready_work,
     results_work,
 )
+from pdos_next.agent.enterprise_search.events import process_event
+from pdos_next.agent.enterprise_search.indexing import project
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Outbox, Receipt
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.events import process_event
-from pdos_next.enterprise_search.indexing import project
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
-from pdos_next.models import Artifact, Outbox, Receipt
-from pdos_next.providers.types import ProviderUsage
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 
 

@@ -12,25 +12,18 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 from build_start.test_transactions import shared_configuration
-from sqlalchemy import delete, func, select
-from sqlalchemy.orm import Session
-from test_build_project_scope import second_project_configuration
-from test_builds import build_command
-from test_builds import configuration as configuration
-from test_project_first_plan import accepted
-from test_project_first_plan import definition as definition
-from test_project_first_plan import project as project
-from verification_results.fixtures import (  # noqa: F401
-    accepted_work,
-    capture,
-    command,
-    known_configuration,
-    launch_work,
-    operational_work,
-    ready_work,
-    results_work,
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    ObjectAudience,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
 )
-
+from pdos_next.core.service import digest
 from pdos_next.domain.build_execution.models import SampleUnit
 from pdos_next.domain.build_operational_facts.models import BuildOperationalFact, ResourceOccupancy
 from pdos_next.domain.builds.models import Build, BuildReadiness
@@ -60,18 +53,24 @@ from pdos_next.domain.verification_results.models import (
     TestResultActionFact,
     TestResultProjection,
 )
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    ObjectAudience,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
+from sqlalchemy import delete, func, select
+from sqlalchemy.orm import Session
+from test_build_project_scope import second_project_configuration
+from test_builds import build_command
+from test_builds import configuration as configuration
+from test_project_first_plan import accepted
+from test_project_first_plan import definition as definition
+from test_project_first_plan import project as project
+from verification_results.fixtures import (  # noqa: F401
+    accepted_work,
+    capture,
+    command,
+    known_configuration,
+    launch_work,
+    operational_work,
+    ready_work,
+    results_work,
 )
-from pdos_next.service import digest
 
 
 def business_counts(setup):

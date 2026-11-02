@@ -15,19 +15,18 @@ from uuid import UUID
 
 import pytest
 from pdos_agent_runtime.graph import in_registered_agent_graph
+from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.context_budget import TOOL_RESULT_RESERVE, budget_for, measure
+from pdos_next.agent.kernel.disclosure import disclosure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall, WireAgentOutput
+from pdos_next.core.models import Artifact, ObjectAudience
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.context_budget import TOOL_RESULT_RESERVE, budget_for, measure
-from pdos_next.agent_kernel.disclosure import disclosure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall, WireAgentOutput
-from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.models import Artifact, ObjectAudience
-from pdos_next.providers.types import ProviderUsage
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_run_continuation import start
 from tests.enterprise_search.test_eval_v0_contracts_pg import explicit_target
@@ -117,7 +116,7 @@ def ctx12_queries(case):
 
 
 def pinned_control():
-    from pdos_next.agent_kernel.work_state import STATE_TOKENS
+    from pdos_next.agent.kernel.work_state import STATE_TOKENS
 
     if not PINNED_DIAGNOSTIC.is_file():
         return {"diagnostic": str(PINNED_DIAGNOSTIC.relative_to(ROOT)), "available": False}
@@ -433,7 +432,7 @@ def register_sources(setup, case):
 
 
 def measure_body(body):
-    from pdos_next.agent_kernel.context_budget import estimate_tokens
+    from pdos_next.agent.kernel.context_budget import estimate_tokens
 
     return estimate_tokens(body)
 
@@ -815,7 +814,7 @@ def test_output_is_exclusive_and_does_not_create_unapproved_directory(tmp_path):
 
 
 def test_result_pages_require_every_original_fragment_before_decoding():
-    from pdos_next.agent_kernel.result_continuation import page_view
+    from pdos_next.agent.kernel.result_continuation import page_view
 
     original = {"rows": [{"quote": "隔离原句" * 800}], "coverage": {"complete": True}}
     handle = "result:00000000-0000-0000-0000-000000000001:" + "a" * 64
@@ -859,7 +858,7 @@ def test_provider_capture_excludes_emit_and_preserves_only_actual_wire_fields():
 
 def test_ctx12_window_plan_uses_exact_trace_codes_and_keeps_complete_native_spans():
     """Plan check only; the PG case separately proves actual ledger interval union."""
-    from pdos_next.enterprise_search.indexing import chunks
+    from pdos_next.agent.enterprise_search.indexing import chunks
 
     case = cases()["CTX-12"]
     queries = ctx12_queries(case)

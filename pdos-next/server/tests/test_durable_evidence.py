@@ -11,26 +11,34 @@ from threading import Barrier
 from uuid import UUID, uuid4
 
 import pytest
-from security_fixture import secured_parse, secured_runtime  # noqa: F401
-from sqlalchemy import event, func, select
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import UploadInput
-from pdos_next.database import tenant_session
-from pdos_next.dispatch.outbox import (
+from pdos_next.core.contracts import UploadInput
+from pdos_next.core.database import tenant_session
+from pdos_next.core.dispatch.outbox import (
     CONSUMER,
     acknowledge,
     claim_events,
     delivery_unknown,
     dispatch_once,
 )
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Grant,
+    Inbox,
+    Outbox,
+    Receipt,
+    UploadedOriginal,
+    now,
+)
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Grant, Inbox, Outbox, Receipt, UploadedOriginal, now
-from pdos_next.object_storage import LocalPrivateObjectStore
-from pdos_next.original_security import configure
-from pdos_next.originals import object_reference, require_original, upload
-from pdos_next.service import Context, digest
+from pdos_next.originals.access import object_reference, require_original, upload
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
+from pdos_next.originals.security import configure
+from security_fixture import secured_parse, secured_runtime  # noqa: F401
+from sqlalchemy import event, func, select
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 pytestmark = pytest.mark.usefixtures("secured_runtime")
 

@@ -1,11 +1,10 @@
 """Scoped immutable waiting records and current source proof in the caller's UOW."""
 
-from sqlalchemy import select
-
-from pdos_next.change_implementation_owner import common_group
+from pdos_next.core.service import digest
 from pdos_next.domain.work_management.owner import project as project
 from pdos_next.domain.work_management.owner import sources_current as artifact_sources_current
-from pdos_next.service import digest
+from pdos_next.features.change.implementation_owner import common_group
+from sqlalchemy import select
 
 from . import calendar_owner
 from .models import EVENT, OPERATION, ExternalWaitCurrent, ExternalWaitVersion

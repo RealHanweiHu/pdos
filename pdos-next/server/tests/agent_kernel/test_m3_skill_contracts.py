@@ -5,14 +5,13 @@ import re
 from copy import deepcopy
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.category_candidate import CategoryCandidateInput
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import WireAgentOutput
+from pdos_next.agent.kernel.category_candidate import CategoryCandidateInput
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import WireAgentOutput
+from pdos_next.agent.research.tools import FanoutInput
 from pdos_next.domain.preproject.evidence_schemas import ClaimWithdraw
-from pdos_next.research.tools import FanoutInput
+from pydantic import ValidationError
 
 SKILLS = ("category_framing", "proposal_drafting", "public_research")
 

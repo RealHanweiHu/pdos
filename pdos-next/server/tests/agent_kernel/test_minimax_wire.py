@@ -5,8 +5,7 @@ from dataclasses import replace
 
 import httpx
 import pytest
-
-from pdos_next.agent_kernel.qualification_binding import fingerprint, model_identity
+from pdos_next.agent.kernel.qualification_binding import fingerprint, model_identity
 from pdos_next.errors import DomainError
 from pdos_next.providers.agent_client import (
     AgentProviderClient,

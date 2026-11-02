@@ -2,13 +2,12 @@
 
 from uuid import UUID
 
-from sqlalchemy import exists, select
-
+from pdos_next.core.models import Grant, Principal, now
+from pdos_next.core.service import require_access
 from pdos_next.domain.work_management import g0_sources
 from pdos_next.domain.work_management import owner as work_owner
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, now
-from pdos_next.service import require_access
+from sqlalchemy import exists, select
 
 from . import owner
 from .models import ProjectRiskFollowup

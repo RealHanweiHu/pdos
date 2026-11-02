@@ -3,6 +3,15 @@
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.core.models import Base
+from pdos_next.features.change.controlled_schemas import BIND
+from pdos_next.features.change.controlled_store import (
+    _continuous,
+    _Current,
+    _Fact,
+    _previous,
+    _scope,
+)
 from sqlalchemy import (
     BigInteger,
     CheckConstraint,
@@ -14,10 +23,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.change_controlled_schemas import BIND
-from pdos_next.change_controlled_store import _continuous, _Current, _Fact, _previous, _scope
-from pdos_next.models import Base
 
 
 class ChangeCoverageFact(_Fact, Base):

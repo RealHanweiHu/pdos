@@ -6,13 +6,12 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Artifact, UploadedOriginal
 from pdos_next.domain.preproject.models import Proposal, ProposalSubmission
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, UploadedOriginal
 
 
 class Session:
@@ -55,7 +54,7 @@ def synthetic_source_guard(monkeypatch):
             raise DomainError("SOURCE_UNAVAILABLE", "synthetic stale source")
         return row
 
-    monkeypatch.setattr("pdos_next.agent_kernel.bootstrap.source_for", source)
+    monkeypatch.setattr("pdos_next.agent.kernel.bootstrap.source_for", source)
 
 
 def fixture(*, category=True, proposal=False, status="draft", reviewer=False):
@@ -254,7 +253,7 @@ def test_actual_current_source_guard_rejection_does_not_activate_rfq(monkeypatch
     def blocked(*_):
         raise DomainError("ORIGINAL_SECURITY_BLOCKED", "synthetic new scan invalidated")
 
-    monkeypatch.setattr("pdos_next.agent_kernel.bootstrap.source_for", blocked)
+    monkeypatch.setattr("pdos_next.agent.kernel.bootstrap.source_for", blocked)
     assert f.owner.default_preload(f.scope) == ("proposal_drafting", "gap_check")
 
 

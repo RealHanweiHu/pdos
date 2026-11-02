@@ -12,17 +12,16 @@ from hashlib import sha256
 from uuid import UUID, uuid4
 
 from manufacturing_preparation import publication_pg_helpers as upstream
-from sqlalchemy import select
-from test_project_first_plan import cmd, post
-
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
 from pdos_next.domain.configurations.models import EngineeringConfiguration
 from pdos_next.domain.release import service
 from pdos_next.domain.release.models import ReleaseDecision, ReleasePackage, ReleasePackageCurrent
 from pdos_next.domain.release.policy_models import ReleasePolicyCurrent, ReleasePolicyFact
 from pdos_next.domain.release.policy_owner import ActualReleasePolicyOwner
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
-from pdos_next.professional_import import import_professional_fact
+from sqlalchemy import select
+from test_project_first_plan import cmd, post
 
 MODELS = (
     ReleasePolicyFact,

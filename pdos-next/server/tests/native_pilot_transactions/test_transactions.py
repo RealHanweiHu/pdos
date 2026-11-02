@@ -9,11 +9,10 @@ from decimal import Decimal
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-
+from pdos_next.core.models import RequestKey
 from pdos_next.domain.manufacturing_trials import native_service
 from pdos_next.errors import DomainError
-from pdos_next.models import RequestKey
+from sqlalchemy import select
 
 from . import fixtures as helper
 

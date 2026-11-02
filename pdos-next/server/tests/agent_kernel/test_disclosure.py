@@ -6,8 +6,7 @@ call sites will depend on.
 """
 
 import pytest
-
-from pdos_next.agent_kernel.disclosure import (
+from pdos_next.agent.kernel.disclosure import (
     CORE,
     check_growth,
     disclosed_names,
@@ -15,8 +14,8 @@ from pdos_next.agent_kernel.disclosure import (
     disclosure_digest,
     skill_operations,
 )
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.errors import DomainError
 
 
@@ -115,7 +114,7 @@ def test_isolated_subtask_disclosure_cannot_be_widened_by_a_skill():
 
 def test_digest_matches_the_full_list_when_nothing_is_hidden():
     registry = default_registry()
-    from pdos_next.service import digest
+    from pdos_next.core.service import digest
 
     every_write = {
         item["name"] for item in registry.definitions("main")
@@ -184,7 +183,7 @@ def test_model_supplied_shapes_are_refused():
 
 
 def test_run_records_an_append_only_disclosure_chain():
-    from pdos_next.agent_kernel.disclosure import CHAIN_KEY, disclosed_in_run, record_disclosure
+    from pdos_next.agent.kernel.disclosure import CHAIN_KEY, disclosed_in_run, record_disclosure
 
     versions = {"tool_definitions": {}}
     first = record_disclosure(versions, "main", ["a", "b"], "d1")
@@ -199,7 +198,7 @@ def test_run_records_an_append_only_disclosure_chain():
 
 
 def test_a_narrowed_or_swapped_disclosure_is_refused_within_a_run():
-    from pdos_next.agent_kernel.disclosure import CHAIN_KEY, record_disclosure
+    from pdos_next.agent.kernel.disclosure import CHAIN_KEY, record_disclosure
 
     versions = {"tool_definitions": {"main": "d1"}, CHAIN_KEY: {
         "main": {"names": ["a", "b"], "chain": ["d1"]},
@@ -212,7 +211,7 @@ def test_a_narrowed_or_swapped_disclosure_is_refused_within_a_run():
 
 
 def test_isolations_keep_separate_chains():
-    from pdos_next.agent_kernel.disclosure import CHAIN_KEY, disclosed_in_run, record_disclosure
+    from pdos_next.agent.kernel.disclosure import CHAIN_KEY, disclosed_in_run, record_disclosure
 
     versions = {"tool_definitions": {}}
     versions = {**versions, CHAIN_KEY: record_disclosure(versions, "main", ["a"], "m1"),
@@ -229,7 +228,7 @@ def test_isolations_keep_separate_chains():
 def test_binding_operations_refuses_a_skill_that_changed_after_the_call():
     from types import SimpleNamespace
 
-    from pdos_next.agent_kernel.disclosure import binding_operations
+    from pdos_next.agent.kernel.disclosure import binding_operations
 
     catalog = SkillCatalog()
     skill = catalog.configuration("jtbd")
@@ -246,9 +245,9 @@ def test_binding_operations_refuses_a_skill_that_changed_after_the_call():
 
 
 def test_module_imports_cleanly_from_every_entry_point():
-    """pdos_next.service reaches this module through contracts -> snapshot_command.
+    """pdos_next.core.service reaches this module through contracts -> snapshot_command.
 
-    A module-level ``from pdos_next.service import digest`` here is a circular
+    A module-level ``from pdos_next.core.service import digest`` here is a circular
     import that pytest's own import order hides, so check it in a fresh
     interpreter the way a worker or an offline script would import it.
     """
@@ -256,11 +255,11 @@ def test_module_imports_cleanly_from_every_entry_point():
     import sys
 
     for module in (
-        "pdos_next.service",
-        "pdos_next.contracts",
-        "pdos_next.agent_kernel.disclosure",
-        "pdos_next.agent_kernel.snapshot_command",
-        "pdos_next.agent_kernel.skills",
+        "pdos_next.core.service",
+        "pdos_next.core.contracts",
+        "pdos_next.agent.kernel.disclosure",
+        "pdos_next.agent.kernel.snapshot_command",
+        "pdos_next.agent.kernel.skills",
     ):
         done = subprocess.run(
             [sys.executable, "-c", f"import {module}"],

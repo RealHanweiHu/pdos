@@ -5,14 +5,13 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import AgentEvent, TenantAdministrator
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
+from pdos_next.errors import DomainError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import AgentEvent, TenantAdministrator
-from pdos_next.database import tenant_session
-from pdos_next.errors import DomainError
-from pdos_next.models import now
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
 from tests.enterprise_search.test_retrieval_pg import index
 from tests.test_original_security import parsed, uploaded

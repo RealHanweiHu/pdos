@@ -4,15 +4,14 @@ import json
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import now
+from pdos_next.core.request_proof import batch_read, snapshot_rows
+from pdos_next.core.service import digest, source_for
 from pdos_next.domain.professional_authority.schemas import ApprovalBasis
 from pdos_next.domain.professional_authority.service import _project
 from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.request_proof import batch_read, snapshot_rows
-from pdos_next.service import digest, source_for
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from .evidence import merge_reads, refs_from_exact, source_basis
 from .models import QualityPolicyCurrent, QualityPolicyFact

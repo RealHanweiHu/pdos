@@ -5,26 +5,25 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.disclosure import binding_operations, disclosure_digest
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.disclosure import binding_operations, disclosure_digest
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentSession,
     AgentToolCall,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.prompts import PromptCatalog
-from pdos_next.agent_kernel.qualification_binding import tool_identity
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.prompts import PromptCatalog
+from pdos_next.agent.kernel.qualification_binding import tool_identity
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Claim, Grant, Outbox, Receipt, RequestKey
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest, execute
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Claim, Grant, Outbox, Receipt, RequestKey
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest, execute
+from sqlalchemy import event, func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_execution_binding import ledger
 
 
@@ -281,8 +280,8 @@ def test_cross_run_existing_result_keeps_original_ownership_and_has_no_new_call(
 
 
 def test_actual_read_tools_keep_root_metadata_and_exact_isolated_source_scope(setup):
-    from pdos_next.agent_kernel.domain_reads import DomainReads
-    from pdos_next.agent_kernel.persistence import KernelStore
+    from pdos_next.agent.kernel.domain_reads import DomainReads
+    from pdos_next.agent.kernel.persistence import KernelStore
 
     f = fixture(setup)
     reads = DomainReads(KernelStore(setup.engine), f.adapter)

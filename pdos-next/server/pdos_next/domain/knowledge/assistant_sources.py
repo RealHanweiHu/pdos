@@ -4,15 +4,15 @@ from copy import deepcopy
 from types import SimpleNamespace
 from uuid import UUID
 
-from pdos_next.agent_kernel.execution import scope_for_run
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.work_state import user_goal
+from pdos_next.agent.enterprise_search import assistant_ledger as ledger
+from pdos_next.agent.enterprise_search.assistant_answer import checked_sources
+from pdos_next.agent.enterprise_search.assistant_sources import current
+from pdos_next.agent.kernel.execution import scope_for_run
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.work_state import user_goal
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.preproject.access import human
-from pdos_next.enterprise_search import assistant_ledger as ledger
-from pdos_next.enterprise_search.assistant_answer import checked_sources
-from pdos_next.enterprise_search.assistant_sources import current
 from pdos_next.errors import DomainError
-from pdos_next.service import digest, require_access
 from sqlalchemy import select
 
 FIELDS = ("source_type", "source_id", "source_revision", "content_hash", "category_id")
@@ -30,11 +30,11 @@ def answer_body(run):
     assistant = (run.result or {}).get("result", {}).get("assistant", {})
     comparison, task = assistant.get("comparison"), assistant.get("task_result")
     if comparison:
-        from pdos_next.enterprise_search.comparison_result import markdown
+        from pdos_next.agent.enterprise_search.comparison_result import markdown
 
         body += "\n\n" + markdown(comparison)
     if task:
-        from pdos_next.enterprise_search.task_result import markdown
+        from pdos_next.agent.enterprise_search.task_result import markdown
 
         body += "\n\n" + markdown(task)
     return body.strip()
@@ -42,7 +42,7 @@ def answer_body(run):
 
 def bound_proof(session, run, *, category_id=None):
     """Actual bound material versions are dependencies, never fabricated citations."""
-    from pdos_next.enterprise_search.sources import select_sources
+    from pdos_next.agent.enterprise_search.sources import select_sources
 
     expected = {
         UUID(str(ref["artifact_id"])): ref["expected_revision"]
@@ -87,7 +87,7 @@ def capture(session, ctx, run_id, *, expected_digest=None):
     )
     require_access(session, ctx, run.product_id, write=False)
     if run.project_id:
-        from pdos_next.agent_kernel.project_scope import require_project
+        from pdos_next.agent.kernel.project_scope import require_project
 
         require_project(session, ctx, run.project_id, run.product_id)
     actual = checked_sources(session, run)

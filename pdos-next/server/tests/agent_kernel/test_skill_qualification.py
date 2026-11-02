@@ -4,23 +4,22 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.models import (
     SkillQualification,
     TenantAdministrator,
     TenantPilotAdmission,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.policy import qualified
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-from pdos_next.agent_kernel.skill_qualification import recovery_digest
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.contracts import Command
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.agent.kernel.policy import qualified
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent.kernel.skill_qualification import recovery_digest
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 from tests.agent_kernel.test_skill_management import command as toggle
 from tests.agent_kernel.test_transactions import human_session
@@ -59,8 +58,8 @@ def command(f, operation, payload):
 def confirmed(f, data):
     preview = post(f, data, "commands/preview")
     if preview.status_code == 422:
-        from pdos_next.contracts import Command
-        from pdos_next.service import preview_command
+        from pdos_next.core.contracts import Command
+        from pdos_next.core.service import preview_command
 
         with human_session(f.setup) as session:
             preview_command(session, f.setup.ctx, Command.model_validate(data))
@@ -130,7 +129,7 @@ def eligible(f):
     skill, tools = SkillCatalog().configuration("public_research"), default_registry()
     current = reading(f)
     with human_session(f.setup) as session:
-        from pdos_next.agent_kernel.skill_qualification import current_model
+        from pdos_next.agent.kernel.skill_qualification import current_model
 
         model = current_model(session, f.setup.tenant).metadata
         return qualified(
@@ -268,7 +267,7 @@ def test_revoke_survives_model_removal_and_trial_shutdown(f, monkeypatch):
     confirmed(f, grant_command(f, refs))
     with Session(f.setup.admin) as session, session.begin():
         session.get(TenantPilotAdmission, f.setup.tenant).active = False
-    from pdos_next.agent_kernel import skill_qualification
+    from pdos_next.agent.kernel import skill_qualification
 
     monkeypatch.setattr(skill_qualification, "current_model", lambda *_args, **_kwargs: None)
     original_revoke, receipt, _ = confirmed(
@@ -351,7 +350,7 @@ def test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_c
     confirmed(f, grant_command(f, refs))
     assert eligible(f)
     skill, tools = SkillCatalog().configuration("public_research"), default_registry()
-    from pdos_next.agent_kernel.skill_qualification import current_model
+    from pdos_next.agent.kernel.skill_qualification import current_model
 
     with human_session(f.setup) as session:
         metadata = current_model(session, f.setup.tenant).metadata
@@ -383,7 +382,7 @@ def test_active_qualification_invalidates_on_actual_skill_tool_model_and_pilot_c
 
 
 def test_case_or_qualification_failure_rolls_back_fact_state_and_consumed_proof(f, monkeypatch):
-    from pdos_next.agent_kernel import skill_qualification
+    from pdos_next.agent.kernel import skill_qualification
 
     _, _, refs = review(f)
     original = post(f, grant_command(f, refs), "commands/preview").json()["command"]
@@ -452,7 +451,7 @@ def test_pause_batch_does_not_count_as_new_review_after_its_own_critical_error(f
 def test_quality_identity_excludes_credentials_and_prices_but_tracks_relevant_tool_contract():
     from dataclasses import replace
 
-    from pdos_next.agent_kernel.registry import ToolRegistry
+    from pdos_next.agent.kernel.registry import ToolRegistry
     from tests.agent_kernel.test_gateway import configured_route
 
     route = configured_route()
@@ -470,7 +469,7 @@ def test_quality_identity_excludes_credentials_and_prices_but_tracks_relevant_to
 
 
 def test_named_review_qualification_is_consumed_by_actual_t0_domain_command(f):
-    from pdos_next.agent_kernel.bindings import execution_key
+    from pdos_next.agent.kernel.bindings import execution_key
     from tests.agent_kernel.test_domain_adapter_transactions import fixture
 
     _, _, refs = review(f)

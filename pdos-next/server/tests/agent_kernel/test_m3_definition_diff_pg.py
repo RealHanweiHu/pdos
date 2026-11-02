@@ -11,23 +11,22 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select
-
-from pdos_next.agent_kernel import m3_definition_diff
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.deterministic_proofs import resolve_compute_proof
-from pdos_next.agent_kernel.domain_reads import DomainReads
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.m3_calculators import ENGINES
-from pdos_next.agent_kernel.models import AgentToolCall, TenantSkillEnablement
-from pdos_next.agent_kernel.read_execution import ReadBinding, ReadSource
+from pdos_next.agent.kernel import m3_definition_diff
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.deterministic_proofs import resolve_compute_proof
+from pdos_next.agent.kernel.domain_reads import DomainReads
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.m3_calculators import ENGINES
+from pdos_next.agent.kernel.models import AgentToolCall, TenantSkillEnablement
+from pdos_next.agent.kernel.read_execution import ReadBinding, ReadSource
+from pdos_next.core.models import Artifact, ObjectAudience, Product
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.baseline import publication_digest
 from pdos_next.domain.products.definitions import definition_view
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, ObjectAudience, Product
-from pdos_next.service import digest
+from sqlalchemy import func, select
 from tests.agent_kernel.test_transactions import human_session
 from tests.agent_kernel.test_transactions import run as create_read_run
 from tests.g0_fixture import create_g0_project

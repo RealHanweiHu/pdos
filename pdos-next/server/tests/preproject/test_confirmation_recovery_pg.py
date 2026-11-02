@@ -6,14 +6,13 @@ from datetime import timedelta
 from uuid import UUID
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.clock import now, using_clock
+from pdos_next.core.clock import now, using_clock
+from pdos_next.core.models import Audit, Category, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.category_creation_models import CategoryCreationConfirmation
 from pdos_next.domain.preproject.models import Proposal, ProposalItemVersion
-from pdos_next.models import Audit, Category, Confirmation, Outbox, Receipt, RequestKey
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_category_candidate_transactions import personal_fixture
 from tests.preproject.test_derivation_transactions import derivative_payload, synthetic_parent
 from tests.preproject.test_g0 import payload, post, request

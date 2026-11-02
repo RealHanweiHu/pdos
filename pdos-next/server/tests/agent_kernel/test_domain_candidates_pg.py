@@ -6,16 +6,15 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.core.models import Grant, Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import PreparedCandidate
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Receipt, now
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.products.test_definition_item_commands_pg import confirmed
 from tests.products.test_definition_item_revert_pg import agent_fixture
 from tests.products.test_platform_links_pg import counts, payload
@@ -164,7 +163,7 @@ def test_candidate_pagination_is_stable_and_typed(setup):
 
 
 def test_candidate_and_prepared_content_rollback_together(setup, monkeypatch):
-    from pdos_next.agent_kernel import domain_candidates
+    from pdos_next.agent.kernel import domain_candidates
 
     f = fixture(setup)
     original = domain_candidates.record
@@ -191,7 +190,7 @@ def test_candidate_and_prepared_content_rollback_together(setup, monkeypatch):
 
 
 def test_named_decisions_do_not_enter_executable_candidate_stream():
-    from pdos_next.agent_kernel.domain_candidates import record
+    from pdos_next.agent.kernel.domain_candidates import record
 
     with pytest.raises(DomainError) as denied:
         record(None, None, SimpleNamespace(operation="proposal.g0.decide"), "untrusted")
@@ -278,10 +277,9 @@ def test_proposal_receipt_metadata_mismatch_rolls_back_and_history_blocks_downgr
 ):
     from alembic.migration import MigrationContext
     from alembic.operations import Operations
-    from sqlalchemy.exc import DBAPIError
-
     from migrations.versions.s0_0760_prepared_proposal_receipts import downgrade
-    from pdos_next import service
+    from pdos_next.core import service
+    from sqlalchemy.exc import DBAPIError
     from tests.preproject.test_g0 import payload as proposal_payload
 
     arguments = proposal_payload(setup)

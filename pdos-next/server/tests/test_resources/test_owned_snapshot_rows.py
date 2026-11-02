@@ -7,9 +7,8 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.orm import Session, make_transient_to_detached
-
+from pdos_next.core.request_proof import request_proof
+from pdos_next.core.service import Context
 from pdos_next.domain.test_resources import retained, service
 from pdos_next.domain.test_resources.models import SampleRunUsage
 from pdos_next.domain.test_resources.models import TestResourceCurrent as ResourceCurrent
@@ -17,9 +16,9 @@ from pdos_next.domain.test_resources.models import TestResourceFact as ResourceF
 from pdos_next.domain.test_resources.schemas import TestPlanBinding as Binding
 from pdos_next.domain.verification_launch import service as launch
 from pdos_next.errors import DomainError
-from pdos_next.request_proof import request_proof
 from pdos_next.schemas.resource_readiness.contracts import ResourceUse
-from pdos_next.service import Context
+from sqlalchemy import select
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 
 @pytest.fixture

@@ -6,11 +6,10 @@ from uuid import uuid4
 
 import pytest
 from jsonschema import Draft202012Validator
-
-from pdos_next.agent_kernel import work_state_candidates as metadata
-from pdos_next.agent_kernel.context_projection import combine_contracts, project
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.work_state import empty
+from pdos_next.agent.kernel import work_state_candidates as metadata
+from pdos_next.agent.kernel.context_projection import combine_contracts, project
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.work_state import empty
 
 
 def schema():

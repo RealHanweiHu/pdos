@@ -6,15 +6,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from quality_followup.test_pure import issue as fixed_issue
-from quality_issues.helpers import NOW, source, uid
-from sqlalchemy import inspect as actual_inspect
-from sqlalchemy.orm import Session as ActualSession
-from sqlalchemy.orm import make_transient_to_detached
-from sqlalchemy.orm.attributes import set_committed_value
-
-from pdos_next import quality_followup_host as host
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import Context, digest, material_digest
 from pdos_next.domain.quality_execution.evidence import merge_reads, union_sources
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.domain.quality_followup import service as followup
@@ -22,9 +16,14 @@ from pdos_next.domain.quality_followup.schemas import RootCausePayload
 from pdos_next.domain.quality_issues.ports import Mutation
 from pdos_next.domain.quality_issues.rules import issue_sources, replace
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation
+from pdos_next.features.quality import followup_host as host
 from pdos_next.schemas.quality_issues.contracts import NamedConclusion
-from pdos_next.service import Context, digest, material_digest
+from quality_followup.test_pure import issue as fixed_issue
+from quality_issues.helpers import NOW, source, uid
+from sqlalchemy import inspect as actual_inspect
+from sqlalchemy.orm import Session as ActualSession
+from sqlalchemy.orm import make_transient_to_detached
+from sqlalchemy.orm.attributes import set_committed_value
 
 
 class Result:

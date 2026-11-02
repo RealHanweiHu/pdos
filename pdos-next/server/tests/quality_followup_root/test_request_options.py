@@ -5,12 +5,14 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
 from pdos_next.domain.capa_verification.schemas import OutputRef
 from pdos_next.errors import DomainError
-from pdos_next.quality_followup_integration import PAIRED_FORMAL_OPERATIONS, request_options
-from pdos_next.quality_followup_views import ViewRuntime, configure_output_options
+from pdos_next.features.quality.followup_integration import (
+    PAIRED_FORMAL_OPERATIONS,
+    request_options,
+)
+from pdos_next.features.quality.followup_views import ViewRuntime, configure_output_options
+from sqlalchemy.dialects import postgresql
 
 TENANT = UUID("11111111-2222-4333-8444-555555555555")
 PRODUCT = UUID("abcdefab-2222-4333-8444-555555555555")

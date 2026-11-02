@@ -13,20 +13,19 @@ from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
-from quality_issues.helpers import NOW, fixed_run, source, uid
-from sqlalchemy import create_engine
-from sqlalchemy.orm import Session, make_transient_to_detached
-
+from pdos_next.core.models import Grant, Principal, Product
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.change_execution import service as change
 from pdos_next.domain.quality_execution import service as quality
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.domain.quality_issues.ports import VerifiedRun
 from pdos_next.domain.quality_issues.rules import failure_ref
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product
 from pdos_next.schemas.change_control.contracts import Ref
 from pdos_next.schemas.quality_issues.contracts import Issue
-from pdos_next.service import Context, digest
+from quality_issues.helpers import NOW, fixed_run, source, uid
+from sqlalchemy import create_engine
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 
 @pytest.fixture
@@ -413,7 +412,7 @@ def test_current_pointer_cannot_rollback_same_issue_series(case, variant):
 
 
 def test_lifecycle_bookkeeping_allowed_without_clearing_confirmation(case):
-    from pdos_next.models import Confirmation
+    from pdos_next.core.models import Confirmation
 
     product = Product(
         id=case.row.product_id,

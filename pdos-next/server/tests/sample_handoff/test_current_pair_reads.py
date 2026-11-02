@@ -11,20 +11,11 @@ from contextlib import contextmanager
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, func, inspect, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session, attributes
-from test_project_first_plan import accepted
-from verification_handoff.fixtures import (  # noqa: F401
-    actual_method,
-    handoff_work,
-    known_configuration,
-    operational_work,
-    ready_work,
-)
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, now
+from pdos_next.core.request_proof import request_proof, scope_is_held
+from pdos_next.core.service import Context, command_scope
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
 from pdos_next.domain.sample_handoff import service as readiness
@@ -35,10 +26,11 @@ from pdos_next.domain.verification_handoff.models import (
     ActualMethodCurrent,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, now
-from pdos_next.request_proof import request_proof, scope_is_held
 from pdos_next.schemas.verification.contracts import SampleRef
-from pdos_next.service import Context, command_scope
+from sqlalchemy import event, func, inspect, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session, attributes
+from test_project_first_plan import accepted
 from tests.professional_authority.test_transactions import (  # noqa: F401
     OP,
     PURPOSE,
@@ -46,6 +38,13 @@ from tests.professional_authority.test_transactions import (  # noqa: F401
     imported,
     pair,
     successor,
+)
+from verification_handoff.fixtures import (  # noqa: F401
+    actual_method,
+    handoff_work,
+    known_configuration,
+    operational_work,
+    ready_work,
 )
 
 

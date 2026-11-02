@@ -9,15 +9,9 @@ from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from pdos_next.contracts import Command, OriginalScanInput, ProductInput, UploadInput
-from pdos_next.database import category_transaction, configured_engines, tenant_session
-from pdos_next.domain.build_start.schemas import BuildAssessmentPayload
-from pdos_next.domain.cost_execution.schemas import CostCaptureInput
-from pdos_next.domain.products.definitions import list_definitions
-from pdos_next.domain.supply_execution.schemas import SupplyCaptureInput
-from pdos_next.domain.verification_results.schemas import CaptureInput
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.contracts import Command, OriginalScanInput, ProductInput, UploadInput
+from pdos_next.core.database import category_transaction, configured_engines, tenant_session
+from pdos_next.core.models import (
     Artifact,
     BudgetReservation,
     Claim,
@@ -33,9 +27,7 @@ from pdos_next.models import (
     WorkRequest,
     now,
 )
-from pdos_next.object_storage import StorageFailure
-from pdos_next.originals import object_reference, original_view, require_original, upload
-from pdos_next.service import (
+from pdos_next.core.service import (
     Context,
     append_receipt,
     digest,
@@ -45,6 +37,14 @@ from pdos_next.service import (
     receipt_view,
     require_access,
 )
+from pdos_next.domain.build_start.schemas import BuildAssessmentPayload
+from pdos_next.domain.cost_execution.schemas import CostCaptureInput
+from pdos_next.domain.products.definitions import list_definitions
+from pdos_next.domain.supply_execution.schemas import SupplyCaptureInput
+from pdos_next.domain.verification_results.schemas import CaptureInput
+from pdos_next.errors import DomainError
+from pdos_next.originals.access import object_reference, original_view, require_original, upload
+from pdos_next.originals.object_storage import StorageFailure
 
 
 def create_app(
@@ -112,7 +112,7 @@ def create_app(
             configure_store as configure_change_store,
         )
         from pdos_next.domain.quality_execution.service import configure_result_bridge
-        from pdos_next.quality_result_bridge import (
+        from pdos_next.features.quality.result_bridge import (
             fixed_failure_result,
             fixed_failure_scope,
             read_failure_batch,
@@ -127,13 +127,13 @@ def create_app(
             scope=fixed_failure_scope,
             read_batch=read_failure_batch,
         )
-        from pdos_next.lifecycle_worker import configure_lifecycle
+        from pdos_next.features.lifecycle.worker import configure_lifecycle
 
         configure_lifecycle(
             engine, object_store, policy=lifecycle_policy, allow_local_profile=lifecycle_enabled
         )
     if security_runtime is not None:
-        from pdos_next.original_security import configure
+        from pdos_next.originals.security import configure
 
         configure(engine, security_runtime)
     if workflow_enabled is None:
@@ -144,12 +144,12 @@ def create_app(
             "production models must use the Temporal worker's trusted host ports"
         )
     if synthetic_mode:
-        from pdos_next.safety import verify_test_target
+        from pdos_next.core.safety import verify_test_target
 
         verify_test_target(engine)
     if professional_synthetic_scope is not None:
+        from pdos_next.core.safety import verify_test_target
         from pdos_next.domain.professional_authority.service import configure_local_synthetic
-        from pdos_next.safety import verify_test_target
 
         verify_test_target(engine)
         if set(professional_synthetic_scope) != {"tenant_id", "product_id"}:
@@ -161,38 +161,38 @@ def create_app(
             enabled=True,
         )
     if professional_synthetic_profiles is not None:
+        from pdos_next.core.safety import verify_test_target
         from pdos_next.domain.professional_authority.service import (
             configure_local_synthetic_profiles,
         )
-        from pdos_next.safety import verify_test_target
 
         verify_test_target(engine)
         configure_local_synthetic_profiles(engine, professional_synthetic_profiles, enabled=True)
 
     if operational_synthetic_profile is not None:
-        from pdos_next.operational_bootstrap import configure_local_profile
+        from pdos_next.bootstrap.operational import configure_local_profile
 
         configure_local_profile(engine, operational_synthetic_profile)
     elif operational_synthetic_profiles is not None:
-        from pdos_next.operational_bootstrap import configure_local_profiles
+        from pdos_next.bootstrap.operational import configure_local_profiles
 
         configure_local_profiles(engine, operational_synthetic_profiles)
 
     if test_resource_synthetic_profile is not None:
-        from pdos_next.test_resource_bootstrap import configure_local_profile
+        from pdos_next.bootstrap.test_resources import configure_local_profile
 
         configure_local_profile(engine, test_resource_synthetic_profile)
     elif test_resource_synthetic_profiles is not None:
-        from pdos_next.test_resource_bootstrap import configure_local_profiles
+        from pdos_next.bootstrap.test_resources import configure_local_profiles
 
         configure_local_profiles(engine, test_resource_synthetic_profiles)
 
     if quality_synthetic_profile is not None:
-        from pdos_next.quality_bootstrap import configure_local_profile
+        from pdos_next.bootstrap.quality import configure_local_profile
 
         configure_local_profile(engine, quality_synthetic_profile)
     elif quality_synthetic_profiles is not None:
-        from pdos_next.quality_bootstrap import configure_local_profiles
+        from pdos_next.bootstrap.quality import configure_local_profiles
 
         configure_local_profiles(engine, quality_synthetic_profiles)
 
@@ -218,7 +218,7 @@ def create_app(
     )
 
     configure_release_exceptions(engine)
-    from pdos_next.quality_followup_integration import configure_integration
+    from pdos_next.features.quality.followup_integration import configure_integration
 
     configure_integration(
         engine,
@@ -230,17 +230,19 @@ def create_app(
 
     configure_capa_candidate(engine)
 
-    from pdos_next.capa_fact_owner import ActualFactOwner
     from pdos_next.domain.capa_effectiveness.fact_service import configure as configure_capa_facts
+    from pdos_next.features.capa.fact_owner import ActualFactOwner
 
     if capa_facts_synthetic_profile is not None:
-        from pdos_next.capa_rule_publisher import configure_local_profile as configure_rule_profile
+        from pdos_next.features.capa.rule_publisher import (
+            configure_local_profile as configure_rule_profile,
+        )
 
         capa_fact_material_owner = ActualFactOwner(
             publisher=configure_rule_profile(engine, capa_facts_synthetic_profile)
         )
     elif capa_facts_synthetic_profiles is not None:
-        from pdos_next.capa_rule_publisher import (
+        from pdos_next.features.capa.rule_publisher import (
             configure_local_profiles as configure_rule_profiles,
         )
 
@@ -248,18 +250,22 @@ def create_app(
             publisher=configure_rule_profiles(engine, capa_facts_synthetic_profiles)
         )
     fact_owner = capa_fact_material_owner or ActualFactOwner()
-    from pdos_next.paired_followup_adapter import configure as configure_paired_followup
-    from pdos_next.paired_output_bridge import LivePairedOwner
+    from pdos_next.features.quality.paired_followup_adapter import (
+        configure as configure_paired_followup,
+    )
+    from pdos_next.features.quality.paired_output_bridge import LivePairedOwner
 
     paired_owner = LivePairedOwner()
     if type(fact_owner) is ActualFactOwner and fact_owner.review_owner is None:
-        from pdos_next.capa_applicability_owner import (
+        from pdos_next.domain.capa_effectiveness.candidate_commands import semantic_owner
+        from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
+        from pdos_next.features.capa.applicability_owner import (
             ActualActionFulfillmentOwner,
             ActualApplicabilityOwner,
         )
-        from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
-        from pdos_next.domain.capa_effectiveness.candidate_commands import semantic_owner
-        from pdos_next.domain.capa_effectiveness.named_review_owner import ActualNamedReviewOwner
+        from pdos_next.features.change.action_fulfillment_owner import (
+            ApprovedChangeActionFulfillmentOwner,
+        )
 
         fact_owner.review_owner = ActualNamedReviewOwner(
             fact_owner,
@@ -276,8 +282,8 @@ def create_app(
     configure_capa_facts(engine, fact_owner)
     configure_paired_followup(engine, paired_owner)
 
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
-    from pdos_next.agent_kernel.temporal_port import RuntimeTemporal, TemporalPort
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.temporal_port import RuntimeTemporal, TemporalPort
 
     kernel_bootstrap = Bootstrap(engine, ports=agent_runtime_ports)
     kernel_temporal = RuntimeTemporal()
@@ -302,7 +308,7 @@ def create_app(
             except Exception:
                 kernel_temporal.port = None
         if security_runtime_factory is not None:
-            from pdos_next.original_security import configure
+            from pdos_next.originals.security import configure
 
             configure(engine, await security_runtime_factory())
         try:
@@ -316,7 +322,7 @@ def create_app(
                     await close()
 
     app = FastAPI(title="PDOS Next · 品类与小Pai", version="0.1.0", lifespan=lifespan)
-    from pdos_next.public_api import install
+    from pdos_next.core.public_api import install
 
     install(app)
 
@@ -324,7 +330,7 @@ def create_app(
     async def domain_error(_request: Request, exc: DomainError):
         return JSONResponse(status_code=exc.status, content=exc.payload())
 
-    from pdos_next.original_lifecycle.types import LifecycleFailure
+    from pdos_next.originals.lifecycle.types import LifecycleFailure
 
     @app.exception_handler(LifecycleFailure)
     async def lifecycle_error(_request: Request, exc: LifecycleFailure):
@@ -393,14 +399,14 @@ def create_app(
             if not actor or not actor.active or actor.kind != "human":
                 raise DomainError("UNAUTHENTICATED", "当前会话身份不可用。", 401)
             if ctx.category_id is not None:
-                from pdos_next.models import Category
+                from pdos_next.core.models import Category
 
                 if s.get(Category, ctx.category_id) is None:
                     raise DomainError("FORBIDDEN_SCOPE", "品类不在当前授权范围。", 403)
         return ctx
 
     auth_dependency = Depends(authenticated)
-    from pdos_next.agent_kernel.api import router as kernel_router
+    from pdos_next.agent.kernel.api import router as kernel_router
 
     app.include_router(
         kernel_router(
@@ -409,52 +415,52 @@ def create_app(
             ports=agent_api_ports or kernel_bootstrap.api_ports(kernel_temporal),
         )
     )
-    from pdos_next.dingtalk.api import register_routes as register_dingtalk
+    from pdos_next.integrations.dingtalk.api import register_routes as register_dingtalk
 
     register_dingtalk(app, engine, auth_engine, auth_dependency, kernel_bootstrap)
     from pdos_next.domain.change_execution.api import register_routes as register_change_routes
     from pdos_next.domain.quality_execution.api import register_routes as register_quality_routes
 
     register_quality_routes(app, engine, auth_dependency)
-    from pdos_next.change_public_integration import configure as configure_change_owners
+    from pdos_next.features.change.public_integration import configure as configure_change_owners
 
     configure_change_owners(engine)
     register_change_routes(app, engine, auth_dependency)
     from pdos_next.domain.preproject.api import register_routes as register_preproject_routes
 
     register_preproject_routes(app, engine, auth_dependency)
-    from pdos_next.personal_views import register_routes as register_personal_routes
+    from pdos_next.features.personal.views import register_routes as register_personal_routes
 
     register_personal_routes(app, engine, auth_dependency)
-    from pdos_next.inbox.api import register_routes as register_inbox
+    from pdos_next.features.inbox.api import register_routes as register_inbox
 
     register_inbox(app, engine, auth_dependency)
-    from pdos_next.project_sets.api import register_routes as register_project_sets
+    from pdos_next.features.projects.sets.api import register_routes as register_project_sets
 
     register_project_sets(app, engine, auth_dependency)
-    from pdos_next.personal_attention_api import register_routes as register_attention
+    from pdos_next.features.personal.attention_api import register_routes as register_attention
 
     register_attention(app, engine, auth_dependency)
-    from pdos_next.personal_preferences_api import register_routes as register_preferences
+    from pdos_next.features.personal.preferences_api import register_routes as register_preferences
 
     register_preferences(app, engine, auth_dependency)
-    from pdos_next.enterprise_search.similar_history_api import (
+    from pdos_next.agent.enterprise_search.similar_history_api import (
         register_routes as register_similar_history,
     )
 
     register_similar_history(app, engine, auth_dependency)
-    from pdos_next.agent_kernel.management_api import register_routes as register_governance_routes
+    from pdos_next.agent.kernel.management_api import register_routes as register_governance_routes
 
     register_governance_routes(app, engine, auth_dependency)
-    from pdos_next.quality_followup_api import register_routes as register_followup_routes
+    from pdos_next.features.quality.followup_api import register_routes as register_followup_routes
 
     register_followup_routes(app, engine, auth_dependency)
 
-    from pdos_next.capa_candidate_api import register_routes as register_candidate_routes
+    from pdos_next.features.capa.candidate_api import register_routes as register_candidate_routes
 
     register_candidate_routes(app, engine, auth_dependency)
 
-    from pdos_next.capa_fact_api import register_routes as register_fact_routes
+    from pdos_next.features.capa.fact_api import register_routes as register_fact_routes
 
     register_fact_routes(app, engine, auth_dependency)
 
@@ -487,9 +493,9 @@ def create_app(
 
     @app.get("/v1/categories")
     def categories(ctx: Context = auth_dependency):
-        from pdos_next.category_capabilities import product_management_categories
+        from pdos_next.core.category_capabilities import product_management_categories
+        from pdos_next.core.models import Category
         from pdos_next.domain.preproject.models import Proposal
-        from pdos_next.models import Category
 
         with tenant_session(
             engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id
@@ -524,7 +530,12 @@ def create_app(
                 for c in visible
             ]
 
-    from pdos_next.category_scope import CategoryCreate, MemberGrant, create_category, grant_member
+    from pdos_next.core.category_scope import (
+        CategoryCreate,
+        MemberGrant,
+        create_category,
+        grant_member,
+    )
 
     @app.post("/v1/categories", status_code=201)
     async def category_create(data: CategoryCreate, ctx: Context = auth_dependency):
@@ -535,7 +546,7 @@ def create_app(
             proof = value.get("result", {})
             continuation = None
             if proof.get("adoption_input_ref"):
-                from pdos_next.agent_kernel.models import AgentRun
+                from pdos_next.agent.kernel.models import AgentRun
 
                 run = s.get(AgentRun, UUID(proof["prepared_by_run_id"]))
                 if run and run.state in {"queued", "running", "waiting_input"}:
@@ -662,12 +673,15 @@ def create_app(
             )
             return receipt_view(r)
 
-    from pdos_next.enterprise_search.embedding_composition import bind_session, configured_ports
+    from pdos_next.agent.enterprise_search.embedding_composition import (
+        bind_session,
+        configured_ports,
+    )
 
     embedding_host = embedding_ports if embedding_ports is not None else configured_ports(
         kernel_bootstrap.ports,
     )
-    from pdos_next.enterprise_search.embedding_api import (
+    from pdos_next.agent.enterprise_search.embedding_api import (
         register_routes as register_embedding_routes,
     )
 
@@ -682,7 +696,7 @@ def create_app(
 
         result = category_transaction(engine, ctx, apply_command)
         if data.operation == "evidence.lifecycle.upload.abandon" and object_store is not None:
-            from pdos_next.upload_lifecycle import reconcile_terminal
+            from pdos_next.originals.upload_lifecycle import reconcile_terminal
 
             try:
                 with tenant_session(
@@ -711,7 +725,7 @@ def create_app(
 
     @app.get("/v1/categories/{category_id}/model-configuration")
     def model_configuration(ctx: Context = auth_dependency):
-        from pdos_next.model_configuration.commands import reading
+        from pdos_next.agent.model_configuration.commands import reading
 
         with tenant_session(
             engine,
@@ -723,7 +737,7 @@ def create_app(
             s.info["model_configuration_secrets"] = kernel_bootstrap.ports.secrets
             return reading(s, ctx)
 
-    from pdos_next.model_configuration.connections import (
+    from pdos_next.agent.model_configuration.connections import (
         register_routes as register_model_connections,
     )
 
@@ -731,7 +745,7 @@ def create_app(
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/workspace")
     def workspace(product_id: UUID, ctx: Context = auth_dependency):
-        from pdos_next.original_security import source_status
+        from pdos_next.originals.security import source_status
 
         with tenant_session(
             engine,
@@ -868,7 +882,7 @@ def create_app(
 
     @app.post("/v1/categories/{category_id}/agent-runs/{run_id}/revert-preview")
     def run_revert_preview(run_id: UUID, ctx: Context = auth_dependency):
-        from pdos_next.agent_kernel.persistence import prepare_run_revert
+        from pdos_next.agent.kernel.persistence import prepare_run_revert
 
         with tenant_session(
             engine,
@@ -991,7 +1005,9 @@ def create_app(
 
     register_fulfillment(app, engine, auth_dependency)
 
-    from pdos_next.project_activity_api import register_routes as register_project_activity
+    from pdos_next.features.projects.activity_api import (
+        register_routes as register_project_activity,
+    )
 
     register_project_activity(app, engine, auth_dependency)
 
@@ -1272,7 +1288,7 @@ def create_app(
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/model-calls")
     def model_calls(product_id: UUID, ctx: Context = auth_dependency):
-        from pdos_next.model_gateway.reconciliation import preview
+        from pdos_next.agent.model_gateway.reconciliation import preview
 
         with tenant_session(
             engine,
@@ -1372,7 +1388,7 @@ def create_app(
             raise DomainError("STORAGE_UNAVAILABLE", "原件存储尚未配置。", 503)
         attempt_id = None
         if hasattr(object_store, "put_scoped"):
-            from pdos_next.upload_lifecycle import reserve
+            from pdos_next.originals.upload_lifecycle import reserve
 
             with tenant_session(
                 engine,
@@ -1434,7 +1450,7 @@ def create_app(
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/original-lifecycle")
     def lifecycle_inventory(product_id: UUID, ctx: Context = auth_dependency):
-        from pdos_next.lifecycle_access import inventory
+        from pdos_next.features.lifecycle.access import inventory
 
         if object_store is None:
             raise DomainError("STORAGE_UNAVAILABLE", "原件存储尚未配置。", 503)
@@ -1471,9 +1487,9 @@ def create_app(
         "/v1/categories/{category_id}/products/{product_id}/original-lifecycle/intents/{intent_id}/reconcile"
     )
     def lifecycle_reconcile(product_id: UUID, intent_id: UUID, ctx: Context = auth_dependency):
-        from pdos_next.lifecycle_access import product_gate
-        from pdos_next.lifecycle_worker import process
-        from pdos_next.models import LifecycleIntentRecord
+        from pdos_next.core.models import LifecycleIntentRecord
+        from pdos_next.features.lifecycle.access import product_gate
+        from pdos_next.features.lifecycle.worker import process
 
         with tenant_session(
             engine,
@@ -1517,7 +1533,7 @@ def create_app(
     def original_scan(
         product_id: UUID, original_id: UUID, data: OriginalScanInput, ctx: Context = auth_dependency
     ):
-        from pdos_next.original_security import request_scan
+        from pdos_next.originals.security import request_scan
 
         with tenant_session(
             engine,
@@ -1552,7 +1568,7 @@ def create_app(
             requester_id=ctx.requester_id,
             category_id=ctx.category_id,
         ) as s:
-            from pdos_next.original_security import require_safe
+            from pdos_next.originals.security import require_safe
 
             s.scalar(select(Product).where(Product.id == product_id).with_for_update())
             row = require_original(s, ctx, product_id, original_id, lock=True)
@@ -1560,7 +1576,7 @@ def create_app(
             reference, filename = object_reference(row), row.filename
             # Current ACL and object integrity are both checked before bytes leave this service.
             try:
-                from pdos_next.originals import read_registered_bytes
+                from pdos_next.originals.access import read_registered_bytes
 
                 content = read_registered_bytes(
                     object_store, reference, ctx.tenant_id, product_id, ctx.category_id

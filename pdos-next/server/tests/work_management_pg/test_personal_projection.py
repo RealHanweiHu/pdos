@@ -17,11 +17,9 @@ from zoneinfo import ZoneInfo
 
 import pytest
 from g0_fixture import create_g0_project
-from sqlalchemy import event, update
-from sqlalchemy.orm import Session
-from test_project_first_plan import cmd
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Category, Grant, now
+from pdos_next.core.safety import verify_test_target
 from pdos_next.domain.work_management.constants import (
     ACCEPT,
     ASSIGN,
@@ -32,8 +30,10 @@ from pdos_next.domain.work_management.constants import (
     STATUS,
     SUBMIT,
 )
-from pdos_next.models import Category, Grant, now
-from pdos_next.safety import verify_test_target
+from sqlalchemy import event, update
+from sqlalchemy.orm import Session
+from test_project_first_plan import cmd
+
 from work_management_pg import test_workflow as flow
 from work_management_pg.test_workflow import (
     original_security_work,  # noqa: F401

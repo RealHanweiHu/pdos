@@ -1,7 +1,7 @@
 from uuid import UUID
 
-from pdos_next.database import tenant_session
-from pdos_next.service import Context, require_access
+from pdos_next.core.database import tenant_session
+from pdos_next.core.service import Context, require_access
 
 from .service import events, gate, release_evidence, state, view
 

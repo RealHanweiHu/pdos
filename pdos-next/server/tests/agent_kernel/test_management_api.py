@@ -5,14 +5,13 @@ from threading import Barrier
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel import management
+from pdos_next.agent.kernel.management import agreement_receipt, register_agreement
+from pdos_next.agent.kernel.models import ProviderDataAgreement, TenantAdministrator
+from pdos_next.core.database import category_transaction, tenant_session
+from pdos_next.core.models import Audit, Outbox, Receipt
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel import management
-from pdos_next.agent_kernel.management import agreement_receipt, register_agreement
-from pdos_next.agent_kernel.models import ProviderDataAgreement, TenantAdministrator
-from pdos_next.database import category_transaction, tenant_session
-from pdos_next.models import Audit, Outbox, Receipt
 from tests.agent_kernel.test_transactions import agreement, human_session, run
 
 
@@ -63,7 +62,7 @@ def test_admin_registers_and_member_reads_current_head_and_receipt_atom(setup):
     assert len(current["items"]) == 1 and current["items"][0]["status"] == "inactive"
     assert current["items"][0]["revision"] == 2 and current["can_edit"] is True
     store, bound = run(setup, private_context=True, data_categories=("customer_original",))
-    from pdos_next.agent_kernel.policy import egress
+    from pdos_next.agent.kernel.policy import egress
 
     with store.transaction(bound) as (session, _):
         # P26: a disabled latest agreement is optional governance, not an
@@ -133,7 +132,7 @@ def test_conflicting_heads_and_invalid_scope_never_add_registration(setup):
         requester_id=setup.human,
         category_id=setup.category,
     ) as session:
-        from pdos_next.agent_kernel.management_api import human
+        from pdos_next.agent.kernel.management_api import human
         from pdos_next.errors import DomainError
 
         with pytest.raises(DomainError):

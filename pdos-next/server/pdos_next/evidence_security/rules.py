@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pdos_next.object_storage.types import ObjectRef
+from pdos_next.originals.object_storage.types import ObjectRef
 
 from .types import (
     ScanConfiguration,

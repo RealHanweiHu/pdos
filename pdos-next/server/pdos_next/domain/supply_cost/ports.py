@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Protocol
 
-from pdos_next.engines.supply_cost.dto import AlternateQualification
+from pdos_next.domain.engines.supply_cost.dto import AlternateQualification
 from pdos_next.schemas.supply_cost.dto import (
     BoundDemand,
     CommandBinding,

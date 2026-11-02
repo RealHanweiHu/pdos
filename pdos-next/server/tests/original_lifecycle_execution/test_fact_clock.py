@@ -4,8 +4,7 @@ from dataclasses import replace
 from datetime import timedelta
 
 import pytest
-
-from pdos_next.original_lifecycle.types import DecisionReason, LifecycleFailure
+from pdos_next.originals.lifecycle.types import DecisionReason, LifecycleFailure
 from tests.original_lifecycle.helpers import confirm, fixture, preview, record, start
 
 pytestmark = pytest.mark.usefixtures("pure_guard")

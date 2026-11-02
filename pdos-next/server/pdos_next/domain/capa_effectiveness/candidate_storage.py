@@ -17,7 +17,7 @@ from typing import Literal
 from collections.abc import Callable
 from uuid import UUID
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from . import anchor
 from . import anchor_storage
@@ -28,8 +28,8 @@ from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
 from pdos_next.domain.capa_verification.schemas import CandidateBinding, CandidateInspect
 from pdos_next.domain.capa_verification.service import basis_from_issue
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Principal, Receipt, RequestKey
-from pdos_next.receipt_request_binding import readable_receipt_request_bound
+from pdos_next.core.models import Audit, Confirmation, Outbox, Principal, Receipt, RequestKey
+from pdos_next.core.receipt_request_binding import readable_receipt_request_bound
 from pdos_next.schemas.verification.contracts import DTO
 from pydantic import AwareDatetime, BaseModel, JsonValue, ValidationError
 from sqlalchemy import select

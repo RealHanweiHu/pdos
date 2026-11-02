@@ -14,7 +14,7 @@ from uuid import UUID
 from typing import Literal
 from pdos_next.domain.configurations.schemas import DefinitionReference
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
 from pdos_next.domain.quality_execution import evidence, policy
 from pdos_next.domain.verification_front.models import FormalVerificationCurrent

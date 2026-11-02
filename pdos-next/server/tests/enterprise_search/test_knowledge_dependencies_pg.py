@@ -8,18 +8,17 @@ from dataclasses import replace
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.enterprise_search import assistant_ledger as ledger
+from pdos_next.agent.enterprise_search.assistant_sources import current, human_snapshot
+from pdos_next.agent.enterprise_search.indexing import project
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.core.models import Artifact, Claim, Grant
+from pdos_next.domain.preproject.category_models import KnowledgeEntry
+from pdos_next.errors import DomainError
+from pdos_next.originals.security import configure
 from sqlalchemy import event, select
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.enterprise_search import assistant_ledger as ledger
-from pdos_next.enterprise_search.assistant_sources import current, human_snapshot
-from pdos_next.enterprise_search.indexing import project
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Claim, Grant
-from pdos_next.original_security import configure
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
 from tests.enterprise_search.test_citation_inheritance_pg import FollowupClient, continuation
 from tests.enterprise_search.test_retrieval_pg import index, register, session_for

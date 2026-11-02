@@ -1,14 +1,13 @@
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
-
+from pdos_next.core.models import Principal, Product
+from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
 from pdos_next.domain.planning.calendar import ScheduleError
 from pdos_next.domain.planning.scheduling import schedule
 from pdos_next.domain.products.definitions import definition_view
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Product
-from pdos_next.request_proof import snapshot_get, snapshot_scalar
+from sqlalchemy import func, select
 
 from .models import (
     PlanProposal,
@@ -70,8 +69,8 @@ def _proposal(s, ctx, product_id, payload):
 
 
 def validate(s, ctx, command, product, payload):
+    from pdos_next.core.service import source_for
     from pdos_next.domain.preproject.baseline import validate_sources
-    from pdos_next.service import source_for
 
     actor = s.get(Principal, ctx.actor_id)
     if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
@@ -415,7 +414,7 @@ def apply(s, ctx, command, product, payload):
 
 
 def list_projects(s, ctx, product_id, *, project_id=None):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     query = select(Project).where(Project.product_id == product_id)

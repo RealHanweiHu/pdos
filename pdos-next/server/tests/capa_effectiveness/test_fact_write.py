@@ -10,13 +10,10 @@ from datetime import datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
-from quality_issues.helpers import NOW, uid
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session, make_transient_to_detached
-from test_candidate_write_prepare import origin_fixture
-
-from pdos_next import service as common
-from pdos_next.contracts import Command
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation, Grant, Principal, Product
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.capa_effectiveness import fact_commands as commands
 from pdos_next.domain.capa_effectiveness import fact_consumption as consumption
 from pdos_next.domain.capa_effectiveness import fact_write as writer
@@ -27,8 +24,10 @@ from pdos_next.domain.capa_effectiveness.fact_storage_codec import (
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Grant, Principal, Product
-from pdos_next.service import Context, digest
+from quality_issues.helpers import NOW, uid
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session, make_transient_to_detached
+from test_candidate_write_prepare import origin_fixture
 
 
 def rejects(code, fn):

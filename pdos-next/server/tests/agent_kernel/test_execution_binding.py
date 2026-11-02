@@ -10,34 +10,33 @@ import httpx
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 from pdos_agent_runtime.graph import registered_graph_context
-
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.disclosure import binding_operations, disclosure, skill_operations
-from pdos_next.agent_kernel.execution import (
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.disclosure import binding_operations, disclosure, skill_operations
+from pdos_next.agent.kernel.execution import (
     finish_domain_call,
     prepare_domain_call,
     recover_domain_call,
     validate_model_source,
     validate_skill_load,
 )
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentToolCall,
     TenantPilotAdmission,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.models import Receipt, now
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Receipt, now
 from pdos_next.providers.agent_client import AgentProviderClient, tool_name
-from pdos_next.service import digest
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_graph import Host, final, scope
 

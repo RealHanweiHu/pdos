@@ -12,11 +12,10 @@ from datetime import datetime
 from uuid import UUID
 from weakref import WeakKeyDictionary, ref
 
-from pydantic import BaseModel
-from pydantic_core import to_jsonable_python
-
-from pdos_next.contracts import SourceRead
-from pdos_next.database import require_context
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.database import require_context
+from pdos_next.core.models import now
+from pdos_next.core.service import digest, require_access, source_for
 from pdos_next.domain.build_execution import service as execution
 from pdos_next.domain.build_execution.models import BuildLot
 from pdos_next.domain.build_operational_facts.models import (
@@ -32,7 +31,6 @@ from pdos_next.domain.manufacturing_resource_owner.schemas import ResourceReques
 from pdos_next.domain.quality_execution import service as quality
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent
 from pdos_next.errors import DomainError
-from pdos_next.models import now
 from pdos_next.schemas.manufacturing_trials.contracts import (
     Gap,
     PilotCreate,
@@ -47,7 +45,8 @@ from pdos_next.schemas.manufacturing_trials.pilot_results import (
     RecordedBatch,
 )
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest, require_access, source_for
+from pydantic import BaseModel
+from pydantic_core import to_jsonable_python
 
 from .native_material_owner import (
     ActualPilotMaterialOwner,

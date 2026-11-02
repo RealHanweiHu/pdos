@@ -2,12 +2,11 @@
 
 from uuid import uuid4
 
+from pdos_next.agent.enterprise_search.readable_sources import readable
+from pdos_next.agent.enterprise_search.relations import KINDS, QUALITY, edges, graph_for
+from pdos_next.agent.enterprise_search.sources import catalog, identity_keys
 from sqlalchemy import literal, select, union_all
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.enterprise_search.readable_sources import readable
-from pdos_next.enterprise_search.relations import KINDS, QUALITY, edges, graph_for
-from pdos_next.enterprise_search.sources import catalog, identity_keys
 
 
 def compiled(graph):
@@ -155,7 +154,7 @@ def test_shared_sql_alias_never_binds_a_principal_and_exact_identity_keeps_table
 
 
 def test_cached_authority_statement_binds_source_keys_at_each_execution():
-    from pdos_next.enterprise_search.assistant_sources import _source_query
+    from pdos_next.agent.enterprise_search.assistant_sources import _source_query
 
     query = _source_query(("artifact", "issue"), False)
     assert query is _source_query(("artifact", "issue"), False)

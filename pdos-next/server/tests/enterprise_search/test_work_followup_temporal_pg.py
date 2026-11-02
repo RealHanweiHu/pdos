@@ -15,9 +15,9 @@ from uuid import UUID, uuid4
 
 import pytest
 from g0_fixture import create_g0_project
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, TenantSkillEnablement
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, TenantSkillEnablement
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.database import tenant_session
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.work_management.models import WorkCommitmentVersion, WorkTaskVersion
 from sqlalchemy import func, select

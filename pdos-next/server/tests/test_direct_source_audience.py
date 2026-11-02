@@ -6,12 +6,8 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import delete, text, update
-from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.models import (
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     Category,
     Grant,
@@ -20,7 +16,10 @@ from pdos_next.models import (
     UploadedOriginal,
     now,
 )
-from pdos_next.service import digest
+from pdos_next.core.service import digest
+from sqlalchemy import delete, text, update
+from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import Session
 
 
 @dataclass(frozen=True)

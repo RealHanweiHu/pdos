@@ -2,10 +2,9 @@
 
 import time
 
+from pdos_next.agent.enterprise_search.query import SearchInput, search
+from pdos_next.agent.enterprise_search.sources import catalog
 from sqlalchemy import select, text
-
-from pdos_next.enterprise_search.query import SearchInput, search
-from pdos_next.enterprise_search.sources import catalog
 from tests.enterprise_search.test_retrieval_pg import session_for
 
 

@@ -6,6 +6,11 @@ from time import perf_counter
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search.indexing import project
+from pdos_next.agent.enterprise_search.similar_history_models import SimilarHistoryFeedback
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt
 from quality_execution.fixtures import (
     accepted_work,
     command,
@@ -22,12 +27,6 @@ from sqlalchemy import event, func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted
-
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.indexing import project
-from pdos_next.enterprise_search.similar_history_models import SimilarHistoryFeedback
-from pdos_next.models import Receipt
 
 
 @pytest.fixture

@@ -14,15 +14,6 @@ from pathlib import Path
 from time import monotonic
 from uuid import UUID, uuid4
 
-from change_coverage_transactions.test_publication import (
-    CASE_NODE_LIMIT,
-    SOURCE_LIMIT,
-    common_rows,
-    effect_hashes,
-    engines,  # noqa: F401 - verified real target fixture
-    publish,
-    registered_original,
-)
 from change_execution.test_transactions import (  # noqa: F401
     accepted_work,
     capture,
@@ -39,18 +30,27 @@ from change_execution.test_transactions import (  # noqa: F401
     ready_work,
     results_work,
 )
-from sqlalchemy import func, select
-from test_project_first_plan import post
-
-from pdos_next.change_order_service import current_fixed
-from pdos_next.change_order_service import snapshot as change_snapshot
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import digest as common_digest
 from pdos_next.domain.change_control.rules import MANUFACTURING, NEXT, digest
 from pdos_next.domain.change_coverage_owner import models, owner, registry, schemas, trust
 from pdos_next.domain.change_execution.models import ChangeGraphCapture
-from pdos_next.models import Artifact, Audit, Outbox, Receipt, RequestKey, now
+from pdos_next.features.change.order_service import current_fixed
+from pdos_next.features.change.order_service import snapshot as change_snapshot
 from pdos_next.schemas.change_control.contracts import GraphSnapshot, ImpactAssessment
-from pdos_next.service import digest as common_digest
+from sqlalchemy import func, select
+from test_project_first_plan import post
+
+from change_coverage_transactions.test_publication import (
+    CASE_NODE_LIMIT,
+    SOURCE_LIMIT,
+    common_rows,
+    effect_hashes,
+    engines,  # noqa: F401 - verified real target fixture
+    publish,
+    registered_original,
+)
 
 REPORT_ENV = "PDOS_ROOT_MINIMAL_PUBLIC_COVERAGE_CAPTURE_REPORT"
 

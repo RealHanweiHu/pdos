@@ -6,14 +6,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
+from pdos_next.core.service import Context
 from pdos_next.domain.external_handoff import rules, schemas
 from pdos_next.domain.release import rules as release_rules
 from pdos_next.domain.release.schemas import ApprovePayload, VersionRef
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context
+from pydantic import ValidationError
 from tests.release.test_rules import AT
 from tests.release.test_rules import case as release_case  # noqa: F401
 

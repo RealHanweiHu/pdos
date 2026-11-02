@@ -3,12 +3,11 @@ from copy import deepcopy
 from dataclasses import replace
 
 import pytest
-
-from pdos_next.agent_kernel.context_budget import fit_messages, measure
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import WireAgentOutput
+from pdos_next.agent.kernel.context_budget import fit_messages, measure
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import WireAgentOutput
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_bound_read_host import make_host
 from tests.agent_kernel.test_gateway import configured_route
@@ -133,7 +132,7 @@ def test_graph_preserves_context_incomplete_details_as_partial_without_retry():
 
 
 def test_unknown_32k_route_reports_fixed_surface_and_effective_recovery():
-    from pdos_next.agent_kernel.disclosure import disclosure
+    from pdos_next.agent.kernel.disclosure import disclosure
 
     registry = default_registry()
     kernel = AgentKernel(None, registry)

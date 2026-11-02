@@ -14,9 +14,19 @@ from decimal import Decimal
 from pathlib import Path
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import (
+    Audit,
+    Confirmation,
+    Grant,
+    LoginSession,
+    ObjectAudience,
+    Outbox,
+    Principal,
+    Product,
+    Receipt,
+    now,
+)
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.category_models import (
     KnowledgeCurrent,
     KnowledgeEntry,
@@ -31,19 +41,8 @@ from pdos_next.domain.preproject.models import (
 )
 from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import (
-    Audit,
-    Confirmation,
-    Grant,
-    LoginSession,
-    ObjectAudience,
-    Outbox,
-    Principal,
-    Product,
-    Receipt,
-    now,
-)
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.preproject.test_category_context_pg import add_knowledge
 from tests.preproject.test_g0 import create, decide_request, payload, read, request, save, submit
 from tests.preproject.test_g0 import work as work

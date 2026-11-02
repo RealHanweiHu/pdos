@@ -20,10 +20,17 @@ STATE = ROOT / ".local" / "runtime.json"
 REPORT = ROOT.parent / "docs/reports/evidence/pdos-next-g0-20261002"
 sys.path.insert(0, str(SERVER))
 
-from pdos_next.contracts import Command  # noqa: E402
-from pdos_next.database import engine_for, tenant_session  # noqa: E402
-from pdos_next.models import Category, Grant, LoginSession, Principal, Product, now  # noqa: E402
-from pdos_next.service import Context, digest, execute  # noqa: E402
+from pdos_next.core.contracts import Command  # noqa: E402
+from pdos_next.core.database import engine_for, tenant_session  # noqa: E402
+from pdos_next.core.models import (  # noqa: E402
+    Category,
+    Grant,
+    LoginSession,
+    Principal,
+    Product,
+    now,
+)
+from pdos_next.core.service import Context, digest, execute  # noqa: E402
 
 
 def docker(*args):
@@ -68,7 +75,7 @@ def save(state):
 
 
 def verified(state):
-    from pdos_next.safety import verify_test_target
+    from pdos_next.core.safety import verify_test_target
 
     os.environ.update(environment(state))
     verify_test_target(engine_for(state["admin_url"]))

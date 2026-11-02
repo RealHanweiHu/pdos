@@ -2,9 +2,7 @@
 
 from uuid import UUID
 
-from sqlalchemy import CheckConstraint, Integer, String, UniqueConstraint
-from sqlalchemy.orm import Mapped, mapped_column
-
+from pdos_next.core.models import Base
 from pdos_next.domain.work_management.models import (
     BINDING,
     COMMITMENT,
@@ -15,7 +13,8 @@ from pdos_next.domain.work_management.models import (
     _Scope,
     _scope,
 )
-from pdos_next.models import Base
+from sqlalchemy import CheckConstraint, Integer, String, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column
 
 REVIEW = "work_commitment_reviews"
 CURRENT = "work_commitment_review_currents"

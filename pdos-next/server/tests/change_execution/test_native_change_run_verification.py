@@ -7,15 +7,11 @@ from datetime import timedelta
 from types import SimpleNamespace
 from uuid import uuid4
 
+import pdos_next.core.models  # noqa: F401 -- model registration precedes domain imports
 import pytest
-from pydantic import ValidationError
-from test_quality_result_bridge_reuse import (
-    archive,  # noqa: F401 -- real typed Run/original fixture
-)
-
-import pdos_next.models  # noqa: F401 -- model registration precedes domain imports
-from pdos_next import change_run_verification as owner
+from pdos_next.core.service import digest
 from pdos_next.domain.change_control.rules import digest as change_digest
+from pdos_next.features.change import run_verification as owner
 from pdos_next.schemas.change_control.contracts import (
     ChangeOrder,
     ChangeRequest,
@@ -28,7 +24,10 @@ from pdos_next.schemas.change_control.contracts import (
     Ref,
     Selection,
 )
-from pdos_next.service import digest
+from pydantic import ValidationError
+from test_quality_result_bridge_reuse import (
+    archive,  # noqa: F401 -- real typed Run/original fixture
+)
 
 
 @pytest.fixture

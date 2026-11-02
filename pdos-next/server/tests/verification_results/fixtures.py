@@ -10,6 +10,14 @@ from uuid import UUID, uuid4
 import pytest
 from build_start.test_transactions import import_authority
 from fastapi.testclient import TestClient
+from pdos_next.api import create_app
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, now
+from pdos_next.domain.verification_front import service as front
+from pdos_next.domain.verification_launch import service as launch_service
+from pdos_next.domain.verification_results import service
+from pdos_next.domain.verification_results.schemas import CaptureInput
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
 from security_fixture import secured_parse, synthetic_runtime
 from sqlalchemy import inspect, select
 from test_project_first_plan import cmd
@@ -20,15 +28,6 @@ from verification_launch.fixtures import (  # noqa: F401
     operational_work,
     ready_work,
 )
-
-from pdos_next.api import create_app
-from pdos_next.database import tenant_session
-from pdos_next.domain.verification_front import service as front
-from pdos_next.domain.verification_launch import service as launch_service
-from pdos_next.domain.verification_results import service
-from pdos_next.domain.verification_results.schemas import CaptureInput
-from pdos_next.models import Artifact, now
-from pdos_next.object_storage import LocalPrivateObjectStore
 
 OPERATIONS = set(service.PAYLOADS)
 
@@ -159,7 +158,7 @@ def results_work(launch_work, monkeypatch, tmp_path):
         for name, previous in original_clients.items():
             getattr(work, name).client = previous
         service.configure_store(work.setup.engine, prior_store)
-        from pdos_next.original_security import configure
+        from pdos_next.originals.security import configure
 
         configure(work.setup.engine, prior_security)
 
@@ -320,9 +319,8 @@ def command(work, operation, *, captured=None, final=False, **changes):
                     next_owner_id=str(work.quality.human),
                 )
         else:
-            from sqlalchemy import select
-
             from pdos_next.domain.verification_results.models import TestResultProjection
+            from sqlalchemy import select
 
             with tenant_session(
                 work.setup.engine,

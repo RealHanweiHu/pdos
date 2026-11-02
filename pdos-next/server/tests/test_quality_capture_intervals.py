@@ -4,17 +4,16 @@ from copy import deepcopy
 from datetime import timedelta
 from uuid import uuid4
 
+from pdos_next.core.models import now
 from sqlalchemy import bindparam, text
 from sqlalchemy.dialects.postgresql import JSONB
-
-from pdos_next.models import now
 
 
 def test_ordinary_capture_has_no_ttl_but_actual_fact_intervals_remain_required():
     import os
 
-    from pdos_next.database import engine_for
-    from pdos_next.safety import verify_test_target
+    from pdos_next.core.database import engine_for
+    from pdos_next.core.safety import verify_test_target
 
     # No application .env fallback, even for this read-only database guard.
     engine = engine_for(os.environ["TEST_DATABASE_URL"])

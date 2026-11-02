@@ -6,9 +6,8 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-
+from pdos_next.core.service import Context
 from pdos_next.domain.test_resources import service as resources
-from pdos_next.service import Context
 
 
 @pytest.fixture

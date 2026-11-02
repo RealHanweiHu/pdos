@@ -1,8 +1,7 @@
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine, event
-
 from pdos_next.api import create_app
-from pdos_next.error_catalog import CATEGORIES
+from pdos_next.core.error_catalog import CATEGORIES
+from sqlalchemy import create_engine, event
 
 
 def test_actual_host_routing_validation_and_unexpected_failures_share_public_contract():

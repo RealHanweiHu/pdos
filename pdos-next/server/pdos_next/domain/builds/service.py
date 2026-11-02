@@ -1,12 +1,11 @@
 from uuid import UUID
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Principal, now
+from pdos_next.core.request_proof import snapshot_get
 from pdos_next.domain.configurations.service import get_engineering, get_process
 from pdos_next.domain.projects.service import _project
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, now
-from pdos_next.request_proof import snapshot_get
+from sqlalchemy import select
 
 from .models import Build, BuildReadiness
 from .schemas import BuildCreatePayload
@@ -35,8 +34,8 @@ def _build(s, ctx, product_id, build_id, *, write=False):
 
 
 def _linked(s, ctx, product_id, value, *, write=False, new_consumption=False):
+    from pdos_next.core.request_proof import request_proof
     from pdos_next.domain.preproject.baseline import validate_sources
-    from pdos_next.request_proof import request_proof
 
     project, link, definition = _project(s, ctx, product_id, value.project_id, write=write)
     if new_consumption:
@@ -86,7 +85,7 @@ def validate(s, ctx, command, product, payload):
         from pdos_next.domain.build_start.service import validate as validate_execution
 
         return validate_execution(s, ctx, command, product, execution)
-    from pdos_next.service import source_for
+    from pdos_next.core.service import source_for
 
     actor = s.get(Principal, ctx.actor_id)
     if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
@@ -280,7 +279,7 @@ def readiness_snapshot(build, engineering, manufacturing):
 
 
 def list_builds(s, ctx, product_id, *, project_id=None):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     query = select(Build).where(Build.product_id == product_id)

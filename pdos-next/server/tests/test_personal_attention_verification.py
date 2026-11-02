@@ -4,13 +4,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import union_all
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.sql import operators, visitors
-from sqlalchemy.sql.elements import BinaryExpression, Cast, Label
-from sqlalchemy.sql.selectable import Select
-
-from pdos_next import models as registered_models  # noqa: F401 -- standalone model registry
+from pdos_next.core import models as registered_models  # noqa: F401 -- standalone model registry
 from pdos_next.domain.verification_front.models import (
     FormalVerificationCurrent,
     FormalVerificationRequest,
@@ -19,8 +13,13 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunCurrent,
     VerificationRunVersion,
 )
-from pdos_next.personal_attention_verification import queries
+from pdos_next.features.personal.attention_verification import queries
 from pdos_next.schemas.verification.contracts import Acceptance, Coverage, Measurement
+from sqlalchemy import union_all
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.sql import operators, visitors
+from sqlalchemy.sql.elements import BinaryExpression, Cast, Label
+from sqlalchemy.sql.selectable import Select
 
 
 def _compile(value, *, literals=True):

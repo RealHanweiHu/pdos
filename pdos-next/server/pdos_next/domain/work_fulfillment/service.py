@@ -4,19 +4,18 @@ from dataclasses import dataclass
 from hashlib import sha256
 from uuid import uuid4
 
-from sqlalchemy import select
-
-from pdos_next.change_implementation_owner import common_group
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import now
+from pdos_next.core.service import command_digest, command_scope, digest
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.preproject.access import human
 from pdos_next.domain.quality_execution.evidence import merge_reads
 from pdos_next.domain.work_management import owner
 from pdos_next.domain.work_management.models import WorkCommitmentVersion
 from pdos_next.domain.work_management.rules import semantic
 from pdos_next.domain.work_management.service import _merge_basis, _without_recorded
-from pdos_next.models import now
-from pdos_next.service import command_digest, command_scope, digest
-from pdos_next.source_current import direct_source_basis
+from pdos_next.features.change.implementation_owner import common_group
+from sqlalchemy import select
 
 from .models import EVENT, OPERATION, SUBJECT, WorkCommitmentReview, WorkCommitmentReviewCurrent
 from .rules import require, review_state

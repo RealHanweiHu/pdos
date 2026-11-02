@@ -4,17 +4,16 @@ import json
 from datetime import UTC, datetime
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Grant, Principal, now
+from pdos_next.core.request_proof import request_proof, scope_is_held
+from pdos_next.core.service import digest
 from pdos_next.domain.quality_execution import policy
 from pdos_next.domain.quality_execution import service as quality
 from pdos_next.domain.quality_execution.evidence import merge_reads, refs_from_exact, source_basis
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, now
-from pdos_next.request_proof import request_proof, scope_is_held
-from pdos_next.service import digest
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from .schemas import (
     ActionBinding,
@@ -121,9 +120,9 @@ def _snapshot_basis_context(s, ctx, product_id, row):
         isinstance(s, Session) and s.info.get("read_snapshot") and scope_is_held(s, product_id)
     ):
         return None
-    from pdos_next.database import require_context
+    from pdos_next.core.database import require_context
     from pdos_next.domain.capa_effectiveness.fact_atom_storage import _uow
-    from pdos_next.quality_result_bridge import _runtime_stamp
+    from pdos_next.features.quality.result_bridge import _runtime_stamp
 
     require_context(s, ctx)
     proof = request_proof(s)
@@ -397,7 +396,7 @@ def _paired_output(s, ctx, product_id, basis, ref, *, previous=None, write=False
         if previous is not None:
             raise DomainError("SOURCE_STALE", "配对输出的原保存操作发生变化。")
         return None
-    from pdos_next import paired_followup_adapter
+    from pdos_next.features.quality import paired_followup_adapter
 
     owner = paired_followup_adapter.configured(s)
     if owner is None:

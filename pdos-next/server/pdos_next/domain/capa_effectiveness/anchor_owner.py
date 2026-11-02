@@ -5,7 +5,7 @@ It is not suitable for a PostgreSQL READ ONLY transaction. Nothing here begins,
 flushes, commits, consumes a proof, configures an issuer or opens a connection.
 """
 
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
 
 
 # Initialize the actual registry before staged domain imports.
@@ -15,7 +15,7 @@ from datetime import UTC
 from typing import Literal
 from uuid import UUID
 
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 
 from . import anchor as a
 from . import anchor_storage as storage
@@ -23,8 +23,8 @@ from . import fact_atom_storage as guards
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.domain.quality_execution.ports import FixedQualityResult
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
-from pdos_next.quality_result_bridge import _runtime_stamp
+from pdos_next.core.models import Grant, Principal
+from pdos_next.features.quality.result_bridge import _runtime_stamp
 from pdos_next.schemas.verification.contracts import DTO
 from pydantic import AwareDatetime, ValidationError
 

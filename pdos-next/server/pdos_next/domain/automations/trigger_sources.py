@@ -3,15 +3,14 @@
 from datetime import UTC, datetime, timedelta
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AwareDatetime, TypeAdapter, ValidationError
-from sqlalchemy import select
-
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
 from pdos_next.domain.work_management import owner
 from pdos_next.domain.work_management.models import WorkTaskCurrent
 from pdos_next.errors import DomainError
 from pdos_next.schemas.planning import CalendarRef
-from pdos_next.service import digest, require_access
+from pydantic import AwareDatetime, TypeAdapter, ValidationError
+from sqlalchemy import select
 
 from .fulfillment_sources import commitment_fulfilled
 from .schemas import Conditions, RelativeTrigger

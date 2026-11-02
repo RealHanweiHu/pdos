@@ -5,16 +5,15 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.models import Artifact, Category, Grant
+from pdos_next.errors import DomainError
+from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Category, Grant
-from pdos_next.providers.types import ProviderUsage
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_personal_context_pins_pg import pin_personal
 from tests.agent_kernel.test_run_continuation import scope, start, synthetic_artifact
@@ -63,7 +62,7 @@ def test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke
             visibility="private", revision=1, status="active"))
     actual = pin_personal(setup, [first, second])
     with Session(setup.admin) as session, session.begin():
-        from pdos_next.agent_kernel.models import AgentRun
+        from pdos_next.agent.kernel.models import AgentRun
 
         run = session.get(AgentRun, actual.run_id)
         assert run.state == "queued"
@@ -87,7 +86,7 @@ def test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke
     # Both private sources were read; neither is a final citation. The history
     # dependency must retain them and ordinary owner RLS must continue to read.
     with Session(setup.admin) as session:
-        from pdos_next.agent_kernel.models import AgentRun
+        from pdos_next.agent.kernel.models import AgentRun
         access = session.get(AgentRun, child).versions["conversation_access"]
         assert {str(first), str(second)} <= {item["source_id"]
             for value in access.values() for item in value["citations"]}
@@ -125,7 +124,7 @@ def test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke
     # Independently exercise the persisted historical manifest, without clearing
     # or editing the frozen selection merely to reach this layer. The unquoted
     # second source must still hide that historical answer in one metadata batch.
-    from pdos_next.agent_kernel.conversation_acl import classify
+    from pdos_next.agent.kernel.conversation_acl import classify
 
     event.listen(setup.engine, "before_cursor_execute", observe)
     try:
@@ -139,8 +138,8 @@ def test_actual_private_cross_category_read_uses_owner_and_one_batch_then_revoke
 
 
 def test_actual_read_without_explicit_run_sources_keeps_goal_and_hides_revoked_answer(setup):
-    from pdos_next.agent_kernel.models import AgentRun
-    from pdos_next.models import ObjectAudience
+    from pdos_next.agent.kernel.models import AgentRun
+    from pdos_next.core.models import ObjectAudience
     from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
     from tests.enterprise_search.test_retrieval_pg import index
     from tests.preproject.test_g0 import post, request

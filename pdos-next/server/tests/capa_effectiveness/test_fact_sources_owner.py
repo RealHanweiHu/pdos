@@ -12,14 +12,13 @@ from uuid import uuid4
 
 import pytest
 from capa_effectiveness.test_participants_owner import work as work
-
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import Artifact, Receipt
 from pdos_next.domain.capa_effectiveness import anchor as a
 from pdos_next.domain.capa_effectiveness import fact_sources_owner as owner
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Receipt
 from pdos_next.schemas.verification.contracts import SourceRef
 
 
@@ -258,9 +257,9 @@ def uploaded(work, monkeypatch, *, content=b"synthetic uploaded report bytes"):
     work.s.get_bind()._pdos_results_store = store
     # Controlled synthetic byte/safety ports explicitly stand in for scanner and
     # filesystem gates. Real source-for/line/hash/current checks stay exercised.
-    monkeypatch.setattr("pdos_next.originals.require_original", lambda *_a, **_k: original)
+    monkeypatch.setattr("pdos_next.originals.access.require_original", lambda *_a, **_k: original)
     monkeypatch.setattr(
-        "pdos_next.original_security.require_safe", lambda *_a, **_k: (epoch["value"], None)
+        "pdos_next.originals.security.require_safe", lambda *_a, **_k: (epoch["value"], None)
     )
     monkeypatch.setattr(owner, "require_original", lambda *_a, **_k: original)
     monkeypatch.setattr(owner, "require_safe", lambda *_a, **_k: (epoch["value"], None))

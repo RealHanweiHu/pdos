@@ -11,14 +11,13 @@ from copy import deepcopy
 from datetime import timedelta
 from uuid import UUID
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant, LoginSession, now
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.preproject.models import ProposalSubmission
-from pdos_next.models import Artifact, Grant, LoginSession, now
-from pdos_next.service import digest
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_transactions import human_session
 from tests.preproject.test_evidence_commands_pg import (
     artifact,

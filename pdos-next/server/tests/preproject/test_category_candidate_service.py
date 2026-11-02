@@ -9,16 +9,15 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.models import PublicWebSnapshot
-from pdos_next.clock import now
+from pdos_next.agent.kernel.models import PublicWebSnapshot
+from pdos_next.agent.research.types import Snapshot
+from pdos_next.core.clock import now
+from pdos_next.core.models import Audit, Category, Grant, Outbox, Receipt, RequestKey
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.preproject import category_creation as creation
 from pdos_next.domain.preproject.category_creation_models import CategoryCreationConfirmation
 from pdos_next.domain.preproject.category_models import KnowledgeEntry, ParameterVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Category, Grant, Outbox, Receipt, RequestKey
-from pdos_next.research.types import Snapshot
-from pdos_next.service import Context, digest
 
 
 class MemorySession:
@@ -49,7 +48,7 @@ class MemorySession:
 
 @pytest.fixture
 def candidate(monkeypatch):
-    from pdos_next.agent_kernel import category_candidate
+    from pdos_next.agent.kernel import category_candidate
 
     tenant, requester, writer, run_id = (uuid4() for _ in range(4))
     actor = NS(id=requester, tenant_id=tenant, active=True, kind="human", access_epoch=7)

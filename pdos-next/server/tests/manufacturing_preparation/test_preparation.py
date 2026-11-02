@@ -9,18 +9,17 @@ from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation, Product
+from pdos_next.core.service import Context, digest, material_digest
+from pdos_next.domain.manufacturing_baseline import consumption, models, rules, schemas, service
+from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy import CheckConstraint, ForeignKeyConstraint, UniqueConstraint, inspect
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Session, make_transient_to_detached
 from sqlalchemy.schema import CreateTable
 from sqlalchemy.types import Uuid
-
-from pdos_next.contracts import Command
-from pdos_next.domain.manufacturing_baseline import consumption, models, rules, schemas, service
-from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product
-from pdos_next.service import Context, digest, material_digest
 
 
 def source():
@@ -604,8 +603,12 @@ def test_actual_authority_cannot_be_borrowed_from_different_caller_or_project(mo
 
 
 def test_explicit_public_registry_is_manufacturing_t1_without_release():
-    from pdos_next.command_handlers import LIVE_CONSUMPTION_OPERATIONS, T1_OPERATIONS, T2_OPERATIONS
-    from pdos_next.service import EVENTS
+    from pdos_next.core.command_handlers import (
+        LIVE_CONSUMPTION_OPERATIONS,
+        T1_OPERATIONS,
+        T2_OPERATIONS,
+    )
+    from pdos_next.core.service import EVENTS
 
     assert set(schemas.PAYLOADS) <= set(T1_OPERATIONS) & set(LIVE_CONSUMPTION_OPERATIONS)
     assert not set(schemas.PAYLOADS) & set(T2_OPERATIONS)

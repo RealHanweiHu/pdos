@@ -8,19 +8,18 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import snapshot_command as command
-from pdos_next.agent_kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent_kernel.read_execution import ReadBinding
-from pdos_next.agent_kernel.research_read_ledger import page_result
-from pdos_next.agent_kernel.types import RunScope
-from pdos_next.contracts import Command
+from pdos_next.agent.kernel import snapshot_command as command
+from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
+from pdos_next.agent.kernel.read_execution import ReadBinding
+from pdos_next.agent.kernel.research_read_ledger import page_result
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.agent.research.types import ReadPage, Snapshot
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Category, Grant, Principal
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Grant, Principal
-from pdos_next.research.types import ReadPage, Snapshot
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
 
 
 class MemorySession:

@@ -9,21 +9,20 @@ from urllib.parse import urlsplit
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import indexing
+from pdos_next.agent.enterprise_search.events import ProjectionSender
+from pdos_next.agent.enterprise_search.models import SearchSource
+from pdos_next.agent.enterprise_search.workflow import EnterpriseProjection
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core.dispatch.outbox import dispatch_once
+from pdos_next.core.models import Inbox, Outbox
+from pdos_next.errors import DomainError
+from pdos_next.workflows.transport import TemporalSender
+from pdos_next.workflows.worker import Activities
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from temporalio.client import Client, WorkflowExecutionStatus
 from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.dispatch.outbox import dispatch_once
-from pdos_next.enterprise_search import indexing
-from pdos_next.enterprise_search.events import ProjectionSender
-from pdos_next.enterprise_search.models import SearchSource
-from pdos_next.enterprise_search.workflow import EnterpriseProjection
-from pdos_next.errors import DomainError
-from pdos_next.models import Inbox, Outbox
-from pdos_next.workflows.transport import TemporalSender
-from pdos_next.workflows.worker import Activities
 from tests.enterprise_search.test_retrieval_pg import query, register, session_for
 
 

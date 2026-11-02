@@ -17,18 +17,17 @@ from build_start.test_transactions import (
     ready_work,  # noqa: F401
     shared_configuration,
 )
+from pdos_next.core.models import Grant, LoginSession, Principal, now
+from pdos_next.core.service import Context, digest
+from pdos_next.domain.configurations.schemas import DefinitionReference
+from pdos_next.domain.configurations.service import _merge_reads
+from pdos_next.domain.verification_handoff.service import event_source
 from sqlalchemy.orm import Session
 from test_build_execution import actual_command, allocation_command, execution_view, output_command
 from test_project_first_plan import accepted, cmd, post
 from test_verification_execution import command as prep_command
 from test_verification_execution import payload as prep_payload
 from test_verification_execution import row_for
-
-from pdos_next.domain.configurations.schemas import DefinitionReference
-from pdos_next.domain.configurations.service import _merge_reads
-from pdos_next.domain.verification_handoff.service import event_source
-from pdos_next.models import Grant, LoginSession, Principal, now
-from pdos_next.service import Context, digest
 
 
 @pytest.fixture

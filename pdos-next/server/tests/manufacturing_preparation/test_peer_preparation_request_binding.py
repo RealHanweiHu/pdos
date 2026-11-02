@@ -11,15 +11,14 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.core.service import Context, digest, material_digest
+from pdos_next.domain.manufacturing_baseline import models, rules, service
+from pdos_next.errors import DomainError
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import operators
-
-from pdos_next.contracts import Command
-from pdos_next.domain.manufacturing_baseline import models, rules, service
-from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey
-from pdos_next.service import Context, digest, material_digest
 
 from .test_preparation import material
 

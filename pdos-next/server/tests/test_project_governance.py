@@ -1,7 +1,6 @@
 # ruff: noqa: F811 -- pytest imports fixtures by name
-from test_project_first_plan import accepted, cmd, definition, post, project  # noqa: F401
-
 from pdos_next.domain.project_governance.rules import aggregate, health
+from test_project_first_plan import accepted, cmd, definition, post, project  # noqa: F401
 
 
 def get(setup, project):
@@ -192,11 +191,10 @@ def test_baseline_binding_and_directory_share_facts(setup, definition, project):
 
 def test_governance_ledger_is_immutable_and_agent_has_no_write(setup, definition, project):
     import pytest
+    from pdos_next.core.database import tenant_session
+    from pdos_next.domain.project_governance.models import GovernanceEvent
     from sqlalchemy import func, select, update
     from sqlalchemy.exc import DBAPIError
-
-    from pdos_next.database import tenant_session
-    from pdos_next.domain.project_governance.models import GovernanceEvent
 
     accepted(
         setup, command(setup, definition, project, "work.stage.adopt", 0, template="standard@1")

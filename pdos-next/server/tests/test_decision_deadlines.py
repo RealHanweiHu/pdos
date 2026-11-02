@@ -1,6 +1,6 @@
 from datetime import UTC, datetime, timedelta
 
-from pdos_next.clock import proof_deadline_current
+from pdos_next.core.clock import proof_deadline_current
 
 
 def test_only_named_t2_decision_can_have_no_confirmation_deadline():

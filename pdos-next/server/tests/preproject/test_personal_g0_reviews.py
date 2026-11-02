@@ -7,10 +7,9 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next import personal_g0_reviews as service
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.personal import g0_reviews as service
 
 
 def head(ctx, *, ordinal=1, owner_name="Readable owner"):

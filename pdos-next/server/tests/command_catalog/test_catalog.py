@@ -4,16 +4,15 @@ import json
 from pathlib import Path
 
 import pytest
-
-from pdos_next.command_handlers import (
+from pdos_next.core.command_handlers import (
     T0_OPERATIONS,
     T1_OPERATIONS,
     T2_OPERATIONS,
     tier_of,
 )
-from pdos_next.contracts import PAYLOADS
+from pdos_next.core.contracts import PAYLOADS
+from pdos_next.core.service import EVENTS
 from pdos_next.errors import DomainError
-from pdos_next.service import EVENTS
 
 CONTRACTS = Path(__file__).resolve().parents[3] / "contracts"
 

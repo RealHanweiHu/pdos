@@ -5,8 +5,7 @@ suspension must not turn an unrelated immutability/context test into expiry QA.
 """
 
 import pytest
-
-from pdos_next.clock import now, using_clock
+from pdos_next.core.clock import now, using_clock
 
 
 @pytest.fixture

@@ -14,9 +14,8 @@ from pathlib import Path
 from types import SimpleNamespace
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next import paired_followup_adapter as adapter
+from pdos_next.core.models import Grant, Principal, Receipt
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.capa_effectiveness import paired_storage
 from pdos_next.domain.capa_verification.schemas import ActionBinding, FollowupBasis, OutputRef
 from pdos_next.domain.verification_front.models import FormalVerificationRequest
@@ -26,9 +25,9 @@ from pdos_next.domain.verification_launch.models import (
 )
 from pdos_next.domain.verification_results.models import TestResultActionFact as ResultActionORM
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Receipt
+from pdos_next.features.quality import paired_followup_adapter as adapter
 from pdos_next.schemas.quality_issues.contracts import EffectivenessRequirement
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
 
 _spec = importlib.util.spec_from_file_location(
     "followup_live_saved_shapes", Path(__file__).with_name("test_live_paired_owner.py")

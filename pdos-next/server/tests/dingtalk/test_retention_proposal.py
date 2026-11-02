@@ -5,7 +5,9 @@ import re
 from pathlib import Path
 
 from migrations.candidates.dingtalk_lifecycle import LIFECYCLE_UP_SQL, NATIVE_FUNCTIONS
-from pdos_next.dingtalk.models import (
+from pdos_next.features.lifecycle.access import NON_CONSUMING
+from pdos_next.features.lifecycle.catalog import COVERED_COLUMNS, GUARDED
+from pdos_next.integrations.dingtalk.models import (
     Application,
     Binding,
     BindingNonce,
@@ -13,8 +15,6 @@ from pdos_next.dingtalk.models import (
     Message,
     ShareConsent,
 )
-from pdos_next.lifecycle_access import NON_CONSUMING
-from pdos_next.lifecycle_catalog import COVERED_COLUMNS, GUARDED
 from sqlalchemy.dialects import postgresql
 
 MODELS = (Application, BindingNonce, Binding, Message, ShareConsent, Delivery)

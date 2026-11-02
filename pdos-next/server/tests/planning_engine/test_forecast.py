@@ -4,10 +4,8 @@ from datetime import UTC, datetime
 from decimal import Decimal, localcontext
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.engines.planning import calculate_forecast
-from pdos_next.engines.planning.dto import (
+from pdos_next.domain.engines.planning import calculate_forecast
+from pdos_next.domain.engines.planning.dto import (
     CalendarSnapshot,
     Dependency,
     DurationEstimate,
@@ -23,6 +21,7 @@ from pdos_next.engines.planning.dto import (
     WeekdaySchedule,
     WorkInterval,
 )
+from pydantic import ValidationError
 
 REF = Reference(source_id="synthetic-input", version="v1")
 NOW = datetime(2026, 10, 2, 9, tzinfo=UTC)

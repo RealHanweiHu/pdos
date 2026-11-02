@@ -7,12 +7,11 @@ from dataclasses import replace
 from uuid import UUID
 
 import pytest
-from sqlalchemy import event
-
-from pdos_next.agent_kernel.search_preferences import SearchPreferences, configure_start
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.search_preferences import SearchPreferences, configure_start
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
-from pdos_next.original_security import configure
+from pdos_next.originals.security import configure
+from sqlalchemy import event
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
 from tests.enterprise_search.test_retrieval_pg import index, register, session_for
 from tests.g0_fixture import create_g0_project
@@ -56,9 +55,9 @@ def test_category_fallback_keeps_internal_private_but_customer_private_needs_hum
     assert answer["sources"][0]["group"] == "same_category"
     assert [group["returned"] for group in answer["search_groups"]] == [0, 2]
     assert str(customer) not in str(client.messages)
-    from pdos_next.enterprise_search.assistant_scope import retrieve
-    from pdos_next.enterprise_search.assistant_sources import human_snapshot
-    from pdos_next.enterprise_search.schemas import SearchInput
+    from pdos_next.agent.enterprise_search.assistant_scope import retrieve
+    from pdos_next.agent.enterprise_search.assistant_sources import human_snapshot
+    from pdos_next.agent.enterprise_search.schemas import SearchInput
 
     durations, queries, current_count = [], [], []
     def statement(*_args):
@@ -93,7 +92,7 @@ def test_category_fallback_keeps_internal_private_but_customer_private_needs_hum
     chosen = ScopeClient("PRIVATESCOPE-9101")
     owner, scope, host, adapter = fixture(setup, chosen, project_id=project)
     with session_for(setup) as session:
-        from pdos_next.agent_kernel.models import AgentRun
+        from pdos_next.agent.kernel.models import AgentRun
 
         run = session.get(AgentRun, scope.run_id)
         configure_start(session, setup.ctx, run,

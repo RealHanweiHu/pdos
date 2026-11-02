@@ -9,11 +9,8 @@ from types import SimpleNamespace
 from uuid import UUID
 
 from build_start.test_transactions import import_authority
-from quality_followup_transactions import fixtures as followup
-from sqlalchemy import select
-from test_project_first_plan import accepted, cmd
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import now
 from pdos_next.domain.capa_effectiveness import (
     candidate_commands,
     candidate_storage,
@@ -32,9 +29,11 @@ from pdos_next.domain.capa_verification.schemas import FailurePairMapping
 from pdos_next.domain.quality_execution.evidence import union_sources
 from pdos_next.domain.verification_results import service as results
 from pdos_next.domain.verification_results.models import TestResultProjection as ResultProjection
-from pdos_next.models import now
 from pdos_next.schemas.quality_issues.contracts import Issue
 from pdos_next.schemas.verification.contracts import VerificationRequest
+from quality_followup_transactions import fixtures as followup
+from sqlalchemy import select
+from test_project_first_plan import accepted, cmd
 
 from . import approved_configuration_helpers as approved
 from . import formal_fulfillment_chain_helpers as fulfillment

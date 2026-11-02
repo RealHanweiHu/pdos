@@ -9,23 +9,22 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.sql.elements import TextClause
-
-from pdos_next.agent_kernel import activities
-from pdos_next.agent_kernel import category_adoption as adoption
-from pdos_next.agent_kernel.graph import VerifiedCategoryAdoption
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun
-from pdos_next.agent_kernel.persistence import record_answers
-from pdos_next.agent_kernel.temporal_port import workflow_id
-from pdos_next.agent_kernel.types import RunScope
-from pdos_next.agent_kernel.work_state_models import AgentWorkState
-from pdos_next.dispatch import outbox
+from pdos_next.agent.kernel import activities
+from pdos_next.agent.kernel import category_adoption as adoption
+from pdos_next.agent.kernel.graph import VerifiedCategoryAdoption
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun
+from pdos_next.agent.kernel.persistence import record_answers
+from pdos_next.agent.kernel.temporal_port import workflow_id
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.agent.kernel.work_state_models import AgentWorkState
+from pdos_next.core.dispatch import outbox
+from pdos_next.core.models import Category, Principal, Receipt
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Principal, Receipt
-from pdos_next.service import Context, digest
 from pdos_next.workflows.transport import TemporalSender
 from pdos_next.workflows.xiaopai import XiaopaiWork
+from sqlalchemy import select
+from sqlalchemy.sql.elements import TextClause
 
 
 class MemorySession:

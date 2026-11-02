@@ -1,10 +1,9 @@
 """One read snapshot of real waiting facts and the calendars actually available."""
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Grant, Principal, now
+from pdos_next.core.service import require_access
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, now
-from pdos_next.service import require_access
+from sqlalchemy import select
 
 from . import calendar_owner, owner, rules
 from .models import ExternalWaitCurrent, ExternalWaitVersion

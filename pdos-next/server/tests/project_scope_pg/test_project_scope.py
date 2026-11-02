@@ -14,20 +14,19 @@ from uuid import UUID, uuid4
 
 import g0_fixture
 import pytest
-from sqlalchemy import event, select
-from sqlalchemy.orm import Session, load_only
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentSession, AgentToolCall
-from pdos_next.agent_kernel.persistence import KernelStore
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentSession, AgentToolCall
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.core.models import Grant, ObjectAudience, Product, now
+from pdos_next.core.safety import verify_test_target
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.service_models import AutomationServiceAttempt
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.work_management.constants import ACCEPT, ASSIGN, CREATE
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, ObjectAudience, Product, now
-from pdos_next.safety import verify_test_target
+from sqlalchemy import event, select
+from sqlalchemy.orm import Session, load_only
 from tests.automations_pg.test_service_automation_pg import _activate, _ready, _spec
 from tests.automations_pg.test_service_relative_pg import _commit
 from tests.work_management_pg import test_workflow as flow
@@ -163,7 +162,7 @@ def test_actual_project_start_cancel_continue_and_private_metadata_events(projec
     assert detail["project_id"] == str(work.project_id)
     # Source/session metadata readers deliberately omit new and private columns.
     # The owner check re-reads only the missing scope, with ordinary current RLS.
-    from pdos_next.agent_kernel.run_reconciliation import owner
+    from pdos_next.agent.kernel.run_reconciliation import owner
 
     with flow.scoped(work) as session:
         limited = session.scalar(

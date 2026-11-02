@@ -101,7 +101,7 @@ def run(destination):
     )
     paths = [ROOT / "server" / name for name in TESTS]
     paths.extend((ROOT / "server/pdos_next").rglob("*.py"))
-    paths.extend(path for path in (ROOT / "server/pdos_next/skill_packages").rglob("*")
+    paths.extend(path for path in (ROOT / "server/pdos_next/agent/skill_packages").rglob("*")
                  if path.suffix in {".json", ".md"})
     paths.extend((ROOT.parent / "packages/pdos-agent-runtime/src").rglob("*.py"))
     paths.extend((ROOT / "server/tests").rglob("*eval_v0*.py"))

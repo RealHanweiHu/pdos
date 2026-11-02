@@ -7,15 +7,18 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import SecretStr, ValidationError
-
+from pdos_next.agent.model_configuration.commands import SavePayload, semantic
+from pdos_next.agent.model_configuration.connections import AddConnection, add, readings
+from pdos_next.agent.model_configuration.host import TenantRuntime
+from pdos_next.agent.model_configuration.kms import AliyunKms
+from pdos_next.agent.model_configuration.local_kms import (
+    LOCAL_ENDPOINT,
+    LOCAL_REGION,
+    LocalKeychainKms,
+)
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.commands import SavePayload, semantic
-from pdos_next.model_configuration.connections import AddConnection, add, readings
-from pdos_next.model_configuration.host import TenantRuntime
-from pdos_next.model_configuration.kms import AliyunKms
-from pdos_next.model_configuration.local_kms import LOCAL_ENDPOINT, LOCAL_REGION, LocalKeychainKms
 from pdos_next.schemas.model_configuration import ModelMetadata
+from pydantic import SecretStr, ValidationError
 from tests.model_configuration.test_host_runtime import KmsSdk, document, write_config
 
 KEY = "synthetic-provider-key-private"
@@ -131,7 +134,7 @@ def test_file_failure_retries_same_immutable_secret_without_changing_existing_bi
     host, kms = configured_host(tmp_path, tenant)
     before = host.path.read_bytes()
     data = request()
-    import pdos_next.model_configuration.connections as connections
+    import pdos_next.agent.model_configuration.connections as connections
     original = connections.os.replace
 
     def unavailable(*_):

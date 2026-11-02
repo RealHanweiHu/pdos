@@ -1,6 +1,6 @@
 import logging
 
-from pdos_next.error_catalog import REASONS
+from pdos_next.core.error_catalog import REASONS
 
 
 class DomainError(Exception):

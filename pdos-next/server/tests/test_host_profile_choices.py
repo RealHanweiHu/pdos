@@ -3,7 +3,6 @@
 from types import SimpleNamespace
 
 import pytest
-
 from pdos_next.api import create_app
 
 CHOICES = (
@@ -61,7 +60,7 @@ def test_professional_plural_requires_real_target_guard_before_issuer_registrati
     def no_registration(*args, **kwargs):
         pytest.fail("No professional issuer may register after target rejection")
 
-    monkeypatch.setattr("pdos_next.safety.verify_test_target", rejected_target)
+    monkeypatch.setattr("pdos_next.core.safety.verify_test_target", rejected_target)
     monkeypatch.setattr(
         "pdos_next.domain.professional_authority.service.configure_local_synthetic_profiles",
         no_registration,

@@ -3,11 +3,10 @@ from decimal import Decimal
 from typing import Annotated, Self
 from uuid import UUID
 
-from pydantic import AwareDatetime, BeforeValidator, Field, field_validator, model_validator
-
 from pdos_next.domain.configurations.schemas import DefinitionReference
-from pdos_next.engines.supply_cost.common import FrozenDTO, bounded_decimal
+from pdos_next.domain.engines.supply_cost.common import FrozenDTO, bounded_decimal
 from pdos_next.schemas.verification.contracts import EventTime
+from pydantic import AwareDatetime, BeforeValidator, Field, field_validator, model_validator
 
 Key = Annotated[str, Field(min_length=1, max_length=120)]
 Text = Annotated[str, Field(min_length=1, max_length=2000)]

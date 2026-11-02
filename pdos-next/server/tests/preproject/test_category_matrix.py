@@ -7,13 +7,12 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.models import Product
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject import category_matrix as matrix
 from pdos_next.domain.preproject.category_models import KnowledgeEntry, ProductTargetSegment
 from pdos_next.domain.preproject.models import ProposalDecision
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
-from pdos_next.service import digest
 
 
 def source():

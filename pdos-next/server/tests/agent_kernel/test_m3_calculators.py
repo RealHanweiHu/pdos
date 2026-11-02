@@ -6,9 +6,7 @@ from decimal import Decimal, localcontext
 from uuid import UUID
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.m3_calculators import (
+from pdos_next.agent.kernel.m3_calculators import (
     ENGINES,
     PRICE_FIELDS,
     SCHEMAS,
@@ -17,8 +15,9 @@ from pdos_next.agent_kernel.m3_calculators import (
     opportunity_score,
     price_band,
 )
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.evidence_schemas import ClaimContent
-from pdos_next.service import digest
+from pydantic import ValidationError
 
 REF = {"type": "claim", "id": str(UUID(int=10)), "version": 2, "line": 4, "quote": "synthetic"}
 

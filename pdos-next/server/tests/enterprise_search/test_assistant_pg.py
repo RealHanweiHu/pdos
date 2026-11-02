@@ -6,16 +6,16 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.persistence import create_run
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.persistence import create_run
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Grant
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant
 from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -134,7 +134,7 @@ def fixture(
     ) as session:
         binding = None
         if read_sources:
-            from pdos_next.agent_kernel.api import StartInput
+            from pdos_next.agent.kernel.api import StartInput
 
             binding = owner.binding_for(session, ctx, StartInput(
                 goal="比较明确选择的固定资料", idempotency_key=str(uuid4()),
@@ -172,7 +172,7 @@ def fixture(
     # Only accounting is synthetic; the child retains the actual registry, read
     # bindings, gateway, source checks, server rows and production graph.
     adapter.graph = AssistantExtractGraph(host, adapter)
-    from pdos_next.enterprise_search.comparison_graph import AssistantComparisonGraph
+    from pdos_next.agent.enterprise_search.comparison_graph import AssistantComparisonGraph
 
     adapter.comparison_graph = AssistantComparisonGraph(host, adapter)
     return owner, scope, host, adapter
@@ -270,8 +270,8 @@ def test_structured_knowledge_extract_uses_no_child_model_and_no_match_has_real_
         ),
     )
     assert response.status_code == 200, response.text
+    from pdos_next.agent.enterprise_search.indexing import project
     from pdos_next.domain.preproject.category_models import KnowledgeEntry
-    from pdos_next.enterprise_search.indexing import project
     from tests.enterprise_search.test_retrieval_pg import session_for
 
     with session_for(setup) as session:

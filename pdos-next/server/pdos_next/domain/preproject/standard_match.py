@@ -8,11 +8,10 @@ requirement; overlapping numeric intervals are inconclusive, not a match.
 from decimal import Decimal
 from uuid import UUID
 
+from pdos_next.core.schema_base import StrictModel
+from pdos_next.core.service import digest
 from pydantic import Field, model_validator
 from sqlalchemy import text
-
-from pdos_next.schema_base import StrictModel
-from pdos_next.service import digest
 
 from . import category_service, spec_compare
 from .schemas import SpecItem

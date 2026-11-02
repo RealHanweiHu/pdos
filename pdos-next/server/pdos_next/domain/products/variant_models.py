@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     ForeignKeyConstraint,
@@ -10,8 +11,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.models import Base, Row
 
 
 class Variant(Row, Base):

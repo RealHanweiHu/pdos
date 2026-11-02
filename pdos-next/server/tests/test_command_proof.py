@@ -2,20 +2,19 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.clock import now, using_clock
+from pdos_next.core.models import Artifact, Grant, Outbox, Receipt, RequestKey
 from sqlalchemy import event, select
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_trusted_source_work import claim_cmd, command, post, source
 
-from pdos_next.clock import now, using_clock
-from pdos_next.models import Artifact, Grant, Outbox, Receipt, RequestKey
-
 
 @pytest.mark.parametrize("product_scope", [True, False])
 def test_held_membership_proof_still_checks_actual_temporary_deadline(setup, product_scope):
-    from pdos_next.database import tenant_session
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.service import require_access
     from pdos_next.errors import DomainError
-    from pdos_next.service import require_access
 
     at = now()
     with Session(setup.admin) as session, session.begin():
@@ -224,10 +223,9 @@ def test_public_error_category_has_specific_reason_without_identity_leak(setup):
 
 
 def test_read_snapshot_is_repeatable_readonly_and_memo_ends_with_transaction(setup):
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.request_proof import snapshot_scalar
     from sqlalchemy import text
-
-    from pdos_next.database import tenant_session
-    from pdos_next.request_proof import snapshot_scalar
 
     artifact_id, _ = source(setup)
     identity = UUID(artifact_id)
@@ -274,11 +272,11 @@ def test_read_snapshot_is_repeatable_readonly_and_memo_ends_with_transaction(set
 
 
 def test_locked_scope_reads_upgrade_once_and_flush_discards_cached_scalars(setup):
-    from pdos_next.contracts import Command
-    from pdos_next.database import tenant_session
-    from pdos_next.models import Product
-    from pdos_next.request_proof import snapshot_scalar
-    from pdos_next.service import Context, command_scope
+    from pdos_next.core.contracts import Command
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.models import Product
+    from pdos_next.core.request_proof import snapshot_scalar
+    from pdos_next.core.service import Context, command_scope
 
     ctx = Context(setup.tenant, setup.human, setup.human, category_id=setup.category)
     value = Command.model_validate(
@@ -328,9 +326,9 @@ def test_locked_scope_reads_upgrade_once_and_flush_discards_cached_scalars(setup
 
 @pytest.mark.parametrize("reader", ["batch", "scoped"])
 def test_lock_upgrade_reads_committed_peer_change_into_held_orm_identity(setup, reader):
-    from pdos_next.database import tenant_session
-    from pdos_next.models import Product
-    from pdos_next.request_proof import batch_read, scoped_rows
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.models import Product
+    from pdos_next.core.request_proof import batch_read, scoped_rows
 
     query = select(Product).where(Product.id == setup.product)
     with tenant_session(
@@ -351,9 +349,9 @@ def test_lock_upgrade_reads_committed_peer_change_into_held_orm_identity(setup, 
 
 
 def test_savepoint_rollback_cannot_reuse_authority_after_its_lock_is_released(setup):
-    from pdos_next.database import tenant_session
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.service import require_access
     from pdos_next.errors import DomainError
-    from pdos_next.service import require_access
 
     with tenant_session(
         setup.engine, setup.tenant, actor_id=setup.human, category_id=setup.category
@@ -377,10 +375,9 @@ def test_savepoint_rollback_cannot_reuse_authority_after_its_lock_is_released(se
 
 @pytest.mark.parametrize("mutation", ["source", "authority"])
 def test_direct_dml_invalidates_source_and_authority_proofs_in_same_uow(setup, mutation):
-    from sqlalchemy import update
-
+    from pdos_next.core.service import require_access, source_for
     from pdos_next.errors import DomainError
-    from pdos_next.service import require_access, source_for
+    from sqlalchemy import update
 
     artifact, _ = source(setup)
     identity = UUID(artifact)

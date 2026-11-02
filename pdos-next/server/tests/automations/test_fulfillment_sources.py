@@ -10,7 +10,7 @@ from uuid import uuid4
 import pytest
 from sqlalchemy.engine import Engine
 
-from pdos_next import models  # noqa: F401
+from pdos_next.core import models  # noqa: F401
 from pdos_next.domain.automations import fulfillment_sources as actual
 from pdos_next.domain.automations import fulfillment_sql as storage
 from pdos_next.domain.automations import service_commands_sql as commands
@@ -18,7 +18,7 @@ from pdos_next.domain.automations import service_runtime as runtime
 from pdos_next.domain.automations import trigger_sources as sources
 from pdos_next.domain.automations.models import AutomationRuleCurrent
 from pdos_next.errors import DomainError
-from pdos_next.models import Base
+from pdos_next.core.models import Base
 import test_trigger_sources as original_sources
 
 case = original_sources.case

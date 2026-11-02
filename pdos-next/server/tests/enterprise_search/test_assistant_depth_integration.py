@@ -11,16 +11,15 @@ from uuid import uuid4
 
 import pytest
 from jsonschema import Draft202012Validator
-
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.registry import ToolRegistry
-from pdos_next.agent_kernel.types import RunScope
-from pdos_next.enterprise_search import assistant_depth as depth
-from pdos_next.enterprise_search import assistant_ledger
+from pdos_next.agent.enterprise_search import assistant_depth as depth
+from pdos_next.agent.enterprise_search import assistant_ledger
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.registry import ToolRegistry
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 from tests.agent_kernel.test_bound_read_host import MemorySession, make_host
 
 
@@ -176,7 +175,7 @@ def test_fast_extract_budget_is_distinct_fixed_sources_across_actual_model_claim
 def test_actual_public_start_freezes_server_profile_before_workflow_dispatch(
     monkeypatch, requested, parent_present, expected,
 ):
-    from pdos_next.agent_kernel import api, conversation
+    from pdos_next.agent.kernel import api, conversation
 
     tenant, human, category = uuid4(), uuid4(), uuid4()
     ctx = Context(tenant, human, human, category_id=category)
@@ -252,7 +251,7 @@ def test_concurrent_search_claims_share_one_fence_and_only_one_reaches_source_io
 
 
 def test_real_host_projects_frozen_depth_into_closed_dynamic_context_only(monkeypatch):
-    from pdos_next.agent_kernel import context_projection
+    from pdos_next.agent.kernel import context_projection
 
     f = host_case()
     f.run.versions["personal_preferences_context"] = {

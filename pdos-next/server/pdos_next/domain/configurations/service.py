@@ -4,11 +4,10 @@ from copy import deepcopy
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Artifact, Principal
+from pdos_next.core.request_proof import batch_read
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Principal
-from pdos_next.request_proof import batch_read
+from sqlalchemy import select
 
 from .models import BomLine, BomRevision, EngineeringConfiguration, PartIdentity, ProcessRevision
 from .schemas import (
@@ -27,7 +26,7 @@ PAYLOAD_MODELS = {
 
 
 def _human(s, ctx, product_id, *, write=False):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id, write=write, lock=write)
     actor = s.get(Principal, ctx.actor_id)
@@ -36,7 +35,7 @@ def _human(s, ctx, product_id, *, write=False):
 
 
 def _row(s, ctx, product_id, model, identity):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     row = batch_read(s, model, [identity]).get(identity)
@@ -61,8 +60,8 @@ def _merge_reads(*groups):
 
 
 def _source_state(s, ctx, product_id, reads, cache=None):
-    from pdos_next.original_security import source_status
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
+    from pdos_next.originals.security import source_status
 
     category_id = ctx.category_id or require_access(s, ctx, product_id).category_id
     cache = {} if cache is None else cache
@@ -148,7 +147,7 @@ def _decimal(value):
 
 
 def _bom_view(s, ctx, product_id, row, cache=None):
-    from pdos_next.request_proof import snapshot_rows
+    from pdos_next.core.request_proof import snapshot_rows
 
     cache = {} if cache is None else cache
     parts, lines = {}, []
@@ -364,8 +363,8 @@ def _inputs(s, ctx, product_id, payload):
 
 
 def _checked_inputs(s, ctx, command, product, payload):
+    from pdos_next.core.service import source_for
     from pdos_next.domain.preproject.baseline import validate_sources
-    from pdos_next.service import source_for
 
     _human(s, ctx, product.id, write=True)
     if command.product_id != product.id or product.tenant_id != ctx.tenant_id:

@@ -9,6 +9,9 @@ Original roots remain revision one after every observation or correction.
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
+from pdos_next.domain.manufacturing_baseline.publication_models import FIXED as PUBLICATION_FIXED
+from pdos_next.domain.manufacturing_baseline.publication_models import TABLE as PUBLICATION_TABLE
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -20,10 +23,6 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.domain.manufacturing_baseline.publication_models import FIXED as PUBLICATION_FIXED
-from pdos_next.domain.manufacturing_baseline.publication_models import TABLE as PUBLICATION_TABLE
-from pdos_next.models import Base, Row
 
 from .native_schemas import CREATE_OPERATION, RESULT_OPERATION
 

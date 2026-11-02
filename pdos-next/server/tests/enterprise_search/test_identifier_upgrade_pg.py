@@ -1,9 +1,9 @@
 """An existing derived rule version is replaced by the normal rebuild path."""
 
-from pdos_next.enterprise_search import indexing
-from pdos_next.enterprise_search.models import SearchChunk
-from pdos_next.enterprise_search.tokenizer import CODE_RULE
-from pdos_next.models import Artifact, Receipt
+from pdos_next.agent.enterprise_search import indexing
+from pdos_next.agent.enterprise_search.models import SearchChunk
+from pdos_next.agent.enterprise_search.tokenizer import CODE_RULE
+from pdos_next.core.models import Artifact, Receipt
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from tests.enterprise_search.test_retrieval_pg import index, query, register, session_for

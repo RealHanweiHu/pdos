@@ -6,8 +6,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.engine import Engine
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.verification_front import service
 from pdos_next.domain.verification_front.adapters import METHOD_POSITION
 from pdos_next.domain.verification_front.models import (
@@ -19,7 +18,7 @@ from pdos_next.domain.verification_front.models import (
 from pdos_next.domain.verification_front.schemas import MethodPreparePayload, ScheduleProposePayload
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import EventTime, SourceRef
-from pdos_next.service import Context, digest
+from sqlalchemy.engine import Engine
 
 from .test_pure import AT, bound, create  # noqa: F401 - register the bounded pure fixture
 

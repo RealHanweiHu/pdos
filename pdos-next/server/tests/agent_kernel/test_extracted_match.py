@@ -3,12 +3,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.m3_extracted_match import map_spec
-from pdos_next.agent_kernel.m3_spec_compare import AgentSpecCompareInput
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.kernel.m3_extracted_match import map_spec
+from pdos_next.agent.kernel.m3_spec_compare import AgentSpecCompareInput
+from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 
 def parameter(**changes):

@@ -10,9 +10,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Receipt
 from pdos_next.domain.release import rules as release
 from pdos_next.domain.release_exceptions import owner
 from pdos_next.domain.release_exceptions.constants import DECIDE
@@ -21,7 +19,8 @@ from pdos_next.domain.release_exceptions.models import (
     ReleaseExceptionDecision,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Receipt
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session
 
 from .test_rules import case as rule_case  # noqa: F401
 from .test_rules import release_case  # noqa: F401

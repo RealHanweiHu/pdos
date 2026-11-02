@@ -15,22 +15,21 @@ from uuid import UUID
 
 import pytest
 from g0_fixture import create_g0_project
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.conversation import memory
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.project_current_context import KEY
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, ObjectAudience, Product, UploadedOriginal
+from pdos_next.core.service import Context, source_for
+from pdos_next.domain.projects.models import Project
+from pdos_next.domain.work_management.constants import STATUS
+from pdos_next.errors import DomainError
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_original_security import parsed, uploaded
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.conversation import memory
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.project_current_context import KEY
-from pdos_next.database import tenant_session
-from pdos_next.domain.projects.models import Project
-from pdos_next.domain.work_management.constants import STATUS
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Category, ObjectAudience, Product, UploadedOriginal
-from pdos_next.service import Context, source_for
 from tests.agent_kernel.test_project_current_context_pg import (
     original_security_work,
     prepare,

@@ -11,11 +11,10 @@ import os
 from pathlib import Path
 
 import pytest
+from pdos_next.agent.enterprise_search.embedding_models import Vector
+from pdos_next.agent.enterprise_search.schemas import SearchInput
+from pdos_next.core.database import tenant_session
 from sqlalchemy import text
-
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.embedding_models import Vector
-from pdos_next.enterprise_search.schemas import SearchInput
 from tests.enterprise_search.embedding_ann_fixture import (
     HNSW_INDEX,
     native_ann_fixture,

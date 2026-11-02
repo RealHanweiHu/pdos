@@ -3,17 +3,16 @@
 from copy import deepcopy
 
 import pytest
+from pdos_next.core.error_catalog import REASONS
+from pdos_next.core.service import digest
+from pdos_next.domain.verification_front.service import _snapshot
+from pdos_next.errors import DomainError
 from test_handoff_common import documented, row_for
 from verification_launch.test_pure import (
     promised,
     started,
     work,  # noqa: F401
 )
-
-from pdos_next.domain.verification_front.service import _snapshot
-from pdos_next.error_catalog import REASONS
-from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def launch_row(request, operation):

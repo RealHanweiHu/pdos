@@ -6,19 +6,18 @@ from decimal import Decimal
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
 from migrations.schema_s0_0757 import DOWNGRADE_SQL
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Claim
+from pdos_next.core.service import Context
 from pdos_next.domain.preproject.category_models import ParameterVersion
 from pdos_next.domain.products.definitions import definition_view
 from pdos_next.domain.products.models import DefinitionRevision, DefinitionSpecRow
 from pdos_next.domain.products.variants import compare_snapshots, snapshot_from_definition
-from pdos_next.models import Claim
 from pdos_next.schemas.products.derivation import DerivationRequest
-from pdos_next.service import Context
+from sqlalchemy import select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.preproject.test_evidence_commands_pg import artifact, claim_body, evidence_request
 from tests.preproject.test_g0 import create, decide_request, payload, post, request, save, submit
 from tests.preproject.test_g0 import work as work

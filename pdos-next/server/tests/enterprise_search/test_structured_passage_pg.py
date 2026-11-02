@@ -5,15 +5,14 @@ import json
 
 from external_wait_pg.test_workflow import create_record, original_security_work, work
 from external_wait_pg.test_workflow import execute as wait_execute
-from sqlalchemy import select
-
-from pdos_next.agent_kernel.context_budget import estimate_tokens
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.result_continuation import serialized
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.context_budget import estimate_tokens
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.result_continuation import serialized
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.service import digest
 from pdos_next.domain.external_wait.schemas import Create
 from pdos_next.providers.types import ProviderUsage
-from pdos_next.service import digest
+from sqlalchemy import select
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 from tests.enterprise_search.test_business_sources_pg import NativeClient, apply_event
 

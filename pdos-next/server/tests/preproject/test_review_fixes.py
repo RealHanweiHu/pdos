@@ -6,23 +6,22 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import AgentSession, AgentToolCall, TenantSkillEnablement
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import AgentSession, AgentToolCall, TenantSkillEnablement
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant
+from pdos_next.core.service import digest, execute
 from pdos_next.domain.preproject.category_models import (
     ProductTargetSegment,
 )
 from pdos_next.domain.preproject.models import ProjectOpenItem, ProposalSource
 from pdos_next.domain.preproject.provenance import prepare_candidate
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant
-from pdos_next.service import digest, execute
+from sqlalchemy import func, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_execution_binding import ledger
 from tests.preproject.test_g0 import (
     create,
@@ -468,9 +467,9 @@ def test_at52_ai_spec_availability_requires_disposition_only_for_approval(
 
 
 def test_batch_validation_keeps_each_candidate_identity_and_source_privacy(work, monkeypatch):
+    from pdos_next.core.models import Category
     from pdos_next.domain.preproject import service
     from pdos_next.domain.preproject.schemas import ProposalCreate
-    from pdos_next.models import Category
 
     sources = []
     for visibility in ("private", "category"):
@@ -653,7 +652,7 @@ def test_t0_qualified_patch_real_receipt_and_protection(work):
 
 
 def test_agent_context_without_controlled_call_cannot_write(work):
-    from pdos_next.service import Context
+    from pdos_next.core.service import Context
 
     proposal_id, _ = create(work)
     ctx = Context(
@@ -711,7 +710,7 @@ def test_t1_candidate_tampering_rejected(work):
 
 
 def test_t1_patch_requires_confirmation_without_t0_qualification(work):
-    from pdos_next.agent_kernel.models import TenantSkillEnablement
+    from pdos_next.agent.kernel.models import TenantSkillEnablement
 
     proposal_id, _ = create(work)
     item = read(work, proposal_id).json()["items"][0]
@@ -758,7 +757,7 @@ def test_t1_patch_requires_confirmation_without_t0_qualification(work):
 
 
 def test_t1_run_cancelled_after_preview_cannot_be_consumed(work):
-    from pdos_next.agent_kernel.models import AgentRun
+    from pdos_next.agent.kernel.models import AgentRun
 
     data = payload(work)
     data["groups"]["items"][4]["content"]["item_status"] = "ai_draft"
@@ -934,7 +933,7 @@ def test_source_type_database_constraint_rejects_noncanonical_value(work):
     "operation", ["proposal.create", "proposal.item.patch", "proposal.question.create"]
 )
 def test_registered_host_preparation_preserves_model_source(work, operation):
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
 
     proposal_id = None
     if operation == "proposal.create":
@@ -975,9 +974,9 @@ def test_registered_host_preparation_preserves_model_source(work, operation):
 
 
 def test_registered_graph_protected_t0_becomes_t1_candidate():
-    from pdos_next.agent_kernel.graph import AgentKernel
-    from pdos_next.agent_kernel.tools import default_registry
-    from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+    from pdos_next.agent.kernel.graph import AgentKernel
+    from pdos_next.agent.kernel.tools import default_registry
+    from pdos_next.agent.kernel.types import ModelTurn, ToolCall
     from pdos_next.domain.preproject.access import fail
     from tests.agent_kernel.test_graph import Host, final, scope
 

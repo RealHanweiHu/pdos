@@ -3,11 +3,10 @@
 import json
 from datetime import UTC
 
-from pydantic import ValidationError
-
+from pdos_next.core.service import source_for
 from pdos_next.domain.quality_execution.evidence import POSITION, check_source
 from pdos_next.errors import DomainError
-from pdos_next.service import source_for
+from pydantic import ValidationError
 
 from .schemas import CompletionFact
 

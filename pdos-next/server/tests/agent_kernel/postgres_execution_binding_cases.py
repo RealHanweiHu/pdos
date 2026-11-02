@@ -14,30 +14,29 @@ from uuid import uuid4
 import pytest
 from alembic.autogenerate import compare_metadata
 from alembic.migration import MigrationContext
-from sqlalchemy import event, func, select, text
-from sqlalchemy.engine import make_url
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import DomainBinding
-from pdos_next.agent_kernel.execution import (
+from pdos_next.agent.kernel.bindings import DomainBinding
+from pdos_next.agent.kernel.execution import (
     finish_domain_call,
     prepare_domain_call,
     recover_domain_call,
 )
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentSession,
     AgentToolCall,
     KernelRow,
 )
-from pdos_next.clock import now
-from pdos_next.database import engine_for, tenant_session
+from pdos_next.core.clock import now
+from pdos_next.core.database import engine_for, tenant_session
+from pdos_next.core.models import Audit, Base, Category, Grant, Outbox, Principal, Product, Receipt
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Base, Category, Grant, Outbox, Principal, Product, Receipt
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from sqlalchemy import event, func, select, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_execution_binding import ledger
 
 PORT = 51698

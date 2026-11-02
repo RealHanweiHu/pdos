@@ -5,20 +5,19 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-from pydantic import SecretStr, ValidationError
-
-from pdos_next.errors import DomainError
-from pdos_next.model_configuration.ports import (
+from pdos_next.agent.model_configuration.ports import (
     ManagementContext,
     RuntimeFacts,
     RuntimeQuery,
     SecretBinding,
     SecretMaterial,
 )
-from pdos_next.model_configuration.runtime import RuntimeConfiguration
-from pdos_next.model_configuration.service import ConfigurationService
-from pdos_next.model_gateway.ports import CallPermit
+from pdos_next.agent.model_configuration.runtime import RuntimeConfiguration
+from pdos_next.agent.model_configuration.service import ConfigurationService
+from pdos_next.agent.model_gateway.ports import CallPermit
+from pdos_next.errors import DomainError
 from pdos_next.schemas.model_configuration import ModelMetadata, SaveConfiguration
+from pydantic import SecretStr, ValidationError
 
 NOW = datetime(2026, 10, 2, tzinfo=UTC)
 SYNTHETIC_KEY = "synthetic-test-only-credential"
@@ -521,7 +520,7 @@ def test_version_and_metadata_are_immutable(setup):
 def test_sensitive_port_exception_tracebacks_and_request_validation_are_redacted(setup):
     import traceback
 
-    from pdos_next.model_configuration.service import parse_save_payload
+    from pdos_next.agent.model_configuration.service import parse_save_payload
 
     ctx, _, _, metadata, secrets, _, service, _ = setup
     secrets.failure = True

@@ -1,12 +1,11 @@
 """Feedback history and fresh native choices in the caller's current scope."""
 
-from sqlalchemy import or_, select
-
+from pdos_next.core.models import Artifact
+from pdos_next.core.service import require_access
 from pdos_next.domain.build_execution.models import BuildLot
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import Artifact
-from pdos_next.service import require_access
+from sqlalchemy import or_, select
 
 from . import owner
 from .models import FieldFeedbackCurrent, FieldFeedbackVersion, FieldResponseRecord

@@ -9,6 +9,13 @@ from copy import copy, deepcopy
 from uuid import uuid4
 
 from g0_fixture import create_g0_project
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import ObjectAudience, Receipt
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
+from pdos_next.domain.preproject.baseline import publication_digest
+from pdos_next.domain.products.definitions import definition_view
+from pdos_next.domain.products.models import DefinitionRevision
 from sqlalchemy import delete, text
 from sqlalchemy.dialects.postgresql import insert
 from test_builds import build_command
@@ -16,14 +23,6 @@ from test_builds import configuration as configuration
 from test_project_first_plan import accepted, cmd
 from test_project_first_plan import definition as definition
 from test_project_first_plan import project as project
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.preproject.baseline import publication_digest
-from pdos_next.domain.products.definitions import definition_view
-from pdos_next.domain.products.models import DefinitionRevision
-from pdos_next.models import ObjectAudience, Receipt
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
 from tests.preproject.test_g0 import create, read, request, save, submit
 
 

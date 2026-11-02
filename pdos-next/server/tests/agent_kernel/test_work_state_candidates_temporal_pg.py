@@ -8,10 +8,8 @@ import os
 import pytest
 from build_operational_facts.fixtures import configuration, definition, operational_work, project
 from build_start.test_transactions import ready_work
-from verification_handoff.fixtures import artifact, handoff_work, known_configuration
-
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.database import tenant_session
 from tests.agent_kernel.test_work_state_candidates_pg import candidate
 from tests.enterprise_search.test_verification_action_temporal_pg import (
     continuation,
@@ -20,6 +18,7 @@ from tests.enterprise_search.test_verification_action_temporal_pg import (
     prepared,
 )
 from tests.enterprise_search.verification_action_harness import VerificationClient, actual_runtime
+from verification_handoff.fixtures import artifact, handoff_work, known_configuration
 
 pytestmark = pytest.mark.skipif(
     not os.environ.get("PDOS_TEMPORAL_ADDRESS")

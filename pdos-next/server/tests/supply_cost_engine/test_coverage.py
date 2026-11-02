@@ -3,8 +3,7 @@ from decimal import Decimal
 from random import Random
 
 import pytest
-
-from pdos_next.engines.supply_cost import CoverageRequest, calculate_coverage
+from pdos_next.domain.engines.supply_cost import CoverageRequest, calculate_coverage
 
 from .helpers import bom_item, pool, ref
 

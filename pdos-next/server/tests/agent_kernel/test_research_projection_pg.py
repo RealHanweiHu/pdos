@@ -2,10 +2,9 @@
 # ruff: noqa: F811 -- explicitly imported PG fixtures
 
 import pytest
+from pdos_next.agent.research.egress import decide
+from pdos_next.core.models import UploadedOriginal
 from sqlalchemy.orm import Session
-
-from pdos_next.models import UploadedOriginal
-from pdos_next.research.egress import decide
 from tests.agent_kernel.test_m3_original_binding_pg import QUOTE
 from tests.agent_kernel.test_proposal_context_pg import start
 from tests.agent_kernel.test_transactions import run
@@ -27,7 +26,7 @@ def test_actual_proposal_text_is_classified_and_receipted_before_unsigned_resear
         with owner.store.transaction(scope) as (session, run):
             from uuid import UUID
 
-            from pdos_next.models import Artifact
+            from pdos_next.core.models import Artifact
 
             source = session.get(Artifact, UUID(run.read_sources[0]["artifact_id"]))
             query = "look up " + session.get(UploadedOriginal, source.original_id).filename
@@ -44,7 +43,7 @@ def test_actual_proposal_text_is_classified_and_receipted_before_unsigned_resear
 
 
 def test_bound_model_name_is_classified_as_internal_not_public(setup):
-    from pdos_next.models import Product
+    from pdos_next.core.models import Product
 
     store, scope = run(setup, product_id=setup.product, data_categories=("internal",))
     with Session(setup.admin) as session:

@@ -7,16 +7,15 @@ from types import SimpleNamespace as NS
 from uuid import UUID
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import project_object_reads as module
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import project_object_reads as module
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import RunScope
 from pdos_next.domain.builds.models import Build
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
+from sqlalchemy.dialects import postgresql
 
 
 @pytest.fixture
@@ -266,7 +265,7 @@ def test_project_read_module_imports_without_prior_common_model_import():
     from pathlib import Path
 
     result = subprocess.run(
-        [sys.executable, "-c", "import pdos_next.agent_kernel.project_object_reads"],
+        [sys.executable, "-c", "import pdos_next.agent.kernel.project_object_reads"],
         env={**os.environ, "PYTHONPATH": str(Path(module.__file__).parents[2])},
         capture_output=True,
         text=True,

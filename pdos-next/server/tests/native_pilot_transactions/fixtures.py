@@ -13,15 +13,22 @@ from uuid import UUID, uuid4
 
 import pytest
 from manufacturing_preparation import publication_pg_helpers as publication
-from quality_execution import fixtures as quality
-from security_fixture import secured_parse
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-from test_build_execution import actual_command, allocation_command, execution_view, output_command
-from test_builds import build_command
-from test_durable_evidence import upload_input
-from test_project_first_plan import accepted, cmd, post
-
+from pdos_next.bootstrap.operational_import import import_operational_fact
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Category,
+    Confirmation,
+    Consumption,
+    OriginalSecurity,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
+    now,
+)
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.build_execution import service as physical
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.schemas import FactInput, OperationalScope
@@ -43,22 +50,7 @@ from pdos_next.domain.manufacturing_trials.native_statistics_owner import (
     statistics_declaration,
 )
 from pdos_next.domain.projects import service as projects
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Category,
-    Confirmation,
-    Consumption,
-    OriginalSecurity,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
-    now,
-)
-from pdos_next.operational_import import import_operational_fact
-from pdos_next.originals import object_reference
-from pdos_next.safety import verify_test_target
+from pdos_next.originals.access import object_reference
 from pdos_next.schemas.manufacturing_trials.contracts import (
     Counts,
     ExceptionFact,
@@ -69,7 +61,14 @@ from pdos_next.schemas.manufacturing_trials.contracts import (
     YieldScope,
 )
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest
+from quality_execution import fixtures as quality
+from security_fixture import secured_parse
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+from test_build_execution import actual_command, allocation_command, execution_view, output_command
+from test_builds import build_command
+from test_durable_evidence import upload_input
+from test_project_first_plan import accepted, cmd, post
 
 PILOT_MODELS = (NativePilotRun, NativePilotCurrent, NativePilotObservation)
 EFFECT_MODELS = (*PILOT_MODELS, Receipt, Audit, Outbox, RequestKey, Confirmation, Product)

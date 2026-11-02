@@ -4,8 +4,8 @@ from datetime import datetime
 from typing import Literal
 from uuid import UUID
 
-from pdos_next.personal_summary_schemas import Selection as PersonalSummarySelection
-from pdos_next.schema_base import StrictModel
+from pdos_next.core.schema_base import StrictModel
+from pdos_next.features.personal.summary_schemas import Selection as PersonalSummarySelection
 from pydantic import ConfigDict, Field, field_validator, model_serializer, model_validator
 
 from .trigger_time import Schedule

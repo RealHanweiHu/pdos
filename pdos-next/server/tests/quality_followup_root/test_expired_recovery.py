@@ -10,6 +10,11 @@ from datetime import timedelta
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
+from pdos_next.core import service as common
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.domain.quality_execution.models import QualityIssueVersion
+from pdos_next.features.quality import followup_host as host
 from quality_followup_transactions.fixtures import (
     complete_command,
     counts,
@@ -20,12 +25,6 @@ from quality_followup_transactions.fixtures import (
 from quality_followup_transactions.test_transactions import prepared
 from sqlalchemy import func, select
 from test_project_first_plan import accepted
-
-from pdos_next import quality_followup_host as host
-from pdos_next import service as common
-from pdos_next.database import tenant_session
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey
 
 pytest_plugins = ["quality_followup_transactions.fixtures"]
 

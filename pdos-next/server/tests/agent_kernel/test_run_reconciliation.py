@@ -4,11 +4,8 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentInput,
     AgentRun,
@@ -16,12 +13,14 @@ from pdos_next.agent_kernel.models import (
     TenantAdministrator,
     ValidationBudget,
 )
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.run_reconciliation import finalize, mark_required
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.run_reconciliation import finalize, mark_required
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Claim, Receipt, RequestKey
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Claim, Receipt, RequestKey
-from pdos_next.service import digest
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_cost_budget import rate, wallet
 from tests.agent_kernel.test_public_run_revert import claim_ledger
 from tests.agent_kernel.test_revert import receipt
@@ -209,7 +208,7 @@ def test_current_actual_claim_receipt_is_retained_and_whole_goal_is_not_falsely_
             )
         )
     actual = claim_ledger(setup, artifact)
-    from pdos_next.agent_kernel.bindings import execution_key
+    from pdos_next.agent.kernel.bindings import execution_key
 
     saved = actual.adapter.execute(
         actual.scope,
@@ -298,7 +297,7 @@ def test_metadata_pagination_refuses_cross_run_cursor_and_has_no_raw_result_or_p
 
 
 def test_read_only_owner_can_inspect_and_close_technical_wait_without_gain_of_revert_power(setup):
-    from pdos_next.models import Grant
+    from pdos_next.core.models import Grant
 
     f = lost(setup)
     saved = receipt(setup, f.scope)

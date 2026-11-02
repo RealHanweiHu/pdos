@@ -3,7 +3,7 @@
 
 from dataclasses import replace
 
-from pdos_next.original_security import configure
+from pdos_next.originals.security import configure
 from tests.enterprise_search.test_retrieval_pg import index, query
 from tests.test_original_security import parsed, uploaded
 from tests.test_original_security import security_work as security_work

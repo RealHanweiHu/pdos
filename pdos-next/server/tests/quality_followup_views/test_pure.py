@@ -6,9 +6,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next import quality_followup_views as views
+from pdos_next.core.service import digest
 from pdos_next.domain.capa_verification.schemas import (
     ActionBinding,
     FollowupBasis,
@@ -18,9 +16,10 @@ from pdos_next.domain.capa_verification.schemas import (
     SourceRead,
 )
 from pdos_next.errors import DomainError
+from pdos_next.features.quality import followup_views as views
 from pdos_next.schemas.quality_issues.contracts import EffectivenessRequirement
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import digest
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 3, tzinfo=UTC)
 REAL_LINKS = views._links

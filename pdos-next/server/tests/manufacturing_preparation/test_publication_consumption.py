@@ -5,16 +5,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session, make_transient_to_detached
-from sqlalchemy.orm.attributes import set_committed_value
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import Context, digest, material_digest
 from pdos_next.domain.manufacturing_baseline import consumption
 from pdos_next.domain.manufacturing_baseline import publication_rules as rules
 from pdos_next.domain.manufacturing_baseline import publication_schemas as schemas
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation
-from pdos_next.service import Context, digest, material_digest
+from sqlalchemy.orm import Session, make_transient_to_detached
+from sqlalchemy.orm.attributes import set_committed_value
 
 from .test_preparation import frame as preparation_frame
 

@@ -6,21 +6,20 @@ from uuid import UUID, uuid4
 
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.domain_reads import DomainReads
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import AgentToolCall, TenantAdministrator
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
+from pdos_next.errors import DomainError
+from pdos_next.providers.types import ProviderUsage
 from pydantic import ValidationError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.domain_reads import DomainReads
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import AgentToolCall, TenantAdministrator
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
-from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.providers.types import ProviderUsage
 from tests.agent_kernel.test_gateway import Client, configured_route
 from tests.agent_kernel.test_m3_original_binding_pg import actual_run, proposal, uploaded
 from tests.preproject.test_g0 import work as work
@@ -28,7 +27,7 @@ from tests.test_original_security import security_work as security_work
 
 
 def fixture(work, security_work, *, locator=None, cursor=0):
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
 
     _, version_id = uploaded(work, security_work)
     proposal_id = proposal(work, version_id)
@@ -153,7 +152,7 @@ def test_new_located_page_has_actual_completed_read_and_replays_exactly(work, se
 def test_read_at_eof_keeps_an_empty_page_and_does_not_claim_body_coverage(work, security_work):
     owner, scope, args, host, client, source = fixture(work, security_work, cursor=999)
     # An explicit locator denotes an actual start; a later cursor is still only a read request.
-    from pdos_next.agent_kernel.extract_schemas import ArtifactReadInput
+    from pdos_next.agent.kernel.extract_schemas import ArtifactReadInput
 
     with pytest.raises(ValidationError):
         ArtifactReadInput.model_validate({"artifact_id": args["artifact_version_id"]})

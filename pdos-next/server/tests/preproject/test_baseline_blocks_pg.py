@@ -14,9 +14,8 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select, text
-
-from pdos_next.agent_kernel.domain_reads import _public_baseline_bom, _public_definition
+from pdos_next.agent.kernel.domain_reads import _public_baseline_bom, _public_definition
+from pdos_next.core.service import Context
 from pdos_next.domain.configurations.models import (
     BomLine,
     BomRevision,
@@ -25,7 +24,7 @@ from pdos_next.domain.configurations.models import (
 )
 from pdos_next.domain.preproject.baseline import read_baseline
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from sqlalchemy import select, text
 from tests.preproject.test_derivation_transactions import synthetic_owner, synthetic_parent
 from tests.preproject.test_derivation_transactions import work as work
 from tests.preproject.test_material_proofs_pg import human_session

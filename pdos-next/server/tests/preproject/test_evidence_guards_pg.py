@@ -4,14 +4,13 @@
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select, text
-from sqlalchemy.exc import DBAPIError
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Claim, Confirmation, ObjectAudience, Receipt
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.evidence_models import ClaimWithdrawal, EvidenceLink
 from pdos_next.domain.preproject.models import Proposal
-from pdos_next.models import Claim, Confirmation, ObjectAudience, Receipt
-from pdos_next.service import digest
+from sqlalchemy import select, text
+from sqlalchemy.exc import DBAPIError
 from tests.preproject.test_evidence_commands_pg import (
     artifact,
     claim_read,

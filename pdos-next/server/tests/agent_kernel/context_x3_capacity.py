@@ -4,12 +4,12 @@ import json
 from types import SimpleNamespace
 from uuid import NAMESPACE_URL, uuid5
 
-from pdos_next.agent_kernel.context_budget import estimate_tokens, fit_messages, measure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.registry import ToolRegistry
-from pdos_next.agent_kernel.result_continuation import handle_for, page_view
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import WireAgentOutput
+from pdos_next.agent.kernel.context_budget import estimate_tokens, fit_messages, measure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.registry import ToolRegistry
+from pdos_next.agent.kernel.result_continuation import handle_for, page_view
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import WireAgentOutput
 
 TOOLS = ("category.read", "category.parameters.list", "assistant.search", "assistant.extract",
          "assistant.passage.read", "result.read")

@@ -3,12 +3,11 @@
 import re
 
 import pytest
-from sqlalchemy import text
-from sqlalchemy.engine import Engine
-
-from pdos_next import models
+from pdos_next.core import models
 from pdos_next.domain.release import policy_storage_schema as storage
 from pdos_next.domain.release.policy_models import EVENT, OPERATION, SUBJECT
+from sqlalchemy import text
+from sqlalchemy.engine import Engine
 
 
 @pytest.fixture(autouse=True)

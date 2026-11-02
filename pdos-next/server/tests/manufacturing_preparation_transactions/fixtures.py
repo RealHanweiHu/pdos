@@ -10,7 +10,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.change_execution import service as evidence
 from pdos_next.domain.configurations import service as configurations
 from pdos_next.domain.configurations.models import (
@@ -31,11 +35,7 @@ from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects import service as projects
 from pdos_next.domain.projects.models import Project, ProjectProductLink
-from pdos_next.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey, now
-from pdos_next.object_storage import LocalPrivateObjectStore
-from pdos_next.professional_import import import_professional_fact
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from pdos_next.originals.object_storage import LocalPrivateObjectStore
 from sqlalchemy import func, select
 from test_project_first_plan import cmd, post
 

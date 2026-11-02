@@ -9,16 +9,16 @@ from hashlib import sha256
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import AgentToolCall, TenantAdministrator
-from pdos_next.agent_kernel.types import ModelTurn
-from pdos_next.database import tenant_session
+from pdos_next.agent.enterprise_search.embedding_sources import categories
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import AgentToolCall, TenantAdministrator
+from pdos_next.agent.kernel.types import ModelTurn
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, now
 from pdos_next.domain.field_feedback.models import FieldResponseRecord
-from pdos_next.enterprise_search.embedding_sources import categories
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, now
-from pdos_next.original_security import configure
+from pdos_next.originals.security import configure
 from pdos_next.providers.types import ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session

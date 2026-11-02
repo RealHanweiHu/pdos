@@ -7,18 +7,21 @@ from uuid import uuid4
 
 import pytest
 from g0_fixture import create_g0_project
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.core.clock import now
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, Receipt
+from pdos_next.errors import DomainError
+from pdos_next.features.personal.preference_models import PersonalPreference
+from pdos_next.features.personal.preference_schemas import Preferences, PreferenceSave
+from pdos_next.features.personal.preferences import (
+    context_preferences,
+    recheck_context_preferences,
+    save,
+)
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.clock import now
-from pdos_next.database import tenant_session
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Receipt
-from pdos_next.personal_preference_models import PersonalPreference
-from pdos_next.personal_preference_schemas import Preferences, PreferenceSave
-from pdos_next.personal_preferences import context_preferences, recheck_context_preferences, save
 from tests.agent_kernel.test_run_continuation import scope, start
 
 ROOT = "/v1/personal/preferences"

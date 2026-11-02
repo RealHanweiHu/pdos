@@ -1,10 +1,9 @@
 """Calling notes are a registered, required part of a command; no DB, model or network."""
 
 import pytest
-
-from pdos_next.agent_kernel.command_usage import PENDING_LIMIT, pending, registry, require
-from pdos_next.agent_kernel.tools import COMPUTE, M3_TIERS, READS, default_registry
-from pdos_next.contracts import PAYLOADS
+from pdos_next.agent.kernel.command_usage import PENDING_LIMIT, pending, registry, require
+from pdos_next.agent.kernel.tools import COMPUTE, M3_TIERS, READS, default_registry
+from pdos_next.core.contracts import PAYLOADS
 from pdos_next.errors import DomainError
 
 

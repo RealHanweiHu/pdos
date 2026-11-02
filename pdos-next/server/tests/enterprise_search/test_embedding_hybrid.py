@@ -10,33 +10,32 @@ from uuid import uuid4
 import httpx
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-from pydantic import SecretStr, ValidationError
-from sqlalchemy import Boolean, Integer, String, column, table
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.dialects.postgresql import UUID
-
-from pdos_next.agent_kernel.pricing import RateCard
-from pdos_next.enterprise_search import embedding_hybrid as hybrid
-from pdos_next.enterprise_search.embedding_jobs import pack
-from pdos_next.enterprise_search.embedding_models import Vector
-from pdos_next.enterprise_search.embedding_profiles import active, bound_secret
-from pdos_next.enterprise_search.embedding_provider import OpenAIEmbeddingClient
-from pdos_next.enterprise_search.embedding_runtime import (
+from pdos_next.agent.enterprise_search import embedding_hybrid as hybrid
+from pdos_next.agent.enterprise_search.embedding_jobs import pack
+from pdos_next.agent.enterprise_search.embedding_models import Vector
+from pdos_next.agent.enterprise_search.embedding_profiles import active, bound_secret
+from pdos_next.agent.enterprise_search.embedding_provider import OpenAIEmbeddingClient
+from pdos_next.agent.enterprise_search.embedding_runtime import (
     _finish_charge,
     execute_batch,
     settlement,
     unit_vector,
 )
-from pdos_next.enterprise_search.embedding_schemas import (
+from pdos_next.agent.enterprise_search.embedding_schemas import (
     EmbeddingMetadata,
     EmbeddingResponse,
     bounded_inputs,
     validate_response,
 )
-from pdos_next.enterprise_search.retrieval_filters import scoped_authority
+from pdos_next.agent.enterprise_search.retrieval_filters import scoped_authority
+from pdos_next.agent.kernel.pricing import RateCard
+from pdos_next.agent.model_configuration.ports import SecretBinding, SecretMaterial
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
 from pdos_next.providers.types import ProviderError
+from pydantic import SecretStr, ValidationError
+from sqlalchemy import Boolean, Integer, String, column, table
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.dialects.postgresql import UUID
 
 
 def metadata(**changes):
@@ -352,7 +351,7 @@ def test_transport_has_no_redirect_retry_or_unregistered_graph_escape():
 
 
 def test_exact_and_ann_sql_join_current_authority_before_distance_limit():
-    from pdos_next.enterprise_search.embedding_hybrid import nearest_statement
+    from pdos_next.agent.enterprise_search.embedding_hybrid import nearest_statement
 
     authorized = (
         table(
@@ -397,14 +396,13 @@ def test_exact_and_ann_sql_join_current_authority_before_distance_limit():
 def test_temporal_embedding_definitions_remain_sandboxed_without_provider_imports():
     import asyncio
 
-    from temporalio import workflow
-    from temporalio.worker.workflow_sandbox import SandboxedWorkflowRunner
-
-    from pdos_next.enterprise_search.embedding_workflow import (
+    from pdos_next.agent.enterprise_search.embedding_workflow import (
         EnterpriseEmbedding,
         EnterpriseEmbeddingProjection,
         EnterpriseEmbeddingRebuild,
     )
+    from temporalio import workflow
+    from temporalio.worker.workflow_sandbox import SandboxedWorkflowRunner
 
     async def validate():
         for registered in (
@@ -420,7 +418,7 @@ def test_temporal_embedding_definitions_remain_sandboxed_without_provider_import
 
 
 def test_legacy_chat_slot_is_not_an_embedding_host_and_no_key_is_resolved():
-    from pdos_next.enterprise_search.embedding_composition import configured_ports
+    from pdos_next.agent.enterprise_search.embedding_composition import configured_ports
 
     class Chat:
         def current(self, *_args):
@@ -436,12 +434,12 @@ def test_legacy_chat_slot_is_not_an_embedding_host_and_no_key_is_resolved():
 def test_projection_sender_routes_exact_new_event_and_preserves_legacy_projection():
     import asyncio
 
-    from pdos_next.enterprise_search import events as module
-    from pdos_next.enterprise_search.embedding_workflow import (
+    from pdos_next.agent.enterprise_search import events as module
+    from pdos_next.agent.enterprise_search.embedding_workflow import (
         EnterpriseEmbedding,
         EnterpriseEmbeddingProjection,
     )
-    from pdos_next.enterprise_search.workflow import EnterpriseProjection
+    from pdos_next.agent.enterprise_search.workflow import EnterpriseProjection
 
     started = []
 
@@ -453,7 +451,7 @@ def test_projection_sender_routes_exact_new_event_and_preserves_legacy_projectio
         event_type="embedding.profile_saved", tenant_id="tenant", event_id="event"
     )
     # event() uses the actual dataclass Envelope; no invented command dispatch.
-    from pdos_next.dispatch.outbox import Envelope
+    from pdos_next.core.dispatch.outbox import Envelope
 
     event = Envelope(
         "event",
@@ -480,10 +478,10 @@ def test_projection_sender_routes_exact_new_event_and_preserves_legacy_projectio
         await module.ProjectionSender(Client(), embedding=True).event(source)
         assert started[-1][0] is EnterpriseEmbeddingProjection.run
         assert await sender.event(replace(event, event_type="embedding.call_reconciled")) is None
-        from pdos_next.enterprise_search.embedding_workflow import (
+        from pdos_next.agent.enterprise_search.embedding_workflow import (
             EnterpriseEmbeddingRebuild,
         )
-        from pdos_next.enterprise_search.recovery_workflow import EnterpriseRebuild
+        from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
 
         ctx = SimpleNamespace(
             tenant_id=uuid4(), actor_id=uuid4(), requester_id=uuid4(), category_id=None
@@ -500,7 +498,7 @@ def test_projection_sender_routes_exact_new_event_and_preserves_legacy_projectio
 
 
 def test_public_profile_and_cost_views_omit_vectors_body_and_credential_references():
-    from pdos_next.enterprise_search.embedding_api import call_view, profile_view
+    from pdos_next.agent.enterprise_search.embedding_api import call_view, profile_view
 
     profile = SimpleNamespace(
         profile_id=uuid4(),
@@ -552,7 +550,7 @@ def test_public_profile_and_cost_views_omit_vectors_body_and_credential_referenc
 
 
 def test_semantic_relation_uuid_normalization_matches_native_keyword_json_rows():
-    from pdos_next.enterprise_search.relations import FIELDS, decorate
+    from pdos_next.agent.enterprise_search.relations import FIELDS, decorate
 
     origin_id, target_id = uuid4(), uuid4()
     origin = dict.fromkeys(FIELDS)
@@ -597,8 +595,7 @@ def test_disabling_does_not_require_an_available_embedding_key_service():
 
 def test_metadata_get_reuses_the_native_dependency_without_an_extra_command_entry():
     from fastapi import Depends, FastAPI
-
-    from pdos_next.enterprise_search.embedding_api import register_routes
+    from pdos_next.agent.enterprise_search.embedding_api import register_routes
 
     app = FastAPI()
     register_routes(app, object(), Depends(lambda: None))
@@ -626,7 +623,7 @@ def test_metadata_get_reuses_the_native_dependency_without_an_extra_command_entr
     ],
 )
 def test_invalid_rebuild_envelopes_fail_before_any_database_or_provider(reference):
-    from pdos_next.enterprise_search.embedding_activities import EmbeddingActivities
+    from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingActivities
 
     activities = object.__new__(EmbeddingActivities)
     with pytest.raises(DomainError):
@@ -634,8 +631,8 @@ def test_invalid_rebuild_envelopes_fail_before_any_database_or_provider(referenc
 
 
 def test_real_artifact_authority_chunk_join_compiles_with_fixed_pin_and_exclusion(monkeypatch):
-    from pdos_next.enterprise_search import embedding_sources as sources
-    from pdos_next.enterprise_search.schemas import SearchInput
+    from pdos_next.agent.enterprise_search import embedding_sources as sources
+    from pdos_next.agent.enterprise_search.schemas import SearchInput
 
     tenant, category, source_id, excluded = (uuid4() for _ in range(4))
     ctx = SimpleNamespace(tenant_id=tenant)

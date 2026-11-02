@@ -6,11 +6,8 @@ from decimal import Decimal
 from typing import Any
 from uuid import UUID, uuid4
 
-from pydantic import BaseModel, ValidationError
-from sqlalchemy import select
-
+from pdos_next.core.models import Principal
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal
 from pdos_next.schemas.products.definitions import DefinitionDraftPayload, DefinitionReference
 from pdos_next.schemas.products.derivation import (
     CONTENT_FIELDS,
@@ -33,6 +30,8 @@ from pdos_next.schemas.products.derivation import (
     SpecSnapshot,
 )
 from pdos_next.schemas.products.variants import VariantDerivePayload
+from pydantic import BaseModel, ValidationError
+from sqlalchemy import select
 
 from .definitions import definition_view
 from .definitions import validate as validate_definition
@@ -967,7 +966,7 @@ def _assemble(s, ctx, command, product, payload):
 
 
 def validate(s, ctx, command, product, payload):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product.id, write=True, lock=True)
     actor = s.get(Principal, ctx.actor_id)
@@ -1089,12 +1088,12 @@ def _validate_g0_comparison(s, ctx, current, content):
     caller without that history can still read authorized result views, but this
     comparison cannot attest an override whose signed inputs it cannot read.
     """
+    from pdos_next.core.service import digest
     from pdos_next.domain.preproject.access import fail
     from pdos_next.domain.preproject.baseline import published_baseline
     from pdos_next.domain.preproject.derivation import calculation
     from pdos_next.domain.preproject.models import ProposalDecision, ProposalSubmission
     from pdos_next.domain.preproject.service import _all_refs_from_document
-    from pdos_next.service import digest
 
     def unavailable():
         fail(
@@ -1159,8 +1158,8 @@ def _validate_g0_comparison(s, ctx, current, content):
 
 
 def compare_variant(s, ctx, product_id, variant_id, parent_definition_id):
+    from pdos_next.core.service import require_access
     from pdos_next.domain.preproject.baseline import validate_sources
-    from pdos_next.service import require_access
 
     require_access(s, ctx, product_id)
     variant, current = _variant_revision(s, ctx, product_id, variant_id)
@@ -1244,8 +1243,8 @@ def compare_variant(s, ctx, product_id, variant_id, parent_definition_id):
 
 
 def revision_view(s, ctx, row):
-    from pdos_next.models import Artifact
-    from pdos_next.original_security import source_status
+    from pdos_next.core.models import Artifact
+    from pdos_next.originals.security import source_status
 
     value = _revision_content(s, ctx, row)
     current = True
@@ -1354,7 +1353,7 @@ def bind_g0_definition(s, ctx, variant, definition, baseline, decision, calculat
 
 
 def list_variants(s, ctx, product_id):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id)
     rows = s.scalars(

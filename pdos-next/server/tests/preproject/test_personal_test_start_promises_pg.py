@@ -15,9 +15,15 @@ from pathlib import Path
 from time import sleep
 from uuid import UUID, uuid4
 
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, ObjectAudience, Product, now
+from pdos_next.domain.build_operational_facts.models import OperationalAsset
+from pdos_next.domain.test_resources import service as resources
+from pdos_next.domain.verification_launch.models import VerificationLaunchFact
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted
+from tests.test_personal_views import second_category
 from verification_handoff import fixtures as handoff
 from verification_launch import fixtures as launch
 from verification_launch import test_multi_run_chain as multi_run
@@ -30,13 +36,6 @@ from verification_launch.fixtures import (  # noqa: F401
 )
 from verification_launch.test_multi_run_chain import launch_command
 from verification_launch.test_transactions import counts
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_operational_facts.models import OperationalAsset
-from pdos_next.domain.test_resources import service as resources
-from pdos_next.domain.verification_launch.models import VerificationLaunchFact
-from pdos_next.models import Grant, ObjectAudience, Product, now
-from tests.test_personal_views import second_category
 
 CLOCK_FIELDS = {"occurred_at", "original_timezone", "effective_at"}
 

@@ -1,26 +1,25 @@
 """Resumeable real-provider evaluation against an explicitly verified local target."""
 
 import argparse
+import json
+import os
+import secrets
+import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from copy import copy
 from datetime import UTC, datetime, timedelta
-import json
-import os
 from pathlib import Path
-import secrets
-import time
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import httpx
+import local_environment as local
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantAdministrator
+from pdos_next.core.database import engine_for
+from pdos_next.core.models import Grant, LoginSession, Principal
+from pdos_next.core.service import Context, digest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-import local_environment as local
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, AgentToolCall, TenantAdministrator
-from pdos_next.database import engine_for
-from pdos_next.models import Grant, LoginSession, Principal
-from pdos_next.service import Context, digest
 
 ROOT = Path(__file__).resolve().parents[2]
 EVIDENCE = ROOT / 'docs/reports/evidence/pdos-next-real-eval-20261101/live'

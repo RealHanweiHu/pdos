@@ -4,11 +4,10 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import assistant_sources, context_option_safety, sources
+from pdos_next.agent.kernel import context_corrections
 from sqlalchemy import ARRAY, Boolean, Engine, Integer, String, column, select, table
 from sqlalchemy.dialects.postgresql import UUID, dialect
-
-from pdos_next.agent_kernel import context_corrections
-from pdos_next.enterprise_search import assistant_sources, context_option_safety, sources
 
 
 def catalog():
@@ -178,7 +177,7 @@ def test_blank_chooser_does_not_issue_a_broad_dependency_or_scan_read(monkeypatc
 
 
 def test_actual_nine_family_catalog_and_metadata_scan_query_compile_without_cte_collision():
-    from pdos_next.enterprise_search.schemas import SOURCE_TYPES
+    from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
 
     source = sources.retrieval_catalog(SOURCE_TYPES)
     statement = select(*[c for c in source.c if c.key not in {"body", "structured"}]).where(

@@ -3,13 +3,12 @@ import shutil
 from pathlib import Path
 
 import pytest
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.prompt_admin import create_draft, diff, register_draft
+from pdos_next.agent.kernel.prompts import PromptCatalog
+from pdos_next.agent.kernel.tools import default_registry
 
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.prompt_admin import create_draft, diff, register_draft
-from pdos_next.agent_kernel.prompts import PromptCatalog
-from pdos_next.agent_kernel.tools import default_registry
-
-PACKAGE = Path(__file__).resolve().parents[2] / "pdos_next/prompt_packages"
+PACKAGE = Path(__file__).resolve().parents[2] / "pdos_next/agent/prompt_packages"
 
 
 def copy_package(tmp_path):

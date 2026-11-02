@@ -14,15 +14,12 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
-from sqlalchemy import func, select
-from test_project_first_plan import accepted, post
-
-from pdos_next.change_build_adoption import DEVELOPMENT_BUILD_ADOPTION_CONDITION
-from pdos_next.change_order_store import ChangeCompletionRecord
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_coverage_owner import trust
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey, now
+from pdos_next.features.change.build_adoption import DEVELOPMENT_BUILD_ADOPTION_CONDITION
+from pdos_next.features.change.order_store import ChangeCompletionRecord
 from pdos_next.schemas.change_control.contracts import (
     Disposition,
     EffectivityPlan,
@@ -31,6 +28,8 @@ from pdos_next.schemas.change_control.contracts import (
     Ref,
 )
 from pdos_next.schemas.verification.contracts import VerificationRequest
+from sqlalchemy import func, select
+from test_project_first_plan import accepted, post
 
 from . import approved_configuration_continuation_helpers as next_round
 from . import approved_configuration_helpers as helper

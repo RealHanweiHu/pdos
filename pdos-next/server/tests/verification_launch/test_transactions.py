@@ -8,14 +8,19 @@ from datetime import datetime
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-from test_project_first_plan import accepted, post
-from verification_handoff.fixtures import handoff as handoff_command
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.test_resource_import import import_test_resource_fact
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Outbox,
+    Principal,
+    Receipt,
+    RequestKey,
+)
+from pdos_next.core.service import Context, digest, execute
 from pdos_next.domain.build_operational_facts.models import OperationalAsset, ResourceOccupancy
 from pdos_next.domain.test_resources.models import (
     SampleRunUsage,
@@ -30,10 +35,13 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Principal, Receipt, RequestKey
 from pdos_next.schemas.verification.contracts import EventTime
-from pdos_next.service import Context, digest, execute
-from pdos_next.test_resource_import import import_test_resource_fact
+from sqlalchemy import func, select, text, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
+from test_project_first_plan import accepted, post
+from verification_handoff.fixtures import handoff as handoff_command
+
 from verification_launch.fixtures import (  # noqa: F401
     accepted_work,
     advance_clock,
@@ -369,7 +377,7 @@ def test_direct_resource_current_successor_blocks_old_start_confirmation_without
 def test_end_of_common_audit_outbox_failure_rolls_back_start_occupancy_usage_and_token(
     launch_work, monkeypatch
 ):
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     work = launch_work
     promised(work)

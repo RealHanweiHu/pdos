@@ -5,19 +5,18 @@ from dataclasses import replace
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.enterprise_search import assistant_ledger as ledger
+from pdos_next.agent.enterprise_search.assistant_sources import human_snapshot
+from pdos_next.agent.kernel.deterministic_proofs import _historical_read, archived_citation_read
+from pdos_next.agent.kernel.execution import scope_for_run
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.agent.kernel.work_state import record_finish
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact
+from pdos_next.errors import DomainError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.deterministic_proofs import _historical_read, archived_citation_read
-from pdos_next.agent_kernel.execution import scope_for_run
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.agent_kernel.work_state import record_finish
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search import assistant_ledger as ledger
-from pdos_next.enterprise_search.assistant_sources import human_snapshot
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
 from tests.enterprise_search.test_assistant_pg import execute, fixture
 from tests.enterprise_search.test_citation_inheritance_pg import FollowupClient, parent
 

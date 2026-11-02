@@ -6,11 +6,10 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import context_corrections as corrections
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.models import Principal
-from pdos_next.service import Context, digest
+from pdos_next.agent.kernel import context_corrections as corrections
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Principal
+from pdos_next.core.service import Context, digest
 from tests.agent_kernel.test_context_corrections import case, selection
 
 
@@ -69,9 +68,9 @@ def fixture(monkeypatch):
         return {key: value for key, value in values.items()}, {}
 
     monkeypatch.setattr(
-        "pdos_next.enterprise_search.assistant_sources.human_snapshot", human_snapshot
+        "pdos_next.agent.enterprise_search.assistant_sources.human_snapshot", human_snapshot
     )
-    monkeypatch.setattr("pdos_next.enterprise_search.assistant_sources.current", current)
+    monkeypatch.setattr("pdos_next.agent.enterprise_search.assistant_sources.current", current)
     monkeypatch.setattr(corrections, "_rows", rows)
     return SimpleNamespace(run=run, ctx=ctx, ref=ref, condition=condition, writer=writer,
                            reading=reading, retained=retained, seen=seen, rows=rows)
@@ -134,7 +133,7 @@ def test_owner_snapshot_retains_ordinary_revocation_hash_and_scan_rejection(monk
     from pdos_next.errors import DomainError
 
     f = fixture(monkeypatch)
-    monkeypatch.setattr("pdos_next.enterprise_search.assistant_sources.current",
+    monkeypatch.setattr("pdos_next.agent.enterprise_search.assistant_sources.current",
                         lambda *_: ({}, {"0": failure}))
     with pytest.raises(DomainError) as rejected:
         corrections.recheck(f.writer, f.ctx, f.run, f.condition)
@@ -152,7 +151,7 @@ def test_retained_run_must_still_match_actual_binding_before_reading_pin(monkeyp
 
 
 def test_reused_snapshot_is_read_only_for_actual_requester(monkeypatch):
-    from pdos_next.enterprise_search import assistant_sources
+    from pdos_next.agent.enterprise_search import assistant_sources
 
     owner, agent, tenant = uuid4(), uuid4(), uuid4()
     scope = SimpleNamespace(tenant_id=tenant, requester_id=owner, writer_id=agent, category_id=None)

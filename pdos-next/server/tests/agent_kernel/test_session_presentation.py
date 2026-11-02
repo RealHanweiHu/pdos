@@ -7,14 +7,13 @@ from uuid import uuid4
 
 import pytest
 from fastapi import Depends, FastAPI
+from pdos_next.agent.kernel import session_presentation as service
+from pdos_next.agent.kernel import session_presentation_api as api
+from pdos_next.core.service import Context
+from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import session_presentation as service
-from pdos_next.agent_kernel import session_presentation_api as api
-from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 
 def context():

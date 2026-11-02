@@ -10,9 +10,9 @@ from pdos_next.domain.build_operational_facts.service import (
     configure_local_synthetic,
     digest,
 )
-from pdos_next.engines.planning.calendar import frozen_timezone
-from pdos_next.engines.supply_cost import expand_bom
-from pdos_next.engines.supply_cost.dto import FixedBasis
+from pdos_next.domain.engines.planning.calendar import frozen_timezone
+from pdos_next.domain.engines.supply_cost import expand_bom
+from pdos_next.domain.engines.supply_cost.dto import FixedBasis
 from pdos_next.schemas.supply_cost.dto import BoundDemand
 
 AT = datetime(2026, 10, 2, 8, tzinfo=UTC)

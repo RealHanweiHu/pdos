@@ -5,11 +5,10 @@ from copy import deepcopy
 from types import SimpleNamespace
 from uuid import UUID
 
-from sqlalchemy import select, text
-
+from pdos_next.core.models import Claim, Consumption
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Claim, Consumption
-from pdos_next.service import digest
+from sqlalchemy import select, text
 
 from .access import fail
 from .schemas import Reference
@@ -163,11 +162,10 @@ def _canonical_citation(body, locator):
 
 def _link_citation(s, row, link):
     """Read only through this transaction's actual actor, RLS and source lifecycle."""
+    from pdos_next.agent.kernel.models import PublicWebSnapshot
+    from pdos_next.core.models import Artifact
+    from pdos_next.core.service import Context, source_for
     from sqlalchemy.orm import load_only
-
-    from pdos_next.agent_kernel.models import PublicWebSnapshot
-    from pdos_next.models import Artifact
-    from pdos_next.service import Context, source_for
 
     scope = getattr(s, "info", {}).get("scope")
     if (

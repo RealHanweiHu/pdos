@@ -11,22 +11,26 @@ from datetime import datetime
 from typing import TYPE_CHECKING
 from uuid import UUID
 
+from pdos_next.core.models import now
+from pdos_next.domain.engines.supply_cost.common import (
+    FrozenDTO,
+    SnapshotRef,
+    digest,
+    source_issues,
+)
+from pdos_next.domain.engines.supply_cost.dto import CoverageResult, DemandLine, FixedBasis
+from pdos_next.errors import DomainError
+from pdos_next.schemas.supply_cost.dto import BoundDemand, DemandSnapshot, Scope
 from pydantic import JsonValue, ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.engines.supply_cost.common import FrozenDTO, SnapshotRef, digest, source_issues
-from pdos_next.engines.supply_cost.dto import CoverageResult, DemandLine, FixedBasis
-from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.schemas.supply_cost.dto import BoundDemand, DemandSnapshot, Scope
 
 from .models import Build, BuildReadiness
 from .readiness import _Input, _ref
 from .service import _linked, readiness_snapshot
 
 if TYPE_CHECKING:
-    from pdos_next.service import Context
+    from pdos_next.core.service import Context
 
 
 class _DemandFingerprint(FrozenDTO):
@@ -120,10 +124,10 @@ def load_bound_demand(
     This adapter independently compares scope to actual persisted objects and
     rechecks access at real server time, including replay after an old preview.
     """
-    from pdos_next.originals import object_reference, require_original
-    from pdos_next.request_proof import snapshot_scalar
-    from pdos_next.service import digest as source_digest
-    from pdos_next.service import require_access, source_for
+    from pdos_next.core.request_proof import snapshot_scalar
+    from pdos_next.core.service import digest as source_digest
+    from pdos_next.core.service import require_access, source_for
+    from pdos_next.originals.access import object_reference, require_original
 
     if not isinstance(s, Session) or not s.in_transaction():
         raise DomainError("INTEGRATION_REQUIRED", "需求读取必须参加调用者已开启的共同事务。")

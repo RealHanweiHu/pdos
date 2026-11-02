@@ -10,13 +10,13 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.database import tenant_session
+from pdos_next.agent.enterprise_search.indexing import project as project_source
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Receipt, now
 from pdos_next.domain.knowledge.assistant_models import (
     KnowledgeAnswerReview,
     KnowledgeGapSubmission,
 )
-from pdos_next.enterprise_search.indexing import project as project_source
-from pdos_next.models import Artifact, Receipt, now
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session

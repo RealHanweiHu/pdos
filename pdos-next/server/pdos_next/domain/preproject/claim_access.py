@@ -1,9 +1,8 @@
 """Claim reads and source roots under the caller's actual tenant/category audience."""
 
+from pdos_next.agent.kernel.models import PublicWebSnapshot
+from pdos_next.core.models import Artifact, Claim, ObjectAudience, Product, UploadedOriginal
 from sqlalchemy import select, text
-
-from pdos_next.agent_kernel.models import PublicWebSnapshot
-from pdos_next.models import Artifact, Claim, ObjectAudience, Product, UploadedOriginal
 
 from .access import fail, proposal
 from .schemas import Reference
@@ -57,7 +56,7 @@ def source_privacy(s, ctx, row):
 def load_source(s, ctx, reference, *, product_id=None, lock=False):
     """Resolve one active, exact source version through the existing artifact safeguards."""
     if reference.type == "artifact":
-        from pdos_next.service import source_for
+        from pdos_next.core.service import source_for
 
         source = source_for(s, ctx, product_id, reference.id, reference.version)
         body = source.content
@@ -166,7 +165,7 @@ def resolve(
                 is not None
             )
         elif row.status == "reverted":
-            from pdos_next.models import Receipt
+            from pdos_next.core.models import Receipt
 
             historical_version = (
                 s.scalar(

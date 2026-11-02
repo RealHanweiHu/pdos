@@ -6,10 +6,22 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Confirmation, Principal, Receipt
+from pdos_next.core.service import Context, digest, execute
+from pdos_next.domain.verification_results.models import (
+    MeasurementImportCapture,
+    MeasurementRecord,
+    TestResultActionFact,
+    TestResultProjection,
+)
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, post
+
 from verification_results.fixtures import (  # noqa: F401
     accepted_work,
     capture,
@@ -24,18 +36,6 @@ from verification_results.fixtures import (  # noqa: F401
     upload_report,
 )
 from verification_results.test_transactions import counts
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.verification_results.models import (
-    MeasurementImportCapture,
-    MeasurementRecord,
-    TestResultActionFact,
-    TestResultProjection,
-)
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Confirmation, Principal, Receipt
-from pdos_next.service import Context, digest, execute
 
 
 def unconsumed(work, token):

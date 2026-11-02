@@ -3,15 +3,14 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
+from pdos_next.errors import DomainError
+from pdos_next.features.inbox.models import Conversation, InboxState, Message
+from pdos_next.features.inbox.service import NewConversation, create
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.errors import DomainError
-from pdos_next.inbox.models import Conversation, InboxState, Message
-from pdos_next.inbox.service import NewConversation, create
-from pdos_next.models import Grant, now
 
 ROOT = "/v1/personal/inbox"
 

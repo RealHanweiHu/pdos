@@ -9,16 +9,15 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun, AgentSession
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.work_state_models import AgentWorkState
+from pdos_next.core.models import Artifact
+from pdos_next.errors import DomainError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun, AgentSession
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.work_state_models import AgentWorkState
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
 from tests.agent_kernel.test_run_continuation import path, scope, start
 
 
@@ -171,8 +170,8 @@ def test_two_restarts_reauthorize_original_candidate_metadata_and_actual_receipt
 
 
 def test_two_restarts_keep_exact_citation_roots_and_current_withdrawal_stops_disclosure(setup):
-    from pdos_next.enterprise_search.assistant_inheritance import page
-    from pdos_next.enterprise_search.assistant_schemas import CitationsInput
+    from pdos_next.agent.enterprise_search.assistant_inheritance import page
+    from pdos_next.agent.enterprise_search.assistant_schemas import CitationsInput
     from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
     from tests.enterprise_search.test_retrieval_pg import index, register
 
@@ -255,8 +254,7 @@ def unquoted_note_client(marker, note):
 
 def test_unquoted_note_client_search_and_final_output_models_offline(monkeypatch):
     from pdos_agent_runtime import graph
-
-    from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+    from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 
     # Only the graph-context predicate is substituted. Both actual scripted
     # turn methods and the production ModelTurn/ToolCall types execute directly.
@@ -277,7 +275,7 @@ def test_unquoted_note_client_search_and_final_output_models_offline(monkeypatch
 
 
 def test_unquoted_search_candidate_guards_restored_notes_at_admission_and_before_model(setup):
-    from pdos_next.agent_kernel.models import AgentToolCall
+    from pdos_next.agent.kernel.models import AgentToolCall
     from tests.enterprise_search.test_assistant_pg import execute, fixture
     from tests.enterprise_search.test_retrieval_pg import index, register
 

@@ -12,8 +12,8 @@ import pytest
 from capa_effectiveness.test_candidate_write_prepare import origin_fixture
 from capa_effectiveness.test_fact_sources_owner import native, project
 from capa_effectiveness.test_participants_owner import work as work
-
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import Grant, Principal, Product
 from pdos_next.domain.capa_effectiveness import fact_commands as commands
 from pdos_next.domain.capa_effectiveness import named_review_owner as owner
 from pdos_next.domain.capa_effectiveness.facts import Participant
@@ -21,7 +21,6 @@ from pdos_next.domain.capa_effectiveness.paired_storage import StoragePairReader
 from pdos_next.domain.verification_front.models import FormalVerificationCurrent
 from pdos_next.domain.verification_launch.models import VerificationRunVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product
 from pdos_next.schemas.verification.contracts import SourceRef
 
 

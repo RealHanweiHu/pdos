@@ -5,17 +5,16 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
+from pdos_next.core.models import Artifact, Category, Grant, Principal, Product, Receipt, Run
+from pdos_next.core.request_proof import request_proof
+from pdos_next.core.service import Context, command_scope, digest, prove_sources, source_for
+from pdos_next.domain.products.models import DefinitionSource
+from pdos_next.domain.quality_execution import evidence
+from pdos_next.errors import DomainError
 from sqlalchemy import inspect, update
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import UnboundExecutionError
 from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next.domain.products.models import DefinitionSource
-from pdos_next.domain.quality_execution import evidence
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Category, Grant, Principal, Product, Receipt, Run
-from pdos_next.request_proof import request_proof
-from pdos_next.service import Context, command_scope, digest, prove_sources, source_for
 
 
 def _scope():

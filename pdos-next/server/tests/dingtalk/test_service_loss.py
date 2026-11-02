@@ -5,8 +5,8 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next.dingtalk import graph, runtime
-from pdos_next.dingtalk.workflow import ChannelActivities
+from pdos_next.integrations.dingtalk import graph, runtime
+from pdos_next.integrations.dingtalk.workflow import ChannelActivities
 from sqlalchemy.exc import DBAPIError
 
 FENCE = "SELECT dingtalk_lock_message_binding(%(tenant)s,%(message)s)"

@@ -11,13 +11,9 @@ from uuid import uuid4
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import event, select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.model_gateway import CallPermit
-from pdos_next.models import (
+from pdos_next.agent.model_gateway import CallPermit
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
     Artifact,
     BudgetReservation,
     Confirmation,
@@ -29,7 +25,10 @@ from pdos_next.models import (
     WorkRequest,
     now,
 )
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
+from sqlalchemy import event, select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 def human_session(setup, tenant=None):

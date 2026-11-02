@@ -8,14 +8,13 @@ from unittest.mock import Mock
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.service import Context
 from pdos_next.domain.automations import trigger_sources as sources
 from pdos_next.domain.automations.schemas import Conditions, RelativeTrigger
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
 from pdos_next.domain.work_management.models import WorkTaskCurrent
 from pdos_next.domain.work_management.schemas import CommitmentSnapshot, TaskSnapshot
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 AT = datetime(2026, 10, 18, 10, tzinfo=UTC)
 CLOCKS = ("earliest_start", "earliest_finish", "latest_start", "latest_finish")

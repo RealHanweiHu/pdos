@@ -5,10 +5,9 @@ from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import Query
+from pdos_next.core.database import tenant_session
+from pdos_next.core.service import Context, require_access
 from sqlalchemy import select, text
-
-from pdos_next.database import tenant_session
-from pdos_next.service import Context, require_access
 
 from .category_metadata import CategoryMetadata
 from .standard_match import StandardMatchInput
@@ -34,7 +33,7 @@ def register_routes(app, engine, auth_dependency):
 
     @app.post("/v1/categories/{category_id}/metadata")
     def category_metadata_update(data: CategoryMetadata, ctx: Context = auth_dependency):
-        from pdos_next.database import category_transaction
+        from pdos_next.core.database import category_transaction
 
         from .category_metadata import update
 
@@ -282,8 +281,8 @@ def register_routes(app, engine, auth_dependency):
 
     @app.get("/v1/categories/{category_id}/participants")
     def category_participants(ctx: Context = auth_dependency):
-        from pdos_next.clock import now
-        from pdos_next.models import Grant, Principal
+        from pdos_next.core.clock import now
+        from pdos_next.core.models import Grant, Principal
 
         with scope(ctx) as s:
             require_access(s, ctx, None)
@@ -305,9 +304,9 @@ def register_routes(app, engine, auth_dependency):
 
     @app.get("/v1/categories/{category_id}/proposals/{proposal_id}/participants")
     def proposal_participants(proposal_id: UUID, ctx: Context = auth_dependency):
-        from pdos_next.agent_kernel.skill_qualification import is_pilot
-        from pdos_next.clock import now
-        from pdos_next.models import Grant, Principal
+        from pdos_next.agent.kernel.skill_qualification import is_pilot
+        from pdos_next.core.clock import now
+        from pdos_next.core.models import Grant, Principal
 
         from .access import proposal
 

@@ -15,13 +15,13 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.database import tenant_session
-from pdos_next.dingtalk.models import Delivery, Message
-from pdos_next.dingtalk.runtime import delivery_key
-from pdos_next.dingtalk.schemas import ChannelReference
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
-from pdos_next.models import Artifact, Category, Grant, LifecycleObject, Product, now
-from pdos_next.service import digest
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, Grant, LifecycleObject, Product, now
+from pdos_next.core.service import digest
+from pdos_next.integrations.dingtalk.models import Delivery, Message
+from pdos_next.integrations.dingtalk.runtime import delivery_key
+from pdos_next.integrations.dingtalk.schemas import ChannelReference
 from sqlalchemy import insert, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session

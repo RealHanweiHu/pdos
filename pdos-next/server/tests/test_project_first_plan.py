@@ -5,11 +5,8 @@ from uuid import UUID, uuid4
 
 import pytest
 from g0_fixture import create_g0_project
-from sqlalchemy import func, select, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Grant, Outbox, Receipt, now
 from pdos_next.domain.projects.models import (
     PlanProposal,
     PlanRevision,
@@ -20,7 +17,9 @@ from pdos_next.domain.projects.models import (
     TaskDependency,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Grant, Outbox, Receipt, now
+from sqlalchemy import func, select, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 def cmd(setup, operation, payload, source=None):
@@ -300,7 +299,7 @@ def test_first_plan_preserves_four_independent_time_facts(setup, definition, pro
 def test_plan_failure_rolls_back_all_members_and_confirmation(
     setup, definition, project, proposal, monkeypatch
 ):
-    import pdos_next.service as commands
+    import pdos_next.core.service as commands
 
     prepared = post(setup, application(setup, definition, project, proposal), True).json()[
         "command"

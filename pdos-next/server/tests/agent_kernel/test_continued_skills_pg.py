@@ -3,19 +3,18 @@
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, TenantSkillEnablement
+from pdos_next.agent.kernel.requested_skills import preload
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, TenantSkillEnablement
-from pdos_next.agent_kernel.requested_skills import preload
-from pdos_next.errors import DomainError
 from tests.agent_kernel.test_api import client
 from tests.agent_kernel.test_requested_skills_pg import request_skill, scope_for
 from tests.agent_kernel.test_run_continuation import finish
 
 
 def parent_run(setup, *, changes=None, disabled=False):
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     api, calls = client(setup)
     path = f"/v1/categories/{setup.category}/agent-runs"
@@ -137,7 +136,7 @@ def test_inherited_enablement_is_rechecked_after_admission_before_preload(setup)
 
 
 def test_human_explicit_current_selection_replaces_old_version_without_silent_upgrade(setup):
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     api, _calls, path, parent, _ = parent_run(
         setup, changes={"version": "historical-original-version"},
@@ -155,8 +154,8 @@ def test_human_explicit_current_selection_replaces_old_version_without_silent_up
 
 
 def test_restart_excluding_all_inherited_skills_keeps_complete_empty_selection(setup):
-    from pdos_next.agent_kernel.context_restart import KEY
-    from pdos_next.agent_kernel.skills import SkillCatalog
+    from pdos_next.agent.kernel.context_restart import KEY
+    from pdos_next.agent.kernel.skills import SkillCatalog
 
     api, _calls = client(setup)
     path = f"/v1/categories/{setup.category}/agent-runs"

@@ -5,13 +5,12 @@ from dataclasses import replace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search.events import ProjectionSender
+from pdos_next.agent.enterprise_search.workflow import EnterpriseProjection
+from pdos_next.core.dispatch.outbox import Envelope
+from pdos_next.workflows.transport import TemporalSender
 from temporalio.common import WorkflowIDConflictPolicy, WorkflowIDReusePolicy
 from temporalio.exceptions import WorkflowAlreadyStartedError
-
-from pdos_next.dispatch.outbox import Envelope
-from pdos_next.enterprise_search.events import ProjectionSender
-from pdos_next.enterprise_search.workflow import EnterpriseProjection
-from pdos_next.workflows.transport import TemporalSender
 
 
 def envelope(kind="artifact.registered"):

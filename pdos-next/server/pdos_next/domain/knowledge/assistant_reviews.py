@@ -3,10 +3,9 @@
 from datetime import datetime
 from uuid import UUID
 
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.models import Grant, Principal, now
 from sqlalchemy import select
-
-from pdos_next.category_scope import category_scope
-from pdos_next.models import Grant, Principal, now
 
 from .assistant_models import KnowledgeAnswerReview
 from .assistant_sources import capture, inherited_proof, recheck, require

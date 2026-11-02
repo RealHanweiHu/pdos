@@ -5,13 +5,12 @@ from copy import copy, deepcopy
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Grant, Outbox, Product, Receipt
+from pdos_next.domain.products.platform_models import Platform, PlatformLink, PlatformLinkCurrent
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.platform_models import Platform, PlatformLink, PlatformLinkCurrent
-from pdos_next.models import Audit, Confirmation, Grant, Outbox, Product, Receipt
 from tests.products.test_definition_item_commands_pg import confirmed
 from tests.products.test_definition_transactions import command, post
 
@@ -168,7 +167,7 @@ def test_permission_tenant_duplicate_code_and_preview_drift(setup):
 
 
 def test_failure_after_new_platform_rolls_back_every_business_member(setup, monkeypatch):
-    from pdos_next import service
+    from pdos_next.core import service
 
     cmd = request(setup)
     preview = setup.client.post(
@@ -238,7 +237,7 @@ def test_private_variant_link_hidden_but_shared_platform_metadata_readable(setup
 
 
 def test_agent_candidate_confirmation_preserves_writer_and_cancel_guard(setup):
-    from pdos_next.agent_kernel.models import AgentRun
+    from pdos_next.agent.kernel.models import AgentRun
     from pdos_next.domain.preproject.provenance import prepare_candidate
     from tests.products.test_definition_item_revert_pg import agent_fixture
 
@@ -383,7 +382,6 @@ def test_parallel_new_platform_code_creates_one_whole_transaction(setup):
 def test_platform_migration_refuses_to_remove_committed_history(setup):
     from alembic.migration import MigrationContext
     from alembic.operations import Operations
-
     from migrations.versions.s0_0759_platform_links import downgrade
 
     saved, _ = confirmed(setup, request(setup))

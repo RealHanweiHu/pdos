@@ -7,16 +7,15 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.core.database import require_context
+from pdos_next.core.service import Context
+from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as owner
 from professional_authority.test_assessment import (
     AT,
     assessed,
     fake,  # noqa: F401 - real reduction fixture
 )
-
-from pdos_next import change_controlled_owner as owner
-from pdos_next.database import require_context
-from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 
 @pytest.mark.parametrize("same_reader", [True, False])

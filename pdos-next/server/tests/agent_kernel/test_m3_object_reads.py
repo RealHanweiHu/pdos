@@ -8,18 +8,17 @@ from types import SimpleNamespace as NS
 from uuid import UUID
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import m3_object_reads as module
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import AgentRun, PublicWebSnapshot
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import m3_object_reads as module
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import AgentRun, PublicWebSnapshot
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Artifact, Product, UploadedOriginal
 from pdos_next.domain.preproject import root_sources
 from pdos_next.domain.preproject.category_models import KnowledgeEntry
 from pdos_next.domain.preproject.models import ProposalSubmission
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Product, UploadedOriginal
+from pydantic import ValidationError
+from sqlalchemy.dialects import postgresql
 
 PROPOSAL, PRODUCT, ITEM, RECEIPT, SOURCE = (UUID(int=i) for i in range(20, 25))
 AT = datetime(2026, 10, 11, tzinfo=UTC)
@@ -421,7 +420,7 @@ def test_item_filters_and_history_have_no_business_row_limit(port):
 
 
 def install_artifact(port, monkeypatch, *, private=False):
-    from pdos_next import service
+    from pdos_next.core import service
 
     artifact = NS(
         id=SOURCE,

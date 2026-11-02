@@ -2,12 +2,11 @@
 
 from datetime import timedelta
 
+from pdos_next.agent.enterprise_search.assistant_sources import current
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.assistant_sources import current
-from pdos_next.models import Grant, now
 from tests.enterprise_search.test_retrieval_pg import index, query, register, session_for
 
 

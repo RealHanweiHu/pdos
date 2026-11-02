@@ -10,10 +10,10 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from pdos_next.dingtalk.official import OfficialAdapter
-from pdos_next.dingtalk.runtime import ChannelService
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from pdos_next.integrations.dingtalk.official import OfficialAdapter
+from pdos_next.integrations.dingtalk.runtime import ChannelService
 from pydantic import SecretStr
 
 
@@ -324,7 +324,7 @@ def test_pending_explicit_share_keeps_native_completion_waiting_for_query_only()
     from contextlib import contextmanager
     from uuid import uuid4
 
-    from pdos_next.dingtalk.schemas import DeliveryReference
+    from pdos_next.integrations.dingtalk.schemas import DeliveryReference
 
     service = object.__new__(ChannelService)
     consent = SimpleNamespace(message_id=uuid4(), state="planned", error_code=None)

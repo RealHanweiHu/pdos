@@ -4,17 +4,16 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.enterprise_search.assistant_depth import (
+from pdos_next.agent.enterprise_search.assistant_depth import (
     DeepenInput,
     admit_read,
     mode_for,
     prepare_deep,
 )
+from pdos_next.core.models import Principal
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 
 def case(*, existing_child=None, other_owner=False):

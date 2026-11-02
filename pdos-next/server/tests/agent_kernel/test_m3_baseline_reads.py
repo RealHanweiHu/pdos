@@ -7,15 +7,14 @@ from types import SimpleNamespace as NS
 from uuid import UUID
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import domain_reads as module
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import domain_reads as module
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.types import RunScope
 from pdos_next.domain.preproject import access as access_module
 from pdos_next.domain.preproject import baseline, derivation, views
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 PRODUCT, DEFINITION, PROPOSAL = (UUID(int=i) for i in (20, 21, 22))
 
@@ -160,7 +159,7 @@ def port(monkeypatch):
 
 
 def test_schemas_and_handlers_are_registered_for_actual_ports(port):
-    from pdos_next.agent_kernel.tools import default_registry
+    from pdos_next.agent.kernel.tools import default_registry
 
     registry = {tool["name"]: tool for tool in default_registry().definitions()}
     assert "calc.derivation_diff" in port.reads.handlers()
@@ -215,12 +214,12 @@ def test_area_projection_preserves_unknown_blocks(port):
 
 @pytest.fixture
 def bom_port(port, monkeypatch):
+    from pdos_next.core.models import Artifact, Product, UploadedOriginal
     from pdos_next.domain.configurations.models import (
         BomRevision,
         EngineeringConfiguration,
         PartIdentity,
     )
-    from pdos_next.models import Artifact, Product, UploadedOriginal
 
     common = {
         "tenant_id": port.scope.tenant_id,

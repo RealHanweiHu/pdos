@@ -4,15 +4,14 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Grant, Outbox, Product, now
+from pdos_next.domain.builds.models import Build, BuildReadiness
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, cmd, definition, post, project  # noqa: F401
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.builds.models import Build, BuildReadiness
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Confirmation, Grant, Outbox, Product, now
 
 
 @pytest.fixture
@@ -353,7 +352,7 @@ def test_historical_readiness_is_marked_stale_without_rewriting_snapshot(setup, 
 
 
 def test_failed_receipt_rolls_back_plan_and_confirmation(setup, configuration, monkeypatch):
-    import pdos_next.service as commands
+    import pdos_next.core.service as commands
 
     prepared = post(setup, build_command(setup, configuration), True).json()["command"]
     original = commands.append_receipt

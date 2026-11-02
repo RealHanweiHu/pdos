@@ -14,15 +14,16 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from psycopg.types.json import Jsonb, JsonbDumper
-from sqlalchemy import create_engine, event, inspect
-from sqlalchemy.dialects.postgresql.psycopg import PGDialect_psycopg
-from sqlalchemy.orm import Session, make_transient_to_detached
-from sqlalchemy.orm.attributes import set_committed_value
-from sqlalchemy.sql import operators
-
-from pdos_next import service as common
-from pdos_next.contracts import Command
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import (
+    Confirmation,
+    Grant,
+    Outbox,
+    Principal,
+    Product,
+    RequestKey,
+)
 from pdos_next.domain.manufacturing_baseline import publication_service as service
 from pdos_next.domain.manufacturing_baseline import service as preparation
 from pdos_next.domain.manufacturing_baseline.publication_models import (
@@ -36,14 +37,12 @@ from pdos_next.domain.manufacturing_baseline.publication_models import (
 )
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Confirmation,
-    Grant,
-    Outbox,
-    Principal,
-    Product,
-    RequestKey,
-)
+from psycopg.types.json import Jsonb, JsonbDumper
+from sqlalchemy import create_engine, event, inspect
+from sqlalchemy.dialects.postgresql.psycopg import PGDialect_psycopg
+from sqlalchemy.orm import Session, make_transient_to_detached
+from sqlalchemy.orm.attributes import set_committed_value
+from sqlalchemy.sql import operators
 
 from .test_expiry import authority_result
 from .test_publication_rules import case as publication_case

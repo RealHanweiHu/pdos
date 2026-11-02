@@ -4,19 +4,18 @@ from types import SimpleNamespace as NS
 from uuid import UUID
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.deterministic_proofs import (
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.deterministic_proofs import (
     ComputeEngine,
     canonical_hash,
     resolve_compute_proof,
 )
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.agent_kernel.read_execution import ReadBinding
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.agent.kernel.read_execution import ReadBinding
+from pdos_next.core.models import Category, Grant, Principal
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Grant, Principal
-from pdos_next.service import digest
 
 
 class MemorySession:
@@ -38,7 +37,7 @@ class MemorySession:
         ) else None
 
     def scalars(self, query):
-        from pdos_next.clock import now
+        from pdos_next.core.clock import now
         rows = [row for (model, _), row in self.rows.items() if model is Grant
                 and (row.expires_at is None or row.expires_at > now())]
         return NS(all=lambda: rows)
@@ -276,7 +275,7 @@ def test_business_receipt_is_not_read_proof(target):
 def test_current_authority_is_rechecked_for_historical_computation(principal, change):
     from datetime import timedelta
 
-    from pdos_next.clock import now
+    from pdos_next.core.clock import now
 
     f = fixture()
     f.run.state = "completed"

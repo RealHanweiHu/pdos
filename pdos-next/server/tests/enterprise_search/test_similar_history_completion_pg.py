@@ -12,12 +12,12 @@ import pytest
 from change_execution.test_transactions import change_work
 from change_execution.test_transactions import command as change_command
 from change_execution.test_transactions import create_payload as change_payload
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.enterprise_search.indexing import project
+from pdos_next.agent.enterprise_search.similar_history_models import SimilarHistoryFeedback
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.enterprise_search.indexing import project
-from pdos_next.enterprise_search.similar_history_models import SimilarHistoryFeedback
-from pdos_next.models import Receipt
 from sqlalchemy import event, func, select
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session

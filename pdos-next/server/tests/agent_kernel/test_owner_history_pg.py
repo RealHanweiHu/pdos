@@ -6,15 +6,14 @@ ACL reduction uses the test administrator. No real model or provider is called.
 
 from uuid import UUID, uuid4
 
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.work_state import PAGE_MATERIAL_BOUNDARY
+from pdos_next.agent.kernel.work_state_models import AgentWorkState
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, ObjectAudience, Product
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.work_state import PAGE_MATERIAL_BOUNDARY
-from pdos_next.agent_kernel.work_state_models import AgentWorkState
-from pdos_next.database import tenant_session
-from pdos_next.models import Grant, ObjectAudience, Product
 from tests.agent_kernel.test_run_continuation import finish, path, scope, start
 from tests.preproject.test_g0 import post, request
 

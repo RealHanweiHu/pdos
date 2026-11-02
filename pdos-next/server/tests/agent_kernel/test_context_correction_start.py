@@ -10,23 +10,22 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import context_corrections, conversation, work_state
-from pdos_next.contracts import SourceRead
+from pdos_next.agent.kernel import context_corrections, conversation, work_state
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 from tests.agent_kernel.test_context_corrections import case
 
 
 def patched_api(tmp_path):
     # In the integrated tree the root applies the public API hook itself. The
     # stage alone leaves api.py immutable and validates its separate patch here.
-    from pdos_next.agent_kernel import api as actual
+    from pdos_next.agent.kernel import api as actual
 
     if "context_revision" in actual.StartInput.model_fields:
         return actual
     stage = Path(__file__).parents[4]
-    relative = Path("pdos-next/server/pdos_next/agent_kernel/api.py")
+    relative = Path("pdos-next/server/pdos_next/agent/kernel/api.py")
     target = tmp_path / relative
     target.parent.mkdir(parents=True)
     target.write_bytes((stage / relative).read_bytes())
@@ -42,7 +41,7 @@ def patched_api(tmp_path):
         check=True,
         capture_output=True,
     )
-    name = "pdos_next.agent_kernel._context_correction_api_test"
+    name = "pdos_next.agent.kernel._context_correction_api_test"
     spec = importlib.util.spec_from_file_location(name, target)
     module = importlib.util.module_from_spec(spec)
     sys.modules[name] = module

@@ -9,21 +9,20 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentEvent
-from pdos_next.api import create_app
-from pdos_next.enterprise_search.embedding_activities import EmbeddingActivities
-from pdos_next.enterprise_search.embedding_hybrid import hybrid_search
-from pdos_next.enterprise_search.embedding_models import (
+from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingActivities
+from pdos_next.agent.enterprise_search.embedding_hybrid import hybrid_search
+from pdos_next.agent.enterprise_search.embedding_models import (
     ChunkEmbedding,
     EmbeddingBatch,
     EmbeddingBudget,
     EmbeddingCall,
 )
-from pdos_next.enterprise_search.schemas import SearchInput
-from pdos_next.models import Audit, Outbox
+from pdos_next.agent.enterprise_search.schemas import SearchInput
+from pdos_next.agent.kernel.models import AgentEvent
+from pdos_next.api import create_app
+from pdos_next.core.models import Audit, Outbox
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.enterprise_search.embedding_harness import (
     command_for,
     ports_for,

@@ -12,27 +12,24 @@ from datetime import UTC, datetime
 from decimal import Decimal, localcontext
 from uuid import NAMESPACE_URL, UUID, uuid4, uuid5
 
-from pydantic import BaseModel
-from sqlalchemy import or_, select
-from sqlalchemy.dialects.postgresql import insert
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.models import Artifact, Principal, Product, now
+from pdos_next.core.service import digest as _raw_digest
+from pdos_next.core.service import require_access
 from pdos_next.domain.builds.demand import load_bound_demand
 from pdos_next.domain.builds.service import _build, _linked
-from pdos_next.domain.professional_authority.service import _evidence
-from pdos_next.domain.resource_readiness.rules import aggregate, capacity_exceeded, evaluate
-from pdos_next.engines.supply_cost import calculate_coverage
-from pdos_next.engines.supply_cost.common import SnapshotRef
-from pdos_next.engines.supply_cost.dto import (
+from pdos_next.domain.engines.supply_cost import calculate_coverage
+from pdos_next.domain.engines.supply_cost.common import SnapshotRef
+from pdos_next.domain.engines.supply_cost.dto import (
     CoverageRequest,
     PoolKey,
     ReservationSnapshot,
     SupplyPool,
 )
-from pdos_next.engines.supply_cost.units import conversion
+from pdos_next.domain.engines.supply_cost.units import conversion
+from pdos_next.domain.professional_authority.service import _evidence
+from pdos_next.domain.resource_readiness.rules import aggregate, capacity_exceeded, evaluate
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Principal, Product, now
 from pdos_next.schemas.resource_readiness.contracts import (
     Check,
     MaintenanceFact,
@@ -48,8 +45,10 @@ from pdos_next.schemas.resource_readiness.contracts import (
 )
 from pdos_next.schemas.supply_cost.dto import Scope as DemandScope
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import digest as _raw_digest
-from pdos_next.service import require_access
+from pydantic import BaseModel
+from sqlalchemy import or_, select
+from sqlalchemy.dialects.postgresql import insert
+from sqlalchemy.orm import Session
 
 from .models import (
     BuildOperationalCurrent,
@@ -206,7 +205,7 @@ def _issuer(s, ctx, pid, project_id, issuer):
 def _scope(s, ctx, pid, bid, execution_scope, *, write=False):
     _session(s)
     execution_scope = OperationalScope.model_validate(execution_scope)
-    from pdos_next.request_proof import scoped_rows
+    from pdos_next.core.request_proof import scoped_rows
 
     products = scoped_rows(
         s,
@@ -295,7 +294,7 @@ def _assets(data, tenant_id):
 
 
 def _locked_assets(s, ctx, specifications, *, create=False, lock=True):
-    from pdos_next.request_proof import batch_read
+    from pdos_next.core.request_proof import batch_read
 
     specifications = list(specifications)
     if create and specifications:
@@ -334,7 +333,7 @@ def _locked_assets(s, ctx, specifications, *, create=False, lock=True):
 
 
 def _pointer(s, ctx, pid, bid, *, lock=False):
-    from pdos_next.request_proof import scoped_rows
+    from pdos_next.core.request_proof import scoped_rows
 
     rows = scoped_rows(
         s,
@@ -364,10 +363,10 @@ def _binding(build, engineering, manufacturing, scope):
 
 def _evidence_basis(s, ctx, product_id, sources, required_reads=()):
     reads, private, basis = _evidence(s, ctx, product_id, sources)
+    from pdos_next.core.request_proof import batch_read
     from pdos_next.domain.professional_authority.service import _subject_access
-    from pdos_next.original_security import security_row
-    from pdos_next.originals import require_original
-    from pdos_next.request_proof import batch_read
+    from pdos_next.originals.access import require_original
+    from pdos_next.originals.security import security_row
 
     principal, grant = _subject_access(s, ctx, product_id, ctx.requester_id)
     artifacts = batch_read(s, Artifact, [UUID(str(read["artifact_id"])) for read in required_reads])
@@ -1154,7 +1153,7 @@ def _load_bundle(
             facts_revision=digest(fingerprint),
             required_source_read_set=tuple(SourceRead.model_validate(v) for v in reads.values()),
         )
-    from pdos_next.request_proof import snapshot_scalar
+    from pdos_next.core.request_proof import snapshot_scalar
 
     fact = snapshot_scalar(
         s,
@@ -1485,7 +1484,7 @@ def reservation_basis(s, ctx, product_id, build_id, scope, owner_execution_id, i
         MaterialHold.tenant_id == ctx.tenant_id,
         MaterialHold.owner_execution_id == owner_execution_id,
     )
-    from pdos_next.request_proof import snapshot_rows
+    from pdos_next.core.request_proof import snapshot_rows
 
     holds = snapshot_rows(
         s,

@@ -3,12 +3,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.command_handlers import CATEGORY_OPERATIONS, tier_of
+from pdos_next.core.command_handlers import CATEGORY_OPERATIONS, tier_of
 from pdos_next.domain.knowledge import rules
 from pdos_next.domain.knowledge.schemas import CANDIDATE_OP, RULE_OP, RulePublishPayload
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 
 def payload(**changes):

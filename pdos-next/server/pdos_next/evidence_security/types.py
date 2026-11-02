@@ -9,7 +9,7 @@ from enum import StrEnum
 from typing import Protocol
 from uuid import UUID
 
-from pdos_next.object_storage.types import ObjectRef
+from pdos_next.originals.object_storage.types import ObjectRef
 
 
 def aware(value: datetime) -> None:

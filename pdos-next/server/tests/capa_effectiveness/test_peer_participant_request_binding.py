@@ -7,14 +7,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from test_participants_owner import RawSession, reader, saved_group
-from test_participants_owner import work as work
-
-from pdos_next import request_proof
-from pdos_next import service as common
+from pdos_next.core import request_proof
+from pdos_next.core import service as common
+from pdos_next.core.models import Audit, Grant, Outbox, Principal, RequestKey
 from pdos_next.domain.capa_effectiveness import participants_owner as owner
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Grant, Outbox, Principal, RequestKey
+from test_participants_owner import RawSession, reader, saved_group
+from test_participants_owner import work as work
 
 
 def peer_group(work, *, readable_key=False):

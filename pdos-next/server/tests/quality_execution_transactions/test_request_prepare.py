@@ -9,6 +9,14 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.core import service as common
+from pdos_next.core.models import Grant, now
+from pdos_next.core.service import digest
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.quality_execution import direct, service
+from pdos_next.domain.quality_execution.models import QualityIssueVersion
+from pdos_next.errors import DomainError
+from pdos_next.schemas.quality_issues.contracts import Issue
 from quality_execution.fixtures import (
     accepted_work,
     command,
@@ -29,15 +37,6 @@ from sqlalchemy import event, select
 from sqlalchemy.orm import Session
 from test_project_first_plan import cmd, post
 from test_resource_dependency_execution import engines
-
-from pdos_next import service as common
-from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.quality_execution import direct, service
-from pdos_next.domain.quality_execution.models import QualityIssueVersion
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
-from pdos_next.schemas.quality_issues.contracts import Issue
-from pdos_next.service import digest
 
 
 def _triage(work):

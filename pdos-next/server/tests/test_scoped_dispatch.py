@@ -1,12 +1,11 @@
 from uuid import UUID
 
 import pytest
+from pdos_next.core.dispatch.outbox import acknowledge, claim_events, delivery_unknown
+from pdos_next.core.models import Inbox, Outbox
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.dispatch.outbox import acknowledge, claim_events, delivery_unknown
-from pdos_next.models import Inbox, Outbox
 from test_trusted_source_work import source
 
 

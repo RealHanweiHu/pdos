@@ -6,12 +6,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.service import Context
 from pdos_next.domain.professional_authority import service
 from pdos_next.domain.professional_authority import signature_watermarks as watermarks
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 AT = datetime(2026, 10, 17, 12, tzinfo=UTC)
 OP = "npi.manufacturing_baseline.publish"

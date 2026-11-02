@@ -11,22 +11,22 @@ from uuid import UUID, uuid4
 
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.enterprise_search.assistant_adapter import AssistantReadAdapter
+from pdos_next.agent.enterprise_search.embedding_query import QueryEmbedding, QueryPorts
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.models import (
     AgentRun,
     AgentToolCall,
     TenantSkillEnablement,
     ValidationBudget,
 )
-from pdos_next.agent_kernel.persistence import KernelStore, cancel_run
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.persistence import KernelStore, cancel_run
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.schemas import ZERO_MODEL_BUDGET
 from pdos_next.domain.automations.service_models import AutomationServiceAttempt
-from pdos_next.enterprise_search.assistant_adapter import AssistantReadAdapter
-from pdos_next.enterprise_search.embedding_query import QueryEmbedding, QueryPorts
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
 from sqlalchemy import func, select, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
@@ -115,7 +115,7 @@ def counts(work):
 
 def worker(work, monkeypatch):
     monkeypatch.setattr(work.setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
-    monkeypatch.setattr("pdos_next.agent_kernel.activities.activity.heartbeat", lambda *_a: None)
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
     return KernelActivities(
         work.setup.engine,
         checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],

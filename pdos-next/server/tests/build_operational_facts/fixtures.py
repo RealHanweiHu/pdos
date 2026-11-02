@@ -7,11 +7,10 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from test_build_demand import compute
-from test_builds import accepted, configuration, definition, project  # noqa: F401
-from test_project_first_plan import cmd
-
-from pdos_next.database import tenant_session
+from pdos_next.bootstrap.operational_import import import_operational_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
+from pdos_next.core.service import digest
 from pdos_next.domain.build_operational_facts.schemas import (
     DecisionProof,
     FactInput,
@@ -22,10 +21,10 @@ from pdos_next.domain.build_operational_facts.service import (
     disable_issuer,
     load_bundle,
 )
-from pdos_next.engines.planning.calendar import frozen_timezone
-from pdos_next.models import now
-from pdos_next.operational_import import import_operational_fact
-from pdos_next.service import digest
+from pdos_next.domain.engines.planning.calendar import frozen_timezone
+from test_build_demand import compute
+from test_builds import accepted, configuration, definition, project  # noqa: F401
+from test_project_first_plan import cmd
 
 
 @pytest.fixture

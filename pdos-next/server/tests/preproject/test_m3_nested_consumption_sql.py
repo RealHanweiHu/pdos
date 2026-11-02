@@ -6,12 +6,11 @@ import json
 from uuid import UUID, uuid4
 
 import pytest
+from migrations import schema_s0_0750 as migration
+from pdos_next.core.models import Consumption
+from pdos_next.domain.preproject.schemas import Reference
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
-
-from migrations import schema_s0_0750 as migration
-from pdos_next.domain.preproject.schemas import Reference
-from pdos_next.models import Consumption
 from tests.preproject.test_evidence_commands_pg import (
     artifact,
     human_session,

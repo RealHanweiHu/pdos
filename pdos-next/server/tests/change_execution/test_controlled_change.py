@@ -11,23 +11,22 @@ from uuid import uuid4
 import httpx
 import psycopg
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation, Product
+from pdos_next.core.service import Context, material_digest
+from pdos_next.core.service import digest as common_digest
+from pdos_next.domain.change_control.rules import digest
+from pdos_next.domain.change_execution.graph import OwnedObject
+from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as owner
+from pdos_next.features.change import controlled_store as store
+from pdos_next.features.change import selection_service as service
+from pdos_next.features.change.selection_consumption import ConsumptionHost
+from pdos_next.schemas.verification.contracts import SourceRef
 from pydantic import ValidationError
 from sqlalchemy import ForeignKeyConstraint
 from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next import change_controlled_owner as owner
-from pdos_next import change_controlled_store as store
-from pdos_next import change_selection_service as service
-from pdos_next.change_selection_consumption import ConsumptionHost
-from pdos_next.contracts import Command
-from pdos_next.domain.change_control.rules import digest
-from pdos_next.domain.change_execution.graph import OwnedObject
-from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product
-from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import Context, material_digest
-from pdos_next.service import digest as common_digest
 
 from . import kernel_helpers as helper
 
@@ -249,7 +248,7 @@ def test_unconfigured_selection_runtime_is_explicit_missing():
 
 
 def test_host_publication_without_common_tail_cannot_stage_any_record(monkeypatch):
-    from pdos_next import service as common
+    from pdos_next.core import service as common
 
     monkeypatch.delitem(common.EVENTS, store.POLICY_OPERATION)
 

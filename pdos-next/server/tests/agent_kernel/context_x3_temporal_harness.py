@@ -18,22 +18,21 @@ from uuid import uuid4
 
 import httpx
 from langgraph.checkpoint.postgres import PostgresSaver
-from temporalio.client import Client
-from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.context_budget import segments
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.temporal_port import TemporalPort
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.context_budget import segments
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.temporal_port import TemporalPort
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.api import create_app
-from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.models import Receipt
+from pdos_next.core.models import Receipt
+from pdos_next.core.service import receipt_view
 from pdos_next.providers.types import ProviderUsage
-from pdos_next.service import receipt_view
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from pdos_next.workflows.xiaopai import XiaopaiWork
+from temporalio.client import Client
+from temporalio.worker import Worker
 from tests.agent_kernel.context_x3_capacity import capacity_result, registry
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 from tests.enterprise_search.test_assistant_pg import SyntheticClient

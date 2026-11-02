@@ -5,15 +5,15 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-from pdos_next.object_storage.types import ObjectRef
-from pdos_next.original_lifecycle.ports import ClockPort, ReferenceGuardPort
-from pdos_next.original_lifecycle.types import (
+from pdos_next.originals.lifecycle.ports import ClockPort, ReferenceGuardPort
+from pdos_next.originals.lifecycle.types import (
     CurrentAuthorization,
     LifecycleAction,
     LifecycleIntent,
     OriginalState,
     RetentionPolicy,
 )
+from pdos_next.originals.object_storage.types import ObjectRef
 
 
 @dataclass(frozen=True, slots=True)

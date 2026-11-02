@@ -2,6 +2,7 @@
 
 from uuid import UUID
 
+from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
@@ -12,8 +13,6 @@ from sqlalchemy import (
     UniqueConstraint,
 )
 from sqlalchemy.orm import Mapped, mapped_column
-
-from pdos_next.models import Base, Row
 
 
 class Provenance:

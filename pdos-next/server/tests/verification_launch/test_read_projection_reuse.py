@@ -6,13 +6,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session
-
+from pdos_next.core.service import Context
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_start import service as starts
 from pdos_next.domain.professional_authority import service as authority
 from pdos_next.domain.test_resources import service as resources
-from pdos_next.service import Context
+from sqlalchemy.orm import Session
 
 AT = datetime(2026, 10, 9, 12, tzinfo=UTC)
 

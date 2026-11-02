@@ -9,16 +9,15 @@ from uuid import uuid4
 
 import pytest
 from capa_effectiveness.test_actual_applicability_owner import action_work, work  # noqa: F401
-from sqlalchemy.engine import Engine
-
-from pdos_next import change_action_fulfillment_owner as owner
-from pdos_next.change_controlled_owner import ActionIntentRead
-from pdos_next.change_implementation_owner import Occurrence
 from pdos_next.domain.capa_effectiveness.fact_commands import ActionReviewInput
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
 from pdos_next.errors import DomainError
+from pdos_next.features.change import action_fulfillment_owner as owner
+from pdos_next.features.change.controlled_owner import ActionIntentRead
+from pdos_next.features.change.implementation_owner import Occurrence
 from pdos_next.schemas.change_control.contracts import ImplementationFact, Ref
+from sqlalchemy.engine import Engine
 
 from . import kernel_helpers as helper
 

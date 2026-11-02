@@ -8,9 +8,8 @@ Hooks attach only to the Session performing one exact prepared command.
 from contextlib import contextmanager
 from copy import deepcopy
 
-from sqlalchemy import event, inspect, select, text
-
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey
 from pdos_next.domain.build_operational_facts.models import OperationalAsset, ResourceOccupancy
 from pdos_next.domain.test_resources import service as resources
 from pdos_next.domain.test_resources.models import (
@@ -30,7 +29,7 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey
+from sqlalchemy import event, inspect, select, text
 
 FAULT_CODE = "VERSION_CONFLICT"
 MISSING_GROUP_MESSAGE = (

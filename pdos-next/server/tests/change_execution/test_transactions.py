@@ -12,6 +12,17 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Confirmation, Outbox, Receipt, now
+from pdos_next.domain.change_execution import service
+from pdos_next.domain.change_execution.models import (
+    ChangeCurrent,
+    ChangeGraphCapture,
+    ChangeRequestVersion,
+)
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.professional_authority.models import ProfessionalCurrent
+from pdos_next.schemas.change_control.contracts import Facet
 from quality_execution.fixtures import (  # noqa: F401
     accepted_work,
     create_issue,
@@ -28,18 +39,6 @@ from sqlalchemy import event, func, select, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import cmd, post
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.change_execution import service
-from pdos_next.domain.change_execution.models import (
-    ChangeCurrent,
-    ChangeGraphCapture,
-    ChangeRequestVersion,
-)
-from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.professional_authority.models import ProfessionalCurrent
-from pdos_next.models import Artifact, Audit, Confirmation, Outbox, Receipt, now
-from pdos_next.schemas.change_control.contracts import Facet
 
 
 @pytest.fixture

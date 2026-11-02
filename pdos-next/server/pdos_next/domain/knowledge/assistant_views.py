@@ -1,13 +1,12 @@
 """Actual verified answers, review reminders and native command seeds."""
 
-from sqlalchemy import select
-
-from pdos_next.category_scope import category_scope
-from pdos_next.clock import now
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.clock import now
+from pdos_next.core.models import Grant, Principal
+from pdos_next.core.service import require_access
 from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal
-from pdos_next.service import require_access
+from sqlalchemy import select
 
 from .assistant_models import KnowledgeAnswerReview
 from .assistant_reviews import status

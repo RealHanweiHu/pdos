@@ -5,13 +5,12 @@ from dataclasses import replace
 from types import SimpleNamespace
 
 import pytest
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.domain_reads import DomainReads
-from pdos_next.agent_kernel.registry import ToolRegistry
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.domain_reads import DomainReads
+from pdos_next.agent.kernel.registry import ToolRegistry
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 from tests.agent_kernel.test_bound_read_host import read
 from tests.agent_kernel.test_result_continuation import host
 

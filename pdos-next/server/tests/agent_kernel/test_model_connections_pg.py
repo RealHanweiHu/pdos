@@ -6,13 +6,12 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.model_configuration.persistence import ModelConfigurationVersion
+from pdos_next.api import create_app
+from pdos_next.core.models import Confirmation
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.api import create_app
-from pdos_next.model_configuration.persistence import ModelConfigurationVersion
-from pdos_next.models import Confirmation
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 from tests.agent_kernel.test_transactions import run
 from tests.model_configuration.test_connections import KEY, configured_host, request
@@ -101,7 +100,7 @@ def test_nonadmin_cross_scope_and_invalid_keys_fail_without_secret_side_effects(
 def test_interrupted_secure_save_returns_unknown_and_same_request_recovers(
     setup, tmp_path, monkeypatch
 ):
-    import pdos_next.model_configuration.connections as connections
+    import pdos_next.agent.model_configuration.connections as connections
 
     client, host, kms, _, _ = client_host(setup, tmp_path)
     path = f"/v1/categories/{setup.category}/model-connections"

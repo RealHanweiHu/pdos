@@ -5,8 +5,24 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt
+from pdos_next.core.service import digest
+from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
+from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
+from pdos_next.domain.verification_front.models import FormalVerificationRequest
+from pdos_next.domain.verification_launch.models import (
+    VerificationRunCurrent,
+    VerificationRunVersion,
+)
+from pdos_next.domain.verification_results.models import (
+    MeasurementRecord,
+    TestResultActionFact,
+    TestResultProjection,
+)
 from sqlalchemy import event, func, select
 from test_project_first_plan import accepted, post
+
 from verification_results.fixtures import (  # noqa: F401
     accepted_work,
     capture,
@@ -20,22 +36,6 @@ from verification_results.fixtures import (  # noqa: F401
     results_work,
     upload_report,
 )
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_operational_facts.models import ResourceOccupancy
-from pdos_next.domain.test_resources.models import SampleRunUsage, TestResourceReservation
-from pdos_next.domain.verification_front.models import FormalVerificationRequest
-from pdos_next.domain.verification_launch.models import (
-    VerificationRunCurrent,
-    VerificationRunVersion,
-)
-from pdos_next.domain.verification_results.models import (
-    MeasurementRecord,
-    TestResultActionFact,
-    TestResultProjection,
-)
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt
-from pdos_next.service import digest
 
 
 def counts(work, *, result_only=False):

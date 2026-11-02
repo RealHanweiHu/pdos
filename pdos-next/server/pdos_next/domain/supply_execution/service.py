@@ -5,9 +5,10 @@ from copy import deepcopy
 from decimal import Decimal
 from uuid import UUID, uuid4
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Artifact, Principal, Product, now
 from pdos_next.domain.configurations.service import _decimal, _merge_reads, _source_state
+from pdos_next.domain.engines.supply_cost.common import SnapshotRef, digest
+from pdos_next.domain.engines.supply_cost.dto import PoolKey, SupplyPool
 from pdos_next.domain.supply_cost.adapters import coverage_candidate
 from pdos_next.domain.supply_cost.errors import SupplyBusinessError
 from pdos_next.domain.supply_cost.read_models import projection_view, snapshot_view
@@ -21,10 +22,7 @@ from pdos_next.domain.supply_cost.rules import (
     require_scope,
     snapshot_freshness,
 )
-from pdos_next.engines.supply_cost.common import SnapshotRef, digest
-from pdos_next.engines.supply_cost.dto import PoolKey, SupplyPool
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Principal, Product, now
 from pdos_next.schemas.supply_cost.dto import (
     BoundDemand,
     CoverageProjection,
@@ -39,6 +37,7 @@ from pdos_next.schemas.supply_cost.dto import (
 from pdos_next.schemas.supply_cost.dto import (
     SupplySnapshot as SnapshotDTO,
 )
+from sqlalchemy import select
 
 from .models import KitProjection, SupplyCapture, SupplyCurrent, SupplySnapshot
 from .schemas import SnapshotRecordPayload, SupplyCaptureInput
@@ -70,7 +69,7 @@ def _rule(function, *args, **kwargs):
 
 
 def _human(s, ctx, product_id, *, write=False):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id, write=write, lock=write)
     principal = s.get(Principal, ctx.actor_id)
@@ -79,7 +78,7 @@ def _human(s, ctx, product_id, *, write=False):
 
 
 def _row(s, ctx, product_id, model, identity, *, write=False):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, product_id, write=write, lock=write)
     row = s.scalar(
@@ -156,10 +155,10 @@ def _references(data):
 
 
 def _sources(s, ctx, product_id, reads, references=()):
-    from pdos_next.originals import object_reference, require_original
-    from pdos_next.request_proof import batch_read, request_proof
-    from pdos_next.service import digest as content_digest
-    from pdos_next.service import source_for
+    from pdos_next.core.request_proof import batch_read, request_proof
+    from pdos_next.core.service import digest as content_digest
+    from pdos_next.core.service import source_for
+    from pdos_next.originals.access import object_reference, require_original
 
     proof = request_proof(s)
     batch_read(s, Artifact, [UUID(str(read["artifact_id"])) for read in reads])
@@ -224,7 +223,7 @@ def _visibility(build, sources_private, previous=None):
 
 
 def _proposed(data, bound, refs, snapshot_id, captured_at, previous):
-    from pdos_next.service import digest as content_digest
+    from pdos_next.core.service import digest as content_digest
 
     commitments, transit, receipts, restrictions, pools = [], [], [], [], []
     for row in data.records:
@@ -331,7 +330,7 @@ def _capture_payload(row):
 
 
 def _read_evidence(s, ctx, product_id, row):
-    from pdos_next.originals import require_original
+    from pdos_next.originals.access import require_original
 
     state = _source_state(s, ctx, product_id, row.required_source_read_set)
     for read in row.required_source_read_set:
@@ -396,8 +395,8 @@ def _normalized_input(data):
 
 
 def prepare_capture(s, ctx, product_id, data: SupplyCaptureInput):
-    from pdos_next.database import require_context
-    from pdos_next.service import digest as request_digest
+    from pdos_next.core.database import require_context
+    from pdos_next.core.service import digest as request_digest
 
     require_context(s, ctx)
     raw = _normalized_input(data)

@@ -7,9 +7,9 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next import category_scope as scope_module
+from pdos_next.core import category_scope as scope_module
+from pdos_next.core.models import Principal, Product
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.preproject import (
     category_matrix as matrix,
 )
@@ -30,8 +30,7 @@ from pdos_next.domain.preproject.category_schemas import (
 )
 from pdos_next.domain.preproject.schemas import Reference
 from pdos_next.errors import DomainError
-from pdos_next.models import Principal, Product
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
 
 
 def fixed(entry):

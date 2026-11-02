@@ -12,14 +12,8 @@ from uuid import UUID
 import pytest
 from build_start.test_transactions import import_authority
 from change_execution import test_transactions as change
-from quality_execution import fixtures as quality
-from quality_followup_transactions import fixtures as followup
-from sqlalchemy import func, select
-from test_project_first_plan import accepted, post
-from verification_handoff import fixtures as handoff
-from verification_results import fixtures as results
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
 from pdos_next.domain.capa_verification import service as output_owner
 from pdos_next.domain.capa_verification.schemas import OutputRef
 from pdos_next.domain.change_execution import service as change_service
@@ -27,7 +21,13 @@ from pdos_next.domain.quality_execution.models import QualityFailureMap
 from pdos_next.domain.verification_launch import service as launch_service
 from pdos_next.domain.verification_launch.models import VerificationRunVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import now
+from quality_execution import fixtures as quality
+from quality_followup_transactions import fixtures as followup
+from sqlalchemy import func, select
+from test_project_first_plan import accepted, post
+from verification_handoff import fixtures as handoff
+from verification_results import fixtures as results
+
 from verification_launch import fixtures as launch
 from verification_launch.fixtures import (  # noqa: F401
     known_configuration,

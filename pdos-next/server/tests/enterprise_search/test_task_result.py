@@ -5,9 +5,8 @@ from copy import deepcopy
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.assistant_result import attach as ordinary_answer
-from pdos_next.enterprise_search.task_result import FORMATS, assemble, markdown
+from pdos_next.agent.enterprise_search.task_result import FORMATS, assemble, markdown
+from pdos_next.agent.kernel.assistant_result import attach as ordinary_answer
 
 
 def source(*, structured=False):

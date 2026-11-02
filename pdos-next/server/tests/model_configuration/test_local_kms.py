@@ -1,14 +1,13 @@
 """LocalKeychainKms contract: version metadata never decrypts, wrong versions refuse."""
 
 import pytest
-
-from pdos_next.errors import DomainError
-from pdos_next.model_configuration.local_kms import (
+from pdos_next.agent.model_configuration.local_kms import (
     LOCAL_ENDPOINT,
     LOCAL_REGION,
     LocalKeychainKms,
     factory_for,
 )
+from pdos_next.errors import DomainError
 
 ARN = "acs:kms:local:0:secret/synthetic-local-key"
 
@@ -40,7 +39,7 @@ def test_unknown_or_malformed_references_are_unavailable():
 
 
 def test_factory_selects_local_only_for_the_exact_marker_pair():
-    from pdos_next.model_configuration.kms import AliyunKms
+    from pdos_next.agent.model_configuration.kms import AliyunKms
 
     assert isinstance(factory_for(LOCAL_REGION, LOCAL_ENDPOINT), LocalKeychainKms)
     assert isinstance(factory_for("cn-hangzhou", "kms.cn-hangzhou.aliyuncs.com"), AliyunKms)

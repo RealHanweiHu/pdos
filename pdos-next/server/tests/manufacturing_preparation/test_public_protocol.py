@@ -12,14 +12,14 @@ from uuid import uuid4
 
 import pytest
 from fastapi import Depends, FastAPI
+from pdos_next.core import command_handlers, contracts, models
+from pdos_next.core import service as common
+from pdos_next.domain.manufacturing_baseline import api, rules, schema_proposal, schemas, service
+from pdos_next.errors import DomainError
+from pdos_next.features.lifecycle import catalog as lifecycle_catalog
 from pydantic import ValidationError
 from sqlalchemy import ForeignKeyConstraint, UniqueConstraint, inspect
 from sqlalchemy.orm import make_transient_to_detached
-
-from pdos_next import command_handlers, contracts, lifecycle_catalog, models
-from pdos_next import service as common
-from pdos_next.domain.manufacturing_baseline import api, rules, schema_proposal, schemas, service
-from pdos_next.errors import DomainError
 
 from .test_preparation import frame
 

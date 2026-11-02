@@ -5,14 +5,13 @@ from uuid import UUID as PythonUUID
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import embedding_hybrid as hybrid
+from pdos_next.agent.enterprise_search.embedding_hybrid import nearest_statement
 from sqlalchemy import String, column, table
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql import visitors
 from sqlalchemy.sql.selectable import CTE
-
-from pdos_next.enterprise_search import embedding_hybrid as hybrid
-from pdos_next.enterprise_search.embedding_hybrid import nearest_statement
 
 
 @pytest.mark.parametrize("dimensions", [2, 384])

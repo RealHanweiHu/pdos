@@ -12,10 +12,8 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy import create_engine, select
-from sqlalchemy.orm import Session
-from test_fingerprint_compatibility import materials  # noqa: F401 -- fixture reuse
-
+from pdos_next.core.models import Grant, Principal, Product
+from pdos_next.core.service import Context
 from pdos_next.domain.build_operational_facts.service import digest
 from pdos_next.domain.resource_readiness.rules import semantic_digest
 from pdos_next.domain.test_resources import retained
@@ -25,7 +23,6 @@ from pdos_next.domain.test_resources.models import TestResourceFact as Fact
 from pdos_next.domain.test_resources.schemas import TestReservationResult as Result
 from pdos_next.domain.verification_launch.schemas import ExecutionPlan
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Principal, Product
 from pdos_next.schemas.resource_readiness.contracts import (
     ReadinessReport,
     Reservation,
@@ -34,7 +31,9 @@ from pdos_next.schemas.resource_readiness.contracts import (
 )
 from pdos_next.schemas.verification.contracts import Scope, TimeFact
 from pdos_next.schemas.verification.contracts import TestRun as Run
-from pdos_next.service import Context
+from sqlalchemy import create_engine, select
+from sqlalchemy.orm import Session
+from test_fingerprint_compatibility import materials  # noqa: F401 -- fixture reuse
 
 
 def uid(n):
@@ -293,7 +292,7 @@ def work(materials, monkeypatch):
     monkeypatch.setattr(session, "scalar", selected)
     monkeypatch.setattr(session, "get", lambda model, key: rows[model])
     # Explicit substitutes for the public authority ports; this fixture never connects.
-    from pdos_next import service as public_service
+    from pdos_next.core import service as public_service
     from pdos_next.domain.professional_authority import service as professional
 
     def public_access(s, current_ctx, product_id, *, write=False, lock=False):

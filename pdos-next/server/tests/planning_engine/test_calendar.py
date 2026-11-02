@@ -4,21 +4,20 @@ from datetime import UTC, date, datetime, timedelta
 from zoneinfo import ZoneInfo
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.engines.planning.calendar import (
+from pdos_next.domain.engines.planning.calendar import (
     CalendarError,
     WorkingTime,
     ceil_minute,
     frozen_timezone,
 )
-from pdos_next.engines.planning.dto import (
+from pdos_next.domain.engines.planning.dto import (
     CalendarException,
     CalendarSnapshot,
     Reference,
     WeekdaySchedule,
     WorkInterval,
 )
+from pydantic import ValidationError
 
 
 def shift(start: int, end: int) -> WorkInterval:

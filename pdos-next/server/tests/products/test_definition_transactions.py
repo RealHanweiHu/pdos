@@ -2,18 +2,17 @@ from concurrent.futures import ThreadPoolExecutor
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, update
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Outbox, Product, Receipt
+from pdos_next.core.service import Context
 from pdos_next.domain.products.definitions import validate
 from pdos_next.domain.products.models import DefinitionRevision, DefinitionSource, DefinitionSpecRow
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Outbox, Product, Receipt
 from pdos_next.schemas.products.definitions import DefinitionDraftPayload
-from pdos_next.service import Context
+from sqlalchemy import func, select, update
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 
 
 def command(setup, operation, payload, artifact=None):
@@ -259,7 +258,7 @@ def test_receipt_failure_does_not_leave_half_definition(setup, monkeypatch):
     def fail(*_args, **_kwargs):
         raise RuntimeError("Synthetic receipt failure")
 
-    monkeypatch.setattr("pdos_next.service.append_receipt", fail)
+    monkeypatch.setattr("pdos_next.core.service.append_receipt", fail)
     with pytest.raises(RuntimeError, match="Synthetic receipt failure"):
         post(setup, command(setup, "product.definition.draft", payload(artifact), artifact))
     with tenant_session(

@@ -2,14 +2,13 @@
 # ruff: noqa: F811 -- explicitly imported marked database fixtures
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Audit, Grant, Outbox, Product, Receipt
 from pdos_next.domain.preproject.models import ProjectOpenItem
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.products.variant_models import Variant
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import Audit, Grant, Outbox, Product, Receipt
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_m3_original_binding_pg import QUOTE, uploaded
 from tests.preproject.test_derivation_transactions import derivative_payload, synthetic_parent
 from tests.preproject.test_g0 import create, decide_request, payload, post, save, submit

@@ -5,7 +5,7 @@ import json
 from datetime import timedelta
 from decimal import Decimal, localcontext
 
-from pdos_next.engines.planning.calendar import CalendarError, WorkingTime
+from pdos_next.domain.engines.planning.calendar import CalendarError, WorkingTime
 from pdos_next.schemas.resource_readiness.contracts import (
     Check,
     ExecutionWindow,

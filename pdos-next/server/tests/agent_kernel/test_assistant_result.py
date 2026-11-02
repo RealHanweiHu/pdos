@@ -1,8 +1,7 @@
 from copy import deepcopy
 
 import pytest
-
-from pdos_next.agent_kernel.assistant_result import attach
+from pdos_next.agent.kernel.assistant_result import attach
 
 
 @pytest.mark.parametrize("tools", [[], [{"tool": "skill.load"}]])

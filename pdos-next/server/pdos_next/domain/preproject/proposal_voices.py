@@ -6,11 +6,10 @@ switch is used. A failed source/reference never returns the voice's body.
 
 from copy import deepcopy
 
-from sqlalchemy import select
-
-from pdos_next.clock import now
+from pdos_next.core.clock import now
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from sqlalchemy import select
 
 from . import category_reads, proposal_views, root_sources, spec_compare
 from .category_models import KnowledgeCurrent, KnowledgeEntry

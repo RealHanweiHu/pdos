@@ -6,12 +6,9 @@ from email.utils import format_datetime
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.registry import ToolRegistry
-from pdos_next.agent_kernel.types import RunScope
-from pdos_next.errors import DomainError
-from pdos_next.research import (
+from pdos_next.agent.kernel.registry import ToolRegistry
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.agent.research import (
     HostRateLimiter,
     HTTPResponse,
     LedgerDraft,
@@ -24,7 +21,9 @@ from pdos_next.research import (
     SearchHit,
     research_tools,
 )
-from pdos_next.research.web import canonical_url, extract_markdown, public_ip
+from pdos_next.agent.research.web import canonical_url, extract_markdown, public_ip
+from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 
 def run(awaitable):

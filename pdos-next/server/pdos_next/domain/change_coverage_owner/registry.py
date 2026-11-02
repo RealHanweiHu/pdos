@@ -3,13 +3,13 @@
 from dataclasses import dataclass
 from datetime import UTC, datetime
 
-import pdos_next.models  # noqa: F401 - complete model registration before runtime imports
-from pdos_next import change_controlled_owner as controlled
-from pdos_next.change_graph_closure import _fresh_selects, _json, _pending_dependencies
+import pdos_next.core.models  # noqa: F401 - complete model registration before runtime imports
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.domain.change_execution.graph import OwnerReader
 from pdos_next.domain.quality_execution.service import get_issue_for_change
 from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change.graph_closure import _fresh_selects, _json, _pending_dependencies
 from pdos_next.schemas.change_control.contracts import Node
 
 from .trust import require

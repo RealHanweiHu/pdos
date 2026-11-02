@@ -10,13 +10,15 @@ from uuid import UUID
 
 import pytest
 from g0_fixture import add_category_human, create_g0_project
-from pdos_next import personal_summary, personal_summary_runtime, personal_summary_templates
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, now
+from pdos_next.core.service import Context
 from pdos_next.domain.project_governance.models import GovernanceEvent
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import Grant, now
-from pdos_next.personal_summary_schemas import Selection
-from pdos_next.service import Context
+from pdos_next.features.personal import summary as personal_summary
+from pdos_next.features.personal import summary_runtime as personal_summary_runtime
+from pdos_next.features.personal import summary_templates as personal_summary_templates
+from pdos_next.features.personal.summary_schemas import Selection
 from sqlalchemy import func, select, text, update
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, cmd, post, proposal_command

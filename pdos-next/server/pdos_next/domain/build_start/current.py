@@ -3,15 +3,14 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import select
-
+from pdos_next.core.request_proof import scoped_rows, snapshot_get
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import BuildOperationalFact
 from pdos_next.domain.build_operational_facts.schemas import FactInput
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent
 from pdos_next.errors import DomainError
-from pdos_next.request_proof import scoped_rows, snapshot_get
+from sqlalchemy import select
 
 
 def _require(condition, reason="OPERATIONAL_FACTS_CHANGED"):

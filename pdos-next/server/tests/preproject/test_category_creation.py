@@ -6,12 +6,10 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.clock import now, using_clock
-from pdos_next.database import tenant_session
+from pdos_next.core.clock import now, using_clock
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Category, Grant, Outbox, Receipt, RequestKey
+from pdos_next.core.service import Context
 from pdos_next.domain.preproject import category_creation as creation
 from pdos_next.domain.preproject.category_creation import CategoryCreate, InitialGroups
 from pdos_next.domain.preproject.category_creation_models import CategoryCreationConfirmation
@@ -22,8 +20,9 @@ from pdos_next.domain.preproject.category_models import (
     ParameterVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Category, Grant, Outbox, Receipt, RequestKey
-from pdos_next.service import Context
+from pydantic import ValidationError
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 
 
 def data(**changes):
@@ -146,7 +145,7 @@ def test_unit_actor_and_deidentification():
 
 
 def test_unit_preview_writes_only_proof_and_create_consumes_once(monkeypatch):
-    monkeypatch.setattr("pdos_next.category_scope.category_scope", lambda *args, **kwargs: None)
+    monkeypatch.setattr("pdos_next.core.category_scope.category_scope", lambda *args, **kwargs: None)
     actor, ctx = actor_context()
     payload = data(
         groups={

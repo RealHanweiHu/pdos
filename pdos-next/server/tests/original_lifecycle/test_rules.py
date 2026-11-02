@@ -2,8 +2,7 @@ from dataclasses import FrozenInstanceError, replace
 from datetime import timedelta
 
 import pytest
-
-from pdos_next.original_lifecycle import (
+from pdos_next.originals.lifecycle import (
     DecisionReason,
     Disposition,
     LifecycleFailure,

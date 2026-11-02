@@ -13,24 +13,24 @@ from uuid import UUID
 
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-from pdos_next.agent_kernel.management import register_agreement
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
-from pdos_next.agent_kernel.read_execution import ReadBinding
-from pdos_next.enterprise_search.assistant_adapter import AssistantReadAdapter
-from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput
-from pdos_next.enterprise_search.embedding_activities import EmbeddingActivities
-from pdos_next.enterprise_search.embedding_hybrid import RANKING
-from pdos_next.enterprise_search.embedding_models import (
+from pdos_next.agent.enterprise_search.assistant_adapter import AssistantReadAdapter
+from pdos_next.agent.enterprise_search.assistant_schemas import AssistantSearchInput
+from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingActivities
+from pdos_next.agent.enterprise_search.embedding_hybrid import RANKING
+from pdos_next.agent.enterprise_search.embedding_models import (
     EmbeddingBatch,
     EmbeddingBudget,
     EmbeddingCall,
     EmbeddingProfile,
 )
-from pdos_next.enterprise_search.embedding_query_binding import TOOL
-from pdos_next.enterprise_search.query import search
+from pdos_next.agent.enterprise_search.embedding_query_binding import TOOL
+from pdos_next.agent.enterprise_search.query import search
+from pdos_next.agent.kernel.management import register_agreement
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
+from pdos_next.agent.kernel.read_execution import ReadBinding
+from pdos_next.core.models import Confirmation, Receipt
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Receipt
-from pdos_next.service import Context, digest
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from tests.agent_kernel import test_domain_adapter_transactions as native

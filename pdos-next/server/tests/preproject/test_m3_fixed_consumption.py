@@ -4,8 +4,7 @@ from types import SimpleNamespace as NS
 from uuid import UUID
 
 import pytest
-
-from pdos_next import request_proof
+from pdos_next.core import request_proof
 from pdos_next.domain.builds import service as builds
 from pdos_next.domain.configurations import service as configurations
 from pdos_next.domain.preproject import baseline, root_sources
@@ -154,8 +153,9 @@ def consume(e, entry, monkeypatch):
 def test_historical_original_uses_actual_source_scope_and_checks_both_products(
     monkeypatch, source_product,
 ):
-    from pdos_next import originals, service
+    from pdos_next.core import service
     from pdos_next.domain.preproject.schemas import Reference
+    from pdos_next.originals import access as originals
 
     original, source = UUID(int=31), UUID(int=32)
     row = NS(

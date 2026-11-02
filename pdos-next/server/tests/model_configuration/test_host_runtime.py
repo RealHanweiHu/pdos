@@ -9,14 +9,13 @@ from uuid import uuid4
 
 import pytest
 from alibabacloud_kms20160120 import models
-from pydantic import SecretStr
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.model_configuration.host import TenantRuntime, runtime_ports
+from pdos_next.agent.model_configuration.kms import AliyunKms
+from pdos_next.core.models import now
 from pdos_next.errors import DomainError
-from pdos_next.model_configuration.host import TenantRuntime, runtime_ports
-from pdos_next.model_configuration.kms import AliyunKms
-from pdos_next.models import now
 from pdos_next.schemas.model_configuration import ModelMetadata
+from pydantic import SecretStr
 from tests.agent_kernel.test_cost_budget import rate
 
 
@@ -246,7 +245,7 @@ def test_bootstrap_binds_host_output_cap_to_exact_registered_route(tmp_path, mon
     version = SimpleNamespace(metadata=metadata, enabled=True,
         secret=host.current(tenant, metadata.protocol), binding_digest="a" * 64)
     monkeypatch.setattr(
-        "pdos_next.agent_kernel.bootstrap.SessionConfigurationStore",
+        "pdos_next.agent.kernel.bootstrap.SessionConfigurationStore",
         lambda _: SimpleNamespace(current=lambda _: version),
     )
     session = SimpleNamespace(scalar=lambda *_: 1)

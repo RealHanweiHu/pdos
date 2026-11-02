@@ -5,11 +5,10 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.context_restart import KEY, carried_body, origin_ids, validate_body
-from pdos_next.agent_kernel.work_state import empty, validate_constraints
+from pdos_next.agent.kernel.context_restart import KEY, carried_body, origin_ids, validate_body
+from pdos_next.agent.kernel.work_state import empty, validate_constraints
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def state():
@@ -100,7 +99,7 @@ def test_provenance_cannot_import_another_owner_scope_or_state_version(fault):
 def test_history_manifest_only_resolves_cross_session_citations_from_exact_restart_proof(
     monkeypatch, proven,
 ):
-    from pdos_next.agent_kernel import context_restart, conversation_acl
+    from pdos_next.agent.kernel import context_restart, conversation_acl
     from tests.agent_kernel.test_conversation_acl import batch_session, native_ledger
 
     consumer, _calls = native_ledger()
@@ -125,8 +124,8 @@ def test_history_manifest_only_resolves_cross_session_citations_from_exact_resta
 def test_unquoted_read_dependency_is_rechecked_without_body_and_updates_remain_usable(
     monkeypatch, status, revision, expected,
 ):
-    from pdos_next.agent_kernel import conversation_acl
-    from pdos_next.agent_kernel.context_restart import access_state
+    from pdos_next.agent.kernel import conversation_acl
+    from pdos_next.agent.kernel.context_restart import access_state
 
     source, origin = str(uuid4()), str(uuid4())
     access = {origin: {"run_id": origin, "dependencies": [
@@ -138,7 +137,7 @@ def test_unquoted_read_dependency_is_rechecked_without_body_and_updates_remain_u
 
 
 def test_full_read_acl_is_server_only_in_public_and_frozen_model_projection(monkeypatch):
-    from pdos_next.agent_kernel import context_restart, work_state
+    from pdos_next.agent.kernel import context_restart, work_state
 
     identity, session_id = uuid4(), uuid4()
     body = empty()

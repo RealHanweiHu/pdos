@@ -10,18 +10,17 @@ from dataclasses import dataclass, field
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
-from sqlalchemy import or_, select, text
-
-from pdos_next.category_scope import category_scope
-from pdos_next.models import (
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.models import (
     Artifact,
     Claim,
     ObjectAudience,
     Product,
     UploadedOriginal,
 )
-from pdos_next.request_proof import batch_read, command_inputs_once
-from pdos_next.service import digest, require_access, source_for
+from pdos_next.core.request_proof import batch_read, command_inputs_once
+from pdos_next.core.service import digest, require_access, source_for
+from sqlalchemy import or_, select, text
 
 from .access import fail, human, member, proposal
 from .evidence_schemas import ClaimWithdraw, EvidenceLinkCreate, ProposalShare
@@ -85,7 +84,7 @@ def _claim_private(row):
 
 def _source(s, ctx, ref):
     """Return bottom-level source privacy, independent of a Claim's private run."""
-    from pdos_next.agent_kernel.models import PublicWebSnapshot
+    from pdos_next.agent.kernel.models import PublicWebSnapshot
 
     from .schemas import Reference
 
@@ -177,7 +176,7 @@ def _target(s, ctx, command, scope, target):
 
 def _link_provenance(s, ctx, command, scope, target_proposal):
     if ctx.agent_run_id:
-        from pdos_next.agent_kernel.execution import command_call, command_run
+        from pdos_next.agent.kernel.execution import command_call, command_run
 
         run = command_run(s, ctx, scope.id)
         command_call(s, ctx, command.operation)

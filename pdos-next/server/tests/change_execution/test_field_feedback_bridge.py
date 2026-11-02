@@ -7,14 +7,13 @@ from types import ModuleType, SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
+from pdos_next.core.service import Context
 from pdos_next.domain.change_execution import field_bridge, graph, service
 from pdos_next.domain.change_execution.schemas import ChangeCreatePayload
 from pdos_next.errors import DomainError
 from pdos_next.schemas.change_control.contracts import Ref
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 from .test_api_query import route  # noqa: F401 -- explicit shared route fixture
 
@@ -253,7 +252,7 @@ def test_duplicate_feedback_get_selection_rejects_before_tenant_uow(route):
 
 
 def test_field_source_options_accept_exact_registered_native_text_only_when_enabled(monkeypatch):
-    from pdos_next import service as common
+    from pdos_next.core import service as common
 
     from .test_native_evidence import native
 
@@ -270,7 +269,7 @@ def test_field_source_options_accept_exact_registered_native_text_only_when_enab
 
 @pytest.mark.parametrize("invalid", ["missing", "duplicate", "foreign_requester", "bad_result"])
 def test_field_native_source_option_requires_actual_registration_proof(monkeypatch, invalid):
-    from pdos_next import service as common
+    from pdos_next.core import service as common
 
     from .test_native_evidence import native
 

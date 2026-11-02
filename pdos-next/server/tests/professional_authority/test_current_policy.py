@@ -10,14 +10,14 @@ from datetime import timedelta
 from uuid import UUID
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Grant, ObjectAudience, Product, now
+from pdos_next.domain.projects.models import Project
 from sqlalchemy import delete, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import cmd, post
 
-from pdos_next.database import tenant_session
-from pdos_next.domain.projects.models import Project
-from pdos_next.models import Grant, ObjectAudience, Product, now
 from professional_authority.test_transactions import (
     SOURCE_TEXT,
     authority_work,

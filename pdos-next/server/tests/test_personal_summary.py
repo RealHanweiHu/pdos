@@ -7,11 +7,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next import personal_summary as summary
+from pdos_next.core.service import Context
 from pdos_next.domain.work_management.models import WorkCommitmentCurrent, WorkCommitmentVersion
 from pdos_next.errors import DomainError
-from pdos_next.personal_summary_schemas import Coverage, Selection
-from pdos_next.service import Context
+from pdos_next.features.personal import summary as summary
+from pdos_next.features.personal.summary_schemas import Coverage, Selection
 from pydantic import ValidationError
 from sqlalchemy.dialects import postgresql
 
@@ -323,7 +323,8 @@ def test_service_reads_selected_project_and_actual_latest_named_status_without_m
             {} if actual is session and ctx is case.ctx and projects == [project] else None
         ),
     )
-    from pdos_next import personal_summary_gates, personal_summary_quality
+    from pdos_next.features.personal import summary_gates as personal_summary_gates
+    from pdos_next.features.personal import summary_quality as personal_summary_quality
 
     monkeypatch.setattr(personal_summary_quality, "read", lambda *_a, **_k: ([], []))
     monkeypatch.setattr(personal_summary_gates, "read", lambda *_a, **_k: ([], []))

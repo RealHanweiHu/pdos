@@ -4,12 +4,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.work_management import owner
 from pdos_next.domain.work_management.constants import CREATE
 from pdos_next.domain.work_management.schemas import TaskSnapshot
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 
 
 def task_case():

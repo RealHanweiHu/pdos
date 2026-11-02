@@ -9,7 +9,7 @@ from sqlalchemy import create_engine, event
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "server"))
 from pdos_next.api import create_app  # noqa: E402
-from pdos_next.contracts import PAYLOADS, Command  # noqa: E402
+from pdos_next.core.contracts import PAYLOADS, Command  # noqa: E402
 
 schemas = {
     "command_envelope": Command.model_json_schema(),

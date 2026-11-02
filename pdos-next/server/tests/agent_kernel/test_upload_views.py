@@ -10,13 +10,12 @@ import pytest
 from fastapi import Depends, FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import upload_views as views
-from pdos_next.contracts import UploadInput
+from pdos_next.agent.kernel import upload_views as views
+from pdos_next.core.contracts import UploadInput
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.originals import upload_contents
-from pdos_next.service import Context
+from pdos_next.originals.access import upload_contents
+from pydantic import ValidationError
 
 
 def context():

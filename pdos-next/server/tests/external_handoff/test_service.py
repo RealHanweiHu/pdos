@@ -5,15 +5,14 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, event
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import digest
 from pdos_next.domain.external_handoff import service
 from pdos_next.domain.external_handoff.constants import AUTHORIZE
 from pdos_next.domain.release.rules import digest as body_digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from sqlalchemy import create_engine, event
+from sqlalchemy.orm import Session
 
 from .test_rules import case as handoff_case  # noqa: F401
 from .test_rules import release_case  # noqa: F401

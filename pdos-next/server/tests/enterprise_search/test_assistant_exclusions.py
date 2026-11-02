@@ -5,13 +5,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.enterprise_search import assistant_exclusions as exclusions
-from pdos_next.enterprise_search import assistant_inheritance as inheritance
-from pdos_next.enterprise_search import assistant_scope as policy
-from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput
+from pdos_next.agent.enterprise_search import assistant_exclusions as exclusions
+from pdos_next.agent.enterprise_search import assistant_inheritance as inheritance
+from pdos_next.agent.enterprise_search import assistant_scope as policy
+from pdos_next.agent.enterprise_search.assistant_schemas import AssistantSearchInput
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 
 def test_artifact_exclusions_are_typed_deduplicated_and_need_no_citation_scan(monkeypatch):

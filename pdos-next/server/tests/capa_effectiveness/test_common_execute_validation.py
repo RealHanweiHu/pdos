@@ -11,16 +11,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import inspect
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next import service as common
-from pdos_next.contracts import Command, SourceRead
-from pdos_next.domain.capa_effectiveness import candidate_commands
-from pdos_next.domain.capa_effectiveness.fact_consumption import ConsumptionHost
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Category,
@@ -31,6 +24,12 @@ from pdos_next.models import (
     Receipt,
     RequestKey,
 )
+from pdos_next.domain.capa_effectiveness import candidate_commands
+from pdos_next.domain.capa_effectiveness.fact_consumption import ConsumptionHost
+from pdos_next.errors import DomainError
+from sqlalchemy import inspect
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 CANDIDATE = candidate_commands.OPERATION
 LEGACY = (
@@ -320,7 +319,7 @@ def world(monkeypatch):
         monkeypatch.setattr(common, "handler", lambda op: module if op == operation else None)
         monkeypatch.setattr(common, "confirmation_for", confirmation)
         if operation != CANDIDATE:
-            from pdos_next import quality_followup_host
+            from pdos_next.features.quality import followup_host as quality_followup_host
 
             monkeypatch.setattr(common, "reviewed_view", lambda *args: deepcopy(review))
             monkeypatch.setattr(

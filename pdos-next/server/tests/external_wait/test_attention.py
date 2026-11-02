@@ -5,15 +5,14 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.domain.external_wait.models import ExternalWaitCurrent, ExternalWaitVersion
+from pdos_next.domain.work_management.models import BINDING
+from pdos_next.features.personal import attention as personal_attention
+from pdos_next.features.personal.attention_common import QUEUES
+from pdos_next.features.personal.attention_external_wait import queries
 from sqlalchemy import union_all
 from sqlalchemy.dialects.postgresql import dialect
 from sqlalchemy.engine import Engine
-
-from pdos_next import personal_attention
-from pdos_next.domain.external_wait.models import ExternalWaitCurrent, ExternalWaitVersion
-from pdos_next.domain.work_management.models import BINDING
-from pdos_next.personal_attention_common import QUEUES
-from pdos_next.personal_attention_external_wait import queries
 
 
 def sql(value):

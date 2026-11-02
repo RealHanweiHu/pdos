@@ -4,10 +4,9 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 
 import pytest
-
-from pdos_next.enterprise_search import query
-from pdos_next.enterprise_search.schemas import SearchInput
-from pdos_next.enterprise_search.tokenizer import (
+from pdos_next.agent.enterprise_search import query
+from pdos_next.agent.enterprise_search.schemas import SearchInput
+from pdos_next.agent.enterprise_search.tokenizer import (
     QUERY_POLICY_VERSION,
     QUERY_RULE,
     analyze,

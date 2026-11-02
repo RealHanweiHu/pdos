@@ -5,12 +5,11 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
+from pdos_next.core.models import Grant, now
 from pdos_next.domain.products.platform_schemas import PlatformLinkInput, PlatformReadInput
 from pdos_next.errors import DomainError
-from pdos_next.models import Grant, now
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_m3_definition_diff_pg import invoke, reader
 from tests.products.test_definition_item_commands_pg import confirmed
 from tests.products.test_platform_links_pg import request
@@ -74,9 +73,8 @@ def test_agent_platform_read_omits_private_variant_and_forbids_private_target(se
 
 
 def test_registered_schema_is_strict_and_product_scope_cannot_be_replaced(setup):
+    from pdos_next.agent.kernel.tools import default_registry
     from pydantic import ValidationError
-
-    from pdos_next.agent_kernel.tools import default_registry
     from tests.products.test_platform_links_pg import payload
 
     registry = default_registry()

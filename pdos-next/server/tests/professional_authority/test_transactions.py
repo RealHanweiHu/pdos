@@ -10,20 +10,19 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.bootstrap.professional_import import import_professional_fact
+from pdos_next.core.contracts import PAYLOADS
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Audit, Grant, Outbox, Receipt, RequestKey, now
+from pdos_next.core.service import Context
+from pdos_next.domain.professional_authority import service as authority
+from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
+from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_project_first_plan import cmd, post
-
-from pdos_next.contracts import PAYLOADS
-from pdos_next.database import tenant_session
-from pdos_next.domain.professional_authority import service as authority
-from pdos_next.domain.professional_authority.models import ProfessionalCurrent, ProfessionalFact
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Audit, Grant, Outbox, Receipt, RequestKey, now
-from pdos_next.professional_import import import_professional_fact
-from pdos_next.service import Context
 from tests.g0_fixture import create_g0_project
 
 OP = "verification.request.create"

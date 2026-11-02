@@ -3,14 +3,13 @@
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, Category, Claim, Outbox, Product, Receipt
+from pdos_next.core.service import digest
 from sqlalchemy import event, insert, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 from test_trusted_source_work import claim_cmd, command, post
-
-from pdos_next.database import tenant_session
-from pdos_next.models import Artifact, Category, Claim, Outbox, Product, Receipt
-from pdos_next.service import digest
 
 
 def test_category_source_model_consumer_and_foreign_scope_rejection(setup):

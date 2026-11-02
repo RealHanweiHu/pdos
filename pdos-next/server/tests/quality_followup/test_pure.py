@@ -7,9 +7,7 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-from quality_issues.helpers import NOW, fixed_run, source, uid
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.quality_execution.ports import FixedQualityResult
 from pdos_next.domain.quality_followup import service
 from pdos_next.domain.quality_followup.adapters import TransactionCommands, kernel
@@ -31,7 +29,8 @@ from pdos_next.schemas.quality_issues.contracts import (
     Hypothesis,
     Issue,
 )
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
+from quality_issues.helpers import NOW, fixed_run, source, uid
 
 
 def issue():

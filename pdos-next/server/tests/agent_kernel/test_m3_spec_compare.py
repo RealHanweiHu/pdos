@@ -7,15 +7,14 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import m3_spec_compare as module
-from pdos_next.agent_kernel.models import AgentRun, AgentSession
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import m3_spec_compare as module
+from pdos_next.agent.kernel.models import AgentRun, AgentSession
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Artifact, Claim, Product, UploadedOriginal
 from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Claim, Product, UploadedOriginal
+from pydantic import ValidationError
 
 
 @pytest.fixture

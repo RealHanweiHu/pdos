@@ -12,12 +12,19 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, func, select, text
-from sqlalchemy.engine import Engine
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Category,
+    Claim,
+    Confirmation,
+    Consumption,
+    Grant,
+    ObjectAudience,
+    Product,
+    Receipt,
+)
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.preproject.baseline import (
     publication_digest,
     published_baseline,
@@ -29,18 +36,10 @@ from pdos_next.domain.products.models import DefinitionRevision, DefinitionSourc
 from pdos_next.domain.products.variant_models import Variant, VariantRevision
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Artifact,
-    Category,
-    Claim,
-    Confirmation,
-    Consumption,
-    Grant,
-    ObjectAudience,
-    Product,
-    Receipt,
-)
-from pdos_next.service import Context, digest
+from sqlalchemy import event, func, select, text
+from sqlalchemy.engine import Engine
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.preproject.test_evidence_commands_pg import (
     artifact,
     record_claim,
@@ -678,7 +677,7 @@ def test_readonly_pm_has_no_general_product_creation_right(work):
 
 
 def test_revoked_pm_capability_after_preview_blocks_derivative_approval(work):
-    from pdos_next.category_scope import MemberGrant, grant_member
+    from pdos_next.core.category_scope import MemberGrant, grant_member
 
     parent = synthetic_parent(work)
     proposal_id, _ = create(work, derivative_payload(work, parent))

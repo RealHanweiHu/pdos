@@ -3,19 +3,18 @@
 from copy import deepcopy
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel.extract_pages import (
+from pdos_next.agent.kernel.extract_pages import (
     absolute_cursor,
     located_page,
     locator_text,
     project_page,
     resolve_locator,
 )
-from pdos_next.agent_kernel.extract_read_ledger import ExtractReadLedger
-from pdos_next.agent_kernel.extract_schemas import ArtifactReadInput
-from pdos_next.agent_kernel.tools import default_registry
+from pdos_next.agent.kernel.extract_read_ledger import ExtractReadLedger
+from pdos_next.agent.kernel.extract_schemas import ArtifactReadInput
+from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 from tests.agent_kernel.test_extract_read_ledger import ARTIFACT, completed, entry, location, source
 
 

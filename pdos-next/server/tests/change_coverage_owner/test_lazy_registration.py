@@ -26,7 +26,7 @@ with patch.object(Engine, 'connect', forbidden), patch.object(Engine, 'raw_conne
             assert getattr(package, exported) is not None
     else:
         assert importlib.import_module(name + '.' + sys.argv[1])
-    from pdos_next.models import Base
+    from pdos_next.core.models import Base
     tables = {'controlled_change_coverage_facts', 'controlled_change_coverage_currents'}
     assert tables <= set(Base.metadata.tables)
 """
@@ -70,7 +70,7 @@ with ExitStack() as stack:
     ):
         stack.enter_context(patch.object(owner, method, forbidden))
     name = "pdos_next.domain.change_coverage_owner"
-    common = importlib.import_module("pdos_next.service")
+    common = importlib.import_module("pdos_next.core.service")
     models = importlib.import_module(name + ".models")
     assert common.Context and common.digest
     assert name + ".owner" not in sys.modules

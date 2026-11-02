@@ -16,10 +16,8 @@ from capa_effectiveness.test_candidate_write_prepare import origin_fixture
 from capa_effectiveness.test_fact_sources_owner import native, project
 from capa_effectiveness.test_named_review_owner import payload_for
 from capa_effectiveness.test_participants_owner import work as work
-from quality_issues.helpers import fixed_run
-
-from pdos_next import capa_applicability_owner as owner
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey
 from pdos_next.domain.capa_effectiveness import anchor as a
 from pdos_next.domain.capa_effectiveness.facts import _action_bindings
 from pdos_next.domain.capa_effectiveness.participants_owner import _Read
@@ -33,11 +31,12 @@ from pdos_next.domain.verification_handoff.models import (
 )
 from pdos_next.domain.verification_handoff.schemas import ActualMethodPreparePayload
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey
+from pdos_next.features.capa import applicability_owner as owner
 from pdos_next.schemas.verification.contracts import (
     NumericCriterion,
     VerificationRequest,
 )
+from quality_issues.helpers import fixed_run
 
 
 def group(work, subject, *, operation, family, actor, revision=1, command_id=None):

@@ -5,31 +5,30 @@ from copy import deepcopy
 from dataclasses import dataclass
 from datetime import datetime
 
-from sqlalchemy import event, or_, select
-
-import pdos_next.models  # noqa: F401 - complete model registration before runtime imports
-from pdos_next import change_controlled_owner as controlled
-from pdos_next.change_dependency_clock import ChangeDependencyClock
-from pdos_next.change_graph_closure import (
-    _fresh_selects,
-    _pending_dependencies,
-    lock_dependency_clock,
-)
-from pdos_next.change_implementation_owner import common_group
-from pdos_next.change_order_service import _one, current_fixed, snapshot
-from pdos_next.clock import deadline_current, earliest_deadline
-from pdos_next.clock import now as server_now
-from pdos_next.database import category_for_product
+import pdos_next.core.models  # noqa: F401 - complete model registration before runtime imports
+from pdos_next.core.clock import deadline_current, earliest_deadline
+from pdos_next.core.clock import now as server_now
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Grant, Principal, Product
+from pdos_next.core.service import digest as common_digest
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.change_control.rules import digest, graph_sources
 from pdos_next.domain.change_execution import service as old
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.professional_authority.models import ProfessionalCurrent
-from pdos_next.models import Grant, Principal, Product
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
+from pdos_next.features.change.graph_closure import (
+    _fresh_selects,
+    _pending_dependencies,
+    lock_dependency_clock,
+)
+from pdos_next.features.change.implementation_owner import common_group
+from pdos_next.features.change.order_service import _one, current_fixed, snapshot
 from pdos_next.schemas.change_control.contracts import Coverage, GraphSnapshot, PathApplicability
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import digest as common_digest
+from sqlalchemy import event, or_, select
 
 from . import models, registry, trust
 from .schemas import EVENT, FACETS, FAMILY, OPERATION, CoverageMaterial
@@ -718,7 +717,7 @@ def _read(s, ctx, pid, *, change_id, purpose, graph, origin_version=None, retain
     }
     coverage, paths = _material_projection(value, graph, source)
     if retained is not None:
-        from pdos_next.change_coverage_binding import stable_basis
+        from pdos_next.features.change.coverage_binding import stable_basis
 
         require(
             stable_basis(retained) == stable_basis(proof)

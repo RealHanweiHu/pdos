@@ -8,12 +8,12 @@ from types import SimpleNamespace
 import httpx
 import psycopg
 import pytest
+from pdos_next.core import command_handlers as registry
+from pdos_next.core import contracts, models
+from pdos_next.core import service as common
+from pdos_next.features.lifecycle import catalog as lifecycle_catalog
 from sqlalchemy import ForeignKeyConstraint, UniqueConstraint
 from sqlalchemy.engine import Engine
-
-from pdos_next import command_handlers as registry
-from pdos_next import contracts, lifecycle_catalog, models
-from pdos_next import service as common
 
 SERVER = Path(__file__).resolve().parents[2]
 OPS = (
@@ -61,8 +61,8 @@ def test_real_combined_handler_has_correct_tier_event_and_common_callback_signat
 
 
 def test_both_trusted_startups_preserve_the_other_family_and_grant_nothing():
-    from pdos_next import change_public_integration
     from pdos_next.domain.manufacturing_baseline import service as manufacturing
+    from pdos_next.features.change import public_integration as change_public_integration
 
     engine = SimpleNamespace()
     manufacturing.configure(engine)
@@ -123,7 +123,7 @@ def test_actual_models_have_complete_lifecycle_and_exact_fk_parent_keys():
 
 
 def test_real_root_plan_preview_and_fact_first_flush_survive_both_hunks():
-    raw = (SERVER / "pdos_next/service.py").read_text()
+    raw = (SERVER / "pdos_next/core/service.py").read_text()
     tree = ast.parse(raw)
     preview = next(n for n in tree.body if getattr(n, "name", None) == "preview_command")
     preview_text = ast.get_source_segment(raw, preview)

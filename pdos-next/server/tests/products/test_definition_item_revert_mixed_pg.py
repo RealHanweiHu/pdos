@@ -6,25 +6,23 @@ EvidenceLinks and receipts come from normal HTTP or the registered command port.
 
 from copy import deepcopy
 from types import SimpleNamespace
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import event, func, select, text
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentToolCall,
     TenantSkillEnablement,
 )
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.core.models import Artifact, Audit, Claim, Confirmation, Outbox, Receipt
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.evidence_models import EvidenceLink
 from pdos_next.domain.products.models import DefinitionSpecRow
-from pdos_next.models import Artifact, Audit, Claim, Confirmation, Outbox, Receipt
-from pdos_next.service import digest
+from sqlalchemy import event, func, select, text
+from sqlalchemy.orm import Session
 from tests.products import test_definition_item_revert_pg as item_history
 from tests.products.test_definition_item_commands_pg import current_items, draft, upsert
 from tests.products.test_definition_transactions import command, post, source
@@ -257,7 +255,7 @@ def test_mixed_claim_item_link_run_reverts_once_with_actual_receipts(setup, monk
 def test_mixed_revert_finish_failure_rolls_back_and_original_confirmation_retries(
     setup, monkeypatch
 ):
-    from pdos_next.agent_kernel import persistence
+    from pdos_next.agent.kernel import persistence
 
     history = mixed_history(setup, monkeypatch)
     preview = item_history.revert_preview(setup, history.fixture)

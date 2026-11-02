@@ -7,13 +7,13 @@ unnumbered visibility function delta. Import/collection creates no engine.
 
 from uuid import UUID
 
-from pdos_next.database import tenant_session
+from pdos_next.agent.enterprise_search.embedding_sources import categories
+from pdos_next.agent.enterprise_search.indexing import project as project_source
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact
 from pdos_next.domain.field_feedback.schemas import CREATE
 from pdos_next.domain.knowledge.assistant_models import KnowledgeAnswerReview
 from pdos_next.domain.preproject.category_models import KnowledgeEntry
-from pdos_next.enterprise_search.embedding_sources import categories
-from pdos_next.enterprise_search.indexing import project as project_source
-from pdos_next.models import Artifact
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 from tests.enterprise_search.test_field_feedback_sources_pg import (

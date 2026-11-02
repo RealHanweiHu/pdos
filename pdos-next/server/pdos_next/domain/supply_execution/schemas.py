@@ -2,10 +2,9 @@ from datetime import UTC
 from typing import Literal, Self
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, field_validator, model_validator
-
 from pdos_next.domain.configurations.schemas import DefinitionReference
-from pdos_next.engines.supply_cost.common import FrozenDTO, Quantity
+from pdos_next.domain.engines.supply_cost.common import FrozenDTO, Quantity
+from pydantic import AwareDatetime, Field, field_validator, model_validator
 
 
 class SupplyRecordInput(FrozenDTO):

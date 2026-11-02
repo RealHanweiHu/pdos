@@ -3,10 +3,9 @@ from dataclasses import dataclass
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
+from pdos_next.core.models import Artifact, Outbox, Principal
+from pdos_next.core.service import digest, source_for
 from sqlalchemy import func, select, text
-
-from pdos_next.models import Artifact, Outbox, Principal
-from pdos_next.service import digest, source_for
 
 from .access import editable, fail, human, installed, member, proposal
 from .models import (
@@ -163,7 +162,7 @@ def _references(s, ctx, refs, *, approved=False):
             parameter_version(s, ctx, ref.id, ref.version)
             privacy = "shared"
         elif ref.type == "snapshot":
-            from pdos_next.agent_kernel.models import PublicWebSnapshot
+            from pdos_next.agent.kernel.models import PublicWebSnapshot
 
             source = s.get(PublicWebSnapshot, ref.id)
             if not source or source.category_id != ctx.category_id or ref.version != 1:
@@ -262,7 +261,7 @@ def validate(s, ctx, command, scope, payload):
             (digest(ref.model_dump(mode="json")), privacy)
             for ref, privacy in _references(s, ctx, refs, approved=approved)
         )
-        from pdos_next.models import Claim
+        from pdos_next.core.models import Claim
 
         for ref in refs:
             if ref.type == "claim":
@@ -405,7 +404,7 @@ def validate(s, ctx, command, scope, payload):
     elif isinstance(payload, G0Submit):
         if ctx.requester_id != row.owner_id:
             fail("NAMED_DECISION_REQUIRED", "owner_only", "提案由负责人本人提交评审。", 403)
-        from pdos_next.agent_kernel.skill_qualification import is_pilot
+        from pdos_next.agent.kernel.skill_qualification import is_pilot
 
         if payload.reviewer_id == row.owner_id and not is_pilot(s, ctx.tenant_id, lock=True):
             fail("VALIDATION_FAILED", "reviewer_is_owner", "非试点租户须由另一位产品经理评审。")
@@ -427,7 +426,7 @@ def validate(s, ctx, command, scope, payload):
             )
     elif isinstance(payload, G0Decide):
         sub = _submission(s, ctx, row, payload)
-        from pdos_next.agent_kernel.skill_qualification import is_pilot
+        from pdos_next.agent.kernel.skill_qualification import is_pilot
 
         if ctx.requester_id != sub.reviewer_id or (
             ctx.requester_id == row.owner_id and not is_pilot(s, ctx.tenant_id, lock=True)
@@ -489,7 +488,7 @@ def validate(s, ctx, command, scope, payload):
 
 def confirmation_subject(s, ctx, command, scope, payload):
     if isinstance(payload, ProposalCreate):
-        from pdos_next.models import Category
+        from pdos_next.core.models import Category
 
         # Common confirmation_subject expects a category row's category_id projection.
         row = s.get(Category, ctx.category_id)
@@ -1068,7 +1067,7 @@ def _check_document_references(s, ctx, doc, *, approved=False):
 
 def finalize_receipt(s, ctx, command, scope, payload, subject, receipt):
     if isinstance(payload, ProposalCreate) and receipt.agent_run_id:
-        from pdos_next.agent_kernel.session_bindings import bind_saved_proposal
+        from pdos_next.agent.kernel.session_bindings import bind_saved_proposal
 
         bind_saved_proposal(s, ctx, receipt, subject)
     if isinstance(payload, G0Decide) and payload.outcome == "approved":

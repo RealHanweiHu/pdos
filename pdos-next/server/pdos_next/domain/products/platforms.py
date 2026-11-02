@@ -3,14 +3,13 @@
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from pydantic import ValidationError
-from sqlalchemy import select, text
-
+from pdos_next.core.models import Artifact, Product, UploadedOriginal
+from pdos_next.core.service import require_access
 from pdos_next.domain.preproject.access import fail, human
 from pdos_next.domain.preproject.deidentification import check_content
 from pdos_next.domain.preproject.provenance import writing_path
-from pdos_next.models import Artifact, Product, UploadedOriginal
-from pdos_next.service import require_access
+from pydantic import ValidationError
+from sqlalchemy import select, text
 
 from .platform_models import Platform, PlatformLink, PlatformLinkCurrent
 from .platform_schemas import PlatformReadInput
@@ -52,7 +51,7 @@ def target(s, ctx, product_id, variant_id=None):
 def _shared_metadata(s, ctx, payload):
     if not payload.new_platform or not payload.prepared_by_run_id:
         return
-    from pdos_next.agent_kernel.models import AgentRun
+    from pdos_next.agent.kernel.models import AgentRun
 
     run = s.get(AgentRun, payload.prepared_by_run_id)
     source_ids = [UUID(ref["artifact_id"]) for ref in run.read_sources]

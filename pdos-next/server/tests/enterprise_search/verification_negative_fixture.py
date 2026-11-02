@@ -11,20 +11,19 @@ from uuid import UUID, uuid4
 
 import pytest
 from build_start.test_transactions import import_authority
-from sqlalchemy.orm import Session
-from test_builds import build_command
-from test_project_first_plan import accepted, cmd, post
-from verification_handoff.fixtures import artifact, caller
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, ObjectAudience
+from pdos_next.core.service import digest
 from pdos_next.domain.builds.models import Build
 from pdos_next.domain.builds.schemas import BuildCreatePayload
 from pdos_next.domain.builds.service import _linked
 from pdos_next.domain.configurations.service import get_engineering, get_process
-from pdos_next.models import Artifact, ObjectAudience
-from pdos_next.service import digest
+from sqlalchemy.orm import Session
+from test_builds import build_command
+from test_project_first_plan import accepted, cmd, post
 from tests.enterprise_search.test_retrieval_pg import index
 from tests.enterprise_search.verification_action_harness import bound_target
+from verification_handoff.fixtures import artifact, caller
 
 
 def session_for(person):

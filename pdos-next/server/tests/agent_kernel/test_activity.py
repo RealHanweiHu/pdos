@@ -3,16 +3,15 @@ from datetime import timedelta
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.host import KernelAdapters
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun
+from pdos_next.agent.kernel.persistence import record_answers
+from pdos_next.agent.kernel.types import ModelTurn
+from pdos_next.core.models import Grant, now
+from pdos_next.providers.types import ProviderError, ProviderUsage
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-from pdos_next.agent_kernel.host import KernelAdapters
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun
-from pdos_next.agent_kernel.persistence import record_answers
-from pdos_next.agent_kernel.types import ModelTurn
-from pdos_next.models import Grant, now
-from pdos_next.providers.types import ProviderError, ProviderUsage
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_transactions import human_session, run
 
@@ -120,7 +119,6 @@ def test_activity_revocation_during_provider_attempt_has_visible_terminal_failur
     setup, monkeypatch, native_cancellation
 ):
     from temporalio import activity
-
     from tests.agent_kernel.test_gateway import Client
 
     monkeypatch.setattr(activity, "heartbeat", lambda *_: None)

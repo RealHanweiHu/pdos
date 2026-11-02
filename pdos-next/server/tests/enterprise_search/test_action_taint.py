@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next.enterprise_search import action_sources, action_taint, assistant_adapter
+from pdos_next.agent.enterprise_search import action_sources, action_taint, assistant_adapter
 from pdos_next.errors import DomainError
 from tests.enterprise_search.test_action_sources import case  # noqa: F401
 

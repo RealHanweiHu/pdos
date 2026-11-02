@@ -18,27 +18,26 @@ from manufacturing_preparation_transactions.fixtures import (
     payload,
 )
 from manufacturing_preparation_transactions.test_transactions import reference, save
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Confirmation, Product, now
+from pdos_next.domain.change_control.rules import compute_impact, digest
+from pdos_next.domain.change_execution.graph import OwnerReader, audience, capture_graph
+from pdos_next.domain.projects.models import Project
+from pdos_next.errors import DomainError
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
+from pdos_next.features.change.graph_closure import (
+    closure_stamp,
+    lock_dependency_clock,
+    recheck_graph_closure,
+)
+from pdos_next.schemas.change_control.contracts import Ref
+from pdos_next.schemas.verification.contracts import Scope, SourceRef
 from sqlalchemy import select, text, update
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 from test_builds import build_command
 from test_project_first_plan import accepted, cmd
-
-from pdos_next.change_dependency_clock import ChangeDependencyClock
-from pdos_next.change_graph_closure import (
-    closure_stamp,
-    lock_dependency_clock,
-    recheck_graph_closure,
-)
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.domain.change_control.rules import compute_impact, digest
-from pdos_next.domain.change_execution.graph import OwnerReader, audience, capture_graph
-from pdos_next.domain.projects.models import Project
-from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product, now
-from pdos_next.schemas.change_control.contracts import Ref
-from pdos_next.schemas.verification.contracts import Scope, SourceRef
 
 
 def epoch(work, session=None):

@@ -7,13 +7,12 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-from sqlalchemy.engine import Engine
-
-from pdos_next import personal_project_work as projection
+from pdos_next.core.service import Context
 from pdos_next.domain.work_management.models import WorkCommitmentVersion, WorkTaskVersion
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pdos_next.features.personal import project_work as projection
+from sqlalchemy.dialects import postgresql
+from sqlalchemy.engine import Engine
 
 AT = datetime(2026, 10, 18, 9, tzinfo=UTC)
 

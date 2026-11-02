@@ -14,19 +14,20 @@ from uuid import UUID
 
 import pytest
 from g0_fixture import create_g0_project
-from sqlalchemy import select, update
-from sqlalchemy.orm import Session
-from test_original_security import (
-    parsed,
-    uploaded,
-    withdraw_command,
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    OriginalSecurity,
+    Outbox,
+    Receipt,
+    RequestKey,
+    now,
 )
-from test_original_security import (
-    security_work as original_security_work,  # noqa: F401
-)
-from test_project_first_plan import cmd
-
-from pdos_next.database import tenant_session
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.work_management import service
 from pdos_next.domain.work_management.constants import (
     ACCEPT,
@@ -47,19 +48,17 @@ from pdos_next.domain.work_management.models import (
     WorkTaskVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    OriginalSecurity,
-    Outbox,
-    Receipt,
-    RequestKey,
-    now,
+from sqlalchemy import select, update
+from sqlalchemy.orm import Session
+from test_original_security import (
+    parsed,
+    uploaded,
+    withdraw_command,
 )
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from test_original_security import (
+    security_work as original_security_work,  # noqa: F401
+)
+from test_project_first_plan import cmd
 
 MODELS = (
     WorkTaskVersion,

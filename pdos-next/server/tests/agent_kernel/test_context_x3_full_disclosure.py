@@ -12,16 +12,16 @@ from uuid import NAMESPACE_URL, uuid4, uuid5
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-from pdos_next.agent_kernel.context_budget import estimate_tokens, fit_messages
-from pdos_next.agent_kernel.context_runtime import protected_result
-from pdos_next.agent_kernel.disclosure import disclosure, record_disclosure
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.result_continuation import handle_for, page_view
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, RunScope, ToolCall, WireAgentOutput
+from pdos_next.agent.kernel.context_budget import estimate_tokens, fit_messages
+from pdos_next.agent.kernel.context_runtime import protected_result
+from pdos_next.agent.kernel.disclosure import disclosure, record_disclosure
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.result_continuation import handle_for, page_view
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall, WireAgentOutput
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 from pdos_next.providers.types import ProviderRoute
-from pdos_next.service import digest
 from pydantic import SecretStr
 
 GOAL = "只核对合成密封圈措施；保留回执、依据和错误，等本人继续。"

@@ -10,20 +10,9 @@ from types import SimpleNamespace
 from uuid import UUID
 
 from build_start.test_transactions import import_authority
-from quality_followup_transactions import fixtures as followup
-from sqlalchemy import func, select
-from test_project_first_plan import accepted, cmd
-
-from pdos_next.capa_applicability_owner import (
-    ActualActionFulfillmentOwner,
-    ActualApplicabilityOwner,
-)
-from pdos_next.capa_fact_owner import ActualFactOwner
-from pdos_next.capa_rule_import import publish_rule
-from pdos_next.capa_rule_publisher import configure_local_profile
-from pdos_next.change_action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
-from pdos_next.change_implementation_owner import digest as implementation_digest
-from pdos_next.contracts import Command
+from pdos_next.bootstrap.capa_rule_import import publish_rule
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, now
 from pdos_next.domain.capa_effectiveness import (
     anchor_owner,
     candidate_commands,
@@ -45,9 +34,19 @@ from pdos_next.domain.capa_verification.models import CapaVerificationEvidence
 from pdos_next.domain.quality_execution import policy
 from pdos_next.domain.quality_execution.evidence import union_sources
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, now
+from pdos_next.features.capa.applicability_owner import (
+    ActualActionFulfillmentOwner,
+    ActualApplicabilityOwner,
+)
+from pdos_next.features.capa.fact_owner import ActualFactOwner
+from pdos_next.features.capa.rule_publisher import configure_local_profile
+from pdos_next.features.change.action_fulfillment_owner import ApprovedChangeActionFulfillmentOwner
+from pdos_next.features.change.implementation_owner import digest as implementation_digest
 from pdos_next.schemas.quality_issues.contracts import Issue
 from pdos_next.schemas.verification.contracts import VerificationRequest
+from quality_followup_transactions import fixtures as followup
+from sqlalchemy import func, select
+from test_project_first_plan import accepted, cmd
 
 from . import approved_configuration_continuation_helpers as continuation
 from . import approved_configuration_helpers as approved

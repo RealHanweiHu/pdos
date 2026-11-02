@@ -7,7 +7,7 @@ from types import UnionType
 from typing import Union, get_args, get_origin, get_type_hints
 from uuid import UUID
 
-from pdos_next.original_lifecycle.types import (
+from pdos_next.originals.lifecycle.types import (
     LifecycleFailure,
     LifecycleIntent,
     OriginalState,

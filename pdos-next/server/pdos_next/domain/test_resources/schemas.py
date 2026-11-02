@@ -4,9 +4,7 @@ from datetime import UTC
 from typing import Literal, Self
 from uuid import UUID
 
-from pydantic import AwareDatetime, Field, field_validator, model_validator
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
 from pdos_next.domain.build_operational_facts.schemas import (
     DTO,
     FactRef,
@@ -17,8 +15,8 @@ from pdos_next.domain.build_operational_facts.schemas import (
     Revision,
     Text,
 )
+from pdos_next.domain.engines.supply_cost.common import bounded_decimal
 from pdos_next.domain.professional_authority.schemas import DefinitionReference
-from pdos_next.engines.supply_cost.common import bounded_decimal
 from pdos_next.schemas.resource_readiness.contracts import (
     ExecutionWindow,
     ReadinessReport,
@@ -26,6 +24,7 @@ from pdos_next.schemas.resource_readiness.contracts import (
     ResourceUse,
 )
 from pdos_next.schemas.verification.contracts import SampleRef
+from pydantic import AwareDatetime, Field, field_validator, model_validator
 
 
 class TestPairBinding(DTO):

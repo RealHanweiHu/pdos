@@ -6,11 +6,10 @@ from datetime import UTC, datetime, timedelta
 from uuid import UUID
 
 import pytest
-from sqlalchemy import DateTime, String, Uuid, column, select, values
-
-from pdos_next.capa_history import page_query, page_rows
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
 from pdos_next.errors import DomainError
+from pdos_next.features.capa.history import page_query, page_rows
+from sqlalchemy import DateTime, String, Uuid, column, select, values
 
 
 def index(rows):

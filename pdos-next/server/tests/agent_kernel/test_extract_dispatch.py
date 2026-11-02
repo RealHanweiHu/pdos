@@ -8,17 +8,16 @@ from uuid import UUID, uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel.extract_graph import (
+from pdos_next.agent.kernel.extract_graph import (
     ExtractGraph,
     ExtractTask,
     budget_for,
     replay_pages,
 )
-from pdos_next.agent_kernel.extract_pages import located_page
-from pdos_next.agent_kernel.extract_read_ledger import ArtifactSeal, ExtractReadLedger
-from pdos_next.agent_kernel.extract_schemas import RowSchemaDeclaration, draft_registry
-from pdos_next.agent_kernel.types import ModelTurn, RunScope, ToolCall
+from pdos_next.agent.kernel.extract_pages import located_page
+from pdos_next.agent.kernel.extract_read_ledger import ArtifactSeal, ExtractReadLedger
+from pdos_next.agent.kernel.extract_schemas import RowSchemaDeclaration, draft_registry
+from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall
 from pdos_next.errors import DomainError
 from tests.agent_kernel.test_graph import Host
 

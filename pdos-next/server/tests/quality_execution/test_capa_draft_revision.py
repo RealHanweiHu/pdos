@@ -11,17 +11,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from quality_issues.helpers import NOW, Harness, Rejection, source, uid
-from sqlalchemy import Engine
-from sqlalchemy.dialects import postgresql
-
+from pdos_next.core.models import RemediationLinkRecord
 from pdos_next.domain.quality_execution import service
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.domain.quality_execution.schemas import CapaDraftPayload, IssueTriagePayload
 from pdos_next.domain.quality_issues.handlers import OPERATIONS
 from pdos_next.domain.quality_issues.rules import capa_draft_text_revisable, replace
 from pdos_next.errors import DomainError
-from pdos_next.models import RemediationLinkRecord
 from pdos_next.schemas.quality_issues.contracts import (
     CapaDraft,
     EffectivenessDecision,
@@ -29,6 +25,10 @@ from pdos_next.schemas.quality_issues.contracts import (
     NamedConclusion,
     RootCauseDecide,
 )
+from quality_issues.helpers import NOW, Harness, Rejection, source, uid
+from sqlalchemy import Engine
+from sqlalchemy.dialects import postgresql
+
 from quality_execution.test_pure import call, create, result
 from quality_execution.test_pure import host as old_host  # noqa: F401
 

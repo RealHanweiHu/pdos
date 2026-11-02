@@ -3,10 +3,7 @@
 import re
 
 import pytest
-from sqlalchemy import CheckConstraint, UniqueConstraint, text
-from sqlalchemy.engine import Engine
-
-from pdos_next import models as registered_models  # noqa: F401 -- standalone registry
+from pdos_next.core import models as registered_models  # noqa: F401 -- standalone registry
 from pdos_next.domain.external_wait import storage_schema as waiting
 from pdos_next.domain.project_risk import storage_schema as storage
 from pdos_next.domain.project_risk.models import (
@@ -21,6 +18,8 @@ from pdos_next.domain.project_risk.models import (
 )
 from pdos_next.domain.work_management import g0_storage
 from pdos_next.domain.work_management import storage_schema as predecessor
+from sqlalchemy import CheckConstraint, UniqueConstraint, text
+from sqlalchemy.engine import Engine
 
 
 @pytest.fixture(autouse=True)

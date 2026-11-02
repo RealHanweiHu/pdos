@@ -12,7 +12,7 @@ from sqlalchemy.engine import make_url
 def _actual_server():
     for parent in Path(__file__).resolve().parents:
         for candidate in (parent, parent / "server"):
-            if (candidate / "pdos_next" / "models.py").is_file() and (
+            if (candidate / "pdos_next" / "core" / "models.py").is_file() and (
                 candidate / "tests" / "conftest.py"
             ).is_file():
                 return candidate
@@ -26,11 +26,11 @@ sys.path.insert(0, str(ACTUAL_TESTS))
 sys.path.insert(0, str(ACTUAL_SERVER))
 
 # This canonical module registers the entire actual child-table tree. Import it first.
-from pdos_next import models as _actual_registered_models  # noqa: E402
+from pdos_next.core import models as _actual_registered_models  # noqa: E402
 
 assert (
     Path(_actual_registered_models.__file__).resolve()
-    == (ACTUAL_SERVER / "pdos_next" / "models.py").resolve()
+    == (ACTUAL_SERVER / "pdos_next" / "core" / "models.py").resolve()
 )
 
 _spec = importlib.util.spec_from_file_location(

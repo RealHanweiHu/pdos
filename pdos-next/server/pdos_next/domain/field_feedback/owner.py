@@ -2,8 +2,8 @@
 
 from copy import deepcopy
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Receipt
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.configurations import service as configurations
 from pdos_next.domain.knowledge import provenance
 from pdos_next.domain.knowledge.service import _target_content
@@ -11,8 +11,7 @@ from pdos_next.domain.projects.models import ProjectProductLink
 from pdos_next.domain.work_management.owner import project
 from pdos_next.domain.work_management.rules import require
 from pdos_next.errors import DomainError
-from pdos_next.models import Receipt
-from pdos_next.service import digest, require_access
+from sqlalchemy import select
 
 from .models import FieldFeedbackCurrent, FieldFeedbackVersion
 from .schemas import LocatePayload

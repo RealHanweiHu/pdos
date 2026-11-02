@@ -6,9 +6,8 @@ from itertools import product
 from zoneinfo import ZoneInfo
 
 import pytest
-
-from pdos_next.engines.planning import calculate_forecast
-from pdos_next.engines.planning.dto import (
+from pdos_next.domain.engines.planning import calculate_forecast
+from pdos_next.domain.engines.planning.dto import (
     CalendarSnapshot,
     Dependency,
     DurationEstimate,

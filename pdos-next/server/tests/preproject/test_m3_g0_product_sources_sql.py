@@ -6,12 +6,11 @@ from copy import copy, deepcopy
 from uuid import UUID, uuid4
 
 import pytest
+from migrations import schema_s0_0751 as migration
+from pdos_next.core.database import tenant_session
+from pdos_next.domain.products.models import DefinitionSource
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
-
-from migrations import schema_s0_0751 as migration
-from pdos_next.database import tenant_session
-from pdos_next.domain.products.models import DefinitionSource
 from tests.preproject.test_evidence_commands_pg import evidence_request
 from tests.preproject.test_g0 import create, decide_request, post, read, save, submit
 from tests.preproject.test_g0 import work as work  # noqa: F401
@@ -132,7 +131,7 @@ def product_source_g0(work, *, source_id=None, project_owner=None):
 
 def unmatched_product_artifact(work, args):
     """A distinct foreign source, not semantic replay of the signed registration."""
-    from pdos_next.models import Artifact
+    from pdos_next.core.models import Artifact
 
     source_product = copy(work)
     assert source_product.product != args["p"]
@@ -325,8 +324,8 @@ def consumer_commands(work, args, *, actor=None):
 
 
 def assert_consumers_rejected(target, commands):
-    from pdos_next.models import Confirmation
-    from pdos_next.service import digest
+    from pdos_next.core.models import Confirmation
+    from pdos_next.core.service import digest
     from tests.test_project_first_plan import post as product_post
 
     for proposed, confirmed in commands:
@@ -388,8 +387,8 @@ def test_pg_actual_http_rejects_foreign_reads_without_exact_target_g0_proof(work
         target.product = work.product
     else:
         version = 2
+    from pdos_next.core.models import Artifact
     from pdos_next.domain.products.models import DefinitionRevision
-    from pdos_next.models import Artifact
 
     with scoped(work) as session:
         actual = session.get(Artifact, source_id)
@@ -431,7 +430,7 @@ def test_pg_actual_http_rejects_foreign_reads_without_exact_target_g0_proof(work
 
 
 def test_pg_private_source_product_blocks_actual_consumers_and_prepared_confirmations(work):
-    from pdos_next.models import Grant, Product
+    from pdos_next.core.models import Grant, Product
 
     # Give the actual named project owner write membership before the command
     # chain. The source Product still belongs to another real principal.
@@ -456,10 +455,9 @@ def test_pg_private_source_product_blocks_actual_consumers_and_prepared_confirma
 def test_pg_withdrawn_actual_product_original_blocks_new_consumer_and_old_confirmation(
     work, security_work
 ):
+    from pdos_next.core.models import Artifact, OriginalSecurity
     from security_fixture import secured_parse
     from test_durable_evidence import upload_input
-
-    from pdos_next.models import Artifact, OriginalSecurity
 
     uploaded = security_work.client.post(
         f"/v1/categories/{work.category}/products/{work.product}/originals",
@@ -564,7 +562,7 @@ def test_pg_downstream_bridge_uses_actual_sealed_source_and_exact_signed_revisio
 
 def test_pg_downstream_bridge_retains_current_source_product_audience(work):
     args = product_source_g0(work)
-    from pdos_next.models import Product
+    from pdos_next.core.models import Product
 
     with tenant_session(
         work.engine,

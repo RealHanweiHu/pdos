@@ -12,7 +12,8 @@ import paired as p
 import paired_storage as storage
 import pytest
 import test_paired as samples
-from pdos_next import service as common
+from pdos_next.core import service as common
+from pdos_next.core.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey
 from pdos_next.domain.builds.models import Build
 from pdos_next.domain.configurations.models import EngineeringConfiguration, ProcessRevision
 from pdos_next.domain.verification_front.models import (
@@ -32,7 +33,6 @@ from pdos_next.domain.verification_results.models import (
     TestResultProjection as ProjectionORM,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Grant, Outbox, Principal, Product, Receipt, RequestKey
 from pdos_next.schemas.verification.contracts import DocumentRequirement, SourceRef
 from sqlalchemy import event
 from sqlalchemy.dialects import postgresql

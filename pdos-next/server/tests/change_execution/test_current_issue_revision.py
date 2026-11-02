@@ -3,10 +3,10 @@
 from contextlib import nullcontext
 from uuid import uuid4
 
-from pdos_next import change_controlled_owner as owner
+from pdos_next.core.service import Context
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent
+from pdos_next.features.change import controlled_owner as owner
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import Context
 
 
 class ReadOnlySession:

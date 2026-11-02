@@ -5,10 +5,10 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from pdos_next.agent_kernel.models import AgentEvent, AgentInput, AgentToolCall
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.clock import now
-from pdos_next.models import Grant, Receipt
+from pdos_next.agent.kernel.models import AgentEvent, AgentInput, AgentToolCall
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.clock import now
+from pdos_next.core.models import Grant, Receipt
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
 from tests.agent_kernel.test_transactions import run
@@ -92,7 +92,7 @@ def test_original_feedback_replays_after_time_and_never_loads_current_model_or_s
     _, scope, skill = sample(setup)
     body = request(skill)
     first = post(setup, scope, body).json()
-    from pdos_next.clock import using_clock
+    from pdos_next.core.clock import using_clock
 
     future = now() + timedelta(minutes=5)
     monkeypatch.setattr(
@@ -201,9 +201,9 @@ def test_failed_append_rolls_back_and_retry_keeps_original_request(setup):
 
 
 def test_personal_unavailable_work_accepts_own_feedback_without_fabricated_versions(setup):
-    from pdos_next.agent_kernel.persistence import create_run
-    from pdos_next.database import tenant_session
-    from pdos_next.service import Context
+    from pdos_next.agent.kernel.persistence import create_run
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.service import Context
 
     with tenant_session(
         setup.engine, setup.tenant, actor_id=setup.human, requester_id=setup.human
@@ -224,7 +224,7 @@ def test_personal_unavailable_work_accepts_own_feedback_without_fabricated_versi
 
 
 def test_private_feedback_does_not_enter_process_or_model_projected_context(setup):
-    from pdos_next.agent_kernel.bootstrap import Bootstrap
+    from pdos_next.agent.kernel.bootstrap import Bootstrap
 
     _, scope, _ = sample(setup)
     body = {**request(), "comment": "PRIVATE-FEEDBACK-CUSTOMER-MARKER"}
@@ -238,10 +238,10 @@ def test_private_feedback_does_not_enter_process_or_model_projected_context(setu
 
 
 def test_feedback_is_not_an_agent_write_port_and_reads_only_run_identity_columns(setup):
-    from pdos_next.agent_kernel.run_feedback import FeedbackInput, lookup, record
-    from pdos_next.database import tenant_session
+    from pdos_next.agent.kernel.run_feedback import FeedbackInput, lookup, record
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.service import Context
     from pdos_next.errors import DomainError
-    from pdos_next.service import Context
 
     _, scope, _ = sample(setup)
     with tenant_session(

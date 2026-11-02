@@ -8,18 +8,17 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.agent_kernel import project_current_context as facts
-from pdos_next.agent_kernel.context_projection import combine_contracts, project
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import project_current_context as facts
+from pdos_next.agent.kernel.context_projection import combine_contracts, project
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Artifact, Principal
+from pdos_next.core.service import Context
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.projects.models import PlanRevision, Project
 from pdos_next.domain.work_management.models import ProjectStatusUpdate
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Principal
-from pdos_next.service import Context
 
 
 class Reading:
@@ -382,7 +381,7 @@ def test_text_truncation_is_explicit_and_never_fills_a_missing_forecast(reading)
 def test_readonly_owner_snapshot_is_bound_to_actual_run_and_old_runs_are_unchanged(
     reading, monkeypatch,
 ):
-    from pdos_next.enterprise_search import assistant_sources
+    from pdos_next.agent.enterprise_search import assistant_sources
 
     f = reading
     seen = []

@@ -9,22 +9,21 @@ from uuid import uuid4
 import httpx
 import psycopg
 import pytest
-from pydantic import ValidationError
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next import change_implementation_owner as implementation
-from pdos_next import change_order_integration as integration
-from pdos_next import change_order_service as owner
-from pdos_next import change_order_store as store
-from pdos_next.change_order_consumption import ConsumptionHost
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import Context, material_digest
+from pdos_next.core.service import digest as common_digest
 from pdos_next.domain.change_control.rules import digest, replace
 from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation
-from pdos_next.service import Context, material_digest
-from pdos_next.service import digest as common_digest
+from pdos_next.features.change import implementation_owner as implementation
+from pdos_next.features.change import order_integration as integration
+from pdos_next.features.change import order_service as owner
+from pdos_next.features.change import order_store as store
+from pdos_next.features.change.order_consumption import ConsumptionHost
+from pydantic import ValidationError
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 from . import kernel_helpers as helper
 

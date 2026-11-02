@@ -21,9 +21,8 @@ from manufacturing_preparation.test_publication_rules import case as publication
 from manufacturing_trials.test_native_material_owner import work as native_work  # noqa: F401
 from manufacturing_trials.test_native_statistics_owner import fixed_line
 from manufacturing_trials.test_native_statistics_owner import work as statistics_work  # noqa: F401
-from quality_issues.helpers import fixed_run
-from sqlalchemy import select
-
+from pdos_next.core.models import Artifact
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
 from pdos_next.domain.products.models import DefinitionSource
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
@@ -34,11 +33,11 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
 from pdos_next.schemas.change_control.contracts import ChangeRequest
 from pdos_next.schemas.quality_issues.contracts import FailureRef, Issue
 from pdos_next.schemas.verification.contracts import TestRun as Run
-from pdos_next.service import Context, digest
+from quality_issues.helpers import fixed_run
+from sqlalchemy import select
 
 
 @pytest.fixture

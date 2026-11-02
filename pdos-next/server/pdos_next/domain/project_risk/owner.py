@@ -1,12 +1,11 @@
 """Retained proofs and exact Current binding in ordinary project scope."""
 
-from sqlalchemy import select
-
-from pdos_next.change_implementation_owner import common_group
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import ProjectOpenItem
 from pdos_next.domain.work_management.models import BINDING
 from pdos_next.domain.work_management.rules import require
-from pdos_next.service import digest
+from pdos_next.features.change.implementation_owner import common_group
+from sqlalchemy import select
 
 from .models import EVENT, OPERATION, ProjectRiskFollowup, ProjectRiskFollowupCurrent
 

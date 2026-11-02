@@ -4,14 +4,13 @@ from uuid import uuid4
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from pdos_next.agent.kernel.activities import KernelActivities
+from pdos_next.agent.kernel.api import ApiPorts, router
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.core.models import Grant
+from pdos_next.errors import DomainError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.activities import KernelActivities
-from pdos_next.agent_kernel.api import ApiPorts, router
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant
 
 
 def client(setup, *, binding_state=None, cancel_calls=None):
@@ -173,8 +172,8 @@ def test_actual_default_bootstrap_binds_category_source_without_borrowing_agent_
 ):
     from uuid import UUID
 
-    from pdos_next.agent_kernel.models import AgentRun
-    from pdos_next.agent_kernel.persistence import KernelStore
+    from pdos_next.agent.kernel.models import AgentRun
+    from pdos_next.agent.kernel.persistence import KernelStore
     from tests.agent_kernel.test_domain_adapter_transactions import fixture
 
     source = fixture(setup)

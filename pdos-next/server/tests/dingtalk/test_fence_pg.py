@@ -7,11 +7,11 @@ from threading import Event
 from uuid import UUID, uuid4
 
 import pytest
-from pdos_next.database import tenant_session
-from pdos_next.dingtalk.guards import message_binding
-from pdos_next.dingtalk.models import Application, Binding
-from pdos_next.dingtalk.schemas import DeliveryReference
+from pdos_next.core.database import tenant_session
 from pdos_next.errors import DomainError
+from pdos_next.integrations.dingtalk.guards import message_binding
+from pdos_next.integrations.dingtalk.models import Application, Binding
+from pdos_next.integrations.dingtalk.schemas import DeliveryReference
 from sqlalchemy import event, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session

@@ -19,6 +19,10 @@ from manufacturing_preparation_transactions.fixtures import (
 )
 from manufacturing_preparation_transactions.fixtures import manufacturing_case as manufacturing_case
 from manufacturing_preparation_transactions.test_transactions import reference, save
+from pdos_next.core.models import Artifact
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
+from pdos_next.features.capa.history import PAGE_SIZE
 from sqlalchemy import update
 from sqlalchemy.orm import Session
 from test_build_project_scope import second_project_configuration
@@ -26,11 +30,6 @@ from test_builds import configuration as configuration
 from test_project_first_plan import cmd
 from test_project_first_plan import definition as definition
 from test_project_first_plan import project as project
-
-from pdos_next.capa_history import PAGE_SIZE
-from pdos_next.models import Artifact
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
 from tests.ui import test_project_manufacturing_preparation_projection_pg as prior_ui
 
 

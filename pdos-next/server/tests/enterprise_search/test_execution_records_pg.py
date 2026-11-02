@@ -5,9 +5,21 @@ import os
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.core.models import Artifact, Receipt
+from pdos_next.domain.build_start.models import BuildStart
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from test_project_first_plan import accepted, post
+from tests.enterprise_search.test_assistant_pg import execute, fixture
+from tests.enterprise_search.test_assistant_temporal_pg import run_http_case
+from tests.enterprise_search.test_business_sources_pg import (
+    NativeClient,
+    apply_event,
+    native_search,
+    native_session,
+)
 from verification_results.fixtures import (
     accepted_work,
     capture,
@@ -18,19 +30,6 @@ from verification_results.fixtures import (
     operational_work,
     ready_work,
     results_work,
-)
-
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.domain.build_start.models import BuildStart
-from pdos_next.enterprise_search.sources import prepare_read, select_sources
-from pdos_next.models import Artifact, Receipt
-from tests.enterprise_search.test_assistant_pg import execute, fixture
-from tests.enterprise_search.test_assistant_temporal_pg import run_http_case
-from tests.enterprise_search.test_business_sources_pg import (
-    NativeClient,
-    apply_event,
-    native_search,
-    native_session,
 )
 
 

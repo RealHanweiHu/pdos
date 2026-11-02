@@ -11,17 +11,23 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from security_fixture import secured_parse
-from sqlalchemy import func, select
-from test_durable_evidence import upload_input
-
+from pdos_next.core.models import (
+    Artifact,
+    Claim,
+    Confirmation,
+    Consumption,
+    OriginalSecurity,
+    Receipt,
+)
+from pdos_next.core.service import digest
 from pdos_next.domain.configurations.models import EngineeringConfiguration
 from pdos_next.domain.preproject.evidence_models import ClaimWithdrawal
 from pdos_next.domain.preproject.schemas import Reference
 from pdos_next.domain.products.models import DefinitionSource, DefinitionSpecRow
 from pdos_next.domain.projects.models import PlanRevision, Project, ProjectTask, ProjectWorkPackage
-from pdos_next.models import Artifact, Claim, Confirmation, Consumption, OriginalSecurity, Receipt
-from pdos_next.service import digest
+from security_fixture import secured_parse
+from sqlalchemy import func, select
+from test_durable_evidence import upload_input
 from tests.agent_kernel.test_transactions import human_session
 from tests.preproject.test_category_context_pg import add_knowledge
 from tests.preproject.test_evidence_commands_pg import (

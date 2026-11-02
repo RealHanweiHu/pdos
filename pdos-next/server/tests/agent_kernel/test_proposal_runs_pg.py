@@ -2,11 +2,10 @@
 
 from uuid import UUID, uuid4
 
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core.models import Grant
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.models import Grant
 from tests.preproject.test_g0 import create
 
 

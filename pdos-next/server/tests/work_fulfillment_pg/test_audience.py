@@ -14,17 +14,17 @@ from uuid import UUID
 
 import g0_fixture
 import pytest
+from pdos_next.core.models import Artifact, Grant, ObjectAudience, Product, Receipt, RequestKey, now
+from pdos_next.core.safety import verify_test_target
+from pdos_next.domain.projects.models import Project
+from pdos_next.domain.work_fulfillment.models import WorkCommitmentReview
+from pdos_next.domain.work_management.constants import ACCEPT, ASSIGN, COMMIT, CREATE, START, SUBMIT
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 from work_management_pg import test_workflow as flow
 from work_management_pg.test_workflow import original_security_work  # noqa: F401
 from work_management_pg.test_workflow import work as work_case  # noqa: F401
 
-from pdos_next.domain.projects.models import Project
-from pdos_next.domain.work_fulfillment.models import WorkCommitmentReview
-from pdos_next.domain.work_management.constants import ACCEPT, ASSIGN, COMMIT, CREATE, START, SUBMIT
-from pdos_next.models import Artifact, Grant, ObjectAudience, Product, Receipt, RequestKey, now
-from pdos_next.safety import verify_test_target
 from work_fulfillment_pg import test_workflow as fulfillment
 
 

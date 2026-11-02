@@ -4,12 +4,11 @@ from datetime import timedelta
 from types import SimpleNamespace
 
 import pytest
-
-from pdos_next import change_order_service as owner
-from pdos_next import change_order_store as store
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import Context
 from pdos_next.domain.change_control.rules import replace
-from pdos_next.service import Context
+from pdos_next.features.change import order_service as owner
+from pdos_next.features.change import order_store as store
 
 from . import kernel_helpers as helper
 from .test_change_order import no_connection  # noqa: F401 - shared autouse connection guard

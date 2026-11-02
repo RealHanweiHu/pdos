@@ -9,9 +9,8 @@ from threading import Barrier
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.object_journal import JournaledLocalObjectStore, JournalScope
-from pdos_next.object_storage import StorageFailure
+from pdos_next.originals.object_journal import JournaledLocalObjectStore, JournalScope
+from pdos_next.originals.object_storage import StorageFailure
 
 CONTENT = b"Synthetic harmless upload; this raw content must never appear in metadata."
 

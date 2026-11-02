@@ -6,17 +6,16 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects import postgresql
-
-from pdos_next.agent_kernel import run_reconciliation
-from pdos_next.agent_kernel.context_observability import call_metrics
-from pdos_next.agent_kernel.process_view import (
+from pdos_next.agent.kernel import run_reconciliation
+from pdos_next.agent.kernel.context_observability import call_metrics
+from pdos_next.agent.kernel.process_view import (
     KINDS,
     METRIC_KEYS,
     public_context_metrics,
     read_process,
 )
 from pdos_next.errors import DomainError
+from sqlalchemy.dialects import postgresql
 
 
 def actual_metric():

@@ -11,11 +11,9 @@ from copy import deepcopy
 from uuid import UUID
 
 import pytest
-from sqlalchemy import func, select, text
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
-from pdos_next.agent_kernel.persistence import KernelStore
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.core.models import Confirmation, now
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.schemas import DRAFT_SAVE
 from pdos_next.domain.automations.service_models import (
@@ -24,7 +22,8 @@ from pdos_next.domain.automations.service_models import (
     AutomationServiceGrant,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, now
+from sqlalchemy import func, select, text
+from sqlalchemy.orm import Session
 from tests.agent_kernel import test_skill_management as skills
 from tests.automations_pg.test_manual_workflow import assert_common_group, reading, save
 from tests.automations_pg.test_service_automation_pg import (

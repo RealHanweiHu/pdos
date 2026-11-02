@@ -8,14 +8,13 @@ from types import ModuleType, SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import SkillBinding, WriteSource, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.enterprise_search import verification_kernel
-from pdos_next.enterprise_search.verification_candidates import PREPARATION, resolve_draft
+from pdos_next.agent.enterprise_search import verification_kernel
+from pdos_next.agent.enterprise_search.verification_candidates import PREPARATION, resolve_draft
+from pdos_next.agent.kernel.bindings import SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import BuildRef
 from tests.agent_kernel.test_bound_read_host import make_host
@@ -227,13 +226,13 @@ def test_host_only_adds_source_keyword_to_preparation_callback(monkeypatch):
 
 
 def test_action_context_uses_frozen_server_value_and_no_action_adds_nothing(monkeypatch):
-    from pdos_next.agent_kernel import context_projection
+    from pdos_next.agent.kernel import context_projection
 
     f = make_host()
     frozen = {"selection": {"id": str(uuid4())}, "citation_ids": [str(uuid4())]}
     f.run.versions.update(personal_preferences_context={"revision": 1},
                           verification_action=deepcopy(frozen))
-    module = ModuleType("pdos_next.enterprise_search.verification_actions")
+    module = ModuleType("pdos_next.agent.enterprise_search.verification_actions")
     observed = []
 
     def context_value(value):

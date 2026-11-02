@@ -10,15 +10,15 @@ from datetime import UTC, datetime
 from types import SimpleNamespace
 from uuid import NAMESPACE_URL, UUID, uuid5
 
+from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
 from sqlalchemy import select
-
-from pdos_next.request_proof import snapshot_get, snapshot_scalar
 
 # Bootstrap the host's registered metadata before importing individual child models.
 # isort: off
-from pdos_next.models import Artifact, OriginalSecurity, now
+from pdos_next.core.models import Artifact, OriginalSecurity, now
 # isort: on
 
+from pdos_next.core.service import digest
 from pdos_next.domain.build_execution.models import SampleUnit
 from pdos_next.domain.build_execution.service import _lot_context, sample_view
 from pdos_next.domain.build_start.models import BuildStart
@@ -33,7 +33,6 @@ from pdos_next.domain.supply_execution.service import (
     _sources,
 )
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
 
 from .models import SampleReadinessCurrent, SampleReadinessFact
 from .rules import availability, require_manufacturing, validate_event, validate_time
@@ -155,7 +154,7 @@ def read_context_for(s, ctx, product_id):
     """One explicit read-only snapshot shares its physical projection owners."""
     if not getattr(s, "info", {}).get("read_snapshot"):
         return None
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.request_proof import request_proof
 
     proof = request_proof(s)
     key = ("physical-read-context", ReadContext._scope(ctx, product_id))
@@ -350,7 +349,7 @@ def preload_current(s, ctx, product_id, sample_ids):
     """Read only the selected samples' pointers/facts in their held RR scope."""
     if not s.info.get("read_snapshot"):
         return
-    from pdos_next.request_proof import batch_read, request_proof
+    from pdos_next.core.request_proof import batch_read, request_proof
 
     proof = request_proof(s)
     sample_ids = set(sample_ids)
@@ -375,12 +374,11 @@ def preload_current(s, ctx, product_id, sample_ids):
 
 def _pointer_pair_scope(s, ctx, product_id, current_model, fact_model):
     """A fresh pair uses this real single-connection UOW, never a borrowed marker."""
+    from pdos_next.core.database import require_context
+    from pdos_next.core.models import Product
+    from pdos_next.core.request_proof import request_proof
     from sqlalchemy.engine import Connection, Engine
     from sqlalchemy.orm import Session, SessionTransaction
-
-    from pdos_next.database import require_context
-    from pdos_next.models import Product
-    from pdos_next.request_proof import request_proof
 
     if (
         not isinstance(s, Session)
@@ -489,10 +487,9 @@ def _fresh_pointer_pair(
     Canonical SELECT grants are a prerequisite: parse/ACL checks cannot be
     conditionally skipped. Runtime RLS/error order still needs PG validation.
     """
+    from pdos_next.core.request_proof import request_proof
     from sqlalchemy import func, inspect, true
     from sqlalchemy.orm import aliased
-
-    from pdos_next.request_proof import request_proof
 
     token = _pointer_pair_scope(s, ctx, product_id, current_model, fact_model)
     if token is None:
@@ -634,7 +631,7 @@ def _current(s, ctx, product_id, sample_id, *, lock=False):
     )
     if pair is None:
         if s.info.get("read_snapshot") and not lock:
-            from pdos_next.request_proof import request_proof
+            from pdos_next.core.request_proof import request_proof
 
             proof = request_proof(s)
             key = ("readiness-current", product_id, sample_id)
@@ -1218,7 +1215,7 @@ def _caps(s, ctx, product_id, chain, purpose, current, *, read_context=None):
             blockers.append({"code": error.reason, "detail": "当前实物事实不在可见范围。"})
             return cap
     try:
-        from pdos_next.service import require_access
+        from pdos_next.core.service import require_access
 
         require_access(s, ctx, product_id, write=True)
         require_manufacturing(authority)

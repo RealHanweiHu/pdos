@@ -1,12 +1,11 @@
 """G0 result projection over actual identities, the fixed definition and project."""
 
-from sqlalchemy import select
-
+from pdos_next.core.models import Principal
+from pdos_next.core.service import require_access
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.products.variant_models import Variant
 from pdos_next.domain.projects.models import Project, ProjectProductLink
-from pdos_next.models import Principal
-from pdos_next.service import require_access
+from sqlalchemy import select
 
 from .access import fail, proposal
 from .models import ProjectOpenItem, ProposalDecision

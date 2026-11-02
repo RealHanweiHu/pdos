@@ -7,18 +7,17 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation, Product
+from pdos_next.core.service import Context
+from pdos_next.domain.change_execution import graph as graph_owner
+from pdos_next.errors import DomainError
+from pdos_next.features.change import graph_closure as c
+from pdos_next.schemas.change_control.contracts import Coverage, Ref
+from pdos_next.schemas.verification.contracts import Scope, SourceRef
 from sqlalchemy import create_engine, select
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next import change_graph_closure as c
-from pdos_next.contracts import Command
-from pdos_next.domain.change_execution import graph as graph_owner
-from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product
-from pdos_next.schemas.change_control.contracts import Coverage, Ref
-from pdos_next.schemas.verification.contracts import Scope, SourceRef
-from pdos_next.service import Context
 
 
 @pytest.fixture

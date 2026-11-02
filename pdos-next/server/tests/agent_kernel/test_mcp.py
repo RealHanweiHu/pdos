@@ -2,13 +2,12 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.mcp import McpPorts, McpService
-from pdos_next.agent_kernel.mcp_binding import connector_binding
-from pdos_next.agent_kernel.models import McpConnector, McpToolGrant
+from pdos_next.agent.kernel.mcp import McpPorts, McpService
+from pdos_next.agent.kernel.mcp_binding import connector_binding
+from pdos_next.agent.kernel.models import McpConnector, McpToolGrant
+from pdos_next.core.models import now
 from pdos_next.errors import DomainError
-from pdos_next.models import now
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_transactions import run
 
 

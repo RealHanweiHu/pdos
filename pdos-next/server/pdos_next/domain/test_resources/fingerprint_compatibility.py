@@ -14,14 +14,13 @@ from re import fullmatch
 from typing import Literal
 from uuid import UUID
 
-from pydantic import BaseModel, ValidationError
-
 from pdos_next.domain.build_operational_facts.schemas import DecisionInput, DecisionProof
 from pdos_next.domain.build_operational_facts.service import digest
+from pdos_next.domain.engines.supply_cost.common import SnapshotRef
 from pdos_next.domain.test_resources.schemas import TestPlanBinding
-from pdos_next.engines.supply_cost.common import SnapshotRef
 from pdos_next.errors import DomainError
 from pdos_next.schemas.resource_readiness.contracts import Check, ResourceRef
+from pydantic import BaseModel, ValidationError
 
 MATERIAL_KEYS = frozenset(
     {

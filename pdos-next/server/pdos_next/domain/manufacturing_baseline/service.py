@@ -12,10 +12,9 @@ from datetime import datetime
 from types import MappingProxyType
 from uuid import uuid4
 
-from pydantic import ValidationError
-from sqlalchemy import event, exists, inspect, select
-
-from pdos_next.contracts import Command, SourceRead
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey, now
+from pdos_next.core.service import Context, digest, material_digest, require_access
 from pdos_next.domain.capa_effectiveness.fact_atom_storage import _same_uow, _uow
 from pdos_next.domain.capa_effectiveness.facts import canonical_reads, json_value
 from pdos_next.domain.change_execution import service as evidence
@@ -26,9 +25,9 @@ from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.projects import service as projects
 from pdos_next.domain.verification_front.service import _recheck
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Product, Receipt, RequestKey, now
-from pdos_next.quality_result_bridge import _runtime_stamp as bridge_stamp
-from pdos_next.service import Context, digest, material_digest, require_access
+from pdos_next.features.quality.result_bridge import _runtime_stamp as bridge_stamp
+from pydantic import ValidationError
+from sqlalchemy import event, exists, inspect, select
 
 from .consumption import ConsumptionHost
 from .models import BaselineDocumentLink, PreparationCurrent, PreparationVersion
@@ -349,7 +348,7 @@ def _retained_group(s, ctx, pid, row):
     if not keys and receipt.actor_id != ctx.actor_id:
         # A readable peer Receipt does not expose its author's private key row.
         # The existing database check binds that Receipt under this caller only.
-        from pdos_next.receipt_request_binding import readable_receipt_request_bound
+        from pdos_next.core.receipt_request_binding import readable_receipt_request_bound
 
         request_bound = readable_receipt_request_bound(s, ctx, pid, receipt.id)
     require(
@@ -1137,7 +1136,7 @@ def inputs(s, ctx, product_id, command):
 
 
 def list_preparations(s, ctx, product_id, *, project_id, process_id=None, history_cursor=None):
-    from pdos_next.capa_history import page_query, page_rows
+    from pdos_next.features.capa.history import page_query, page_rows
 
     require_access(s, ctx, product_id)
     projects._project(s, ctx, product_id, project_id)

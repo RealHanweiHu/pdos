@@ -12,17 +12,16 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import inspect
-from sqlalchemy.orm import Session, make_transient_to_detached
-from test_preview_phase import NOW
-from test_preview_phase import work as preview_work  # noqa: F401
-
+from pdos_next.core.models import Confirmation, Principal
+from pdos_next.core.service import digest, material_digest
 from pdos_next.domain.capa_verification import preview_phase as preview
 from pdos_next.domain.capa_verification import write_phase as phase
 from pdos_next.domain.capa_verification.models import RemediationLinkRecord
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Principal
-from pdos_next.service import digest, material_digest
+from sqlalchemy import inspect
+from sqlalchemy.orm import Session, make_transient_to_detached
+from test_preview_phase import NOW
+from test_preview_phase import work as preview_work  # noqa: F401
 
 
 @pytest.fixture

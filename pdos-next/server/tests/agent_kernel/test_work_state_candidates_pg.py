@@ -3,14 +3,13 @@
 from datetime import timedelta
 from uuid import UUID
 
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.work_state_models import AgentWorkState
+from pdos_next.core.models import Grant, now
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.work_state_models import AgentWorkState
-from pdos_next.models import Grant, now
 from tests.agent_kernel.test_category_candidate_transactions import adopted, personal_fixture
 from tests.agent_kernel.test_model_configuration_transactions import submit
 from tests.agent_kernel.test_read_proof_transactions import read_fixture

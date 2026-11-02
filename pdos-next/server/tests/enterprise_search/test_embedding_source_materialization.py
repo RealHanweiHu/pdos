@@ -5,13 +5,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import embedding_hybrid as hybrid
+from pdos_next.agent.enterprise_search import embedding_sources as sources
+from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES, SearchInput
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql import visitors
 from sqlalchemy.sql.selectable import CTE
-
-from pdos_next.enterprise_search import embedding_hybrid as hybrid
-from pdos_next.enterprise_search import embedding_sources as sources
-from pdos_next.enterprise_search.schemas import SOURCE_TYPES, SearchInput
 from tests.enterprise_search.test_embedding_ann_sql import ScanSession
 
 METADATA_FIELDS = (

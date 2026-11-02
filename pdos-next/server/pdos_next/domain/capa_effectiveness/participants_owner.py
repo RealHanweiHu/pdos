@@ -5,7 +5,7 @@ Run versions remain fixed; new selections must match actual Current. No client
 participant list, owner Context, DML, new transaction or seven-gate attestation.
 """
 
-from pdos_next.database import category_for_product
+from pdos_next.core.database import category_for_product
 
 
 # Initialize the common registry before its domain children.
@@ -18,9 +18,9 @@ from uuid import UUID
 from sqlalchemy import select
 from pydantic import ValidationError
 
-from pdos_next.service import Context, EVENTS, digest
+from pdos_next.core.service import Context, EVENTS, digest
 from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Grant,
@@ -125,7 +125,7 @@ class _Read:
             .limit(2)
             .execution_options(autoflush=False, populate_existing=True)
         )
-        from pdos_next.request_proof import snapshot_mappings
+        from pdos_next.core.request_proof import snapshot_mappings
 
         values = snapshot_mappings(self.s, statement, scope_id=self.pid)
         _require(len(values) == 1)
@@ -190,11 +190,11 @@ class _Read:
             .limit(1)
             .execution_options(autoflush=False, populate_existing=True)
         )
-        from pdos_next.request_proof import snapshot_mappings
+        from pdos_next.core.request_proof import snapshot_mappings
 
         matches = snapshot_mappings(self.s, key, scope_id=self.pid)
         if not matches and receipt["actor_id"] != self.ctx.actor_id:
-            from pdos_next.receipt_request_binding import receipt_request_binding_statement
+            from pdos_next.core.receipt_request_binding import receipt_request_binding_statement
 
             binding = receipt_request_binding_statement(self.ctx.tenant_id, self.pid, receipt["id"])
             checked = snapshot_mappings(self.s, binding, scope_id=self.pid)
@@ -606,7 +606,7 @@ class _Read:
     def finish(self):
         # No cross-phase memo: every tracked raw group is independently reread.
         for statement, old in self.tracked:
-            from pdos_next.request_proof import snapshot_mappings
+            from pdos_next.core.request_proof import snapshot_mappings
 
             rows = snapshot_mappings(self.s, statement, scope_id=self.pid)
             _require(len(rows) == 1 and dict(rows[0]) == old, "PARTICIPANT_OWNER_CHANGED")

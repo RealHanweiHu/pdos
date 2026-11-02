@@ -1,10 +1,9 @@
 from copy import deepcopy
 
 import pytest
-
-from pdos_next.agent_kernel.research_result import attach
+from pdos_next.agent.kernel.research_result import attach
+from pdos_next.agent.research.egress import compact, overlaps
 from pdos_next.errors import DomainError
-from pdos_next.research.egress import compact, overlaps
 
 
 def tool():

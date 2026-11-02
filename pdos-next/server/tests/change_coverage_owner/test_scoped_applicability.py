@@ -8,16 +8,13 @@ from uuid import uuid4
 import pytest
 from change_coverage_owner.test_owner_boundary import env, publish, read  # noqa: F401
 from change_execution import kernel_helpers as helper
-from pydantic import ValidationError
-from sqlalchemy.engine import Engine
-
-from pdos_next import change_coverage_binding as binding
-from pdos_next import service as common
-from pdos_next.change_dependency_clock import ChangeDependencyClock
+from pdos_next.core import service as common
 from pdos_next.domain.change_control.rules import compute_impact, digest, graph_sources
 from pdos_next.domain.change_coverage_owner import models, owner, registry, schemas, trust
 from pdos_next.domain.change_execution.graph import OwnedObject, capture_graph
 from pdos_next.errors import DomainError
+from pdos_next.features.change import coverage_binding as binding
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
 from pdos_next.schemas.change_control.contracts import (
     Edge,
     GraphSnapshot,
@@ -25,6 +22,8 @@ from pdos_next.schemas.change_control.contracts import (
     Ref,
 )
 from pdos_next.schemas.verification.contracts import SourceRef
+from pydantic import ValidationError
+from sqlalchemy.engine import Engine
 
 
 @pytest.fixture(autouse=True)
@@ -370,8 +369,8 @@ def test_retained_epoch_exception_does_not_relax_original_proof(env, drift):
 
 
 def test_retained_proof_rechecks_current_publisher_after_original_io(env, monkeypatch):
-    from pdos_next import change_controlled_owner as controlled
-    from pdos_next.models import Principal
+    from pdos_next.core.models import Principal
+    from pdos_next.features.change import controlled_owner as controlled
 
     current, approved, _ = retained_publication(env)
     original = controlled._source_guard
@@ -388,7 +387,7 @@ def test_retained_proof_rechecks_current_publisher_after_original_io(env, monkey
 
 
 def test_retained_read_still_fences_clock_changes_during_source_io(env, monkeypatch):
-    from pdos_next import change_controlled_owner as controlled
+    from pdos_next.features.change import controlled_owner as controlled
 
     current, approved, clock = retained_publication(env)
     original = controlled._source_guard

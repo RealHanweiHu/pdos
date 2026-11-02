@@ -15,15 +15,14 @@ from pathlib import Path
 from uuid import UUID
 
 import pytest
+from pdos_next.agent.enterprise_search import embedding_hybrid as hybrid
+from pdos_next.agent.enterprise_search.embedding_models import ChunkEmbedding, Vector
+from pdos_next.agent.enterprise_search.embedding_runtime import unit_vector
+from pdos_next.agent.enterprise_search.schemas import SearchInput
+from pdos_next.core.database import tenant_session
 from sqlalchemy import bindparam, cast, select, text
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.elements import TextClause
-
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search import embedding_hybrid as hybrid
-from pdos_next.enterprise_search.embedding_models import ChunkEmbedding, Vector
-from pdos_next.enterprise_search.embedding_runtime import unit_vector
-from pdos_next.enterprise_search.schemas import SearchInput
 from tests.enterprise_search.embedding_ann_fixture import (
     CHUNKS_PER_SOURCE,
     DIMENSIONS,

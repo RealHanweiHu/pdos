@@ -6,9 +6,8 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import service as common
-from pdos_next.contracts import Command
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command
 from pdos_next.domain.quality_execution import service
 from pdos_next.domain.quality_execution.schemas import IssueTriagePayload
 from pdos_next.errors import DomainError

@@ -14,26 +14,25 @@ from uuid import UUID, uuid4
 import httpx
 import pytest
 from langgraph.checkpoint.postgres import PostgresSaver
+from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
+from pdos_next.agent.enterprise_search.embedding_activities import (
+    EmbeddingActivities,
+    EmbeddingPorts,
+)
+from pdos_next.agent.enterprise_search.embedding_query import QueryPorts
+from pdos_next.agent.enterprise_search.embedding_query_binding import TOOL
+from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.models import AgentToolCall, ValidationBudget
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
+from pdos_next.api import create_app
+from pdos_next.workflows.checkpoints import verified_checkpoint_url
+from pdos_next.workflows.xiaopai import XiaopaiWork
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio.client import Client
 from temporalio.worker import Worker
-
-from pdos_next.agent_kernel.activities import KernelActivities, configure_agent_kernel
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.models import AgentToolCall, ValidationBudget
-from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
-from pdos_next.api import create_app
-from pdos_next.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.enterprise_search.embedding_activities import (
-    EmbeddingActivities,
-    EmbeddingPorts,
-)
-from pdos_next.enterprise_search.embedding_query import QueryPorts
-from pdos_next.enterprise_search.embedding_query_binding import TOOL
-from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent_kernel.test_cost_budget import rate, wallet
 from tests.agent_kernel.test_model_configuration_transactions import configured, submit
 from tests.enterprise_search.embedding_harness import (

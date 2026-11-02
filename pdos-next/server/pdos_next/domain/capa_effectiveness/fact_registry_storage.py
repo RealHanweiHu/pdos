@@ -25,7 +25,7 @@ from pdos_next.domain.projects.models import Project
 from pdos_next.domain.quality_execution.models import QualityIssueVersion
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import Scope
-from pdos_next.service import Context, digest
+from pdos_next.core.service import Context, digest
 from sqlalchemy import select
 
 Kind = Literal["rule", "observation", "review"]
@@ -126,7 +126,7 @@ class _Read:
         self.nodes.add(key)
 
     def _one(self, table, where):
-        from pdos_next.request_proof import snapshot_mappings
+        from pdos_next.core.request_proof import snapshot_mappings
 
         rows = snapshot_mappings(
             self.s,
@@ -354,7 +354,7 @@ class _Read:
                 ),
                 "FACT_CURRENT_ISSUER_SERIES_MISMATCH",
             )
-        from pdos_next.request_proof import scope_is_held
+        from pdos_next.core.request_proof import scope_is_held
 
         if scope_is_held(self.s, self.product_id):
             # The installed append-only series owns predecessor validation:

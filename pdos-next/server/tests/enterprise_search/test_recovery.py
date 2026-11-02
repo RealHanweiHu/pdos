@@ -7,13 +7,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.enterprise_search.events import ProjectionSender
-from pdos_next.enterprise_search.indexing import _same_chunks
-from pdos_next.enterprise_search.recovery import context_reference, validate_plan
-from pdos_next.enterprise_search.recovery_workflow import EnterpriseRebuild, finish_rebuild
+from pdos_next.agent.enterprise_search.events import ProjectionSender
+from pdos_next.agent.enterprise_search.indexing import _same_chunks
+from pdos_next.agent.enterprise_search.recovery import context_reference, validate_plan
+from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild, finish_rebuild
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from pdos_next.service import Context, digest
 
 
 def manifest(count=2):
@@ -114,7 +113,7 @@ def test_summary_never_calls_partial_or_unacknowledged_work_current():
 
 
 def test_workflow_retries_the_same_fixed_slice_then_continues_independent_work(monkeypatch):
-    from pdos_next.enterprise_search import recovery_workflow as module
+    from pdos_next.agent.enterprise_search import recovery_workflow as module
 
     _ctx, plan = manifest()
     calls, attempts = [], {}

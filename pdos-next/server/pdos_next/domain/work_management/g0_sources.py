@@ -9,11 +9,10 @@ from collections.abc import Mapping
 from datetime import date
 from uuid import UUID
 
-from sqlalchemy import and_, select
-
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import ProjectOpenItem
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from sqlalchemy import and_, select
 
 from . import owner
 from .models import WorkTaskCurrent, WorkTaskVersion

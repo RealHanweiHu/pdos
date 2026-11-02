@@ -15,11 +15,10 @@ from uuid import UUID, uuid4
 import pytest
 from manufacturing_preparation.test_expiry import authority_result
 from manufacturing_preparation.test_publication_service import MemorySession
-from sqlalchemy import create_engine, event
-from sqlalchemy.engine import Engine
-
-from pdos_next import service as common
-from pdos_next.contracts import Command
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Confirmation, Grant, Principal, Product, RequestKey
+from pdos_next.core.request_proof import request_proof
 from pdos_next.domain.manufacturing_baseline import consumption as consumption_module
 from pdos_next.domain.manufacturing_baseline import service as preparation
 from pdos_next.domain.manufacturing_trials import native_service as native
@@ -36,8 +35,8 @@ from pdos_next.domain.manufacturing_trials.native_schemas import (
 )
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Grant, Principal, Product, RequestKey
-from pdos_next.request_proof import request_proof
+from sqlalchemy import create_engine, event
+from sqlalchemy.engine import Engine
 
 from .helpers import SCOPE, creation, record
 

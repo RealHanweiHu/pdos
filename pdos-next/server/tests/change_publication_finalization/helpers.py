@@ -10,17 +10,16 @@ from datetime import timedelta
 from pathlib import Path
 from uuid import uuid4
 
+import pdos_next.core.models  # noqa: F401 - register before runtime imports
 import pytest
 from change_execution import kernel_helpers
-
-import pdos_next.models  # noqa: F401 - register before runtime imports
-from pdos_next import service as common
-from pdos_next.change_coverage_binding import covered_graph
-from pdos_next.contracts import Command
+from pdos_next.core import service as common
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Audit, Category, Grant, Outbox, Principal, Receipt, RequestKey
 from pdos_next.domain.change_coverage_owner import owner
 from pdos_next.domain.change_execution import service as impact
 from pdos_next.domain.change_execution.models import ChangeRequestVersion
-from pdos_next.models import Audit, Category, Grant, Outbox, Principal, Receipt, RequestKey
+from pdos_next.features.change.coverage_binding import covered_graph
 
 SERVER = Path(__file__).resolve().parents[2]
 spec = importlib.util.spec_from_file_location(

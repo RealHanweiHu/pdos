@@ -9,9 +9,8 @@ from uuid import uuid4
 import pytest
 from external_wait_pg.test_workflow import create_record, original_security_work, work
 from external_wait_pg.test_workflow import execute as wait_execute
+from pdos_next.core.models import Artifact, now
 from sqlalchemy.orm import Session
-
-from pdos_next.models import Artifact, now
 from tests.enterprise_search.test_assistant_pg import SyntheticClient, execute, fixture
 from tests.enterprise_search.test_business_sources_pg import NativeClient, apply_event
 from tests.enterprise_search.test_retrieval_pg import index, register

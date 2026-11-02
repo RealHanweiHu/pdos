@@ -5,17 +5,16 @@ from copy import deepcopy
 from uuid import UUID
 
 import pytest
-from sqlalchemy import select, text
-from sqlalchemy.exc import DBAPIError
-from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt
 from pdos_next.domain.preproject.category_models import (
     KnowledgeEntry,
     ParameterVersion,
     PromotionProof,
 )
-from pdos_next.models import Receipt
+from sqlalchemy import select, text
+from sqlalchemy.exc import DBAPIError
+from sqlalchemy.orm import Session
 from tests.preproject.test_g0 import (
     create,  # noqa: F401
     decide_request,
@@ -230,7 +229,7 @@ def test_promotion_identity_preview_and_private_proof(work):
 
 
 def test_receipt_failure_rolls_back_version_and_current(work, monkeypatch):
-    import pdos_next.service as common
+    import pdos_next.core.service as common
 
     req = request(work, "category.parameter.publish", parameter())
     preview = post(work, req, preview=True)

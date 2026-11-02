@@ -4,18 +4,17 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.errors import DomainError
-from pdos_next.model_gateway import CallPermit, Reservation
-from pdos_next.model_gateway.persistent_budget import (
+from pdos_next.agent.model_gateway import CallPermit, Reservation
+from pdos_next.agent.model_gateway.persistent_budget import (
     _apply_settlement,
     _metadata,
     _permit_shape,
     _reservation_shape,
     _settlement,
 )
+from pdos_next.core.service import Context
+from pdos_next.errors import DomainError
 from pdos_next.providers import ProviderUsage
-from pdos_next.service import Context
 
 
 def bound():

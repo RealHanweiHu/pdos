@@ -4,16 +4,15 @@ import hashlib
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.models import AgentEvent, AgentRun, PublicWebSnapshot
+from pdos_next.agent.kernel.research_adapter import ResearchArtifacts
+from pdos_next.agent.kernel.research_read_ledger import page_result
+from pdos_next.agent.research.types import ReadPage, Snapshot
+from pdos_next.core.models import Confirmation, Receipt, now
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.models import AgentEvent, AgentRun, PublicWebSnapshot
-from pdos_next.agent_kernel.research_adapter import ResearchArtifacts
-from pdos_next.agent_kernel.research_read_ledger import page_result
-from pdos_next.models import Confirmation, Receipt, now
-from pdos_next.research.types import ReadPage, Snapshot
 from tests.agent_kernel.test_model_configuration_transactions import submit
 from tests.agent_kernel.test_read_proof_transactions import read_fixture
 from tests.agent_kernel.test_snapshot_proof_transactions import model_for
@@ -106,7 +105,7 @@ def test_unusable_snapshot_is_not_exposed_as_a_fresh_confirmation(setup, tmp_pat
     if state == "missing":
         f.artifacts._path(f.scope, f.snapshot.id).unlink()
     elif state == "cancelled":
-        from pdos_next.agent_kernel.persistence import cancel_run
+        from pdos_next.agent.kernel.persistence import cancel_run
         from tests.agent_kernel.test_transactions import human_session
 
         with human_session(setup) as session:

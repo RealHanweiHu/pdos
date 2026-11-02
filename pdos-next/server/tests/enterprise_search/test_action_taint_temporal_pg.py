@@ -15,12 +15,12 @@ from uuid import uuid4
 import pytest
 from build_operational_facts.fixtures import configuration, definition, operational_work, project
 from build_start.test_transactions import ready_work
-from pdos_next.agent_kernel import gateway
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel import gateway
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
 from pdos_next.errors import DomainError
-from pdos_next.models import now
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from tests.enterprise_search.test_action_footprint_temporal_pg import (

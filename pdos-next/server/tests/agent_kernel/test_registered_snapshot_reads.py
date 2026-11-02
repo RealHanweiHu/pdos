@@ -10,18 +10,17 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.read_execution import ReadBinding, ReadSource
-from pdos_next.agent_kernel.registered_snapshot_reads import RegisteredSnapshotReads
-from pdos_next.agent_kernel.registry import ToolRegistry, ToolSpec
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.read_execution import ReadBinding, ReadSource
+from pdos_next.agent.kernel.registered_snapshot_reads import RegisteredSnapshotReads
+from pdos_next.agent.kernel.registry import ToolRegistry, ToolSpec
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Category, Grant, Principal, Receipt
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Grant, Principal, Receipt
-from pdos_next.service import digest
 
 
 class MemorySession:

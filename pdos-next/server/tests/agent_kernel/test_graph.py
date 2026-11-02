@@ -3,13 +3,12 @@ from uuid import uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-
-from pdos_next.agent_kernel.graph import AgentKernel, Budget
-from pdos_next.agent_kernel.registry import ToolRegistry, command_tools
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, RunScope, ToolCall
+from pdos_next.agent.kernel.graph import AgentKernel, Budget
+from pdos_next.agent.kernel.registry import ToolRegistry, command_tools
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall
+from pdos_next.core.schema_base import StrictModel
 from pdos_next.errors import DomainError
-from pdos_next.schema_base import StrictModel
 
 
 def scope(**kwargs):

@@ -1,9 +1,8 @@
 from datetime import UTC
 from uuid import UUID
 
+from pdos_next.domain.engines.supply_cost.common import FrozenDTO
 from pydantic import AwareDatetime, Field, field_validator
-
-from pdos_next.engines.supply_cost.common import FrozenDTO
 
 
 class LifecycleCommandPayload(FrozenDTO):

@@ -11,16 +11,15 @@ from uuid import uuid4
 import httpx
 import psycopg
 import pytest
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
-
-from pdos_next import change_graph_closure as closure
-from pdos_next import change_order_service as formal
 from pdos_next.domain.change_coverage_owner import owner
 from pdos_next.domain.change_execution import service as candidate
 from pdos_next.errors import DomainError
+from pdos_next.features.change import graph_closure as closure
+from pdos_next.features.change import order_service as formal
 from pdos_next.schemas.change_control.contracts import Coverage, Facet, GraphSnapshot, Node, Ref
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
 
 
 @pytest.fixture(autouse=True)

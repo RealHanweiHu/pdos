@@ -6,19 +6,18 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.api import create_app
-from pdos_next.enterprise_search.embedding_activities import EmbeddingActivities
-from pdos_next.enterprise_search.embedding_models import (
+from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingActivities
+from pdos_next.agent.enterprise_search.embedding_models import (
     EmbeddingBudget,
     EmbeddingCall,
 )
-from pdos_next.enterprise_search.embedding_schemas import EmbeddingResponse
+from pdos_next.agent.enterprise_search.embedding_schemas import EmbeddingResponse
+from pdos_next.api import create_app
+from pdos_next.core.models import Artifact
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
 from pdos_next.providers.types import ProviderError, ProviderUsage
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.enterprise_search.embedding_harness import (
     command_for,
     ports_for,
@@ -141,7 +140,7 @@ def test_customer_originals_are_excluded_until_separately_confirmed(security_wor
     assert preview["review"]["expected_sources"] == 1
     _, plan = execute_saved(setup, ports, receipt)
     with Session(setup.admin) as session:
-        from pdos_next.enterprise_search.embedding_models import EmbeddingBatch
+        from pdos_next.agent.enterprise_search.embedding_models import EmbeddingBatch
 
         batch = session.get(EmbeddingBatch, UUID(plan["batches"][0]))
         assert {row["source_id"] for row in batch.manifest["chunks"]} == {str(internal)}

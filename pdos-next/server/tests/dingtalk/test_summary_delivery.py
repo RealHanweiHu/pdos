@@ -7,16 +7,20 @@ from uuid import UUID, uuid4
 
 import httpx
 import pytest
-from pdos_next import models as native_models  # noqa: F401 -- initialize native metadata first
-from pdos_next.dingtalk.accounts import credential
-from pdos_next.dingtalk.official import OfficialAdapter
-from pdos_next.dingtalk.ports import ChannelRuntime
-from pdos_next.dingtalk.runtime import ChannelService
-from pdos_next.dingtalk.summary_delivery import SummaryDeliveryService, compose, source_ids
-from pdos_next.dingtalk.summary_models import SummaryDelivery
-from pdos_next.dingtalk.synthetic import SyntheticKms
-from pdos_next.personal_summary_schemas import Selection, Summary
-from pdos_next.service import digest
+from pdos_next.core import models as native_models  # noqa: F401 -- initialize native metadata first
+from pdos_next.core.service import digest
+from pdos_next.features.personal.summary_schemas import Selection, Summary
+from pdos_next.integrations.dingtalk.accounts import credential
+from pdos_next.integrations.dingtalk.official import OfficialAdapter
+from pdos_next.integrations.dingtalk.ports import ChannelRuntime
+from pdos_next.integrations.dingtalk.runtime import ChannelService
+from pdos_next.integrations.dingtalk.summary_delivery import (
+    SummaryDeliveryService,
+    compose,
+    source_ids,
+)
+from pdos_next.integrations.dingtalk.summary_models import SummaryDelivery
+from pdos_next.integrations.dingtalk.synthetic import SyntheticKms
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.schema import CreateTable
 
@@ -246,8 +250,8 @@ def test_new_model_has_real_scope_and_fixed_origin_columns_in_postgres_ddl():
 
 
 def test_delivery_activity_runs_registered_deterministic_graph_with_only_fixed_ids(monkeypatch):
-    from pdos_next.dingtalk.summary_delivery import SummaryReference
-    from pdos_next.dingtalk.summary_workflow import SummaryActivities
+    from pdos_next.integrations.dingtalk.summary_delivery import SummaryReference
+    from pdos_next.integrations.dingtalk.summary_workflow import SummaryActivities
 
     reference = {"tenant_id": str(uuid4()), "run_id": str(uuid4())}
     seen = []
@@ -260,7 +264,7 @@ def test_delivery_activity_runs_registered_deterministic_graph_with_only_fixed_i
             seen.append(actual)
             return {"state": "delivered", "delivery_id": str(uuid4()), "attempts": 1}
 
-    monkeypatch.setattr("pdos_next.dingtalk.summary_delivery.SummaryDeliveryService", Port)
+    monkeypatch.setattr("pdos_next.integrations.dingtalk.summary_delivery.SummaryDeliveryService", Port)
     assert (
         SummaryActivities(object(), object(), runtime=object()).deliver(reference)["state"]
         == "delivered"

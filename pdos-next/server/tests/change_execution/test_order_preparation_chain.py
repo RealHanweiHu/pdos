@@ -12,6 +12,47 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 from build_start.test_transactions import import_authority
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Outbox,
+    Receipt,
+    RequestKey,
+    UploadedOriginal,
+    now,
+)
+from pdos_next.domain.capa_verification import service as followup_owner
+from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
+from pdos_next.domain.projects.models import Project
+from pdos_next.domain.verification_launch.models import (
+    VerificationRunCurrent,
+    VerificationRunVersion,
+)
+from pdos_next.domain.verification_results.models import MeasurementImportCapture, MeasurementRecord
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change.controlled_schemas import (
+    PolicyImport,
+    PolicyMaterial,
+    SelectionMaterial,
+)
+from pdos_next.features.change.controlled_store import ChangePolicyFact, ChangeSelectionFact
+from pdos_next.features.change.order_store import (
+    ChangeApprovalRecord,
+    ChangeImplementationRecord,
+    ChangeOrderRecord,
+)
+from pdos_next.schemas.change_control.contracts import (
+    ControlledIntent,
+    Disposition,
+    EffectivityPlan,
+    ImpactAssessment,
+    PlanItem,
+    Ref,
+    Selection,
+)
+from pdos_next.schemas.verification.contracts import Scope, SourceRef
 from quality_execution import fixtures as quality
 from quality_execution.fixtures import (  # noqa: F401
     accepted_work,
@@ -25,44 +66,6 @@ from quality_execution.fixtures import (  # noqa: F401
 from sqlalchemy import func, select
 from test_project_first_plan import accepted, cmd, post
 from verification_results import fixtures as results
-
-from pdos_next import change_controlled_owner as controlled
-from pdos_next.change_controlled_schemas import PolicyImport, PolicyMaterial, SelectionMaterial
-from pdos_next.change_controlled_store import ChangePolicyFact, ChangeSelectionFact
-from pdos_next.change_order_store import (
-    ChangeApprovalRecord,
-    ChangeImplementationRecord,
-    ChangeOrderRecord,
-)
-from pdos_next.database import tenant_session
-from pdos_next.domain.capa_verification import service as followup_owner
-from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
-from pdos_next.domain.projects.models import Project
-from pdos_next.domain.verification_launch.models import (
-    VerificationRunCurrent,
-    VerificationRunVersion,
-)
-from pdos_next.domain.verification_results.models import MeasurementImportCapture, MeasurementRecord
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Outbox,
-    Receipt,
-    RequestKey,
-    UploadedOriginal,
-    now,
-)
-from pdos_next.schemas.change_control.contracts import (
-    ControlledIntent,
-    Disposition,
-    EffectivityPlan,
-    ImpactAssessment,
-    PlanItem,
-    Ref,
-    Selection,
-)
-from pdos_next.schemas.verification.contracts import Scope, SourceRef
 
 from . import test_transactions as change
 

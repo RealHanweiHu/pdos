@@ -12,10 +12,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next import capa_applicability_owner as owner
 from pdos_next.domain.quality_followup.schemas import CompletionAssessment, OwnerImplementationProof
 from pdos_next.errors import DomainError
+from pdos_next.features.capa import applicability_owner as owner
 
 from .test_action_fulfillment_owner import (  # noqa: F401 - explicit shared fixture registration
     action_work,
@@ -186,7 +185,7 @@ def test_current_implementation_source_drift_rejects_composed_formal_proof(
         calls.append(True)
         return {"source": "before" if len(calls) == 1 else "after"}
 
-    from pdos_next import change_action_fulfillment_owner as adapter
+    from pdos_next.features.change import action_fulfillment_owner as adapter
 
     monkeypatch.setattr(adapter.controlled, "_source_guard", source_guard)
     with pytest.raises(DomainError) as error:

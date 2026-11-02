@@ -8,22 +8,21 @@ from uuid import UUID, uuid4
 
 import pytest
 from langgraph.checkpoint.postgres import PostgresSaver
+from pdos_next.agent.kernel.category_adoption import dispatch_reference, resolve
+from pdos_next.agent.kernel.graph import AgentKernel, VerifiedCategoryAdoption
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.models import AgentEvent, AgentInput, AgentRun
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.dispatch.outbox import acknowledge, claim_events, delivery_unknown
+from pdos_next.core.models import Grant, Outbox
+from pdos_next.core.service import digest
+from pdos_next.errors import DomainError
+from pdos_next.workflows.checkpoints import verified_checkpoint_url
+from pdos_next.workflows.transport import TemporalSender
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.category_adoption import dispatch_reference, resolve
-from pdos_next.agent_kernel.graph import AgentKernel, VerifiedCategoryAdoption
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.models import AgentEvent, AgentInput, AgentRun
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
-from pdos_next.dispatch.outbox import acknowledge, claim_events, delivery_unknown
-from pdos_next.errors import DomainError
-from pdos_next.models import Grant, Outbox
-from pdos_next.service import digest
-from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.transport import TemporalSender
 from tests.agent_kernel.test_category_candidate_transactions import adopted, personal_fixture
 from tests.confirmation_fixture import confirmation_clock  # noqa: F401
 

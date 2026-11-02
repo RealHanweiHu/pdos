@@ -7,11 +7,11 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next import api
+from pdos_next.core import category_capabilities
+from pdos_next.core.models import Category, Grant, Principal
+from pdos_next.core.service import Context
 from sqlalchemy import create_engine, event
-
-from pdos_next import api, category_capabilities
-from pdos_next.models import Category, Grant, Principal
-from pdos_next.service import Context
 
 
 @pytest.fixture

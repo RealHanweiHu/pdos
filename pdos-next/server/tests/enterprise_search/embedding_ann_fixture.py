@@ -16,15 +16,14 @@ from pathlib import Path
 from time import perf_counter
 from uuid import UUID, uuid4
 
+from pdos_next.agent.enterprise_search.embedding_hybrid import semantic_rows
+from pdos_next.agent.enterprise_search.embedding_models import ChunkEmbedding
+from pdos_next.agent.enterprise_search.indexing import chunks, project
+from pdos_next.agent.enterprise_search.models import SearchChunk, SearchSource
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Artifact, ObjectAudience
 from sqlalchemy import event, func, insert, select, text
 from sqlalchemy.orm import Session
-
-from pdos_next.database import tenant_session
-from pdos_next.enterprise_search.embedding_hybrid import semantic_rows
-from pdos_next.enterprise_search.embedding_models import ChunkEmbedding
-from pdos_next.enterprise_search.indexing import chunks, project
-from pdos_next.enterprise_search.models import SearchChunk, SearchSource
-from pdos_next.models import Artifact, ObjectAudience
 from tests.enterprise_search.embedding_ann_auto_plan import AutoPlanCapture, sql_digest
 from tests.enterprise_search.embedding_harness import command_for, ports_for, save_profile
 

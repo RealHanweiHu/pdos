@@ -6,14 +6,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.dialects.postgresql import dialect
-from sqlalchemy.engine import Engine
-
-from pdos_next import personal_attention
 from pdos_next.domain.project_risk.models import ProjectRiskFollowup, ProjectRiskFollowupCurrent
 from pdos_next.domain.work_management.models import BINDING, SCOPE
-from pdos_next.personal_attention_common import columns
-from pdos_next.personal_attention_project_risk import queries
+from pdos_next.features.personal import attention as personal_attention
+from pdos_next.features.personal.attention_common import columns
+from pdos_next.features.personal.attention_project_risk import queries
+from sqlalchemy.dialects.postgresql import dialect
+from sqlalchemy.engine import Engine
 
 
 def sql(value):

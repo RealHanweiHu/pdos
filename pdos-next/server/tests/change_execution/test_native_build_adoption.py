@@ -9,13 +9,12 @@ from types import SimpleNamespace
 import httpx
 import psycopg
 import pytest
-from sqlalchemy.engine import Engine
-
-from pdos_next import change_build_adoption as adoption
 from pdos_next.domain.change_control.rules import digest
 from pdos_next.errors import DomainError
+from pdos_next.features.change import build_adoption as adoption
 from pdos_next.schemas.change_control.contracts import ImplementationFact, Ref
 from pdos_next.schemas.verification.contracts import SourceRef
+from sqlalchemy.engine import Engine
 
 from . import kernel_helpers as helper
 

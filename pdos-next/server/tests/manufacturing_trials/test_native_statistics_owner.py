@@ -16,8 +16,8 @@ from manufacturing_preparation.test_publication_material_owner import (
     world as native_world,  # noqa: F401
 )
 from manufacturing_preparation.test_publication_rules import case as publication_case  # noqa: F401
-from quality_issues.helpers import fixed_run
-
+from pdos_next.core.models import Artifact, Receipt
+from pdos_next.core.service import digest
 from pdos_next.domain.build_execution.models import SampleUnit
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import (
@@ -32,7 +32,6 @@ from pdos_next.domain.manufacturing_trials.native_schemas import StatisticsBasis
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.domain.quality_execution.schemas import SourceRead as QualitySourceRead
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Receipt
 from pdos_next.schemas.manufacturing_trials.contracts import (
     Ref,
     ResultRecord,
@@ -41,7 +40,7 @@ from pdos_next.schemas.manufacturing_trials.contracts import (
 )
 from pdos_next.schemas.quality_issues.contracts import FailureRef, Issue
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.service import digest
+from quality_issues.helpers import fixed_run
 
 from .test_native_material_owner import _publish_fixture
 from .test_native_material_owner import work as native_work  # noqa: F401

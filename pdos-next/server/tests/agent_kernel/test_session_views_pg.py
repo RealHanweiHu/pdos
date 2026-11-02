@@ -12,11 +12,8 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
-from sqlalchemy import delete, event, func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.clock import using_clock
-from pdos_next.models import (
+from pdos_next.core.clock import using_clock
+from pdos_next.core.models import (
     Audit,
     Confirmation,
     Grant,
@@ -26,10 +23,12 @@ from pdos_next.models import (
     Receipt,
     RequestKey,
 )
+from sqlalchemy import delete, event, func, select
+from sqlalchemy.orm import Session
 
 # Initialize the common registry before its kernel children.
 # isort: split
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentInput,
     AgentRun,

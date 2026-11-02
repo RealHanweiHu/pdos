@@ -13,14 +13,9 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from security_fixture import secured_parse, synthetic_runtime
-from sqlalchemy import delete, event, func, select
-from sqlalchemy.orm import Session
-from test_durable_evidence import upload_input
-
 from pdos_next.api import create_app
-from pdos_next.clock import using_clock
-from pdos_next.models import (
+from pdos_next.core.clock import using_clock
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Category,
@@ -36,12 +31,16 @@ from pdos_next.models import (
     RequestKey,
     UploadedOriginal,
 )
-from pdos_next.object_journal import JournaledLocalObjectStore
-from pdos_next.original_security import configure
+from pdos_next.originals.object_journal import JournaledLocalObjectStore
+from pdos_next.originals.security import configure
+from security_fixture import secured_parse, synthetic_runtime
+from sqlalchemy import delete, event, func, select
+from sqlalchemy.orm import Session
+from test_durable_evidence import upload_input
 
 # Register the common model registry before the kernel's child tables.
 # isort: split
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentInput,
     AgentRun,

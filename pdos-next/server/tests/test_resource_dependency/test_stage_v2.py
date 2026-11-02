@@ -6,9 +6,8 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy.orm import Session
-
 from pdos_next.domain.test_resources import service as resources
+from sqlalchemy.orm import Session
 
 from .harness import v2
 
@@ -149,7 +148,7 @@ def test_every_fresh_call_owns_its_empty_list_and_full_record(staging):
 
 
 def test_held_scope_port_reuses_only_same_real_transaction_and_mutation_epoch(staging):
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.request_proof import request_proof
 
     state = staging
     # A real SQLAlchemy transaction without database IO. Full resource loading
@@ -176,7 +175,7 @@ def test_held_scope_port_reuses_only_same_real_transaction_and_mutation_epoch(st
 
 @pytest.mark.parametrize("boundary", ["qualification", "window"])
 def test_held_scope_port_checks_actual_deadline_on_each_cache_hit(staging, boundary):
-    from pdos_next.request_proof import request_proof
+    from pdos_next.core.request_proof import request_proof
 
     state = staging
     if boundary == "qualification":

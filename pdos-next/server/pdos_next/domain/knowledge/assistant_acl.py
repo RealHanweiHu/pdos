@@ -8,10 +8,9 @@ avoids review -> subject -> review RLS recursion.
 
 # ruff: noqa: E501 -- generated finite SQL predicates remain auditable.
 
+from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 from sqlalchemy import Text, and_, cast, exists, func, literal_column, select, union_all
 from sqlalchemy.dialects.postgresql import dialect
-
-from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 
 SIGNATURE = "knowledge_answer_sources_visible(uuid,uuid,jsonb)"
 
@@ -53,8 +52,8 @@ def _knowledge():
 
 
 def visibility_body():
-    from pdos_next.enterprise_search.schemas import SOURCE_TYPES
-    from pdos_next.enterprise_search.sources import catalog
+    from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
+    from pdos_next.agent.enterprise_search.sources import catalog
 
     branches = []
     for kind in SOURCE_TYPES:

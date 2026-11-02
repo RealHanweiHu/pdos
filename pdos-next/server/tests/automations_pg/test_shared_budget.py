@@ -4,16 +4,15 @@ from types import SimpleNamespace
 from uuid import UUID
 
 import pytest
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, ValidationBudget
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.skills import SkillCatalog
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.safety import verify_test_target
 from pdos_next.domain.automations.models import AutomationTriggerOccurrence
 from pdos_next.domain.automations.schemas import ACTIVATE, DRAFT_SAVE
 from pdos_next.errors import DomainError
-from pdos_next.safety import verify_test_target
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel import test_budget_management as budgets
 from tests.agent_kernel import test_skill_management as skills
 from tests.automations_pg.test_manual_workflow import new_trigger, reading, save, snapshot, trigger

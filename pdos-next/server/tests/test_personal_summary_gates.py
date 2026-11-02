@@ -6,13 +6,13 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pdos_next import personal_summary
-from pdos_next import personal_summary_gates as gates
-from pdos_next import personal_summary_runtime as runtime
-from pdos_next import personal_summary_templates as templates
+from pdos_next.core.service import Context
 from pdos_next.domain.project_governance.models import GovernanceEvent
-from pdos_next.personal_summary_schemas import Selection
-from pdos_next.service import Context
+from pdos_next.features.personal import summary as personal_summary
+from pdos_next.features.personal import summary_gates as gates
+from pdos_next.features.personal import summary_runtime as runtime
+from pdos_next.features.personal import summary_templates as templates
+from pdos_next.features.personal.summary_schemas import Selection
 from sqlalchemy import Engine
 from sqlalchemy.dialects.postgresql import dialect
 

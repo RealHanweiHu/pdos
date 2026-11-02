@@ -4,8 +4,8 @@ No payload anchor, current qualification grant, consumption, flush, commit or
 public registration. Fresh original bytes are always read by the actual owner.
 """
 
-from pdos_next.clock import earliest_deadline
-from pdos_next.database import category_for_product
+from pdos_next.core.clock import earliest_deadline
+from pdos_next.core.database import category_for_product
 
 
 # Initialize actual registry before importing domain children.
@@ -17,7 +17,7 @@ from types import ModuleType
 from uuid import UUID
 from weakref import WeakKeyDictionary, ref
 
-from pdos_next.service import Context, digest, material_digest
+from pdos_next.core.service import Context, digest, material_digest
 
 from . import anchor
 from . import anchor_owner
@@ -25,13 +25,13 @@ from . import anchor_storage
 from . import candidate_commands as commands
 from . import fact_atom_storage as guards
 from . import fact_consumption as consumption
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
 from pdos_next.domain.capa_verification import service as followup
 from pdos_next.domain.capa_verification.schemas import CandidateBinding, CandidateInspect
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Grant, Principal, Product
-from pdos_next.quality_result_bridge import _runtime_stamp
+from pdos_next.core.models import Confirmation, Grant, Principal, Product
+from pdos_next.features.quality.result_bridge import _runtime_stamp
 from pydantic import ValidationError
 from sqlalchemy import select
 

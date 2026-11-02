@@ -6,16 +6,15 @@ from uuid import uuid4
 
 import httpx
 import pytest
-from sqlalchemy.engine import Connection, Engine
-
-from pdos_next.agent_kernel.models import PublicWebSnapshot
-from pdos_next.contracts import Command
+from pdos_next.agent.kernel.models import PublicWebSnapshot
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Claim
+from pdos_next.core.service import Context
 from pdos_next.domain.manufacturing_baseline import service as manufacturing
 from pdos_next.domain.preproject import baseline
 from pdos_next.domain.preproject.category_models import KnowledgeCurrent, KnowledgeEntry
 from pdos_next.errors import DomainError
-from pdos_next.models import Claim
-from pdos_next.service import Context
+from sqlalchemy.engine import Connection, Engine
 
 
 class ReachedProcess(Exception):

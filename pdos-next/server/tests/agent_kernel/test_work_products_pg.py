@@ -3,12 +3,11 @@
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.kernel.models import AgentRun, AgentWorkProduct
+from pdos_next.core.models import Grant
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import AgentRun, AgentWorkProduct
-from pdos_next.models import Grant
 from tests.agent_kernel.test_run_continuation import finish, start
 
 

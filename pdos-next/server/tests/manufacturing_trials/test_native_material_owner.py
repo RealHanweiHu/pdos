@@ -19,9 +19,8 @@ from manufacturing_preparation.test_publication_material_owner import (
     world as native_world,  # noqa: F401
 )
 from manufacturing_preparation.test_publication_rules import case as publication_case  # noqa: F401
-from sqlalchemy import select
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.models import Artifact, Grant
 from pdos_next.domain.build_execution.models import ActualConfiguration, BuildLot
 from pdos_next.domain.builds.models import Build
 from pdos_next.domain.manufacturing_baseline import publication_service as publications
@@ -32,9 +31,9 @@ from pdos_next.domain.manufacturing_baseline.publication_material_owner import (
 from pdos_next.domain.manufacturing_baseline.publication_schemas import ResourceRequirement
 from pdos_next.domain.manufacturing_trials.native_material_owner import ActualPilotMaterialOwner
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant
 from pdos_next.schemas.manufacturing_trials.contracts import LotBasis, PilotCreate, Ref
 from pdos_next.schemas.verification.contracts import SourceRef
+from sqlalchemy import select
 
 
 @pytest.fixture

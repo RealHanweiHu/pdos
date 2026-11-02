@@ -2,9 +2,8 @@
 
 from dataclasses import replace
 
+from pdos_next.core.database import tenant_session
 from sqlalchemy import select
-
-from pdos_next.database import tenant_session
 
 from .models import GovernanceEvent
 from .service import view

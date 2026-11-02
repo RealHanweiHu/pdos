@@ -9,14 +9,13 @@ from uuid import UUID, uuid4
 
 from fastapi.testclient import TestClient
 from g0_fixture import create_g0_project
+from pdos_next.agent.kernel.api import ApiPorts
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.api import create_app
+from pdos_next.core.models import Artifact, Category, Grant, Receipt, now
 from sqlalchemy import event, func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.api import ApiPorts
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.api import create_app
-from pdos_next.models import Artifact, Category, Grant, Receipt, now
 from tests.preproject.test_evidence_commands_pg import artifact
 from tests.preproject.test_g0 import create, decide_request, save, submit
 from tests.preproject.test_g0 import work as work  # noqa: F401

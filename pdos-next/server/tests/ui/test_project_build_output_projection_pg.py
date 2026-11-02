@@ -12,16 +12,17 @@ import os
 from pathlib import Path
 from uuid import uuid4
 
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from test_build_execution import actual_command, allocation_command, output_command
-from test_build_project_scope import second_project_configuration
-from test_builds import build_command
-from test_builds import configuration as configuration
-from test_project_first_plan import accepted
-from test_project_first_plan import definition as definition
-from test_project_first_plan import project as project
-
+from pdos_next.core.models import (
+    Artifact,
+    Audit,
+    Confirmation,
+    Grant,
+    ObjectAudience,
+    Outbox,
+    Product,
+    Receipt,
+    RequestKey,
+)
 from pdos_next.domain.build_execution.models import (
     ActualConfiguration,
     BuildLot,
@@ -36,17 +37,15 @@ from pdos_next.domain.configurations.models import (
 )
 from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.projects.models import Project, ProjectProductLink
-from pdos_next.models import (
-    Artifact,
-    Audit,
-    Confirmation,
-    Grant,
-    ObjectAudience,
-    Outbox,
-    Product,
-    Receipt,
-    RequestKey,
-)
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+from test_build_execution import actual_command, allocation_command, output_command
+from test_build_project_scope import second_project_configuration
+from test_builds import build_command
+from test_builds import configuration as configuration
+from test_project_first_plan import accepted
+from test_project_first_plan import definition as definition
+from test_project_first_plan import project as project
 
 GROUPS = ("actual_configurations", "lots", "allocations", "samples")
 

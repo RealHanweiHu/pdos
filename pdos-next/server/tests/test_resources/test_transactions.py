@@ -5,6 +5,24 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.bootstrap.test_resource_import import import_test_resource_fact
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Receipt
+from pdos_next.domain.build_operational_facts.models import OperationalAsset, ResourceOccupancy
+from pdos_next.domain.test_resources import service
+from pdos_next.domain.test_resources.models import (
+    SampleRunUsage,
+    SampleUsageSentinel,
+)
+from pdos_next.domain.test_resources.models import (
+    TestResourceFact as ResourceFact,
+)
+from pdos_next.domain.test_resources.models import (
+    TestResourceReservation as ResourceReservation,
+)
+from pdos_next.domain.test_resources.schemas import TestResourceFactInput as FactInput
+from pdos_next.errors import DomainError
+from pdos_next.schemas.verification.contracts import EventTime
 from sqlalchemy import func, select
 from test_project_first_plan import post
 from verification_handoff import fixtures as handoff_fixtures
@@ -20,25 +38,6 @@ from verification_launch.fixtures import (  # noqa: F401
     ready_work,
     started,
 )
-
-from pdos_next.database import tenant_session
-from pdos_next.domain.build_operational_facts.models import OperationalAsset, ResourceOccupancy
-from pdos_next.domain.test_resources import service
-from pdos_next.domain.test_resources.models import (
-    SampleRunUsage,
-    SampleUsageSentinel,
-)
-from pdos_next.domain.test_resources.models import (
-    TestResourceFact as ResourceFact,
-)
-from pdos_next.domain.test_resources.models import (
-    TestResourceReservation as ResourceReservation,
-)
-from pdos_next.domain.test_resources.schemas import TestResourceFactInput as FactInput
-from pdos_next.errors import DomainError
-from pdos_next.models import Receipt
-from pdos_next.schemas.verification.contracts import EventTime
-from pdos_next.test_resource_import import import_test_resource_fact
 
 
 @pytest.fixture
@@ -358,12 +357,11 @@ def test_own_run_proof_rechecked_without_new_effects(launch_work, monkeypatch):
                 intent_digest="f" * 64,
             )
         assert exc.value.reason == "RUN_RESERVATION_MISSING"
-        from sqlalchemy import event
-
-        from pdos_next.contracts import Command
+        from pdos_next.core.contracts import Command
+        from pdos_next.core.request_proof import request_proof
+        from pdos_next.core.service import command_scope
         from pdos_next.domain.test_resources.models import TestResourceCurrent as ResourceCurrent
-        from pdos_next.request_proof import request_proof
-        from pdos_next.service import command_scope
+        from sqlalchemy import event
 
         # The read owner holds its dependency locks, but only a real command
         # scope acquires the Product gate required by writer raw-row reuse.
@@ -433,14 +431,13 @@ def test_own_run_proof_rechecked_without_new_effects(launch_work, monkeypatch):
 def test_rr_canonical_owned_sets_share_rows_and_reject_wrong_saved_scope_without_effects(
     launch_work, monkeypatch
 ):
-    from sqlalchemy import event
-    from sqlalchemy.orm.attributes import set_committed_value
-
+    from pdos_next.core.request_proof import request_proof
     from pdos_next.domain.test_resources import retained
     from pdos_next.domain.test_resources.models import TestResourceCurrent as ResourceCurrent
     from pdos_next.domain.verification_launch import service as launch
     from pdos_next.domain.verification_launch.models import VerificationRunVersion as RunVersion
-    from pdos_next.request_proof import request_proof
+    from sqlalchemy import event
+    from sqlalchemy.orm.attributes import set_committed_value
 
     work = launch_work
     receipt, _ = started(work, monkeypatch)

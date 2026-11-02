@@ -3,14 +3,14 @@
 from dataclasses import dataclass
 from types import SimpleNamespace
 
+from pdos_next.core.models import now
+from pdos_next.core.service import digest
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.professional_authority import service as professional
 from pdos_next.domain.quality_issues.ports import Invocation, Mutation
 from pdos_next.domain.quality_issues.rules import issue_sources, semantic_digest
 from pdos_next.errors import DomainError
-from pdos_next.models import now
-from pdos_next.quality_result_bridge import direct_issue_failure
-from pdos_next.service import digest
-from pdos_next.source_current import direct_source_basis
+from pdos_next.features.quality.result_bridge import direct_issue_failure
 
 from . import policy
 from .evidence import merge_reads, source_basis, union_sources

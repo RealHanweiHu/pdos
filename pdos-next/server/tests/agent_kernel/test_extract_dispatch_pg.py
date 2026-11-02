@@ -7,34 +7,33 @@ from uuid import UUID, uuid4
 
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import SkillBinding, execution_key
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.disclosure import binding_operations, disclosure
-from pdos_next.agent_kernel.domain_reads import DomainReads
-from pdos_next.agent_kernel.extract_adapter import ExtractReadAdapter
-from pdos_next.agent_kernel.extract_graph import ExtractGraph
-from pdos_next.agent_kernel.extract_service import ExtractionService
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import SkillBinding, execution_key
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.disclosure import binding_operations, disclosure
+from pdos_next.agent.kernel.domain_reads import DomainReads
+from pdos_next.agent.kernel.extract_adapter import ExtractReadAdapter
+from pdos_next.agent.kernel.extract_graph import ExtractGraph
+from pdos_next.agent.kernel.extract_service import ExtractionService
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentToolCall,
     TenantAdministrator,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.persistence import cancel_run
-from pdos_next.agent_kernel.prompts import PromptCatalog
-from pdos_next.agent_kernel.qualification_binding import model_identity, tool_identity
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.agent.kernel.prompts import PromptCatalog
+from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import now
 from pdos_next.errors import DomainError
-from pdos_next.models import now
 from pdos_next.providers.types import ProviderUsage
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_gateway import Client, configured_route
 from tests.agent_kernel.test_m3_original_binding_pg import QUOTE, actual_run, proposal, uploaded
 from tests.preproject.test_g0 import create
@@ -115,7 +114,7 @@ def fixture(
         requester_id=work.human,
         category_id=work.category,
     ) as session:
-        from pdos_next.agent_kernel.models import ProviderDataAgreement
+        from pdos_next.agent.kernel.models import ProviderDataAgreement
 
         if (
             session.scalar(

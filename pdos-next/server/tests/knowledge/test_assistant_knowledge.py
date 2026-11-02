@@ -6,6 +6,7 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search.sources import catalog, retrieval_catalog
 from pdos_next.domain.knowledge import assistant_reviews as reviews
 from pdos_next.domain.knowledge import assistant_sources as sources
 from pdos_next.domain.knowledge.assistant_gaps import week_bounds
@@ -13,7 +14,6 @@ from pdos_next.domain.knowledge.assistant_schemas import AnswerOrigin, GapInput,
 from pdos_next.domain.knowledge.assistant_storage import downgrade_sql, upgrade_sql
 from pdos_next.domain.knowledge.schemas import CandidatePayload
 from pdos_next.domain.preproject.category_schemas import KnowledgeAdd, KnowledgePromote
-from pdos_next.enterprise_search.sources import catalog, retrieval_catalog
 from pdos_next.errors import DomainError
 from pydantic import ValidationError
 from sqlalchemy import select
@@ -318,9 +318,9 @@ def test_week_is_fixed_utc_and_not_a_differencing_window():
 
 
 def test_policy_is_invoker_bounded_and_does_not_reenter_review_or_knowledge_catalog():
+    from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
     from pdos_next.domain.knowledge.assistant_acl import upgrade_sql as acl_sql
     from pdos_next.domain.knowledge.assistant_storage import GUARD
-    from pdos_next.enterprise_search.schemas import SOURCE_TYPES
 
     function = acl_sql()[0]
     assert "SECURITY INVOKER" in function and "SECURITY DEFINER" not in function

@@ -4,13 +4,12 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
+from pdos_next.agent.enterprise_search import assistant_scope as policy
+from pdos_next.agent.enterprise_search.assistant_schemas import AssistantSearchInput
+from pdos_next.agent.kernel.search_preferences import SearchPreferences
+from pdos_next.agent.kernel.work_state import ChangeInput
+from pdos_next.core.service import digest
 from pydantic import ValidationError
-
-from pdos_next.agent_kernel.search_preferences import SearchPreferences
-from pdos_next.agent_kernel.work_state import ChangeInput
-from pdos_next.enterprise_search import assistant_scope as policy
-from pdos_next.enterprise_search.assistant_schemas import AssistantSearchInput
-from pdos_next.service import digest
 
 
 @pytest.mark.parametrize("count,invalid,mode,calls", [

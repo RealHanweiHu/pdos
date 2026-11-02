@@ -1,7 +1,7 @@
 from temporalio.common import WorkflowIDConflictPolicy, WorkflowIDReusePolicy
 from temporalio.exceptions import WorkflowAlreadyStartedError
 
-from pdos_next.dispatch.outbox import Envelope
+from pdos_next.core.dispatch.outbox import Envelope
 
 from .definitions import (
     OriginalLifecycle,
@@ -37,8 +37,8 @@ class TemporalSender:
         if event.event_type == "category.created":
             if self.dispatch_engine is None:
                 raise RuntimeError("Category continuation requires the metadata dispatcher")
-            from pdos_next.agent_kernel.category_adoption import dispatch_reference
-            from pdos_next.agent_kernel.temporal_port import TemporalPort, workflow_id
+            from pdos_next.agent.kernel.category_adoption import dispatch_reference
+            from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
 
             adoption = dispatch_reference(self.dispatch_engine, event)
             if adoption is None:

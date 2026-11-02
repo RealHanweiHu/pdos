@@ -5,7 +5,7 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pdos_next import quality_bootstrap as bootstrap
+from pdos_next.bootstrap import quality as bootstrap
 from pdos_next.domain.quality_execution import policy
 from pdos_next.errors import DomainError
 from test_operational_bootstrap_profiles import (

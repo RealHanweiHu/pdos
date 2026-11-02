@@ -5,8 +5,7 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-
+from pdos_next.core.service import Context, digest
 from pdos_next.domain.verification.handlers import semantic_digest
 from pdos_next.domain.verification.ports import Invocation
 from pdos_next.domain.verification_front.adapters import authority_dto
@@ -34,7 +33,7 @@ from pdos_next.schemas.verification.contracts import (
     VerificationRequest,
 )
 from pdos_next.schemas.verification.contracts import TestItem as Item
-from pdos_next.service import Context, digest
+from pydantic import ValidationError
 
 AT = datetime(2026, 10, 2, 18, tzinfo=UTC)
 
@@ -866,8 +865,8 @@ def test_get_execution_uses_same_explicit_sample_read_context(work, monkeypatch)
 
 def proof_session(work, monkeypatch):
     """Explicit in-memory authority rows and watermarks; all IO is substituted."""
-    from pdos_next import service as common_service
-    from pdos_next.models import Grant, Principal, Product
+    from pdos_next.core import service as common_service
+    from pdos_next.core.models import Grant, Principal, Product
 
     monkeypatch.setattr(common_service, "now", lambda: service.now())
     reviewer = uuid4()

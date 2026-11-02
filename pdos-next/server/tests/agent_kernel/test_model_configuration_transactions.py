@@ -5,22 +5,21 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
+from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.models import TenantAdministrator
+from pdos_next.agent.model_configuration.persistence import (
+    ModelConfigurationHead,
+    ModelConfigurationVersion,
+)
+from pdos_next.agent.model_configuration.ports import SecretBinding, SecretMaterial
+from pdos_next.api import create_app
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt
+from pdos_next.errors import DomainError
+from pdos_next.schemas.model_configuration import ModelMetadata
 from pydantic import SecretStr
 from sqlalchemy import event, func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap, RuntimePorts
-from pdos_next.agent_kernel.models import TenantAdministrator
-from pdos_next.api import create_app
-from pdos_next.errors import DomainError
-from pdos_next.model_configuration.persistence import (
-    ModelConfigurationHead,
-    ModelConfigurationVersion,
-)
-from pdos_next.model_configuration.ports import SecretBinding, SecretMaterial
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt
-from pdos_next.schemas.model_configuration import ModelMetadata
 from tests.agent_kernel.test_transactions import human_session, run
 
 

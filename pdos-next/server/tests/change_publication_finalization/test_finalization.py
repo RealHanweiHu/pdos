@@ -9,20 +9,19 @@ from datetime import UTC, datetime, timedelta
 from types import SimpleNamespace
 from uuid import uuid4
 
+import pdos_next.core.models  # noqa: F401 - complete model registration
 import pytest
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-import pdos_next.models  # noqa: F401 - complete model registration
-from pdos_next import change_order_integration as integration
-from pdos_next import change_order_service as formal
-from pdos_next import change_publication_finalization as candidate_guard
-from pdos_next import service as actual_common
-from pdos_next.change_coverage_binding import covered_graph
-from pdos_next.change_graph_closure import closure_stamp
-from pdos_next.change_order_consumption import ConsumptionHost
+from pdos_next.core import service as actual_common
+from pdos_next.core.models import Confirmation, Grant, Product
 from pdos_next.domain.change_execution import service as impact
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Grant, Product
+from pdos_next.features.change import order_integration as integration
+from pdos_next.features.change import order_service as formal
+from pdos_next.features.change import publication_finalization as candidate_guard
+from pdos_next.features.change.coverage_binding import covered_graph
+from pdos_next.features.change.graph_closure import closure_stamp
+from pdos_next.features.change.order_consumption import ConsumptionHost
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 from .helpers import case, existing  # noqa: F401 - shared explicit offline fixture
 
@@ -89,12 +88,12 @@ def test_tail_requires_operation_specific_opaque_coverage(candidate, monkeypatch
 @pytest.fixture
 def candidate(case, monkeypatch):
     e = case
-    monkeypatch.setitem(sys.modules, "pdos_next.change_publication_finalization", candidate_guard)
+    monkeypatch.setitem(sys.modules, "pdos_next.features.change.publication_finalization", candidate_guard)
     monkeypatch.setattr(candidate_common, "handler", lambda operation: e.module)
     monkeypatch.setattr(
         candidate_common, "consume_material_confirmation", lambda *a, **k: (object(), object())
     )
-    from pdos_next import change_graph_closure as closure
+    from pdos_next.features.change import graph_closure as closure
 
     product = next(row for row in e.rows if isinstance(row, Product))
     monkeypatch.setattr(
@@ -225,7 +224,7 @@ def test_actual_fixed_common_tail_rejects_drift_and_always_discards_material(
         elif drift == "runtime":
             e.engine._pdos_change_store = object()
         elif drift == "closure":
-            from pdos_next import change_graph_closure as closure
+            from pdos_next.features.change import graph_closure as closure
 
             original = closure._stamp_rows
             monkeypatch.setattr(
@@ -341,7 +340,7 @@ def test_successful_tail_ticket_cannot_be_reattached_in_same_call(candidate):
 
 
 def test_final_closure_sql_side_effect_rechecks_publisher_last(candidate, monkeypatch):
-    from pdos_next import change_graph_closure as closure
+    from pdos_next.features.change import graph_closure as closure
 
     expected = deepcopy(candidate.closure)
 

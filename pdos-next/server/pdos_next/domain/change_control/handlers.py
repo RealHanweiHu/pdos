@@ -1,6 +1,6 @@
 """Registry-callable command participant; host owns Session, proof and commit."""
 
-from pdos_next.clock import deadline_current
+from pdos_next.core.clock import deadline_current
 from pdos_next.errors import DomainError
 from pdos_next.schemas.change_control.contracts import (
     Approval,

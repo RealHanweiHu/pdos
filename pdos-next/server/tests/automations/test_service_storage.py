@@ -3,11 +3,10 @@
 import re
 
 import pytest
+from pdos_next.core.models import Base
+from pdos_next.domain.automations import service_storage as storage
 from sqlalchemy import text
 from sqlalchemy.engine import Engine
-
-from pdos_next.domain.automations import service_storage as storage
-from pdos_next.models import Base
 
 
 @pytest.fixture(autouse=True)

@@ -7,26 +7,25 @@ from uuid import UUID
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import SkillBinding
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.context_projection import check_messages
-from pdos_next.agent_kernel.disclosure import disclosure, skill_operations
-from pdos_next.agent_kernel.graph import AgentKernel
-from pdos_next.agent_kernel.host import BoundHost
-from pdos_next.agent_kernel.management import register_agreement
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.bindings import SkillBinding
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.context_projection import check_messages
+from pdos_next.agent.kernel.disclosure import disclosure, skill_operations
+from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.host import BoundHost
+from pdos_next.agent.kernel.management import register_agreement
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     TenantAdministrator,
     TenantSkillEnablement,
 )
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
 from pdos_next.providers.types import ProviderUsage
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_proposal_runs_pg import start

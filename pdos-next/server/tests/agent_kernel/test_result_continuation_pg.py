@@ -7,22 +7,21 @@ from uuid import UUID, uuid4
 
 import pytest
 from pdos_agent_runtime.graph import registered_graph_context
+from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
+from pdos_next.agent.kernel.context_budget import estimate_tokens
+from pdos_next.agent.kernel.domain_reads import DomainReads
+from pdos_next.agent.kernel.gateway import AgentGateway
+from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
+from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.read_execution import ReadSource
+from pdos_next.agent.kernel.result_continuation import serialized
+from pdos_next.core.contracts import Command
+from pdos_next.core.models import Artifact
+from pdos_next.core.service import digest, execute
+from pdos_next.errors import DomainError
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bindings import ModelBinding, execution_key
-from pdos_next.agent_kernel.context_budget import estimate_tokens
-from pdos_next.agent_kernel.domain_reads import DomainReads
-from pdos_next.agent_kernel.gateway import AgentGateway
-from pdos_next.agent_kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent_kernel.models import AgentToolCall
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.read_execution import ReadSource
-from pdos_next.agent_kernel.result_continuation import serialized
-from pdos_next.contracts import Command
-from pdos_next.errors import DomainError
-from pdos_next.models import Artifact
-from pdos_next.service import digest, execute
 from tests.agent_kernel.test_domain_adapter_transactions import fixture
 from tests.agent_kernel.test_gateway import configured_route
 from tests.agent_kernel.test_transactions import human_session, run
@@ -111,7 +110,7 @@ def test_real_long_source_page_replay_rechecks_withdrawal_and_isolation(setup, m
         }
         assert session.scalar(select(func.count()).select_from(AgentToolCall).where(
             AgentToolCall.run_id == current.id, AgentToolCall.tool == "result.read")) == 1
-    from pdos_next.agent_kernel.result_continuation import ResultReadInput
+    from pdos_next.agent.kernel.result_continuation import ResultReadInput
 
     with pytest.raises(DomainError) as main_denied:
         host.continue_result(f.scope, ResultReadInput.model_validate(page_args))
@@ -140,10 +139,10 @@ def test_context_incomplete_has_zero_model_ledger_and_zero_reserved_budget(setup
 
 
 def test_reduced_context_keeps_omitted_fields_and_run_frozen_preferences(setup, monkeypatch):
-    from pdos_next.agent_kernel.context_projection import check_messages
-    from pdos_next.database import tenant_session
-    from pdos_next.personal_preference_schemas import Preferences, PreferenceSave
-    from pdos_next.personal_preferences import save
+    from pdos_next.agent.kernel.context_projection import check_messages
+    from pdos_next.core.database import tenant_session
+    from pdos_next.features.personal.preference_schemas import Preferences, PreferenceSave
+    from pdos_next.features.personal.preferences import save
 
     monkeypatch.setenv("PDOS_ENVIRONMENT", "production")
     f = fixture(setup)
@@ -200,13 +199,13 @@ def test_reduced_context_keeps_omitted_fields_and_run_frozen_preferences(setup, 
 def test_actual_extract_child_reads_fragments_before_returning_verified_rows(setup):
     from types import SimpleNamespace
 
-    from pdos_next.agent_kernel.extract_graph import ExtractGraph
-    from pdos_next.agent_kernel.extract_read_ledger import ExtractReadLedger
-    from pdos_next.agent_kernel.extract_sources import seal_for
-    from pdos_next.agent_kernel.tools import default_registry
-    from pdos_next.agent_kernel.types import ModelTurn, ToolCall
+    from pdos_next.agent.kernel.extract_graph import ExtractGraph
+    from pdos_next.agent.kernel.extract_read_ledger import ExtractReadLedger
+    from pdos_next.agent.kernel.extract_sources import seal_for
+    from pdos_next.agent.kernel.tools import default_registry
+    from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+    from pdos_next.core.service import Context
     from pdos_next.providers.types import ProviderUsage
-    from pdos_next.service import Context
     from tests.agent_kernel.test_extract_dispatch import task
 
     with human_session(setup) as session:

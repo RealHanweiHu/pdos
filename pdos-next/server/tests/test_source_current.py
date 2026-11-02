@@ -4,12 +4,11 @@ from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-
-from pdos_next.contracts import SourceRead
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.quality_execution import evidence
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import SourceRef
-from pdos_next.source_current import direct_source_basis
 
 
 def reference(identity, revision=1, position="line:1;quote_sha256:" + "a" * 64):

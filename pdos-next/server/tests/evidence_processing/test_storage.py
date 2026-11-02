@@ -4,8 +4,7 @@ from dataclasses import FrozenInstanceError, replace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.object_storage import (
+from pdos_next.originals.object_storage import (
     ArtifactRef,
     LocalPrivateObjectStore,
     S3PrivateObjectStore,

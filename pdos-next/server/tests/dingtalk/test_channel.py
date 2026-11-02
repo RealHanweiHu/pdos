@@ -8,16 +8,16 @@ from uuid import uuid4
 
 import pytest
 from pdos_agent_runtime.graph import in_registered_agent_graph
-from pdos_next.clock import now
-from pdos_next.dingtalk.accounts import credential
-from pdos_next.dingtalk.graph import execute
-from pdos_next.dingtalk.ports import ChannelRuntime
-from pdos_next.dingtalk.projection import payload, run_link, whole_answer
-from pdos_next.dingtalk.runtime import ChannelService, configured, delivery_key
-from pdos_next.dingtalk.schemas import BindingFinish, ChannelReference, ShareConfirm
-from pdos_next.dingtalk.synthetic import SyntheticAdapter, SyntheticKms
+from pdos_next.core.clock import now
+from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.service import digest
+from pdos_next.integrations.dingtalk.accounts import credential
+from pdos_next.integrations.dingtalk.graph import execute
+from pdos_next.integrations.dingtalk.ports import ChannelRuntime
+from pdos_next.integrations.dingtalk.projection import payload, run_link, whole_answer
+from pdos_next.integrations.dingtalk.runtime import ChannelService, configured, delivery_key
+from pdos_next.integrations.dingtalk.schemas import BindingFinish, ChannelReference, ShareConfirm
+from pdos_next.integrations.dingtalk.synthetic import SyntheticAdapter, SyntheticKms
 from pydantic import ValidationError
 
 

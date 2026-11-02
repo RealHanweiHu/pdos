@@ -8,9 +8,8 @@ import pytest
 from fastapi import FastAPI
 from fastapi.responses import JSONResponse
 from fastapi.testclient import TestClient
-
-from pdos_next import capa_fact_api as api
 from pdos_next.errors import DomainError
+from pdos_next.features.capa import fact_api as api
 
 PID = UUID("11111111-1111-4111-8111-111111111111")
 ISSUE = UUID("22222222-2222-4222-8222-222222222222")

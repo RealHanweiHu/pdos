@@ -14,11 +14,16 @@ from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
-from sqlalchemy import select
-from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
-from pdos_next.database import category_for_product
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import category_for_product
+from pdos_next.core.models import Artifact, Grant, Principal, Product, now
+from pdos_next.core.request_proof import (
+    command_inputs_once,
+    scope_is_held,
+    snapshot_rows,
+    snapshot_scalar,
+)
+from pdos_next.core.service import digest, source_for
 from pdos_next.domain.measurement_evidence.schemas import ObservationSelection as SourceSelection
 from pdos_next.domain.measurement_evidence.schemas import ReportBinding
 from pdos_next.domain.measurement_evidence.verifier import (
@@ -40,23 +45,17 @@ from pdos_next.domain.verification_launch.models import (
     VerificationRunVersion,
 )
 from pdos_next.errors import DomainError
-from pdos_next.models import Artifact, Grant, Principal, Product, now
-from pdos_next.object_storage import StorageFailure
-from pdos_next.original_security import require_safe
-from pdos_next.originals import object_reference, read_registered_bytes, require_original
-from pdos_next.request_proof import (
-    command_inputs_once,
-    scope_is_held,
-    snapshot_rows,
-    snapshot_scalar,
-)
+from pdos_next.originals.access import object_reference, read_registered_bytes, require_original
+from pdos_next.originals.object_storage import StorageFailure
+from pdos_next.originals.security import require_safe
 from pdos_next.schemas.verification.contracts import (
     Measurement,
     ResultsSubmit,
     RunDisposition,
     RunReview,
 )
-from pdos_next.service import digest, source_for
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
 from .adapters import ResultsCommands, kernel
 from .models import (
@@ -129,7 +128,7 @@ def _rr_read_session(s):
 def _held_read_session(s, ctx, pid):
     if not (isinstance(s, Session) and s.in_transaction() and not (s.new or s.dirty or s.deleted)):
         return False
-    from pdos_next.database import require_context
+    from pdos_next.core.database import require_context
 
     require_context(s, ctx)
     # A writer shares only exact immutable rows under its actual model gate.
@@ -260,9 +259,9 @@ class PreparedCapture:
 
 def recover_capture(s, ctx, pid, input):
     """A readable same-intent capture is returned before bytes, extraction or new proof."""
-    from pdos_next.database import require_context
+    from pdos_next.core.database import require_context
+    from pdos_next.core.service import require_access
     from pdos_next.domain.supply_execution.service import _read_evidence
-    from pdos_next.service import require_access
 
     require_context(s, ctx)
     require_access(s, ctx, pid)
@@ -284,7 +283,7 @@ def recover_capture(s, ctx, pid, input):
 
 
 def read_capture_report(s, ctx, pid, input: CaptureInput, store):
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     require_access(s, ctx, pid)
     _, _, row, run, plan, reads, refs = _base(
@@ -594,7 +593,7 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
         raise DomainError("FORBIDDEN_SCOPE", "结果不在当前服务器产品。", 403)
     write = not getattr(s, "info", {}).get("read_snapshot", False)
     if not write:
-        from pdos_next.service import require_access
+        from pdos_next.core.service import require_access
 
         require_access(s, ctx, product.id, write=True, lock=False)
     row, request, run_row, run, plan, reads, refs = _base(
@@ -1530,7 +1529,7 @@ def _report_sources(s, ctx, pid):
 
 def _read_capabilities(s, ctx, pid, row, request_row, run, request, plan, view):
     """Current proofs surround original I/O; no confirmation, write or reservation."""
-    from pdos_next.service import require_access
+    from pdos_next.core.service import require_access
 
     write_access = True
     try:

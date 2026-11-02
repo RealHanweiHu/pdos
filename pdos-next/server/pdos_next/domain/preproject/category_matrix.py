@@ -8,13 +8,12 @@ from collections import Counter
 from copy import deepcopy
 from decimal import Decimal, InvalidOperation
 
-from sqlalchemy import select, tuple_
-
-from pdos_next.category_scope import category_scope
-from pdos_next.clock import now
+from pdos_next.core.category_scope import category_scope
+from pdos_next.core.clock import now
+from pdos_next.core.models import Product
+from pdos_next.core.service import digest, require_access
 from pdos_next.errors import DomainError
-from pdos_next.models import Product
-from pdos_next.service import digest, require_access
+from sqlalchemy import select, tuple_
 
 from . import category_reads, spec_compare
 from .access import fail

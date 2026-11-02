@@ -5,14 +5,13 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
+from pdos_next.core.service import Context
 from pdos_next.domain.work_management import rules, service
 from pdos_next.domain.work_management.constants import ACCEPT, COMMIT, CREATE, STATUS
 from pdos_next.domain.work_management.schemas import PAYLOADS, TaskSnapshot
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
+from pydantic import ValidationError
 
 
 def declaration(**overrides):

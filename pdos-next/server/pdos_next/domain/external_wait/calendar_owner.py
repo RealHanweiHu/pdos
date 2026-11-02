@@ -9,9 +9,9 @@ from collections.abc import Mapping
 from copy import deepcopy
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
-from sqlalchemy import and_, select
-
+from pdos_next.core.models import now
+from pdos_next.core.service import digest
+from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.build_operational_facts import service as operational
 from pdos_next.domain.build_operational_facts.models import (
     BuildOperationalCurrent,
@@ -20,19 +20,18 @@ from pdos_next.domain.build_operational_facts.models import (
 )
 from pdos_next.domain.build_operational_facts.schemas import ResourceInput
 from pdos_next.domain.builds.models import Build
+from pdos_next.domain.engines.planning.calendar import CalendarError, WorkingTime
+from pdos_next.domain.engines.planning.dto import CalendarSnapshot
 from pdos_next.domain.planning.calendar import ScheduleError, WorkingCalendar
 from pdos_next.domain.professional_authority.schemas import DefinitionReference
 from pdos_next.domain.projects import service as projects
 from pdos_next.domain.projects.models import PlanProposal, PlanRevision
 from pdos_next.domain.quality_execution.evidence import refs_from_exact
 from pdos_next.domain.work_management import owner as work_owner
-from pdos_next.engines.planning.calendar import CalendarError, WorkingTime
-from pdos_next.engines.planning.dto import CalendarSnapshot
 from pdos_next.errors import DomainError
-from pdos_next.models import now
 from pdos_next.schemas.planning import Calendar
-from pdos_next.service import digest
-from pdos_next.source_current import direct_source_basis
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
+from sqlalchemy import and_, select
 
 _SCOPE = ("tenant_id", "category_id", "product_id", "project_id")
 _UNSET = object()

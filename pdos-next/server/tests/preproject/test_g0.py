@@ -3,17 +3,16 @@ from datetime import timedelta
 from uuid import UUID, uuid4
 
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import category_transaction, tenant_session
+from pdos_next.core.models import Artifact, Confirmation, Grant, Principal, Product, Receipt, now
+from pdos_next.core.service import Context, execute
+from pdos_next.domain.preproject.models import Proposal, ProposalDecision, ProposalItemVersion
+from pdos_next.domain.preproject.schemas import ProposalCreate, SpecItem
 from pydantic import ValidationError
 from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
-
-from pdos_next.contracts import Command
-from pdos_next.database import category_transaction, tenant_session
-from pdos_next.domain.preproject.models import Proposal, ProposalDecision, ProposalItemVersion
-from pdos_next.domain.preproject.schemas import ProposalCreate, SpecItem
-from pdos_next.models import Artifact, Confirmation, Grant, Principal, Product, Receipt, now
-from pdos_next.service import Context, execute
 
 
 def request(work, operation, payload, revision=1):
@@ -264,7 +263,7 @@ def test_submit_guards(work, failure):
         data["groups"]["items"] = [i for i in data["groups"]["items"] if i["kind"] != "section"]
     proposal_id, _ = create(work, data)
     if failure == "self":
-        from pdos_next.agent_kernel.models import TenantPilotAdmission
+        from pdos_next.agent.kernel.models import TenantPilotAdmission
 
         with Session(work.admin) as s, s.begin():
             s.get(TenantPilotAdmission, work.tenant).active = False

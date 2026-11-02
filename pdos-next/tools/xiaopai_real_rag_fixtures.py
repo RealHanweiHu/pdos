@@ -109,8 +109,8 @@ def seed_corpus(person):
     and isolate the category first. No model connection or qualification is read
     or copied. Artifacts are scoped to the selected category, not a fake project.
     """
-    from pdos_next.enterprise_search.sources import prepare_read, select_sources
-    from pdos_next.safety import verify_test_target
+    from pdos_next.agent.enterprise_search.sources import prepare_read, select_sources
+    from pdos_next.core.safety import verify_test_target
     from tests.enterprise_search.test_retrieval_pg import index, register, session_for
 
     verify_test_target(person.admin)
@@ -287,7 +287,7 @@ def native_bindings(person, bound_sources, tmp_path):
     import pytest
     from build_operational_facts import fixtures as operational
     from build_start import test_transactions as build_start
-    from pdos_next.safety import verify_test_target
+    from pdos_next.core.safety import verify_test_target
     from quality_execution import fixtures as quality
     from test_project_first_plan import accepted, cmd
     from verification_handoff import fixtures as handoff

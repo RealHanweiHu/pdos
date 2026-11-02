@@ -5,17 +5,16 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import domain_adapter as module
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.domain_adapter import DomainCommands
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
-from pdos_next.agent_kernel.registry import PREPARE_ONLY
-from pdos_next.agent_kernel.tools import default_registry
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel import domain_adapter as module
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
+from pdos_next.agent.kernel.registry import PREPARE_ONLY
+from pdos_next.agent.kernel.tools import default_registry
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Receipt
 from pdos_next.errors import DomainError
-from pdos_next.models import Receipt
+from pydantic import ValidationError
 
 
 class MemorySession:

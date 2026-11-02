@@ -16,11 +16,10 @@ from build_operational_facts.fixtures import (  # noqa: F401 -- actual controlle
     project,
 )
 from build_operational_facts.test_transactions import fact, successor
-from sqlalchemy import select
-
+from pdos_next.core.models import Artifact, now
 from pdos_next.domain.build_operational_facts.models import BuildOperationalFact, ResourceOccupancy
 from pdos_next.domain.external_wait.models import ExternalWaitVersion
-from pdos_next.models import Artifact, now
+from sqlalchemy import select
 
 from . import test_workflow as waits
 

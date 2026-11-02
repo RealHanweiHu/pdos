@@ -7,20 +7,19 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-
-from pdos_next.agent_kernel.bindings import execution_key
-from pdos_next.agent_kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
-from pdos_next.agent_kernel.snapshot_read_ledger import (
+from pdos_next.agent.kernel.bindings import execution_key
+from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, PublicWebSnapshot
+from pdos_next.agent.kernel.snapshot_read_ledger import (
     TOOL,
     SnapshotReadBinding,
     page_result,
     validate_snapshot_read,
 )
-from pdos_next.agent_kernel.types import RunScope
+from pdos_next.agent.kernel.types import RunScope
+from pdos_next.core.models import Category, Grant, Principal, Receipt
+from pdos_next.core.service import digest
 from pdos_next.domain.preproject.models import Proposal
 from pdos_next.errors import DomainError
-from pdos_next.models import Category, Grant, Principal, Receipt
-from pdos_next.service import digest
 
 
 class MemorySession:
@@ -29,7 +28,7 @@ class MemorySession:
         self.reads = []
 
     def scalars(self, query):
-        from pdos_next.clock import now
+        from pdos_next.core.clock import now
         rows = [row for (model, _), row in self.rows.items() if model is Grant
                 and (row.expires_at is None or row.expires_at > now())]
         self.reads.extend((Grant, row.id) for row in rows)
@@ -507,7 +506,7 @@ def test_completed_consuming_run_keeps_historical_read_valid(ledger, state):
 def test_historical_read_rechecks_current_authority(ledger, change):
     from datetime import timedelta
 
-    from pdos_next.clock import now
+    from pdos_next.core.clock import now
 
     ledger.run.state = "completed"
     if change.endswith("inactive"):

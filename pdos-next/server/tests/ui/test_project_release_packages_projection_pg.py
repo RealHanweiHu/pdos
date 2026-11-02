@@ -14,11 +14,15 @@ from uuid import UUID, uuid4
 from g0_fixture import create_g0_project
 from manufacturing_preparation import publication_pg_helpers as upstream
 from manufacturing_preparation.publication_pg_helpers import publication_case as publication_case
-from release_policy_transactions import test_decisions as flow
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-from test_project_first_plan import post
-
+from pdos_next.core.models import (
+    Artifact,
+    Consumption,
+    Grant,
+    ObjectAudience,
+    OriginalSecurity,
+    Product,
+    UploadedOriginal,
+)
 from pdos_next.domain.configurations.models import (
     BomLine,
     BomRevision,
@@ -30,15 +34,10 @@ from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.domain.release.policy_owner import ActualReleasePolicyOwner
-from pdos_next.models import (
-    Artifact,
-    Consumption,
-    Grant,
-    ObjectAudience,
-    OriginalSecurity,
-    Product,
-    UploadedOriginal,
-)
+from release_policy_transactions import test_decisions as flow
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
+from test_project_first_plan import post
 
 
 def _counts(work):

@@ -5,13 +5,12 @@ from datetime import timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.bootstrap import Bootstrap
-from pdos_next.agent_kernel.management import AgreementInput, register_agreement
-from pdos_next.agent_kernel.models import TenantAdministrator
+from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.management import AgreementInput, register_agreement
+from pdos_next.agent.kernel.models import TenantAdministrator
+from pdos_next.core.models import now
 from pdos_next.errors import DomainError
-from pdos_next.models import now
+from sqlalchemy.orm import Session
 from tests.agent_kernel.test_research_runtime import configuration
 from tests.agent_kernel.test_transactions import human_session, run
 from tests.model_configuration.test_host_runtime import write_config

@@ -6,22 +6,21 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy.dialects import postgresql
-
-from pdos_next import change_controlled_owner as owner
-from pdos_next import change_preparation_view as view
-from pdos_next import change_selection_service as service
-from pdos_next import field_change_selection as field
-from pdos_next.change_controlled_schemas import (
+from pdos_next.core.models import now
+from pdos_next.domain.change_control.rules import digest
+from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as owner
+from pdos_next.features.change import field_selection as field
+from pdos_next.features.change import preparation_view as view
+from pdos_next.features.change import selection_service as service
+from pdos_next.features.change.controlled_schemas import (
     FieldIntentTarget,
     FieldSelectionMaterial,
     SelectionPayload,
 )
-from pdos_next.domain.change_control.rules import digest
-from pdos_next.errors import DomainError
-from pdos_next.models import now
 from pdos_next.schemas.change_control.contracts import Ref
+from pydantic import ValidationError
+from sqlalchemy.dialects import postgresql
 
 from . import kernel_helpers as helper
 from .test_controlled_change import no_connection, read_work  # noqa: F401 -- no-connect fixture

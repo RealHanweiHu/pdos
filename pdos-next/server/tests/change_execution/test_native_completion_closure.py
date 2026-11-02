@@ -14,21 +14,20 @@ from change_graph_closure.test_approved_output_projection import (
 )
 from change_graph_closure.test_approved_output_projection import capture, outputs, rebuild
 from change_graph_closure.test_closure import case as closure_case
-from pydantic import ValidationError
-from sqlalchemy.engine import Engine
-from sqlalchemy.orm import Session
-
-from pdos_next import change_completion_closure as completion
-from pdos_next import change_completion_owner as native
-from pdos_next import change_graph_closure as closure
-from pdos_next.change_completion_schemas import (
+from pdos_next.errors import DomainError
+from pdos_next.features.change import completion_closure as completion
+from pdos_next.features.change import completion_owner as native
+from pdos_next.features.change import graph_closure as closure
+from pdos_next.features.change.completion_schemas import (
     ClosePayload,
     CompletionMaterial,
     EffectivityPayload,
     VerificationPayload,
 )
-from pdos_next.errors import DomainError
 from pdos_next.schemas.change_control.contracts import EffectivityFact, Ref
+from pydantic import ValidationError
+from sqlalchemy.engine import Engine
+from sqlalchemy.orm import Session
 
 case = closure_case
 approved = approved_fixture

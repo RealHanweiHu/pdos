@@ -2,12 +2,11 @@
 
 from uuid import UUID
 
-from sqlalchemy import select
-
-from pdos_next.change_implementation_owner import common_group
+from pdos_next.core.models import Artifact, OriginalSecurity
+from pdos_next.core.service import digest, require_access
 from pdos_next.domain.projects.models import Project
-from pdos_next.models import Artifact, OriginalSecurity
-from pdos_next.service import digest, require_access
+from pdos_next.features.change.implementation_owner import common_group
+from sqlalchemy import select
 
 from .constants import OPERATIONS
 from .models import WorkCommitmentCurrent, WorkCommitmentVersion, WorkTaskCurrent, WorkTaskVersion

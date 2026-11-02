@@ -2,10 +2,9 @@
 
 from uuid import uuid4
 
+from pdos_next.core.models import Audit, Category, Grant, Outbox, Receipt
 from sqlalchemy import select
 from sqlalchemy.orm import Session
-
-from pdos_next.models import Audit, Category, Grant, Outbox, Receipt
 
 
 def body(**changes):
@@ -92,7 +91,7 @@ def test_candidate_name_and_scene_edits_preserve_original_and_confirmation(setup
     from copy import deepcopy
     from uuid import UUID
 
-    from pdos_next.agent_kernel.models import AgentEvent
+    from pdos_next.agent.kernel.models import AgentEvent
     from tests.agent_kernel.test_category_candidate_transactions import personal_fixture
 
     fixture = personal_fixture(setup, tmp_path)

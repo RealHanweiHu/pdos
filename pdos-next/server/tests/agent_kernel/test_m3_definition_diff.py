@@ -5,10 +5,9 @@ from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
 
 import pytest
-from pydantic import ValidationError
-
-from pdos_next.agent_kernel import m3_definition_diff as module
+from pdos_next.agent.kernel import m3_definition_diff as module
 from pdos_next.errors import DomainError
+from pydantic import ValidationError
 
 
 def view(revision=1, *, product=None, category=None, value="10"):

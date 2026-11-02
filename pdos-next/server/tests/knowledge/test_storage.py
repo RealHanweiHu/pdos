@@ -3,10 +3,7 @@
 import re
 
 import pytest
-from sqlalchemy import CheckConstraint, UniqueConstraint, text
-from sqlalchemy.engine import Engine
-
-from pdos_next import models as registered_models  # noqa: F401 -- parent registry
+from pdos_next.core import models as registered_models  # noqa: F401 -- parent registry
 from pdos_next.domain.knowledge import storage_schema as storage
 from pdos_next.domain.knowledge.models import (
     ASSESSMENT,
@@ -17,6 +14,8 @@ from pdos_next.domain.knowledge.models import (
     DesignRuleVersion,
     KnowledgeCandidateVersion,
 )
+from sqlalchemy import CheckConstraint, UniqueConstraint, text
+from sqlalchemy.engine import Engine
 
 
 @pytest.fixture(autouse=True)

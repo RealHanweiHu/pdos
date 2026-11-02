@@ -9,16 +9,16 @@ from uuid import uuid4
 import pytest
 from jsonschema import Draft202012Validator
 from jsonschema.exceptions import ValidationError as SchemaValidationError
-from pdos_next.agent_kernel.api import StartInput
-from pdos_next.agent_kernel.context_projection import combine_contracts, project
-from pdos_next.agent_kernel.models import AgentRun
-from pdos_next.agent_kernel.requested_skills import RequestedSkill
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.contracts import SourceRead
-from pdos_next.enterprise_search import verification_actions as actions
+from pdos_next.agent.enterprise_search import verification_actions as actions
+from pdos_next.agent.kernel.api import StartInput
+from pdos_next.agent.kernel.context_projection import combine_contracts, project
+from pdos_next.agent.kernel.models import AgentRun
+from pdos_next.agent.kernel.requested_skills import RequestedSkill
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.contracts import SourceRead
+from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import BuildRef
-from pdos_next.service import Context, digest
 from pydantic import ValidationError
 
 
@@ -81,7 +81,7 @@ def case(monkeypatch):
     monkeypatch.setattr(actions, "_target", target)
     monkeypatch.setattr(actions, "capture", capture)
     monkeypatch.setattr(actions, "recheck", recheck)
-    from pdos_next.agent_kernel import requested_skills
+    from pdos_next.agent.kernel import requested_skills
 
     monkeypatch.setattr(requested_skills, "skill_enabled", lambda *_args: True)
     return SimpleNamespace(
@@ -159,7 +159,7 @@ def test_existing_current_method_is_not_duplicated_and_stale_method_is_rejected(
 
 
 def test_disabled_server_method_cannot_be_enabled_by_action(case, monkeypatch):
-    from pdos_next.agent_kernel import requested_skills
+    from pdos_next.agent.kernel import requested_skills
 
     monkeypatch.setattr(requested_skills, "skill_enabled", lambda *_args: False)
     with pytest.raises(DomainError) as failure:
@@ -325,7 +325,7 @@ def test_missing_current_run_rejects_action_before_parent_read(case):
 def test_actual_start_endpoint_preserves_legacy_no_action_idempotency_digest(
     case, monkeypatch, include_null, add_action,
 ):
-    from pdos_next.agent_kernel import api
+    from pdos_next.agent.kernel import api
 
     legacy_request = {
         "goal": "Existing no-action request", "session_id": uuid4(),

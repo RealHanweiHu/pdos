@@ -5,7 +5,7 @@ separate host-only entry; they never enter this public command registry.
 """
 
 # ruff: noqa: I001
-from pdos_next.service import Context, confirmation_for, digest
+from pdos_next.core.service import Context, confirmation_for, digest
 
 import sys
 from copy import deepcopy
@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from datetime import UTC, datetime
 from weakref import WeakKeyDictionary
 
-from pdos_next.contracts import Command
+from pdos_next.core.contracts import Command
 from pdos_next.errors import DomainError
 
 from . import anchor, fact_atom_storage as guards, fact_commands as commands, fact_write as writer

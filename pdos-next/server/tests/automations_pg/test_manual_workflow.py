@@ -4,10 +4,7 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text
-from sqlalchemy.orm import Session
-
-from pdos_next.agent_kernel.models import (
+from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
     AgentSession,
@@ -15,9 +12,12 @@ from pdos_next.agent_kernel.models import (
     TenantSkillEnablement,
     ValidationBudget,
 )
-from pdos_next.agent_kernel.persistence import KernelStore
-from pdos_next.agent_kernel.skills import SkillCatalog
-from pdos_next.database import tenant_session
+from pdos_next.agent.kernel.persistence import KernelStore
+from pdos_next.agent.kernel.skills import SkillCatalog
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Audit, Confirmation, Outbox, Receipt, RequestKey
+from pdos_next.core.safety import verify_test_target
+from pdos_next.core.service import digest
 from pdos_next.domain.automations import runtime
 from pdos_next.domain.automations.models import (
     AutomationRuleCurrent,
@@ -26,9 +26,8 @@ from pdos_next.domain.automations.models import (
 )
 from pdos_next.domain.automations.schemas import ACTIVATE, DRAFT_SAVE, PAUSE
 from pdos_next.errors import DomainError
-from pdos_next.models import Audit, Confirmation, Outbox, Receipt, RequestKey
-from pdos_next.safety import verify_test_target
-from pdos_next.service import digest
+from sqlalchemy import func, select, text
+from sqlalchemy.orm import Session
 from tests.agent_kernel import test_budget_management as budgets
 from tests.agent_kernel import test_skill_management as skills
 

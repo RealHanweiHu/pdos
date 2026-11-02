@@ -1,10 +1,9 @@
 """Opaque shared-capacity reads within the caller's existing transaction."""
 
-from sqlalchemy import func
-
+from pdos_next.core.request_proof import request_proof
+from pdos_next.core.service import require_access
 from pdos_next.errors import DomainError
-from pdos_next.request_proof import request_proof
-from pdos_next.service import require_access
+from sqlalchemy import func
 
 
 def capacity_summary(

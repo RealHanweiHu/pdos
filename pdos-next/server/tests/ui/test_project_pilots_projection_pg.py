@@ -15,18 +15,14 @@ import pytest
 from g0_fixture import create_g0_project
 from native_pilot_transactions import fixtures as helper
 from native_pilot_transactions.fixtures import native_case as native_case
-from quality_execution.fixtures import (  # noqa: F401
-    accepted_work,
-    known_configuration,
-    launch_work,
-    operational_work,
-    quality_work,
-    ready_work,
-    results_work,
+from pdos_next.core.models import (
+    Artifact,
+    Consumption,
+    Grant,
+    ObjectAudience,
+    OriginalSecurity,
+    UploadedOriginal,
 )
-from sqlalchemy import func, select
-from sqlalchemy.orm import Session
-
 from pdos_next.domain.build_execution.models import (
     ActualConfiguration,
     BuildLot,
@@ -44,14 +40,17 @@ from pdos_next.domain.products.models import DefinitionRevision
 from pdos_next.domain.professional_authority.models import ProfessionalFact
 from pdos_next.domain.projects.models import Project, ProjectProductLink
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
-from pdos_next.models import (
-    Artifact,
-    Consumption,
-    Grant,
-    ObjectAudience,
-    OriginalSecurity,
-    UploadedOriginal,
+from quality_execution.fixtures import (  # noqa: F401
+    accepted_work,
+    known_configuration,
+    launch_work,
+    operational_work,
+    quality_work,
+    ready_work,
+    results_work,
 )
+from sqlalchemy import func, select
+from sqlalchemy.orm import Session
 
 
 def _counts(work):

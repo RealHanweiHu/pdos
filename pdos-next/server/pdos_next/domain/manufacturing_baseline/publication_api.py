@@ -3,11 +3,10 @@
 from uuid import UUID
 
 from fastapi import FastAPI, Query, Request
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.service import Context
 
 from .api import _query
 from .publication_schemas import OPERATION

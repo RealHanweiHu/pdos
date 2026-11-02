@@ -4,9 +4,8 @@
 from copy import deepcopy
 from uuid import UUID
 
+from pdos_next.core.models import Receipt
 from sqlalchemy import select
-
-from pdos_next.models import Receipt
 from tests.preproject.test_evidence_commands_pg import (
     artifact,
     claim_read,

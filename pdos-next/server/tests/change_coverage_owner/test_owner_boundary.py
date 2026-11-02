@@ -9,23 +9,8 @@ from uuid import UUID as CategoryUUID
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
-from sqlalchemy import create_engine, event, select
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next import change_controlled_owner as controlled
-from pdos_next import change_coverage_binding as binding
-from pdos_next import service as common
-from pdos_next.change_dependency_clock import ChangeDependencyClock
-from pdos_next.domain.change_control.rules import digest
-from pdos_next.domain.change_coverage_owner import importer, models, owner, registry, schemas, trust
-from pdos_next.domain.change_execution import service as old
-from pdos_next.domain.change_execution.graph import OwnedObject
-from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
-from pdos_next.domain.professional_authority import service as professional
-from pdos_next.domain.projects.models import Project
-from pdos_next.errors import DomainError
-from pdos_next.models import (
+from pdos_next.core import service as common
+from pdos_next.core.models import (
     Artifact,
     Audit,
     Confirmation,
@@ -36,8 +21,22 @@ from pdos_next.models import (
     Receipt,
     RequestKey,
 )
+from pdos_next.domain.change_control.rules import digest
+from pdos_next.domain.change_coverage_owner import importer, models, owner, registry, schemas, trust
+from pdos_next.domain.change_execution import service as old
+from pdos_next.domain.change_execution.graph import OwnedObject
+from pdos_next.domain.change_execution.models import ChangeCurrent, ChangeRequestVersion
+from pdos_next.domain.professional_authority import service as professional
+from pdos_next.domain.projects.models import Project
+from pdos_next.errors import DomainError
+from pdos_next.features.change import controlled_owner as controlled
+from pdos_next.features.change import coverage_binding as binding
+from pdos_next.features.change.dependency_clock import ChangeDependencyClock
 from pdos_next.schemas.change_control.contracts import ChangeRequest, Edge, GraphSnapshot, Node, Ref
 from pdos_next.schemas.verification.contracts import Scope, SourceRef
+from pydantic import ValidationError
+from sqlalchemy import create_engine, event, select
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 ACTUAL_PROJECT = controlled._project
 ACTUAL_SOURCE_GUARD = controlled._source_guard

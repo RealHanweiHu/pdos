@@ -11,10 +11,9 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import inspect
-from sqlalchemy.orm import Session, make_transient_to_detached
-
-from pdos_next.contracts import Command, SourceRead
+from pdos_next.core.contracts import Command, SourceRead
+from pdos_next.core.models import Confirmation, Product
+from pdos_next.core.service import Context, digest, material_digest
 from pdos_next.domain.capa_effectiveness import candidate_commands as commands
 from pdos_next.domain.capa_effectiveness import candidate_prepare as prepare
 from pdos_next.domain.capa_effectiveness import candidate_write as writer
@@ -22,8 +21,8 @@ from pdos_next.domain.capa_effectiveness import service
 from pdos_next.domain.capa_effectiveness.fact_consumption import ConsumptionHost
 from pdos_next.domain.quality_execution.models import QualityIssueCurrent, QualityIssueVersion
 from pdos_next.errors import DomainError
-from pdos_next.models import Confirmation, Product
-from pdos_next.service import Context, digest, material_digest
+from sqlalchemy import inspect
+from sqlalchemy.orm import Session, make_transient_to_detached
 
 ACTUAL_ORIGIN = service._origin
 

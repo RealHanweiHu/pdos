@@ -4,14 +4,13 @@ import io
 from types import SimpleNamespace
 
 import pytest
-from pypdf import PdfWriter
-from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
-
-from pdos_next.agent_kernel.extract_read_ledger import ParseManifest
-from pdos_next.agent_kernel.extract_sources import _manifest
+from pdos_next.agent.kernel.extract_read_ledger import ParseManifest
+from pdos_next.agent.kernel.extract_sources import _manifest
 from pdos_next.errors import DomainError
 from pdos_next.evidence_processing import parse_original
-from pdos_next.originals import _parse_manifest
+from pdos_next.originals.access import _parse_manifest
+from pypdf import PdfWriter
+from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
 from tests.evidence_processing.test_documents import pdf_bytes, workbook_bytes
 
 XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

@@ -3,15 +3,14 @@
 from uuid import UUID
 
 import pytest
+from pdos_next.core.contracts import Command
+from pdos_next.core.database import tenant_session
+from pdos_next.core.models import Confirmation
+from pdos_next.core.service import digest, execute
 from quality_followup_transactions.fixtures import complete_command, fixed_issue, root_command
 from quality_followup_transactions.test_transactions import prepared
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
-
-from pdos_next.contracts import Command
-from pdos_next.database import tenant_session
-from pdos_next.models import Confirmation
-from pdos_next.service import digest, execute
 
 pytest_plugins = ["quality_followup_transactions.fixtures"]
 

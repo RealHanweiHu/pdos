@@ -3,9 +3,9 @@
 import asyncio
 
 import pytest
-from pdos_next.enterprise_search.indexing import CHUNK_CHARS, chunks
-from pdos_next.enterprise_search.tokenizer import analyze, codes, or_query
-from pdos_next.enterprise_search.workflow import EnterpriseProjection
+from pdos_next.agent.enterprise_search.indexing import CHUNK_CHARS, chunks
+from pdos_next.agent.enterprise_search.tokenizer import analyze, codes, or_query
+from pdos_next.agent.enterprise_search.workflow import EnterpriseProjection
 from temporalio import workflow
 from temporalio.worker.workflow_sandbox import SandboxedWorkflowRunner
 

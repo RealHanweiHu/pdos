@@ -3,13 +3,13 @@ import shutil
 import sys
 from pathlib import Path
 
-from pdos_next.agent_kernel.prompt_admin import create_draft, register_draft
+from pdos_next.agent.kernel.prompt_admin import create_draft, register_draft
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "pdos-next/tools"))
 from xiaopai_prompt import evaluate_ab  # noqa: E402
 
-PACKAGE = ROOT / "pdos-next/server/pdos_next/prompt_packages"
+PACKAGE = ROOT / "pdos-next/server/pdos_next/agent/prompt_packages"
 
 
 def inputs(tmp_path):
