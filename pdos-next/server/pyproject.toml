@@ -31,7 +31,7 @@ dev = ["pytest>=9,<10", "httpx>=0.28,<1", "ruff>=0.15,<1"]
 package = false
 
 [tool.uv.sources]
-pdos-agent-runtime = { path = "../../packages/pdos-agent-runtime" }
+pdos-agent-runtime = { path = "../packages/pdos-agent-runtime" }
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["."]

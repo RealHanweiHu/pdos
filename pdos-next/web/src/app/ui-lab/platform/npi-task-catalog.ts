@@ -33,7 +33,7 @@ export async function readNpiTaskCatalog(): Promise<NpiTaskTemplate[]> {
     await readFile(
       resolve(
         process.cwd(),
-        "../../assets/cehub/deliverable-guide-manifest.json",
+        "../assets/cehub/deliverable-guide-manifest.json",
       ),
       "utf8",
     ),

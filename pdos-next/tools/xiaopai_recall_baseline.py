@@ -24,7 +24,7 @@ def main():
     root = Path(__file__).resolve().parents[1]
     env.update(
         PYTHONPATH=os.pathsep.join([
-            str(root.parent / "packages/pdos-agent-runtime/src"),
+            str(root / "packages/pdos-agent-runtime/src"),
             str(root / "server"), str(root / "server/tests"),
         ]),
         PYTHONUNBUFFERED="1",

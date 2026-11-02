@@ -1023,7 +1023,7 @@ wheels = [
 [[package]]
 name = "pdos-agent-runtime"
 version = "0.1.0"
-source = { directory = "../../packages/pdos-agent-runtime" }
+source = { directory = "../packages/pdos-agent-runtime" }
 dependencies = [
     { name = "langgraph" },
     { name = "langgraph-checkpoint-postgres" },
@@ -1088,7 +1088,7 @@ requires-dist = [
     { name = "langgraph-checkpoint-postgres", specifier = ">=3.1.2" },
     { name = "mcp", specifier = ">=1.30,<2" },
     { name = "openpyxl", specifier = ">=3.1.5" },
-    { name = "pdos-agent-runtime", directory = "../../packages/pdos-agent-runtime" },
+    { name = "pdos-agent-runtime", directory = "../packages/pdos-agent-runtime" },
     { name = "psycopg", extras = ["binary"], specifier = ">=3.3,<4" },
     { name = "pydantic", specifier = ">=2.12,<3" },
     { name = "pypdf", specifier = ">=6.19.0" },

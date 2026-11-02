@@ -10,7 +10,7 @@ from pdos_next.errors import DomainError
 
 @lru_cache(maxsize=1)
 def catalog():
-    path = Path(__file__).resolve().parents[5] / "assets/cehub/deliverable-guide-manifest.json"
+    path = Path(__file__).resolve().parents[4] / "assets/cehub/deliverable-guide-manifest.json"
     raw = path.read_bytes()
     manifest = json.loads(raw)
     fingerprint = hashlib.sha256(raw).hexdigest()

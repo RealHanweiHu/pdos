@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path[:0] = [str(ROOT / "server"), str(ROOT.parent / "packages/pdos-agent-runtime/src")]
+sys.path[:0] = [str(ROOT / "server"), str(ROOT / "packages/pdos-agent-runtime/src")]
 import local_environment as environment  # noqa: E402
 
 

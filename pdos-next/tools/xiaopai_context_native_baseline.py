@@ -96,14 +96,14 @@ def run(destination):
     env.update(
         PYTHONDONTWRITEBYTECODE="1", PYTHONUNBUFFERED="1",
         PYTHONPATH=os.pathsep.join((str(ROOT / "server"),
-                                   str(ROOT.parent / "packages/pdos-agent-runtime/src"))),
+                                   str(ROOT / "packages/pdos-agent-runtime/src"))),
         PDOS_CONTEXT_NATIVE_OUTPUT_DIR=str(destination),
     )
     paths = [ROOT / "server" / name for name in TESTS]
     paths.extend((ROOT / "server/pdos_next").rglob("*.py"))
     paths.extend(path for path in (ROOT / "server/pdos_next/agent/skill_packages").rglob("*")
                  if path.suffix in {".json", ".md"})
-    paths.extend((ROOT.parent / "packages/pdos-agent-runtime/src").rglob("*.py"))
+    paths.extend((ROOT / "packages/pdos-agent-runtime/src").rglob("*.py"))
     paths.extend((ROOT / "server/tests").rglob("*eval_v0*.py"))
     paths.extend((Path(__file__).resolve(), ROOT / "tools/xiaopai_context_admission_baseline.py"))
     source_hashes = {

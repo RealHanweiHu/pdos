@@ -1,6 +1,6 @@
 """Offline production-prefix admission lower bound; never a native replay or quality score.
 
-Run with the server venv and PYTHONPATH=pdos-next/server:packages/pdos-agent-runtime/src.
+Run with the server venv and PYTHONPATH=pdos-next/server:pdos-next/packages/pdos-agent-runtime/src.
 No provider, database, credentials, environment file, receipts or READ bindings are used.
 """
 

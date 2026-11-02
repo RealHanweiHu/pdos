@@ -10,7 +10,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 SERVER = ROOT / "pdos-next/server"
 sys.path.insert(0, str(SERVER))
-sys.path.insert(0, str(ROOT / "packages/pdos-agent-runtime/src"))
+sys.path.insert(0, str(ROOT / "pdos-next/packages/pdos-agent-runtime/src"))
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from pdos_next.agent.kernel.prompt_admin import (  # noqa: E402
@@ -55,7 +55,7 @@ def source_hashes(package, questions, expanded):
     ]
     paths.extend((SERVER / "pdos_next/agent/skill_packages").rglob("*"))
     paths.extend(Path(package).rglob("*"))
-    paths.extend((ROOT / "packages/pdos-agent-runtime/src").rglob("*.py"))
+    paths.extend((ROOT / "pdos-next/packages/pdos-agent-runtime/src").rglob("*.py"))
 
     def identity(path):
         if path.is_relative_to(ROOT):
