@@ -13,7 +13,7 @@
 
 ## v1.1 修订说明
 
-依据：[设计确认稿](2026-10-08-pdos-next-design-confirmation.md)中用户已确认的 K1–K9 和 C1–C14（2026-10-08），以及 [立项前改造方案](2026-10-05-preproject-redesign.md)、单 Agent 方案（已归档：标签 `archive/pre-restructure-2026-11-01` 的 `docs/design/2026-10-07-xiaopai-single-agent-runtime-plan.md`） §4–§6。
+依据：[设计确认稿](2026-10-08-pdos-next-design-confirmation.md)中用户已确认的 K1–K9 和 C1–C14（2026-10-08），以及 [立项前改造方案](2026-10-05-preproject-redesign.md)、[单 Agent 方案](2026-10-07-xiaopai-single-agent-runtime-plan.md) §4–§6。
 
 | # | 修订 | 位置 | 依据 |
 |---|---|---|---|
