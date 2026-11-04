@@ -318,12 +318,12 @@ W3c · 想法已变但没有记录
 - D24 契约标记失真：`provider.agreement.register`、`my_work.query` 已实现，仍标为未实现；api.py 三处 `model_available` 写死为 False。
 - D25 本人自评的 G0 不进“要我决定”（`personal_attention_decisions.py:106` 只认 owner≠requester），按 P27 应放行。
 - D26 认证类、客户类专业变更会死锁，先返回明确的“暂不支持”；根治随 D21-B2。
-- D27 测试失败：HEAD 10 条回放/撤回失败（2 条 work_state 旧断言、8 条撤回 VERSION_CONFLICT）；S1 6 个摘要夹具失败；141 项测试替身层失败（capa、launch_plan、change 一带），重跑后定性。W1（D242）的受影响范围回归另有 48 个 PG 测试在不含修复的 HEAD 上同样失败，集中在 `test_computed_claim`、`test_m3_*`、`test_deterministic_proofs`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures.txt)），可能与上面几类重叠，重跑定性时一起核。
+- D27 测试失败：HEAD 10 条回放/撤回失败（2 条 work_state 旧断言、8 条撤回 VERSION_CONFLICT）；S1 6 个摘要夹具失败；141 项测试替身层失败（capa、launch_plan、change 一带），重跑后定性。W1（D242）的受影响范围回归另有 48 个 PG 测试在不含修复的 HEAD 上同样失败，集中在 `test_computed_claim`、`test_m3_*`、`test_deterministic_proofs`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures.txt)），可能与上面几类重叠，重跑定性时一起核。D245 的受影响范围回归（11-04）又多出 37 个在 HEAD 上同样失败的测试，集中在 `test_evidence_commands_pg`、`test_private_analysis_pg`、`test_baseline_watermarks_pg`、`test_private_spec_compare_pg`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures-d245.txt)）；另有 `test_project_current_context_pg` 的 1 个用例单独重跑通过，疑似依赖执行顺序。
 - D28 测试卫生：28 个 tests 子目录缺 `__init__.py`，加一条 collect 检查；pytest 排除 iCloud 副本；`PENDING_LIMIT` 从 131 收到 116。
 - D29 三件小事：`mcp-management.tsx:134` 的旧口径文案按 P26 核对；技能包与政策的漂移检查（10-22 的卡片一直没启动）；18 个技能包写了 `preload_when` 但没有任何代码读取，改成服务器可判定的条件。W1 实测：每个品类运行都由服务端预载 `proposal_drafting`（约 3.8k token），与问题内容无关。
 - D53 停用 LLM 时仍能手动建提案，并显示失败说明（拍板表 §5.3 F06、AT-45）。UI 重建后没再看到这个入口。
 - D57 运行成本口径：Worker 线程数写死为 4（`workflows/worker.py:244`）；未知调用按上限占账；幂等重放会重走校验（F45）。W1 实测（D06）：输出预留按服务商上限 524288 计，未知调用每次约 0.69 美元，约是正常调用的 140 倍（原估 3.4 倍）；51 次共占账 35 美元，是实计费用的近 5 倍，其中 33 次其实是完整响应（D244）。按 D161 改为“本次调用输出预算 + 4k”后应大幅回落，改完复核。
-- D245 模型参数通过了工具定义的格式检查，但处理函数的 pydantic 校验更严时，`ValidationError` 不会退回模型，而是让整轮 `INTERNAL_ERROR`。三处直接 `model_validate`：`agent/kernel/extract_service.py:125`、`agent/kernel/platform_reads.py:26`、`agent/enterprise_search/assistant_adapter.py:216`。照 `host.read_result`（`host.py:310-313`）的做法转成 `VALIDATION_FAILED`，再查其他处理函数有没有同样的写法。W1 中 4 个运行因此失败。
+- D245 ✅ 11-04 已修并本地提交（未推送）：新增 `agent/kernel/tool_arguments.py`，模型给的工具参数校验失败时退回 `VALIDATION_FAILED`（422，列出字段路径和错误类型；校验说明不含提交内容时一并给出），模型可以改参数重试，不再整轮崩溃。共 21 处首次校验改用它，覆盖主循环读取、计算、比较、会话历史、企业检索和抽取、研究、比较子任务；`m3_object_reads` 原有的同类写法并入。已有校验的入口、续读恢复和对已校验参数的二次核对不改。回归：`test_tool_arguments.py` 的三个 W1 崩溃点用例在不含修复的代码上以原 `ValidationError` 失败、修复后通过；受影响的 122 个测试文件 1328 通过，失败项与 HEAD 一致（31 个在 D242 清单内、37 个在 HEAD 上同样失败，见 D27），另有 7 处原断言 `ValidationError` 的测试按新行为改为断言工具错误。 原记录：模型参数通过了工具定义的格式检查，但处理函数的 pydantic 校验更严时，`ValidationError` 不会退回模型，而是让整轮 `INTERNAL_ERROR`。三处直接 `model_validate`：`agent/kernel/extract_service.py:125`、`agent/kernel/platform_reads.py:26`、`agent/enterprise_search/assistant_adapter.py:216`。照 `host.read_result`（`host.py:310-313`）的做法转成 `VALIDATION_FAILED`，再查其他处理函数有没有同样的写法。W1 中 4 个运行因此失败。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
@@ -365,12 +365,12 @@ W3c · 想法已变但没有记录
 - D46 用 AI 候选新建品类一次也没跑通，原因是研究端口没接（随 D20-A3、D62）。
 - D54 冻结前缀里加一句护栏（F10）。prompt 1.0.0 还没有这句，走 10-31 建好的 Prompt A/B 流程。
 - D58 LangGraph 检查点库的保留期。`lifecycle_catalog.py` 覆盖了 agent_* 表，但没有覆盖检查点库，试点前补上。
-
 - D243 超时重试与未停下的尝试并发（W1 失败的头号原因）：`XiaopaiWork` 推进 Activity 的执行超时是 10 分钟、最多 3 次（`workflows/xiaopai.py:44-46`）。Activity 是线程池里的同步函数，超时后 Temporal 派出第二次尝试，第一次的线程要到下次心跳才收到取消，期间两次尝试并发推进同一个 Run，第二次撞上“原调用须按回执对账”和绑定保护后 `INTERNAL_ERROR`。W1 共 33 个运行因此失败（31 个执行超时、2 个心跳超时），拆分 API/Worker 后没有减少；另有 6 次模型调用的预留一直没结（约 4.19 美元）。一轮几次长输出就会超过 10 分钟（单次输出最多 11,167 token）。要定的是：超时后怎样保证旧尝试先停、再续跑，而不是并发或直接失败。
 - D244 服务商响应完整，却被记成“结果未知”：最终输出函数里的 `result_json` 是一段再转义的 JSON 字符串，模型约 2% 的调用会写坏（缺逗号、多余尾部、键重复），另有少数以纯文本收尾，`agent_client.parse_turn` 一律按 `PROVIDER_INVALID_RESPONSE unknown=True` 处理，整轮等 300 秒对账后失败，还按上限占账。W1 中 1677 次调用里 38 次，15 个运行因此失败。可选改法：解析失败按已知失败处理并给一次格式修正回合；或把 `result_json` 改为对象参数。
 - D246 〔待定〕工具失败在账本和返回给模型的结果里一律是 `SOURCE_UNAVAILABLE`，真实原因（范围不符、本轮查找预算用完、缺基线型号、参数越界）被藏起来，模型分不清该换工具、该停还是该补参数。W1 中 11-02 以后范围不符 98 次、预算用完 93 次。须与 v1.1 §08.7 错误码收敛相容：公开错误码不变，考虑在给模型的工具结果里附一个可行动的原因类别。
 - D247 品类问答一次下发 66 个工具，工具定义约 30–37k token，其中 31 个是写入或审批类，另有 `build.read`、`test.run.read` 等项目级读取在品类范围内必然被拒，模型却常去调用（失败率 77–94%）。固定部分约 40k，超过 F=48000 的一半，导致 F=48000 下 61 轮里 43 轮回答不完整，基本不可用。按技能和范围渐进下发工具，与 D29 的 `preload_when` 一起做。
 - D248 token 估算系统性偏低约 10%：418 次有估算和实际计数的调用，实际 ÷ 估算 p50 约 1.10、最大 1.173。准入靠约 1.15 的校准系数兜住，余量来自系数而不是估算本身。改估算或把系数写成有依据的配置。
+
 **W9 业务域余项（实现缺口；按闭环推进）**
 - D47 14 条 not_implemented 操作：forecast.refresh、capa.effectiveness、tooltrial、fixture、customer.sample/acceptance、supply.commitment/alternate、source.withdraw 等。
 - D48 S3–S5 余项：
@@ -391,12 +391,12 @@ W3c · 想法已变但没有记录
   - Temporal 目前用 SQLite 回退，不能作为正式依据；
   - 下方 M2 行写“出口待 B7/B8”，与 M1 行“B8 已关闭”矛盾，要改；
   - 确认定时任务 `pdos-s3-s5` 是否还在跑。
-
 - D249 真实评测环境的缺口（W1 中 6 题、4 个上下文格因此没跑或没跑完）：
   - HTTP 评测运行时没接三处端口（需求准备快照、专业资格），PUR-09、QUA-09、QUA-10 受阻；测试夹具在进程内接了，评测运行时没有；
   - ENG-10、PRD-10 的父题没有形成子题需要的引用；CTX-06、CTX-08、CTX-10、CTX-11 前置受阻；
   - 模型配置是租户级的，评测切换 F 时预览里的小Pai 一起受影响；评测与预览共用库、租户和命名空间（D59）。
   下次真实回归（D129）前补齐。
+
 **W11 试点上线准备（所有材料都没考虑到的方面；可与 W6–W9 并行，真人试点前必须完成）**
 - D210 〔你〕部署方案：阿里云各服务的规格、网络、域名、TLS，以及 ICP 备案（原工程用过 pdos.beepump.net，要核对备案主体是否覆盖新的 ECS）。拍板表 B15 推荐“单机 compose 放内网”，与阿里云计划不一致，要一起定（D88）。
 - D211 备份与恢复：

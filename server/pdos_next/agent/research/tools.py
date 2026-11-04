@@ -5,6 +5,7 @@ from dataclasses import asdict
 from pydantic import Field
 
 from pdos_next.agent.kernel.registry import ToolSpec
+from pdos_next.agent.kernel.tool_arguments import tool_arguments
 from pdos_next.core.schema_base import StrictModel
 
 from .service import _invoke
@@ -73,10 +74,10 @@ class ResearchToolHost:
 
     async def call(self, scope, name, arguments, *, job_id=None, pin_plan=None):
         if name == "research.search":
-            payload = SearchInput.model_validate(arguments)
+            payload = tool_arguments(SearchInput, arguments)
             return [asdict(hit) for hit in await self.service.search(scope, payload.query)]
         if name == "research.read":
-            payload = ReadInput.model_validate(arguments)
+            payload = tool_arguments(ReadInput, arguments)
             # Only this page enters child context; the full snapshot stays in the host.
             page = await self.service.read(scope, payload.url, cursor=payload.cursor)
             return {
@@ -89,7 +90,7 @@ class ResearchToolHost:
                 "next_cursor": page.next_cursor,
             }
         if name == "research.fanout":
-            payload = FanoutInput.model_validate(arguments)
+            payload = tool_arguments(FanoutInput, arguments)
             parameters = tuple(await _invoke(self.parameter_versions, scope))
             tasks = tuple(
                 ResearchTask(task.key, task.focus, task.brand, task.source_type, parameters)

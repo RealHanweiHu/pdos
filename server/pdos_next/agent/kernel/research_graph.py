@@ -13,6 +13,7 @@ from .graph import AgentKernel, Budget
 from .host import BoundHost
 from .read_execution import ReadSource
 from .research_read_ledger import page_result, restore_page, restore_search
+from .tool_arguments import tool_arguments
 from .tools import default_registry
 
 
@@ -104,7 +105,7 @@ class ResearchGraph:
                         source=source, original_reader=self.read,
                     )
                 if spec.name == "research.search":
-                    data = SearchInput.model_validate(arguments)
+                    data = tool_arguments(SearchInput, arguments)
 
                     def callback(*_):
                         hits = asyncio.run_coroutine_threadsafe(
@@ -119,7 +120,7 @@ class ResearchGraph:
                         return restore_search(child, data.query, previous, current=self.current)
 
                 elif spec.name == "research.read":
-                    data = ReadInput.model_validate(arguments)
+                    data = tool_arguments(ReadInput, arguments)
                     if (
                         isinstance(host, BoundHost) and callable(registered_read)
                         and callable(getattr(host, "read_callback", None))

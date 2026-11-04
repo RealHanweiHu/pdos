@@ -24,6 +24,7 @@ from .execution import check_run_binding
 from .m3_object_reads import _references
 from .m3_spec_compare import _head, _objects, _RunObjects, _unavailable
 from .models import AgentRun, AgentSession
+from .tool_arguments import tool_arguments
 
 
 class FixedDefinition(StrictModel):
@@ -172,7 +173,7 @@ class DefinitionDiffReads:
         return view
 
     def call(self, scope, arguments):
-        payload = DefinitionDiffInput.model_validate(arguments)
+        payload = tool_arguments(DefinitionDiffInput, arguments)
         if scope.category_id is None:
             raise DomainError("FORBIDDEN_SCOPE", "定义比较须绑定当前品类。", 403)
         with tenant_session(
@@ -216,7 +217,7 @@ class DefinitionDiffReads:
 
                     result = self.proposal_reads._baseline_call(
                         scope,
-                        DerivationDiffInput.model_validate(arguments),
+                        tool_arguments(DerivationDiffInput, arguments),
                         name="calc.derivation_diff",
                         session=session,
                     )

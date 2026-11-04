@@ -489,7 +489,7 @@ def test_tool_host_projects_parameter_versions_and_rejects_model_authority():
     assert result["ledger"][0]["parameter_version"] == 7
     assert observed == [(ParameterVersion(parameter_id, 7),)]
     args["tasks"][0]["parameters"] = [{"parameter_id": str(parameter_id), "version": 1}]
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         run(host.call(bound, "research.fanout", args))
 
 

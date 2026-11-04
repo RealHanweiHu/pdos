@@ -6,6 +6,7 @@ from uuid import UUID
 from sqlalchemy import select
 
 from pdos_next.agent.kernel.models import AgentToolCall
+from pdos_next.agent.kernel.tool_arguments import tool_arguments
 from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
 
@@ -78,7 +79,7 @@ class AssistantReadAdapter:
         from .assistant_materials import read
 
         call_id = self._started(scope, "assistant.materials.read", arguments, intent_key)
-        data = MaterialsInput.model_validate(arguments)
+        data = tool_arguments(MaterialsInput, arguments)
         with human_snapshot(self.store.engine, scope) as session:
             return read(session, scope, data, call_id)
 
@@ -98,7 +99,7 @@ class AssistantReadAdapter:
         from .assistant_inheritance import page
 
         self._started(scope, "assistant.citations.read", arguments, intent_key)
-        data = CitationsInput.model_validate(arguments)
+        data = tool_arguments(CitationsInput, arguments)
         with human_snapshot(self.store.engine, scope) as session:
             run = session.get(AgentRun, scope.run_id)
             exclusions = run.versions.get("work_state", {}).get("exclusions", [])
@@ -151,7 +152,7 @@ class AssistantReadAdapter:
         from .assistant_scope import retrieve
 
         call_id = self._started(scope, "assistant.search", arguments, intent_key)
-        data = AssistantSearchInput.model_validate(arguments)
+        data = tool_arguments(AssistantSearchInput, arguments)
         updates = {}
         if scope.product_id is not None:
             if data.product_id not in (None, scope.product_id):
@@ -213,7 +214,7 @@ class AssistantReadAdapter:
         return start, end
 
     def passage(self, scope, arguments, *, historical=False):
-        data = PassageInput.model_validate(arguments)
+        data = tool_arguments(PassageInput, arguments)
         if scope.isolation != "assistant_extract" or data.citation_id not in scope.citation_ids:
             ledger.deny("isolated_citation_required")
         selected = self._selected(scope, [data.citation_id])
@@ -244,7 +245,7 @@ class AssistantReadAdapter:
 
     def extract(self, scope, arguments, *, intent_key=None):
         call_id = self._started(scope, "assistant.extract", arguments, intent_key)
-        data = ExtractInput.model_validate(arguments)
+        data = tool_arguments(ExtractInput, arguments)
         selected = self._selected(scope, data.citation_ids)
         inherited = {cid for cid, item in selected.items() if "origin_run_id" in item}
         actual, missing = self._current(scope, selected, body=True, allow_updated=inherited)

@@ -99,7 +99,7 @@
     - 314 次同时有估算和实际计数的调用，实际 ÷ 估算的 p50 是 1.098，p90 是 1.134，最大 1.173，两档 F 一致。加上 c64 共 418 次：F=64000 的 307 次 p50 1.095、p90 1.121、最大 1.168；F=48000 的 111 次不变。
     - 准入口径用的是估算 × 约 1.15，因此能兜住，但这个余量是靠校准系数，不是估算本身准。
 17. **剩余待查（11-03 已处理）：** 租户里还挂着 4 个小Pai 等回答的运行（11-01 18:35 一个，11-02 07:39、07:45、09:56 各一个），错误码为空，不是在等对账。11-03 以各自发起人身份经 `POST …/agent-runs/{id}/cancel` 取消（预留额度 0）；其中 3 个在旧队列 `pdos-real-eval-20261101` 上，临时起一个只轮询旧队列的 Worker 让工作流走完取消后停掉。之后预览租户里没有未结束的运行。
-18. **模型参数校验失败会让整轮崩成 INTERNAL_ERROR（缺陷，未修）。**
+18. **模型参数校验失败会让整轮崩成 INTERNAL_ERROR（缺陷，11-04 已修，见清单 D245）。**
     - 模型给的参数通过了工具定义的 JSON 格式检查，但处理函数里的 pydantic 校验更严，例如 `ExtractInput` 要求品类抽取必须给出明确的资料版本列表。处理函数直接 `model_validate(arguments)`，没有把 `ValidationError` 转成 `VALIDATION_FAILED` 退回给模型，异常一直冒到 Activity，整轮以 `INTERNAL_ERROR` 失败。
     - 出现位置（共 4 次）：`agent/kernel/extract_service.py:125`（`evidence.extract`，2 次：a2 的 `d013032e`、c64 CTX-12 第 1 轮 `5583b7b2`）、`agent/kernel/platform_reads.py:26`（`platform.read`，1 次：`d3d8e0f4`）和 `agent/enterprise_search/assistant_adapter.py:216`（抽取子任务里的段落读取 `PassageInput`，1 次：c64 CTX-12 第 3 轮 `d2b60eee`）。
     - 对照：`host.read_result` 已经这样转换了（`host.py:310-313`），说明预期行为是退回工具错误、让模型改参数。

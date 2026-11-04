@@ -23,6 +23,7 @@ from .execution import check_run_binding
 from .m3_extracted_match import ExtractionRows, compare_extracted
 from .m3_object_reads import _public_proposal, _public_sources, _references
 from .models import AgentRun, AgentSession, PublicWebSnapshot
+from .tool_arguments import tool_arguments
 
 
 class AgentSpecCompareInput(spec_compare.SpecCompareInput):
@@ -432,7 +433,7 @@ class SpecCompareReads:
         return {"calc.spec_compare": self.restore}
 
     def call(self, scope, arguments):
-        payload = AgentSpecCompareInput.model_validate(arguments)
+        payload = tool_arguments(AgentSpecCompareInput, arguments)
         if scope.category_id is None:
             raise DomainError("FORBIDDEN_SCOPE", "规格比较须绑定当前品类。", 403)
         with tenant_session(

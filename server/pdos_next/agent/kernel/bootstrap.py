@@ -25,6 +25,7 @@ from .host import KernelAdapters
 from .models import AgentRun, AgentToolCall, ValidationBudget
 from .persistence import KernelStore
 from .skills import SkillCatalog
+from .tool_arguments import tool_arguments
 from .tools import default_registry
 
 
@@ -419,7 +420,7 @@ class Bootstrap:
         from pdos_next.core.service import digest
 
         from .conversation import HistoryInput, memory
-        payload = HistoryInput.model_validate(arguments)
+        payload = tool_arguments(HistoryInput, arguments)
         with self.store.transaction(scope, lock=True) as (session, run):
             access = {}
             value = memory(session, run, readers=getattr(self, "_history_readers", {}),

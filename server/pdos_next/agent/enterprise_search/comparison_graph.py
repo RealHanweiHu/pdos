@@ -7,6 +7,7 @@ from pydantic import ValidationError
 
 from pdos_next.agent.kernel.deterministic_proofs import _historical_read
 from pdos_next.agent.kernel.graph import AgentKernel, Budget
+from pdos_next.agent.kernel.tool_arguments import tool_arguments
 from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
@@ -26,7 +27,7 @@ class AssistantComparisonGraph:
         payload = {"comparison_id": comparison_id, "changes": changes}
 
         def reading(bound, arguments):
-            data = ComparisonReadInput.model_validate(arguments)
+            data = tool_arguments(ComparisonReadInput, arguments)
             if (
                 bound.isolation != "assistant_compare"
                 or data.comparison_id != comparison_id

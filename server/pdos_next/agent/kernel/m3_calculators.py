@@ -20,6 +20,7 @@ from pdos_next.domain.categories.preproject.evidence_schemas import ClaimContent
 from pdos_next.domain.categories.preproject.schemas import Reference
 
 from .deterministic_proofs import ComputeEngine
+from .tool_arguments import tool_arguments
 
 VERSION = "m3-calculators/v1"
 
@@ -496,7 +497,7 @@ def _price_band(payload):
 
 def calculate(name, arguments):
     """Validate and calculate without I/O or mutation of the caller's arguments."""
-    payload = SCHEMAS[name].model_validate(arguments)
+    payload = tool_arguments(SCHEMAS[name], arguments)
     input_digest = digest([name, arguments])
     with localcontext() as context:
         # Input bounds are 60 digits, at most 30 fractional places. Even the

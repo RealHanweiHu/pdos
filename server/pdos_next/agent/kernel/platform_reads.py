@@ -8,6 +8,7 @@ from pdos_next.errors import DomainError
 
 from .execution import check_run_binding
 from .models import AgentRun
+from .tool_arguments import tool_arguments
 
 SCHEMAS = {"platform.read": PlatformReadInput}
 
@@ -23,7 +24,7 @@ class PlatformReads:
         return {"platform.read": self.restore}
 
     def call(self, scope, arguments):
-        payload = PlatformReadInput.model_validate(arguments)
+        payload = tool_arguments(PlatformReadInput, arguments)
         if scope.category_id is None or (
             scope.product_id is not None
             and payload.product_id is not None

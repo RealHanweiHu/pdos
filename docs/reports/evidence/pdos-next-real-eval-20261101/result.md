@@ -237,11 +237,12 @@ ENG-06、QUA-06（a2）：零写入、零回执、零候选，模型没有请求
 - 影响：15 个运行因此失败（另有 5 个“未知”失败是确属未知、响应超限或服务商 5xx）；c64 另有 3 轮在第一次尝试里遇到它，随后先撞上 10 分钟超时，计入 §5.2。
 - 可选改法（待定）：解析失败按已知失败处理，给一次格式修正回合；或把 `result_json` 改为对象参数。
 
-### 5.4 模型参数校验异常没转成工具错误（未修）
+### 5.4 模型参数校验异常没转成工具错误（11-04 已修，见清单 D245）
 
 - 模型参数通过了工具定义的 JSON 格式检查，但处理函数的 pydantic 校验更严（如品类抽取必须给出明确的资料版本列表）。`agent/kernel/extract_service.py:125`、`agent/kernel/platform_reads.py:26`、`agent/enterprise_search/assistant_adapter.py:216`（抽取子任务里的段落读取）直接 `model_validate`，`ValidationError` 冒到 Activity，整轮 `INTERNAL_ERROR`。
 - 对照：`host.read_result` 已把同类错误转成 `VALIDATION_FAILED` 退回模型（`host.py:310-313`）。
 - 影响：4 次（a2 PUR-01、a2m PRD-09、c64 CTX-12 第 1 轮和第 3 轮，轮次从 0 起）。
+- 修复（11-04）：模型工具参数统一经 `agent/kernel/tool_arguments.py` 校验，失败时退回 `VALIDATION_FAILED`，模型可以改参数重试。上面三处和其余 18 处同类入口一起改；没有重跑真实模型。
 
 ### 5.5 账本错误码把真实原因藏起来（未修）
 

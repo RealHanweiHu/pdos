@@ -19,6 +19,7 @@ from .extract_read_ledger import ExtractReadLedger
 from .extract_schemas import ArtifactReadInput, CitationDraft, RowSchemaDeclaration
 from .graph import AgentKernel, Budget
 from .read_execution import ReadSource
+from .tool_arguments import tool_arguments
 from .tools import default_registry
 
 MAX_PAGE_LINES = 200  # evidence.artifact.read v2 page contract
@@ -176,7 +177,7 @@ class ExtractGraph:
                     raise DomainError(
                         "FORBIDDEN_SCOPE", "抽取子任务只拥有登记的原件读取。"
                     )
-                data = ArtifactReadInput.model_validate(arguments)
+                data = tool_arguments(ArtifactReadInput, arguments)
                 read_callback = getattr(host, "read_callback", None)
                 if callable(read_callback):
                     if not isinstance(source, ReadSource):

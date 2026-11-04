@@ -7,7 +7,6 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pydantic import ValidationError
 
 from pdos_next.agent.kernel import m3_spec_compare as module
 from pdos_next.agent.kernel.models import AgentRun, AgentSession
@@ -201,7 +200,7 @@ def test_cancel_epoch_and_model_supplied_values_never_reach_reader(port):
     with pytest.raises(DomainError) as caught:
         call(port)
     assert caught.value.code == "CANCELLED_RUN"
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         port.adapter.call(port.scope, {**arguments(port), "values": [999]})
     assert not any(event[0] == "compare" for event in port.events)
 

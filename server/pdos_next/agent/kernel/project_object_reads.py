@@ -7,6 +7,7 @@ measurements and customer originals remain behind their dedicated source ports.
 
 # The common model registry initializes before its domain children.
 # ruff: noqa: I001
+from .tool_arguments import tool_arguments
 from functools import partial
 from uuid import UUID
 
@@ -257,7 +258,7 @@ class ProjectObjectReads:
         self.store, self.commands = store, commands
 
     def call(self, scope, arguments, *, name):
-        payload = SCHEMAS[name].model_validate(arguments)
+        payload = tool_arguments(SCHEMAS[name], arguments)
         if (
             scope.category_id is None
             or scope.product_id is None

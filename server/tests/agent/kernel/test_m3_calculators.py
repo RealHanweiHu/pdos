@@ -6,7 +6,6 @@ from decimal import Decimal, localcontext
 from uuid import UUID
 
 import pytest
-from pydantic import ValidationError
 
 from pdos_next.agent.kernel.m3_calculators import (
     ENGINES,
@@ -19,6 +18,7 @@ from pdos_next.agent.kernel.m3_calculators import (
 )
 from pdos_next.core.service import digest
 from pdos_next.domain.categories.preproject.evidence_schemas import ClaimContent
+from pdos_next.errors import DomainError
 
 REF = {"type": "claim", "id": str(UUID(int=10)), "version": 2, "line": 4, "quote": "synthetic"}
 
@@ -349,7 +349,7 @@ def test_empty_input_is_unknown_and_engine_metadata_has_only_fixed_claim_project
 
 @pytest.mark.parametrize("value", [True, False, 0.1, "NaN", "Infinity", "-1"])
 def test_invalid_money_cannot_enter_arithmetic(value):
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         cost_subtotal({"lines": [cost(unit_cost=value)]})
 
 
@@ -369,7 +369,7 @@ def test_invalid_money_cannot_enter_arithmetic(value):
     ],
 )
 def test_strict_input_blocks_ambiguous_statistics_policy_fields_and_coercive_booleans(args):
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         price_band(args)
 
 
@@ -381,9 +381,9 @@ def test_market_rejects_conflicting_quantity_methods_or_invalid_penetration():
         "price": interval(10),
         "currency": "USD",
     }
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         market_size({"segments": [{**segment, "quantity": interval(10)}]})
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         market_size({"segments": [{**segment, "penetration": interval("1.1")}]})
 
 
@@ -445,5 +445,5 @@ def test_model_cannot_supply_or_override_the_fixed_claim_projection(placement):
         args["proof_claims"] = {"single_currency_subtotal": forged}
     else:
         args["lines"][0]["proof_claims"] = {"single_currency_subtotal": forged}
-    with pytest.raises(ValidationError):
+    with pytest.raises(DomainError, match="工具参数不符合要求"):
         cost_subtotal(args)

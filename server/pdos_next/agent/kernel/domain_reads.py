@@ -17,6 +17,7 @@ from pdos_next.errors import DomainError
 from .extract_pages import located_page
 from .extract_schemas import ArtifactReadInput
 from .extract_sources import seal_for
+from .tool_arguments import tool_arguments
 
 
 class EmptyInput(StrictModel):
@@ -286,7 +287,7 @@ class DomainReads:
         self.store, self.commands = store, commands
 
     def call(self, scope, arguments, *, name):
-        payload = SCHEMAS[name].model_validate(arguments)
+        payload = tool_arguments(SCHEMAS[name], arguments)
         if scope.category_id is None:
             raise DomainError("FORBIDDEN_SCOPE", "业务读取须绑定当前品类。", 403)
         if name in {"product.baseline.read", "calc.derivation_diff"}:

@@ -22,6 +22,7 @@ from .extract_read_ledger import ExtractReadLedger
 from .extract_schemas import ExtractInput, ParameterFocus, draft_registry
 from .extract_sources import seal_for
 from .models import AgentEvent
+from .tool_arguments import tool_arguments
 
 
 class ExtractionService:
@@ -122,7 +123,7 @@ class ExtractionService:
         return SimpleNamespace(proposal_id=proposal_id, task=task, seals=seals)
 
     def extract(self, scope, arguments, *, graph):
-        payload = ExtractInput.model_validate(arguments)
+        payload = tool_arguments(ExtractInput, arguments)
         if scope.isolation != "main":
             raise DomainError("FORBIDDEN_SCOPE", "隔离子任务不能再次派发抽取。", 403)
         with self.store.transaction(scope) as (session, run):

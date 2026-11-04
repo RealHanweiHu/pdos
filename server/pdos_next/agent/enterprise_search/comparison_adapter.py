@@ -3,6 +3,7 @@
 from copy import deepcopy
 from uuid import UUID
 
+from pdos_next.agent.kernel.tool_arguments import tool_arguments
 from pdos_next.errors import DomainError
 
 from . import assistant_ledger as ledger
@@ -11,7 +12,7 @@ from .comparison import align
 
 
 def selected(adapter, scope, arguments):
-    data = CompareInput.model_validate(arguments)
+    data = tool_arguments(CompareInput, arguments)
     citations = adapter._selected(scope, [data.left_citation_id, data.right_citation_id])
     actual, missing = adapter._current(scope, citations, body=True)
     if missing:
