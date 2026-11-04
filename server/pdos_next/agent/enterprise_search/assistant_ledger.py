@@ -6,7 +6,11 @@ from uuid import NAMESPACE_URL, UUID, uuid5
 
 from sqlalchemy import select
 
-from pdos_next.agent.kernel.deterministic_proofs import _historical_read, archived_citation_read
+from pdos_next.agent.kernel.deterministic_proofs import (
+    _historical_read,
+    archived_citation_read,
+    reconciled_epoch,
+)
 from pdos_next.agent.kernel.models import AgentToolCall
 from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
@@ -113,7 +117,9 @@ def carried(session, scope):
     run = session.get(AgentRun, scope.run_id)
     if run is None:
         deny("run_unreadable")
-    interrupted = run.state in {"failed", "cancelled"}
+    interrupted = run.state in {"failed", "cancelled"} or (
+        reconciled_epoch(session, run, deny=deny) is not None
+    )
     own = issued(session, scope, archive=interrupted)
     origins = set()
     frozen = run.versions.get("conversation_memory", {})

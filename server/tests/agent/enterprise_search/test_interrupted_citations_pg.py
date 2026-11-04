@@ -14,6 +14,7 @@ from pdos_next.agent.kernel.deterministic_proofs import _historical_read, archiv
 from pdos_next.agent.kernel.execution import scope_for_run
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
 from pdos_next.agent.kernel.persistence import cancel_run
+from pdos_next.agent.kernel.run_reconciliation import finalize, mark_required
 from pdos_next.agent.kernel.work_state import record_finish
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Artifact
@@ -31,7 +32,7 @@ class StopAfterMetadata(FollowupClient):
         return super().turn(route, **kwargs)
 
 
-@pytest.mark.parametrize("terminal", ["failed", "cancelled"])
+@pytest.mark.parametrize("terminal", ["failed", "cancelled", "reconciled"])
 def test_metadata_outside_preview_survives_interruption_without_reviving_old_run(setup, terminal):
     _ids, owner, root, _adapter, _output = parent(setup, count=5)
     with owner.store.transaction(root) as (session, run):
@@ -50,6 +51,16 @@ def test_metadata_outside_preview_survives_interruption_without_reviving_old_run
                 setup.engine, setup.tenant, actor_id=setup.human, requester_id=setup.human
             ) as session:
                 cancel_run(session, replace(setup.ctx, category_id=None), middle.run_id)
+        elif terminal == "reconciled":
+            # Automatic technical reconciliation closes the Run and advances cancel_epoch;
+            # the owner must still read it and continue from its sealed metadata reads.
+            with middle_owner.store.transaction(middle, lock=True) as (_session, run):
+                run.state, run.error_code = "waiting_input", "EXTERNAL_OUTCOME_UNKNOWN"
+            mark_required(middle_owner.store, middle)
+            closed = finalize(setup.engine, replace(setup.ctx, category_id=None), middle.run_id,
+                              automatic=True)
+            assert closed["status"] == "failed" and closed["reconciliation"][
+                "original_cancel_epoch"] == 0
         else:
             with middle_owner.store.transaction(middle, lock=True) as (session, run):
                 run.state, run.error_code = "failed", "INVALID_PAYLOAD"
@@ -60,17 +71,18 @@ def test_metadata_outside_preview_survives_interruption_without_reviving_old_run
     # Like the Activity failure path, settle the failed model reservation before
     # recording its terminal Run; the completed metadata read is already sealed.
     stop()
+    status = "failed" if terminal == "reconciled" else terminal
     assert client.delivered["origin_citation_id"] == root_cid
     alias = client.delivered["citation_id"]
     detail = setup.client.get(f"/v1/personal/agent-runs/{middle.run_id}", headers=setup.headers)
-    assert detail.status_code == 200 and detail.json()["status"] == terminal, detail.text
+    assert detail.status_code == 200 and detail.json()["status"] == status, detail.text
     events = setup.client.get(
         f"/v1/personal/agent-runs/{middle.run_id}/events", headers=setup.headers
     )
     assert events.status_code == 200, events.text
     with human_snapshot(setup.engine, middle) as session:
         run = session.get(AgentRun, middle.run_id)
-        assert run.state == terminal
+        assert run.state == status
         canonical = scope_for_run(run)
         call = session.scalar(
             select(AgentToolCall).where(

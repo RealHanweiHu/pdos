@@ -83,18 +83,42 @@ def _historical_read(session, scope, call_id, read_kind, *, deny):
     return _completed_read(session, run, scope, call_id, read_kind, deny=deny)
 
 
+def reconciled_epoch(session, run, *, deny):
+    """The epoch a technically reconciled Run's reads were sealed under, else None.
+
+    Reconciliation closes the Run and advances cancel_epoch by one; its reads keep
+    the earlier epoch. Only the server-written run_reconciled event is trusted.
+    """
+    if run.reverted_at or run.state not in {"failed", "partial"}:
+        return None
+    from .run_reconciliation import completed_record
+
+    record = completed_record(session, run)
+    if record is None:
+        return None
+    original = record["original_cancel_epoch"]
+    if type(original) is not int or run.cancel_epoch != original + 1:
+        deny("archive_epoch_invalid")
+    return original
+
+
 def archived_citation_read(session, scope, call_id, *, deny):
     """Only provenance for reissuing search metadata, never an execution/write proof.
 
-    Cancellation prevents all new work in that Run. Its sealed completed reads
-    can still identify sources for a new Run, which reauthorizes and extracts
-    them afresh. Business/compute/extraction proof consumers retain the strict
-    _historical_read entry point.
+    Cancellation and technical reconciliation prevent all new work in that Run. Its
+    sealed completed reads can still identify sources for a new Run, which
+    reauthorizes and extracts them afresh. Business/compute/extraction proof
+    consumers retain the strict _historical_read entry point.
     """
     run = session.get(AgentRun, scope.run_id)
     if run is None or scope != scope_for_run(run) or run.reverted_at:
         deny("archive_scope_invalid")
-    if run.state not in {"failed", "cancelled"}:
+    reconciled = reconciled_epoch(session, run, deny=deny)
+    if reconciled is not None:
+        actual, call, binding, arguments = _completed_read(
+            session, run, scope, call_id, "ordinary/v1", deny=deny, epoch=reconciled
+        )
+    elif run.state not in {"failed", "cancelled"}:
         actual, call, binding, arguments = _historical_read(
             session, scope, call_id, "ordinary/v1", deny=deny
         )
