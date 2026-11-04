@@ -105,3 +105,28 @@ def test_pilot_removal_or_revoked_manager_blocks_prepared_self_decision(work):
             )
         ).product_manager = False
     assert post(work, preview.json()["command"]).status_code != 200
+
+
+def test_pilot_self_review_is_listed_under_decide_and_blocked_after_the_pilot_ends(work):
+    """D25: a P27 self-review reaches the owner's own decide queue."""
+
+    def decide_queue():
+        response = work.client.get(
+            "/v1/personal/attention",
+            params={"queue": "decide", "page_size": 20},
+            headers=work.headers,
+        )
+        assert response.status_code == 200, response.text
+        return [item for item in response.json()["items"] if item["kind"] == "g0_review"]
+
+    admit(work)
+    pid, _ = create(work)
+    save(work, self_submit(work, pid))
+    (item,) = decide_queue()
+    assert item["source"]["id"] == pid and item["responsible"]["id"] == str(work.human)
+    assert item["blocked"] is None
+
+    with Session(work.admin) as s, s.begin():
+        s.get(TenantPilotAdmission, work.tenant).active = False
+    (item,) = decide_queue()
+    assert item["blocked"]["code"] == "NAMED_DECISION_REQUIRED"

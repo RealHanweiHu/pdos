@@ -25,6 +25,7 @@ from pdos_next.domain.change.completion_schemas import (
 from pdos_next.domain.change.control.handlers import ChangeControlHandler
 from pdos_next.domain.change.control.ports import Invocation, Outcome, Policy, Ports
 from pdos_next.domain.change.control.rules import digest, graph_sources, replace
+from pdos_next.domain.change.disciplines import require_signing_roles
 from pdos_next.domain.change.execution import adapters
 from pdos_next.domain.change.execution import service as old
 from pdos_next.domain.change.execution.graph import OwnerReader
@@ -201,6 +202,7 @@ def _policy(s, ctx, pid, scope, purpose, row, request, callbacks, *, previous=No
         "CHANGE_POLICY_OWNER_REQUIRED",
         503,
     )
+    require_signing_roles(value.required_disciplines)
     require(
         not (
             value.visibility == "private"

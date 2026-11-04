@@ -37,7 +37,20 @@ def external_pending(receipt_count, sent, accepted, effective):
 
 
 def _g0(ctx):
+    from pdos_next.agent.kernel.models import TenantPilotAdmission
+
     submission = ProposalSubmission
+    # P27: in an active pilot the owner may review their own proposal. A self-review
+    # stays listed after the pilot ends, blocked with the decision command's reason.
+    self_review = submission.reviewer_id == Proposal.owner_id
+    pilot = (
+        select(TenantPilotAdmission.tenant_id)
+        .where(
+            TenantPilotAdmission.tenant_id == Proposal.tenant_id,
+            TenantPilotAdmission.active.is_(True),
+        )
+        .exists()
+    )
     current_reviewer = (
         select(Grant.id)
         .where(
@@ -79,9 +92,17 @@ def _g0(ctx):
                 responsible_id=submission.reviewer_id,
                 responsibility="named_reviewer",
                 target="proposal",
-                blocked_code=case((not_(current_reviewer), "FORBIDDEN_SCOPE"), else_=None),
+                blocked_code=case(
+                    (not_(current_reviewer), "FORBIDDEN_SCOPE"),
+                    (and_(self_review, not_(pilot)), "NAMED_DECISION_REQUIRED"),
+                    else_=None,
+                ),
                 blocked_message=case(
                     (not_(current_reviewer), "当前评审人缺少品类产品管理办理权限，请核对授权。"),
+                    (
+                        and_(self_review, not_(pilot)),
+                        "试点已停用，负责人不能再评审本人提案，请改为提交给另一位产品经理。",
+                    ),
                     else_=None,
                 ),
                 details=func.jsonb_build_object(
@@ -111,7 +132,6 @@ def _g0(ctx):
             Proposal.tenant_id == ctx.tenant_id,
             Proposal.status == "in_review",
             submission.reviewer_id == ctx.requester_id,
-            Proposal.owner_id != ctx.requester_id,
             not_(decided),
         )
     )

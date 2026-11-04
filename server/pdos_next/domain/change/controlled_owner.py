@@ -23,6 +23,7 @@ from pdos_next.domain.change import field_selection as field
 from pdos_next.domain.change import order_store as outputs
 from pdos_next.domain.change.control.rules import digest
 from pdos_next.domain.change.controlled_schemas import FieldIntentTarget, FieldSelectionMaterial
+from pdos_next.domain.change.disciplines import require_signing_roles
 from pdos_next.domain.change.execution import service as old
 from pdos_next.domain.change.execution.graph import OwnerReader
 from pdos_next.domain.change.implementation_owner import _atom_proof, _json, common_group
@@ -631,6 +632,7 @@ def import_policy(s, ctx, pid, payload, *, command_id, request_key):
         "CONTROLLED_POLICY_SCOPE_MISMATCH",
         403,
     )
+    require_signing_roles(value.required_disciplines)
     auth, auth_until = authority(s, ctx, pid, scope, models.POLICY_OPERATION, data.purpose)
     require(
         "quality" in auth["roles"]

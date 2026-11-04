@@ -33,7 +33,8 @@ def test_g0_is_one_exact_undecided_current_submission_for_the_named_reviewer():
     assert "proposal_submissions.id = proposals.current_submission_id" in sql
     assert "proposal_submissions.owner_id = proposals.owner_id" in sql
     assert "proposals.status = 'in_review'" in sql
-    assert "proposal_submissions.reviewer_id =" in sql and "proposals.owner_id !=" in sql
+    assert "proposal_submissions.reviewer_id =" in sql and "proposals.owner_id !=" not in sql
+    assert "tenant_pilot_admissions.active IS true" in sql and "NAMED_DECISION_REQUIRED" in sql
     assert "proposal_decisions.submission_id = proposal_submissions.id" in sql
     assert "NOT (EXISTS" in sql
     assert "grants.can_write IS true" in sql and "grants.product_manager IS true" in sql
