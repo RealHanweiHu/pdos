@@ -340,3 +340,41 @@ def test_terminal_usage_never_accepts_incomplete_or_unbound_stream(corruption):
         assert failure.value.unknown
     finally:
         client.close()
+
+
+def finish_with(arguments):
+    value = output_reply()
+    value["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"] = arguments
+    return value
+
+
+def final(result_json):
+    return json.dumps({"status": "completed", "summary": "synthetic", "result_json": result_json,
+                       "questions": [], "unfinished": []})
+
+
+@pytest.mark.parametrize("broken", ['{"a": 1 "b": 2}', '{"a": 1}}', '{"a": 1, "a": 2}', "[1]"])
+def test_malformed_result_json_is_a_known_turn_sent_to_format_repair(broken):
+    """D244: a complete reply is billable and repairable, never an unknown outcome."""
+    from pydantic import ValidationError
+
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    turn = parse_turn(finish_with(final(broken)), minimax())
+    assert turn.usage.output_tokens == 5 and turn.request_id
+    assert turn.structured["result"] is None and "result_json" not in turn.structured
+    with pytest.raises(ValidationError):
+        AgentOutput.model_validate(turn.structured)
+
+
+def test_empty_result_object_stays_valid():
+    turn = parse_turn(finish_with(final("{}")), minimax())
+    assert turn.structured["result"] == {}
+
+
+@pytest.mark.parametrize("text", ["只是一段纯文本回答", "[1, 2]", ""])
+def test_plain_text_final_is_a_known_turn_with_an_empty_object(text):
+    value = reply("openai-compatible")
+    value["choices"][0]["message"]["content"] = text
+    turn = parse_turn(value, route("openai-compatible"))
+    assert turn.structured == {} and turn.usage.output_tokens == 5

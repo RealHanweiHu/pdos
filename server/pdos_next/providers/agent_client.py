@@ -233,16 +233,19 @@ def parse_turn(body, route, request_id=None):
             or usage.output_tokens > route.max_output_tokens
         ):
             raise ValueError("Duplicate call or output limit")
+        # D244: by here the reply is complete and its usage known. A final object the
+        # model wrote badly (re-escaped result_json, or plain text instead of JSON) is
+        # still a known, billable turn. Leaving the business result out sends it to the
+        # graph's bounded format repair instead of an unknown outcome and reconciliation.
         structured = native_output if native_output is not None else (
-            json_value(text) if not calls else None
+            (_final_object(text) or {}) if not calls else None
         )
         if isinstance(structured, dict) and "result_json" in structured:
-            decoded = json_value(structured.pop("result_json"))
-            if not isinstance(decoded, dict):
-                raise ValueError("Business result object required")
-            structured["result"] = decoded
+            # None (not an object) fails AgentOutput, so verification asks for a repair;
+            # an absent result would silently default to an empty one.
+            structured["result"] = _final_object(structured.pop("result_json"))
         if not calls and not isinstance(structured, dict):
-            raise ValueError("Structured final object required")
+            structured = {}
         return ModelTurn(text, tuple(calls), usage, valid_request_id, structured,
                          continuation=continuation)
     except ProviderError as error:
@@ -252,6 +255,15 @@ def parse_turn(body, route, request_id=None):
         raise ProviderError(
             "PROVIDER_INVALID_RESPONSE", unknown=True, request_id=valid_request_id
         ) from None
+
+
+def _final_object(content):
+    """The model's final JSON object, or None when it did not write one (D244)."""
+    try:
+        value = json_value(content) if isinstance(content, str | bytes) else None
+    except (ValueError, RecursionError):
+        return None
+    return value if isinstance(value, dict) else None
 
 
 class StreamAccumulator:
