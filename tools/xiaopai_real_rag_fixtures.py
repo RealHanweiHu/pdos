@@ -171,7 +171,7 @@ def _read(person, path, **params):
 
 def _human_work(person, operation, payload, *, external=False):
     """Use the existing public inputs/preview/commit contract, never business INSERTs."""
-    from test_project_first_plan import accepted, cmd, post
+    from projects.test_project_first_plan import accepted, cmd, post
 
     root = f"/v1/categories/{person.category}/products/{person.product}/project-work"
     response = person.client.post(root + ("/external-waits" if external else "") + "/inputs",
@@ -190,9 +190,9 @@ def _human_work(person, operation, payload, *, external=False):
 
 
 def _native_project(person, bound, *, name, source_alias, configuration_name):
+    from builds.test_builds import build_command, listed
     from g0_fixture import create_g0_project
-    from test_builds import build_command, listed
-    from test_project_first_plan import accepted, cmd
+    from projects.test_project_first_plan import accepted, cmd
 
     person = copy(person)  # G0 sets product on its fixture; preserve the caller's scope.
     project = create_g0_project(person, visibility="category", name=name,
@@ -235,7 +235,7 @@ def _native_project(person, bound, *, name, source_alias, configuration_name):
 
 
 def _current_fixture(person, project, exact, *, summary, task_title):
-    from test_project_first_plan import accepted, cmd
+    from projects.test_project_first_plan import accepted, cmd
 
     payload = {"project_id": str(project.project_id), "sources": [{
         "kind": "artifact", "id": exact["artifact_id"], "revision": exact["expected_revision"],
@@ -273,6 +273,95 @@ def _enter_fixture(stack, fixture, *arguments):
     return value
 
 
+def _supply_binding(m2, m2_project, m2_build, config, common, m2_truth, bound_sources):
+    """PUR-09 native supply capture, snapshot and external wait (Human commands only)."""
+    from projects.test_project_first_plan import accepted, cmd
+
+    # Current supply is a real Human capture/snapshot; the unchanged mail is
+    # its exact evidence, not a substituted current-domain tool response.
+    supply_source = bound_sources["pur_commitment"]
+    supply_exact = {"artifact_id": supply_source["source_id"],
+        "expected_revision": supply_source["source_revision"], "line": 1,
+        "quote": supply_source["source_body"].splitlines()[0]}
+    material = _read(m2, f"/v1/categories/{m2.category}/products/{m2.product}/configurations")
+    bom = next(row for row in material["boms"] if row["id"] == config["bom"]["subject_id"])
+    part = bom["lines"][0]["part_id"]
+    records = [{"record_kind": "commitment", "record_id": "RAG40-CBM2-240",
+        "material_id": part, "quantity": "240", "unit": "ea",
+        "supplier_id": "合成供应商澄岳电子", "expected_at": "2026-11-03T00:00:00Z",
+        "note": "具名捕获240片书面承诺，不是到货或独立证实的原因", "sources": [supply_exact]},
+        {"record_kind": "commitment", "record_id": "RAG40-CBM2-REMAINING-60",
+        "material_id": part, "quantity": "60", "unit": "ea",
+        "supplier_id": "合成供应商澄岳电子", "expected_at": None,
+        "note": "余60片交期未定，不能按旧批历史估算", "sources": [supply_exact]}]
+    root = f"/v1/categories/{m2.category}/products/{m2.product}"
+    captured = m2.client.post(root + "/supply-captures", headers=m2.headers, json={
+        "capture_key": str(uuid5(NAMESPACE_URL, str(m2.product) + ":rag40-supply")),
+        "expected_product_revision": 1, "build_id": m2_build["id"],
+        "expected_build_revision": m2_build["revision"],
+        "reason": "RAG40具名合成供应承诺捕获，未宣称收货", "records": records})
+    if captured.status_code != 200:
+        raise ValueError(f"Supply capture failed: {captured.status_code}: {captured.text}")
+    capture = captured.json()
+    command = cmd(m2, "supply.snapshot.record", capture["snapshot_record_payload"])
+    command["source_read_set"] = capture["required_source_read_set"]
+    supply_receipt, _ = accepted(m2, command)
+    wait_payload = {"project_id": str(m2_project.project_id), "sources": [{
+        "kind": "artifact", "id": supply_exact["artifact_id"],
+        "revision": supply_exact["expected_revision"],
+        "position": "line:1;quote_sha256:" + sha256(supply_exact["quote"].encode()).hexdigest(),
+    }], "reason": "RAG40内部等待登记，无真实发信或供应商联系", "wait": None,
+        "record": {"action": "create", "title": "控制板余60片交期待确认",
+            "target": "合成供应商澄岳电子", "request_content": "待本人确认后询问余60片交期",
+            "closure_condition": "具名登记可核验交期或明确仍未知", "blocking": True,
+            "next_check_at": None, "original_timezone": "Asia/Shanghai", "calendar": None,
+            "milestone": None, "build": None, "replaces": None}}
+    wait = _human_work(m2, "work.external_wait.record", wait_payload, external=True)
+    supply_truth = {"capture": capture, "snapshot_receipt": supply_receipt,
+                    "external_wait_receipt": wait,
+                    "external_waits": _read(m2, root + "/project-work/external-waits",
+                                             project_id=str(m2_project.project_id))}
+    return {**common, "current_truth_evidence": m2_truth,
+            "supply_wait_evidence": supply_truth}
+
+
+
+def _quality_binding(person, stack, tmp_path):
+    """QUA-09/10 via the existing native result -> Issue -> CAPA fixture chain."""
+    import pytest
+    from builds.operational_facts import fixtures as operational
+    from builds.start import test_transactions as build_start
+    from quality.execution import fixtures as quality
+    from verification.handoff import fixtures as handoff
+    from verification.results import fixtures as results
+
+    # Reuse the complete real fixture chain rather than fabricate a failure,
+    # Issue, CAPA, professional decision, READ result, or execution receipt.
+    qperson = copy(person)
+    qconfig = handoff.known_configuration.__wrapped__(qperson)
+    op = _enter_fixture(stack, operational.operational_work, qperson, qconfig)
+    ready = _enter_fixture(stack, build_start.ready_work, op)
+    patch = pytest.MonkeyPatch()
+    stack.callback(patch.undo)
+    accepted_work = _enter_fixture(stack, results.accepted_work, ready, patch)
+    launch_work = _enter_fixture(stack, results.launch_work, accepted_work,
+                                 SimpleNamespace(node=SimpleNamespace()), patch)
+    result_work = _enter_fixture(stack, results.results_work, launch_work, patch, tmp_path)
+    quality_work = _enter_fixture(stack, quality.quality_work, result_work)
+    quality.publish_policy(quality_work)
+    issue, _ = quality.create_issue(quality_work, title="青岑M2壳体裂纹合成问题")
+    capa_receipt, issue_view = quality.draft_capa(quality_work, issue)
+    qtruth = {"issue_create_receipt": issue, "capa_receipt": capa_receipt,
+              "current_issue": issue_view, "quality_reading": quality.listing(quality_work),
+              "underlying_measurements": "Existing native synthetic 23 C dry numeric failure "
+                  "fixture; current Issue/CAPA status is evaluated, not corpus QI quantities"}
+    qcommon = {"product_id": str(qperson.product), "project_id": quality_work.config["project"]}
+    bindings = {"QUA-09": {**qcommon, "current_truth_evidence": qtruth,
+                            "issue_capa_evidence": qtruth},
+                "QUA-10": dict(qcommon)}
+    return bindings, {"QUA-09": quality_work.quality, "QUA-10": qperson}
+
+
 @contextmanager
 def native_bindings(person, bound_sources, tmp_path):
     """Root-only legal native setup for all eight dependent cases; zero inference.
@@ -284,14 +373,7 @@ def native_bindings(person, bound_sources, tmp_path):
     Parent Run/citation IDs are deliberately obtained later from actual model
     answers via bind_action_parents(), not seeded into the Agent ledger.
     """
-    import pytest
-    from build_operational_facts import fixtures as operational
-    from build_start import test_transactions as build_start
     from pdos_next.core.safety import verify_test_target
-    from quality_execution import fixtures as quality
-    from test_project_first_plan import accepted, cmd
-    from verification_handoff import fixtures as handoff
-    from verification_results import fixtures as results
 
     verify_test_target(person.admin)
     verify_test_target(person.engine)
@@ -323,80 +405,20 @@ def native_bindings(person, bound_sources, tmp_path):
         bindings["PUR-10"] = dict(common)
         actors.update({key: m2 for key in ("PRD-09", "PRD-10", "PUR-09", "PUR-10")})
 
-        # Current supply is a real Human capture/snapshot; the unchanged mail is
-        # its exact evidence, not a substituted current-domain tool response.
-        supply_source = bound_sources["pur_commitment"]
-        supply_exact = {"artifact_id": supply_source["source_id"],
-            "expected_revision": supply_source["source_revision"], "line": 1,
-            "quote": supply_source["source_body"].splitlines()[0]}
-        material = _read(m2, f"/v1/categories/{m2.category}/products/{m2.product}/configurations")
-        bom = next(row for row in material["boms"] if row["id"] == config["bom"]["subject_id"])
-        part = bom["lines"][0]["part_id"]
-        records = [{"record_kind": "commitment", "record_id": "RAG40-CBM2-240",
-            "material_id": part, "quantity": "240", "unit": "ea",
-            "supplier_id": "合成供应商澄岳电子", "expected_at": "2026-11-03T00:00:00Z",
-            "note": "具名捕获240片书面承诺，不是到货或独立证实的原因", "sources": [supply_exact]},
-            {"record_kind": "commitment", "record_id": "RAG40-CBM2-REMAINING-60",
-            "material_id": part, "quantity": "60", "unit": "ea",
-            "supplier_id": "合成供应商澄岳电子", "expected_at": None,
-            "note": "余60片交期未定，不能按旧批历史估算", "sources": [supply_exact]}]
-        root = f"/v1/categories/{m2.category}/products/{m2.product}"
-        captured = m2.client.post(root + "/supply-captures", headers=m2.headers, json={
-            "capture_key": str(uuid5(NAMESPACE_URL, str(m2.product) + ":rag40-supply")),
-            "expected_product_revision": 1, "build_id": m2_build["id"],
-            "expected_build_revision": m2_build["revision"],
-            "reason": "RAG40具名合成供应承诺捕获，未宣称收货", "records": records})
-        if captured.status_code != 200:
-            raise ValueError(f"Supply capture failed: {captured.status_code}: {captured.text}")
-        capture = captured.json()
-        command = cmd(m2, "supply.snapshot.record", capture["snapshot_record_payload"])
-        command["source_read_set"] = capture["required_source_read_set"]
-        supply_receipt, _ = accepted(m2, command)
-        wait_payload = {"project_id": str(m2_project.project_id), "sources": [{
-            "kind": "artifact", "id": supply_exact["artifact_id"],
-            "revision": supply_exact["expected_revision"],
-            "position": "line:1;quote_sha256:" + sha256(supply_exact["quote"].encode()).hexdigest(),
-        }], "reason": "RAG40内部等待登记，无真实发信或供应商联系", "wait": None,
-            "record": {"action": "create", "title": "控制板余60片交期待确认",
-                "target": "合成供应商澄岳电子", "request_content": "待本人确认后询问余60片交期",
-                "closure_condition": "具名登记可核验交期或明确仍未知", "blocking": True,
-                "next_check_at": None, "original_timezone": "Asia/Shanghai", "calendar": None,
-                "milestone": None, "build": None, "replaces": None}}
-        wait = _human_work(m2, "work.external_wait.record", wait_payload, external=True)
-        supply_truth = {"capture": capture, "snapshot_receipt": supply_receipt,
-                        "external_wait_receipt": wait,
-                        "external_waits": _read(m2, root + "/project-work/external-waits",
-                                                 project_id=str(m2_project.project_id))}
-        bindings["PUR-09"] = {**common, "current_truth_evidence": m2_truth,
-                              "supply_wait_evidence": supply_truth}
-
-        # Reuse the complete real fixture chain rather than fabricate a failure,
-        # Issue, CAPA, professional decision, READ result, or execution receipt.
-        qperson = copy(person)
-        qconfig = handoff.known_configuration.__wrapped__(qperson)
-        op = _enter_fixture(stack, operational.operational_work, qperson, qconfig)
-        ready = _enter_fixture(stack, build_start.ready_work, op)
-        patch = pytest.MonkeyPatch()
-        stack.callback(patch.undo)
-        accepted_work = _enter_fixture(stack, results.accepted_work, ready, patch)
-        launch_work = _enter_fixture(stack, results.launch_work, accepted_work,
-                                     SimpleNamespace(node=SimpleNamespace()), patch)
-        result_work = _enter_fixture(stack, results.results_work, launch_work, patch, tmp_path)
-        quality_work = _enter_fixture(stack, quality.quality_work, result_work)
-        quality.publish_policy(quality_work)
-        issue, _ = quality.create_issue(quality_work, title="青岑M2壳体裂纹合成问题")
-        capa_receipt, issue_view = quality.draft_capa(quality_work, issue)
-        qtruth = {"issue_create_receipt": issue, "capa_receipt": capa_receipt,
-                  "current_issue": issue_view, "quality_reading": quality.listing(quality_work),
-                  "underlying_measurements": "Existing native synthetic 23 C dry numeric failure "
-                      "fixture; current Issue/CAPA status is evaluated, not corpus QI quantities"}
-        qcommon = {"product_id": str(qperson.product), "project_id": quality_work.config["project"]}
-        bindings["QUA-09"] = {**qcommon, "current_truth_evidence": qtruth,
-                              "issue_capa_evidence": qtruth}
-        bindings["QUA-10"] = dict(qcommon)
-        actors["QUA-09"] = quality_work.quality
-        actors["QUA-10"] = qperson
-        yield {"bindings": bindings, "person_by_case": actors,
+        blocked = {}
+        try:
+            bindings["PUR-09"] = _supply_binding(m2, m2_project, m2_build, config, common,
+                                                 m2_truth, bound_sources)
+        except Exception as error:  # a missing native port blocks only this case
+            blocked["PUR-09"] = f"{type(error).__name__}: {str(error)[:300]}"
+        try:
+            quality_bindings, quality_actors = _quality_binding(person, stack, tmp_path)
+            bindings.update(quality_bindings)
+            actors.update(quality_actors)
+        except Exception as error:
+            for case in ("QUA-09", "QUA-10"):
+                blocked[case] = f"{type(error).__name__}: {str(error)[:300]}"
+        yield {"bindings": bindings, "person_by_case": actors, "blocked": blocked,
                "parent_case_ids": PARENTS, "real_model_calls": 0,
                "setup_boundary": "Human synthetic fixture commands only; no inference, "
                     "Agent qualification, actual external delivery or production enablement"}
@@ -443,7 +465,11 @@ def build_run_specs(category_id, *, namespace, native_bindings=None):
         payload = {"goal": case["prompt"], "idempotency_key": str(uuid5(
             NAMESPACE_URL, f"{namespace}:rag40:run:{case['id']}",
         ))}
-        for key in ("product_id", "project_id", "continue_from_run_id"):
+        # A continued Run takes only the parent, goal and optional new sources; the
+        # server carries product/project scope over (agent/kernel/conversation.py).
+        scoped = ("continue_from_run_id",) if binding.get("continue_from_run_id") else (
+            "product_id", "project_id")
+        for key in scoped:
             if binding.get(key):
                 payload[key] = str(UUID(str(binding[key])))
         if case["evaluation"] == "workflow" and not missing:
@@ -451,7 +477,8 @@ def build_run_specs(category_id, *, namespace, native_bindings=None):
             if case["id"] in {"ENG-10", "PRD-10"}:
                 payload["verification_action"] = {**action, "selection": binding["selection"]}
             else:
-                payload["work_followup_action"] = {**action, "project_id": payload["project_id"]}
+                payload["work_followup_action"] = {
+                    **action, "project_id": str(UUID(str(binding["project_id"])))}
         specs.append({
             "case_id": case["id"], "actor": case["actor"], "role": case["role"],
             "evaluation": case["evaluation"], "slice": case["slice"],

@@ -23,6 +23,8 @@ from sqlalchemy.orm import Session
 
 ROOT = Path(__file__).resolve().parents[1]
 EVIDENCE = ROOT / 'docs/reports/evidence/pdos-next-real-eval-20261101/live'
+# Which evaluation runtime's API to call; defaults to runtime A.
+RUNTIME = Path(os.environ.get('REAL_EVAL_RUNTIME', EVIDENCE / 'runtime.json'))
 PRIVATE = ROOT / '.local/real-eval-20261101'
 TENANT = UUID('78340ac0-57c2-4235-87c6-a468dd3d8173')
 
@@ -60,8 +62,8 @@ def save_command(person, operation, payload, *, revision=1):
 
 
 def person_from(value, state):
-    runtime = json.loads((EVIDENCE/'runtime.json').read_text())
-    client = httpx.Client(base_url=runtime['api_base'], timeout=60)
+    runtime = json.loads(RUNTIME.read_text())
+    client = httpx.Client(base_url=runtime['api_base'], timeout=180)
     tokens = {UUID(key):token for key,token in value['tokens'].items()}
     ids = {key:UUID(value[key]) for key in ('tenant','human','peer','agent','category','product')}
     return SimpleNamespace(**ids, tokens=tokens, headers={'Authorization':'Bearer '+tokens[ids['human']]},
@@ -75,7 +77,7 @@ def new_person(label, state=None):
     path = PRIVATE / ('person-'+label+'.json')
     if path.exists():
         return person_from(json.loads(path.read_text()),state)
-    runtime = json.loads((EVIDENCE/'runtime.json').read_text())
+    runtime = json.loads(RUNTIME.read_text())
     admin = engine_for(state['admin_url'])
     tokens = {}
     human,peer = uuid4(),uuid4()
@@ -91,7 +93,7 @@ def new_person(label, state=None):
             session.add(LoginSession(token_hash=digest(token),tenant_id=TENANT,principal_id=identity,
                                      expires_at=datetime.now(UTC)+timedelta(days=7)))
             session.add(TenantAdministrator(tenant_id=TENANT,principal_id=identity,active=True))
-    client=httpx.Client(base_url=runtime['api_base'],timeout=60)
+    client=httpx.Client(base_url=runtime['api_base'],timeout=180)
     headers={'Authorization':'Bearer '+tokens[str(human)]}
     body={'key':'real-eval-'+label.lower().replace('_','-')+'-'+uuid4().hex[:8],
           'name':'真实模型合成评测 '+label, 'purpose':'现有52题合成资料隔离验证，不代表真实业务或模型资格。',
@@ -127,6 +129,21 @@ def new_person(label, state=None):
     return person
 
 
+def restore_configuration(person):
+    """Put back the pre-evaluation context window (the only field set_focus changed)."""
+    path=f'/v1/categories/{person.category}/model-configuration'
+    reading=response_json(person.client.get(path,headers=person.headers))
+    current=reading['configuration']
+    original=json.loads((PRIVATE/'original-model-configuration.json').read_text())
+    metadata=current['metadata'].copy()
+    metadata['context_window_tokens']=original['metadata']['context_window_tokens']
+    receipt=save_command(person,'model.configuration.save',{'expected_revision':current['revision'],
+        'metadata':metadata,'enabled':True},revision=reading['category_revision'])
+    after=response_json(person.client.get(path,headers=person.headers))['configuration']
+    print(json.dumps({'restored_context_window':after['metadata']['context_window_tokens'],
+                      'revision':after['revision'],'receipt_id':receipt['id']}),flush=True)
+
+
 def set_focus(person, focus):
     path=f'/v1/categories/{person.category}/model-configuration'
     reading=response_json(person.client.get(path,headers=person.headers))
@@ -144,7 +161,7 @@ def set_focus(person, focus):
     print('focus configured',focus,'revision',result['configuration']['revision'],flush=True)
 
 
-def run_request(person, case_id, payload, *, label=None, timeout=600):
+def run_request(person, case_id, payload, *, label=None, timeout=1800):
     folder=EVIDENCE/'runs';folder.mkdir(exist_ok=True)
     filename=folder/((label or case_id)+'.json')
     if filename.exists():return json.loads(filename.read_text())
@@ -204,8 +221,7 @@ def capture_run(person, result):
                            'sequence':event.sequence,'body':event.body} for event in events]
         result['held_tokens']=row.held_tokens
         result['used_tokens']=row.used_tokens
-    observations=EVIDENCE/'provider-observations.jsonl'
-    samples=[json.loads(line) for line in observations.read_text().splitlines()] if observations.exists() else []
+    samples=load_observations()
     by_request={sample.get('request_id'):sample for sample in samples
                 if sample.get('run_id')==str(run_id) and sample.get('request_id')}
     for call in result['tool_calls']:
@@ -247,47 +263,470 @@ def actor_person(person,actor):
     return selected
 
 
-def run_rag_ready(state, *, only=None):
+def attempt_names(attempt):
+    """a1 keeps the original 11-01 file names; later attempts get a fresh category and corpus."""
+    if attempt=='a1':
+        return SimpleNamespace(person='rag40',bound='bound-rag-sources.json',
+                               namespace='real-eval-rag40-F64000-v1',label='rag-',
+                               scores='rag-ready-mechanical-scores.json')
+    return SimpleNamespace(person='rag40-'+attempt,bound=f'bound-rag-sources-{attempt}.json',
+                           namespace=f'real-eval-rag40-F64000-{attempt}',label=f'{attempt}-rag-',
+                           scores=f'rag-ready-mechanical-scores-{attempt}.json')
+
+
+def seed_rag(state, attempt):
     import xiaopai_real_rag_fixtures as rag
 
-    person=new_person('rag40',state)
-    bound=json.loads((EVIDENCE/'bound-rag-sources.json').read_text())
-    specs=rag.build_run_specs(person.category,namespace='real-eval-rag40-F64000-v1')['cases']
+    names=attempt_names(attempt)
+    person=new_person(names.person,state)
+    output=EVIDENCE/names.bound
+    if not output.exists():
+        bound=rag.seed_corpus(person)
+        output.write_text(json.dumps(bound,ensure_ascii=False,indent=2)+'\n')
+    print('RAG corpus prepared',str(output),flush=True)
+    return person
+
+
+def run_rag_ready(state, *, only=None, attempt='a1', workers=2):
+    import xiaopai_real_rag_fixtures as rag
+
+    names=attempt_names(attempt)
+    person=new_person(names.person,state)
+    bound=json.loads((EVIDENCE/names.bound).read_text())
+    assert bound['category_id']==str(person.category)
+    specs=rag.build_run_specs(person.category,namespace=names.namespace)['cases']
     specs=[spec for spec in specs if spec['status']=='ready' and (not only or spec['case_id'] in only)]
     def one(spec):
         own=actor_person(person,spec['actor'])
-        result=run_request(own,spec['case_id'],spec['request']['json'],label='rag-'+spec['case_id'])
-        result.update(suite='rag40',role=spec['role'],slice=spec['slice'],focus=64000,
+        result=run_request(own,spec['case_id'],spec['request']['json'],label=names.label+spec['case_id'])
+        result.update(suite='rag40',attempt=attempt,role=spec['role'],slice=spec['slice'],focus=64000,
                       native_binding_status='bound',case_sha256=spec['case_sha256'],
                       expected_sha256=spec['expected_sha256'])
         return capture_run(own,result)
     results=[]
-    with ThreadPoolExecutor(max_workers=2) as executor:
+    with ThreadPoolExecutor(max_workers=workers) as executor:
         futures={executor.submit(one,spec):spec for spec in specs}
         for future in as_completed(futures):
             results.append(future.result())
-    (EVIDENCE/'rag-ready-mechanical-scores.json').write_text(json.dumps(
-        rag.score_observations(bound['bound_sources'],results),ensure_ascii=False,indent=2)+'\n')
+    if not only:
+        (EVIDENCE/names.scores).write_text(json.dumps(
+            rag.score_observations(bound['bound_sources'],results),ensure_ascii=False,indent=2)+'\n')
     return results
+
+
+def run_rag_native(state, *, attempt, workers=2):
+    """Eight dependent cases: native Human fixtures, in-project parents, then actual citations.
+
+    Resumes from the saved setup record: finished Runs come from their run files, and the
+    native projects are not created again. A request the server refuses is recorded.
+    """
+    from contextlib import nullcontext
+    from uuid import NAMESPACE_URL, uuid5
+
+    import xiaopai_real_rag_fixtures as rag
+
+    names=attempt_names(attempt)
+    person=new_person(names.person,state)
+    bound=json.loads((EVIDENCE/names.bound).read_text())
+    assert bound['category_id']==str(person.category)
+    questions,_,_=rag.frozen_inputs()
+    cases={case['id']:case for case in questions['questions']}
+    record_path=EVIDENCE/f'rag-native-{attempt}.json'
+    saved=json.loads(record_path.read_text()) if record_path.exists() else None
+    record=saved or {'attempt':attempt,'category_id':str(person.category),'blocked':{},
+                     'parents':{}}
+    record.setdefault('refused',{})
+    def execute(actor,case_id,payload,label,spec_case):
+        try:
+            result=run_request(actor,case_id,payload,label=label)
+        except RuntimeError as error:
+            record['refused'][label]={'case_id':case_id,'refusal':str(error)[:800]}
+            print(json.dumps({'case':case_id,'label':label,'refused':str(error)[:200]},
+                             ensure_ascii=False),flush=True)
+            return None
+        spec=cases[spec_case]
+        result.update(suite='rag40',attempt=attempt,role=spec['role'],slice=spec['slice'],
+                      focus=64000,native_binding_status='bound',case_sha256=rag.digest(spec))
+        return capture_run(actor,result)
+    resume=saved is not None and 'bindings' in saved
+    context=nullcontext({'bindings':saved['bindings'],'person_by_case':{},
+                         'blocked':saved['blocked']}) if resume else rag.native_bindings(
+        person,bound['bound_sources'],PRIVATE/f'native-{attempt}')
+    with context as native:
+        bindings=native['bindings']
+        # Native project actors are copies of the same owner; HTTP needs only its identity.
+        actors={case:native['person_by_case'].get(case,person) for case in rag.NATIVE}
+        record['blocked'].update(native.get('blocked',{}))
+        record['bindings']=json.loads(json.dumps(bindings,ensure_ascii=False,default=str))
+        record_path.write_text(json.dumps(record,ensure_ascii=False,indent=2,default=str)+'\n')
+        print(json.dumps({'native_setup':sorted(bindings),'resumed':resume,
+                          'blocked':record['blocked']},ensure_ascii=False),flush=True)
+        specs={spec['case_id']:spec for spec in rag.build_run_specs(
+            person.category,namespace=names.namespace,native_bindings=bindings)['cases']}
+        first=[]
+        for case_id in ('ENG-09','QUA-09','PRD-09','PUR-09'):
+            if specs[case_id]['status']!='ready':
+                record['blocked'].setdefault(case_id,'missing '+','.join(
+                    specs[case_id]['missing_native_bindings']))
+                continue
+            first.append((actors[case_id],case_id,specs[case_id]['request']['json'],
+                          names.label+case_id,case_id))
+        for child,parent in rag.PARENTS.items():
+            if child not in bindings:
+                record['blocked'].setdefault(child,'native project binding unavailable')
+                continue
+            payload={'goal':cases[parent]['prompt'],'idempotency_key':str(uuid5(
+                NAMESPACE_URL,f'{names.namespace}:rag40:parent:{child}:{parent}')),
+                'product_id':bindings[child]['product_id'],
+                'project_id':bindings[child]['project_id']}
+            first.append((actors[child],parent,payload,f'{names.label}{parent}-for-{child}',parent))
+        done={}
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures={executor.submit(execute,*item):item for item in first}
+            for future in as_completed(futures):
+                value=future.result()
+                if value is not None:
+                    done[futures[future][3]]=value
+        bound_children={}
+        for child,parent in rag.PARENTS.items():
+            if f'{names.label}{parent}-for-{child}' not in done:
+                continue
+            parent_result=done[f'{names.label}{parent}-for-{child}']
+            record['parents'][child]={'parent':parent,'run_id':parent_result['run_id'],
+                                      'status':parent_result['status']}
+            try:
+                bound_children[child]=rag.bind_action_parents(
+                    {child:bindings[child]},{parent:parent_result},bound['bound_sources'])[child]
+            except ValueError as error:
+                record['blocked'][child]=str(error)
+        specs={spec['case_id']:spec for spec in rag.build_run_specs(
+            person.category,namespace=names.namespace,native_bindings=bound_children)['cases']}
+        second=[(actors[child],child,specs[child]['request']['json'],names.label+child,child)
+                for child in bound_children if specs[child]['status']=='ready']
+        for child in bound_children:
+            if specs[child]['status']!='ready':
+                missing=specs[child]['missing_native_bindings']
+                record['blocked'][child]='missing '+','.join(missing)
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            futures={executor.submit(execute,*item):item for item in second}
+            for future in as_completed(futures):
+                value=future.result()
+                if value is not None:
+                    done[futures[future][3]]=value
+    results=[done[names.label+case] for case in
+             ('ENG-09','QUA-09','PRD-09','PUR-09','ENG-10','QUA-10','PRD-10','PUR-10')
+             if names.label+case in done]
+    record['scores']=rag.score_observations(bound['bound_sources'],results)
+    record['finished']=True
+    record_path.write_text(json.dumps(record,ensure_ascii=False,indent=2,default=str)+'\n')
+    print(json.dumps({'native_done':len(results),'blocked':record['blocked'],
+                      'refused':sorted(record['refused'])},ensure_ascii=False),flush=True)
+    return results
+
+
+def current_focus(person):
+    reading=response_json(person.client.get(
+        f'/v1/categories/{person.category}/model-configuration',headers=person.headers))
+    return reading['configuration']['metadata']['context_window_tokens']-524_288-4000
+
+
+def settle_for_continuation(person, previous, limit=1200):
+    """A continued turn needs a terminal parent (conversation.py: completed/partial/failed/
+    cancelled). Await automatic reconciliation; an open question is cancelled the way a
+    person ignoring it and sending the next message would. Returns the recorded intervention."""
+    if previous['status'] not in {'waiting_input','observation_timeout'}:
+        return None
+    path=f"/v1/categories/{person.category}/agent-runs/{previous['run_id']}"
+    kinds=[event['body'].get('type') for event in previous.get('events',[])]
+    started=time.monotonic()
+    if previous['status']=='observation_timeout':
+        intervention='awaited_unobserved_completion'
+    elif 'reconciliation_required' in kinds[-3:]:
+        intervention='awaited_automatic_reconciliation'
+    else:
+        intervention='cancelled_open_question'
+        response_json(person.client.post(path+'/cancel',headers=person.headers))
+    while time.monotonic()-started<limit:
+        # Poll the ledger, not GET run: a reconciled run's own answer currently returns 403
+        # (cancel_epoch +1 on reconciliation vs. archived read proof; see the W1 report).
+        with Session(person.admin) as session:
+            current=session.get(AgentRun,UUID(previous['run_id'])).state
+        if current in {'completed','partial','failed','cancelled'}:
+            settled=capture_run(person,{**previous,'status':current,'state':current,
+                                       'settled_by':intervention})
+            return settled,{'intervention':intervention,'final_status':current,
+                            'waited_ms':(time.monotonic()-started)*1000}
+        time.sleep(5)
+    raise RuntimeError(f'{intervention} did not settle within {limit}s')
+
+
+def run_context_cell(state, case_id, focus, attempt):
+    """One context cell per runner-contract.md: native controls between actual continued Runs."""
+    import xiaopai_real_context_fixtures as fixtures
+
+    label=f'{attempt}-ctx-{case_id}-F{focus}'
+    folder=EVIDENCE/'context'
+    folder.mkdir(exist_ok=True)
+    summary_path=folder/(label+'.json')
+    spec_path=PRIVATE/f'context-spec-{label}.json'
+    resumed=None
+    if summary_path.exists():
+        summary=json.loads(summary_path.read_text())
+        if summary.get('finished'):
+            return summary
+        saved=json.loads(spec_path.read_text()) if spec_path.exists() else None
+        if saved is None or any(step['before'] or step['after'] for step in saved['steps']):
+            print(json.dumps({'cell':label,'skipped':'unfinished with native controls; '
+                              'rerun under a new --attempt'}),flush=True)
+            return summary
+        # Control-free cell (e.g. CTX-01): continue after the last captured step.
+        resumed=[step for step in summary['steps'] if step.get('run_id')]
+    person=new_person(f'ctx-{case_id.lower()}-f{focus}-{attempt}',state)
+    if resumed is None:
+        summary={'case_id':case_id,'focus':focus,'attempt':attempt,'label':label,
+                 'category_id':str(person.category),'steps':[],'blocked':None,'error':None}
+    else:
+        summary.update(steps=resumed,error=None,
+                       resumed_from=summary.get('resumed_from',[])+[len(resumed)])
+    try:
+        if resumed is None:
+            spec=fixtures.prepare_case(person,case_id,focus)
+            save_private(spec_path,json.loads(json.dumps(spec,ensure_ascii=False,default=str)))
+        else:
+            spec=saved
+        summary.update(binding_status=spec['binding_status'],execution_class=spec['execution_class'],
+                       limits=spec['limits'],step_count=len(spec['steps']))
+        previous,revision=None,None
+        for ordinal,step in enumerate(spec['steps']):
+            if resumed and ordinal<len(resumed):
+                previous=json.loads((EVIDENCE/'runs'/f'{label}-s{ordinal:02d}.json').read_text())
+                continue
+            entry={'ordinal':ordinal,'phase':step['phase'],'turn_index':step['turn_index'],
+                   'before':[],'after':[]}
+            summary['steps'].append(entry)
+            for action in step['before']:
+                control=fixtures.apply_control(person,spec,action,previous)
+                entry['before'].append(json.loads(json.dumps(control,ensure_ascii=False,default=str)))
+                revision=control.get('context_revision',revision)
+            payload=fixtures.run_payload(spec,ordinal,previous,context_revision=revision)
+            result=run_request(person,case_id,payload,label=f'{label}-s{ordinal:02d}')
+            result.update(suite='context',attempt=attempt,focus=focus,ordinal=ordinal,
+                          phase=step['phase'],turn_index=step['turn_index'])
+            previous=capture_run(person,result)
+            entry.update(run_id=previous['run_id'],status=previous['status'])
+            if ordinal+1<len(spec['steps']):
+                settled=settle_for_continuation(person,previous)
+                if settled:
+                    previous,entry['continuation']=settled
+                    entry['settled_status']=previous['status']
+            revision=None
+            for action in step['after']:
+                control=fixtures.apply_control(person,spec,action,previous)
+                entry['after'].append(json.loads(json.dumps(control,ensure_ascii=False,default=str)))
+                revision=control.get('context_revision',revision)
+            # A failed or cancelled turn is a result, and a terminal parent may be continued,
+            # so the replay goes on with the next original user turn.
+    except fixtures.FixtureBlocked as error:
+        summary['blocked']=str(error)
+    except RuntimeError as error:
+        last=summary['steps'][-1] if summary['steps'] else {}
+        reconciled=any((step.get('continuation') or {}).get('intervention')==
+                       'awaited_automatic_reconciliation' for step in summary['steps'])
+        if 'FORBIDDEN_SCOPE' in str(error) and reconciled:
+            summary['blocked']=('reconciled_parent_provenance_defect: the next turn after an '
+                                'automatically reconciled Run was refused; '+str(error)[:300])
+            last['blocked_by_defect']=True
+        else:
+            summary['error']=f'{type(error).__name__}: {str(error)[:800]}'
+    except Exception as error:  # keep the other cells running; the record shows the failure
+        summary['error']=f'{type(error).__name__}: {str(error)[:800]}'
+    summary['finished']=summary['error'] is None or summary['blocked'] is not None
+    summary_path.write_text(json.dumps(summary,ensure_ascii=False,indent=2,default=str)+'\n')
+    print(json.dumps({'cell':label,'steps':len(summary['steps']),'blocked':summary['blocked'],
+                      'error':summary['error']},ensure_ascii=False),flush=True)
+    return summary
+
+
+def run_context(state, *, focus, attempt, only=None, workers=2):
+    import xiaopai_real_context_fixtures as fixtures
+
+    control=new_person('control',state)
+    if current_focus(control)!=focus:
+        raise RuntimeError(f'Tenant focus is {current_focus(control)}; switch with set-focus first')
+    identities=[case for case in sorted(fixtures.cases()) if not only or case in only]
+    with ThreadPoolExecutor(max_workers=workers) as executor:
+        futures=[executor.submit(run_context_cell,state,case,focus,attempt) for case in identities]
+        return [future.result() for future in futures]
+
+
+def export_attempt(attempt, output):
+    """Content-free export for xiaopai_real_eval_metrics.py (metering fields only)."""
+    import xiaopai_real_context_fixtures as context_fixtures
+    import xiaopai_real_rag_fixtures as rag
+
+    questions,_,_=rag.frozen_inputs()
+    cases=[{'case_id':case['id']} for case in questions['questions']]
+    cases+=[{'case_id':case} for case in sorted(context_fixtures.cases())]
+    # Several attempt prefixes may be combined (a2,a2m,a3,a4,c48); the aborted a2 context
+    # cell (stopped before the continuation fix) is excluded.
+    files=sorted({path for prefix in attempt.split(',')
+                  for path in (EVIDENCE/'runs').glob(f'{prefix}-*.json')
+                  if not path.name.startswith('a2-ctx-')})
+    runs,calls,events=[],[],[]
+    keep=('id','run_id','tool','state','error_code','created_at','execution_binding',
+          'reserved_tokens','charged_tokens','provider_request_id','actual_input_tokens',
+          'actual_output_tokens','cost_state','cost_reserved_micro_usd',
+          'cost_charged_micro_usd','cost_pricing','elapsed_ms','protocol','raw_usage')
+    for path in files:
+        run=json.loads(path.read_text())
+        context=run.get('suite')=='context'
+        view=run.get('view') or {}
+        error=view['error'].get('code') if isinstance(view.get('error'),dict) \
+            else view.get('error_code')
+        runs.append({'id':run['run_id'],'case_id':run['case_id'],
+                     'suite':'context12' if context else 'rag40','label':run['label'],
+                     'state':run['state'],'error_code':error,
+                     'continued_from_id':run.get('continued_from_id'),
+                     'elapsed_ms':run.get('elapsed_ms'),'first_visible_ms':run.get('first_visible_ms'),
+                     'focus':run.get('focus')})
+        for call in run.get('tool_calls',[]):
+            row={key:call.get(key) for key in keep if key in call}
+            if call['tool']=='model':
+                result=call.get('result') or {}
+                row['result']={key:result[key] for key in ('usage','context_budget')
+                               if key in result}
+            calls.append(row)
+        for event in run.get('events',[]):
+            if event['body'].get('type')=='context_observed':
+                events.append({'run_id':run['run_id'],'body':event['body']})
+    value={'version':'xiaopai-real-eval-export/v1','attempt':attempt,'cases':cases,
+           'runs':runs,'tool_calls':calls,'events':events}
+    output.write_text(json.dumps(value,ensure_ascii=False,indent=1,default=str)+'\n')
+    print(json.dumps({'export':str(output),'runs':len(runs),'tool_calls':len(calls),
+                      'events':len(events)}),flush=True)
+
+
+def load_observations():
+    samples=[]
+    for observations in [EVIDENCE/'provider-observations.jsonl',
+                         *sorted(EVIDENCE.glob('runtime-*/provider-observations.jsonl'))]:
+        if observations.exists():
+            samples+=[json.loads(line) for line in observations.read_text().splitlines()]
+    return samples
+
+
+def reattach_observations(attempt):
+    """Pure file pass: attach both workers' provider observations to captured model calls."""
+    index={(sample.get('run_id'),sample.get('request_id')):sample for sample in load_observations()
+           if sample.get('request_id')}
+    attached=0
+    for path in sorted((EVIDENCE/'runs').glob(f'{attempt}-*.json')):
+        run=json.loads(path.read_text())
+        for call in run.get('tool_calls',[]):
+            sample=index.get((run['run_id'],call.get('provider_request_id')))
+            if sample and 'provider_observation' not in call:
+                call.update(elapsed_ms=sample['elapsed_ms'],protocol=sample['protocol'],
+                            provider_observation=sample)
+                if 'raw_usage' in sample:
+                    call['raw_usage']=sample['raw_usage']
+                attached+=1
+        path.write_text(json.dumps(run,ensure_ascii=False,indent=2)+'\n')
+    print(json.dumps({'reattached':attached}),flush=True)
+
+
+def refresh_attempt(state, attempt):
+    """Re-capture runs the runner stopped watching; elapsed then comes from durable events."""
+    tokens={}
+    for path in PRIVATE.glob('person-*.json'):
+        tokens.update(json.loads(path.read_text())['tokens'])
+    base=new_person('control',state)  # any existing synthetic owner; reads use admin
+    for path in sorted((EVIDENCE/'runs').glob(f'{attempt}-*.json')):
+        run=json.loads(path.read_text())
+        if run['state'] not in {'observation_timeout','waiting_input'}:
+            continue
+        with Session(base.admin) as session:
+            row=session.get(AgentRun,UUID(run['run_id']))
+            requester,category,current=row.requester_id,row.category_id,row.state
+            stamps=[event.created_at for event in session.scalars(select(AgentEvent).where(
+                AgentEvent.run_id==row.id).order_by(AgentEvent.sequence))]
+        if current in {'queued','running'} or current==run['state']:
+            if current!=run['state']:
+                print(json.dumps({'label':run['label'],'still':current}),flush=True)
+            continue
+        if run['state']=='waiting_input':
+            # Reached waiting_input (e.g. reconciliation) and later closed; keep the
+            # runner's elapsed to that point and record the durable final state.
+            own=copy(base)
+            own.human,own.category=requester,category
+            own.headers={'Authorization':'Bearer '+tokens[str(requester)]} \
+                if str(requester) in tokens else {}
+            run.update(status=current,state=current,observed_state='waiting_input',
+                       final_state_basis='durable_ledger_after_close')
+            capture_run(own,run)
+            print(json.dumps({'label':run['label'],'closed_as':current}),flush=True)
+            continue
+        own=copy(base)
+        own.human,own.category=requester,category
+        own.headers={'Authorization':'Bearer '+tokens[str(requester)]} if str(requester) in tokens \
+            else {}
+        run.update(status=current,state=current,observation_timeout_elapsed_ms=run['elapsed_ms'],
+                   elapsed_ms=(stamps[-1]-stamps[0]).total_seconds()*1000,
+                   elapsed_basis='durable_event_timestamps')
+        capture_run(own,run)
+        print(json.dumps({'label':run['label'],'refreshed':current}),flush=True)
 
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('action',choices=['bootstrap','smoke','seed-rag','rag-ready'])
+    parser.add_argument('action',choices=['bootstrap','smoke','seed-rag','rag-ready','rag-native',
+                                          'context','set-focus','export','reattach','refresh',
+                                          'rescore','restore-config'])
+    parser.add_argument('--focus',type=int,choices=[48000,64000],default=64000)
     parser.add_argument('--only',nargs='*')
+    parser.add_argument('--attempt',default='a1')
+    parser.add_argument('--workers',type=int,default=2)
     args=parser.parse_args()
     state=checked_environment()
     if args.action=='rag-ready':
-        run_rag_ready(state,only=set(args.only) if args.only else None)
+        run_rag_ready(state,only=set(args.only) if args.only else None,attempt=args.attempt,
+                      workers=args.workers)
         return
     if args.action=='seed-rag':
+        seed_rag(state,args.attempt)
+        return
+    if args.action=='rag-native':
+        run_rag_native(state,attempt=args.attempt,workers=args.workers)
+        return
+    if args.action=='context':
+        run_context(state,focus=args.focus,attempt=args.attempt,
+                    only=set(args.only) if args.only else None,workers=args.workers)
+        return
+    if args.action=='export':
+        export_attempt(args.attempt,EVIDENCE/f"export-{args.attempt.replace(',','-')}.json")
+        return
+    if args.action=='rescore':
         import xiaopai_real_rag_fixtures as rag
-        person=new_person('rag40',state)
-        output=EVIDENCE/'bound-rag-sources.json'
-        if not output.exists():
-            bound=rag.seed_corpus(person)
-            output.write_text(json.dumps(bound,ensure_ascii=False,indent=2)+'\n')
-        print('RAG corpus prepared',str(output),flush=True)
+        names=attempt_names(args.attempt)
+        bound=json.loads((EVIDENCE/names.bound).read_text())
+        results=[json.loads(path.read_text()) for path in
+                 sorted((EVIDENCE/'runs').glob(names.label+'*.json'))
+                 if '-for-' not in path.name]
+        ready=[row for row in results if not row['case_id'].endswith(('-09','-10'))]
+        (EVIDENCE/names.scores).write_text(json.dumps(
+            rag.score_observations(bound['bound_sources'],ready),ensure_ascii=False,indent=2)+'\n')
+        print(json.dumps({'rescored':len(ready)}),flush=True)
+        return
+    if args.action=='refresh':
+        refresh_attempt(state,args.attempt)
+        return
+    if args.action=='reattach':
+        reattach_observations(args.attempt)
+        return
+    if args.action=='restore-config':
+        restore_configuration(new_person('control',state))
+        return
+    if args.action=='set-focus':
+        set_focus(new_person('control',state),args.focus)
         return
     person=new_person('control',state)
     if args.action=='bootstrap':set_focus(person,64000)

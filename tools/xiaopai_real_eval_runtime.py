@@ -27,6 +27,32 @@ def append_json(path, value):
         stream.write(json.dumps(value, ensure_ascii=False, default=str) + '\n')
 
 
+def observe_domain_errors(evidence):
+    """Record the original reason behind collapsed public codes; behaviour unchanged."""
+    import sys
+
+    from pdos_next.errors import DomainError
+
+    original = DomainError.__init__
+
+    def init(self, code, message, *args, **kwargs):
+        original(self, code, message, *args, **kwargs)
+        frames, run_id, frame = [], None, sys._getframe(1)
+        while frame is not None and len(frames) < 8:
+            name = frame.f_code.co_filename
+            if '/pdos_next/' in name:
+                frames.append(f"{name.split('/pdos_next/')[-1]}:{frame.f_lineno}:{frame.f_code.co_name}")
+            if run_id is None:
+                run_id = getattr(frame.f_locals.get('scope'), 'run_id', None)
+            frame = frame.f_back
+        append_json(evidence / 'domain-errors.jsonl', {
+            'at': datetime.now(UTC).isoformat(), 'run_id': str(run_id) if run_id else None,
+            'code': self.code, 'reason': self.reason, 'message': self.message, 'frames': frames,
+        })
+
+    DomainError.__init__ = init
+
+
 def observe_provider(evidence):
     from pdos_next.agent.kernel.gateway import AgentGateway
     from pdos_next.providers import agent_client
@@ -165,12 +191,13 @@ async def serve(args):
     from pdos_next.api import create_app
     from pdos_next.workflows.xiaopai import XiaopaiWork
 
+    observe_domain_errors(args.evidence)
     provider = observe_provider(args.evidence)
     ports = replace(runtime_ports(engine), provider_client=provider)
     bootstrap = Bootstrap(engine, ports=ports)
     configure_agent_kernel(engine, bootstrap.adapters())
     activities = KernelActivities(engine, checkpoint_url=checkpoint, technical_engine=dispatch)
-    queue = 'pdos-real-eval-20261101'
+    queue = args.queue
     temporal = TemporalPort(client, task_queue=queue)
     app = create_app(engine, auth, workflow_enabled=True, agent_runtime_ports=ports,
                      agent_api_ports=bootstrap.api_ports(temporal))
@@ -179,10 +206,25 @@ async def serve(args):
         port = listener.getsockname()[1]
     config = uvicorn.Config(app, host='127.0.0.1', port=port, log_level='warning', access_log=False)
     server = uvicorn.Server(config)
-    with ThreadPoolExecutor(max_workers=4) as executor:
-        async with Worker(client, task_queue=queue, workflows=[XiaopaiWork],
-                          activities=[activities.advance, activities.reconcile],
-                          activity_executor=executor, max_concurrent_activities=2):
+    from contextlib import AsyncExitStack
+
+    # role 'api' / 'worker' mirror production, where the API and the Temporal worker are
+    # separate processes; 'both' is the original single-process composition.
+    async with AsyncExitStack() as stack:
+        if args.role in ('both', 'worker'):
+            executor = stack.enter_context(ThreadPoolExecutor(max_workers=4))
+            await stack.enter_async_context(Worker(
+                client, task_queue=queue, workflows=[XiaopaiWork],
+                activities=[activities.advance, activities.reconcile],
+                activity_executor=executor, max_concurrent_activities=2))
+        public = {'role':args.role, 'task_queue':queue, 'temporal':args.temporal,
+                  'namespace':args.namespace, 'database':'pdos_test',
+                  'database_port':state['port'], 'marker':state['marker'],
+                  'tenant_id':str(TENANT), 'pid':os.getpid(),
+                  'runtime_config':'comprehensive-minimax-20261023.json',
+                  'provider_observer':'transparent parse_turn usage-only; unchanged request/response',
+                  'started_at':datetime.now(UTC).isoformat()}
+        if args.role in ('both', 'api'):
             task = asyncio.create_task(server.serve())
             for _ in range(100):
                 if server.started:
@@ -192,27 +234,24 @@ async def serve(args):
                 await asyncio.sleep(.1)
             if not server.started:
                 raise RuntimeError('Evaluation API did not start')
-            public = {'api_port':port, 'api_base':f'http://127.0.0.1:{port}',
-                      'task_queue':queue, 'temporal':args.temporal, 'namespace':args.namespace,
-                      'database':'pdos_test','database_port':state['port'], 'marker':state['marker'],
-                      'tenant_id':str(TENANT),'pid':os.getpid(),
-                      'runtime_config':'comprehensive-minimax-20261023.json',
-                      'provider_observer':'transparent parse_turn usage-only; unchanged request/response',
-                      'started_at':datetime.now(UTC).isoformat()}
-            (args.evidence / 'runtime.json').write_text(json.dumps(public,indent=2)+'\n')
-            print(json.dumps(public), flush=True)
-            try:
-                await task
-            finally:
-                server.should_exit = True
-                provider.shutdown()
-                for item in (engine,auth,dispatch):
-                    item.dispose()
-
+            public.update(api_port=port, api_base=f'http://127.0.0.1:{port}')
+        else:
+            task = asyncio.create_task(asyncio.Event().wait())
+        (args.evidence / 'runtime.json').write_text(json.dumps(public,indent=2)+'\n')
+        print(json.dumps(public), flush=True)
+        try:
+            await task
+        finally:
+            server.should_exit = True
+            provider.shutdown()
+            for item in (engine,auth,dispatch):
+                item.dispose()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--evidence',type=Path,required=True)
     parser.add_argument('--temporal',default='127.0.0.1:58708')
     parser.add_argument('--namespace',default='pdos-next')
+    parser.add_argument('--queue',default='pdos-real-eval-20261101')
+    parser.add_argument('--role',choices=['both','api','worker'],default='both')
     asyncio.run(serve(parser.parse_args()))
