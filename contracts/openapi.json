@@ -11745,7 +11745,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/pdos_next__change_command_schemas__CaptureInput"
+                "$ref": "#/components/schemas/pdos_next__domain__change__command_schemas__CaptureInput"
               }
             }
           }
@@ -36858,7 +36858,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/pdos_next__domain__verification_results__schemas__CaptureInput"
+                "$ref": "#/components/schemas/pdos_next__domain__verification__results__schemas__CaptureInput"
               }
             }
           }
@@ -45198,7 +45198,7 @@
         ],
         "title": "WorkFollowupAction"
       },
-      "pdos_next__change_command_schemas__CaptureInput": {
+      "pdos_next__domain__change__command_schemas__CaptureInput": {
         "properties": {
           "change_id": {
             "type": "string",
@@ -45252,7 +45252,7 @@
         ],
         "title": "CaptureInput"
       },
-      "pdos_next__domain__verification_results__schemas__CaptureInput": {
+      "pdos_next__domain__verification__results__schemas__CaptureInput": {
         "properties": {
           "capture_key": {
             "type": "string",

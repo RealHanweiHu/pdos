@@ -617,7 +617,12 @@
       "ai_execution": "授权读取",
       "event": null,
       "stage": "S0",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_endpoint",
+      "payload_schema": "openapi.json",
+      "api_binding": {
+        "method": "GET",
+        "path": "/v1/personal/attention"
+      }
     },
     {
       "operation": "research.snapshot.register",
@@ -803,8 +808,13 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "provider.agreement_registered",
       "stage": "S1",
-      "implementation": "not_implemented",
-      "v1_1": "added"
+      "implementation": "implemented_local_endpoint",
+      "v1_1": "added",
+      "payload_schema": "openapi.json",
+      "api_binding": {
+        "method": "POST",
+        "path": "/v1/categories/{category_id}/provider-agreements"
+      }
     },
     {
       "operation": "mcp.connector.allow",

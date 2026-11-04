@@ -480,7 +480,6 @@ def create_app(
     def health():
         return {
             "status": "ok",
-            "model_available": False,
             "slice": "wave1-source-definition",
             "durable_queue_enabled": workflow_enabled,
         }
@@ -495,7 +494,7 @@ def create_app(
             category_id=ctx.category_id,
         ) as s:
             p = s.get(Principal, ctx.actor_id)
-            return {"name": p.name, "principal_id": str(p.id), "model_available": False}
+            return {"name": p.name, "principal_id": str(p.id)}
 
     @app.get("/v1/categories")
     def categories(ctx: Context = auth_dependency):
@@ -870,7 +869,6 @@ def create_app(
                 ],
                 "receipts": [receipt_view(r) for r in receipts],
                 "as_of": now().isoformat(),
-                "model_available": False,
             }
 
     @app.post(

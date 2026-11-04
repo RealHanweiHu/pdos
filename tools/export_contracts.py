@@ -17,10 +17,12 @@ schemas = {
     "scope": "implemented local domain slices; real AI qualification and formal exits are separate",
 }
 ENDPOINTS = {
-    "ai.work.start": "/v1/categories/{category_id}/agent-runs",
-    "ai.run.cancel": "/v1/categories/{category_id}/agent-runs/{run_id}/cancel",
-    "category.create": "/v1/categories",
-    "category.member.grant": "/v1/categories/{category_id}/members",
+    "ai.work.start": ("POST", "/v1/categories/{category_id}/agent-runs"),
+    "ai.run.cancel": ("POST", "/v1/categories/{category_id}/agent-runs/{run_id}/cancel"),
+    "category.create": ("POST", "/v1/categories"),
+    "category.member.grant": ("POST", "/v1/categories/{category_id}/members"),
+    "provider.agreement.register": ("POST", "/v1/categories/{category_id}/provider-agreements"),
+    "my_work.query": ("GET", "/v1/personal/attention"),
 }
 (ROOT / "contracts/payloads.schema.json").write_text(
     json.dumps(schemas, ensure_ascii=False, indent=2) + "\n"
@@ -40,9 +42,10 @@ for entry in data["items"]:
             "G0 decision. No independent executable command; Xiaopai may prepare materials."
         )
     elif entry["operation"] in ENDPOINTS:
+        method, endpoint = ENDPOINTS[entry["operation"]]
         entry["implementation"] = "implemented_local_endpoint"
         entry["payload_schema"] = "openapi.json"
-        entry["api_binding"] = {"method": "POST", "path": ENDPOINTS[entry["operation"]]}
+        entry["api_binding"] = {"method": method, "path": endpoint}
         if entry["operation"].startswith("ai."):
             entry["note"] = (
                 "Current Xiaopai durable run endpoint, with AgentEvent trace; "
@@ -72,8 +75,8 @@ def forbid_connection(*_args):
 try:
     app = create_app(engine=engine, auth_engine=engine)
     actual = app.openapi()
-    for operation, endpoint in ENDPOINTS.items():
-        assert "post" in actual["paths"][endpoint], f"Missing actual endpoint: {operation}"
+    for operation, (method, endpoint) in ENDPOINTS.items():
+        assert method.lower() in actual["paths"][endpoint], f"Missing actual endpoint: {operation}"
     (ROOT / "contracts/openapi.json").write_text(
         json.dumps(actual, ensure_ascii=False, indent=2) + "\n"
     )

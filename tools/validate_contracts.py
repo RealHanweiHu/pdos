@@ -28,6 +28,17 @@ for op, tier, _ai, event in re.findall(
     assert operations[op]["write_tier"] == tier
     assert operations[op]["event"] == (None if tier == "READ" else event.strip())
 assert {a["id"] for a in items["acceptance"]} == {f"AT-{n:02}" for n in range(1, 64)}
+# P51: each scenario and expected result matches appendix B word for word.
+appendix_b = source.split("# 附录 B", 1)[1]
+rows = {
+    at: (scenario.strip(), expected.strip())
+    for at, scenario, expected in re.findall(
+        r"^\| (AT-\d\d) \| ([^|]+) \| ([^|]+) \|$", appendix_b, re.M
+    )
+}
+assert set(rows) == {a["id"] for a in items["acceptance"]}
+for a in items["acceptance"]:
+    assert (a["scenario"], a["expected"]) == rows[a["id"]], f"{a['id']} differs from appendix B"
 assert len({e["type"] for e in items["events"]}) == len(items["events"])
 assert {e["type"] for e in items["events"] if not e.get("auxiliary", False)} == {
     o["event"] for o in operations.values() if o["event"]
@@ -42,6 +53,30 @@ for entry in items["events"]:
         declared = auxiliary_by_name[entry["operation"]]
         assert entry["type"] == declared["event"]
         assert declared["write_tier"] in {"READ", "T0", "T1", "T2"}
+# Bound endpoints exist in the exported API; listed areas have no unregistered writes (P71, P75).
+paths = json.loads((ROOT / "contracts/openapi.json").read_text())["paths"]
+bound = set()
+for entry in operations.values():
+    if binding := entry.get("api_binding"):
+        bound.add((binding["method"].lower(), binding["path"]))
+for entry in auxiliary:
+    assert entry["write_tier"] in {"READ", "T0", "T1", "T2"}
+    for binding in entry.get("api_bindings", []):
+        method = binding["method"].lower()
+        assert (method == "get") == (entry["write_tier"] == "READ"), entry["operation"]
+        bound.add((method, binding["path"]))
+inbound = json.loads((ROOT / "contracts/auxiliary-operations.json").read_text())
+for entry in inbound.get("inbound_endpoints", []):
+    bound.add((entry["method"].lower(), entry["path"]))
+for method, path in bound:
+    assert method in paths.get(path, {}), f"Catalogued endpoint missing: {method.upper()} {path}"
+REGISTERED_AREAS = ("/v1/dingtalk/", "/v1/personal/dingtalk/", "/v1/project-sets")
+for path, methods in paths.items():
+    if path.startswith(REGISTERED_AREAS):
+        for method in methods:
+            assert method == "get" or (method, path) in bound, (
+                f"Unregistered write endpoint: {method.upper()} {path}"
+            )
 print(
     "v1.1 catalog/source coverage passed: "
     f"{len(items['operations'])} operations, {len(items['events'])} events, "

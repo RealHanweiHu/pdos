@@ -801,6 +801,163 @@
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice",
       "source": "RAG v0.4 §12; separate tenant indexing accounting"
+    },
+    {
+      "operation": "dingtalk.application.configure",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "dingtalk_applications",
+      "purpose": "租户管理员配置、启用或切换钉钉应用，一次确认。凭据经专用管理员接口进入 KMS 或本机 Keychain，不进命令正文（P29）。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/dingtalk/application"
+        },
+        {
+          "method": "PUT",
+          "path": "/v1/dingtalk/application"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "operation": "dingtalk.binding.create",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "dingtalk_account_bindings",
+      "purpose": "本人绑定自己的钉钉账号，一次确认；开始与完成两步共用一次性随机值。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/dingtalk/bindings/begin"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/personal/dingtalk/bindings/finish"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "operation": "dingtalk.binding.revoke",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "dingtalk_account_bindings",
+      "purpose": "本人解绑，或管理员撤销他人绑定；均为一次确认，管理员撤销须具名留回执。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/dingtalk/bindings/revoke"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "operation": "dingtalk.share.send",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "dingtalk_share_consents",
+      "purpose": "发起人预览后一次确认“发到群里”；分享内容受来源受众限制（P31 第 3 项、P62）。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/dingtalk/share/preview"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/personal/dingtalk/share/confirm"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "operation": "dingtalk.delivery.reconcile",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "dingtalk_deliveries",
+      "purpose": "按投递回执补记结果的系统对账，由本人触发；不新增投递。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/dingtalk/deliveries/{delivery_id}/reconcile"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "operation": "dingtalk.personal.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "dingtalk_account_bindings",
+      "purpose": "读取本人的钉钉设置、绑定与投递记录，只限本人范围。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/personal/dingtalk/settings"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/dingtalk/bindings"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/dingtalk/deliveries"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "operation": "project.set.save",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_set_versions",
+      "purpose": "租户内具名成员创建项目集或改名；小Pai 只能准备。项目集不是权限根、审批单位或业务状态来源。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/project-sets"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P75 第 8 项（用户 2026-11-03）"
+    },
+    {
+      "operation": "project.set.move",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_set_links",
+      "purpose": "租户内具名成员把项目移入或移出项目集；一个项目最多归属一个项目集；小Pai 只能准备。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/project-sets/move"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P75 第 8 项（用户 2026-11-03）"
+    }
+  ],
+  "inbound_endpoints": [
+    {
+      "name": "dingtalk.event.callback",
+      "method": "POST",
+      "path": "/v1/dingtalk/applications/{application_id}/events",
+      "purpose": "钉钉事件回调入站入口：只做签名校验与幂等，不是领域命令。",
+      "source": "设计确认稿 P71（用户 2026-11-02）"
     }
   ]
 }
