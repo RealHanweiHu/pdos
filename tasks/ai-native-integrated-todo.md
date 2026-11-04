@@ -86,7 +86,7 @@
   - 低：wave17/15 的旧工具引用了已删目录，可以一起删。
   - 设计索引已由 d167f9ea 修好，没有死链。
 
-**W3 拍板（设计待拍板；一个问答会话，只出决定和记录，新记录从 P35 起编号；11-03 已用到 P75）**
+**W3 拍板（设计待拍板；一个问答会话，只出决定和记录，新记录从 P35 起编号；11-04 已用到 P83）**
 - D17 ✅ 11-02 全部按推荐，见[确认稿 P41](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p41)。要点：
   - ≥95% 作新品框架 v1 缺省值，只用于阶段评审材料判定，不自动推进或阻断；首批框架为新品和派生；
   - 轻量路径看四个字段（电池、新模、新认证、首用关键部件），任一未知按“是”，G0 评审人只能升不能降；
@@ -105,14 +105,14 @@
   - A6 ✅ [P45](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p45)：取回原工作簿解析按 B 类复用，确认稿 §5.1 已补一行；
   - A7 ✅ [P46](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p46)：首个进展 ≤2 秒（按服务器事件计）、日常问答 p95 ≤8 秒、企业问答 ≤25 秒、起草 ≤90 秒、研究 >5 分钟转后台，均为观察目标，W1 后与 D23 一起复核；
   - A8 ✅ 不单独拍板：底座已由 P37 定，余项在 W3b 的 D119–D121 定。
-- D21 〔你〕拍板表 B、C 两组已逐条拆进下方 W3b 候选池，在那里一起定。B1①、B9、B17③、C2、C4 的前提已被 P28–P34 改变，候选池里按新前提改写了，已失效的部分记在不采用清单。
+- D21 ✅ 11-04 拍板表 B、C 两组已随 W3b 候选池全部定完（P77–P83）。原记录：拍板表 B、C 两组已逐条拆进下方 W3b 候选池，在那里一起定。B1①、B9、B17③、C2、C4 的前提已被 P28–P34 改变，候选池里按新前提改写了，已失效的部分记在不采用清单。
 - D22 ✅ 补决策记录（11-02 五项全部定完）：
   - ✅ M2 方案 C 追认，见[P37](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p37)。取代 v1.1 §06.3.3 末段“工具列表保持稳定、引入检索工具”。待同步：v1.1 §06.3.3 末段；`contracts/acceptance.json` 的 AT-58 补“下发集合按已加载技能推导并记入运行”；
   - ✅ 不采用程序化工具调用，理由见[P38](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p38)，不采用清单已改；
   - ✅ T0 抽检 20%、每周至少 2 次，关键错误五类、1 次即暂停，见[P42](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p42)。待同步：v1.1 §06.12 末段加注；
   - ✅ 会话模式延后，恢复条件是首个 T0 资格生效或你提出需要，见[P39](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p39)。D119 不因此触发；
   - ✅ P14 A 类 24 条按你 10-17 原话整体认可，P14、P22 已加状态更正，见[P40](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p40)。
-- D23 〔你〕小Pai 启用前的选项（等 W1 数据）：
+- D23 ✅ 11-04 按 W1 数据全部按推荐，见[P76](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p76)：§16 配置试点期由你本人负责、缺省沿用代码值；CTX-09 修订稿采纳为替换候选进 D30；QUA-04 接受为已知项；工具下发三处收缩（范围过滤、T2 准备也须先加载技能即 D120、预载按页面判定，关联 D29），交 W8；token 流式只在日常问答快档开；P46 目标不变并登记 W1 基线。原记录：小Pai 启用前的选项（等 W1 数据）：
   - RAG §16 配置项：停用词和编号维护人、摘要模板与频率、品类知识负责人、补查阈值等；
   - CTX-09 修订稿是否采纳；QUA-04 没进前 5 是否接受；
   - 主循环固定前缀（61 项工具，约 3 万 token）是否收缩；是否做 token 级流式。
@@ -123,133 +123,133 @@
 
 W3b · 协作、通知与项目管理
 - D70 ✅ 11-02 随 D150 定掉：承接时默认一并承诺，后台分开记录，见[P58](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p58)。实施归 W6。 原记录：〔采纳→W6〕承接即承诺：受派人一键“承接并承诺这个日期”，或者提出另一个日期。后台仍分开记录，只是合并展示（a28e836c T2；v1.1 §03.3）。
-- D71 〔采纳→W9〕未回复自动升级：1 个工作日没有回复，就给负责人一条注意项。用确定性规则，不经模型（拍板表 B1②；对标 Linear Asks）。
-- D72 〔延后：等 D18〕待分拣来源标签（B1④；对标 Linear Triage）。
-- D73 〔采纳→W6⑤〕收件箱加“稍后提醒”。目前只有已读、归档、关注（驾驶舱稿 §3.1；对标 Linear）。
-- D74 〔采纳→W6⑤〕定下聊天和通知的实时投递方式（轮询还是 SSE），要在 P34 讨论上线前定。目前收件箱前端没有推送（UI 候选 §5.1）。
-- D75 〔采纳→W6〕自动化规则模板的最小版：承诺到期提醒、外部等待升级、状态更新起草（G-28、C8；对标 Linear Loops、Notion Custom Agents）。
-- D76 〔采纳→W6⑦〕跨项目对比改按出口成果计算。P33 之后各项目的任务不同，按任务比没有意义（NPI 稿 §12）。
-- D77 〔采纳，配合 P33〕同一运行产生的候选整包确认，减轻审批疲劳（B7；对标 Asana、Linear）。
-- D78 〔采纳，随 D18/D19〕定下待确认候选和待答问题放在哪里，深链时预选版本（B8、G-10）。
-- D79 〔延后〕品类常见任务沉淀回品类资料，等多项目数据积累后，经你批准生效（NPI 稿 §9）。
-- D80 〔延后〕流程节点由小Pai 执行（驾驶舱稿 §3.1；对标飞书项目 AI 节点）。P33/P34 已覆盖大半。
-- D81 〔首批不做〕草稿多人实时协同编辑（v1.1 §05.7；对标 Notion、飞书文档），乐观版本控制已够用。
-- D82 〔不做〕“近 7 天完成/新建与状态分布”卡片（对标 Jira Summary），与 UI 定稿“无指标卡片墙”冲突。
+- D71 ✅ 采纳→W9，并入 D190：未回复和未推进分别计时（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）未回复自动升级：1 个工作日没有回复，就给负责人一条注意项。用确定性规则，不经模型（拍板表 B1②；对标 Linear Asks）。
+- D72 〔延后：D114 上线后〕（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）待分拣来源标签（B1④；对标 Linear Triage）。
+- D73 ✅ 采纳→W6⑤（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）收件箱加“稍后提醒”。目前只有已读、归档、关注（驾驶舱稿 §3.1；对标 Linear）。
+- D74 ✅ 采纳→W6⑤，定为 SSE，断线回退 30 秒轮询（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）定下聊天和通知的实时投递方式（轮询还是 SSE），要在 P34 讨论上线前定。目前收件箱前端没有推送（UI 候选 §5.1）。
+- D75 ✅ 采纳→W6，负责人与范围按 P57，状态更新起草按 P65（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）自动化规则模板的最小版：承诺到期提醒、外部等待升级、状态更新起草（G-28、C8；对标 Linear Loops、Notion Custom Agents）。
+- D76 ✅ 采纳→W6⑦（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）跨项目对比改按出口成果计算。P33 之后各项目的任务不同，按任务比没有意义（NPI 稿 §12）。
+- D77 ✅ 采纳→W7、W8（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）同一运行产生的候选整包确认，减轻审批疲劳（B7；对标 Asana、Linear）。
+- D78 ✅ 采纳→W7，放在“要我决定”内按运行聚合（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）定下待确认候选和待答问题放在哪里，深链时预选版本（B8、G-10）。
+- D79 〔延后：同一品类 3 个以上项目完成计划基线后〕（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）品类常见任务沉淀回品类资料，等多项目数据积累后，经你批准生效（NPI 稿 §9）。
+- D80 ✅ 不做，已移入不采用清单（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）流程节点由小Pai 执行（驾驶舱稿 §3.1；对标飞书项目 AI 节点）。P33/P34 已覆盖大半。
+- D81 〔延后：试点中多人同时编辑同一草稿成为常态时〕（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）草稿多人实时协同编辑（v1.1 §05.7；对标 Notion、飞书文档），乐观版本控制已够用。
+- D82 ✅ 不做，已移入不采用清单（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）“近 7 天完成/新建与状态分布”卡片（对标 Jira Summary），与 UI 定稿“无指标卡片墙”冲突。
 
 W3b · 资源、组合与试点准备
-- D83 〔采纳→W7〕共享设备和台架预约：项目内登记占用并提示冲突。后端已有 `test_resource_reservations`（UI 候选 §5.1、C7）。
-- D84 〔延后：先做 P34 成员负载〕按人、设备、周的只读负载视图，以及优先级取舍记录（C7；对标飞书人力甘特、Motion）。
-- D85 〔采纳〕在途项目经 G0 纳管，否则试点时现有项目进不来。先同步附录 A L1683 的文字（B10）。（11-02 补：原工程 `intake_organization` 在途项目资料整理未承接，并入本条，与 D200 一起定。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D86 〔采纳〕邀请链接和一键停用，这是多人试点的硬前置（B2 F38②③）。
-- D87 〔采纳〕试点的“步骤 × 人”编组表：先走查，凑不齐人就写兼岗记录（B3）。
-- D88 〔采纳〕生产形态的 Temporal 和常驻环境，试点前置。目前是 SQLite 回退（B15）。
-- D89 〔采纳〕录入责任清单：列出系统依赖的约十条事实，写清谁录、何时录；找不到人录的，就不建那个页面（9a1ab768 T15）。
-- D90 〔延后到试点前〕首周引导与角色模板（G-41）。
-- D91 〔延后到多人试点〕多人试点与 ROI/减负报表，需要放宽 K9（C1、G-44）。
+- D83 ✅ 采纳→W7（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）共享设备和台架预约：项目内登记占用并提示冲突。后端已有 `test_resource_reservations`（UI 候选 §5.1、C7）。
+- D84 〔延后：P34 成员负载上线后〕（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）按人、设备、周的只读负载视图，以及优先级取舍记录（C7；对标飞书人力甘特、Motion）。
+- D85 ✅ 采纳→W6：带“在途纳管”标记，统计排除，定义 v1 标“未复核”，首批 3–5 个；附录 A 过渡入口文字待同步（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）在途项目经 G0 纳管，否则试点时现有项目进不来。先同步附录 A L1683 的文字（B10）。（11-02 补：原工程 `intake_organization` 在途项目资料整理未承接，并入本条，与 D200 一起定。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
+- D86 ✅ 采纳→W11，并入 D192，与 D214 一起做：邀请链接 72 小时单次有效，停用即吊销全部会话（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）邀请链接和一键停用，这是多人试点的硬前置（B2 F38②③）。
+- D87 ✅ 采纳→W11（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）试点的“步骤 × 人”编组表：先走查，凑不齐人就写兼岗记录（B3）。
+- D88 ✅ 采纳→W11：Temporal 官方镜像自托管、同实例分库，检查点 30 天；部署位置随 D210（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）生产形态的 Temporal 和常驻环境，试点前置。目前是 SQLite 回退（B15）。
+- D89 ✅ 采纳→W11（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）录入责任清单：列出系统依赖的约十条事实，写清谁录、何时录；找不到人录的，就不建那个页面（9a1ab768 T15）。
+- D90 〔延后：第二位真人用户加入前〕（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）首周引导与角色模板（G-41）。
+- D91 〔延后：D86、D88、D214 完成且 D218 定好后；届时放宽 K9 另写记录〕（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）多人试点与 ROI/减负报表，需要放宽 K9（C1、G-44）。
 
 W3b · NPI 业务域（对照 PLM/NPI 软件）
-- D92 〔采纳〕regulatory 角色与资格上移：目前只有四个角色，且 project_id 必填。这是 D26 根治的前提（B2）。
-- D93 〔采纳，先写决策记录，实施排在 S3/S4〕认证台账与市场放行。P33 把认证报告列为红线成果，需要有实际记录可以链接；包装、说明书、标签目前不受控（B11；对标 Arena）。
-- D94 〔采纳〕规格条目映射参数版本：G0 时逐条处置，S2 的覆盖视图依赖它（B4；对标 Teamcenter）。
-- D95 〔采纳〕`proposal.create` 档位：代码一直是 T1，v1.1 正文和附录 A 自相矛盾。以附录 A 为准改正文（B5）。
-- D96 〔采纳〕私有提案在运行收尾时预填 promote，不放宽 K5/I22（B6）。
-- D97 〔采纳〕模具记录与验收：不新增验收命令（B12）。
-- D98 〔采纳〕BOM 导入与版本差异，加 BOM 确定性规则卡（B13、F35；对标 OpenBOM、Aras）。
-- D99 〔采纳〕项目内的品类知识只读入口，不改权限（B14、G-31）。
-- D100 〔采纳〕未知项要有责任人和期限，但只在它挡住下一个不可逆动作时才推到人面前（9a1ab768 T15）。
-- D101 〔PCN 子流程采纳，情报源延后〕供方变更（PCN）子流程；供应链情报源（C10；对标 Arena SCI、Cofactr）。
-- D102 〔延后：等 D20-A6〕测试数据管道与 Cpk（C9；对标 Instrumental）。
-- D103 〔延后到 S4 之后〕量产 ECN 单号与断点（C12；对标金蝶 AI PLM）。
-- D104 〔延后，随 D48〕售后差评回流场景，附录 B 的路径 F 还没补（C13）。
-- D105 〔延后；设计已覆盖，只差排期〕四项：客户改版差异与版本比对（F20；对标 Arena File Comparison）；目标成本对照与 ECO 成本差（F26；对标 Teamcenter BOM Agent）；safety_ctq 贯通（F33）；制造基线 line_programs（F34）。（11-02 补：原工程 `cost_reduction`、`cost_discussion_followup` 降本与成本讨论跟进未承接，并入本条。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D106 〔现阶段不做〕外部协作者入口与协作席位。UI 稿有“收到的交付”，C11 推荐先由内部具名人代为登记（对标 Teamcenter Supplier Hub、Jiga）。
-- D107 〔不做〕培训记录作为人员资格证据（G-24）。
+- D92 ✅ 采纳→W9：新增 regulatory 专业角色，资格在管理员页具名登记、可到品类（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）regulatory 角色与资格上移：目前只有四个角色，且 project_id 必填。这是 D26 根治的前提（B2）。
+- D93 ✅ 采纳，并入 D188：认证台账排在 S3/S4，市场放行与宣传口径核对到 S4 再定（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）认证台账与市场放行。P33 把认证报告列为红线成果，需要有实际记录可以链接；包装、说明书、标签目前不受控（B11；对标 Arena）。
+- D94 ✅ 采纳→W9：G0 批准时未映射规格条目逐条处置（加严，已记录）（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）规格条目映射参数版本：G0 时逐条处置，S2 的覆盖视图依赖它（B4；对标 Teamcenter）。
+- D95 ✅ 采纳：维持 T1，“草稿可 T0”限于条目级草稿；v1.1 §05.5、§08 待同步（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）`proposal.create` 档位：代码一直是 T1，v1.1 正文和附录 A 自相矛盾。以附录 A 为准改正文（B5）。
+- D96 ✅ 采纳→W8（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）私有提案在运行收尾时预填 promote，不放宽 K5/I22（B6）。
+- D97 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）模具记录与验收：不新增验收命令（B12）。
+- D98 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）BOM 导入与版本差异，加 BOM 确定性规则卡（B13、F35；对标 OpenBOM、Aras）。
+- D99 ✅ 采纳→W7（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）项目内的品类知识只读入口，不改权限（B14、G-31）。
+- D100 ✅ 采纳→W6、W9：只在挡住下一个冻结点或阶段节点时推送（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）未知项要有责任人和期限，但只在它挡住下一个不可逆动作时才推到人面前（9a1ab768 T15）。
+- D101 ✅ PCN 子流程采纳→W9；情报源〔延后：有可接入的数据源时〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）供方变更（PCN）子流程；供应链情报源（C10；对标 Arena SCI、Cofactr）。
+- D102 〔延后：P45 首个导入模板跑通后〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）测试数据管道与 Cpk（C9；对标 Instrumental）。
+- D103 〔延后：S4 放行闭环建成后，届时定日期断点〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）量产 ECN 单号与断点（C12；对标金蝶 AI PLM）。
+- D104 〔延后：随 D48 的 S5 爬坡反馈〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）售后差评回流场景，附录 B 的路径 F 还没补（C13）。
+- D105 ✅ 设计已覆盖，改为实施项→W9，按闭环排期（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）四项：客户改版差异与版本比对（F20；对标 Arena File Comparison）；目标成本对照与 ECO 成本差（F26；对标 Teamcenter BOM Agent）；safety_ctq 贯通（F33）；制造基线 line_programs（F34）。（11-02 补：原工程 `cost_reduction`、`cost_discussion_followup` 降本与成本讨论跟进未承接，并入本条。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
+- D106 〔延后：首个客户或供应商要求直接登录时；在此之前内部具名人代为登记〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）外部协作者入口与协作席位。UI 稿有“收到的交付”，C11 推荐先由内部具名人代为登记（对标 Teamcenter Supplier Hub、Jiga）。
+- D107 ✅ 不做，已移入不采用清单（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）培训记录作为人员资格证据（G-24）。
 
 W3b · 入口、移动与集成
-- D108 〔延后：先做 D52〕⌘K 支持自然语言（G-08）。
-- D109 〔采纳，随交样移动 Web〕扫码定位与一步录入：交样扫码、品质一键接收、拍照即上传（v1.1 §05.9；9a1ab768 T15）。
-- D110 〔延后：先做交样移动 Web〕移动端的 T1/G0 审批与续聊（C14、G-03）。
-- D111 〔现阶段不做：先跑通钉钉（D64）〕飞书/企微入口与卡片内办理（C2；对标飞书 aily、企微）。
-- D112 〔延后到规模化前，只读优先〕PDOS 作为 MCP server（C3；对标 Propel、Linear、Notion）。
-- D113 〔延后：随 D66 的试点范围〕企业系统只读连接器：钉钉文档、ERP、PLM（RAG §16-3；对标 Glean、Rovo）。
-- D114 〔延后：先做 P34 讨论里的“转为任务”〕摄取邮件、纪要和群聊，会议纪要转任务（C17、G-04；对标 Rovo、飞书妙记）。（11-02 补：原工程会议类能力 `meeting_business`、`meeting_decisions`、`meeting_minutes` 未承接，`meeting_actions`、`meeting_reading` 部分承接，建议本条扩为“会议技能包”一并定；DC-11 §8 首批第 1 项已列此方向。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D115 〔延后〕对接 GoodJob 的客户和商机编号（F42）。
+- D108 〔延后：D52 ⌘K 命令面板完成后〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）⌘K 支持自然语言（G-08）。
+- D109 ✅ 采纳→W7，随交样移动 Web；样件二维码标签生成并入本条（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）扫码定位与一步录入：交样扫码、品质一键接收、拍照即上传（v1.1 §05.9；9a1ab768 T15）。
+- D110 〔延后：交样移动 Web 与 D214 登录完成后〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）移动端的 T1/G0 审批与续聊（C14、G-03）。
+- D111 〔延后：钉钉真实联通且有客户要求飞书或企微时〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）飞书/企微入口与卡片内办理（C2；对标飞书 aily、企微）。
+- D112 〔延后：规模化前或有外部 Agent 接入需求时；只读优先〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）PDOS 作为 MCP server（C3；对标 Propel、Linear、Notion）。
+- D113 〔延后：D66 试点范围定了且有具体系统要接时〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）企业系统只读连接器：钉钉文档、ERP、PLM（RAG §16-3；对标 Glean、Rovo）。
+- D114 ✅ 拆开：会议技能包采纳→W8（排在 P34 讨论之后）；邮件与群聊自动摄取〔延后：试点出现稳定需求，外部触发由你单独开启〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）摄取邮件、纪要和群聊，会议纪要转任务（C17、G-04；对标 Rovo、飞书妙记）。（11-02 补：原工程会议类能力 `meeting_business`、`meeting_decisions`、`meeting_minutes` 未承接，`meeting_actions`、`meeting_reading` 部分承接，建议本条扩为“会议技能包”一并定；DC-11 §8 首批第 1 项已列此方向。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
+- D115 ✅ 改为实施项→W9，只存外部编号作引用（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）对接 GoodJob 的客户和商机编号（F42）。
 
 W3b · 小Pai 与 AI 能力
-- D116 〔采纳，先请你确认定位〕NPI 协调线技能包。现有 18 个技能包里没有协调类（a1e2d2bf T2，当时没回答）。
-- D117 〔采纳→W8〕AI 价值指标，如草稿保留率、人工修改率。P33 的自动降级本来就要用这些量（10-07 运行时方案 §9）。
-- D118 ✅〔采纳→D06〕按操作统计工具误选率和参数错误率，并入 W1 的评测报告（M2 §7）。11-03 已并入[报告 §4.5](../docs/reports/evidence/pdos-next-real-eval-20261101/result.md)：按工具的失败率和原始原因；“误选”只能给机械近似（项目级读取在品类范围内必然被拒）。
-- D119 〔延后；触发条件：决定做会话模式（D22），或开通 Anthropic 路线（D65）〕方案 B：原生延迟加载、会话中增删工具（M2 §5、拍板表 A8）。
-- D120 〔延后，与 D23 一起定〕T2 准备类工具也要求先加载技能。零技能基线可以从 27.9% 压到 9.2%，但这是能力变更，要写决策记录（M2 修订 §4）。
-- D121 〔不做：等 D06 的缓存数据〕A 窄入口作为兼容路线的退路（M2 §6）。
-- D122 〔延后〕逐个工具开 `strict: true`。P28 接入的兼容接口不保证都支持（M2 §4）。
-- D123 〔延后：等真实岗位题〕跨编码器或 LLM 重排。合成题的 recall@10 已经是 100%（RAG §16-4；对标 Glean、Cohere）。
-- D124 〔延后：等 D06 算出子任务成本占比〕隔离子任务改用较小的模型（RAG §6.4）。D06 已出（11-03）：抽取子任务占价卡成本 27%、比较子任务 3%，抽取的调用次数和输出都比主循环多；换小模型的收益上限约为总成本的 30%，可以拍板了。
-- D125 〔延后：研究长运行撞到上限时再做〕研究子任务内用模型压缩（上下文设计 §12）。
-- D126 〔不做〕服务端 `clear_tool_uses`，图内的确定性清理已经够用（上下文设计 §6.4）。
-- D127 〔延后：先定资格口径〕用户自建、保存并共享个人技能。v1.1 §06.3.4 已写，没有实现（C8；对标 Claude Skills、GPTs、Rovo）。
-- D128 〔延后〕照片与图纸问答（视觉输入）；图纸/形状相似检索（RAG §20、§18；对标 CADDi）。
-- D129 〔延后：等 D30 题集定版〕真实模型定期回归（10-07 运行时方案 §9）。
-- D130 〔延后：等试点排障吃力时〕统一调用链追踪（对标 LangSmith、Langfuse、OpenTelemetry）。
-- D131 〔延后，随 D42/D43〕富 Markdown 回答展示，目前只解析表格。
-- D132 〔延后：P33 之后随 D37 再评〕AI 改动的段落高亮（G-13；对标 Linear 文本归因）。
+- D116 ✅ 不另建，并入 work_management 的扩展→W6、W8（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）NPI 协调线技能包。现有 18 个技能包里没有协调类（a1e2d2bf T2，当时没回答）。
+- D117 ✅ 采纳→W8（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）AI 价值指标，如草稿保留率、人工修改率。P33 的自动降级本来就要用这些量（10-07 运行时方案 §9）。
+- D118 ✅ 已由 W1 报告 §4.5 完成，此后作 D129 固定指标（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）✅〔采纳→D06〕按操作统计工具误选率和参数错误率，并入 W1 的评测报告（M2 §7）。11-03 已并入[报告 §4.5](../docs/reports/evidence/pdos-next-real-eval-20261101/result.md)：按工具的失败率和原始原因；“误选”只能给机械近似（项目级读取在品类范围内必然被拒）。
+- D119 〔延后：开通 Anthropic 路线（D65）或会话模式恢复（P39）时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）方案 B：原生延迟加载、会话中增删工具（M2 §5、拍板表 A8）。
+- D120 ✅ 11-04 随 D23 采纳：T2 准备类工具也须先加载对应技能，页面预载照常带上，见[P76](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p76) 第 4 项。原记录：〔延后，与 D23 一起定〕T2 准备类工具也要求先加载技能。零技能基线可以从 27.9% 压到 9.2%，但这是能力变更，要写决策记录（M2 修订 §4）。
+- D121 ✅ 不做，W1 显示兼容路线缓存已生效，已移入不采用清单（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）A 窄入口作为兼容路线的退路（M2 §6）。
+- D122 〔延后：W1 §5.4 修复后参数错误率仍高且服务商支持时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）逐个工具开 `strict: true`。P28 接入的兼容接口不保证都支持（M2 §4）。
+- D123 〔延后：有真实岗位题时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）跨编码器或 LLM 重排。合成题的 recall@10 已经是 100%（RAG §16-4；对标 Glean、Cohere）。
+- D124 ✅ 采纳→W8：子任务可单独配置较小模型，同题回归不降才启用（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）隔离子任务改用较小的模型（RAG §6.4）。D06 已出（11-03）：抽取子任务占价卡成本 27%、比较子任务 3%，抽取的调用次数和输出都比主循环多；换小模型的收益上限约为总成本的 30%，可以拍板了。
+- D125 〔延后：研究长运行撞到上下文上限时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）研究子任务内用模型压缩（上下文设计 §12）。
+- D126 ✅ 不做，已移入不采用清单（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）服务端 `clear_tool_uses`，图内的确定性清理已经够用（上下文设计 §6.4）。
+- D127 〔延后：试点用户提出复用指令需求时；届时只作指令模板，不取得 T0〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）用户自建、保存并共享个人技能。v1.1 §06.3.4 已写，没有实现（C8；对标 Claude Skills、GPTs、Rovo）。
+- D128 〔延后：选定视觉模型且试点有需求时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）照片与图纸问答（视觉输入）；图纸/形状相似检索（RAG §20、§18；对标 CADDi）。
+- D129 〔延后：D30 题集定版且 D249 环境缺口补齐后〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）真实模型定期回归（10-07 运行时方案 §9）。
+- D130 〔延后：试点排障吃力时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）统一调用链追踪（对标 LangSmith、Langfuse、OpenTelemetry）。
+- D131 〔延后：随 D42、D43〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）富 Markdown 回答展示，目前只解析表格。
+- D132 〔延后：随 D37 再评〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）AI 改动的段落高亮（G-13；对标 Linear 文本归因）。
 
 W3b · 部署、合规与商业
-- D133 〔采纳，只写进 §07.1，不建设〕部署三档与信创核对（C15、G-38/G-39）。
-- D134 〔延后：等首个私有化客户〕DeepSeek/Qwen 私有部署适配、固定出站 IP、运行详情显示出站去向（C4、G-25）。
-- D135 〔延后：等 D20-A5〕三级用量上限与触顶暂停（C5、G-09）。
-- D136 〔不做，属于商业决定〕目标客户分层与计费（C18）。
-- D137 〔采纳，仅限新代码〕守卫放置约定。须先确认它与 10-08 否决过的 C5 选项 1 不冲突（B16）。
-- D138 〔采纳〕三项暂缓的设计各自写明恢复条件：FailureMode；个人偏好记忆与“我的记忆”页；模板更新差异（B17）。（11-02：其中“模板更新差异”已由 [P60](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p60) 定为项目绑定框架版本、新版本只出差异，不再暂缓。）
-- D139 〔延后，属产品叙事〕把已经领先竞品的 9 个点做成用户看得见的特性（缺口稿 §2）。
-- D241 〔待定，11-02 新增〕供应异常恢复方案：物料短缺或模具轮次异常时，小Pai 给出催交、替代、借料、模具恢复等选项，写明验证步骤和完成判据。原工程 `supplier_recovery` 未承接，`event_issue` 的缺料部分也没人接；现在 `build_execution` 只登记供应快照、计算齐套（见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)）。
+- D133 ✅ 采纳，只写进 v1.1 §07.1（待同步），不建设（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）部署三档与信创核对（C15、G-38/G-39）。
+- D134 ✅ 拆开：运行详情显示出站去向→W8；私有部署适配与固定出站 IP〔延后：首个私有化客户〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）DeepSeek/Qwen 私有部署适配、固定出站 IP、运行详情显示出站去向（C4、G-25）。
+- D135 〔延后：成员预算上线并有 1 个月真实用量后〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）三级用量上限与触顶暂停（C5、G-09）。
+- D136 ✅ 不做，已移入不采用清单（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）目标客户分层与计费（C18）。
+- D137 ✅ 采纳→W8：写约定，新代码遵守，存量清点列清单，动到时收口（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）守卫放置约定。须先确认它与 10-08 否决过的 C5 选项 1 不冲突（B16）。
+- D138 ✅ 逐项定：模板更新差异已由 P60 定；“我的记忆”页作为 P72 显式偏好管理页随 RAG 切片 B 做；FailureMode〔延后：S3 问题闭环上线并有 20 条以上同品类已关闭 Issue〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）三项暂缓的设计各自写明恢复条件：FailureMode；个人偏好记忆与“我的记忆”页；模板更新差异（B17）。（11-02：其中“模板更新差异”已由 [P60](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p60) 定为项目绑定框架版本、新版本只出差异，不再暂缓。）
+- D139 〔延后：准备对外演示或销售材料时〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）把已经领先竞品的 9 个点做成用户看得见的特性（缺口稿 §2）。
+- D241 〔延后：供应承诺与替代料命令实现后（D47），届时加进 build_execution〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）供应异常恢复方案：物料短缺或模具轮次异常时，小Pai 给出催交、替代、借料、模具恢复等选项，写明验证步骤和完成判据。原工程 `supplier_recovery` 未承接，`event_issue` 的缺料部分也没人接；现在 `build_execution` 只登记供应快照、计算齐套（见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)）。
 
 W3b · 早期想法（10-08 之前）：丢失或口径变窄，需要定补回还是放弃
-- D180 〔补回，写成 P35 起的记录〕外贸出口的市场方向。这是你 09-28 的裁决：用户声音以英文平台为主（亚马逊评论、Reddit），认证先看 UL/CE/FCC 和欧盟电池法规，用卖家精灵作采集渠道。现在 v1.1、确认稿和技能包里都找不到（PM 方法目录 §2）。
-- D181 〔补回 §03.5、§09.5，并加 AT〕两项：承诺兑现率作北极星，并用预测误差校准排期；关键路径与浮时，延期只传到受影响的后继。原固定案例：A 延 6 天，B 延 3 天，C 被浮时吸收（08-24 §8、09-10 §11）。
-- D182 〔补回，并入 D37〕需要执行的决定要关联任务和回执。“已记录”不能算“已完成”，下次要核对是否落实（09-10 §4、§10）。
-- D183 〔补回，或写明由 P33 承接并给判据〕项目级测试计划：绑定模板版本；增删项要写理由；必测覆盖按版本计算；对话生成新版计划时，旧结果不被覆盖。这是你 09-08 提出的场景，现在附录 A 没有测试计划的创建或修订命令（09-08 测试模板合同）。
-- D184 〔补回〕三项：
+- D180 ✅ 补回→W8，写进三个研究类技能包的使用原则（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）外贸出口的市场方向。这是你 09-28 的裁决：用户声音以英文平台为主（亚马逊评论、Reddit），认证先看 UL/CE/FCC 和欧盟电池法规，用卖家精灵作采集渠道。现在 v1.1、确认稿和技能包里都找不到（PM 方法目录 §2）。
+- D181 ✅ 补回→W9，加 AT-67；v1.1 §09.5 待同步（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）两项：承诺兑现率作北极星，并用预测误差校准排期；关键路径与浮时，延期只传到受影响的后继。原固定案例：A 延 6 天，B 延 3 天，C 被浮时吸收（08-24 §8、09-10 §11）。
+- D182 ✅ 补回→W6（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）需要执行的决定要关联任务和回执。“已记录”不能算“已完成”，下次要核对是否落实（09-10 §4、§10）。
+- D183 ✅ 补回→W9，附录 A 补测试计划命令，加 AT-68（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）项目级测试计划：绑定模板版本；增删项要写理由；必测覆盖按版本计算；对话生成新版计划时，旧结果不被覆盖。这是你 09-08 提出的场景，现在附录 A 没有测试计划的创建或修订命令（09-08 测试模板合同）。
+- D184 ✅ 补回→W9（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）三项：
   - PRD 装配文档：你当时裁决“必须有实际 PRD”，含需求↔规格映射；
   - 结项时按假设逐条判支持、证伪或未知；
   - 项目复盘入库（PM 方法目录 §6）。
-- D185 〔补回，或写明延后〕导出与审核：
+- D185 ✅ 拆开：按模板导出采纳→W9；回传差异候选、外审取证包、API/Webhook〔延后〕（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）导出与审核：
   - 8D、DFMEA、Gate 包、周报按客户的 Word/PPT 模板导出；手改过的导出件传回来，变成差异候选；
   - ISO 9001/IATF 外审和客户验厂用的签核取证包；
   - 受控的 API/Webhook。
 
   原 N7-01 注明“此条不得从总出口遗漏”，现在只有 D56 的 Excel 导出。
-- D186 〔补回，做成技能包〕pre-mortem 生成 FMEA 候选；Living FMEA：新 Issue 没被 FMEA 覆盖时，提出更新提案。你当时裁决“首批并行，T1”（PM 方法目录 §4）。
-- D187 〔补回，与 D116 同组〕方法技能：SWOT、PESTLE、五力、安索夫（你当时说“四项全借”），以及确认稿 C3 写明的实验设计技能包。现有 18 个技能包里都没有。
-- D188 〔并入 D93〕上市准备：卖点证据与销售资料，宣传口径要与实测能力一致（PDOS 产品空间.pdf p1）。
-- D189 〔确认放弃，或补成视图〕产品家族、矩阵与路线图（产品空间.pdf p4、原 N6-04）。v1.1 §01.5 仍写产品经理负责“产品路线”，全文却没有路线图。（11-02 补：原工程 `product_matrix` 产品矩阵解释未承接，并入本条，见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D190 〔补进 D71〕“未推进”也要升级：“收到”不算推进，未回复和未推进分别计时（DC-12 Q10/Q14，已批准）。
-- D191 〔补回 §09.5〕指标纪律与原业务指标：
+- D186 ✅ 拆开：事前验尸生成 FMEA 候选采纳→W8；Living FMEA〔延后：随 D138 的 FailureMode〕（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）pre-mortem 生成 FMEA 候选；Living FMEA：新 Issue 没被 FMEA 覆盖时，提出更新提案。你当时裁决“首批并行，T1”（PM 方法目录 §4）。
+- D187 ✅ 补回→W8：产品方法技能包与实验设计技能包（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）方法技能：SWOT、PESTLE、五力、安索夫（你当时说“四项全借”），以及确认稿 C3 写明的实验设计技能包。现有 18 个技能包里都没有。
+- D188 ✅ 并入 D93 一起采纳（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）上市准备：卖点证据与销售资料，宣传口径要与实测能力一致（PDOS 产品空间.pdf p1）。
+- D189 ✅ 补成只读视图→W7：品类矩阵与路线图（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）产品家族、矩阵与路线图（产品空间.pdf p4、原 N6-04）。v1.1 §01.5 仍写产品经理负责“产品路线”，全文却没有路线图。（11-02 补：原工程 `product_matrix` 产品矩阵解释未承接，并入本条，见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
+- D190 ✅ 并入 D71 一起采纳（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）“未推进”也要升级：“收到”不算推进，未回复和未推进分别计时（DC-12 Q10/Q14，已批准）。
+- D191 ✅ 补回：纪律进 §09.5 与 D218，原指标进试点报表，真人走查进 D218（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）指标纪律与原业务指标：
   - 纪律：阈值先冻结，看到结果后不下调；分母为 0 记 N/A；主动时间要计入审核和纠错；
   - 原指标：兑现率；Issue 重开与复发；齐套与快照新鲜度；员工价值按岗位分场景；
   - 单日工作流真人走查（原 Q1）。
-- D192 〔并入 D86〕账户生命周期：只由管理员建号；不能提权，也不能停用自己；至少保留一个 Owner；重置密码后旧会话失效（08-20 账户合同）。
-- D193 〔补回 §07〕数据保留与删除：分档保留期；删除前先做引用分析和预览；被引用的证据受保护；租户退出时提供导出包（09-10 §20）。
-- D194 〔补回〕品类合并、拆分与重复检测。品类是权限根，划错了目前没有修正路径（10-07 立项前审查 §3）。
-- D195 〔补成试点规程〕两项：试点失败按七类归因（模型误读、映射、资料矛盾、规则缺失、职责不清、连接器、界面难用）；加功能前先回答“给谁用、用在哪、少做了什么”（V2 设计包 04 §13）。
-- D196 〔补进附录 B 的 S5 知识〕主动知识复用：立项、ECR、选型时推送已验证的经验；采用、无用、纠错都要留痕；未验证的经验不作依据；作者不能当审核人（原 N3-03）。
-- D197 〔补 AT，或并入 D90〕新人与临时接手：接手人拿到最小相关资料包；代理有期限、可撤销；无关的敏感资料不泄漏（原 N3-04）。
-- D198 〔补决策〕小Pai 能否按自然语言起草流程、规则或框架的差异，用历史项目演练后由授权人发布（原 N3-09）。P33 目前写的是“小Pai 不改框架”。（11-02 补：原工程 `process_template_configuration` 流程模板配置未承接，并入本条。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D199 〔补放弃或延后记录〕两项：供方工程画像（交期、响应、历史失败，可重算）；NRE 预算与模具费用、归属（原 N5-04、N5-06；CEHub 有 6 条相关）。
-- D200 〔你，写决策记录，试点前置〕CEHub 去留：
+- D192 ✅ 并入 D86 一起采纳（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）账户生命周期：只由管理员建号；不能提权，也不能停用自己；至少保留一个 Owner；重置密码后旧会话失效（08-20 账户合同）。
+- D193 ✅ 补回→W11，具体年限写进 D217（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）数据保留与删除：分档保留期；删除前先做引用分析和预览；被引用的证据受保护；租户退出时提供导出包（09-10 §20）。
+- D194 ✅ 拆开：重复检测→W9；合并拆分〔延后：出现第一个需要合并或拆分的真实品类〕（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）品类合并、拆分与重复检测。品类是权限根，划错了目前没有修正路径（10-07 立项前审查 §3）。
+- D195 ✅ 采纳→W11，写进试点规程（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）两项：试点失败按七类归因（模型误读、映射、资料矛盾、规则缺失、职责不清、连接器、界面难用）；加功能前先回答“给谁用、用在哪、少做了什么”（V2 设计包 04 §13）。
+- D196 ✅ 补回→W9（S5），加 AT-69（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）主动知识复用：立项、ECR、选型时推送已验证的经验；采用、无用、纠错都要留痕；未验证的经验不作依据；作者不能当审核人（原 N3-03）。
+- D197 ✅ 补回→W6，加 AT-70（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）新人与临时接手：接手人拿到最小相关资料包；代理有期限、可撤销；无关的敏感资料不泄漏（原 N3-04）。
+- D198 ✅ 采纳→W8，排在框架 v1 投入使用后：小Pai 可起草差异，不能发布（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）小Pai 能否按自然语言起草流程、规则或框架的差异，用历史项目演练后由授权人发布（原 N3-09）。P33 目前写的是“小Pai 不改框架”。（11-02 补：原工程 `process_template_configuration` 流程模板配置未承接，并入本条。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
+- D199 〔延后：画像待 D47 供应承诺积累半年数据；NRE 待 D105 目标成本上线〕（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）两项：供方工程画像（交期、响应、历史失败，可重算）；NRE 预算与模具费用、归属（原 N5-04、N5-06；CEHub 有 6 条相关）。
+- D200 ✅ 定：试点通过后取代 CEHub；在途项目经 G0 纳管；试点期并行，达标后转只读 3 个月再退役；试点期随时可回退。转只读与退役执行前仍须你授权（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）CEHub 去留：
   - pdos-next 是否取代 CEHub；
   - CEHub 的在途项目怎么进来；
   - 何时转只读、何时退役；回滚方案。
 
   CEHub 目前还在生产服务器上运行，v1.1 和确认稿都没有决定（原 P5）。
-- D201 〔并入 D66〕缺失的岗位：成本、资源管理员/职能负责人、知识审核人，在 v1.1 的 9 类职责里都没有；DQE/SQE/IE 的早期介入和 ID 计划也没有场景（09-10 角色稿）。
-- D202 〔逐条确认〕口径变窄的地方：（11-02 补：原工程 `meeting_planning` 会前装配未承接，并入“会前装配”一项，见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）（11-03：第 3 项中的日推送上限与静默时段已由 [P75](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p75) 第 6 项补回。）
+- D201 ✅ 并入 D66 的租户角色目录（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）缺失的岗位：成本、资源管理员/职能负责人、知识审核人，在 v1.1 的 9 类职责里都没有；DQE/SQE/IE 的早期介入和 ID 计划也没有场景（09-10 角色稿）。
+- D202 ✅ 逐条定，见 P83 第 2 项（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）口径变窄的地方：（11-02 补：原工程 `meeting_planning` 会前装配未承接，并入“会前装配”一项，见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）（11-03：第 3 项中的日推送上限与静默时段已由 [P75](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p75) 第 6 项补回。）
   - 依赖传播的对账案例没有 AT；资源受限排程和情景比较没有判据；
   - 健康度从六维缩成四档；会议闭环的会前装配和下次复查没有去留；收敛前的方案数从 3 降到 2；
   - 单项确认 ≤3 次点击、14 天自动归档、日推送上限、静默时段都没了；
   - 性能从真实设备首屏变成本地计时；中英界面没有提。
-- D203 〔逐条确认放弃，或移入候选池〕低价值零散项：汇率、Webhook、草稿 TTL、长周期测试进排期、客户视角“还在等什么”、销售接口角色、编号规则可配置。
-- D204 〔补恢复条件〕v1.1 写了“以后再做”，但没写恢复条件：
+- D203 ✅ 逐条定，见 P83 第 3 项；草稿 TTL、编号规则可配置已移入不采用清单（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）低价值零散项：汇率、Webhook、草稿 TTL、长周期测试进排期、客户视角“还在等什么”、销售接口角色、编号规则可配置。
+- D204 ✅ 补了恢复条件；M4、M5 已由现有实现及 D45、D57、D74、P46 承接（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）v1.1 写了“以后再做”，但没写恢复条件：
   - 爬虫订阅（§07.7）；
   - 第二、三批立项视图：差距矩阵、热力图、成本桥、价格与评分时间线（§05.8）；
   - 10-07 执行计划的 M4/M5。
