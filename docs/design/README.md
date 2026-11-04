@@ -37,9 +37,9 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 
 | 文档 | 状态 |
 |---|---|
-| [日常问答与企业检索](2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md) | 实施设计 v0.4；P30–P32 已确认 |
-| [上下文设计](2026-10-28-xiaopai-context-design.md) | v0.2；§13 已确认为 P32 |
-| [切片 A / X1 实施交接](2026-10-28-slice-a-x1-implementation-handoff.md) | 逐步操作说明；代码路径已按 2026-11-01 新目录更新 |
+| [日常问答与企业检索](2026-10-27-xiaopai-daily-assistant-enterprise-rag-design.md) | 实施设计 v0.4；P30–P32 已确认；切片 A–G 已实施（10-28/10-30），余项见[清单 W1](../../tasks/ai-native-integrated-todo.md#debt-board) |
+| [上下文设计](2026-10-28-xiaopai-context-design.md) | v0.2；§13 已确认为 P32；X1–X3 已实施（10-28/10-30），余项见[清单 W1](../../tasks/ai-native-integrated-todo.md#debt-board) |
+| [切片 A / X1 实施交接](2026-10-28-slice-a-x1-implementation-handoff.md) | 已实施（10-28）；代码路径已按 2026-11-01 新目录更新 |
 | [M2 工具面决定](2026-10-17-m2-tool-surface-decision.md) | 方案 C 已实施；T2 门禁与方案 B 待定 |
 | [M2 工具下发审查](2026-10-08-m2-skill-tool-delivery-proposal.md) | 待评审；载荷数字已被上一行取代 |
 | [本地开发 MiniMax 策略](2026-10-23-local-development-minimax-policy.md) | 用户批准的本地开发不限额策略 |
