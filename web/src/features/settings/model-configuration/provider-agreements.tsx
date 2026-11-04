@@ -6,7 +6,7 @@ import { agreementCategories, agreementPendingKey, matchAgreementReceipt, parseA
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 
 type Draft = { provider: string; signed: string; expires: string; categories: AgreementCategory[]; retention: string; training: string; active: boolean; promptCacheAllowed: boolean };
-const empty: Draft = { provider: "", signed: "", expires: "", categories: [], retention: "", training: "", active: true, promptCacheAllowed: false };
+const empty: Draft = { provider: "", signed: "", expires: "", categories: [], retention: "", training: "", active: true, promptCacheAllowed: true };
 const statusText = { active: "有效", inactive: "已停用", expired: "已到期", not_started: "未生效" };
 const inputClass = "w-full rounded-lg border border-input bg-background px-3 py-2 text-sm";
 function localDate(value: string) {
@@ -14,7 +14,7 @@ function localDate(value: string) {
   return new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
 }
 function dateText(value: string) { return new Date(value).toLocaleString("zh-CN"); }
-function cacheText(value: boolean | null | undefined) { return value === true ? "允许" : value === false ? "关闭" : "未取得明确允许（关闭）"; }
+function cacheText(value: boolean | null | undefined) { return value === true ? "允许" : value === false ? "关闭" : "未声明（按允许）"; }
 
 function Review({ request }: { request: AgreementRequest }) {
   return <div className="space-y-2 break-words text-sm">
@@ -127,7 +127,7 @@ export function ConnectedProviderAgreements({ api, principalId, categoryId }: { 
 
   function reuse(row: Agreement) {
     setDraft({ provider: row.provider, signed: localDate(row.signed_on), expires: localDate(row.expires_at),
-      categories: [...row.data_categories], retention: row.retention_terms, training: row.training_terms, active: row.active, promptCacheAllowed: row.prompt_cache_allowed === true });
+      categories: [...row.data_categories], retention: row.retention_terms, training: row.training_terms, active: row.active, promptCacheAllowed: row.prompt_cache_allowed !== false });
     setError(""); setReceipt(null);
   }
 
@@ -177,7 +177,7 @@ export function ConnectedProviderAgreements({ api, principalId, categoryId }: { 
         <div className="space-y-2 sm:col-span-2"><p className="text-sm font-medium">协议允许的数据类别</p>{Object.entries(agreementCategories).map(([value, label]) => <label htmlFor={`${prefix}-${value}`} key={value} className="agreement-check text-sm"><input id={`${prefix}-${value}`} type="checkbox" checked={draft.categories.includes(value as AgreementCategory)} onChange={event => setDraft({ ...draft, categories: event.target.checked ? [...draft.categories, value as AgreementCategory] : draft.categories.filter(item => item !== value) })} />{label}</label>)}</div>
         <label htmlFor={`${prefix}-retention`} className="grid gap-1 text-sm sm:col-span-2">留存条款<textarea id={`${prefix}-retention`} value={draft.retention} onChange={event => setDraft({ ...draft, retention: event.target.value })} required minLength={3} rows={3} className={inputClass} /></label>
         <label htmlFor={`${prefix}-training`} className="grid gap-1 text-sm sm:col-span-2">训练条款<textarea id={`${prefix}-training`} value={draft.training} onChange={event => setDraft({ ...draft, training: event.target.value })} required minLength={3} rows={3} className={inputClass} /></label>
-        <div className="space-y-1 sm:col-span-2"><label htmlFor={`${prefix}-prompt-cache`} className="agreement-check text-sm"><input id={`${prefix}-prompt-cache`} type="checkbox" checked={draft.promptCacheAllowed} onChange={event => setDraft({ ...draft, promptCacheAllowed: event.target.checked })} />协议明确允许提示缓存</label><p className="text-xs text-muted-foreground">仅在协议允许短期留存时勾选。只控制服务商接口支持的提示缓存，不改变其他留存条款。</p></div>
+        <div className="space-y-1 sm:col-span-2"><label htmlFor={`${prefix}-prompt-cache`} className="agreement-check text-sm"><input id={`${prefix}-prompt-cache`} type="checkbox" checked={draft.promptCacheAllowed} onChange={event => setDraft({ ...draft, promptCacheAllowed: event.target.checked })} />允许服务商提示缓存</label><p className="text-xs text-muted-foreground">缺省允许。协议不允许短期留存时取消勾选，关闭会写入登记回执。只控制服务商接口支持的提示缓存，不改变其他留存条款。</p></div>
         <label htmlFor={`${prefix}-active`} className="agreement-check text-sm sm:col-span-2"><input id={`${prefix}-active`} type="checkbox" checked={draft.active} onChange={event => setDraft({ ...draft, active: event.target.checked })} />启用此协议登记（取消勾选以停用）</label>
       </fieldset>
       <Button disabled={disabled} type="submit">核对协议并预览</Button>

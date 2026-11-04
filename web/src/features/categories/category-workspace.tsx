@@ -1,12 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ModelWorkspace } from "@/features/categories/model-workspace";
 import { Workspace } from "@/features/shell/workspace";
 import { CategoryCreateForm } from "@/features/categories/create/category-create-form";
 import { ArrowUpRight, MagnifyingGlass, Plus, Sparkle, X } from "@phosphor-icons/react";
 import { ProposalList } from "@/features/categories/proposals/proposal-list";
+import { ProposalCreateForm } from "@/features/categories/proposals/proposal-create-form";
 import styles from "./category-home.module.css";
 import { CategoryHome } from "@/features/categories/category-home";
 import { browserApi } from "@/lib/browser-api";
@@ -30,6 +32,9 @@ export function CategoryArea({ area, categories, categoryId, projectId, onSelect
   const updateMaterialContext = useCallback((material: MaterialContext | undefined) => onPaiContext({ categoryId, productId: "", sources: [], material }), [categoryId, onPaiContext]);
   const createDialog = useRef<HTMLDialogElement>(null);
   const createTrigger = useRef<HTMLButtonElement>(null);
+  const router = useRouter();
+  const proposalDialog = useRef<HTMLDialogElement>(null);
+  const proposalTrigger = useRef<HTMLButtonElement>(null);
   const [query, setQuery] = useState("");
   const [creationNotice, setCreationNotice] = useState("");
   const bench = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("bench") ?? "" : "";
@@ -70,7 +75,7 @@ export function CategoryArea({ area, categories, categoryId, projectId, onSelect
     </>;
   }
 
-  if (!bench && proposals && category) return <section aria-label="立项提案"><div className="workspace-page-heading"><div><h1>立项提案</h1><p>把想法和需求整理为可判断的产品方案。</p></div><Button size="sm" onClick={() => { updateMaterialContext({ kind: "proposal", title: `${category.name} · 新提案`, draft: { category_name: category.name, purpose: category.purpose }, request: { id: crypto.randomUUID(), prompt: "请根据当前品类的竞品、用户声音和规格字典，起草一份私有立项提案。先读取可用资料并列出待补充问题，提供可编辑候选，确认后保存。" } }); onOpenPai(); }}><Plus/>新建提案</Button></div><ProposalList key={categoryId} categories={categories} categoryId={categoryId} api={browserApi}/></section>;
+  if (!bench && proposals && category) return <section aria-label="立项提案"><div className="workspace-page-heading"><div><h1>立项提案</h1><p>把想法和需求整理为可判断的产品方案。</p></div><Button ref={proposalTrigger} size="sm" onClick={() => proposalDialog.current?.showModal()}><Plus/>新建提案</Button></div><ProposalList key={categoryId} categories={categories} categoryId={categoryId} api={browserApi}/><dialog ref={proposalDialog} aria-label="新建提案" onClose={() => proposalTrigger.current?.focus()}><div className={styles.dialogHeading}><h2>新建提案</h2><Button size="icon" variant="ghost" aria-label="关闭新建提案" onClick={() => proposalDialog.current?.close()}><X/></Button></div><button type="button" className={styles.paiCreate} onClick={() => { proposalDialog.current?.close(); updateMaterialContext({ kind: "proposal", title: `${category.name} · 新提案`, draft: { category_name: category.name, purpose: category.purpose }, request: { id: crypto.randomUUID(), prompt: "请根据当前品类的竞品、用户声音和规格字典，起草一份私有立项提案。先读取可用资料并列出待补充问题，提供可编辑候选，确认后保存。" } }); onOpenPai(); }}><Sparkle size={16}/>与小Pai一起起草<ArrowUpRight size={14}/></button><p className="mb-4 text-sm text-muted-foreground">小Pai 不可用时（未配置模型、预算已用完或服务商故障），可以直接手动创建，之后再让小Pai补全。</p><ProposalCreateForm categoryId={categoryId} api={browserApi} onCreated={id => { proposalDialog.current?.close(); router.push(`/categories/${categoryId}/proposals/${id}`); }}/></dialog></section>;
 
   if (!bench && area === "category") {
     return <>
