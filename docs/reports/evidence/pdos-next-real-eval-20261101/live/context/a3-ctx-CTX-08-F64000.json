@@ -1,0 +1,27 @@
+{
+  "case_id": "CTX-08",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-08-F64000",
+  "category_id": "a711226b-7666-4668-a31c-7fa2ad22851d",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "9b27e051-66c7-45a5-b226-eeba773888c4",
+      "status": "partial"
+    }
+  ],
+  "blocked": "CTX08 requires the actual private-derived historical answer",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [
+    "This batch uses category-scoped HTTP Runs for fixture isolation; the old scripted control used personal scope. Record the variant."
+  ],
+  "step_count": 3,
+  "finished": true
+}

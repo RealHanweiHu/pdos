@@ -1,0 +1,2 @@
+{"run_id": "61b6c25c-403b-4ac5-a5f3-af61e41a52ae", "error_type": "ProgrammingError", "sqlstate": "P0001", "message_primary": "Kernel run binding immutable", "table_name": null, "constraint_name": null}
+{"run_id": "f63e2068-1501-4ea7-83f2-7c72b77f3fae", "error_type": "ProgrammingError", "sqlstate": "P0001", "message_primary": "Kernel run binding immutable", "table_name": null, "constraint_name": null}

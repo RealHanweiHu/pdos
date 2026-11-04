@@ -1,0 +1,25 @@
+{
+  "case_id": "CTX-01",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-01-F64000",
+  "category_id": "78c45839-df0d-47a3-a098-77028fad7446",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "6554a60d-b708-468a-bbbc-f0a7c3e745c5",
+      "status": "waiting_input"
+    }
+  ],
+  "blocked": null,
+  "error": "RuntimeError: HTTP 403: {\"code\":\"FORBIDDEN_SCOPE\",\"message\":\"这次回答依赖的资料已不可读取，原内容已隐藏。\",\"detail\":{\"reason\":\"FORBIDDEN_SCOPE\"}}",
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 31,
+  "finished": false
+}

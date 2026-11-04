@@ -1,0 +1,51 @@
+{
+  "case_id": "CTX-09",
+  "focus": 64000,
+  "attempt": "a4",
+  "label": "a4-ctx-CTX-09-F64000",
+  "category_id": "6b98b0f8-d208-4c7e-a47d-36f25930b664",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "73574008-a41f-4dfb-b771-bf97420ceef8",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "failed",
+        "waited_ms": 302207.59004200227
+      },
+      "settled_status": "failed"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 4,
+      "before": [],
+      "after": [],
+      "run_id": "ede5ec5f-4d87-42bb-896d-957c94e0e3c5",
+      "status": "partial"
+    },
+    {
+      "ordinal": 2,
+      "phase": "final",
+      "turn_index": 6,
+      "before": [],
+      "after": [],
+      "run_id": "cffcf14c-f558-42a8-a400-afc86a25467b",
+      "status": "partial"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "partial",
+  "execution_class": "unbound_scenario_control",
+  "limits": [
+    "Original exact 3->6/9 result.read scenario remains partial/needs_case_revision; natural 9-item directory fits a single tool result. No failure is injected."
+  ],
+  "step_count": 3,
+  "finished": true
+}

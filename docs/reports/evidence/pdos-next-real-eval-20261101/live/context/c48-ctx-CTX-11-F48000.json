@@ -1,0 +1,34 @@
+{
+  "case_id": "CTX-11",
+  "focus": 48000,
+  "attempt": "c48",
+  "label": "c48-ctx-CTX-11-F48000",
+  "category_id": "0f06533b-8a74-4f39-a1d5-fd4258257f70",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "binding_precondition",
+      "turn_index": null,
+      "before": [],
+      "after": [],
+      "run_id": "22abcc2b-5e8e-4092-a7fc-e380cf644117",
+      "status": "completed"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "9a652e99-1d93-4f32-94c5-23e6d596bc91",
+      "status": "partial"
+    }
+  ],
+  "blocked": "CTX11 needs a real unadopted pending old-title candidate",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 4,
+  "finished": true
+}

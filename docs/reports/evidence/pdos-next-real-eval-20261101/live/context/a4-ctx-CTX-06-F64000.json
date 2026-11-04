@@ -1,0 +1,31 @@
+{
+  "case_id": "CTX-06",
+  "focus": 64000,
+  "attempt": "a4",
+  "label": "a4-ctx-CTX-06-F64000",
+  "category_id": "72677a31-2486-46e2-8b55-7a05e1026b8c",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "9dceb53e-d082-4159-bca8-0f6e5bf79bf5",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "failed",
+        "waited_ms": 301771.02783300506
+      },
+      "settled_status": "failed"
+    }
+  ],
+  "blocked": "CTX06 needs a real carried historical-source citation before exclusion",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 4,
+  "finished": true
+}

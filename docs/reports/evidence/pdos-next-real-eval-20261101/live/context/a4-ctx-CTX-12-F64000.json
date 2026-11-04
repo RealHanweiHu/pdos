@@ -1,0 +1,84 @@
+{
+  "case_id": "CTX-12",
+  "focus": 64000,
+  "attempt": "a4",
+  "label": "a4-ctx-CTX-12-F64000",
+  "category_id": "26ff0112-7b77-48b6-8b4d-e23ef2a69859",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "fd6696ae-b7d8-4fa7-bc37-4a116a519399",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "failed",
+        "waited_ms": 11097.93154199724
+      },
+      "settled_status": "failed"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 5,
+      "before": [],
+      "after": [],
+      "run_id": "1e5a6306-7138-438d-9bf1-fd1d73e429e9",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "failed",
+        "waited_ms": 262055.80154100608
+      },
+      "settled_status": "failed"
+    },
+    {
+      "ordinal": 2,
+      "phase": "history",
+      "turn_index": 10,
+      "before": [],
+      "after": [],
+      "run_id": "d9bf97a0-c56c-48b9-9de5-c4a8d3e45ab6",
+      "status": "failed"
+    },
+    {
+      "ordinal": 3,
+      "phase": "history",
+      "turn_index": 15,
+      "before": [],
+      "after": [],
+      "run_id": "11b75f5c-78c9-455b-9322-cb415392f473",
+      "status": "partial"
+    },
+    {
+      "ordinal": 4,
+      "phase": "history",
+      "turn_index": 20,
+      "before": [],
+      "after": [],
+      "run_id": "7dfcab07-99b5-4508-b586-93d6668f5f69",
+      "status": "partial"
+    },
+    {
+      "ordinal": 5,
+      "phase": "final",
+      "turn_index": 21,
+      "before": [],
+      "after": [],
+      "run_id": "9db31a3b-6d1b-48e9-914d-d75fb8875965",
+      "status": "failed"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [
+    "Eight explicit fixed source pins can exceed STATE_TOKENS=1500; use category-scoped reads and preserve the ordinary state cap."
+  ],
+  "step_count": 6,
+  "finished": true
+}

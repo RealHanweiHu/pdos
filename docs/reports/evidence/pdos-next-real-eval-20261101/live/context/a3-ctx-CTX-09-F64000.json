@@ -1,0 +1,36 @@
+{
+  "case_id": "CTX-09",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-09-F64000",
+  "category_id": "68d1e012-a538-40af-9fe8-52a62984d56e",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "559dc85c-9875-4135-aa79-4990a5d0b415",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 4,
+      "before": [],
+      "after": [],
+      "run_id": "03e01ef3-508d-4d10-ad64-540f40559973",
+      "status": "waiting_input"
+    }
+  ],
+  "blocked": null,
+  "error": "RuntimeError: HTTP 403: {\"code\":\"FORBIDDEN_SCOPE\",\"message\":\"这次回答依赖的资料已不可读取，原内容已隐藏。\",\"detail\":{\"reason\":\"FORBIDDEN_SCOPE\"}}",
+  "binding_status": "partial",
+  "execution_class": "unbound_scenario_control",
+  "limits": [
+    "Original exact 3->6/9 result.read scenario remains partial/needs_case_revision; natural 9-item directory fits a single tool result. No failure is injected."
+  ],
+  "step_count": 3,
+  "finished": false
+}

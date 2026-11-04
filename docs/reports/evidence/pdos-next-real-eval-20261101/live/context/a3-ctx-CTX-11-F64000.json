@@ -1,0 +1,32 @@
+{
+  "case_id": "CTX-11",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-11-F64000",
+  "category_id": "fbd2e39d-526c-4dce-88c8-77f0750594b3",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "binding_precondition",
+      "turn_index": null,
+      "before": [],
+      "after": [],
+      "run_id": "9d19939f-7c2e-45ff-a017-1139cfbdc0eb",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": []
+    }
+  ],
+  "blocked": "work_followup_action needs actual preceding verified citations",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 4,
+  "finished": true
+}

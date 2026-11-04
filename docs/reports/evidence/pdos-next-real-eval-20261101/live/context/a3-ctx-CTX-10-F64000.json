@@ -1,0 +1,25 @@
+{
+  "case_id": "CTX-10",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-10-F64000",
+  "category_id": "a88ab38a-f0ad-4d7c-8bb7-eec08b9abd52",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "e760680b-cf81-4ff2-8b4c-15529c76c83c",
+      "status": "partial"
+    }
+  ],
+  "blocked": "CTX10 needs all 24 verbatim native constraints above STATE_TOKENS",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "control_only",
+  "limits": [],
+  "step_count": 3,
+  "finished": true
+}

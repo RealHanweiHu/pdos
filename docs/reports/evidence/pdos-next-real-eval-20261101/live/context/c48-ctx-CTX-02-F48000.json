@@ -1,0 +1,49 @@
+{
+  "case_id": "CTX-02",
+  "focus": 48000,
+  "attempt": "c48",
+  "label": "c48-ctx-CTX-02-F48000",
+  "category_id": "b3fa9f6d-3f94-4579-a13b-f6944e46b14e",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "fbbe628c-109d-4439-9076-36bcde09af28",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 3,
+      "before": [],
+      "after": [],
+      "run_id": "6af7edf1-f7d3-4bb6-aac4-4ddc4589eaf7",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "failed",
+        "waited_ms": 302193.90633300645
+      },
+      "settled_status": "failed"
+    },
+    {
+      "ordinal": 2,
+      "phase": "final",
+      "turn_index": 6,
+      "before": [],
+      "after": [],
+      "run_id": "00f0df20-2013-402a-a475-ee560c233259",
+      "status": "partial"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 3,
+  "finished": true
+}

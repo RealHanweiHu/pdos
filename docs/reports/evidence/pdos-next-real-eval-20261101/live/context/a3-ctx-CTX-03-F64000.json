@@ -1,0 +1,45 @@
+{
+  "case_id": "CTX-03",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-03-F64000",
+  "category_id": "ce543980-56b1-43dc-9c2d-08ff062675aa",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "b6a8bca5-9ba2-4234-a555-2c04552fd9c8",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 3,
+      "before": [],
+      "after": [],
+      "run_id": "b51bcf6a-5246-4914-80fa-a78b9d2df55c",
+      "status": "partial"
+    },
+    {
+      "ordinal": 2,
+      "phase": "final",
+      "turn_index": 6,
+      "before": [],
+      "after": [],
+      "run_id": "3c13bae7-8a82-4d5a-8af5-6fd4deb89c73",
+      "status": "partial"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [
+    "This batch uses category-scoped HTTP Runs for fixture isolation; the old scripted control used personal scope. Record the variant."
+  ],
+  "step_count": 3,
+  "finished": true
+}

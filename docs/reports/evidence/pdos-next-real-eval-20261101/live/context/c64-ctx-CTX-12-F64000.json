@@ -1,0 +1,78 @@
+{
+  "case_id": "CTX-12",
+  "focus": 64000,
+  "attempt": "c64",
+  "label": "c64-ctx-CTX-12-F64000",
+  "category_id": "a8c92d5c-e2bb-47eb-9444-aeb87b1378c5",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "47b9c3e3-ce3f-4d6a-a341-30a24f172441",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 5,
+      "before": [],
+      "after": [],
+      "run_id": "5583b7b2-eb02-492e-b978-909e94bd6149",
+      "status": "failed"
+    },
+    {
+      "ordinal": 2,
+      "phase": "history",
+      "turn_index": 10,
+      "before": [],
+      "after": [],
+      "run_id": "5127d7af-7d40-424c-a054-814dac22a8e8",
+      "status": "partial"
+    },
+    {
+      "ordinal": 3,
+      "phase": "history",
+      "turn_index": 15,
+      "before": [],
+      "after": [],
+      "run_id": "d2b60eee-8657-46c4-b118-e1ef0a4c455d",
+      "status": "failed"
+    },
+    {
+      "ordinal": 4,
+      "phase": "history",
+      "turn_index": 20,
+      "before": [],
+      "after": [],
+      "run_id": "05304781-4c5c-4382-9bc1-f24c82a06b91",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "failed",
+        "waited_ms": 302628.7322079879
+      },
+      "settled_status": "failed"
+    },
+    {
+      "ordinal": 5,
+      "phase": "final",
+      "turn_index": 21,
+      "before": [],
+      "after": [],
+      "run_id": "5be30611-28db-4a61-a4e2-4997bfda7547",
+      "status": "failed"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [
+    "Eight explicit fixed source pins can exceed STATE_TOKENS=1500; use category-scoped reads and preserve the ordinary state cap."
+  ],
+  "step_count": 6,
+  "finished": true
+}

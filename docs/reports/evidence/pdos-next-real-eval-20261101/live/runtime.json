@@ -1,6 +1,6 @@
 {
-  "api_port": 51598,
-  "api_base": "http://127.0.0.1:51598",
+  "api_port": 54877,
+  "api_base": "http://127.0.0.1:54877",
   "task_queue": "pdos-real-eval-20261101",
   "temporal": "127.0.0.1:61596",
   "namespace": "pdos-next-comprehensive-20261023",
@@ -8,8 +8,8 @@
   "database_port": 64387,
   "marker": "c351c0ca-b874-49b9-bf1b-44c3ad150aaf",
   "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
-  "pid": 66870,
+  "pid": 62404,
   "runtime_config": "comprehensive-minimax-20261023.json",
   "provider_observer": "transparent parse_turn usage-only; unchanged request/response",
-  "started_at": "2026-11-01T18:32:58.120459+00:00"
+  "started_at": "2026-11-02T06:39:15.698920+00:00"
 }

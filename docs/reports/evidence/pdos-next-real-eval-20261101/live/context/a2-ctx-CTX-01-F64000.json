@@ -1,0 +1,32 @@
+{
+  "case_id": "CTX-01",
+  "focus": 64000,
+  "attempt": "a2",
+  "label": "a2-ctx-CTX-01-F64000",
+  "category_id": "8fb47afb-ec9e-4cfe-8db9-fc4b2eff63e9",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "e7693d26-5fcd-4f6c-a493-83050374fd23",
+      "status": "waiting_input"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 2,
+      "before": [],
+      "after": []
+    }
+  ],
+  "blocked": null,
+  "error": "RuntimeError: HTTP 409: {\"code\":\"VERSION_CONFLICT\",\"message\":\"原工作尚未结束或已撤回，请先核对原运行。\",\"detail\":{\"reason\":\"VERSION_CONFLICT\"}}",
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 31,
+  "finished": false
+}

@@ -1,9 +1,9 @@
 {
   "reading": {
     "configuration": {
-      "revision": 4,
-      "version_id": "4c14fef9-6781-5490-ad85-674ccc1a7546",
-      "provider_version": "mc:4c14fef9-6781-5490-ad85-674ccc1a7546:4:a8b3a64c8bb2d63cd032469411e448b4e8f9f54d900e8b30fff12ef6c95c0679",
+      "revision": 6,
+      "version_id": "8a47b47f-cdc5-5be7-90bb-fbddc0d90309",
+      "provider_version": "mc:8a47b47f-cdc5-5be7-90bb-fbddc0d90309:6:d012e2446f116484a7e2dc0df101311cf525b716887fc8684f59f2b41f962026",
       "metadata": {
         "protocol": "openai-compatible",
         "base_url": "https://api.minimax.cn/v1",
@@ -21,14 +21,14 @@
       "enabled": true,
       "credential_status": "bound",
       "credential_display": "已绑定 ••••",
-      "created_at": "2026-11-01T18:20:17.539004Z",
+      "created_at": "2026-11-03T23:01:42.168317Z",
       "requires_requalification": true
     },
-    "category_revision": 2,
+    "category_revision": 3,
     "can_edit": true
   },
-  "receipt_id": "9e78f470-12d9-40d6-88cc-97d79c82b7f5",
+  "receipt_id": "01f6a07b-8f39-4c1a-ad19-d828c91f5e04",
   "focus": 64000,
   "provider_output_limit": 524288,
-  "at_utc": "2026-11-01T18:20:17.782063+00:00"
+  "at_utc": "2026-11-03T23:01:42.367737+00:00"
 }

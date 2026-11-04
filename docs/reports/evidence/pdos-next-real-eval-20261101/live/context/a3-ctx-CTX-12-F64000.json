@@ -1,0 +1,51 @@
+{
+  "case_id": "CTX-12",
+  "focus": 64000,
+  "attempt": "a3",
+  "label": "a3-ctx-CTX-12-F64000",
+  "category_id": "e7fdfb7d-39c9-4256-b15d-813c0a505492",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "7c65992c-9650-4f39-9eac-e1688a4d65c7",
+      "status": "waiting_input",
+      "continuation": {
+        "intervention": "awaited_automatic_reconciliation",
+        "final_status": "partial",
+        "waited_ms": 282596.3108750002
+      },
+      "settled_status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 5,
+      "before": [],
+      "after": [],
+      "run_id": "bef8c314-4e65-4482-b83b-fa1d01ffcd0f",
+      "status": "partial"
+    },
+    {
+      "ordinal": 2,
+      "phase": "history",
+      "turn_index": 10,
+      "before": [],
+      "after": [],
+      "run_id": "62061300-1ffe-48f7-9f6c-17015b3bc3b2",
+      "status": "failed"
+    }
+  ],
+  "blocked": null,
+  "error": "step 2 ended failed",
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [
+    "Eight explicit fixed source pins can exceed STATE_TOKENS=1500; use category-scoped reads and preserve the ordinary state cap."
+  ],
+  "step_count": 6,
+  "finished": false
+}
