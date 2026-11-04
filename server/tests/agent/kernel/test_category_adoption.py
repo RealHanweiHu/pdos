@@ -401,6 +401,10 @@ def test_activity_delivers_proof_and_never_reopens_terminal_run(ledger, monkeypa
     monkeypatch.setattr(activities, "PostgresSaver", NS(from_conn_string=saver))
     monkeypatch.setattr(activities, "verified_checkpoint_url", lambda url: url)
     monkeypatch.setattr(activities.activity, "heartbeat", lambda *_: None)
+    # D243 lease and cancellation shield need a real engine and Activity context.
+    monkeypatch.setattr(activities, "run_lease", lambda *_a, **_k: nullcontext())
+    monkeypatch.setattr(activities.activity, "shield_thread_cancel_exception", nullcontext)
+    monkeypatch.setattr(activities.activity, "is_cancelled", lambda: False)
     ref = {"tenant_id": str(f.scope.tenant_id), "category_id": "",
            "actor_id": str(f.scope.requester_id), "requester_id": str(f.scope.requester_id),
            "subject_id": str(f.scope.run_id), "answer_ref": str(f.entry.id)}

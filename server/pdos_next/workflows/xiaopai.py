@@ -41,7 +41,9 @@ class XiaopaiWork:
                 result = await workflow.execute_activity(
                     "advance_xiaopai_run",
                     payload,
-                    start_to_close_timeout=timedelta(minutes=10),
+                    # Liveness comes from the 45 s heartbeat. W1 rounds legitimately ran
+                    # 10–30 minutes; a 10-minute limit only forced handovers (D243).
+                    start_to_close_timeout=timedelta(minutes=60),
                     heartbeat_timeout=timedelta(seconds=45),
                     retry_policy=RetryPolicy(maximum_attempts=3),
                 )

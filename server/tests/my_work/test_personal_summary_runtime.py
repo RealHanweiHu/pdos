@@ -286,6 +286,10 @@ def test_activity_without_adapters_runs_summary_and_retries_sql(bound, monkeypat
     monkeypatch.setattr("pdos_next.domain.automations.runtime.binding", binding)
     monkeypatch.setattr(activities, "BoundHost", no_gateway)
     monkeypatch.setattr(activities.activity, "heartbeat", lambda *_a: None)
+    # D243 lease and cancellation shield need a real engine and Activity context.
+    monkeypatch.setattr(activities, "run_lease", lambda *_a, **_k: nullcontext())
+    monkeypatch.setattr(activities.activity, "shield_thread_cancel_exception", nullcontext)
+    monkeypatch.setattr(activities.activity, "is_cancelled", lambda: False)
     monkeypatch.setattr(activities, "verified_checkpoint_url", lambda url: url)
     monkeypatch.setattr(activities.PostgresSaver, "from_conn_string", saver)
     monkeypatch.setattr(runtime, "generate", generate)

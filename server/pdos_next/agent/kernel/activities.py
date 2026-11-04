@@ -11,6 +11,7 @@ from psycopg import OperationalError as CheckpointUnavailable
 from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from temporalio import activity
+from temporalio.exceptions import ApplicationError, CancelledError
 
 from pdos_next.core.database import tenant_session
 from pdos_next.core.dispatch.context import event_context
@@ -22,6 +23,7 @@ from .graph import AgentKernel
 from .host import BoundHost
 from .models import AgentRun
 from .persistence import KernelStore
+from .run_lease import AttemptSuperseded, RunBusy, run_lease
 from .tools import default_registry
 
 
@@ -119,6 +121,27 @@ class KernelActivities:
             if self.scope_failed(ctx, run_id):
                 return self.scope_failure(run_id)
             raise
+        # D243: one attempt works on a run at a time. A later attempt (after a timeout)
+        # waits here, heartbeating, until the earlier one has stopped at a safe point.
+        with run_lease(self.engine, run_id, waiting=lambda: activity.heartbeat(str(run_id))):
+            return self._advance_owned(ctx, run_id, scope, reference, writer, goal, summary_run)
+
+    def _advance_owned(self, ctx, run_id, scope, reference, writer, goal, summary_run):
+        # The attempt this one waited for may have finished the round meanwhile.
+        with self.store.transaction(scope) as (_, row):
+            if row.reverted_at:
+                return {"run_id": str(row.id), "status": "cancelled", "reverted": True}
+            if row.state in {"completed", "partial", "failed", "cancelled"}:
+                return {"run_id": str(row.id), "status": row.state}
+            if row.state == "waiting_input" and "answer_ref" not in reference:
+                # Only this Activity sets waiting_input; return what that attempt returned.
+                if row.error_code == "EXTERNAL_OUTCOME_UNKNOWN":
+                    return {"run_id": str(row.id), "status": "needs_reconciliation",
+                            "error_code": row.error_code}
+                if row.error_code:
+                    return {"run_id": str(row.id), "status": "waiting_input",
+                            "error_code": row.error_code}
+                return {"run_id": str(row.id), "status": "needs_input"}
         adapters = getattr(self.engine, "_pdos_agent_kernel_adapters", None)
         if adapters is None and not summary_run:
             with self.store.transaction(scope, lock=True) as (session, row):
@@ -141,44 +164,54 @@ class KernelActivities:
                 host, adapters.tool_registry or default_registry(), catalog=host.catalog
             )
         )
-        stopped = Event()
+        stopped, superseded = Event(), Event()
+        if host is not None:
+            host.superseded = superseded
         heartbeat_context = copy_context()
 
         def heartbeat():
             while not stopped.wait(10):
                 activity.heartbeat(str(scope.run_id))
+                if activity.is_cancelled():
+                    # Temporal gave this attempt up; stop before the next model/tool call.
+                    superseded.set()
 
         thread = Thread(target=lambda: heartbeat_context.run(heartbeat), daemon=True)
         try:
-            if reference.get("answer_ref") and not summary_run:
-                from .category_adoption import resolve
+            with activity.shield_thread_cancel_exception():
+                if reference.get("answer_ref") and not summary_run:
+                    from .category_adoption import resolve
 
-                answer = resolve(self.engine, scope, reference["answer_ref"])
-            activity.heartbeat(str(scope.run_id))
-            thread.start()
-            # No in-memory fallback in the production Activity.
-            if not self.checkpoint_url:
-                raise DomainError("SOURCE_UNAVAILABLE", "检查点存储未配置。")
-            with PostgresSaver.from_conn_string(
-                verified_checkpoint_url(self.checkpoint_url)
-            ) as saver:
-                if summary_run:
-                    from pdos_next.domain.my_work.summary_graph import execute
+                    answer = resolve(self.engine, scope, reference["answer_ref"])
+                activity.heartbeat(str(scope.run_id))
+                thread.start()
+                # No in-memory fallback in the production Activity.
+                if not self.checkpoint_url:
+                    raise DomainError("SOURCE_UNAVAILABLE", "检查点存储未配置。")
+                with PostgresSaver.from_conn_string(
+                    verified_checkpoint_url(self.checkpoint_url)
+                ) as saver:
+                    if summary_run:
+                        from pdos_next.domain.my_work.summary_graph import execute
 
-                    result = execute(self.store, scope, checkpointer=saver)
-                else:
-                    result = kernel.execute(
-                        scope,
-                        goal=goal,
-                        answer=answer,
-                        checkpointer=saver,
-                        preload=self.preload(scope, adapters),
-                    )
-            if result.get("__interrupt__"):
-                with self.store.transaction(scope, lock=True) as (_, row):
-                    row.state = "waiting_input"
-                return {"run_id": str(scope.run_id), "status": "needs_input"}
-            return {"run_id": str(scope.run_id), "status": result["output"]["status"]}
+                        result = execute(self.store, scope, checkpointer=saver)
+                    else:
+                        result = kernel.execute(
+                            scope,
+                            goal=goal,
+                            answer=answer,
+                            checkpointer=saver,
+                            preload=self.preload(scope, adapters),
+                        )
+                if result.get("__interrupt__"):
+                    with self.store.transaction(scope, lock=True) as (_, row):
+                        row.state = "waiting_input"
+                    return {"run_id": str(scope.run_id), "status": "needs_input"}
+                return {"run_id": str(scope.run_id), "status": result["output"]["status"]}
+        except (AttemptSuperseded, CancelledError):
+            # This attempt was given up; the next attempt or the workflow owns the run now.
+            # Leave the run's state alone instead of marking it failed.
+            raise CancelledError("小Pai attempt superseded") from None
         except Exception as exc:
             if summary_run and isinstance(exc, (OperationalError, CheckpointUnavailable)):
                 # No inference or external/business write occurred. Let the same
@@ -265,13 +298,17 @@ class KernelActivities:
         from .run_reconciliation import finalize
 
         try:
-            return finalize(
-                self.engine,
-                ctx,
-                run_id,
-                automatic=True,
-                activity_exhausted=reference.get("activity_exhausted", False),
-            )
+            with run_lease(self.engine, run_id):
+                return finalize(
+                    self.engine,
+                    ctx,
+                    run_id,
+                    automatic=True,
+                    activity_exhausted=reference.get("activity_exhausted", False),
+                )
+        except RunBusy:
+            # A timed-out attempt is still stopping; reconcile after it has (D243).
+            raise ApplicationError("小Pai run is still held by an earlier attempt") from None
         except DomainError:
             if self.scope_failed(ctx, run_id):
                 return self.scope_failure(run_id)

@@ -14,6 +14,7 @@ from .gateway import AgentGateway
 from .models import AgentToolCall
 from .persistence import KernelStore
 from .read_execution import ReadSource, build_read_binding, verify_read_source
+from .run_lease import check_attempt
 from .skills import SkillCatalog
 
 _ADMITTED_MESSAGES = ContextVar("admitted_context_messages", default=None)
@@ -44,6 +45,11 @@ class KernelAdapters:
 
 
 class BoundHost:
+    # Set by the Temporal Activity: once this attempt is superseded it stops at the
+    # next model or tool call instead of racing the next attempt (D243). A class
+    # default, so hosts built without __init__ also have it.
+    superseded = None
+
     def __init__(self, store: KernelStore, adapters: KernelAdapters):
         self.store, self.adapters = store, adapters
         self.catalog = adapters.skill_catalog or SkillCatalog()
@@ -184,6 +190,7 @@ class BoundHost:
             return max(0, run.token_limit - run.used_tokens - run.held_tokens)
 
     def context_guard(self, scope):
+        check_attempt(self.superseded)
         from pdos_next.domain.my_work.preferences import recheck_context_preferences
 
         if self.adapters.context_guard is not None:
@@ -258,6 +265,7 @@ class BoundHost:
         return reduced, budget
 
     def read(self, scope, spec, arguments, intent_key, *, source: ReadSource | None = None):
+        check_attempt(self.superseded)
         from pdos_next.agent.enterprise_search.assistant_depth import TOOLS, mode_for
 
         if scope.isolation == "main" and spec.name in TOOLS:
@@ -433,6 +441,7 @@ class BoundHost:
             raise
 
     def prepare(self, scope, spec, arguments, intent_key, *, source: WriteSource | None = None):
+        check_attempt(self.superseded)
         from pdos_next.domain.automations.runtime import guard_tool
 
         guard_tool(self.store, scope, writing=True)
@@ -449,6 +458,7 @@ class BoundHost:
         return self.adapters.prepare_candidate(scope, spec, arguments, intent_key)
 
     def write(self, scope, spec, arguments, intent_key, *, source: WriteSource):
+        check_attempt(self.superseded)
         from pdos_next.domain.automations.runtime import guard_tool
 
         guard_tool(self.store, scope, writing=True)
@@ -480,6 +490,7 @@ class BoundHost:
         )
 
     def recover(self, scope, spec, arguments, intent_key, *, source: WriteSource):
+        check_attempt(self.superseded)
         if spec.tier != "T0" or scope.isolation != "main":
             return None
         if self.adapters.recover_command is None:
