@@ -11,9 +11,6 @@ from types import SimpleNamespace
 from uuid import uuid4
 
 import pytest
-from test_fact_write import apply, consume, make_world, prepared
-from test_live_paired_owner import frame as paired_frame
-from test_participants_owner import RawSession
 
 from pdos_next.core import service as common
 from pdos_next.core.models import (
@@ -28,6 +25,10 @@ from pdos_next.core.models import (
 )
 from pdos_next.domain.quality.capa import fact_atom_storage, paired_storage
 from pdos_next.errors import DomainError
+
+from .test_fact_write import apply, consume, make_world, prepared
+from .test_live_paired_owner import frame as paired_frame
+from .test_participants_owner import RawSession
 
 
 def _columns(row):

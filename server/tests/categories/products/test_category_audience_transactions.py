@@ -2,12 +2,13 @@ from uuid import UUID, uuid4
 
 from sqlalchemy import delete, select
 from sqlalchemy.orm import Session
-from test_definition_transactions import command, definitions, payload, post, source
 
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import ObjectAudience
 from pdos_next.core.service import Context
 from pdos_next.domain.categories.products.models import DefinitionRevision
+
+from .test_definition_transactions import command, definitions, payload, post, source
 
 
 def named_review(setup, object_type, identity):

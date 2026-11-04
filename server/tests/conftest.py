@@ -6,12 +6,17 @@ from uuid import uuid4
 
 import pytest
 from fastapi.testclient import TestClient
+from sqlalchemy.orm import Session
+
 from pdos_next.api import create_app
 from pdos_next.core.database import engine_for
 from pdos_next.core.models import Category, Grant, LoginSession, Principal, Product, now
 from pdos_next.core.safety import verify_test_target
 from pdos_next.core.service import Context, digest
-from sqlalchemy.orm import Session
+
+# iCloud sync conflicts leave numbered copies such as "test_x 2.py" or "kernel 2/".
+# They are never real tests (D28).
+collect_ignore_glob = ["* [0-9].py", "* [0-9][0-9].py", "* [0-9]", "* [0-9][0-9]"]
 
 
 class IsolatedFixture(SimpleNamespace):

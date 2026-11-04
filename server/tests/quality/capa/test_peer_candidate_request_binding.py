@@ -11,10 +11,7 @@ from datetime import timedelta
 from types import SimpleNamespace
 
 import pytest
-from quality.issues.helpers import uid
 from sqlalchemy import create_engine, event
-from test_fixed_candidate_anchor import origin_fixture
-from test_participants_owner import RawSession
 
 from pdos_next.core.models import Audit, Confirmation, Outbox, Principal, Receipt, RequestKey
 from pdos_next.core.service import Context, digest
@@ -25,6 +22,10 @@ from pdos_next.domain.quality.capa.verification.schemas import CandidateBinding,
 from pdos_next.domain.quality.capa.verification.service import basis_from_issue
 from pdos_next.domain.quality.execution.models import QualityIssueVersion
 from pdos_next.errors import DomainError
+from quality.issues.helpers import uid
+
+from .test_fixed_candidate_anchor import origin_fixture
+from .test_participants_owner import RawSession
 
 
 class GroupSession(RawSession):

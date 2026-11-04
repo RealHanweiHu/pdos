@@ -10,10 +10,8 @@ from datetime import datetime, timedelta
 from types import SimpleNamespace
 
 import pytest
-from quality.issues.helpers import NOW, uid
 from sqlalchemy import create_engine, event
 from sqlalchemy.orm import Session, make_transient_to_detached
-from test_candidate_write_prepare import origin_fixture
 
 from pdos_next.core import service as common
 from pdos_next.core.contracts import Command
@@ -29,6 +27,9 @@ from pdos_next.domain.quality.capa.fact_storage_codec import (
 )
 from pdos_next.domain.quality.execution.models import QualityIssueCurrent
 from pdos_next.errors import DomainError
+from quality.issues.helpers import NOW, uid
+
+from .test_candidate_write_prepare import origin_fixture
 
 
 def rejects(code, fn):

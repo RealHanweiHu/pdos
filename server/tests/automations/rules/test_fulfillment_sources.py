@@ -19,7 +19,7 @@ from pdos_next.domain.automations import trigger_sources as sources
 from pdos_next.domain.automations.models import AutomationRuleCurrent
 from pdos_next.errors import DomainError
 from pdos_next.core.models import Base
-import test_trigger_sources as original_sources
+from . import test_trigger_sources as original_sources
 
 case = original_sources.case
 relative = original_sources.relative

@@ -12,9 +12,7 @@ from hashlib import sha256
 from types import SimpleNamespace
 
 import pytest
-from quality.issues.helpers import uid
 from sqlalchemy.orm import make_transient_to_detached
-from test_fact_write import make_world
 
 from pdos_next.bootstrap import capa_rule_import
 from pdos_next.core import service as common
@@ -30,6 +28,9 @@ from pdos_next.domain.quality.capa import rule_publisher as capa_rule_publisher
 from pdos_next.domain.quality.execution import evidence
 from pdos_next.errors import DomainError
 from pdos_next.schemas.verification.contracts import SourceRef
+from quality.issues.helpers import uid
+
+from .test_fact_write import make_world
 
 
 def rejects(code, fn):
