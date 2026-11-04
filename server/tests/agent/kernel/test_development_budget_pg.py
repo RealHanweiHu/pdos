@@ -8,6 +8,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.context_budget import OUTPUT_BUDGET
 from pdos_next.agent.kernel.gateway import AgentGateway
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
 from pdos_next.agent.kernel.types import ModelTurn
@@ -69,10 +70,27 @@ def test_development_route_requires_verified_local_database_and_changes_route_di
     owner = Bootstrap(setup.engine, ports=ports)
     _, scope = run(setup)
     selected = owner.route_for(scope)
-    assert selected.max_output_tokens == 524288
+    assert selected.max_output_tokens == OUTPUT_BUDGET  # P67: the 524288 limit only clamps
     assert selected.budget_policy == "development_unlimited"
     assert selected.digest != replace(selected, budget_policy="enforced").digest
     monkeypatch.delenv("TEST_DATABASE_MARKER")
     with pytest.raises(DomainError) as failed:
         owner.route_for(scope)
     assert failed.value.code == "FORBIDDEN_SCOPE"
+
+
+def test_configured_output_limit_only_clamps_the_per_call_budget(setup):
+    """D252 (P67, 16k from 2026-11-04): R and the reservation follow the call budget."""
+    from pdos_next.agent.kernel.context_budget import TOOL_RESULT_RESERVE, budget_for
+
+    api, ports, command = configured(setup)
+    command["payload"]["metadata"].update(base_url="https://api.minimax.cn/v1", model="MiniMax-M3")
+    saved, _ = submit(setup, api, command)
+    assert saved.status_code == 200, saved.text
+    _, scope = run(setup)
+    for limit, expected in ((2_048, 2_048), (524_288, OUTPUT_BUDGET)):
+        bound = replace(ports, output_limit_for=lambda *_, cap=limit: cap)
+        owner = Bootstrap(setup.engine, ports=bound)
+        route = owner.route_for(scope)
+        assert route.max_output_tokens == expected
+        assert budget_for(route)["reserve"] == expected + TOOL_RESULT_RESERVE

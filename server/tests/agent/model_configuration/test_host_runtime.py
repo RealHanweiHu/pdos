@@ -12,6 +12,7 @@ from alibabacloud_kms20160120 import models
 from pydantic import SecretStr
 
 from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+from pdos_next.agent.kernel.context_budget import OUTPUT_BUDGET
 from pdos_next.agent.model_configuration.host import TenantRuntime, runtime_ports
 from pdos_next.agent.model_configuration.kms import AliyunKms
 from pdos_next.core.models import now
@@ -254,7 +255,8 @@ def test_bootstrap_binds_host_output_cap_to_exact_registered_route(tmp_path, mon
         secrets=host, output_limit_for=host.output_limit_for,
     ))
     route = owner.route(session, SimpleNamespace(tenant_id=tenant))
-    assert route.max_output_tokens == (2048 if limit is None else limit)
+    # P67: the host's configured cap only clamps the per-call output budget.
+    assert route.max_output_tokens == min(2048 if limit is None else limit, OUTPUT_BUDGET)
     assert route.configuration_digest == version.binding_digest
     assert route.digest != replace(route, max_output_tokens=2047).digest
     # Reloaded host policy changes the route binding without changing the secret or model.

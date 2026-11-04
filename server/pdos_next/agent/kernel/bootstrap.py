@@ -19,6 +19,7 @@ from pdos_next.errors import DomainError
 
 from .api import ApiPorts
 from .bindings import DomainBinding, WriteSource, execution_key
+from .context_budget import OUTPUT_BUDGET
 from .domain_adapter import DomainCommands
 from .execution import scope_for_run
 from .host import KernelAdapters
@@ -98,6 +99,9 @@ class Bootstrap:
         route = version.metadata.route(material.credential, version.metadata.model_version)
         if self.ports.output_limit_for is not None:
             route = replace(route, max_output_tokens=self.ports.output_limit_for(scope, route))
+        # P67 (D252): the configured output limit only clamps the per-call budget, which
+        # sets the request's max_tokens, the context reserve R and the cost reservation.
+        route = replace(route, max_output_tokens=min(route.max_output_tokens, OUTPUT_BUDGET))
         if self.ports.development_budget_for is not None and (
             self.ports.development_budget_for(scope, route)
         ):

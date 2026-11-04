@@ -9,6 +9,10 @@ from pdos_next.errors import DomainError
 DEFAULT_WINDOW = 32_000
 TOOL_RESULT_RESERVE = 4_000
 FOCUS_CAP = 64_000
+# P67: each call requests this output budget, clamped by the connection's configured
+# output limit; R is this budget plus the tool-result reserve. Revised from 8k to 16k
+# on 2026-11-04 after W1 measured single outputs of up to 11,167 tokens.
+OUTPUT_BUDGET = 16_384
 
 
 def _is_wide(char):
