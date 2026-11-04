@@ -49,7 +49,8 @@ def test_named_cache_choice_is_tenant_wide_and_replays_without_changing_old_requ
         decision = egress(session, NS(tenant_id=setup.tenant,
                                      data_categories=tuple(original.data_categories)),
                           original.provider)
-        assert decision.prompt_cache_allowed is (choice is True)
+        # P70: an undeclared choice inside a current agreement allows caching.
+        assert decision.prompt_cache_allowed is (choice is not False)
         assert decision.agreement_id == receipt["subject_id"]
     unauthorized = replace(setup.ctx, actor_id=setup.peer, requester_id=setup.peer)
     with tenant_session(setup.engine, setup.tenant, actor_id=setup.peer,

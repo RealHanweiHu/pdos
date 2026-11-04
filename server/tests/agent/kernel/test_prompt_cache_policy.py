@@ -76,8 +76,8 @@ class PolicySession:
         self.reads.append(ProviderDataAgreement)
         return self.f.agreement
 
-@pytest.mark.parametrize("choice,allowed", [(True, True), (False, False), (None, False)])
-def test_active_agreement_has_one_policy_read_and_only_named_boolean_allows_cache(
+@pytest.mark.parametrize("choice,allowed", [(True, True), (False, False), (None, True)])
+def test_active_agreement_has_one_policy_read_and_only_named_false_closes_cache(
     monkeypatch, choice, allowed,
 ):
     f = case(choice)

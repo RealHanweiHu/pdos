@@ -134,8 +134,9 @@ def test_project_skills_bind_the_project_context_profile(key):
     assert current.metadata["context_schema"]["required"] == profile["required"]
 
 
-@pytest.mark.parametrize("key", PROJECT_SKILLS)
-def test_project_skills_never_authorize_governance_or_t2_execution(key):
+@pytest.mark.parametrize("key", [entry["key"] for entry in SkillCatalog().index])
+def test_no_skill_authorizes_governance_or_t2_execution(key):
+    # Policy drift check over every package (D29): non-negotiable 1 keeps T2 human-only.
     registry = default_registry()
     for operation in skill(key).metadata["allowed_operations"]:
         name = operation["tool"]

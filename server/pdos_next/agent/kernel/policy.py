@@ -52,7 +52,8 @@ def egress(session, scope, provider, *, data_categories=None):
         )
     # This typed field is the named agreement fact. Never interpret retention prose
     # or make tenant policy depend on access to the administrator's private receipt.
-    cache_allowed = not current or agreement.prompt_cache_allowed is True
+    # P70: inside a current agreement caching is allowed unless it was explicitly closed.
+    cache_allowed = not current or agreement.prompt_cache_allowed is not False
     return EgressDecision(
         provider,
         tuple(sorted(categories)),

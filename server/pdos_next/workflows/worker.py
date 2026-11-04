@@ -139,6 +139,19 @@ class Activities:
             ) from None
 
 
+def activity_threads():
+    """Activity thread count (D57, F45), from PDOS_WORKER_ACTIVITY_THREADS; default 4.
+
+    Temporal is given the same limit, so it never starts an Activity that would wait
+    for a free thread while its execution timeout is already running.
+    """
+    raw = os.environ.get("PDOS_WORKER_ACTIVITY_THREADS", "4")
+    value = int(raw) if raw.isdigit() else 0
+    if not 1 <= value <= 64:
+        raise RuntimeError("PDOS_WORKER_ACTIVITY_THREADS must be a whole number from 1 to 64")
+    return value
+
+
 async def main(
     *, agent_runtime_ports=None, agent_kernel_adapters=None, embedding_ports=None,
     dingtalk_runtime=None,
@@ -248,7 +261,8 @@ async def main(
             except TimeoutError:
                 pass
 
-    with ThreadPoolExecutor(max_workers=4) as executor:
+    threads = activity_threads()
+    with ThreadPoolExecutor(max_workers=threads) as executor:
         async with Worker(
             client,
             task_queue=sender.task_queue,
@@ -287,6 +301,7 @@ async def main(
                 activities.enterprise_rebuild_batch,
             ],
             activity_executor=executor,
+            max_concurrent_activities=threads,
         ):
             task = asyncio.create_task(deliver())
             try:
