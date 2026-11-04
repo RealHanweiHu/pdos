@@ -18,7 +18,7 @@
 
 1. 代码目录地图见 [README.md 的仓库结构](README.md#仓库结构)。先读[清单当前队列](tasks/ai-native-integrated-todo.md#current-queue)，再读 v1.1 中本闭环涉及的章节、操作（附录 A）和验收场景（附录 B）；不全文重读历史日志。
 2. 设计依据：v1.1 §00–§09 与[设计确认稿](docs/design/2026-10-08-pdos-next-design-confirmation.md)。全部设计文档的权威链、生效合同与被取代稿分类见[设计文档索引](docs/design/README.md)。v1.0 与原工程的设计合同只作历史对照。
-3. 前端遵循[UI 基线](docs/design/2026-08-09-ui-baseline.md)与[原稿](docs/design/ui-baseline-mockup.html)：shadcn/ui + Tailwind v4 + Geist，橙色亮 `#c2410c` / 暗 `#fb923c`，圆角 8px，双主题，Phosphor 图标。不换栈或新增第二套 UI 库。
+3. 前端视觉与交互以 `web/src/app/ui-lab/platform`（用户 2026-10-25 确认）及其 `DESIGN.md`、[完整产品 UI 设计候选](docs/design/2026-10-23-pdos-full-product-ui-candidate.md)为准；技术栈与品牌 token 按 [UI 基线](docs/design/2026-08-09-ui-baseline.md) §1：shadcn/ui + Tailwind v4 + Geist，橙色亮 `#c2410c` / 暗 `#fb923c`，圆角 6px / 8px / pill，双主题，Phosphor 图标（确认稿 P74）。基线原稿只作历史视觉。不换栈或新增第二套 UI 库。
 4. 只有追溯特定旧结论时，从标签 `archive/pre-restructure-2026-11-01` 读取入口历史 `AGENTS.history-2026-09-27.md` 或清单的历史段落。归档中的旧“当前/下一步”不是执行命令。
 
 ## 当前状态指针
