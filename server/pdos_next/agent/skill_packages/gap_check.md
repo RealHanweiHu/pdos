@@ -1,6 +1,6 @@
 ---
 key: gap_check
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。
 input_schema:
   type: object
@@ -49,6 +49,8 @@ allowed_operations:
   - {tool: evidence.link.create, tier: T0, note: 把变化证据关联到受影响条目；只追加来源、不改值}
   - {tool: proposal.item.patch, tier: T0, note: 仅对 AI 起草且无人工值的 spec 条目 upsert availability=conflicted 或 item_status=expert_pending，值不变}
   - {tool: product.definition.item.patch, tier: T0, note: 定义上下文中同上}
+  - {tool: proposal.g0.submit, tier: T1, note: 提交前检查完成后预填提交候选；只有提案负责人本人能一次确认}
+  - {tool: proposal.g0.decide, tier: T2-prepare-only, note: 只为评审人准备处置表草稿，决定由评审人具名作出}
 evidence_policy: |
   每个 finding 指向具体条目与字段；冲突类要给两边的证据。规则类检查（缺单位、缺工况、版本不一致）以条目字段为准，不凭印象。
   只按 v1.1 与 M3 合同的 G0 提交检查判 blocks_g0，不自加门槛。
@@ -65,10 +67,8 @@ model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#gap_check", case_types: [客户RFQ, 派生, 自主新品（均含预埋缺陷）], min_cases: 10}
 owner: 待定
 preload_when:
-  - 提案负责人打开"提交 G0 立项评审"之前
-  - 提案或定义引用的来源有新版本、被撤回或新增证据（领域事件）
-  - 用户要求"查漏/检查一下/还缺什么"
-  - 型号定义页（项目内）请求检查
+  - {object: proposal, view: drafting, order: 2}
+  - {object: proposal, view: reviewing, order: 1}
 ---
 
 # gap_check · 缺项与冲突检查
@@ -80,7 +80,7 @@ preload_when:
 3. 数值冲突用 `calc.spec_compare` 判断，不自己比。
 4. 需要人处理的项合并后用 `proposal.question.create`（T1）建待决问题：related_item_ids 指向条目，所需专业角色写在问题正文，建议负责人与期限由人在确认框选定（私有提案只能是负责人或评审人）。建之前用 `proposal.items.read` 返回的已有待决问题去重：related_item_ids 覆盖同一条目、同一缺口且 status=open 的，finding 只引用该问题（existing_question），不再建。
 5. 新证据触发时（没有"加标记"操作）：用 `evidence.link.create`（T0）把变化证据关联到受影响条目；受影响的 AI 起草规格条目可用 `proposal.item.patch` 或 `product.definition.item.patch`（T0，upsert）改 availability=conflicted 或 item_status=expert_pending，值不变；人工值条目只建问题。
-6. 提交 G0 前的检查结果作为提交前检查材料；`proposal.g0.submit`、`proposal.g0.decide` 只能准备材料，由负责人或评审人本人办理。为评审人准备处置表草稿时，处置负责人可以是私有提案受众外的品类成员：G0 决定会在同一事务把他们加入该型号与项目的受众（合同 §3.4），草稿逐条标出这一影响，由评审人决定。
+6. 提交 G0 前的检查结果作为提交前检查材料；负责人要提交时可用 `proposal.g0.submit`（T1）预填提交候选，只有提案负责人本人能一次确认。`proposal.g0.decide`（T2）只能为评审人准备材料，由评审人本人具名决定。为评审人准备处置表草稿时，处置负责人可以是私有提案受众外的品类成员：G0 决定会在同一事务把他们加入该型号与项目的受众（合同 §3.4），草稿逐条标出这一影响，由评审人决定。
 
 ## 数据语义
 

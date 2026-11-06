@@ -1,6 +1,6 @@
 ---
 key: option_comparison
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 为立项提案起草 2–3 个在决策上真正不同的方案（可含"沿用现款"或"不做"），按同一组维度写定位、关键差异、大致成本与周期和取舍；成本由计算工具给出，选择留给人。
 input_schema:
   type: object
@@ -63,9 +63,7 @@ model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#option_comparison", case_types: [自主新品, 客户RFQ, 派生], min_cases: 10}
 owner: 待定
 preload_when:
-  - 提案方案对比视图打开或该节为空
-  - 用户要求"给几个方案/比较方案"
-  - proposal_drafting 在自主新品入口起草定位方案
+  - {object: proposal, view: reviewing, order: 2}
 ---
 
 # option_comparison · 方案对比

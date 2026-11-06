@@ -7,6 +7,7 @@ from collections import deque
 from copy import deepcopy
 from dataclasses import replace
 from pathlib import Path
+from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 from pdos_agent_runtime.graph import in_registered_agent_graph
@@ -116,7 +117,9 @@ class ScriptedProvider:
     def turn(self, route, *, system, tools, messages, output_schema, **_kwargs):
         assert in_registered_agent_graph()
         assert route.base_url == "https://synthetic-provider.test/v1"
-        assert tools == disclosure(default_registry(), "main", ()) and len(tools) == 61
+        # A category run (no bound project) is not shown project reads (P76 item 4a).
+        category_run = SimpleNamespace(category_id="bound", product_id=None, project_id=None)
+        assert tools == disclosure(default_registry(), "main", (), scope=category_run)
         assert output_schema == WireAgentOutput.model_json_schema()
         self.requests.append(deepcopy(messages))
         phase, self.calls = self.calls, self.calls + 1

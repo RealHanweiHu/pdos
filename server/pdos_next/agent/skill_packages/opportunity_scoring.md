@@ -1,6 +1,6 @@
 ---
 key: opportunity_scoring
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 收集机会评分与市场规模所需的输入并逐项注明来源、区间和性质，调用计算工具得到结果，再解释驱动因素与不确定性；模型不自报任何规模或分数。
 input_schema:
   type: object
@@ -51,10 +51,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#opportunity_scoring", case_types: [自主新品, 派生（新地区/新价位）], min_cases: 10}
 owner: 待定
-preload_when:
-  - 提案"值不值得做"段落起草
-  - 用户问市场规模、机会大小、评分
-  - option_comparison 需要比较方案吸引力
+preload_when: []
 ---
 
 # opportunity_scoring · 机会评分与市场规模

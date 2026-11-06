@@ -1,6 +1,6 @@
 ---
 key: release_handover
-version: 0.1.1-draft
+version: 0.1.2-draft
 purpose: 组装放行包并办理对外移交：按固定主体配置与放行范围收集定义、双配置、验证结果、试产、遗留与例外，为工程发布、制造放行、有限例外及其撤回准备具名决定材料，准备 ERP/MES 移交授权，并登记外部回执；四类决定与移交授权由各专业本人作出。
 input_schema:
   type: object
@@ -61,10 +61,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#release_handover", case_types: [试产放行, 有限例外, ERP 移交回执], min_cases: 10}
 owner: 待定
-preload_when:
-  - 项目工作区放行/移交入口打开且已选定主体配置或放行包
-  - 试产结果齐备后准备放行
-  - 用户问"能不能放行/移交出去了吗"
+preload_when: []
 ---
 
 # release_handover · 放行包与对外移交

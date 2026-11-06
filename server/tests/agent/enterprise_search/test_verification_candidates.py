@@ -265,7 +265,9 @@ def test_event_bridge_replays_actual_model_sources_then_requires_saved_preparati
     binding = ModelBinding(
         model_version=route.version, model_route_digest=route.digest, isolation="main",
         cancel_epoch=0, loaded_skills=(skill_source,), prompt_digest=digest("fixed prefix"),
-        tool_definitions_digest=digest(disclosure(registry, "main", skill_operations([skill]))),
+        tool_definitions_digest=digest(
+            disclosure(registry, "main", skill_operations([skill]), scope=run)
+        ),
     )
     run.versions = {"model_version": route.version, "model_route_digest": route.digest,
                     "tool_definitions": {"main": binding.tool_definitions_digest},

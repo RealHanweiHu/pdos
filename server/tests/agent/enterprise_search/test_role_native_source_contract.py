@@ -27,7 +27,8 @@ def sql(value):
 def test_native_role_records_use_generic_sources_and_full_tool_disclosure():
     assert len(SOURCE_TYPES) == 13 and FAMILIES <= set(SOURCE_TYPES)
     assert SearchInput(query="fixed record", source_types=sorted(FAMILIES)).source_types
-    assert len(disclosure(default_registry())) == 61
+    # P76 item 4b: without a loaded skill only reads and core tools are disclosed.
+    assert len(disclosure(default_registry())) == 34
     assert {EVENTS[name] for name in OPERATIONS} <= business_events.EVENTS
     assert {model.__tablename__ for model in MODELS["manufacturing_document"]} == {
         "manufacturing_preparation_versions",

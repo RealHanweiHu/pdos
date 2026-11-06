@@ -40,20 +40,37 @@ def test_disclosure_hides_exactly_what_authorize_would_refuse():
             assert item["name"] not in names
 
 
-def test_no_loaded_skill_keeps_reads_and_t2_preparation():
+def test_no_loaded_skill_keeps_reads_and_hides_every_write():
     registry = default_registry()
     names = disclosed_names(registry, "main")
     assert "skill.load" in names
     # Reads never required a loaded skill to be authorized, so they stay visible.
     assert "conversation.history" in names
     assert "category.list" in names
-    # T2 preparation is exempt from the skill requirement in authorize; hiding it
-    # would remove a capability instead of removing payload.
-    assert "proposal.g0.submit" in names
-    assert "project.create" in names
-    assert not [
-        n for n in names if registry.get(n).tier in {"T0", "T1"} and registry.get(n).kind == "write"
-    ]
+    # P76 item 4b: T2 preparation needs a loaded skill too, so no write is disclosed;
+    # the proposal page preloads the skills that prepare G0 and share material.
+    assert not [n for n in names if registry.get(n).kind == "write"]
+    assert "proposal.g0.decide" not in names and "project.create" not in names
+
+
+def test_proposal_skills_disclose_the_g0_and_share_preparation_p44():
+    registry, catalog = default_registry(), SkillCatalog()
+    drafting = frozenset(disclosed_names(registry, "main", skill_operations(
+        [catalog_skill(key) for key in catalog.preloaded("drafting")]
+    )))
+    reviewing = frozenset(disclosed_names(registry, "main", skill_operations(
+        [catalog_skill(key) for key in catalog.preloaded("reviewing")]
+    )))
+    assert {"proposal.g0.submit", "proposal.share"} <= drafting
+    # gap_check, preloaded in both views, prepares the reviewer's G0 decision material.
+    assert "proposal.g0.decide" in reviewing and "proposal.share" not in reviewing
+    # Governance preparation stays outside every skill, so 小Pai never sees it.
+    every = frozenset(disclosed_names(registry, "main", skill_operations(
+        [catalog_skill(entry["key"]) for entry in catalog.index]
+    )))
+    for name in ("project.create", "category.member.grant", "provider.agreement.register",
+                 "ai.skill.qualify", "mcp.connector.allow", "knowledge.rule.publish"):
+        assert name not in every
 
 
 def test_loaded_skill_discloses_exactly_its_own_write_tools():

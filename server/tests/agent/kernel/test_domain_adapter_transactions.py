@@ -93,7 +93,7 @@ def fixture(setup, *, artifact_id=None, proposal_id=None, skill_key="public_rese
         model_version=f.route.version,
         model_route_digest=f.route.digest,
         tool_definitions_digest=disclosure_digest(
-            f.registry, "main", binding_operations(f.catalog, (bound,))
+            f.registry, "main", binding_operations(f.catalog, (bound,)), scope=f.scope
         ),
         prompt_digest=prompt_identity["system_digest"],
         isolation="main",

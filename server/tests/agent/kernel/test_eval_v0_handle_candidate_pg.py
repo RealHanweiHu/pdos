@@ -406,6 +406,9 @@ def test_model_observations_keeps_three_main_two_extract_dispatches_and_budgets(
             model_observations(altered, requests, observed_events, 48_000)
 
 
+CATEGORY_RUN = SimpleNamespace(category_id="bound", product_id=None, project_id=None)
+
+
 def assert_disclosure(runtime, provider):
     registry, catalog = runtime.owner.registry, runtime.owner.catalog
     for request_row in provider.requests:
@@ -415,7 +418,9 @@ def assert_disclosure(runtime, provider):
             continue
         # Check the exact production disclosure, rather than a hand-picked count.
         skills = [catalog.configuration("work_management")] if "work.task.create" in names else []
-        assert tools == disclosure(registry, operations=skill_operations(skills))
+        # These runs are category-bound, so project reads are not shown (P76 item 4a).
+        assert tools == disclosure(registry, operations=skill_operations(skills),
+                                   scope=CATEGORY_RUN)
         assert request_row["output_schema"] == WireAgentOutput.model_json_schema()
 
 

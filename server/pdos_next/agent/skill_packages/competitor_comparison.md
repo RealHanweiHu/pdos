@@ -1,6 +1,6 @@
 ---
 key: competitor_comparison
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 按规格字典参数版本做竞品与我方现款/目标的同口径对比，区分实测、宣传、推断、未知，口径不同就分组标注，数值比较交给 calc.spec_compare。
 input_schema:
   type: object
@@ -58,10 +58,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#competitor_comparison", case_types: [自主新品, 客户RFQ（对标现款）, 派生], min_cases: 10}
 owner: 待定
-preload_when:
-  - 提案页打开竞品对比或规格对标视图
-  - 用户要求"对比/对标/和某某比"
-  - proposal_drafting 在自主新品入口加载
+preload_when: []
 ---
 
 # competitor_comparison · 竞品同口径对比

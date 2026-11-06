@@ -1,6 +1,6 @@
 ---
 key: derivative_diff
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 以原型号已发布定义为基线，把改动说明拆成规格、BOM、认证、模具、成本及其他差异，区分直接差异与推断的传导影响，写明沿用范围和待专家项，作为派生提案的立项版定义草稿。
 input_schema:
   type: object
@@ -58,10 +58,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#derivative_diff", case_types: [派生（新型号/新变体）, 片段级小案例], min_cases: 10}
 owner: 待定
-preload_when:
-  - 提案 entry_kind=derivative
-  - 型号页点"发起派生提案"
-  - 用户说"在某型号基础上改…/出一个某某版"
+preload_when: []
 ---
 
 # derivative_diff · 派生差异

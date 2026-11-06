@@ -726,7 +726,7 @@
     "proposal.share": {
       "when": "私有改为品类共享",
       "produces": "proposal.shared",
-      "limit": "仅人工。",
+      "limit": "仅准备，负责人在页面办理。",
       "tier": "T1",
       "source": "v1.1 附录 A"
     },

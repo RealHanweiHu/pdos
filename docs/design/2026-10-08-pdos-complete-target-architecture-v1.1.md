@@ -1671,7 +1671,7 @@ S0～S5是新工程交付建议，不是旧项目任务编号。顺序（v1.1 �
 | `proposal.create`（v1.1） | T1 | 一次确认后；默认私有 | proposal.created |
 | `proposal.item.patch`（v1.1，条目级编辑） | T0 | 需资格与授权；署 AI 名、可按运行撤回、不覆盖人工值 | proposal.item_patched |
 | `proposal.question.create`（v1.1，待决问题） | T1 | 一次确认后 | proposal.question_created |
-| `proposal.share`（v1.1，私有改为品类共享） | T1 | 仅人工 | proposal.shared |
+| `proposal.share`（v1.1，私有改为品类共享） | T1 | 仅准备，负责人在页面办理（P44） | proposal.shared |
 | `proposal.g0.submit`（v1.1） | T1 | 仅提案负责人本人 | proposal.g0_submitted |
 | `proposal.g0.decide`（v1.1） | T2 | 仅准备/不可代决定；非试点评审人不得为负责人，当前有效试点允许负责人本人具名评审（P27） | proposal.g0_decided |
 | `platform.link.create`（v1.1） | T1 | 一次确认后 | platform.linked |

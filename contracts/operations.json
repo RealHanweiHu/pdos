@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "f19899fb1ee5730a2106be7005682481e5600601f91eb5b373b7876344ef5787",
+    "sha256": "cf6f95d9d48e6598c569f4cf7a6117983848f6b3d40345f7289b534059bd99c9",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -735,7 +735,7 @@
     {
       "operation": "proposal.share",
       "write_tier": "T1",
-      "ai_execution": "仅人工",
+      "ai_execution": "仅准备，负责人在页面办理（P44）",
       "event": "proposal.shared",
       "stage": "S1",
       "implementation": "implemented_local_slice",

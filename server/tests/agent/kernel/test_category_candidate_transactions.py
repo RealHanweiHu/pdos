@@ -66,7 +66,9 @@ def personal_fixture(setup, tmp_path, *, sources=True):
     binding = ModelBinding(
         model_version=f.route.version,
         model_route_digest=f.route.digest,
-        tool_definitions_digest=digest(disclosure(f.registry, "main", skill_operations([skill]))),
+        tool_definitions_digest=digest(
+            disclosure(f.registry, "main", skill_operations([skill]), scope=f.run)
+        ),
         prompt_digest=digest("prefix"),
         isolation="main",
         cancel_epoch=0,

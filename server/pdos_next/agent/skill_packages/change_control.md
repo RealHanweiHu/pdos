@@ -1,6 +1,6 @@
 ---
 key: change_control
-version: 0.1.1-draft
+version: 0.1.2-draft
 purpose: 办理同时穿透产品与制造的工程变更：按来源建立变更请求，用确定性工具算显式影响并与 AI 待核线索分栏，准备变更单与实施计划，登记实际实施事实，维护工程配置/BOM 与派生变体版本，并为逐项取舍与专业批准准备具名决定材料；取舍与批准由专业本人作出。
 input_schema:
   type: object
@@ -70,10 +70,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#change_control", case_types: [失败引发变更, 供应替代, 派生变体改基线], min_cases: 10}
 owner: 待定
-preload_when:
-  - 项目工作区变更入口打开且已选定变更
-  - 问题处置转入变更路径
-  - 用户问"这个改动影响什么/要不要走变更"
+preload_when: []
 ---
 
 # change_control · 工程变更穿透与实施

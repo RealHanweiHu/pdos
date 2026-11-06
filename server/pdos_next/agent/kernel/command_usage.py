@@ -45,19 +45,22 @@ class Usage:
     def written(self):
         return bool(self.when)
 
-    def description(self, operation: str, tier: str | None = None, kind: str | None = None):
+    def description(
+        self, operation: str, tier: str | None = None, kind: str | None = None,
+        *, prepare_only: bool = False,
+    ):
         """The tool description 小Pai actually sees, assembled from registered facts.
 
-        ``tier`` is the tier the registry actually assigned, which can be stricter
-        than 附录 A (``proposal.g0.submit`` is T1 there and prepare-only here), so
-        the verb follows what the server will really do rather than the contract.
+        ``tier`` is the tier the registry actually assigned, and ``prepare_only``
+        marks a T1 command 小Pai only prepares (P44), so the verb follows what the
+        server will really do rather than the contract's tier alone.
         """
         effective = tier or self.tier
         verb = (
             "计算" if kind == "compute"
             else "检索" if kind == "research"
             else "读取" if effective == "READ"
-            else "准备" if effective == "T2-prepare-only"
+            else "准备" if effective == "T2-prepare-only" or prepare_only
             else "办理"
         )
         parts = [

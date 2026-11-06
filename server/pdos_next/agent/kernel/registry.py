@@ -10,10 +10,13 @@ from pdos_next.errors import DomainError
 from .command_usage import require
 from .types import RunScope, Tier
 
+# Commands 小Pai only prepares and never carries out. A T2 one keeps its T2 tier; a T1 one
+# (proposal.share) keeps T1 and is marked ``prepare_only``, because "only prepare" says
+# what 小Pai may do and the tier says how the person handles it (P44 item 3).
+# proposal.g0.submit left this list under P44 item 1: 小Pai prefills it, the owner confirms.
 PREPARE_ONLY = frozenset(
     {
         "proposal.share",
-        "proposal.g0.submit",
         "proposal.g0.decide",
         "category.member.grant",
         "project.create",
@@ -84,13 +87,27 @@ class ToolSpec:
     handler: Callable | None = field(default=None, repr=False, compare=False)
     version: str = "1"
     max_result_tokens: int = 4_000
+    # Run scope fields that must be bound for this tool to work at all (P76 item 4a).
+    # A run without them neither sees the tool nor may call it.
+    scope_requires: tuple[str, ...] = ()
+    # 小Pai only prepares material for this T1 command; the person handles it on the page
+    # (P44 item 2). T2 preparation is told by its tier, so this marks T1 ones only.
+    prepare_only: bool = False
 
     def __post_init__(self):
         if type(self.max_result_tokens) is not int or self.max_result_tokens < 512:
             raise ValueError("Tool result limit must fit a continuation envelope")
+        if self.prepare_only and self.tier != "T1":
+            raise ValueError("Only a T1 command is marked prepare-only; T2 says so by its tier")
 
     def definition(self):
         return {"name": self.name, "description": self.description, "parameters": self.input_schema}
+
+    def available_in(self, scope) -> bool:
+        """Whether the run's bound scope satisfies this tool's scope requirement."""
+        return scope is None or all(
+            getattr(scope, key, None) is not None for key in self.scope_requires
+        )
 
     @property
     def requires_loaded_skill(self):
@@ -98,10 +115,15 @@ class ToolSpec:
 
         The one source of truth for both ``ToolRegistry.authorize`` and the
         per-call disclosure derivation, so what 小Pai may see cannot drift from
-        what it may call. T2 preparation produces named-decision material under
-        its own policy and never required a skill.
+        what it may call. Every write needs one, T2 preparation included (P76
+        item 4b, replacing P37 item 2): a page that needs it preloads the skill.
         """
-        return self.kind == "write" and self.tier != "T2-prepare-only"
+        return self.kind == "write"
+
+    @property
+    def prepares_only(self):
+        """Whether 小Pai only prepares this and a person always carries it out."""
+        return self.tier == "T2-prepare-only" or self.prepare_only
 
 
 class ToolRegistry:
@@ -113,8 +135,8 @@ class ToolRegistry:
     def add(self, spec: ToolSpec):
         if spec.name in self._specs:
             raise ValueError("Duplicate registered tool")
-        if spec.tier == "T2-prepare-only" and spec.operation_key is not None:
-            raise ValueError("T2 preparation cannot bind an executing domain operation")
+        if spec.prepares_only and spec.operation_key is not None:
+            raise ValueError("Preparation cannot bind an executing domain operation")
         self._specs[spec.name] = spec
 
     def get(self, name):
@@ -151,6 +173,11 @@ class ToolRegistry:
 
     def authorize(self, scope: RunScope, name: str, arguments: Mapping, loaded, enabled):
         spec = self.get(name)
+        if not spec.available_in(scope):
+            raise DomainError(
+                "FORBIDDEN_SCOPE", "此工具须在绑定了相应项目、型号和品类的运行中使用。",
+                detail={"reason_key": "tool_scope_required"},
+            )
         authority = SCOPE_KEYS.intersection(arguments) if isinstance(arguments, Mapping) else set()
         if spec.name == "ai.run.revert" and spec.tier == "T1":
             # This is a Human-confirmed business target, never the execution scope.
@@ -219,13 +246,10 @@ def command_tools(payloads=None, tiers=None, handlers=None):
     usage = require(sorted(payloads))
     specs = []
     for operation, schema in sorted(payloads.items()):
-        tier = (
-            "T1"
-            if operation == "ai.run.revert"
-            else "T2-prepare-only"
-            if operation in PREPARE_ONLY
-            else tiers[operation]
-        )
+        tier = "T1" if operation == "ai.run.revert" else tiers[operation]
+        if operation in PREPARE_ONLY and tier != "T1":
+            tier = "T2-prepare-only"
+        prepare_only = operation in PREPARE_ONLY and tier == "T1"
         raw = schema.model_json_schema()
         # Confirmation credentials and server scope can never be supplied by a model.
         for key in tuple(raw.get("properties", {})):
@@ -236,16 +260,18 @@ def command_tools(payloads=None, tiers=None, handlers=None):
             }:
                 raw["properties"].pop(key)
                 raw["required"] = [v for v in raw.get("required", []) if v != key]
+        prepares = prepare_only or tier == "T2-prepare-only"
         specs.append(
             ToolSpec(
                 operation,
-                usage[operation].description(operation, tier),
+                usage[operation].description(operation, tier, prepare_only=prepare_only),
                 raw,
                 {"type": "object"},
                 "write",
                 tier,
-                None if tier == "T2-prepare-only" else operation,
+                None if prepares else operation,
                 handler=handlers.get(operation),
+                prepare_only=prepare_only,
             )
         )
     return specs

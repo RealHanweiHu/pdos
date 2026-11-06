@@ -1,6 +1,6 @@
 ---
 key: proposal_drafting
-version: 0.2.3-draft
+version: 0.2.4-draft
 purpose: 在当前品类内按客户需求、自主新品、派生迭代三个入口起草或修订立项提案，以条目级补丁写入草稿，标明来源、状态与未知，并只提少量关键问题。
 input_schema:
   type: object
@@ -138,6 +138,8 @@ allowed_operations:
   - {tool: evidence.link.create, tier: T0, note: 把已登记的 Claim 关联到本轮写入或改写的条目}
   - {tool: proposal.question.create, tier: T1}
   - {tool: evidence.claim.withdraw, tier: T1, note: 单条 Claim 撤回只准备候选，由人确认后执行}
+  - {tool: proposal.g0.submit, tier: T1, note: 预填 G0 提交候选；只有提案负责人本人能一次确认}
+  - {tool: proposal.share, tier: T1, note: 仅准备共享材料与身份检查清单，负责人在页面办理}
 evidence_policy: |
   section 中的市场/客户信号、竞品、价格、用户声音必须带来源（source_refs）；规格值来自客户原件、基线定义或研究台账时引用之，AI 建议值 item_status=ai_draft 并在 reason 中说明。
   不编造来源、竞品、价格、评论、BOM、认证或模具事实；没有来源就写 unknown（规格条目 availability=unknown）并转为待决问题或研究问题。
@@ -154,9 +156,7 @@ model_capability_requirements: [native_tool_calling, json_schema_output, paralle
 evaluation_suite: {rubric: "evaluation-rubric.md#proposal_drafting", case_types: [客户RFQ, 派生, 自主新品], min_cases: 12}
 owner: 待定
 preload_when:
-  - 当前页面是立项提案页
-  - 用户在品类页点"立项提案"打开的品类对话
-  - 用户在任意对话中要求起草/修改提案
+  - {object: proposal, view: drafting, order: 1}
 ---
 
 # proposal_drafting · 立项提案起草
@@ -181,7 +181,7 @@ preload_when:
 4. **写条目**：`proposal.item.patch`（T0，op=upsert/remove，带 base_version）逐条写入，相关条目可同批；子技能已登记的 Claim 用 `evidence.link.create`（T0）关联到对应条目，不重复登记。目标成本合计用 `calc.cost_subtotal`，写入 commercial_target.cost。
 5. **待决问题**：`proposal.question.create`（T1），owner_id 与 due_date 必填，由人一次确认；私有提案只能指派负责人或评审人，所需专业角色写在问题正文里。
 6. `evidence.search` 只在本品类和本提案范围内找已有证据，不替代研究；它对客户原件和网页快照只返回定位与已登记 Claim，不返回正文，读原文只经 `evidence.extract`。
-7. 共享提案、提交 G0、G0 决定（`proposal.share`、`proposal.g0.submit`、`proposal.g0.decide`）只能准备材料（例如提交说明），由人在界面办理。
+7. **提交 G0**：先按 `gap_check` 查漏，再用 `proposal.g0.submit`（T1）预填提交候选，只有提案负责人本人能一次确认，你不能代提交。**共享提案**：`proposal.share` 只准备材料（含身份检查清单），由负责人在页面办理，你不能代共享。**G0 决定**（`proposal.g0.decide`，T2）由评审人具名作出，本技能不准备；评审材料由评审人页面预载的 `gap_check` 准备。
 
 ## 实际 DTO 与尚缺的执行前置
 

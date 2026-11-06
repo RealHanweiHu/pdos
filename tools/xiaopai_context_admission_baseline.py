@@ -161,14 +161,21 @@ def evaluate(questions, expanded, *, prompt=None):
 
 def report(value):
     fixed = value["production_fixed_prefix"]
+    # Which profiles the fixed prefix overflows is measured, not assumed (P76 item 4b
+    # shrank the zero-skill face, so F=16384 now admits it).
+    over = [focus for focus in FOCUS_PROFILES
+            if any(case["profiles"][str(focus)]["status"] == "CONTEXT_INCOMPLETE"
+                   for case in value["cases"])]
+    admitted = [focus for focus in FOCUS_PROFILES if focus not in over]
     lines = [
         "# 小Pai v0：离线固定前缀准入下界", "",
         f"生产固定系统提示估算 {fixed['system_estimated_tokens']} tokens，初始 "
         f"{fixed['tool_count']} 工具与输出 schema 估算 "
         f"{fixed['tools_and_output_schema_estimated_tokens']} tokens。"
         f"生产 15% 余量后的固定下界为 {fixed['fixed_admission_tokens']} tokens。", "",
-        "原 F=8192/16384 的固定前缀已经超窗，不能用这两档比较长会话模型质量。"
-        "F=48000/64000 的当前问题下界可准入，仅建议作为后续原生回放的候选；"
+        (f"F={'/'.join(map(str, over))} 的固定前缀已经超窗，不能用这些档比较长会话模型质量。"
+         if over else "")
+        + f"F={'/'.join(map(str, admitted))} 的当前问题下界可准入，仅建议作为后续原生回放的候选；"
         "未验证服务商窗口、已加载技能、完整历史与工具结果准入。", "",
         "| 场景 | 原始材料估算 | F8192 | F16384 | F48000 | F64000 | 原生回放 |",
         "| --- | ---: | --- | --- | --- | --- | --- |",

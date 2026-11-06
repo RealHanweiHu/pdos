@@ -1,6 +1,6 @@
 ---
 key: build_execution
-version: 0.1.1-draft
+version: 0.1.2-draft
 purpose: 在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业授权材料，并用确定性工具算齐套与成本；实际数量、参数和时点只按真实记录写入。
 input_schema:
   type: object
@@ -73,10 +73,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#build_execution", case_types: [试模轮次, 多批产出与样件分配, 试产], min_cases: 10}
 owner: 待定
-preload_when:
-  - 项目工作区 Builds 入口打开且已选定 Build
-  - 用户问"这轮试模/这批产出/样件去向"
-  - 试产（PilotRun）登记
+preload_when: []
 ---
 
 # build_execution · 制造轮次与试模执行

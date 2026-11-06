@@ -1,6 +1,6 @@
 ---
 key: category_framing
-version: 0.2.2-draft
+version: 0.2.3-draft
 purpose: 按依赖顺序追问（每次最多三问、推荐答案不预选）确定品类边界，未明确项作为显式假设，起草可一次确认的品类候选。
 input_schema:
   type: object
@@ -142,9 +142,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output（maxItems 与封闭字段约束）, interrupt 恢复后续写]
 evaluation_suite: {rubric: "evaluation-rubric.md#category_framing", case_types: [含糊品类词, 明确品类, 混入客户信息, 已存在同名品类], min_cases: 10}
 owner: 待定
-preload_when:
-  - 用户点击"新建品类"打开的个人小Pai对话
-  - 个人对话中用户表达要建立/研究一个新品类或市场空间
+preload_when: []
 ---
 
 # category_framing · 品类界定

@@ -484,7 +484,7 @@ def run_native(
     main = [item for item in provider.requests if item["isolation"] == "main"]
     if main:
         assert main[0]["system"] == kernel.system
-        assert main[0]["tools"] == disclosure(owner.registry)
+        assert main[0]["tools"] == disclosure(owner.registry, scope=scope)
         assert main[0]["output_schema"] == WireAgentOutput.model_json_schema()
     return owner, scope, output, response
 

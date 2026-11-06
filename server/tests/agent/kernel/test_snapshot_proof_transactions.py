@@ -38,7 +38,7 @@ def model_for(f, tool, arguments, *, isolation="main"):
     binding = previous.model_copy(update={
         "isolation": isolation,
         "tool_definitions_digest": disclosure_digest(
-            f.registry, isolation, binding_operations(f.catalog, loaded),
+            f.registry, isolation, binding_operations(f.catalog, loaded), scope=scope,
         ),
         "loaded_skills": loaded,
     })

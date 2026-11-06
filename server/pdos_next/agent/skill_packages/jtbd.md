@@ -1,6 +1,6 @@
 ---
 key: jtbd
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 从用户声音、场景与研究证据中整理目标用户要完成的工作（JTBD）、完整使用路径与购买标准，区分有证据的发现和待验证假设。
 input_schema:
   type: object
@@ -52,10 +52,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#jtbd", case_types: [自主新品, 品类建立后补用户与场景], min_cases: 10}
 owner: 待定
-preload_when:
-  - 品类页"用户与场景"区域编辑或补全
-  - 自主新品提案起草"目标客户/市场/渠道"段落
-  - 用户问"用户为什么买/在什么场景用"
+preload_when: []
 ---
 
 # jtbd · 用户要完成的工作

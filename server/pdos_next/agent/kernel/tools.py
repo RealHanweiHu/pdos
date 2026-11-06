@@ -119,6 +119,9 @@ def default_registry():
                     "assistant.citations.read",
                     "assistant.materials.read", "assistant.compare",
                 },
+                # Project object reads refuse any run without a bound project (P76 4a).
+                scope_requires=("category_id", "product_id", "project_id")
+                if name in PROJECT_SCHEMAS else (),
                 version="5"
                 if name == "calc.spec_compare"
                 else "2"

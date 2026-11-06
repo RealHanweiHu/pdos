@@ -1,6 +1,6 @@
 ---
 key: quality_issue
-version: 0.1.1-draft
+version: 0.1.2-draft
 purpose: 按来源明确的测量或观察建立与分诊品质问题，登记围堵措施，起草 CAPA 的假设与措施，按固定规则登记复发观察，并为根因结论与 CAPA 有效性复核准备具名决定材料；根因与有效性结论本身由专业本人作出。
 input_schema:
   type: object
@@ -67,10 +67,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#quality_issue", case_types: [测试失败立项, 分批失败与围堵, CAPA 复发观察], min_cases: 10}
 owner: 待定
-preload_when:
-  - 项目工作区问题入口打开且已选定 Issue
-  - 测试失败结果页面发起处置
-  - 用户问"这个失败怎么处理/要不要立 CAPA"
+preload_when: []
 ---
 
 # quality_issue · 品质问题与 CAPA

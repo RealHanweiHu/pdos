@@ -48,13 +48,15 @@ def skill_operations(skills: Iterable) -> frozenset[str]:
     return frozenset(names)
 
 
-def disclosure(registry, isolation="main", operations: Iterable[str] = ()):
+def disclosure(registry, isolation="main", operations: Iterable[str] = (), scope=None):
     """Return the tool definitions this model call may see, in registry order.
 
     ``operations`` is the union of the loaded skills' allowed operations. An
     operation that this isolation may not disclose at all (an isolated
     original-text read, say) is skipped rather than widening the child's list;
     ``ToolRegistry.definitions`` remains the only source of what is disclosable.
+    With ``scope``, a tool the run's bound scope can never satisfy is not disclosed
+    (P76 item 4a), by the same ``ToolSpec.available_in`` that authorization checks.
     """
     if isinstance(operations, (str, bytes, Mapping)):
         raise DomainError("VALIDATION_FAILED", "披露须按操作名集合推导。")
@@ -64,17 +66,20 @@ def disclosure(registry, isolation="main", operations: Iterable[str] = ()):
     return [
         item
         for item in _ordered(registry, isolation)
-        if item["name"] in CORE
-        or not registry.get(item["name"]).requires_loaded_skill
-        or item["name"] in allowed
+        if registry.get(item["name"]).available_in(scope)
+        and (
+            item["name"] in CORE
+            or not registry.get(item["name"]).requires_loaded_skill
+            or item["name"] in allowed
+        )
     ]
 
 
-def disclosed_names(registry, isolation="main", operations: Iterable[str] = ()):
-    return tuple(item["name"] for item in disclosure(registry, isolation, operations))
+def disclosed_names(registry, isolation="main", operations: Iterable[str] = (), scope=None):
+    return tuple(item["name"] for item in disclosure(registry, isolation, operations, scope))
 
 
-def disclosure_digest(registry, isolation="main", operations: Iterable[str] = ()):
+def disclosure_digest(registry, isolation="main", operations: Iterable[str] = (), scope=None):
     """Digest of this call's disclosure, comparable with the recorded binding.
 
     Deliberately ``digest`` of the same definition list the gateway sends, so a
@@ -84,7 +89,7 @@ def disclosure_digest(registry, isolation="main", operations: Iterable[str] = ()
     # contracts -> snapshot_command, so a module-level import would be circular.
     from pdos_next.core.service import digest
 
-    return digest(disclosure(registry, isolation, operations))
+    return digest(disclosure(registry, isolation, operations, scope))
 
 
 def binding_operations(catalog, bindings: Iterable):

@@ -7,6 +7,33 @@ import yaml
 
 from pdos_next.errors import DomainError
 
+# What the server itself can tell about a run bound to a proposal (P76 item 4c): whether
+# the requester is reviewing the current G0 submission or working on the draft, and
+# whether the run read a parsed, clean customer original of that proposal.
+PRELOAD_VIEWS = frozenset({"drafting", "reviewing"})
+PRELOAD_SOURCES = frozenset({"customer_original"})
+
+
+def preload_conditions(key, declared):
+    """Validate ``preload_when``: only conditions the server checks itself.
+
+    An empty list means the server never preloads the skill; the page that needs it
+    requests it, an automation rule names it, or 小Pai loads it with ``skill.load``.
+    """
+    if not isinstance(declared, list):
+        raise ValueError(f"Skill {key} preload_when must be a list of conditions")
+    for item in declared:
+        if (
+            not isinstance(item, dict)
+            or not {"object", "view", "order"} <= set(item) <= {"object", "view", "source", "order"}
+            or item["object"] != "proposal"
+            or item["view"] not in PRELOAD_VIEWS
+            or item.get("source", "customer_original") not in PRELOAD_SOURCES
+            or type(item["order"]) is not int
+        ):
+            raise ValueError(f"Skill {key} declares a preload condition the server cannot check")
+    return declared
+
 
 @dataclass(frozen=True)
 class Skill:
@@ -68,9 +95,11 @@ class SkillCatalog:
                 "model_capability_requirements",
                 "evaluation_suite",
                 "owner",
+                "preload_when",
             }
             if not required <= data.keys() or data["key"] in self._skills:
                 raise ValueError("Invalid versioned skill configuration")
+            preload_conditions(data["key"], data["preload_when"])
             data["context_schema"] = declared_contract(data["context_schema"], self.contexts)
             operations = frozenset(o["tool"] for o in data["allowed_operations"])
             self._skills[data["key"]] = Skill(
@@ -91,6 +120,18 @@ class SkillCatalog:
     @property
     def index(self):
         return [{"key": s.key, "purpose": s.purpose} for _, s in sorted(self._skills.items())]
+
+    def preloaded(self, view, sources=()):
+        """Skills the server preloads for a proposal run in ``view``, in declared order."""
+        matched = []
+        for skill in self._skills.values():
+            for condition in skill.metadata["preload_when"]:
+                if condition["view"] == view and condition.get("source", None) in {
+                    None, *sources,
+                }:
+                    matched.append((condition["order"], skill.key))
+                    break
+        return tuple(key for _, key in sorted(matched))
 
     def configuration(self, key):
         """Inspect registered configuration; this does not enable or load a capability."""

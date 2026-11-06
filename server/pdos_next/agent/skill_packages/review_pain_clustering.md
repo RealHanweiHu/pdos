@@ -1,6 +1,6 @@
 ---
 key: review_pain_clustering
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 把评论、退货原因等用户声音按痛点归类，每类给可核原文片段，样本量与占比由代码计算，并按型号、渠道、时间区分。
 input_schema:
   type: object
@@ -54,10 +54,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output, 多语言短文本理解]
 evaluation_suite: {rubric: "evaluation-rubric.md#review_pain_clustering", case_types: [自主新品（公开评论）, 派生（我方退货原因）, 客户投诉混入], min_cases: 10}
 owner: 待定
-preload_when:
-  - 品类或提案中导入了评论/退货原因文件
-  - 提案用户声音视图打开
-  - 用户问"用户都在抱怨什么/痛点"
+preload_when: []
 ---
 
 # review_pain_clustering · 评论痛点归类

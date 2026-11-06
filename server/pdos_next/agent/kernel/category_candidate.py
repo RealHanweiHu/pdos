@@ -120,7 +120,8 @@ def _source(session, run, owner, source, binding, arguments, intent_key, *, spec
     current = owner.registry.get(OPERATION)
     route = owner.route(session, scope)
     disclosed = disclosure(
-        owner.registry, binding.isolation, binding_operations(owner.catalog, binding.loaded_skills)
+        owner.registry, binding.isolation,
+        binding_operations(owner.catalog, binding.loaded_skills), scope,
     )
     if (
         not model or model.tenant_id != run.tenant_id or model.run_id != run.id

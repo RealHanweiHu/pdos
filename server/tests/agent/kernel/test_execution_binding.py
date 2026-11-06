@@ -210,7 +210,7 @@ def ledger():
         model_version=route.version, model_route_digest=route.digest,
         # The call discloses what its loaded skill allows, not the whole registry.
         tool_definitions_digest=digest(
-            disclosure(registry, "main", skill_operations([skill]))
+            disclosure(registry, "main", skill_operations([skill]), scope=actual)
         ), prompt_digest=digest("prefix"),
         isolation="main", cancel_epoch=actual.cancel_epoch, loaded_skills=(bound,),
     )
@@ -552,7 +552,8 @@ def test_gateway_returns_actual_model_ledger_and_keeps_binding_out_of_native_pay
     gateway = AgentGateway(store, route_for=lambda _: route, cost_required=False, client=client)
     options = dict(
         system="frozen", messages=[{"role": "user", "content": "synthetic"}],
-        tools=disclosure(f.registry, operations=binding_operations(f.catalog, (f.source.skill,))),
+        tools=disclosure(f.registry, operations=binding_operations(f.catalog, (f.source.skill,)),
+                         scope=f.scope),
         output_schema={"type": "object"}, loaded_skills=(f.source.skill,),
     )
     assert f.spec.name in {tool["name"] for tool in options["tools"]}

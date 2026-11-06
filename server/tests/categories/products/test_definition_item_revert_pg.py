@@ -82,7 +82,7 @@ def agent_fixture(
         **fixture.model.execution_binding,
         "loaded_skills": [bound.model_dump(mode="json")],
         "tool_definitions_digest": digest(
-            disclosure(fixture.registry, "main", skill_operations([skill]))
+            disclosure(fixture.registry, "main", skill_operations([skill]), scope=fixture.scope)
         ),
     }
     fixture.run.versions = {

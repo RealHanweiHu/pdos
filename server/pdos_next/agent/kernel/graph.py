@@ -158,7 +158,7 @@ class AgentKernel:
             without a loaded skill stays disclosed (see .disclosure).
             """
             return json.loads(json.dumps(disclosure(
-                registry, scope.isolation, skill_operations(loaded.values()),
+                registry, scope.isolation, skill_operations(loaded.values()), scope,
             )))
 
         def load_binding(skill):

@@ -166,7 +166,7 @@ def verify_read_source(
         # A read is only trusted when the call it cites disclosed this tool, which
         # the binding's own loaded skills must imply (see .disclosure).
         disclosed = disclosure(
-            registry, scope.isolation, binding_operations(catalog, model.loaded_skills)
+            registry, scope.isolation, binding_operations(catalog, model.loaded_skills), scope
         )
         if (
             route is None or route.version != model.model_version

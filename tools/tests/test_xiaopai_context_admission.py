@@ -63,17 +63,17 @@ def test_probe_never_promotes_scenario_tool_or_hidden_history_to_input(baseline,
 
 def test_production_prefix_rejects_old_profiles_and_admits_large_lower_bounds(baseline, inputs):
     value = baseline.evaluate(*inputs)
-    assert value["production_fixed_prefix"]["tool_count"] == 61
+    # P76 item 4b: the zero-skill face holds no write tool.
+    assert value["production_fixed_prefix"]["tool_count"] == 34
     assert value["provider_calls"] == value["database_operations"] == 0
-    assert value["production_fixed_prefix"]["fixed_admission_tokens"] > 16384
+    assert 8192 < value["production_fixed_prefix"]["fixed_admission_tokens"] < 16384
     for case in value["cases"]:
-        for focus in (8192, 16384):
-            probe = case["profiles"][str(focus)]
-            assert probe["status"] == "CONTEXT_INCOMPLETE"
-            assert probe["reason_key"] == "fixed_context_exceeds_window"
-            assert probe["context_budget"]["focus"] == focus
-            assert probe["recovery"]["action"] == "configure_model_context_window"
-        for focus in (48000, 64000):
+        probe = case["profiles"]["8192"]
+        assert probe["status"] == "CONTEXT_INCOMPLETE"
+        assert probe["reason_key"] == "fixed_context_exceeds_window"
+        assert probe["context_budget"]["focus"] == 8192
+        assert probe["recovery"]["action"] == "configure_model_context_window"
+        for focus in (16384, 48000, 64000):
             probe = case["profiles"][str(focus)]
             assert probe["status"] == "admitted_lower_bound_only"
             assert probe["context_budget"]["focus"] == focus

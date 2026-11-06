@@ -137,9 +137,12 @@ def test_unknown_32k_route_reports_fixed_surface_and_effective_recovery():
 
     registry = default_registry()
     kernel = AgentKernel(None, registry)
+    # Since P76 item 4b the zero-skill face fits 32k; disclosing every write does not.
+    every_write = [item["name"] for item in registry.definitions()
+                   if registry.get(item["name"]).kind == "write"]
     with pytest.raises(DomainError) as error:
         fit_messages(replace(configured_route(), context_window_tokens=None),
-                     kernel.system, disclosure(registry), message({}),
+                     kernel.system, disclosure(registry, "main", every_write), message({}),
                      WireAgentOutput.model_json_schema())
     assert error.value.detail["reason_key"] == "fixed_context_exceeds_window"
     assert error.value.recovery == {

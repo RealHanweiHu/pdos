@@ -31,8 +31,8 @@ def example(key, contract):
 def test_skill_declares_actual_native_wire_schema(key):
     current = skill(key)
     assert current.metadata["output_schema"] == WireAgentOutput.model_json_schema()
-    expected = {"proposal_drafting": "0.2.3-draft", "public_research": "0.2.3-draft"}
-    assert current.version == expected.get(key, "0.2.2-draft")
+    expected = {"proposal_drafting": "0.2.4-draft", "public_research": "0.2.4-draft"}
+    assert current.version == expected.get(key, "0.2.3-draft")
     registry = default_registry()
     for operation in current.metadata["allowed_operations"]:
         assert registry.get(operation["tool"]).tier == operation["tier"]

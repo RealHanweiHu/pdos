@@ -147,7 +147,8 @@ def prepared(f, tool, args):
         model_version=f.route.version,
         model_route_digest=f.route.digest,
         tool_definitions_digest=digest(
-            disclosure(f.registry, "main", binding_operations(f.owner.catalog, f.loaded.values()))
+            disclosure(f.registry, "main", binding_operations(f.owner.catalog, f.loaded.values()),
+                       scope=f.scope)
         ),
         prompt_digest=prompt_digest,
         isolation="main",

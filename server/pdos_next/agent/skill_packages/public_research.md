@@ -1,6 +1,6 @@
 ---
 key: public_research
-version: 0.2.3-draft
+version: 0.2.4-draft
 purpose: 把研究问题拆成并行的公开来源子任务，交回带可核原文片段的台账、发现和未答问题；只研究，不替用户下结论或写提案。
 input_schema:
   type: object
@@ -150,11 +150,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output, parallel_tool_calls, 中英文网页阅读]
 evaluation_suite: {rubric: "evaluation-rubric.md#public_research", case_types: [自主新品研究问题, 单点事实问题, 来源失败, 网页注入], min_cases: 10}
 owner: 待定
-preload_when:
-  - 用户消息要求搜索、查资料、看最新信息
-  - category_framing 进入研究阶段（用途已明确）
-  - 自主新品提案缺竞品、价格或用户声音资料
-  - 由 AutomationRule 触发的品类资料定时更新（需规则授权联网）
+preload_when: []
 ---
 
 # public_research · 公开研究

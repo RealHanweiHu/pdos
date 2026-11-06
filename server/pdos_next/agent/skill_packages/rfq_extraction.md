@@ -1,6 +1,6 @@
 ---
 key: rfq_extraction
-version: 0.4.1-draft
+version: 0.4.2-draft
 purpose: 经隔离子任务从客户 RFQ、规格书、图纸说明和邮件中逐条抽取需求，保留原文位置、数值、单位、工况、否定与例外，映射到规格字典并登记为证据，列出冲突、未知、差距和待问客户/专家的问题。
 row_schemas:
   - {kind: rfq_requirement, version: "1"}
@@ -78,9 +78,7 @@ model_capability_requirements: [native_tool_calling, json_schema_output, 长上�
 evaluation_suite: {rubric: "evaluation-rubric.md#rfq_extraction", case_types: [客户RFQ（文本/表格/PDF/邮件）, 片段级小案例], min_cases: 10}
 owner: 待定
 preload_when:
-  - 客户原件上传到私有提案
-  - 提案 entry_kind=customer_request 且有未抽取的原件版本
-  - 用户在提案页要求"读一下客户资料/抽需求"
+  - {object: proposal, view: drafting, source: customer_original, order: 3}
 ---
 
 # rfq_extraction · 客户需求抽取

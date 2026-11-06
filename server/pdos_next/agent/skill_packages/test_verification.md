@@ -1,6 +1,6 @@
 ---
 key: test_verification
-version: 0.1.1-draft
+version: 0.1.2-draft
 purpose: 办理验证准备与试模后交接：形成验证请求与方法可用性、提出与承诺时段、逐项记录交样/接收/退回、计划并开始测试 Run、导入实测结果并交确定性工具判定，为专业复核与处置准备具名决定材料；接收、承诺与结论本身由各方本人作出。
 input_schema:
   type: object
@@ -72,10 +72,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#test_verification", case_types: [试模后交接, 部分接收与退回, 分批结果导入], min_cases: 10}
 owner: 待定
-preload_when:
-  - 项目工作区验证/测试入口打开且已选定请求或 Run
-  - 样件就绪后发起交接
-  - 用户问"交品质/什么时候出结果/这批测了哪些项"
+preload_when: []
 ---
 
 # test_verification · 验证准备、交接与测试

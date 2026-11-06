@@ -1,6 +1,6 @@
 ---
 key: work_management
-version: 0.1.1-draft
+version: 0.1.2-draft
 purpose: 按真实项目和原件起草任务、计划、阶段办理与外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。
 input_schema:
   type: object
@@ -219,9 +219,7 @@ evaluation_suite:
   - 原请求恢复与失权
   min_cases: 10
 owner: 待定
-preload_when:
-- 用户要求安排项目任务、登记实际进展或作出承诺
-- 项目工作、我的工作或外部等待现场要求小Pai协助
+preload_when: []
 ---
 
 # work_management · 项目行动与个人承诺

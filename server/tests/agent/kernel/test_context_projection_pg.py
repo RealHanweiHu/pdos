@@ -173,10 +173,10 @@ def test_registered_graph_progressively_adds_context_and_replay_never_calls_prov
     research = owner.catalog.configuration("public_research")
     drafting = owner.catalog.configuration("proposal_drafting")
     assert client.requests[0]["tools"] == disclosure(
-        registry, "main", skill_operations([research]),
+        registry, "main", skill_operations([research]), scope=scope,
     )
     assert client.requests[1]["tools"] == disclosure(
-        registry, "main", skill_operations([research, drafting]),
+        registry, "main", skill_operations([research, drafting]), scope=scope,
     )
     before = {tool["name"]: tool for tool in client.requests[0]["tools"]}
     after = {tool["name"]: tool for tool in client.requests[1]["tools"]}

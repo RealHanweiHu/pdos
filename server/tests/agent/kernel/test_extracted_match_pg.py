@@ -137,6 +137,7 @@ def prepare(work, security_work, *, missing=False, kind="spec"):
             messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
             tools=disclosure(
                 owner.registry, operations=binding_operations(owner.catalog, (binding,)),
+                scope=scope,
             ),
             output_schema={"type": "object"},
             loaded_skills=(binding,),

@@ -1,6 +1,6 @@
 ---
 key: price_band
-version: 0.2.1-draft
+version: 0.2.2-draft
 purpose: 在统一价格口径（币种、日期、地区、渠道、零售或促销、含税运、配置）下整理竞品与我方价格点，用 calc.price_band 得到价格带分布与目标价位置；分组、分档、分位和换汇都交计算工具。
 input_schema:
   type: object
@@ -53,10 +53,7 @@ budget:
 model_capability_requirements: [native_tool_calling, json_schema_output]
 evaluation_suite: {rubric: "evaluation-rubric.md#price_band", case_types: [自主新品, 派生（换价位）], min_cases: 10}
 owner: 待定
-preload_when:
-  - 自主新品提案起草或定位方案阶段
-  - 用户问"价格带/定价/卖多少钱合适"
-  - 提案定位图（价格 × 关键性能）视图打开
+preload_when: []
 ---
 
 # price_band · 价格带

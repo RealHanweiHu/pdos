@@ -1,8 +1,8 @@
-"""Offline registered-graph capacity proof, with the unchanged full initial face.
+"""Offline registered-graph capacity proof, with the actual zero-skill initial face.
 
 The provider, reads, receipts and citations below are explicitly synthetic. This
 tests disclosure/admission/cleanup/checkpoint mechanics, not model correctness,
-real provider window support, durable PG provenance or execution of all 61 tools.
+real provider window support, durable PG provenance or execution of any tool.
 """
 
 import json
@@ -16,6 +16,7 @@ from pdos_next.agent.kernel.context_budget import estimate_tokens, fit_messages
 from pdos_next.agent.kernel.context_runtime import protected_result
 from pdos_next.agent.kernel.disclosure import disclosure, record_disclosure
 from pdos_next.agent.kernel.graph import AgentKernel
+from pdos_next.agent.kernel.registry import ToolSpec
 from pdos_next.agent.kernel.result_continuation import handle_for, page_view
 from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall, WireAgentOutput
@@ -64,6 +65,7 @@ class ScriptedProvider:
 
     def __init__(self, *, recovery=False):
         self.recovery, self.calls, self.messages = recovery, 0, []
+        self.scope = None
         self.handle = None
 
     def turn(self, configured, *, system, tools, messages, output_schema):
@@ -71,8 +73,7 @@ class ScriptedProvider:
 
         assert in_registered_agent_graph()
         assert configured.base_url == "https://synthetic-provider.test/v1"
-        assert tools == disclosure(default_registry(), "main", ())
-        assert len(tools) == 61
+        assert tools == disclosure(default_registry(), "main", (), scope=self.scope)
         assert output_schema == WireAgentOutput.model_json_schema()
         self.messages.append(deepcopy(messages))
         phase, self.calls = self.calls, self.calls + 1
@@ -225,8 +226,8 @@ def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(
     host, saver = OfflineHost(window, provider), InMemorySaver()
     kernel = AgentKernel(host, host.registry)
     bound = RunScope(*(uuid4() for _ in range(6)))
-    baseline = deepcopy(disclosure(host.registry, "main", ()))
-    assert len(baseline) == 61
+    provider.scope = bound
+    baseline = deepcopy(disclosure(host.registry, "main", (), scope=bound))
     paused = kernel.execute(bound, goal=GOAL, checkpointer=saver)
     assert paused["__interrupt__"] and provider.calls == 6
     assert paused["tools_used"] == 13
@@ -286,6 +287,7 @@ def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(
     # Replace the entire pure Host/provider. The in-memory checkpoint preserves
     # model views, full tool_results and human wait; no old tool is called again.
     next_provider = ScriptedProvider(recovery=True)
+    next_provider.scope = bound
     next_host = OfflineHost(window, next_provider)
     finished = AgentKernel(next_host, next_host.registry).execute(
         bound, answer={"continue": "继续"}, checkpointer=saver,
@@ -298,13 +300,24 @@ def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(
     assert next_host.disclosures == [baseline] and next_host.prefixes == [kernel.system]
 
 
+def oversized_registry():
+    """Since P76 item 4b the zero-skill face fits 32k; synthetic reads make one that does not."""
+    registry = default_registry()
+    for index in range(20):
+        registry.add(ToolSpec(
+            f"synthetic.oversized.read.{index:02}", "合成只读工具。" + "宽" * 1_500,
+            {"type": "object"}, {"type": "object"}, "read", "READ",
+        ))
+    return registry
+
+
 @pytest.mark.parametrize("window", [None, 32_000])
-def test_full_initial_disclosure_32k_stops_registered_graph_before_fake_provider(window):
+def test_oversized_initial_disclosure_32k_stops_registered_graph_before_fake_provider(window):
     provider = ScriptedProvider()
     host = OfflineHost(window, provider)
-    state = AgentKernel(host, host.registry).execute(
-        RunScope(*(uuid4() for _ in range(6))), goal=GOAL,
-    )
+    host.registry = oversized_registry()
+    bound = RunScope(*(uuid4() for _ in range(6)))
+    state = AgentKernel(host, host.registry).execute(bound, goal=GOAL)
     output = state["output"]
     assert output["status"] == "partial" and output["result"]["context_incomplete"]
     budget = output["result"]["context_budget"]
@@ -314,5 +327,5 @@ def test_full_initial_disclosure_32k_stops_registered_graph_before_fake_provider
     assert output["result"]["recovery"] == {
         "action": "configure_model_context_window", "new_run_required": True,
     }
-    assert len(host.disclosures[0]) == 61
+    assert host.disclosures[0] == disclosure(host.registry, "main", (), scope=bound)
     assert provider.calls == 0 and not host.reads and state["tool_results"] == []

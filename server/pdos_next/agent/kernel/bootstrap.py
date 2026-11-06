@@ -507,6 +507,8 @@ class Bootstrap:
                 "command": command.model_dump(mode="json"),
                 "requires_human": True,
                 "write_tier": "T2" if spec.tier == "T2-prepare-only" else "T1",
+                # P44: the person handles a prepare-only T1 command on the page.
+                **({"prepare_only": True} if spec.prepare_only else {}),
                 "state": "candidate",
                 **({"event_id": str(event_id)} if event_id else {}),
             }
@@ -590,12 +592,11 @@ class Bootstrap:
                 # Free conversation starts with the catalog; page actions request skills.
                 return ()
             if scope.proposal_id is None:
-                if scope.project_id is not None:
-                    # A project run is not proposal drafting. Which project method applies is
-                    # not derivable from the bound scope, so the catalog stays as the only
-                    # entry and skill.load decides, under the server's own scope check.
-                    return ()
-                return ("proposal_drafting",)
+                # P76 item 4c: proposal_drafting is preloaded only for a run bound to a
+                # proposal. A category or project run starts from the skill catalog, and
+                # skill.load decides under the server's own scope check; W1 found this
+                # preload cost about 3.8k tokens on every category run regardless of topic.
+                return ()
             from pdos_next.domain.categories.preproject.models import Proposal, ProposalSubmission
 
             proposal = session.get(Proposal, scope.proposal_id)
@@ -603,10 +604,10 @@ class Bootstrap:
                 raise DomainError("FORBIDDEN_SCOPE", "立项提案不可读。")
             submission = session.get(ProposalSubmission, proposal.current_submission_id) \
                 if proposal.current_submission_id else None
+            # Which skills each view preloads is declared by the skills' preload_when.
             if (proposal.status == "in_review" and submission
                     and submission.reviewer_id == scope.requester_id):
-                return ("gap_check", "option_comparison")
-            skills = ["proposal_drafting", "gap_check"]
+                return self.catalog.preloaded("reviewing")
             original_versions = {
                 (UUID(ref["id"]), ref["version"]) for ref in proposal.source_refs
                 if ref.get("type") == "original"
@@ -638,9 +639,9 @@ class Bootstrap:
                 ):
                     customer_original = True
                     break
-            if customer_original:
-                skills.append("rfq_extraction")
-            return tuple(skills)
+            return self.catalog.preloaded(
+                "drafting", ("customer_original",) if customer_original else ()
+            )
 
     def adapters(self):
         from .domain_reads import DomainReads

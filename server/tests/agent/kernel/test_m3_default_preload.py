@@ -9,6 +9,7 @@ import pytest
 
 from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
 from pdos_next.agent.kernel.domain_adapter import DomainCommands
+from pdos_next.agent.kernel.skills import SkillCatalog
 from pdos_next.agent.kernel.types import RunScope
 from pdos_next.core.models import Artifact, UploadedOriginal
 from pdos_next.domain.categories.preproject.models import Proposal, ProposalSubmission
@@ -78,6 +79,7 @@ def fixture(*, category=True, proposal=False, status="draft", reviewer=False):
     owner = Bootstrap.__new__(Bootstrap)
     owner.store = Store(session, run)
     owner.commands = NS(context=DomainCommands.context)
+    owner.catalog = SkillCatalog()
     return NS(owner=owner, scope=scope, session=session, run=run, proposal=row)
 
 
@@ -88,9 +90,10 @@ def test_personal_entry_has_no_default_business_skill():
     assert f.session.reads == []
 
 
-def test_category_entry_preloads_proposal_drafting():
+def test_category_entry_without_a_proposal_preloads_nothing():
+    """P76 item 4c: only a run bound to a proposal preloads proposal_drafting."""
     f = fixture()
-    assert f.owner.default_preload(f.scope) == ("proposal_drafting",)
+    assert f.owner.default_preload(f.scope) == ()
     assert f.owner.store.checked == [f.scope]
 
 

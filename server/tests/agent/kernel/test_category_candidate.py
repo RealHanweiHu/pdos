@@ -514,7 +514,8 @@ def test_category_candidate_matches_actual_skill_disclosure_not_unloaded_write_t
     f.owner.registry.add(ToolSpec('proposal.create', 'Unloaded write', {}, {}, 'write', 'T1'))
     binding = ModelBinding.model_validate(f.model.execution_binding)
     actual = disclosure(
-        f.owner.registry, 'main', binding_operations(f.owner.catalog, binding.loaded_skills)
+        f.owner.registry, 'main', binding_operations(f.owner.catalog, binding.loaded_skills),
+        scope=f.scope,
     )
     assert not any(item['name'] == 'proposal.create' for item in actual)
     fingerprint = digest(f.owner.registry.definitions() if whole_registry else actual)

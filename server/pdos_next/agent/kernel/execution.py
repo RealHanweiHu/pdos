@@ -281,7 +281,7 @@ def verify_source(
     # The binding must match the disclosure its own loaded skills imply, so a write
     # is provably bound to a call that could actually see that command.
     disclosed = disclosure(
-        registry, model.isolation, binding_operations(catalog, model.loaded_skills)
+        registry, model.isolation, binding_operations(catalog, model.loaded_skills), scope
     )
     if (
         current != spec

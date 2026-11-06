@@ -47,7 +47,9 @@ def test_work_commands_need_loaded_enabled_skill_and_never_enter_child(name, loa
     spec = registry.authorize(
         scope, name, arguments, {loaded.key: loaded}, lambda *_: True
     )
-    assert spec.operation_key == name and spec.tier in {"T0", "T1"}
+    # Since P76 item 4b a T2 approval needs the skill too, and still only prepares.
+    assert spec.operation_key == (None if spec.prepares_only else name)
+    assert spec.tier in {"T0", "T1", "T2-prepare-only"}
     assert name not in disclosed_names(registry)
     assert name in disclosed_names(registry, operations=loaded.operations)
     with pytest.raises(DomainError):
@@ -80,7 +82,7 @@ def test_work_documented_task_is_valid_domain_input_without_model_authority(load
 def test_change_completion_skill_retains_named_prepare_only_boundary():
     skill = SkillCatalog().configuration("change_control")
     registry = default_registry()
-    assert skill.version == "0.1.1-draft"
+    assert skill.version == "0.1.2-draft"
     assert registry.get("change.effectivity.record").tier == "T1"
     assert usage()["change.effectivity.record"].written
     for name in ("change.verification.record", "change.close"):

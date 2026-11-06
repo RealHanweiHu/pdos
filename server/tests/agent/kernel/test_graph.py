@@ -153,15 +153,32 @@ def test_t2_has_no_executing_operation_and_only_prepares():
     host = Host(
         [
             ModelTurn(
-                calls=(ToolCall(id="p", name="project.create", arguments={"name": "suggestion"}),)
+                calls=(ToolCall(id="p", name="proposal.g0.decide", arguments={"note": "draft"}),)
             ),
             final(),
         ]
     )
     kernel = AgentKernel(host, default_registry())
-    assert kernel.registry.get("project.create").operation_key is None
-    kernel.execute(scope(), goal="Synthetic decision", preload=["proposal_drafting"])
+    assert kernel.registry.get("proposal.g0.decide").operation_key is None
+    kernel.execute(scope(), goal="Synthetic decision", preload=["gap_check"])
     assert len(host.prepared) == 1 and not host.writes
+
+
+def test_t2_preparation_without_a_skill_that_lists_it_is_refused():
+    """P76 item 4b: a governance T2 tool that no skill lists is neither seen nor callable."""
+    host = Host(
+        [
+            ModelTurn(
+                calls=(ToolCall(id="p", name="project.create", arguments={"name": "suggestion"}),)
+            ),
+            final(),
+        ]
+    )
+    result = AgentKernel(host, default_registry()).execute(
+        scope(), goal="Synthetic decision", preload=["proposal_drafting"],
+    )
+    assert result["tool_results"][0]["value"]["error"]["code"] == "FORBIDDEN_SCOPE"
+    assert not host.prepared and not host.writes
 
 
 def test_whole_run_revert_target_is_t1_preparation_and_never_execution_identity():

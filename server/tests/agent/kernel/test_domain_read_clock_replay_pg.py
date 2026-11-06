@@ -60,7 +60,7 @@ def test_native_list_clock_continuation_rechecks_changed_source_and_current_gran
     host = BoundHost(store, adapters)
     binding = ModelBinding(
         model_version=route.version, model_route_digest=route.digest,
-        tool_definitions_digest=disclosure_digest(owner.registry),
+        tool_definitions_digest=disclosure_digest(owner.registry, scope=scope),
         prompt_digest=digest("Native local list clock regression"),
         isolation="main", cancel_epoch=0,
     )

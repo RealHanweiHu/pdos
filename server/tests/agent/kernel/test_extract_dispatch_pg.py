@@ -282,6 +282,7 @@ def fixture(
             messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
             tools=disclosure(
                 owner.registry, operations=binding_operations(owner.catalog, bindings),
+                scope=scope,
             ),
             output_schema={"type": "object"},
             loaded_skills=bindings,

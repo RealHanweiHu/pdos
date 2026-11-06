@@ -76,11 +76,17 @@ def test_32k_actual_meter_crosses_focus_then_cleans_at_least_20_percent():
 
 
 @pytest.mark.parametrize('window', [None, 32_000])
-def test_unchanged_full_production_face_still_rejects_32k_before_provider(window):
+def test_zero_skill_face_fits_32k_and_an_oversized_face_is_rejected_before_provider(window):
     full = default_registry()
     route = SimpleNamespace(context_window_tokens=window, max_output_tokens=ROUTE.max_output_tokens)
+    system = AgentKernel(None, full).system
+    # P76 item 4b: with no skill loaded no write is disclosed, so the face fits 32k.
+    fit_messages(route, system, disclosure(full, 'main', ()), first_messages(), SCHEMA,
+                 allow_envelope=True)
+    every_write = [item['name'] for item in full.definitions()
+                   if full.get(item['name']).kind == 'write']
     with pytest.raises(DomainError) as caught:
-        fit_messages(route, AgentKernel(None, full).system, disclosure(full, 'main', ()),
+        fit_messages(route, system, disclosure(full, 'main', every_write),
                      first_messages(), SCHEMA, allow_envelope=True)
     assert caught.value.reason == 'CONTEXT_INCOMPLETE'
     assert caught.value.detail['context_budget']['fixed_admission_tokens'] > (
