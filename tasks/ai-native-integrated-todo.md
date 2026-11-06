@@ -22,7 +22,7 @@
 
 **推荐顺序**：
 1. W0 ✅ → W1 ✅（11-03 由 Claude 主会话收口并本地提交，未推送）。
-2. D60 迁出 iCloud → W2（整仓重组放在 W2 最后做）。
+2. D60 迁出 iCloud ✅（11-05，旧文件夹待删）→ W2（整仓重组放在 W2 最后做）。
 3. W3 拍板与 W4 小缺陷并行：一个是问答，一个是代码。拍板按 W3 → W3c 设计冲突（先定 D140–D144 五条）→ W3b 候选池分拣的顺序做，内容多，可以分两三次。采纳的条目移入对应组。
 4. W5 在 W1 出结果后由你随时做。
 5. W6 先做 P34，再做 P33；W7 中与 P34 无关的页面可以并行。D140、D141、D144 不定，W6 的 ③⑥ 不能动工。
@@ -100,7 +100,7 @@
   - A1 ✅ [P43](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p43)：`work.stage.review.submit`、`work.stage.decide` 登记进附录 A；阶段决定只有批准、退回；规格冻结排在 G1 前（D36）；CEHub 687 条进 `work_management` 参考资料，只作缺项提示（同时答复 W11 D223，该条未改）；模板更新差异并入 D152。待同步：附录 A 两行，合同目录对齐后消除 90≠86；
   - A2 ✅ [P47](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p47)：不设基线闸门；授权技能包真实基线 ≥10 次，排在 W1 之后；rfq 资格集 10 例由你签名（W5 D31）；
   - A3 ✅ P47：接 Tavily + Firecrawl，SearXNG 回退，凭据见 D62；境外出站限制随 D216；
-  - A4 ✅ [P44](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p44)：`proposal.g0.submit` 对齐一次确认，`proposal.share` 为“小Pai 仅准备”（同时定了 D166 后半）。待同步：附录 A `proposal.share` 行；代码侧 registry 与两个技能包（实施项）；
+  - A4 ✅ [P44](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p44)：`proposal.g0.submit` 对齐一次确认，`proposal.share` 为“小Pai 仅准备”（同时定了 D166 后半）。11-04 已同步（已本地提交，未推送，随 D247）：附录 A `proposal.share` 行、registry、两个技能包、评测细则 G-S3；
   - A5 ✅ P47：管理员为成员办预算，运行详情显示 ¥，不做三级上限（D135）；
   - A6 ✅ [P45](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p45)：取回原工作簿解析按 B 类复用，确认稿 §5.1 已补一行；
   - A7 ✅ [P46](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p46)：首个进展 ≤2 秒（按服务器事件计）、日常问答 p95 ≤8 秒、企业问答 ≤25 秒、起草 ≤90 秒、研究 >5 分钟转后台，均为观察目标，W1 后与 D23 一起复核；
@@ -180,7 +180,7 @@ W3b · 小Pai 与 AI 能力
 - D117 ✅ 采纳→W8（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）AI 价值指标，如草稿保留率、人工修改率。P33 的自动降级本来就要用这些量（10-07 运行时方案 §9）。
 - D118 ✅ 已由 W1 报告 §4.5 完成，此后作 D129 固定指标（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）✅〔采纳→D06〕按操作统计工具误选率和参数错误率，并入 W1 的评测报告（M2 §7）。11-03 已并入[报告 §4.5](../docs/reports/evidence/pdos-next-real-eval-20261101/result.md)：按工具的失败率和原始原因；“误选”只能给机械近似（项目级读取在品类范围内必然被拒）。
 - D119 〔延后：开通 Anthropic 路线（D65）或会话模式恢复（P39）时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）方案 B：原生延迟加载、会话中增删工具（M2 §5、拍板表 A8）。
-- D120 ✅ 11-04 随 D23 采纳：T2 准备类工具也须先加载对应技能，页面预载照常带上，见[P76](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p76) 第 4 项。原记录：〔延后，与 D23 一起定〕T2 准备类工具也要求先加载技能。零技能基线可以从 27.9% 压到 9.2%，但这是能力变更，要写决策记录（M2 修订 §4）。
+- D120 ✅ 11-04 随 D23 采纳：T2 准备类工具也须先加载对应技能，页面预载照常带上，见[P76](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p76) 第 4 项。11-04 已实现（已本地提交，未推送），见 D247。原记录：〔延后，与 D23 一起定〕T2 准备类工具也要求先加载技能。零技能基线可以从 27.9% 压到 9.2%，但这是能力变更，要写决策记录（M2 修订 §4）。
 - D121 ✅ 不做，W1 显示兼容路线缓存已生效，已移入不采用清单（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）A 窄入口作为兼容路线的退路（M2 §6）。
 - D122 〔延后：W1 §5.4 修复后参数错误率仍高且服务商支持时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）逐个工具开 `strict: true`。P28 接入的兼容接口不保证都支持（M2 §4）。
 - D123 〔延后：有真实岗位题时〕（11-04，[P81](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p81)）跨编码器或 LLM 重排。合成题的 recall@10 已经是 100%（RAG §16-4；对标 Glean、Cohere）。
@@ -320,7 +320,7 @@ W3c · 想法已变但没有记录
 - D26 ✅ 11-04 新增 `domain/change/disciplines.py`：变更政策要求的专业里有没有签核角色的（客户、认证），导入政策和准备变更单时都返回 `CHANGE_DISCIPLINE_UNSUPPORTED`（422，“暂不支持……”）；专业角色清单补上后自动放行，根治仍随 D21-B2（P79）。 原记录：认证类、客户类专业变更会死锁，先返回明确的“暂不支持”；根治随 D21-B2。
 - D27 测试失败：HEAD 10 条回放/撤回失败（2 条 work_state 旧断言、8 条撤回 VERSION_CONFLICT）；S1 6 个摘要夹具失败；141 项测试替身层失败（capa、launch_plan、change 一带），重跑后定性。W1（D242）的受影响范围回归另有 48 个 PG 测试在不含修复的 HEAD 上同样失败，集中在 `test_computed_claim`、`test_m3_*`、`test_deterministic_proofs`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures.txt)），可能与上面几类重叠，重跑定性时一起核。D245 的受影响范围回归（11-04）又多出 37 个在 HEAD 上同样失败的测试，集中在 `test_evidence_commands_pg`、`test_private_analysis_pg`、`test_baseline_watermarks_pg`、`test_private_spec_compare_pg`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures-d245.txt)）；另有 `test_project_current_context_pg` 的 1 个用例单独重跑通过，疑似依赖执行顺序。（11-04 定性，W4 未修）无库全量 171 个失败在 W4 改动前后逐项相同，按原因分四类：① 测试替身过时约 120 个：`SimpleNamespace` 假会话、假对象跟不上代码接口（62 个 unhashable、51 个 `assert False`），集中在 `quality/capa_link_phases`（90）、`projects/test_launch_plan_preview`（22）、`change/test_change_capture_deadline`（12）；② 计算事实的夹具缺少确定性证明约 20 个（PG 侧另 15 个同类）；③ 假服务商 `ScriptedProvider.turn()` 不认 `prompt_identity`（2 个）；④ 需要数据库却没标记的 5 个。PG 侧（D242、D245 两份清单）另有：读取绑定被拒 27 个、6 个断言改收到 `VERSION_CONFLICT`，都是夹具早于更严的读取证明绑定；工具或技能摘要已变 9 个；零散 7 个（上下文窗口夹具过小、数据库函数文本漂移、测试库有超级用户拥有的函数等）。8 条撤回 VERSION_CONFLICT 随 P68（W8）修。修法是逐类更新夹具，建议单独做一次。
 - D28 ✅ 11-04 28 个测试子目录补 `__init__.py`，14 处同目录裸导入改为相对导入；`tests/conftest.py` 忽略 iCloud 编号副本；新增 `tests/test_layout.py` 检查两者；`PENDING_LIMIT` 131→116。全量收集与改动前逐项一致，只多出新增用例。 原记录：测试卫生：28 个 tests 子目录缺 `__init__.py`，加一条 collect 检查；pytest 排除 iCloud 副本；`PENDING_LIMIT` 从 131 收到 116。
-- D29 ✅ 11-04 两项（`preload_when` 归 W8，由 P76 第 4 项 (c) 落实）：MCP 页文案按 P26 改为“每次调用的服务商与资料类别记入回执；已登记有效协议的按协议限制”；技能包政策漂移检查：“不授权治理操作、不执行 T2”的检查从 6 个项目技能包扩到全部 18 个（各操作档位与注册表一致的检查原已存在）。10-22 原卡片的具体内容没找到，按不可协商项 1 落实。 原记录：三件小事：`mcp-management.tsx:134` 的旧口径文案按 P26 核对；技能包与政策的漂移检查（10-22 的卡片一直没启动）；18 个技能包写了 `preload_when` 但没有任何代码读取，改成服务器可判定的条件。W1 实测：每个品类运行都由服务端预载 `proposal_drafting`（约 3.8k token），与问题内容无关。
+- D29 ✅ 11-04 两项（`preload_when` 归 W8，由 P76 第 4 项 (c) 落实；11-04 已改为服务器判定的条件，已本地提交、未推送，见 D247）：MCP 页文案按 P26 改为“每次调用的服务商与资料类别记入回执；已登记有效协议的按协议限制”；技能包政策漂移检查：“不授权治理操作、不执行 T2”的检查从 6 个项目技能包扩到全部 18 个（各操作档位与注册表一致的检查原已存在）。10-22 原卡片的具体内容没找到，按不可协商项 1 落实。 原记录：三件小事：`mcp-management.tsx:134` 的旧口径文案按 P26 核对；技能包与政策的漂移检查（10-22 的卡片一直没启动）；18 个技能包写了 `preload_when` 但没有任何代码读取，改成服务器可判定的条件。W1 实测：每个品类运行都由服务端预载 `proposal_drafting`（约 3.8k token），与问题内容无关。
 - D53 ✅ 11-04 立项提案页的“新建提案”改为弹窗：与小Pai一起起草，或手动创建（标题、来源、简述；服务器确认预览后本人确认，人工办理 `proposal.create`），并说明小Pai不可用时可手动创建。本地开发环境实测创建成功并进入新提案页。 原记录：停用 LLM 时仍能手动建提案，并显示失败说明（拍板表 §5.3 F06、AT-45）。UI 重建后没再看到这个入口。
 - D57 部分 ✅ 11-04：Worker 活动线程数改为 `PDOS_WORKER_ACTIVITY_THREADS`（缺省 4，限 1–64），Temporal 并发活动数限为同值，避免活动排队等线程时执行超时已在计时（与 D243 有关）；幂等重放这一项已不成立：领域命令在校验前就直接返回原回执，小Pai读取重放时的复核是有意保留的（旧结果不代替当前权限）。余项：未知调用按服务商输出上限占账，D252 已改为按 16k 预算占账（见 D252），待下次真实回归复核。 原记录：运行成本口径：Worker 线程数写死为 4（`workflows/worker.py:244`）；未知调用按上限占账；幂等重放会重走校验（F45）。W1 实测（D06）：输出预留按服务商上限 524288 计，未知调用每次约 0.69 美元，约是正常调用的 140 倍（原估 3.4 倍）；51 次共占账 35 美元，是实计费用的近 5 倍，其中 33 次其实是完整响应（D244）。按 D161 改为“本次调用输出预算 + 4k”后应大幅回落，改完复核。
 - D245 ✅ 11-04 已修并本地提交（未推送）：新增 `agent/kernel/tool_arguments.py`，模型给的工具参数校验失败时退回 `VALIDATION_FAILED`（422，列出字段路径和错误类型；校验说明不含提交内容时一并给出），模型可以改参数重试，不再整轮崩溃。共 21 处首次校验改用它，覆盖主循环读取、计算、比较、会话历史、企业检索和抽取、研究、比较子任务；`m3_object_reads` 原有的同类写法并入。已有校验的入口、续读恢复和对已校验参数的二次核对不改。回归：`test_tool_arguments.py` 的三个 W1 崩溃点用例在不含修复的代码上以原 `ValidationError` 失败、修复后通过；受影响的 122 个测试文件 1328 通过，失败项与 HEAD 一致（31 个在 D242 清单内、37 个在 HEAD 上同样失败，见 D27），另有 7 处原断言 `ValidationError` 的测试按新行为改为断言工具错误。 原记录：模型参数通过了工具定义的格式检查，但处理函数的 pydantic 校验更严时，`ValidationError` 不会退回模型，而是让整轮 `INTERNAL_ERROR`。三处直接 `model_validate`：`agent/kernel/extract_service.py:125`、`agent/kernel/platform_reads.py:26`、`agent/enterprise_search/assistant_adapter.py:216`。照 `host.read_result`（`host.py:310-313`）的做法转成 `VALIDATION_FAILED`，再查其他处理函数有没有同样的写法。W1 中 4 个运行因此失败。
@@ -370,7 +370,13 @@ W3c · 想法已变但没有记录
 - D243 ✅ 11-04（已本地提交，未推送）每个运行同一时刻只有一个尝试在做：按运行的会话级咨询锁（`agent/kernel/run_lease.py`，独立自动提交连接，进程退出即释放），后来的尝试边发心跳边等；SDK 的异步取消在执行期间被屏蔽，被放弃的尝试在下一次模型或工具调用前停下（LangGraph 从中断的那一步续跑，前面的步骤不重做），交回取消、不再把运行标为失败；拿到锁后先复核，前一尝试已结束或已停在问题处的，直接返回原结果；对账活动拿不到锁时稍后重试；执行超时 10→60 分钟（存活由 45 秒心跳判断）。测试：`test_run_attempts.py`（含 SDK 取消落在轮中间的 W1 情形）、`test_run_lease_pg.py`；受影响的 35 个 Temporal/PG 测试文件除原有环境缺口外全过。还没用真实模型复测。 原记录：超时重试与未停下的尝试并发（W1 失败的头号原因）：`XiaopaiWork` 推进 Activity 的执行超时是 10 分钟、最多 3 次（`workflows/xiaopai.py:44-46`）。Activity 是线程池里的同步函数，超时后 Temporal 派出第二次尝试，第一次的线程要到下次心跳才收到取消，期间两次尝试并发推进同一个 Run，第二次撞上“原调用须按回执对账”和绑定保护后 `INTERNAL_ERROR`。W1 共 33 个运行因此失败（31 个执行超时、2 个心跳超时），拆分 API/Worker 后没有减少；另有 6 次模型调用的预留一直没结（约 4.19 美元）。一轮几次长输出就会超过 10 分钟（单次输出最多 11,167 token）。要定的是：超时后怎样保证旧尝试先停、再续跑，而不是并发或直接失败。
 - D244 ✅ 11-04（已本地提交，未推送）`agent_client.parse_turn`：响应完整但 `result_json` 写坏或以纯文本收尾时，按正常回合返回、用量照实记账，`result` 记为空值，让核对必然失败并进入图里已有的格式修正回合（有次数上限）；空对象 `{}` 仍是合法结果。没有改工具定义。测试在 `test_minimax_wire.py`。 原记录：服务商响应完整，却被记成“结果未知”：最终输出函数里的 `result_json` 是一段再转义的 JSON 字符串，模型约 2% 的调用会写坏（缺逗号、多余尾部、键重复），另有少数以纯文本收尾，`agent_client.parse_turn` 一律按 `PROVIDER_INVALID_RESPONSE unknown=True` 处理，整轮等 300 秒对账后失败，还按上限占账。W1 中 1677 次调用里 38 次，15 个运行因此失败。可选改法：解析失败按已知失败处理并给一次格式修正回合；或把 `result_json` 改为对象参数。
 - D246 〔待定〕工具失败在账本和返回给模型的结果里一律是 `SOURCE_UNAVAILABLE`，真实原因（范围不符、本轮查找预算用完、缺基线型号、参数越界）被藏起来，模型分不清该换工具、该停还是该补参数。W1 中 11-02 以后范围不符 98 次、预算用完 93 次。须与 v1.1 §08.7 错误码收敛相容：公开错误码不变，考虑在给模型的工具结果里附一个可行动的原因类别。
-- D247 品类问答一次下发 66 个工具，工具定义约 30–37k token，其中 31 个是写入或审批类，另有 `build.read`、`test.run.read` 等项目级读取在品类范围内必然被拒，模型却常去调用（失败率 77–94%）。固定部分约 40k，超过 F=48000 的一半，导致 F=48000 下 61 轮里 43 轮回答不完整，基本不可用。按技能和范围渐进下发工具，与 D29 的 `preload_when` 一起做。
+- D247 ✅ 11-04（已本地提交，未推送）P76 第 4 项三处收缩一起做，同时落实 P44：
+  - (a) 工具可声明必需的运行范围（`ToolSpec.scope_requires`），范围不满足的既不下发、也不能调用；5 个项目级读取在品类范围不再下发；
+  - (b) 写工具一律须先加载列出它的技能，T2 准备也一样（取代 P37 第 2 项）；
+  - (c) `preload_when` 改为服务器能判定的条件（提案起草视图 / 评审视图、是否有客户原件，带声明顺序），预载由技能目录推导；不绑提案的运行不预载；
+  - P44：`proposal.g0.submit` 改 T1，小Pai 预填、只有负责人本人能确认（领域原有 `owner_only` 检查）；`proposal.share` 为 T1 且标“仅准备”（`prepare_only`，不绑执行操作），负责人在页面办理；这两项和 `proposal.g0.decide` 补进 `proposal_drafting`、`gap_check`；附录 A、操作合同、调用须知和评测细则 G-S3 同步；
+  - 18 个技能包各升一个补丁版本（`preload_when` 变了，技能摘要随之变，已有资格须重审）。
+  效果：品类运行零技能下发 66 → 29 个工具（约 30k 字符），提案起草页 38 个，评审页 35 个；零技能面和起草面都能放进 32k 窗口。代价：6 个治理类 T2 准备工具（`project.create`、`category.member.grant`、`provider.agreement.register`、`ai.skill.qualify`、`mcp.connector.allow`、`knowledge.rule.publish`）没有技能列出，小Pai 不再看到，由人在管理页办理。约 20 处测试夹具改为按运行范围计算披露摘要。受影响范围回归：无库测试与 HEAD 相比无新增失败（修好 2 个），`tools/` 测试全过，45 个 PG 测试文件的 39 个失败都在 HEAD 或已知清单中（[证据](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-p76-item4.txt)）。剩余：下次真实回归复测 F=48000 和工具调用失败率。 原记录：品类问答一次下发 66 个工具，工具定义约 30–37k token，其中 31 个是写入或审批类，另有 `build.read`、`test.run.read` 等项目级读取在品类范围内必然被拒，模型却常去调用（失败率 77–94%）。固定部分约 40k，超过 F=48000 的一半，导致 F=48000 下 61 轮里 43 轮回答不完整，基本不可用。按技能和范围渐进下发工具，与 D29 的 `preload_when` 一起做。
 - D248 token 估算系统性偏低约 10%：418 次有估算和实际计数的调用，实际 ÷ 估算 p50 约 1.10、最大 1.173。准入靠约 1.15 的校准系数兜住，余量来自系数而不是估算本身。改估算或把系数写成有依据的配置。
 - D252 ✅ 11-04（已本地提交，未推送）P67 实施，缺省输出预算按你 11-04 的决定定为 16k（确认稿 P67 已加修订）：所有模型路由在 `bootstrap.route()` 统一取“连接配置的输出上限”与 16,384 中的较小值，请求的 max_tokens、上下文预留 R（预算 + 4k）和费用预留都随之变化；路由摘要在一次运行内保持一致。W1 那套 524288 的配置下，上下文预留 R 从 528,288 降到 20,384 token；费用预留中的输出部分从 524,288 降到 16,384 token，按 W1 价卡约从 0.66 美元降到 0.02 美元，未知调用的过度占账（D57）随之回落，待下次真实回归实测确认。窗口须为公布或实测值（P67 第 3 项）仍是配置规则，未加校验。 原记录：P67 实施：R 按本次调用的输出预算 + 4k，连接配置的输出上限只作钳制，窗口须为公布或实测值；做完复核 D57 的未知调用占账。〔待定〕P67 建议主循环缺省 8k，但 W1 实测单次输出最多 11,167 token（推理 7,882），8k 会截断，缺省值要重定。
 
@@ -439,7 +445,11 @@ W3c · 想法已变但没有记录
   - 电子签核与签字扫描件并存。
 
 **你本人的外部动作（随时可做，可并行）**
-- D60 把仓库迁出 iCloud 桌面目录。冲突副本还在不断产生，这一步要排在整仓重组之前。
+- D60 ✅ 11-05 已迁到 `~/Developer/ai-native-R&D-platform`（经你同意：位置、只复制需要的、短暂停 Temporal）。做法是复制后核对，不是移动：
+  - 不复制可重建或无用的：`web/.next`（11G）、`server/.venv`（在新位置按 `uv.lock` 重装，115 个包版本一致）、`.local` 里 70 个旧预览构建（29G）、`__pycache__`、96 个 iCloud 冲突副本（含 `.git/index 2…9`、空的 `server 2` 等；其中 12 个已被 iCloud 清成占位）；
+  - 其余 12.5G 逐文件核对：83,752 项路径、类型、大小、链接一致，73,316 个文件内容哈希一致；HEAD、分支、275 行 git 状态（含未提交改动）一致，`git fsck` 无问题；
+  - 本地 Temporal（61596）停机复制数据库后从新位置启动，`environment.json` 的程序路径已改，命名空间与记录保留；冒烟：合同校验、134 个无库测试、2 个 PG 文件、Next.js 与 tsc 均正常；
+  - 剩余〔你〕：旧文件夹仍在桌面并继续同步 iCloud，确认新位置用着没问题后再删（删前须你同意，删后 iCloud 上的副本也随之删除，未复制的旧预览构建和缓存一并清掉）；`~/Documents/pdos-ui-linear` 断链见 D10。 原记录：把仓库迁出 iCloud 桌面目录。冲突副本还在不断产生，这一步要排在整仓重组之前。
 - D61 原工程生产下线 S5：按[下线手册](../docs/runbooks/original-production-decommission.md)执行。
 - D62 研究后端：授权一家商用服务商，或先恢复 searxng（A3）。
 - D63 选定真实 embedding 服务商，经 T1 确认 profile 和数据类别后做 shadow 对比（P30）。
