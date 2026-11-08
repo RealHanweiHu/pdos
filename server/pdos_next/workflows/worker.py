@@ -224,6 +224,9 @@ async def main(
     retention = CheckpointRetention(
         dispatch_engine, os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
     )
+    from pdos_next.originals.rescan import OriginalRescan
+
+    rescans = OriginalRescan(engine, dispatch_engine)
 
     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
     from pdos_next.integrations.dingtalk.runtime import configure as configure_dingtalk
@@ -314,6 +317,7 @@ async def main(
                 activities.enterprise_rebuild_plan,
                 activities.enterprise_rebuild_batch,
                 retention.purge,
+                rescans.rescan,
             ],
             activity_executor=executor,
             max_concurrent_activities=threads,

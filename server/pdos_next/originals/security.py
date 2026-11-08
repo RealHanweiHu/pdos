@@ -285,6 +285,12 @@ def view(s, original, ctx=None, store=None):
         status = "scanning"
     if state.source_state != "active":
         status, reasons = "stale", ["SOURCE_WITHDRAWN"]
+    elif status == "stale" and state.disposition == "active":
+        from pdos_next.originals.rescan import renewable, rescan_reason
+
+        if renewable(gate, result):
+            # D215: say whether the hourly rescan will renew it, or why it cannot.
+            reasons.append(rescan_reason(s, original, record))
     scan = None
     if record:
         req = decoded_request(record.binding)

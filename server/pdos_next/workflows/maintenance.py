@@ -1,4 +1,4 @@
-"""Per-tenant system upkeep on durable timers.
+"""Per-tenant system upkeep on durable timers (D58 checkpoints, D215 rescans).
 
 Each job is one long-lived workflow per tenant with a fixed id, started by the
 worker's discovery loop (the same pattern as automation supervision). It runs the
@@ -15,8 +15,10 @@ from temporalio.common import RetryPolicy
 from temporalio.exceptions import ActivityError, ApplicationError
 
 # job -> (Activity name, period). D58: checkpoints are purged daily (P78 item 3).
+# D215: clean scan receipts are valid 24 hours; aged-out ones are renewed hourly.
 JOBS = {
     "checkpoint_retention": ("purge_checkpoint_retention", timedelta(days=1)),
+    "original_rescan": ("rescan_expired_originals", timedelta(hours=1)),
 }
 PASSES_PER_HISTORY = 24
 ACTIVITY_TIMEOUT = timedelta(minutes=10)

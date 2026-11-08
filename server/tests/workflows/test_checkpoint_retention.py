@@ -149,13 +149,22 @@ def test_daily_passes_survive_a_failed_pass_and_bound_their_history(monkeypatch)
 
 def test_sender_starts_each_tenant_job_once_and_tolerates_existing_runs():
     client = AsyncMock()
-    client.start_workflow.side_effect = [None, WorkflowAlreadyStartedError("x", "y")]
+    client.start_workflow.side_effect = [None, WorkflowAlreadyStartedError("x", "y"), None, None]
     sender = maintenance.MaintenanceSender(client, task_queue="q")
     other = str(uuid4())
     for tenant in (TENANT, TENANT, other, other):
         asyncio.run(sender.discover(tenant))
-    assert client.start_workflow.await_count == 2
-    first = client.start_workflow.await_args_list[0]
-    assert first.args[1] == {"tenant_id": TENANT, "job": "checkpoint_retention"}
-    assert first.kwargs["id"] == f"pdos-next:maintenance:checkpoint_retention:{TENANT}"
-    assert first.kwargs["task_queue"] == "q"
+    assert client.start_workflow.await_count == 2 * len(maintenance.JOBS)
+    started = {(call.args[1]["job"], call.args[1]["tenant_id"]): call.kwargs
+               for call in client.start_workflow.await_args_list}
+    assert set(started) == {(job, t) for job in maintenance.JOBS for t in (TENANT, other)}
+    for (job, tenant), options in started.items():
+        assert options["id"] == f"pdos-next:maintenance:{job}:{tenant}"
+        assert options["task_queue"] == "q"
+
+
+def test_jobs_and_periods_are_the_decided_ones():
+    assert maintenance.JOBS == {
+        "checkpoint_retention": ("purge_checkpoint_retention", timedelta(days=1)),
+        "original_rescan": ("rescan_expired_originals", timedelta(hours=1)),
+    }
