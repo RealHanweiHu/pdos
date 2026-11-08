@@ -145,7 +145,7 @@ W3b · 资源、组合与试点准备
 - D83 ✅ 采纳→W7（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）共享设备和台架预约：项目内登记占用并提示冲突。后端已有 `test_resource_reservations`（UI 候选 §5.1、C7）。
 - D84 〔延后：P34 成员负载上线后〕（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）按人、设备、周的只读负载视图，以及优先级取舍记录（C7；对标飞书人力甘特、Motion）。
 - D85 ✅ 采纳→W6：带“在途纳管”标记，统计排除，定义 v1 标“未复核”，首批 3–5 个；附录 A 过渡入口文字待同步（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）在途项目经 G0 纳管，否则试点时现有项目进不来。先同步附录 A L1683 的文字（B10）。（11-02 补：原工程 `intake_organization` 在途项目资料整理未承接，并入本条，与 D200 一起定。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D86 ✅ 采纳→W11，并入 D192，与 D214 一起做：邀请链接 72 小时单次有效，停用即吊销全部会话（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）邀请链接和一键停用，这是多人试点的硬前置（B2 F38②③）。
+- D86 ✅ 11-07 已实现（随 D214，[证据](../docs/reports/evidence/pdos-next-sign-in-20261107/result.md)：链接第二次使用、过期、被新链接取代均被拒，库约束有效期不超过 72 小时；停用立即吊销全部会话和未用链接）。采纳→W11，并入 D192，与 D214 一起做：邀请链接 72 小时单次有效，停用即吊销全部会话（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）邀请链接和一键停用，这是多人试点的硬前置（B2 F38②③）。
 - D87 ✅ 采纳→W11（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）试点的“步骤 × 人”编组表：先走查，凑不齐人就写兼岗记录（B3）。
 - D88 ✅ 采纳→W11：Temporal 官方镜像自托管、同实例分库，检查点 30 天；部署位置随 D210（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）生产形态的 Temporal 和常驻环境，试点前置。目前是 SQLite 回退（B15）。
 - D89 ✅ 采纳→W11（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）录入责任清单：列出系统依赖的约十条事实，写清谁录、何时录；找不到人录的，就不建那个页面（9a1ab768 T15）。
@@ -233,7 +233,7 @@ W3b · 早期想法（10-08 之前）：丢失或口径变窄，需要定补回�
   - 纪律：阈值先冻结，看到结果后不下调；分母为 0 记 N/A；主动时间要计入审核和纠错；
   - 原指标：兑现率；Issue 重开与复发；齐套与快照新鲜度；员工价值按岗位分场景；
   - 单日工作流真人走查（原 Q1）。
-- D192 ✅ 并入 D86 一起采纳（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）账户生命周期：只由管理员建号；不能提权，也不能停用自己；至少保留一个 Owner；重置密码后旧会话失效（08-20 账户合同）。
+- D192 ✅ 11-07 已实现（随 D214，[证据](../docs/reports/evidence/pdos-next-sign-in-20261107/result.md)：只由管理员建号；不能停用自己、不能更改自己的管理员身份，数据库限制性策略同样拒绝；两位管理员同时互相停用只成功一个，至少保留一位启用的管理员；重置密码后旧口令和全部会话失效。P78 的 Owner 按“启用的人类租户管理员”实现）。并入 D86 一起采纳（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）账户生命周期：只由管理员建号；不能提权，也不能停用自己；至少保留一个 Owner；重置密码后旧会话失效（08-20 账户合同）。
 - D193 ✅ 补回→W11，具体年限写进 D217（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）数据保留与删除：分档保留期；删除前先做引用分析和预览；被引用的证据受保护；租户退出时提供导出包（09-10 §20）。
 - D194 ✅ 拆开：重复检测→W9；合并拆分〔延后：出现第一个需要合并或拆分的真实品类〕（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）品类合并、拆分与重复检测。品类是权限根，划错了目前没有修正路径（10-07 立项前审查 §3）。
 - D195 ✅ 采纳→W11，写进试点规程（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）两项：试点失败按七类归因（模型误读、映射、资料矛盾、规则缺失、职责不清、连接器、界面难用）；加功能前先回答“给谁用、用在哪、少做了什么”（V2 设计包 04 §13）。
@@ -342,6 +342,8 @@ W3c · 想法已变但没有记录
 - D251 ✅ 11-04 P70：已登记的有效协议内提示缓存缺省允许，只有明确关闭才关（`agent/kernel/policy.py`）；登记页复选框缺省勾选，改为“允许服务商提示缓存”，取消勾选写入回执。字段可空、空即未声明，不需要迁移。
 - D258 迁移缺陷（11-07 D27 发现，未修）：`s0_0776` 新建的 SECURITY DEFINER 函数 `change_receipt_key_bound(uuid,uuid,uuid)` 没有转给 `pdos_next_owner`，属主留在执行迁移的账号上（测试库里是超级用户 `postgres`）。`s0_0720` 只把当时已有的函数一次性转给属主，之后新建的定义者函数要自己 `ALTER FUNCTION … OWNER TO pdos_next_owner`（如 `s0_0728`、`s0_0771`）或在 `SET LOCAL ROLE` 下创建。后果：该函数以迁移账号的权限执行，绕过 RLS，只靠函数体自己的谓词限范围；部署时迁移账号若是 RDS 管理员也一样。`test_review_fixes.py::test_actual_owner_and_definers_are_non_superuser` 因此失败（public 下唯一一个超级用户属主的定义者函数）。改法：新迁移 `ALTER FUNCTION public.change_receipt_key_bound(uuid,uuid,uuid) OWNER TO pdos_next_owner`，并加一条迁移检查：head 上不得有属主不在登记角色内的定义者函数。
 - D259 企业检索缺陷（11-07 D27 发现，未修）：以客户上传原件为依据的知识条目在检索里永远拿不到，覆盖状态停在 partial（“部分当前可读来源尚未完成索引或当前扫描复核”）。原因：`agent/enterprise_search/indexing.py` 的 `project` 用 `select_sources`→`catalog(["knowledge"])` 写投影，`SearchSource.original_ids` 只含条目自身的原件（为 `[]`），不含 `source_refs` 依据里的原件；`sources.py` 的 `dependency_originals` 只在缓存为 NULL 时才回退实时推导，于是依据原件不进入 `safe_originals` 的核对集合，`query.py` 把命中的条目判为不安全剔除。实测：同一原件用本人会话直接调 `safe_originals` 是安全的（扫描绑定一致、闸门放行），投影里却是 `[]`。影响 `test_knowledge_retrieval_authority_pg.py::test_knowledge_original_scan_proof_precedes_http_metadata` 和 `test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs`。改法二选一：投影按 `retrieval_catalog` 写入依据原件；或 `dependency_originals` 对知识条目始终补算依据原件（缓存只扩大核对范围）。
+- D260 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D258，11-08 集成时改号）`tools/local_environment.py create` 在 d730291d 上失败：迁移往返降到 base 时，`s0_0784_release_exceptions.downgrade` 报“Release exception requires its exact reviewed confirmation predecessor”。降级事务整体回滚，库停在 head 可继续用，但 `seed()` 不会执行。要查是哪一步之后的降级没有把函数恢复到 0784 审核过的原文。
+- D261 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D259，11-08 集成时改号）`test_migration_matches_orm_and_test_guard` 在基线就失败：模型与库有 7 项漂移，`ix_dingtalk_summary_deliveries_tenant_id` 只在模型里，6 个 `ix_enterprise_embedding_hnsw_*` 只在库里。要么补迁移，要么在模型或比较规则里登记。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
@@ -462,12 +464,14 @@ W3c · 想法已变但没有记录
   - 试点前在云上按 AT-47 实演一次恢复。
 - D212 发布与回滚手册：迁移前快照 → 迁移 → 冒烟 → 回滚。规定工作流代码改动必须用 patch，避免在途的长等待工作流重放失败；维护窗口提前通知。
 - D213 监控告警与值班：至少监控探活、错误率、队列积压、模型失败率四项，告警发到钉钉群，写明谁接、多久响应。
-- D214 真人登录：服务端目前没有签发登录会话的接口，只能用命令行工具发 token。建议：
-  - 复用已有的钉钉 OAuth 做扫码登录，或用密码加限流；
-  - 加会话超时和强制下线；
-  - 写一个租户开通脚本：建首个管理员、建真实品类。
-
-  与 D86、D192 一起做。
+- D214 ✅ 11-07 真人登录（与 D86、D192 一起做，本地提交、未推送，[结果与证据](../docs/reports/evidence/pdos-next-sign-in-20261107/result.md)）：
+  - 你选“密码 + 限流”（11-07）；钉钉扫码等 D64；
+  - 登录签发带空闲超时的会话（7 天有效、空闲 12 小时失效），Web 只放在 HttpOnly cookie；同一登录名 15 分钟内失败 5 次、同一来源 30 次即暂停；管理员可强制下线，本人可退出；
+  - 迁移 `s0_0856_human_sign_in`（接 `s0_0855`；分支上原为 `s0_0855` 接 `s0_0854`，11-08 集成时因主线 M1 已占 `s0_0855` 改号）；登录前只走认证角色的专用函数，应用角色读不到口令哈希和链接哈希，Agent 角色零权限；
+  - 租户开通脚本 `tools/tenant_provision.py`：建首个管理员、首个品类和 72 小时邀请链接，只在本地带标记的合成环境演示；生产开通要等 D210 并另行授权；
+  - 前端 `/login`、`/invite` 和设置里的“账户与邀请”；本地浏览器走通登录、邀请、停用；
+  - 验证：账户边界 11 项、全表守卫 90 项、迁移往返、契约校验、BFF 8 项与全部 `.mjs` 前端测试、typecheck/lint 通过；
+  - 余项：停用时“未结事项交项目负责人”归 W6（P56 交接）；反向代理要设 `X-Real-IP`（随 D210/D212）；首次登录告知归 D217。
 - D215 生产文件扫描：
   - 现状：只有本地合成的扫描档，病毒库固定不更新；扫描结果 24 小时过期，又没有定时重扫。真实原件上传后，很可能隔天 AI 就不能再引用；D43 遇到的 SOURCE_UNAVAILABLE 很可能就是这个原因。
   - 建议：定一个生产扫描档，病毒库定期更新，过期原件定时重扫，失败时显示原因。

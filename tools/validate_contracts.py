@@ -73,7 +73,13 @@ for entry in inbound.get("inbound_endpoints", []):
     bound.add((entry["method"].lower(), entry["path"]))
 for method, path in bound:
     assert method in paths.get(path, {}), f"Catalogued endpoint missing: {method.upper()} {path}"
-REGISTERED_AREAS = ("/v1/dingtalk/", "/v1/personal/dingtalk/", "/v1/project-sets")
+REGISTERED_AREAS = (
+    "/v1/dingtalk/",
+    "/v1/personal/dingtalk/",
+    "/v1/project-sets",
+    "/v1/accounts",
+    "/v1/auth/",
+)
 for path, methods in paths.items():
     if path.startswith(REGISTERED_AREAS):
         for method in methods:
