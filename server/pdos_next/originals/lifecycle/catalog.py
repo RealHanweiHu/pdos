@@ -5373,3 +5373,38 @@ COVERED_COLUMNS['dingtalk_summary_deliveries'] = (
     'created_at',
 )
 GUARDED += ('dingtalk_summary_deliveries',)
+
+# LangGraph checkpoint store (D58; P78 item 3; D193). A separate database holding
+# only in-run graph state: business facts, receipts, events and conversation memory
+# are in the tables above, so a finished Run never reads its checkpoints again.
+# Retained 30 days after the owner's newest checkpoint, purged daily, never while
+# the owning Run or embedding batch is still open (workflows/checkpoint_retention.py).
+# As with COVERED_COLUMNS, an unknown table or column in that database denies the
+# purge instead of leaving uncovered data behind.
+CHECKPOINT_RETENTION_DAYS = 30
+CHECKPOINT_COVERED_COLUMNS = {
+    "checkpoint_migrations": ("v",),
+    "checkpoints": (
+        "thread_id",
+        "checkpoint_ns",
+        "checkpoint_id",
+        "parent_checkpoint_id",
+        "type",
+        "checkpoint",
+        "metadata",
+    ),
+    "checkpoint_blobs": ("thread_id", "checkpoint_ns", "channel", "version", "type", "blob"),
+    "checkpoint_writes": (
+        "thread_id",
+        "checkpoint_ns",
+        "checkpoint_id",
+        "task_id",
+        "idx",
+        "channel",
+        "type",
+        "blob",
+        "task_path",
+    ),
+}
+# Every table holding checkpoint content, keyed by (thread_id, checkpoint_ns).
+CHECKPOINT_PURGED = ("checkpoint_writes", "checkpoint_blobs", "checkpoints")
