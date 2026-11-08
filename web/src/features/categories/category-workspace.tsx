@@ -11,6 +11,7 @@ import { ProposalList } from "@/features/categories/proposals/proposal-list";
 import { ProposalCreateForm } from "@/features/categories/proposals/proposal-create-form";
 import styles from "./category-home.module.css";
 import { CategoryHome } from "@/features/categories/category-home";
+import { useCreateIntent } from "@/features/shell/use-create-intent";
 import { browserApi } from "@/lib/browser-api";
 import type { CreatedCategory } from "@/features/categories/create/contracts";
 import type { MaterialContext } from "./category-material-editor";
@@ -40,6 +41,9 @@ export function CategoryArea({ area, categories, categoryId, projectId, onSelect
   const bench = typeof window !== "undefined" ? new URLSearchParams(window.location.search).get("bench") ?? "" : "";
   const proposals = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("focus") === "proposals";
   const category = categories.find(item => item.id === categoryId);
+  // ⌘K 快速创建只打开这里原有的新建对话框；创建仍须本人在表单中确认。
+  useCreateIntent("category", categoryId ? "pending" : "ready", () => { if (!createDialog.current?.open) createDialog.current?.showModal(); });
+  useCreateIntent("proposal", !bench && proposals ? category ? "ready" : "unavailable" : "pending", () => { if (!proposalDialog.current?.open) proposalDialog.current?.showModal(); });
 
   useEffect(() => {
     if (area !== "knowledge" || !categoryId || bench === "knowledge") return;

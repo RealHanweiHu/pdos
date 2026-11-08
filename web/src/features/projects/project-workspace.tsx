@@ -11,6 +11,7 @@ import { ProjectGovernance } from "./project-governance";
 import { ProjectPlanResources } from "./project-plan-resources";
 import { ProjectCommitments } from "./project-commitments";
 import { ProjectWork } from "./project-work";
+import { useCreateIntent } from "@/features/shell/use-create-intent";
 import { ConnectedProjectPlanning } from "./connected-project-planning";
 import { ProjectActivity } from "./project-activity";
 import { ProjectOverviewBuilds } from "./project-overview-builds";
@@ -41,6 +42,8 @@ export function ProjectWorkspace({ entry, api, session, today, onBack, onOpenWor
     if (isProfessionalView(initialView)) setLastProfessional(initialView);
   }
   const [writingUpdate, setWritingUpdate] = useState(false);
+  // ⌘K 的“写状态更新”打开同一个具名周报编辑区；是否可写仍由编辑区按服务器成员资格判定。
+  useCreateIntent("status_update", "ready", () => setWritingUpdate(true));
   const [detailsOpen, setDetailsOpen] = useState(false);
   function chooseTab(next: Tab) {
     setTab(next);

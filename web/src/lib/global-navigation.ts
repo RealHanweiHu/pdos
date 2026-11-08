@@ -49,7 +49,8 @@ export function globalHref(location: GlobalLocation, search = ""): string {
   const params = new URLSearchParams(search);
   params.set("area", location.area);
   params.delete("projectView"); params.delete("panel");
-  for (const key of ["build", "request", "run", "issue", "change", "feedback", "publication"]) params.delete(key);
+  // create 是 ⌘K 留给目标页的一次性新建意图，换页时不能带走。
+  for (const key of ["build", "request", "run", "issue", "change", "feedback", "publication", "create"]) params.delete(key);
   if (location.categoryId) params.set("category", location.categoryId); else params.delete("category");
   if (location.projectId) params.set("project", location.projectId); else params.delete("project");
   if (location.area !== "category") { params.delete("bench"); params.delete("view"); params.delete("task"); params.delete("product"); params.delete("focus"); }
