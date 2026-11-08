@@ -56,7 +56,8 @@ for entry in items["events"]:
         declared = auxiliary_by_name[entry["operation"]]
         assert entry["type"] == declared["event"]
         assert declared["write_tier"] in {"READ", "T0", "T1", "T2"}
-# Bound endpoints exist in the exported API; listed areas have no unregistered writes (P71, P75).
+# Bound endpoints exist in the exported API; listed areas have no unregistered writes
+# (P71, P75, P34).
 paths = json.loads((ROOT / "contracts/openapi.json").read_text())["paths"]
 bound = set()
 for entry in operations.values():
@@ -79,6 +80,7 @@ REGISTERED_AREAS = (
     "/v1/project-sets",
     "/v1/accounts",
     "/v1/auth/",
+    "/v1/role-catalog",
 )
 for path, methods in paths.items():
     if path.startswith(REGISTERED_AREAS):

@@ -570,7 +570,17 @@ def preview_view(s, ctx, command, scope, payload):
         sub = _submission(s, ctx, row, payload)
         row.reviewer_for_decision = sub.reviewer_id
         dispositions, owner, added = _audience_changes(s, row, payload)
+        team = sorted(
+            {row.owner_id, sub.reviewer_id, owner, *(d.owner_id for d in payload.dispositions)},
+            key=str,
+        )
         result.update(
+            project_team=[
+                {"id": str(person), "name": getattr(s.get(Principal, person), "name", "")}
+                for person in team
+            ]
+            if payload.outcome == "approved"
+            else [],
             document_digest=sub.document_digest,
             dispositions=dispositions,
             project_owner_id=str(owner),
@@ -945,10 +955,11 @@ def apply_validated(s, ctx, command, scope, payload, validated):
             )
             s.add(decision)
             s.flush([decision])
+            team = []
             if approved:
                 from .materialize import approve
 
-                approve(
+                team = approve(
                     s, ctx, row, sub, decision, provenance=provenance, baseline=validated.baseline
                 )
                 from .baseline import validate_references
@@ -972,6 +983,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                 "dispositions": dispositions,
                 "project_owner_id": str(owner) if approved else None,
                 "project_owner_audience_added": added if approved else False,
+                "project_member_ids": team,
             }
         row.revision += 1
     row.prepared_receipt_id = receipt_id

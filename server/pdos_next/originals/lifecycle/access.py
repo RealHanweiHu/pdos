@@ -63,6 +63,12 @@ NON_CONSUMING = frozenset(
         "inbox_states",
         "project_set_versions",
         "project_set_links",
+        # Team membership, roles and the role catalog hold identities only.
+        "project_role_catalog_versions",
+        "project_team_changes",
+        "project_members",
+        "project_member_roles",
+        "project_member_audiences",
         "products",
         "upload_attempts",
         "lifecycle_objects",

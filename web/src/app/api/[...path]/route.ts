@@ -237,9 +237,10 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/memory-usage|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy)$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
+  const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
   const inbox = /^v1\/personal\/inbox\/(?:summaries|summary-options|states|conversations(?:\/[a-f0-9-]{36}\/messages)?)$/i.test(forwardPath.join("/"));
   const categoryMembers = categoryId && forwardPath.length === 4 && forwardPath[3] === "members";
-  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && !roleCatalog && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const path = categoryId ? ["v1", ...forwardPath.slice(3)] : forwardPath;
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
@@ -271,13 +272,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const externalHandoff = externalHandoffPaths.test(pathname);
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
+  const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && !roleCatalog && !projectTeam) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -302,6 +304,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (projectSets) {
     if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });
+  } else if (roleCatalog || projectTeam) {
+    if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
   } else if (inbox) {
     if ((pathname.endsWith("/summaries") || pathname.endsWith("/summary-options")) && request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "摘要列表只支持本人读取。" }, { status: 405 });
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只支持读取与保存。" }, { status: 405 });

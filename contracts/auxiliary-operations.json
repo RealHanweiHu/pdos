@@ -1087,6 +1087,70 @@
       ],
       "implementation": "implemented_local_endpoint",
       "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "project.member.set",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_team_changes",
+      "purpose": "项目负责人本人添加、移出成员，设置角色与主责人；整张变更一次提交、一次确认。成员须已有品类授权，负责人不能代授；小Pai 不是成员，只能起草名单。私有项目中成员即项目受众，加入时一并加入负责人本人所有的型号与立项定义受众；有未交接事项的成员移出后保留可见并标待交接，交接完成后由负责人完成移出，随本项目加上的受众一并撤回（P56 临时口径）。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/team"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P56、P60 第 4 项（用户 2026-11-01、11-02）；D33 拍板（用户 2026-11-07）"
+    },
+    {
+      "operation": "project.team.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_members",
+      "purpose": "读取项目团队：当前成员与角色、主责人、已离开成员、空缺角色与各人品类授权状态；只在项目可见范围内。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/team"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
+    },
+    {
+      "operation": "project.role_catalog.publish",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_role_catalog_versions",
+      "purpose": "租户管理员本人发布租户级角色目录新版本，一次确认；缺省为设计稿 §4.1 的可编辑初始值。被项目成员担任的角色不能删除，只能停用（P60 第 4 项）。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/role-catalog"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
+    },
+    {
+      "operation": "project.role_catalog.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_role_catalog_versions",
+      "purpose": "读取租户当前角色目录及版本，未发布时为缺省目录（版本 0）。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/role-catalog"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
     }
   ],
   "inbound_endpoints": [

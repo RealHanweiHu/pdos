@@ -16,12 +16,21 @@ import g0_fixture
 import pytest
 from sqlalchemy import select, text
 from sqlalchemy.orm import Session
+from team_fixture import remove_member
 
 from pdos_next.core.models import Artifact, Grant, ObjectAudience, Product, Receipt, RequestKey, now
 from pdos_next.core.safety import verify_test_target
 from pdos_next.domain.projects.fulfillment.models import WorkCommitmentReview
 from pdos_next.domain.projects.models import Project
-from pdos_next.domain.projects.work.constants import ACCEPT, ASSIGN, COMMIT, CREATE, START, SUBMIT
+from pdos_next.domain.projects.work.constants import (
+    ACCEPT,
+    ASSIGN,
+    COMMIT,
+    CREATE,
+    REVIEW,
+    START,
+    SUBMIT,
+)
 from projects.fulfillment_pg import test_workflow as fulfillment
 from projects.work_pg import test_workflow as flow
 from projects.work_pg.test_workflow import original_security_work  # noqa: F401
@@ -193,6 +202,15 @@ def test_project_audience_history_receipt_and_key_proof_follow_current_project_g
         assert review is not None and review.visibility == "audience"
         assert review.actor_id == review.requester_id == review.recipient_id == setup.human
         assert review.promisor_id == setup.peer and review.receipt_id == UUID(receipt["id"])
+    # The submitted task is still the peer's own unhanded work (P56 as decided
+    # 2026-11-07), so the owner accepts it before the team removal further down.
+    step(
+        REVIEW,
+        task=fulfillment._task_ref(submitted),
+        decision="accepted",
+        **flow.clock_fields(),
+        checks=[{"key": "drawing", "decision": "accepted", "reason": "Delivered drawing accepted"}],
+    )
 
     peer_view = _get(work, setup.peer)
     promise_view = next(
@@ -211,22 +229,20 @@ def test_project_audience_history_receipt_and_key_proof_follow_current_project_g
     _get(work, outsider, expected=403)
     _receipt_read(work, outsider, receipt, visible=False)
 
-    # The repository has proposal.share, but no public command to revoke a
-    # derived Project audience. Narrow verified fixture-admin maintenance only.
+    # The project owner removes the promisor from the team (P34-1). The commitment
+    # is reviewed as fulfilled, so nothing is left to hand over (P56 as decided):
+    # the project audience goes at once, with no business rewrite.
     before_revoke = fulfillment.snapshots(work)
-    with Session(setup.admin) as session, session.begin():
-        direct = session.scalars(
+    assert remove_member(setup, work.project_id, setup.peer)["handover_pending"] is False
+    with Session(setup.admin) as session:
+        assert not session.scalars(
             select(ObjectAudience).where(
                 ObjectAudience.tenant_id == setup.tenant,
-                ObjectAudience.category_id == setup.category,
                 ObjectAudience.object_type == "projects",
                 ObjectAudience.subject_id == work.project_id,
-                ObjectAudience.owner_id == setup.human,
                 ObjectAudience.principal_id == setup.peer,
             )
         ).all()
-        assert len(direct) == 1
-        session.delete(direct[0])
     assert fulfillment.snapshots(work) == before_revoke
 
     # Product audience, active category membership and original evidence remain;
