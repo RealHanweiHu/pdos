@@ -1,0 +1,12 @@
+# 无库全量对照（不设数据库变量；PG 用例为 ERROR，不计）
+
+基点 38f5a024（git archive 副本，不含 web/）: 171 failed, 10490 passed, 102 skipped, 1905 errors, 7 subtests passed in 612.33s (0:10:12)
+本分支（含生命周期目录登记修复）:        169 failed, 10496 passed, 102 skipped, 1911 errors, 7 subtests passed in 609.39s (0:10:09)
+
+本分支有而基点没有的 FAILED：（无）
+
+基点有而本分支没有的 FAILED（副本缺 web/ 等导致，或时序波动）：
+FAILED tests/core/test_current_read_profiler.py::test_nested_root_and_thread_boundary_count_once_restore_exact_returns
+FAILED tests/projects/activity/test_catalog.py::test_destinations_are_actual_existing_workspace_panels
+
+修复前的第一次本分支运行曾多出 2 个由新表引起的失败（test_m3_lifecycle_catalog、test_public_protocol 的生命周期目录对照），已通过在 originals/lifecycle 登记 export_audits 修复。

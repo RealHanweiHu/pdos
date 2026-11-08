@@ -3,6 +3,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { ArrowRight } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { ExportButton } from "@/features/exports/export-button";
+import { exportHref } from "@/features/exports/lib/export-download";
 import { readBuildTestSummary, readProjectBuilds, type ProjectBuildApi, type ProjectBuildRecord, type ProjectBuildScope } from "@/lib/project-build-summary";
 import { ProjectBuildOutput } from "./project-build-output";
 import { ProjectBuildReadiness } from "./project-build-readiness";
@@ -73,7 +75,7 @@ function SelectedBuild({ api, scope, build, builds, onAccessRejected }: { api: P
   }, [api, categoryId, productId, projectId, build, attempt, onAccessRejected]);
   const fixed = data?.build, previous = fixed?.previous_build_id ? builds.find(item => item.id === fixed.previous_build_id) : undefined;
   return <section className={styles.panel} aria-label="已选轮次事实摘要">
-    <header className={styles.heading}><h3>已选轮次事实摘要</h3><Button type="button" size="xs" variant="outline" onClick={() => setAttempt(value => value + 1)}>刷新已选轮次摘要</Button></header>
+    <header className={styles.heading}><h3>已选轮次事实摘要</h3><span className={styles.actions}><ExportButton exportUrl={exportHref("test-summary", { categoryId, productId }, build.id)} label="导出测试汇总"/><Button type="button" size="xs" variant="outline" onClick={() => setAttempt(value => value + 1)}>刷新已选轮次摘要</Button></span></header>
     {error ? <div className={styles.notice} role="alert"><p>已选轮次与测试摘要暂不可读：{error}</p><Button type="button" size="xs" variant="outline" onClick={() => setAttempt(value => value + 1)}>重新读取已选轮次摘要</Button></div> : !data || !fixed ? <p className={styles.notice} role="status">正在核对已选轮次与当前测试记录…</p> : <>
       <dl className={styles.facts}><div><dt>Build</dt><dd>{fixed.name} · 固定 v{fixed.revision}</dd></div><div><dt>目的</dt><dd>{fixed.purpose}</dd></div><div><dt>计划数量</dt><dd className={styles.mono}>{fixed.planned_quantity} {fixed.unit}</dd></div><div><dt>前轮</dt><dd>{fixed.previous_build_id ? previous?.name ?? "已登记前轮，名称未取得" : "未登记前轮"}</dd></div><div><dt>固定工程配置</dt><dd>{fixed.engineering_configuration.name} · v{fixed.engineering_configuration.revision}</dd></div><div><dt>固定制造配置</dt><dd>{fixed.manufacturing_configuration.name} · v{fixed.manufacturing_configuration.revision}</dd></div><div className={styles.full}><dt>验证目标</dt><dd>{print(fixed.verification_objectives)}</dd></div><div className={styles.full}><dt>处置要求</dt><dd>{print(fixed.disposition_plan)}</dd></div></dl>
       <details className={styles.details}><summary>固定双配置、版本与来源状态</summary><p>本轮按下列固定引用核对。</p><dl className={styles.identityFacts}><div><dt>Build 标识</dt><dd>{fixed.id} · v{fixed.revision}</dd></div><div><dt>原固定项目版本</dt><dd>v{fixed.project_revision}</dd></div>{[["工程配置", fixed.engineering_configuration], ["制造配置", fixed.manufacturing_configuration]].map(([label, value]) => { const config = value as ProjectBuildRecord["engineering_configuration"]; return <div key={String(label)}><dt>{String(label)}</dt><dd>{config.name} · 固定 v{config.revision}<small>{config.id} · {sourceState(config.source_status)}</small></dd></div>; })}<div><dt>前轮标识</dt><dd>{print(fixed.previous_build_id)}</dd></div></dl></details>

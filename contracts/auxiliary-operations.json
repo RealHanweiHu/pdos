@@ -1151,6 +1151,34 @@
       ],
       "implementation": "implemented_local_endpoint",
       "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
+    },
+    {
+      "operation": "export.workbook.download",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "export_audits",
+      "purpose": "具名本人按当前读权限把项目、我的工作、BOM 差异、测试汇总导出为 Excel；行与字段过滤与页面读取相同，AI 来源的行和单元格带“AI 起草”标识与隐式元数据；每次导出写一条只追加审计，审计未落库不交付文件。小Pai 与运行身份不能发起；不经系统向外部发送。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/exports/project"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/exports/bom-diff"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/exports/test-summary"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/exports/my-work"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "拍板表 C16、设计优化评估 F41、设计确认稿 P41 第 7 项（欠债总表 D56，2026-11-08）"
     }
   ],
   "inbound_endpoints": [
