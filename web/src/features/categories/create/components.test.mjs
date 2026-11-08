@@ -40,7 +40,7 @@ function load(filename) {
     : specifier.endsWith(".module.css") ? { __esModule: true, default: new Proxy({}, { get: (_target, key) => String(key) }) }
     : specifier.startsWith("@/") ? load(path.join(webRoot, "src", specifier.slice(2)))
     : specifier.startsWith(".") ? load(path.resolve(path.dirname(filename), specifier)) : dependency(specifier);
-  loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: {
+  loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { fileName: filename, compilerOptions: {
     module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true,
   } }).outputText, filename);
   return loaded.exports;

@@ -13,6 +13,12 @@ SUPPORTED_MEDIA = frozenset(
         "text/markdown",
         "application/pdf",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "image/jpeg",
+        "image/png",
+        "image/webp",
+        "image/heic",
+        "image/heif",
     }
 )
 

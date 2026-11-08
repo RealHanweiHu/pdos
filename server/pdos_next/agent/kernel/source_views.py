@@ -317,6 +317,14 @@ def router(*, transaction, context_dependency):
         with transaction(ctx, read_snapshot=True) as session:
             return read_list(session, ctx, page)
 
+    from .personal_source_views import PersonalSourcePage
+    from .personal_source_views import read_list as read_personal_list
+
+    @result.get("/v1/personal/agent-input-sources")
+    def personal_listing(page: Annotated[PersonalSourcePage, Query()], ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            return read_personal_list(session, ctx, page)
+
     @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/source-bindings")
     def bindings(request: Request, run_id: UUID, ctx=context_dependency):
         if request.query_params:

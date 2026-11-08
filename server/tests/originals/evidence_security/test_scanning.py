@@ -9,6 +9,7 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
+
 from pdos_next.evidence_security import (
     ObjectStoreScannerAdapter,
     ScanBinding,
@@ -26,8 +27,9 @@ from pdos_next.evidence_security import (
     check_content,
     parsing_gate,
 )
-from pdos_next.evidence_security.preflight import XLSX
+from pdos_next.evidence_security.preflight import DOCX, XLSX
 from pdos_next.originals.object_storage import LocalPrivateObjectStore, ObjectRef, StorageFailure
+from tests.originals.office_fixture import JPEG, PNG, docx_bytes
 
 NOW = datetime(2026, 10, 2, 12, tzinfo=UTC)
 IDENTITY = ScannerIdentity("fake-local-unit-check", "engine-v1", "rules-v1")
@@ -159,6 +161,10 @@ def test_real_local_store_adapter_reads_only_owned_temporary_synthetic_original(
         (b"not a pdf", "application/pdf", "TYPE_MISMATCH"),
         (b"%PDF-1.7 no ending", "application/pdf", "TYPE_MISMATCH"),
         (b"not a zip", XLSX, "TYPE_MISMATCH"),
+        (b"not a zip", DOCX, "TYPE_MISMATCH"),
+        (archive(), DOCX, "TYPE_MISMATCH"),
+        (JPEG, "image/png", "TYPE_MISMATCH"),
+        (b"MZ synthetic", "image/jpeg", "TYPE_MISMATCH"),
         (b"text", "application/octet-stream", "UNSUPPORTED_MEDIA_TYPE"),
     ],
 )
@@ -175,6 +181,9 @@ def test_type_budget_checks_are_not_malware_certification(content, media, code):
         (b"# harmless markdown", "text/markdown"),
         (b"%PDF-1.7\nsynthetic nonparseable body\n%%EOF", "application/pdf"),
         (archive(), XLSX),
+        (docx_bytes(), DOCX),
+        (PNG, "image/png"),
+        (JPEG, "image/jpeg"),
     ],
 )
 def test_preflight_accepts_supported_envelopes_without_claiming_clean(content, media):

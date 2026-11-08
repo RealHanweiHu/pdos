@@ -8,7 +8,7 @@ const ts = createRequire(import.meta.url)("typescript"), compiled = { exports: {
 runInNewContext(ts.transpileModule(readFileSync(new URL("./pai-sources.ts", import.meta.url), "utf8"), {
   compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 },
 }).outputText, { module: compiled, exports: compiled.exports, URLSearchParams });
-const { readInputSources, readRunSourceBindings, inputSourceReference, validateInputSourceSelection, sourceSelectionMatchesBindings } = compiled.exports;
+const { readInputSources, readRunSourceBindings, inputSourceReference, validateInputSourceSelection, sourceSelectionMatchesBindings, readPersonalSources } = compiled.exports;
 const id = n => `00000000-0000-0000-0000-${n.toString(16).padStart(12, "0")}`;
 const scope = { principalId: id(1), categoryId: id(2), productId: id(3), proposalId: id(4) };
 const date = "2026-10-17T12:34:56.123456+00:00";
@@ -169,4 +169,31 @@ test("empty catalog/bindings are real empty responses; failures propagate withou
   await assert.rejects(readInputSources(api, scope), error => error === failure);
   await assert.rejects(readRunSourceBindings(api, scope, id(8)), error => error === failure);
   assert.equal(calls.length, 2);
+});
+
+function personalPage(items = [{ ...source(30), product_id: null, category: { id: id(40), name: "他品类" } }]) {
+  return { version: "personal-input-sources/v1", principal_id: scope.principalId, as_of: date, items, next_cursor: null };
+}
+
+test("P91 personal sources: GET only, each head keeps its actual category, display data stays data", async () => {
+  const { api, calls } = apiFor(personalPage());
+  const reading = await readPersonalSources(api, scope.principalId);
+  assert.equal(calls[0][0], "v1/personal/agent-input-sources?page_size=20");
+  assert.equal(reading.items[0].category.id, id(40));
+  const { category, ...head } = reading.items[0];
+  assert.equal(category.name, "他品类");
+  // The picker copies only the exact Artifact version; category is display, the server rebinds it.
+  assert.deepEqual(clone(inputSourceReference(head)), { artifact_id: id(30), expected_revision: 3 });
+  assert.throws(() => inputSourceReference(reading.items[0]), /无法核对/);
+});
+
+test("P91 personal sources fail closed on another principal, a missing category or a malformed head", async () => {
+  const bad = [
+    { ...personalPage(), principal_id: id(99) },
+    personalPage([{ ...source(30), product_id: null }]),
+    personalPage([{ ...source(30), product_id: null, category: { id: "not-an-id", name: "x" } }]),
+    personalPage([{ ...source(30), product_id: null, availability: { available: true, code: "SOURCE_STALE" }, category: { id: id(40), name: null } }]),
+    { ...personalPage(), scope: { category_id: id(2) } },
+  ];
+  for (const value of bad) await assert.rejects(readPersonalSources(apiFor(value).api, scope.principalId), /无法核对/);
 });

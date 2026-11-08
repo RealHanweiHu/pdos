@@ -33,7 +33,16 @@ MEDIA = {
     ".md": "text/markdown",
     ".pdf": "application/pdf",
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    # Photos are registered as originals without OCR (F12); OCR belongs to memory M4.
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".png": "image/png",
+    ".webp": "image/webp",
+    ".heic": "image/heic",
+    ".heif": "image/heif",
 }
+UPLOAD_EXTENSIONS = tuple(MEDIA)
 
 
 def object_reference(row):
@@ -78,7 +87,11 @@ def upload_contents(data):
         raise DomainError("INVALID_PAYLOAD", "文件名称无效。", 422)
     media = MEDIA.get(PurePath(data.filename.lower()).suffix)
     if not media:
-        raise DomainError("UNSUPPORTED_MEDIA_TYPE", "当前可处理UTF-8文本、PDF和XLSX。", 422)
+        raise DomainError(
+            "UNSUPPORTED_MEDIA_TYPE",
+            "当前可处理UTF-8文本、PDF、XLSX、DOCX和照片（JPG、PNG、WebP、HEIC）。",
+            422,
+        )
     try:
         content = base64.b64decode(data.content_base64, validate=True)
     except (binascii.Error, ValueError):
@@ -371,6 +384,9 @@ def parse_uploaded(engine, reference: dict, store):
                 )
             if row.media_type == "application/pdf" and result.warnings:
                 row.parse_code = "PARTIAL_TEXT"
+            elif row.media_type.startswith("image/"):
+                # The derived line only records the registration; no pixels were read.
+                row.parse_code = "OCR_NOT_PERFORMED"
             row.locator_map = locations
             row.parse_manifest = _parse_manifest(result)
         s.flush()

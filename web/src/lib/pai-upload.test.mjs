@@ -13,7 +13,7 @@ const id = n => `00000000-0000-0000-0000-${n.toString(16).padStart(12, "0")}`;
 const scope = { principalId: id(1), categoryId: id(2), productId: null, proposalId: id(3) };
 const date = "2026-10-17T12:34:56.123456+00:00";
 const clone = value => JSON.parse(JSON.stringify(value));
-function target(product = null) { return { version: "agent-upload-target/v1", principal_id: scope.principalId, scope: { category_id: scope.categoryId, product_id: product, proposal_id: scope.proposalId }, as_of: date, target: { kind: product ? "product" : "category", id: product ?? scope.categoryId, revision: 5 }, authorization: { can_write: true, code: null }, constraints: { max_bytes: 8388608, extensions: [".txt", ".md", ".pdf", ".xlsx"], default_visibility: "private" } }; }
+function target(product = null) { return { version: "agent-upload-target/v1", principal_id: scope.principalId, scope: { category_id: scope.categoryId, product_id: product, proposal_id: scope.proposalId }, as_of: date, target: { kind: product ? "product" : "category", id: product ?? scope.categoryId, revision: 5 }, authorization: { can_write: true, code: null }, constraints: { max_bytes: 8388608, extensions: [".txt", ".md", ".pdf", ".xlsx", ".docx", ".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"], default_visibility: "private" } }; }
 function file(content = "真实原字节\n", name = "资料.txt") { const bytes = new TextEncoder().encode(content); return { name, size: bytes.length, arrayBuffer: async () => bytes.slice().buffer }; }
 const intent = () => createUploadIntent(file(), { title: " 原标题 ", sourceLabel: " 来源说明 " }, target());
 function reading(original, state = "committed") {

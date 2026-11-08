@@ -561,6 +561,38 @@ def test_xlsx_locator_retains_cell_and_multiline_value_offsets(setup, store):
         assert second["location"]["row"] == 2 and second["location"]["column"] == 2
 
 
+
+def test_docx_and_photo_follow_the_same_upload_scan_parse_and_source_path(setup, store):
+    """F12/D55: DOCX lines and registration-only photos become ordinary registered sources."""
+    from tests.originals.office_fixture import JPEG, docx_bytes
+
+    docx, _ = uploaded(setup, store, docx_bytes(), filename="synthetic-spec.docx")
+    photo, _ = uploaded(setup, store, JPEG, filename="synthetic-sample.JPG")
+    assert secured_parse(setup.engine, reference(setup, docx), store)["status"] == "parsed"
+    assert secured_parse(setup.engine, reference(setup, photo), store)["status"] == "parsed"
+    with tenant_session(
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.human,
+        requester_id=setup.human,
+        category_id=setup.category,
+    ) as session:
+        word = session.get(UploadedOriginal, UUID(docx["subject_id"]))
+        image = session.get(UploadedOriginal, UUID(photo["subject_id"]))
+        assert word.media_type.endswith("wordprocessingml.document")
+        assert image.media_type == "image/jpeg" and image.scan_status == "clean"
+        assert word.parse_code is None and image.parse_code == "OCR_NOT_PERFORMED"
+        text = session.scalar(select(Artifact).where(Artifact.original_id == word.id))
+        registration = session.scalar(select(Artifact).where(Artifact.original_id == image.id))
+        assert text.content.splitlines()[1] == "额定压力：\t150 PSI"
+        assert [item["derived_line_start"] for item in word.locator_map] == [1, 2, 3, 4]
+        assert "未执行 OCR" in registration.content and registration.title == image.title
+        assert image.locator_map[0]["value_kind"] == "image_registration"
+    # Same bytes and request under a new key keep one original (existing dedupe path).
+    again, _ = uploaded(setup, store, JPEG, filename="synthetic-sample.JPG")
+    assert again["subject_id"] == photo["subject_id"]
+
+
 def test_competing_outbox_leases_have_one_claim_and_one_inbox(setup, store):
     uploaded(setup, store)
     with ThreadPoolExecutor(max_workers=2) as pool:

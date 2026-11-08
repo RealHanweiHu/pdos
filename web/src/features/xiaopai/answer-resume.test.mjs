@@ -21,7 +21,7 @@ const shim = { ...React,
 const noop = () => {}, products = { items: [], busy: false, openProduct: null, load: async () => {}, clear: noop };
 const children = new Map();
 function child(name) { if (!children.has(name)) { const fn = props => React.createElement("div", null, props.children); Object.defineProperty(fn, "name", { value: name }); children.set(name, fn); } return children.get(name); }
-const stubs = new Proxy({ useSessionDraft: () => shim.useState(""), clearPaiComposerDrafts: noop, useWorkProducts: () => products, usePaiScroll: noop,
+const stubs = new Proxy({ useSessionDraft: () => shim.useState(""), useHistoryRail: () => [...shim.useState(false), noop], carriedReferences: value => value.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision })), clearPaiComposerDrafts: noop, useWorkProducts: () => products, usePaiScroll: noop,
   loadedSkillFacts: () => [], reconciliationNeeded: () => false, collapsedAnswerCitations: () => [], panelVisible: () => false,
   asCandidate: () => null, adoptedCategory: () => null, materialContextText: () => "", sourcePickerScope: v => JSON.stringify(v), defaultSearchPreferences: {},
 }, { get: (object, key) => key in object ? object[key] : child(key) });

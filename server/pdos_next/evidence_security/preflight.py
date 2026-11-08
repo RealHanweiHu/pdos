@@ -12,7 +12,18 @@ from pathlib import PurePosixPath
 from .types import ScanRequest, SecurityFailure
 
 XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-SUPPORTED_MEDIA = frozenset({"text/plain", "text/markdown", "application/pdf", XLSX})
+DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+_ARCHIVE_PARTS = {XLSX: "xl/workbook.xml", DOCX: "word/document.xml"}
+_IMAGE_HEADS = {
+    "image/jpeg": lambda head: head.startswith(b"\xff\xd8\xff"),
+    "image/png": lambda head: head.startswith(b"\x89PNG\r\n\x1a\n"),
+    "image/webp": lambda head: head[:4] == b"RIFF" and head[8:12] == b"WEBP",
+    "image/heic": lambda head: head[4:8] == b"ftyp",
+    "image/heif": lambda head: head[4:8] == b"ftyp",
+}
+SUPPORTED_MEDIA = frozenset(
+    {"text/plain", "text/markdown", "application/pdf", *_ARCHIVE_PARTS, *_IMAGE_HEADS}
+)
 
 
 def _bounded_directory(content: bytes, max_entries: int) -> None:
@@ -79,6 +90,10 @@ def check_content(request: ScanRequest, content: bytes, *, deadline: float | Non
     elif ref.media_type == "application/pdf":
         if not content.startswith(b"%PDF-") or b"%%EOF" not in content[-4096:]:
             raise SecurityFailure("TYPE_MISMATCH")
+    elif ref.media_type in _IMAGE_HEADS:
+        # Registration-only photos: the declared format must match its header bytes.
+        if not _IMAGE_HEADS[ref.media_type](content[:32]) or content.startswith((b"MZ", b"PK")):
+            raise SecurityFailure("TYPE_MISMATCH")
     else:
         if not content.startswith(b"PK\x03\x04"):
             raise SecurityFailure("TYPE_MISMATCH")
@@ -119,7 +134,7 @@ def check_content(request: ScanRequest, content: bytes, *, deadline: float | Non
                         raise SecurityFailure("ARCHIVE_EXPANDED_LIMIT")
                     if entry.file_size > max(1, entry.compress_size) * limits.max_zip_ratio:
                         raise SecurityFailure("ARCHIVE_RATIO_LIMIT")
-                if not {"[Content_Types].xml", "xl/workbook.xml"} <= names:
+                if not {"[Content_Types].xml", _ARCHIVE_PARTS[ref.media_type]} <= names:
                     raise SecurityFailure("TYPE_MISMATCH")
                 actual_total = 0
                 for entry in entries:

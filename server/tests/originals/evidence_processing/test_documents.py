@@ -228,3 +228,104 @@ def test_parse_limits_reject_unbounded_server_configuration():
         replace(ParseLimits(), timeout_seconds=120)
     with pytest.raises(ValueError):
         replace(ParseLimits(), max_zip_expanded_bytes=1_000_000_000)
+
+
+def test_docx_keeps_body_order_one_line_per_paragraph_and_table_row():
+    from tests.originals.office_fixture import DOCX, docx_bytes
+
+    content = docx_bytes()
+    result = parse_original(content, media_type=DOCX)
+    assert result.status == "parsed"
+    assert [segment.text for segment in result.segments] == [
+        "合成规格（非真实客户资料）",
+        "额定压力：\t150 PSI",
+        "项目 | 目标",
+        "噪声 | ≤ 70 dB 1 米处",
+    ]
+    # Deleted tracked text is not source text; derived lines are exactly the segments.
+    assert "120 PSI" not in result.text
+    assert result.text.split("\n") == [segment.text for segment in result.segments]
+    assert [segment.location.line for segment in result.segments] == [1, 2, 3, 4]
+    assert [segment.value_kind for segment in result.segments][2:] == ["table_row", "table_row"]
+    assert result.source_sha256 == hashlib.sha256(content).hexdigest()
+    assert "not extracted" in result.warnings[0]
+
+
+def test_docx_without_body_text_needs_ocr_without_fabrication():
+    from tests.originals.office_fixture import DOCX, docx_bytes
+
+    result = parse_original(docx_bytes("<w:p/>"), media_type=DOCX)
+    assert result.status == "needs_ocr" and result.text == "" and result.segments == ()
+
+
+@pytest.mark.parametrize(
+    ("kwargs", "code"),
+    [
+        ({"extra": {"word/vbaProject.bin": b"macro original"}}, "ACTIVE_CONTENT"),
+        ({"extra": {"word/embeddings/oleObject1.bin": b"ole"}}, "ACTIVE_CONTENT"),
+        (
+            {"main_type": "application/vnd.ms-word.document.macroEnabled.main+xml"},
+            "ACTIVE_CONTENT",
+        ),
+        (
+            {
+                "extra": {
+                    "word/_rels/document.xml.rels": (
+                        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/'
+                        'relationships"><Relationship Id="r9" Type="http://schemas.openxmlformats'
+                        '.org/officeDocument/2006/relationships/attachedTemplate" Target='
+                        '"http://example.invalid/t.dotm" TargetMode="External"/></Relationships>'
+                    )
+                }
+            },
+            "EXTERNAL_CONTENT",
+        ),
+        (
+            {"extra": {"word/x.xml": '<!DOCTYPE r [<!ENTITY x SYSTEM "file:///etc/passwd">]><r/>'}},
+            "ACTIVE_CONTENT",
+        ),
+        ({"document": False}, "MEDIA_TYPE_MISMATCH"),
+        ({"main_type": "application/xml"}, "MEDIA_TYPE_MISMATCH"),
+        ({"extra": {"word/bomb.xml": b"0" * 50_000}}, "ARCHIVE_LIMIT"),
+    ],
+)
+def test_docx_active_external_and_expansion_are_rejected(kwargs, code):
+    from tests.originals.office_fixture import DOCX, docx_bytes
+
+    assert_failure(docx_bytes(**kwargs), DOCX, code)
+
+
+def test_docx_hyperlink_relationship_is_not_external_content():
+    from tests.originals.office_fixture import DOCX, docx_bytes
+
+    rels = (
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        '<Relationship Id="r2" Type="http://schemas.openxmlformats.org/officeDocument/2006/'
+        'relationships/hyperlink" Target="https://example.invalid" TargetMode="External"/>'
+        "</Relationships>"
+    )
+    content = docx_bytes(extra={"word/_rels/document.xml.rels": rels})
+    assert parse_original(content, media_type=DOCX).status == "parsed"
+    assert_failure(b"not a document", DOCX, "MEDIA_TYPE_MISMATCH")
+
+
+@pytest.mark.parametrize(("media", "label"), [("image/png", "PNG"), ("image/jpeg", "JPEG")])
+def test_photo_is_registered_without_ocr_or_recognition(media, label):
+    from tests.originals.office_fixture import JPEG, PNG
+
+    content = PNG if media == "image/png" else JPEG
+    result = parse_original(content, media_type=media)
+    assert result.status == "parsed" and len(result.segments) == 1
+    segment = result.segments[0]
+    assert segment.location.line == 1 and segment.value_kind == "image_registration"
+    assert f"{label} 图像" in result.text and "未执行 OCR" in result.text
+    assert "without OCR" in result.warnings[0]
+
+
+def test_photo_header_must_match_declared_type():
+    from tests.originals.office_fixture import JPEG, PNG
+
+    assert_failure(JPEG, "image/png", "MEDIA_TYPE_MISMATCH")
+    assert_failure(PNG, "image/jpeg", "MEDIA_TYPE_MISMATCH")
+    assert_failure(b"RIFF\x00\x00\x00\x00WAVE", "image/webp", "MEDIA_TYPE_MISMATCH")
+    assert_failure(b"\x00\x00\x00\x18ftypisom", "image/heic", "MEDIA_TYPE_MISMATCH")
