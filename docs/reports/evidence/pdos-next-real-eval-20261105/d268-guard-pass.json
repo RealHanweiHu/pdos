@@ -1,0 +1,247 @@
+{
+ "note": "Local isolated pdos_test, offline synthetic provider; 3 documents; one search+extract per round. ms is best of 3 and noisy (host load average up to ~100 during the fixed run); SQL counts are exact.",
+ "before": [
+  {
+   "prior_rounds": 0,
+   "carried": 0,
+   "guard_sql": 9,
+   "guard_ms": 88.1,
+   "conversation_sql": 4,
+   "conversation_ms": 28.8
+  },
+  {
+   "prior_rounds": 1,
+   "carried": 6,
+   "guard_sql": 26,
+   "guard_ms": 250.8,
+   "conversation_sql": 27,
+   "conversation_ms": 263.5
+  },
+  {
+   "prior_rounds": 2,
+   "carried": 12,
+   "guard_sql": 44,
+   "guard_ms": 118.2,
+   "conversation_sql": 40,
+   "conversation_ms": 117.0
+  },
+  {
+   "prior_rounds": 3,
+   "carried": 18,
+   "guard_sql": 66,
+   "guard_ms": 164.6,
+   "conversation_sql": 48,
+   "conversation_ms": 141.3
+  },
+  {
+   "prior_rounds": 4,
+   "carried": 24,
+   "guard_sql": 92,
+   "guard_ms": 226.5,
+   "conversation_sql": 56,
+   "conversation_ms": 144.9
+  },
+  {
+   "prior_rounds": 5,
+   "carried": 30,
+   "guard_sql": 122,
+   "guard_ms": 482.1,
+   "conversation_sql": 64,
+   "conversation_ms": 161.9
+  },
+  {
+   "prior_rounds": 6,
+   "carried": 36,
+   "guard_sql": 156,
+   "guard_ms": 517.9,
+   "conversation_sql": 72,
+   "conversation_ms": 277.3
+  },
+  {
+   "prior_rounds": 7,
+   "carried": 42,
+   "guard_sql": 194,
+   "guard_ms": 846.5,
+   "conversation_sql": 80,
+   "conversation_ms": 260.4
+  },
+  {
+   "prior_rounds": 8,
+   "carried": 48,
+   "guard_sql": 236,
+   "guard_ms": 777.6,
+   "conversation_sql": 88,
+   "conversation_ms": 408.1
+  },
+  {
+   "prior_rounds": 9,
+   "carried": 54,
+   "guard_sql": 282,
+   "guard_ms": 925.5,
+   "conversation_sql": 96,
+   "conversation_ms": 444.2
+  },
+  {
+   "prior_rounds": 10,
+   "carried": 60,
+   "guard_sql": 332,
+   "guard_ms": 1164.6,
+   "conversation_sql": 104,
+   "conversation_ms": 468.4
+  },
+  {
+   "prior_rounds": 11,
+   "carried": 63,
+   "guard_sql": 381,
+   "guard_ms": 1559.3,
+   "conversation_sql": 112,
+   "conversation_ms": 495.9
+  },
+  {
+   "prior_rounds": 12,
+   "carried": 63,
+   "guard_sql": 425,
+   "guard_ms": 1628.7,
+   "conversation_sql": 120,
+   "conversation_ms": 526.6
+  }
+ ],
+ "after": [
+  {
+   "prior_rounds": 0,
+   "carried": 0,
+   "guard_sql": 9,
+   "guard_ms": 36.8,
+   "conversation_sql": 4,
+   "conversation_ms": 18.9
+  },
+  {
+   "prior_rounds": 1,
+   "carried": 6,
+   "guard_sql": 21,
+   "guard_ms": 87.1,
+   "conversation_sql": 22,
+   "conversation_ms": 96.8
+  },
+  {
+   "prior_rounds": 2,
+   "carried": 12,
+   "guard_sql": 30,
+   "guard_ms": 116.3,
+   "conversation_sql": 30,
+   "conversation_ms": 113.9
+  },
+  {
+   "prior_rounds": 3,
+   "carried": 18,
+   "guard_sql": 39,
+   "guard_ms": 134.2,
+   "conversation_sql": 34,
+   "conversation_ms": 98.4
+  },
+  {
+   "prior_rounds": 4,
+   "carried": 24,
+   "guard_sql": 48,
+   "guard_ms": 159.8,
+   "conversation_sql": 38,
+   "conversation_ms": 133.9
+  },
+  {
+   "prior_rounds": 5,
+   "carried": 30,
+   "guard_sql": 57,
+   "guard_ms": 226.9,
+   "conversation_sql": 42,
+   "conversation_ms": 145.1
+  },
+  {
+   "prior_rounds": 6,
+   "carried": 36,
+   "guard_sql": 66,
+   "guard_ms": 217.8,
+   "conversation_sql": 46,
+   "conversation_ms": 193.7
+  },
+  {
+   "prior_rounds": 7,
+   "carried": 42,
+   "guard_sql": 75,
+   "guard_ms": 348.5,
+   "conversation_sql": 50,
+   "conversation_ms": 231.2
+  },
+  {
+   "prior_rounds": 8,
+   "carried": 48,
+   "guard_sql": 84,
+   "guard_ms": 378.0,
+   "conversation_sql": 54,
+   "conversation_ms": 326.3
+  },
+  {
+   "prior_rounds": 9,
+   "carried": 54,
+   "guard_sql": 93,
+   "guard_ms": 393.2,
+   "conversation_sql": 58,
+   "conversation_ms": 227.5
+  },
+  {
+   "prior_rounds": 10,
+   "carried": 60,
+   "guard_sql": 102,
+   "guard_ms": 508.4,
+   "conversation_sql": 62,
+   "conversation_ms": 305.8
+  },
+  {
+   "prior_rounds": 11,
+   "carried": 63,
+   "guard_sql": 110,
+   "guard_ms": 719.3,
+   "conversation_sql": 66,
+   "conversation_ms": 406.3
+  },
+  {
+   "prior_rounds": 12,
+   "carried": 63,
+   "guard_sql": 114,
+   "guard_ms": 568.4,
+   "conversation_sql": 70,
+   "conversation_ms": 351.5
+  }
+ ],
+ "after_round_12_guard_statements": [
+  {
+   "statement": "WITH RECURSIVE conversation_lineage(id, continued_from_id) AS (SELECT agent_runs",
+   "count": 11,
+   "ms": 206.2
+  },
+  {
+   "statement": "SELECT agent_tool_calls.run_id, agent_tool_calls.call_key, agent_tool_calls.tool",
+   "count": 37,
+   "ms": 106.0
+  },
+  {
+   "statement": "SELECT agent_runs.category_id, agent_runs.product_id, agent_runs.proposal_id, ag",
+   "count": 2,
+   "ms": 87.2
+  },
+  {
+   "statement": "WITH RECURSIVE restart_ancestors(id, continued_from_id) AS (SELECT agent_runs.id",
+   "count": 11,
+   "ms": 36.1
+  },
+  {
+   "statement": "SELECT principals.name, principals.kind, principals.active, principals.access_ep",
+   "count": 26,
+   "ms": 30.5
+  },
+  {
+   "statement": "SELECT agent_sessions.category_id, agent_sessions.product_id, agent_sessions.pro",
+   "count": 11,
+   "ms": 23.1
+  }
+ ]
+}

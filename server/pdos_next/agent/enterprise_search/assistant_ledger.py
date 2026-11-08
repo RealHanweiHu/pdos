@@ -1,5 +1,6 @@
 """Run-bound citations authored by actual completed search reads, never model JSON."""
 
+from contextlib import contextmanager
 from copy import deepcopy
 from types import SimpleNamespace
 from uuid import NAMESPACE_URL, UUID, uuid5
@@ -17,6 +18,7 @@ from pdos_next.errors import DomainError
 
 ROOT_TOOLS = frozenset({"assistant.search", "assistant.materials.read"})
 TOOLS = ROOT_TOOLS | {"assistant.extract", "assistant.citations.read", "assistant.compare"}
+_PASS = "assistant_ledger_guard_pass"
 
 
 def deny(reason):
@@ -65,7 +67,37 @@ def completed(session, scope, tools=TOOLS, *, archive=False):
     return result
 
 
+@contextmanager
+def one_pass(session):
+    """Prove each earlier Run's sealed search reads once per guard pass (D268).
+
+    A pass walks the lineage of the current Run and of every earlier round, so the
+    same ancestor used to be proven once per later round: O(rounds²) per guard. The
+    memo lives in this one transaction only; the next pass proves everything again
+    against current state, and callers always get their own copy.
+    """
+    info = getattr(session, "info", None)
+    if not isinstance(info, dict) or _PASS in info:
+        yield  # Not an ORM session (no memo), or an outer pass already holds one.
+        return
+    info[_PASS] = {"search": {}, "runs": {}}
+    try:
+        yield
+    finally:
+        info.pop(_PASS, None)
+
+
+def pass_memo(session, part):
+    """This pass's memo for ``part`` ("search" or "runs"), or None outside a pass."""
+    info = getattr(session, "info", None)
+    memo = info.get(_PASS) if isinstance(info, dict) else None
+    return None if memo is None else memo[part]
+
+
 def search_issued(session, scope, *, archive=False):
+    memo = pass_memo(session, "search") if archive else None
+    if memo is not None and scope in memo:
+        return deepcopy(memo[scope])
     result = {}
     for call, _arguments in completed(session, scope, ROOT_TOOLS, archive=archive):
         for item in call.result.get("items", []):
@@ -75,6 +107,8 @@ def search_issued(session, scope, *, archive=False):
                 deny("citation_invalid")
             identity = str(UUID(item["citation_id"]))
             result[identity] = deepcopy(item)
+    if memo is not None:
+        memo[scope] = deepcopy(result)
     return result
 
 
@@ -110,6 +144,11 @@ def select_issued(session, scope, identities):
 
 
 def carried(session, scope):
+    with one_pass(session):
+        return _carried(session, scope)
+
+
+def _carried(session, scope):
     from pdos_next.agent.kernel.execution import scope_for_run
     from pdos_next.agent.kernel.models import AgentRun
     from pdos_next.agent.kernel.work_state_models import AgentWorkState
@@ -150,17 +189,27 @@ def carried(session, scope):
                 deny("work_state_unreadable")
             origins.add(UUID(stored.body["current_goal"]["run_id"]))
     historical = {}
-    rows = (
+    # Earlier rounds whose rows this pass already read under ordinary RLS are not
+    # fetched again (D268); the same session and requester filters still apply.
+    memo = pass_memo(session, "runs")
+    known = memo if memo is not None else {}
+    reused = [known[identity] for identity in origins if identity in known]
+    wanted = [identity for identity in origins if identity not in known]
+    fetched = (
         session.scalars(
             select(AgentRun).where(
-                AgentRun.id.in_(origins),
+                AgentRun.id.in_(wanted),
                 AgentRun.session_id == run.session_id,
                 AgentRun.requester_id == run.requester_id,
             )
         ).all()
-        if origins
+        if wanted
         else []
     )
+    if memo is not None:
+        memo.update((row.id, row) for row in fetched)
+    rows = fetched + [row for row in reused
+                      if row.session_id == run.session_id and row.requester_id == run.requester_id]
     if {row.id for row in rows} != origins:
         deny("history_unreadable")
     for origin in rows:
