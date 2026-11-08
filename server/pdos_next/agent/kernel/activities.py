@@ -23,7 +23,7 @@ from .graph import AgentKernel
 from .host import BoundHost
 from .models import AgentRun
 from .persistence import KernelStore
-from .run_lease import AttemptSuperseded, RunBusy, run_lease
+from .run_lease import AttemptSuperseded, RunBusy, attempt_scope, run_lease
 from .tools import default_registry
 
 
@@ -178,7 +178,9 @@ class KernelActivities:
 
         thread = Thread(target=lambda: heartbeat_context.run(heartbeat), daemon=True)
         try:
-            with activity.shield_thread_cancel_exception():
+            # The stop signal also reaches isolated children whose hosts were built at
+            # startup, and the threads an extraction starts for them (D257).
+            with activity.shield_thread_cancel_exception(), attempt_scope(superseded):
                 if reference.get("answer_ref") and not summary_run:
                     from .category_adoption import resolve
 

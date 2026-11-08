@@ -100,3 +100,28 @@ def test_every_host_safe_point_stops_a_superseded_attempt_first(method):
     kwargs = {} if method in {"context_guard", "read", "prepare"} else {"source": None}
     with pytest.raises(AttemptSuperseded):
         getattr(host, method)(*args, **kwargs)
+
+
+def test_isolated_extraction_threads_see_the_attempt_signal_and_stop(monkeypatch):
+    """D257: children run on hosts built at startup and on their own threads."""
+    from pdos_next.agent.enterprise_search import assistant_fanout as fanout
+    from pdos_next.agent.kernel.run_lease import current_attempt
+
+    store, seen = Store("queued"), []
+
+    def execute(host):
+        seen.append(current_attempt() is host.superseded is not None)
+
+        def child():
+            seen.append(current_attempt() is host.superseded)
+            host.superseded.set()  # Temporal gives the attempt up mid-extraction.
+            fanout.checkpoint()  # The child's next model or read call.
+            pytest.fail("a superseded child must stop at its safe point")
+
+        fanout.run([child, child], 2)
+
+    with pytest.raises(CancelledError):
+        owned(monkeypatch, store, execute)
+    assert seen and all(seen)
+    assert store.row.state == "running" and "failed" not in store.states
+    assert current_attempt() is None  # The signal belongs to that attempt only.
