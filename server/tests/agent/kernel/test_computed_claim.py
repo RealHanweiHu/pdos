@@ -135,6 +135,7 @@ def sample():
     f.run = f.session.put(AgentRun, NS(
         id=uuid4(), tenant_id=uuid4(), category_id=uuid4(), requester_id=uuid4(),
         writer_id=uuid4(), session_id=uuid4(), product_id=None, proposal_id=None,
+        project_id=None,  # AgentRun.project_id: the proof re-checks a bound project
         private_context=False, data_categories=["public"], customer_identities=[],
         trigger="conversation", cancel_epoch=0, state="running", reverted_at=None,
         read_sources=[], versions={

@@ -73,6 +73,13 @@ def work(monkeypatch):
         revision=3,
         lifecycle_epoch=1,
         status="draft",
+        # Every column must be loaded: the session has no live bind for lazy loads.
+        parent_product_id=None,
+        target_price=None,
+        target_price_currency=None,
+        target_price_basis=None,
+        target_price_includes_tax=None,
+        target_price_as_of=None,
     )
     make_transient_to_detached(product)
     s.add(product)

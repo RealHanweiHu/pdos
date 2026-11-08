@@ -170,8 +170,10 @@ def boundary(monkeypatch):
             "sources": [source.model_dump(mode="json")],
             "publisher_access_sha256": "b" * 64,
         }
-        # Deliberately no real CoverageRead/token: this is an explicit IO substitute.
-        value = SimpleNamespace(
+        # The capture now requires the owner's CoverageRead type (covered_graph, 10-17).
+        # Its token, session and proof fields are inert placeholders: this is an
+        # explicit IO substitute, not a real owner proof.
+        value = owner.CoverageRead(
             source_basis=basis,
             valid_until=min(state.until, graph.expires_at) if graph.expires_at else state.until,
             coverage=tuple(
@@ -180,6 +182,11 @@ def boundary(monkeypatch):
             ),
             sources=(source,),
             required_source_read_set=tuple(reads),
+            _token=object(),
+            _session=s,
+            _uow=None,
+            _caller_hash="substitute",
+            _proof_sha256="0" * 64,
         )
         state.owner_returns.append(value)
         return value

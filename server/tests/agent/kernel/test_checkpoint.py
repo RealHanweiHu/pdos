@@ -1,5 +1,6 @@
 import os
 
+import pytest
 from langgraph.checkpoint.postgres import PostgresSaver
 
 from pdos_next.agent.kernel.graph import AgentKernel
@@ -9,6 +10,10 @@ from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from tests.agent.kernel.test_graph import Host, final, scope
 
 
+@pytest.mark.skipif(
+    not os.environ.get("M2_TEST_CHECKPOINT_URL"),
+    reason="Explicit verified independent checkpoint store required",
+)
 def test_graph_interrupt_survives_new_host_and_same_session_postgres_checkpoint():
     bound = scope()
     question = ModelTurn(

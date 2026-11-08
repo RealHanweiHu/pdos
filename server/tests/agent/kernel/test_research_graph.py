@@ -21,9 +21,11 @@ def test_read_only_child_uses_registered_graph_and_returns_exact_quoted_ledger()
             from pdos_agent_runtime.graph import in_agent_graph
 
             assert in_agent_graph() and bound.isolation == "research"
+            # Isolated faces also carry result.read for paged continuation (073aa96d, 10-31).
             assert {tool["name"] for tool in kwargs["tools"]} == {
                 "research.search",
                 "research.read",
+                "result.read",
             }
             self.calls += 1
             messages = kwargs["messages"]

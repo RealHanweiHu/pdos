@@ -163,7 +163,10 @@ def test_run_history_stable_cursor_and_other_requester_exclusion(setup):
                                                   Grant.principal_id == setup.human))
         session.delete(grant)
     assert api.get(path + "/" + created[0]).status_code == 403
-    assert api.get(path).json()["items"] == []
+    # Since 10-22 (1583fab1) the category history also requires current category
+    # access, like the single-run read above, instead of listing nothing.
+    listed = api.get(path)
+    assert listed.status_code == 403 and listed.json()["code"] == "FORBIDDEN_SCOPE"
     api.close()
 
 

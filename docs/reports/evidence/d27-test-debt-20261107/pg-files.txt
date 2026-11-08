@@ -1,0 +1,3 @@
+tests/categories/preproject/test_evidence_revert_pg.py
+tests/categories/products/test_definition_item_revert_mixed_pg.py
+tests/agent/kernel/test_project_current_context_pg.py

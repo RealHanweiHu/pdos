@@ -6,6 +6,7 @@ rewritten. The only fixture mutation is the explicit category-read revocation.
 # ruff: noqa: F401 -- actual fixture dependency tree is intentionally re-exported
 
 import os
+from contextlib import nullcontext
 from datetime import timedelta
 from hashlib import sha256
 from types import SimpleNamespace
@@ -170,6 +171,12 @@ def test_actual_no_model_activity_reads_owner_private_source_and_keeps_repeat_re
         assert session.scalar(select(Project.id).where(Project.id == work.project_id)) is None
     worker = kernel(summary_work, monkeypatch)
     monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
+    # D243 (9f91e89c): advance() now enters the Activity cancellation shield; outside a
+    # Temporal Activity it needs the same stand-ins as heartbeat.
+    monkeypatch.setattr(
+        "pdos_next.agent.kernel.activities.activity.shield_thread_cancel_exception", nullcontext
+    )
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.is_cancelled", lambda: False)
     first = worker.advance(envelope)
     assert first == {"run_id": envelope["subject_id"], "status": "completed"}
     result, events = saved(summary_work, envelope)
@@ -214,6 +221,12 @@ def test_actual_owner_revocation_hides_persisted_summary(summary_work, monkeypat
     _rule, envelope = admit(summary_work)
     worker = kernel(summary_work, monkeypatch)
     monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
+    # D243 (9f91e89c): advance() now enters the Activity cancellation shield; outside a
+    # Temporal Activity it needs the same stand-ins as heartbeat.
+    monkeypatch.setattr(
+        "pdos_next.agent.kernel.activities.activity.shield_thread_cancel_exception", nullcontext
+    )
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.is_cancelled", lambda: False)
     assert worker.advance(envelope)["status"] == "completed"
     result, _events = saved(summary_work, envelope)
     setup = summary_work.setup

@@ -17,7 +17,6 @@ from pdos_next.errors import DomainError
 from tests.agent.kernel.test_m3_definition_diff_pg import invoke, reader
 from tests.categories.products.test_definition_item_commands_pg import confirmed
 from tests.categories.products.test_platform_links_pg import request
-from tests.categories.products.test_variants_transactions import definition, derive, source
 
 
 def test_ordinary_host_restore_rechecks_platform_versions_and_permission(setup):
@@ -51,9 +50,12 @@ def test_ordinary_host_restore_rechecks_platform_versions_and_permission(setup):
 
 
 def test_agent_platform_read_omits_private_variant_and_forbids_private_target(setup):
-    artifact = source(setup)
-    parent = definition(setup, artifact)
-    variant, _, _ = derive(setup, parent, artifact, kind="customer", visibility="private")
+    # 确认稿 P23 (10-17): only a G0-approved variant identity may be linked, so the
+    # private target comes from a derivative proposal, not a draft variant row.
+    from g0_fixture import add_category_human, create_g0_variant
+
+    reviewer = add_category_human(setup, name="Synthetic variant reviewer")
+    variant = {"id": create_g0_variant(setup, reviewer=reviewer).variant_id}
     saved, _ = confirmed(
         setup, request(setup, variant_id=variant["id"], compatibility="客户私有要求")
     )

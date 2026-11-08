@@ -91,6 +91,10 @@ def test_category_wait_survives_postgres_checkpoint_and_new_host(setup, tmp_path
     )
 
     class Host(BoundHost):
+        # Since 10-31 the graph prefers BoundHost.model_step (gateway admission and
+        # provider call) over model(); this host scripts model() and calls no provider.
+        model_step = None
+
         def __init__(self, turns):
             super().__init__(f.store, adapters)
             self.turns, self.model_count = iter(turns), 0

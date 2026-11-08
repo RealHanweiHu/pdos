@@ -15,6 +15,7 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
 from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.disclosure import disclosure_digest
 from pdos_next.agent.kernel.graph import AgentKernel
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, TenantSkillEnablement
@@ -64,7 +65,8 @@ def call(f, tool, arguments):
     binding = ModelBinding(
         model_version=route.version,
         model_route_digest=route.digest,
-        tool_definitions_digest=digest(f.owner.registry.definitions()),
+        # A call discloses only what its loaded skills and bound scope allow (P76 item 4).
+        tool_definitions_digest=disclosure_digest(f.owner.registry, scope=f.scope),
         prompt_digest=digest("synthetic private analysis prefix"),
         isolation="main",
         cancel_epoch=f.scope.cancel_epoch,
@@ -218,7 +220,10 @@ def test_private_three_way_recovery_keeps_actual_item_versions_and_old_result(wo
             session.add(AgentRun(**candidate))
             session.flush()
     assert invalid_scope.value.orig.sqlstate == "23514"
-    from migrations.schema_s0_0761 import DOWNGRADE_SQL, GATE
+    # The rejected s0_0761 downgrade must leave the current gate intact; since
+    # s0_0850/s0_0854 that is the project-native definition, not s0_0761's text.
+    from migrations.schema_s0_0761 import DOWNGRADE_SQL
+    from migrations.schema_s0_0854 import NATIVE_GATE
 
     with pytest.raises(DBAPIError, match="model-source history requires s0_0761"):
         with work.admin.begin() as connection:
@@ -233,7 +238,7 @@ def test_private_three_way_recovery_keeps_actual_item_versions_and_old_result(wo
             connection.scalar(
                 text("SELECT pg_get_functiondef('kernel_source_reference_gate()'::regprocedure)")
             )
-            == GATE
+            == NATIVE_GATE
         )
     print(
         json.dumps(

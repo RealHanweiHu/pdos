@@ -9,8 +9,9 @@ from uuid import uuid4
 import pytest
 from pdos_next import api
 from pdos_next.core import category_capabilities
-from pdos_next.core.models import Category, Grant, Principal
+from pdos_next.core.models import Category, Grant, Principal, Product
 from pdos_next.core.service import Context
+from pdos_next.domain.categories.preproject.models import Proposal
 from sqlalchemy import create_engine, event
 
 
@@ -124,6 +125,25 @@ def test_categories_route_preserves_visible_rows_and_legacy_fields(projection, m
         for index, identity in enumerate([p.grant.category_id, uuid4()])
     ]
     p.session.scalars = lambda query: visible
+    # Since 10-31 (48713836) the list also carries three caller-scoped aggregates
+    # for the category page: owner name, readable products and my drafts.
+    owner_name = "Synthetic owner"
+    aggregates = {
+        Principal: [(p.ctx.actor_id, owner_name)],
+        Product: [(visible[0].id, 2)],
+        Proposal: [],
+    }
+    capability_execute = p.session.execute
+
+    def execute(query):
+        entity = query.column_descriptions[0]["entity"]
+        if entity is Principal and len(query.column_descriptions) == 2 and (
+            query.column_descriptions[1]["entity"] is Grant
+        ):
+            return capability_execute(query)
+        return SimpleNamespace(all=lambda: aggregates[entity])
+
+    p.session.execute = execute
 
     @contextmanager
     def session(engine, tenant_id, **scope):
@@ -154,6 +174,9 @@ def test_categories_route_preserves_visible_rows_and_legacy_fields(projection, m
                 "revision": category.revision,
                 "status": category.status,
                 "capabilities": {"product_management": category.id == p.grant.category_id},
+                "owner_name": owner_name,
+                "readable_product_count": 2 if category is visible[0] else 0,
+                "my_draft_count": 0,
             }
     finally:
         engine.dispose()

@@ -1,8 +1,12 @@
-"""Offline registered-graph capacity proof, with the actual zero-skill initial face.
+"""Offline registered-graph capacity proof at the pre-P76 full initial face size.
 
 The provider, reads, receipts and citations below are explicitly synthetic. This
 tests disclosure/admission/cleanup/checkpoint mechanics, not model correctness,
 real provider window support, durable PG provenance or execution of any tool.
+
+Since P76 item 4 the actual zero-skill face is about 9k tokens instead of 27k, so
+nine capacity results no longer reach the cleanup threshold. The long-run case
+pads the face with synthetic read tools back to the old size (D27).
 """
 
 import json
@@ -63,17 +67,19 @@ def tool_values(messages):
 class ScriptedProvider:
     """No transport/tokenizer; scripted outputs test mechanics, never quality."""
 
-    def __init__(self, *, recovery=False):
+    def __init__(self, *, recovery=False, registry=None):
         self.recovery, self.calls, self.messages = recovery, 0, []
+        self.registry = registry or default_registry()
         self.scope = None
         self.handle = None
 
-    def turn(self, configured, *, system, tools, messages, output_schema):
+    def turn(self, configured, *, system, tools, messages, output_schema, prompt_identity=None):
+        # The graph passes the prompt identity on every model step (OfflineHost forwards it).
         from pdos_agent_runtime.graph import in_registered_agent_graph
 
         assert in_registered_agent_graph()
         assert configured.base_url == "https://synthetic-provider.test/v1"
-        assert tools == disclosure(default_registry(), "main", (), scope=self.scope)
+        assert tools == disclosure(self.registry, "main", (), scope=self.scope)
         assert output_schema == WireAgentOutput.model_json_schema()
         self.messages.append(deepcopy(messages))
         phase, self.calls = self.calls, self.calls + 1
@@ -128,9 +134,9 @@ class ScriptedProvider:
 class OfflineHost:
     """Pure ports around the production graph; no DB, KMS, network or receipts."""
 
-    def __init__(self, window, provider):
+    def __init__(self, window, provider, registry=None):
         self.route, self.provider = route(window), provider
-        self.registry = default_registry()
+        self.registry = registry or default_registry()
         self.budgets, self.originals, self.reads, self.events = [], {}, [], []
         self.prefixes, self.disclosures, self.versions = [], [], {}
         self.requests = []
@@ -220,10 +226,26 @@ class OfflineHost:
         pytest.fail("Capacity transport must never execute a business action")
 
 
+def padded_registry():
+    """The actual zero-skill face plus synthetic reads, back to the pre-P76 ~27k tokens.
+
+    At 64k the fixed part must stay just over F/2 (the asserted >50%F warning) while
+    six capacity results still fit and nine trigger the cleanup; 12 x 1,450 does both.
+    """
+    registry = default_registry()
+    for index in range(12):
+        registry.add(ToolSpec(
+            f"synthetic.padding.read.{index:02}", "合成只读工具。" + "宽" * 1_450,
+            {"type": "object"}, {"type": "object"}, "read", "READ",
+        ))
+    return registry
+
+
 @pytest.mark.parametrize("window, focus", [(64_000, 58_976), (200_000, 64_000)])
 def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(window, focus):
-    provider = ScriptedProvider()
-    host, saver = OfflineHost(window, provider), InMemorySaver()
+    registry = padded_registry()
+    provider = ScriptedProvider(registry=registry)
+    host, saver = OfflineHost(window, provider, registry), InMemorySaver()
     kernel = AgentKernel(host, host.registry)
     bound = RunScope(*(uuid4() for _ in range(6)))
     provider.scope = bound
@@ -286,9 +308,9 @@ def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(
     assert omissions
     # Replace the entire pure Host/provider. The in-memory checkpoint preserves
     # model views, full tool_results and human wait; no old tool is called again.
-    next_provider = ScriptedProvider(recovery=True)
+    next_provider = ScriptedProvider(recovery=True, registry=registry)
     next_provider.scope = bound
-    next_host = OfflineHost(window, next_provider)
+    next_host = OfflineHost(window, next_provider, registry)
     finished = AgentKernel(next_host, next_host.registry).execute(
         bound, answer={"continue": "继续"}, checkpointer=saver,
     )

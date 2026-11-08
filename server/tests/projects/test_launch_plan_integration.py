@@ -15,6 +15,7 @@ from sqlalchemy.orm import make_transient_to_detached
 
 from pdos_next.core import service as common
 from pdos_next.core.models import Artifact, Category, Confirmation, Grant, Principal, Product
+from pdos_next.domain.categories.products.models import DefinitionSource
 from pdos_next.domain.projects import launch_plan_preview as seam
 from pdos_next.errors import DomainError
 from projects.test_launch_plan_preview import no_io, work  # noqa: F401
@@ -90,6 +91,11 @@ def common_rows(request, monkeypatch):
             # All ten fixture originals belong to this model, not the category-only branch.
             assert query.column_descriptions[0]["name"] in {"id", "Artifact"}
             return None
+        if entity is DefinitionSource:
+            # An invisible source may still be a G0-signed definition source of this
+            # product (source_for -> _signed_product_source); this fixture has none.
+            selected.append(DefinitionSource)
+            return None
         pytest.fail(f"Unexpected common scalar read {entity}")
 
     def execute(query):
@@ -98,6 +104,11 @@ def common_rows(request, monkeypatch):
         return SimpleNamespace(all=lambda: [(principal, grant)])
 
     def scalars(query):
+        if query.column_descriptions[0]["entity"] is Category:
+            # test.run.plan declares category_lifecycle_fence: the common scope
+            # locks the category root before the product.
+            selected.append((Category, "lock"))
+            return iter([category])
         assert query.column_descriptions[0]["entity"] is Artifact
         selected.append((Artifact, "batch"))
         # Explicit RLS substitute in a no-I/O protocol check. Actual privacy is tested in PG.
@@ -138,6 +149,7 @@ def test_normal_common_locks_and_persistent_rows_are_not_pending_writes(common_r
     assert w.selected.count(Product) == 1
     assert w.selected.count(Principal) == 1 and w.selected.count(Grant) == 1
     assert w.selected.count((Artifact, "batch")) == 1
+    assert w.selected.count((Category, "lock")) == 1
     assert w.counts == {"load": 1, "guards": 1, "cas": 1}
     pending = list(w.s.new)
     assert len(pending) == 1 and type(pending[0]) is Confirmation

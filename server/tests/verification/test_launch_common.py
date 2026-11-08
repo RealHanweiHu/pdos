@@ -39,7 +39,11 @@ def test_common_reader_accepts_running_only_with_matching_start_operation(work):
     loaded = _snapshot(row)
     assert loaded.status == "executing"
     assert loaded.timeline.promised_start is not None and loaded.timeline.actual_start is not None
+    # S2 multi-run contract (10-17, P13): a running request may still receive later
+    # samples, so handoff.accept/return can write an executing version.
     row.operation = "verification.handoff.accept"
+    assert _snapshot(row).status == "executing"
+    row.operation = "verification.handoff.offer"
     with pytest.raises(DomainError) as error:
         _snapshot(row)
     assert error.value.reason == "INTEGRITY_MISMATCH"
@@ -56,6 +60,11 @@ def test_launch_cannot_smuggle_result_or_disposition_through_shared_reader(work,
     )
     row = launch_row(request, "test.run.start")
     row.snapshot_sha256 = digest(request.model_dump(mode="json"))
+    if clock == "preliminary_result":
+        # S2 multi-run contract (10-17, P13): a later Run's start keeps the request's
+        # earlier preliminary-result clock; only final result/disposition stay barred.
+        assert _snapshot(row).timeline.preliminary_result == request.timeline.actual_start
+        return
     with pytest.raises(DomainError) as error:
         _snapshot(row)
     assert error.value.reason == "INTEGRITY_MISMATCH"
