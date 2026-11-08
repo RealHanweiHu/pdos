@@ -1,0 +1,35 @@
+{
+  "reading": {
+    "configuration": {
+      "revision": 8,
+      "version_id": "5e120019-329b-52c4-b271-62dc160393f0",
+      "provider_version": "mc:5e120019-329b-52c4-b271-62dc160393f0:8:5367c112b42631a4fe5efe36799039bf4033434ca862149df51a28c345e1d152",
+      "metadata": {
+        "protocol": "openai-compatible",
+        "base_url": "https://api.minimax.cn/v1",
+        "model": "MiniMax-M3",
+        "model_version": "MiniMax-M3",
+        "max_output_tokens": 2048,
+        "context_window_tokens": 68384,
+        "openai_output_parameter": "max_completion_tokens",
+        "openai_response_mode": "auto",
+        "streaming": true,
+        "connection_id": null,
+        "timeout_seconds": 30.0,
+        "response_bytes": 1048576
+      },
+      "enabled": true,
+      "credential_status": "bound",
+      "credential_display": "已绑定 ••••",
+      "created_at": "2026-11-06T02:25:43.352802Z",
+      "requires_requalification": true
+    },
+    "category_revision": 1,
+    "can_edit": true
+  },
+  "receipt_id": "33b29de3-7891-4822-b0a5-e2b700fe367c",
+  "focus": 48000,
+  "provider_output_limit": 524288,
+  "context_reserve": 20384,
+  "at_utc": "2026-11-06T02:25:44.384681+00:00"
+}

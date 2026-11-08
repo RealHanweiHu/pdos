@@ -1,0 +1,25 @@
+{
+  "case_id": "CTX-10",
+  "focus": 48000,
+  "attempt": "r48",
+  "label": "r48-ctx-CTX-10-F48000",
+  "category_id": "c12510ee-23af-4b6c-a190-742b2207396c",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "a36d6414-0389-4cb8-8898-15a926dba93d",
+      "status": "partial"
+    }
+  ],
+  "blocked": "CTX10 needs all 24 verbatim native constraints above STATE_TOKENS",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "control_only",
+  "limits": [],
+  "step_count": 3,
+  "finished": true
+}

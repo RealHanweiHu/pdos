@@ -1,0 +1,67 @@
+{
+  "case_id": "CTX-07",
+  "focus": 48000,
+  "attempt": "r48",
+  "label": "r48-ctx-CTX-07-F48000",
+  "category_id": "01123a78-ba73-4416-a142-271d21deb9ed",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [
+        {
+          "action": "publish_current_knowledge",
+          "old_source": {
+            "source_type": "knowledge",
+            "source_id": "d444afb8-5eb3-4dc1-8963-b59770fd4050",
+            "lineage_id": "e7530f72-ceb9-46b4-9db6-ffffeb23998a",
+            "version": 1,
+            "artifact_id": "1a58c820-22dc-4b4a-b38b-c541ef8a0088",
+            "artifact_revision": 1,
+            "receipt_id": "84201e3b-723d-4ede-a664-54e539ab892f",
+            "definition": "S7-A；复验观察窗口30秒。"
+          },
+          "new_source": {
+            "source_type": "knowledge",
+            "source_id": "40c60dbb-761e-4f5f-9442-ef6dad31a42b",
+            "lineage_id": "e7530f72-ceb9-46b4-9db6-ffffeb23998a",
+            "version": 2,
+            "artifact_id": "95bc1f63-9312-42d0-9707-d4877d35205a",
+            "artifact_revision": 1,
+            "receipt_id": "444a861b-c14d-446d-9131-c8cb3f9fe956",
+            "definition": "S7-A；复验观察窗口45秒；生效日期2026-10-21。"
+          }
+        }
+      ],
+      "run_id": "83e25860-8b2f-4872-b2ff-da0a20d7b2d9",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 4,
+      "before": [],
+      "after": [],
+      "run_id": "135a2ba9-5025-4db0-be61-ed14a3346437",
+      "status": "partial"
+    },
+    {
+      "ordinal": 2,
+      "phase": "final",
+      "turn_index": 6,
+      "before": [],
+      "after": [],
+      "run_id": "5c3f2990-ba2c-40fc-b6f9-5168801d0290",
+      "status": "partial"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 3,
+  "finished": true
+}

@@ -1,0 +1,726 @@
+{
+  "case_id": "CTX-05",
+  "focus": 48000,
+  "attempt": "r48",
+  "label": "r48-ctx-CTX-05-F48000",
+  "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [
+        {
+          "action": "select_old_focus",
+          "before": {
+            "version": "agent-work-state/v1",
+            "revision": 1,
+            "session_id": "150942e6-968e-407c-9323-e410bc807c77",
+            "skills": [],
+            "citations": [],
+            "completed": [],
+            "questions": [
+              {
+                "id": "q1_limit_basis",
+                "why": "在册的 78 dB 明确是“空载噪声”，而可读资料里没有 80 dB 上限本身的登记记录；若上限针对其他工况或测量方式，两者不可直接对标。",
+                "options": [
+                  {
+                    "label": "就是空载噪声上限，与 A-17 记录口径一致",
+                    "value": "空载噪声上限"
+                  },
+                  {
+                    "label": "针对其他工况/测点的噪声上限",
+                    "value": "其他工况或测点"
+                  },
+                  {
+                    "label": "尚不确定，需回查噪声规格书",
+                    "value": "需查规格书"
+                  }
+                ],
+                "question": "80 dB 上限的口径是哪一种？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "空载噪声上限",
+                  "reason": "你的表述沿用上一轮口径，最可能是同一指标口径；仍需你确认后我才把 78 dB 与其正式对标。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q2_attribution",
+                "why": "可读资料中查不到“砾川 M2”这一项目对象（platform.read 全量、按名查询均为空），A-17 只以编号登记；在没有绑定记录前我不会替你认定归属。",
+                "options": [
+                  {
+                    "label": "A-17 就是砾川 M2 项目下的样件，按此呈现",
+                    "value": "确认即砾川 M2"
+                  },
+                  {
+                    "label": "需要我下一轮把项目与样件绑定关系查清后再呈现",
+                    "value": "需建立绑定"
+                  },
+                  {
+                    "label": "暂不绑定，只呈现 A-17 记录本身",
+                    "value": "先不绑定"
+                  }
+                ],
+                "question": "A-17 与合成项目“砾川 M2”的归属关系如何确认？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "确认即砾川 M2",
+                  "reason": "你本次提问已把两者并置，且本轮已穷尽可读来源仍无独立绑定记录。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q3_next_depth",
+                "why": "本轮检索预算已用尽，A-17 的测试 Run、实测报告、批次记录以及 80 dB 限值出处都还没查到。",
+                "options": [
+                  {
+                    "label": "继续深入检索测试/制造来源与限值出处",
+                    "value": "继续深查"
+                  },
+                  {
+                    "label": "停在此处，先用现有记录讨论",
+                    "value": "停在此处"
+                  },
+                  {
+                    "label": "由人工补充实测记录或限值文件后我再核",
+                    "value": "人工补记录"
+                  }
+                ],
+                "question": "是否要在下一轮继续深入查 A-17 的实测与制造记录？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "继续深查",
+                  "reason": "当前只有一行在册数值，缺实测与限值出处，判定前提尚不完整。"
+                },
+                "allow_free_text": true
+              }
+            ],
+            "root_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "candidates": [],
+            "exclusions": [],
+            "unfinished": [
+              "A-17 的测试 Run、实测报告与制造批次记录未找到（本轮检索预算已用尽，coverage=partial），需要在同会话下一轮深入查。",
+              "“80 dB 上限”的登记出处与口径未核对，目前仅来自你的陈述。",
+              "A-17 与合成项目“砾川 M2”的对象绑定未在可读资料中找到，未做任何归属认定。",
+              "未出具合格/通过结论（按你的要求），也未做任何登记写入。",
+              "企业资料的引用或覆盖尚未完整核对。"
+            ],
+            "constraints": [
+              {
+                "id": "111ffb4f-3e28-5ab2-91c4-9aca5667227d",
+                "text": "不要写通过结论。",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+              }
+            ],
+            "current_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "focus_objects": [
+              {
+                "id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "kind": "category",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "version": 1
+              }
+            ],
+            "completed_count": 0,
+            "search_preferences": {
+              "scope": "same_category",
+              "include_customer_private": false
+            },
+            "citation_directory": {
+              "tool": "assistant.citations.read",
+              "has_more": false,
+              "next_cursor": null
+            },
+            "search_context": {
+              "kind": "category",
+              "label": "当前品类的可读资料",
+              "scoped": false
+            },
+            "notes": [],
+            "estimated_tokens": 1139,
+            "context_incomplete": false,
+            "missing": []
+          },
+          "after": {
+            "version": "agent-work-state/v1",
+            "revision": 2,
+            "session_id": "150942e6-968e-407c-9323-e410bc807c77",
+            "skills": [],
+            "citations": [],
+            "completed": [],
+            "questions": [
+              {
+                "id": "q1_limit_basis",
+                "why": "在册的 78 dB 明确是“空载噪声”，而可读资料里没有 80 dB 上限本身的登记记录；若上限针对其他工况或测量方式，两者不可直接对标。",
+                "options": [
+                  {
+                    "label": "就是空载噪声上限，与 A-17 记录口径一致",
+                    "value": "空载噪声上限"
+                  },
+                  {
+                    "label": "针对其他工况/测点的噪声上限",
+                    "value": "其他工况或测点"
+                  },
+                  {
+                    "label": "尚不确定，需回查噪声规格书",
+                    "value": "需查规格书"
+                  }
+                ],
+                "question": "80 dB 上限的口径是哪一种？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "空载噪声上限",
+                  "reason": "你的表述沿用上一轮口径，最可能是同一指标口径；仍需你确认后我才把 78 dB 与其正式对标。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q2_attribution",
+                "why": "可读资料中查不到“砾川 M2”这一项目对象（platform.read 全量、按名查询均为空），A-17 只以编号登记；在没有绑定记录前我不会替你认定归属。",
+                "options": [
+                  {
+                    "label": "A-17 就是砾川 M2 项目下的样件，按此呈现",
+                    "value": "确认即砾川 M2"
+                  },
+                  {
+                    "label": "需要我下一轮把项目与样件绑定关系查清后再呈现",
+                    "value": "需建立绑定"
+                  },
+                  {
+                    "label": "暂不绑定，只呈现 A-17 记录本身",
+                    "value": "先不绑定"
+                  }
+                ],
+                "question": "A-17 与合成项目“砾川 M2”的归属关系如何确认？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "确认即砾川 M2",
+                  "reason": "你本次提问已把两者并置，且本轮已穷尽可读来源仍无独立绑定记录。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q3_next_depth",
+                "why": "本轮检索预算已用尽，A-17 的测试 Run、实测报告、批次记录以及 80 dB 限值出处都还没查到。",
+                "options": [
+                  {
+                    "label": "继续深入检索测试/制造来源与限值出处",
+                    "value": "继续深查"
+                  },
+                  {
+                    "label": "停在此处，先用现有记录讨论",
+                    "value": "停在此处"
+                  },
+                  {
+                    "label": "由人工补充实测记录或限值文件后我再核",
+                    "value": "人工补记录"
+                  }
+                ],
+                "question": "是否要在下一轮继续深入查 A-17 的实测与制造记录？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "继续深查",
+                  "reason": "当前只有一行在册数值，缺实测与限值出处，判定前提尚不完整。"
+                },
+                "allow_free_text": true
+              }
+            ],
+            "root_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "candidates": [],
+            "exclusions": [],
+            "unfinished": [
+              "A-17 的测试 Run、实测报告与制造批次记录未找到（本轮检索预算已用尽，coverage=partial），需要在同会话下一轮深入查。",
+              "“80 dB 上限”的登记出处与口径未核对，目前仅来自你的陈述。",
+              "A-17 与合成项目“砾川 M2”的对象绑定未在可读资料中找到，未做任何归属认定。",
+              "未出具合格/通过结论（按你的要求），也未做任何登记写入。",
+              "企业资料的引用或覆盖尚未完整核对。"
+            ],
+            "constraints": [
+              {
+                "id": "111ffb4f-3e28-5ab2-91c4-9aca5667227d",
+                "text": "不要写通过结论。",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+              }
+            ],
+            "current_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "focus_objects": [
+              {
+                "id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "kind": "category",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "version": 1
+              },
+              {
+                "kind": "source",
+                "id": "9d420aa9-5956-442e-bd8d-9e700f98f6f3",
+                "version": 1,
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "title": "品类知识 · boundary"
+              }
+            ],
+            "completed_count": 0,
+            "search_preferences": {
+              "scope": "same_category",
+              "include_customer_private": false
+            },
+            "context_selection": {
+              "version": 1,
+              "status": "available",
+              "focus": {
+                "source_type": "knowledge",
+                "source_id": "70282799-161d-4cf6-9b9b-19ab0e20a1ad",
+                "object_id": "9d420aa9-5956-442e-bd8d-9e700f98f6f3",
+                "source_revision": 1,
+                "content_hash": "c761c991cd41f982a63004f6ceeffded0ffde4b02555d55e039af2665dd1569c",
+                "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "product_id": null,
+                "project_id": null,
+                "proposal_id": null,
+                "title": "品类知识 · boundary",
+                "private": false,
+                "customer_original": false
+              },
+              "version_mode": "fixed",
+              "versions": [
+                {
+                  "source_type": "knowledge",
+                  "source_id": "70282799-161d-4cf6-9b9b-19ab0e20a1ad",
+                  "object_id": "9d420aa9-5956-442e-bd8d-9e700f98f6f3",
+                  "source_revision": 1,
+                  "content_hash": "c761c991cd41f982a63004f6ceeffded0ffde4b02555d55e039af2665dd1569c",
+                  "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                  "product_id": null,
+                  "project_id": null,
+                  "proposal_id": null,
+                  "title": "品类知识 · boundary",
+                  "private": false,
+                  "customer_original": false
+                }
+              ],
+              "sources": null
+            },
+            "citation_directory": {
+              "tool": "assistant.citations.read",
+              "has_more": false,
+              "next_cursor": null
+            },
+            "search_context": {
+              "kind": "category",
+              "label": "当前品类的可读资料",
+              "scoped": false
+            },
+            "notes": [],
+            "estimated_tokens": 1435,
+            "context_incomplete": false,
+            "missing": []
+          },
+          "context_revision": 2
+        }
+      ],
+      "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+      "status": "partial"
+    },
+    {
+      "ordinal": 1,
+      "phase": "history",
+      "turn_index": 3,
+      "before": [
+        {
+          "action": "select_new_focus",
+          "before": {
+            "version": "agent-work-state/v1",
+            "revision": 2,
+            "session_id": "150942e6-968e-407c-9323-e410bc807c77",
+            "skills": [],
+            "citations": [],
+            "completed": [],
+            "questions": [
+              {
+                "id": "q1_limit_basis",
+                "why": "在册的 78 dB 明确是“空载噪声”，而可读资料里没有 80 dB 上限本身的登记记录；若上限针对其他工况或测量方式，两者不可直接对标。",
+                "options": [
+                  {
+                    "label": "就是空载噪声上限，与 A-17 记录口径一致",
+                    "value": "空载噪声上限"
+                  },
+                  {
+                    "label": "针对其他工况/测点的噪声上限",
+                    "value": "其他工况或测点"
+                  },
+                  {
+                    "label": "尚不确定，需回查噪声规格书",
+                    "value": "需查规格书"
+                  }
+                ],
+                "question": "80 dB 上限的口径是哪一种？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "空载噪声上限",
+                  "reason": "你的表述沿用上一轮口径，最可能是同一指标口径；仍需你确认后我才把 78 dB 与其正式对标。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q2_attribution",
+                "why": "可读资料中查不到“砾川 M2”这一项目对象（platform.read 全量、按名查询均为空），A-17 只以编号登记；在没有绑定记录前我不会替你认定归属。",
+                "options": [
+                  {
+                    "label": "A-17 就是砾川 M2 项目下的样件，按此呈现",
+                    "value": "确认即砾川 M2"
+                  },
+                  {
+                    "label": "需要我下一轮把项目与样件绑定关系查清后再呈现",
+                    "value": "需建立绑定"
+                  },
+                  {
+                    "label": "暂不绑定，只呈现 A-17 记录本身",
+                    "value": "先不绑定"
+                  }
+                ],
+                "question": "A-17 与合成项目“砾川 M2”的归属关系如何确认？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "确认即砾川 M2",
+                  "reason": "你本次提问已把两者并置，且本轮已穷尽可读来源仍无独立绑定记录。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q3_next_depth",
+                "why": "本轮检索预算已用尽，A-17 的测试 Run、实测报告、批次记录以及 80 dB 限值出处都还没查到。",
+                "options": [
+                  {
+                    "label": "继续深入检索测试/制造来源与限值出处",
+                    "value": "继续深查"
+                  },
+                  {
+                    "label": "停在此处，先用现有记录讨论",
+                    "value": "停在此处"
+                  },
+                  {
+                    "label": "由人工补充实测记录或限值文件后我再核",
+                    "value": "人工补记录"
+                  }
+                ],
+                "question": "是否要在下一轮继续深入查 A-17 的实测与制造记录？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "继续深查",
+                  "reason": "当前只有一行在册数值，缺实测与限值出处，判定前提尚不完整。"
+                },
+                "allow_free_text": true
+              }
+            ],
+            "root_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "candidates": [],
+            "exclusions": [],
+            "unfinished": [
+              "A-17 的测试 Run、实测报告与制造批次记录未找到（本轮检索预算已用尽，coverage=partial），需要在同会话下一轮深入查。",
+              "“80 dB 上限”的登记出处与口径未核对，目前仅来自你的陈述。",
+              "A-17 与合成项目“砾川 M2”的对象绑定未在可读资料中找到，未做任何归属认定。",
+              "未出具合格/通过结论（按你的要求），也未做任何登记写入。",
+              "企业资料的引用或覆盖尚未完整核对。"
+            ],
+            "constraints": [
+              {
+                "id": "111ffb4f-3e28-5ab2-91c4-9aca5667227d",
+                "text": "不要写通过结论。",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+              }
+            ],
+            "current_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "focus_objects": [
+              {
+                "id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "kind": "category",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "version": 1
+              },
+              {
+                "kind": "source",
+                "id": "9d420aa9-5956-442e-bd8d-9e700f98f6f3",
+                "version": 1,
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "title": "品类知识 · boundary"
+              }
+            ],
+            "completed_count": 0,
+            "context_selection": {
+              "version": 1,
+              "status": "available",
+              "focus": {
+                "source_type": "knowledge",
+                "source_id": "70282799-161d-4cf6-9b9b-19ab0e20a1ad",
+                "object_id": "9d420aa9-5956-442e-bd8d-9e700f98f6f3",
+                "source_revision": 1,
+                "content_hash": "c761c991cd41f982a63004f6ceeffded0ffde4b02555d55e039af2665dd1569c",
+                "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "product_id": null,
+                "project_id": null,
+                "proposal_id": null,
+                "title": "品类知识 · boundary",
+                "private": false,
+                "customer_original": false
+              },
+              "version_mode": "fixed",
+              "versions": [
+                {
+                  "source_type": "knowledge",
+                  "source_id": "70282799-161d-4cf6-9b9b-19ab0e20a1ad",
+                  "object_id": "9d420aa9-5956-442e-bd8d-9e700f98f6f3",
+                  "source_revision": 1,
+                  "content_hash": "c761c991cd41f982a63004f6ceeffded0ffde4b02555d55e039af2665dd1569c",
+                  "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                  "product_id": null,
+                  "project_id": null,
+                  "proposal_id": null,
+                  "title": "品类知识 · boundary",
+                  "private": false,
+                  "customer_original": false
+                }
+              ],
+              "sources": null
+            },
+            "search_preferences": {
+              "scope": "same_category",
+              "include_customer_private": false
+            },
+            "citation_directory": {
+              "tool": "assistant.citations.read",
+              "has_more": false,
+              "next_cursor": null
+            },
+            "search_context": {
+              "kind": "category",
+              "label": "当前品类的可读资料",
+              "scoped": false
+            },
+            "notes": [],
+            "estimated_tokens": 1435,
+            "context_incomplete": false,
+            "missing": []
+          },
+          "after": {
+            "version": "agent-work-state/v1",
+            "revision": 3,
+            "session_id": "150942e6-968e-407c-9323-e410bc807c77",
+            "skills": [],
+            "citations": [],
+            "completed": [],
+            "questions": [
+              {
+                "id": "q1_limit_basis",
+                "why": "在册的 78 dB 明确是“空载噪声”，而可读资料里没有 80 dB 上限本身的登记记录；若上限针对其他工况或测量方式，两者不可直接对标。",
+                "options": [
+                  {
+                    "label": "就是空载噪声上限，与 A-17 记录口径一致",
+                    "value": "空载噪声上限"
+                  },
+                  {
+                    "label": "针对其他工况/测点的噪声上限",
+                    "value": "其他工况或测点"
+                  },
+                  {
+                    "label": "尚不确定，需回查噪声规格书",
+                    "value": "需查规格书"
+                  }
+                ],
+                "question": "80 dB 上限的口径是哪一种？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "空载噪声上限",
+                  "reason": "你的表述沿用上一轮口径，最可能是同一指标口径；仍需你确认后我才把 78 dB 与其正式对标。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q2_attribution",
+                "why": "可读资料中查不到“砾川 M2”这一项目对象（platform.read 全量、按名查询均为空），A-17 只以编号登记；在没有绑定记录前我不会替你认定归属。",
+                "options": [
+                  {
+                    "label": "A-17 就是砾川 M2 项目下的样件，按此呈现",
+                    "value": "确认即砾川 M2"
+                  },
+                  {
+                    "label": "需要我下一轮把项目与样件绑定关系查清后再呈现",
+                    "value": "需建立绑定"
+                  },
+                  {
+                    "label": "暂不绑定，只呈现 A-17 记录本身",
+                    "value": "先不绑定"
+                  }
+                ],
+                "question": "A-17 与合成项目“砾川 M2”的归属关系如何确认？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "确认即砾川 M2",
+                  "reason": "你本次提问已把两者并置，且本轮已穷尽可读来源仍无独立绑定记录。"
+                },
+                "allow_free_text": true
+              },
+              {
+                "id": "q3_next_depth",
+                "why": "本轮检索预算已用尽，A-17 的测试 Run、实测报告、批次记录以及 80 dB 限值出处都还没查到。",
+                "options": [
+                  {
+                    "label": "继续深入检索测试/制造来源与限值出处",
+                    "value": "继续深查"
+                  },
+                  {
+                    "label": "停在此处，先用现有记录讨论",
+                    "value": "停在此处"
+                  },
+                  {
+                    "label": "由人工补充实测记录或限值文件后我再核",
+                    "value": "人工补记录"
+                  }
+                ],
+                "question": "是否要在下一轮继续深入查 A-17 的实测与制造记录？",
+                "depends_on": [],
+                "recommended": {
+                  "value": "继续深查",
+                  "reason": "当前只有一行在册数值，缺实测与限值出处，判定前提尚不完整。"
+                },
+                "allow_free_text": true
+              }
+            ],
+            "root_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "candidates": [],
+            "exclusions": [],
+            "unfinished": [
+              "A-17 的测试 Run、实测报告与制造批次记录未找到（本轮检索预算已用尽，coverage=partial），需要在同会话下一轮深入查。",
+              "“80 dB 上限”的登记出处与口径未核对，目前仅来自你的陈述。",
+              "A-17 与合成项目“砾川 M2”的对象绑定未在可读资料中找到，未做任何归属认定。",
+              "未出具合格/通过结论（按你的要求），也未做任何登记写入。",
+              "企业资料的引用或覆盖尚未完整核对。"
+            ],
+            "constraints": [
+              {
+                "id": "111ffb4f-3e28-5ab2-91c4-9aca5667227d",
+                "text": "不要写通过结论。",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+              }
+            ],
+            "current_goal": {
+              "text": "看合成项目“砾川 M2”的A-17样件，噪声上限仍用80 dB；不要写通过结论。",
+              "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc"
+            },
+            "focus_objects": [
+              {
+                "id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "kind": "category",
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "version": 1
+              },
+              {
+                "kind": "source",
+                "id": "11086bdf-5487-4caa-af86-b3d50f5f5d02",
+                "version": 2,
+                "run_id": "5903b464-b240-4fdf-8149-c4d3fe5ea0dc",
+                "title": "品类知识 · boundary"
+              }
+            ],
+            "completed_count": 0,
+            "context_selection": {
+              "version": 1,
+              "status": "available",
+              "focus": {
+                "source_type": "knowledge",
+                "source_id": "f1127a4f-b838-4c6c-aa54-8e8bbe8cc7f5",
+                "object_id": "11086bdf-5487-4caa-af86-b3d50f5f5d02",
+                "source_revision": 2,
+                "content_hash": "1514152e4b0ce7ae79410ea11d88bdd1cbde01d7308c4fb43d7d8fc1e1a76bb3",
+                "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                "product_id": null,
+                "project_id": null,
+                "proposal_id": null,
+                "title": "品类知识 · boundary",
+                "private": false,
+                "customer_original": false
+              },
+              "version_mode": "fixed",
+              "versions": [
+                {
+                  "source_type": "knowledge",
+                  "source_id": "f1127a4f-b838-4c6c-aa54-8e8bbe8cc7f5",
+                  "object_id": "11086bdf-5487-4caa-af86-b3d50f5f5d02",
+                  "source_revision": 2,
+                  "content_hash": "1514152e4b0ce7ae79410ea11d88bdd1cbde01d7308c4fb43d7d8fc1e1a76bb3",
+                  "category_id": "83280bac-862f-4c3c-a05b-4c603fa91c52",
+                  "product_id": null,
+                  "project_id": null,
+                  "proposal_id": null,
+                  "title": "品类知识 · boundary",
+                  "private": false,
+                  "customer_original": false
+                }
+              ],
+              "sources": null
+            },
+            "search_preferences": {
+              "scope": "same_category",
+              "include_customer_private": false
+            },
+            "citation_directory": {
+              "tool": "assistant.citations.read",
+              "has_more": false,
+              "next_cursor": null
+            },
+            "search_context": {
+              "kind": "category",
+              "label": "当前品类的可读资料",
+              "scoped": false
+            },
+            "notes": [],
+            "estimated_tokens": 1435,
+            "context_incomplete": false,
+            "missing": []
+          },
+          "context_revision": 3
+        }
+      ],
+      "after": [],
+      "run_id": "9506ceb1-79d5-4e44-9f37-ea736382fecb",
+      "status": "partial"
+    },
+    {
+      "ordinal": 2,
+      "phase": "final",
+      "turn_index": 6,
+      "before": [],
+      "after": [],
+      "run_id": "2c6856cd-3741-4dba-86dd-9eb8a58c421b",
+      "status": "partial"
+    }
+  ],
+  "blocked": null,
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 3,
+  "finished": true
+}

@@ -1,0 +1,25 @@
+{
+  "case_id": "CTX-06",
+  "focus": 48000,
+  "attempt": "r48",
+  "label": "r48-ctx-CTX-06-F48000",
+  "category_id": "4e9a5c62-fb0a-4e9a-80c9-d26583f86c5c",
+  "steps": [
+    {
+      "ordinal": 0,
+      "phase": "history",
+      "turn_index": 0,
+      "before": [],
+      "after": [],
+      "run_id": "7ca7f7a9-832a-4108-9f40-84b6dc9f68d3",
+      "status": "partial"
+    }
+  ],
+  "blocked": "CTX06 needs a real carried historical-source citation before exclusion",
+  "error": null,
+  "binding_status": "setup_ready_preconditions_unverified",
+  "execution_class": "answer_evaluation",
+  "limits": [],
+  "step_count": 4,
+  "finished": true
+}

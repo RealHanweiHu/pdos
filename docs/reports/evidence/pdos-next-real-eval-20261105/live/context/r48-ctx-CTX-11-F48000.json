@@ -1,0 +1,11 @@
+{
+  "case_id": "CTX-11",
+  "focus": 48000,
+  "attempt": "r48",
+  "label": "r48-ctx-CTX-11-F48000",
+  "category_id": "e289dc47-543d-4b9d-80fe-04f0c5b71d02",
+  "steps": [],
+  "blocked": null,
+  "error": "ModuleNotFoundError: No module named 'g0_fixture'",
+  "finished": false
+}

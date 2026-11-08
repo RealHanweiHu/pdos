@@ -1,0 +1,2556 @@
+{
+  "attempt": "r2m",
+  "category_id": "eca40910-37a5-4b4a-852e-146897823a89",
+  "blocked": {
+    "PUR-09": "ValueError: Supply capture failed: 409: {\"code\":\"SOURCE_UNAVAILABLE\",\"message\":\"本轮尚未保存权威需求准备快照。\",\"detail\":{\"reason\":\"PORT_UNCONNECTED\"}}",
+    "QUA-09": "AssertionError: {\"code\":\"QUALIFICATION_REQUIRED\",\"message\":\"本动作需要当前具名人员的用途限定职责与有效专业资格。\",\"detail\":{\"reason\":\"PROFESSIONAL_AUTHORITY_REQUIRED\"}}",
+    "QUA-10": "AssertionError: {\"code\":\"QUALIFICATION_REQUIRED\",\"message\":\"本动作需要当前具名人员的用途限定职责与有效专业资格。\",\"detail\":{\"reason\":\"PROFESSIONAL_AUTHORITY_REQUIRED\"}}",
+    "PRD-10": "Parent lacks actual required citations for PRD-10",
+    "PUR-10": "Parent lacks actual required citations for PUR-10"
+  },
+  "parents": {
+    "ENG-10": {
+      "parent": "ENG-03",
+      "run_id": "3c00aef6-bc21-4fb7-a218-d54473ddc59a",
+      "status": "partial"
+    },
+    "PRD-10": {
+      "parent": "PRD-03",
+      "run_id": "03086609-3056-4fa9-9521-975feb5a2073",
+      "status": "partial"
+    },
+    "PUR-10": {
+      "parent": "PUR-01",
+      "run_id": "95c86176-5813-427a-a098-efbbcb1a5ee0",
+      "status": "waiting_input"
+    }
+  },
+  "refused": {
+    "r2m-rag-ENG-10": {
+      "case_id": "ENG-10",
+      "refusal": "HTTP 403: {\"code\":\"FORBIDDEN_SCOPE\",\"message\":\"本次讨论携带的来源受众未覆盖当前复验准备。\",\"detail\":{\"reason_key\":\"assistant_action_audience_widened\",\"reason\":\"FORBIDDEN_SCOPE\"}}"
+    }
+  },
+  "bindings": {
+    "ENG-09": {
+      "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+      "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+      "current_truth_evidence": {
+        "status_receipt": {
+          "id": "fee63a13-0eab-49ca-acf9-39b04d6d6053",
+          "category_id": "eca40910-37a5-4b4a-852e-146897823a89",
+          "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+          "operation": "work.status_update.create",
+          "subject_type": "project_status_update",
+          "subject_id": "802fe93d-5e82-48ea-997f-b9918e67c03e",
+          "subject_revision": 1,
+          "writer_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "requester_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:24.729957+00:00",
+          "agent_run_id": null,
+          "result": {
+            "id": "802fe93d-5e82-48ea-997f-b9918e67c03e",
+            "revision": 1,
+            "status": "recorded",
+            "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83"
+          }
+        },
+        "project_work": {
+          "project": {
+            "id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+            "revision": 1,
+            "name": "岚桥A7",
+            "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+            "visibility": "category"
+          },
+          "product_revision": 1,
+          "members": [
+            {
+              "id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "name": "RealEval-rag40-r2m-owner",
+              "can_write": true
+            },
+            {
+              "id": "2be9b83a-774d-418a-8077-ce94945dd679",
+              "name": "RealEval-rag40-r2m-peer",
+              "can_write": true
+            }
+          ],
+          "tasks": [
+            {
+              "id": "019bae9f-5877-4db7-ae29-4bc14e2bcb79",
+              "task_id": "019bae9f-5877-4db7-ae29-4bc14e2bcb79",
+              "version_id": "019bae9f-5877-4db7-ae29-4bc14e2bcb79",
+              "revision": 1,
+              "state": "proposed",
+              "status": "proposed",
+              "title": "确认45℃满载复验样品数并补齐测试准备",
+              "goal": "补齐明确缺项后由本人核对，不替代专业结论",
+              "outcomes": [
+                {
+                  "key": "evidence",
+                  "text": "可核对的补证记录",
+                  "required": true
+                }
+              ],
+              "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "assignee_id": null,
+              "recipient_id": null,
+              "plan_task": null,
+              "npi_template": null,
+              "g0_open_item": null,
+              "sources": [
+                {
+                  "id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                  "kind": "artifact",
+                  "position": "line:1;quote_sha256:79ef07462bc26bc92603e1e5fb82195a2b5c08938e8dfe03e5fe5b0c22d40bc4",
+                  "revision": 1
+                }
+              ],
+              "actual_start": null,
+              "submission": null,
+              "review": null,
+              "history": [
+                {
+                  "id": "019bae9f-5877-4db7-ae29-4bc14e2bcb79",
+                  "revision": 1,
+                  "action": "create",
+                  "state": "proposed",
+                  "actor_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:24.354739+00:00",
+                  "receipt_id": "0d7d72ad-2f89-4825-a7c8-15bb92c03ba9"
+                }
+              ]
+            }
+          ],
+          "g0_open_items": [],
+          "commitments": [],
+          "updates": [
+            {
+              "id": "802fe93d-5e82-48ea-997f-b9918e67c03e",
+              "revision": 1,
+              "actor_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "fact_summary": "具名登记：45℃满载温升复验尚未准备，样品数待本人决定；尚未进入DVT。",
+              "next_steps": "确认45℃满载复验样品数并补齐测试准备",
+              "task_refs": [],
+              "sources": [
+                {
+                  "id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                  "kind": "artifact",
+                  "position": "line:1;quote_sha256:79ef07462bc26bc92603e1e5fb82195a2b5c08938e8dfe03e5fe5b0c22d40bc4",
+                  "revision": 1
+                }
+              ],
+              "created_at": "2026-11-06T08:17:24.708968+00:00",
+              "receipt_id": "fee63a13-0eab-49ca-acf9-39b04d6d6053"
+            }
+          ],
+          "as_of": "2026-11-06T08:17:26.163444+00:00"
+        },
+        "governance": {
+          "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+          "project_revision": 1,
+          "revision": 1,
+          "timeline": {
+            "task_key": null,
+            "baseline": null,
+            "forecast": null,
+            "commitments": [],
+            "actual": null
+          },
+          "plan_tasks": [],
+          "plan": null,
+          "bindings": {},
+          "template": {
+            "id": "small-change@1",
+            "name": "小改项目"
+          },
+          "stages": [
+            {
+              "id": "9334f25d-90d6-4fa3-b2a3-41ff68a036b1",
+              "key": "planning",
+              "name": "计划",
+              "rules": [
+                "baseline"
+              ],
+              "entry_rules": [
+                "g0"
+              ],
+              "status": "current",
+              "actual": null
+            },
+            {
+              "id": "98799ce1-21d7-4f87-bc8b-b9cc7c255861",
+              "key": "design",
+              "name": "设计",
+              "rules": [
+                "engineering"
+              ],
+              "entry_rules": [
+                "baseline"
+              ],
+              "status": "upcoming",
+              "actual": null
+            },
+            {
+              "id": "422a2ccb-816d-4ec2-a727-c3684172b163",
+              "key": "dvt",
+              "name": "DVT",
+              "rules": [
+                "engineering",
+                "manufacturing"
+              ],
+              "entry_rules": [
+                "engineering"
+              ],
+              "status": "upcoming",
+              "actual": null
+            }
+          ],
+          "current_stage": {
+            "id": "9334f25d-90d6-4fa3-b2a3-41ff68a036b1",
+            "key": "planning",
+            "name": "计划",
+            "rules": [
+              "baseline"
+            ],
+            "entry_rules": [
+              "g0"
+            ]
+          },
+          "completed": false,
+          "gate": {
+            "stage_id": "9334f25d-90d6-4fa3-b2a3-41ff68a036b1",
+            "state": "UNKNOWN",
+            "checks": [
+              {
+                "key": "baseline",
+                "label": "当前计划的具名批准基线",
+                "state": "UNKNOWN",
+                "detail": "当前计划尚无适用的批准基线",
+                "ref": null
+              }
+            ],
+            "maturity": {
+              "engineering": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "manufacturing": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "delivery": {
+                "state": "UNKNOWN",
+                "detail": "固定用途、数量及地点/地区；客户承认和真实外发仍独立办理",
+                "scope": null,
+                "purpose": null,
+                "limits": []
+              }
+            },
+            "release": null,
+            "required_source_read_set": [],
+            "review_current": false
+          },
+          "next_gate": {
+            "stage_id": "98799ce1-21d7-4f87-bc8b-b9cc7c255861",
+            "state": "UNKNOWN",
+            "checks": [
+              {
+                "key": "baseline",
+                "label": "当前计划的具名批准基线",
+                "state": "UNKNOWN",
+                "detail": "当前计划尚无适用的批准基线",
+                "ref": null
+              }
+            ],
+            "maturity": {
+              "engineering": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "manufacturing": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "delivery": {
+                "state": "UNKNOWN",
+                "detail": "固定用途、数量及地点/地区；客户承认和真实外发仍独立办理",
+                "scope": null,
+                "purpose": null,
+                "limits": []
+              }
+            },
+            "release": null,
+            "required_source_read_set": []
+          },
+          "baseline": null,
+          "review": null,
+          "health": {
+            "state": "unknown",
+            "label": "待核对",
+            "reason": "当前必需依据不完整或已失效"
+          },
+          "commitments": [],
+          "history": [
+            {
+              "id": "561dfaa0-c48b-484e-bba1-4303d6a947a6",
+              "revision": 1,
+              "operation": "work.stage.adopt",
+              "actor_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "at": "2026-11-06T08:17:25.937763+00:00",
+              "receipt_id": "f3080e19-02ae-4702-b241-3cf09761202f",
+              "reason": "RAG40合成项目采用现有阶段；当前仍待计划基线与补证",
+              "outcome": null,
+              "stage_name": null
+            }
+          ],
+          "can_manage": true,
+          "templates": [
+            {
+              "id": "standard@1",
+              "name": "完整开发",
+              "stages": [
+                {
+                  "key": "concept",
+                  "name": "概念",
+                  "rules": [
+                    "g0"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "planning",
+                  "name": "计划",
+                  "rules": [
+                    "baseline"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "design",
+                  "name": "设计",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "baseline"
+                  ]
+                },
+                {
+                  "key": "evt",
+                  "name": "EVT",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                },
+                {
+                  "key": "dvt",
+                  "name": "DVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                },
+                {
+                  "key": "pvt",
+                  "name": "PVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing",
+                    "delivery"
+                  ],
+                  "entry_rules": [
+                    "manufacturing"
+                  ]
+                },
+                {
+                  "key": "mp",
+                  "name": "量产导入",
+                  "rules": [
+                    "engineering",
+                    "manufacturing",
+                    "delivery"
+                  ],
+                  "entry_rules": [
+                    "manufacturing",
+                    "delivery"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "derivative@1",
+              "name": "派生项目",
+              "stages": [
+                {
+                  "key": "planning",
+                  "name": "计划",
+                  "rules": [
+                    "baseline"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "design",
+                  "name": "设计",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "baseline"
+                  ]
+                },
+                {
+                  "key": "dvt",
+                  "name": "DVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                },
+                {
+                  "key": "pvt",
+                  "name": "PVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing",
+                    "delivery"
+                  ],
+                  "entry_rules": [
+                    "manufacturing"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "small-change@1",
+              "name": "小改项目",
+              "stages": [
+                {
+                  "key": "planning",
+                  "name": "计划",
+                  "rules": [
+                    "baseline"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "design",
+                  "name": "设计",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "baseline"
+                  ]
+                },
+                {
+                  "key": "dvt",
+                  "name": "DVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                }
+              ]
+            }
+          ],
+          "product_revision": 1,
+          "release_packages": [],
+          "release_packages_cursor": null
+        },
+        "builds": {
+          "items": [
+            {
+              "id": "8db7f7e1-7461-4af8-8806-3bc8e1504c10",
+              "revision": 1,
+              "status": "planned",
+              "source_status": "current",
+              "name": "A7工程样机合成批次",
+              "type": "prototype",
+              "purpose": "RAG40复验准备，未发起实际执行",
+              "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "visibility": "category",
+              "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+              "project_name": "岚桥A7",
+              "project_revision": 1,
+              "planned_quantity": "10.00000000",
+              "unit": "ea",
+              "planned_start": null,
+              "planned_end": null,
+              "verification_objectives": "Verify motor and housing fit",
+              "disposition_plan": "Retain synthetic samples for review",
+              "previous_build_id": null,
+              "engineering_configuration": {
+                "id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+                "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                "revision": 1,
+                "name": "A7工程样机",
+                "status": "draft",
+                "visibility": "category",
+                "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                "created_at": "2026-11-06T08:17:19.425370+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+                    "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "RAG40隔离合成配置，非量产批准",
+                "definition_id": "4826b744-15f2-449b-aa44-362778e411e2",
+                "definition_revision": 1,
+                "definition": {
+                  "id": "4826b744-15f2-449b-aa44-362778e411e2",
+                  "revision": 1,
+                  "title": "岚桥A7",
+                  "status": "draft",
+                  "visibility": "category",
+                  "source_status": "current"
+                },
+                "bom_id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+                "bom_revision": 1,
+                "bom": {
+                  "id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+                  "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                  "revision": 1,
+                  "name": "岚桥A7合成BOM",
+                  "status": "draft",
+                  "visibility": "category",
+                  "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:18.454938+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+                      "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "series_id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+                  "previous_id": null,
+                  "expected_previous_revision": null,
+                  "reason": "RAG40隔离合成配置，非量产批准",
+                  "lines": [
+                    {
+                      "key": "control_board",
+                      "part_id": "4388c9b3-c6db-4def-96a9-27a9a1bb95da",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "4388c9b3-c6db-4def-96a9-27a9a1bb95da",
+                        "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                        "revision": 1,
+                        "name": "控制板CB-M2",
+                        "status": "draft",
+                        "visibility": "category",
+                        "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                        "created_at": "2026-11-06T08:17:18.474475+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+                            "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": "RAG40-CB-fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": "1",
+                      "unit": "ea",
+                      "loss_rate": "0",
+                      "critical": true,
+                      "notes": null
+                    }
+                  ]
+                },
+                "design_versions": {
+                  "firmware": null,
+                  "electronic": null,
+                  "mechanical": null
+                },
+                "external_verification": "not_checked"
+              },
+              "manufacturing_configuration": {
+                "id": "df2ba757-5546-4bc8-8cf9-ef7a156ef330",
+                "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                "revision": 1,
+                "name": "A7工程样机装配工艺",
+                "status": "draft",
+                "visibility": "category",
+                "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                "created_at": "2026-11-06T08:17:20.362700+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+                    "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "df2ba757-5546-4bc8-8cf9-ef7a156ef330",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "RAG40隔离合成配置，非量产批准",
+                "engineering_configuration_id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+                "engineering_revision": 1,
+                "engineering_configuration": {
+                  "id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+                  "revision": 1,
+                  "name": "A7工程样机",
+                  "status": "draft",
+                  "definition_id": "4826b744-15f2-449b-aa44-362778e411e2",
+                  "bom_id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+                  "source_status": "current"
+                },
+                "site": "RAG40-SYNTHETIC-LAB",
+                "line": "RAG40-L2",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "合成端子座装配",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "control_board"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "external_verification": "not_checked",
+                "qualification_status": "unknown"
+              },
+              "required_source_read_set": [
+                {
+                  "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                  "expected_revision": 1
+                }
+              ],
+              "created_at": "2026-11-06T08:17:22.088316+00:00",
+              "readiness": null
+            }
+          ],
+          "unavailable_count": 0,
+          "has_more": false
+        }
+      }
+    },
+    "ENG-10": {
+      "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+      "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+      "selection": {
+        "id": "8db7f7e1-7461-4af8-8806-3bc8e1504c10",
+        "revision": 1,
+        "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+        "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+        "engineering_configuration": {
+          "id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+          "revision": 1
+        },
+        "manufacturing_configuration": {
+          "id": "df2ba757-5546-4bc8-8cf9-ef7a156ef330",
+          "revision": 1
+        }
+      },
+      "build_evidence": {
+        "id": "8db7f7e1-7461-4af8-8806-3bc8e1504c10",
+        "revision": 1,
+        "status": "planned",
+        "source_status": "current",
+        "name": "A7工程样机合成批次",
+        "type": "prototype",
+        "purpose": "RAG40复验准备，未发起实际执行",
+        "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+        "visibility": "category",
+        "project_id": "f832ebc1-ebd2-4dac-8ab1-d6896fc90e83",
+        "project_name": "岚桥A7",
+        "project_revision": 1,
+        "planned_quantity": "10.00000000",
+        "unit": "ea",
+        "planned_start": null,
+        "planned_end": null,
+        "verification_objectives": "Verify motor and housing fit",
+        "disposition_plan": "Retain synthetic samples for review",
+        "previous_build_id": null,
+        "engineering_configuration": {
+          "id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+          "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+          "revision": 1,
+          "name": "A7工程样机",
+          "status": "draft",
+          "visibility": "category",
+          "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:19.425370+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+              "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "RAG40隔离合成配置，非量产批准",
+          "definition_id": "4826b744-15f2-449b-aa44-362778e411e2",
+          "definition_revision": 1,
+          "definition": {
+            "id": "4826b744-15f2-449b-aa44-362778e411e2",
+            "revision": 1,
+            "title": "岚桥A7",
+            "status": "draft",
+            "visibility": "category",
+            "source_status": "current"
+          },
+          "bom_id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+          "bom_revision": 1,
+          "bom": {
+            "id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+            "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+            "revision": 1,
+            "name": "岚桥A7合成BOM",
+            "status": "draft",
+            "visibility": "category",
+            "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+            "created_at": "2026-11-06T08:17:18.454938+00:00",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+                "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "series_id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+            "previous_id": null,
+            "expected_previous_revision": null,
+            "reason": "RAG40隔离合成配置，非量产批准",
+            "lines": [
+              {
+                "key": "control_board",
+                "part_id": "4388c9b3-c6db-4def-96a9-27a9a1bb95da",
+                "expected_part_revision": 1,
+                "part": {
+                  "id": "4388c9b3-c6db-4def-96a9-27a9a1bb95da",
+                  "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                  "revision": 1,
+                  "name": "控制板CB-M2",
+                  "status": "draft",
+                  "visibility": "category",
+                  "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:18.474475+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+                      "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "internal_number": "RAG40-CB-fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+                  "erp_number": null,
+                  "customer_number": null,
+                  "mapping_version": null,
+                  "external_design_refs": [],
+                  "external_verification": "not_checked",
+                  "mapping_status": "unknown"
+                },
+                "quantity": "1",
+                "unit": "ea",
+                "loss_rate": "0",
+                "critical": true,
+                "notes": null
+              }
+            ]
+          },
+          "design_versions": {
+            "firmware": null,
+            "electronic": null,
+            "mechanical": null
+          },
+          "external_verification": "not_checked"
+        },
+        "manufacturing_configuration": {
+          "id": "df2ba757-5546-4bc8-8cf9-ef7a156ef330",
+          "product_id": "fd140895-a626-4b7b-ac1d-f8275e6eb0ea",
+          "revision": 1,
+          "name": "A7工程样机装配工艺",
+          "status": "draft",
+          "visibility": "category",
+          "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:20.362700+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "资料编号：TR-A7-2026-006；报告版本：v1；测试日期：2026-10-23；签署人：苏澈。",
+              "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "df2ba757-5546-4bc8-8cf9-ef7a156ef330",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "RAG40隔离合成配置，非量产批准",
+          "engineering_configuration_id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+          "engineering_revision": 1,
+          "engineering_configuration": {
+            "id": "2448f8c7-776c-4a50-8eca-0f48fe0f509f",
+            "revision": 1,
+            "name": "A7工程样机",
+            "status": "draft",
+            "definition_id": "4826b744-15f2-449b-aa44-362778e411e2",
+            "bom_id": "9b81836a-e1e1-4c53-8563-b774fa449825",
+            "source_status": "current"
+          },
+          "site": "RAG40-SYNTHETIC-LAB",
+          "line": "RAG40-L2",
+          "operations": [
+            {
+              "key": "assembly",
+              "sop": null,
+              "kind": "assembly",
+              "name": "合成端子座装配",
+              "notes": null,
+              "depends_on": [],
+              "bom_line_keys": [
+                "control_board"
+              ],
+              "cycle_time_minutes": null,
+              "acceptance_criterion": null,
+              "resource_requirements": []
+            }
+          ],
+          "external_verification": "not_checked",
+          "qualification_status": "unknown"
+        },
+        "required_source_read_set": [
+          {
+            "artifact_id": "8c89f208-1a0c-4ca6-9a65-c5a7da65db3c",
+            "expected_revision": 1
+          }
+        ],
+        "created_at": "2026-11-06T08:17:22.088316+00:00",
+        "readiness": null
+      }
+    },
+    "PRD-09": {
+      "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+      "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+      "current_truth_evidence": {
+        "status_receipt": {
+          "id": "3f367668-da36-438e-904a-250d19d5af64",
+          "category_id": "eca40910-37a5-4b4a-852e-146897823a89",
+          "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+          "operation": "work.status_update.create",
+          "subject_type": "project_status_update",
+          "subject_id": "84061bd5-c189-4072-a325-4c150f6fe7fe",
+          "subject_revision": 1,
+          "writer_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "requester_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:35.427002+00:00",
+          "agent_run_id": null,
+          "result": {
+            "id": "84061bd5-c189-4072-a325-4c150f6fe7fe",
+            "revision": 1,
+            "status": "recorded",
+            "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8"
+          }
+        },
+        "project_work": {
+          "project": {
+            "id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+            "revision": 1,
+            "name": "青岑M2",
+            "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+            "visibility": "category"
+          },
+          "product_revision": 1,
+          "members": [
+            {
+              "id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "name": "RealEval-rag40-r2m-owner",
+              "can_write": true
+            },
+            {
+              "id": "2be9b83a-774d-418a-8077-ce94945dd679",
+              "name": "RealEval-rag40-r2m-peer",
+              "can_write": true
+            }
+          ],
+          "tasks": [
+            {
+              "id": "c85ee71f-e71f-47b9-bb27-53f34c56221c",
+              "task_id": "c85ee71f-e71f-47b9-bb27-53f34c56221c",
+              "version_id": "c85ee71f-e71f-47b9-bb27-53f34c56221c",
+              "revision": 1,
+              "state": "proposed",
+              "status": "proposed",
+              "title": "补齐M2-D批气密复验准备及具名检测安排",
+              "goal": "补齐明确缺项后由本人核对，不替代专业结论",
+              "outcomes": [
+                {
+                  "key": "evidence",
+                  "text": "可核对的补证记录",
+                  "required": true
+                }
+              ],
+              "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "assignee_id": null,
+              "recipient_id": null,
+              "plan_task": null,
+              "npi_template": null,
+              "g0_open_item": null,
+              "sources": [
+                {
+                  "id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                  "kind": "artifact",
+                  "position": "line:1;quote_sha256:f838a3ecb98c2a0dee75fe57648c4000ab776e95a49e2a5898d9bdbd267f0e35",
+                  "revision": 1
+                }
+              ],
+              "actual_start": null,
+              "submission": null,
+              "review": null,
+              "history": [
+                {
+                  "id": "c85ee71f-e71f-47b9-bb27-53f34c56221c",
+                  "revision": 1,
+                  "action": "create",
+                  "state": "proposed",
+                  "actor_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:35.070313+00:00",
+                  "receipt_id": "c829a50e-2e63-4ed1-8444-3d081476e8d6"
+                }
+              ]
+            }
+          ],
+          "g0_open_items": [],
+          "commitments": [],
+          "updates": [
+            {
+              "id": "84061bd5-c189-4072-a325-4c150f6fe7fe",
+              "revision": 1,
+              "actor_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "fact_summary": "具名登记：M2-D合成批次的气密结果、检测日期和负责人均未登记；制造准备待补证。",
+              "next_steps": "补齐M2-D批气密复验准备及具名检测安排",
+              "task_refs": [],
+              "sources": [
+                {
+                  "id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                  "kind": "artifact",
+                  "position": "line:1;quote_sha256:f838a3ecb98c2a0dee75fe57648c4000ab776e95a49e2a5898d9bdbd267f0e35",
+                  "revision": 1
+                }
+              ],
+              "created_at": "2026-11-06T08:17:35.411031+00:00",
+              "receipt_id": "3f367668-da36-438e-904a-250d19d5af64"
+            }
+          ],
+          "as_of": "2026-11-06T08:17:37.006777+00:00"
+        },
+        "governance": {
+          "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+          "project_revision": 1,
+          "revision": 1,
+          "timeline": {
+            "task_key": null,
+            "baseline": null,
+            "forecast": null,
+            "commitments": [],
+            "actual": null
+          },
+          "plan_tasks": [],
+          "plan": null,
+          "bindings": {},
+          "template": {
+            "id": "small-change@1",
+            "name": "小改项目"
+          },
+          "stages": [
+            {
+              "id": "67e1745f-06f2-4e11-b74b-5ba9003a40c8",
+              "key": "planning",
+              "name": "计划",
+              "rules": [
+                "baseline"
+              ],
+              "entry_rules": [
+                "g0"
+              ],
+              "status": "current",
+              "actual": null
+            },
+            {
+              "id": "281d997f-a815-4160-b369-6616d2dbb936",
+              "key": "design",
+              "name": "设计",
+              "rules": [
+                "engineering"
+              ],
+              "entry_rules": [
+                "baseline"
+              ],
+              "status": "upcoming",
+              "actual": null
+            },
+            {
+              "id": "6b5849a1-547b-401f-8568-034ac198dd89",
+              "key": "dvt",
+              "name": "DVT",
+              "rules": [
+                "engineering",
+                "manufacturing"
+              ],
+              "entry_rules": [
+                "engineering"
+              ],
+              "status": "upcoming",
+              "actual": null
+            }
+          ],
+          "current_stage": {
+            "id": "67e1745f-06f2-4e11-b74b-5ba9003a40c8",
+            "key": "planning",
+            "name": "计划",
+            "rules": [
+              "baseline"
+            ],
+            "entry_rules": [
+              "g0"
+            ]
+          },
+          "completed": false,
+          "gate": {
+            "stage_id": "67e1745f-06f2-4e11-b74b-5ba9003a40c8",
+            "state": "UNKNOWN",
+            "checks": [
+              {
+                "key": "baseline",
+                "label": "当前计划的具名批准基线",
+                "state": "UNKNOWN",
+                "detail": "当前计划尚无适用的批准基线",
+                "ref": null
+              }
+            ],
+            "maturity": {
+              "engineering": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "manufacturing": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "delivery": {
+                "state": "UNKNOWN",
+                "detail": "固定用途、数量及地点/地区；客户承认和真实外发仍独立办理",
+                "scope": null,
+                "purpose": null,
+                "limits": []
+              }
+            },
+            "release": null,
+            "required_source_read_set": [],
+            "review_current": false
+          },
+          "next_gate": {
+            "stage_id": "281d997f-a815-4160-b369-6616d2dbb936",
+            "state": "UNKNOWN",
+            "checks": [
+              {
+                "key": "baseline",
+                "label": "当前计划的具名批准基线",
+                "state": "UNKNOWN",
+                "detail": "当前计划尚无适用的批准基线",
+                "ref": null
+              }
+            ],
+            "maturity": {
+              "engineering": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "manufacturing": {
+                "state": "UNKNOWN",
+                "detail": "规则结果与专业签核分别核对",
+                "assessment": null,
+                "decisions": [],
+                "ref": null
+              },
+              "delivery": {
+                "state": "UNKNOWN",
+                "detail": "固定用途、数量及地点/地区；客户承认和真实外发仍独立办理",
+                "scope": null,
+                "purpose": null,
+                "limits": []
+              }
+            },
+            "release": null,
+            "required_source_read_set": []
+          },
+          "baseline": null,
+          "review": null,
+          "health": {
+            "state": "unknown",
+            "label": "待核对",
+            "reason": "当前必需依据不完整或已失效"
+          },
+          "commitments": [],
+          "history": [
+            {
+              "id": "287a827f-b64b-4e6f-90cb-b2139562142e",
+              "revision": 1,
+              "operation": "work.stage.adopt",
+              "actor_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "at": "2026-11-06T08:17:36.788854+00:00",
+              "receipt_id": "a042316a-a6b9-42ca-8744-4559000338ab",
+              "reason": "RAG40合成项目采用现有阶段；当前仍待计划基线与补证",
+              "outcome": null,
+              "stage_name": null
+            }
+          ],
+          "can_manage": true,
+          "templates": [
+            {
+              "id": "standard@1",
+              "name": "完整开发",
+              "stages": [
+                {
+                  "key": "concept",
+                  "name": "概念",
+                  "rules": [
+                    "g0"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "planning",
+                  "name": "计划",
+                  "rules": [
+                    "baseline"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "design",
+                  "name": "设计",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "baseline"
+                  ]
+                },
+                {
+                  "key": "evt",
+                  "name": "EVT",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                },
+                {
+                  "key": "dvt",
+                  "name": "DVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                },
+                {
+                  "key": "pvt",
+                  "name": "PVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing",
+                    "delivery"
+                  ],
+                  "entry_rules": [
+                    "manufacturing"
+                  ]
+                },
+                {
+                  "key": "mp",
+                  "name": "量产导入",
+                  "rules": [
+                    "engineering",
+                    "manufacturing",
+                    "delivery"
+                  ],
+                  "entry_rules": [
+                    "manufacturing",
+                    "delivery"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "derivative@1",
+              "name": "派生项目",
+              "stages": [
+                {
+                  "key": "planning",
+                  "name": "计划",
+                  "rules": [
+                    "baseline"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "design",
+                  "name": "设计",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "baseline"
+                  ]
+                },
+                {
+                  "key": "dvt",
+                  "name": "DVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                },
+                {
+                  "key": "pvt",
+                  "name": "PVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing",
+                    "delivery"
+                  ],
+                  "entry_rules": [
+                    "manufacturing"
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "small-change@1",
+              "name": "小改项目",
+              "stages": [
+                {
+                  "key": "planning",
+                  "name": "计划",
+                  "rules": [
+                    "baseline"
+                  ],
+                  "entry_rules": [
+                    "g0"
+                  ]
+                },
+                {
+                  "key": "design",
+                  "name": "设计",
+                  "rules": [
+                    "engineering"
+                  ],
+                  "entry_rules": [
+                    "baseline"
+                  ]
+                },
+                {
+                  "key": "dvt",
+                  "name": "DVT",
+                  "rules": [
+                    "engineering",
+                    "manufacturing"
+                  ],
+                  "entry_rules": [
+                    "engineering"
+                  ]
+                }
+              ]
+            }
+          ],
+          "product_revision": 1,
+          "release_packages": [],
+          "release_packages_cursor": null
+        },
+        "builds": {
+          "items": [
+            {
+              "id": "5cbe4b59-aa95-4594-b499-490696539151",
+              "revision": 1,
+              "status": "planned",
+              "source_status": "current",
+              "name": "M2-D合成批次",
+              "type": "prototype",
+              "purpose": "RAG40复验准备，未发起实际执行",
+              "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+              "visibility": "category",
+              "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+              "project_name": "青岑M2",
+              "project_revision": 1,
+              "planned_quantity": "10.00000000",
+              "unit": "ea",
+              "planned_start": null,
+              "planned_end": null,
+              "verification_objectives": "Verify motor and housing fit",
+              "disposition_plan": "Retain synthetic samples for review",
+              "previous_build_id": null,
+              "engineering_configuration": {
+                "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+                "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+                "revision": 1,
+                "name": "M2-D",
+                "status": "draft",
+                "visibility": "category",
+                "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                "created_at": "2026-11-06T08:17:29.627024+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                    "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "RAG40隔离合成配置，非量产批准",
+                "definition_id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+                "definition_revision": 1,
+                "definition": {
+                  "id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+                  "revision": 1,
+                  "title": "青岑M2",
+                  "status": "draft",
+                  "visibility": "category",
+                  "source_status": "current"
+                },
+                "bom_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+                "bom_revision": 1,
+                "bom": {
+                  "id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+                  "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+                  "revision": 1,
+                  "name": "青岑M2合成BOM",
+                  "status": "draft",
+                  "visibility": "category",
+                  "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:28.638215+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                      "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "series_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+                  "previous_id": null,
+                  "expected_previous_revision": null,
+                  "reason": "RAG40隔离合成配置，非量产批准",
+                  "lines": [
+                    {
+                      "key": "control_board",
+                      "part_id": "e2dd013a-f67f-4915-81f6-46b7dbd8c3ca",
+                      "expected_part_revision": 1,
+                      "part": {
+                        "id": "e2dd013a-f67f-4915-81f6-46b7dbd8c3ca",
+                        "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+                        "revision": 1,
+                        "name": "控制板CB-M2",
+                        "status": "draft",
+                        "visibility": "category",
+                        "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                        "created_at": "2026-11-06T08:17:28.651424+00:00",
+                        "sources": [
+                          {
+                            "line": 1,
+                            "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                            "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "required_source_read_set": [
+                          {
+                            "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                            "expected_revision": 1
+                          }
+                        ],
+                        "source_status": "current",
+                        "internal_number": "RAG40-CB-92ccbb16-3275-40d9-b421-834f5de3cb97",
+                        "erp_number": null,
+                        "customer_number": null,
+                        "mapping_version": null,
+                        "external_design_refs": [],
+                        "external_verification": "not_checked",
+                        "mapping_status": "unknown"
+                      },
+                      "quantity": "1",
+                      "unit": "ea",
+                      "loss_rate": "0",
+                      "critical": true,
+                      "notes": null
+                    }
+                  ]
+                },
+                "design_versions": {
+                  "firmware": null,
+                  "electronic": null,
+                  "mechanical": null
+                },
+                "external_verification": "not_checked"
+              },
+              "manufacturing_configuration": {
+                "id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+                "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+                "revision": 1,
+                "name": "M2-D装配工艺",
+                "status": "draft",
+                "visibility": "category",
+                "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                "created_at": "2026-11-06T08:17:30.727701+00:00",
+                "sources": [
+                  {
+                    "line": 1,
+                    "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                    "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                    "expected_revision": 1
+                  }
+                ],
+                "required_source_read_set": [
+                  {
+                    "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                    "expected_revision": 1
+                  }
+                ],
+                "source_status": "current",
+                "series_id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+                "previous_id": null,
+                "expected_previous_revision": null,
+                "reason": "RAG40隔离合成配置，非量产批准",
+                "engineering_configuration_id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+                "engineering_revision": 1,
+                "engineering_configuration": {
+                  "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+                  "revision": 1,
+                  "name": "M2-D",
+                  "status": "draft",
+                  "definition_id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+                  "bom_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+                  "source_status": "current"
+                },
+                "site": "RAG40-SYNTHETIC-LAB",
+                "line": "RAG40-L2",
+                "operations": [
+                  {
+                    "key": "assembly",
+                    "sop": null,
+                    "kind": "assembly",
+                    "name": "合成端子座装配",
+                    "notes": null,
+                    "depends_on": [],
+                    "bom_line_keys": [
+                      "control_board"
+                    ],
+                    "cycle_time_minutes": null,
+                    "acceptance_criterion": null,
+                    "resource_requirements": []
+                  }
+                ],
+                "external_verification": "not_checked",
+                "qualification_status": "unknown"
+              },
+              "required_source_read_set": [
+                {
+                  "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                  "expected_revision": 1
+                }
+              ],
+              "created_at": "2026-11-06T08:17:32.646477+00:00",
+              "readiness": null
+            }
+          ],
+          "unavailable_count": 0,
+          "has_more": false
+        }
+      },
+      "build_evidence": {
+        "id": "5cbe4b59-aa95-4594-b499-490696539151",
+        "revision": 1,
+        "status": "planned",
+        "source_status": "current",
+        "name": "M2-D合成批次",
+        "type": "prototype",
+        "purpose": "RAG40复验准备，未发起实际执行",
+        "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+        "visibility": "category",
+        "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+        "project_name": "青岑M2",
+        "project_revision": 1,
+        "planned_quantity": "10.00000000",
+        "unit": "ea",
+        "planned_start": null,
+        "planned_end": null,
+        "verification_objectives": "Verify motor and housing fit",
+        "disposition_plan": "Retain synthetic samples for review",
+        "previous_build_id": null,
+        "engineering_configuration": {
+          "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+          "revision": 1,
+          "name": "M2-D",
+          "status": "draft",
+          "visibility": "category",
+          "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:29.627024+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "RAG40隔离合成配置，非量产批准",
+          "definition_id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+          "definition_revision": 1,
+          "definition": {
+            "id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+            "revision": 1,
+            "title": "青岑M2",
+            "status": "draft",
+            "visibility": "category",
+            "source_status": "current"
+          },
+          "bom_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+          "bom_revision": 1,
+          "bom": {
+            "id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+            "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+            "revision": 1,
+            "name": "青岑M2合成BOM",
+            "status": "draft",
+            "visibility": "category",
+            "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+            "created_at": "2026-11-06T08:17:28.638215+00:00",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "series_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+            "previous_id": null,
+            "expected_previous_revision": null,
+            "reason": "RAG40隔离合成配置，非量产批准",
+            "lines": [
+              {
+                "key": "control_board",
+                "part_id": "e2dd013a-f67f-4915-81f6-46b7dbd8c3ca",
+                "expected_part_revision": 1,
+                "part": {
+                  "id": "e2dd013a-f67f-4915-81f6-46b7dbd8c3ca",
+                  "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+                  "revision": 1,
+                  "name": "控制板CB-M2",
+                  "status": "draft",
+                  "visibility": "category",
+                  "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:28.651424+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                      "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "internal_number": "RAG40-CB-92ccbb16-3275-40d9-b421-834f5de3cb97",
+                  "erp_number": null,
+                  "customer_number": null,
+                  "mapping_version": null,
+                  "external_design_refs": [],
+                  "external_verification": "not_checked",
+                  "mapping_status": "unknown"
+                },
+                "quantity": "1",
+                "unit": "ea",
+                "loss_rate": "0",
+                "critical": true,
+                "notes": null
+              }
+            ]
+          },
+          "design_versions": {
+            "firmware": null,
+            "electronic": null,
+            "mechanical": null
+          },
+          "external_verification": "not_checked"
+        },
+        "manufacturing_configuration": {
+          "id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+          "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+          "revision": 1,
+          "name": "M2-D装配工艺",
+          "status": "draft",
+          "visibility": "category",
+          "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:30.727701+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "RAG40隔离合成配置，非量产批准",
+          "engineering_configuration_id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "engineering_revision": 1,
+          "engineering_configuration": {
+            "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+            "revision": 1,
+            "name": "M2-D",
+            "status": "draft",
+            "definition_id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+            "bom_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+            "source_status": "current"
+          },
+          "site": "RAG40-SYNTHETIC-LAB",
+          "line": "RAG40-L2",
+          "operations": [
+            {
+              "key": "assembly",
+              "sop": null,
+              "kind": "assembly",
+              "name": "合成端子座装配",
+              "notes": null,
+              "depends_on": [],
+              "bom_line_keys": [
+                "control_board"
+              ],
+              "cycle_time_minutes": null,
+              "acceptance_criterion": null,
+              "resource_requirements": []
+            }
+          ],
+          "external_verification": "not_checked",
+          "qualification_status": "unknown"
+        },
+        "required_source_read_set": [
+          {
+            "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+            "expected_revision": 1
+          }
+        ],
+        "created_at": "2026-11-06T08:17:32.646477+00:00",
+        "readiness": null
+      }
+    },
+    "PRD-10": {
+      "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+      "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+      "selection": {
+        "id": "5cbe4b59-aa95-4594-b499-490696539151",
+        "revision": 1,
+        "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+        "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+        "engineering_configuration": {
+          "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "revision": 1
+        },
+        "manufacturing_configuration": {
+          "id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+          "revision": 1
+        }
+      },
+      "build_evidence": {
+        "id": "5cbe4b59-aa95-4594-b499-490696539151",
+        "revision": 1,
+        "status": "planned",
+        "source_status": "current",
+        "name": "M2-D合成批次",
+        "type": "prototype",
+        "purpose": "RAG40复验准备，未发起实际执行",
+        "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+        "visibility": "category",
+        "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8",
+        "project_name": "青岑M2",
+        "project_revision": 1,
+        "planned_quantity": "10.00000000",
+        "unit": "ea",
+        "planned_start": null,
+        "planned_end": null,
+        "verification_objectives": "Verify motor and housing fit",
+        "disposition_plan": "Retain synthetic samples for review",
+        "previous_build_id": null,
+        "engineering_configuration": {
+          "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+          "revision": 1,
+          "name": "M2-D",
+          "status": "draft",
+          "visibility": "category",
+          "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:29.627024+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "RAG40隔离合成配置，非量产批准",
+          "definition_id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+          "definition_revision": 1,
+          "definition": {
+            "id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+            "revision": 1,
+            "title": "青岑M2",
+            "status": "draft",
+            "visibility": "category",
+            "source_status": "current"
+          },
+          "bom_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+          "bom_revision": 1,
+          "bom": {
+            "id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+            "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+            "revision": 1,
+            "name": "青岑M2合成BOM",
+            "status": "draft",
+            "visibility": "category",
+            "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+            "created_at": "2026-11-06T08:17:28.638215+00:00",
+            "sources": [
+              {
+                "line": 1,
+                "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                "expected_revision": 1
+              }
+            ],
+            "required_source_read_set": [
+              {
+                "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                "expected_revision": 1
+              }
+            ],
+            "source_status": "current",
+            "series_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+            "previous_id": null,
+            "expected_previous_revision": null,
+            "reason": "RAG40隔离合成配置，非量产批准",
+            "lines": [
+              {
+                "key": "control_board",
+                "part_id": "e2dd013a-f67f-4915-81f6-46b7dbd8c3ca",
+                "expected_part_revision": 1,
+                "part": {
+                  "id": "e2dd013a-f67f-4915-81f6-46b7dbd8c3ca",
+                  "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+                  "revision": 1,
+                  "name": "控制板CB-M2",
+                  "status": "draft",
+                  "visibility": "category",
+                  "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+                  "created_at": "2026-11-06T08:17:28.651424+00:00",
+                  "sources": [
+                    {
+                      "line": 1,
+                      "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+                      "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "required_source_read_set": [
+                    {
+                      "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+                      "expected_revision": 1
+                    }
+                  ],
+                  "source_status": "current",
+                  "internal_number": "RAG40-CB-92ccbb16-3275-40d9-b421-834f5de3cb97",
+                  "erp_number": null,
+                  "customer_number": null,
+                  "mapping_version": null,
+                  "external_design_refs": [],
+                  "external_verification": "not_checked",
+                  "mapping_status": "unknown"
+                },
+                "quantity": "1",
+                "unit": "ea",
+                "loss_rate": "0",
+                "critical": true,
+                "notes": null
+              }
+            ]
+          },
+          "design_versions": {
+            "firmware": null,
+            "electronic": null,
+            "mechanical": null
+          },
+          "external_verification": "not_checked"
+        },
+        "manufacturing_configuration": {
+          "id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+          "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+          "revision": 1,
+          "name": "M2-D装配工艺",
+          "status": "draft",
+          "visibility": "category",
+          "owner_id": "8601e7ce-3b49-49c5-8544-b97141a41656",
+          "created_at": "2026-11-06T08:17:30.727701+00:00",
+          "sources": [
+            {
+              "line": 1,
+              "quote": "资料编号：FA-2026-029；记录版本：v1；检查日期：2026-10-24；批次：M2-L09。",
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "required_source_read_set": [
+            {
+              "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+              "expected_revision": 1
+            }
+          ],
+          "source_status": "current",
+          "series_id": "ccedf218-118a-46e4-bb4a-2aecf3709be7",
+          "previous_id": null,
+          "expected_previous_revision": null,
+          "reason": "RAG40隔离合成配置，非量产批准",
+          "engineering_configuration_id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+          "engineering_revision": 1,
+          "engineering_configuration": {
+            "id": "d9b226f1-b43c-40c8-9b86-0847b1a22b88",
+            "revision": 1,
+            "name": "M2-D",
+            "status": "draft",
+            "definition_id": "5b075db0-faa1-4702-af21-fabc28e7b449",
+            "bom_id": "fcd234d4-18f2-4502-9d83-648a7d25518b",
+            "source_status": "current"
+          },
+          "site": "RAG40-SYNTHETIC-LAB",
+          "line": "RAG40-L2",
+          "operations": [
+            {
+              "key": "assembly",
+              "sop": null,
+              "kind": "assembly",
+              "name": "合成端子座装配",
+              "notes": null,
+              "depends_on": [],
+              "bom_line_keys": [
+                "control_board"
+              ],
+              "cycle_time_minutes": null,
+              "acceptance_criterion": null,
+              "resource_requirements": []
+            }
+          ],
+          "external_verification": "not_checked",
+          "qualification_status": "unknown"
+        },
+        "required_source_read_set": [
+          {
+            "artifact_id": "075a6f5b-969d-42a5-9673-dcf794359d4b",
+            "expected_revision": 1
+          }
+        ],
+        "created_at": "2026-11-06T08:17:32.646477+00:00",
+        "readiness": null
+      }
+    },
+    "PUR-10": {
+      "product_id": "92ccbb16-3275-40d9-b421-834f5de3cb97",
+      "project_id": "b0bdf873-8a84-4ff0-b187-61a57a4269a8"
+    }
+  },
+  "scores": {
+    "version": "xiaopai-real-rag-preparation/v1",
+    "input_sha256": {
+      "questions.json": "4ad1d8b337bb496d30dd8c56ac8275f8e91f363c624d316b5ba95b3907217685",
+      "corpus.json": "846de93e8a8dd496ddc432b30220146dfc868b170da63ef331be83cdadc43920",
+      "rubric.md": "2fb0c99abc53c63b927de89a17d8922aeb63ce29682af0fa9bf6afeaab172c14",
+      "question-review.md": "a9fd06a8d678a6a7789de8cb2b1fae91114e31a166f03878c8f57559e4785089"
+    },
+    "synthetic": true,
+    "trusted_root": false,
+    "review_status": "draft_for_review",
+    "cases": [
+      {
+        "case_id": "ENG-01",
+        "role": "engineering",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-02",
+        "role": "engineering",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-03",
+        "role": "engineering",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-04",
+        "role": "engineering",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-05",
+        "role": "engineering",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-06",
+        "role": "engineering",
+        "slice": "injection",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-07",
+        "role": "engineering",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-08",
+        "role": "engineering",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "ENG-09",
+        "role": "engineering",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "waiting_input",
+        "run_id": "70d2aeb4-2f95-4f97-a3bc-7c9c8771b2b6",
+        "checks": {
+          "frozen_inputs": {
+            "status": "not_run",
+            "evidence": null
+          },
+          "normal_execution_path": {
+            "status": "not_run",
+            "evidence": {
+              "http_start_status": null,
+              "temporal_workflow_id": null,
+              "activity_name": null,
+              "registered_graph_calls": null
+            }
+          },
+          "no_unconfirmed_business_write": {
+            "status": "not_run",
+            "evidence": null
+          },
+          "forbidden_source_exclusion": {
+            "status": "not_run",
+            "evidence": {
+              "leaks": []
+            }
+          },
+          "native_quote_binding": {
+            "status": "not_run",
+            "evidence": {
+              "citations": 0,
+              "bound": 0,
+              "missing_source_binding": 0
+            }
+          },
+          "routing": {
+            "status": "not_run",
+            "evidence": null
+          }
+        },
+        "first_search_recall": null,
+        "search_union_expected_hits": 0,
+        "hard_failure_observed": false,
+        "semantic_expected_behavior": [
+          "绑定实际当前项目，以本人普通RLS读取具名状态、计划、openItems和governance门禁，带as_of及固定对象链接。",
+          "不能用eng_gate_minutes或其他静态纪要冒充现在；缺字段如实说明。",
+          "须后续在已配置原生项目fixture上做模型路由与HTTP→Temporal→图验收，静态语料召回不裁定当前事实正确性。"
+        ]
+      },
+      {
+        "case_id": "ENG-10",
+        "role": "engineering",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-01",
+        "role": "quality",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-02",
+        "role": "quality",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-03",
+        "role": "quality",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-04",
+        "role": "quality",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-05",
+        "role": "quality",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-06",
+        "role": "quality",
+        "slice": "injection",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-07",
+        "role": "quality",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-08",
+        "role": "quality",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-09",
+        "role": "quality",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "QUA-10",
+        "role": "quality",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-01",
+        "role": "production",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-02",
+        "role": "production",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-03",
+        "role": "production",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-04",
+        "role": "production",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-05",
+        "role": "production",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-06",
+        "role": "production",
+        "slice": "private_authorized",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-07",
+        "role": "production",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-08",
+        "role": "production",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PRD-09",
+        "role": "production",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "partial",
+        "run_id": "2a4ace3a-fe6e-47f3-961f-e344763dbb58",
+        "checks": {
+          "frozen_inputs": {
+            "status": "not_run",
+            "evidence": null
+          },
+          "normal_execution_path": {
+            "status": "not_run",
+            "evidence": {
+              "http_start_status": null,
+              "temporal_workflow_id": null,
+              "activity_name": null,
+              "registered_graph_calls": null
+            }
+          },
+          "no_unconfirmed_business_write": {
+            "status": "not_run",
+            "evidence": null
+          },
+          "forbidden_source_exclusion": {
+            "status": "not_run",
+            "evidence": {
+              "leaks": []
+            }
+          },
+          "native_quote_binding": {
+            "status": "passed",
+            "evidence": {
+              "citations": 9,
+              "bound": 9,
+              "missing_source_binding": 0
+            }
+          },
+          "routing": {
+            "status": "not_run",
+            "evidence": null
+          }
+        },
+        "first_search_recall": null,
+        "search_union_expected_hits": 0,
+        "hard_failure_observed": false,
+        "semantic_expected_behavior": [
+          "按实际项目/Build读取当前配置、制造准备、计划及未完成项，附as_of与原版本链接。",
+          "健康度只复述最新具名状态；没有记录就说缺失，不由停机或历史复盘自判。",
+          "后续需真实原生对象和模型路由验收，静态语料不能代替当前记录，不进recall。"
+        ]
+      },
+      {
+        "case_id": "PRD-10",
+        "role": "production",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-01",
+        "role": "procurement",
+        "slice": "normal",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-02",
+        "role": "procurement",
+        "slice": "historical",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-03",
+        "role": "procurement",
+        "slice": "exact_id",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-04",
+        "role": "procurement",
+        "slice": "should_lookup",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-05",
+        "role": "procurement",
+        "slice": "conflict_unknown",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-06",
+        "role": "procurement",
+        "slice": "private_authorized",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-07",
+        "role": "procurement",
+        "slice": "permission_negative",
+        "evaluation": "retrieval",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-08",
+        "role": "procurement",
+        "slice": "ordinary",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-09",
+        "role": "procurement",
+        "slice": "current_fact",
+        "evaluation": "routing",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      },
+      {
+        "case_id": "PUR-10",
+        "role": "procurement",
+        "slice": "turn_to_action",
+        "evaluation": "workflow",
+        "semantic_quality": "requires_independent_review",
+        "status": "not_run",
+        "reason": "No observation"
+      }
+    ],
+    "status_counts": {
+      "not_run": 38,
+      "waiting_input": 1,
+      "partial": 1
+    },
+    "mechanical_checks": {
+      "forbidden_source_exclusion": {
+        "not_run": 40
+      },
+      "frozen_inputs": {
+        "not_run": 40
+      },
+      "native_quote_binding": {
+        "not_run": 39,
+        "passed": 1
+      },
+      "no_unconfirmed_business_write": {
+        "not_run": 40
+      },
+      "normal_execution_path": {
+        "not_run": 40
+      },
+      "routing": {
+        "not_run": 40
+      }
+    },
+    "latency_ms": {
+      "samples": 2,
+      "p50": 478416.0727710114,
+      "p95_inclusive": 627984.5664770866
+    },
+    "quality_passed": null,
+    "independent_human_review": "not_run",
+    "scope": "Actual READ/quote/route/permission/path evidence only; semantic facts, unknown boundaries and usability require independent review. Use native model usage/pricing receipts for cache/cost; never estimate money from character counts or missing prices."
+  },
+  "finished": true
+}

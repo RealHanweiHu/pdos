@@ -1,0 +1,14 @@
+{
+  "role": "worker",
+  "task_queue": "pdos-real-eval-20261105",
+  "temporal": "127.0.0.1:61596",
+  "namespace": "pdos-next-comprehensive-20261023",
+  "database": "pdos_test",
+  "database_port": 64387,
+  "marker": "c351c0ca-b874-49b9-bf1b-44c3ad150aaf",
+  "tenant_id": "78340ac0-57c2-4235-87c6-a468dd3d8173",
+  "pid": 69161,
+  "runtime_config": "comprehensive-minimax-20261023.json",
+  "provider_observer": "transparent parse_turn usage-only; unchanged request/response",
+  "started_at": "2026-11-06T02:25:20.995174+00:00"
+}
