@@ -346,6 +346,7 @@ W3c · 想法已变但没有记录
 - D260 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D258，11-08 集成时改号）`tools/local_environment.py create` 在 d730291d 上失败：迁移往返降到 base 时，`s0_0784_release_exceptions.downgrade` 报“Release exception requires its exact reviewed confirmation predecessor”。降级事务整体回滚，库停在 head 可继续用，但 `seed()` 不会执行。要查是哪一步之后的降级没有把函数恢复到 0784 审核过的原文。
 - D261 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D259，11-08 集成时改号）`test_migration_matches_orm_and_test_guard` 在基线就失败：模型与库有 7 项漂移，`ix_dingtalk_summary_deliveries_tenant_id` 只在模型里，6 个 `ix_enterprise_embedding_hnsw_*` 只在库里。要么补迁移，要么在模型或比较规则里登记。
 - D262 11-08 D33 回归中发现：`test_material_proofs_pg`（19 个）和 `test_evidence_guards_pg`（4 个）共 23 个 PG 用例在基点 `d730291d` 上同样失败，错误逐条相同，D27 的清单和修复都没覆盖这两个文件（[对照记录](../docs/reports/evidence/w6-d33-project-team-20261107/result.md#受影响测试)）。其中 20 个失败在 AI 写入预备时报“实际登记工具或技能允许操作已变化”，与 D27 修好的整次撤回、证据命令同类，多半是夹具没跟上 P76 第 4 项的工具下发收窄；另 3 个断言期望 `CONFIRMATION_REQUIRED` 或 `FORBIDDEN_SCOPE`，实得 `VERSION_CONFLICT`。
+  - 11-08 集成核对：这 23 个与 D27 已归因的 4 个（D258、D259 两个、检索 p95）没有重复。集成分支带上 D27 的夹具修复后，`test_evidence_guards_pg` 的 4 个通过；还剩 `test_material_proofs_pg` 19 个（16 个“实际登记工具或技能允许操作已变化”，3 个得到 `VERSION_CONFLICT`），未修。
 - 集成记录 11-08（第一轮）：本地集成分支 `claude/frosty-villani-38f085`，未推送，尚未落到 `pdos-next/design-v1.1`（主工作区另有未提交改动，等你定）。
   - 基点：`pdos-next/design-v1.1` 的 `38f5a024`。M1（`claude/m1-episodic-memory-324cdf`）11-08 已快进进主线，已在基点里，无需合并，迁移保持 `s0_0855_memory_episodes`。
   - 合并：D27 `refs/heads/claude/w4-d27-test-debt-6147cc`（`7cf4351d`，只有测试，无迁移），D214 `refs/heads/claude/gracious-hofstadter-311cb9`（`b1854243`）。
@@ -360,7 +361,35 @@ W3c · 想法已变但没有记录
     - D27 的 PG 清单复跑 199 个，195 通过、4 失败，就是 D27 已归因的那 4 个（D258、D259 两个、检索 p95 1.07 秒）；
     - 前端 typecheck 通过，lint 0 错误（4 条警告是原有的），1899 个 `.mjs` 测试全部通过。
   - 发现：`contracts/openapi.json` 没有 M1 的 10 个记忆接口，M1 没重新导出。`tools/export_contracts.py` 能补上，但会重排上万行，没有混进合并提交。
-  - 第二轮：等协调会话通知再合并 D58/D215/D248（`claude/goofy-lamarr-0cd875`）和 D33（`claude/intelligent-herschel-74d5dc`），迁移按真实 head 从 `s0_0857` 起改号；D33 里两处没写编号的既有问题改为指向 D260、D261。
+  - 第二轮（已于 11-08 完成，见下一条）：等协调会话通知再合并 D58/D215/D248（`claude/goofy-lamarr-0cd875`）和 D33（`claude/intelligent-herschel-74d5dc`），迁移按真实 head 从 `s0_0857` 起改号；D33 里两处没写编号的既有问题改为指向 D260、D261。
+- 集成记录 11-08（第二轮）：同一集成分支，未推送，`pdos-next/design-v1.1` 和主工作区都没动。
+  - 合并：D58/D215/D248 `refs/heads/claude/goofy-lamarr-0cd875`（`6887053e`）、D33 `refs/heads/claude/intelligent-herschel-74d5dc`（`40d23ddd`）、D52 `refs/heads/claude/interesting-haslett-179813`（`fe3d640e`，只改前端，无迁移）。之后单独提交一次重新导出的 `openapi.json`。
+  - 迁移改号：D58 `s0_0855_checkpoint_retention` 改为 `s0_0857`，D215 `s0_0856_original_rescan` 改为 `s0_0858`，D33 `s0_0855_project_team` 改为 `s0_0859`；三份快照都原样改名（内容里不带编号）。现 head `s0_0859`，链条线性。D33 会重建 `object_audiences` 上的 `m3_share_delete_only`，`s0_0736` 之后没有别的迁移动过这条策略，所以降级能恢复到正确的原文。
+  - D 编号：D262（D33）、D271（D52）保持原号，没有冲突；D33 条目里两处没写编号的既有问题改为指向 D260、D261。
+  - 冲突都保留两边：
+    - `worker.py`：记忆索引和每租户维护两个工作流都登记，三类发现各自执行；
+    - 生命周期目录：加上检查点库的条目；
+    - `auxiliary-operations.json`：77 + 4 = 81 项；
+    - `validate_contracts.py`：登记区加 `/v1/role-catalog`；
+    - Web 总路由：M1 的 memory 与 D33 的 roleCatalog、projectTeam 一起放行；
+    - 本清单：D214 取新条目，D215 取 goofy 的新条目。
+  - 代码层面核对过：`context_budget.py` 和 `host.py` 两边改动不重叠，M1 的记忆背景区裁剪也经过 D248 带下限的 `measure()`；D52 的 ⌘K 面板不枚举项目标签页，不受 D33 新增“团队”页影响。
+  - `openapi.json` 重新导出：只多了 M1 的 10 个记忆接口、3 个输入结构，加上 M1 的 `memory_off` 和工作状态 `text` 字段，没有删除任何接口。
+  - 验证（新建独立带标记的 `pdos_test`，未用 `.env`）：
+    - 合同校验通过。
+    - 迁移：空库升到 `s0_0859` 通过，降到 base 仍在 `s0_0784` 失败（D260）；`s0_0854`↔`s0_0859` 降、升、降、升通过。
+    - 无库全量：10707 通过、0 失败。1931 个 ERROR = 1904 个缺库 + 27 个 `citation_ids` 夹具问题（见 D27 补记）。
+    - PG 第一批：D33 的受影响范围，加上 core、memory、originals、workflows，以及 goofy 和 M1 的 PG 用例，共 2420 个，2392 通过、27 失败、1 跳过。失败的都是原有问题，或已复跑通过：
+      - D262 的 `test_material_proofs_pg` 19 个；
+      - goofy 自报的 CTX-04 F48000/F64000 2 个（“模型调用未形成可用结果”）；
+      - D258、D261（还是那 7 项）、`test_category_source_consumers`、`test_business_audience_summary` 各 1 个；
+      - `test_domain_candidates_pg` 2 个：本机在第一批刚启动时休眠（02:17–11:18），这两个正跑在休眠期间，报会话失效和行级安全拒绝；单独复跑全部通过。
+    - PG 第二批：D27 清单的其余部分 143 个，140 通过；3 个失败就是 D27 已归因的（D259 两个、检索 p95 1.55 秒）。
+    - D33 自报的 70 个失败，在集成分支上只剩上面那 19 个：属于 D27 修复前清单的 44 个、D33 自己改好的 3 个、`test_evidence_guards_pg` 的 4 个都通过了。goofy 自报的 5 个里，`test_context_x3_full_disclosure` 2 个和 `test_development_budget_pg` 1 个已被 D27 修好，只剩 CTX-04 两个。
+    - 前端：typecheck 通过，lint 0 错误（4 条警告是原有的），`.mjs` 1910 个、`.test.ts` 752 个全部通过。
+  - 发现，未修：
+    - `tests/core/test_current_read_profiler.py` 等三处把 `tools/` 插到 `sys.path` 最前面。如果先收集它们、后收集 `tests/builds`，`tests.conftest` 会解析成 `tools/tests/conftest.py`，导致收集报错。按默认顺序跑不会出现。
+    - Web 的 54 个 `.test.ts` 用了不带扩展名的 import，`package.json` 里没有测试脚本，直接 `node --test` 加载不了。本次在草稿区用一个解析钩子跑通，仓库未改。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
