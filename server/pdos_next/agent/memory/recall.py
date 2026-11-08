@@ -313,6 +313,10 @@ def unavailable(run, session):
     if (run.versions or {}).get("dingtalk"):
         return "channel_excluded", "钉钉入口首期不读个人记忆。"
     if run_is_off(session, run):
+        if run.state in ACTIVE and not (run.versions or {}).get("memory_mode", {}).get("off"):
+            # Freeze "off" for the rest of this Run, so turning memory back on
+            # mid-run cannot record it.
+            run.versions = {**run.versions, "memory_mode": {"off": True}}
         return "memory_off", "本会话已设为不进记忆，未读取个人记忆。"
     return None
 

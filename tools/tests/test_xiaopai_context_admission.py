@@ -63,8 +63,9 @@ def test_probe_never_promotes_scenario_tool_or_hidden_history_to_input(baseline,
 
 def test_production_prefix_rejects_old_profiles_and_admits_large_lower_bounds(baseline, inputs):
     value = baseline.evaluate(*inputs)
-    # P76 item 4b: the zero-skill face holds no write tool.
-    assert value["production_fixed_prefix"]["tool_count"] == 34
+    # P76 item 4b: the zero-skill face holds no write tool. P85 adds the READ
+    # memory.search to every scope, so the zero-skill face is 35 tools.
+    assert value["production_fixed_prefix"]["tool_count"] == 35
     assert value["provider_calls"] == value["database_operations"] == 0
     assert 8192 < value["production_fixed_prefix"]["fixed_admission_tokens"] < 16384
     for case in value["cases"]:

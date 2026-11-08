@@ -72,18 +72,19 @@ def configure_start(session, ctx, run, requested, *, new_session):
             "VALIDATION_FAILED", "已有会话请在会话设置里切换“不进记忆”。", 422,
             detail={"reason": "memory_mode_existing_session"},
         )
+    if not requested:
+        # No query on the common path. An existing Session's "off" is frozen at
+        # the Run's first context assembly (recall.unavailable), and a Run
+        # without a frozen mode reads the switch again when it finishes.
+        return
     _lock(session, ctx.tenant_id, run.session_id)
-    current = latest(session, run.session_id)
-    if requested and current is None:
+    if latest(session, run.session_id) is None:
         key = uuid5(NAMESPACE_URL, f"pdos-memory-mode-start:{run.id}")
-        current = _append(
+        _append(
             session, ctx, run.session_id, True, key=key,
             fingerprint=digest({"memory_off": True, "start_run_id": str(run.id)}), revision=1,
         )
-    if current is not None and current.memory_off:
-        # Only "off" is frozen. A Run without it reads the switch again when it
-        # finishes, so turning memory off mid-run also stops its episode.
-        run.versions = {**run.versions, "memory_mode": {"off": True}}
+    run.versions = {**run.versions, "memory_mode": {"off": True}}
 
 
 def run_is_off(session, run):
