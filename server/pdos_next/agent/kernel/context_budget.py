@@ -6,6 +6,8 @@ from copy import deepcopy
 
 from pdos_next.errors import DomainError
 
+from .context_calibration import LEGACY_FLOOR
+
 DEFAULT_WINDOW = 32_000
 TOOL_RESULT_RESERVE = 4_000
 FOCUS_CAP = 64_000
@@ -85,15 +87,18 @@ def segments(system, tools, messages, output_schema=None):
     return {"segments": values, "estimated_total": sum(values.values())}
 
 
-def measure(route, system, tools, messages, output_schema=None, *, calibration=None):
+def measure(route, system, tools, messages, output_schema=None, *, calibration=None,
+            floor=LEGACY_FLOOR):
     value = {**budget_for(route), **segments(system, tools, messages, output_schema)}
-    # Actual input on this same route calibrates the character estimate. Keep
-    # the conservative 15% floor for previously unseen mixes of text/schema.
-    factor = 1.15
+    # Actual input on this same route calibrates the character estimate. The floor
+    # is the measured one for this route and isolation (context_calibration.json,
+    # D248); unmeasured routes keep the conservative 15% floor.
+    factor = floor
     if calibration and calibration.get("estimated_total", 0) > 0:
         factor = max(factor, calibration["actual_input_tokens"] / calibration["estimated_total"])
     value["admission_tokens"] = math.ceil(value["estimated_total"] * factor)
-    value["estimation_margin"] = 0.15
+    value["estimation_margin"] = round(floor - 1, 4)
+    value["calibration_floor"] = floor
     value["calibration_factor"] = factor
     value["estimation_basis"] = "previous_actual_input" if calibration else "first_call_estimate"
     if calibration:
@@ -165,7 +170,8 @@ def required_items(system, tools, messages, output_schema=None):
 
 
 def fit_messages(route, system, tools, messages, output_schema=None, *, compact_tool=None,
-                 allow_envelope=False, calibration=None, compact_fragment=None):
+                 allow_envelope=False, calibration=None, compact_fragment=None,
+                 floor=LEGACY_FLOOR):
     """Shrink only recoverable data, in the design's fixed order.
 
     The input/checkpoint remains intact. A trusted host signs any derived server
@@ -178,7 +184,8 @@ def fit_messages(route, system, tools, messages, output_schema=None, *, compact_
     previous_reductions = deepcopy(envelope.get("context_reductions", []))
 
     def measured():
-        return measure(route, system, tools, result, output_schema, calibration=calibration)
+        return measure(route, system, tools, result, output_schema, calibration=calibration,
+                       floor=floor)
 
     def commit_envelope():
         envelope["context_reductions"] = [*previous_reductions, *reductions]
@@ -232,6 +239,7 @@ def fit_messages(route, system, tools, messages, output_schema=None, *, compact_
     result, tool_reductions, cleanup = cleanup_tools(
         result, measure=lambda candidate: measure(
             route, system, tools, candidate, output_schema, calibration=calibration,
+            floor=floor,
         ), compact_tool=compact_tool, decorate=decorate, compact_fragment=compact_fragment,
     )
     reductions.extend(tool_reductions)

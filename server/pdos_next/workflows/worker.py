@@ -232,6 +232,16 @@ async def main(
         projection_sender=ProjectionSender(client, embedding=True),
     )
     from pdos_next.agent.kernel.temporal_port import TemporalPort, dispatch_pending_runs
+    from pdos_next.workflows.checkpoint_retention import CheckpointRetention
+    from pdos_next.workflows.maintenance import MaintenanceSender, TenantMaintenance
+
+    maintenance = MaintenanceSender(client, task_queue=sender.task_queue)
+    retention = CheckpointRetention(
+        dispatch_engine, os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
+    )
+    from pdos_next.originals.rescan import OriginalRescan
+
+    rescans = OriginalRescan(engine, dispatch_engine)
 
     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
     from pdos_next.integrations.dingtalk.runtime import configure as configure_dingtalk
@@ -266,6 +276,12 @@ async def main(
                 except Exception as error:
                     logging.getLogger(__name__).warning(
                         "Automation discovery unavailable: %s", type(error).__name__
+                    )
+                try:
+                    await maintenance.discover(tenant)
+                except Exception as error:
+                    logging.getLogger(__name__).warning(
+                        "Maintenance discovery unavailable: %s", type(error).__name__
                     )
                 await dispatch_once(dispatch_engine, tenant, sender)
                 await dispatch_pending_runs(dispatch_engine, tenant, kernel_sender)
@@ -305,6 +321,7 @@ async def main(
                 EnterpriseEmbeddingRebuild,
                 EnterpriseRebuild,
                 MemoryEpisodeIndex,
+                TenantMaintenance,
             ],
             activities=[
                 kernel_activities.advance,
@@ -324,6 +341,8 @@ async def main(
                 activities.enterprise_rebuild_plan,
                 activities.enterprise_rebuild_batch,
                 activities.memory_episode_index,
+                retention.purge,
+                rescans.rescan,
             ],
             activity_executor=executor,
             max_concurrent_activities=threads,
