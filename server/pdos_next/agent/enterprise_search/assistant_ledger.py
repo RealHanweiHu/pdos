@@ -130,6 +130,8 @@ def carried(session, scope):
         session, scope, {"conversation.history"}, archive=interrupted
     ))
     for page in pages:
+        if page.get("session_id") not in (None, str(run.session_id)):
+            continue  # Another Session's page (P85) is a dated memory record only.
         origins.update(
             UUID(turn["run_id"])
             for turn in page.get("turns", [])

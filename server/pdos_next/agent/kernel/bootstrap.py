@@ -354,6 +354,9 @@ class Bootstrap:
 
                 if run.versions.get("work_state"):
                     check_frozen(session, run, self.commands.context(scope))
+                from pdos_next.agent.memory.recall import recheck_frozen
+
+                recheck_frozen(session, run)
                 frozen = run.versions.get("conversation_memory")
                 if run.continued_from_id is None or frozen is None:
                     return
@@ -425,6 +428,10 @@ class Bootstrap:
 
         from .conversation import HistoryInput, memory
         payload = tool_arguments(HistoryInput, arguments)
+        if payload.session_id is not None and payload.session_id != scope.session_id:
+            from pdos_next.agent.memory.history import other_session
+
+            return other_session(self.store, scope, payload, getattr(self, "_history_readers", {}))
         with self.store.transaction(scope, lock=True) as (session, run):
             access = {}
             value = memory(session, run, readers=getattr(self, "_history_readers", {}),
@@ -722,6 +729,9 @@ class Bootstrap:
             for name, engine in ENGINES.items()
         })
         adapters.read_tools["conversation.history"] = self.conversation_history
+        from pdos_next.agent.memory.tool import memory_search
+
+        adapters.read_tools["memory.search"] = memory_search(self.store)
         from .extract_adapter import ExtractReadAdapter
         from .extract_graph import ExtractGraph
         from .extract_service import ExtractionService

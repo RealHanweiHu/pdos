@@ -44,6 +44,19 @@ class Activities:
                 non_retryable=error.code == "FORBIDDEN_SCOPE",
             ) from None
 
+    @activity.defn(name="index_memory_episode")
+    def memory_episode_index(self, reference: dict):
+        from pdos_next.agent.memory.index import index_episode
+
+        try:
+            return index_episode(self.engine, reference)
+        except DomainError as error:
+            raise ApplicationError(
+                "Memory index unavailable",
+                type=error.code,
+                non_retryable=error.code == "FORBIDDEN_SCOPE",
+            ) from None
+
     @activity.defn(name="plan_enterprise_rebuild")
     def enterprise_rebuild_plan(self, reference: dict):
         from pdos_next.agent.enterprise_search.recovery import _context, plan_rebuild
@@ -209,6 +222,8 @@ async def main(
     automation_sender = ServiceAutomationSender(client, engine, dispatch_engine)
     from pdos_next.agent.enterprise_search.events import EnterpriseProjection, ProjectionSender
     from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
+    from pdos_next.agent.memory.index import dispatch_pending as dispatch_memory_index
+    from pdos_next.agent.memory.index_workflow import MemoryEpisodeIndex
 
     sender = TemporalSender(
         client,
@@ -254,6 +269,14 @@ async def main(
                     )
                 await dispatch_once(dispatch_engine, tenant, sender)
                 await dispatch_pending_runs(dispatch_engine, tenant, kernel_sender)
+                try:
+                    await dispatch_memory_index(
+                        dispatch_engine, tenant, client, task_queue=sender.task_queue,
+                    )
+                except Exception as error:
+                    logging.getLogger(__name__).warning(
+                        "Memory index discovery unavailable: %s", type(error).__name__
+                    )
                 if dingtalk_runtime is not None:
                     await channel_sender.discover(tenant)
             try:
@@ -281,6 +304,7 @@ async def main(
                 EnterpriseEmbeddingProjection,
                 EnterpriseEmbeddingRebuild,
                 EnterpriseRebuild,
+                MemoryEpisodeIndex,
             ],
             activities=[
                 kernel_activities.advance,
@@ -299,6 +323,7 @@ async def main(
                 embedding_activities.embed,
                 activities.enterprise_rebuild_plan,
                 activities.enterprise_rebuild_batch,
+                activities.memory_episode_index,
             ],
             activity_executor=executor,
             max_concurrent_activities=threads,

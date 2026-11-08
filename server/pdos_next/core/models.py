@@ -1123,6 +1123,7 @@ for _name in (
 import pdos_next.agent.kernel.models  # noqa: E402,F401
 import pdos_next.agent.kernel.session_presentation_models  # noqa: E402,F401
 import pdos_next.agent.kernel.work_state_models  # noqa: E402,F401
+import pdos_next.agent.memory.models  # noqa: E402,F401
 import pdos_next.agent.enterprise_search.models  # noqa: E402,F401
 
 # Tenant model metadata is part of the actual shared schema; credentials stay in host ports.

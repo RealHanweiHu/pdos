@@ -191,6 +191,13 @@ def fit_messages(route, system, tools, messages, output_schema=None, *, compact_
         return result, {**measured(), "reductions": reductions, "cleanup": {
             "triggered": False, "applied": False, "reason": "within_focus",
         }}
+    context = envelope.get("context", {})
+    if isinstance(context, dict) and isinstance(context.get("memory"), dict) and over():
+        # Memory design §8: the background zone (episode catalog) is cut first.
+        context.pop("memory")
+        reductions.append({"kind": "memory_background", "field": "memory",
+                           "read_more": {"tool": "memory.search", "arguments": {}}})
+        commit_envelope()
     conversation = envelope.get("context", {}).get("conversation", {})
     for phase, indices, limit in (
         ("history_directory", range(3, len(conversation.get("turns", []))), 60),

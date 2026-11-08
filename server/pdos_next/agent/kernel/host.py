@@ -94,6 +94,14 @@ class BoundHost:
                 preferences = context_preferences(session, scope)
                 run.versions = {**run.versions, "personal_preferences_context": preferences}
             raw = {**raw, "personal_preferences": preferences}
+            if scope.isolation == "main":
+                # P85 第 2 项: background-zone catalog of the owner's recent work in
+                # this scope; SQL only, frozen for the Run, never in the fixed prefix.
+                from pdos_next.agent.memory.recall import frozen_catalog
+
+                recent = frozen_catalog(session, run)
+                if recent is not None:
+                    raw["memory"] = recent
             action = run.versions.get("verification_action")
             if action is not None:
                 from pdos_next.agent.enterprise_search.verification_actions import context_value

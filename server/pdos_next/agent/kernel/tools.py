@@ -30,6 +30,7 @@ READS = frozenset(
         "assistant.compare",
         "assistant.comparison.read",
         "assistant.passage.read",
+        "memory.search",
     }
 )
 RESEARCH = frozenset({"research.search", "research.read", "research.fanout"})
@@ -63,6 +64,7 @@ M3_TIERS = {
 
 def default_registry():
     from pdos_next.agent.enterprise_search.assistant_schemas import SCHEMAS as ASSISTANT_SCHEMAS
+    from pdos_next.agent.memory.recall import MemorySearchInput
 
     from .category_candidate import CategoryCandidateInput
     from .conversation import HistoryInput
@@ -80,6 +82,7 @@ def default_registry():
 
     schemas = {
         "conversation.history": HistoryInput,
+        "memory.search": MemorySearchInput,
         **SCHEMAS,
         **COMPUTE_SCHEMAS,
         **OBJECT_SCHEMAS,

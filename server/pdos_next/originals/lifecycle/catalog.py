@@ -5373,3 +5373,31 @@ COVERED_COLUMNS['dingtalk_summary_deliveries'] = (
     'created_at',
 )
 GUARDED += ('dingtalk_summary_deliveries',)
+
+# Personal episodic memory (M1, P85). Episodes hold only object references copied
+# from the committed work state; actual Run read_sources keep the source edges.
+COVERED_COLUMNS.update({
+    "memory_episodes": (
+        "owner_id", "session_id", "run_id", "work_state_id", "work_state_revision",
+        "category_id", "product_id", "proposal_id", "project_id", "entry", "status",
+        "goal", "body", "projection_version", "id", "tenant_id", "created_at",
+    ),
+    "memory_episode_marks": (
+        "owner_id", "session_id", "episode_id", "kind", "body", "request_key",
+        "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "memory_index": (
+        "owner_id", "session_id", "episode_id", "source_kind", "source_version",
+        "profile_version", "idempotency_key", "terms", "term_counts", "codes",
+        "token_count", "tokenizer_version", "code_rule_version", "id", "tenant_id",
+        "created_at",
+    ),
+    "memory_session_settings": (
+        "owner_id", "session_id", "revision", "memory_off", "request_key",
+        "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "memory_tenant_policies": (
+        "revision", "work_state_idle_days", "set_by", "request_key", "request_sha256",
+        "id", "tenant_id", "created_at",
+    ),
+})

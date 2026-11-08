@@ -33,7 +33,7 @@ RESEARCH = frozenset({"research.search", "research.read", "research.fanout"})
 MCP = frozenset({"mcp.tools.list", "mcp.read", "mcp.result.read"})
 PURE = frozenset({"calc.cost_subtotal", "calc.market_size", "calc.opportunity_score",
                   "calc.price_band"})
-OTHER = frozenset({"conversation.history", "result.read", "skill.load"})
+OTHER = frozenset({"conversation.history", "result.read", "skill.load", "memory.search"})
 READ_TOOLS = (ASSISTANT | CATEGORY | OBJECTS | PROJECT.keys() | EVIDENCE
               | RESEARCH | MCP | PURE | OTHER)
 
@@ -266,6 +266,10 @@ def collect_call(name, args, value, run):
         # Private snapshots live under this exact originating Run; published
         # snapshots are separately captured from registered child read bindings.
         deps.append(dependency("run", run.id))
+    elif name == "memory.search":
+        # Recalled cards come from the owner's earlier Runs; each origin stays a root.
+        deps.extend(dependency("run", item["run_id"]) for item in value.get("items", [])
+                    if isinstance(item, dict) and item.get("run_id"))
     elif name in PURE:
         # References in pure arithmetic are model inputs, not issued provenance.
         # Their actual READs are collected independently; do not mint new roots.

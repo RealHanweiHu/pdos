@@ -47,6 +47,9 @@ class StartInput(StrictModel):
     work_followup_action: WorkFollowupAction | None = None
     lookup_depth: Literal["deep"] | None = None
     context_revision: int | None = Field(default=None, ge=1, strict=True)
+    # P85 第 5 项: only a brand-new Session takes the switch here; later changes use
+    # the Session memory-mode endpoint. Omitted means the Session's current mode.
+    memory_off: bool | None = None
 
 
 class AnswerInput(StrictModel):
@@ -148,6 +151,10 @@ def router(engine, *, context_dependency, ports: ApiPorts):
         work_state_router(transaction=transaction, context_dependency=run_dependency)
     )
 
+    from pdos_next.agent.memory.api import router as memory_router
+
+    result.include_router(memory_router(transaction=transaction, context_dependency=run_dependency))
+
     @result.get("/v1/personal/agent-skills")
     def personal_skills(ctx=run_dependency):
         from .requested_skills import reading
@@ -173,6 +180,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     | ({"lookup_depth"} if data.lookup_depth is None else set())
                     | ({"context_revision"} if data.context_revision is None else set())
                     | ({"restart_from_run_id"} if data.restart_from_run_id is None else set())
+                    | ({"memory_off"} if data.memory_off is None else set())
                     | ({"excluded_continued_skills"}
                        if not data.excluded_continued_skills else set())
                 ),
@@ -270,6 +278,13 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                 from .context_corrections import configure_start as configure_context_start
 
                 configure_context_start(s, ctx, row, data, effective, parent)
+                from pdos_next.agent.memory.mode import configure_start as configure_memory
+
+                configure_memory(
+                    s, ctx, row, data.memory_off,
+                    new_session=data.session_id is None and data.continue_from_run_id is None
+                    and data.restart_from_run_id is None,
+                )
                 if restart is not None:
                     from .context_restart import install
 

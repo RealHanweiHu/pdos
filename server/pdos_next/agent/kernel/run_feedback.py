@@ -225,4 +225,8 @@ def record(session, ctx, run, data):
     )
     session.add(event)
     session.flush()
+    # P85 第 1 项: the episode only gains an appended correction; it is never edited.
+    from pdos_next.agent.memory.api import record_correction
+
+    record_correction(session, ctx, run, request)
     return {"run_id": str(run.id), "feedback": item(event)}

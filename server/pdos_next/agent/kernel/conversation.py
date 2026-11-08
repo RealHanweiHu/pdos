@@ -26,6 +26,8 @@ class HistoryInput(StrictModel):
     before: UUID | None = None
     page_size: int = Field(default=10, ge=1, le=25)
     include_research_rows: bool = False
+    # Another Session of the same owner (P85). The server checks ownership.
+    session_id: UUID | None = None
 
 
 def prepare(session, ctx, data):

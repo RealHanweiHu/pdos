@@ -1,0 +1,482 @@
+"""Recall of the owner's own episodes: memory.search, the recent catalog, rechecks.
+
+Design §14.4 and P85. The server binds the person to the Run's requester and the
+range to the Run's scope; arguments can only narrow it. Every item is rechecked
+against current permissions and its dependency manifest before it is returned,
+and a revoked item is dropped without saying it existed. All ranking is
+deterministic; there is no model or embedding call on this path.
+"""
+
+import math
+import re
+from datetime import UTC, date, datetime, time, timedelta
+from typing import Literal
+from uuid import UUID
+
+from pydantic import Field, model_validator
+from sqlalchemy import func, or_, select, text
+
+from pdos_next.core.schema_base import StrictModel
+from pdos_next.errors import DomainError
+
+from .models import MemoryEpisode, MemoryEpisodeMark, MemoryIndexEntry
+
+VERSION = "memory-search/v1"
+RANKING = "memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5"
+KEYWORD_POOL = 50
+PENDING_SCAN = 200
+RECHECK_LIMIT = 30
+RRF_K = 60
+HALF_LIFE_DAYS = 30
+CATALOG_SIZE = 3
+CATALOG_TOKENS = 300
+GOAL_CHARS = 80
+CATALOG_GOAL_CHARS = 40
+ACTIVE = frozenset({"queued", "running", "waiting_input"})
+USAGE_LIMIT = 50
+FACT_POLICY = (
+    "情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。"
+    "要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。"
+)
+SEMANTIC_OFF = {
+    "status": "not_enabled",
+    "reason": "本人会话记录未启用向量化，本次只做了关键词检索。",
+}
+
+
+class MemorySearchInput(StrictModel):
+    query: str = Field(min_length=1, max_length=200)
+    kinds: list[Literal["episode", "note", "scope_note"]] = Field(
+        default_factory=lambda: ["episode"], min_length=1, max_length=3,
+    )
+    since: date | None = None
+    until: date | None = None
+    narrow_to: Literal["current_session"] | None = None
+    offset: int = Field(default=0, ge=0, le=40)
+    page_size: int = Field(default=5, ge=1, le=10)
+
+    @model_validator(mode="after")
+    def ordered(self):
+        if len(set(self.kinds)) != len(self.kinds):
+            raise ValueError("kinds 不能重复。")
+        if self.since and self.until and self.since > self.until:
+            raise ValueError("since 不能晚于 until。")
+        return self
+
+
+def first_sentence(value, limit=GOAL_CHARS):
+    head = re.split(r"[。！？!?\n]", value.strip(), maxsplit=1)[0].strip() or value.strip()
+    return head if len(head) <= limit else head[: limit - 1] + "…"
+
+
+def scope_filter(run):
+    """The Run's own range (RAG 设计 §7.1). Personal-global runs read all own episodes."""
+    if getattr(run, "project_id", None) is not None:
+        return "project", MemoryEpisode.project_id == run.project_id
+    if run.proposal_id is not None:
+        return "proposal", MemoryEpisode.proposal_id == run.proposal_id
+    if run.product_id is not None:
+        return "product", MemoryEpisode.product_id == run.product_id
+    if run.category_id is not None:
+        return "category", MemoryEpisode.category_id == run.category_id
+    return "personal", None
+
+
+def _archived(session, tenant_id, session_ids):
+    return {
+        identity for identity in session_ids
+        if session.scalar(text("SELECT public.memory_session_archived(:t,:s)"),
+                          {"t": tenant_id, "s": identity})
+    }
+
+
+def marks(session, episode_ids):
+    """Latest pin/hide state and every correction, per episode."""
+    if not episode_ids:
+        return {}
+    rows = session.scalars(
+        select(MemoryEpisodeMark)
+        .where(MemoryEpisodeMark.episode_id.in_(episode_ids))
+        .order_by(MemoryEpisodeMark.created_at, MemoryEpisodeMark.id)
+    ).all()
+    state = {}
+    for row in rows:
+        value = state.setdefault(row.episode_id, {"pinned": False, "hidden": False,
+                                                  "corrections": []})
+        if row.kind in {"pin", "unpin"}:
+            value["pinned"] = row.kind == "pin"
+        elif row.kind in {"hide", "unhide"}:
+            value["hidden"] = row.kind == "hide"
+        elif row.kind == "correction":
+            value["corrections"].append({
+                "recorded_at": row.created_at.isoformat(),
+                "categories": list(row.body.get("categories", [])),
+                "destination": row.body.get("destination"),
+                "comment": row.body.get("comment", "")[:200],
+            })
+    return state
+
+
+def keyword_score(parsed, counts, codes):
+    score = 0.0
+    for term in parsed["terms"]:
+        tf = counts.get(term, 0)
+        if tf:
+            score += tf / (tf + 1.2)
+    score += sum(1.0 for code in parsed["codes"] if code in set(codes))
+    return score
+
+
+def _candidates(session, run, data, parsed, *, extra):
+    from pdos_next.agent.enterprise_search.tokenizer import analyze, or_query, version
+
+    tokenizer = version()
+    base = [MemoryEpisode.owner_id == run.requester_id, MemoryEpisode.run_id != run.id]
+    _kind, condition = scope_filter(run)
+    if condition is not None:
+        base.append(condition)
+    if data.narrow_to == "current_session":
+        base.append(MemoryEpisode.session_id == run.session_id)
+    if data.since:
+        base.append(MemoryEpisode.created_at >= datetime.combine(data.since, time.min, UTC))
+    if data.until:
+        base.append(MemoryEpisode.created_at
+                    < datetime.combine(data.until + timedelta(days=1), time.min, UTC))
+    base.extend(extra)
+    scored = {}
+    if parsed["terms"] or parsed["codes"]:
+        matches = []
+        if parsed["terms"]:
+            matches.append(MemoryIndexEntry.terms.op("@@")(
+                func.to_tsquery("simple", or_query(parsed["terms"]))))
+        if parsed["codes"]:
+            matches.append(MemoryIndexEntry.codes.overlap(parsed["codes"]))
+        rows = session.execute(
+            select(MemoryEpisode, MemoryIndexEntry.term_counts, MemoryIndexEntry.codes)
+            .join(MemoryIndexEntry, MemoryIndexEntry.episode_id == MemoryEpisode.id)
+            .where(*base, MemoryIndexEntry.tokenizer_version == tokenizer,
+                   MemoryIndexEntry.profile_version == "none", or_(*matches))
+            .order_by(MemoryEpisode.created_at.desc(), MemoryEpisode.id)
+            .limit(KEYWORD_POOL * 4)
+        ).all()
+        for episode, counts, codes in rows:
+            scored[episode.id] = (episode, keyword_score(parsed, counts, codes))
+    # Index lag must never look like "nothing found": unindexed episodes in range
+    # are scored here with the same tokenizer (the 伪零结果 gate for M1).
+    indexed = select(MemoryIndexEntry.episode_id).where(
+        MemoryIndexEntry.episode_id == MemoryEpisode.id,
+        MemoryIndexEntry.tokenizer_version == tokenizer,
+    ).exists()
+    pending = session.scalars(
+        select(MemoryEpisode).where(*base, ~indexed)
+        .order_by(MemoryEpisode.created_at.desc(), MemoryEpisode.id).limit(PENDING_SCAN)
+    ).all()
+    for episode in pending:
+        words = analyze(episode.goal)
+        score = keyword_score(parsed, words["counts"], words["codes"])
+        if score > 0:
+            scored[episode.id] = (episode, score)
+    ranked = sorted(scored.values(), key=lambda item: (-item[1], -item[0].created_at.timestamp(),
+                                                       str(item[0].id)))[:KEYWORD_POOL]
+    return ranked, len(pending)
+
+
+def _final_order(ranked, state, now):
+    values = []
+    for rank, (episode, _score) in enumerate(ranked, start=1):
+        age = max((now - episode.created_at).total_seconds() / 86400, 0)
+        value = (1 / (RRF_K + rank)) * math.pow(0.5, age / HALF_LIFE_DAYS)
+        mark = state.get(episode.id, {})
+        value *= 1 + 0.25 * bool(episode.body.get("receipts")) + 0.25 * bool(mark.get("pinned"))
+        if mark.get("corrections"):
+            value *= 0.5
+        values.append((value, episode))
+    return [episode for _value, episode in sorted(
+        values, key=lambda item: (-item[0], -item[1].created_at.timestamp(), str(item[1].id)))]
+
+
+def covered(origin, run):
+    """A recalled record never imports a wider private/customer outbound class."""
+    return not (
+        (origin.private_context and not run.private_context)
+        or set(origin.data_categories) - set(run.data_categories)
+        or set(origin.customer_identities) - set(run.customer_identities)
+    )
+
+
+def _scope_title(session, ctx, episode):
+    from pdos_next.core.models import Category, Product
+    from pdos_next.domain.categories.preproject.models import Proposal
+    from pdos_next.domain.projects.models import Project
+
+    for kind, model, column in (("project", Project, "name"), ("proposal", Proposal, "title"),
+                                ("product", Product, "name"), ("category", Category, "name")):
+        identity = getattr(episode, f"{kind}_id")
+        if identity is not None:
+            title = session.scalar(select(getattr(model, column)).where(model.id == identity))
+            if title is None:
+                raise DomainError("FORBIDDEN_SCOPE", "情景范围已不可读。")
+            return {"kind": kind, "id": str(identity), "title": title}
+    return {"kind": "personal", "id": None, "title": "个人"}
+
+
+def recheck(session, run, episodes, *, limit):
+    """Drop anything not readable now; return (cards input, access manifests)."""
+    from pdos_next.agent.kernel.conversation_acl import classify, manifests
+    from pdos_next.agent.kernel.models import AgentRun
+    from pdos_next.core.models import Receipt
+
+    if not episodes:
+        return [], {}
+    archived = _archived(session, run.tenant_id, {episode.session_id for episode in episodes})
+    origins = {row.id: row for row in session.scalars(
+        select(AgentRun).where(AgentRun.id.in_([episode.run_id for episode in episodes]))
+    ).all()}
+    kept = [episode for episode in episodes
+            if episode.session_id not in archived
+            and episode.run_id in origins
+            and not origins[episode.run_id].reverted_at
+            and covered(origins[episode.run_id], run)][: limit * 3]
+    if not kept:
+        return [], {}
+    access = manifests(session, [origins[episode.run_id] for episode in kept], consumer=run)
+    states = classify(session, access, consumer=run)
+    ctx = None
+    result = []
+    for episode in kept:
+        state = states.get(str(episode.run_id), "hidden")
+        if state == "hidden":
+            continue
+        try:
+            scope = _scope_title(session, ctx, episode)
+        except DomainError:
+            continue
+        receipts = [UUID(item["receipt_id"]) for item in episode.body.get("receipts", [])]
+        readable = set(session.scalars(select(Receipt.id).where(Receipt.id.in_(receipts))).all()
+                       ) if receipts else set()
+        result.append((episode, state, scope, [
+            item for item in episode.body.get("receipts", [])
+            if UUID(item["receipt_id"]) in readable
+        ]))
+        if len(result) >= limit:
+            break
+    kept_access = {str(item[0].run_id): access[str(item[0].run_id)] for item in result}
+    return result, kept_access
+
+
+def card(episode, state, scope, receipts, mark, run):
+    value = {
+        "run_id": str(episode.run_id),
+        "session_id": str(episode.session_id),
+        "as_of": episode.created_at.isoformat(),
+        "scope": scope,
+        "goal": first_sentence(episode.goal),
+        "status": episode.status,
+        "receipts": [{"operation": item["operation"]} for item in receipts],
+        "candidate_count": len(episode.body.get("candidates", [])),
+        "skills": [item["key"] for item in episode.body.get("skills", [])],
+        "same_session": episode.session_id == run.session_id,
+        "pinned": bool(mark.get("pinned")),
+        "corrections": mark.get("corrections", []),
+    }
+    if state == "updated":
+        value["note"] = "当时读过的资料已更新，涉及事实须重新读取"
+    if mark.get("corrections"):
+        value["note"] = "这次工作被你纠正过，排序已降低；纠正内容见 corrections"
+    return value
+
+
+def record_usage(run, *, episodes=(), sessions=(), access=None, retrieval=None, catalog=None):
+    """Server-fact usage list for "用到了 N 条记忆", the episode record and rechecks."""
+    if run.state not in ACTIVE:
+        return
+    usage = dict(run.versions.get("memory_usage") or {})
+    for key, values in (("episodes", episodes), ("sessions", sessions)):
+        merged = list(usage.get(key, []))
+        merged.extend(value for value in map(str, values) if value not in merged)
+        usage[key] = merged[:USAGE_LIMIT]
+    if access:
+        usage["access"] = {**usage.get("access", {}), **access}
+    if retrieval is not None:
+        usage["retrieval"] = retrieval
+    if catalog is not None:
+        usage["catalog"] = [str(value) for value in catalog]
+    run.versions = {**run.versions, "memory_usage": usage}
+
+
+def unavailable(run, session):
+    """Reasons this Run reads no personal memory at all (P85 第 5、8 项)."""
+    from .mode import run_is_off
+
+    if run.trigger != "conversation":
+        return "not_conversation", "自动化运行不读个人记忆。"
+    if (run.versions or {}).get("dingtalk"):
+        return "channel_excluded", "钉钉入口首期不读个人记忆。"
+    if run_is_off(session, run):
+        return "memory_off", "本会话已设为不进记忆，未读取个人记忆。"
+    return None
+
+
+def search(session, run, data, *, now=None):
+    from pdos_next.agent.enterprise_search.tokenizer import analyze_query
+
+    now = now or datetime.now(UTC)
+    kind, _condition = scope_filter(run)
+    response = {
+        "version": VERSION,
+        "scope": {"kind": kind, "narrowed_to": data.narrow_to},
+        "items": [],
+        "returned": 0,
+        "next_offset": None,
+        "unavailable_kinds": [value for value in data.kinds if value != "episode"],
+        "retrieval": {"channels": ["keyword"], "semantic": SEMANTIC_OFF,
+                      "ranking_version": RANKING, "index_pending": 0},
+        "fact_policy": FACT_POLICY,
+    }
+    if response["unavailable_kinds"]:
+        response["kinds_note"] = "本期只有情景记录；个人记忆条目与团队备忘尚未启用。"
+    blocked = unavailable(run, session)
+    if blocked is not None:
+        response.update(status=blocked[0], message=blocked[1])
+        return response
+    if "episode" not in data.kinds:
+        response["status"] = "completed"
+        return response
+    parsed = analyze_query(data.query)
+    ranked, pending = _candidates(session, run, data, parsed, extra=[])
+    state = marks(session, [episode.id for episode, _score in ranked])
+    ranked = [(episode, score) for episode, score in ranked
+              if not state.get(episode.id, {}).get("hidden")]
+    ordered = _final_order(ranked, state, now)
+    window = ordered[data.offset:]
+    kept, access = recheck(session, run, window[:RECHECK_LIMIT], limit=data.page_size)
+    response["items"] = [card(episode, item_state, scope, receipts, state.get(episode.id, {}), run)
+                         for episode, item_state, scope, receipts in kept]
+    response["returned"] = len(response["items"])
+    response["retrieval"]["index_pending"] = pending
+    if len(window) > data.page_size and data.offset + data.page_size <= 40:
+        response["next_offset"] = data.offset + data.page_size
+    response["status"] = "completed"
+    record_usage(run, episodes=[item["run_id"] for item in response["items"]], access=access,
+                 retrieval={"channels": ["keyword"], "semantic": "not_enabled",
+                            "index_pending": pending})
+    return response
+
+
+def catalog(session, run):
+    """Up to 3 one-line entries from the same scope, other Sessions only; SQL only (§6.2)."""
+    from pdos_next.agent.kernel.context_budget import estimate_tokens
+
+    kind, condition = scope_filter(run)
+    if kind == "personal" or condition is None or unavailable(run, session) is not None:
+        return None
+    rows = session.scalars(
+        select(MemoryEpisode)
+        .where(MemoryEpisode.owner_id == run.requester_id, condition,
+               MemoryEpisode.session_id != run.session_id)
+        .order_by(MemoryEpisode.created_at.desc(), MemoryEpisode.id).limit(CATALOG_SIZE * 4)
+    ).all()
+    state = marks(session, [row.id for row in rows])
+    rows = [row for row in rows if not state.get(row.id, {}).get("hidden")]
+    kept, access = recheck(session, run, rows, limit=CATALOG_SIZE)
+    if not kept:
+        return None
+    value = {
+        "zone": "background",
+        "label": "历史（as_of）：你本人在当前范围最近几次工作的目录，"
+                 "不是业务事实，不能作为依据引用。",
+        "how_to_use": "需要细节时用 memory.search 或 conversation.history(session_id=…)。",
+        "recent_episodes": [
+            {"run_id": str(episode.run_id), "session_id": str(episode.session_id),
+             "as_of": episode.created_at.date().isoformat(),
+             "goal": first_sentence(episode.goal, CATALOG_GOAL_CHARS)}
+            for episode, _state, _scope, _receipts in kept
+        ],
+    }
+    import json
+
+    while value["recent_episodes"] and estimate_tokens(
+        json.dumps(value, ensure_ascii=False)
+    ) > CATALOG_TOKENS:
+        value["recent_episodes"].pop()
+    if not value["recent_episodes"]:
+        return None
+    record_usage(run, episodes=[item["run_id"] for item in value["recent_episodes"]],
+                 access={key: access[key] for key in access
+                         if key in {item["run_id"] for item in value["recent_episodes"]}},
+                 catalog=[item["run_id"] for item in value["recent_episodes"]])
+    return value
+
+
+def recheck_frozen(session, run):
+    """Before each model call: stop sending recalled records whose sources were revoked."""
+    from pdos_next.agent.kernel.conversation_acl import classify
+
+    access = (run.versions.get("memory_usage") or {}).get("access") or {}
+    if not access:
+        return
+    hidden = sorted(identity for identity, state in classify(session, access, consumer=run).items()
+                    if state == "hidden")
+    if hidden:
+        raise DomainError(
+            "CONVERSATION_HISTORY_REVOKED", "调取过的以往工作记录引用的资料已无权读取或已撤回。",
+            detail={"run_ids": hidden},
+        )
+
+
+def matching_runs(session, ctx, q):
+    """Owner's episode Run IDs whose own words match ``q`` (session list search)."""
+    from pdos_next.agent.enterprise_search.tokenizer import analyze_query, or_query, version
+
+    parsed = analyze_query(q)
+    if not parsed["terms"] and not parsed["codes"]:
+        return select(MemoryEpisode.run_id).where(False)
+    matches = []
+    if parsed["terms"]:
+        matches.append(MemoryIndexEntry.terms.op("@@")(
+            func.to_tsquery("simple", or_query(parsed["terms"]))))
+    if parsed["codes"]:
+        matches.append(MemoryIndexEntry.codes.overlap(parsed["codes"]))
+    return (
+        select(MemoryEpisode.run_id)
+        .join(MemoryIndexEntry, MemoryIndexEntry.episode_id == MemoryEpisode.id)
+        .where(MemoryEpisode.owner_id == ctx.requester_id,
+               MemoryIndexEntry.tokenizer_version == version(), or_(*matches))
+    )
+
+
+CONTEXT_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["zone", "label", "how_to_use", "recent_episodes"],
+    "properties": {
+        "zone": {"const": "background"},
+        "label": {"type": "string"},
+        "how_to_use": {"type": "string"},
+        "recent_episodes": {
+            "type": "array",
+            "maxItems": CATALOG_SIZE,
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["run_id", "session_id", "as_of", "goal"],
+                "properties": {
+                    "run_id": {"type": "string"},
+                    "session_id": {"type": "string"},
+                    "as_of": {"type": "string"},
+                    "goal": {"type": "string"},
+                },
+            },
+        },
+    },
+}
+
+
+def frozen_catalog(session, run):
+    """The catalog a Run used is fixed at its first assembly, including after skill.load."""
+    if "memory_context" in run.versions:
+        return run.versions["memory_context"]
+    value = catalog(session, run)
+    if run.state in ACTIVE:
+        run.versions = {**run.versions, "memory_context": value}
+    return value

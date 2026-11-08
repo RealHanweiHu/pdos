@@ -76,6 +76,9 @@ def combine_contracts(catalog, skills):
     from pdos_next.agent.enterprise_search.assistant_depth import CONTEXT_SCHEMA as DEPTH_SCHEMA
 
     properties["assistant_depth"] = deepcopy(DEPTH_SCHEMA)
+    from pdos_next.agent.memory.recall import CONTEXT_SCHEMA as MEMORY_SCHEMA
+
+    properties["memory"] = deepcopy(MEMORY_SCHEMA)
     return {"type": "object", "properties": properties, "required": sorted(required),
             "additionalProperties": False, "$defs": schemas[0]["$defs"]}
 
