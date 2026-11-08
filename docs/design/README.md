@@ -58,6 +58,7 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 |---|---|
 | [NPI 框架与 Agent 任务规划](2026-11-01-npi-framework-agent-task-planning-design.md) | 设计草案 v0.2；P33 已确认，未实施 |
 | [项目协作、驾驶舱与提及](2026-11-01-project-team-cockpit-mentions-design.md) | 设计草案 v0.1；P34 已确认，未实施 |
+| [小Pai 记忆层优化](2026-11-05-xiaopai-memory-layer-design.md) | v0.4 已确认（用户 2026-11-07，Q1–Q19，[P84–P90](2026-10-08-pdos-next-design-confirmation.md#p84)）；含业务场景记忆、具体架构、节点衔接与评测方案、语言习惯；未实施，按 §13 分期交清单 W8 D45 |
 | [v1.1 缺口与竞品对照](2026-10-22-pdos-v1.1-gap-analysis-and-competitive-review.md) | 分析稿，不构成合同；改变范围的条目须先有决策记录 |
 
 ## 六、资料与相邻目录
