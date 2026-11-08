@@ -354,6 +354,17 @@ def test_unchanged_canonical_specs_retain_baseline_and_s0_changes_are_explicit()
         "pdos_next/schemas/supply_cost/dto.py",
         "pdos_next/schemas/verification/contracts.py",
     }
+    # Later deliberate revisions are pinned to their exact digest, so any further
+    # change still fails here until it is recorded the same way.
+    approved_later_revisions = {
+        # 073aa96d (10-31): model connection gains context window, OpenAI response
+        # mode, streaming and managed connection id (小Pai context work).
+        "pdos_next/schemas/model_configuration/dto.py": (
+            "0743e661d66e3efffcf9bcf22a48f2c8f1966b9b9c73555f310c8fb6f661b629"
+        ),
+    }
+    assert set(approved_later_revisions) <= set(baseline) - approved_s0_changes
+    expected = {**baseline, **approved_later_revisions}
     specs = [
         p for p in baseline if p.startswith("pdos_next/schemas/") and p not in approved_s0_changes
     ]
@@ -361,7 +372,7 @@ def test_unchanged_canonical_specs_retain_baseline_and_s0_changes_are_explicit()
 
     assert GraphSnapshot.model_fields["expires_at"].default is None
     assert specs
-    assert all(hashlib.sha256((source / p).read_bytes()).hexdigest() == baseline[p] for p in specs)
+    assert all(hashlib.sha256((source / p).read_bytes()).hexdigest() == expected[p] for p in specs)
 
 
 def test_reverse_common_members_preserve_delivery_and_aliases_without_current_reauthorization():

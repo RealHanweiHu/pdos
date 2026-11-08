@@ -2,6 +2,7 @@
 
 # ruff: noqa: F401,F811 -- register the existing real quality/launch fixture tree
 
+import os
 from copy import deepcopy
 from datetime import timedelta
 from uuid import uuid4
@@ -175,6 +176,11 @@ def _preview(request, monkeypatch, operation):
     return work, confirmed
 
 
+# Its fixtures are requested inside the body, so a missing database fails
+# instead of erroring at setup; skip it explicitly without one (D27).
+@pytest.mark.skipif(
+    not os.environ.get("TEST_DATABASE_URL"), reason="Explicit verified local PostgreSQL required"
+)
 @pytest.mark.parametrize("operation", OPERATIONS)
 def test_direct_preview_storage_is_immutable_and_normal_consumption_is_monotonic(
     request, monkeypatch, operation

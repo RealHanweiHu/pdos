@@ -71,8 +71,11 @@ def environment(monkeypatch):
         manufacturing_configuration_id=PROCESS,
         visibility="private",
         build_id=UUID(int=12),
+        expected_project_revision=1,
+        resource_demands=(),
     )
-    project, link = NS(id=PROJECT), NS(definition_id=DEFINITION)
+    # Plan validation checks the project revision before its sources.
+    project, link = NS(id=PROJECT, revision=1), NS(definition_id=DEFINITION)
     proof = NS(read_rows={})
     engineering = {
         "id": str(ENGINEERING),

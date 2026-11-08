@@ -2,6 +2,7 @@
 # ruff: noqa: F811 -- explicitly imported marked PG fixtures
 
 import hashlib
+from copy import deepcopy
 from dataclasses import replace
 from types import SimpleNamespace
 from uuid import UUID, uuid4
@@ -105,6 +106,11 @@ def current(f):
         return digest(run.versions), list(run.versions[KEY]["references"])
 
 
+def versions(f):
+    with f.store.transaction(f.scope) as (_, run):
+        return deepcopy(run.versions)
+
+
 def claim_args(f):
     return {**f.arguments, "visibility": "audience"}
 
@@ -155,8 +161,17 @@ def test_new_claim_can_be_adopted_read_and_replayed_in_original_run(work, monkey
     after = current(f)
     assert {ref["type"] for ref in after[1]} >= {"claim", "artifact"}
     assert not any(ref["id"] == str(identity) for ref in before)
+    recorded = versions(f)
     attach(work, f, "claim", identity)
-    assert replay()["id"] == receipt["id"] and current(f) == after
+    # attach() reads project_context, which since 10-31 freezes the server-owned
+    # work state into the run. That is the only change; the admitted references stay.
+    attached = versions(f)
+    changed = {key for key in recorded.keys() | attached.keys()
+               if recorded.get(key) != attached.get(key)}
+    assert all(key.startswith("work_state") for key in changed), changed
+    assert current(f)[1] == after[1]
+    settled = current(f)
+    assert replay()["id"] == receipt["id"] and current(f) == settled
     with Session(work.admin) as session:
         row = session.get(Claim, identity)
         assert row.run_id == f.scope.run_id and row.writer_id == f.scope.writer_id

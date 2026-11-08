@@ -52,6 +52,14 @@ def work(monkeypatch):
         lifecycle_epoch=1,
         status="draft",
         visibility="category",
+        # Every column must be loaded: the preview digests all product columns and
+        # this protocol session has no live bind for lazy loads.
+        parent_product_id=None,
+        target_price=None,
+        target_price_currency=None,
+        target_price_basis=None,
+        target_price_includes_tax=None,
+        target_price_as_of=None,
     )
     make_transient_to_detached(product)
     session.add(product)

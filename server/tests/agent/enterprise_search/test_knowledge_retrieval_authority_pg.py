@@ -166,5 +166,9 @@ def test_knowledge_dependency_sql_count_is_batched_and_warm_latency_under_one_se
     record_property("knowledge_retrieval_sql_counts", counts)
     record_property("knowledge_retrieval_sources", 8)
     record_property("knowledge_retrieval_samples", len(timings))
-    assert len(set(counts)) == 1 and counts[0] == 3, counts
+    # One transaction-local `SET LOCAL jit=off` (enterprise_search.sources.prepare_read)
+    # precedes the three batched reads; the count stays constant as sources grow.
+    assert len(set(counts)) == 1 and counts[0] == 4, counts
+    assert statements[0] == "SET LOCAL jit=off"
+    assert statements.count("SET LOCAL jit=off") == 1
     assert p95 < 1.0

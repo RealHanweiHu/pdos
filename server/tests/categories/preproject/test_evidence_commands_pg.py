@@ -10,6 +10,7 @@ from sqlalchemy import select
 
 from pdos_next.agent.kernel.bindings import execution_key
 from pdos_next.agent.kernel.bootstrap import Bootstrap
+from pdos_next.agent.kernel.disclosure import disclosure_digest
 from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
 from pdos_next.core.category_scope import MemberGrant, grant_member
 from pdos_next.core.database import tenant_session
@@ -112,9 +113,17 @@ def claim_fixture(
             update={"key": skill.key, "version": skill.version, "digest": skill.digest}
         )
         ledger.source = ledger.source.model_copy(update={"skill": binding})
+        # The call's disclosure follows its loaded skill: swapping the skill also
+        # swaps the recorded tool-definition digest the T0 source check compares.
+        tools = disclosure_digest(ledger.registry, "main", skill.operations, ledger.scope)
         ledger.model.execution_binding = {
             **ledger.model.execution_binding,
             "loaded_skills": [binding.model_dump(mode="json")],
+            "tool_definitions_digest": tools,
+        }
+        ledger.run.versions = {
+            **ledger.run.versions,
+            "tool_definitions": {**ledger.run.versions["tool_definitions"], "main": tools},
         }
         ledger.event.body = {
             **ledger.event.body,

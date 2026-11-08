@@ -17,6 +17,7 @@ from pdos_next.agent.kernel import m3_definition_diff
 from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.deterministic_proofs import resolve_compute_proof
+from pdos_next.agent.kernel.disclosure import disclosure_digest
 from pdos_next.agent.kernel.domain_reads import DomainReads
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.m3_calculators import ENGINES
@@ -61,7 +62,8 @@ def reader(work, arguments, *, proposal_id=None, product_bound=False, tool=TOOL)
     binding = ModelBinding(
         model_version=route.version,
         model_route_digest=route.digest,
-        tool_definitions_digest=digest(bootstrap.registry.definitions()),
+        # A call discloses only what its loaded skills and bound scope allow (P76 item 4).
+        tool_definitions_digest=disclosure_digest(bootstrap.registry, scope=scope),
         prompt_digest=digest("synthetic diff prefix"),
         isolation="main",
         cancel_epoch=scope.cancel_epoch,

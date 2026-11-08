@@ -6,7 +6,7 @@ from dataclasses import replace
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import func, select, text
+from sqlalchemy import bindparam, func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
@@ -141,15 +141,28 @@ def test_actual_owner_and_definers_are_non_superuser(work):
             )
         ).one() == ("pdos_next_owner", False, False)
         assert not s.scalar(text("SELECT rolcanlogin FROM pg_roles WHERE rolname=current_user"))
+        # Since 10-31 (832c9429) two reviewed narrow maintenance roles own their own
+        # DingTalk and enterprise-index definers; like the owner they are NOLOGIN,
+        # NOSUPERUSER, NOBYPASSRLS and NOINHERIT. No definer may have any other owner.
+        maintenance = ("pdos_next_dingtalk_maintenance", "pdos_enterprise_index_maintainer")
+        assert s.execute(
+            text(
+                "SELECT rolname,rolsuper,rolbypassrls,rolcanlogin,rolinherit FROM pg_roles "
+                "WHERE rolname IN :roles ORDER BY rolname"
+            ).bindparams(bindparam("roles", expanding=True)),
+            {"roles": list(maintenance)},
+        ).all() == [(role, False, False, False, False) for role in sorted(maintenance)]
         assert (
-            s.scalar(
+            s.execute(
                 text(
-                    "SELECT count(*) FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace "
+                    "SELECT p.oid::regprocedure::text,r.rolname FROM pg_proc p "
+                    "JOIN pg_namespace n ON n.oid=p.pronamespace "
                     "JOIN pg_roles r ON r.oid=p.proowner WHERE n.nspname='public' AND p.prosecdef "
-                    "AND (r.rolsuper OR r.rolbypassrls OR r.rolname<>'pdos_next_owner')"
-                )
-            )
-            == 0
+                    "AND (r.rolsuper OR r.rolbypassrls OR r.rolname NOT IN :owners) ORDER BY 1"
+                ).bindparams(bindparam("owners", expanding=True)),
+                {"owners": ["pdos_next_owner", *maintenance]},
+            ).all()
+            == []
         )
         assert not s.scalar(text("SELECT pg_has_role('pdos_next_app','pdos_next_owner','MEMBER')"))
         assert not s.scalar(text("SELECT has_schema_privilege('pdos_next_app','public','CREATE')"))

@@ -191,8 +191,11 @@ def test_actual_public_start_freezes_server_profile_before_workflow_dispatch(
                           continued_from_id=parent.id if parent else None)
     scalars = iter([None] * (3 if parent_present else 2))
     events, dispatched = [], []
+    # A continued start reads the parent's last loaded skills (10-31 skill
+    # continuation); this synthetic parent loaded none.
     session = SimpleNamespace(execute=lambda *_args, **_kwargs: None,
-                              scalar=lambda *_args: next(scalars), add=events.append)
+                              scalar=lambda *_args: next(scalars), add=events.append,
+                              scalars=lambda *_args: iter(()))
 
     @contextmanager
     def transaction(*_args, **_kwargs):

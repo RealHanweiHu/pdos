@@ -16,6 +16,7 @@ from pdos_next.agent.kernel import m3_spec_compare
 from pdos_next.agent.kernel.bindings import ModelBinding, execution_key
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.deterministic_proofs import resolve_compute_proof
+from pdos_next.agent.kernel.disclosure import disclosure_digest
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.m3_calculators import ENGINES
 from pdos_next.agent.kernel.models import AgentToolCall, TenantSkillEnablement
@@ -52,7 +53,8 @@ def comparison(work, subjects, *, proposal_id=None, private_context=False, read_
     binding = ModelBinding(
         model_version=route.version,
         model_route_digest=route.digest,
-        tool_definitions_digest=digest(bootstrap.registry.definitions()),
+        # A call discloses only what its loaded skills and bound scope allow (P76 item 4).
+        tool_definitions_digest=disclosure_digest(bootstrap.registry, scope=scope),
         prompt_digest=digest("synthetic comparison prefix"),
         isolation="main",
         cancel_epoch=scope.cancel_epoch,

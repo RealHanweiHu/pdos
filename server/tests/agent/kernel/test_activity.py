@@ -1,4 +1,5 @@
 import os
+from contextlib import nullcontext
 from datetime import timedelta
 from uuid import UUID
 
@@ -23,6 +24,10 @@ def test_activity_restarts_with_committed_answer_and_persistent_graph_checkpoint
     from temporalio import activity
 
     monkeypatch.setattr(activity, "heartbeat", lambda *_: None)
+    # D243 (9f91e89c): advance() now enters the Activity cancellation shield; outside a
+    # Temporal Activity it needs the same stand-ins as heartbeat.
+    monkeypatch.setattr(activity, "shield_thread_cancel_exception", nullcontext)
+    monkeypatch.setattr(activity, "is_cancelled", lambda: False)
     store, bound = run(setup, token_limit=500000)
 
     class Client:
@@ -124,6 +129,10 @@ def test_activity_revocation_during_provider_attempt_has_visible_terminal_failur
     from tests.agent.kernel.test_gateway import Client
 
     monkeypatch.setattr(activity, "heartbeat", lambda *_: None)
+    # D243 (9f91e89c): advance() now enters the Activity cancellation shield; outside a
+    # Temporal Activity it needs the same stand-ins as heartbeat.
+    monkeypatch.setattr(activity, "shield_thread_cancel_exception", nullcontext)
+    monkeypatch.setattr(activity, "is_cancelled", lambda: False)
     _, bound = run(setup, token_limit=500000)
 
     def revoke(_):

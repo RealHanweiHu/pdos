@@ -1,16 +1,20 @@
 """Actual invoker guard retains declared duty, qualification and policy intervals."""
 
+import os
 from copy import deepcopy
 from datetime import timedelta
 from uuid import uuid4
 
+import pytest
 from pdos_next.core.models import now
 from sqlalchemy import bindparam, text
 from sqlalchemy.dialects.postgresql import JSONB
 
 
+@pytest.mark.skipif(
+    not os.environ.get("TEST_DATABASE_URL"), reason="Explicit verified local PostgreSQL required"
+)
 def test_ordinary_capture_has_no_ttl_but_actual_fact_intervals_remain_required():
-    import os
 
     from pdos_next.core.database import engine_for
     from pdos_next.core.safety import verify_test_target

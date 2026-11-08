@@ -1,0 +1,4 @@
+tests/agent/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs | failure | AssertionError: {'status': 'partial', 'summary': '参考固定记录：更换密封圈。', 'result': {'assistant': {'version': 1, 'kind |  |  | 
+tests/agent/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_knowledge_original_scan_proof_precedes_http_metadata | failure | assert (0 == 1) |  |  | 
+tests/agent/enterprise_search/test_recovery_pg.py::test_registered_family_search_and_authority_batch_stay_constant_sql_and_under_one_second | failure | assert 2.1199509041471174 < 1.0 |  |  | 
+tests/categories/preproject/test_review_fixes.py::test_actual_owner_and_definers_are_non_superuser | failure | AssertionError: assert [('change_rec..., 'postgres')] == []      Left contains one more item: ('change_receipt |  |  | 

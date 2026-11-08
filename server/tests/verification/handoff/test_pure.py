@@ -691,17 +691,18 @@ def test_history_is_guarded_but_does_not_repeat_current_actions_or_next_owners(w
     )
     assert all(row["timeline"]["request_created"] == "fixed server clock" for row in history)
     assert len(calls["proof"]) == 3 and len(calls["execution"]) == 3
-    assert len(s.run_queries) == 3 and set(s.run_queries) == set(current)
+    # S2 multi-run contract (10-17, P13): a request that already has a Run may still
+    # receive or return later samples, so the list no longer looks up a planned Run
+    # and an existing Run never blocks the pending scope.
+    assert s.run_queries == []
     current_views = {UUID(row["id"]): row for row in result["requests"] if row["is_current"]}
     planned_view = current_views[current[planned_request].id]
-    assert planned_view["planned_run_id"] == str(planned_run)
-    assert not planned_view["capabilities"]["handoff_accept"]
-    assert not planned_view["capabilities"]["handoff_return"]
-    # Identical pending offered scope without a Run can still be returned.
+    assert "planned_run_id" not in planned_view
     assert all(
-        row["planned_run_id"] is None and row["capabilities"]["handoff_return"]
-        for identity, row in current_views.items()
-        if identity != current[planned_request].id
+        "planned_run_id" not in row
+        and row["capabilities"]["handoff_return"]
+        and row["capabilities"]["handoff_accept"] == planned_view["capabilities"]["handoff_accept"]
+        for row in current_views.values()
     )
     assert len(calls["preparation"]) == 2 and s.owner_queries == 1
     assert calls["owner"] == [(work.request.scope.project_id, owner.id), (project_b, owner.id)]

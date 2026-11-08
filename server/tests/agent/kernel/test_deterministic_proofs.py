@@ -58,6 +58,7 @@ def fixture():
         trigger="conversation",
         product_id=None,
         proposal_id=UUID(int=5),
+        project_id=None,  # AgentRun.project_id: the proof re-checks a bound project
         cancel_epoch=0,
         state="running",
         reverted_at=None,

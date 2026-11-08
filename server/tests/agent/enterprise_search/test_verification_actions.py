@@ -341,6 +341,8 @@ def test_actual_start_endpoint_preserves_legacy_no_action_idempotency_digest(
         continued_from_id=None, state="queued", intent_digest=digest({
             "category_id": case.ctx.category_id, "request": legacy_request,
         }),
+        # The replayed start reports a work-state restart from AgentRun.versions (10-31).
+        versions={},
     )
     queries = iter([existing, uuid4()])
     workflows = []
