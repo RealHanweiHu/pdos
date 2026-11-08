@@ -332,6 +332,7 @@ W3c · 想法已变但没有记录
     - 环境：以前的运行器没给检查点库地址和 Temporal 本地程序，HEAD 上 11 条因此直接报错；补齐后 4 条通过，另 7 条就是上面的 D243 替身问题。S1 的 6 条候选摘要在 HEAD 上已通过。`test_project_current_context_pg` 整文件按顺序跑全过，未复现顺序依赖。
   - 剩余 4 个，均已归因：D258 迁移缺陷 1 个、D259 企业检索缺陷 2 个（下两条）；`test_recovery_pg` 检索 p95 1.47 秒超过 1 秒 1 个，两种核对模式在 1 秒内、语句数恒定，整机负载 13–15、测试库 1.1 GB，按环境性能归因，未改阈值（性能验收按 P13 暂缓）。
   - 合并提示：主工作区未提交的改动涉及 agent kernel 与 `test_graph.py` 等 4 个测试，本次未动这 4 个；本次改了 39 个测试文件，与主工作区可能重叠的只有本清单。新编号从 D258 起，主工作区清单已有 D253，合并时核对编号。
+  - 11-08 已合并进本地集成分支 `claude/frosty-villani-38f085`（未推送，见本组末尾的集成记录），D258、D259 保持原号。补记：无库全量的 ERROR 不全是缺库：`tests/agent/kernel/test_registered_snapshot_reads.py` 的 27 个用例，夹具把 `RunScope.citation_ids` 传给 `AgentRun`，以 `TypeError` 报错，`d730291d` 的干净副本上同样如此；D27 当时把它们算进了 1882 个缺库 ERROR。未修。
   - 原记录：测试失败：HEAD 10 条回放/撤回失败（2 条 work_state 旧断言、8 条撤回 VERSION_CONFLICT）；S1 6 个摘要夹具失败；141 项测试替身层失败（capa、launch_plan、change 一带），重跑后定性。W1（D242）的受影响范围回归另有 48 个 PG 测试在不含修复的 HEAD 上同样失败，集中在 `test_computed_claim`、`test_m3_*`、`test_deterministic_proofs`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures.txt)），可能与上面几类重叠，重跑定性时一起核。D245 的受影响范围回归（11-04）又多出 37 个在 HEAD 上同样失败的测试，集中在 `test_evidence_commands_pg`、`test_private_analysis_pg`、`test_baseline_watermarks_pg`、`test_private_spec_compare_pg`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures-d245.txt)）；另有 `test_project_current_context_pg` 的 1 个用例单独重跑通过，疑似依赖执行顺序。（11-04 定性，W4 未修）无库全量 171 个失败在 W4 改动前后逐项相同，按原因分四类：① 测试替身过时约 120 个：`SimpleNamespace` 假会话、假对象跟不上代码接口（62 个 unhashable、51 个 `assert False`），集中在 `quality/capa_link_phases`（90）、`projects/test_launch_plan_preview`（22）、`change/test_change_capture_deadline`（12）；② 计算事实的夹具缺少确定性证明约 20 个（PG 侧另 15 个同类）；③ 假服务商 `ScriptedProvider.turn()` 不认 `prompt_identity`（2 个）；④ 需要数据库却没标记的 5 个。PG 侧（D242、D245 两份清单）另有：读取绑定被拒 27 个、6 个断言改收到 `VERSION_CONFLICT`，都是夹具早于更严的读取证明绑定；工具或技能摘要已变 9 个；零散 7 个（上下文窗口夹具过小、数据库函数文本漂移、测试库有超级用户拥有的函数等）。8 条撤回 VERSION_CONFLICT 随 P68（W8）修。修法是逐类更新夹具，建议单独做一次。
 - D28 ✅ 11-04 28 个测试子目录补 `__init__.py`，14 处同目录裸导入改为相对导入；`tests/conftest.py` 忽略 iCloud 编号副本；新增 `tests/test_layout.py` 检查两者；`PENDING_LIMIT` 131→116。全量收集与改动前逐项一致，只多出新增用例。 原记录：测试卫生：28 个 tests 子目录缺 `__init__.py`，加一条 collect 检查；pytest 排除 iCloud 副本；`PENDING_LIMIT` 从 131 收到 116。
 - D29 ✅ 11-04 两项（`preload_when` 归 W8，由 P76 第 4 项 (c) 落实；11-04 已改为服务器判定的条件，已本地提交、未推送，见 D247）：MCP 页文案按 P26 改为“每次调用的服务商与资料类别记入回执；已登记有效协议的按协议限制”；技能包政策漂移检查：“不授权治理操作、不执行 T2”的检查从 6 个项目技能包扩到全部 18 个（各操作档位与注册表一致的检查原已存在）。10-22 原卡片的具体内容没找到，按不可协商项 1 落实。 原记录：三件小事：`mcp-management.tsx:134` 的旧口径文案按 P26 核对；技能包与政策的漂移检查（10-22 的卡片一直没启动）；18 个技能包写了 `preload_when` 但没有任何代码读取，改成服务器可判定的条件。W1 实测：每个品类运行都由服务端预载 `proposal_drafting`（约 3.8k token），与问题内容无关。
@@ -344,6 +345,21 @@ W3c · 想法已变但没有记录
 - D259 企业检索缺陷（11-07 D27 发现，未修）：以客户上传原件为依据的知识条目在检索里永远拿不到，覆盖状态停在 partial（“部分当前可读来源尚未完成索引或当前扫描复核”）。原因：`agent/enterprise_search/indexing.py` 的 `project` 用 `select_sources`→`catalog(["knowledge"])` 写投影，`SearchSource.original_ids` 只含条目自身的原件（为 `[]`），不含 `source_refs` 依据里的原件；`sources.py` 的 `dependency_originals` 只在缓存为 NULL 时才回退实时推导，于是依据原件不进入 `safe_originals` 的核对集合，`query.py` 把命中的条目判为不安全剔除。实测：同一原件用本人会话直接调 `safe_originals` 是安全的（扫描绑定一致、闸门放行），投影里却是 `[]`。影响 `test_knowledge_retrieval_authority_pg.py::test_knowledge_original_scan_proof_precedes_http_metadata` 和 `test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs`。改法二选一：投影按 `retrieval_catalog` 写入依据原件；或 `dependency_originals` 对知识条目始终补算依据原件（缓存只扩大核对范围）。
 - D260 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D258，11-08 集成时改号）`tools/local_environment.py create` 在 d730291d 上失败：迁移往返降到 base 时，`s0_0784_release_exceptions.downgrade` 报“Release exception requires its exact reviewed confirmation predecessor”。降级事务整体回滚，库停在 head 可继续用，但 `seed()` 不会执行。要查是哪一步之后的降级没有把函数恢复到 0784 审核过的原文。
 - D261 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D259，11-08 集成时改号）`test_migration_matches_orm_and_test_guard` 在基线就失败：模型与库有 7 项漂移，`ix_dingtalk_summary_deliveries_tenant_id` 只在模型里，6 个 `ix_enterprise_embedding_hnsw_*` 只在库里。要么补迁移，要么在模型或比较规则里登记。
+- 集成记录 11-08（第一轮）：本地集成分支 `claude/frosty-villani-38f085`，未推送，尚未落到 `pdos-next/design-v1.1`（主工作区另有未提交改动，等你定）。
+  - 基点：`pdos-next/design-v1.1` 的 `38f5a024`。M1（`claude/m1-episodic-memory-324cdf`）11-08 已快进进主线，已在基点里，无需合并，迁移保持 `s0_0855_memory_episodes`。
+  - 合并：D27 `refs/heads/claude/w4-d27-test-debt-6147cc`（`7cf4351d`，只有测试，无迁移），D214 `refs/heads/claude/gracious-hofstadter-311cb9`（`b1854243`）。
+  - 迁移改号：D214 的 `s0_0855_human_sign_in` 改为 `s0_0856`（down_revision `s0_0855`），快照原样移为 `schema_s0_0856.py`，只改了降级保护的报错文字；与 M1 的迁移没有共用的数据库对象。现 head `s0_0856`，链条线性。
+  - D 编号：D27 的 D258、D259 保持；D214 的 D258、D259 改为 D260、D261，证据文件同步改。
+  - 冲突都保留两边：生命周期目录（M1 记忆表 + D214 账户表）、`auxiliary-operations.json`（68 + `memory.search` + 8 个账户操作 = 77）、本清单。
+  - 验证（独立带标记的 `pdos_test`，未用 `.env`）：
+    - 合同校验通过；
+    - 空库升到 `s0_0856` 通过，降到 base 在 `s0_0784` 失败（D260）；`s0_0854`↔`s0_0856` 降、升、降、升通过，也补上了 M1 末版迁移没做过的干净往返；
+    - 无库全量 10656 通过、0 失败。1916 个 ERROR = D27 记的 1882 个 + M1/D214 新增 PG 用例 34 个；其中 27 个不是缺库，见 D27 补记；
+    - PG（`tests/core`、`tests/agent/memory`、`tests/originals` 和两个目录类测试）637 通过、4 失败，都是原有问题：D258、D261（还是那 7 项）、`test_category_source_consumers`（`d730291d` 上同样失败）、`test_business_audience_summary`（M1 报告里基点同样失败）；
+    - D27 的 PG 清单复跑 199 个，195 通过、4 失败，就是 D27 已归因的那 4 个（D258、D259 两个、检索 p95 1.07 秒）；
+    - 前端 typecheck 通过，lint 0 错误（4 条警告是原有的），1899 个 `.mjs` 测试全部通过。
+  - 发现：`contracts/openapi.json` 没有 M1 的 10 个记忆接口，M1 没重新导出。`tools/export_contracts.py` 能补上，但会重排上万行，没有混进合并提交。
+  - 第二轮：等协调会话通知再合并 D58/D215/D248（`claude/goofy-lamarr-0cd875`）和 D33（`claude/intelligent-herschel-74d5dc`），迁移按真实 head 从 `s0_0857` 起改号；D33 里两处没写编号的既有问题改为指向 D260、D261。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
@@ -472,6 +488,7 @@ W3c · 想法已变但没有记录
   - 前端 `/login`、`/invite` 和设置里的“账户与邀请”；本地浏览器走通登录、邀请、停用；
   - 验证：账户边界 11 项、全表守卫 90 项、迁移往返、契约校验、BFF 8 项与全部 `.mjs` 前端测试、typecheck/lint 通过；
   - 余项：停用时“未结事项交项目负责人”归 W6（P56 交接）；反向代理要设 `X-Real-IP`（随 D210/D212）；首次登录告知归 D217。
+  - 11-08 已合并进本地集成分支 `claude/frosty-villani-38f085`（未推送）：迁移改为 `s0_0856`，本项发现的两个既有问题由 D258、D259 改为 D260、D261（见 W4 末尾的集成记录）。
 - D215 生产文件扫描：
   - 现状：只有本地合成的扫描档，病毒库固定不更新；扫描结果 24 小时过期，又没有定时重扫。真实原件上传后，很可能隔天 AI 就不能再引用；D43 遇到的 SOURCE_UNAVAILABLE 很可能就是这个原因。
   - 建议：定一个生产扫描档，病毒库定期更新，过期原件定时重扫，失败时显示原因。
