@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ArrowClockwise, ArrowRight, FolderSimple } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { ExportButton } from "@/features/exports/export-button";
+import { exportHref } from "@/features/exports/lib/export-download";
 import {
   myOpenItems,
   readPortfolio,
@@ -264,7 +266,7 @@ export function MyWork({
         <div>
           <h1>我的工作</h1>
           <p>处理产品取舍，继续提案，跟进定义与项目。</p>
-        </div><Button size="icon" variant="ghost" aria-label="刷新我的工作" title="刷新我的工作" onClick={() => { setPortfolio(null); setRuns([]); setError(""); setReload(value => value + 1); }}><ArrowClockwise size={15}/></Button>
+        </div><div className="inline-flex items-center gap-1"><ExportButton exportUrl={exportHref("my-work")} label="导出 Excel"/><Button size="icon" variant="ghost" aria-label="刷新我的工作" title="刷新我的工作" onClick={() => { setPortfolio(null); setRuns([]); setError(""); setReload(value => value + 1); }}><ArrowClockwise size={15}/></Button></div>
       </div>
       <nav className="workspace-view-tabs" aria-label="我的工作视图">
         {(

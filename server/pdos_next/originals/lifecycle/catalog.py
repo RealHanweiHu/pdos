@@ -5401,3 +5401,13 @@ COVERED_COLUMNS.update({
         "id", "tenant_id", "created_at",
     ),
 })
+
+# D56 export audit rows: scope identifiers, counts and the delivered file digest.
+COVERED_COLUMNS.update({
+    "export_audits": (
+        "id", "tenant_id", "created_at", "actor_id", "category_id", "product_id",
+        "project_id", "view", "scope", "row_count", "ai_row_count", "ai_cell_count",
+        "contains_ai", "sheet_rows", "file_format", "filename", "content_sha256",
+        "byte_size", "marker_version",
+    ),
+})

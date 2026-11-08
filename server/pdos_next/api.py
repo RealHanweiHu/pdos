@@ -475,6 +475,9 @@ def create_app(
     )
 
     register_resource_read_routes(app, engine, auth_dependency)
+    from pdos_next.domain.exports.api import register_routes as register_export_routes
+
+    register_export_routes(app, engine, auth_dependency)
 
     @app.get("/health")
     def health():

@@ -103,6 +103,9 @@ NON_CONSUMING = frozenset(
         "memory_index",
         "memory_session_settings",
         "memory_tenant_policies",
+        # D56 export audit: who exported which scope, counts and file digest only;
+        # it never copies or adopts source material.
+        "export_audits",
         "agent_tool_calls",
         "agent_run_events",
         "agent_run_inputs",
