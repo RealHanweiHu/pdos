@@ -12,6 +12,7 @@ import { ConnectedProviderAgreements } from "./model-configuration/provider-agre
 import { ConnectedAutomationRules } from "./automation-rules";
 import { DingTalkSettings } from "./dingtalk-settings";
 import { PersonalPreferences } from "./personal-preferences";
+import { AccountManagement } from "./accounts";
 import { Button } from "@/components/ui/button";
 import styles from "./platform-settings.module.css";
 
@@ -56,17 +57,18 @@ function ScopedSettings({ categoryId, principalId, tab, onOpenRun }: { categoryI
   </>;
 }
 
-export function PlatformSettings({ categories, initialCategoryId, principalId, preferences, onOpenRun }: {
-  categories: { id: string; name: string }[]; initialCategoryId: string; principalId: string; preferences: ReactNode; onOpenRun: (runId: string, categoryId: string) => void;
+export function PlatformSettings({ categories, initialCategoryId, principalId, preferences, onOpenRun, administrator = false }: {
+  categories: { id: string; name: string }[]; initialCategoryId: string; principalId: string; preferences: ReactNode; onOpenRun: (runId: string, categoryId: string) => void; administrator?: boolean;
 }) {
   const [tab, setTab] = useState<string>("preferences");
   const [selected, setSelected] = useState(initialCategoryId);
   const categoryId = categories.find(item => item.id === selected)?.id ?? categories[0]?.id ?? "";
   return <section className={styles.page} aria-label="设置">
     <div className="workspace-page-heading"><div><h1>设置</h1><p>低频配置集中管理，日常工作保持简洁。</p></div></div>
-    <nav className={styles.tabs} aria-label="设置视图">{tabs.map(([id, label]) => <button type="button" key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
+    <nav className={styles.tabs} aria-label="设置视图">{(administrator ? [tabs[0], ["accounts", "账户与邀请"] as const, ...tabs.slice(1)] : tabs).map(([id, label]) => <button type="button" key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
     <div hidden={tab !== "preferences"} className={styles.retained}>{preferences}<PersonalPreferences key={principalId}/><DingTalkSettings key={`dingtalk:${principalId}`} principalId={principalId}/></div>
-    {tab !== "preferences" && <div className={styles.scope}><label>品类范围<select value={categoryId} onChange={event => setSelected(event.target.value)}>{!categoryId && <option value="">暂无可用范围</option>}{categories.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>}
-    {categoryId ? <ScopedSettings key={`${principalId}:${categoryId}`} principalId={principalId} categoryId={categoryId} tab={tab} onOpenRun={onOpenRun}/> : tab !== "preferences" && <p className={styles.note}>当前没有可用的品类范围。</p>}
+    {administrator && <Retained active={tab === "accounts"}><AccountManagement key={`accounts:${principalId}`}/></Retained>}
+    {tab !== "preferences" && tab !== "accounts" && <div className={styles.scope}><label>品类范围<select value={categoryId} onChange={event => setSelected(event.target.value)}>{!categoryId && <option value="">暂无可用范围</option>}{categories.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>}
+    {categoryId ? <ScopedSettings key={`${principalId}:${categoryId}`} principalId={principalId} categoryId={categoryId} tab={tab} onOpenRun={onOpenRun}/> : tab !== "preferences" && tab !== "accounts" && <p className={styles.note}>当前没有可用的品类范围。</p>}
   </section>;
 }

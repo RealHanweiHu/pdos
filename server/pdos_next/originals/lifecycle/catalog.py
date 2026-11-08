@@ -1284,7 +1284,17 @@ COVERED_COLUMNS = {
         "created_at",
         "category_id",
     ),
-    "login_sessions": ("token_hash", "tenant_id", "principal_id", "expires_at", "revoked"),
+    "login_sessions": (
+        "token_hash",
+        "tenant_id",
+        "principal_id",
+        "expires_at",
+        "revoked",
+        "origin",
+        "issued_at",
+        "last_seen_at",
+        "idle_timeout_seconds",
+    ),
     "manufacturing_baseline_document_links": (
         "product_id",
         "project_id",
@@ -5373,3 +5383,40 @@ COVERED_COLUMNS['dingtalk_summary_deliveries'] = (
     'created_at',
 )
 GUARDED += ('dingtalk_summary_deliveries',)
+# Human sign-in (D214/D86/D192): identity and session bookkeeping, no source body.
+COVERED_COLUMNS.update(
+    {
+        "human_credentials": (
+            "principal_id",
+            "login_name",
+            "password_hash",
+            "password_changed_at",
+            "created_by",
+            "id",
+            "tenant_id",
+            "created_at",
+        ),
+        "account_invitations": (
+            "principal_id",
+            "purpose",
+            "token_hash",
+            "expires_at",
+            "used_at",
+            "revoked_at",
+            "created_by",
+            "id",
+            "tenant_id",
+            "created_at",
+        ),
+        "account_events": (
+            "subject_id",
+            "actor_id",
+            "kind",
+            "detail",
+            "id",
+            "tenant_id",
+            "created_at",
+        ),
+        "sign_in_attempts": ("id", "created_at", "login_key", "source_key", "succeeded"),
+    }
+)

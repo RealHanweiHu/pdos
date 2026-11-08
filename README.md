@@ -155,6 +155,7 @@ pnpm install --frozen-lockfile
 | [`local_environment.py`](tools/local_environment.py) | 建立或核对带身份标记的独立合成 `pdos_test` 环境，启动 API 与 Web 预览 |
 | [`workflow_environment.py`](tools/workflow_environment.py) | 管理独立工作流状态库、Temporal 开发服务、健康检查与 Worker |
 | [`agent_runtime_environment.py`](tools/agent_runtime_environment.py) | 管理共用 Agent 状态库与 Temporal 开发服务 |
+| [`tenant_provision.py`](tools/tenant_provision.py) | 在带标记的本地合成环境里开通租户：首个管理员、首个品类和 72 小时单次有效的邀请链接（链接只写入私有状态文件） |
 
 首次环境建立会创建临时资源并执行迁移。已有环境应先核对实例、端口、身份标记和真实迁移 head，再按当前候选的检查工具续接。私有 `.local/` 文件不作为通用生产启动入口。
 

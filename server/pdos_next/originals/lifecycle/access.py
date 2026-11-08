@@ -45,6 +45,11 @@ NON_CONSUMING = frozenset(
         "object_audiences",
         "principals",
         "login_sessions",
+        # Human sign-in identity, invitations, throttling and lifecycle events.
+        "human_credentials",
+        "account_invitations",
+        "account_events",
+        "sign_in_attempts",
         "grants",
         "qualifications",
         "model_invocations",
