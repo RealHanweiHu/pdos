@@ -5093,6 +5093,67 @@ COVERED_COLUMNS["project_set_links"] = (
     "tenant_id",
     "created_at",
 )
+# Project team (P34-1): identity, role and configuration bookkeeping only.
+COVERED_COLUMNS["project_role_catalog_versions"] = (
+    "revision",
+    "roles",
+    "author_id",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_team_changes"] = (
+    "project_id",
+    "revision",
+    "source",
+    "author_id",
+    "request_key",
+    "request_sha256",
+    "changes",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_members"] = (
+    "project_id",
+    "principal_id",
+    "joined_at",
+    "added_by",
+    "joined_change_id",
+    "left_at",
+    "removed_by",
+    "left_change_id",
+    "departed_roles",
+    "handover_pending",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_member_roles"] = (
+    "project_id",
+    "member_id",
+    "role_key",
+    "is_lead",
+    "change_id",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_member_audiences"] = (
+    "project_id",
+    "member_id",
+    "object_type",
+    "subject_id",
+    "owner_id",
+    "principal_id",
+    "inserted",
+    "released_at",
+    "id",
+    "tenant_id",
+    "created_at",
+)
 COVERED_COLUMNS["project_governance_events"] = (
     "product_id",
     "project_id",

@@ -442,6 +442,9 @@ def create_app(
     from pdos_next.domain.projects.sets.api import register_routes as register_project_sets
 
     register_project_sets(app, engine, auth_dependency)
+    from pdos_next.domain.projects.team.api import register_routes as register_project_team
+
+    register_project_team(app, engine, auth_dependency)
     from pdos_next.domain.my_work.attention_api import register_routes as register_attention
 
     register_attention(app, engine, auth_dependency)
