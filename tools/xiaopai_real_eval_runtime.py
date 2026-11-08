@@ -20,6 +20,8 @@ TENANT = UUID('78340ac0-57c2-4235-87c6-a468dd3d8173')
 CURRENT = ContextVar('real_eval_scope', default=None)
 SAMPLE = ContextVar('real_eval_usage_sample', default=None)
 WRITE_LOCK = threading.Lock()
+# Private response copies; a later regression keeps its own folder.
+PRIVATE = Path(os.environ.get('REAL_EVAL_PRIVATE', ROOT / '.local/real-eval-20261101'))
 
 
 def append_json(path, value):
@@ -83,7 +85,7 @@ def observe_provider(evidence):
 
             payload = json.dumps(body,ensure_ascii=False,default=str).encode()
             fingerprint = sha256(payload).hexdigest()
-            folder = ROOT / '.local/real-eval-20261101/wire'
+            folder = PRIVATE / 'wire'
             folder.mkdir(mode=0o700,parents=True,exist_ok=True)
             path = folder/(fingerprint+'.response.json')
             path.write_bytes(payload)
@@ -109,7 +111,7 @@ def observe_provider(evidence):
                 return
             payload = request.content
             fingerprint = sha256(payload).hexdigest()
-            folder = ROOT / '.local/real-eval-20261101/wire'
+            folder = PRIVATE / 'wire'
             folder.mkdir(mode=0o700, parents=True, exist_ok=True)
             path = folder / (fingerprint + '.json')
             if not path.exists():

@@ -436,7 +436,7 @@ def bind_action_parents(bindings, parent_results, bound_sources):
         binding = result[identity]
         if any(str(parent.get(key)) != str(binding[key]) for key in ("product_id", "project_id")):
             raise ValueError(f"Parent project differs for {identity}")
-        assistant = (parent.get("output", {}).get("result") or {}).get("assistant") or {}
+        assistant = ((parent.get("output") or {}).get("result") or {}).get("assistant") or {}
         required = {bound_sources[alias]["source_id"]
                     for alias in cases[identity]["expected_sources"]}
         if (parent.get("status") not in {"completed", "partial"}

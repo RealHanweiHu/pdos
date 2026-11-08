@@ -22,10 +22,24 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 ROOT = Path(__file__).resolve().parents[1]
-EVIDENCE = ROOT / 'docs/reports/evidence/pdos-next-real-eval-20261101/live'
+# A later regression writes to its own folders, so W1's committed evidence is never overwritten.
+EVIDENCE = Path(os.environ.get(
+    'REAL_EVAL_EVIDENCE', ROOT / 'docs/reports/evidence/pdos-next-real-eval-20261101/live'))
 # Which evaluation runtime's API to call; defaults to runtime A.
 RUNTIME = Path(os.environ.get('REAL_EVAL_RUNTIME', EVIDENCE / 'runtime.json'))
-PRIVATE = ROOT / '.local/real-eval-20261101'
+PRIVATE = Path(os.environ.get('REAL_EVAL_PRIVATE', ROOT / '.local/real-eval-20261101'))
+PROVIDER_OUTPUT_LIMIT = 524_288
+
+
+def context_reserve():
+    """R the server actually holds back: the capped output budget plus the tool-result reserve.
+
+    Since D252 bootstrap.route() requests at most OUTPUT_BUDGET, so F = window - R uses that
+    cap rather than the provider's 524288 limit.
+    """
+    from pdos_next.agent.kernel.context_budget import OUTPUT_BUDGET, TOOL_RESULT_RESERVE
+
+    return min(PROVIDER_OUTPUT_LIMIT, OUTPUT_BUDGET) + TOOL_RESULT_RESERVE
 TENANT = UUID('78340ac0-57c2-4235-87c6-a468dd3d8173')
 
 
@@ -151,13 +165,14 @@ def set_focus(person, focus):
     original=PRIVATE/'original-model-configuration.json'
     if not original.exists():save_private(original,current)
     metadata=current['metadata'].copy()
-    metadata['context_window_tokens']=524_288+4000+focus
+    metadata['context_window_tokens']=context_reserve()+focus
     receipt=save_command(person,'model.configuration.save',{'expected_revision':current['revision'],
         'metadata':metadata,'enabled':True},revision=reading['category_revision'])
     result=response_json(person.client.get(path,headers=person.headers))
     (EVIDENCE/f'model-configuration-F{focus}.json').write_text(json.dumps({
         'reading':result,'receipt_id':receipt['id'],'focus':focus,
-        'provider_output_limit':524288,'at_utc':datetime.now(UTC).isoformat()},ensure_ascii=False,indent=2)+'\n')
+        'provider_output_limit':PROVIDER_OUTPUT_LIMIT,'context_reserve':context_reserve(),
+        'at_utc':datetime.now(UTC).isoformat()},ensure_ascii=False,indent=2)+'\n')
     print('focus configured',focus,'revision',result['configuration']['revision'],flush=True)
 
 
@@ -427,7 +442,7 @@ def run_rag_native(state, *, attempt, workers=2):
 def current_focus(person):
     reading=response_json(person.client.get(
         f'/v1/categories/{person.category}/model-configuration',headers=person.headers))
-    return reading['configuration']['metadata']['context_window_tokens']-524_288-4000
+    return reading['configuration']['metadata']['context_window_tokens']-context_reserve()
 
 
 def settle_for_continuation(person, previous, limit=1200):
