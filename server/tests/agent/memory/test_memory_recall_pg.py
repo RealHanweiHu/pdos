@@ -267,3 +267,24 @@ def test_revoked_source_hides_the_episode_and_stops_further_sending(setup):
     again = memory_search(KernelStore(setup.engine))(
         scope(setup, later, personal=True), {"query": "漏气"})
     assert again["items"] == [] and "密封圈" not in str(again)
+
+
+def test_session_list_search_uses_the_same_keyword_index(setup):
+    earlier, first = start(setup)
+    finish(setup, earlier)
+    path = f"/v1/categories/{setup.category}/agent-conversations"
+
+    def found(q):
+        response = setup.client.get(path, headers=setup.headers, params={"q": q})
+        assert response.status_code == 200, response.text
+        return [item["session_id"] for item in response.json()["items"]]
+
+    # Not a contiguous substring, so only the episode index can match it.
+    assert found("气泵 供应商") == []  # Not indexed yet: plain title/goal search only.
+    indexed(setup, earlier)
+    assert found("气泵 供应商") == [first["session_id"]]
+    assert found("气泵 帐篷") == []  # Every word must match.
+    peer_run, _ = start(setup, headers=peer_headers(setup), goal=PEER)
+    finish(setup, peer_run, requester=setup.peer)
+    indexed(setup, peer_run)
+    assert found("同事") == []  # Another person's words never match my list.

@@ -55,6 +55,8 @@ import type { MaterialContext } from "../categories/category-material-editor";
 import { materialContextText, withMaterialContext } from "@/features/xiaopai/lib/pai-material-context";
 import { defaultSearchPreferences, type SearchPreferences } from "@/lib/search-preferences";
 import { SearchScope } from "@/features/xiaopai/search-scope";
+import { MemoryUsage } from "@/features/xiaopai/memory-usage";
+import { MemoryOffStart } from "@/features/xiaopai/memory-mode";
 
 type Props = { fullPage?: boolean; contextControl?: ReactNode; headerActions?: ReactNode;
   materialContext?: MaterialContext;
@@ -71,6 +73,7 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
   const [answerExclusions, setAnswerExclusions] = useState<AnswerExclusions | null>(null);
   const draftScope = `${categoryId}:${productId}:${proposalId ?? ""}:${projectId ?? ""}`;
   const [carryMaterial, setCarryMaterial] = useState(true);
+  const [memoryOff, setMemoryOff] = useState(false);
   const [materialDenied, setMaterialDenied] = useState(false);
   const [materialDocuments, setMaterialDocuments] = useState<DomainCandidate[]>([]);
   const [editingMaterial, setEditingMaterial] = useState<string | null>(null);
@@ -314,6 +317,7 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
       <PaiMessage from="pai">
       <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" presentation="conversation" onUnavailable={sourceUnavailable} />
       {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
+      {!run.reverted && <MemoryUsage api={api} root="v1/agent-runs" runId={run.run_id} status={run.status} />}
       {!run.reverted && ["completed", "partial"].includes(run.status) && <PersonalSummaryRunResult output={run.result} principalId={principalId}/>}
 
       <ResearchResult value={run.result?.result?.research} />
@@ -348,13 +352,14 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
           {run && run.status !== "hidden" && <div className={styles.continuation}><RunContinuation categoryId={categoryId} onStop={active ? () => { void send({ path: `v1/agent-runs/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} contextControl={contextControl} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root="v1/agent-runs" run={run} additionalSources={continuationSources} sourceTools={<details className={styles.attachments}><summary aria-label="添加附件" title="添加附件"><Paperclip size={14} aria-hidden="true"/></summary><div><FileUpload api={api} scope={runSourceScope} disabled={busy || !!pending} /><SourcePicker key={`continuation-sources:${sourceReadVersion}`} api={api} scope={runSourceScope} value={selected} onChange={setSelected} disabled={busy || !!pending} /></div></details>} contextText={pageMaterial} contextLabel={currentMaterial && !materialDenied ? `${currentMaterial.title}${currentMaterial.version ? ` · v${currentMaterial.version}` : ""}` : undefined} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async (id, sid) => { if (sid) { clearSelection(); selectedSession.current = sid; setSessionId(sid); } await readRun(id, sid); setHistoryVersion(value => value + 1); }} /></div>}
           {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => {
               let submittedGoal: string; try { submittedGoal = withMaterialContext(goal, pageMaterial); } catch (failure) { setError((failure as Error).message); return; }
-              void send({ path: "v1/agent-runs", body: { goal: submittedGoal, idempotency_key: crypto.randomUUID(), product_id: sourceScope.productId, ...(proposalId ? { proposal_id: proposalId } : {}), ...(projectId ? { project_id: projectId } : {}), ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(projectId || proposalId ? { search_preferences: searchPreferences } : {}), sources: selectedSources.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision })) } });
+              void send({ path: "v1/agent-runs", body: { goal: submittedGoal, idempotency_key: crypto.randomUUID(), product_id: sourceScope.productId, ...(proposalId ? { proposal_id: proposalId } : {}), ...(projectId ? { project_id: projectId } : {}), ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(projectId || proposalId ? { search_preferences: searchPreferences } : {}), ...(memoryOff ? { memory_off: true } : {}), sources: selectedSources.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision })) } });
             }} disabled={busy || !!pending}
             background={(projectId || proposalId) && <SearchScope label={requestScope} kind={proposalId ? "proposal" : "project"} value={searchPreferences} onChange={setSearchPreferences} disabled={busy || !!pending} control={contextControl}/>}
             tools={<>
               {productId && !proposalId && !projectId && <details className={styles.objectPicker}><summary><At size={13} aria-hidden="true" />对象</summary><div className={styles.objectOptions}><label><input type="checkbox" checked={useProduct} onChange={event => { setUseProduct(event.target.checked); setSelected(null); }} />关联当前型号</label></div></details>}
               <details className={styles.attachments}><summary aria-label="添加附件" title="添加附件"><Paperclip size={14} aria-hidden="true"/></summary><div><FileUpload api={api} scope={sourceScope} disabled={busy || !!pending} /><SourcePicker key={`sources:${sourceReadVersion}`} api={api} scope={sourceScope} value={selected} onChange={setSelected} disabled={busy || !!pending} /></div></details>
               <SkillPicker key={`skills:${sourceReadVersion}`} api={api} value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/>
+              <MemoryOffStart checked={memoryOff} onChange={setMemoryOff} disabled={busy || !!pending}/>
               {currentMaterial && !materialDenied && <details className={styles.materialCarry}><summary title={`页面资料：${currentMaterial.title}`}><FileText size={13}/>当前资料</summary><div><label className="mt-2 flex gap-2"><input type="checkbox" checked={carryMaterial} onChange={event => setCarryMaterial(event.target.checked)}/>携带当前资料与未保存编辑</label><p className="text-muted-foreground">只随你发送的下一条消息提供，固定版本与权限由服务器重新核对。</p></div></details>}
               <PaiCarry scope={requestScope} objects={[...(projectId ? [`项目 ${projectName || projectId}`] : []), ...(sourceScope.productId ? [`型号 ${sourceScope.productId}`] : []), ...selectedSources.map(source => `${source.title} · 固定版本 ${source.expected_revision}`), ...requestedSkills.map(skill => `优先技能 ${skill.key} · ${skill.version}`)]} />
             </>} /></div>}

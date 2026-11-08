@@ -31,9 +31,9 @@ def manifest(origin, *, dependencies=(), citations=(), **changes):
 def test_all_current_registered_read_kinds_have_a_closed_history_classification():
     actual = {spec.name for spec in default_registry()._specs.values() if spec.tier == "READ"}
     assert actual == acl.READ_TOOLS
-    assert len(actual) == 39
+    assert len(actual) == 40
     assert {"assistant.passage.read", "assistant.comparison.read", "mcp.result.read",
-            "evidence.artifact.read", "research.read"} <= actual
+            "evidence.artifact.read", "research.read", "memory.search"} <= actual
 
 
 @pytest.mark.parametrize("tool", sorted(acl.READ_TOOLS))

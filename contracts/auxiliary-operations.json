@@ -949,6 +949,16 @@
       ],
       "implementation": "implemented_local_endpoint",
       "source": "设计确认稿 P75 第 8 项（用户 2026-11-03）"
+    },
+    {
+      "operation": "memory.search",
+      "write_tier": "READ",
+      "executor": "xiaopai_read",
+      "event": null,
+      "record": "memory_episodes",
+      "purpose": "小Pai 读取本人以往的情景记录（M1）。查询人与范围由服务器按本次运行绑定，参数只能收窄；逐条复核当前权限；结果不是业务事实，不能作为依据引用。",
+      "implementation": "implemented_local_tool",
+      "source": "设计确认稿 P85、P90（用户 2026-11-07）"
     }
   ],
   "inbound_endpoints": [

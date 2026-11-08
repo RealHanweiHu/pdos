@@ -35,6 +35,8 @@ import { PersonalRunMaterials } from "./personal-run-materials";
 import { WorkProductActions } from "@/features/xiaopai/work-product-actions";
 import { WorkProductEditor } from "@/features/xiaopai/work-product-editor";
 import { useWorkProducts } from "@/features/xiaopai/use-work-products";
+import { MemoryUsage } from "@/features/xiaopai/memory-usage";
+import { MemoryOffStart } from "@/features/xiaopai/memory-mode";
 import type { Api, CategoryAdopted, CategoryCandidate, CategoryConfirmationDraft, CreatedCategory } from "./contracts";
 
 type ReadableRun = { session_id: string; goal?: string; conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; status: Exclude<PaiRunStatus, "hidden">; history_hidden?: false; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
@@ -77,6 +79,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
   const [mobileView, setMobileView] = useState<"chat" | "editor">("chat");
   const [material, setMaterial] = useState<{ runId: string; candidate: CategoryCandidate; sourceRun: Run } | null>(null);
   const [requestedSkills, setRequestedSkills] = useState<RequestedSkill[]>([]);
+  const [memoryOff, setMemoryOff] = useState(false);
   const [historyVersion, setHistoryVersion] = useState(0);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -320,6 +323,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       <PaiMessage from="pai">
       <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root={root} presentation="conversation" onUnavailable={sourceUnavailable} />
       {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
+      {!run.reverted && <MemoryUsage api={api} root={root} runId={run.run_id} status={run.status} />}
 
       <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={async () => { await readRun(run.run_id); }} />
 
@@ -352,9 +356,9 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
         </div>
         <div className={styles.composer}>
           {run && run.status !== "hidden" && <div className={styles.continuation}><RunContinuation onStop={active ? () => { void send({ path: `${root}/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root={root} run={run} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async (id, sid) => { if (sid) { clearSelection(); selectedSession.current = sid; setSessionId(sid); } await readRun(id, "restore", sid); setHistoryVersion(value => value + 1); }} /></div>}
-          {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send({ path: root, body: { goal, idempotency_key: crypto.randomUUID(), sources: [], ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}) } })}
+          {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send({ path: root, body: { goal, idempotency_key: crypto.randomUUID(), sources: [], ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(memoryOff ? { memory_off: true } : {}) } })}
             disabled={busy || !!pending} inputRef={composer}
-            tools={<><SkillPicker api={api} resource="v1/personal/agent-skills" value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/><PaiCarry scope="个人工作" objects={requestedSkills.map(skill => `优先技能 ${skillTitle(skill.key)} · ${skill.version}`)} /></>} /></div>}
+            tools={<><SkillPicker api={api} resource="v1/personal/agent-skills" value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/><MemoryOffStart checked={memoryOff} onChange={setMemoryOff} disabled={busy || !!pending}/><PaiCarry scope="个人工作" objects={requestedSkills.map(skill => `优先技能 ${skillTitle(skill.key)} · ${skill.version}`)} /></>} /></div>}
         </div>
       </div>
     </div>

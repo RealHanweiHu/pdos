@@ -233,11 +233,13 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const personalWorkProducts = /^v1\/personal\/work-products(?:\/[a-f0-9-]{36}(?:\/revisions)?|\/from-run)?$/i.test(forwardPath.join("/"));
   const workState = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-sessions\/[a-f0-9-]{36}\/work-state(?:\/context-options)?$/i.test(forwardPath.join("/"));
   const enterpriseSearch = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/enterprise-search$/i.test(forwardPath.join("/"));
+  // P85 personal memory: the owner's own switch, pin/hide, usage and the tenant idle limit.
+  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/memory-usage|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy)$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
   const inbox = /^v1\/personal\/inbox\/(?:summaries|summary-options|states|conversations(?:\/[a-f0-9-]{36}\/messages)?)$/i.test(forwardPath.join("/"));
   const categoryMembers = categoryId && forwardPath.length === 4 && forwardPath[3] === "members";
-  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !enterpriseSearch && !assistantSource && !inbox && !projectSets && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const path = categoryId ? ["v1", ...forwardPath.slice(3)] : forwardPath;
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
@@ -275,7 +277,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !enterpriseSearch && !assistantSource && !inbox && !projectSets) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -293,6 +295,10 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       if (!options || query.has(key) || !(key === "query" && value.length <= 120 || key === "object_id" && uuid.test(value))) return Response.json({ code: "VALIDATION_FAILED", message: "本次携带或资料选择条件无效。" }, { status: 422 });
       query.set(key, value);
     }
+  } else if (memory) {
+    const methods = pathname.endsWith("/memory-usage") ? ["GET"] : pathname.endsWith("/marks") ? ["POST"] : ["GET", "POST"];
+    if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "记忆入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "记忆只按本人与当前会话读取。" }, { status: 422 });
   } else if (projectSets) {
     if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });

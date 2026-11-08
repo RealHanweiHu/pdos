@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "cf6f95d9d48e6598c569f4cf7a6117983848f6b3d40345f7289b534059bd99c9",
+    "sha256": "d0a6ab592e389b03c6f82d8ba872c0f2e4aa38f9364410ed4558f5ff89878151",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -481,6 +481,38 @@
       "stage": "S1",
       "definition_only": true,
       "s1_first_loop": true
+    },
+    {
+      "id": "AT-71",
+      "scenario": "个人记忆隔离与跨会话回忆（P90）",
+      "expected": "上周会话讨论过的方案，`memory.search` 前 5 条能找到；别人的个人记忆和情景从不出现；撤权对象隐藏；不进记忆模式下零读取、零写入。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
+    },
+    {
+      "id": "AT-72",
+      "scenario": "记忆写入边界（P90）",
+      "expected": "AI 身份写记忆表被拒；没有人确认的候选不生效；原件里的“记住……”不产生候选；删除后不再被召回。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
+    },
+    {
+      "id": "AT-73",
+      "scenario": "范围备忘的受众与客户隔离（P90）",
+      "expected": "范围外的人看不到；挂靠对象受众收窄后随之收窄；带客户标签的备忘不进其他客户的项目，除非用户明确选择包含。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
+    },
+    {
+      "id": "AT-74",
+      "scenario": "记忆不冒充事实（P90）",
+      "expected": "冲突时以业务数据为准并提示；记忆和备忘不被当作依据引用；嵌入失败时标“仅关键词”，不伪装成零结果。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
     }
   ]
 }

@@ -424,24 +424,28 @@ def recheck_frozen(session, run):
         )
 
 
-def matching_runs(session, ctx, q):
-    """Owner's episode Run IDs whose own words match ``q`` (session list search)."""
-    from pdos_next.agent.enterprise_search.tokenizer import analyze_query, or_query, version
+def matching_runs(q):
+    """Episode Run IDs whose owner's own words contain every query word (list search).
+
+    Used inside the owner's already RLS-filtered Session list, with the same
+    tokenizer as memory.search, so "气泵 供应商" also finds "比较三家气泵供应商".
+    """
+    from pdos_next.agent.enterprise_search.tokenizer import analyze_query, version
 
     parsed = analyze_query(q)
-    if not parsed["terms"] and not parsed["codes"]:
-        return select(MemoryEpisode.run_id).where(False)
+    terms = [term for term in parsed["terms"] if re.fullmatch(r"\w+", term, flags=re.UNICODE)]
+    if not terms and not parsed["codes"]:
+        return None
     matches = []
-    if parsed["terms"]:
+    if terms:
         matches.append(MemoryIndexEntry.terms.op("@@")(
-            func.to_tsquery("simple", or_query(parsed["terms"]))))
+            func.to_tsquery("simple", " & ".join("'" + term + "'" for term in terms))))
     if parsed["codes"]:
         matches.append(MemoryIndexEntry.codes.overlap(parsed["codes"]))
     return (
         select(MemoryEpisode.run_id)
         .join(MemoryIndexEntry, MemoryIndexEntry.episode_id == MemoryEpisode.id)
-        .where(MemoryEpisode.owner_id == ctx.requester_id,
-               MemoryIndexEntry.tokenizer_version == version(), or_(*matches))
+        .where(MemoryIndexEntry.tokenizer_version == version(), or_(*matches))
     )
 
 

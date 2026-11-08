@@ -146,3 +146,32 @@ test("permission failure on a later refresh clears a stale adopted summary", asy
   await c.click("刷新携带内容");
   assert.doesNotMatch(text(c.render()), /private-old-receipt|已采用/);
 });
+
+test("a proposed paraphrase stays pending until the owner confirms it, and typed constraints are the owner's own", async () => {
+  const writes = []; let state = { ...initial, pending_constraints: [{ id: "p1", text: "只看 B2 版本、按欧标" }] };
+  const c = session(async (_path, body) => { if (!body) return state; writes.push(structuredClone(body)); state = { ...state, revision: state.revision + 1, pending_constraints: [], constraints: [...state.constraints, { id: "p1", text: "只看 B2 版本、按欧标", origin: "human_confirmed" }] }; return state; });
+  await c.settle();
+  assert.match(text(c.render()), /待你确认：只看 B2 版本、按欧标/);
+  assert.doesNotMatch(text(c.render()), /约束：只看 B2 版本/);
+  await c.click("确认");
+  assert.deepEqual({ action: writes[0].action, item_id: writes[0].item_id }, { action: "confirm_constraint", item_id: "p1" });
+  assert.match(text(c.render()), /约束：只看 B2 版本、按欧标 · 本人确认/);
+  const input = nodes(c.render()).find(node => node.type === "input");
+  input.props.onChange({ target: { value: "  按欧标 " } }); await c.settle();
+  const form = nodes(c.render()).find(node => node.type === "form");
+  form.props.onSubmit({ preventDefault() {} }); await c.settle();
+  assert.deepEqual({ action: writes[1].action, text: writes[1].text }, { action: "add_constraint", text: "按欧标" });
+  assert.equal("item_id" in writes[1], false);
+});
+
+test("an idle work state is not carried and one click restores it", async () => {
+  const writes = []; let state = { ...initial, constraints: [], stale: { revision: 1, idle_days: 31, limit_days: 30, parked: false } };
+  const c = session(async (_path, body) => { if (!body) return state; writes.push(structuredClone(body)); state = { ...initial, revision: 2 }; return state; });
+  c.props.background = true; await c.settle();
+  assert.match(text(c.render()), /已闲置 31 天，没有自动带入/);
+  await c.click("恢复上次的工作状态");
+  assert.deepEqual(Object.keys(writes[0]).sort(), ["action", "expected_revision", "request_key"]);
+  assert.equal(writes[0].action, "restore_stale");
+  assert.doesNotMatch(text(c.render()), /没有自动带入/);
+  assert.match(text(c.render()), /约束：单位未知/);
+});

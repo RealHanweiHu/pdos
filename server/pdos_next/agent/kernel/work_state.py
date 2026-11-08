@@ -42,13 +42,25 @@ class ChangeInput(StrictModel):
     action: Literal[
         "remove_constraint", "exclude_source", "remove_exclusion",
         "set_search_scope", "correct_context",
+        # P85 第 6、7 项: the owner adds, confirms or dismisses a constraint, or
+        # restores an idle work state. Each is a human-origin version.
+        "add_constraint", "confirm_constraint", "dismiss_constraint", "restore_stale",
     ]
     item_id: UUID | None = None
     search_preferences: SearchPreferences | None = None
     context_change: ContextChange | None = None
+    text: str | None = Field(default=None, min_length=1, max_length=200)
 
     @model_validator(mode="after")
     def action_fields(self):
+        if self.action in {"add_constraint", "restore_stale"}:
+            if (self.item_id is not None or self.search_preferences is not None
+                    or self.context_change is not None
+                    or (self.text is None) == (self.action == "add_constraint")):
+                raise ValueError("添加约束只提供约束文字；恢复工作状态不带其他内容。")
+            return self
+        if self.text is not None:
+            raise ValueError("只有添加约束可以提供约束文字。")
         if self.action == "correct_context":
             if (self.context_change is None or self.item_id is not None
                     or self.search_preferences is not None):
@@ -164,6 +176,14 @@ def _record_finish(session, run, result):
         return value
     current = latest(session, run.session_id)
     body = deepcopy(current.body) if current else empty()
+    stale = (run.versions.get("work_state") or {}).get("stale")
+    if current is not None and stale and stale.get("revision") == current.revision:
+        # P85 第 6 项: not restored during this Run, so the idle state stays parked.
+        # Owner choices that must never be reset or resurrected are kept.
+        body = {**empty(), "search_preferences": deepcopy(current.body.get(
+                    "search_preferences", search_defaults())),
+                "removed_constraints": list(current.body["removed_constraints"]),
+                "_stale_parked": {"revision": stale.get("parked_revision", current.revision)}}
     from .context_corrections import requested
 
     selection, configured = requested(run)
@@ -194,6 +214,15 @@ def _record_finish(session, run, result):
     by_id = {item["id"]: item for item in body["constraints"]}
     by_id.update((item["id"], item) for item in accepted)
     body["constraints"] = list(by_id.values())
+    from pdos_next.agent.memory.constraints import admissible, merge_pending, page_material
+
+    pending, paraphrase_rejected = admissible(
+        run, proposals.get("paraphrased_constraints") if isinstance(proposals, dict) else None,
+        goals, set(body["removed_constraints"]), page_material=page_material(goals),
+    )
+    if pending:
+        merge_pending(body, pending)
+    rejected = [*rejected, *paraphrase_rejected]
     body["root_goal"] = body["root_goal"] or {
         "run_id": str(rows[0].id),
         "text": user_goal(rows[0].goal),
@@ -394,7 +423,16 @@ def _project(session, ctx, row, *, current_run=None):
         for key in ("candidates", "unfinished", "questions", "citations"):
             body[key] = []
     public = {key: val for key, val in body.items()
-              if key not in {"removed_constraints", "_restart_access"}}
+              if key not in {"removed_constraints", "_restart_access", "_stale_parked"}}
+    public.setdefault("pending_constraints", [])
+    if current_run is None and row is not None:
+        from pdos_next.agent.memory.policy import idle
+
+        days, is_stale, limit = idle(session, row.created_at)
+        parked = body.get("_stale_parked")
+        if parked or is_stale:
+            public["stale"] = {"revision": parked["revision"] if parked else row.revision,
+                               "idle_days": days, "limit_days": limit, "parked": bool(parked)}
     public["citation_directory"] = directory
     origin = current_run or (
         session.get(AgentRun, UUID(body["current_goal"]["run_id"]))
@@ -461,7 +499,22 @@ def frozen(session, run, ctx):
         access = deepcopy(row.body.get("_restart_access", {})) if row else {}
         run.versions = {**run.versions, "work_state_access": access,
                         "work_state_access_digest": digest(access)} if access else run.versions
-        if row is not None and not _covered(session, run, row.body):
+        from pdos_next.agent.memory.policy import idle
+
+        # Only an actual stored version has an activity time; nothing else is idle.
+        recorded = getattr(row, "created_at", None)
+        days, stale, limit = idle(session, recorded) if recorded else (0, False, 0)
+        if row is not None and stale:
+            value = _project(session, ctx, None, current_run=run)
+            value["search_preferences"] = SearchPreferences.model_validate(
+                row.body.get("search_preferences", {})
+            ).model_dump(mode="json")
+            parked = row.body.get("_stale_parked")
+            value["stale"] = {"revision": row.revision, "idle_days": days, "limit_days": limit,
+                              **({"parked_revision": parked["revision"]} if parked else {})}
+            value["notes"] = [f"上次的工作状态已闲置 {days} 天，没有自动带入；"
+                              "需要时可在“本次携带”里一键恢复。"]
+        elif row is not None and not _covered(session, run, row.body):
             value = _project(session, ctx, None, current_run=run)
             # These are the owner's source-independent UI choices. Dropping
             # old private context must never reset "current only" to a wider default.
@@ -511,6 +564,8 @@ def frozen(session, run, ctx):
             value["citation_directory"] = {
                 "tool": "assistant.citations.read", "has_more": False, "next_cursor": None
             }
+        # Pending paraphrases are not constraints until the owner confirms them.
+        value.pop("pending_constraints", None)
         value["current_goal"] = {"run_id": str(run.id), "text": user_goal(run.goal)}
         if value["root_goal"] is None:
             value["root_goal"] = value["current_goal"]
@@ -649,7 +704,18 @@ def change(session, ctx, session_id, data):
     body = deepcopy(current.body)
     identity = str(data.item_id)
     key = "constraints" if data.action == "remove_constraint" else "exclusions"
-    if data.action == "correct_context":
+    from pdos_next.agent.memory import constraints as owner_constraints
+
+    if data.action == "add_constraint":
+        owner_constraints.add(body, session_id=session_id,
+                              run_id=body["current_goal"]["run_id"], text=data.text)
+    elif data.action == "confirm_constraint":
+        owner_constraints.confirm(body, identity)
+    elif data.action == "dismiss_constraint":
+        owner_constraints.dismiss(body, identity)
+    elif data.action == "restore_stale":
+        _restore(session, current, body)
+    elif data.action == "correct_context":
         from .context_corrections import apply
 
         apply(session, ctx, feedback_run, body, data.context_change)
@@ -706,6 +772,47 @@ def change(session, ctx, session_id, data):
 
         record(session, ctx, feedback_run, row, identity)
     return _project(session, ctx, row)
+
+
+def _restore(session, current, body):
+    """Bring a parked or idle state back as an owner version (P85 第 6 项)."""
+    from pdos_next.agent.memory.policy import idle
+
+    parked = body.pop("_stale_parked", None)
+    if parked is None:
+        if not idle(session, current.created_at)[1]:
+            raise DomainError("VERSION_CONFLICT", "工作状态没有闲置，无需恢复。")
+        return  # A fresh human version of the same state ends the idle period.
+    old = session.scalar(select(AgentWorkState).where(
+        AgentWorkState.session_id == current.session_id,
+        AgentWorkState.revision == parked["revision"],
+    ))
+    if old is None:
+        raise DomainError("NOT_FOUND", "上次的工作状态已不可读。", 404)
+    removed = set(body["removed_constraints"])
+
+    def union(key, identity):
+        seen, merged = set(), []
+        for item in [*old.body.get(key, []), *body.get(key, [])]:
+            value = identity(item)
+            if value not in seen:
+                seen.add(value)
+                merged.append(item)
+        return merged
+
+    body["constraints"] = [item for item in union("constraints", lambda item: item["id"])
+                           if item["id"] not in removed]
+    body["pending_constraints"] = [
+        item for item in union("pending_constraints", lambda item: item["id"])
+        if item["id"] not in removed]
+    body["focus_objects"] = union(
+        "focus_objects", lambda item: (item["kind"], item["id"], item.get("version")))
+    body["exclusions"] = union("exclusions", lambda item: item["id"])
+    body["candidates"] = union("candidates", lambda item: item["event_id"])
+    body["citations"] = union("citations", lambda item: item["citation_id"])
+    body["completed"] = union("completed", lambda item: item["receipt_id"])[-COMPLETED_LIMIT:]
+    skills = {item["key"]: item for item in [*old.body.get("skills", []), *body["skills"]]}
+    body["skills"] = list(skills.values())
 
 
 def router(*, transaction, context_dependency):

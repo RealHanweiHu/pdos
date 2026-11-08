@@ -201,6 +201,11 @@ def _pattern(q):
 
 def _matched(runs, q):
     conditions = [runs.c.goal.ilike(_pattern(q), escape="\\")]
+    from pdos_next.agent.memory.recall import matching_runs
+
+    remembered = matching_runs(q)  # P85: the same keyword index as memory.search.
+    if remembered is not None:
+        conditions.append(runs.c.run_id.in_(remembered))
     try:
         identity = UUID(q)
     except ValueError:
