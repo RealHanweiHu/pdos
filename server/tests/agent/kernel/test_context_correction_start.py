@@ -134,6 +134,7 @@ def test_actual_start_freezes_only_original_human_sources_before_dispatch(monkey
             "work_followup_action",
             "restart_from_run_id",
             "excluded_continued_skills",
+            "memory_off",
         }
     )
     assert run.intent_digest == digest({"category_id": ctx.category_id, "request": legacy})

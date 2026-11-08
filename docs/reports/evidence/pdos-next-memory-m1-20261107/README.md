@@ -14,4 +14,16 @@
 | 前端：`work-state-carry`、`memory-usage`、BFF 记忆路由及相关测试 | 96+ 通过；`tsc --noEmit` 与改动文件 eslint 通过 |
 | `test_assistant_depth_integration` 2 个失败 | 在基线提交 69be8a19 上同样失败，既有问题 |
 
-未完成：`tests/agent tests/core tests/originals tests/workflows tests/integrations tests/my_work` 的大回归在会话结束时仍在运行，结果未记录；未做真实 Temporal 联调、HTTP/浏览器整链和亮暗/多尺寸检查。
+## 大回归（`tests/agent tests/core tests/originals tests/workflows tests/integrations tests/my_work` 与生命周期目录测试）
+
+- 结果：4450 通过、105 失败、31 错误、77 跳过（1 小时 45 分）。失败与错误共 136 个，列在 [broad-failing-ids.txt](broad-failing-ids.txt)。
+- 判别：在基线提交 69be8a19 的临时 worktree 上，用同一个库复跑这 136 个，其中 130 个同样失败（[broad-failing-on-base-too.txt](broad-failing-on-base-too.txt)），属既有问题。典型原因有：测试桩不认 `prompt_identity`、夹具给 AgentRun 传 `citation_ids`、缺 `M2_TEST_CHECKPOINT_URL` 等环境变量，以及 7 条既有的钉钉/向量索引元数据差异。
+- 基线能过、本分支失败的 6 个，处理如下：
+  - 2 个钉钉取消用例：复跑通过，属偶发；
+  - 1 个 assistant_depth：测试用的假会话只能查固定次数，已改为开始运行时不多查记忆开关；
+  - 2 个零技能下发工具数（34→35）：这是 `memory.search` 所有范围都下发的预期结果，已更新断言；
+  - 1 个请求摘要：未填的 `memory_off` 不计入请求摘要，旧请求的摘要不变；测试的排除清单已补上它。
+  - 6 个复跑全部通过。
+- 对结构敏感的 4 个（`test_migration_matches_orm` 与三个 core 用例）在本分支上的报错都与记忆表无关，已逐个核对。
+
+未做：真实 Temporal 下的索引工作流联调、HTTP/浏览器整链、亮暗/多尺寸检查；加入 `memory_session_archived` 之后的迁移干净往返。

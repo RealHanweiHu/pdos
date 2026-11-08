@@ -23,7 +23,7 @@ def test_registered_generic_search_accepts_native_field_without_an_extra_tool():
     assert value.source_types == ["field_feedback"] and len(SOURCE_TYPES) == 13
     registry = default_registry()
     # P76 item 4b: without a loaded skill only reads and core tools are disclosed.
-    assert len(disclosure(registry)) == 34
+    assert len(disclosure(registry)) == 35  # P85: memory.search in every scope.
     assert not any(spec.tier == "READ" and name.startswith("field.")
                    for name, spec in registry._specs.items())
     assert set(EVENTS.values()) <= business_events.EVENTS
