@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowClockwise, CheckCircle, ClipboardText, Columns, List, MagnifyingGlass, Plus, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { DetailSheet } from "@/components/ui/detail-sheet";
+import { useCreateIntent } from "@/features/shell/use-create-intent";
 import { blankWorkLocal, newWorkCommand, parseWorkPayload, parseWorkSources, readProjectWork, restoreWorkLocal, runProjectWorkRequest, taskActions, workOperationNames, workPreviewCurrent, workStorageKey, workG0Ref, type ProjectWorkApi, type ProjectWorkView, type WorkCheck, type WorkDraft, type WorkG0OpenItem, type WorkLocal, type WorkOperation, type WorkOutcome, type WorkPayload, type WorkPending, type WorkPrepared, type WorkResult, type WorkScope, type WorkTask, type WorkSource } from "@/lib/project-work";
 import type { Project, ProjectList } from "@/lib/project-plan-view";
 import { ProjectCommitments } from "./project-commitments";
@@ -121,6 +122,8 @@ function ScopedProjectWork({ api, categoryId, productId, projectId, principalId,
     const selected = data?.tasks.find(row => row.id === item.task?.id || (row.g0_open_item?.id === item.id && row.g0_open_item.decision_id === item.decision_id));
     if (selected) select(taskActions(selected, principalId, data?.project.owner_id ?? "")[0] ?? "work.task.assign", selected);
   }
+  // ⌘K 的“新建任务”只打开这里同一个新建表单；保存仍由本人在表单中操作。办理中或无写入资格时丢弃该意图。
+  useCreateIntent("task", view !== "tasks" ? "pending" : editable ? "ready" : !hydrated || (!data && !readError && !denied) ? "pending" : "unavailable", () => select("work.task.create"));
   const members = data?.members ?? [], name = (identity: string | null) => identity ? members.find(row => row.id === identity)?.name ?? identity : "尚未指定";
   const d = local.draft, itemOutcomes = array<WorkOutcome>(d.outcomes, []), resultRows = array<WorkResult>(d.results, []), checkRows = array<WorkCheck>(d.checks, []), taskRefs = array<{ id: string; revision: number }>(d.taskRefs, []);
   const updateResult = (index: number, changes: Partial<WorkResult>) => change("results", json(resultRows.map((row, i) => i === index ? { ...row, ...changes } : row)));

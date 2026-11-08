@@ -356,8 +356,9 @@ W3c · 想法已变但没有记录
   - 补样本后再验：手机确认、新保存提案续接，目前缺合成样本；
   - Prompt 设置页截图；知识页 10-29 因 RAG 改过，需要你目测确认；
   - 数据问题：旧合成原件的安全扫描失效（SOURCE_UNAVAILABLE），外部生效回执有指纹冲突。
-- D52 ⌘K 执行命令与快速创建：P22 的 B19 已确认，但现在 ⌘K 只能搜索跳转（`object-search.tsx`）。按命令登记表和角色收窄。
+- D52 ✅ 11-08 ⌘K 执行命令与快速创建，[证据](../docs/reports/evidence/pdos-next-d52-command-palette-20261108/README.md)。面板在对象搜索之外加“快速创建”和“跳转”：只接 4 个已登记、已实现的页面入口（项目内新建任务 `work.task.create`、写状态更新 `work.status_update.create`；有产品管理权的品类新建立项提案 `proposal.create`；新建品类 `category.create`），单元测试逐条对照 `operations.json` 的档位；可见性只认服务器当次读回的 `capabilities.product_management` 与项目成员 `can_write`，读不回就不显示；T2 不进面板，完整编号只定位。选中命令只打开原页面的同一个表单，确认与服务器权限检查照旧。键盘 ↑↓/Enter/Esc，亮暗与 375px 已在浏览器按产品经理、工程师两个合成账号走查。余项：只在当前所在项目给项目内快速创建；外部等待、质量问题、变更、Build、验证请求等需对象上下文的入口未接。D108 的恢复条件已满足。原记录：P22 的 B19 已确认，但现在 ⌘K 只能搜索跳转（`object-search.tsx`）。按命令登记表和角色收窄。
 - D55 DOCX、拖入文件、照片登记（F12），随 D42 的附件入口一起做。
+- D271 （11-08 D52 走查时发现）原生 `<dialog>` 多数贴左上角显示：Tailwind v4 预置样式把 dialog 的 margin 清零，全局 `dialog` 样式没有补居中；`web/src` 的 55 个 dialog 只有 7 个自带 `m-auto`。可见于新建品类、新建提案对话框（页面按钮与 ⌘K 打开的一样）。随 D43 一并核对哪些本应居中。
 
 **W8 小Pai 架构余项（实现缺口）**
 - D44 三处结构问题：
