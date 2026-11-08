@@ -1,0 +1,37 @@
+{
+  "schema": "pdos.context-estimate-calibration/v1",
+  "default_floor": 1.15,
+  "default_source": "上下文设计 §6.1 首轮留 15% 余量；没有实测记录的路线一律用此值，任何实测项都不得低于它（D248）。",
+  "routes": [
+    {
+      "protocol": "openai-compatible",
+      "model": "MiniMax-M3",
+      "isolation": "main",
+      "floor": 1.22,
+      "decided": "2026-11-07 用户拍板（欠债总表 D248）：按实测最大值 1.211 向上取整。",
+      "evidence": "docs/reports/evidence/pdos-next-real-eval-20261105/d248-estimate-calibration.json",
+      "measured": {
+        "batches": ["pdos-next-real-eval-20261101", "pdos-next-real-eval-20261105"],
+        "calls": 1245,
+        "p50": 1.099,
+        "p95": 1.169,
+        "max": 1.211
+      }
+    },
+    {
+      "protocol": "openai-compatible",
+      "model": "MiniMax-M3",
+      "isolation": "isolated",
+      "floor": 1.15,
+      "decided": "2026-11-07 用户拍板（欠债总表 D248）：实测为高估，保持默认下限，不降。",
+      "evidence": "docs/reports/evidence/pdos-next-real-eval-20261105/d248-estimate-calibration.json",
+      "measured": {
+        "batches": ["pdos-next-real-eval-20261101", "pdos-next-real-eval-20261105"],
+        "calls": 1525,
+        "p50": 0.939,
+        "p95": 0.948,
+        "max": 0.967
+      }
+    }
+  ]
+}
