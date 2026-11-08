@@ -12,7 +12,7 @@ from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from pydantic import Field, model_validator
-from sqlalchemy import delete, func, select, text
+from sqlalchemy import delete, func, or_, select, text
 from sqlalchemy.dialects.postgresql import insert
 
 from pdos_next.core.database import require_context
@@ -128,6 +128,7 @@ def pending_items(s, ctx, project, person):
         ExternalWaitCurrent,
         ExternalWaitVersion,
     )
+    from pdos_next.domain.projects.fulfillment.models import WorkCommitmentReviewCurrent
     from pdos_next.domain.projects.work.models import (
         WorkCommitmentCurrent,
         WorkTaskCurrent,
@@ -145,6 +146,7 @@ def pending_items(s, ctx, project, person):
             WorkTaskVersion.body["assignee_id"].astext == str(person),
         )
     )
+    # A commitment is handed over once reviewed as fulfilled or its task is completed.
     commitments = s.scalar(
         select(func.count())
         .select_from(WorkCommitmentCurrent)
@@ -154,11 +156,21 @@ def pending_items(s, ctx, project, person):
             & (WorkTaskCurrent.product_id == WorkCommitmentCurrent.product_id)
             & (WorkTaskCurrent.task_id == WorkCommitmentCurrent.task_id),
         )
+        .outerjoin(
+            WorkCommitmentReviewCurrent,
+            (WorkCommitmentReviewCurrent.tenant_id == WorkCommitmentCurrent.tenant_id)
+            & (WorkCommitmentReviewCurrent.product_id == WorkCommitmentCurrent.product_id)
+            & (WorkCommitmentReviewCurrent.commitment_id == WorkCommitmentCurrent.version_id),
+        )
         .where(
             WorkCommitmentCurrent.tenant_id == ctx.tenant_id,
             WorkCommitmentCurrent.project_id == project.id,
             WorkCommitmentCurrent.promisor_id == person,
             WorkTaskCurrent.state != "completed",
+            or_(
+                WorkCommitmentReviewCurrent.state.is_(None),
+                WorkCommitmentReviewCurrent.state != "fulfilled",
+            ),
         )
     )
     waits = s.scalar(

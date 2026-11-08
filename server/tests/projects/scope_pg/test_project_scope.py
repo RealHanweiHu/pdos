@@ -33,6 +33,7 @@ from tests.automations.pg.test_service_relative_pg import _commit
 from tests.projects.work_pg import test_workflow as flow
 from tests.projects.work_pg.test_workflow import original_security_work  # noqa: F401
 from tests.projects.work_pg.test_workflow import work as work_case  # noqa: F401
+from tests.team_fixture import remove_member
 
 
 @pytest.fixture
@@ -268,18 +269,9 @@ def test_project_acl_revoke_hides_private_run_and_releases_real_technical_reserv
         scope, "synthetic-reservation-no-inference", "model", {}, reservation=37
     )
     assert scope.project_id == work.project_id
-    with Session(setup.admin) as session, session.begin():
-        relation = session.scalars(
-            select(ObjectAudience).where(
-                ObjectAudience.tenant_id == setup.tenant,
-                ObjectAudience.category_id == setup.category,
-                ObjectAudience.object_type == "projects",
-                ObjectAudience.subject_id == work.project_id,
-                ObjectAudience.owner_id == setup.human,
-                ObjectAudience.principal_id == setup.peer,
-            )
-        ).one()
-        session.delete(relation)
+    # The owner removes the reviewer from the team (P34-1); nothing is left to hand
+    # over, so the project audience goes at once while model access stays.
+    assert remove_member(setup, work.project_id, setup.peer)["handover_pending"] is False
     with flow.scoped(work, setup.peer) as session:
         assert session.get(Project, work.project_id) is None
         assert session.get(Product, setup.product) is not None

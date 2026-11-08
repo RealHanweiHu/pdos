@@ -12,7 +12,7 @@ from g0_fixture import create_g0_project
 from projects.test_project_first_plan import accepted, cmd
 from projects.test_project_first_plan import definition as definition
 from projects.test_project_first_plan import project as project
-from sqlalchemy import delete, text
+from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import insert
 
 from builds.test_builds import build_command
@@ -25,6 +25,7 @@ from pdos_next.domain.categories.preproject.baseline import publication_digest
 from pdos_next.domain.categories.products.definitions import definition_view
 from pdos_next.domain.categories.products.models import DefinitionRevision
 from tests.categories.preproject.test_g0 import create, read, request, save, submit
+from tests.team_fixture import remove_member
 
 
 def synthetic_published_baseline(setup):
@@ -260,24 +261,11 @@ def test_project_filter_rejects_missing_and_other_model_project(setup, configura
 
 def test_project_filter_rechecks_project_audience_after_model_access(setup, configuration):
     pair = create_two_project_builds(setup, configuration)
-    # G0 explicitly shares its outputs with the named reviewer. Revoke only the
-    # project audience, retaining the reviewer's actual model/baseline access.
-    with tenant_session(
-        setup.admin,
-        setup.tenant,
-        actor_id=setup.human,
-        requester_id=setup.human,
-        category_id=setup.category,
-    ) as session:
-        session.execute(text("SET LOCAL ROLE pdos_next_owner"))
-        session.execute(
-            delete(ObjectAudience).where(
-                ObjectAudience.tenant_id == setup.tenant,
-                ObjectAudience.category_id == setup.category,
-                ObjectAudience.object_type == "projects",
-                ObjectAudience.principal_id == setup.peer,
-            )
-        )
+    # G0 explicitly shares its outputs with the named reviewer. The owner removes
+    # the reviewer from both teams (P34-1): only the project audience goes, the
+    # G0-granted model/baseline access stays.
+    for project_id in pair["project_ids"]:
+        assert remove_member(setup, project_id, setup.peer)["handover_pending"] is False
     model_read = get_builds(setup, actor=setup.peer)
     assert model_read.status_code == 200, model_read.text
     # An unreadable project must not become an empty successful response.

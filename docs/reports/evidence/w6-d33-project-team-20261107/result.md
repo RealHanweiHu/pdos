@@ -8,7 +8,7 @@
 |---|---|
 | 数据 | 五张表：`project_role_catalog_versions`（租户级、只追加、版本号连续）、`project_team_changes`（团队修订号与幂等请求，只追加）、`project_members`（一人一段任期：加入时间、添加人、离开时间、移出人、离开时角色）、`project_member_roles`（当前角色；部分唯一索引保证每个角色最多一名主责人）、`project_member_audiences`（成员依赖的型号/立项定义/变体受众，及是否由本次加入添加）。不带品类列，范围经项目行自身的行级策略取得 |
 | 守卫 | 只有在世具名人员、且当时持有本品类有效授权的人能加入（小Pai 等智能体不能）；负责人始终在团队中；离开前须先解除角色；历史只追加；提交时检查“项目受众 = 当前成员”（数据库约束触发器，受众行或成员行任一不一致即回滚）；只有成员已结束时负责人才能撤回项目受众行（替换 `object_audiences` 的 `m3_share_delete_only` 策略，提案部分原样保留） |
-| 拍板 1：移出（P56 临时口径） | 私有项目中，移出时此人有未交接事项（本人受派或承接未完的任务、作出且任务未完成的承诺、本人负责的未关闭外部等待）的，成员资格和角色立即结束，项目受众保留并标“待交接”；交接完成后由负责人“完成移出”，此时才撤受众。没有未交接事项的立即移出。交接期可见范围比 P56“其他内容立即不可见”宽，记为余项 |
+| 拍板 1：移出（P56 临时口径） | 私有项目中，移出时此人有未交接事项（本人受派或承接未完的任务、作出、尚未验收兑现且任务未完成的承诺、本人负责的未关闭外部等待）的，成员资格和角色立即结束，项目受众保留并标“待交接”；交接完成后由负责人“完成移出”，此时才撤受众。没有未交接事项的立即移出。交接期可见范围比 P56“其他内容立即不可见”宽，记为余项 |
 | 拍板 2：型号与定义受众 | 私有项目加成员时，同一事务把此人加入本项目型号、立项定义 v1（有变体时含变体）的受众，前提是这些对象由项目负责人本人所有；否则不代加，成员行标“需要型号资料可见，请联系 某某”。受众记下来源：随本项目加上的，在完全移出时一起撤回，若此人另一当前成员资格仍依赖它则保留并转由那一方负责；原本就有的或别处授予的（如 G0 授予）保留。定义来源里的私有原件不自动扩大 |
 | 权限 | 五表对 `pdos_agent` 零权限；读写都要求具名本人（actor = requester）；写入须为项目负责人且有品类写权限，或正在执行的 G0 决定本身 |
 | 角色目录 | 未发布时为设计稿 §4.1 的 12 个缺省角色（版本 0，可编辑初始值）；租户管理员发布新版本；被当前成员担任的角色不能删除，只能停用；停用后不能再分派，已有担任不变（P60 第 4 项）。正式内容待 D66 |
@@ -32,4 +32,12 @@
 
 ## 受影响测试
 
-preproject、projects、my_work 收件箱与关注、command_catalog 等 1796 例的串行回归在提交时尚未跑完。已出现的失败集中在 `test_evidence_commands_pg`、`test_evidence_guards_pg`、`test_material_proofs_pg`（智能体登记工具摘要校验“实际登记工具或技能允许操作已变化”）和 `test_m3_fixed_consumption`（`SimpleNamespace` 假项目缺 `revision`），与 D27 记录的既有失败同类，未触及团队代码路径；但尚未逐项与 D27 两份既有失败清单比对，这一步是余项。
+范围：`tests/categories/preproject`、`tests/projects`、`tests/my_work/test_personal_attention_decisions.py`、`tests/my_work/attention_pg`、`tests/my_work/inbox`、`tests/builds/test_build_project_scope.py`、`tests/core/command_catalog`、`tests/agent/kernel/test_domain_candidates_pg.py`，共 1796 个用例，在本 worktree 独立 `pdos_test`（`s0_0855`）上串行跑完：1725 通过、70 失败、1 跳过（50 分钟）。
+
+| 失败 | 个数 | 结论 |
+|---|---|---|
+| `test_project_filter_rechecks_project_audience_after_model_access`、`test_project_audience_history_receipt_and_key_proof_follow_current_project_grant`、`test_project_acl_revoke_hides_private_run_and_releases_real_technical_reservation` | 3 | **D33 引起。** 三个测试都直接删评审人的项目受众行，提交时被“私有项目受众 = 当前成员（含待交接）”拒绝。规则没错，改测试：新增 `tests/team_fixture.py` 的 `remove_member`，由项目负责人经团队命令移出成员。履约用例中评审人还有已提交、未验收的任务，按拍板 ① 应保留可见，所以先由负责人验收任务再移出；同时修正待交接计数，已验收兑现的承诺不再算未交接。三个用例改后通过 |
+| D27 修复前清单中已有的 | 44 | 基点既有。PG 15 个在 `pg-before-classified.txt` / `pg-before-extra-classified.txt`，无库 29 个在 `nodb-before-failures.txt`（D27 分支 `claude/w4-d27-test-debt-6147cc` 的 `docs/reports/evidence/d27-test-debt-20261107/`）。主要是 `test_launch_plan_*` 的脱库替身和 `test_m3_fixed_consumption` 的假项目 |
+| `test_material_proofs_pg`（19）、`test_evidence_guards_pg`（4） | 23 | 基点既有。在 `git archive d730291d` 的干净副本上、同一个库退回 `s0_0854` 后复跑，23 个全部失败，错误逐条相同（20 个“实际登记工具或技能允许操作已变化”，3 个断言得到 `VERSION_CONFLICT`）。D27 未覆盖这两个文件，登记 D262 |
+
+改动后复跑：`tests/projects/team_pg`、上述三个测试所在的整个文件、`test_m3_lifecycle_catalog.py`、`test_combined_registries.py`、`tests/core/command_catalog`，共 100 个，全部通过。
