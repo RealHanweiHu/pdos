@@ -378,3 +378,52 @@ def test_plain_text_final_is_a_known_turn_with_an_empty_object(text):
     value["choices"][0]["message"]["content"] = text
     turn = parse_turn(value, route("openai-compatible"))
     assert turn.structured == {} and turn.usage.output_tokens == 5
+
+
+REPEATED_ID = "chatcmpl-tool-afcb05bc4727a0b1"
+
+
+def repeated_id_packets(arguments, *, last_id=REPEATED_ID):
+    """The 11-06 capture: the full call id resent on every chunk of one call."""
+    packets = []
+    for position, piece in enumerate(arguments):
+        packets.append({"id": "synthetic-repeat", "choices": [{"index": 0, "delta": {
+            "tool_calls": [{
+                "index": 0, "type": "function",
+                "id": last_id if position == len(arguments) - 1 else REPEATED_ID,
+                "function": {"name": tool_name("category.read") if position == 0 else "",
+                             "arguments": piece},
+            }]}}]})
+    packets.append({"id": "synthetic-repeat",
+                    "choices": [{"index": 0, "delta": {}, "finish_reason": "tool_calls"}]})
+    packets.append({"id": "synthetic-repeat", "choices": [],
+                    "usage": {"prompt_tokens": 30, "completion_tokens": 20},
+                    "base_resp": {"status_code": 0, "status_msg": ""}})
+    return packets
+
+
+def test_a_repeated_call_id_counts_once_and_the_reply_stays_known():
+    """D254: 15 chunks x 30 characters once built a 450-character id and an unknown."""
+    arguments = '{"cursor":  0 }'
+    assert len(arguments) * len(REPEATED_ID) > 200
+    client = terminal_client(repeated_id_packets(arguments))
+    try:
+        turn = client.turn(minimax(), system="fixed", messages=[], tools=TOOLS,
+                           output_schema=SCHEMA, emit=lambda _: None)
+        assert [(c.id, c.name, c.arguments) for c in turn.calls] == [
+            (REPEATED_ID, "category.read", {"cursor": 0})
+        ]
+        assert turn.usage.output_tokens == 20
+    finally:
+        client.close()
+
+
+def test_a_different_id_inside_one_call_is_still_a_broken_stream():
+    client = terminal_client(repeated_id_packets('{"cursor":0}', last_id="chatcmpl-tool-other"))
+    try:
+        with pytest.raises(ProviderError) as failure:
+            client.turn(minimax(), system="fixed", messages=[], tools=TOOLS,
+                        output_schema=SCHEMA, emit=lambda _: None)
+        assert failure.value.unknown
+    finally:
+        client.close()

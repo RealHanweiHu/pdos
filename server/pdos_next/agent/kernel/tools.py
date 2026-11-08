@@ -67,6 +67,7 @@ def default_registry():
     from .category_candidate import CategoryCandidateInput
     from .conversation import HistoryInput
     from .domain_reads import SCHEMAS
+    from .extract_schemas import SCHEMAS as EXTRACT_SCHEMAS
     from .m3_calculators import SCHEMAS as COMPUTE_SCHEMAS
     from .m3_definition_diff import SCHEMAS as DEFINITION_SCHEMAS
     from .m3_object_reads import SCHEMAS as OBJECT_SCHEMAS
@@ -75,6 +76,7 @@ def default_registry():
     from .platform_reads import SCHEMAS as PLATFORM_SCHEMAS
     from .project_object_reads import SCHEMAS as PROJECT_SCHEMAS
     from .result_continuation import ResultReadInput
+    from .skills import SkillLoadInput
 
     schemas = {
         "conversation.history": HistoryInput,
@@ -86,6 +88,8 @@ def default_registry():
         **PLATFORM_SCHEMAS,
         **PROJECT_SCHEMAS,
         **ASSISTANT_SCHEMAS,
+        **EXTRACT_SCHEMAS,
+        "skill.load": SkillLoadInput,
     }
 
     registry = ToolRegistry(command_tools())
@@ -103,12 +107,16 @@ def default_registry():
             taint="external" if name != "mcp.tools.list" else "trusted",
         ))
     for name in sorted(READS | COMPUTE | {"skill.load"}):
+        if name not in schemas:
+            # D255: an empty definition left the model unable to fill in what the
+            # handler validates, so every call failed. No parameter model, no tool.
+            raise ValueError(f"Read tool {name} has no parameter model")
         kind = "research" if name in RESEARCH else "compute" if name in COMPUTE else "read"
         registry.add(
             ToolSpec(
                 name,
                 describe(name, "READ", kind),
-                schemas[name].model_json_schema() if name in schemas else {"type": "object"},
+                schemas[name].model_json_schema(),
                 {"type": "object"},
                 kind,
                 "READ",

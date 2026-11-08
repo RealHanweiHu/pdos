@@ -37,7 +37,10 @@ class ExtractInput(StrictModel):
     # None means the actual mounted set of an actual bound Proposal; [] never
     # silently becomes 'all'. Neither form grants source access on its own.
     artifact_version_ids: list[UUID] | None = Field(default=None, min_length=1)
-    row_schema: RowSchemaDeclaration
+    row_schema: RowSchemaDeclaration = Field(
+        description="Copy one kind/version pair exactly from the row_schemas that skill.load "
+        "returned for a loaded skill"
+    )
     focus: NonBlank | ParameterFocus | None = None
 
     @model_validator(mode="after")

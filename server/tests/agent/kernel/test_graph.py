@@ -394,3 +394,22 @@ def test_required_work_state_over_budget_stops_partial_without_model():
     assert result["output"]["result"]["context_incomplete"] is True
     assert result["output"]["unfinished"] == ["必需约束超出预算"]
     assert host.captured_model_messages == []
+
+
+@pytest.mark.parametrize(("skill", "declared"), [
+    ("rfq_extraction", [{"kind": "rfq_requirement", "version": "1"}]),
+    ("proposal_drafting", None),
+])
+def test_skill_load_hands_back_the_row_schemas_extraction_needs(skill, declared):
+    """D255: the declaration lives in skill metadata, which the content does not carry."""
+    import json
+
+    host = Host([
+        ModelTurn(calls=(ToolCall(id="load", name="skill.load", arguments={"name": skill}),)),
+        final(),
+    ])
+    AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic extraction")
+    loaded = [json.loads(m["content"]) for m in host.captured_model_messages[1]
+              if m.get("role") == "tool"]
+    assert len(loaded) == 1 and loaded[0]["skill"] == skill
+    assert loaded[0].get("row_schemas") == declared

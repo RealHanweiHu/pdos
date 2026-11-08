@@ -4,7 +4,9 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import yaml
+from pydantic import Field
 
+from pdos_next.core.schema_base import StrictModel
 from pdos_next.errors import DomainError
 
 # What the server itself can tell about a run bound to a proposal (P76 item 4c): whether
@@ -12,6 +14,12 @@ from pdos_next.errors import DomainError
 # whether the run read a parsed, clean customer original of that proposal.
 PRELOAD_VIEWS = frozenset({"drafting", "reviewing"})
 PRELOAD_SOURCES = frozenset({"customer_original"})
+
+
+class SkillLoadInput(StrictModel):
+    """``skill.load`` takes one skill key and nothing else (D255)."""
+
+    name: str = Field(min_length=1, description="Key of one skill listed in the skill catalog")
 
 
 def preload_conditions(key, declared):

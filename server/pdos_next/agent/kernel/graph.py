@@ -402,6 +402,11 @@ class AgentKernel:
                     bindings[skill.key] = load_binding(skill)
                     result = {"skill": skill.key, "version": skill.version,
                               "content": skill.content}
+                    if skill.row_schemas:
+                        # D255: evidence.extract needs one of these exactly, and the
+                        # declaration sits in metadata the content does not carry.
+                        result["row_schemas"] = [item.model_dump(mode="json")
+                                                 for item in skill.row_schemas]
                     project_context = getattr(ports, "skill_context", None)
                     if callable(project_context):
                         result.update(project_context(scope, state["goal"], bindings=tuple(

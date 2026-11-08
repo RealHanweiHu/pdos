@@ -335,7 +335,14 @@ class StreamAccumulator:
                     value["index"],
                     {"id": "", "type": "function", "function": {"name": "", "arguments": ""}},
                 )
-                call["id"] += value.get("id", "")
+                # D254: some providers resend the call's full id on every chunk. The
+                # first id stands; an identical repeat is ignored, a different one is
+                # a broken stream.
+                if value.get("id"):
+                    if not call["id"]:
+                        call["id"] = value["id"]
+                    elif value["id"] != call["id"]:
+                        raise ValueError("Streamed tool call identity changed")
                 for key in ("name", "arguments"):
                     call["function"][key] += value.get("function", {}).get(key, "")
             message["tool_calls"] = [self.calls[n] for n in sorted(self.calls)]
