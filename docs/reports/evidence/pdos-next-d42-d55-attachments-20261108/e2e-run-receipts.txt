@@ -1,0 +1,5 @@
+bd44efc2 | False | completed | 3 | ["customer_original", "internal"] | True | 5f85a310-88cb-454a-a233-532bb429f841:customer_original 84cf225a-b502-40c0-be48-40d93eb960fd:internal 5f85a310-88cb-454a-a233-532bb429f841:customer_original
+65acddac | True | partial | 1 | ["customer_original", "internal"] | True | 5f85a310-88cb-454a-a233-532bb429f841:customer_original
+4c5e1c37 | False | completed | 2 | ["customer_original", "internal"] | True | 84cf225a-b502-40c0-be48-40d93eb960fd:internal 5f85a310-88cb-454a-a233-532bb429f841:customer_original
+8a2c6fad | True | completed | 2 | ["customer_original", "internal"] | True | 84cf225a-b502-40c0-be48-40d93eb960fd:internal 5f85a310-88cb-454a-a233-532bb429f841:customer_original
+a4c287a1 | False | queued | 1 | ["customer_original", "internal"] | True | None

@@ -57,6 +57,11 @@ function inputScope(scope: PaiUploadScope): Scope {
   if (!object(scope) || !uuid(scope.principalId) || !uuid(scope.categoryId) || !nullableUuid(scope.productId) || !nullableUuid(scope.proposalId)) invalid();
   return { category_id: scope.categoryId, product_id: scope.productId, proposal_id: scope.proposalId };
 }
+/** Server upload allowlist (agent-upload-target constraints); photos are registered without OCR. */
+export const UPLOAD_EXTENSIONS = [".txt", ".md", ".pdf", ".xlsx", ".docx", ".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"] as const;
+export const UPLOAD_ACCEPT = UPLOAD_EXTENSIONS.join(",");
+export const uploadExtensionAllowed = (filename: string) => UPLOAD_EXTENSIONS.some(ext => filename.toLowerCase().endsWith(ext));
+export const isPhotoFilename = (filename: string) => /\.(jpe?g|png|webp|hei[cf])$/i.test(filename);
 function sameScope(value: unknown, expected: Scope): value is Scope {
   return scopeShape(value) && sameId(value.category_id, expected.category_id) && sameId(value.product_id, expected.product_id) && sameId(value.proposal_id, expected.proposal_id);
 }
@@ -71,13 +76,13 @@ function target(value: unknown): value is PaiUploadTarget {
     && value.authorization.code === (value.authorization.can_write ? null : "FORBIDDEN_SCOPE")
     && object(value.constraints) && keys(value.constraints, ["max_bytes", "extensions", "default_visibility"])
     && value.constraints.max_bytes === MAX_UPLOAD_BYTES && value.constraints.default_visibility === "private"
-    && Array.isArray(value.constraints.extensions) && value.constraints.extensions.length === 4
-    && new Set(value.constraints.extensions).size === 4 && [".txt", ".md", ".pdf", ".xlsx"].every(ext => (value.constraints as { extensions: unknown[] }).extensions.includes(ext));
+    && Array.isArray(value.constraints.extensions) && value.constraints.extensions.length === UPLOAD_EXTENSIONS.length
+    && new Set(value.constraints.extensions).size === UPLOAD_EXTENSIONS.length && UPLOAD_EXTENSIONS.every(ext => (value.constraints as { extensions: unknown[] }).extensions.includes(ext));
 }
 function metadata(value: unknown): value is Metadata {
   return object(value) && keys(value, ["filename", "title", "source_label", "visibility", "expected_revision"])
     && cleanText(value.filename, 200) && !/[\x00-\x1f/\\]/.test(value.filename) && new TextEncoder().encode(value.filename).length <= 600
-    && /\.(txt|md|pdf|xlsx)$/i.test(value.filename) && cleanText(value.title, 200) && cleanText(value.source_label, 200)
+    && uploadExtensionAllowed(value.filename) && cleanText(value.title, 200) && cleanText(value.source_label, 200)
     && ["private", "category", "audience"].includes(String(value.visibility)) && integer(value.expected_revision);
 }
 const sha256 = async (bytes: Uint8Array): Promise<string> => [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes as Uint8Array<ArrayBuffer>))].map(v => v.toString(16).padStart(2, "0")).join("");

@@ -136,7 +136,8 @@ class Guard:
         scope = self.s.info.get("scope")
         if not scope or not scope[1] or not scope[2]:
             raise DomainError("FORBIDDEN_SCOPE", "扫描证明缺少当前请求身份。", 403)
-        ctx = Context(*scope[:3], category_id=scope[3])
+        # P91: a personal (category-free) transaction binds the original in its own category.
+        ctx = Context(*scope[:3], category_id=scope[3] or row.category_id)
         from pdos_next.core.request_proof import request_proof
 
         require_access(self.s, ctx, row.product_id, lock=self.lock)

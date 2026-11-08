@@ -42,16 +42,19 @@ function ScopedSourcePicker({ api, scope, value, onChange, disabled }: PickerPro
   const [error, setError] = useState("");
   const generation = useRef(0), lock = useRef(false);
   const key = sourcePickerScope(scope);
-  const selected = reading && value?.scope === key ? value.items : [];
+  // Sources a confirmed upload just offered stay listed; a refresh keeps only still-available exact versions.
+  const selected = value?.scope === key ? value.items : [];
   useEffect(() => { const counter = generation; return () => { counter.current++; }; }, []);
   async function load(cursor?: string) {
     if (lock.current) return;
     lock.current = true; const own = ++generation.current;
     setLoading(true); setError("");
-    if (!cursor) { setReading(null); onChange({ scope: key, items: [] }); }
+    const prior = selected;
+    if (!cursor) setReading(null);
     try {
       const page = await readInputSources(api, scope, { cursor });
       if (generation.current !== own) return;
+      if (!cursor) onChange({ scope: key, items: prior.filter(item => page.items.some(row => row.artifact_id === item.artifact_id && row.artifact_revision === item.expected_revision && row.availability.available)) });
       if (cursor && (!reading || reading.next_cursor !== cursor || page.next_cursor === cursor)) throw new Error("来源分页位置已变化，请重新读取。 ");
       setReading(previous => cursor && previous ? { ...page, items: [...previous.items, ...page.items.filter(item => !previous.items.some(prior => prior.artifact_id === item.artifact_id))] } : page);
     } catch (failure) {

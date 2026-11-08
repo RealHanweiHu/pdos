@@ -69,7 +69,7 @@ const scope = { principalId: uuid(100), categoryId: uuid(101), productId: null, 
 const target = (current = scope, canWrite = true, revision = 4) => ({ version: "agent-upload-target/v1", principal_id: current.principalId,
   scope: { category_id: current.categoryId, product_id: current.productId, proposal_id: current.proposalId }, as_of: time,
   target: { kind: current.productId ? "product" : "category", id: current.productId ?? current.categoryId, revision }, authorization: { can_write: canWrite, code: canWrite ? null : "FORBIDDEN_SCOPE" },
-  constraints: { max_bytes: 8388608, extensions: [".txt", ".md", ".pdf", ".xlsx"], default_visibility: "private" } });
+  constraints: { max_bytes: 8388608, extensions: [".txt", ".md", ".pdf", ".xlsx", ".docx", ".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"], default_visibility: "private" } });
 const smallFile = (name = "原规格.txt", text = "真实文件字节") => { const bytes = new TextEncoder().encode(text); return { name, size: bytes.length, arrayBuffer: async () => bytes.buffer.slice(0) }; };
 const keyFor = current => `pdos-next:pai-upload:${JSON.stringify([current.principalId, current.categoryId, current.productId, current.proposalId])}`;
 function receipt(path, state = "committed", current = scope, available = false) {

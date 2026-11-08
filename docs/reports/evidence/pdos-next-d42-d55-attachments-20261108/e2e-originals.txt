@@ -1,0 +1,4 @@
+合成客户规格.docx | application/vnd.openxmlformats-officedocument.wordprocessingml.document | uploaded | None | rejected | None
+合成客户规格B.docx | application/vnd.openxmlformats-officedocument.wordprocessingml.document | parsed | None | clean | True
+样机气嘴照片.jpg | image/jpeg | parsed | OCR_NOT_PERFORMED | clean | True
+合成试模记录.md | text/markdown | parsed | None | clean | True
