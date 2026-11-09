@@ -444,7 +444,13 @@ SCHEMA_GUARDS = {
         "definition\n"
         "      FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace\n"
         "      JOIN pg_language l ON l.oid=p.prolang WHERE n.nspname='public'\n"
+        "      AND NOT EXISTS(SELECT 1 FROM pg_depend d WHERE d.classid='pg_proc'::regclass\n"
+        "        AND d.objid=p.oid AND d.deptype='e')\n"
         "      ORDER BY p.oid::regprocedure::text",
+        # D260 (user decision 11-08): extension members are excluded, as in s0_0720.
+        # s0_0836 deliberately retains the shared pgvector extension on downgrade;
+        # the chain has no extension in public at this revision, so the frozen
+        # fingerprints below are unchanged and every PDOS function is still exact.
         "rows": 160,
         "sha256": "3ef8d45119decb445eebaff0c835de65259fed352e896e00a5e1f17223ea2137",
         # The main test chain has two reviewed formatting-only definitions;
