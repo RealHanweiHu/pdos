@@ -1,0 +1,38 @@
+# D260 before: tools/local_environment.py create on this branch's base point (s0_0861 head), 11-08
+upgrade head: passed
+    raise RuntimeError("Release exception requires its exact reviewed confirmation predecessor")
+RuntimeError: Release exception requires its exact reviewed confirmation predecessor
+
+# After fix 1 (s0_0800 downgrade input): downgrade base stops at s0_0727
+    raise RuntimeError("Unreviewed Link schema/function/membership drift: " + name)
+RuntimeError: Unreviewed Link schema/function/membership drift: functions
+
+# s0_0727 function catalog: fresh upgrade to s0_0727 vs downgraded from head
+fresh rows 160 downgraded rows 278 only after downgrade 118
+owners ['postgres'] languages ['c', 'internal']
+other guarded catalogs equal: True
+sample: array_to_halfvec(double precision[],integer,boolean), array_to_halfvec(integer[],integer,boolean), array_to_halfvec(numeric[],integer,boolean), array_to_halfvec(real[],integer,boolean), array_to_sparsevec(double precision[],integer,boolean), array_to_sparsevec(integer[],integer,boolean) ...
+
+# Diagnosis (pdos_test only): at s0_0727 drop the retained vector extension by hand, then
+marker ok; start at s0_0861
+downgrade s0_0727: passed -> s0_0727
+pdos_test at s0_0727: vector extension dropped (diagnosis only)
+marker ok; start at s0_0727
+downgrade base: passed -> base
+upgrade head: passed -> s0_0862
+downgrade s0_0854: passed -> s0_0854
+upgrade head: passed -> s0_0862
+downgrade s0_0854: passed -> s0_0854
+upgrade head: passed -> s0_0862
+
+# After fix 2 (s0_0727 excludes extension members): one-transaction downgrade to base
+s0_0001 downgrade: psycopg.errors.OutOfMemory: out of shared memory (HINT: increase max_locks_per_transaction)
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/bin/python', '-m', 'alembic', 'downgrade', 'base']' returned non-zero exit status 1.
+
+# After fix 3 (test container max_locks_per_transaction=256): tools/local_environment.py create
+upgrade head: passed
+downgrade base: passed
+upgrade head: passed
+Independent app/auth/agent roles and migration up/down/up verified. No old databases accessed.
+exit=0

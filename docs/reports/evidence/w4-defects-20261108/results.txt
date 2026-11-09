@@ -1,0 +1,76 @@
+# W4 defect cleanup: full-suite results (2026-11-08/09)
+
+Branch claude/elated-shirley-4a1ed9; base point d6abcbf2. All databases were created by
+tools/local_environment.py create (isolated, marked pdos_test); TEST_DATABASE_URL explicit,
+no .env, no real model calls. Base numbers come from `git archive d6abcbf2` with its own
+isolated database.
+
+## No-database full suite (no database variables, no env file)
+
+| tree | passed | failed | skipped | errors |
+|---|---|---|---|---|
+| this branch (40f535c9) | 10784 | 0 | 110 | 1934 |
+| d6abcbf2 | 10755 | 2 | 110 | 1961 |
+
+- All 1934 branch errors are `KeyError: 'TEST_DATABASE_URL'` at fixture setup (PG tests).
+- d6abcbf2's extra 27 errors: test_registered_snapshot_reads.py (citation_ids fixture), fixed.
+- d6abcbf2's 2 failures: D42 test_source_views (fixed); test_current_read_profiler (the
+  scratch copy's path contains "/private/", which that test's redaction check rejects; an
+  artifact of the copy's location, passes in the worktree).
+
+## PG full suite: every file that has a PG-only (errored or skipped) test without a database
+
+353 files, 2222 tests, run on the branch in four segments over three isolated databases
+(the same order split head / forward / middle / reverse; the meeting file was filled in).
+Coverage 2222 of 2222.
+
+Segment outcome: 2131 passed, 69 skipped, 11 failed, 7 errors (+4 filled in: passed).
+Every failure and error, rerun on the final code:
+
+| test | segment | final code | attribution |
+|---|---|---|---|
+| builds/professional_authority/test_current_policy [source, fact, project] | F | 6/6 file passed | stale fixture (D33 rule), fixed in f363cea4 after the segment ran; same failure on d6abcbf2 |
+| builds/test_build_execution [release.manufacturing.approve] | F | 5/5 passed | stale 403 expectation, fixed in 8759aaf6; same on d6abcbf2 |
+| builds/test_builds readiness | F | 26/26 file passed | same stale 403, fixed in c257ae13; same on d6abcbf2 |
+| categories/products/test_definition_parent_lineage_pg | F | passed | pinned head s0_0756, fixed in 40f535c9; same on d6abcbf2 |
+| change/coverage_transactions/test_public_capture_minimal | F | passed | test counted direct edges only, fixed in 7c3ba325; same on d6abcbf2 |
+| manufacturing/preparation/test_publication_pg | F | passed | transient in the long batch (passes alone, also on d6abcbf2) |
+| manufacturing/preparation_transactions, release_policy_transactions, release_transactions (3) | E | 14/14 with quality/execution passed | transient in the long batch |
+| quality/execution/test_transactions (4) | E | passed | transient; 11/11 on d6abcbf2 as well |
+| ui/test_project_external_handoffs_projection_pg | F | passed with PDOS_EXTERNAL_HANDOFF_LINK=1 | needs its explicit isolated opt-in, asserts instead of skipping without it; same on d6abcbf2 (D288) |
+| change/execution/test_partial_observation_review_chain | F | F | pre-existing, same on d6abcbf2: preparation rejected MISSING_REQUIRED_EVIDENCE (D287) |
+| change/manufacturing_transactions/test_graph::test_actual_tenant_shared_asset_fence_and_rejected_roles | F | F | pre-existing, same on d6abcbf2: a third product's dependency clock (D286) |
+
+The retrieval p95 test (test_recovery_pg family search) passed inside this full run; in an
+earlier targeted batch it took 3.9 s while the machine load was 27-32 with four other
+sessions' test databases busy (77 MB test database). Environment, threshold unchanged.
+
+## d6abcbf2 targeted PG comparison
+
+24 files (round-three failures, the files this work changed, D248's list): on d6abcbf2
+140 passed, 40 failed, 27 errors, 1 skipped. The failures are exactly the items fixed here:
+test_material_proofs_pg 19, test_review_fixes (D258) 1, test_trusted_source_work (D261) 1,
+test_category_source_consumers 1, test_business_audience_summary 1, CTX-04 2, D259 2,
+test_extracted_claim_pg 8, test_source_views 1, D33's two 2, test_recovery_pg 2, and the 27
+citation_ids errors. Of the two test_recovery_pg failures, one is the p95 timing (1.25 s); the
+other, the same_count rebuild, ends with a different authority digest after the rebuild on
+d6abcbf2. It passed on the branch both times it ran (targeted batch and full run); whether
+D259's projection change is what fixed it, or it is intermittent, was not investigated. The
+same 24 files on the branch pass except the environment-attributed p95.
+
+Outside those files, checked one by one on d6abcbf2: the 8 stale tests above fail the same,
+and D286/D287 fail the same.
+
+## Remaining failures on the final code
+
+- D286, D287: pre-existing on d6abcbf2, not fixed (outside this task's list; each needs a
+  chain-level investigation).
+- D288: the opt-in test fails by design without PDOS_EXTERNAL_HANDOFF_LINK=1.
+- Retrieval p95: environment-dependent timing.
+
+## Migrations
+
+- s0_0854 <-> s0_0864, twice: passed ([migration-roundtrip.txt](migration-roundtrip.txt)).
+- tools/local_environment.py create (head -> base -> head, then seed): passed, on two
+  separate fresh databases ([d260-roundtrip.txt](d260-roundtrip.txt)).
+- ORM vs database: 0 differences.

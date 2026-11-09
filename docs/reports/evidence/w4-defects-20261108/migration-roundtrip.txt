@@ -1,0 +1,18 @@
+# s0_0854 <-> s0_0864 round trip, twice, on a fresh tools/local_environment.py database (11-08)
+marker ok; start at s0_0864
+downgrade s0_0854: passed -> s0_0854
+upgrade head: passed -> s0_0864
+downgrade s0_0854: passed -> s0_0854
+upgrade head: passed -> s0_0864
+
+# ORM vs database (alembic compare_metadata, same filter as test_migration_matches_orm_and_test_guard) at s0_0864
+differences: 0
+
+# Before (d6abcbf2): 7 differences
+add_index ix_dingtalk_summary_deliveries_tenant_id
+remove_index ix_enterprise_embedding_hnsw_1024
+remove_index ix_enterprise_embedding_hnsw_1536
+remove_index ix_enterprise_embedding_hnsw_2
+remove_index ix_enterprise_embedding_hnsw_2000
+remove_index ix_enterprise_embedding_hnsw_384
+remove_index ix_enterprise_embedding_hnsw_768
