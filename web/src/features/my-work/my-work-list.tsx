@@ -1,6 +1,6 @@
 "use client";
 import { CaretRight, Circle, SlidersHorizontal } from "@phosphor-icons/react";
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { Button } from "@/components/ui/button";
 import {
   workKindNames,
@@ -19,14 +19,23 @@ export type WorkReading = {
   retry: () => void;
   loadMore?: () => Promise<void>;
 };
+/** P35 groups for 待我处理; `extra` renders non-row items (e.g. 小Pai runs) inside a group. */
+export type WorkGroup = {
+  key: string;
+  label: string;
+  kinds: WorkKind[];
+  extra?: (query: string) => { node: ReactNode; count: number } | null;
+};
 export function MyWorkList({
   rows,
   readings,
+  groups,
   onOpenProject,
   onOpenRun,
 }: {
   rows: WorkRow[];
   readings: WorkReading[];
+  groups?: WorkGroup[];
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenRun: (runId: string, categoryId: string) => void;
 }) {
@@ -55,9 +64,85 @@ export function MyWorkList({
   const incomplete = readings.some(
     (item) => item.loading || item.error || item.more,
   );
+  // Undated items such as a 小Pai run follow the 稍后与未定 period, like undated rows.
+  const extras = new Map(
+    (groups ?? []).map((group) => [
+      group.key,
+      group.extra &&
+      (kind === "all" || group.kinds.includes(kind as WorkKind)) &&
+      (period === "all" || period === "later")
+        ? group.extra(query.trim().toLocaleLowerCase())
+        : null,
+    ]),
+  );
+  const extraCount = [...extras.values()].reduce(
+    (total, item) => total + (item?.count ?? 0),
+    0,
+  );
+  const renderRow = (row: WorkRow) => (
+    <details key={row.id} className={styles.row}>
+      <summary>
+        <Circle size={14} className={styles.taskCircle} aria-hidden="true"/>
+        <span className={styles.title} title={row.title}>
+          {row.title}
+        </span>
+        <span className={styles.muted} title={row.party ? `${row.party} · ${row.project}` : row.project}>
+          {row.party ? `${row.party} · ${row.project}` : row.project}
+        </span>
+        <span className={styles.state}>
+          <small>{workKindNames[row.kind]}</small>
+          {row.state}
+        </span>
+        <span
+          className={styles.date}
+          data-overdue={!!row.due && row.due < now}
+          title={row.due ? `${row.dateKind} ${row.due}` : "尚未登记期限"}
+        >
+          {row.due ? `${row.dateKind} ${row.due.slice(5)}` : "—"}
+        </span>
+        <CaretRight size={12} aria-hidden="true"/>
+      </summary>
+      <div className={styles.detail}>
+        <dl>
+          {row.facts.map(([label, value], index) => (
+            <div key={`${label}:${index}`}>
+              <dt>{label}</dt>
+              <dd>{value}</dd>
+            </div>
+          ))}
+        </dl>
+        {"href" in row.target ? (
+          <a href={row.target.href}>进入原工作</a>
+        ) : (
+          <Button
+            size="xs"
+            variant="outline"
+            onClick={() => {
+              const target = row.target;
+              if ("runId" in target)
+                onOpenRun(target.runId, target.categoryId);
+              else if ("projectId" in target)
+                onOpenProject(target.categoryId, target.projectId);
+            }}
+          >
+            {"runId" in row.target ? "继续对话" : "进入项目办理"}
+          </Button>
+        )}
+      </div>
+    </details>
+  );
+  const grouped = groups?.map((group) => ({
+    group,
+    rows: filtered.filter((row) => group.kinds.includes(row.kind)),
+    extra: extras.get(group.key) ?? null,
+  }));
+  const ungrouped = groups
+    ? filtered.filter((row) => !groups.some((group) => group.kinds.includes(row.kind)))
+    : filtered;
+  const shown = filtered.length + extraCount;
   return (
     <section className={styles.list} aria-label="责任与期限清单">
-      <div className={styles.toolbar}><span>{filtered.length} 项需要关注{incomplete ? " · 已加载" : ""}</span><small>按责任与期限排列</small><details className={styles.filters}><summary aria-label="搜索与筛选我的工作" title="搜索与筛选"><SlidersHorizontal size={15}/></summary><div>
+      <div className={styles.toolbar}><span>{shown} 项需要关注{incomplete ? " · 已加载" : ""}</span><small>按责任与期限排列</small><details className={styles.filters}><summary aria-label="搜索与筛选我的工作" title="搜索与筛选"><SlidersHorizontal size={15}/></summary><div>
         <input
           type="search"
           aria-label="搜索我的工作"
@@ -105,59 +190,17 @@ export function MyWorkList({
             </Button>
           </div>
         ))}
-      {filtered.map((row) => (
-        <details key={row.id} className={styles.row}>
-          <summary>
-            <Circle size={14} className={styles.taskCircle} aria-hidden="true"/>
-            <span className={styles.title} title={row.title}>
-              {row.title}
-            </span>
-            <span className={styles.muted} title={row.project}>
-              {row.project}
-            </span>
-            <span className={styles.state}>
-              <small>{workKindNames[row.kind]}</small>
-              {row.state}
-            </span>
-            <span
-              className={styles.date}
-              data-overdue={!!row.due && row.due < now}
-              title={row.due ? `${row.dateKind} ${row.due}` : "尚未登记期限"}
-            >
-              {row.due ? `${row.dateKind} ${row.due.slice(5)}` : "—"}
-            </span>
-            <CaretRight size={12} aria-hidden="true"/>
-          </summary>
-          <div className={styles.detail}>
-            <dl>
-              {row.facts.map(([label, value], index) => (
-                <div key={`${label}:${index}`}>
-                  <dt>{label}</dt>
-                  <dd>{value}</dd>
-                </div>
-              ))}
-            </dl>
-            {"href" in row.target ? (
-              <a href={row.target.href}>进入原工作</a>
-            ) : (
-              <Button
-                size="xs"
-                variant="outline"
-                onClick={() => {
-                  const target = row.target;
-                  if ("runId" in target)
-                    onOpenRun(target.runId, target.categoryId);
-                  else if ("projectId" in target)
-                    onOpenProject(target.categoryId, target.projectId);
-                }}
-              >
-                {"runId" in row.target ? "继续对话" : "进入项目办理"}
-              </Button>
-            )}
-          </div>
-        </details>
-      ))}
-      {!filtered.length && (
+      {grouped?.map(({ group, rows: members, extra }) =>
+        members.length || extra?.count ? (
+          <section key={group.key} className={styles.group} aria-label={group.label}>
+            <h3 className={styles.groupHeading}>{group.label}<span>{members.length + (extra?.count ?? 0)}</span></h3>
+            {extra?.node}
+            {members.map(renderRow)}
+          </section>
+        ) : null,
+      )}
+      {ungrouped.map(renderRow)}
+      {!shown && (
         <p className={styles.notice} role="status">
           {readings.some((item) => item.loading)
             ? "正在读取…"

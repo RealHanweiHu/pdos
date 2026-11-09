@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
 export type PersonalProjectWorkApi = <T>(path: string, body?: unknown) => Promise<T>;
-export type PersonalWorkQueue = "receive" | "verify" | "tasks" | "commitments";
+export type PersonalWorkQueue = "receive" | "verify" | "tasks" | "commitments" | "received";
 export type PersonalWorkItem = {
   id: string;
   category: { id: string; name: string };
@@ -15,6 +15,8 @@ export type PersonalWorkItem = {
   recorded_at: string;
   commitment: { id: string; revision: number; task_revision: number; promisor_id: string; recipient_id: string; outcome_keys: string[]; promised_at: string | null; original_timezone: string; calendar_id: string | null } | null;
   timing: "unknown" | "pending" | "overdue" | null;
+  /** Present on commitment queues: who made the promise (D38). */
+  promisor?: { id: string; name: string | null } | null;
 };
 export type PersonalWorkPage = { version: "personal-project-work/v1"; principal_id: string; as_of: string; queue: PersonalWorkQueue; total_records: number; items: PersonalWorkItem[]; next_cursor: string | null };
 export type PersonalProjectWorkState = { status: "loading" | "ready" | "error"; items: PersonalWorkItem[]; totalRecords: number | null; asOf: string | null; nextCursor: string | null; error: string; loadingMore: boolean; moreError: string; loadMore: () => Promise<void>; retry: () => void };
@@ -29,14 +31,15 @@ const zone = (v: unknown): v is string => { if (!text(v)) return false; try { ne
 const named = (v: unknown) => record(v) && uuid(v.id) && text(v.name);
 const person = (v: unknown) => v === null || (record(v) && uuid(v.id) && (v.name === null || text(v.name)));
 const unique = (values: string[]) => new Set(values).size === values.length;
-function item(v: unknown, queue: PersonalWorkQueue): v is PersonalWorkItem {
+function item(v: unknown, queue: PersonalWorkQueue, principalId: string): v is PersonalWorkItem {
   if (!record(v) || !uuid(v.id) || !named(v.category) || !named(v.product) || !named(v.project) || !record(v.task) || !uuid(v.task.id) || !uuid(v.task.version_id) || !positive(v.task.revision) || !["proposed", "assigned", "accepted", "in_progress", "submitted", "completed"].includes(String(v.task.state)) || !text(v.task.title) || !person(v.assignee) || !person(v.recipient) || !timestamp(v.recorded_at) || !(v.timing === null || ["unknown", "pending", "overdue"].includes(String(v.timing)))) return false;
   const c = v.commitment;
   if (c !== null && (!record(c) || !uuid(c.id) || !positive(c.revision) || !positive(c.task_revision) || !uuid(c.promisor_id) || !uuid(c.recipient_id) || !Array.isArray(c.outcome_keys) || !c.outcome_keys.length || !c.outcome_keys.every(text) || !unique(c.outcome_keys) || !(c.promised_at === null || timestamp(c.promised_at)) || !zone(c.original_timezone) || !(c.calendar_id === null || uuid(c.calendar_id)))) return false;
-  return queue === "commitments" ? record(c) && v.id === c.id : v.id === v.task.id;
+  if (queue === "received" && !(record(c) && c.recipient_id === principalId && record(v.promisor) && v.promisor.id === c.promisor_id)) return false;
+  return queue === "commitments" || queue === "received" ? record(c) && v.id === c.id : v.id === v.task.id;
 }
 export function parsePersonalProjectWork(value: unknown, principalId: string, queue: PersonalWorkQueue): PersonalWorkPage {
-  if (!record(value) || value.version !== "personal-project-work/v1" || value.principal_id !== principalId || value.queue !== queue || !timestamp(value.as_of) || !Number.isSafeInteger(value.total_records) || Number(value.total_records) < 0 || !Array.isArray(value.items) || value.items.length > 20 || !value.items.every(v => item(v, queue)) || !unique(value.items.map(v => v.id)) || Number(value.total_records) < value.items.length || !(value.next_cursor === null || text(value.next_cursor))) throw new Error("个人项目队列资料未完整取得，不能显示为空或零。");
+  if (!record(value) || value.version !== "personal-project-work/v1" || value.principal_id !== principalId || value.queue !== queue || !timestamp(value.as_of) || !Number.isSafeInteger(value.total_records) || Number(value.total_records) < 0 || !Array.isArray(value.items) || value.items.length > 20 || !value.items.every(v => item(v, queue, principalId)) || !unique(value.items.map(v => v.id)) || Number(value.total_records) < value.items.length || !(value.next_cursor === null || text(value.next_cursor))) throw new Error("个人项目队列资料未完整取得，不能显示为空或零。");
   return value as PersonalWorkPage;
 }
 export function personalProjectWorkPath(queue: PersonalWorkQueue, cursor?: string) { const query = new URLSearchParams({ queue, page_size: "20" }); if (cursor !== undefined) query.set("cursor", cursor); return `v1/personal/project-work?${query}`; }

@@ -23,7 +23,7 @@ import { isProposalViewResponse, matchesProposalDocument } from "@/features/cate
 import type { ProposalViewDocument, ProposalViewName, ProposalViewResponse } from "@/features/categories/preproject/proposal-view-contracts";
 
 type Item = { item_id: string; version: number; kind: string; content: Record<string, unknown>; source_refs: unknown[]; origin: string };
-type Person = { id: string; name: string; reviewer_eligible: boolean; can_write: boolean };
+type Person = { id: string; name: string; reviewer_eligible: boolean; can_write: boolean; can_read_proposal?: boolean };
 type Disposition = { subject_type: string; subject_id: string; title: string };
 type Proposal = {
   id: string; title: string; brief: string; owner_id: string; revision: number; status: string;
@@ -85,6 +85,8 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
   const [proposal, setProposal] = useState<Proposal | null>(null);
   const [documentReady, setDocumentReady] = useState(false);
   const [documentError, setDocumentError] = useState("");
+  // D336: a re-read keeps the current document mounted and replaces it only once the read returns.
+  const [refreshing, setRefreshing] = useState(false);
   const [readVersion, setReadVersion] = useState(0);
   const [selectedView, setSelectedView] = useState<ProposalViewName>("spec-benchmark");
   const [documentTab, setDocumentTab] = useState<DocumentTab>("narrative");
@@ -125,7 +127,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
   const [variantKind, setVariantKind] = useState("configuration");
   const [dispositions, setDispositions] = useState<Record<string, Assignment>>({});
   const reviewTrigger = useRef<HTMLButtonElement>(null);
-  const loadDocument = useCallback(() => {
+  const loadDocument = useCallback((settle?: () => void) => {
     if (!live.current) return;
     const request = ++documentRequest.current;
     documentController.current?.abort();
@@ -153,28 +155,33 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
       if (draftPrincipal.current && draftPrincipal.current !== session.principal_id) { setDrafts({}); setPatchRequest(null); }
       draftPrincipal.current = session.principal_id;
       setProposal(value); setPeople(participants.items); setMe(session.principal_id);
+      // Saved drafts leave in the same render as the document that now contains them.
+      settle?.();
       if (!initialized.current) {
         setProjectName(value.display_document.title); setProjectOwner(value.owner_id); setIdentityName(value.display_document.title);
         initialized.current = true;
       }
       // A frozen identity can remain unchanged after source withdrawal or ACL changes.
       setReadVersion(previous => previous + 1);
-      setDocumentReady(true);
+      setDocumentReady(true); setRefreshing(false);
     }).catch(failure => {
       if (live.current && !controller.signal.aborted && request === documentRequest.current) {
         controller.abort();
+        settle?.(); setRefreshing(false);
         setProposal(null); setPeople([]); setDocumentError((failure as Error).message);
         if ([401, 403].includes((failure as { status?: number }).status ?? 0)) { setDrafts({}); setPatchRequest(null); }
         setViewResult(null); setViewLoading(false);
       }
     });
   }, [root, proposalId]);
-  const reload = useCallback(() => {
+  const reload = useCallback((settle?: () => void) => {
     if (!live.current) return Promise.resolve();
+    // The document stays on screen (D336). View results may quote sources whose access
+    // changed, so they are still withdrawn at once and read again for the new identity.
     ++viewRequest.current; viewController.current?.abort();
-    setDocumentReady(false); setDocumentError("");
+    setRefreshing(true); setDocumentError("");
     setViewResult(null); setViewLoading(true); setViewError("");
-    return loadDocument();
+    return loadDocument(settle);
   }, [loadDocument]);
   useEffect(() => {
     live.current = true;
@@ -258,9 +265,8 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
       if (!live.current) return false;
       try { localStorage.removeItem(patchKey); } catch { /* A retained successful command is safe to reconcile with its original idempotency key. */ }
       const savedIds = new Set((request.command.payload.ops as ProposalPatch[]).map(op => op.item_id));
-      setDrafts(old => Object.fromEntries(Object.entries(old).filter(([id]) => !savedIds.has(id))));
       setPatchRequest(null); setSaveNotice("已保存，可继续与小Pai完善。");
-      await reload();
+      await reload(() => setDrafts(old => Object.fromEntries(Object.entries(old).filter(([id]) => !savedIds.has(id)))));
       return true;
     } catch (failure) {
       if (live.current) {
@@ -275,7 +281,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
     } finally { patchLock.current = false; if (live.current) setBusy(false); }
   }
   async function mutate(ops: ProposalPatch[]) {
-    if (!ops.length || !documentReady || !proposal || patchRequest || busy || prepared) return false;
+    if (!ops.length || !documentReady || refreshing || !proposal || patchRequest || busy || prepared) return false;
     return savePatch({ principalId: me, command: command("proposal.item.patch", { proposal_id: proposalId, ops }) });
   }
   async function patch(item: Item, content: Record<string, unknown>) {
@@ -302,7 +308,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
       <header className={styles.documentHeader}><div><h1>{proposal.display_document.title}</h1><p className={styles.meta}>{{ customer_request: "客户需求", new_product: "自主新品", derivative: "派生迭代" }[proposal.display_document.entry_kind]} · {variantTarget ? "新变体" : "新型号"}</p></div><div className={styles.headerActions}>{proposal.decision?.project_id ? <Button asChild size="sm"><Link href={`/?area=cockpit&category=${categoryId}&project=${proposal.decision.project_id}`}>进入项目<ArrowUpRight size={14}/></Link></Button> : <Button type="button" size="sm" onClick={() => { setReviewOpen(true); requestAnimationFrame(() => document.getElementById("proposal-g0-review")?.scrollIntoView({ block: "nearest" })); }}>{proposal.status === "in_review" ? "查看评审" : "提交评审"}</Button>}</div></header>
       <div className={styles.documentMeta}><span className={styles.status} data-state={proposal.status}>{statuses[proposal.status] ?? proposal.status}</span><span>v{proposal.revision}</span><span>负责人 {people.find(person => person.id === proposal.owner_id)?.name ?? "未取得姓名"}</span><span>{proposal.visibility === "private" ? "私有提案" : "已共享"}{proposal.private_source_count > 0 ? " · 含私有来源" : ""}</span>{!embedded && <button type="button" onClick={() => { setPaiOpen(true); setMobileView("pai"); }}>与小Pai{editable ? "完善" : "讨论"}<ArrowUpRight size={13}/></button>}</div>
       {proposal.status === "approved" && <p className={styles.frozen}>立项时的版本已固定。后续产品定义修订在项目中继续。</p>}
-      {Object.keys(drafts).length > 0 && <div className={styles.draftBar}><span>有 {Object.keys(drafts).length} 条未保存编辑</span><Button size="sm" disabled={!editable || busy || !!prepared || !!patchRequest} onClick={() => { try { void mutate(proposalDraftPatches(drafts, docItems)); } catch (failure) { setError((failure as Error).message); } }}>保存修订</Button></div>}
+      {Object.keys(drafts).length > 0 && <div className={styles.draftBar}><span>有 {Object.keys(drafts).length} 条未保存编辑</span><Button size="sm" disabled={!editable || busy || refreshing || !!prepared || !!patchRequest} onClick={() => { try { void mutate(proposalDraftPatches(drafts, docItems)); } catch (failure) { setError((failure as Error).message); } }}>保存修订</Button></div>}
       <nav className={styles.tabs} aria-label="提案文档视图">{documentTabs.filter(tab => ["narrative", "comparison", "features", "maturity", "evidence"].includes(tab.id)).map(tab => <button type="button" key={tab.id} className={styles.chip} aria-pressed={documentTab === tab.id} onClick={() => { setDocumentTab(tab.id); if (["comparison", "features", "maturity"].includes(tab.id)) changeView(tab.id === "features" ? "feature-config" : tab.id === "maturity" ? "definition-maturity" : "spec-benchmark"); }}>{tab.label}</button>)}<details className={styles.moreViews}><summary>更多</summary><div>{documentTabs.filter(tab => !["narrative", "comparison", "features", "maturity", "evidence"].includes(tab.id)).map(tab => <button type="button" key={tab.id} aria-pressed={documentTab === tab.id} onClick={event => { setDocumentTab(tab.id); event.currentTarget.closest("details")?.removeAttribute("open"); }}>{tab.label}</button>)}</div></details></nav>
     </>}
     <div className={styles.mobileSwitch} role="group" aria-label="提案工作区">{(["document", "pai"] as const).map(view => <Button key={view} size="sm" variant={mobileView === view ? "secondary" : "ghost"} aria-pressed={mobileView === view} onClick={() => { setMobileView(view); if (view === "pai") setPaiOpen(true); }}>{view === "document" ? "编辑提案" : "与小Pai对话"}</Button>)}</div>
@@ -385,7 +391,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
       {!!prepared.review.project_team?.length && <p className="text-sm">批准后登记为项目团队：{prepared.review.project_team.map(person => person.name || "姓名暂不可读").join("、")}；角色由项目负责人补充。</p>}
       <div className="mt-6 flex gap-3"><Button disabled={busy} onClick={async () => {
         setBusy(true); setError("");
-        try { await api(`${root}/commands`, prepared.command); if (live.current) { if (prepared.command.operation === "proposal.question.create" && typeof prepared.command.payload.supersedes_item_id === "string") onDraft(prepared.command.payload.supersedes_item_id, null); if (prepared.command.operation === "proposal.question.create" && !prepared.command.payload.supersedes_item_id && creatingQuestion.current) { const done = creatingQuestion.current; creatingQuestion.current = ""; setNewQuestions(rows => rows.filter(row => row.key !== done)); } setPrepared(null); setSaveNotice("已保存，可继续与小Pai完善。"); await reload(); } }
+        try { await api(`${root}/commands`, prepared.command); if (live.current) { const payload = prepared.command.payload, created = prepared.command.operation === "proposal.question.create", done = created && !payload.supersedes_item_id ? creatingQuestion.current : ""; if (done) creatingQuestion.current = ""; setPrepared(null); setSaveNotice("已保存，可继续与小Pai完善。"); await reload(() => { if (created && typeof payload.supersedes_item_id === "string") onDraft(payload.supersedes_item_id, null); if (done) setNewQuestions(rows => rows.filter(row => row.key !== done)); }); } }
         catch (failure) { if (live.current) setError((failure as Error).message); }
         finally { if (live.current) setBusy(false); }
       }}>确认办理</Button><Button variant="outline" disabled={busy} onClick={() => setPrepared(null)}>返回修改</Button></div><p className="mt-3 text-xs text-muted-foreground">暂未取得回执时可重试本次办理，重复请求会返回原结果。</p>

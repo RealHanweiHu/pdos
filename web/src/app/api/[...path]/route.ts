@@ -5,9 +5,9 @@ import { candidateTransportOptions } from "@/lib/server/candidate-transport";
 
 const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
-const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates(?:\/confirm)?|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|agent-skills|agent-input-sources)$/i;
+const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|run-decisions|search|project-work|agent-skills|agent-input-sources)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
@@ -416,7 +416,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     const searching = pathname === "v1/personal/search";
     const projectWorkQueue = pathname === "v1/personal/project-work";
     for (const [key, value] of request.nextUrl.searchParams) {
-      const valid = projectWorkQueue ? (key === "queue" ? ["receive", "verify", "tasks", "commitments"].includes(value)
+      const valid = projectWorkQueue ? (key === "queue" ? ["receive", "verify", "tasks", "commitments", "received"].includes(value)
         : key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100
         : key === "cursor" && uuid.test(value))
         : searching ? (key === "q" ? !!value.trim() && value.length <= 200
@@ -463,7 +463,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if ((agentPath[2] && !uuid.test(agentPath[2])) || (agentPath[3] === "calls" && !uuid.test(agentPath[4] ?? ""))) return Response.json({ code: "VALIDATION_FAILED", message: "运行或调用编号无效。" }, { status: 422 });
     const collection = agentPath.length === 2;
     const create = collection && request.method === "POST";
-    const action = /\/(?:answers|cancel|recover)$/.test(pathname);
+    // D77: a run's candidate package is one POST; each item still runs its own command.
+    const action = /\/(?:answers|cancel|recover|candidates\/confirm)$/.test(pathname);
     const reconciliation = pathname.endsWith("/reconciliation");
     const feedback = pathname.endsWith("/feedback");
     const method = create || action || (reconciliation || feedback) && request.method === "POST" ? "POST" : "GET";
@@ -771,7 +772,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     // the same source locks. Keep their transport budget aligned without retries.
     const deepRead = request.method === "GET" && (qualityChange || qualityFollowup || /\/verification-results$/.test(pathname) || /\/exports\/test-summary$/.test(pathname));
     const extendedTransport = candidateCommand || factCommand || factPath || deepRead;
-    const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || externalHandoff || releaseException || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
+    const timeout = extendedTransport ? 600000 : longCommand || pathname.endsWith("/candidates/confirm") || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || externalHandoff || releaseException || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
     const response = await fetch(`${base}/${forwardPath.join("/")}${query.size ? `?${query}` : ""}`, {
       ...candidateTransportOptions(extendedTransport),
       method: request.method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

@@ -436,7 +436,7 @@ class TestStartPromisePage(ProjectPage):
 
 
 class PersonalProjectWorkPage(ProjectPage):
-    queue: Literal["receive", "verify", "tasks", "commitments"]
+    queue: Literal["receive", "verify", "tasks", "commitments", "received"]
     page_size: int = Field(default=20, ge=1, le=100)
 
 
@@ -487,6 +487,13 @@ def register_routes(app, engine, auth_dependency):
             return read(
                 session, ctx, queue=page.queue, cursor=page.cursor, page_size=page.page_size
             )
+
+    @app.get("/v1/personal/run-decisions")
+    def run_decisions(ctx: Context = auth_dependency):
+        """要我决定 · 小Pai 运行分组 (D78): one category read snapshot per category."""
+        from pdos_next.domain.my_work.run_decisions import read
+
+        return read(engine, ctx)
 
     @app.get("/v1/personal/run-activity")
     def activity(page: Annotated[ActivityPage, Query()], ctx: Context = auth_dependency):

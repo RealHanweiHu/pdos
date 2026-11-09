@@ -40,7 +40,7 @@ from projects.work_pg.test_workflow import (
 )
 from projects.work_pg.test_workflow import work as work_case  # noqa: F401
 
-QUEUES = ("receive", "verify", "tasks", "commitments")
+QUEUES = ("receive", "verify", "tasks", "commitments", "received")
 _WHOLE_PRIVATE_COLUMNS = re.compile(
     r'\b[\w"]+\.(?:body|command|source_basis)\s*(?=,|as\b|from\b|$)', re.I
 )
@@ -114,17 +114,21 @@ def _page(work, queue, *, actor=None, cursor=None, page_size=20, expected=200):
             "recorded_at",
             "commitment",
             "timing",
+            "promisor",
         }
         assert set(item["task"]) == {"id", "version_id", "revision", "state", "title"}
         assert all(set(item[key]) == {"id", "name"} for key in ("category", "product", "project"))
         assert datetime.fromisoformat(item["recorded_at"]).utcoffset() is not None
         assert item["timing"] in {None, "unknown", "pending", "overdue"}
-        if queue == "commitments":
+        if queue in {"commitments", "received"}:
             assert item["commitment"] is not None
             assert item["id"] == item["commitment"]["id"]
-            assert item["commitment"]["promisor_id"] == str(actor)
+            side = "promisor_id" if queue == "commitments" else "recipient_id"
+            assert item["commitment"][side] == str(actor)
+            assert item["promisor"]["id"] == item["commitment"]["promisor_id"]
         else:
             assert item["id"] == item["task"]["id"] and item["commitment"] is None
+            assert item["promisor"] is None
     if value["next_cursor"] is not None:
         assert value["items"] and value["next_cursor"] == value["items"][-1]["id"]
     return value
@@ -347,6 +351,13 @@ def test_actual_personal_queues_follow_named_work_across_categories_and_current_
     )
     _all_pages(work, "commitments", _ids(promise_page), actor=setup.peer)
     _page(work, "commitments", cursor=commitments[0]["subject_id"], expected=403)
+    # D38: the recipient sees what others promised to them, with the promisor named.
+    given = _page(work, "received")
+    assert _ids(given) == {null["id"]}
+    assert given["items"][0]["promisor"]["id"] == str(setup.peer)
+    assert given["items"][0]["recipient"]["id"] == str(setup.human)
+    assert _ids(_page(work, "received", actor=setup.peer)) == {bounded["id"]}
+    _page(work, "received", cursor=bounded["id"], expected=403)
     # The caller loses only one category; another category's active task remains.
     with Session(setup.admin) as s, s.begin():
         s.execute(

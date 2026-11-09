@@ -604,6 +604,31 @@ test("个人视图只读，拒绝伪造范围和无效分页", async () => {
   }
 });
 
+test("要我决定 · 小Pai 运行：个人只读读取，整包确认只作为该运行的一次 POST 转发（D77/D78）", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/personal/run-decisions", { unscoped: true })).response.status, 200);
+  assert.equal(h.calls[0].url, "http://synthetic-api.invalid/v1/personal/run-decisions");
+  assert.equal((await h.send("v1/personal/project-work", { unscoped: true, query: "queue=received&page_size=20" })).response.status, 200);
+  assert.equal(h.calls[1].url, "http://synthetic-api.invalid/v1/personal/project-work?queue=received&page_size=20");
+  const body = JSON.stringify({ items: [{ event_id: issue, command: { operation: "platform.link.create" } }] });
+  const sent = await h.send(`v1/agent-runs/${run}/candidates/confirm`, { method: "POST", body });
+  assert.equal(sent.response.status, 200);
+  assert.equal(h.calls[2].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-runs/${run}/candidates/confirm`);
+  assert.equal(h.calls[2].init.method, "POST"); assert.equal(h.calls[2].init.body, body);
+  assert.equal(h.timeouts.at(-1), 180000);
+  for (const input of [
+    { path: "v1/personal/run-decisions", method: "POST" as const, body: "{}", unscoped: true, status: 405 },
+    { path: "v1/personal/run-decisions", query: "page_size=1", unscoped: true, status: 422 },
+    { path: `v1/agent-runs/${run}/candidates/confirm`, status: 405 },
+    { path: `v1/personal/agent-runs/${run}/candidates/confirm`, method: "POST" as const, body, unscoped: true, status: 404 },
+  ]) {
+    const denied = harness();
+    const result = await denied.send(input.path, input);
+    assert.equal(result.response.status, input.status, input.path);
+    assert.equal(denied.calls.length, 0);
+  }
+});
+
 test("对象搜索保持个人只读路径和文字，不放行伪造范围或无效条件", async () => {
   const h = harness();
   const query = new URLSearchParams({ q: "100%_充气", kind: "project", page_size: "20", cursor: `project:${product}:0123456789abcdef` }).toString();

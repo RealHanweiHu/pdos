@@ -60,11 +60,14 @@ const task = (id, due_date, owner_id = "me", status = "open") => ({ id, kind: "t
 const entry = { category: { id: "cat", name: "合成品类" }, product: { id: "product", name: "合成型号" }, project: { id: "project", name: "合成项目" }, openItems: [task("今日", day(0)), task("逾期", day(-1)), task("稍后", day(9)), task("未定", null), task("他人", day(0), "other"), task("已完", day(0), "me", "done"), { ...task("风险", day(2)), kind: "risk", title: "合成风险" }], openItemsError: "" };
 const waiting = { run_id: "waiting", goal: "需要答复的合成工作", status: "waiting_input", categoryId: "cat", categoryName: "合成品类", scope: "category", product_id: null, created_at: "2026-10-17T08:00:00Z" };
 const completed = { ...waiting, run_id: "complete", goal: "已完成的合成工作", status: "completed" };
+// D78: runs waiting on me arrive grouped by run from one personal read.
+const waitingRun = { run_id: "11111111-1111-4111-8111-111111111111", goal: "需要答复的合成工作", status: "waiting_input", error_code: null, reading_token: "waiting_input:0", created_at: "2026-10-17T08:00:00Z", scope: "category", category: { id: "22222222-2222-4222-8222-222222222222", name: "合成品类" }, product_id: null, proposal_id: null, project_id: null, questions: [{ id: "q1", question: "合成问题是什么？", why: "补齐判据", options: [], allow_free_text: true }], question_sequence: 3, needs_review: false, candidates: [], more_candidates: false };
+const decisionsPage = runs => ({ version: "personal-run-decisions/v1", principal_id: "me", as_of: "2026-10-17T09:00:00Z", runs, total_runs: runs.length, candidate_count: runs.reduce((total, run) => total + run.candidates.length, 0), question_count: runs.reduce((total, run) => total + run.questions.length, 0), truncated: false, unavailable_runs: 0 });
 const g0Item = { proposal_id: "proposal", title: "合成G0提案", proposal_revision: 3, status: "in_review", category: { id: "cat", name: "合成品类" }, owner: { id: "owner", name: "合成负责人" }, reviewer_id: "me", submission: { id: "submission", revision: 2, submitted_at: "2026-10-17T09:00:00Z", document_digest: "fixed-digest" } };
 const promiseItem = { id: "promise-record", recorded_at: "2026-10-17T09:00:00Z", category: { id: "cat", name: "合成品类" }, product: { id: "product", name: "合成型号" }, project: { id: "project", name: "合成项目" }, build: { id: "build", name: "合成承诺Build" }, request: { id: "request" }, run: { id: "test-run", revision: 2, status: "planned" }, promise: { occurred_at: "2026-10-17T00:00:00.160086Z", original_timezone: "Asia/Shanghai", effective_at: null }, actual_start: null, recipient: null, recipient_status: "not_recorded", timing: "awaiting_start", coverage: { sample_count: 2, item_count: 3, pair_count: 6 } };
 function apiFixture({ fail = () => false, unavailable = 0, g0Fail = () => false, g0Items = [], promisesFail = () => false, promiseItems = [] } = {}) {
   const calls = [];
-  return { calls, api: async (url, body) => { calls.push({ url, body }); if (fail()) throw new Error("合成读取失败"); if (url.startsWith("v1/personal/g0-reviews")) { if (g0Fail()) throw new Error("合成G0读取失败"); return { version: "personal-g0-reviews/v1", principal_id: "me", as_of: "2026-10-17T09:00:00Z", total_pending: g0Items.length, items: g0Items, next_cursor: null }; } if (url.startsWith("v1/personal/test-start-promises")) { if (promisesFail()) throw new Error("合成开测承诺读取失败"); return { version: "personal-test-start-promises/v1", principal_id: "me", as_of: "2026-10-17T09:00:00Z", total_records: promiseItems.length, items: promiseItems, next_cursor: null }; } return url.startsWith("v1/personal/projects") ? { items: [entry], next_cursor: null, unavailable_count: unavailable, as_of: "2026-10-17T09:00:00Z" } : { items: url.includes("waiting=true") ? [waiting] : [waiting, completed], next_cursor: null }; } };
+  return { calls, api: async (url, body) => { calls.push({ url, body }); if (fail()) throw new Error("合成读取失败"); if (url.startsWith("v1/personal/g0-reviews")) { if (g0Fail()) throw new Error("合成G0读取失败"); return { version: "personal-g0-reviews/v1", principal_id: "me", as_of: "2026-10-17T09:00:00Z", total_pending: g0Items.length, items: g0Items, next_cursor: null }; } if (url.startsWith("v1/personal/run-decisions")) return decisionsPage([waitingRun]); if (url.startsWith("v1/personal/test-start-promises")) { if (promisesFail()) throw new Error("合成开测承诺读取失败"); return { version: "personal-test-start-promises/v1", principal_id: "me", as_of: "2026-10-17T09:00:00Z", total_records: promiseItems.length, items: promiseItems, next_cursor: null }; } return url.startsWith("v1/personal/projects") ? { items: [entry], next_cursor: null, unavailable_count: unavailable, as_of: "2026-10-17T09:00:00Z" } : { items: url.includes("waiting=true") ? [waiting] : [waiting, completed], next_cursor: null }; } };
 }
 const defaultProps = api => ({ api, session: { name: "合成人员", principal_id: "me" }, onOpenRun() {}, onOpenProject() {}, onOpenPai() {} });
 const section = (tree, label) => elements(tree, element => element.props?.["aria-label"] === label)[0];
@@ -86,10 +89,13 @@ test("one responsibility list combines real tasks, risks and paused conversation
   component.render();component.mount();await tick();const tree=component.render(),items=rows(tree);
   assert.ok(items.some(item=>item.title==="合成风险"));assert.ok(items.some(item=>item.title==="任务今日"));
   assert.equal(items.some(item=>/任务他人|任务已完/.test(item.title)),false);
-  const run=items.find(item=>item.kind==="pai");assert.equal(run.title,"需要答复的合成工作");
-  list(tree).props.onOpenRun(run.target.runId,run.target.categoryId);
+  assert.equal(items.some(item=>item.kind==="pai"),false);
+  const decide=list(tree).props.groups.find(group=>group.key==="decide").extra("");assert.equal(decide.count,1);
+  const run=decide.node.props.runs[0];assert.equal(run.goal,"需要答复的合成工作");
+  decide.node.props.onOpenRun(run.run_id,run.category.id);
   const task=items.find(item=>item.title==="任务今日");list(tree).props.onOpenProject(task.target.categoryId,task.target.projectId);
-  assert.deepEqual(opened,[["waiting","cat"],["cat","project"]]);
+  assert.deepEqual(opened,[[waitingRun.run_id,waitingRun.category.id],["cat","project"]]);
+  assert.deepEqual(list(tree).props.groups.map(group=>group.label),["要我决定","要我接收","要我验证","等外部回复","我的任务"]);
   assert.equal(elements(tree,item=>item.type?.name==="PersonalAttention" || item.type?.name==="PersonalProjectWorkQueue").length,0);
   assert.ok(fixture.calls.every(item=>item.body===undefined));assert.equal(fixture.calls.some(item=>item.url.startsWith("v1/personal/g0-reviews")),false);
 });
@@ -112,7 +118,7 @@ test("commitments share one list while test-start recipient gaps and original ti
  elements(section(active,"我的工作视图"),item=>item.type==="button"&&item.props.children==="承诺")[0].props.onClick();const tree=component.render(),items=rows(tree);assert.equal(items.length,1);assert.equal(items[0].kind,"test");assert.match(JSON.stringify(items[0].facts),/Asia\/Shanghai|Asia\\\/Shanghai/);assert.match(JSON.stringify(items[0].facts),/尚未记录|配对 6/);assert.match(items[0].target.href,/project=project/);
 });
 test("a test-start read failure does not erase tasks or paused conversations",async()=>{
- const component=driver(defaultProps(apiFixture({promisesFail:()=>true}).api));component.render();component.mount();await tick();const active=component.render();assert.ok(rows(active).some(item=>item.kind==="pai"));assert.ok(rows(active).some(item=>item.kind==="task"));
+ const component=driver(defaultProps(apiFixture({promisesFail:()=>true}).api));component.render();component.mount();await tick();const active=component.render();assert.equal(list(active).props.groups[0].extra("").count,1);assert.ok(rows(active).some(item=>item.kind==="task"));
  elements(section(active,"我的工作视图"),item=>item.type==="button"&&item.props.children==="承诺")[0].props.onClick();assert.ok(list(component.render()).props.readings.some(item=>item.error.includes("合成开测承诺读取失败")));
 });
 const workItems=load(path.join(webRoot,"src/features/my-work/lib/my-work-items.ts"));
