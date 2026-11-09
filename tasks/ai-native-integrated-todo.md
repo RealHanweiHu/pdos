@@ -259,6 +259,16 @@ W3b · 早期想法（10-08 之前）：丢失或口径变窄，需要定补回�
   - 第二、三批立项视图：差距矩阵、热力图、成本桥、价格与评分时间线（§05.8）；
   - 10-07 执行计划的 M4/M5。
 
+W3b · 场景拓展候选（11-08 竞品对照增补；依据、竞品来源与可信度标注见[场景拓展评估](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)，其 §6 的待核对项在采纳前核对）
+- D321 〔推荐：采纳→W9，与 D93/D188 认证台账同批；新来源类型须决策记录〕（11-08，[评估 J-01a](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）合规雷达：品类知识的“法规认证按地区”升为持续监测——法规源作 MCP 研究工具，变化产出带引用的 Claim 与 SpecItem/重认证候选（T1），接认证台账与 ImpactAssessment。硬日期：CRA Article 14 报告义务 2026-09-11 已生效、电池护照 2027-02-18（对标 Arena SCI、osapiens、Circularise；PLM AI 无人做“研发数据→合规”闭环）。
+- D322 〔推荐：采纳→W9（S4 放行闭环），与 D185 延后的外审取证包合并设计；导出模板须决策记录〕（11-08，[评估 J-01b/J-07](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）放行包→DPP/外审数据包出口：字段映射由确定性引擎做，AI 只起草缺项说明；把运行回执、引用逐字核对、资格记录做成客户可见的审计叙事（接 D139、G-44）。电池护照等硬日期给 D185 外审取证包的延后提供了新恢复依据。
+- D323 〔推荐：采纳→W8，研究类技能包，与 D180 同组；专利服务商按 P26 登记“服务商 × 数据类别”，连接器须决策记录〕（11-08，[评估 J-02](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）立项期 IP/FTO 初筛：按品类/方案关键词做新颖性与 FTO 粗筛，产出带引用的 Claim，G0 材料加“IP 风险”节；侵权结论不由 AI 下，候选标注“须专业代理复核”（对标智慧芽 Eureka：2026-03 改版、已开放 MCP/API；海外与国内 PLM 均无立项 IP 环节）。Patsnap 类 MCP 源可作 D101 情报源“有可接入数据源时”恢复条件的信号。
+- D324 〔推荐：采纳→W9，随 D105 目标成本；细化为主，接外部税率源时按来源类型登记〕（11-08，[评估 J-03](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）关税与 HS 口径：CostEstimate/ImpactAssessment 加 HS 候选码、目的市场、税率，差额由确定性引擎计算；AI 只起草归类理由与“改设计换税目”候选（T1），归类以报关行/BTI 裁定为准。HS 2028 的归类治理窗口在 2026–2027（对标 Flexport 关税工程、Thomson Reuters/Descartes）。
+- D325 〔推荐：延后——D47 供应承诺命令实现后，与 D241 同批〕（11-08，[评估 J-04](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）询价—比价—跟催中段：报价单抽取（已有）→确定性比价表（价差、交期差、缺项）→跟催/澄清函 T1 草稿；外发维持 T2/授权，不做自主谈判（对标 Levelpath Merlin、Pactum、Arkestro；Gartner 口径 2028 年仅 40% 采购团队用上 agent，自主谈判未被验证）。
+- D326 〔推荐：不提前排期，把“现场退货单元（FieldReturnUnit）一等对象 + NFF 复测结构化字段”写为 D104 的具体承接物，新对象的决策记录随 D48 启动时再写〕（11-08，[评估 J-05](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）退货与 NFF 回流：序列号、退货原因口径、复测 TestRun、处置结论；AI 做失效聚类→Issue/FailureMode 候选（T1），喂 D186 的 Living FMEA。行业连“退货件复测结果”字段都没有；Instrumental 管产线内、Claimlane/Bruviti 管客服理赔，退货件作工程对象是空档。
+- D327 〔推荐：合成项，随 D321/D323/D324 落地后拼装；G0 材料模板细化，不需决策记录〕（11-08，[评估 J-06](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）G0 风险雷达：G0 评审材料固定加 IP、法规认证、关税、供应四维风险候选，各带引用与未知项责任人（接 D100、D101）。全部为只读研究 + T0/T1 候选，竞品无人占位。
+- D328 〔推荐：只改措辞——D112、D106 的恢复条件补“客户或供应商提出 agent 对接时”〕（11-08，[评估 J-08](../docs/reports/2026-11-08-agent-scenario-expansion-review.md)）A2A 趋势登记：协议入 Linux Foundation、150+ 组织支持，买卖双方 agent 询报价模式成型中。不改变 D112、D106 的延后结论。
+
 **W3c 设计冲突，以及“想法已变但没有记录”（需要你定口径，多数要写成 P35 起的决策记录；在 W3 之后、W3b 之前处理）**
 
 先定这 5 条，它们直接挡住施工或违反不可协商项：
