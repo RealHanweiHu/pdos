@@ -18,6 +18,8 @@ import { ProjectSets } from "../projects/project-sets";
 import { KnowledgeIndex } from "@/features/knowledge/knowledge-index";
 import { PaiRail, type PaiContext } from "@/features/xiaopai/pai-rail";
 import { ObjectSearch } from "@/features/shell/object-search";
+import { countText, defaultHomeArea, readPendingCount, shellPreferences, type ShellPreferences } from "@/features/shell/lib/shell-preferences";
+import { preferencesSavedEvent } from "@/lib/personal-preferences";
 import styles from "./app-shell.module.css";
 
 type Session = { name: string; principal_id: string; login_name?: string | null; administrator?: boolean };
@@ -57,6 +59,9 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
     setPaiContext(context);
     if (context?.material?.request) setFocusRun(null);
   }, []);
+  const [interfacePreferences, setInterfacePreferences] = useState<ShellPreferences | null>(null);
+  const [pendingCount, setPendingCount] = useState<number | null>(null);
+  const homeApplied = useRef(false);
   const mobileDialog = useRef<HTMLDialogElement>(null);
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const searchControl = useRef<HTMLDivElement>(null);
@@ -118,6 +123,42 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
     });
     return () => { active = false; };
   }, [session]);
+
+  // Interface settings (D40): read once per session; a failure keeps the app defaults.
+  const principalId = session?.principal_id ?? "";
+  useEffect(() => {
+    if (!principalId) return;
+    let active = true;
+    browserApi<unknown>("v1/personal/preferences").then(value => {
+      if (!active) return;
+      const preferences = shellPreferences(value);
+      setInterfacePreferences(preferences);
+      if (homeApplied.current || documentMode || runPageId) return;
+      homeApplied.current = true;
+      const home = defaultHomeArea(window.location.search, preferences);
+      if (!home) return;
+      const href = globalHref({ area: home, categoryId: "", projectId: "" });
+      window.history.replaceState(null, "", href);
+      setLocation(resolveGlobalLocation(href));
+    }).catch(() => { if (active) { homeApplied.current = true; setInterfacePreferences(shellPreferences(null)); } });
+    const saved = (event: Event) => setInterfacePreferences(shellPreferences((event as CustomEvent).detail));
+    window.addEventListener(preferencesSavedEvent, saved);
+    return () => { active = false; window.removeEventListener(preferencesSavedEvent, saved); };
+  }, [principalId, documentMode, runPageId]);
+  const reminders = !!principalId && !!interfacePreferences?.pending_reminders;
+  useEffect(() => {
+    if (!reminders) { void Promise.resolve().then(() => setPendingCount(null)); return; }
+    let active = true, last = 0;
+    const read = () => {
+      if (Date.now() - last < 60000) return;
+      last = Date.now();
+      // An unreadable queue shows no number rather than a wrong or zero count.
+      readPendingCount(browserApi, principalId).then(count => { if (active) setPendingCount(count); }).catch(() => { if (active) setPendingCount(null); });
+    };
+    read();
+    window.addEventListener("focus", read);
+    return () => { active = false; window.removeEventListener("focus", read); };
+  }, [reminders, principalId]);
 
   useEffect(() => {
     if (auth !== "ready" || location.area !== "category" || new URLSearchParams(window.location.search).get("focus") !== "proposals") return;
@@ -222,7 +263,7 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
         {globalAreas.filter(item => item.group === "main").map(item => {
           const Icon = areaIcons[item.id];
           return <div key={item.id}>
-            <a href={pageHref(globalHref({ area: item.id, categoryId: item.id === "pai" ? "" : location.categoryId, projectId: "" }, window.location.search))} className={`workspace-nav-item ${styles.primaryLink}`} aria-current={location.area === item.id ? "page" : item.id === "projects" && (location.area === "cockpit" || projectWorkbench) ? "location" : undefined} aria-label={item.label} title={item.label} onClick={event => { if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); navigate(item.id); }}><Icon size={17} weight="regular" aria-hidden="true"/><span className="workspace-nav-label">{item.label}</span>{item.planned && <span className="workspace-nav-label subtle ml-auto text-[10px]">尚未接入</span>}</a>
+            <a href={pageHref(globalHref({ area: item.id, categoryId: item.id === "pai" ? "" : location.categoryId, projectId: "" }, window.location.search))} className={`workspace-nav-item ${styles.primaryLink}`} aria-current={location.area === item.id ? "page" : item.id === "projects" && (location.area === "cockpit" || projectWorkbench) ? "location" : undefined} aria-label={item.id === "work" && pendingCount ? `${item.label}，需要我处理 ${pendingCount} 项` : item.label} title={item.id === "work" && pendingCount ? `${item.label} · 需要我处理 ${pendingCount} 项` : item.label} onClick={event => { if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); navigate(item.id); }}><Icon size={17} weight="regular" aria-hidden="true"/><span className="workspace-nav-label">{item.label}</span>{item.planned && <span className="workspace-nav-label subtle ml-auto text-[10px]">尚未接入</span>}{item.id === "work" && !!pendingCount && <span className="workspace-nav-count" aria-hidden="true">{countText(pendingCount)}</span>}</a>
 
           </div>;
         })}

@@ -23,3 +23,13 @@
 .page :is(label,input,select,textarea,p) { font-size:12px; }
 .page h2 { font-size:14px; }
 .page h3 { font-size:13px; }
+/* D40: members with project responsibilities and scope. */
+.tableScroll { max-width:100%; overflow-x:auto; }
+.tableScroll .table { min-width:520px; }
+.table :is(th,td) { padding-right:16px; vertical-align:top; }
+.table th:first-child { width:22%; }
+.table th:last-child { width:26%; }
+.assignments { display:grid; gap:6px; }
+.assignments small, .cellNote { display:block; margin-top:1px; color:var(--text-subtle); font-size:11px; }
+.muted { color:var(--text-subtle); }
+.note > button { margin-left:6px; }

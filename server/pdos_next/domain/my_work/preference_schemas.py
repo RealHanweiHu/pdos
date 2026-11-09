@@ -12,6 +12,8 @@ ResponseDetail = Literal["brief", "balanced", "detailed"]
 Role = Literal[
     "product", "engineering", "quality", "manufacturing", "supply", "management", "other"
 ]
+# Where the app opens when no page is named (D40). Navigation only; never authority.
+DefaultHome = Literal["work", "inbox", "projects"]
 
 
 class Preferences(StrictModel):
@@ -21,6 +23,10 @@ class Preferences(StrictModel):
     department: str | None = Field(default=None, max_length=80)
     favorite_category_ids: list[UUID] = Field(default_factory=list, max_length=10)
     favorite_project_ids: list[UUID] = Field(default_factory=list, max_length=10)
+    # Interface settings (D40): the default home and whether the navigation shows how
+    # many items need me. Stored with the rest; never part of a Run's context.
+    default_home: DefaultHome = "work"
+    pending_reminders: bool = Field(default=True, strict=True)
 
     @field_validator("department")
     @classmethod

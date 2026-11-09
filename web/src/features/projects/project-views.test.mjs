@@ -155,7 +155,8 @@ test("professional summaries retain explicit project scope while maintenance is 
     const summary = elements(tree, e => e.type?.name === componentName)[0];
     assert.ok(summary); assert.deepEqual(summary.props, scope);
     assert.equal(elements(tree, e => e.props?.embeddedPanel).length, 0);
-    elements(tree, e => e.props?.className === "editorToggle")[0].props.onClick();
+    // D40: long professional forms open on demand in the shared drawer.
+    elements(tree, e => e.props?.["aria-haspopup"] === "dialog")[0].props.onClick();
     tree = component.render();
     const editor = elements(tree, e => e.props?.embeddedPanel === panel)[0];
     assert.ok(editor); assert.equal(editor.props.fixedProductId, scope.productId); assert.equal(editor.props.projectId, scope.projectId); assert.equal(editor.props.categoryId, scope.categoryId);

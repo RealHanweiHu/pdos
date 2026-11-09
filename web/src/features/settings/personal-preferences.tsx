@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/browser-api";
-import { newPersonalPreferences, type PersonalPreferences as Values, type PreferenceCandidate, type PreferenceOptions, type PreferenceView } from "@/lib/personal-preferences";
+import { newPersonalPreferences, preferencesSavedEvent, type PersonalPreferences as Values, type PreferenceCandidate, type PreferenceOptions, type PreferenceView } from "@/lib/personal-preferences";
 import { Button } from "../../components/ui/button";
 import styles from "./personal-preferences.module.css";
 
@@ -44,6 +44,10 @@ function FavoriteOptions({ kind, selected, candidates, onChange, api, disabled }
   </fieldset>;
 }
 
+/** A reading from a server without the interface settings keeps their defaults. */
+const withDefaults = (value: Values): Values => ({ ...newPersonalPreferences(), ...value });
+const homes = [["work", "我的工作"], ["inbox", "收件箱"], ["projects", "项目"]] as const;
+
 export function PersonalPreferences({ api = browserApi }: { api?: Api }) {
   const [reading, setReading] = useState<PreferenceView | null>(null);
   const [draft, setDraft] = useState<Values>(newPersonalPreferences);
@@ -55,7 +59,7 @@ export function PersonalPreferences({ api = browserApi }: { api?: Api }) {
   useEffect(() => {
     let active = true;
     api<PreferenceView>(endpoint).then(value => {
-      if (active) { setReading(value); setDraft(value.preferences); setError(""); }
+      if (active) { setReading(value); setDraft(withDefaults(value.preferences)); setError(""); }
     }).catch(failure => { if (active) setError(failure instanceof Error ? failure.message : "个人偏好读取失败。"); });
     return () => { active = false; };
   }, [api, attempt]);
@@ -64,7 +68,8 @@ export function PersonalPreferences({ api = browserApi }: { api?: Api }) {
     setBusy(true); setError(""); setNotice(""); setConflict(false);
     try {
       const value = await api<PreferenceView>(endpoint, { expected_revision: reading.revision, preferences: values });
-      setReading(value); setDraft(value.preferences); setNotice("已保存，将用于之后的小Pai对话。");
+      setReading(value); setDraft(withDefaults(value.preferences)); setNotice("已保存。首页与提醒立即生效，小Pai设置用于之后的对话。");
+      window.dispatchEvent(new CustomEvent(preferencesSavedEvent, { detail: withDefaults(value.preferences) }));
     } catch (failure) {
       setError(failure instanceof Error ? failure.message : "保存未完成，填写内容仍保留。");
       setConflict(!!failure && typeof failure === "object" && "code" in failure && failure.code === "VERSION_CONFLICT");
@@ -77,10 +82,16 @@ export function PersonalPreferences({ api = browserApi }: { api?: Api }) {
     finally { setBusy(false); }
   }
   function submit(event: FormEvent) { event.preventDefault(); void save(draft); }
-  if (!reading) return <section className={styles.panel} aria-label="小Pai个人偏好"><h2>小Pai个人偏好</h2>{error ? <><p role="alert">{error}</p><Button variant="outline" onClick={() => setAttempt(n => n + 1)}>重新读取偏好</Button></> : <p role="status">正在读取个人偏好…</p>}</section>;
-  return <section className={styles.panel} aria-label="小Pai个人偏好">
-    <h2>小Pai个人偏好</h2><p className={styles.note}>仅自己可见，可随时修改或清空。</p>
+  if (!reading) return <section className={styles.panel} aria-label="个人偏好"><h2>个人偏好</h2>{error ? <><p role="alert">{error}</p><Button variant="outline" onClick={() => setAttempt(n => n + 1)}>重新读取偏好</Button></> : <p role="status">正在读取个人偏好…</p>}</section>;
+  return <section className={styles.panel} aria-label="个人偏好">
+    <h2>工作与提醒</h2><p className={styles.note}>仅自己可见，可随时修改或清空。</p>
     <form onSubmit={submit}>
+      <fieldset className={styles.rows} disabled={busy}>
+        <legend className="sr-only">工作与提醒</legend>
+        <div className={styles.settingRow}><span><strong id="pending-reminders-label">需要我处理的提醒</strong><small>在侧栏“我的工作”旁显示要我决定、接收和验证的事项数。已完成的自动工作进入动态，不计入提醒。</small></span><label className={styles.toggle}><input type="checkbox" aria-labelledby="pending-reminders-label" checked={draft.pending_reminders} onChange={event => setDraft(old => ({ ...old, pending_reminders: event.target.checked }))}/>{draft.pending_reminders ? "开启" : "关闭"}</label></div>
+        <div className={styles.settingRow}><span><strong id="default-home-label">默认首页</strong><small>没有指定页面时打开。默认是“我的工作”，由本人当前责任组织工作。</small></span><select aria-labelledby="default-home-label" value={draft.default_home} onChange={event => setDraft(old => ({ ...old, default_home: event.target.value as Values["default_home"] }))}>{homes.map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select></div>
+      </fieldset>
+      <h2 className={styles.subheading}>小Pai个人偏好</h2>
       <fieldset className={styles.fields} disabled={busy}>
         <label>回答语言<select value={draft.answer_language} onChange={event => setDraft(old => ({ ...old, answer_language: event.target.value as Values["answer_language"] }))}><option value="auto">跟随当前提问</option><option value="zh-CN">简体中文</option><option value="zh-TW">繁體中文</option><option value="en">English</option><option value="ja">日本語</option></select></label>
         <label>回答详略<select value={draft.response_detail} onChange={event => setDraft(old => ({ ...old, response_detail: event.target.value as Values["response_detail"] }))}><option value="brief">简洁</option><option value="balanced">适中</option><option value="detailed">详细</option></select></label>

@@ -171,6 +171,11 @@ def options(session, ctx, data: NavigationOptions):
             if len(rows) > data.page_size else None}
 
 
+# Navigation identities are rechecked separately; interface settings never reach a Run.
+CONTEXT_EXCLUDED = {"favorite_category_ids", "favorite_project_ids", "default_home",
+                    "pending_reminders"}
+
+
 def context_preferences(session, scope):
     """Called only by the trusted host for its bound requester, read once per Run."""
     ctx = _identity(session, scope, runtime=True)
@@ -179,7 +184,7 @@ def context_preferences(session, scope):
     return {
         "revision": row.revision if row else 0,
         "source": "explicit_user_settings", "use": "personalization_only",
-        **preferences.model_dump(exclude={"favorite_category_ids", "favorite_project_ids"}),
+        **preferences.model_dump(exclude=CONTEXT_EXCLUDED),
         "navigation_candidates": navigation_candidates(session, ctx, preferences),
         "role_defaults": role_defaults(preferences),
     }

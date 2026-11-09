@@ -1,10 +1,11 @@
 "use client";
 /* Operate: inherit the approved flat lists, quiet orange controls and eight-pixel
-   surfaces. Read actual records first; inspect a row and continue the original
-   controlled operation. Filters stay above the table; editing remains optional. */
+   surfaces. Read actual records first; a row opens the shared right-side detail
+   drawer, from which the original controlled operation continues on demand. */
 import { useEffect, useRef, useState } from "react";
 import { ArrowClockwise, ArrowRight } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { DetailSheet } from "@/components/ui/detail-sheet";
 import { SimilarHistory, SimilarHistoryLayout } from "@/features/xiaopai/similar-history/similar-history";
 import { buildRecordPanels, readProfessionalBuilds, readProfessionalRecords, type ProfessionalApi, type ProfessionalReading, type ProfessionalRecord, type ProfessionalTarget } from "@/lib/professional-records";
 import styles from "./project-professional.module.css";
@@ -13,8 +14,7 @@ export function ProjectProfessionalRecords({api,productId,projectId,panel,readVe
   const [builds,setBuilds]=useState<Awaited<ReturnType<typeof readProfessionalBuilds>>|null>(null);
   const [build,setBuild]=useState(initialBuild),[reading,setReading]=useState<ProfessionalReading|null>(null);
   const [error,setError]=useState(""),[attempt,setAttempt]=useState(0),[query,setQuery]=useState(""),[history,setHistory]=useState(false),[detail,setDetail]=useState<ProfessionalRecord|null>(null);
-  const detailHeading=useRef<HTMLHeadingElement>(null),detailTrigger=useRef<HTMLButtonElement|null>(null);
-  const needsBuild=buildRecordPanels.has(panel);
+    const needsBuild=buildRecordPanels.has(panel);
   const generation=useRef(0),[paging,setPaging]=useState(false),[pageError,setPageError]=useState("");
   const [routeBuild,setRouteBuild]=useState(initialBuild);
   if(routeBuild!==initialBuild){setRouteBuild(initialBuild);if(build!==initialBuild){setBuild(initialBuild);setReading(null);setDetail(null);}}
@@ -43,11 +43,11 @@ export function ProjectProfessionalRecords({api,productId,projectId,panel,readVe
     </div>
     {error?<div role="alert" className={styles.readNotice}><p>{error}</p><Button size="sm" variant="outline" onClick={()=>setAttempt(n=>n+1)}>重新读取</Button></div>:needsBuild&&!builds?<p role="status">正在读取本项目轮次…</p>:needsBuild&&!build?<p className={styles.readNotice}>{builds?.items.length?"选择轮次，查看本轮真实记录。":"本项目尚无可读轮次；可从工程配置与 BOM 准备新的试制计划。"}</p>:!reading?<p role="status">正在读取专业记录…</p>:<>
       {((reading.incomplete&&!reading.nextCursor)||reading.unavailable>0||builds?.incomplete||!!builds?.unavailable)&&<p className={styles.readNotice}>当前仅显示已读取范围。更多或暂不可读记录请在专业办理中核对，不能据此判断全部完成。</p>}
-      <div className={styles.recordScroll}><table><thead><tr><th>记录</th><th>类型</th><th>状态</th><th>版本与依据</th><th>保存时间</th></tr></thead><tbody>{rows.map(row=><tr key={row.id}><td><button className={styles.recordLink} aria-expanded={detail?.id===row.id} aria-controls={`professional-record-detail-${panel}`} onClick={event=>{detailTrigger.current=event.currentTarget;setDetail(row);requestAnimationFrame(()=>{detailHeading.current?.scrollIntoView({block:"nearest"});detailHeading.current?.focus({preventScroll:true});});}}>{row.title}<ArrowRight size={12}/></button></td><td>{row.kind}</td><td>{row.status}</td><td>{row.revision?`v${row.revision} · `:""}{row.historical?"历史版本":row.source}</td><td>{row.at?new Date(row.at).toLocaleString("zh-CN"):"未登记"}</td></tr>)}</tbody></table></div>
+      <div className={styles.recordScroll}><table><thead><tr><th>记录</th><th>类型</th><th>状态</th><th>版本与依据</th><th>保存时间</th></tr></thead><tbody>{rows.map(row=><tr key={row.id}><td><button className={styles.recordLink} aria-expanded={detail?.id===row.id} aria-controls={`professional-record-detail-${panel}`} onClick={()=>setDetail(row)}>{row.title}<ArrowRight size={12}/></button></td><td>{row.kind}</td><td>{row.status}</td><td>{row.revision?`v${row.revision} · `:""}{row.historical?"历史版本":row.source}</td><td>{row.at?new Date(row.at).toLocaleString("zh-CN"):"未登记"}</td></tr>)}</tbody></table></div>
       {pageError&&<p role="alert" className={styles.readNotice}>{pageError}</p>}
       {reading.nextCursor&&<Button size="sm" variant="outline" disabled={paging} onClick={()=>{setHistory(true);void moreHistory();}}>{paging?"正在读取历史…":"读取更早记录"}</Button>}
       {!rows.length&&<p className={styles.readNotice}>{query?"没有匹配的记录。":"当前范围尚无记录。可展开专业办理，创建或接续当前工作。"}</p>}
     </>}
-    {detail&&<section id={`professional-record-detail-${panel}`} className={styles.recordDetail} aria-label="专业记录详情"><SimilarHistoryLayout history={(panel === "quality" || panel === "followup") && detail.target.issue ? <SimilarHistory api={api} productId={productId} issueId={detail.target.issue} versionId={detail.id}/> : panel === "changes" && detail.target.change ? <SimilarHistory api={api} productId={productId} changeId={detail.target.change} versionId={detail.id}/> : null}><header><h3 ref={detailHeading} tabIndex={-1}>{detail.title} · {detail.kind}</h3><Button size="sm" variant="ghost" onClick={()=>{setDetail(null);detailTrigger.current?.focus();}}>收起详情</Button></header><p>{detail.status} · {detail.source}{detail.historical?" · 历史固定版本":""}</p><dl>{detail.facts.map(([name,text])=><div key={name}><dt>{name}</dt><dd>{text}</dd></div>)}</dl><Button variant="outline" size="sm" onClick={()=>onEdit(detail.target)}>继续专业办理<ArrowRight size={12}/></Button><p className={styles.readNotice}>进入后按当前事实核对，原有确认、具名决定及历史记录保留。</p></SimilarHistoryLayout></section>}
+    {detail&&<DetailSheet title="专业记录详情" onClose={()=>setDetail(null)}><section id={`professional-record-detail-${panel}`} className={styles.recordDetail} aria-label="专业记录详情"><SimilarHistoryLayout history={(panel === "quality" || panel === "followup") && detail.target.issue ? <SimilarHistory api={api} productId={productId} issueId={detail.target.issue} versionId={detail.id}/> : panel === "changes" && detail.target.change ? <SimilarHistory api={api} productId={productId} changeId={detail.target.change} versionId={detail.id}/> : null}><h2>{detail.title}</h2><p className={styles.detailMeta}>{detail.kind} · {detail.status} · {detail.source}{detail.historical?" · 历史固定版本":""}</p><dl>{detail.facts.map(([name,text])=><div key={name}><dt>{name}</dt><dd>{text}</dd></div>)}</dl><Button size="sm" onClick={()=>{const target=detail.target;setDetail(null);onEdit(target);}}>继续专业办理<ArrowRight size={12}/></Button><p className={styles.readNotice}>进入后按当前事实核对，原有确认、具名决定及历史记录保留。</p></SimilarHistoryLayout></section></DetailSheet>}
   </section>;
 }
