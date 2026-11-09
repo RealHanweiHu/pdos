@@ -371,7 +371,11 @@ def test_actual_tenant_shared_asset_fence_and_rejected_roles(operational_work): 
                 )
             ).all()
         )
-        assert set(before) == {setup.product, second_product}
+        # Signed G0 creates the project's own product, so the tenant also holds the shared
+        # fixture's base product. Every product has exactly one clock and nothing else does.
+        products = set(s.scalars(select(Product.id).where(Product.tenant_id == setup.tenant)))
+        assert {setup.product, second_product} <= products
+        assert set(before) == products
         assert all(type(epoch) is int and epoch > 0 for epoch in before.values())
         for role in ("pdos_agent", "pdos_next_auth"):
             assert (
