@@ -390,6 +390,37 @@ W3c · 想法已变但没有记录
   - 发现，未修：
     - `tests/core/test_current_read_profiler.py` 等三处把 `tools/` 插到 `sys.path` 最前面。如果先收集它们、后收集 `tests/builds`，`tests.conftest` 会解析成 `tools/tests/conftest.py`，导致收集报错。按默认顺序跑不会出现。
     - Web 的 54 个 `.test.ts` 用了不带扩展名的 import，`package.json` 里没有测试脚本，直接 `node --test` 加载不了。本次在草稿区用一个解析钩子跑通，仓库未改。
+- 集成记录 11-08（第三轮）：同一集成分支，未推送，`pdos-next/design-v1.1` 和主工作区都没动。
+  - 合并：D257/D256/D268 `refs/heads/claude/silly-easley-3b11d8`（`c2a59149`，无迁移、无合同改动）、D42/D55 `refs/heads/claude/charming-almeida-2d1941`（`254d3104`）、D56 `refs/heads/claude/xenodochial-tharp-12e9c0`（`8a5225c2`）。之后单独提交一次重新导出的 `openapi.json`，再单独提交一处合并引起的测试修正（见验证）。
+  - 迁移：编号都不变，只改 down：`s0_0860_personal_run_sources` 由 `s0_0855` 改为 `s0_0859`，`s0_0861_export_audits` 由 `s0_0855` 改为 `s0_0860`。现 head `s0_0861`，链条线性。
+  - 逐个核对了 s0_0856–s0_0859（`s0_0861` 还加上 `s0_0860`）：
+    - `s0_0860` 改的三条函数（`kernel_read_set_visible`、`kernel_source_reference_gate`、`kernel_source_reference_clock`）没有被中间的迁移重定义；它们用到的 `direct_source_set_visible`、`scope_actor`、`scope_requester`，以及 `agent_runs`、`grants`、`artifact_versions`、`lifecycle_objects`、`categories`、`products` 的策略和授权也都没动。s0_0856 只给 `principals` 加了“不能停用自己”的更新限制策略，不影响门函数的读取。所以 `schema_s0_0860.py` 的 SQL 原样保留，只改了说明文字；往返中升级前后的 `require_functions` 核对都通过。
+    - `s0_0861` 用到的 `category_access`、`kernel_append_only`、`scope_actor`、`scope_requester` 没有被重定义。s0_0856 给 `tenant_administrators` 加的是管理员读取的放行策略、插入和更新的限制策略，审计读策略里“本人管理员行”的判断不受影响。生命周期目录里 D58 的检查点库条目和 D56 的 `export_audits` 各自保留，`export_audits` 已登记为不消费来源的表。
+  - 代码层面核对过：D257 的并发提取子任务记录上下文准入时照样锁运行行，D248 只在同一条记录里多写一个下限，互不影响；D257/D268 与 M1 的 kernel 改动不在同一文件。D56 的导出直接调用页面读取函数，D33 没改这些函数。
+  - 冲突都保留两边：
+    - 本清单：D52 取集成分支的 ✅ 新条目，D55 取 D42 分支的 ✅ 新条目，D271 和 D274–D276 都保留；
+    - `auxiliary-operations.json`：81 + 1 = 82 项，入站入口 5 个不变；
+    - `core/models.py`：项目团队和导出两个模型模块都导入；
+    - 生命周期目录：D214、D58 的条目之后接 `export_audits`；
+    - Web 总路由：两处守卫同时放行 `roleCatalog`/`projectTeam` 和 `personalExport`/`exportView`，合并后的行去掉对方新增的判断，就等于各自分支的原行。
+  - D 编号：D268、D269、D274–D276、D278–D283 都保持原号，没有重复。D263–D267、D270、D272、D273、D277 不在本分支，也不在主工作区清单或任何本地 `claude/*` 分支里，可能是协调会话预留的。
+  - 合同：三份合同里设计稿 v1.1 的 sha256 与文件一致（只有 D56 改过 v1.1）。`openapi.json` 重新导出后只多了 D42 的 `GET /v1/personal/agent-input-sources`；D56 的 4 个导出接口按路由注册顺序挪了位置，内容不变。
+  - 验证（新建独立带标记的 `pdos_test` 和检查点库，未用 `.env`；本机全程保持唤醒）：
+    - 合同校验通过（87 operations、92 events、67 acceptance）。
+    - 迁移：空库升到 `s0_0861` 通过，降到 base 仍在 `s0_0784` 失败（D260）；`s0_0854`↔`s0_0861` 降、升、降、升通过。
+    - 无库全量：10753 通过、1 失败（D42 的过时测试，见下）。1958 个 ERROR 都是缺库或 `citation_ids` 夹具问题。
+    - PG 第一批（core、originals、projects、preproject、workflows、memory 等）2393 个：2369 通过、23 失败、1 跳过，失败都是原有的：D262 的 19 个、D258、D261（还是那 7 项，`export_audits` 与模型一致）、`test_category_source_consumers`、`test_business_audience_summary`。
+    - PG 第二批（整个 kernel 和 enterprise_search、exports、my_work，加 D27 清单里的其余文件）3849 个：3741 通过、17 失败、27 错误、64 跳过。逐个归因：
+      - 原有：CTX-04 两个（goofy 自报）；D259 两个和检索 p95（1.0009 秒）一个（D27 已归因）；`test_extracted_claim_pg` 8 个（“所选技能与实际模型尚无当前资格”，用基点 `38f5a024` 的代码在同一库上同样失败）；27 个 `citation_ids` 错误（D27 补记）。
+      - 合并引起，已修：`test_private_analysis_pg::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result`。D27 把“当前门函数”的期望改成 s0_0854 的定义，D42 的 s0_0860 又改了这条函数；两个分支各自都通过，合在一起才失败。已改为对照 `schema_s0_0860` 的定义（单独提交，只改测试），整文件 10 个通过。
+      - 分支自带，未修：D42 的 `test_source_views` 一个；D33 的 `test_session_presentation_pg`、`test_project_discussion_history_pg` 各一个（见下）。
+    - 指定用例全部通过、没有跳过：D42 的 11 个正反例、D56 的 6 个 PG 用例和 4 个工作簿用例、D257/D268 的 9 个 PG 用例、`test_durable_evidence` 19 个（含 DOCX 和照片上传）。
+    - 前端：typecheck 通过，lint 0 错误（4 条警告是原有的），`.mjs` 1916 个、`.test.ts` 752 个全部通过。
+  - 发现，未修：
+    - D42：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot` 在 D42 分支上就失败，基点通过。D42 在同一个路由里新增了 `/v1/personal/agent-input-sources`，这条旧测试仍断言该路径返回 404，又没替换个人读取函数，于是用桩会话调用了真实函数，得到 500。产品行为符合 P91，是测试过时；D42 没跑无库全量，所以没发现。改法：给个人读取打桩并断言 200，或去掉这条断言。
+    - D33：`test_session_presentation_pg` 和 `test_project_discussion_history_pg` 共用的 `_revoke_peer_project_fixture` 直接删除同事的项目受众行，而同事仍是当前成员，被 D33 新加的 `require_project_team_audience` 拒绝（“Project audience differs from its current members”）。产品代码里只有 D33 的团队服务会删项目受众，所以只是夹具过时；D33 已用“由负责人经团队命令移出成员”改过另外 3 个同类用例，这两个文件不在它的回归范围里。
+    - D56：证据 README 链接的 `migration-roundtrip.log` 被 `.gitignore` 的 `*.log` 排除，只在 D56 自己的 worktree 里有，提交里没有；那个 worktree 清理后这份证据就丢了。可以改名为 `.txt` 后补提交。
+  - 落地准备（只读，详见交接笔记）：主工作区 19 个未提交文件里有 6 个与集成分支重叠，三方试算 5 个自动合并，`web/src/features/shell/app-shell.tsx` 有 1 处冲突，是相邻两行各改一行，按行取两边即可，不涉及取舍。把集成分支和主工作区改动合在一起的完整树在草稿区试过：前端 typecheck 通过，后端无库 3832 通过（唯一失败就是上面 D42 那条），主工作区改过的 PG 测试与相关用例 54 个全部通过。主工作区要先提交自己的改动，集成分支才能合进去。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
@@ -400,6 +431,7 @@ W3c · 想法已变但没有记录
 - D33 ✅ 11-07 实施、11-08 验证完成 ① 项目成员、租户角色目录和迁移（P34-1，是 P33 的前置），本地提交、未推送，[证据](../docs/reports/evidence/w6-d33-project-team-20261107/result.md)。迁移为 `s0_0859`（down `s0_0858`；分支上为 `s0_0855` 接 `s0_0854`，11-08 集成时排在 M1、D214、D58、D215 之后改号）。
   - 可用能力：项目成员（具名人员、多角色、每个角色最多一名主责人、加入与离开时间、添加人与移出人）；租户级、版本化的角色目录，未发布时用设计稿 §4.1 的 12 个角色作可编辑初始值，租户管理员发布新版本，被担任的角色只能停用不能删（P60 第 4 项）；G0 物化时同一事务把加入项目受众的人登记为成员，预览和回执列出（P55）；负责人整张变更一次确认（`project.member.set`，T1）；成员须有当前品类授权，负责人不能代授，页面显示“需要品类授权”；小Pai 不能成为成员，AI 身份对成员表零权限；私有项目中“受众 = 当前成员”由数据库在提交时核对；品类共享项目成员不改变可见范围；项目“更多 → 团队”页面亮暗两种主题已在浏览器验收。
   - 验证（11-08）：受影响范围回归 1796 个用例里 70 个失败。其中 3 个由 D33 引起：测试直接删项目受众行，违反“私有项目受众 = 当前成员”；已改为由负责人经团队命令移出成员，其中履约用例先验收已提交的任务再移出（按拍板 ①）；同时修正待交接计数，已验收兑现的承诺不再算未交接。其余 67 个在基点同样失败：44 个在 D27 的修复前清单里，23 个在基点副本上逐条复现，登记为 D262。改动后重跑团队、三个受影响文件、表目录和命令目录共 100 个，全部通过。
+    - 11-08 第三轮集成时发现：`test_session_presentation_pg`、`test_project_discussion_history_pg` 的共用夹具也直接删项目受众行，同样被拒，未修，见 W4 第三轮集成记录。
   - 11-07 拍板（用户，经设计会话转达）：① 移出成员时，成员资格和角色立即结束；此人有未交接事项的，项目受众保留到交接完成，页面标“待交接”，交接完成后由负责人“完成移出”；没有的立即移出。② 私有项目加成员时，一并加入负责人本人所有的型号、立项定义 v1（及变体）受众，不是其所有人的不代加，成员行标“需要型号资料可见，请联系 某某”；这些受众记下来源，完全移出时撤回随本项目加上的，原本就有的或别处授予的保留；定义来源里的私有原件不自动扩大。
   - 余项：
     - **对 P56 的临时偏离**：交接期内被移出的人仍能看到整个项目，比 P56“项目讨论和其他内容立即不可见”宽。收窄为只保留本人未交接事项的可见与办理，随 W6 ⑤（D37 讨论上线）一起做，最迟在真人试点前补上；届时交接完成后自动完全移出（现在由负责人点“完成移出”）。
@@ -423,6 +455,7 @@ W3c · 想法已变但没有记录
   - 可用：个人聊天输入框有“附件”入口，可勾选本人当前可读的已登记原件（新接口 `GET /v1/personal/agent-input-sources`，跨品类、带所属品类），或选存放品类后上传新文件；拖入输入框即打开上传并预填，本人确认上传后走原有原件登记、扫描、去重路径，扫描解析完成后自动加入本次携带；已携带资料以小标签显示在输入框上方，可逐个移除；续问可再加附件，并沿用上一轮服务器已绑定的附件（每份重新核对）。品类小Pai 同样支持拖入和上传后自动携带。服务器按 run 上下文逐份核对（本人以人员身份、来源品类成员资格、小Pai 在该品类的读取授权、受众、精确版本、原件安全），运行记录 `versions.personal_sources` 记下每份来源的品类和数据类别；数据库守卫改为条件放行（迁移占位号 `s0_0860`，集成时按真实 head 重排）；权限收回后运行按既有规则隐藏、续问 403；M1 召回经 RLS 与依赖清单两层复核。历史栏改为随视口（1000px 断点）和整页/侧栏状态更新。
   - 集成注意：① `server/pdos_next/agent/kernel/bootstrap.py` 只改了 `binding_for` 个人入口路径（约 10 行），主工作区另一线程对该文件有未提交改动，落主线时会冲突，需手工合并；② `s0_0860` 的升级前置条件是三条函数（`kernel_read_set_visible`、`kernel_source_reference_gate`、`kernel_source_reference_clock`）与 s0_0855 head 逐字一致，若集成分支上别的迁移改过它们，须按真实 head 重新生成 `schema_s0_0860.py`（11-08 集成时核对：s0_0856–s0_0859 都没有重定义这三条函数，也没改它们依赖的 `direct_source_set_visible`、`scope_actor`、`scope_requester` 和所读表的策略，SQL 不变，只把 down 改为 `s0_0859`）；③ `security_runtime/parser-image.json` 指向本机重建的解析器镜像（只在本机有效），其他机器须用 `containers/evidence-parser/build.py` 重建。
   - 余项：两项待复现风险（新候选不替换已打开的编辑区、品类冷恢复时名称取 AI 原候选）未做，相关文件在主工作区另一线程中；`contracts/openapi.json` 未重导出新接口（同 M1，下次统一导出）；见 D274–D276。
+  - 11-08 第三轮集成时发现：`test_source_views` 一条旧测试仍断言 `/v1/personal/agent-input-sources` 为 404，在本分支上就失败，未修，见 W4 第三轮集成记录。
 - D43 UI 冻结候选检查：10-26 之后大批改动一直没跑过整链。要做：
   - 亮暗主题 × 多尺寸各跑一遍；
   - 补余验：新上传文件进 Run、品类候选保存、会话改名/置顶/归档、320px 宽度；
