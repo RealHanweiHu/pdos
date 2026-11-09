@@ -362,6 +362,7 @@ W3c · 想法已变但没有记录
 - D286 11-09 PG 全量中发现（`d6abcbf2` 上同样失败，未修）：`tests/change/manufacturing_transactions/test_graph.py::test_actual_tenant_shared_asset_fence_and_rejected_roles` 断言租户里只有两个产品的变更依赖时钟，实际多出一个。多半是夹具现在多建了一个产品，测试没跟上；未核实。
 - D287 11-09 PG 全量中发现（`d6abcbf2` 上同样失败，未修）：`tests/change/execution/test_partial_observation_review_chain.py` 在记录部分观察时被拒，`MISSING_REQUIRED_EVIDENCE`（“缺本次真实事实owner、来源或共同写入材料”），出在 `partial_observation_chain_helpers.py:173`。还没分清是产品缺陷还是夹具过时；单次运行约 25 分钟。
 - D288 11-09（未改）：`tests/ui/test_project_external_handoffs_projection_pg.py` 要显式设置 `PDOS_EXTERNAL_HANDOFF_LINK=1`（只走合成的隔离两地区链路），不设时断言失败而不是跳过，所以默认的整仓回归里总是失败。带开关单独跑通过。W10 D50 回归要么带上开关，要么把它改成跳过。
+- D377 11-09 第四轮集成 PG 全量中发现（未修，修法需要你定）：W4 修好 D260 后，`tools/local_environment.py create` 的 head→base→head 往返能走完，测试库最终是“降到 base 再升级”后的状态，和空库直接升级不同。`s0_0836` 降级时有意保留共享的 pgvector 扩展；再次升级时，`s0_0001` 的 `REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC,pdos_agent` 把扩展的 118 个函数的公共执行权一起收掉，`CREATE EXTENSION IF NOT EXISTS vector` 不会补回。于是应用角色调不了 `vector_norm`、`vector_dims` 等，企业检索向量化 4 个（`test_embedding_controls_pg`、`test_embedding_projection_pg` 两个、`test_embedding_query_pg`）和 M2a 记忆向量 2 个（`test_memory_vectors_pg`）PG 用例失败。核对：同一库上只把这 118 个函数的执行权恢复为默认，6 个全部通过；`4ba32f97` 的 `create` 仍停在 D260（回滚），库是空库首次升级的状态、函数权限为默认，4 个检索用例通过（M2a 的用例那时还没有）。生产和预览库是一次性顺序升级，不受影响；受影响的是 `create` 建的每个测试库，以及任何“降到 base 再升级”的环境。可选修法：① `s0_0836` 升级时给扩展函数补回执行权（改历史迁移）；② `s0_0001` 的整体收回排除扩展成员（改历史迁移，同 D260 第二处的做法）；③ 新增一条前向迁移，缺权限时补授；④ 只改 `create`（不治本）。改历史迁移按先例要你定。
 - 集成记录 11-08（第一轮）：本地集成分支 `claude/frosty-villani-38f085`，未推送，尚未落到 `pdos-next/design-v1.1`（主工作区另有未提交改动，等你定）。
   - 基点：`pdos-next/design-v1.1` 的 `38f5a024`。M1（`claude/m1-episodic-memory-324cdf`）11-08 已快进进主线，已在基点里，无需合并，迁移保持 `s0_0855_memory_episodes`。
   - 合并：D27 `refs/heads/claude/w4-d27-test-debt-6147cc`（`7cf4351d`，只有测试，无迁移），D214 `refs/heads/claude/gracious-hofstadter-311cb9`（`b1854243`）。
@@ -457,6 +458,39 @@ W3c · 想法已变但没有记录
   - D56：证据日志改名 `migration-roundtrip.txt`，链接已改。
   - 未修：检索 p95（`test_recovery_pg` 家族检索 3.9 秒）。测试库只有 77 MB，当时整机负载 27–32，另有 4 个会话的测试库在跑；按环境归因，阈值没动（性能验收按 P13 暂缓）；同一用例在负载较低时的 PG 全量里通过。另有 D286–D288 未修，见下。
   - 验证（[结果](../docs/reports/evidence/w4-defects-20261108/results.txt)）：无库全量 10784 通过、0 失败（`d6abcbf2` 为 10755 通过、2 失败，多 27 个 `citation_ids` 错误）；PG 全量（无库时报缺库或跳过的用例所在的 353 个文件，2222 个用例，三个隔离库分段并行，全部覆盖）：分段里 11 个失败、7 个错误，按最终代码逐个复跑，只剩 D286、D287（`d6abcbf2` 上同样失败）；D288 带开关通过；其余是分段跑完后才修的过时测试，或长批次里的偶发，单独复跑都通过。`d6abcbf2` 定向对比 24 个文件：40 失败、27 错误，正是本次修掉的各项。迁移：`s0_0854`↔`s0_0864` 两轮往返通过；`tools/local_environment.py create` 在两个新库上都通过 head→base→head 并完成 seed；ORM 与库比对 0 项。
+- 集成记录 11-09（第四轮）：集成分支 `claude/frosty-villani-38f085` 先快进到主线 `4ba32f97`，再合 6 个分支；未推送，`pdos-next/design-v1.1`、主工作区和预览库都没动，停在集成分支等落地确认。D47（`claude/elastic-noyce-fad368`）本轮不合。
+  - 合并（按此顺序）：W4 缺陷收尾 `refs/heads/claude/elated-shirley-4a1ed9`（`bb5f624e`）、M2a `refs/heads/claude/intelligent-banach-bd90dd`（`d2dd8e9a`）、W11 运维 `refs/heads/claude/charming-robinson-414f5d`（`8d8fd4c5`）、W6 ⑤ `refs/heads/claude/eloquent-mclean-240ee2`（`1ec546b8`）、D40 `refs/heads/claude/busy-kare-1f02fd`（`e4de441b`，无迁移）、D269/D44 `refs/heads/claude/amazing-driscoll-5714b9`（`25589b1b`，无迁移）。之后单独提交一次重新导出的 `openapi.json`。
+  - 迁移按真实 head 单调排号，现 head `s0_0869`，链条线性：
+    - W4 `s0_0862`–`s0_0864` 本来就接 `s0_0861`，不变；它改的两份历史迁移（`schema_s0_0800.py` 降级语句、`s0_0727` 指纹查询，指纹值不变）照原样带入；
+    - M2a `s0_0865`、`s0_0866` 编号不变，`s0_0865` 的 down 由 `s0_0861` 改为 `s0_0864`；
+    - W11 占位 `s0_0879_ops_health_counters` 改为 `s0_0867`（down `s0_0866`）；
+    - W6 ⑤ 占位 `s0_0873_handover_lane`、`s0_0874_project_discussions` 改为 `s0_0868`（down `s0_0867`）、`s0_0869`；前置核对的报错文字和降级保护的 “requires” 文字一起改；
+    - 文件名、revision、down_revision、`schema_s0_xxxx` 模块名和 import 一起改，SQL 都没动。主线落地记录里给 D47 预留的 `s0_0868`–`s0_0872` 按本轮安排让给 W6 ⑤，D47 合入时再按真实 head 排号。
+  - 核对：
+    - `s0_0868`（原 `s0_0873`）升级前按 md5 核对 7 个对象（`projects.category_scope` 策略、`work_receipt_project_visible`、`require_project_team_audience`、`project_audience_releasable`、`guard_project_member`、`release_project_member_upstream`、`source_object_audience`）。`s0_0862`–`s0_0867` 和 W4 改的 `s0_0727`、`schema_s0_0800.py` 都没碰这 7 个对象（`s0_0727` 里的 `category_scope` 是 `quality_event_failure_links` 的），所以核对原文与 md5 原样保留，没有放宽；往返里两次升级都通过了这项核对。
+    - W4 的 `s0_0862` 要求所有定义者函数归注册属主；M2a、W11 新建的定义者函数都在 `ordinary_owner()` 下创建，符合。
+  - D 编号：W6 ⑤ 分支登记的 D321–D331 与主线 `4ba32f97` 竞品场景评估的 D321–D328 撞号，只把 W6 ⑤ 自己的 12 行清单和 `result.md` 1 行改为 D366–D376，共享笔记同步；主线 D321–D328 各行原样。其余分支的 D284–D294、D295–D303、D336–D341、D346–D350、D356–D358 都不重复。
+  - 冲突都按各自原位保留：
+    - 本清单：主线落地记录与 W4 缺陷清理记录两段都留；
+    - 确认稿：M2a 的 P92–P94 之后接 W6 ⑤ 的 P98、P99；
+    - `worker.py`：W11 把工作流清单挪进 `registered_workflows()` 供发布前回放检查，M2a 在旧清单里加了 `MemoryEpisodeVectors`。保留 W11 的函数并把 `MemoryEpisodeVectors` 放进去（17 个类和顺序与原清单一致），保留 M2a 的向量派发；W11 测试里写死的工作流个数 16 随之改为 17；
+    - `openapi.json`：不手工拼，全部合完后用 `tools/export_contracts.py` 重新导出。
+  - 代码层面核对过：D269 在 `host.py` 调整停止信号检查的位置、在 `bootstrap.py` 登记提取读取的续接，与 M2a 在同两个文件里冻结本人记忆条目、给记忆检索接向量互不重叠；D40 与 W6 ⑤ 都改了 `app-shell.tsx`，自动合并，shell 与设置页前端测试通过。
+  - 合同：`openapi.json` 相对主线只增不删（266→292 个接口、136→151 个结构）：M2a 11 个记忆接口、W6 ⑤ 15 个讨论/评论/提及/通知/交接接口；`PolicyInput`（M2a）、`Preferences`（D40）各加两个字段，`AgreementRequest.data_categories` 加 `owner_session`（M2a P93）。`auxiliary-operations.json` 90 项无重复。合同校验通过（87 operations、92 events、67 acceptance）。
+  - 上一轮登记的分支自带问题已由 W4 修好：D42 `test_source_views`、D33 共用夹具两个、D56 证据日志（改名 `.txt` 入库）；`citation_ids` 27 个、`test_extracted_claim_pg` 8 个、CTX-04 两个也已修好。
+  - 验证（`tools/local_environment.py create` 建独立临时 `pdos_test`，显式 `TEST_DATABASE_URL`，未用 `.env`，未碰预览库；本机全程保持唤醒）：
+    - 前端：typecheck 通过，lint 0 错误（4 条警告是原有的），`.mjs` 1940 个、`.test.ts` 752 个全部通过。
+    - 合同校验通过。
+    - 无库全量：10808 通过、0 失败、111 跳过；1980 个 ERROR 全是缺库。
+    - 迁移：`create` 的 head→base→head 往返和 seed 在三个新库上都通过（本 worktree、并行副本、基点对照副本只用于下面的复核），D260 确已修好；`s0_0854`↔`s0_0869` 降、升、降、升通过，`s0_0868` 的 md5 前置核对两次升级都通过；模型与库 0 差异（D261 已修）。
+    - PG 全量，按 W4 的口径取“无库时报缺库或跳过的用例所在的文件”，共 363 个，分两段在两个隔离库上并行（第二段在同一提交的草稿区副本里跑）：
+      - 第一段 `tests/agent` 875 个：807 通过、61 跳过、7 失败。其中 6 个是新登记的 D377（测试库状态问题，见该条）；1 个是检索 p95（1.12 秒，负载高时偶发）。
+      - 第二段其余 1391 个：1382 通过、9 跳过、0 失败。
+      - D286、D287 单独跑，仍是原来那两个失败（多一个产品时钟；`MISSING_REQUIRED_EVIDENCE`），共 18 分钟。D288 带 `PDOS_EXTERNAL_HANDOFF_LINK=1` 通过。
+      - 跳过的是：Temporal 相关（本机没有 Temporal，未拉镜像）、绑定 53502 测试库的根级用例、浏览器种子，以及 AT-47 备份恢复演练（需显式开启和原生 Temporal，W11 已在干净环境留证据）。
+    - 新失败已按要求在 `4ba32f97` 的干净副本上复核归因（见 D377）；没有合并引起的失败。
+    - 三套测试库、检查点库和草稿区副本都已销毁。
+  - 落地：本轮停在集成分支，等你确认后再落到 `pdos-next/design-v1.1`。集成分支是 `4ba32f97` 的后代，可以快进。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
