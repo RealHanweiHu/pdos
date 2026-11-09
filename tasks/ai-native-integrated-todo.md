@@ -145,7 +145,7 @@ W3b · 资源、组合与试点准备
 - D83 ✅ 采纳→W7（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）共享设备和台架预约：项目内登记占用并提示冲突。后端已有 `test_resource_reservations`（UI 候选 §5.1、C7）。
 - D84 〔延后：P34 成员负载上线后〕（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）按人、设备、周的只读负载视图，以及优先级取舍记录（C7；对标飞书人力甘特、Motion）。
 - D85 ✅ 采纳→W6：带“在途纳管”标记，统计排除，定义 v1 标“未复核”，首批 3–5 个；附录 A 过渡入口文字待同步（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）在途项目经 G0 纳管，否则试点时现有项目进不来。先同步附录 A L1683 的文字（B10）。（11-02 补：原工程 `intake_organization` 在途项目资料整理未承接，并入本条，与 D200 一起定。见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D86 ✅ 采纳→W11，并入 D192，与 D214 一起做：邀请链接 72 小时单次有效，停用即吊销全部会话（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）邀请链接和一键停用，这是多人试点的硬前置（B2 F38②③）。
+- D86 ✅ 11-07 已实现（随 D214，[证据](../docs/reports/evidence/pdos-next-sign-in-20261107/result.md)：链接第二次使用、过期、被新链接取代均被拒，库约束有效期不超过 72 小时；停用立即吊销全部会话和未用链接）。采纳→W11，并入 D192，与 D214 一起做：邀请链接 72 小时单次有效，停用即吊销全部会话（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）邀请链接和一键停用，这是多人试点的硬前置（B2 F38②③）。
 - D87 ✅ 采纳→W11（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）试点的“步骤 × 人”编组表：先走查，凑不齐人就写兼岗记录（B3）。
 - D88 ✅ 采纳→W11：Temporal 官方镜像自托管、同实例分库，检查点 30 天；部署位置随 D210（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）生产形态的 Temporal 和常驻环境，试点前置。目前是 SQLite 回退（B15）。
 - D89 ✅ 采纳→W11（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）录入责任清单：列出系统依赖的约十条事实，写清谁录、何时录；找不到人录的，就不建那个页面（9a1ab768 T15）。
@@ -233,7 +233,7 @@ W3b · 早期想法（10-08 之前）：丢失或口径变窄，需要定补回�
   - 纪律：阈值先冻结，看到结果后不下调；分母为 0 记 N/A；主动时间要计入审核和纠错；
   - 原指标：兑现率；Issue 重开与复发；齐套与快照新鲜度；员工价值按岗位分场景；
   - 单日工作流真人走查（原 Q1）。
-- D192 ✅ 并入 D86 一起采纳（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）账户生命周期：只由管理员建号；不能提权，也不能停用自己；至少保留一个 Owner；重置密码后旧会话失效（08-20 账户合同）。
+- D192 ✅ 11-07 已实现（随 D214，[证据](../docs/reports/evidence/pdos-next-sign-in-20261107/result.md)：只由管理员建号；不能停用自己、不能更改自己的管理员身份，数据库限制性策略同样拒绝；两位管理员同时互相停用只成功一个，至少保留一位启用的管理员；重置密码后旧口令和全部会话失效。P78 的 Owner 按“启用的人类租户管理员”实现）。并入 D86 一起采纳（11-04，[P78](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p78)）账户生命周期：只由管理员建号；不能提权，也不能停用自己；至少保留一个 Owner；重置密码后旧会话失效（08-20 账户合同）。
 - D193 ✅ 补回→W11，具体年限写进 D217（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）数据保留与删除：分档保留期；删除前先做引用分析和预览；被引用的证据受保护；租户退出时提供导出包（09-10 §20）。
 - D194 ✅ 拆开：重复检测→W9；合并拆分〔延后：出现第一个需要合并或拆分的真实品类〕（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）品类合并、拆分与重复检测。品类是权限根，划错了目前没有修正路径（10-07 立项前审查 §3）。
 - D195 ✅ 采纳→W11，写进试点规程（11-04，[P83](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p83)）两项：试点失败按七类归因（模型误读、映射、资料矛盾、规则缺失、职责不清、连接器、界面难用）；加功能前先回答“给谁用、用在哪、少做了什么”（V2 设计包 04 §13）。
@@ -323,7 +323,17 @@ W3c · 想法已变但没有记录
 - D24 ✅ 11-04 `operations.json` 中 `provider.agreement.register`（POST …/provider-agreements）与 `my_work.query`（GET /v1/personal/attention）改为已实现并绑定实际接口，`tools/export_contracts.py` 支持 GET；api.py 三处写死的 `model_available: False` 删除（没有任何读取方）。 原记录：契约标记失真：`provider.agreement.register`、`my_work.query` 已实现，仍标为未实现；api.py 三处 `model_available` 写死为 False。
 - D25 ✅ 11-04 “要我决定”不再排除负责人本人评审（`domain/my_work/attention_decisions.py`）；试点停用后仍列出，但标为受阻（`NAMED_DECISION_REQUIRED`），与 G0 决定命令同一规则。新增 PG 用例 `test_pilot_g0.py::test_pilot_self_review_is_listed_under_decide_and_blocked_after_the_pilot_ends`。 原记录：本人自评的 G0 不进“要我决定”（`personal_attention_decisions.py:106` 只认 owner≠requester），按 P27 应放行。
 - D26 ✅ 11-04 新增 `domain/change/disciplines.py`：变更政策要求的专业里有没有签核角色的（客户、认证），导入政策和准备变更单时都返回 `CHANGE_DISCIPLINE_UNSUPPORTED`（422，“暂不支持……”）；专业角色清单补上后自动放行，根治仍随 D21-B2（P79）。 原记录：认证类、客户类专业变更会死锁，先返回明确的“暂不支持”；根治随 D21-B2。
-- D27 测试失败：HEAD 10 条回放/撤回失败（2 条 work_state 旧断言、8 条撤回 VERSION_CONFLICT）；S1 6 个摘要夹具失败；141 项测试替身层失败（capa、launch_plan、change 一带），重跑后定性。W1（D242）的受影响范围回归另有 48 个 PG 测试在不含修复的 HEAD 上同样失败，集中在 `test_computed_claim`、`test_m3_*`、`test_deterministic_proofs`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures.txt)），可能与上面几类重叠，重跑定性时一起核。D245 的受影响范围回归（11-04）又多出 37 个在 HEAD 上同样失败的测试，集中在 `test_evidence_commands_pg`、`test_private_analysis_pg`、`test_baseline_watermarks_pg`、`test_private_spec_compare_pg`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures-d245.txt)）；另有 `test_project_current_context_pg` 的 1 个用例单独重跑通过，疑似依赖执行顺序。（11-04 定性，W4 未修）无库全量 171 个失败在 W4 改动前后逐项相同，按原因分四类：① 测试替身过时约 120 个：`SimpleNamespace` 假会话、假对象跟不上代码接口（62 个 unhashable、51 个 `assert False`），集中在 `quality/capa_link_phases`（90）、`projects/test_launch_plan_preview`（22）、`change/test_change_capture_deadline`（12）；② 计算事实的夹具缺少确定性证明约 20 个（PG 侧另 15 个同类）；③ 假服务商 `ScriptedProvider.turn()` 不认 `prompt_identity`（2 个）；④ 需要数据库却没标记的 5 个。PG 侧（D242、D245 两份清单）另有：读取绑定被拒 27 个、6 个断言改收到 `VERSION_CONFLICT`，都是夹具早于更严的读取证明绑定；工具或技能摘要已变 9 个；零散 7 个（上下文窗口夹具过小、数据库函数文本漂移、测试库有超级用户拥有的函数等）。8 条撤回 VERSION_CONFLICT 随 P68（W8）修。修法是逐类更新夹具，建议单独做一次。
+- D27 ✅ 11-07 已清（只改测试和夹具，不改产品行为；本地提交、未推送，[前后对照](../docs/reports/evidence/d27-test-debt-20261107/README.md)）：
+  - 无库全量：HEAD 169 个失败 → 0（10654 通过）。原分四类的口径基本成立：① 过时替身 157 个（产品对象缺后来新增的 6 列 112、变更捕获要真实 `CoverageRead` 12、假运行缺 `project_id` 被计算证明吞成 `deterministic_proof_required` 21、其余各缺一个字段或查询分支 12）；② 即上面那 21 个，不是证明夹具缺失；③ `ScriptedProvider` 2 个（另需把工具面补回 P76 前的大小才能触发清理）；④ 缺数据库标记 5 个，照现有写法加 `skipif`。另有 5 处按现行行为改断言并注明依据：S2 分批接收（P13，10-17）3 处、品类列表 10-31 加的聚合字段、schema 冻结守卫登记 10-31 的 `model_configuration/dto.py`（钉精确摘要）。
+  - PG 清单：D242、D245、P76 第 4 项、D254/D255 四份去重 89 个，加 11-04 摘要类 14 个、10-31 报告的 8 条撤回所在两个文件、`test_project_current_context_pg` 整文件，共 115 个，HEAD 103 失败 4 错误 → 修复后 分三轮复跑后只剩 4 个（见下）；连同 S1 候选摘要、整次撤回和受共享夹具影响的整文件共 184 个，180 通过、4 失败，即下面已归因的 4 个。
+    - 读取绑定被拒 27 个、改收到 `VERSION_CONFLICT` 6 个、证据命令 9 个、对账 1 个和**那 8 条撤回**：夹具记录的工具定义摘要没跟上“披露按已加载技能和运行范围推导”，改用 `disclosure_digest`，追加加载技能时照网关做法记入披露链。8 条撤回的失败点在建 T0 写入的来源校验，撤回本身不查版本，**与 P68 无关**；P68（W8）仍未实施。
+    - 摘要类 7 条和 `test_activity` 3 条：D243（11-04）给 `advance()` 加了活动取消保护，测试直接调用时缺替身（那次会话这些用例因缺检查点环境变量没跑到）；照 D243 已改的两处写法补上。
+    - 零散：门函数比现行 head（s0_0854）定义；平台关联改用 G0 变体（P23）；开发预算夹具按 P67 输出预算和 64k 窗口；会话历史无权限时为 403（10-22）；EXPLAIN 渲染展开参数；`work_state` 冻结后回放基准改在 attach 之后；剧本宿主置空 `model_step`（10-31 起图优先走网关）；知识检索语句数为 3 条批量读取加每事务一次 `SET LOCAL jit=off`；整次撤回夹具的触发方式与运行一致。
+    - 环境：以前的运行器没给检查点库地址和 Temporal 本地程序，HEAD 上 11 条因此直接报错；补齐后 4 条通过，另 7 条就是上面的 D243 替身问题。S1 的 6 条候选摘要在 HEAD 上已通过。`test_project_current_context_pg` 整文件按顺序跑全过，未复现顺序依赖。
+  - 剩余 4 个，均已归因：D258 迁移缺陷 1 个、D259 企业检索缺陷 2 个（下两条）；`test_recovery_pg` 检索 p95 1.47 秒超过 1 秒 1 个，两种核对模式在 1 秒内、语句数恒定，整机负载 13–15、测试库 1.1 GB，按环境性能归因，未改阈值（性能验收按 P13 暂缓）。
+  - 合并提示：主工作区未提交的改动涉及 agent kernel 与 `test_graph.py` 等 4 个测试，本次未动这 4 个；本次改了 39 个测试文件，与主工作区可能重叠的只有本清单。新编号从 D258 起，主工作区清单已有 D253，合并时核对编号。
+  - 11-08 已合并进本地集成分支 `claude/frosty-villani-38f085`（未推送，见本组末尾的集成记录），D258、D259 保持原号。补记：无库全量的 ERROR 不全是缺库：`tests/agent/kernel/test_registered_snapshot_reads.py` 的 27 个用例，夹具把 `RunScope.citation_ids` 传给 `AgentRun`，以 `TypeError` 报错，`d730291d` 的干净副本上同样如此；D27 当时把它们算进了 1882 个缺库 ERROR。未修。
+  - 原记录：测试失败：HEAD 10 条回放/撤回失败（2 条 work_state 旧断言、8 条撤回 VERSION_CONFLICT）；S1 6 个摘要夹具失败；141 项测试替身层失败（capa、launch_plan、change 一带），重跑后定性。W1（D242）的受影响范围回归另有 48 个 PG 测试在不含修复的 HEAD 上同样失败，集中在 `test_computed_claim`、`test_m3_*`、`test_deterministic_proofs`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures.txt)），可能与上面几类重叠，重跑定性时一起核。D245 的受影响范围回归（11-04）又多出 37 个在 HEAD 上同样失败的测试，集中在 `test_evidence_commands_pg`、`test_private_analysis_pg`、`test_baseline_watermarks_pg`、`test_private_spec_compare_pg`（[清单](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-preexisting-failures-d245.txt)）；另有 `test_project_current_context_pg` 的 1 个用例单独重跑通过，疑似依赖执行顺序。（11-04 定性，W4 未修）无库全量 171 个失败在 W4 改动前后逐项相同，按原因分四类：① 测试替身过时约 120 个：`SimpleNamespace` 假会话、假对象跟不上代码接口（62 个 unhashable、51 个 `assert False`），集中在 `quality/capa_link_phases`（90）、`projects/test_launch_plan_preview`（22）、`change/test_change_capture_deadline`（12）；② 计算事实的夹具缺少确定性证明约 20 个（PG 侧另 15 个同类）；③ 假服务商 `ScriptedProvider.turn()` 不认 `prompt_identity`（2 个）；④ 需要数据库却没标记的 5 个。PG 侧（D242、D245 两份清单）另有：读取绑定被拒 27 个、6 个断言改收到 `VERSION_CONFLICT`，都是夹具早于更严的读取证明绑定；工具或技能摘要已变 9 个；零散 7 个（上下文窗口夹具过小、数据库函数文本漂移、测试库有超级用户拥有的函数等）。8 条撤回 VERSION_CONFLICT 随 P68（W8）修。修法是逐类更新夹具，建议单独做一次。
 - D28 ✅ 11-04 28 个测试子目录补 `__init__.py`，14 处同目录裸导入改为相对导入；`tests/conftest.py` 忽略 iCloud 编号副本；新增 `tests/test_layout.py` 检查两者；`PENDING_LIMIT` 131→116。全量收集与改动前逐项一致，只多出新增用例。 原记录：测试卫生：28 个 tests 子目录缺 `__init__.py`，加一条 collect 检查；pytest 排除 iCloud 副本；`PENDING_LIMIT` 从 131 收到 116。
 - D29 ✅ 11-04 两项（`preload_when` 归 W8，由 P76 第 4 项 (c) 落实；11-04 已改为服务器判定的条件，已本地提交、未推送，见 D247）：MCP 页文案按 P26 改为“每次调用的服务商与资料类别记入回执；已登记有效协议的按协议限制”；技能包政策漂移检查：“不授权治理操作、不执行 T2”的检查从 6 个项目技能包扩到全部 18 个（各操作档位与注册表一致的检查原已存在）。10-22 原卡片的具体内容没找到，按不可协商项 1 落实。 原记录：三件小事：`mcp-management.tsx:134` 的旧口径文案按 P26 核对；技能包与政策的漂移检查（10-22 的卡片一直没启动）；18 个技能包写了 `preload_when` 但没有任何代码读取，改成服务器可判定的条件。W1 实测：每个品类运行都由服务端预载 `proposal_drafting`（约 3.8k token），与问题内容无关。
 - D53 ✅ 11-04 立项提案页的“新建提案”改为弹窗：与小Pai一起起草，或手动创建（标题、来源、简述；服务器确认预览后本人确认，人工办理 `proposal.create`），并说明小Pai不可用时可手动创建。本地开发环境实测创建成功并进入新提案页。 原记录：停用 LLM 时仍能手动建提案，并显示失败说明（拍板表 §5.3 F06、AT-45）。UI 重建后没再看到这个入口。
@@ -331,6 +341,86 @@ W3c · 想法已变但没有记录
 - D245 ✅ 11-04 已修并本地提交（未推送）：新增 `agent/kernel/tool_arguments.py`，模型给的工具参数校验失败时退回 `VALIDATION_FAILED`（422，列出字段路径和错误类型；校验说明不含提交内容时一并给出），模型可以改参数重试，不再整轮崩溃。共 21 处首次校验改用它，覆盖主循环读取、计算、比较、会话历史、企业检索和抽取、研究、比较子任务；`m3_object_reads` 原有的同类写法并入。已有校验的入口、续读恢复和对已校验参数的二次核对不改。回归：`test_tool_arguments.py` 的三个 W1 崩溃点用例在不含修复的代码上以原 `ValidationError` 失败、修复后通过；受影响的 122 个测试文件 1328 通过，失败项与 HEAD 一致（31 个在 D242 清单内、37 个在 HEAD 上同样失败，见 D27），另有 7 处原断言 `ValidationError` 的测试按新行为改为断言工具错误。11-06 真实回归：参数校验崩溃 0（W1 4 个运行），参数错误都退回模型；但有两个工具下发时没有参数定义，模型改不对，见 D255。 原记录：模型参数通过了工具定义的格式检查，但处理函数的 pydantic 校验更严时，`ValidationError` 不会退回模型，而是让整轮 `INTERNAL_ERROR`。三处直接 `model_validate`：`agent/kernel/extract_service.py:125`、`agent/kernel/platform_reads.py:26`、`agent/enterprise_search/assistant_adapter.py:216`。照 `host.read_result`（`host.py:310-313`）的做法转成 `VALIDATION_FAILED`，再查其他处理函数有没有同样的写法。W1 中 4 个运行因此失败。
 - D250 ✅ 11-04 合同目录对齐（W3 交接：P43、P51、P71、P75 第 8 项）：P43 的两条阶段命令早已登记在辅助操作目录，90≠86 已不复现；AT-52、AT-57 按附录 B 同步，`tools/validate_contracts.py` 增加附录 B 与 `acceptance.json` 逐字比对；钉钉 12 个接口登记为 6 个辅助操作和 1 个入站入口，项目集两类写入登记为辅助操作；校验器检查登记的接口都存在，钉钉与项目集没有未登记的写接口（改坏任一条时检查失败，有用例）。v1.1 附录 A/B 正文待集中同步。
 - D251 ✅ 11-04 P70：已登记的有效协议内提示缓存缺省允许，只有明确关闭才关（`agent/kernel/policy.py`）；登记页复选框缺省勾选，改为“允许服务商提示缓存”，取消勾选写入回执。字段可空、空即未声明，不需要迁移。
+- D258 迁移缺陷（11-07 D27 发现，未修）：`s0_0776` 新建的 SECURITY DEFINER 函数 `change_receipt_key_bound(uuid,uuid,uuid)` 没有转给 `pdos_next_owner`，属主留在执行迁移的账号上（测试库里是超级用户 `postgres`）。`s0_0720` 只把当时已有的函数一次性转给属主，之后新建的定义者函数要自己 `ALTER FUNCTION … OWNER TO pdos_next_owner`（如 `s0_0728`、`s0_0771`）或在 `SET LOCAL ROLE` 下创建。后果：该函数以迁移账号的权限执行，绕过 RLS，只靠函数体自己的谓词限范围；部署时迁移账号若是 RDS 管理员也一样。`test_review_fixes.py::test_actual_owner_and_definers_are_non_superuser` 因此失败（public 下唯一一个超级用户属主的定义者函数）。改法：新迁移 `ALTER FUNCTION public.change_receipt_key_bound(uuid,uuid,uuid) OWNER TO pdos_next_owner`，并加一条迁移检查：head 上不得有属主不在登记角色内的定义者函数。
+- D259 企业检索缺陷（11-07 D27 发现，未修）：以客户上传原件为依据的知识条目在检索里永远拿不到，覆盖状态停在 partial（“部分当前可读来源尚未完成索引或当前扫描复核”）。原因：`agent/enterprise_search/indexing.py` 的 `project` 用 `select_sources`→`catalog(["knowledge"])` 写投影，`SearchSource.original_ids` 只含条目自身的原件（为 `[]`），不含 `source_refs` 依据里的原件；`sources.py` 的 `dependency_originals` 只在缓存为 NULL 时才回退实时推导，于是依据原件不进入 `safe_originals` 的核对集合，`query.py` 把命中的条目判为不安全剔除。实测：同一原件用本人会话直接调 `safe_originals` 是安全的（扫描绑定一致、闸门放行），投影里却是 `[]`。影响 `test_knowledge_retrieval_authority_pg.py::test_knowledge_original_scan_proof_precedes_http_metadata` 和 `test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs`。改法二选一：投影按 `retrieval_catalog` 写入依据原件；或 `dependency_originals` 对知识条目始终补算依据原件（缓存只扩大核对范围）。
+- D260 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D258，11-08 集成时改号）`tools/local_environment.py create` 在 d730291d 上失败：迁移往返降到 base 时，`s0_0784_release_exceptions.downgrade` 报“Release exception requires its exact reviewed confirmation predecessor”。降级事务整体回滚，库停在 head 可继续用，但 `seed()` 不会执行。要查是哪一步之后的降级没有把函数恢复到 0784 审核过的原文。
+- D261 （11-07 D214 会话发现，与登录改动无关；D214 分支原记为 D259，11-08 集成时改号）`test_migration_matches_orm_and_test_guard` 在基线就失败：模型与库有 7 项漂移，`ix_dingtalk_summary_deliveries_tenant_id` 只在模型里，6 个 `ix_enterprise_embedding_hnsw_*` 只在库里。要么补迁移，要么在模型或比较规则里登记。
+- D262 11-08 D33 回归中发现：`test_material_proofs_pg`（19 个）和 `test_evidence_guards_pg`（4 个）共 23 个 PG 用例在基点 `d730291d` 上同样失败，错误逐条相同，D27 的清单和修复都没覆盖这两个文件（[对照记录](../docs/reports/evidence/w6-d33-project-team-20261107/result.md#受影响测试)）。其中 20 个失败在 AI 写入预备时报“实际登记工具或技能允许操作已变化”，与 D27 修好的整次撤回、证据命令同类，多半是夹具没跟上 P76 第 4 项的工具下发收窄；另 3 个断言期望 `CONFIRMATION_REQUIRED` 或 `FORBIDDEN_SCOPE`，实得 `VERSION_CONFLICT`。
+  - 11-08 集成核对：这 23 个与 D27 已归因的 4 个（D258、D259 两个、检索 p95）没有重复。集成分支带上 D27 的夹具修复后，`test_evidence_guards_pg` 的 4 个通过；还剩 `test_material_proofs_pg` 19 个（16 个“实际登记工具或技能允许操作已变化”，3 个得到 `VERSION_CONFLICT`），未修。
+- 集成记录 11-08（第一轮）：本地集成分支 `claude/frosty-villani-38f085`，未推送，尚未落到 `pdos-next/design-v1.1`（主工作区另有未提交改动，等你定）。
+  - 基点：`pdos-next/design-v1.1` 的 `38f5a024`。M1（`claude/m1-episodic-memory-324cdf`）11-08 已快进进主线，已在基点里，无需合并，迁移保持 `s0_0855_memory_episodes`。
+  - 合并：D27 `refs/heads/claude/w4-d27-test-debt-6147cc`（`7cf4351d`，只有测试，无迁移），D214 `refs/heads/claude/gracious-hofstadter-311cb9`（`b1854243`）。
+  - 迁移改号：D214 的 `s0_0855_human_sign_in` 改为 `s0_0856`（down_revision `s0_0855`），快照原样移为 `schema_s0_0856.py`，只改了降级保护的报错文字；与 M1 的迁移没有共用的数据库对象。现 head `s0_0856`，链条线性。
+  - D 编号：D27 的 D258、D259 保持；D214 的 D258、D259 改为 D260、D261，证据文件同步改。
+  - 冲突都保留两边：生命周期目录（M1 记忆表 + D214 账户表）、`auxiliary-operations.json`（68 + `memory.search` + 8 个账户操作 = 77）、本清单。
+  - 验证（独立带标记的 `pdos_test`，未用 `.env`）：
+    - 合同校验通过；
+    - 空库升到 `s0_0856` 通过，降到 base 在 `s0_0784` 失败（D260）；`s0_0854`↔`s0_0856` 降、升、降、升通过，也补上了 M1 末版迁移没做过的干净往返；
+    - 无库全量 10656 通过、0 失败。1916 个 ERROR = D27 记的 1882 个 + M1/D214 新增 PG 用例 34 个；其中 27 个不是缺库，见 D27 补记；
+    - PG（`tests/core`、`tests/agent/memory`、`tests/originals` 和两个目录类测试）637 通过、4 失败，都是原有问题：D258、D261（还是那 7 项）、`test_category_source_consumers`（`d730291d` 上同样失败）、`test_business_audience_summary`（M1 报告里基点同样失败）；
+    - D27 的 PG 清单复跑 199 个，195 通过、4 失败，就是 D27 已归因的那 4 个（D258、D259 两个、检索 p95 1.07 秒）；
+    - 前端 typecheck 通过，lint 0 错误（4 条警告是原有的），1899 个 `.mjs` 测试全部通过。
+  - 发现：`contracts/openapi.json` 没有 M1 的 10 个记忆接口，M1 没重新导出。`tools/export_contracts.py` 能补上，但会重排上万行，没有混进合并提交。
+  - 第二轮（已于 11-08 完成，见下一条）：等协调会话通知再合并 D58/D215/D248（`claude/goofy-lamarr-0cd875`）和 D33（`claude/intelligent-herschel-74d5dc`），迁移按真实 head 从 `s0_0857` 起改号；D33 里两处没写编号的既有问题改为指向 D260、D261。
+- 集成记录 11-08（第二轮）：同一集成分支，未推送，`pdos-next/design-v1.1` 和主工作区都没动。
+  - 合并：D58/D215/D248 `refs/heads/claude/goofy-lamarr-0cd875`（`6887053e`）、D33 `refs/heads/claude/intelligent-herschel-74d5dc`（`40d23ddd`）、D52 `refs/heads/claude/interesting-haslett-179813`（`fe3d640e`，只改前端，无迁移）。之后单独提交一次重新导出的 `openapi.json`。
+  - 迁移改号：D58 `s0_0855_checkpoint_retention` 改为 `s0_0857`，D215 `s0_0856_original_rescan` 改为 `s0_0858`，D33 `s0_0855_project_team` 改为 `s0_0859`；三份快照都原样改名（内容里不带编号）。现 head `s0_0859`，链条线性。D33 会重建 `object_audiences` 上的 `m3_share_delete_only`，`s0_0736` 之后没有别的迁移动过这条策略，所以降级能恢复到正确的原文。
+  - D 编号：D262（D33）、D271（D52）保持原号，没有冲突；D33 条目里两处没写编号的既有问题改为指向 D260、D261。
+  - 冲突都保留两边：
+    - `worker.py`：记忆索引和每租户维护两个工作流都登记，三类发现各自执行；
+    - 生命周期目录：加上检查点库的条目；
+    - `auxiliary-operations.json`：77 + 4 = 81 项；
+    - `validate_contracts.py`：登记区加 `/v1/role-catalog`；
+    - Web 总路由：M1 的 memory 与 D33 的 roleCatalog、projectTeam 一起放行；
+    - 本清单：D214 取新条目，D215 取 goofy 的新条目。
+  - 代码层面核对过：`context_budget.py` 和 `host.py` 两边改动不重叠，M1 的记忆背景区裁剪也经过 D248 带下限的 `measure()`；D52 的 ⌘K 面板不枚举项目标签页，不受 D33 新增“团队”页影响。
+  - `openapi.json` 重新导出：只多了 M1 的 10 个记忆接口、3 个输入结构，加上 M1 的 `memory_off` 和工作状态 `text` 字段，没有删除任何接口。
+  - 验证（新建独立带标记的 `pdos_test`，未用 `.env`）：
+    - 合同校验通过。
+    - 迁移：空库升到 `s0_0859` 通过，降到 base 仍在 `s0_0784` 失败（D260）；`s0_0854`↔`s0_0859` 降、升、降、升通过。
+    - 无库全量：10707 通过、0 失败。1931 个 ERROR = 1904 个缺库 + 27 个 `citation_ids` 夹具问题（见 D27 补记）。
+    - PG 第一批：D33 的受影响范围，加上 core、memory、originals、workflows，以及 goofy 和 M1 的 PG 用例，共 2420 个，2392 通过、27 失败、1 跳过。失败的都是原有问题，或已复跑通过：
+      - D262 的 `test_material_proofs_pg` 19 个；
+      - goofy 自报的 CTX-04 F48000/F64000 2 个（“模型调用未形成可用结果”）；
+      - D258、D261（还是那 7 项）、`test_category_source_consumers`、`test_business_audience_summary` 各 1 个；
+      - `test_domain_candidates_pg` 2 个：本机在第一批刚启动时休眠（02:17–11:18），这两个正跑在休眠期间，报会话失效和行级安全拒绝；单独复跑全部通过。
+    - PG 第二批：D27 清单的其余部分 143 个，140 通过；3 个失败就是 D27 已归因的（D259 两个、检索 p95 1.55 秒）。
+    - D33 自报的 70 个失败，在集成分支上只剩上面那 19 个：属于 D27 修复前清单的 44 个、D33 自己改好的 3 个、`test_evidence_guards_pg` 的 4 个都通过了。goofy 自报的 5 个里，`test_context_x3_full_disclosure` 2 个和 `test_development_budget_pg` 1 个已被 D27 修好，只剩 CTX-04 两个。
+    - 前端：typecheck 通过，lint 0 错误（4 条警告是原有的），`.mjs` 1910 个、`.test.ts` 752 个全部通过。
+  - 发现，未修：
+    - `tests/core/test_current_read_profiler.py` 等三处把 `tools/` 插到 `sys.path` 最前面。如果先收集它们、后收集 `tests/builds`，`tests.conftest` 会解析成 `tools/tests/conftest.py`，导致收集报错。按默认顺序跑不会出现。
+    - Web 的 54 个 `.test.ts` 用了不带扩展名的 import，`package.json` 里没有测试脚本，直接 `node --test` 加载不了。本次在草稿区用一个解析钩子跑通，仓库未改。
+- 集成记录 11-08（第三轮）：同一集成分支，未推送，`pdos-next/design-v1.1` 和主工作区都没动。
+  - 合并：D257/D256/D268 `refs/heads/claude/silly-easley-3b11d8`（`c2a59149`，无迁移、无合同改动）、D42/D55 `refs/heads/claude/charming-almeida-2d1941`（`254d3104`）、D56 `refs/heads/claude/xenodochial-tharp-12e9c0`（`8a5225c2`）。之后单独提交一次重新导出的 `openapi.json`，再单独提交一处合并引起的测试修正（见验证）。
+  - 迁移：编号都不变，只改 down：`s0_0860_personal_run_sources` 由 `s0_0855` 改为 `s0_0859`，`s0_0861_export_audits` 由 `s0_0855` 改为 `s0_0860`。现 head `s0_0861`，链条线性。
+  - 逐个核对了 s0_0856–s0_0859（`s0_0861` 还加上 `s0_0860`）：
+    - `s0_0860` 改的三条函数（`kernel_read_set_visible`、`kernel_source_reference_gate`、`kernel_source_reference_clock`）没有被中间的迁移重定义；它们用到的 `direct_source_set_visible`、`scope_actor`、`scope_requester`，以及 `agent_runs`、`grants`、`artifact_versions`、`lifecycle_objects`、`categories`、`products` 的策略和授权也都没动。s0_0856 只给 `principals` 加了“不能停用自己”的更新限制策略，不影响门函数的读取。所以 `schema_s0_0860.py` 的 SQL 原样保留，只改了说明文字；往返中升级前后的 `require_functions` 核对都通过。
+    - `s0_0861` 用到的 `category_access`、`kernel_append_only`、`scope_actor`、`scope_requester` 没有被重定义。s0_0856 给 `tenant_administrators` 加的是管理员读取的放行策略、插入和更新的限制策略，审计读策略里“本人管理员行”的判断不受影响。生命周期目录里 D58 的检查点库条目和 D56 的 `export_audits` 各自保留，`export_audits` 已登记为不消费来源的表。
+  - 代码层面核对过：D257 的并发提取子任务记录上下文准入时照样锁运行行，D248 只在同一条记录里多写一个下限，互不影响；D257/D268 与 M1 的 kernel 改动不在同一文件。D56 的导出直接调用页面读取函数，D33 没改这些函数。
+  - 冲突都保留两边：
+    - 本清单：D52 取集成分支的 ✅ 新条目，D55 取 D42 分支的 ✅ 新条目，D271 和 D274–D276 都保留；
+    - `auxiliary-operations.json`：81 + 1 = 82 项，入站入口 5 个不变；
+    - `core/models.py`：项目团队和导出两个模型模块都导入；
+    - 生命周期目录：D214、D58 的条目之后接 `export_audits`；
+    - Web 总路由：两处守卫同时放行 `roleCatalog`/`projectTeam` 和 `personalExport`/`exportView`，合并后的行去掉对方新增的判断，就等于各自分支的原行。
+  - D 编号：D268、D269、D274–D276、D278–D283 都保持原号，没有重复。D263–D267、D270、D272、D273、D277 不在本分支，也不在主工作区清单或任何本地 `claude/*` 分支里，可能是协调会话预留的。
+  - 合同：三份合同里设计稿 v1.1 的 sha256 与文件一致（只有 D56 改过 v1.1）。`openapi.json` 重新导出后只多了 D42 的 `GET /v1/personal/agent-input-sources`；D56 的 4 个导出接口按路由注册顺序挪了位置，内容不变。
+  - 验证（新建独立带标记的 `pdos_test` 和检查点库，未用 `.env`；本机全程保持唤醒）：
+    - 合同校验通过（87 operations、92 events、67 acceptance）。
+    - 迁移：空库升到 `s0_0861` 通过，降到 base 仍在 `s0_0784` 失败（D260）；`s0_0854`↔`s0_0861` 降、升、降、升通过。
+    - 无库全量：10753 通过、1 失败（D42 的过时测试，见下）。1958 个 ERROR 都是缺库或 `citation_ids` 夹具问题。
+    - PG 第一批（core、originals、projects、preproject、workflows、memory 等）2393 个：2369 通过、23 失败、1 跳过，失败都是原有的：D262 的 19 个、D258、D261（还是那 7 项，`export_audits` 与模型一致）、`test_category_source_consumers`、`test_business_audience_summary`。
+    - PG 第二批（整个 kernel 和 enterprise_search、exports、my_work，加 D27 清单里的其余文件）3849 个：3741 通过、17 失败、27 错误、64 跳过。逐个归因：
+      - 原有：CTX-04 两个（goofy 自报）；D259 两个和检索 p95（1.0009 秒）一个（D27 已归因）；`test_extracted_claim_pg` 8 个（“所选技能与实际模型尚无当前资格”，用基点 `38f5a024` 的代码在同一库上同样失败）；27 个 `citation_ids` 错误（D27 补记）。
+      - 合并引起，已修：`test_private_analysis_pg::test_private_three_way_recovery_keeps_actual_item_versions_and_old_result`。D27 把“当前门函数”的期望改成 s0_0854 的定义，D42 的 s0_0860 又改了这条函数；两个分支各自都通过，合在一起才失败。已改为对照 `schema_s0_0860` 的定义（单独提交，只改测试），整文件 10 个通过。
+      - 分支自带，未修：D42 的 `test_source_views` 一个；D33 的 `test_session_presentation_pg`、`test_project_discussion_history_pg` 各一个（见下）。
+    - 指定用例全部通过、没有跳过：D42 的 11 个正反例、D56 的 6 个 PG 用例和 4 个工作簿用例、D257/D268 的 9 个 PG 用例、`test_durable_evidence` 19 个（含 DOCX 和照片上传）。
+    - 前端：typecheck 通过，lint 0 错误（4 条警告是原有的），`.mjs` 1916 个、`.test.ts` 752 个全部通过。
+  - 发现，未修：
+    - D42：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot` 在 D42 分支上就失败，基点通过。D42 在同一个路由里新增了 `/v1/personal/agent-input-sources`，这条旧测试仍断言该路径返回 404，又没替换个人读取函数，于是用桩会话调用了真实函数，得到 500。产品行为符合 P91，是测试过时；D42 没跑无库全量，所以没发现。改法：给个人读取打桩并断言 200，或去掉这条断言。
+    - D33：`test_session_presentation_pg` 和 `test_project_discussion_history_pg` 共用的 `_revoke_peer_project_fixture` 直接删除同事的项目受众行，而同事仍是当前成员，被 D33 新加的 `require_project_team_audience` 拒绝（“Project audience differs from its current members”）。产品代码里只有 D33 的团队服务会删项目受众，所以只是夹具过时；D33 已用“由负责人经团队命令移出成员”改过另外 3 个同类用例，这两个文件不在它的回归范围里。
+    - D56：证据 README 链接的 `migration-roundtrip.log` 被 `.gitignore` 的 `*.log` 排除，只在 D56 自己的 worktree 里有，提交里没有；那个 worktree 清理后这份证据就丢了。可以改名为 `.txt` 后补提交。
+  - 落地准备（只读，详见交接笔记）：主工作区 19 个未提交文件里有 6 个与集成分支重叠，三方试算 5 个自动合并，`web/src/features/shell/app-shell.tsx` 有 1 处冲突，是相邻两行各改一行，按行取两边即可，不涉及取舍。把集成分支和主工作区改动合在一起的完整树在草稿区试过：前端 typecheck 通过，后端无库 3832 通过（唯一失败就是上面 D42 那条），主工作区改过的 PG 测试与相关用例 54 个全部通过。主工作区要先提交自己的改动，集成分支才能合进去。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
@@ -338,26 +428,46 @@ W3c · 想法已变但没有记录
 - D32 〔你〕work_management 的 T0 资格要 10–20 个多品类计划给你审阅。仓库只有两个品类种子（auto-tire-inflator、bicycle-pump），帐篷泵和气垫泵需要另建品类。
 
 **W6 P34→P33 实施（设计已定未实现；按 ①–⑧ 的顺序；前置 D17、D18）**
-- D33 ① 项目成员、租户角色目录和迁移（P34-1，是 P33 的前置；项目目前只有负责人字段）。
+- D33 ✅ 11-07 实施、11-08 验证完成 ① 项目成员、租户角色目录和迁移（P34-1，是 P33 的前置），本地提交、未推送，[证据](../docs/reports/evidence/w6-d33-project-team-20261107/result.md)。迁移为 `s0_0859`（down `s0_0858`；分支上为 `s0_0855` 接 `s0_0854`，11-08 集成时排在 M1、D214、D58、D215 之后改号）。
+  - 可用能力：项目成员（具名人员、多角色、每个角色最多一名主责人、加入与离开时间、添加人与移出人）；租户级、版本化的角色目录，未发布时用设计稿 §4.1 的 12 个角色作可编辑初始值，租户管理员发布新版本，被担任的角色只能停用不能删（P60 第 4 项）；G0 物化时同一事务把加入项目受众的人登记为成员，预览和回执列出（P55）；负责人整张变更一次确认（`project.member.set`，T1）；成员须有当前品类授权，负责人不能代授，页面显示“需要品类授权”；小Pai 不能成为成员，AI 身份对成员表零权限；私有项目中“受众 = 当前成员”由数据库在提交时核对；品类共享项目成员不改变可见范围；项目“更多 → 团队”页面亮暗两种主题已在浏览器验收。
+  - 验证（11-08）：受影响范围回归 1796 个用例里 70 个失败。其中 3 个由 D33 引起：测试直接删项目受众行，违反“私有项目受众 = 当前成员”；已改为由负责人经团队命令移出成员，其中履约用例先验收已提交的任务再移出（按拍板 ①）；同时修正待交接计数，已验收兑现的承诺不再算未交接。其余 67 个在基点同样失败：44 个在 D27 的修复前清单里，23 个在基点副本上逐条复现，登记为 D262。改动后重跑团队、三个受影响文件、表目录和命令目录共 100 个，全部通过。
+    - 11-08 第三轮集成时发现：`test_session_presentation_pg`、`test_project_discussion_history_pg` 的共用夹具也直接删项目受众行，同样被拒，未修，见 W4 第三轮集成记录。
+  - 11-07 拍板（用户，经设计会话转达）：① 移出成员时，成员资格和角色立即结束；此人有未交接事项的，项目受众保留到交接完成，页面标“待交接”，交接完成后由负责人“完成移出”；没有的立即移出。② 私有项目加成员时，一并加入负责人本人所有的型号、立项定义 v1（及变体）受众，不是其所有人的不代加，成员行标“需要型号资料可见，请联系 某某”；这些受众记下来源，完全移出时撤回随本项目加上的，原本就有的或别处授予的保留；定义来源里的私有原件不自动扩大。
+  - 余项：
+    - **对 P56 的临时偏离**：交接期内被移出的人仍能看到整个项目，比 P56“项目讨论和其他内容立即不可见”宽。收窄为只保留本人未交接事项的可见与办理，随 W6 ⑤（D37 讨论上线）一起做，最迟在真人试点前补上；届时交接完成后自动完全移出（现在由负责人点“完成移出”）。
+    - 小Pai 起草团队名单：服务器侧已就绪（AI 身份不能增删成员、智能体不能成为成员、整张名单一次确认）；起草工具和提示词归 W8，本次未动 agent kernel。
+    - 设计稿 §4.4 离开交接的起草与待接事项卡片未做。
+    - 角色目录管理界面未做，目前只有接口（`/v1/role-catalog`）；正式角色内容待 D66。
+    - “需要型号资料可见”只检查型号、定义、变体三层受众，不检查定义来源里的私有原件。
+    - 已有问题（与本项无关）：新建测试库的升-降-升往返在 `s0_0784` 降级时失败（D260）；ORM 与迁移比对在基点已差 7 项（钉钉摘要索引、6 个向量索引，D261）；回归中 67 个既有失败见 D27、D262。
 - D34 ② NPI 新品框架的配置、版本和发布（`work.framework.publish`），加确定性框架检查器，并停用混合三代模板目录（templates.py 中新品 81 个任务 + 15 个门禁项）。框架 v1 和角色目录的内容见 D66。
 - D35 ③ G0 后自动起草计划；基线前的 T0 情形（adopt/apply/bind/assign）；`work.task.revise`；整次撤回时逐条列出未撤回项；修订 S5 合同和 work_management 技能包的来源规则；8 个新操作并入 operations.json（现为 87 项）。
 - D36 ④ 阶段节点服务器接口和日历口径（同时补上 UI 缺的阶段模板、健康度、冻结点合同）；规格冻结 `product.definition.publish`（P23 派生入口的前置），派生草稿收进提案（随 D20-A1）。
 - D37 ⑤ 讨论与评论、提及解析、通知降噪；⑥ 共享串里的 @小Pai（受众核对与 P31 共用）和小Pai 主动提及；⑦ 单项目驾驶舱和管理者驾驶舱的读模型、状态更新周期；⑧ 资格评测集、按运行指标自动降级、判据登记进 acceptance。
+  - ⑤ 同时收掉 D33 余项“对 P56 的临时偏离”：被移出的人交接期只保留本人未交接事项的可见与办理，交接完成后自动完全移出；最迟在真人试点前。
 
 **W7 UI 对齐余项（实现缺口；依据 10-26 对照报告，涉及的文件多数自 10-25 起没改过）**
 - D38 我的工作：双向承诺（我承诺的 / 别人承诺给我的）；“继续提案”缺入口和更新列；“继续项目”缺阶段进度条（随 D18）。
 - D39 项目：任务工具栏收成一行，默认显示当前阶段，补任务编号和状态图标；概览缺健康度摘要和直接办理入口；计划页里程碑下重复列出明细；文件页缺版本和所属对象汇总。
 - D40 提案和专业页：方案 A/B 并排、单元格直改，待决问题可手动增删；专业页的长表单改成按需打开的抽屉；型号页仍是 7 个标签；成员页缺责任列和范围；个人偏好缺待处理提醒和默认首页。
 - D41 项目集：健康度看板、详情里的阶段和健康度列、直接换归属。收件箱：工作通知、同事提及、聊天关联项目，这部分和 D37 合在一起做。
-- D42 小Pai 个人聊天：没有附件入口（首轮 `sources: []` 是写死的）；历史栏是否展开只在挂载时判断一次。另有两项风险待复现：新候选不会替换已打开的编辑区；品类冷恢复时名称取的是 AI 原候选。
+- D42 ✅ 11-08 附件入口与历史栏（分支 `claude/charming-almeida-2d1941`，本地提交未推送，[证据](../docs/reports/evidence/pdos-next-d42-d55-attachments-20261108/README.md)）。个人聊天携带附件按用户 11-08 选定的 B 案实施，决策见[确认稿 P91](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p91)。
+  - 可用：个人聊天输入框有“附件”入口，可勾选本人当前可读的已登记原件（新接口 `GET /v1/personal/agent-input-sources`，跨品类、带所属品类），或选存放品类后上传新文件；拖入输入框即打开上传并预填，本人确认上传后走原有原件登记、扫描、去重路径，扫描解析完成后自动加入本次携带；已携带资料以小标签显示在输入框上方，可逐个移除；续问可再加附件，并沿用上一轮服务器已绑定的附件（每份重新核对）。品类小Pai 同样支持拖入和上传后自动携带。服务器按 run 上下文逐份核对（本人以人员身份、来源品类成员资格、小Pai 在该品类的读取授权、受众、精确版本、原件安全），运行记录 `versions.personal_sources` 记下每份来源的品类和数据类别；数据库守卫改为条件放行（迁移占位号 `s0_0860`，集成时按真实 head 重排）；权限收回后运行按既有规则隐藏、续问 403；M1 召回经 RLS 与依赖清单两层复核。历史栏改为随视口（1000px 断点）和整页/侧栏状态更新。
+  - 集成注意：① `server/pdos_next/agent/kernel/bootstrap.py` 只改了 `binding_for` 个人入口路径（约 10 行），主工作区另一线程对该文件有未提交改动，落主线时会冲突，需手工合并；② `s0_0860` 的升级前置条件是三条函数（`kernel_read_set_visible`、`kernel_source_reference_gate`、`kernel_source_reference_clock`）与 s0_0855 head 逐字一致，若集成分支上别的迁移改过它们，须按真实 head 重新生成 `schema_s0_0860.py`（11-08 集成时核对：s0_0856–s0_0859 都没有重定义这三条函数，也没改它们依赖的 `direct_source_set_visible`、`scope_actor`、`scope_requester` 和所读表的策略，SQL 不变，只把 down 改为 `s0_0859`）；③ `security_runtime/parser-image.json` 指向本机重建的解析器镜像（只在本机有效），其他机器须用 `containers/evidence-parser/build.py` 重建。
+  - 余项：两项待复现风险（新候选不替换已打开的编辑区、品类冷恢复时名称取 AI 原候选）未做，相关文件在主工作区另一线程中；`contracts/openapi.json` 未重导出新接口（同 M1，下次统一导出）；见 D274–D276。
+  - 11-08 第三轮集成时发现：`test_source_views` 一条旧测试仍断言 `/v1/personal/agent-input-sources` 为 404，在本分支上就失败，未修，见 W4 第三轮集成记录。
 - D43 UI 冻结候选检查：10-26 之后大批改动一直没跑过整链。要做：
   - 亮暗主题 × 多尺寸各跑一遍；
   - 补余验：新上传文件进 Run、品类候选保存、会话改名/置顶/归档、320px 宽度；
   - 补样本后再验：手机确认、新保存提案续接，目前缺合成样本；
   - Prompt 设置页截图；知识页 10-29 因 RAG 改过，需要你目测确认；
   - 数据问题：旧合成原件的安全扫描失效（SOURCE_UNAVAILABLE），外部生效回执有指纹冲突。
-- D52 ⌘K 执行命令与快速创建：P22 的 B19 已确认，但现在 ⌘K 只能搜索跳转（`object-search.tsx`）。按命令登记表和角色收窄。
-- D55 DOCX、拖入文件、照片登记（F12），随 D42 的附件入口一起做。
+- D52 ✅ 11-08 ⌘K 执行命令与快速创建，[证据](../docs/reports/evidence/pdos-next-d52-command-palette-20261108/README.md)。面板在对象搜索之外加“快速创建”和“跳转”：只接 4 个已登记、已实现的页面入口（项目内新建任务 `work.task.create`、写状态更新 `work.status_update.create`；有产品管理权的品类新建立项提案 `proposal.create`；新建品类 `category.create`），单元测试逐条对照 `operations.json` 的档位；可见性只认服务器当次读回的 `capabilities.product_management` 与项目成员 `can_write`，读不回就不显示；T2 不进面板，完整编号只定位。选中命令只打开原页面的同一个表单，确认与服务器权限检查照旧。键盘 ↑↓/Enter/Esc，亮暗与 375px 已在浏览器按产品经理、工程师两个合成账号走查。余项：只在当前所在项目给项目内快速创建；外部等待、质量问题、变更、Build、验证请求等需对象上下文的入口未接。D108 的恢复条件已满足。原记录：P22 的 B19 已确认，但现在 ⌘K 只能搜索跳转（`object-search.tsx`）。按命令登记表和角色收窄。
+- D55 ✅ 11-08 DOCX、拖入、照片登记（F12），随 D42 一起完成，[证据](../docs/reports/evidence/pdos-next-d42-d55-attachments-20261108/README.md)。服务器原件接收原来只认 TXT/MD/PDF/XLSX，现补：DOCX（隔离解析器容器内只用标准库解析正文段落和表格行，每段/每行一个可定位行；拒绝宏、ActiveX、嵌入对象、外链模板/子文档、实体声明和超限压缩；无正文时记为需要 OCR）；照片 JPG/PNG/WebP/HEIC 只按文件头核对类型后登记为原件，派生一行登记文字（格式与字节数、“未执行 OCR”），解析码 `OCR_NOT_PERFORMED`，可作为来源被引用，不识别图像内容（OCR 属于记忆层 M4）。宿主机预检、对象存储、上传目标、前端校验与选择框同步放开；解析器镜像已在本机按新源码重建。拖入：输入框整体可拖入，品类与个人小Pai 都适用。
+- D271 （11-08 D52 走查时发现）原生 `<dialog>` 多数贴左上角显示：Tailwind v4 预置样式把 dialog 的 margin 清零，全局 `dialog` 样式没有补居中；`web/src` 的 55 个 dialog 只有 7 个自带 `m-auto`。可见于新建品类、新建提案对话框（页面按钮与 ⌘K 打开的一样）。随 D43 一并核对哪些本应居中。
+- D274 个人运行携带业务来源后，原件生命周期图（`m3_lifecycle_nodes`）仍按品类只扫 `agent_runs.category_id = c` 的运行，看不到个人运行对来源的引用；清除或保留规划可能漏算这些引用。读取时已复核（来源撤回后回答收起引用、运行按权限隐藏），但生命周期侧应参照钉钉个人回答按 `source_dependencies.category_id` 登记的做法补上（P91 实施时发现，11-08）。
+- D275 本地预览没有 Temporal worker 时，上传的原件不会自动扫描和解析，附件面板会一直停在“扫描与解析完成后才可携带”；D42 验收是用脚本调用同一套扫描/解析函数补的。闭环检查点（D43）应在带 worker 的预览环境里再走一遍上传→自动携带。
+- D276 附件面板重新打开时，上传组件会从本地恢复上一份上传的回读记录；按 D42 的取舍，恢复的记录不会再自动加入携带（避免把旧文件带进新对话），需在“选择已有原件”里手选。若希望保留“未完成扫描的文件完成后自动加入”，需要把待携带意图持久化到会话草稿，另议。
 
 **W8 小Pai 架构余项（实现缺口）**
 - D44 三处结构问题：
@@ -382,7 +492,12 @@ W3c · 想法已变但没有记录
   - 状态机没有集中声明，VerificationRequest 的写入口散在 5 个模块（I01）。
 - D46 用 AI 候选新建品类一次也没跑通，原因是研究端口没接（随 D20-A3、D62）。
 - D54 冻结前缀里加一句护栏（F10）。prompt 1.0.0 还没有这句，走 10-31 建好的 Prompt A/B 流程。
-- D58 LangGraph 检查点库的保留期。`lifecycle_catalog.py` 覆盖了 agent_* 表，但没有覆盖检查点库，试点前补上。
+- D58 ✅ 11-07（已本地提交，未推送）LangGraph 检查点保留 30 天、按天清理（P78 第 3 项、D193）：
+  - 覆盖：`originals/lifecycle/catalog.py` 登记检查点库的表和列（`CHECKPOINT_COVERED_COLUMNS`）与 30 天保留期；检查点库里出现目录外的表或列时整轮拒绝清理，同业务库的做法。
+  - 清理：`workflows/checkpoint_retention.py` 按服务器构造的线程 ID 把检查点归到运行或嵌入批次。归属的最新检查点超过 30 天，且运行已结束（completed/partial/failed/cancelled）或批次已结束（ready/unavailable），才删掉它的全部检查点行。排队、运行中、等待中（含待对账）的运行和排队、运行中、可重试的批次一律保留；业务库查不到归属的、线程 ID 认不出的也保留。会话布局下同一线程里其他运行的命名空间不受影响。
+  - 定时：新增每租户长驻工作流 `TenantMaintenance`（`workflows/maintenance.py`），固定 ID、持久计时器、每天一轮，由 worker 的发现循环启动，做法同自动化监督；一轮失败只记日志，下一轮照常。
+  - 迁移 `s0_0857`（分支上为 `s0_0855`，11-08 集成时按真实 head 改号）：调度角色只能经 `checkpoint_retention_owners` 读运行和批次的开闭标志，直接读两张表仍被拒；批次表原来只在人员范围内可见，给属主角色加了按当前租户限定的只读策略（只有这个函数用到）。
+  - 测试：`tests/workflows/test_checkpoint_retention.py` 26 例（线程 ID 解析、目录校验、每日循环与失败后继续、启动去重）；`test_checkpoint_retention_pg.py` 3 例，用真实 LangGraph 检查点和各状态的真实运行验证只删已结束且超期的归属，并验证目录外的列会拒绝清理、跨租户看不到。受影响的既有测试（workflows、originals、生命周期目录、worker 进程等）544 通过、6 跳过。迁移 0855 单步往返通过。
 - D243 ✅ 11-04（已本地提交，未推送）每个运行同一时刻只有一个尝试在做：按运行的会话级咨询锁（`agent/kernel/run_lease.py`，独立自动提交连接，进程退出即释放），后来的尝试边发心跳边等；SDK 的异步取消在执行期间被屏蔽，被放弃的尝试在下一次模型或工具调用前停下（LangGraph 从中断的那一步续跑，前面的步骤不重做），交回取消、不再把运行标为失败；拿到锁后先复核，前一尝试已结束或已停在问题处的，直接返回原结果；对账活动拿不到锁时稍后重试；执行超时 10→60 分钟（存活由 45 秒心跳判断）。测试：`test_run_attempts.py`（含 SDK 取消落在轮中间的 W1 情形）、`test_run_lease_pg.py`；受影响的 35 个 Temporal/PG 测试文件除原有环境缺口外全过。11-06 真实回归复测通过：超时并发造成的失败 33 → 0，最长 31 分钟的轮次也没被判超时；唯一一次尝试被放弃由合盖休眠造成，旧尝试按设计交回取消（[11-05 回归结果](../docs/reports/evidence/pdos-next-real-eval-20261105/result.md)）。 原记录：超时重试与未停下的尝试并发（W1 失败的头号原因）：`XiaopaiWork` 推进 Activity 的执行超时是 10 分钟、最多 3 次（`workflows/xiaopai.py:44-46`）。Activity 是线程池里的同步函数，超时后 Temporal 派出第二次尝试，第一次的线程要到下次心跳才收到取消，期间两次尝试并发推进同一个 Run，第二次撞上“原调用须按回执对账”和绑定保护后 `INTERNAL_ERROR`。W1 共 33 个运行因此失败（31 个执行超时、2 个心跳超时），拆分 API/Worker 后没有减少；另有 6 次模型调用的预留一直没结（约 4.19 美元）。一轮几次长输出就会超过 10 分钟（单次输出最多 11,167 token）。要定的是：超时后怎样保证旧尝试先停、再续跑，而不是并发或直接失败。
 - D244 ✅ 11-04（已本地提交，未推送）`agent_client.parse_turn`：响应完整但 `result_json` 写坏或以纯文本收尾时，按正常回合返回、用量照实记账，`result` 记为空值，让核对必然失败并进入图里已有的格式修正回合（有次数上限）；空对象 `{}` 仍是合法结果。没有改工具定义。测试在 `test_minimax_wire.py`。11-06 真实回归复测：这一类未知 0 次（W1 38 次）；另发现完整响应被记成未知的新原因，见 D254。 原记录：服务商响应完整，却被记成“结果未知”：最终输出函数里的 `result_json` 是一段再转义的 JSON 字符串，模型约 2% 的调用会写坏（缺逗号、多余尾部、键重复），另有少数以纯文本收尾，`agent_client.parse_turn` 一律按 `PROVIDER_INVALID_RESPONSE unknown=True` 处理，整轮等 300 秒对账后失败，还按上限占账。W1 中 1677 次调用里 38 次，15 个运行因此失败。可选改法：解析失败按已知失败处理并给一次格式修正回合；或把 `result_json` 改为对象参数。
 - D246 〔待定〕工具失败在账本和返回给模型的结果里一律是 `SOURCE_UNAVAILABLE`，真实原因（范围不符、本轮查找预算用完、缺基线型号、参数越界）被藏起来，模型分不清该换工具、该停还是该补参数。W1 中 11-02 以后范围不符 98 次、预算用完 93 次。须与 v1.1 §08.7 错误码收敛相容：公开错误码不变，考虑在给模型的工具结果里附一个可行动的原因类别。
@@ -393,7 +508,18 @@ W3c · 想法已变但没有记录
   - P44：`proposal.g0.submit` 改 T1，小Pai 预填、只有负责人本人能确认（领域原有 `owner_only` 检查）；`proposal.share` 为 T1 且标“仅准备”（`prepare_only`，不绑执行操作），负责人在页面办理；这两项和 `proposal.g0.decide` 补进 `proposal_drafting`、`gap_check`；附录 A、操作合同、调用须知和评测细则 G-S3 同步；
   - 18 个技能包各升一个补丁版本（`preload_when` 变了，技能摘要随之变，已有资格须重审）。
   效果：品类运行零技能下发 66 → 29 个工具（约 30k 字符），提案起草页 38 个，评审页 35 个；零技能面和起草面都能放进 32k 窗口。代价：6 个治理类 T2 准备工具（`project.create`、`category.member.grant`、`provider.agreement.register`、`ai.skill.qualify`、`mcp.connector.allow`、`knowledge.rule.publish`）没有技能列出，小Pai 不再看到，由人在管理页办理。约 20 处测试夹具改为按运行范围计算披露摘要。受影响范围回归：无库测试与 HEAD 相比无新增失败（修好 2 个），`tools/` 测试全过，45 个 PG 测试文件的 39 个失败都在 HEAD 或已知清单中（[证据](../docs/reports/evidence/pdos-next-real-eval-20261101/regression-p76-item4.txt)）。11-06 真实回归复测：F=48000 下回答不完整 61 轮里 43 轮 → 55 轮里 6 轮，首次调用输入约 41–43k → 13.6–16.4k，项目级读取在品类范围被拒 98 次 → 0，服务商实际输入最大 45,205 仍不超 F（[11-05 回归结果](../docs/reports/evidence/pdos-next-real-eval-20261105/result.md) §3、§6）。 原记录：品类问答一次下发 66 个工具，工具定义约 30–37k token，其中 31 个是写入或审批类，另有 `build.read`、`test.run.read` 等项目级读取在品类范围内必然被拒，模型却常去调用（失败率 77–94%）。固定部分约 40k，超过 F=48000 的一半，导致 F=48000 下 61 轮里 43 轮回答不完整，基本不可用。按技能和范围渐进下发工具，与 D29 的 `preload_when` 一起做。
-- D248 token 估算系统性偏低约 10%：418 次有估算和实际计数的调用，实际 ÷ 估算 p50 约 1.10、最大 1.173。准入靠约 1.15 的校准系数兜住，余量来自系数而不是估算本身。改估算或把系数写成有依据的配置。
+- D248 ✅ 11-08（已本地提交，未推送）主循环准入下限按你 11-07 的决定定为 1.22，写成带出处的配置。token 估算系统性偏低。11-07 用两批真实回归的全部逐运行文件（主工作区 `live/runs/`，只读）复核了 2770 次有估算和实际计数的模型调用，数字见 [D248 复核](../docs/reports/evidence/pdos-next-real-eval-20261105/d248-estimate-calibration.json)：
+  - 主循环 1245 次：实际 ÷ 估算 p50 1.099、p95 1.169、最大 1.211（11-05 批最大 1.211，比 11-03 报告的 1.173 高）。隔离子任务（`assistant_extract`/`assistant_compare`）1525 次：p50 0.939、最大 0.967，是高估。只有 MiniMax-M3 一个模型。
+  - 1.15 并没有完全兜住：主循环有 88 次准入值低于实际（最差低 4.8%）。这些调用离 F 都还有距离，实际输入一次也没超过 F。
+  - 现行代码首轮直接用 1.15，相当于“校准比 1.0 + 15% 余量”；上下文设计 §6.1 写的是“按校准比估算并留 15% 余量”。
+  - 只要做到实测零低估，主循环的准入就会比现在严，原本放得下的调用里有一部分会先触发缩减：
+    - 主循环下限 1.18（约 p95）：低估 88 → 20，多缩减 59 次（4.7%）；
+    - 1.22（实测最大值向上取整）：低估 0，多缩减 110 次（8.8%）；
+    - 照 §6.1 字面（校准比 1.10 × 1.15 ≈ 1.265），或改估算（工具段 ×1.12、其余 ×1.06）后再留 15%：低估 0，多缩减约 155 次（12.5%）。
+  - 隔离子任务一律保持 1.15，不降。
+  - 实施：`agent/kernel/context_calibration.json` 按“协议 × 模型 × 主循环/子任务”记下限及其决定、证据和样本；openai-compatible 的 MiniMax-M3 主循环 1.22、子任务 1.15，没有实测记录的路线一律 1.15。加载时拒绝低于 1.15 或低于自身实测最大值的下限，余量只能比原来大。`context_budget.measure` 以 max(下限, 上一次实际 ÷ 估算) 为系数，`fit_messages`、宿主准入和网关一路传下限。网关在每次请求准入时把下限和校准输入一起冻结进运行（`context_admissions`），重放沿用当时的值；本次之前已准入的请求按 1.15 重放，调用键不变。评测基线工具的探针路由不带模型身份，仍按 1.15。
+  - 测试：`tests/agent/kernel/test_context_calibration.py` 15 例（配置与证据文件逐项一致、按协议/模型/隔离选下限、会缩小余量或缺出处的配置被拒、缩减循环每一步用同一下限、网关冻结与旧准入按 1.15 重放），连同既有准入测试共 36 例通过；tools 相关 3 个文件 24 例通过。受影响的 49 个服务端测试文件 468 通过、18 跳过、5 失败。这 5 个在不含本次改动的已提交 HEAD 上以相同错误失败，与下限无关：`test_context_x3_full_disclosure.py` 2 例是测试桩 `ScriptedProvider.turn()` 不接收 `prompt_identity`；`test_development_budget_pg.py` 1 例报固定上下文超过窗口；`test_eval_v0_history_state_pg.py` 的 CTX-04（F48000/F64000）2 例报模型调用未形成可用结果。
+  - 原记录：token 估算系统性偏低约 10%：418 次有估算和实际计数的调用，实际 ÷ 估算 p50 约 1.10、最大 1.173。准入靠约 1.15 的校准系数兜住，余量来自系数而不是估算本身。改估算或把系数写成有依据的配置。
 - D252 ✅ 11-04（已本地提交，未推送）P67 实施，缺省输出预算按你 11-04 的决定定为 16k（确认稿 P67 已加修订）：所有模型路由在 `bootstrap.route()` 统一取“连接配置的输出上限”与 16,384 中的较小值，请求的 max_tokens、上下文预留 R（预算 + 4k）和费用预留都随之变化；路由摘要在一次运行内保持一致。W1 那套 524288 的配置下，上下文预留 R 从 528,288 降到 20,384 token；费用预留中的输出部分从 524,288 降到 16,384 token，按 W1 价卡约从 0.66 美元降到 0.02 美元，未知调用的过度占账（D57）随之回落；11-06 真实回归已确认：单次输出封顶 16,384（W1 有 5 次失控到约 52 万），未知调用每次约 0.043 美元。窗口须为公布或实测值（P67 第 3 项）仍是配置规则，未加校验。 原记录：P67 实施：R 按本次调用的输出预算 + 4k，连接配置的输出上限只作钳制，窗口须为公布或实测值；做完复核 D57 的未知调用占账。〔待定〕P67 建议主循环缺省 8k，但 W1 实测单次输出最多 11,167 token（推理 7,882），8k 会截断，缺省值要重定。
 - D254 ✅ 11-07 已修并本地提交（未推送）：`providers/agent_client.py` 的流式累积改为 id 以第一块为准，相同的重复忽略，中途换成不同 id 仍按断流记未知。`test_minimax_wire.py` 加两个用例：照 11-06 抓包每块重复完整 id（15 块 × 30 字符），修复前整条记成未知、修复后得到原 id 且用量照记；同一调用中途换 id 仍记未知。与 D255 合跑（独立 `pdos_test`）：受影响的 107 个测试文件 1630 通过、27 跳过；22 个失败在不含这两项改动的代码上同样失败，不由本次引起。 原记录：工具调用 id 被重复拼接，完整响应被记成未知（11-06 真实回归发现，[结果](../docs/reports/evidence/pdos-next-real-eval-20261105/result.md) §4.1）：
   - 现象：MiniMax 流式返回时，有时在同一工具调用的每一块里都重复给出 id。`providers/agent_client.py:338` 把它们拼接起来，超过 `ToolCall.id` 的 200 字符上限（`agent/kernel/types.py:45`）后，整条响应按 `PROVIDER_INVALID_RESPONSE unknown=True` 处理。
@@ -408,14 +534,78 @@ W3c · 想法已变但没有记录
     - `evidence.extract` 下发的参数是空对象，处理函数却要求 `row_schema`（含 `kind`、`version`），30 次调用全部 `VALIDATION_FAILED`。
     - `skill.load` 同样没有定义，7 次被拒（只接受名称）。
     - 改法：工具定义从处理函数的参数模型生成，并加一条检查：处理函数需要参数、定义却为空的不得下发。与 W8 的“116 条何时调用说明待补写”相关。
-- D256 评测运行器缺口（11-06，§4.3）：
-  - 已修并本地提交（未推送）：脚本导入路径补上 `server/tests`；父题停在问题处时 `bind_action_parents` 不再崩溃（`tools/xiaopai_real_rag_fixtures.py:439`）。
-  - 未修：运行超过 30 分钟观测上限后又停在问题处时，后续等待只认结束状态，CTX-01 因此停在 25/31 轮；“待对账”在 API 上也显示为 `waiting_input`，要结合错误码区分。
+- D256 ✅ 11-08 余项已修并本地提交（未推送）：
+  - `tools/xiaopai_real_eval_runner.py` 的续接等待每次轮询都按当前状态重新判断（`stop_kind`）。超过 30 分钟观测上限后又停在问题处的，按回放规则取消后续接，记为 `awaited_unobserved_completion` → `cancelled_open_question`，不再等 20 分钟后把整格记成错误（CTX-01 停在 25/31 轮的原因）。待对账的继续等自动对账。
+  - 问题和待对账在 API 上都是 `waiting_input`，现在只按错误码区分：`EXTERNAL_OUTCOME_UNKNOWN` 是待对账，与服务端 `run_reconciliation.required` 同一判据；其余是问题。原来按最近 3 个事件里有没有 `reconciliation_required` 来猜。
+  - 测试：`tools/test_xiaopai_real_eval_runner.py` 9 例，含 CTX-01 情形。`tools/` 全量 80 通过；4 个失败在 `test_local_host_profiles`，是原有的。
+  - 余项：CTX-01 少跑的 6 轮等下次真实回归补跑。
   - 环境：长批次须接电源并用 `caffeinate -s`（`-i` 挡不住合盖休眠，11-06 一次 12 分钟的休眠使 2 个运行失败）。
-- D257 单轮最长 31 分钟（11-06，§4.4）：
-  - F=48000 的轮次修复后能做完，平均每轮模型调用 4.6 → 11.4 次，上下文单轮 p95 从 11.3 分钟升到 24 分钟。
-  - 长尾在企业检索的隔离抽取 `assistant.extract`：子调用串行，每个 1–2 分钟，一次抽取可达 17 分钟。
-  - 可考虑子调用并行或给单轮总时长设上限；与 30 分钟观测上限、60 分钟活动上限一起看。
+  - 原记录：评测运行器缺口（11-06，§4.3）。已修并本地提交（未推送）：脚本导入路径补上 `server/tests`；父题停在问题处时 `bind_action_parents` 不再崩溃（`tools/xiaopai_real_rag_fixtures.py:439`）。未修：运行超过 30 分钟观测上限后又停在问题处时，后续等待只认结束状态，CTX-01 因此停在 25/31 轮；“待对账”在 API 上也显示为 `waiting_input`，要结合错误码区分。
+- D257 🟡 11-08 子调用并发已做并本地提交（未推送）。真实回归没跑，要你另行授权。单轮长尾的主因不在串行，另登记 D268（11-08 已修）。[分析与验证](../docs/reports/evidence/pdos-next-real-eval-20261105/d257-extract-timing.md)
+  - 改法：
+    - `assistant.extract` 里每条非结构化引用各跑一个隔离子图。原来逐条串行，现在最多 N 个同时跑（`agent/enterprise_search/assistant_fanout.py`）。
+    - 结果按引用原顺序合并，与串行逐条相同。
+    - N 由 `PDOS_ASSISTANT_EXTRACT_CONCURRENCY` 配置，取 1–8，1 就是原来的串行。worker 组装适配器时校验，非法值启动即报错。
+  - 缺省 2，依据：
+    - 11-05 回归的 130 次抽取里，非结构化引用 1 条 68 次、2 条 15 次、3 条 45 次，没有超过 3 条。估算 2 路把抽取 p95 从 8.2 降到约 5.9 分钟，3 路约 5.6 分钟，再往上几乎没有收益。
+    - 连接：每个 worker 缺省 4 个活动线程。抽取进行中，每个活动常驻占 2–3 个应用库连接（运行租约 1 个，组合锁 1–2 个），SQLAlchemy 缺省连接池共 15 个，只剩 3–7 个给短事务。2 路时最多 8 个子图共用这些连接，再高容易等池。每个子图另占 1 个检查点库连接。
+    - 预算：同一运行的子调用同时持有各自的 token 与费用预留，预算快用完时并发越高越早被拒。
+    - 服务商：同一密钥的并发限额未知，11-05 已是 4 个运行同时跑。
+    - 主机侧开销有一部分是 Python 计算，受 GIL 限制，3 路以上的收益不确定。
+  - 没变的：
+    - 每个子调用各自的预算与费用预留、运行回执和幂等键。领取与释放都按“运行行 → 调用 → 预算”的顺序加锁，并发不改变各自预留和记账的内容。
+    - 结果顺序与账本记账。
+    - 一个子调用以领域错误失败时，只记为该引用失败，其余照跑，与原来相同。
+    - 非预期错误时，未开始的不再开始，在跑的到下一个安全点停下，按引用顺序抛出第一个错误。
+  - D243 补洞：抽取子图的主机在启动时建好，活动设的“已放弃”信号原来传不到子图，被放弃的尝试会把整个抽取跑完。现在：
+    - 活动把信号放进运行上下文（`run_lease.attempt_scope`）。
+    - 子图在每次模型和读取调用之前检查，在领取之前停下。
+    - 线程池等所有子线程停下才返回，子线程活不过本次尝试。
+  - 测试（隔离 `pdos_test`，head `s0_0855`）：
+    - `test_assistant_fanout.py` 21 例，连跑 15 次全过。
+    - `test_assistant_extract_concurrency_pg.py` 5 例，用真实账本、价格卡与验证预算：
+      - 3 个子调用同时在途；
+      - 各自预留并按实际结算，占用归零；
+      - 被放弃后不再发起子调用，下一尝试从检查点续跑，没有重复发送（内存检查点与 PostgresSaver 各一遍）；
+      - 取消；
+      - 一条被服务商拒绝。
+    - `test_run_attempts.py` 加 1 例。
+    - 反证：去掉子图里的安全点，被放弃的尝试还会多发 2 次子调用，测试失败。
+    - 受影响范围回归（104 个文件）：910 通过、22 失败、4 个错误。这 26 个在不含本次改动的代码上逐条同样失败，其中 12 个是缺检查点库环境，其余与 D27 同类。
+  - 可选项，属于规则，本次未加：给单轮总时长设上限，例如超过 N 分钟就停在问题处并说明进度。与 30 分钟观测上限、60 分钟活动上限一起，由你决定。
+  - 余项：
+    - 真实回归复测，花钱，要你授权；
+    - Temporal 运行时下的联调未跑。
+  - 改到的文件：`activities.py`、`run_lease.py`、`assistant_adapter.py`、`assistant_graph.py`，新文件 `assistant_fanout.py`。没有改 `context_budget.py`、`gateway.py`、`host.py`（D248），也没有改 `assistant_ledger.py`（M1）。
+  - 原记录：单轮最长 31 分钟（11-06，§4.4）。F=48000 的轮次修复后能做完，平均每轮模型调用 4.6 → 11.4 次，上下文单轮 p95 从 11.3 分钟升到 24 分钟。长尾在企业检索的隔离抽取 `assistant.extract`：子调用串行，每个 1–2 分钟，一次抽取可达 17 分钟。可考虑子调用并行或给单轮总时长设上限；与 30 分钟观测上限、60 分钟活动上限一起看。
+- D268 ✅ 11-08 已修并本地提交（未推送）；真实回归没跑。[剖析与修复](../docs/reports/evidence/pdos-next-real-eval-20261105/d268-guard-pass.md)
+  - 原因（剖析确认）：每次守卫都把当前运行和每个前序轮次的谱系各走一遍（`assistant_inheritance.registry`），同一个祖先的检索读取在一次守卫里被重复证明、整行（含很大的 `versions`）重复读取，次数随轮次增长。守卫 SQL 条数约是轮次的平方：每轮多出的条数依次是 17、18、22、26、30……
+  - 改法：`assistant_ledger.one_pass(session)` 是一次守卫内的记忆，挂在本事务上，事务结束就丢弃。
+    - 每个前序运行的封存检索读取只证明一次，之后返回深拷贝；
+    - 本事务里已按普通 RLS 读到的运行行不再重读，`carried()` 复用它们时照样逐条核对会话与请求人；
+    - 只在 `carried()` 和 `work_state.check_frozen()` 里启用。
+  - 权限口径不变：下一次守卫（包括同一次模型调用发出前的复核）照旧把全部历史按当前权限、撤回和扫描状态重新证明一遍。
+  - 效果（隔离 `pdos_test`，离线服务商，第 12 轮）：
+    - 守卫 SQL 425 → 114 条，之后每轮固定约 9 条；
+    - 耗时 1.6 → 0.6 秒，测量时本机负载很高，只作参考；
+    - `check_conversation` 120 → 70 条；
+    - 剩下的时间约 97% 是等数据库返回。
+    - 按此外推，第 24 轮守卫约 1480 → 220 条，未实测。
+  - 测试：
+    - `test_guard_pass_pg.py` 4 例：一次守卫和一次会话检查里每个封存调用只证明一次、下一次守卫全部重证；SQL 每轮增量不变；两次守卫之间撤回资料会被拒；记忆只在本事务内、返回副本。
+    - 反证：换回修复前的代码，前两例失败（4 轮时同一调用被证明 5 次）。
+  - 受影响范围回归（132 个文件）：1249 通过、19 失败。
+    - 15 个在不含本次改动的代码上逐条同样失败，与 D27 同类。
+    - 3 个 `test_work_state_candidates` 是因为假会话没有 `info`，已改为没有 `info` 时不启用记忆，重跑通过。
+    - 1 个 `test_recovery_pg[statistics_only]` 是比较一个没有 `ORDER BY` 的查询结果摘要，重跑通过，与本改动无关。
+  - 余项：
+    - 每个前序轮次仍各跑一次谱系递归查询、一次恢复根查询和一次会话绑定查询，每条证明 2 次 principals 查询，都是线性的。再降要改 `lineage()` 或证明函数，这次没动。
+    - 真实回归复测，花钱，要你授权。
+  - 改到的文件：`assistant_ledger.py`（M1 也改过，合并时注意）、`assistant_inheritance.py`、`work_state.py`。没有改 D248 的三个文件。
+  - 原记录：单轮长尾的主因：每步的守卫随会话变长而线性变慢（11-08 由 11-05 回归数据发现）。子模型调用 HTTP 各轮约 10 秒，CTX-01 第 18–24 轮抽取子图每次模型调用前的主机工作 p50 130 秒、p95 228 秒，领取到发出 HTTP 再约 23 秒；第 0–5 轮是 8.4 秒和 1.9 秒，RAG 单轮题 3.4 秒和 0.7 秒。最长的抽取只有 1–2 条引用，D257 的并发缩不短它们。
+- D269 D243 停止信号的两处余项（11-08 做 D257 时发现，都未修）：
+  - 研究、MCP、`evidence.extract`、`assistant.compare` 的隔离子图，与原来的企业检索抽取一样，用启动时建的主机，收不到“已放弃”信号，被放弃的尝试会把这些子图跑完。不会并发写坏账本（后来的尝试在租约处等待），只是浪费时长和费用。可以照 D257 的做法，在子图主机的 `current()` 里检查 `run_lease.current_attempt()`。
+  - 主循环里，模型调用发出前的复核（`gateway._recheck_dispatch` → `context_guard`）在领取之后。信号恰好落在两次检查之间（毫秒级）时，这次调用留在 started，下一尝试会把它当成要对账的未知调用。概率很低；改法涉及 `gateway.py`，等 D248 合并后再看。
 
 **W9 业务域余项（实现缺口；按闭环推进）**
 - D47 14 条 not_implemented 操作：forecast.refresh、capa.effectiveness、tooltrial、fixture、customer.sample/acceptance、supply.commitment/alternate、source.withdraw 等。
@@ -427,7 +617,25 @@ W3c · 想法已变但没有记录
   - 准备度三维聚合是否已统一；
   - 日常录入和交样比设计更严（`human_recorded` 只出现在 external_wait）；交样整批接收；
   - 原领域缺口：语音输入、引用漂移、接口合同与设计责任人、当前制造成熟度、独立项目资料包、全库知识检索。
-- D56 按权限导出 Excel，导出内容带“AI 起草”标识（F41、C16）。
+- D56 ✅ 按权限导出 Excel，导出内容带“AI 起草”标识（F41、C16）。（11-08，worktree `xenodochial-tharp-12e9c0`，本地提交未推送，[证据](../docs/reports/evidence/pdos-next-d56-export-20261108/README.md)）
+  - 可用：项目（任务、风险与待决项、承诺、状态更新）、我的工作（四个注意项队列加本人任务、承诺）、BOM 差异（本版对上一版）、测试汇总（已选轮次的当前运行与测量值）四类导出，入口分别在项目任务“更多”、我的工作页头、BOM 版本记录、已选轮次摘要。每类都直接调用对应页面的读取函数，行与字段过滤与页面一致，不另写权限。
+  - AI 标识：写入者是 AI 身份或回执带 AI 运行（AI 起草、人确认）即为“AI 起草”；人改过的字段转为人工，所以行分“AI 起草 / 部分 AI 起草 / 人工”，AI 起草的单元格带批注并在“AI 起草字段”列列出。封面写明行数与 AI 行数，文件另带隐式元数据（自定义属性 `AIGC` 等）。
+  - 审计与身份：新表 `export_audits` 只追加，记导出人、范围、行数、AI 行数与单元格数、是否含 AI、文件 sha256；审计未落库不交付文件。只有具名本人能导出：服务端拒绝 AI 身份、运行与代办上下文，数据库策略同样拒绝 AI 身份写审计；`pdos_agent` 无写权限。
+  - 登记：v1.1 附录 A 增“拍板表 C16、优化评估 F41 登记的操作”段，`auxiliary-operations.json` 增 `export.workbook.download`（READ、仅具名本人、4 个 GET），三份合同 sha256 同步；`openapi.json` 只增这 4 条路径。
+  - 口径（用户 11-08 确认）：导出是读者本人的 READ，不经系统向外部发送，不走 T2；依据 F41“按读者权限过滤”与 C16“不需决策记录”。DC-11 §7 的客户报告外发仍是 T2，不在本操作内。
+  - 迁移：占位号 `s0_0861`（down `s0_0855`），**集成时按真实 head 重排**（文件名、revision、down_revision 与快照文件名 `schema_s0_0861.py` 一起改）。11-08 集成时编号不变，down 改为 `s0_0860`；s0_0856–s0_0860 没有重定义它用到的 `category_access`、`kernel_append_only`、`scope_actor`、`scope_requester`；s0_0856 给 `tenant_administrators` 加的是管理员读取的放行策略和插入、更新的限制策略，审计读策略里“本人管理员行”的判断不受影响。
+  - 验证：PG 6 项（项目导出含两种角色、私有受众与跨租户；我的工作与审计私有；AI 身份与代办上下文拒绝、审计只追加；字段级 AI 判定；BOM 差异与私有 BOM；测试汇总）；工作簿 4 项；前端 1895 项 `.mjs`、tsc、lint 0 错误；合同校验；迁移往返；浏览器亮暗两套主题走通项目、我的工作、BOM 差异导出，取回的 xlsx 与审计 sha256 一致。
+  - 余项：D278–D283。
+- D278 Word/PPT 客户模板导出（D185 采纳部分：8D、Gate 包、周报按客户模板导出并带“AI 起草”标识）。依赖：
+  - 客户模板原件登记与版本（docx/pptx 解析按 R14 进隔离容器）；
+  - 8D 的数据结构（品质问题与 CAPA 现在没有 8D 视图）、Gate 包（阶段评审包）、周报（`work.status_update`）的导出读取；
+  - docx/pptx 的隐式标识写法另定；`export_audits.view` 枚举扩展要迁移。
+  可复用本次的读权限调用方式、AI 判定与审计。
+- D279 讨论导出（确认稿 P41 第 7 项并入 D56）：P34 讨论与对象评论尚未实现，没有可导出的数据。等 W6 讨论落地后加到项目导出：撤回内容导出为“已撤回”占位，客户私有对象下的评论按受众过滤。
+- D280 真实小Pai 运行写入的行在导出中标“AI 起草”，端到端 PG 未验证。原因是没有可复用的 `work_management` T0/T1 运行夹具（候选准备要走企业检索跟进上下文）。本次覆盖到的：真实版本行加“哪张回执算 AI”替身的字段级判定，以及真实 agent 主体识别。下次有小Pai 建任务或 BOM 候选的 PG 夹具时补一条。
+- D281 〔你〕隐式元数据（自定义文档属性 `AIGC`，字段名照 GB 45438-2025 文件元数据要素）是否满足合规要求，未做合规核对。（11-08 用户已确认导出按读者本人 READ 办理、不走 T2，原第二点关闭；所有导出都带显式加隐式标识。）
+- D282 BOM 版本差异的页面视图（D98）仍未做；本次只有导出。差异计算暂放在 `domain/exports/views.py`，D98 落地时移到配置领域，由页面和导出共用。
+- D283 导出审计只能由导出人本人和租户管理员经数据库策略读取，没有查看页面或接口；需要审计查看时再补（管理员页）。
 
 **W10 阶段验收检查点（验证欠账；集中做，放在 W6–W9 之后）**
 - D50 整仓回归：S0 之后没跑过（5603 项基于 s0_0728，现在 head 是 s0_0854）。23 项修复要在本分支的环境里复跑，并跑 make check。
@@ -453,15 +661,21 @@ W3c · 想法已变但没有记录
   - 试点前在云上按 AT-47 实演一次恢复。
 - D212 发布与回滚手册：迁移前快照 → 迁移 → 冒烟 → 回滚。规定工作流代码改动必须用 patch，避免在途的长等待工作流重放失败；维护窗口提前通知。
 - D213 监控告警与值班：至少监控探活、错误率、队列积压、模型失败率四项，告警发到钉钉群，写明谁接、多久响应。
-- D214 真人登录：服务端目前没有签发登录会话的接口，只能用命令行工具发 token。建议：
-  - 复用已有的钉钉 OAuth 做扫码登录，或用密码加限流；
-  - 加会话超时和强制下线；
-  - 写一个租户开通脚本：建首个管理员、建真实品类。
-
-  与 D86、D192 一起做。
-- D215 生产文件扫描：
-  - 现状：只有本地合成的扫描档，病毒库固定不更新；扫描结果 24 小时过期，又没有定时重扫。真实原件上传后，很可能隔天 AI 就不能再引用；D43 遇到的 SOURCE_UNAVAILABLE 很可能就是这个原因。
-  - 建议：定一个生产扫描档，病毒库定期更新，过期原件定时重扫，失败时显示原因。
+- D214 ✅ 11-07 真人登录（与 D86、D192 一起做，本地提交、未推送，[结果与证据](../docs/reports/evidence/pdos-next-sign-in-20261107/result.md)）：
+  - 你选“密码 + 限流”（11-07）；钉钉扫码等 D64；
+  - 登录签发带空闲超时的会话（7 天有效、空闲 12 小时失效），Web 只放在 HttpOnly cookie；同一登录名 15 分钟内失败 5 次、同一来源 30 次即暂停；管理员可强制下线，本人可退出；
+  - 迁移 `s0_0856_human_sign_in`（接 `s0_0855`；分支上原为 `s0_0855` 接 `s0_0854`，11-08 集成时因主线 M1 已占 `s0_0855` 改号）；登录前只走认证角色的专用函数，应用角色读不到口令哈希和链接哈希，Agent 角色零权限；
+  - 租户开通脚本 `tools/tenant_provision.py`：建首个管理员、首个品类和 72 小时邀请链接，只在本地带标记的合成环境演示；生产开通要等 D210 并另行授权；
+  - 前端 `/login`、`/invite` 和设置里的“账户与邀请”；本地浏览器走通登录、邀请、停用；
+  - 验证：账户边界 11 项、全表守卫 90 项、迁移往返、契约校验、BFF 8 项与全部 `.mjs` 前端测试、typecheck/lint 通过；
+  - 余项：停用时“未结事项交项目负责人”归 W6（P56 交接）；反向代理要设 `X-Real-IP`（随 D210/D212）；首次登录告知归 D217。
+  - 11-08 已合并进本地集成分支 `claude/frosty-villani-38f085`（未推送）：迁移改为 `s0_0856`，本项发现的两个既有问题由 D258、D259 改为 D260、D261（见 W4 末尾的集成记录）。
+- D215 ✅ 11-07（已本地提交，未推送）过期原件定时重扫；生产扫描档与病毒库更新只写进[运行手册](../docs/runbooks/original-file-scanning.md)，未做任何生产操作，执行前仍须授权：
+  - 规则不变：扫描通过的回执仍只有 24 小时有效，过期或扫描配置变化后照旧不能下载、不能被 AI 引用；定时重扫只是续期。
+  - 定时：D58 的每租户维护工作流加一项 `original_rescan`，每小时一轮。调度角色经 `original_rescan_candidates`（迁移 `s0_0858`，分支上为 `s0_0856`，11-08 集成时改号；只返回引用）列出已解析、来源有效、未隔离、当前回执为通过但已超过它自己政策的有效期，或做于当前已不使用的扫描配置（病毒库更新后）的原件；每个候选在原扫描申请人范围内重跑真实扫描判定，确认只是过期或配置变化，才经与页面“重新请求扫描”相同的 `request_scan` 提交，之后走原扫描工作流（`originals/rescan.py`）。幂等键 `rescan:{原件}:{epoch}`，每轮每租户最多 5000 条，按回执时间分页。
+  - 原因可见：过期原件的安全状态在原因里加一条“已列入每小时一次的自动重新扫描”，或说明为什么不能自动重扫（原申请人已无写入权限、原件未解析）；重扫失败或检出风险按普通扫描结果记下，页面显示具体原因；前端补了这几条及扫描器超时、错误、版本不符等原先缺的中文说明（`web/src/lib/original-security.ts`）。
+  - 测试：`tests/originals/test_original_rescan_pg.py` 5 例（满 24 小时前不重扫；过期后显示待重扫、提交新请求并发出扫描事件、处理中不重复提交、通过后可下载；重扫失败原因可见且不自动重复；申请人失权时显示原因；扫描器规则版本变化后续期；函数只授权调度角色、跨租户看不到）；`test_original_rescan.py` 9 例；维护工作流测试改为覆盖两项任务。受影响范围（originals、workflows、core、categories/products、上传视图与 worker 进程）841 通过、2 跳过、8 失败；8 个失败在改动前的 d730291d 上同样失败（技能登记变化、API 列表对象、ORM 与迁移比对、写死旧迁移号 `s0_0756` 的断言、受众唯一键），不由本次引起。前端该文件 12 例、eslint、tsc 无错误。迁移 0856 单步往返通过。
+  - 未处理（写在手册“已知缺口”）：扫描执行时绑定或配置已变、扫描 Activity 不写结果就返回的请求，页面会一直显示“扫描处理中”，定时重扫不接手；小Pai 选资料面板的扫描标签读缓存状态，过期后仍可能显示“已记录扫描通过”。
 - D216 〔你，写决策记录〕数据出境：P28/P29 允许接入任意兼容端点，客户原件可能出境。给服务商连接加“境内/境外”属性；境外服务商是否默认禁止客户原件、客户名和个人信息，由你来定。这涉及出站规则，不能自行加严。
 - D217 〔你〕试点协议与个人信息告知：写明数据归属、保密、退出时的导出和删除，以及“AI 草稿不构成工程结论”；首次登录时做个人信息告知。
 - D218 〔你〕试点成功与退出标准：3–5 条可观测的判据、停止条件、怎么回到原来的工作方式。开始前先用旧方法计时，作为基线（与 D191 有关）。

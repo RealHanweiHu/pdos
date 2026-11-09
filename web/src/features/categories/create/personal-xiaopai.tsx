@@ -14,6 +14,7 @@ import { assertHiddenRun, type PaiHiddenRun, type PaiRunStatus } from "@/lib/pai
 import { PersonalPreferenceWelcome } from "@/features/settings/personal-preference-welcome";
 import type { LoadedSkill } from "@/features/xiaopai/pai-conversation";
 import { ConversationHistory } from "@/features/xiaopai/conversation-history";
+import { useHistoryRail } from "@/features/xiaopai/use-history-rail";
 import { SessionHistory } from "@/features/xiaopai/session-history";
 import { SkillPicker } from "@/features/xiaopai/skill-picker";
 import type { AgentSkill } from "@/lib/agent-skills";
@@ -37,9 +38,12 @@ import { WorkProductEditor } from "@/features/xiaopai/work-product-editor";
 import { useWorkProducts } from "@/features/xiaopai/use-work-products";
 import { MemoryUsage } from "@/features/xiaopai/memory-usage";
 import { MemoryOffStart } from "@/features/xiaopai/memory-mode";
+import { CarriedChips, PersonalAttachments, carriedReferences, type CarriedSource } from "@/features/xiaopai/personal-attachments";
+import type { DroppedFile } from "@/features/xiaopai/file-upload";
 import type { Api, CategoryAdopted, CategoryCandidate, CategoryConfirmationDraft, CreatedCategory } from "./contracts";
 
-type ReadableRun = { session_id: string; goal?: string; conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; status: Exclude<PaiRunStatus, "hidden">; history_hidden?: false; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
+type PersonalSourceReceipt = { artifact_id: string; expected_revision: number; category_id: string; data_category: string };
+type ReadableRun = { session_id: string; goal?: string; versions?: { personal_sources?: PersonalSourceReceipt[] }; conversation?: {previous_run_id:string|null;next_run_id:string|null}; process?: RunProcessData; reconciliation?: unknown; run_id: string; status: Exclude<PaiRunStatus, "hidden">; history_hidden?: false; cancel_epoch: number; reverted: boolean; error_code?: string; result?: { summary?: string; unfinished?: string[]; result?: Record<string, unknown> } };
 type Run = ReadableRun | PaiHiddenRun;
 type Event = { sequence: number; event: { type: string; key?: string; version?: string; questions?: Question[] } };
 type Pending = { path: string; body: unknown };
@@ -80,6 +84,14 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
   const [material, setMaterial] = useState<{ runId: string; candidate: CategoryCandidate; sourceRun: Run } | null>(null);
   const [requestedSkills, setRequestedSkills] = useState<RequestedSkill[]>([]);
   const [memoryOff, setMemoryOff] = useState(false);
+  // D42/P91: registered sources this personal turn carries; the server rebinds each on send.
+  const [carried, setCarried] = useState<CarriedSource[]>([]);
+  const [attachOpen, setAttachOpen] = useState(false);
+  const [dropped, setDropped] = useState<DroppedFile | null>(null);
+  const dropFile = useCallback((file: File) => { setDropped({ file, nonce: Date.now() }); setAttachOpen(true); }, []);
+  const removeCarried = useCallback((artifactId: string) => setCarried(old => old.filter(item => item.artifact_id !== artifactId)), []);
+  // A new or another conversation starts without the previous composer's attachments.
+  const resetAttachments = useCallback(() => { setCarried([]); setDropped(null); setAttachOpen(false); }, []);
   const [historyVersion, setHistoryVersion] = useState(0);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -114,7 +126,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
     }).catch(() => { if (live) { setMaterial(null); materialDialog.current?.close(); setSavedCategory(null); savedDialog.current?.close(); } });
     return () => { live = false; };
   }, [api, materialRunId, activeRunId, activeSessionId]);
-  const [historyOpen, setHistoryOpen] = useState(() => fullPage && typeof window !== "undefined" && window.innerWidth >= 1000);
+  const [historyOpen, setHistoryOpen, resetHistory] = useHistoryRail(fullPage);
   const [backgroundRun, setBackgroundRun] = useState<string | null>(null);
   const [candidates, setCandidates] = useState<CategoryCandidate[]>([]);
   const [adoptions, setAdoptions] = useState<{ proof: CategoryAdopted; category: CreatedCategory }[]>([]);
@@ -149,7 +161,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
     setQuestionDialog(false); questionIdentity.current = null;
   }, []);
   const sourceUnavailable = useCallback(() => {
-    clearResumes(); clearPaiComposerDrafts(principalId); setGoal(""); request.current = null; setPending(null);
+    clearResumes(); clearPaiComposerDrafts(principalId); setGoal(""); setCarried([]); setDropped(null); request.current = null; setPending(null);
     setConfirmationDrafts({}); clearSelection(); setBusy(false);
     setError("当前来源或运行范围无法核对，已清除旧资料；请重新读取。");
   }, [clearSelection, clearResumes, principalId, setGoal]);
@@ -256,7 +268,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
   async function read(action: () => Promise<unknown>, clearRun = false) {
     if (lock.current) return;
     lock.current = true; setBusy(true); setError("");
-    if (clearRun) { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); }
+    if (clearRun) { clearSelection(); resetHistory(); }
     try { await action(); }
     catch (failure) { if ([401, 403].includes((failure as { status?: number }).status ?? 0)) sourceUnavailable(); setError(failure instanceof Error ? failure.message : "读取暂不可用。"); setCandidates([]); setAdoptions([]); setQuestions([]); setQuestionDialog(false); }
     finally { lock.current = false; setBusy(false); }
@@ -268,7 +280,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
     lock.current = true; generation.current++; setBusy(true); setError(""); setNotice("");
     request.current = value; setPending(value);
     setQuestionDialog(false);
-    if (value.path === root) { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); }
+    if (value.path === root) { clearSelection(); resetHistory(); }
     try {
       const result = await api<{ run_id: string; execution_state?: string; status?: string; answer_ref?: string }>(value.path, value.body);
       if (!mounted.current) return;
@@ -281,7 +293,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       setNotice(result.execution_state === "durable_runtime_unavailable"
         ? "运行已保存，持久执行服务暂不可用，尚未完成模型执行。" : "");
       if (answeredRunId) setNotice("答复已提交，正在等待继续执行；无需重复答复。");
-      if (value.path === root) { setGoal(""); setRequestedSkills([]); }
+      if (value.path === root) { setGoal(""); setRequestedSkills([]); setCarried([]); setDropped(null); setAttachOpen(false); }
       if (!answeredRunId) setRun(null); setCandidates([]); setAdoptions([]); setQuestions([]);
       await readRun(result.run_id, "live");
       setHistoryVersion(value => value + 1);
@@ -300,12 +312,12 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
     <div className={styles.layout}>
       <aside className={styles.history} aria-label="小Pai会话列表">
         <div className={styles.historyHeading}><strong>会话</strong><button type="button" className={styles.historyBack} onClick={() => setHistoryOpen(false)}>返回对话</button></div>
-        <Button variant="ghost" className={styles.newWork} disabled={busy || !!pending} onClick={() => { clearSelection(); setHistoryOpen(fullPage && window.innerWidth >= 1000); composer.current?.focus(); }}><Plus size={14} aria-hidden="true" />新对话</Button>
-        <SessionHistory api={api} scope={{ categoryId: null }} principalId={principalId} currentSessionId={sessionId} currentRunId={selectedRunId} refreshVersion={historyVersion} disabled={busy || !!pending} onClearSelection={clearSelection} onPermissionDenied={sourceUnavailable} onSelectRun={(id, sid) => { clearSelection(); selectedSession.current = sid; setSessionId(sid); setHistoryOpen(fullPage && window.innerWidth >= 1000); void read(() => readRun(id, "restore", sid)); }} />
+        <Button variant="ghost" className={styles.newWork} disabled={busy || !!pending} onClick={() => { clearSelection(); resetAttachments(); resetHistory(); composer.current?.focus(); }}><Plus size={14} aria-hidden="true" />新对话</Button>
+        <SessionHistory api={api} scope={{ categoryId: null }} principalId={principalId} currentSessionId={sessionId} currentRunId={selectedRunId} refreshVersion={historyVersion} disabled={busy || !!pending} onClearSelection={clearSelection} onPermissionDenied={sourceUnavailable} onSelectRun={(id, sid) => { clearSelection(); resetAttachments(); selectedSession.current = sid; setSessionId(sid); resetHistory(); void read(() => readRun(id, "restore", sid)); }} />
         <p className={styles.historyPrivacy}>私人会话 · 仅你可见</p>
       </aside>
       <div className={styles.conversation}>
-    <PaiScope onBackground={active ? () => { if (onBackground) onBackground(); else { background.current = run.run_id; setBackgroundRun(run.run_id); } setQuestionDialog(false); setNotice("已在后台继续，可从会话记录返回。"); } : undefined} actions={headerActions} scope="个人工作" skills={skills} hasRun={!!run && run.status !== "hidden"} title={runGoal} disabled={busy || !!pending} onNewConversation={() => { clearSelection(); setGoal(""); setHistoryOpen(fullPage && window.innerWidth >= 1000); composer.current?.focus(); }} historyOpen={historyOpen} onHistoryToggle={() => setHistoryOpen(value => !value)} />
+    <PaiScope onBackground={active ? () => { if (onBackground) onBackground(); else { background.current = run.run_id; setBackgroundRun(run.run_id); } setQuestionDialog(false); setNotice("已在后台继续，可从会话记录返回。"); } : undefined} actions={headerActions} scope="个人工作" skills={skills} hasRun={!!run && run.status !== "hidden"} title={runGoal} disabled={busy || !!pending} onNewConversation={() => { clearSelection(); resetAttachments(); setGoal(""); resetHistory(); composer.current?.focus(); }} historyOpen={historyOpen} onHistoryToggle={() => setHistoryOpen(value => !value)} />
         <PaiContextBar scope={"通用对话"} control={contextControl}/>
         {(savedCategory || material || workProducts.openProduct) && <PaiMobileWorkspaceSwitch view="editor" onClick={() => setMobileView("editor")} />}
         <div className={styles.thread} aria-label="小Pai 对话线程">
@@ -319,7 +331,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       <ConversationHistory api={api} root={root} sessionId={run.session_id} previousRunId={run.conversation?.previous_run_id ?? null} onUnavailable={sourceUnavailable} onOpen={id => { void read(() => readRun(id)); }} renderMaterials={historyRun => <><PersonalRunMaterials api={api} runId={historyRun.run_id} onUnavailable={sourceUnavailable}
         onOpenCandidate={(runId, candidate) => { void read(async () => { const restored = await readRun(runId); if (!restored) return; setMobileView("editor"); setMaterial({ runId, candidate, sourceRun: restored }); requestAnimationFrame(() => materialDialog.current?.show()); }); }}
         onOpenCategory={(runId, proof, category) => { void read(async () => { const restored = await readRun(runId); if (!restored) return; setMobileView("editor"); setSavedCategory({ ...category, receiptId: proof.receipt_id }); requestAnimationFrame(() => savedDialog.current?.show()); }); }} /><WorkProductActions run={historyRun} items={workProducts.items} busy={workProducts.busy} onOpen={kind => { void workProducts.openFromRun(historyRun, kind).then(product => { if (product) setMobileView("editor"); }); }} /></>} />
-      {runGoal && <PaiMessage from="user"><PaiGoal value={runGoal}/></PaiMessage>}
+      {runGoal && <PaiMessage from="user"><PaiGoal value={runGoal}/>{!!run.versions?.personal_sources?.length && <p className="mt-1 text-xs text-muted-foreground">携带 {run.versions.personal_sources.length} 份资料 · 来自 {new Set(run.versions.personal_sources.map(item => item.category_id)).size} 个品类</p>}</PaiMessage>}
       <PaiMessage from="pai">
       <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root={root} presentation="conversation" onUnavailable={sourceUnavailable} />
       {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
@@ -355,10 +367,12 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       onReturnFocus={() => answerAnchor.current?.focus()} />}
         </div>
         <div className={styles.composer}>
-          {run && run.status !== "hidden" && <div className={styles.continuation}><RunContinuation onStop={active ? () => { void send({ path: `${root}/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root={root} run={run} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async (id, sid) => { if (sid) { clearSelection(); selectedSession.current = sid; setSessionId(sid); } await readRun(id, "restore", sid); setHistoryVersion(value => value + 1); }} /></div>}
-          {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send({ path: root, body: { goal, idempotency_key: crypto.randomUUID(), sources: [], ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(memoryOff ? { memory_off: true } : {}) } })}
+          {run && run.status !== "hidden" && <div className={styles.continuation}><RunContinuation additionalSources={carriedReferences(carried)} sourceChips={<CarriedChips value={carried} onRemove={removeCarried} disabled={busy || !!pending}/>} onFileDrop={dropFile}
+            sourceTools={<PersonalAttachments api={api} principalId={principalId} value={carried} onChange={setCarried} open={attachOpen} onOpenChange={setAttachOpen} dropped={dropped} disabled={busy || !!pending}/>} onStop={active ? () => { void send({ path: `${root}/${run.run_id}/cancel`, body: {} }); } : undefined} presentation="composer" answerActions={!!run.result?.summary && !run.reconciliation} onAnswerExclusions={setAnswerExclusions} disabled={busy || !!pending} key={`continue:${run.run_id}`} api={api} root={root} run={run} principalId={principalId} onUnavailable={sourceUnavailable} onOpen={async (id, sid) => { setCarried([]); setDropped(null); setAttachOpen(false); if (sid) { clearSelection(); selectedSession.current = sid; setSessionId(sid); } await readRun(id, "restore", sid); setHistoryVersion(value => value + 1); }} /></div>}
+          {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send({ path: root, body: { goal, idempotency_key: crypto.randomUUID(), sources: carriedReferences(carried), ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(memoryOff ? { memory_off: true } : {}) } })}
             disabled={busy || !!pending} inputRef={composer}
-            tools={<><SkillPicker api={api} resource="v1/personal/agent-skills" value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/><MemoryOffStart checked={memoryOff} onChange={setMemoryOff} disabled={busy || !!pending}/><PaiCarry scope="个人工作" objects={requestedSkills.map(skill => `优先技能 ${skillTitle(skill.key)} · ${skill.version}`)} /></>} /></div>}
+            attachments={<CarriedChips value={carried} onRemove={removeCarried} disabled={busy || !!pending}/>} onFileDrop={dropFile}
+            tools={<><PersonalAttachments api={api} principalId={principalId} value={carried} onChange={setCarried} open={attachOpen} onOpenChange={setAttachOpen} dropped={dropped} disabled={busy || !!pending}/><SkillPicker api={api} resource="v1/personal/agent-skills" value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/><MemoryOffStart checked={memoryOff} onChange={setMemoryOff} disabled={busy || !!pending}/><PaiCarry scope="个人工作" objects={[...carried.map(item => `${item.title} · 固定版本 ${item.expected_revision}${item.category ? ` · ${item.category}` : ""}`), ...requestedSkills.map(skill => `优先技能 ${skillTitle(skill.key)} · ${skill.version}`)]} /></>} /></div>}
         </div>
       </div>
     </div>

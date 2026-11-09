@@ -1,0 +1,20 @@
+{
+  "purpose": "本地合成环境的真人登录走查种子（D214）。只能用于带标记的独立 pdos_test；不是任何真实人员或真实账户，口令只为本地走查生成，不得用于其他系统。",
+  "tenant": {
+    "name": "sign-in-walkthrough",
+    "category": "轮胎充气泵（合成走查）",
+    "purpose": "演示租户开通：首个管理员与首个品类。合成数据，不代表真实品类资料。"
+  },
+  "administrator": {
+    "login_name": "walk-admin",
+    "display_name": "走查管理员（合成）",
+    "password": "walk-qTJBFSggncto-klCa81I2989"
+  },
+  "members": [
+    {
+      "login_name": "walk-engineer",
+      "display_name": "走查工程师（合成）",
+      "password": "walk-JbyxNqHy9w8X9h0JqZEwhzDV"
+    }
+  ]
+}

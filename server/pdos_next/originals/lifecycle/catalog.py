@@ -1284,7 +1284,17 @@ COVERED_COLUMNS = {
         "created_at",
         "category_id",
     ),
-    "login_sessions": ("token_hash", "tenant_id", "principal_id", "expires_at", "revoked"),
+    "login_sessions": (
+        "token_hash",
+        "tenant_id",
+        "principal_id",
+        "expires_at",
+        "revoked",
+        "origin",
+        "issued_at",
+        "last_seen_at",
+        "idle_timeout_seconds",
+    ),
     "manufacturing_baseline_document_links": (
         "product_id",
         "project_id",
@@ -5093,6 +5103,67 @@ COVERED_COLUMNS["project_set_links"] = (
     "tenant_id",
     "created_at",
 )
+# Project team (P34-1): identity, role and configuration bookkeeping only.
+COVERED_COLUMNS["project_role_catalog_versions"] = (
+    "revision",
+    "roles",
+    "author_id",
+    "request_key",
+    "request_sha256",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_team_changes"] = (
+    "project_id",
+    "revision",
+    "source",
+    "author_id",
+    "request_key",
+    "request_sha256",
+    "changes",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_members"] = (
+    "project_id",
+    "principal_id",
+    "joined_at",
+    "added_by",
+    "joined_change_id",
+    "left_at",
+    "removed_by",
+    "left_change_id",
+    "departed_roles",
+    "handover_pending",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_member_roles"] = (
+    "project_id",
+    "member_id",
+    "role_key",
+    "is_lead",
+    "change_id",
+    "id",
+    "tenant_id",
+    "created_at",
+)
+COVERED_COLUMNS["project_member_audiences"] = (
+    "project_id",
+    "member_id",
+    "object_type",
+    "subject_id",
+    "owner_id",
+    "principal_id",
+    "inserted",
+    "released_at",
+    "id",
+    "tenant_id",
+    "created_at",
+)
 COVERED_COLUMNS["project_governance_events"] = (
     "product_id",
     "project_id",
@@ -5399,5 +5470,86 @@ COVERED_COLUMNS.update({
     "memory_tenant_policies": (
         "revision", "work_state_idle_days", "set_by", "request_key", "request_sha256",
         "id", "tenant_id", "created_at",
+    ),
+})
+# Human sign-in (D214/D86/D192): identity and session bookkeeping, no source body.
+COVERED_COLUMNS.update(
+    {
+        "human_credentials": (
+            "principal_id",
+            "login_name",
+            "password_hash",
+            "password_changed_at",
+            "created_by",
+            "id",
+            "tenant_id",
+            "created_at",
+        ),
+        "account_invitations": (
+            "principal_id",
+            "purpose",
+            "token_hash",
+            "expires_at",
+            "used_at",
+            "revoked_at",
+            "created_by",
+            "id",
+            "tenant_id",
+            "created_at",
+        ),
+        "account_events": (
+            "subject_id",
+            "actor_id",
+            "kind",
+            "detail",
+            "id",
+            "tenant_id",
+            "created_at",
+        ),
+        "sign_in_attempts": ("id", "created_at", "login_key", "source_key", "succeeded"),
+    }
+)
+# LangGraph checkpoint store (D58; P78 item 3; D193). A separate database holding
+# only in-run graph state: business facts, receipts, events and conversation memory
+# are in the tables above, so a finished Run never reads its checkpoints again.
+# Retained 30 days after the owner's newest checkpoint, purged daily, never while
+# the owning Run or embedding batch is still open (workflows/checkpoint_retention.py).
+# As with COVERED_COLUMNS, an unknown table or column in that database denies the
+# purge instead of leaving uncovered data behind.
+CHECKPOINT_RETENTION_DAYS = 30
+CHECKPOINT_COVERED_COLUMNS = {
+    "checkpoint_migrations": ("v",),
+    "checkpoints": (
+        "thread_id",
+        "checkpoint_ns",
+        "checkpoint_id",
+        "parent_checkpoint_id",
+        "type",
+        "checkpoint",
+        "metadata",
+    ),
+    "checkpoint_blobs": ("thread_id", "checkpoint_ns", "channel", "version", "type", "blob"),
+    "checkpoint_writes": (
+        "thread_id",
+        "checkpoint_ns",
+        "checkpoint_id",
+        "task_id",
+        "idx",
+        "channel",
+        "type",
+        "blob",
+        "task_path",
+    ),
+}
+# Every table holding checkpoint content, keyed by (thread_id, checkpoint_ns).
+CHECKPOINT_PURGED = ("checkpoint_writes", "checkpoint_blobs", "checkpoints")
+
+# D56 export audit rows: scope identifiers, counts and the delivered file digest.
+COVERED_COLUMNS.update({
+    "export_audits": (
+        "id", "tenant_id", "created_at", "actor_id", "category_id", "product_id",
+        "project_id", "view", "scope", "row_count", "ai_row_count", "ai_cell_count",
+        "contains_ai", "sheet_rows", "file_format", "filename", "content_sha256",
+        "byte_size", "marker_version",
     ),
 })

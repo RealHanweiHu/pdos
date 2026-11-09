@@ -1,0 +1,107 @@
+{
+  "item": "D248",
+  "method": "Read-only pass over every model call in the uncommitted per-run files (main checkout docs/reports/evidence/<batch>/live/runs/*.json): ratio = result.usage.input_tokens / result.context_budget.estimated_total; nearest-rank percentiles; isolation from execution_binding.isolation (main vs assistant_extract/assistant_compare). admission = context_budget.admission_tokens; focus = F. Counts differ from result.md §3.3 (418 calls), which used the CTX suite only.",
+  "run_files": {
+    "20261101": 244,
+    "20261105": 93
+  },
+  "protocols": [
+    "openai-compatible"
+  ],
+  "model": "MiniMax-M3 (openai-compatible), both batches",
+  "ratios": {
+    "20261101/isolated": {
+      "calls": 890,
+      "p50": 0.939,
+      "p90": 0.946,
+      "p95": 0.948,
+      "max": 0.967,
+      "min": 0.83,
+      "admission_below_actual": 0,
+      "worst_actual_over_admission": 0.841,
+      "actual_over_focus": 0
+    },
+    "20261101/main": {
+      "calls": 739,
+      "p50": 1.098,
+      "p90": 1.139,
+      "p95": 1.162,
+      "max": 1.188,
+      "min": 1.009,
+      "admission_below_actual": 34,
+      "worst_actual_over_admission": 1.028,
+      "actual_over_focus": 0
+    },
+    "20261105/isolated": {
+      "calls": 635,
+      "p50": 0.939,
+      "p90": 0.946,
+      "p95": 0.949,
+      "max": 0.96,
+      "min": 0.717,
+      "admission_below_actual": 0,
+      "worst_actual_over_admission": 0.835,
+      "actual_over_focus": 0
+    },
+    "20261105/main": {
+      "calls": 506,
+      "p50": 1.104,
+      "p90": 1.166,
+      "p95": 1.177,
+      "max": 1.211,
+      "min": 0.958,
+      "admission_below_actual": 54,
+      "worst_actual_over_admission": 1.048,
+      "actual_over_focus": 0
+    },
+    "all/isolated": {
+      "calls": 1525,
+      "p50": 0.939,
+      "p90": 0.946,
+      "p95": 0.948,
+      "max": 0.967,
+      "min": 0.717,
+      "admission_below_actual": 0,
+      "worst_actual_over_admission": 0.841,
+      "actual_over_focus": 0
+    },
+    "all/main": {
+      "calls": 1245,
+      "p50": 1.099,
+      "p90": 1.156,
+      "p95": 1.169,
+      "max": 1.211,
+      "min": 0.958,
+      "admission_below_actual": 88,
+      "worst_actual_over_admission": 1.048,
+      "actual_over_focus": 0
+    }
+  },
+  "main_options": {
+    "current: floor 1.15": {
+      "admission_below_actual": 88,
+      "newly_over_focus": 0,
+      "of_calls": 1245
+    },
+    "floor 1.18 (~main p95)": {
+      "admission_below_actual": 20,
+      "newly_over_focus": 59,
+      "of_calls": 1245
+    },
+    "floor 1.22 (main max 1.211, rounded up)": {
+      "admission_below_actual": 0,
+      "newly_over_focus": 110,
+      "of_calls": 1245
+    },
+    "design 6.1 literally: ratio p50 1.10 x 15% = floor 1.265": {
+      "admission_below_actual": 0,
+      "newly_over_focus": 156,
+      "of_calls": 1245
+    },
+    "estimator x1.12 tools, x1.06 rest, then 1.15": {
+      "admission_below_actual": 0,
+      "newly_over_focus": 155,
+      "of_calls": 1245
+    }
+  }
+}

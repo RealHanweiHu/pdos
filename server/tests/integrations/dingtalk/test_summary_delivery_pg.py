@@ -8,6 +8,7 @@ model skill/wallet or provider is created for delivery. All facts use native com
 import asyncio
 import os
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import nullcontext
 from datetime import timedelta
 from types import SimpleNamespace as NS
 from uuid import UUID, uuid4
@@ -101,6 +102,12 @@ def summary_channel(summary_work, request, monkeypatch):
         }
     monkeypatch.setattr(setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
     monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.heartbeat", lambda *_a: None)
+    # D243 (9f91e89c): advance() now enters the Activity cancellation shield; outside a
+    # Temporal Activity it needs the same stand-ins as heartbeat.
+    monkeypatch.setattr(
+        "pdos_next.agent.kernel.activities.activity.shield_thread_cancel_exception", nullcontext
+    )
+    monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.is_cancelled", lambda: False)
     activity = KernelActivities(
         setup.engine,
         checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],

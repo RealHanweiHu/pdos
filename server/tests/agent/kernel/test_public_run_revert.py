@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent.kernel import persistence
 from pdos_next.agent.kernel.bindings import ModelBinding, SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.disclosure import disclosure_digest
 from pdos_next.agent.kernel.domain_adapter import DomainCommands
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentSession
 from pdos_next.agent.kernel.qualification_binding import model_identity, tool_identity
@@ -23,9 +24,12 @@ from tests.agent.kernel.test_transactions import run
 def claim_ledger(setup, artifact):
     """Synthetic provider output; the real adapter writes the Claim and its receipt."""
     f = ledger()
+    # The run below is page-triggered; since 10-17 (0a760ae0) the store also checks
+    # that the scope's trigger matches the run's.
     f.scope = replace(
         f.scope, tenant_id=setup.tenant, category_id=setup.category,
         requester_id=setup.human, writer_id=setup.agent, product_id=setup.product,
+        trigger="page",
     )
     skill = f.catalog._skills["public_research"]
     bound = SkillBinding(
@@ -33,7 +37,9 @@ def claim_ledger(setup, artifact):
     )
     binding = ModelBinding(
         model_version=f.route.version, model_route_digest=f.route.digest,
-        tool_definitions_digest=digest(f.registry.definitions()), prompt_digest=digest("prefix"),
+        # The call discloses what its loaded skill and bound scope allow (P76 item 4).
+        tool_definitions_digest=disclosure_digest(f.registry, "main", skill.operations, f.scope),
+        prompt_digest=digest("prefix"),
         isolation="main", cancel_epoch=0, loaded_skills=(bound,),
     )
     for name in ("tenant_id", "category_id", "requester_id", "writer_id", "product_id"):

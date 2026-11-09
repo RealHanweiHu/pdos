@@ -123,3 +123,11 @@ test("global navigation clears professional object selections across destination
   const href = globalHref({area:"projects",categoryId:category,projectId:""}, "?area=cockpit&build=b&request=r&run=t&issue=i&change=c&feedback=f&publication=p");
   for (const key of ["build","request","run","issue","change","feedback","publication"]) assert.equal(new URLSearchParams(href).has(key), false);
 });
+
+test("⌘K 留下的一次性新建意图不会随换页带到别的页面", () => {
+  const next = new URLSearchParams(globalHref({ area: "work", categoryId: "", projectId: "" }, `?area=category&category=${category}&focus=proposals&create=proposal`));
+  assert.equal(next.get("area"), "work");
+  assert.equal(next.has("create"), false);
+  const cockpit = new URLSearchParams(globalHref({ area: "cockpit", categoryId: category, projectId: project }, `?area=cockpit&category=${category}&project=${project}&create=task`));
+  assert.equal(cockpit.has("create"), false);
+});

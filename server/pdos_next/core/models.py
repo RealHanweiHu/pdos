@@ -57,15 +57,140 @@ class Principal(Row, Base):
 
 
 class LoginSession(Base):
+    """A browser or tool session. Password sessions also expire after idle time (D214)."""
+
     __tablename__ = "login_sessions"
     token_hash: Mapped[str] = mapped_column(String(64), primary_key=True)
     tenant_id: Mapped[UUID]
     principal_id: Mapped[UUID]
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     revoked: Mapped[bool] = mapped_column(Boolean, default=False)
+    origin: Mapped[str] = mapped_column(String(16), default="tool", server_default="tool")
+    issued_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=now, server_default=text("now()")
+    )
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    idle_timeout_seconds: Mapped[int | None] = mapped_column(Integer)
     __table_args__ = (
         ForeignKeyConstraint(
             ["tenant_id", "principal_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        Index("ix_login_sessions_principal", "tenant_id", "principal_id"),
+        CheckConstraint("origin IN ('tool','password')", name="login_session_origin"),
+        CheckConstraint(
+            "idle_timeout_seconds IS NULL OR idle_timeout_seconds > 0", name="login_session_idle"
+        ),
+        CheckConstraint(
+            "origin <> 'password' OR idle_timeout_seconds IS NOT NULL",
+            name="login_session_password_idle",
+        ),
+    )
+
+
+class HumanCredential(Row, Base):
+    """Sign-in name and password hash of one person. Only an administrator creates it."""
+
+    __tablename__ = "human_credentials"
+    principal_id: Mapped[UUID]
+    login_name: Mapped[str] = mapped_column(String(64), unique=True)
+    password_hash: Mapped[str | None] = mapped_column(String(255))
+    password_changed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "principal_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "principal_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "created_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        CheckConstraint(
+            "login_name ~ '^[a-z0-9][a-z0-9._-]{2,63}$'", name="human_credential_login_shape"
+        ),
+        CheckConstraint(
+            "password_hash IS NULL OR password_hash LIKE 'scrypt$%'",
+            name="human_credential_password_shape",
+        ),
+        CheckConstraint(
+            "(password_hash IS NULL) = (password_changed_at IS NULL)",
+            name="human_credential_password_time",
+        ),
+    )
+
+
+class AccountInvitation(Row, Base):
+    """One-time link that sets a password: an invitation or an administrator reset (P78)."""
+
+    __tablename__ = "account_invitations"
+    principal_id: Mapped[UUID]
+    purpose: Mapped[str] = mapped_column(String(16))
+    token_hash: Mapped[str] = mapped_column(String(64), unique=True)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    created_by: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "principal_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "created_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        Index("ix_account_invitations_principal", "tenant_id", "principal_id"),
+        CheckConstraint("purpose IN ('invite','reset')", name="account_invitation_purpose"),
+        CheckConstraint("token_hash ~ '^[0-9a-f]{64}$'", name="account_invitation_token_hash"),
+        CheckConstraint(
+            "used_at IS NULL OR revoked_at IS NULL", name="account_invitation_single_end"
+        ),
+        CheckConstraint(
+            "expires_at > created_at AND expires_at <= created_at + interval '72 hours'",
+            name="account_invitation_72_hours",
+        ),
+    )
+
+
+class AccountEvent(Row, Base):
+    """Append-only account lifecycle record. Never holds a password, hash or token."""
+
+    __tablename__ = "account_events"
+    subject_id: Mapped[UUID]
+    actor_id: Mapped[UUID]
+    kind: Mapped[str] = mapped_column(String(40))
+    detail: Mapped[dict] = mapped_column(JSONB, default=dict)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "subject_id"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "actor_id"], ["principals.tenant_id", "principals.id"]),
+        Index("ix_account_events_subject", "tenant_id", "subject_id"),
+        CheckConstraint(
+            "kind IN ('account.create','invitation.issue','invitation.accept','password.reset',"
+            "'password.set','account.deactivate','account.reactivate','sessions.revoke',"
+            "'administrator.grant','administrator.revoke','sign_in','sign_out')",
+            name="account_event_kind",
+        ),
+        CheckConstraint("jsonb_typeof(detail) = 'object'", name="account_event_detail"),
+    )
+
+
+class SignInAttempt(Base):
+    """Pre-tenant throttle ledger. Both keys are SHA-256 digests, never the typed values."""
+
+    __tablename__ = "sign_in_attempts"
+    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    login_key: Mapped[str] = mapped_column(String(64))
+    source_key: Mapped[str] = mapped_column(String(64))
+    succeeded: Mapped[bool] = mapped_column(Boolean)
+    __table_args__ = (
+        Index("ix_sign_in_attempts_login", "login_key", "created_at"),
+        Index("ix_sign_in_attempts_source", "source_key", "created_at"),
+        CheckConstraint(
+            "login_key ~ '^[0-9a-f]{64}$' AND source_key ~ '^[0-9a-f]{64}$'",
+            name="sign_in_attempt_keys",
         ),
     )
 
@@ -1176,7 +1301,9 @@ import pdos_next.domain.projects.external_wait.models  # noqa: E402,F401
 import pdos_next.domain.projects.risk.models  # noqa: E402,F401
 
 from pdos_next.domain.quality.field_feedback.models import (  # noqa: E402,F401
-    FieldFeedbackVersion, FieldFeedbackCurrent, FieldResponseRecord,
+    FieldFeedbackVersion,
+    FieldFeedbackCurrent,
+    FieldResponseRecord,
 )
 
 import pdos_next.domain.my_work.inbox.models  # noqa: E402,F401
@@ -1197,3 +1324,8 @@ import pdos_next.domain.knowledge.assistant_models  # noqa: E402,F401
 import pdos_next.integrations.dingtalk.models  # noqa: E402,F401
 
 import pdos_next.integrations.dingtalk.summary_models  # noqa: E402,F401
+
+import pdos_next.domain.projects.team.models  # noqa: E402,F401
+
+# D56 export audit rows (append-only; human reader only).
+import pdos_next.domain.exports.models  # noqa: E402,F401

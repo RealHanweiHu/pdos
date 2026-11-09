@@ -622,6 +622,14 @@ def _covered(session, run, body):
 
 
 def check_frozen(session, run, ctx):
+    from pdos_next.agent.enterprise_search.assistant_ledger import one_pass
+
+    # recheck() and _project() each walk the lineage; prove each sealed read once (D268).
+    with one_pass(session):
+        _check_frozen(session, run, ctx)
+
+
+def _check_frozen(session, run, ctx):
     from .context_restart import access_state
 
     access = run.versions.get("work_state_access", {})

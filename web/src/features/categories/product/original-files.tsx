@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowClockwise, DownloadSimple, FileText, ShieldCheck, UploadSimple, WarningCircle } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
+import { UPLOAD_ACCEPT } from "@/lib/pai-upload";
 import { journalStateNames, originalActions, originalReason, originalScope, originalTime, parseStateNames, safeOriginalFailure, scanReplyNames, scanStateNames, securityFor, validWithdrawPreview, withdrawCommand, type OriginalApi, type OriginalFile, type OriginalPending, type WithdrawPreview } from "@/lib/original-security";
 
 type Props = { product: { id: string; revision: number }; originals: OriginalFile[]; api: OriginalApi; onSaved: () => Promise<void> };
@@ -87,7 +88,7 @@ function OriginalPanel({ product, originals, api, onSaved }: Props) {
     {error && <p role="alert" className="my-3 text-sm text-destructive [overflow-wrap:anywhere]">{error}</p>}{notice && <p role="status" className="my-3 text-sm [overflow-wrap:anywhere]">{notice}</p>}
     {pending && <div className="mb-4 space-y-3 rounded-lg border border-primary p-3"><p className="text-sm">{pending.stage === "upload" ? "原上传结果待核对；本页暂存相同文件和请求，未把文件字节长期存入本机。核对完成前请保留此页面。" : pending.stage === "scan" ? "扫描请求结果待核对；不会另造一次扫描请求。" : "来源撤回请求结果待核对；核对完成前保留原请求与原因。"}</p><Button variant="outline" disabled={busy} onClick={() => void perform(() => pending)}>核对原{pending.stage === "upload" ? "上传" : pending.stage === "scan" ? "扫描" : pending.stage === "preview" ? "预览" : "撤回"}请求</Button></div>}
     <details><summary className="cursor-pointer font-medium">上传并保留资料原件</summary><form className="mt-4" onSubmit={event => { event.preventDefault(); upload(event.currentTarget); }}><fieldset disabled={!editing}>
-      <label>文件<input ref={fileInput} type="file" accept=".txt,.md,.pdf,.xlsx" required onChange={event => setFile(event.target.files?.[0] ?? null)}/></label>
+      <label>文件<input ref={fileInput} type="file" accept={UPLOAD_ACCEPT} required onChange={event => setFile(event.target.files?.[0] ?? null)}/></label>
       <label>来源说明<input value={label} required maxLength={200} onChange={event => setLabel(event.target.value)} placeholder="谁提供的，或来自哪里"/></label>
       <label>资料受众<select value={visibility} onChange={event => setVisibility(event.target.value)}><option value="private">仅我可见</option><option value="category">品类授权成员</option></select></label>
       <Button type="submit"><UploadSimple/>保存原件</Button><p className="subtle mt-3">保存不等于扫描通过；文件本身不写入本机长期草稿。未知回执先核对原请求。</p>

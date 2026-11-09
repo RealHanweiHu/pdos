@@ -78,6 +78,31 @@ export async function readInputSources(api: PaiSourcesApi, scope: PaiSourcesScop
   return value as unknown as PaiInputSources;
 }
 
+export type PaiPersonalSource = PaiInputSource & { category: { id: string; name: string | null } };
+export type PaiPersonalSources = { version: "personal-input-sources/v1"; principal_id: string; as_of: string; items: PaiPersonalSource[]; next_cursor: string | null };
+
+/** P91: registered sources the requester can read now, each with its actual category. */
+export async function readPersonalSources(api: PaiSourcesApi, principalId: string, options: PaiSourcePage = {}): Promise<PaiPersonalSources> {
+  if (!uuid(principalId)) invalid();
+  const page = pageInput(options), query = new URLSearchParams({ page_size: String(page.pageSize) });
+  if (page.cursor) query.set("cursor", page.cursor);
+  const value = await api<unknown>(`v1/personal/agent-input-sources?${query}`);
+  if (!object(value) || !keys(value, ["version", "principal_id", "as_of", "items", "next_cursor"]) || value.version !== "personal-input-sources/v1"
+    || !sameId(value.principal_id, principalId) || !timestamp(value.as_of) || !Array.isArray(value.items) || !nullableUuid(value.next_cursor)) invalid();
+  const rows = value.items as unknown[];
+  if (rows.length > page.pageSize) invalid();
+  const items = rows.map(row => {
+    if (!object(row) || !object(row.category) || !keys(row.category, ["id", "name"]) || !uuid(row.category.id) || !nullableText(row.category.name)) invalid();
+    const { category, ...head } = row;
+    if (!source(head)) invalid();
+    return { ...(head as PaiInputSource), category: category as PaiPersonalSource["category"] };
+  });
+  const ids = items.map(item => item.artifact_id.toLowerCase());
+  if (new Set(ids).size !== ids.length || items.some(item => sameId(item.artifact_id, page.cursor))) invalid();
+  if (value.next_cursor !== null && (items.length !== page.pageSize || !sameId(value.next_cursor, items.at(-1)?.artifact_id))) invalid();
+  return { ...(value as unknown as PaiPersonalSources), items };
+}
+
 /** Actual persisted read-set, including any server-bound sources; not an executed ContextSnapshot. */
 export async function readRunSourceBindings(api: PaiSourcesApi, scope: PaiSourcesScope, runId: string, expectedSessionId?: string): Promise<PaiRunSourceBindings> {
   const expected = expectedScope(scope);

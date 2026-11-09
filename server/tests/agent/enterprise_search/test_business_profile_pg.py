@@ -14,7 +14,11 @@ def test_native_source_planner_cost_and_warm_latency_without_jit(setup, record_p
         from dataclasses import replace
 
         statement = select(catalog().c.source_type)
-        compiled = statement.compile(dialect=setup.engine.dialect)
+        # The catalog now carries expanding IN parameters; render them so the
+        # EXPLAIN text has no __[POSTCOMPILE_...] placeholders.
+        compiled = statement.compile(
+            dialect=setup.engine.dialect, compile_kwargs={"render_postcompile": True}
+        )
         plan = session.connection().exec_driver_sql(
             "EXPLAIN (FORMAT JSON, SETTINGS) " + str(compiled), compiled.params
         ).scalar_one()[0]

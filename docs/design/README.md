@@ -13,7 +13,7 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 | 文档 | 作用 |
 |---|---|
 | [完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) | 2026-10-08 批准并冻结；产品、领域、体验、运行架构与验收（附录 A 操作、附录 B 验收场景）的唯一设计依据 |
-| [设计确认与决策记录](2026-10-08-pdos-next-design-confirmation.md) | 冻结后经用户确认的变更 P1–P34；与 v1.1 冲突时以较新的决策为准 |
+| [设计确认与决策记录](2026-10-08-pdos-next-design-confirmation.md) | 冻结后经用户确认的变更 P1–P91（最新 [P91 个人聊天携带附件](2026-10-08-pdos-next-design-confirmation.md#p91)）；与 v1.1 冲突时以较新的决策为准 |
 | [架构导读](2026-10-08-pdos-next-architecture-overview.md) | 汇总权威文档与实现现状的阅读入口，不新增权威 |
 | [AI 写入分级 DC-11](2026-09-20-ai-direct-write-tier-policy.md) | T0/T1/T2 政策，AGENTS.md 不可协商项 1 |
 | [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md) | LangGraph + Temporal 的统一运行规则 |

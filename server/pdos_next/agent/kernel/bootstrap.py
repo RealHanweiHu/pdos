@@ -190,9 +190,11 @@ class Bootstrap:
             data.product_id is not None
             or data.proposal_id is not None
             or getattr(data, "project_id", None) is not None
-            or data.sources
         ):
             raise DomainError("FORBIDDEN_SCOPE", "个人入口不能绑定业务对象。", 403)
+        # P91: a personal Run pins only sources its Human requester can read now,
+        # each resolved and rechecked in that source's own category.
+        from .personal_sources import category_context, resolve
         if data.proposal_id is not None:
             from pdos_next.domain.categories.preproject.access import proposal
             from pdos_next.domain.categories.preproject.views import read
@@ -209,14 +211,17 @@ class Bootstrap:
         for ref in data.sources:
             refs.append(
                 source_for(session, ctx, data.product_id, ref.artifact_id, ref.expected_revision)
+                if ctx.category_id is not None
+                else resolve(session, ctx, ref.artifact_id, ref.expected_revision)
             )
         reads = {}
         for artifact in refs:
             from pdos_next.domain.categories.preproject.claim_access import source_privacy
 
-            source_for(session, ctx, artifact.product_id, artifact.id, artifact.revision)
+            scoped = ctx if ctx.category_id is not None else category_context(ctx, artifact)
+            source_for(session, scoped, artifact.product_id, artifact.id, artifact.revision)
             private = private or source_privacy(
-                session, ctx, SimpleNamespace(source_kind="artifact", artifact_id=artifact.id)
+                session, scoped, SimpleNamespace(source_kind="artifact", artifact_id=artifact.id)
             ) != "shared"
             reads[artifact.id] = {
                 **SourceRead(

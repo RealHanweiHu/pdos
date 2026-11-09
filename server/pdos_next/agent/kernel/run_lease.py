@@ -9,12 +9,14 @@ the next safe point: before its next model call or tool call.
 
 import time
 from contextlib import contextmanager
+from contextvars import ContextVar
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.pool import NullPool
 
 _KEY = "xiaopai-run-attempt:"
 _TRY = text("SELECT pg_try_advisory_lock(hashtextextended(:key, 0))")
+_ATTEMPT = ContextVar("xiaopai_attempt_superseded", default=None)
 
 
 class AttemptSuperseded(BaseException):
@@ -57,3 +59,22 @@ def check_attempt(superseded):
     """Stop at a safe point when this attempt has been superseded."""
     if superseded is not None and superseded.is_set():
         raise AttemptSuperseded()
+
+
+@contextmanager
+def attempt_scope(superseded):
+    """Expose this attempt's stop signal to code that has no handle on its host.
+
+    The isolated children of a tool call run on hosts built once at startup, so the
+    Activity cannot hand them the signal directly (D257). They read it from here, and
+    threads they start copy it with their context.
+    """
+    token = _ATTEMPT.set(superseded)
+    try:
+        yield
+    finally:
+        _ATTEMPT.reset(token)
+
+
+def current_attempt():
+    return _ATTEMPT.get()

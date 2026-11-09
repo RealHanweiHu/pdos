@@ -21,9 +21,12 @@ from tests.agent.kernel.test_transactions import run
 
 
 def route():
+    # The route the bootstrap actually selects: P67 (D252) clamps the 524288 provider
+    # limit to OUTPUT_BUDGET (see the next test), and W1 configured a 64k window.
+    # The old uncapped output left no context focus at all.
     return ProviderRoute("openai-compatible", "https://api.minimax.cn/v1", "MiniMax-M3",
-        SecretStr("synthetic-only"), "MiniMax-M3", max_output_tokens=524288,
-        budget_policy="development_unlimited")
+        SecretStr("synthetic-only"), "MiniMax-M3", max_output_tokens=OUTPUT_BUDGET,
+        context_window_tokens=64_000, budget_policy="development_unlimited")
 
 
 def test_development_calls_exceed_old_caps_are_metered_once_and_explicit_stop_still_works(setup):

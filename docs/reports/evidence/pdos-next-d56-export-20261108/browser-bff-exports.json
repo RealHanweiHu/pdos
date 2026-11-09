@@ -1,0 +1,408 @@
+{
+  "cases": [
+    {
+      "case": "project-owner",
+      "reader": "human",
+      "status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "ca27d4fe3a25405f71d9e39d8fd86d7f3590cdb44ff5a0694b7ec6da12f7d106",
+      "export_id": "32b22281-dfa5-4c85-859c-02a522292fec",
+      "header_rows": "2",
+      "sheets": {
+        "任务": {
+          "rows": 2,
+          "source_labels": [
+            "人工"
+          ]
+        },
+        "风险与待决项": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "承诺": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "状态更新": {
+          "rows": 0,
+          "source_labels": []
+        }
+      },
+      "cover_first": "导出内容",
+      "aigc": {
+        "Label": "0",
+        "ContentProducer": "PDOS",
+        "ProduceID": "32b22281-dfa5-4c85-859c-02a522292fec",
+        "ContentPropagator": "PDOS",
+        "PropagateID": "32b22281-dfa5-4c85-859c-02a522292fec",
+        "ReservedCode1": "pdos-ai-label/v1",
+        "ReservedCode2": ""
+      },
+      "marker_version": "pdos-ai-label/v1",
+      "audit": {
+        "exporter": "Synthetic owner",
+        "view": "project",
+        "rows": 2,
+        "ai_rows": 0,
+        "ai_cells": 0,
+        "contains_ai": false,
+        "sha_matches_file": true
+      }
+    },
+    {
+      "case": "project-readonly",
+      "reader": "readonly",
+      "status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "c06000ef55704dbefab7779a48adb7bca886a6d86dfc1e607b0664ef3b00398f",
+      "export_id": "c92e3fd2-9b36-47e0-a614-464ffc85eeb1",
+      "header_rows": "2",
+      "sheets": {
+        "任务": {
+          "rows": 2,
+          "source_labels": [
+            "人工"
+          ]
+        },
+        "风险与待决项": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "承诺": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "状态更新": {
+          "rows": 0,
+          "source_labels": []
+        }
+      },
+      "cover_first": "导出内容",
+      "aigc": {
+        "Label": "0",
+        "ContentProducer": "PDOS",
+        "ProduceID": "c92e3fd2-9b36-47e0-a614-464ffc85eeb1",
+        "ContentPropagator": "PDOS",
+        "PropagateID": "c92e3fd2-9b36-47e0-a614-464ffc85eeb1",
+        "ReservedCode1": "pdos-ai-label/v1",
+        "ReservedCode2": ""
+      },
+      "marker_version": "pdos-ai-label/v1",
+      "audit": {
+        "exporter": "合成只读成员",
+        "view": "project",
+        "rows": 2,
+        "ai_rows": 0,
+        "ai_cells": 0,
+        "contains_ai": false,
+        "sha_matches_file": true
+      }
+    },
+    {
+      "case": "my-work-owner",
+      "reader": "human",
+      "status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "e6ce6a5960606c8bdb629e13ac95a1b87a809bf6318634433e2d8eb5fd80d549",
+      "export_id": "52542b6b-0ddd-4055-8f1f-12ec2b3116d3",
+      "header_rows": "0",
+      "sheets": {
+        "待我决定": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "待我接收": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "待我验收": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "外部等待": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "我的任务": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "我的承诺": {
+          "rows": 0,
+          "source_labels": []
+        }
+      },
+      "cover_first": "导出内容",
+      "aigc": {
+        "Label": "0",
+        "ContentProducer": "PDOS",
+        "ProduceID": "52542b6b-0ddd-4055-8f1f-12ec2b3116d3",
+        "ContentPropagator": "PDOS",
+        "PropagateID": "52542b6b-0ddd-4055-8f1f-12ec2b3116d3",
+        "ReservedCode1": "pdos-ai-label/v1",
+        "ReservedCode2": ""
+      },
+      "marker_version": "pdos-ai-label/v1",
+      "audit": {
+        "exporter": "Synthetic owner",
+        "view": "my_work",
+        "rows": 0,
+        "ai_rows": 0,
+        "ai_cells": 0,
+        "contains_ai": false,
+        "sha_matches_file": true
+      }
+    },
+    {
+      "case": "my-work-peer",
+      "reader": "peer",
+      "status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "de92ae8b5d64ee5e34d02c2a01853bbab983d63c2c373c27ea91b445d230ea41",
+      "export_id": "bf39d435-4f45-414b-b75e-d4718c838ac9",
+      "header_rows": "1",
+      "sheets": {
+        "待我决定": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "待我接收": {
+          "rows": 1,
+          "source_labels": [
+            "人工"
+          ]
+        },
+        "待我验收": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "外部等待": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "我的任务": {
+          "rows": 0,
+          "source_labels": []
+        },
+        "我的承诺": {
+          "rows": 0,
+          "source_labels": []
+        }
+      },
+      "cover_first": "导出内容",
+      "aigc": {
+        "Label": "0",
+        "ContentProducer": "PDOS",
+        "ProduceID": "bf39d435-4f45-414b-b75e-d4718c838ac9",
+        "ContentPropagator": "PDOS",
+        "PropagateID": "bf39d435-4f45-414b-b75e-d4718c838ac9",
+        "ReservedCode1": "pdos-ai-label/v1",
+        "ReservedCode2": ""
+      },
+      "marker_version": "pdos-ai-label/v1",
+      "audit": {
+        "exporter": "Synthetic peer",
+        "view": "my_work",
+        "rows": 1,
+        "ai_rows": 0,
+        "ai_cells": 0,
+        "contains_ai": false,
+        "sha_matches_file": true
+      }
+    },
+    {
+      "case": "bom-diff-owner",
+      "reader": "human",
+      "status": 200,
+      "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "sha256": "09c64decf0066b241ce99569381e3677a60b129ae6661262d24a67ddc0b589d4",
+      "export_id": "d3886b26-b55f-4077-b4e8-01ff6ae9116a",
+      "header_rows": "3",
+      "sheets": {
+        "BOM 差异": {
+          "rows": 1,
+          "source_labels": [
+            "人工"
+          ]
+        },
+        "修订信息": {
+          "rows": 2,
+          "source_labels": [
+            "人工"
+          ]
+        }
+      },
+      "cover_first": "导出内容",
+      "aigc": {
+        "Label": "0",
+        "ContentProducer": "PDOS",
+        "ProduceID": "d3886b26-b55f-4077-b4e8-01ff6ae9116a",
+        "ContentPropagator": "PDOS",
+        "PropagateID": "d3886b26-b55f-4077-b4e8-01ff6ae9116a",
+        "ReservedCode1": "pdos-ai-label/v1",
+        "ReservedCode2": ""
+      },
+      "marker_version": "pdos-ai-label/v1",
+      "audit": {
+        "exporter": "Synthetic owner",
+        "view": "bom_diff",
+        "rows": 3,
+        "ai_rows": 0,
+        "ai_cells": 0,
+        "contains_ai": false,
+        "sha_matches_file": true
+      }
+    },
+    {
+      "case": "bom-diff-readonly-private",
+      "reader": "readonly",
+      "status": 403,
+      "content_type": "application/json",
+      "body": {
+        "code": "FORBIDDEN_SCOPE",
+        "message": "固定配置或物料不在当前授权型号范围。",
+        "detail": {
+          "reason": "FORBIDDEN_SCOPE"
+        }
+      }
+    },
+    {
+      "case": "project-extra-param",
+      "reader": "human",
+      "status": 422,
+      "content_type": "application/json",
+      "body": {
+        "code": "VALIDATION_FAILED",
+        "message": "请只指定一个明确的导出范围。"
+      }
+    }
+  ],
+  "tenant_audit_rows": [
+    {
+      "exporter": "Synthetic owner",
+      "view": "my_work",
+      "rows": 0,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:48:22.393374+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "project",
+      "rows": 2,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:48:56.692548+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "project",
+      "rows": 2,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:49:20.743463+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "bom_diff",
+      "rows": 3,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:50:04.039734+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "project",
+      "rows": 2,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:50:50.011016+00"
+    },
+    {
+      "exporter": "合成只读成员",
+      "view": "project",
+      "rows": 2,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:50:50.414828+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "my_work",
+      "rows": 0,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:50:53.777077+00"
+    },
+    {
+      "exporter": "Synthetic peer",
+      "view": "my_work",
+      "rows": 1,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:50:57.006207+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "bom_diff",
+      "rows": 3,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:50:57.284184+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "project",
+      "rows": 2,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:51:08.567491+00"
+    },
+    {
+      "exporter": "合成只读成员",
+      "view": "project",
+      "rows": 2,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:51:08.899484+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "my_work",
+      "rows": 0,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:51:11.99549+00"
+    },
+    {
+      "exporter": "Synthetic peer",
+      "view": "my_work",
+      "rows": 1,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:51:15.580986+00"
+    },
+    {
+      "exporter": "Synthetic owner",
+      "view": "bom_diff",
+      "rows": 3,
+      "ai_rows": 0,
+      "ai_cells": 0,
+      "contains_ai": false,
+      "at": "2026-11-08 19:51:15.870087+00"
+    }
+  ]
+}

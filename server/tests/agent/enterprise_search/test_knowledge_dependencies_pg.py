@@ -264,8 +264,8 @@ def test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_
     assert len(selected) == 6
     statements, counts, durations = [], [], []
 
-    def counted(*_args):
-        statements.append(True)
+    def counted(_connection, _cursor, statement, *_args):
+        statements.append(statement)
 
     event.listen(setup.engine, "before_cursor_execute", counted)
     try:
@@ -289,5 +289,9 @@ def test_knowledge_dependency_rechecks_batch_claims_and_roots_with_bounded_warm_
     record_property("knowledge_dependency_queries_per_request", str(sorted(set(counts))))
     record_property("knowledge_dependency_sources", 6)
     record_property("knowledge_dependency_samples", len(durations))
-    assert set(counts) == {baseline} and baseline == 3
+    # One transaction-local `SET LOCAL jit=off` (enterprise_search.sources.prepare_read)
+    # precedes the three batched reads; the count stays constant as sources grow.
+    assert set(counts) == {baseline} and baseline == 4
+    assert statements[0] == "SET LOCAL jit=off"
+    assert statements.count("SET LOCAL jit=off") == 1
     assert p95 < 1.0

@@ -1,6 +1,7 @@
 """Enterprise READ tools over the existing immutable call ledger and source authority."""
 
 from copy import deepcopy
+from functools import partial
 from uuid import UUID
 
 from sqlalchemy import select
@@ -10,6 +11,7 @@ from pdos_next.agent.kernel.tool_arguments import tool_arguments
 from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
 
+from . import assistant_fanout as fanout
 from . import assistant_ledger as ledger
 from .assistant_schemas import (
     AssistantSearchInput,
@@ -251,6 +253,18 @@ class AssistantReadAdapter:
         actual, missing = self._current(scope, selected, body=True, allow_updated=inherited)
         rows, coverage, rejected = [], [], []
         failures = [{"citation_id": cid, "code": code} for cid, code in missing.items()]
+        isolated = [cid for cid in selected
+                    if cid in actual and actual[cid]["nature"] != "structured"]
+        if isolated and self.graph is None:
+            raise DomainError("SOURCE_UNAVAILABLE", "隔离提取执行端口尚未配置。")
+        # D257: the isolated children run side by side, at most `concurrency` at once,
+        # and are merged below in citation order, as the serial loop did.
+        outcomes = dict(zip(isolated, fanout.run(
+            [partial(self.graph, scope.child("assistant_extract", citation_ids={UUID(cid)}),
+                     selected[cid], actual[cid], data.question, call_id)
+             for cid in isolated],
+            getattr(self.graph, "concurrency", 1),
+        ), strict=True))
         for cid in selected:
             source = actual.get(cid)
             if source is None:
@@ -276,17 +290,8 @@ class AssistantReadAdapter:
                 )
                 coverage.append({"citation_id": cid, "complete": True, "kind": "structured"})
             else:
-                if self.graph is None:
-                    raise DomainError("SOURCE_UNAVAILABLE", "隔离提取执行端口尚未配置。")
-                try:
-                    outcome = self.graph(
-                        scope.child("assistant_extract", citation_ids={UUID(cid)}),
-                        selected[cid],
-                        source,
-                        data.question,
-                        call_id,
-                    )
-                except DomainError as error:
+                outcome, error = outcomes[cid]
+                if error is not None:
                     failures.append({"citation_id": cid, "code": error.code})
                     continue
                 rows.extend(outcome["rows"])

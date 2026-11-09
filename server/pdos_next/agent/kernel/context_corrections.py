@@ -348,9 +348,12 @@ def selected_reads(session, ctx, parent, state, incoming):
     )
     refs = {} if condition else {ref["artifact_id"]: dict(ref) for ref in parent.read_sources}
     fixed = {row["source_id"]: row for row in values(condition) if row["source_type"] == "artifact"}
+    # P91: a personal parent carries forward only the sources the server bound to it;
+    # each is rebound for the follow-up under the requester's current access.
+    bound = {str(ref["artifact_id"]) for ref in parent.read_sources}
     for identity, row in fixed.items():
         if (
-            parent.category_id is None
+            parent.category_id is None and str(identity) not in bound
             or parent.product_id is not None
             and row.get("product_id") not in {None, str(parent.product_id)}
         ):

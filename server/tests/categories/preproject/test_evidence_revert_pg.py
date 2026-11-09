@@ -10,6 +10,12 @@ from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from pdos_next.agent.kernel.bindings import SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.disclosure import (
+    CHAIN_KEY,
+    disclosure,
+    record_disclosure,
+    skill_operations,
+)
 from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
@@ -103,6 +109,22 @@ def drafting_model_source(work, fixture, arguments):
             assert enabled.enabled and not enabled.qualification_revoked
             assert enabled.qualified_skill_version == skill.version
             assert enabled.qualified_model_version == fixture.route.version
+        # Loading a second skill widens this call's disclosure. Record it the way the
+        # gateway does: the run keeps the earlier, narrower digest in its chain.
+        earlier = fixture.catalog._skills[fixture.source.skill.key]
+        widened = disclosure(
+            fixture.registry, "main", skill_operations([earlier, skill]), fixture.scope
+        )
+        run = session.get(AgentRun, fixture.scope.run_id)
+        versions = dict(run.versions)
+        narrower = disclosure(fixture.registry, "main", skill_operations([earlier]), fixture.scope)
+        assert CHAIN_KEY in versions or digest(narrower) == versions["tool_definitions"]["main"]
+        for listed in ([narrower] if CHAIN_KEY not in versions else []) + [widened]:
+            versions[CHAIN_KEY] = record_disclosure(
+                versions, "main", [item["name"] for item in listed], digest(listed)
+            )
+        versions["tool_definitions"] = {**versions["tool_definitions"], "main": digest(widened)}
+        run.versions = versions
         session.add(
             AgentToolCall(
                 id=model_id,
@@ -114,6 +136,7 @@ def drafting_model_source(work, fixture, arguments):
                 state="completed",
                 execution_binding={
                     **fixture.model.execution_binding,
+                    "tool_definitions_digest": digest(widened),
                     "loaded_skills": [
                         fixture.source.skill.model_dump(mode="json"),
                         bound.model_dump(mode="json"),

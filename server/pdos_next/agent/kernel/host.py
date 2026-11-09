@@ -213,8 +213,11 @@ class BoundHost:
                 )
 
     def admit_context(self, scope, *, route, system, tools, messages, output_schema, loaded_skills,
-                      calibration=None):
+                      calibration=None, floor=None):
         from .context_budget import fit_messages, measure
+        from .context_calibration import LEGACY_FLOOR
+
+        floor = LEGACY_FLOOR if floor is None else floor
         from .context_projection import combine_contracts, project, snapshot
         from .context_runtime import compact_fragment_view
         from .tools import default_registry
@@ -231,7 +234,7 @@ class BoundHost:
             reduced, budget = fit_messages(
                 route, system, tools, messages, output_schema,
                 compact_tool=compact, allow_envelope=scope.isolation == "main",
-                calibration=calibration,
+                calibration=calibration, floor=floor,
                 compact_fragment=lambda value: compact_fragment_view(
                     self.store, scope, registry, value,
                 ),
@@ -266,7 +269,7 @@ class BoundHost:
             envelope["omitted_fields"] = [entry["field"] for entry in omitted]
             reduced[0]["content"] = json.dumps(envelope, ensure_ascii=False)
             budget = {**budget, **measure(route, system, tools, reduced, output_schema,
-                                          calibration=calibration)}
+                                          calibration=calibration, floor=floor)}
         capture = _ADMITTED_MESSAGES.get()
         if capture is not None:
             capture.append((reduced, budget))

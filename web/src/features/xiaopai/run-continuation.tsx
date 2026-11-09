@@ -46,6 +46,8 @@ export function RunContinuation({
   contextText = "",
   additionalSources = [],
   sourceTools,
+  sourceChips,
+  onFileDrop,
   principalId,
   categoryId,
   onUnavailable,
@@ -66,6 +68,9 @@ export function RunContinuation({
   contextText?: string;
   additionalSources?: ContinuationSource[];
   sourceTools?: ReactNode;
+  /** Chips for sources added to this follow-up (personal chat, P91). */
+  sourceChips?: ReactNode;
+  onFileDrop?: (file: File) => void;
   principalId?: string;
   categoryId?: string;
   onUnavailable?: () => void;
@@ -292,7 +297,7 @@ export function RunContinuation({
       {reading?.context_restart && terminal && !run.reverted && !pending && <ContextRestart api={api} root={root} runId={run.run_id} sessionId={run.session_id} revision={reading.context_restart.expected_revision} existing={reading.context_restart.existing} goal={goal.trim() || run.goal || "继续处理原目标。"} principalId={principalId} requested={requestedSkills} excluded={excludedSkills} disabled={disabled || busy} onOpen={onOpen} onUnavailable={onUnavailable} onBusy={setBusy}/>}
       {pending && !busy && !reading?.existing && <div className={styles.composerRecovery}><p>发送结果待核对，原消息已保留。</p><Button size="sm" variant="outline" disabled={disabled} onClick={() => void send()}>核对并重试原请求</Button></div>}
       {reading?.existing ? <div className={styles.composerRecovery}><p>这段对话已有后续消息。</p><Button size="sm" variant="outline" disabled={busy || disabled} onClick={() => void onOpen(reading.existing!.run_id).catch(failure => setError(failure.message))}>打开已保存的后续工作</Button></div> :
-        <PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send()}
+        <PaiComposer value={goal} onChange={setGoal} onSubmit={() => void send()} attachments={sourceChips} onFileDrop={onFileDrop}
           background={<WorkStateCarry background onChange={setCorrectionState} refreshVersion={`${run.run_id}:${terminal ? run.status : "pending"}:${carryRefresh}`} contextControl={contextControl} api={api} root={root} sessionId={run.session_id} disabled={disabled || busy || !terminal} onUnavailable={onUnavailable}/>}
           disabled={disabled} busy={busy} inputDisabled={!!pending || !canSend} sendDisabled={!!pending || !canSend}
           onStop={canStop ? () => onStop?.() : undefined}

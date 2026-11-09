@@ -42,22 +42,31 @@ class AgentGateway:
         self.client.close()
 
     def context_baseline(self, scope, route, request_key):
-        """Freeze the estimator input before admission, including on replay.
+        return self.context_admission(scope, route, request_key)[0]
 
-        Only digests/numbers persist here. A later provider observation cannot
-        change an already admitted request's reductions or durable call key.
+    def context_admission(self, scope, route, request_key):
+        """Freeze the estimator input and admission floor before admission, also on replay.
+
+        Only digests/numbers persist here. A later provider observation or a changed
+        calibration file cannot change an already admitted request's reductions or
+        durable call key. Requests admitted before the floor was recorded replay with
+        the floor then in force.
         """
+        from .context_calibration import LEGACY_FLOOR, floor_for
+
         with self.store.transaction(scope, lock=True) as (_, run):
             admissions = run.versions.get("context_admissions", {})
             if request_key in admissions:
-                return admissions[request_key]["calibration"]
+                entry = admissions[request_key]
+                return entry["calibration"], entry.get("floor", LEGACY_FLOOR)
             previous = run.versions.get("context_observations", {}).get(scope.isolation)
             if previous and previous.get("route_digest") != route.digest:
                 previous = None
+            floor = floor_for(route, scope.isolation)
             run.versions = {**run.versions, "context_admissions": {
-                **admissions, request_key: {"calibration": previous},
+                **admissions, request_key: {"calibration": previous, "floor": floor},
             }}
-            return previous
+            return previous, floor
 
     def observe_context(self, scope, route, budget, usage, *, only_if_missing=False):
         if usage.input_tokens <= 0:
@@ -114,7 +123,7 @@ class AgentGateway:
 
         from .context_budget import fit_messages
 
-        calibration = self.context_baseline(
+        calibration, floor = self.context_admission(
             scope, route, digest([
                 system, messages, tools, output_schema, route.digest, scope.isolation,
             ]),
@@ -125,12 +134,12 @@ class AgentGateway:
                 messages, context_budget = self.context_admitter(
                     scope, route=route, system=system, tools=tools, messages=messages,
                     output_schema=output_schema, loaded_skills=loaded_skills,
-                    calibration=calibration,
+                    calibration=calibration, floor=floor,
                 )
             else:
                 messages, context_budget = fit_messages(
                     route, system, tools, messages, output_schema,
-                    calibration=calibration,
+                    calibration=calibration, floor=floor,
                 )
         except DomainError as error:
             if error.reason == "CONTEXT_INCOMPLETE":

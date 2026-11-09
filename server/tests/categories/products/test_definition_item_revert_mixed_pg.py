@@ -13,6 +13,12 @@ from sqlalchemy import event, func, select, text
 from sqlalchemy.orm import Session
 
 from pdos_next.agent.kernel.bindings import SkillBinding, WriteSource, execution_key
+from pdos_next.agent.kernel.disclosure import (
+    CHAIN_KEY,
+    disclosure,
+    record_disclosure,
+    skill_operations,
+)
 from pdos_next.agent.kernel.models import (
     AgentEvent,
     AgentRun,
@@ -27,6 +33,30 @@ from pdos_next.domain.categories.products.models import DefinitionSpecRow
 from tests.categories.products import test_definition_item_revert_pg as item_history
 from tests.categories.products.test_definition_item_commands_pg import current_items, draft, upsert
 from tests.categories.products.test_definition_transactions import command, post, source
+
+
+def widen_disclosure(session, fixture, bindings):
+    """Record this call's disclosure the way the gateway does and return its digest.
+
+    A loaded skill widens what the call sees; the run keeps every earlier,
+    narrower digest in its chain so the first calls stay verifiable.
+    """
+    skills = [fixture.catalog._skills[value.key] for value in bindings]
+    run = session.get(AgentRun, fixture.scope.run_id)
+    versions = dict(run.versions)
+    steps = [skills[:1], skills] if CHAIN_KEY not in versions else [skills]
+    for loaded in steps:
+        listed = disclosure(fixture.registry, "main", skill_operations(loaded), fixture.scope)
+        versions[CHAIN_KEY] = record_disclosure(
+            versions, "main", [item["name"] for item in listed], digest(listed)
+        )
+    assert CHAIN_KEY in run.versions or (
+        versions[CHAIN_KEY]["main"]["chain"][0]
+        == run.versions["tool_definitions"]["main"]
+    )
+    versions["tool_definitions"] = {**versions["tool_definitions"], "main": digest(listed)}
+    run.versions = versions
+    return digest(listed)
 
 
 def actual_model(setup, fixture, operation, arguments, *, skill_key="gap_check"):
@@ -92,6 +122,9 @@ def actual_model(setup, fixture, operation, arguments, *, skill_key="gap_check")
     ]
     identity = uuid4()
     with Session(setup.admin) as session, session.begin():
+        binding["tool_definitions_digest"] = widen_disclosure(
+            session, fixture, list(fixture.mixed_skills.values())
+        )
         session.add(
             AgentToolCall(
                 id=identity,

@@ -64,6 +64,22 @@ def response_json(response, expected=200):
     return response.json()
 
 
+TERMINAL = frozenset({'completed','partial','failed','cancelled'})
+
+
+def stop_kind(state, error_code):
+    """What a Run's current state means for the runner (D256).
+
+    The API shows an open question and a pending reconciliation both as waiting_input;
+    only EXTERNAL_OUTCOME_UNKNOWN marks the latter (run_reconciliation.required).
+    """
+    if state in TERMINAL:
+        return 'terminal'
+    if state=='waiting_input':
+        return 'reconciliation' if error_code=='EXTERNAL_OUTCOME_UNKNOWN' else 'question'
+    return 'running'
+
+
 def save_command(person, operation, payload, *, revision=1):
     command = {'command_id':str(uuid4()), 'idempotency_key':str(uuid4()),
                'category_id':str(person.category), 'product_id':None,
@@ -195,7 +211,7 @@ def run_request(person, case_id, payload, *, label=None, timeout=1800):
             events=response_json(person.client.get(path+'/'+accepted['run_id']+'/events',headers=person.headers))
             if any(row['event'].get('type') in {'model_delta','model_text','text_delta'} for row in events.get('items',[])):
                 first_visible=(time.monotonic()-started)*1000
-        if state in {'completed','partial','failed','cancelled','waiting_input','needs_reconciliation'}:
+        if stop_kind(state,view.get('error_code'))!='running':
             break
         if time.monotonic()-started>timeout:
             state='observation_timeout'
@@ -445,34 +461,47 @@ def current_focus(person):
     return reading['configuration']['metadata']['context_window_tokens']-context_reserve()
 
 
-def settle_for_continuation(person, previous, limit=1200):
+def ledger_state(person, run_id):
+    # Poll the ledger, not GET run: a reconciled run's own answer currently returns 403
+    # (cancel_epoch +1 on reconciliation vs. archived read proof; see the W1 report).
+    with Session(person.admin) as session:
+        row=session.get(AgentRun,UUID(run_id))
+        return row.state,row.error_code
+
+
+def settle_for_continuation(person, previous, limit=1200, poll=5):
     """A continued turn needs a terminal parent (conversation.py: completed/partial/failed/
     cancelled). Await automatic reconciliation; an open question is cancelled the way a
-    person ignoring it and sending the next message would. Returns the recorded intervention."""
+    person ignoring it and sending the next message would. Returns the recorded intervention.
+
+    D256: a Run still working when the runner stopped watching (observation_timeout) may
+    later stop at a question too, so every poll classifies the current state again.
+    """
     if previous['status'] not in {'waiting_input','observation_timeout'}:
         return None
     path=f"/v1/categories/{person.category}/agent-runs/{previous['run_id']}"
-    kinds=[event['body'].get('type') for event in previous.get('events',[])]
     started=time.monotonic()
-    if previous['status']=='observation_timeout':
-        intervention='awaited_unobserved_completion'
-    elif 'reconciliation_required' in kinds[-3:]:
-        intervention='awaited_automatic_reconciliation'
-    else:
-        intervention='cancelled_open_question'
-        response_json(person.client.post(path+'/cancel',headers=person.headers))
+    interventions=['awaited_unobserved_completion'] \
+        if previous['status']=='observation_timeout' else []
     while time.monotonic()-started<limit:
-        # Poll the ledger, not GET run: a reconciled run's own answer currently returns 403
-        # (cancel_epoch +1 on reconciliation vs. archived read proof; see the W1 report).
-        with Session(person.admin) as session:
-            current=session.get(AgentRun,UUID(previous['run_id'])).state
-        if current in {'completed','partial','failed','cancelled'}:
+        current,error_code=ledger_state(person,previous['run_id'])
+        kind=stop_kind(current,error_code)
+        if kind=='terminal':
+            intervention=interventions[-1] if interventions else 'none'
             settled=capture_run(person,{**previous,'status':current,'state':current,
                                        'settled_by':intervention})
-            return settled,{'intervention':intervention,'final_status':current,
+            return settled,{'intervention':intervention,'interventions':interventions,
+                            'final_status':current,
                             'waited_ms':(time.monotonic()-started)*1000}
-        time.sleep(5)
-    raise RuntimeError(f'{intervention} did not settle within {limit}s')
+        if kind=='question' and 'cancelled_open_question' not in interventions:
+            interventions.append('cancelled_open_question')
+            response_json(person.client.post(path+'/cancel',headers=person.headers))
+            continue
+        if kind=='reconciliation' and 'awaited_automatic_reconciliation' not in interventions:
+            interventions.append('awaited_automatic_reconciliation')
+        time.sleep(poll)
+    waiting=interventions[-1] if interventions else 'settle'
+    raise RuntimeError(f'{waiting} did not settle within {limit}s')
 
 
 def run_context_cell(state, case_id, focus, attempt):
@@ -545,8 +574,10 @@ def run_context_cell(state, case_id, focus, attempt):
         summary['blocked']=str(error)
     except RuntimeError as error:
         last=summary['steps'][-1] if summary['steps'] else {}
-        reconciled=any((step.get('continuation') or {}).get('intervention')==
-                       'awaited_automatic_reconciliation' for step in summary['steps'])
+        reconciled=any('awaited_automatic_reconciliation' in (
+            (step.get('continuation') or {}).get('interventions')
+            or [(step.get('continuation') or {}).get('intervention')])
+            for step in summary['steps'])
         if 'FORBIDDEN_SCOPE' in str(error) and reconciled:
             summary['blocked']=('reconciled_parent_provenance_defect: the next turn after an '
                                 'automatically reconciled Run was refused; '+str(error)[:300])

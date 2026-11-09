@@ -1,0 +1,13 @@
+tests/categories/preproject/test_evidence_revert_pg.py
+tests/categories/products/test_definition_item_revert_mixed_pg.py
+tests/agent/kernel/test_project_current_context_pg.py
+tests/agent/kernel/test_public_run_revert.py
+tests/agent/kernel/test_domain_candidates_pg.py
+tests/agent/kernel/test_category_adoption_transactions.py
+tests/agent/kernel/test_category_candidate_transactions.py
+tests/agent/kernel/test_m3_research_composition_transactions.py
+tests/agent/kernel/test_run_reconciliation.py
+tests/agent/kernel/test_work_state_candidates_pg.py
+tests/categories/preproject/test_category_metadata.py
+tests/categories/preproject/test_confirmation_recovery_pg.py
+tests/categories/preproject/test_evidence_commands_pg.py

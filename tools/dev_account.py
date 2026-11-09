@@ -1,7 +1,7 @@
 """Personal accounts for local development.
 
-The app has no sign-in yet (debt item D214), so a browser session comes from a
-token issued here. `create` makes a person in a tenant of their own, with one
+People sign in on /login with a password (D214, tenant_provision.py opens a tenant).
+For local development a browser session can still come from a token issued here. `create` makes a person in a tenant of their own, with one
 empty category they own and manage as product manager, and keeps the session
 token in the environment's private state file. `local_environment.py serve-dev
 <name>` then serves the app signed in as that person.

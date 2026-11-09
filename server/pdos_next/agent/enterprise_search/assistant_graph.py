@@ -10,15 +10,20 @@ from pdos_next.agent.kernel.graph import AgentKernel, Budget
 from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.errors import DomainError
 
+from . import assistant_fanout as fanout
 from .assistant_ledger import deny
 from .assistant_schemas import EvidenceDraft
 from .locations import span
 
 
 class AssistantExtractGraph:
-    def __init__(self, host, adapter, *, checkpointer_factory=None):
+    def __init__(self, host, adapter, *, checkpointer_factory=None, concurrency=None):
         self.host, self.adapter = host, adapter
         self.checkpointer_factory = checkpointer_factory
+        # Children of one extraction that may run at once (D257); read at startup.
+        self.concurrency = (
+            fanout.concurrency() if concurrency is None else fanout.validated(concurrency)
+        )
 
     def __call__(self, scope, citation, source, question, parent_call_id):
         host, adapter = self.host, self.adapter
@@ -29,6 +34,9 @@ class AssistantExtractGraph:
             catalog = host.catalog
 
             def current(self, bound):
+                # Before each model or read call: a given-up attempt or a failed sibling
+                # stops this child here, before it claims anything (D243, D257).
+                fanout.checkpoint()
                 host.current(bound)
                 adapter.guard(bound)
 

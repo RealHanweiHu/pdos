@@ -2,7 +2,7 @@
 export const projectViews = [
   { id: "now", label: "概览" }, { id: "tasks", label: "任务" },
   { id: "plan", label: "计划" }, { id: "docs", label: "文件" },
-  { id: "prep", label: "产品与工程" }, { id: "builds", label: "试制与验证" },
+  { id: "team", label: "团队" }, { id: "prep", label: "产品与工程" }, { id: "builds", label: "试制与验证" },
   { id: "issues", label: "问题与变更" }, { id: "review", label: "评审与交付" },
   { id: "gates", label: "阶段与门禁" }, { id: "feedback", label: "现场反馈" },
 ] as const;

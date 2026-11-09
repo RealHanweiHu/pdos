@@ -23,8 +23,9 @@ import { usePaiScroll, loadedSkillFacts, PaiCarry, PaiMessage, PaiUnfinished, Pa
 import { assertHiddenRun, type PaiHiddenRun, type PaiRunStatus } from "@/lib/pai-sessions";
 import type { LoadedSkill } from "@/features/xiaopai/pai-conversation";
 import { ConversationHistory } from "@/features/xiaopai/conversation-history";
+import { useHistoryRail } from "@/features/xiaopai/use-history-rail";
 import { SessionHistory } from "@/features/xiaopai/session-history";
-import { FileUpload } from "@/features/xiaopai/file-upload";
+import { FileUpload, type DroppedFile, type UploadedSource } from "@/features/xiaopai/file-upload";
 import { SkillPicker } from "@/features/xiaopai/skill-picker";
 import type { RequestedSkill } from "@/lib/run-start-intent";
 import { RunSourceBindings, SourcePicker, sourcePickerScope } from "@/features/xiaopai/source-picker";
@@ -91,6 +92,9 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
   const [searchPreferences, setSearchPreferences] = useState<SearchPreferences>({ ...defaultSearchPreferences });
   const [useProduct, setUseProduct] = useState(false);
   const [selected, setSelected] = useState<SourceSelection | null>(null);
+  // D55: a file dropped on the composer opens the upload panel; a confirmed upload joins this turn.
+  const [attachOpen, setAttachOpen] = useState(false);
+  const [dropped, setDropped] = useState<DroppedFile | null>(null);
   const [sourceReadVersion, setSourceReadVersion] = useState(0);
   const [historyVersion, setHistoryVersion] = useState(0);
   const [selectedRunId, setSelectedRunId] = useState<string | null>(null);
@@ -100,7 +104,7 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
   const panel = useRef<HTMLElement | null>(null);
   usePaiScroll(panel, run?.run_id);
   const [skills, setSkills] = useState<LoadedSkill[]>([]);
-  const [historyOpen, setHistoryOpen] = useState(() => fullPage && typeof window !== "undefined" && window.innerWidth >= 1000);
+  const [historyOpen, setHistoryOpen, resetHistory] = useHistoryRail(fullPage);
   const [backgroundRun, setBackgroundRun] = useState<string | null>(null);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -280,6 +284,10 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
   const sourceScope = { principalId, categoryId, productId: !proposalId && productId && (projectId || useProduct) ? productId : null, proposalId: proposalId ?? null };
   const runSourceScope = run ? { principalId, categoryId, productId: run.product_id, proposalId: run.proposal_id ?? null } : sourceScope;
   const selectedSources = selected?.scope === sourcePickerScope(sourceScope) ? selected.items : [];
+  const offerUploaded = (source: UploadedSource) => {
+    const key = sourcePickerScope(sourceScope);
+    setSelected(old => ({ scope: key, items: [...(old?.scope === key ? old.items : []).filter(item => item.artifact_id !== source.artifact_id), { artifact_id: source.artifact_id, expected_revision: source.expected_revision, title: source.title }] }));
+  };
   const continuationSources = selected?.scope === sourcePickerScope(runSourceScope) ? selected.items.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision })) : [];
   const categoryScope = categoryName || "当前品类";
   const requestScope = `${categoryScope}${projectId ? ` · ${projectName || "当前项目"}` : ""}${proposalId ? ` · ${proposalTitle || "当前提案"}` : ""}`;
@@ -295,12 +303,12 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
     <div className={styles.layout}>
       <aside className={styles.history} aria-label="小Pai会话列表">
         <div className={styles.historyHeading}><strong>会话</strong><button type="button" className={styles.historyBack} onClick={() => setHistoryOpen(false)}>返回对话</button></div>
-        <Button variant="ghost" className={styles.newWork} disabled={busy || !!pending} onClick={() => { clearSelection(); onComposeChange(true); setHistoryOpen(fullPage && window.innerWidth >= 1000); }}><Plus size={14} aria-hidden="true" />新对话</Button>
-        <SessionHistory api={api} scope={{ categoryId, proposalId, ...(projectId ? { projectId } : {}) }} principalId={principalId} currentSessionId={sessionId} currentRunId={selectedRunId} refreshVersion={historyVersion} disabled={busy || !!pending} onClearSelection={clearSelection} onPermissionDenied={sourceUnavailable} onSelectRun={(id, sid) => { clearSelection(); selectedSession.current = sid; setSessionId(sid); setHistoryOpen(fullPage && window.innerWidth >= 1000); void read(() => readRun(id, sid)); }} />
+        <Button variant="ghost" className={styles.newWork} disabled={busy || !!pending} onClick={() => { clearSelection(); onComposeChange(true); resetHistory(); }}><Plus size={14} aria-hidden="true" />新对话</Button>
+        <SessionHistory api={api} scope={{ categoryId, proposalId, ...(projectId ? { projectId } : {}) }} principalId={principalId} currentSessionId={sessionId} currentRunId={selectedRunId} refreshVersion={historyVersion} disabled={busy || !!pending} onClearSelection={clearSelection} onPermissionDenied={sourceUnavailable} onSelectRun={(id, sid) => { clearSelection(); selectedSession.current = sid; setSessionId(sid); resetHistory(); void read(() => readRun(id, sid)); }} />
         <p className={styles.historyPrivacy}>私人会话 · 仅你可见</p>
       </aside>
       <div className={styles.conversation}>
-    <PaiScope onBackground={active ? () => { if (onBackground) onBackground(); else setBackgroundRun(run.run_id); setNotice("已在后台继续，可从会话记录返回。"); } : undefined} actions={headerActions} scope={run ? runScope : requestScope} skills={skills} hasRun={!!run && run.status !== "hidden"} title={runGoal} disabled={busy || !!pending} onNewConversation={() => { clearSelection(); setGoal(""); setHistoryOpen(fullPage && window.innerWidth >= 1000); setEditingMaterial(null); onComposeChange(true); }} historyOpen={historyOpen} onHistoryToggle={() => setHistoryOpen(value => !value)} />
+    <PaiScope onBackground={active ? () => { if (onBackground) onBackground(); else setBackgroundRun(run.run_id); setNotice("已在后台继续，可从会话记录返回。"); } : undefined} actions={headerActions} scope={run ? runScope : requestScope} skills={skills} hasRun={!!run && run.status !== "hidden"} title={runGoal} disabled={busy || !!pending} onNewConversation={() => { clearSelection(); setGoal(""); resetHistory(); setEditingMaterial(null); onComposeChange(true); }} historyOpen={historyOpen} onHistoryToggle={() => setHistoryOpen(value => !value)} />
         <PaiContextBar scope={requestScope} control={contextControl}/>
         {(editingMaterial || workProducts.openProduct) && <PaiMobileWorkspaceSwitch view="editor" onClick={() => setMobileView("editor")} />}
         <div className={styles.thread} aria-label="小Pai 对话线程">
@@ -353,11 +361,11 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
           {!run && <div className={styles.chatContinuation}><PaiComposer value={goal} onChange={setGoal} onSubmit={() => {
               let submittedGoal: string; try { submittedGoal = withMaterialContext(goal, pageMaterial); } catch (failure) { setError((failure as Error).message); return; }
               void send({ path: "v1/agent-runs", body: { goal: submittedGoal, idempotency_key: crypto.randomUUID(), product_id: sourceScope.productId, ...(proposalId ? { proposal_id: proposalId } : {}), ...(projectId ? { project_id: projectId } : {}), ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}), ...(projectId || proposalId ? { search_preferences: searchPreferences } : {}), ...(memoryOff ? { memory_off: true } : {}), sources: selectedSources.map(({ artifact_id, expected_revision }) => ({ artifact_id, expected_revision })) } });
-            }} disabled={busy || !!pending}
+            }} disabled={busy || !!pending} onFileDrop={file => { setDropped({ file, nonce: Date.now() }); setAttachOpen(true); }}
             background={(projectId || proposalId) && <SearchScope label={requestScope} kind={proposalId ? "proposal" : "project"} value={searchPreferences} onChange={setSearchPreferences} disabled={busy || !!pending} control={contextControl}/>}
             tools={<>
               {productId && !proposalId && !projectId && <details className={styles.objectPicker}><summary><At size={13} aria-hidden="true" />对象</summary><div className={styles.objectOptions}><label><input type="checkbox" checked={useProduct} onChange={event => { setUseProduct(event.target.checked); setSelected(null); }} />关联当前型号</label></div></details>}
-              <details className={styles.attachments}><summary aria-label="添加附件" title="添加附件"><Paperclip size={14} aria-hidden="true"/></summary><div><FileUpload api={api} scope={sourceScope} disabled={busy || !!pending} /><SourcePicker key={`sources:${sourceReadVersion}`} api={api} scope={sourceScope} value={selected} onChange={setSelected} disabled={busy || !!pending} /></div></details>
+              <details className={styles.attachments} open={attachOpen} onToggle={event => setAttachOpen(event.currentTarget.open)}><summary aria-label="添加附件" title="添加附件"><Paperclip size={14} aria-hidden="true"/></summary><div><FileUpload api={api} scope={sourceScope} disabled={busy || !!pending} dropped={dropped} onSourceReady={offerUploaded} /><SourcePicker key={`sources:${sourceReadVersion}`} api={api} scope={sourceScope} value={selected} onChange={setSelected} disabled={busy || !!pending} /></div></details>
               <SkillPicker key={`skills:${sourceReadVersion}`} api={api} value={requestedSkills} onChange={setRequestedSkills} disabled={busy || !!pending}/>
               <MemoryOffStart checked={memoryOff} onChange={setMemoryOff} disabled={busy || !!pending}/>
               {currentMaterial && !materialDenied && <details className={styles.materialCarry}><summary title={`页面资料：${currentMaterial.title}`}><FileText size={13}/>当前资料</summary><div><label className="mt-2 flex gap-2"><input type="checkbox" checked={carryMaterial} onChange={event => setCarryMaterial(event.target.checked)}/>携带当前资料与未保存编辑</label><p className="text-muted-foreground">只随你发送的下一条消息提供，固定版本与权限由服务器重新核对。</p></div></details>}

@@ -7,7 +7,7 @@ const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|agent-skills)$/i;
+const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|agent-skills|agent-input-sources)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
@@ -15,6 +15,9 @@ const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
 const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|governance(?:\/review-inputs)?))?$/i;
+// D56 permission-filtered Excel exports (READ, named human only); one exact scope parameter each.
+const exportPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/exports\/(?:project|bom-diff|test-summary)|personal\/exports\/my-work)$/i;
+const exportScope: Record<string, string | null> = { project: "project_id", "bom-diff": "bom_id", "test-summary": "build_id", "my-work": null };
 const manufacturingPreparationPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/manufacturing-preparations(?:\/inputs|\/(?:work_instruction|control_plan|manufacturing_baseline)\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12})?$/;
 const manufacturingPreparationCommands = new Set(["npi.work_instruction.record", "npi.control_plan.record", "npi.manufacturing_baseline.record"]);
 const manufacturingPublicationPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/manufacturing-publications(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
@@ -237,13 +240,16 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/memory-usage|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy)$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
+  const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
+  const personalExport = forwardPath.join("/") === "v1/personal/exports/my-work";
   const inbox = /^v1\/personal\/inbox\/(?:summaries|summary-options|states|conversations(?:\/[a-f0-9-]{36}\/messages)?)$/i.test(forwardPath.join("/"));
   const categoryMembers = categoryId && forwardPath.length === 4 && forwardPath[3] === "members";
-  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && !roleCatalog && !personalExport && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const path = categoryId ? ["v1", ...forwardPath.slice(3)] : forwardPath;
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
   const projectPlanning = projectPlanningPaths.test(pathname);
+  const exportView = exportPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
   const categoryKnowledge = categoryKnowledgePaths.test(pathname);
@@ -271,13 +277,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const externalHandoff = externalHandoffPaths.test(pathname);
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
+  const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && !roleCatalog && !projectTeam) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -302,6 +309,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (projectSets) {
     if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });
+  } else if (roleCatalog || projectTeam) {
+    if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
   } else if (inbox) {
     if ((pathname.endsWith("/summaries") || pathname.endsWith("/summary-options")) && request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "摘要列表只支持本人读取。" }, { status: 405 });
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只支持读取与保存。" }, { status: 405 });
@@ -352,6 +362,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用明确的服务商与分页条件；登记和回执核对只使用原正文。" }, { status: 422 });
       query.set(key, value);
     }
+  } else if (exportView) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "导出只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
+    const scopeKey = exportScope[pathname.split("/").pop() ?? ""];
+    for (const [key, value] of request.nextUrl.searchParams) {
+      if (key !== scopeKey || !uuid.test(value) || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请只指定一个明确的导出范围。" }, { status: 422 });
+      query.set(key, value);
+    }
+    if (scopeKey && !query.has(scopeKey)) return Response.json({ code: "VALIDATION_FAILED", message: "请先选择要导出的范围。" }, { status: 422 });
   } else if (projectPlanning) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     for (const [key,value] of request.nextUrl.searchParams) {
@@ -370,7 +388,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
   } else if (personalView) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
-    const collection = ["v1/personal/projects", "v1/personal/run-activity"].includes(pathname);
+    const collection = ["v1/personal/projects", "v1/personal/run-activity", "v1/personal/agent-input-sources"].includes(pathname);
     const searching = pathname === "v1/personal/search";
     const projectWorkQueue = pathname === "v1/personal/project-work";
     for (const [key, value] of request.nextUrl.searchParams) {
@@ -727,7 +745,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
     // Actual paired-output reads exceed three minutes; related reads may wait on
     // the same source locks. Keep their transport budget aligned without retries.
-    const deepRead = request.method === "GET" && (qualityChange || qualityFollowup || /\/verification-results$/.test(pathname));
+    const deepRead = request.method === "GET" && (qualityChange || qualityFollowup || /\/verification-results$/.test(pathname) || /\/exports\/test-summary$/.test(pathname));
     const extendedTransport = candidateCommand || factCommand || factPath || deepRead;
     const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || externalHandoff || releaseException || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
     const response = await fetch(`${base}/${forwardPath.join("/")}${query.size ? `?${query}` : ""}`, {
@@ -739,6 +757,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     const headers = new Headers({ "Content-Type": response.headers.get("Content-Type") ?? "application/json", "Cache-Control": "no-store", "X-Content-Type-Options": "nosniff" });
     const disposition = response.headers.get("Content-Disposition");
     if (disposition) headers.set("Content-Disposition", disposition);
+    if (exportView) for (const name of ["X-PDOS-Export-Id", "X-PDOS-Export-Rows", "X-PDOS-Export-AI-Rows", "X-PDOS-Export-AI-Cells"]) { const value = response.headers.get(name); if (value && /^[a-f0-9-]{1,36}$/i.test(value)) headers.set(name, value); }
     return new Response(await response.arrayBuffer(), { status: response.status, headers });
   } catch {
     if (request.method === "GET" || resourceInspect || standardMatch || selectionMaterial || completionMaterial || (providerAgreement || mcpManagement || agentSkill || skillQualification || agentBudget) && pathname.endsWith("/recover")) return Response.json({ code: "SOURCE_UNAVAILABLE", detail: { reason: "TRANSPORT_UNAVAILABLE" }, message: "暂未读取到当前事实，请刷新核对。本次读取没有发起操作。" }, { status: 503 });

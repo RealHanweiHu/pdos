@@ -10,7 +10,20 @@ from xml.etree import ElementTree
 from .types import ParseFailure, ParseLimits, ParseResult, SourceLocation, TextSegment
 
 XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-SUPPORTED_MEDIA = frozenset({"text/plain", "text/markdown", "application/pdf", XLSX})
+DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+# Photos are registered as originals only (F12): no OCR or visual recognition here.
+IMAGES = {
+    "image/jpeg": "JPEG",
+    "image/png": "PNG",
+    "image/webp": "WebP",
+    "image/heic": "HEIC",
+    "image/heif": "HEIF",
+}
+SUPPORTED_MEDIA = frozenset({"text/plain", "text/markdown", "application/pdf", XLSX, DOCX, *IMAGES})
+_W = "{http://schemas.openxmlformats.org/wordprocessingml/2006/main}"
+# parse_uploaded counts these as line boundaries; one DOCX line never contains them.
+_LINE_BREAKS = str.maketrans(dict.fromkeys("\r\n\v\f\x1c\x1d\x1e\x85\u2028\u2029", " "))
+_EXTERNAL_PARTS = (b"/attachedTemplate", b"/subDocument", b"/oleObject", b"/aFChunk", b"/frame")
 
 
 def _fail(code: str, message: str):
@@ -195,6 +208,152 @@ def _xlsx(content: bytes, limits: ParseLimits):
             workbook.close()
 
 
+def _docx_archive(content: bytes, limits: ParseLimits) -> bytes:
+    """Same archive budget as XLSX; returns the bounded main document part."""
+    if not content.startswith(b"PK\x03\x04"):
+        _fail("MEDIA_TYPE_MISMATCH", "Word original must be a DOCX archive")
+    try:
+        with zipfile.ZipFile(io.BytesIO(content)) as archive:
+            members = archive.infolist()
+            if len(members) > limits.max_zip_entries:
+                _fail("ARCHIVE_LIMIT", "Document contains too many archive entries")
+            expanded = 0
+            names = set()
+            content_types = document = None
+            for member in members:
+                name = member.filename
+                if (
+                    name in names
+                    or name.startswith(("/", "\\"))
+                    or "\\" in name
+                    or ".." in name.split("/")
+                ):
+                    _fail("INVALID_ARCHIVE", "Document archive has invalid member paths")
+                names.add(name)
+                if member.flag_bits & 1:
+                    _fail("ENCRYPTED_DOCUMENT", "Encrypted document archives are unsupported")
+                expanded += member.file_size
+                if (
+                    expanded > limits.max_zip_expanded_bytes
+                    or member.file_size > max(1, member.compress_size) * limits.max_zip_ratio
+                ):
+                    _fail("ARCHIVE_LIMIT", "Document expansion exceeds the configured limit")
+                lower = name.lower()
+                if "vbaproject" in lower or lower.endswith((".vba", ".exe", ".dll", ".js")):
+                    _fail("ACTIVE_CONTENT", "Macro or executable document content is unsupported")
+                if lower.startswith(("word/activex/", "word/embeddings/")):
+                    _fail("ACTIVE_CONTENT", "Embedded active document content is unsupported")
+                if lower.endswith((".xml", ".rels")):
+                    value = archive.read(member)
+                    upper = value.upper()
+                    if b"<!DOCTYPE" in upper or b"<!ENTITY" in upper:
+                        _fail("ACTIVE_CONTENT", "Document entity declarations are unsupported")
+                    if (
+                        lower.endswith(".rels")
+                        and b'TARGETMODE="EXTERNAL"' in upper
+                        and any(kind in value for kind in _EXTERNAL_PARTS)
+                    ):
+                        _fail(
+                            "EXTERNAL_CONTENT", "Externally linked document parts are unsupported"
+                        )
+                    if name == "[Content_Types].xml":
+                        content_types = value
+                    elif name == "word/document.xml":
+                        document = value
+            if document is None or content_types is None:
+                _fail("MEDIA_TYPE_MISMATCH", "Archive is not a DOCX document")
+            document_type = False
+            for entry in ElementTree.fromstring(content_types):
+                kind = entry.attrib.get("ContentType", "")
+                if any(marker in kind.lower() for marker in ("macroenabled", "vba", "activex")):
+                    _fail("ACTIVE_CONTENT", "Macro-enabled documents are unsupported")
+                if entry.attrib.get("PartName") == "/word/document.xml":
+                    document_type = kind == (
+                        "application/vnd.openxmlformats-officedocument."
+                        "wordprocessingml.document.main+xml"
+                    )
+            if not document_type:
+                _fail("MEDIA_TYPE_MISMATCH", "Document content type does not match DOCX")
+            return document
+    except (zipfile.BadZipFile, ElementTree.ParseError, RuntimeError, OSError) as exc:
+        raise ParseFailure("MALFORMED_DOCUMENT", "Document archive is malformed") from exc
+
+
+def _docx_runs(node, out: list[str]) -> None:
+    for child in node:
+        if child.tag == _W + "t":
+            out.append(child.text or "")
+        elif child.tag == _W + "tab":
+            out.append("\t")
+        elif child.tag in (_W + "br", _W + "cr"):
+            out.append(" ")
+        elif child.tag not in (_W + "delText", _W + "instrText"):
+            _docx_runs(child, out)
+
+
+def _docx_line(node) -> str:
+    out: list[str] = []
+    _docx_runs(node, out)
+    return "".join(out).translate(_LINE_BREAKS).strip()
+
+
+def _docx_blocks(container, values: _Segments) -> None:
+    """Body order: one derived line per paragraph and per table row."""
+    for child in container:
+        if child.tag == _W + "p":
+            line = _docx_line(child)
+            if line:
+                values.add(line, SourceLocation("line", line=len(values.values) + 1))
+        elif child.tag == _W + "tbl":
+            for row in child.findall(_W + "tr"):
+                cells = [_docx_line(cell) for cell in row.findall(_W + "tc")]
+                if any(cells):
+                    values.add(
+                        " | ".join(cells),
+                        SourceLocation("line", line=len(values.values) + 1),
+                        "table_row",
+                    )
+        elif child.tag in (_W + "sdt", _W + "sdtContent", _W + "customXml"):
+            _docx_blocks(child, values)
+
+
+def _docx(content: bytes, limits: ParseLimits):
+    document = _docx_archive(content, limits)
+    try:
+        body = ElementTree.fromstring(document).find(_W + "body")
+    except ElementTree.ParseError as exc:
+        raise ParseFailure("MALFORMED_DOCUMENT", "Document body could not be parsed") from exc
+    if body is None:
+        _fail("MALFORMED_DOCUMENT", "Document body is missing")
+    values = _Segments(limits)
+    _docx_blocks(body, values)
+    warnings = ("Headers, footers, comments, notes and images were not extracted",)
+    if not values.values:
+        return "", (), (*warnings, "Document body has no text; OCR was not performed"), "needs_ocr"
+    return "\n".join(item.text for item in values.values), tuple(values.values), warnings, "parsed"
+
+
+def _image(content: bytes, media_type: str):
+    """Registration only: verify the declared format, never decode or recognize pixels."""
+    head = content[:32]
+    brand = head[8:12] if head[4:8] == b"ftyp" else b""
+    matches = {
+        "image/jpeg": head.startswith(b"\xff\xd8\xff"),
+        "image/png": head.startswith(b"\x89PNG\r\n\x1a\n"),
+        "image/webp": head[:4] == b"RIFF" and head[8:12] == b"WEBP",
+        "image/heic": brand in {b"heic", b"heix", b"heim", b"heis", b"hevc", b"hevx", b"mif1"},
+        "image/heif": brand in {b"mif1", b"msf1", b"heic", b"heix"},
+    }
+    if not matches[media_type]:
+        _fail("MEDIA_TYPE_MISMATCH", "Declared image type does not match the original bytes")
+    text = (
+        f"照片原件已登记（{IMAGES[media_type]} 图像，{len(content)} 字节）。"
+        "仅登记原件，未识别图像中的文字或内容，未执行 OCR。"
+    )
+    segment = TextSegment(text, SourceLocation("line", line=1), "image_registration")
+    return text, (segment,), ("Image registered without OCR or visual recognition",)
+
+
 def _pdf(content: bytes, limits: ParseLimits):
     if not content.startswith(b"%PDF-"):
         _fail("MEDIA_TYPE_MISMATCH", "PDF original must contain a PDF header")
@@ -271,6 +430,10 @@ def parse_in_worker(content: bytes, media_type: str, limits: ParseLimits) -> Par
         text, segments = _utf8(content, limits)
     elif media_type == XLSX:
         text, segments, warnings = _xlsx(content, limits)
+    elif media_type == DOCX:
+        text, segments, warnings, status = _docx(content, limits)
+    elif media_type in IMAGES:
+        text, segments, warnings = _image(content, media_type)
     else:
         text, segments, warnings, status, expected = _pdf(content, limits)
     if expected is None:

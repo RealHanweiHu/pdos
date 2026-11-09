@@ -19,6 +19,7 @@ from pdos_next.core.request_proof import batch_read, request_proof
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import require_access
 from pdos_next.errors import DomainError
+from pdos_next.originals.access import UPLOAD_EXTENSIONS
 from pdos_next.originals.security import view as security_view
 
 from .source_views import ARTIFACT_FIELDS, ORIGINAL_FIELDS, _head, _human, _metadata, _scope
@@ -66,7 +67,7 @@ def read_target(session, ctx, page):
         "authorization": {"can_write": can_write, "code": None if can_write else "FORBIDDEN_SCOPE"},
         "constraints": {
             "max_bytes": 8_388_608,
-            "extensions": [".txt", ".md", ".pdf", ".xlsx"],
+            "extensions": list(UPLOAD_EXTENSIONS),
             "default_visibility": "private",
         },
     }

@@ -19,17 +19,32 @@ TOOL = "assistant.citations.read"
 PREVIEW_SIZE = 3
 
 
-def registry(session, run, *, include_self=False):
-    parents = lineage(session, run)
-    identities = [row.id for row in parents]
+def _ancestors(session, identities):
+    """Ancestor rows under ordinary RLS; fetched once per guard pass (D268).
+
+    Each later round's registry needs the same ancestors again, and their full
+    versions made that the largest read of a long session's guard.
+    """
+    known = ledger.pass_memo(session, "runs")
+    wanted = [identity for identity in identities if known is None or identity not in known]
     rows = (
         session.scalars(
-            select(AgentRun).options(defer(AgentRun.result)).where(AgentRun.id.in_(identities))
+            select(AgentRun).options(defer(AgentRun.result)).where(AgentRun.id.in_(wanted))
         ).all()
-        if identities
+        if wanted
         else []
     )
     by_id = {row.id: row for row in rows}
+    if known is not None:
+        known.update(by_id)
+        by_id.update((identity, known[identity]) for identity in identities if identity in known)
+    return by_id
+
+
+def registry(session, run, *, include_self=False):
+    parents = lineage(session, run)
+    identities = [row.id for row in parents]
+    by_id = _ancestors(session, identities)
     if set(by_id) != set(identities):
         ledger.deny("lineage_unreadable")
     ordered = ([run] if include_self else []) + [by_id[identity] for identity in identities]

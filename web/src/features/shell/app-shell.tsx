@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useTheme } from "next-themes";
-import { ArrowClockwise, BookOpen, CaretRight, Cube, FolderSimple, Stack, Tray, FileText, GearSix, Kanban, List, ListChecks, MagnifyingGlass, Moon, SidebarSimple, Sparkle, Sun, X, type Icon } from "@phosphor-icons/react";
+import { ArrowClockwise, BookOpen, CaretRight, Cube, FolderSimple, Stack, Tray, FileText, GearSix, Kanban, List, ListChecks, MagnifyingGlass, Moon, SidebarSimple, SignOut, Sparkle, Sun, X, type Icon } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { browserApi } from "@/lib/browser-api";
 import { defaultGlobalLocation, globalAreas, globalHref, normalizeGlobalSearch, productManagementCategories, productManagementHref, projectWorkbenchHref, resolveGlobalLocation, type GlobalArea, type GlobalLocation } from "@/lib/global-navigation";
@@ -20,7 +20,7 @@ import { PaiRail, type PaiContext } from "@/features/xiaopai/pai-rail";
 import { ObjectSearch } from "@/features/shell/object-search";
 import styles from "./app-shell.module.css";
 
-type Session = { name: string; principal_id: string };
+type Session = { name: string; principal_id: string; login_name?: string | null; administrator?: boolean };
 type Category = { id: string; name: string; purpose: string; capabilities?: { product_management?: boolean } };
 type NavigationProject = { category: { id: string }; project: { id: string; name: string; status: string } };
 type NavigationProjectPage = { items: NavigationProject[]; next_cursor: string | null };
@@ -76,17 +76,22 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
       setProjectsError(projects.status === "rejected" ? (projects.reason as Error).message : "");
       setAuth("ready");
     };
-    // There is no sign-in page yet (D214). When this server holds a local session for this machine,
-    // that session decides who is signed in, so a cookie left by another local environment on the
-    // same host cannot win. The entry card below remains the fallback.
+    // A local development server may hold a session for this machine; that session decides who is
+    // signed in, so a cookie left by another local environment on the same host cannot win.
     if (localSession) { try { await browserApi("local-session", {}); } catch { /* keep the existing cookie */ } }
     try {
       await read();
     } catch (failure) {
-      if ((failure as { status?: number }).status === 401) setAuth("signed_out");
-      else { setEntryError((failure as Error).message); setAuth("signed_out"); }
+      // Without a local development session, people sign in on the sign-in page (D214).
+      if ((failure as { status?: number }).status === 401 && !localSession && !localPreview) { window.location.replace(`/login?next=${encodeURIComponent(window.location.pathname + window.location.search)}`); return; }
+      if ((failure as { status?: number }).status !== 401) setEntryError((failure as Error).message);
+      setAuth("signed_out");
     }
-  }, [localSession]);
+  }, [localSession, localPreview]);
+  async function signOut() {
+    try { await browserApi("auth/sign-out", {}); } catch { /* the cookie is cleared by the next sign-in either way */ }
+    window.location.replace("/login?reason=signed_out");
+  }
   useEffect(() => { let active = true; void Promise.resolve().then(() => { if (active) return load(); }); return () => { active = false; }; }, [load]);
   useEffect(() => { const refresh = () => { void load(); }; window.addEventListener("pdos:category-metadata-saved", refresh); return () => window.removeEventListener("pdos:category-metadata-saved", refresh); }, [load]);
 
@@ -191,11 +196,12 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
   if (auth === "signed_out") return <>
     <header className="workspace-public-header"><span className={styles.brandMark} aria-hidden="true">P</span><span className="font-semibold">PDOS</span><Button className="ml-auto" size="icon" variant="ghost" aria-label="切换明暗主题" onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>{resolvedTheme === "dark" ? <Sun/> : <Moon/>}</Button></header>
     <main className="mx-auto max-w-lg px-4 py-16"><div className="panel">
-      <p className="subtle">本地开发环境</p>
+      {localSession && <p className="subtle">本地开发环境</p>}
       <h1 className="mt-3 text-2xl font-semibold">PDOS 研发工作区</h1>
-      <p className="my-5">从我的工作开始，办理项目、整理项目集、查找知识。小Pai 对所有岗位开放，产品管理入口按本人品类权限显示。此环境只用于本地开发。</p>
+      <p className="my-5">从我的工作开始，办理项目、整理项目集、查找知识。小Pai 对所有岗位开放，产品管理入口按本人品类权限显示。{localSession ? "此环境只用于本地开发。" : ""}</p>
       {entryError && <p role="alert" className="mb-4">{entryError}</p>}
-      <Button onClick={async () => { setEntryError(""); try { await browserApi("local-session", {}); await load(); } catch (failure) { setEntryError((failure as Error).message); } }}>进入本地开发环境</Button>
+      {localSession ? <Button onClick={async () => { setEntryError(""); try { await browserApi("local-session", {}); await load(); } catch (failure) { setEntryError((failure as Error).message); } }}>进入本地开发环境</Button>
+        : <div className="flex gap-2"><Button onClick={() => { setEntryError(""); setAuth("loading"); void load(); }}>重新读取</Button><Button asChild variant="outline"><a href="/login">前往登录</a></Button></div>}
     </div></main>
   </>;
 
@@ -233,7 +239,7 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
       </nav>
       <div className="workspace-sidebar-bottom">
         <a href={pageHref(globalHref({ area: "settings", categoryId: location.categoryId, projectId: "" }, window.location.search))} className="workspace-nav-item" aria-label="设置" title="设置" aria-current={location.area === "settings" ? "page" : undefined} onClick={event => { if (event.button || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return; event.preventDefault(); navigate("settings"); }}><GearSix size={17} aria-hidden="true"/><span className="workspace-nav-label">设置</span></a>
-        <div className="workspace-profile"><span className="workspace-avatar" aria-hidden="true">{session?.name.slice(0, 1) ?? "P"}</span><div className="workspace-nav-label min-w-0"><p className="truncate text-xs font-medium">{session?.name}</p><p className="workspace-environment">本地开发环境</p></div></div>
+        <div className="workspace-profile"><span className="workspace-avatar" aria-hidden="true">{session?.name.slice(0, 1) ?? "P"}</span><div className="workspace-nav-label min-w-0"><p className="truncate text-xs font-medium">{session?.name}</p><p className="workspace-environment">{localSession || localPreview ? "本地开发环境" : session?.login_name ?? ""}</p></div>{!localPreview && <Button size="icon" variant="ghost" className="workspace-nav-label ml-auto" aria-label="退出登录" title="退出登录" onClick={() => void signOut()}><SignOut/></Button>}</div>
       </div>
     </>;
   }
@@ -251,7 +257,7 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
   else if (location.area === "category" && !projectWorkbench && managementError && !managedCategories.some(item => item.id === location.categoryId)) content = <section className="workspace-empty"><p role="status">{managementError}</p><Button variant="outline" onClick={() => void load()}><ArrowClockwise/>重新读取权限</Button></section>;
   else if (location.area === "category" && !projectWorkbench && (!managedCategories.length || Boolean(location.categoryId) && !managedCategories.some(item => item.id === location.categoryId))) content = <section className="workspace-empty"><p>当前范围没有产品管理权限。你可以从我的工作和项目办理岗位工作，小Pai 仍可使用。</p><Button variant="outline" onClick={() => navigate("projects")}>打开项目</Button></section>;
   else if (location.area === "category" || location.area === "knowledge") content = <CategoryArea key={session!.principal_id} principalId={session!.principal_id} area={location.area} projectId={location.projectId} categories={location.area === "category" && !projectWorkbench ? managedCategories : categories} categoryId={location.categoryId} onSelectCategory={selectCategory} onCreated={created => { setCategories(old => [...old.filter(item => item.id !== created.id), created]); selectCategory(created.id); void load(); }} onPaiContext={updateMaterialContext} onOpenPai={options => { setPresetSkillKeys(options?.presetSkillKeys ?? []); setPaiOpen(true); }} />;
-  else content = <PlatformSettings categories={categories} initialCategoryId={location.categoryId} principalId={session!.principal_id} onOpenRun={openRun} preferences={<section className="workspace-preferences"><h2>界面外观</h2><div className="workspace-preference-row"><div><p>主题</p><p className="subtle">选择适合当前工作环境的显示方式</p></div><ThemeOptions /></div><div className="workspace-preference-row"><div><p>侧栏</p><p className="subtle">按当前用户记住展开或收起状态</p></div><Button variant="outline" onClick={toggleSidebar}><SidebarSimple/>{collapsed ? "展开侧栏" : "收起侧栏"}</Button></div><div className="workspace-preference-row"><div><p>小Pai 工作栏</p><p className="subtle">按当前用户记住右侧工作栏开关</p></div><Button variant="outline" aria-pressed={paiOpen} onClick={togglePai}><Sparkle/>{paiOpen ? "关闭小Pai 工作栏" : "打开小Pai 工作栏"}</Button></div></section>}/>;
+  else content = <PlatformSettings administrator={Boolean(session?.administrator)} categories={categories} initialCategoryId={location.categoryId} principalId={session!.principal_id} onOpenRun={openRun} preferences={<section className="workspace-preferences"><h2>界面外观</h2><div className="workspace-preference-row"><div><p>主题</p><p className="subtle">选择适合当前工作环境的显示方式</p></div><ThemeOptions /></div><div className="workspace-preference-row"><div><p>侧栏</p><p className="subtle">按当前用户记住展开或收起状态</p></div><Button variant="outline" onClick={toggleSidebar}><SidebarSimple/>{collapsed ? "展开侧栏" : "收起侧栏"}</Button></div><div className="workspace-preference-row"><div><p>小Pai 工作栏</p><p className="subtle">按当前用户记住右侧工作栏开关</p></div><Button variant="outline" aria-pressed={paiOpen} onClick={togglePai}><Sparkle/>{paiOpen ? "关闭小Pai 工作栏" : "打开小Pai 工作栏"}</Button></div></section>}/>;
 
   return <SimilarHistoryPaiContext.Provider value={selection => {
     if (selection.anchor.category_id !== location.categoryId || location.projectId && selection.anchor.project_id !== location.projectId) return;

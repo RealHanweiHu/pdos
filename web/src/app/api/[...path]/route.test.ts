@@ -1003,6 +1003,22 @@ test("shared project sets use only the authenticated organization routes", async
   assert.equal((await h.send("v1/project-sets", { unscoped:true,method:"POST",body,origin:"http://untrusted.invalid" })).response.status,403);
 });
 
+test("project team and tenant role catalog use only their path scope", async () => {
+  const team = `${base}/projects/${issue}/team`, h = harness();
+  assert.equal((await h.send(team)).response.status, 200);
+  assert.equal(h.calls.at(-1)?.url.endsWith(`/v1/categories/${category}/products/${product}/projects/${issue}/team`), true);
+  const body = JSON.stringify({ expected_revision: 1, request_key: run, changes: [{ action: "remove", principal_id: change }] });
+  assert.equal((await h.send(team, { method: "POST", body })).response.status, 200);
+  assert.equal(h.calls.at(-1)?.init.body, body);
+  assert.equal((await h.send("v1/role-catalog", { unscoped: true })).response.status, 200);
+  assert.equal((await h.send("v1/role-catalog", { unscoped: true, method: "POST", body })).response.status, 200);
+  for (const [path, value] of [[team, { query: `principal_id=${run}` }], ["v1/role-catalog", { unscoped: true, query: `tenant_id=${run}` }], [`${base}/projects/${issue}/team/extra`, {}], [team, { method: "POST" as const, body, origin: "http://untrusted.invalid" }]] as const) {
+    const isolated = harness();
+    assert.notEqual((await isolated.send(path, value)).response.status, 200);
+    assert.equal(isolated.calls.length, 0);
+  }
+});
+
 
 test("model provider credentials require same-origin POST and stay out of URLs", async () => {
   const h = harness();

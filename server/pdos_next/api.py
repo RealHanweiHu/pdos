@@ -7,7 +7,6 @@ from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, ConfigDict, ValidationError
 from sqlalchemy import func, select
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
 
 from pdos_next.core.contracts import Command, OriginalScanInput, ProductInput, UploadInput
 from pdos_next.core.database import category_transaction, configured_engines, tenant_session
@@ -16,7 +15,6 @@ from pdos_next.core.models import (
     BudgetReservation,
     Claim,
     Grant,
-    LoginSession,
     Principal,
     Product,
     Receipt,
@@ -377,19 +375,20 @@ def create_app(
     def authenticated(request: Request, authorization: str | None = Header(default=None)):
         if not authorization or not authorization.startswith("Bearer "):
             raise DomainError("UNAUTHENTICATED", "需要有效会话。", 401)
-        token = authorization[7:]
-        with Session(auth_engine) as s:
-            login = s.get(LoginSession, digest(token))
-            if not login or login.revoked or login.expires_at <= now():
-                raise DomainError("UNAUTHENTICATED", "会话已失效，请重新登录。", 401)
-            category_path = request.path_params.get("category_id")
-            try:
-                category_id = UUID(category_path) if category_path else None
-            except ValueError as exc:
-                raise DomainError("VALIDATION_FAILED", "品类标识无效。", 422) from exc
-            ctx = Context(
-                login.tenant_id, login.principal_id, login.principal_id, category_id=category_id
-            )
+        from pdos_next.core.accounts.sign_in import resolve
+
+        # Revoked, expired and idle sessions all end here (D214).
+        login = resolve(auth_engine, authorization[7:])
+        if login is None:
+            raise DomainError("UNAUTHENTICATED", "会话已失效，请重新登录。", 401)
+        category_path = request.path_params.get("category_id")
+        try:
+            category_id = UUID(category_path) if category_path else None
+        except ValueError as exc:
+            raise DomainError("VALIDATION_FAILED", "品类标识无效。", 422) from exc
+        ctx = Context(
+            login.tenant_id, login.principal_id, login.principal_id, category_id=category_id
+        )
         with tenant_session(
             engine,
             ctx.tenant_id,
@@ -408,6 +407,9 @@ def create_app(
         return ctx
 
     auth_dependency = Depends(authenticated)
+    from pdos_next.core.accounts.api import register_routes as register_accounts
+
+    register_accounts(app, engine, auth_engine, auth_dependency)
     from pdos_next.agent.kernel.api import router as kernel_router
 
     app.include_router(
@@ -442,6 +444,9 @@ def create_app(
     from pdos_next.domain.projects.sets.api import register_routes as register_project_sets
 
     register_project_sets(app, engine, auth_dependency)
+    from pdos_next.domain.projects.team.api import register_routes as register_project_team
+
+    register_project_team(app, engine, auth_dependency)
     from pdos_next.domain.my_work.attention_api import register_routes as register_attention
 
     register_attention(app, engine, auth_dependency)
@@ -475,6 +480,9 @@ def create_app(
     )
 
     register_resource_read_routes(app, engine, auth_dependency)
+    from pdos_next.domain.exports.api import register_routes as register_export_routes
+
+    register_export_routes(app, engine, auth_dependency)
 
     @app.get("/health")
     def health():
@@ -493,8 +501,10 @@ def create_app(
             requester_id=ctx.requester_id,
             category_id=ctx.category_id,
         ) as s:
+            from pdos_next.core.accounts.management import own_account
+
             p = s.get(Principal, ctx.actor_id)
-            return {"name": p.name, "principal_id": str(p.id)}
+            return {"name": p.name, "principal_id": str(p.id), **own_account(s, ctx)}
 
     @app.get("/v1/categories")
     def categories(ctx: Context = auth_dependency):

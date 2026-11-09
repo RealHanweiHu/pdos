@@ -244,6 +244,10 @@ def approve(s, ctx, row, sub, decision, *, provenance, baseline=None):
         variant_id=variant.id if variant else None,
     )
     audience(s, ctx, "projects", project.id, project.owner_id, people)
+    from pdos_next.domain.projects.team.service import register_g0
+
+    # P55: the people this decision adds to the project audience become its team.
+    team = register_g0(s, ctx, project, people, decision)
     by_id = {i["item_id"]: i for i in doc["items"]}
     for disp in decision.dispositions:
         item = by_id[disp["subject_id"]]
@@ -286,3 +290,4 @@ def approve(s, ctx, row, sub, decision, *, provenance, baseline=None):
                 }
             _version(s, ctx, row, input_item, decision.receipt_id, provenance=carry_provenance)
     s.flush()
+    return team

@@ -45,6 +45,11 @@ NON_CONSUMING = frozenset(
         "object_audiences",
         "principals",
         "login_sessions",
+        # Human sign-in identity, invitations, throttling and lifecycle events.
+        "human_credentials",
+        "account_invitations",
+        "account_events",
+        "sign_in_attempts",
         "grants",
         "qualifications",
         "model_invocations",
@@ -58,6 +63,12 @@ NON_CONSUMING = frozenset(
         "inbox_states",
         "project_set_versions",
         "project_set_links",
+        # Team membership, roles and the role catalog hold identities only.
+        "project_role_catalog_versions",
+        "project_team_changes",
+        "project_members",
+        "project_member_roles",
+        "project_member_audiences",
         "products",
         "upload_attempts",
         "lifecycle_objects",
@@ -103,6 +114,9 @@ NON_CONSUMING = frozenset(
         "memory_index",
         "memory_session_settings",
         "memory_tenant_policies",
+        # D56 export audit: who exported which scope, counts and file digest only;
+        # it never copies or adopts source material.
+        "export_audits",
         "agent_tool_calls",
         "agent_run_events",
         "agent_run_inputs",

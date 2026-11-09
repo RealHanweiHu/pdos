@@ -620,12 +620,18 @@ def create_run(
         if prior.intent_digest != fingerprint:
             raise DomainError("DUPLICATE_INTENT_CONFLICT", "请求编号对应不同目标。")
         return prior
-    if read_sources:
+    personal_sources = None
+    if read_sources and ctx.category_id is None:
+        # P91: only the Human requester's currently readable sources, per actual category.
+        from .personal_sources import canonical
+
+        if product_id is not None or proposal_id is not None or project_id is not None:
+            raise DomainError("FORBIDDEN_SCOPE", "个人运行不能绑定业务对象。", 403)
+        read_sources, personal_sources = canonical(session, ctx, read_sources, writer_id)
+    elif read_sources:
         from pdos_next.core.contracts import SourceRead
         from pdos_next.core.service import source_for
 
-        if ctx.category_id is None:
-            raise DomainError("FORBIDDEN_SCOPE", "个人运行不能绑定业务原件。", 403)
         require_access(session, ctx, product_id)
         canonical_reads = []
         for ref in read_sources:
@@ -713,6 +719,7 @@ def create_run(
             **({"proposal_context": outbound_context} if outbound_context is not None else {}),
             **({"project_metadata_context": project_metadata} if project_metadata else {}),
             **({"project_current_context": project_facts} if project_facts else {}),
+            **({"personal_sources": personal_sources} if personal_sources else {}),
         },
         validation_budget_id=validation_budget_id,
     )

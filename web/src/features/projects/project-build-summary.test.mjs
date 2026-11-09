@@ -34,7 +34,7 @@ function load(filename) {
   if (!path.extname(filename)) filename = [".tsx", ".ts"].map(ext => filename + ext).find(existsSync);
   if (modules.has(filename)) return modules.get(filename).exports;
   const loaded = new Module(filename); modules.set(filename, loaded);
-  loaded.require = name => name === "react" ? react : name === "@/lib/project-build-summary" ? boundary : name === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") }) : name.startsWith("@/") ? load(path.join(webRoot, "src", name.slice(2))) : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name);
+  loaded.require = name => name === "react" ? react : name === "@/lib/project-build-summary" ? boundary : name === "@/features/exports/export-button" ? { ExportButton: () => null } : name === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") }) : name.startsWith("@/") ? load(path.join(webRoot, "src", name.slice(2))) : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name);
   loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename);
   return loaded.exports;
 }

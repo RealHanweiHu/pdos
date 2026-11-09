@@ -959,6 +959,226 @@
       "purpose": "小Pai 读取本人以往的情景记录（M1）。查询人与范围由服务器按本次运行绑定，参数只能收窄；逐条复核当前权限；结果不是业务事实，不能作为依据引用。",
       "implementation": "implemented_local_tool",
       "source": "设计确认稿 P85、P90（用户 2026-11-07）"
+    },
+    {
+      "operation": "account.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员读取本租户账户、邀请状态与在线会话数；不返回密码、哈希或链接。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/accounts"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.create",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员建立账户并取得 72 小时单次有效的邀请链接；账户只能由管理员建立，小Pai 不能办理。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.invitation.issue",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员为尚未设密码的账户重发邀请链接；旧链接随即失效。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/{principal_id}/invitation"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.password.reset",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员重置密码：旧密码与该账户全部会话立即失效，另发 72 小时单次有效的重设链接。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/{principal_id}/password-reset"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.deactivate",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员停用账户：立即吊销其全部会话与未用链接；不能停用自己，至少保留一位启用的管理员。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/{principal_id}/deactivate"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.reactivate",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员恢复已停用的账户；已吊销的会话不恢复。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/{principal_id}/reactivate"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.sessions.revoke",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员强制该账户在所有设备下线，不改变账户状态。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/{principal_id}/sessions/revoke"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "account.administrator.set",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "account_events",
+      "purpose": "租户管理员授予或取消他人的管理员身份；不能更改自己的身份，至少保留一位启用的管理员。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/accounts/{principal_id}/administrator"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "operation": "project.member.set",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_team_changes",
+      "purpose": "项目负责人本人添加、移出成员，设置角色与主责人；整张变更一次提交、一次确认。成员须已有品类授权，负责人不能代授；小Pai 不是成员，只能起草名单。私有项目中成员即项目受众，加入时一并加入负责人本人所有的型号与立项定义受众；有未交接事项的成员移出后保留可见并标待交接，交接完成后由负责人完成移出，随本项目加上的受众一并撤回（P56 临时口径）。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/team"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P56、P60 第 4 项（用户 2026-11-01、11-02）；D33 拍板（用户 2026-11-07）"
+    },
+    {
+      "operation": "project.team.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_members",
+      "purpose": "读取项目团队：当前成员与角色、主责人、已离开成员、空缺角色与各人品类授权状态；只在项目可见范围内。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/team"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
+    },
+    {
+      "operation": "project.role_catalog.publish",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_role_catalog_versions",
+      "purpose": "租户管理员本人发布租户级角色目录新版本，一次确认；缺省为设计稿 §4.1 的可编辑初始值。被项目成员担任的角色不能删除，只能停用（P60 第 4 项）。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/role-catalog"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
+    },
+    {
+      "operation": "project.role_catalog.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "project_role_catalog_versions",
+      "purpose": "读取租户当前角色目录及版本，未发布时为缺省目录（版本 0）。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/role-catalog"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 1 项、P55、P60 第 4 项（用户 2026-11-01、11-02）"
+    },
+    {
+      "operation": "export.workbook.download",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "export_audits",
+      "purpose": "具名本人按当前读权限把项目、我的工作、BOM 差异、测试汇总导出为 Excel；行与字段过滤与页面读取相同，AI 来源的行和单元格带“AI 起草”标识与隐式元数据；每次导出写一条只追加审计，审计未落库不交付文件。小Pai 与运行身份不能发起；不经系统向外部发送。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/exports/project"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/exports/bom-diff"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/exports/test-summary"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/exports/my-work"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "拍板表 C16、设计优化评估 F41、设计确认稿 P41 第 7 项（欠债总表 D56，2026-11-08）"
     }
   ],
   "inbound_endpoints": [
@@ -968,6 +1188,34 @@
       "path": "/v1/dingtalk/applications/{application_id}/events",
       "purpose": "钉钉事件回调入站入口：只做签名校验与幂等，不是领域命令。",
       "source": "设计确认稿 P71（用户 2026-11-02）"
+    },
+    {
+      "name": "auth.sign_in",
+      "method": "POST",
+      "path": "/v1/auth/sign-in",
+      "purpose": "密码登录入站入口：按登录名与来源限流，签发带空闲超时的会话；会话令牌只交给 Web BFF 写入 HttpOnly cookie，不是领域命令。",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "name": "auth.sign_out",
+      "method": "POST",
+      "path": "/v1/auth/sign-out",
+      "purpose": "本人结束当前会话。",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "name": "auth.invitation.inspect",
+      "method": "POST",
+      "path": "/v1/auth/invitations/inspect",
+      "purpose": "持链接者查看邀请或重设链接是否有效。",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
+    },
+    {
+      "name": "auth.invitation.accept",
+      "method": "POST",
+      "path": "/v1/auth/invitations/accept",
+      "purpose": "持链接者设置密码并登录；链接只能使用一次，72 小时内有效。",
+      "source": "设计确认稿 P78 第 2 项（用户 2026-11-04）；欠债总表 D214、D86、D192"
     }
   ]
 }

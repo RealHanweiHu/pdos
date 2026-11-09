@@ -35,7 +35,7 @@ type Proposal = {
   decision: G0Decision | null;
 };
 type Command = { command_id: string; idempotency_key: string; category_id: string; product_id: null; operation: string; expected_revision: number; source_read_set: unknown[]; payload: Record<string, unknown> };
-type Prepared = { command: Command; review: { effect?: string; target_kind?: string; identity_name?: string; variant_kind?: string; dispositions?: { note: string; audience_added: boolean }[]; project_owner_audience_added?: boolean } };
+type Prepared = { command: Command; review: { effect?: string; target_kind?: string; identity_name?: string; variant_kind?: string; dispositions?: { note: string; audience_added: boolean }[]; project_owner_audience_added?: boolean; project_team?: { id: string; name: string }[] } };
 type Assignment = { kind: string; owner_id: string; due_date: string };
 
 const statuses: Record<string, string> = { draft: "草稿", returned: "已退回", in_review: "G0 评审中", approved: "已批准", rejected: "不立项" };
@@ -380,6 +380,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
       </>}
       {prepared.review.dispositions?.map((item, index) => <p key={index} className="mb-2 text-sm">{item.note}{item.audience_added ? "：负责人会获得型号与项目读取权限" : ""}</p>)}
       {prepared.review.project_owner_audience_added && <p className="text-sm">项目负责人会获得型号与项目读取权限。</p>}
+      {!!prepared.review.project_team?.length && <p className="text-sm">批准后登记为项目团队：{prepared.review.project_team.map(person => person.name || "姓名暂不可读").join("、")}；角色由项目负责人补充。</p>}
       <div className="mt-6 flex gap-3"><Button disabled={busy} onClick={async () => {
         setBusy(true); setError("");
         try { await api(`${root}/commands`, prepared.command); if (live.current) { if (prepared.command.operation === "proposal.question.create" && typeof prepared.command.payload.supersedes_item_id === "string") onDraft(prepared.command.payload.supersedes_item_id, null); setPrepared(null); setSaveNotice("已保存，可继续与小Pai完善。"); await reload(); } }
