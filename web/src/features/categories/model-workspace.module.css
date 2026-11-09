@@ -1,0 +1,28 @@
+/* 型号与定义 overview: flat facts, one version table, on-demand professional areas. */
+.page { min-width:0; }
+.page > button:first-child { margin-bottom:12px; }
+.facts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 32px; margin:0 0 28px; border-top:1px solid var(--border); }
+.facts > div { display:grid; grid-template-columns:88px minmax(0,1fr); gap:12px; padding:11px 0; border-bottom:1px solid var(--border); font-size:12px; line-height:1.65; }
+.facts dt { color:var(--text-subtle); }
+.facts dd { min-width:0; overflow-wrap:anywhere; }
+.facts dd small { display:block; color:var(--text-subtle); font-size:11px; }
+.links { display:flex; flex-wrap:wrap; gap:4px 12px; }
+.links a { color:var(--primary); }
+.links a:hover { text-decoration:underline; }
+.section { margin-bottom:28px; }
+.section > header { display:flex; align-items:baseline; gap:8px; margin-bottom:10px; }
+.section > header h2 { font-size:14px; font-weight:550; }
+.section > header span { color:var(--text-subtle); font-size:11px; }
+.tableScroll { max-width:100%; overflow-x:auto; }
+.tableScroll table { width:100%; min-width:560px; border-collapse:collapse; text-align:left; font-size:12px; }
+.tableScroll th { height:30px; padding:4px 12px 4px 0; border-bottom:1px solid var(--border); color:var(--text-subtle); font-size:11px; font-weight:400; }
+.tableScroll td { padding:10px 12px 10px 0; border-bottom:1px solid var(--border); vertical-align:top; overflow-wrap:anywhere; }
+.rowLink { display:inline-flex; align-items:center; gap:6px; text-align:left; font-weight:500; cursor:pointer; }
+.rowLink:hover { color:var(--primary); }
+.rowLink:focus-visible, .entries button:focus-visible { outline:2px solid var(--ring); outline-offset:3px; border-radius:4px; }
+.note { margin:10px 0; color:var(--text-subtle); font-size:12px; line-height:1.65; }
+.note > button { margin-top:8px; }
+.entries { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); border-top:1px solid var(--border); }
+.entries button { display:flex; align-items:center; justify-content:space-between; gap:8px; min-height:44px; padding:0 12px 0 0; border-bottom:1px solid var(--border); font-size:12px; text-align:left; cursor:pointer; }
+.entries button:hover { color:var(--primary); }
+@media(max-width:720px) { .facts { grid-template-columns:minmax(0,1fr); } .facts > div { grid-template-columns:76px minmax(0,1fr); } }

@@ -48491,6 +48491,21 @@
             "type": "array",
             "maxItems": 10,
             "title": "Favorite Project Ids"
+          },
+          "default_home": {
+            "type": "string",
+            "enum": [
+              "work",
+              "inbox",
+              "projects"
+            ],
+            "title": "Default Home",
+            "default": "work"
+          },
+          "pending_reminders": {
+            "type": "boolean",
+            "title": "Pending Reminders",
+            "default": true
           }
         },
         "additionalProperties": false,

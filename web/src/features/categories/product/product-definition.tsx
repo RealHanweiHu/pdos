@@ -1,13 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { ArrowClockwise, FileText, Plus, Trash } from "@phosphor-icons/react";
+import { ArrowClockwise, ArrowRight, FileText, Plus, Trash } from "@phosphor-icons/react";
 import { originalLocation } from "@/lib/original-location";
 import { numericShapeProblem } from "@/lib/spec-bound-values";
 import { Button } from "@/components/ui/button";
+import { RetainedSheet } from "@/components/ui/detail-sheet";
 import { availabilityLabels, isLatestDefinition, natureLabels, plainReference, referenceKey, sourceLines, specificationValue, type DefinitionApi, type DefinitionList, type DefinitionPayload, type DefinitionReference, type DefinitionRevision, type DefinitionSource, type DefinitionSpec } from "@/lib/product-view";
 import { DefinitionDraftActions } from "./definition-draft-actions";
-import { ReadingPanel, ReadingRecord } from "./reading";
+import { ReadingPanel } from "./reading";
 
 type Product = { id: string; name: string; purpose: string; revision: number };
 type Props = { compact?: boolean; product: Product; principalId: string; sources: DefinitionSource[]; api: DefinitionApi; onSaved: () => void | Promise<void>; onAccessDenied?: () => void };
@@ -72,14 +73,15 @@ export function ProductDefinition(props: Props) {
   return <DefinitionPanel key={`${props.principalId}:${props.product.id}`} {...props}/>;
 }
 
-function DefinitionPanel({ compact = false, product, principalId, sources, api, onSaved, onAccessDenied }: Props) {
+function DefinitionPanel({ product, principalId, sources, api, onSaved, onAccessDenied }: Props) {
   const storageKey = `pdos-next:definition:${principalId}:${product.id}`;
   const [items, setItems] = useState<DefinitionRevision[]>([]);
   const [payload, setPayload] = useState(() => emptyPayload(product));
   const [pending, setPending] = useState<Pending | null>(null);
   const [busy, setBusy] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [editorOpen, setEditorOpen] = useState<boolean | null>(null);
+  const [editorOpen, setEditorOpen] = useState(false);
+  const [viewing, setViewing] = useState<{ id: string; open: boolean } | null>(null);
   const [ready, setReady] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
@@ -125,7 +127,7 @@ function DefinitionPanel({ compact = false, product, principalId, sources, api, 
     edit({ ...payload, specs: payload.specs.map((spec, position) => index === position ? { ...spec, ...patch } : spec) });
   }
   function clearPrivate() {
-    setItems([]); setPayload(emptyPayload(product)); setEditorOpen(false);
+    setItems([]); setPayload(emptyPayload(product)); setEditorOpen(false); setViewing(null);
     setSourceId(""); setQuote(""); setUnavailable(0);
     if (!pending) localStorage.removeItem(storageKey);
     onAccessDenied?.();
@@ -165,7 +167,7 @@ function DefinitionPanel({ compact = false, product, principalId, sources, api, 
       if (!alive.current) return;
       committed = true;
       setPending(null); store(payload, null);
-      setNotice("新定义草稿已保存，原版本与来源保留。尚未发布或专业确认。");
+      setNotice("新定义草稿已保存，原版本与来源保留。尚未发布或专业确认。"); setEditorOpen(false);
       await refresh(); await onSaved();
     } catch (failure) {
       if (!alive.current) return;
@@ -179,15 +181,18 @@ function DefinitionPanel({ compact = false, product, principalId, sources, api, 
     }
   }
 
-  const showEditor = !!pending || (editorOpen ?? (!loading && items.length === 0));
+  // The long draft form opens on demand in the shared drawer (D40); it stays
+  // mounted while closed, and unsent input is also kept on this device.
+  const showEditor = editorOpen;
+  const viewed = viewing ? items.find(item => item.id === viewing.id) ?? null : null;
   return <section className="min-w-0 space-y-5" aria-label="型号定义">
-    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">从当前资料形成定义 · 无需建立项目</p><h2 className="mt-1 text-lg font-semibold">型号定义与可测规格</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy || !!pending} aria-expanded={showEditor} aria-controls={`definition-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><Plus/>{showEditor ? "收起编辑" : "编辑定义草稿"}</Button><Button variant="outline" disabled={busy} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新已保存版本</Button></div></header>
+    <header className="flex flex-wrap items-start justify-between gap-3"><div><p className="subtle">从当前资料形成定义 · 无需建立项目</p><h2 className="mt-1 text-lg font-semibold">型号定义与可测规格</h2></div><div className="flex flex-wrap gap-2"><Button variant="outline" disabled={busy} aria-haspopup="dialog" onClick={() => setEditorOpen(true)}><Plus/>{items.length ? "编辑定义草稿" : "准备首版定义"}</Button><Button variant="outline" disabled={busy} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新已保存版本</Button></div></header>
     {error && <p role="alert" className="break-words rounded-lg border border-destructive p-3 text-destructive">{error}</p>}
     {notice && <p role="status" className="rounded-lg border border-border p-3">{notice}</p>}
     {unavailable > 0 && <p className="subtle">{unavailable} 个版本的来源权限需要重核，派生正文已隐藏。</p>}
-    {pending && <div className="rounded-lg border border-primary p-4"><p className="mb-2 font-medium">此保存结果仍待确认</p><p className="subtle mb-3">保留原内容与请求编号。重试会核对同一请求，不另建定义。</p><Button disabled={busy} onClick={() => void submit(pending)}>按原请求重试定义保存</Button></div>}
-    <div className={showEditor ? "grid min-w-0 items-start gap-5 xl:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]" : "min-w-0 max-w-5xl"}>
-      <div id={`definition-editor-pane-${product.id}`} hidden={!showEditor}>
+    {pending && <div className="rounded-lg border border-primary p-4"><p className="mb-2 font-medium">此保存结果仍待确认</p><p className="subtle mb-3">保留原内容与请求编号。重试会核对同一请求，不另建定义。</p><div className="flex flex-wrap gap-2"><Button disabled={busy} onClick={() => void submit(pending)}>按原请求重试定义保存</Button><Button variant="outline" disabled={busy} onClick={() => setEditorOpen(true)}>查看原内容</Button></div></div>}
+    <RetainedSheet open={showEditor} title={payload.parent_definition_id ? "续写定义草稿" : "准备首版定义"} onClose={() => setEditorOpen(false)}>
+      <div id={`definition-editor-pane-${product.id}`}>
       <ReadingPanel title={payload.parent_definition_id ? `续写固定草稿 v${payload.expected_parent_revision}` : "准备首版定义"}>
         <form noValidate id={`definition-editor-${product.id}`} className="min-w-0 scroll-mt-20" onSubmit={event => { event.preventDefault(); void submit(); }}>
           <fieldset disabled={busy || !!pending || !ready} className="min-w-0">
@@ -229,18 +234,22 @@ function DefinitionPanel({ compact = false, product, principalId, sources, api, 
         </form>
       </ReadingPanel>
       </div>
+    </RetainedSheet>
+    <div className="min-w-0">
       <ReadingPanel title="已保存定义" count={items.length}>
-        {loading ? <p role="status" className="subtle">正在读取定义版本…</p> : items.length === 0 ? <p className="subtle">还没有可见定义版本。先核对原文，再保存首版草稿。</p> : <div className="space-y-4">{items.map((item, index) => <ReadingRecord key={item.id} id={`definition-${item.id}`} title={`${item.title} · v${item.revision}`} open={index === 0} meta={<><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time> · 草稿 · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}{item.source_status !== "current" && " · 来源待重核"}</>}>
+        {loading ? <p role="status" className="subtle">正在读取定义版本…</p> : items.length === 0 ? <p className="subtle">还没有可见定义版本。先核对原文，再保存首版草稿。</p> : <div className="definition-versions"><table><thead><tr><th>定义版本</th><th>规格</th><th>受众</th><th>来源</th><th>保存时间</th></tr></thead><tbody>{items.map(item => <tr key={item.id}><td><button type="button" className="definition-version-link" aria-haspopup="dialog" onClick={() => setViewing({ id: item.id, open: true })}>{item.title} · v{item.revision}<ArrowRight size={12}/></button>{isLatestDefinition(item, items) && <small className="subtle block">当前草稿</small>}</td><td>{item.specs.length} 项</td><td>{item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}</td><td>{item.source_status === "current" ? `${item.sources.length} 条有效` : "来源待重核"}</td><td><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time></td></tr>)}</tbody></table></div>}
+        {hasMore && <p className="subtle mt-4">显示最近100个可见版本，历史仍保留。</p>}
+      </ReadingPanel>
+    </div>
+    {viewing && <RetainedSheet size="default" open={viewing.open && !!viewed} title="定义详情" onClose={() => setViewing(current => current && { ...current, open: false })}>
+      {viewed && (item => <div className="min-w-0 space-y-4"><h2 className="break-words">{item.title} · v{item.revision}</h2><p className="subtle"><time dateTime={item.created_at}>{new Date(item.created_at).toLocaleString()}</time> · 草稿 · {item.visibility === "private" ? "仅本人" : item.visibility === "audience" ? "指定评审人" : "品类授权成员"}{item.source_status !== "current" && " · 来源待重核"}</p>
           <p className="break-words">{item.purpose}</p>{listFields.map(([key, label]) => item[key].length > 0 && <section key={key}><h4 className="subtle mb-1">{label}</h4><ul className="list-disc space-y-1 pl-5">{item[key].map((value, position) => <li className="break-words" key={position}>{value}</li>)}</ul></section>)}
           {item.specs.length > 0 && <section className="space-y-3"><h4 className="font-medium">规格与核对条件</h4>{item.specs.map(spec => <article key={spec.key} className="min-w-0 border-t border-border pt-3"><p className="break-words font-medium">{spec.parameter}</p><p className="my-2 break-words font-mono">{specificationValue(spec)}</p><p className="subtle">{natureLabels[spec.nature]} · 待专业确认 · {spec.owner_id === principalId ? "我负责" : spec.owner_id ? "有原负责人" : "负责人待定"}</p><p className="mt-2 break-words text-sm">依据：{spec.reason}</p><p className="subtle mt-1 break-words">条件：{spec.test_conditions.join("；") || "尚未明确"}</p><p className="subtle break-words">方法：{spec.method ?? "尚未明确"} · 判据：{spec.acceptance_criterion ?? "尚未明确"}</p></article>)}</section>}
           <details><summary className="cursor-pointer text-sm font-medium"><FileText className="mr-1 inline-block size-4"/>原文依据与版本</summary><ul className="mt-3 space-y-3">{item.sources.map(ref => <li key={referenceKey(ref)} className="min-w-0 border-l-2 border-border pl-3"><p className="subtle">{ref.title} · v{ref.expected_revision} · 第{ref.line}行 · {ref.status === "active" ? "当前来源有效" : "来源待重核"}</p><blockquote className="mt-1 break-words text-sm">{ref.quote}</blockquote></li>)}</ul></details>
           <p className="subtle break-words">本版原因：{item.change_reason}{item.parent_definition_id ? " · 固定前一草稿，历史未覆盖" : " · 首版"}</p>
           {item.differences.length > 0 && <details><summary className="cursor-pointer text-sm font-medium">与固定父版的变化 · {item.differences.length}处</summary><div className="mt-3 space-y-3">{item.differences.map(change => <div key={change.path} className="min-w-0 rounded-lg border border-border p-3"><p className="mb-2 text-sm font-medium">{pathLabels[change.path] ?? `规格 ${change.path.replace("specs/", "")}`}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="subtle">前版</p><div className="break-words whitespace-pre-wrap text-sm">{changeValue(change.before)}</div></div><div><p className="subtle">此版</p><div className="break-words whitespace-pre-wrap text-sm">{change.after == null ? "从新版本移除，前版保留" : changeValue(change.after)}</div></div></div></div>)}</div></details>}
-          {compact ? <details className="border-t border-border pt-3"><summary className="cursor-pointer text-xs font-medium">维护定义与条目</summary><div className="mt-3"><DefinitionDraftActions definition={item} product={product} principalId={principalId} sources={sources} api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/></div></details> : <DefinitionDraftActions definition={item} product={product} principalId={principalId} sources={sources}
-            api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/>}
-        </ReadingRecord>)}</div>}
-        {hasMore && <p className="subtle mt-4">显示最近100个可见版本，历史仍保留。</p>}
-      </ReadingPanel>
-    </div>
+          <section className="border-t border-border pt-4"><h4 className="mb-3 font-medium">维护定义与条目</h4><DefinitionDraftActions key={item.id} definition={item} product={product} principalId={principalId} sources={sources} api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/></section>
+        </div>)(viewed)}
+    </RetainedSheet>}
   </section>;
 }

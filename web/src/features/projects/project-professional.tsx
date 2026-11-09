@@ -1,7 +1,9 @@
 "use client";
 
 import { useCallback, useMemo, useState } from "react";
-import { CaretDown } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react";
+import { Button } from "@/components/ui/button";
+import { RetainedSheet } from "@/components/ui/detail-sheet";
 import { Workspace } from "@/features/shell/workspace";
 import { professionalViews, type ProfessionalView } from "@/lib/project-workspace-navigation";
 import type { browserApi } from "@/lib/browser-api";
@@ -46,39 +48,51 @@ export function ProjectProfessional({ view, categoryId, productId, projectId, pr
     for (const key of ["build","request","run","issue","change","feedback","publication"] as const) { const value=params.get(key); if(value && /^[0-9a-f-]{36}$/i.test(value))target[key]=value; }
     setIntent(previous=>({target,serial:previous.serial+1}));
   }
-  const [editors, setEditors] = useState<Record<string, boolean>>({ ...(initialPanel && Object.keys(intent.target).length ? {[initialPanel]:true} : {}) });
-  const [savedVersion, setSavedVersion] = useState(0);
-  const saved = useCallback(() => { setSavedVersion(value => value + 1); onSaved?.(); }, [onSaved]);
-  const [visited, setVisited] = useState(false);
   const definition = professionalViews[view];
   const panel = definition.panels.find(([id]) => id === selected[view])?.[0] ?? definition.panels[0][0];
+  const panelLabel = definition.panels.find(([id]) => id === panel)?.[1] ?? definition.title;
   const Summary = summaries[panel as keyof typeof summaries];
-  const editing = panel !== "summary" && panel !== "files" && (!(Summary || recordPanels.has(panel)) || editors[panel]);
-  if (editing && !visited) setVisited(true);
+  // Panels with a compact summary or record list keep their long professional
+  // forms in the shared right-side drawer, opened only on demand (D40).
+  const listed = !!Summary || recordPanels.has(panel);
+  const inline = panel !== "summary" && panel !== "files" && !listed;
+  const [drawer, setDrawer] = useState<{ open: boolean; panel: string }>(() => ({ open: !!initialPanel && Object.keys(intent.target).length > 0 && (!!summaries[initialPanel as keyof typeof summaries] || recordPanels.has(initialPanel)), panel: initialPanel }));
+  const [drawerVisited, setDrawerVisited] = useState(drawer.open);
+  if (drawer.open && !drawerVisited) setDrawerVisited(true);
+  const [inlineVisited, setInlineVisited] = useState(inline);
+  if (inline && !inlineVisited) setInlineVisited(true);
+  const [savedVersion, setSavedVersion] = useState(0);
+  const saved = useCallback(() => { setSavedVersion(value => value + 1); onSaved?.(); }, [onSaved]);
   const scope = { categoryId, productId, projectId, principalId, api, readVersion: readVersion + savedVersion };
+  const drawerLabel = definition.panels.find(([id]) => id === drawer.panel)?.[1] ?? definition.title;
   function choose(value: string) {
     setSelected(current => ({ ...current, [view]: value }));
     const params = new URLSearchParams(window.location.search);
     params.set("projectView", view); params.set("panel", value);
     window.history.replaceState(null, "", `?${params}`);
   }
+  function openDrawer() { setDrawer({ open: true, panel }); }
   function editRecord(target:ProfessionalTarget) {
-    setIntent(previous=>({target,serial:previous.serial+1})); setEditors(current=>({...current,[panel]:true}));
+    setIntent(previous=>({target,serial:previous.serial+1})); setDrawer({ open: true, panel });
     const params=new URLSearchParams(window.location.search);
     for(const key of ["build","request","run","issue","change","feedback","publication"] as const) { params.delete(key); if(target[key])params.set(key,target[key]!); }
     window.history.replaceState(null,"",`?${params}`);
-    requestAnimationFrame(()=>document.getElementById("project-professional-editor")?.scrollIntoView({block:"start"}));
   }
   return <ProfessionalTargetContext.Provider value={intent}><section className={styles.surface} aria-label={definition.title}>
-    <header className={styles.heading}><h2>{definition.title}</h2><p>{definition.description}</p></header>
+    <header className={`${styles.heading} ${styles.headingRow}`}><div><h2>{definition.title}</h2><p>{definition.description}</p></div>{listed && <Button size="sm" variant="outline" aria-haspopup="dialog" onClick={openDrawer}>{panelLabel} · 专业办理<ArrowRight size={13}/></Button>}</header>
     {definition.panels.length > 1 && <nav className={styles.tabs} aria-label={`${definition.title}视图`}>{definition.panels.map(([id, label]) => <button type="button" key={id} aria-pressed={panel === id} onClick={() => choose(id)}>{label}</button>)}</nav>}
     {panel === "files" && <ProjectFiles api={api} categoryId={categoryId} productId={productId} productName={productName} manageHref={projectWorkspaceHref(categoryId, productId, projectId, "docs", "originals")}/>}
     {panel === "summary" && <ProjectBuildSummary {...scope} initialBuild={intent.target.build}/>}
     {recordPanels.has(panel) && <ProjectProfessionalRecords key={`${projectId}:${panel}`} api={scoped} productId={productId} projectId={projectId} panel={panel} readVersion={readVersion + savedVersion} initialBuild={intent.target.build} onEdit={editRecord}/>}
     {Summary && <Summary {...scope}/>}
-    {(Summary || recordPanels.has(panel)) && <><button type="button" className={styles.editorToggle} aria-expanded={!!editing} aria-controls="project-professional-editor" onClick={() => setEditors(current => ({ ...current, [panel]: !editing }))}>维护记录与专业办理<CaretDown size={14}/></button></>}
-    {(editing || visited) && <div id="project-professional-editor" hidden={!editing} className={styles.body}>
-      <Workspace key={`${principalId}:${categoryId}:${productId}:${projectId}`} categoryId={categoryId} projectId={projectId} fixedProductId={productId} onSaved={saved} embeddedPanel={editing ? panel : ""}/>
+    {(inlineVisited || inline) && <div className={styles.body} hidden={!inline}>
+      <Workspace key={`inline:${principalId}:${categoryId}:${productId}:${projectId}`} categoryId={categoryId} projectId={projectId} fixedProductId={productId} onSaved={saved} embeddedPanel={inline ? panel : ""}/>
     </div>}
+    {(drawerVisited || drawer.open) && <RetainedSheet open={drawer.open} title={`${drawerLabel} · 专业办理`} onClose={() => setDrawer(current => ({ ...current, open: false }))}>
+      <p className={styles.drawerIntro}>按当前事实核对后办理；原有确认、具名决定和历史记录保留。关闭抽屉不会丢失未保存的填写。</p>
+      <div id="project-professional-editor" className={styles.body}>
+        <Workspace key={`drawer:${principalId}:${categoryId}:${productId}:${projectId}`} categoryId={categoryId} projectId={projectId} fixedProductId={productId} onSaved={saved} embeddedPanel={drawer.open ? drawer.panel : ""}/>
+      </div>
+    </RetainedSheet>}
   </section></ProfessionalTargetContext.Provider>;
 }

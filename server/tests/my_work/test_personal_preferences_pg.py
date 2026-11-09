@@ -49,7 +49,8 @@ def test_actual_defaults_save_replay_conflict_clear_and_private_accounts(setup):
               "favorite_project_ids": []}
     first = post(setup, fields)
     assert first.status_code == 200, first.text
-    assert first.json()["revision"] == 1 and first.json()["preferences"] == fields
+    assert first.json()["revision"] == 1
+    assert first.json()["preferences"] == {**Preferences().model_dump(mode="json"), **fields}
     assert first.json()["navigation_candidates"][0]["id"] == str(setup.category)
     assert first.json()["role_defaults"]["welcome_examples"]
     assert post(setup, fields).json() == first.json()  # lost response, same values
@@ -183,6 +184,7 @@ def test_actual_sql_rls_cannot_borrow_other_person_and_guard_rejects_identity_re
 @pytest.mark.parametrize("invalid", [
     {"requester_id": str(uuid4())}, {"tenant_id": str(uuid4())},
     {"role": "administrator"}, {"favorite_category_ids": [str(uuid4())] * 2},
+    {"default_home": "settings"}, {"pending_reminders": "false"},
 ])
 def test_actual_api_rejects_forged_or_invalid_fields(setup, invalid):
     response = post(setup, invalid)
@@ -227,3 +229,12 @@ def test_actual_frozen_recheck_allows_setting_edits_and_blocks_revoked_navigatio
         grant.expires_at = now() - timedelta(seconds=1)
     with store.transaction(bound) as (session, _run):
         assert not recheck_context_preferences(session, bound, frozen)
+
+
+def test_actual_interface_settings_save_without_reaching_run_context(setup):
+    saved = post(setup, {"default_home": "inbox", "pending_reminders": False})
+    assert saved.status_code == 200, saved.text
+    assert saved.json()["preferences"]["default_home"] == "inbox"
+    assert saved.json()["preferences"]["pending_reminders"] is False
+    reread = setup.client.get(ROOT, headers=setup.headers).json()
+    assert reread["revision"] == 1 and reread["preferences"] == saved.json()["preferences"]

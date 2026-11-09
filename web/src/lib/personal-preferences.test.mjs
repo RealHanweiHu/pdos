@@ -18,12 +18,16 @@ const uuid = "11111111-1111-4111-8111-111111111111";
 test("finite explicit DTO rejects identities, inferred authority, coercions and oversized favorites", () => {
   const body = { expected_revision: 0, preferences: values.newPersonalPreferences() };
   assert.equal(values.validPreferenceSave(body), true);
+  assert.equal(values.validPreferenceSave({ ...body, preferences: { ...body.preferences, default_home: "inbox", pending_reminders: false } }), true);
   for (const preferences of [
     { ...body.preferences, requester_id: uuid }, { ...body.preferences, role: "administrator" },
     { ...body.preferences, answer_language: ["en"] }, { ...body.preferences, role: ["quality"] },
     { ...body.preferences, response_detail: ["brief"] }, { ...body.preferences, department: "a\nb" },
     { ...body.preferences, department: "a".repeat(81) }, { ...body.preferences, favorite_category_ids: [uuid, uuid.toUpperCase()] },
     { ...body.preferences, favorite_project_ids: Array.from({ length: 11 }, () => uuid) },
+    { ...body.preferences, default_home: "settings" }, { ...body.preferences, default_home: ["inbox"] },
+    { ...body.preferences, pending_reminders: "false" }, { ...body.preferences, pending_reminders: 1 },
+    Object.fromEntries(Object.entries(body.preferences).filter(([key]) => key !== "default_home")),
   ]) assert.equal(values.validPreferenceSave({ ...body, preferences }), false);
   for (const expected_revision of [-1, 0.5, true, "1", 2147483647]) assert.equal(values.validPreferenceSave({ ...body, expected_revision }), false);
   assert.equal(values.validPreferenceSave({ ...body, tenant_id: uuid }), false);

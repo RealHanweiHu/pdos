@@ -207,3 +207,38 @@
  .page[data-pai-open=true][data-mobile-view=pai] .mobileSwitch { position:fixed; inset:48px 0 auto; height:44px; padding:6px 16px; z-index:35; }
  .page[data-pai-open=true][data-mobile-view=pai] .assistant { top:92px; }
 }
+
+/* D40: options side by side and in-place cell editing (10-25 platform design §提案表格编辑). */
+.comparisonTable { width:100%; border-collapse:collapse; table-layout:fixed; text-align:left; font-size:12px; line-height:1.5; }
+.comparisonTable th, .comparisonTable td { padding:8px 10px; border-bottom:1px solid var(--border); vertical-align:top; overflow-wrap:anywhere; }
+.comparisonTable thead th { padding-block:6px; color:var(--text-subtle); font-size:11px; font-weight:500; }
+.comparisonTable th + th, .comparisonTable td + td { border-left:1px solid var(--border); }
+.comparisonTable .rowLabel { width:72px; color:var(--text-subtle); font-size:11px; font-weight:400; }
+.comparisonTable tbody th.rowLabel { padding-top:12px; }
+.columnHead { display:flex; align-items:center; justify-content:space-between; gap:6px; color:var(--foreground); }
+.cellAction { display:grid; place-items:center; width:24px; height:24px; border-radius:5px; color:var(--text-subtle); cursor:pointer; }
+.cellAction:hover:not(:disabled) { background:var(--muted); color:var(--foreground); }
+.cellAction:disabled { opacity:.5; cursor:default; }
+.cellText { white-space:pre-wrap; }
+.cellFooter { display:flex; align-items:center; flex-wrap:wrap; gap:6px; color:var(--text-subtle); font-size:11px; }
+.cellFooter > span { flex:1; min-width:0; }
+.cellEdit td:has(> input), .cellEdit td:has(> textarea), .cellEdit td:has(> select) { padding:3px; }
+.cellEdit input:not([type="checkbox"]), .cellEdit textarea, .cellEdit select { width:100%; min-width:0; margin:0; border:1px solid transparent; border-radius:6px; padding:6px 7px; background:transparent; color:var(--foreground); font:inherit; font-size:12px; line-height:1.5; box-shadow:none; }
+.cellEdit input:not([type="checkbox"]), .cellEdit select { height:32px; }
+.cellEdit textarea { min-height:68px; max-height:160px; resize:vertical; }
+.cellEdit input:hover:not(:disabled), .cellEdit textarea:hover:not(:disabled), .cellEdit select:hover:not(:disabled) { border-color:var(--border); }
+.cellEdit input:focus-visible, .cellEdit textarea:focus-visible, .cellEdit select:focus-visible { border-color:var(--ring); outline:1px solid var(--ring); outline-offset:-1px; background:var(--background); }
+.cellEdit tbody tr:focus-within { background:color-mix(in srgb, var(--muted) 60%, transparent); }
+.cellEdit tr[data-draft="true"] > td:first-child { box-shadow:inset 2px 0 0 var(--primary); }
+.questionTable { table-layout:fixed; min-width:640px; }
+.questionTable td > input + input, .questionTable td > select + input { margin-top:4px; }
+.ownerColumn { width:128px; }
+.dueColumn { width:142px; }
+.stateColumn { width:150px; }
+.actionColumn { width:92px; }
+.questionTable .rowTools { justify-content:flex-end; }
+.addRow { display:inline-flex; align-items:center; gap:5px; margin-top:8px; padding:4px 6px; border-radius:6px; color:var(--text-subtle); font-size:12px; cursor:pointer; }
+.addRow:hover:not(:disabled) { background:var(--muted); color:var(--foreground); }
+.addRow:disabled { opacity:.5; cursor:default; }
+.tableScroll:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+@media (pointer:coarse) { .cellEdit input:not([type="checkbox"]), .cellEdit select { height:40px; } .addRow { min-height:44px; } .cellAction { width:36px; height:36px; } }

@@ -5,21 +5,28 @@ export type PersonalPreferences = {
   department: string | null;
   favorite_category_ids: string[];
   favorite_project_ids: string[];
+  /** Interface only (D40): where the app opens and whether navigation counts items needing me. */
+  default_home: "work" | "inbox" | "projects";
+  pending_reminders: boolean;
 };
 export type PreferenceCandidate = { kind: "category" | "project"; id: string; label: string; category_id: string; product_id: string | null; href: string };
 export type PreferenceView = { revision: number; preferences: PersonalPreferences; navigation_candidates: PreferenceCandidate[]; role_defaults: { welcome_examples: string[]; summary_sections: string[] }; updated_at: string | null };
 export type PreferenceOptions = { items: PreferenceCandidate[]; next_cursor: string | null };
-export const newPersonalPreferences = (): PersonalPreferences => ({ answer_language: "auto", response_detail: "balanced", role: null, department: null, favorite_category_ids: [], favorite_project_ids: [] });
+/** Tells the app shell that home and reminder settings changed; carries only the saved values. */
+export const preferencesSavedEvent = "pdos:personal-preferences-saved";
+export const newPersonalPreferences = (): PersonalPreferences => ({ answer_language: "auto", response_detail: "balanced", role: null, department: null, favorite_category_ids: [], favorite_project_ids: [], default_home: "work", pending_reminders: true });
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 export function validPreferenceSave(value: unknown): boolean {
   if (!record(value) || Object.keys(value).length !== 2 || !Object.keys(value).every(key => ["expected_revision", "preferences"].includes(key)) || typeof value.expected_revision !== "number" || !Number.isSafeInteger(value.expected_revision) || value.expected_revision < 0 || value.expected_revision > 2147483646 || !record(value.preferences)) return false;
   const p = value.preferences;
-  return Object.keys(p).length === 6 && Object.keys(p).every(key => Object.keys(newPersonalPreferences()).includes(key))
+  return Object.keys(p).length === 8 && Object.keys(p).every(key => Object.keys(newPersonalPreferences()).includes(key))
     && typeof p.answer_language === "string" && ["auto", "zh-CN", "zh-TW", "en", "ja"].includes(p.answer_language)
     && typeof p.response_detail === "string" && ["brief", "balanced", "detailed"].includes(p.response_detail)
     && (p.role === null || typeof p.role === "string" && ["product", "engineering", "quality", "manufacturing", "supply", "management", "other"].includes(p.role))
     && (p.department === null || typeof p.department === "string" && [...p.department].length <= 80 && !/[\u0000-\u001f]/.test(p.department))
+    && typeof p.default_home === "string" && ["work", "inbox", "projects"].includes(p.default_home)
+    && typeof p.pending_reminders === "boolean"
     && [p.favorite_category_ids, p.favorite_project_ids].every(ids => Array.isArray(ids) && ids.length <= 10 && ids.every(id => typeof id === "string" && uuid.test(id)) && new Set(ids.map(id => id.toLowerCase())).size === ids.length);
 }
 

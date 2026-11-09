@@ -99,6 +99,8 @@ function environment(t, search, overrides = {}, initialProps = {}) {
     if (route === "v1/session") return structuredClone(state.who);
     if (route === "v1/categories") { if (state.categoryError) throw state.categoryError; return structuredClone(state.categories); }
     if (route === "v1/personal/projects?page_size=6") return { items: [], next_cursor: null };
+    // Interface settings (D40); reminders off keeps the shell to its own reads here.
+    if (route === "v1/personal/preferences") return { revision: 0, preferences: { default_home: "work", pending_reminders: false } };
     assert.fail(`Shell must not choose/read a first model or execute a child request: ${route}`);
   };
   currentEnvironment = { api };
@@ -157,7 +159,7 @@ test("category read failure mounts neither library nor legacy workbench and retr
   const env = environment(t, `?area=knowledge&category=${id(1)}`, { categoryError: new Error("category read unavailable") }); await env.flush();
   assert.equal(env.nodes("KnowledgeIndex").length, 0); assert.equal(env.nodes("CategoryArea").length, 0); assert.ok(text(env.content()).includes("category read unavailable"));
   env.state.categoryError = null; await env.click(node => node.type === entries.Button && text(node) === "重新读取");
-  assert.equal(library(env).props.categories[0].id, id(1)); assert.equal(env.calls.length, 6);
+  assert.equal(library(env).props.categories[0].id, id(1)); assert.equal(env.calls.filter(call => call.route !== "v1/personal/preferences").length, 6);
 });
 test("document mode preserves document children and never mounts the library even with knowledge URL", async t => {
   const document = React.createElement("section", { "data-document": "actual-child" }, "已选文档正文");

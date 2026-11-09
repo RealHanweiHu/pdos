@@ -29,6 +29,8 @@ from pdos_next.errors import DomainError
     {"requester_id": str(uuid4())}, {"allow_write": True}, {"learn_automatically": True},
     {"favorite_category_ids": [str(uuid4())] * 2},
     {"favorite_project_ids": [str(uuid4()) for _ in range(11)]},
+    {"default_home": "settings"}, {"default_home": "https://example.invalid"},
+    {"pending_reminders": "yes"}, {"pending_reminders": 1},
 ])
 def test_settings_reject_authority_learning_unknown_fields_and_unbounded_values(body):
     with pytest.raises(ValidationError):
@@ -74,6 +76,7 @@ def test_context_keeps_explicit_values_and_only_current_authorized_navigation():
     assert {item["id"] for item in value["navigation_candidates"]} == {str(category), str(project)}
     assert str(revoked) not in str(value)
     assert "favorite_category_ids" not in value and "favorite_project_ids" not in value
+    assert "default_home" not in value and "pending_reminders" not in value
     assert len(value["role_defaults"]["welcome_examples"]) == 2
 
 
@@ -108,3 +111,16 @@ def test_frozen_navigation_recheck_uses_only_identities_and_current_authorizatio
     ]}
     assert recheck_context_preferences(session, scope, frozen) is visible
     assert len(reads) == 1
+
+
+def test_interface_settings_default_to_my_work_with_reminders_and_stay_out_of_runs():
+    defaults = Preferences()
+    assert defaults.default_home == "work" and defaults.pending_reminders is True
+    # Rows saved before these settings existed still read with the same defaults.
+    old_body = {"answer_language": "en", "response_detail": "brief", "role": None,
+                "department": None, "favorite_category_ids": [], "favorite_project_ids": []}
+    restored = Preferences.model_validate(old_body)
+    assert restored.default_home == "work" and restored.pending_reminders is True
+    chosen = Preferences(default_home="inbox", pending_reminders=False)
+    assert chosen.model_dump(mode="json")["default_home"] == "inbox"
+    assert chosen.model_dump(mode="json")["pending_reminders"] is False

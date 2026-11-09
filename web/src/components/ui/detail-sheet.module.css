@@ -10,3 +10,6 @@
 .body > p { color:var(--text-subtle); line-height:1.65; margin-bottom:20px; }
 @media(max-width:640px) { .sheet { width:100vw; border:0; } .body { padding:20px; } .sheet > header { padding-inline:20px; } }
 @media(pointer:coarse) { .sheet > header button { width:44px; height:44px; } }
+.sheet[data-size="wide"] { width:min(880px,100vw); }
+.workBody { overflow:auto; min-height:0; flex:1; padding:20px 24px 32px; font-size:13px; }
+@media(max-width:640px) { .workBody { padding:16px; } }

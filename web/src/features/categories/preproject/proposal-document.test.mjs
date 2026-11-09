@@ -440,3 +440,37 @@ test("dictionary picker searches, selects all matching parameters, clears select
  await press("全选搜索结果");await press("添加 2 项");assert.equal(submitted.length,1);assert.deepEqual(submitted[0].map(op=>[op.content.parameter_id,op.content.parameter_version]),[["pressure",3],["pressure_max",2]]);
  assert.ok(submitted[0].every(op=>op.content.availability==="unknown"));
 });
+
+test("options compare side by side with in-place cells; unchanged cells are not drafts", () => {
+ const { draftChange } = load(path.join(directory, "proposal-item-table.tsx"));
+ const option = (id, name, kind) => ({ item_id: id, version: 2, kind: "option", content: { name, kind, summary: `${name} 说明` }, source_refs: [], origin: "human" });
+ const items = [option("a", "自研", "new"), option("b", "保持现状", "status_quo")];
+ const common = { kind: "option", people: [], busy: false, mutate: async () => true, onDraft() {}, items };
+ const html = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, editable: true }));
+ assert.match(html, /方案 A/); assert.match(html, /方案 B/); assert.match(html, /aria-label="方案 A 名称"[^>]*value="自研"|value="自研"[^>]*aria-label="方案 A 名称"/);
+ assert.match(html, /aria-label="删除方案 B"/); assert.match(html, /添加方案/); assert.doesNotMatch(html, /PencilSimple|编辑自研/);
+ const readOnly = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, editable: false }));
+ assert.doesNotMatch(readOnly, /<input|<textarea|<select|添加方案|删除方案/); assert.match(readOnly, /自研 说明/);
+ const changed = draftChange(items[0], undefined, "name", "自研二代"); assert.deepEqual(changed.values, { name: "自研二代" });
+ assert.equal(draftChange(items[0], changed, "name", "自研"), null, "typing back the saved value drops the draft");
+ const stale = { item: { ...items[0], version: 1 }, values: { summary: "旧草稿" } };
+ assert.equal(draftChange(items[0], stale, "name", "新名").item.version, 1, "a stale draft keeps its original base version");
+});
+
+test("questions edit in place; new and reassigned questions need their own confirmation, deletion uses the existing patch", async () => {
+ const question = { item_id: "q1", version: 3, kind: "question", content: { question: "认证地区？", owner_id: "owner", due_date: "2030-01-01", status: "open", answer: null }, source_refs: [], origin: "human" };
+ const people = [{ id: "owner", name: "Owner" }, { id: "peer", name: "Peer" }];
+ const common = { kind: "question", people, items: [question], editable: true, busy: false, mutate: async () => true, onDraft() {} };
+ const plain = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, newQuestions: [], onNewQuestions() {}, onCreateQuestion() {} }));
+ assert.match(plain, /aria-label="问题内容 1"/); assert.match(plain, /删除问题：认证地区？/); assert.match(plain, /添加问题/); assert.doesNotMatch(plain, /核对改派/);
+ const reassigned = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, drafts: { q1: { item: question, values: { owner_id: "peer" } } } }));
+ assert.match(reassigned, /核对改派：认证地区？/); assert.match(reassigned, /需核对一次责任安排/);
+ const answered = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, drafts: { q1: { item: question, values: { status: "answered" } } } }));
+ assert.doesNotMatch(answered, /核对改派/, "status and answer save with the ordinary revision"); assert.match(answered, /问题答复 1/);
+ const incomplete = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, newQuestions: [{ key: "n", question: "电池方案？", owner_id: "", due_date: "" }], onNewQuestions() {}, onCreateQuestion() {} }));
+ assert.match(incomplete, /<button[^>]*disabled=""[^>]*aria-label="核对新增问题 1"|<button[^>]*aria-label="核对新增问题 1"[^>]*disabled=""/);
+ const complete = renderToStaticMarkup(React.createElement(ProposalItemTable, { ...common, newQuestions: [{ key: "n", question: "电池方案？", owner_id: "peer", due_date: "2030-02-01" }], onNewQuestions() {}, onCreateQuestion() {} }));
+ assert.doesNotMatch(complete, /<button[^>]*disabled=""[^>]*aria-label="核对新增问题 1"|<button[^>]*aria-label="核对新增问题 1"[^>]*disabled=""/);
+ const xiaopai = renderToStaticMarkup(React.createElement(ProposalItemTable, common));
+ assert.doesNotMatch(xiaopai, /添加问题/, "without a confirmation path there is no add entry");
+});
