@@ -1,0 +1,8 @@
+# branch, affected set (96 files)
+10 failed, 1014 passed, 54 skipped, 27 errors in 2549.33s (0:42:29)
+# same 37 failing ids on 07c023e5 copy
+10 failed, 27 errors in 85.56s (0:01:25)
+# 8 checkpoint-dependent ids on branch, with task checkpoint store
+8 passed in 87.86s (0:01:27)
+# 54 skipped ids on branch, with task checkpoint store
+13 passed, 41 skipped in 84.21s (0:01:24)

@@ -84,27 +84,41 @@
 
 ## 受影响范围回归
 
-**未跑完。** 按改动选出 96 个测试文件、1105 例（kernel、企业检索、my_work、automations、workflows 中引用改动代码的文件）。本机负载约 23（其他会话同时在跑测试），约 10 分钟只跑完 69 例；额度将尽，已停止。已跑的 69 例失败 0 个。
+11-08 晚补跑完成（第一次因本机负载和额度只跑到 69 例）。范围：按改动选出的 96 个测试文件，共 1105 例，覆盖 kernel、企业检索、my_work、automations、workflows 中引用改动代码的文件，清单见 [affected-files.txt](affected-files.txt)。
 
-已在隔离库上完整跑过的：
+| 结果 | 数量 | 说明 |
+|---|---|---|
+| 通过 | 1035 | 主跑 1014 例通过；另有 21 例补上本任务自己的检查点库后通过（见下） |
+| 错误 | 27 | `test_registered_snapshot_reads.py` 全部 27 例。夹具把 `citation_ids` 传给 `AgentRun`，以 `TypeError` 报错。清单 11-08 已记录、未修，原有问题。 |
+| 失败 | 2 | `test_public_temporal_domain.py` 两例，断言本机有 Temporal 可执行文件，本机没有。属于环境问题。 |
+| 跳过 | 41 | 27 例需要本地 Temporal；14 例绑定历史端口 53502 的库，按测试自身的守卫跳过。 |
 
-- 新增的 D269 用例 8 个、D44 用例 3 个；
-- D257 的 `test_assistant_extract_concurrency_pg.py` 5 个；
-- `test_run_attempts.py` 23 个、`test_assistant_fanout.py`。
+**归因：**
 
-以上全部通过。剩余受影响回归须在检查点集中补跑。
+- 主跑中失败或报错的 37 例，在 `07c023e5` 的干净副本上用同一个隔离库重跑，37 例全部同样失败或报错，没有一例只在本分支失败。副本由 `git archive` 取得，已核对导入的是旧代码。
+- 其中 8 例（`test_activity.py` 3 例、`test_personal_summary_pg.py` 3 例、`test_summary_setup_pg.py` 2 例）失败只是因为缺检查点库环境变量。用 `tools/workflow_environment.py create-db` 给本任务建了独立的检查点库（本机已有 `postgres:16` 镜像，没有下载）后，8 例在本分支全部通过。`test_activity.py` 走的正是本次改到的 Activity 与持久检查点路径。
+- 原先跳过的 54 例带上检查点库重跑：13 例通过，41 例按上表仍跳过。
+
+**Temporal 用例没跑：** 本机没有 `temporal` 可执行文件，也没有 `temporalio/auto-setup:1.29.1` 镜像，要下载须另行授权。
+
+**原始记录：**
+
+- [regression-summary.txt](regression-summary.txt)：主跑与各次补跑的汇总行；
+- [regression-failed-ids.txt](regression-failed-ids.txt)：主跑失败清单；
+- [regression-baseline-07c023e5.txt](regression-baseline-07c023e5.txt)：同一批用例在基点上的结果。
 
 ## 环境
 
 - 隔离库：`tools/local_environment.py create` 新建的容器，127.0.0.1:63412/pdos_test，`TEST_DATABASE_URL` 显式指向它，未读 `.env`。
   - `create` 在 s0_0784 的降级步骤失败，与 D248/D257 记录相同；之后 `alembic upgrade head` 通过，`seed()` 补完。
   - 收尾时 `destroy`。
-- 未使用 Temporal 开发服务：D269 的停止信号由 Activity 的心跳线程设置，测试直接设置同一个信号（`attempt_scope`），与 D257 相同。
+- 未使用 Temporal 开发服务。D269 的停止信号由 Activity 的心跳线程设置，测试直接设置同一个信号（`attempt_scope`），与 D257 相同。
+- 补跑回归时另建了本任务独立的检查点库（`workflow_environment.py create-db`，127.0.0.1:63593），收尾时与隔离库一起删除。
 - 没有打印任何凭据，没有调用真实模型。
 
 ## 没有验证的
 
-- 真实 Temporal 下的超时、心跳取消到子图停下的整链（Activity 只在 `test_run_attempts.py` 中用 `ActivityEnvironment` 覆盖）。
+- 真实 Temporal 下的超时、心跳取消到子图停下的整链。Activity 在 `test_run_attempts.py` 中用 `ActivityEnvironment` 覆盖，在 `test_activity.py` 中带真实检查点库覆盖；27 例 Temporal 回归用例因本机没有 Temporal 跳过。
 - 真实模型、真实网页和 MCP 服务。
 - 研究子图走主循环 `research.fanout` 的整链（需要研究技能、URL 授权等），这里在子图层驱动。
 - D356 的提案引用路径负例。
