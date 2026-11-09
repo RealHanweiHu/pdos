@@ -241,6 +241,10 @@ def project(s, ctx, product_id, project_id) -> ExportView:
         )
         for u in data["updates"]
     ]
+    from pdos_next.domain.projects.discussions.service import export_rows
+
+    # D279: project discussions and object comments, filtered by the reader's access.
+    discussions = export_rows(s, ctx, _uuid(project_id))
     head = data["project"]
     return ExportView(
         view="project",
@@ -292,8 +296,26 @@ def project(s, ctx, product_id, project_id) -> ExportView:
                 ),
                 tuple(updates),
             ),
+            Sheet(
+                "讨论与评论",
+                (
+                    Column("thread", "讨论或对象", 32),
+                    Column("sequence", "序号", 8),
+                    Column("author", "发言人", 12),
+                    Column("body", "内容", 60),
+                    Column("state", "状态", 10),
+                    Column("subject_revision", "对象版本", 10),
+                    Column("created_at", "发表时间", 24),
+                    Column("updated_at", "最后修改", 24),
+                ),
+                tuple(SheetRow(row) for row in discussions),
+            ),
         ),
-        notes=("任务、风险、承诺与状态更新取自项目工作页同一读取；无权查看的项目或记录不会出现。",),
+        notes=(
+            "任务、风险、承诺与状态更新取自项目工作页同一读取；无权查看的项目或记录不会出现。",
+            "讨论与评论按读者当前受众过滤：看不到的对象下的评论不导出；撤回的内容只导出“已撤回”；"
+            "讨论不构成决定、承诺或批准（P34、P41 第 7 项）。",
+        ),
     )
 
 

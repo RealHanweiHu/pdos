@@ -5,14 +5,15 @@ Rules kept here and in the database guard:
   first, and the project owner cannot grant one;
 - only the project owner, as a named human, changes the team; 小Pai is never a
   member and its identity can neither read nor write these tables;
-- in a private project the audience is exactly the current members.
+- in a private project the audience is exactly the current members; a removed
+  member with open work reaches only those items through the handover lane (P56).
 """
 
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from pydantic import Field, model_validator
-from sqlalchemy import delete, func, or_, select, text
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.dialects.postgresql import insert
 
 from pdos_next.core.database import require_context
@@ -23,6 +24,7 @@ from pdos_next.domain.categories.preproject.access import fail, human
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
 
+from . import handover
 from . import roles as catalog
 from .models import MemberAudience, MemberRole, ProjectMember, TeamChange
 
@@ -123,68 +125,16 @@ def _grants(s, ctx, category_id, people):
 
 
 def pending_items(s, ctx, project, person):
-    """Unhanded responsibility of one person in this project (P56)."""
-    from pdos_next.domain.projects.external_wait.models import (
-        ExternalWaitCurrent,
-        ExternalWaitVersion,
-    )
-    from pdos_next.domain.projects.fulfillment.models import WorkCommitmentReviewCurrent
-    from pdos_next.domain.projects.work.models import (
-        WorkCommitmentCurrent,
-        WorkTaskCurrent,
-        WorkTaskVersion,
-    )
+    """Unhanded responsibility of one person in this project (P56), counted in SQL.
 
-    tasks = s.scalar(
-        select(func.count())
-        .select_from(WorkTaskCurrent)
-        .join(WorkTaskVersion, WorkTaskVersion.id == WorkTaskCurrent.version_id)
-        .where(
-            WorkTaskCurrent.tenant_id == ctx.tenant_id,
-            WorkTaskCurrent.project_id == project.id,
-            WorkTaskCurrent.state.in_(OPEN_TASK_STATES),
-            WorkTaskVersion.body["assignee_id"].astext == str(person),
-        )
-    )
-    # A commitment is handed over once reviewed as fulfilled or its task is completed.
-    commitments = s.scalar(
-        select(func.count())
-        .select_from(WorkCommitmentCurrent)
-        .join(
-            WorkTaskCurrent,
-            (WorkTaskCurrent.tenant_id == WorkCommitmentCurrent.tenant_id)
-            & (WorkTaskCurrent.product_id == WorkCommitmentCurrent.product_id)
-            & (WorkTaskCurrent.task_id == WorkCommitmentCurrent.task_id),
-        )
-        .outerjoin(
-            WorkCommitmentReviewCurrent,
-            (WorkCommitmentReviewCurrent.tenant_id == WorkCommitmentCurrent.tenant_id)
-            & (WorkCommitmentReviewCurrent.product_id == WorkCommitmentCurrent.product_id)
-            & (WorkCommitmentReviewCurrent.commitment_id == WorkCommitmentCurrent.version_id),
-        )
-        .where(
-            WorkCommitmentCurrent.tenant_id == ctx.tenant_id,
-            WorkCommitmentCurrent.project_id == project.id,
-            WorkCommitmentCurrent.promisor_id == person,
-            WorkTaskCurrent.state != "completed",
-            or_(
-                WorkCommitmentReviewCurrent.state.is_(None),
-                WorkCommitmentReviewCurrent.state != "fulfilled",
-            ),
-        )
-    )
-    waits = s.scalar(
-        select(func.count())
-        .select_from(ExternalWaitCurrent)
-        .join(ExternalWaitVersion, ExternalWaitVersion.id == ExternalWaitCurrent.version_id)
-        .where(
-            ExternalWaitCurrent.tenant_id == ctx.tenant_id,
-            ExternalWaitCurrent.project_id == project.id,
-            ExternalWaitCurrent.state == "open",
-            ExternalWaitVersion.body["responsible_id"].astext == str(person),
-        )
-    )
-    return {"tasks": tasks or 0, "commitments": commitments or 0, "external_waits": waits or 0}
+    The same rule gates the handover lane and settles the removal, so the page,
+    the lane and the database can never disagree about what is left.
+    """
+    return handover.counts(handover.items(s, ctx, project.id, person))
+
+
+def pending_detail(s, ctx, project, person):
+    return handover.items(s, ctx, project.id, person)
 
 
 def _open(pending):
@@ -339,6 +289,13 @@ def view(s, ctx, product_id, project_id):
                 "pending": pending_items(s, ctx, project, row.principal_id)
                 if can_manage and private and row.principal_id != project.owner_id
                 else None,
+                "pending_detail": pending_detail(s, ctx, project, row.principal_id)
+                if can_manage
+                and row.principal_id != project.owner_id
+                and not (
+                    tenant_people.get(row.principal_id) and tenant_people[row.principal_id].active
+                )
+                else [],
                 "needs_model_access": gaps(row.principal_id),
             }
         )
@@ -354,9 +311,16 @@ def view(s, ctx, product_id, project_id):
             "left_at": row.left_at.isoformat(),
             "removed_by_name": person(row.removed_by),
             "handover_pending": row.handover_pending,
+            "active_person": bool(
+                tenant_people.get(row.principal_id) and tenant_people[row.principal_id].active
+            ),
             "pending": pending_items(s, ctx, project, row.principal_id)
-            if row.handover_pending
+            if row.handover_pending and can_manage
             else None,
+            # The handover card (§4.4): what is left to take over, item by item.
+            "pending_detail": pending_detail(s, ctx, project, row.principal_id)
+            if row.handover_pending and can_manage
+            else [],
         }
         for row in sorted(
             (row for row in stints if row.left_at is not None),
@@ -555,7 +519,7 @@ def apply(s, ctx: Context, product_id, project_id, data: SetTeam):
         if change.action == "remove":
             if identity == project.owner_id:
                 fail("VALIDATION_FAILED", "owner_stays", "项目负责人始终在团队中，不能移出。", 422)
-            # P56 as decided: unhanded work keeps the project visible until handed over.
+            # P56: unhanded work keeps only the person's own items reachable until handed over.
             if project.visibility != "category":
                 pending[identity] = pending_items(s, ctx, project, identity)
             final.pop(identity)
@@ -609,8 +573,10 @@ def apply(s, ctx: Context, product_id, project_id, data: SetTeam):
             ]
             row.handover_pending = _open(pending.get(identity, {}))
             s.flush()
+            # The project audience ends now either way (P56-1); only a removal with
+            # open work keeps the model/definition claims its own items still need.
+            _audience(s, ctx, project, identity, present=False)
             if not row.handover_pending:
-                _audience(s, ctx, project, identity, present=False)
                 _release_upstream(s, ctx, row)
             continue
         if change.action == "add":

@@ -88,8 +88,8 @@ class ProjectMember(Row, Base):
     removed_by: Mapped[UUID | None]
     left_change_id: Mapped[UUID | None]
     departed_roles: Mapped[list | None] = mapped_column(JSONB)
-    # P56 as decided 2026-11-07: a person who leaves with unhanded work keeps the
-    # project audience until the owner completes the removal.
+    # P56: a person who leaves with unhanded work loses the project audience at once
+    # and keeps only their own open items through the handover lane until it settles.
     handover_pending: Mapped[bool] = mapped_column(Boolean, default=False)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),

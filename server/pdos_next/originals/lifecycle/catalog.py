@@ -5553,3 +5553,35 @@ COVERED_COLUMNS.update({
         "byte_size", "marker_version",
     ),
 })
+
+# P34 discussions, comments, follows and notifications (D37 ⑤): human messages and
+# personal delivery state; subject IDs are opaque and never adopt source material.
+COVERED_COLUMNS.update({
+    "discussion_threads": (
+        "category_id", "product_id", "project_id", "subject_type", "subject_id", "title",
+        "author_id", "request_key", "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "discussion_messages": (
+        "thread_id", "sequence", "author_id", "revision", "state", "body", "mentions",
+        "subject_revision", "updated_at", "change_seq", "request_key", "request_sha256",
+        "id", "tenant_id", "created_at",
+    ),
+    "discussion_message_versions": (
+        "message_id", "thread_id", "revision", "state", "body", "mentions", "subject_revision",
+        "editor_id", "request_key", "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "discussion_follows": (
+        "principal_id", "project_id", "target_kind", "target_id", "followed", "reason",
+        "updated_at", "id", "tenant_id", "created_at",
+    ),
+    "notifications": (
+        "recipient_id", "category_id", "project_id", "category", "reason", "subject_kind",
+        "subject_id", "thread_id", "merge_key", "actor_ids", "event_count", "first_at",
+        "last_at", "latest", "delivery", "read_at", "snoozed_until", "archived_at",
+        "change_seq", "id", "tenant_id", "created_at",
+    ),
+    "notification_preferences": (
+        "principal_id", "project_id", "level", "muted", "digest", "revision", "updated_at",
+        "id", "tenant_id", "created_at",
+    ),
+})

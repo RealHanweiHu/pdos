@@ -349,3 +349,7 @@ def finalize_receipt(s, ctx, command, product, payload, subject, receipt):
     )
     owner.sources_current(s, ctx, product.id, value.source_basis)
     del subject._fulfillment_phase
+    from pdos_next.domain.projects.team import handover
+
+    # A fulfilled commitment is handed over; the promisor's removal may now settle.
+    handover.settle(s, ctx, subject.project_id)

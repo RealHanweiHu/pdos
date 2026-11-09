@@ -1,4 +1,4 @@
-"""Project team (P34-1, P55, P56 as decided, P60-4) over real G0 projects and database guards."""
+"""Project team (P34-1, P55, P56, P60-4) over real G0 projects and database guards."""
 
 # ruff: noqa: F811
 
@@ -522,7 +522,7 @@ def test_private_member_gets_and_loses_the_owned_model_and_definition(setup):
     assert visible(setup, setup.peer, Product, UUID(project.product_id))
 
 
-def test_unhanded_work_keeps_visibility_until_the_owner_completes_removal(setup, monkeypatch):
+def test_unhanded_work_keeps_only_own_items_until_the_removal_completes(setup, monkeypatch):
     project = create_g0_project(setup, visibility="private")
     newcomer = add_category_human(setup, name="合成待交接成员")
     joined, _ = change(setup, project, [{"action": "add", "principal_id": str(newcomer)}])
@@ -543,8 +543,11 @@ def test_unhanded_work_keeps_visibility_until_the_owner_completes_removal(setup,
     assert str(newcomer) not in members(view)
     assert view["departed"][0]["handover_pending"] is True
     assert view["departed"][0]["pending"] == open_work
-    # Membership and roles end now; the project stays visible during handover.
-    assert visible(setup, newcomer, Project, project.project_id)
+    # P56 (D37 ⑤): membership, roles and the project audience end now; only the
+    # model claims the person's own open items still need stay until it settles.
+    # The full lane path over real work is in discussions_pg/test_handover_and_tasks.py.
+    assert not visible(setup, newcomer, Project, project.project_id)
+    assert audience(setup, project) == {setup.human, setup.peer}
     assert visible(setup, newcomer, Product, UUID(project.product_id))
     early, _ = change(setup, project, [{"action": "complete", "principal_id": str(newcomer)}])
     assert early.status_code == 422 and early.json()["detail"]["reason"] == "handover_open"
