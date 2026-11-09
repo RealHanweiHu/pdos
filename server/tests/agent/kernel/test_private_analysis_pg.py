@@ -221,9 +221,11 @@ def test_private_three_way_recovery_keeps_actual_item_versions_and_old_result(wo
             session.flush()
     assert invalid_scope.value.orig.sqlstate == "23514"
     # The rejected s0_0761 downgrade must leave the current gate intact; since
-    # s0_0850/s0_0854 that is the project-native definition, not s0_0761's text.
+    # s0_0860 that is the P91 personal-source definition, not s0_0761's text.
     from migrations.schema_s0_0761 import DOWNGRADE_SQL
-    from migrations.schema_s0_0854 import NATIVE_GATE
+    from migrations.schema_s0_0860 import PERSONAL_FUNCTIONS
+
+    NATIVE_GATE = PERSONAL_FUNCTIONS["kernel_source_reference_gate()"]
 
     with pytest.raises(DBAPIError, match="model-source history requires s0_0761"):
         with work.admin.begin() as connection:
