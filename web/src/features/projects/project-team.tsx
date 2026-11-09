@@ -128,7 +128,7 @@ function Team({ api, categoryId, productId, projectId, principalId }: Props) {
     <div className={s.scroll}><table className={s.table}>
       <thead><tr><th>成员</th><th>角色</th><th className={t.hideNarrow}>加入</th><th>品类授权</th>{view.can_manage && <th aria-label="操作"/>}</tr></thead>
       <tbody>{view.members.map(member => <tr key={member.member_id}>
-        <td><span className={s.titleLink}>{member.name}{member.is_owner && <span className={t.owner}>负责人</span>}</span>{!member.active_person && <small className={t.warn}>账号已停用</small>}{(member.needs_model_access ?? []).map(gap => <small key={gap.object} className={t.warn}>需要{gap.object}资料可见，请联系 {gap.owner_name}</small>)}</td>
+        <td><span className={s.titleLink}>{member.name}{member.is_owner && <span className={t.owner}>负责人</span>}</span>{!member.active_person && <small className={t.warn}>{(member.pending_detail ?? []).length ? `账号已停用 · 待交接：${(member.pending_detail ?? []).map(item => `${item.kind_label}「${item.label}」`).join("、")}` : "账号已停用"}</small>}{(member.needs_model_access ?? []).map(gap => <small key={gap.object} className={t.warn}>需要{gap.object}资料可见，请联系 {gap.owner_name}</small>)}</td>
         <td>{member.roles.length ? <span className={t.chips}>{member.roles.map(role => <span key={role.key} className={t.chip} data-lead={role.lead} title={role.lead ? `${role.name}主责人` : role.name}>{role.name}{role.lead ? " · 主责" : ""}</span>)}</span> : <span className={t.none}>未设角色</span>}</td>
         <td className={t.hideNarrow}>{formatJoined(member.joined_at)}<small>由 {member.added_by_name} 添加</small></td>
         <td><span className={needsGrant(member.grant) ? t.warn : undefined} title={needsGrant(member.grant) ? "由管理员处理；项目负责人不能代为授权。" : undefined}>{grantLabel(member.grant)}</span></td>
@@ -141,7 +141,7 @@ function Team({ api, categoryId, productId, projectId, principalId }: Props) {
       <summary>已离开的成员（{view.departed.length}）{view.departed.some(member => member.handover_pending) ? ` · ${view.departed.filter(member => member.handover_pending).length} 人待交接` : ""}</summary>
       <div className={s.scroll}><table className={s.table}><thead><tr><th>成员</th><th>离开时角色</th><th>在项目期间</th><th className={t.hideNarrow}>移出人</th>{view.can_manage && <th aria-label="操作"/>}</tr></thead>
         <tbody>{view.departed.map(member => <tr key={member.member_id}>
-          <td>{member.name}{member.handover_pending && <span className={t.owner}>待交接</span>}{member.handover_pending && <small>{pendingText(member.pending) ? `未交接：${pendingText(member.pending)}；交接完成前仍可看到本项目` : "已无未交接事项，可以完成移出"}</small>}</td>
+          <td>{member.name}{member.handover_pending && <span className={t.owner}>待交接</span>}{member.handover_pending && <small>{pendingText(member.pending) ? `未交接：${(member.pending_detail ?? []).map(item => `${item.kind_label}「${item.label}」`).join("、") || pendingText(member.pending)}；此人只能查看和办理这些事项，交接完成后自动完全移出` : "已无未交接事项，可以完成移出"}</small>}</td>
           <td>{member.roles.length ? names(member.roles.map(role => role.key)) : <span className={t.none}>未设角色</span>}</td>
           <td>{formatJoined(member.joined_at)} — {formatJoined(member.left_at)}</td>
           <td className={t.hideNarrow}>{member.removed_by_name}</td>
@@ -166,7 +166,7 @@ function Team({ api, categoryId, productId, projectId, principalId }: Props) {
           </div>
           {removing && <div className={t.consequence} role="alert">
             <p>{!view.membership_controls_visibility ? `移出后 ${editing.name} 仍按品类授权查看本项目，只是不再属于团队；担任的角色一并解除，历史记录保留署名。`
-              : pendingText(editing.pending) ? `${editing.name} 还有未交接事项（${pendingText(editing.pending)}）。移出后成员资格和角色立即结束；交接完成前仍可看到本项目，列为“待交接”，交接完成后由你完成移出。`
+              : pendingText(editing.pending) ? `${editing.name} 还有未交接事项（${pendingText(editing.pending)}）。移出后成员资格、角色和项目可见范围立即结束，此人只能查看和办理这些未交接事项，列为“待交接”；交接完成后自动完全移出。`
               : `移出后 ${editing.name} 立即看不到本项目，随本项目加上的型号与定义查看权一并撤回；担任的角色一并解除，历史记录保留署名。`}</p>
             <div className={t.sheetActions}><div><Button type="button" size="xs" variant="ghost" onClick={() => setRemoving(false)}>保留成员</Button><Button type="button" size="xs" variant="destructive" onClick={() => submit([{ action: "remove", principal_id: editing.principal_id }], `${editing.name} 已移出团队。`)}>确认移出</Button></div></div>
           </div>}

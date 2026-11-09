@@ -27,6 +27,7 @@ import {
 } from "@/features/my-work/lib/my-work-items";
 import { MyWorkContinue } from "./my-work-continue";
 import styles from "./my-work.module.css";
+import { HandoverItems } from "./handover-items";
 
 type Api = typeof browserApi;
 type TaskPeriod = "today" | "week" | "later";
@@ -268,6 +269,7 @@ export function MyWork({
           <p>处理产品取舍，继续提案，跟进定义与项目。</p>
         </div><div className="inline-flex items-center gap-1"><ExportButton exportUrl={exportHref("my-work")} label="导出 Excel"/><Button size="icon" variant="ghost" aria-label="刷新我的工作" title="刷新我的工作" onClick={() => { setPortfolio(null); setRuns([]); setError(""); setReload(value => value + 1); }}><ArrowClockwise size={15}/></Button></div>
       </div>
+      <HandoverItems api={api} principalId={session.principal_id}/>
       <nav className="workspace-view-tabs" aria-label="我的工作视图">
         {(
           [

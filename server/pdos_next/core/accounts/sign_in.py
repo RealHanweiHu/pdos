@@ -110,6 +110,27 @@ def resolve(auth_engine, token: str) -> LoginSession | None:
     return login
 
 
+def peek(auth_engine, token: str) -> bool:
+    """Whether a session is still current, without counting as activity.
+
+    Live delivery (D74) re-checks this while a stream stays open, so an idle tab
+    cannot keep a session alive past its idle timeout (D214).
+    """
+    with Session(auth_engine) as session:
+        login = session.get(LoginSession, digest(token))
+        if login is None:
+            return False
+        session.expunge(login)
+    instant = now()
+    if login.revoked or login.expires_at <= instant:
+        return False
+    if login.idle_timeout_seconds is not None:
+        seen = login.last_seen_at or login.issued_at
+        if seen + timedelta(seconds=login.idle_timeout_seconds) <= instant:
+            return False
+    return True
+
+
 def end_session(auth_engine, token: str) -> bool:
     with auth_engine.begin() as connection:
         return bool(connection.scalar(text("SELECT auth_session_end(:h)"), {"h": digest(token)}))

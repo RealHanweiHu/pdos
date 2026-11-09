@@ -244,8 +244,10 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
   const personalExport = forwardPath.join("/") === "v1/personal/exports/my-work";
   const inbox = /^v1\/personal\/inbox\/(?:summaries|summary-options|states|conversations(?:\/[a-f0-9-]{36}\/messages)?)$/i.test(forwardPath.join("/"));
+  // P34 §8 / D73 / D74: personal notifications, state, settings, polling fallback and own handover items.
+  const notifications = /^v1\/personal\/(?:notifications(?:\/state|\/changes)?|notification-preferences(?:\/[a-f0-9-]{36})?|handover)$/i.test(forwardPath.join("/"));
   const categoryMembers = categoryId && forwardPath.length === 4 && forwardPath[3] === "members";
-  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && !roleCatalog && !personalExport && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryId && !categoryRoot && !categoryPreview && !categorySeed && !personalAgent && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !personalExport && forwardPath.join("/") !== "v1/session") return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const path = categoryId ? ["v1", ...forwardPath.slice(3)] : forwardPath;
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
@@ -279,13 +281,15 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const releaseException = releaseExceptionPaths.test(pathname);
   const projectWork = projectWorkPaths.test(pathname);
   const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
+  // P34-2/3: project topics, object comments, mention candidates; scope stays in the path.
+  const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?)?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !projectSets && !roleCatalog && !projectTeam) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -313,6 +317,25 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (roleCatalog || projectTeam) {
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
+  } else if (discussion) {
+    const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36})$/i.test(pathname), write = /\/(?:follow|edit|retract|messages)$/.test(pathname);
+    const methods = read ? ["GET"] : write ? ["POST"] : ["GET", "POST"];
+    if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "讨论入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = request.method === "GET" && (pathname.endsWith("/mentionable") ? key === "subject_type" && ["project", "work_task", "artifact"].includes(value) || key === "subject_id" && uuid.test(value) : key === "before" && /^[1-9]\d*$/.test(value));
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "讨论只按路径中的项目与对象读取。" }, { status: 422 });
+      query.set(key, value);
+    }
+  } else if (notifications) {
+    const writing = pathname.endsWith("/state") || pathname === "v1/personal/notification-preferences";
+    if (request.method !== (writing ? "POST" : "GET")) return Response.json({ code: "VALIDATION_FAILED", message: "通知入口不支持此操作。" }, { status: 405, headers: { Allow: writing ? "POST" : "GET" } });
+    for (const [key, value] of request.nextUrl.searchParams) {
+      const valid = pathname === "v1/personal/notifications" ? key === "view" && ["inbox", "snoozed", "archived", "digest"].includes(value) || key === "category" && ["mention", "assigned", "decide", "agent", "follow"].includes(value) || key === "unread" && ["true", "false"].includes(value) || key === "before" && /^[1-9]\d*$/.test(value) || key === "page_size" && /^[1-9]\d*$/.test(value) && Number(value) <= 100
+        : pathname.endsWith("/changes") ? key === "since" && /^[0-9.]{0,64}$/.test(value) || key === "threads" && value.split(",").length <= 20 && value.split(",").every(item => uuid.test(item))
+        : false;
+      if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "通知只按本人读取。" }, { status: 422 });
+      query.set(key, value);
+    }
   } else if (inbox) {
     if ((pathname.endsWith("/summaries") || pathname.endsWith("/summary-options")) && request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "摘要列表只支持本人读取。" }, { status: 405 });
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "此入口只支持读取与保存。" }, { status: 405 });

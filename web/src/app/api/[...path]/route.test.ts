@@ -1020,6 +1020,43 @@ test("project team and tenant role catalog use only their path scope", async () 
 });
 
 
+test("project discussions and personal notifications keep server scope and strict queries", async () => {
+  const project = `${base}/projects/${issue}`, h = harness();
+  const body = JSON.stringify({ body: "@[许晴](person:" + change + ") 请看", request_key: run });
+  for (const path of [`${project}/discussions`, `${project}/discussions/${run}`, `${project}/comments/work_task/${run}`, `${project}/mentionable`]) {
+    assert.equal((await h.send(path)).response.status, 200, path);
+    assert.equal(h.calls.at(-1)?.url.includes(`/v1/categories/${category}/products/`), true);
+  }
+  assert.equal((await h.send(`${project}/mentionable`, { query: `subject_type=work_task&subject_id=${run}` })).response.status, 200);
+  for (const path of [`${project}/discussions`, `${project}/discussions/${run}/messages`, `${project}/discussions/${run}/messages/${change}/edit`, `${project}/discussions/${run}/messages/${change}/retract`, `${project}/discussions/${run}/follow`, `${project}/comments/artifact/${run}`]) {
+    assert.equal((await h.send(path, { method: "POST", body })).response.status, 200, path);
+    assert.equal(h.calls.at(-1)?.init.body, body);
+  }
+  for (const [path, value] of [["v1/personal/notifications", { query: "view=snoozed&category=mention&page_size=20" }], ["v1/personal/notifications/changes", { query: `since=12.0&threads=${run}` }], [`v1/personal/notification-preferences/${issue}`, {}], ["v1/personal/handover", {}]] as const) {
+    assert.equal((await h.send(path, { unscoped: true, ...value })).response.status, 200, path);
+  }
+  for (const path of ["v1/personal/notifications/state", "v1/personal/notification-preferences"]) {
+    assert.equal((await h.send(path, { unscoped: true, method: "POST", body })).response.status, 200, path);
+  }
+  for (const [path, value] of [
+    [`${project}/discussions`, { query: `principal_id=${run}` }],
+    [`${project}/discussions/${run}`, { method: "POST" as const, body }],
+    [`${project}/discussions/${run}/messages`, {}],
+    [`${project}/comments/build/${run}`, {}],
+    [`${project}/mentionable`, { query: "subject_type=project&recipient=all" }],
+    [`${project}/discussions/${run}/messages`, { method: "POST" as const, body, origin: "http://untrusted.invalid" }],
+    ["v1/personal/notifications", { unscoped: true, query: `recipient_id=${run}` }],
+    ["v1/personal/notifications", { unscoped: true, query: "view=everyone" }],
+    ["v1/personal/notifications/changes", { unscoped: true, query: "since=1;drop" }],
+    ["v1/personal/notifications/state", { unscoped: true }],
+    ["v1/personal/notifications/stream", { unscoped: true }],
+  ] as const) {
+    const isolated = harness();
+    assert.notEqual((await isolated.send(path, value)).response.status, 200, path);
+    assert.equal(isolated.calls.length, 0);
+  }
+});
+
 test("model provider credentials require same-origin POST and stay out of URLs", async () => {
   const h = harness();
   assert.equal((await h.send("v1/model-connections")).response.status, 200);

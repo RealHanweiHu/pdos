@@ -15,6 +15,8 @@ import { CommitmentFulfillment } from "./commitment-fulfillment";
 import { ExternalWaits } from "./external-waits";
 import { ProjectRisks } from "./project-risks";
 import { ExportButton } from "@/features/exports/export-button";
+import type { browserApi } from "@/lib/browser-api";
+import { ObjectComments } from "./discussion-thread";
 import { exportHref } from "@/features/exports/lib/export-download";
 import styles from "./project-work.module.css";
 
@@ -48,7 +50,8 @@ export function ProjectWork(props: Props) { return <ScopedProjectWork key={JSON.
 function ScopedProjectWork({ api, categoryId, productId, projectId, principalId, productRevision, onRefresh, onCloseEditor, readVersion = 0, view = "all", planSection }: Props) {
   const scope = { categoryId, productId, projectId, principalId }, storageKey = workStorageKey(scope) + (view === "updates" ? ":status-update" : "");
   const [editorOpen, setEditorOpen] = useState(view === "updates");
-  const [inspectedId, setInspectedId] = useState<string | null>(null);
+  // A notification may open one task with its comments (`?task=`), within this project only.
+  const [inspectedId, setInspectedId] = useState<string | null>(() => typeof window === "undefined" || view !== "tasks" ? null : new URLSearchParams(window.location.search).get("task"));
   const [query, setQuery] = useState("");
   const [layout, setLayout] = useState<"list" | "board">("list");
   const [phaseFilter, setPhaseFilter] = useState("");
@@ -179,7 +182,7 @@ function ScopedProjectWork({ api, categoryId, productId, projectId, principalId,
     {local.receipt && !denied && <p className={styles.success}>已保存：{workOperationNames[local.receipt.operation]} · 回执 {local.receipt.id}。刷新只读回结果。</p>}
   </>;
   return <div className={styles.root}>
-    {inspected && !denied && !showEditor && <DetailSheet title="任务详情" onClose={() => setInspectedId(null)}><h2>{inspected.title}</h2>{taskDetail(inspected)}</DetailSheet>}
+    {inspected && !denied && !showEditor && <DetailSheet title="任务详情" onClose={() => setInspectedId(null)}><h2>{inspected.title}</h2>{taskDetail(inspected)}<ObjectComments api={api as typeof browserApi} scope={{ categoryId, productId, projectId }} subjectType="work_task" subjectId={inspected.id}/></DetailSheet>}
     {view !== "tasks" && <header className={styles.heading}><div><h2 className={view === "updates" || planSection ? "sr-only" : undefined}>{view === "plan" ? "承诺与协调" : "项目任务"}</h2></div><div className={styles.actions}>{view === "all" && data && (<div className={styles.actions}>{!showEditor && Boolean(local.taskId || local.draft.title || local.draft.factSummary) && <Button size="sm" variant="ghost" onClick={() => setEditorOpen(true)}>继续编辑</Button>}<Button size="sm" variant="outline" disabled={!editable} onClick={() => select("work.task.create")}><Plus aria-hidden="true"/>新建任务</Button><NpiTaskPicker api={api} scope={scope} disabled={!editable} onChoose={chooseTemplate}/><Button size="sm" variant="outline" disabled={!editable} onClick={() => select("work.status_update.create")}><ClipboardText aria-hidden="true"/>写具名周报</Button></div>)}<Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => setAttempt(v => v + 1)}><ArrowClockwise aria-hidden="true"/>刷新任务</Button>{view === "all" && <ExportButton exportUrl={exportHref("project", { categoryId, productId }, projectId)} label="导出 Excel"/>}</div></header>}
     {notice && <p className={styles.notice} role="status">{notice}</p>}{error && <p className={styles.error} role="alert">{error}</p>}
     {!storageOk && hydrated && !(view !== "all" && showEditor) && <Button type="button" variant="outline" onClick={() => saveEvent(localRef.current)}>重试本机保存</Button>}

@@ -92,6 +92,11 @@ def validate(s, ctx, command, product, payload):
     rules.require(
         command.expected_revision == product.revision, "型号范围版本已变化。", "VERSION_CONFLICT"
     )
+    if payload.wait is not None:
+        from pdos_next.domain.projects.team import handover
+
+        # P56-1: a removed member may still update their own open external wait.
+        handover.open_lane(s, ctx, payload.project_id, "external_wait", payload.wait.id)
     project = owner.project(s, ctx, product.id, payload.project_id, lock=True)
     human_actor = not ctx.agent_run_id and not ctx.run_id
     if human_actor:
@@ -305,3 +310,6 @@ def finalize_receipt(s, ctx, command, product, payload, subject, receipt):
     owner.sources_current(s, ctx, product.id, value.project.id, value.source_basis)
     _anchors(s, ctx, product.id, value.project.id, value.plan)
     del subject._wait_phase
+    from pdos_next.domain.projects.team import handover
+
+    handover.settle(s, ctx, value.project.id)

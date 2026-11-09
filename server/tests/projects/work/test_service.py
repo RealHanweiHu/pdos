@@ -89,6 +89,8 @@ def case(monkeypatch):
     monkeypatch.setattr(service.owner, "project", actual_project)
     monkeypatch.setattr(service.owner, "task", actual_task)
     monkeypatch.setattr(service.owner, "sources_current", lambda *args: True)
+    monkeypatch.setattr(service.owner, "handover_lane", lambda *a, **kw: None)
+    monkeypatch.setattr(service.owner, "after_fact", lambda *a, **kw: None)
     monkeypatch.setattr(service, "human", lambda *args: None)
     monkeypatch.setattr(service, "direct_source_basis", actual_sources)
     clock = [AT]
@@ -227,6 +229,8 @@ def test_finalize_propagates_late_source_failure_before_clearing_original_phase(
         raise DomainError("SOURCE_UNAVAILABLE", "Explicit late source withdrawal")
 
     monkeypatch.setattr(service.owner, "sources_current", stale)
+    monkeypatch.setattr(service.owner, "handover_lane", lambda *a, **kw: None)
+    monkeypatch.setattr(service.owner, "after_fact", lambda *a, **kw: None)
     with pytest.raises(DomainError) as error:
         service.finalize_receipt(
             session, case.ctx, case.command, case.product, case.payload, subject, receipt

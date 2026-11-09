@@ -447,6 +447,12 @@ def create_app(
     from pdos_next.domain.projects.team.api import register_routes as register_project_team
 
     register_project_team(app, engine, auth_dependency)
+    # P34 discussions, comments, notifications and live delivery (D37 ⑤).
+    from pdos_next.domain.my_work.notifications.api import register_routes as register_notes
+    from pdos_next.domain.projects.discussions.api import register_routes as register_discussions
+
+    register_discussions(app, engine, auth_dependency)
+    register_notes(app, engine, auth_dependency, auth_engine)
     from pdos_next.domain.my_work.attention_api import register_routes as register_attention
 
     register_attention(app, engine, auth_dependency)

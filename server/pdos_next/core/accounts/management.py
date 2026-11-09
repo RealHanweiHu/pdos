@@ -378,7 +378,19 @@ def deactivate(s, ctx, principal_id: UUID) -> dict:
         _revoke_invitations(s, ctx, principal_id, now())
         _event(s, ctx, principal_id, "account.deactivate", sessions_revoked=ended)
         s.flush()
-    return {"account": _view(s, ctx, principal_id), "sessions_revoked": ended}
+        # P56-3: the person loses all access now; each project owner gets a card
+        # listing their unhanded tasks, commitments and external waits.
+        cards = s.scalar(
+            text("SELECT notify_deactivated_handover(:t, :person)"),
+            {"t": ctx.tenant_id, "person": principal_id},
+        )
+    else:
+        cards = 0
+    return {
+        "account": _view(s, ctx, principal_id),
+        "sessions_revoked": ended,
+        "handover_cards": cards,
+    }
 
 
 def reactivate(s, ctx, principal_id: UUID) -> dict:

@@ -69,6 +69,14 @@ NON_CONSUMING = frozenset(
         "project_members",
         "project_member_roles",
         "project_member_audiences",
+        # P34 discussions and notifications: human messages and personal delivery
+        # state. Opaque subject IDs never establish source references.
+        "discussion_threads",
+        "discussion_messages",
+        "discussion_message_versions",
+        "discussion_follows",
+        "notifications",
+        "notification_preferences",
         "products",
         "upload_attempts",
         "lifecycle_objects",
