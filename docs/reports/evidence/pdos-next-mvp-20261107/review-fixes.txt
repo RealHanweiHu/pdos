@@ -1,0 +1,259 @@
+MVP code review repairs, 2026-11-07 (local)
+Tracked base: d730291d
+Candidate source diff SHA-256: d6ea244d5e21788b08e273ba4b1980f5bd5854c00808c48b0cba13ca4079008a
+Candidate added test SHA-256: a8f94fd53c0270c5951a6b831d3a473a3a51ee287812b608c0a1e4de1207c0fd
+PostgreSQL checks used a marked independent synthetic pdos_test. Model responses were synthetic.
+
+=== unit.log ===
+........................................................................ [ 34%]
+........................................................................ [ 68%]
+...................................................................      [100%]
+211 passed in 65.29s (0:01:05)
+
+=== pg.log ===
+.....................................                                    [100%]
+=============================== warnings summary ===============================
+tests/agent/kernel/test_proposal_runs_pg.py: 4 warnings
+tests/categories/preproject/test_g0.py: 17 warnings
+tests/categories/preproject/test_pilot_g0.py: 3 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/preproject/service.py:730: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent/kernel/test_proposal_runs_pg.py: 6 warnings
+tests/categories/preproject/test_g0.py: 100 warnings
+tests/categories/preproject/test_pilot_g0.py: 18 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/preproject/service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/agent/kernel/test_proposal_runs_pg.py: 1 warning
+tests/categories/preproject/test_g0.py: 10 warnings
+tests/categories/preproject/test_pilot_g0.py: 3 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/preproject/service.py:895: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_return_edit_and_new_submission
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_private_source_is_visible_to_reviewer_and_withdrawal_blocks_approval
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_g0.py::test_returned_proposal_writer_can_edit_but_only_owner_can_submit
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/preproject/service.py:950: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/products/definitions.py:205: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/projects/service.py:275: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+37 passed, 185 warnings in 50.04s
+
+=== cancel-pg.log ===
+.                                                                        [100%]
+=============================== warnings summary ===============================
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/preproject/service.py:730: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+tests/agent/kernel/test_proposal_runs_pg.py::test_g0_candidate_uses_actual_proposal_revision_and_owner_confirmation[True]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/pdos_next/domain/categories/preproject/service.py:611: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+1 passed, 7 warnings in 4.00s
+
+=== web-tests.log ===
+✔ reads only scoped GETs and displays the server document identity (33.17375ms)
+✔ scope remount aborts old reads and ignores responses arriving after abort (4.871584ms)
+✔ a late view response cannot replace a newer selected view (8.940084ms)
+✔ same frozen identity refresh hides old sources and fetches fresh redaction (33.467792ms)
+✔ failed document or view reads hide old success and retry first reloads the document (19.491416ms)
+✔ mismatched envelopes are unavailable and never trigger an automatic retry loop (10.746167ms)
+✔ view changes preserve G0 form values and the prepared command for same-key retry (39.920083ms)
+✔ variant G0 uses the frozen target and sends the named identity for explicit review (24.628667ms)
+✔ foreground refresh is read-only, hidden pages do not refresh, and cleanup removes listeners (27.303917ms)
+✔ superseded same-scope reload cannot replace a newer source projection (31.91875ms)
+✔ late confirmed write from an unmounted scope does not reload or replace the new proposal (24.7285ms)
+✔ missing identity or unreadable frozen copy cannot fall back to current document content (1.905667ms)
+✔ legacy responses without document identity remain unavailable (1.774458ms)
+✔ document chips switch only returned item groups and never submit a domain command (20.23625ms)
+✔ key specification table preserves decimal bounds, false, unknowns and returned source identity (14.247875ms)
+✔ document-tab changes retain the named G0 form and immutable prepared request (24.129542ms)
+✔ row drafts retain their original version through refresh and only the saved row clears, while Pai stays mounted (3.86375ms)
+✔ unknown proposal saves retry the original command and authority failures clear private material (2.422166ms)
+✔ in-flight row saves lock their inputs so later typing cannot be discarded by a receipt (0.86025ms)
+✔ dictionary picker searches, selects all matching parameters, clears selection and submits one fixed-version batch (3.400167ms)
+✔ a lost creation receipt survives refresh and retries the same sealed command (140.391791ms)
+✔ human edits remain separate from the original, save keeps the workspace and opens the same document (41.836125ms)
+✔ unknown writes restore the edited content and replay exactly without automatic resubmission (13.684458ms)
+✔ storage failure prevents a write; a mismatched preview never enables confirmation (7.327541ms)
+✔ permission loss clears document and context even if the parent has not yet unmounted (7.735625ms)
+✔ a forged preview cannot replace the sealed source or human edits (4.139625ms)
+✔ mobile CSS keeps ordinary candidate confirmation visible and hides only the controlled editor background (0.936625ms)
+✔ ordinary preview is modal on mobile and returns to non-modal desktop chat (0.935958ms)
+✔ snapshot is listed without a write, then one preview and one confirmation save it (29.940167ms)
+✔ lost success response restores the actual receipt on reopening without a second POST (13.066334ms)
+✔ an uncommitted request remains recoverable with exactly its original command and token (14.214208ms)
+✔ unknown saved response after the first 50 candidates can read on and restore its receipt without POST (44.863542ms)
+✔ pending candidate on a later page keeps the original request and requires an explicit replay (55.052ms)
+✔ proposal adoption on a later page restores the proposal link from its actual receipt (37.6645ms)
+✔ failed later-page read retains the exact request and refresh can recover the saved receipt (9.395167ms)
+✔ later-page cancelled candidate keeps unknown intent and blocks replay or a new preview (3.291333ms)
+✔ later-page unavailable candidate keeps unknown intent and blocks replay or a new preview (3.349417ms)
+✔ later-page authority loss removes local recovery and does not send the original command (1.871292ms)
+✔ candidate confirmation authorization failure clears private material but preserves its error (1.526375ms)
+✔ native preparation kind binds the ordinary command without pretending to be a CONTENT candidate (1.503334ms)
+✔ only an actual scoped domain candidate can be restored for confirmation (0.225416ms)
+✔ G0 submission restores only the run's candidate and the same proposal revision (0.217958ms)
+✔ preview comparison tolerates JSON key order and the one server confirmation token (0.235959ms)
+✔ changed scope, material, version or original request is not the same preview (0.221542ms)
+✔ nested business fields called confirmation_token are still compared (0.105792ms)
+✔ snapshot confirmation needs the server event and exact currently listed command (0.188ms)
+ℹ tests 46
+ℹ suites 0
+ℹ pass 46
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1411.542458
+
+=== build.log ===
+v22.23.4
+11.16.0
+✓ Lockfile passes supply-chain policies (verified 35d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +433
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 433, reused 431, downloaded 0, added 173
+Progress: resolved 433, reused 433, downloaded 0, added 430
+Progress: resolved 433, reused 433, downloaded 0, added 431
+Progress: resolved 433, reused 433, downloaded 0, added 433, done
+
+dependencies:
++ @phosphor-icons/react 2.1.10
++ class-variance-authority 0.7.1
++ clsx 2.1.1
++ next 16.3.3
++ next-themes 0.4.6
++ radix-ui 1.6.7
++ react 19.2.8
++ react-dom 19.2.8
++ tailwind-merge 3.6.0
++ undici 7.22.0
+
+devDependencies:
++ @tailwindcss/postcss 4.3.3
++ @types/node 20.19.43
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ eslint 9.39.5
++ eslint-config-next 16.3.3
++ tailwindcss 4.3.3
++ typescript 5.9.3
+
+Done in 4s using pnpm v11.16.0
+✓ Lockfile passes supply-chain policies (verified 35d ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Done in 612ms using pnpm v11.16.0
+$ next build --webpack
+▲ Next.js 16.3.3 (webpack)
+✓ Running next.config.ts took 65ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 23.9s
+  Running TypeScript ...
+  Finished TypeScript in 19.1s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/12) ...
+  Generating static pages using 9 workers (3/12) 
+
+  Generating static pages using 9 workers (6/12) 
+
+  Generating static pages using 9 workers (9/12) 
+
+✓ Generating static pages using 9 workers (12/12) in 938ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ƒ /api/local-session
+├ ƒ /api/preview-session
+├ ƒ /api/v1/categories/[categoryId]/agent-conversations
+├ ƒ /api/v1/categories/[categoryId]/agent-input-sources
+├ ƒ /api/v1/categories/[categoryId]/agent-runs/[runId]/source-bindings
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/presentation
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/presentation/requests/[requestKey]
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/runs
+├ ƒ /api/v1/categories/[categoryId]/agent-upload-receipts/[requestKey]
+├ ƒ /api/v1/categories/[categoryId]/agent-upload-target
+├ ƒ /api/v1/categories/[categoryId]/category-matrix
+├ ƒ /api/v1/categories/[categoryId]/competitors/[entryId]/segment-assignment
+├ ƒ /api/v1/categories/[categoryId]/embedding-profile
+├ ƒ /api/v1/categories/[categoryId]/originals
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history/feedback
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/originals
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/quality-issues/[issueId]/similar-history
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/quality-issues/[issueId]/similar-history/feedback
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/similar-history
+├ ƒ /api/v1/categories/[categoryId]/proposals/[proposalId]/voices
+├ ƒ /api/v1/personal/agent-conversations
+├ ƒ /api/v1/personal/agent-sessions
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/presentation
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/presentation/requests/[requestKey]
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/runs
+├ ƒ /api/v1/personal/attention
+├ ƒ /api/v1/personal/g0-reviews
+├ ƒ /api/v1/personal/preferences
+├ ƒ /api/v1/personal/preferences/options
+├ ƒ /api/v1/personal/test-start-promises
+├ ƒ /categories/[categoryId]/proposals/[proposalId]
+├ ƒ /dingtalk/runs/[runId]
+├ ƒ /plan
+├ ƒ /preview
+├ ƒ /ui-lab/pai-controls
+├ ƒ /ui-lab/platform
+└ ƒ /ui-lab/s1
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+=== Catalog ===
+v1.1 catalog/source coverage passed: 87 operations, 92 events, 63 acceptance IDs.
+This is design coverage only; no runtime, model or manufacturing qualification inferred.

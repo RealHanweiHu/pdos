@@ -4,6 +4,7 @@ export const candidateLabels: Record<string, string> = {
   "work.task.create": "资料跟进任务",
   "verification.preparation.record": "复验准备", "verification.request.create": "复验请求",
   "platform.link.create": "平台关联", "proposal.create": "立项提案",
+  "proposal.g0.submit": "提交 G0 评审",
   "proposal.question.create": "待决问题", "proposal.item.patch": "提案条目修订",
   "product.definition.item.patch": "定义条目修订", "category.knowledge.add": "品类知识",
   "category.knowledge.withdraw": "知识撤回", "category.knowledge.promote": "去标识知识沉淀",
@@ -41,6 +42,12 @@ export function boundCandidateCommand(value: unknown, category: string, run: str
     && Number.isSafeInteger(value.expected_revision) && Number(value.expected_revision) > 0
     && Array.isArray(value.source_read_set) && object(value.payload);
   if (!base || !object(value) || !object(value.payload)) return false;
+  if (value.operation === "proposal.g0.submit") return typeof eventId === "string" && uuid.test(eventId)
+    && value.product_id === null && String(value.idempotency_key).startsWith(`agent:${run}:model:`)
+    && typeof value.payload.proposal_id === "string" && uuid.test(value.payload.proposal_id)
+    && typeof value.payload.reviewer_id === "string" && uuid.test(value.payload.reviewer_id)
+    && value.payload.expected_revision === value.expected_revision
+    && Object.keys(value.payload).every(key => ["proposal_id", "reviewer_id", "expected_revision", "no_alternative_reason", "confirmation_token"].includes(key));
   if (value.operation === "verification.preparation.record") return kind === "verification_preparation"
     && typeof eventId === "string" && uuid.test(eventId) && typeof value.product_id === "string"
     && typeof value.payload.request_id === "string" && uuid.test(value.payload.request_id)

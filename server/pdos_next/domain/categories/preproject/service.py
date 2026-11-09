@@ -405,8 +405,11 @@ def validate(s, ctx, command, scope, payload):
     elif isinstance(payload, G0Submit):
         if ctx.requester_id != row.owner_id:
             fail("NAMED_DECISION_REQUIRED", "owner_only", "提案由负责人本人提交评审。", 403)
+        from pdos_next.agent.kernel.domain_candidates import g0_submission_event
         from pdos_next.agent.kernel.skill_qualification import is_pilot
 
+        if event_id := g0_submission_event(s, ctx, command, payload):
+            path["g0_candidate_event_id"] = str(event_id)
         if payload.reviewer_id == row.owner_id and not is_pilot(s, ctx.tenant_id, lock=True):
             fail("VALIDATION_FAILED", "reviewer_is_owner", "非试点租户须由另一位产品经理评审。")
         member(s, ctx, payload.reviewer_id, reviewer=True)
@@ -981,6 +984,8 @@ def apply_validated(s, ctx, command, scope, payload, validated):
         "title": document(s, row)["title"],
         "proposal_url": f"/categories/{ctx.category_id}/proposals/{row.id}",
         **({"human_edits": edits, "edited_by": str(ctx.actor_id)} if edits is not None else {}),
+        **({"g0_candidate_event_id": provenance["g0_candidate_event_id"]}
+           if "g0_candidate_event_id" in provenance else {}),
         **(
             {
                 "prepared_candidate_id": str(provenance["prepared_candidate_id"]),

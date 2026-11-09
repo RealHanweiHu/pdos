@@ -20,7 +20,8 @@ from .disclosure import disclosure, skill_operations
 from .prompts import PromptCatalog
 from .read_execution import ReadSource
 from .registry import ToolRegistry
-from .skills import SkillCatalog
+from .skills import SkillCatalog, SkillLoadInput
+from .tool_arguments import tool_arguments
 from .types import AgentOutput, ModelTurn, RunScope, ToolCall, WireAgentOutput
 
 
@@ -171,6 +172,9 @@ class AgentKernel:
                 load_event_id=event_id,
             ).model_dump(mode="json")
 
+        def extraction_declarations(skill):
+            return [item.model_dump(mode="json") for item in skill.row_schemas]
+
         def restore_loaded(state):
             restored = {}
             for raw in state["loaded"]:
@@ -198,9 +202,13 @@ class AgentKernel:
             context = project_context(scope, state["goal"], bindings=tuple(
                 SkillBinding.model_validate(binding) for binding in loaded.values()
             )) if callable(project_context) else {"context": ports.context(scope, state["goal"])}
-            messages = [{"role": "user", "content": json.dumps(
-                {"goal": state["goal"], **context}, ensure_ascii=False,
-            )}, *({"role": "user", "content": skill.content} for skill in skills)]
+            envelope = {"goal": state["goal"], **context}
+            row_schemas = {skill.key: rows for skill in skills
+                           if (rows := extraction_declarations(skill))}
+            if row_schemas:
+                envelope["row_schemas"] = row_schemas
+            messages = [{"role": "user", "content": json.dumps(envelope, ensure_ascii=False)},
+                        *({"role": "user", "content": skill.content} for skill in skills)]
             return {
                 "run_id": str(scope.run_id),
                 "messages": messages,
@@ -395,18 +403,14 @@ class AgentKernel:
                     loaded = restore_loaded(state)
                 if call.name == "skill.load":
                     registry.authorize(scope, call.name, call.arguments, loaded, ports.enabled)
-                    if set(call.arguments) != {"name"}:
-                        raise DomainError("VALIDATION_FAILED", "技能加载只接受名称。")
-                    skill = catalog.load(call.arguments.get("name"), scope, ports.enabled)
+                    request = tool_arguments(SkillLoadInput, call.arguments)
+                    skill = catalog.load(request.name, scope, ports.enabled)
                     loaded[skill.key] = skill
                     bindings[skill.key] = load_binding(skill)
                     result = {"skill": skill.key, "version": skill.version,
                               "content": skill.content}
-                    if skill.row_schemas:
-                        # D255: evidence.extract needs one of these exactly, and the
-                        # declaration sits in metadata the content does not carry.
-                        result["row_schemas"] = [item.model_dump(mode="json")
-                                                 for item in skill.row_schemas]
+                    if rows := extraction_declarations(skill):
+                        result["row_schemas"] = rows
                     project_context = getattr(ports, "skill_context", None)
                     if callable(project_context):
                         result.update(project_context(scope, state["goal"], bindings=tuple(

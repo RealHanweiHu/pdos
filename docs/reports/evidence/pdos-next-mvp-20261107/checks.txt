@@ -1,0 +1,693 @@
+PDOS MVP preflight, 2026-11-07 (local), source 8e28a81f
+Tracked source only. Dedicated synthetic PostgreSQL environment.
+
+=== Contract coverage ===
+v1.1 catalog/source coverage passed: 87 operations, 92 events, 63 acceptance IDs.
+This is design coverage only; no runtime, model or manufacturing qualification inferred.
+
+=== mvp-web-pinned.log ===
+v22.23.4
+11.16.0
+✓ Lockfile passes supply-chain policies (verified 35d ago)
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +433
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 433, reused 429, downloaded 0, added 24
+Progress: resolved 433, reused 433, downloaded 0, added 427
+Progress: resolved 433, reused 433, downloaded 0, added 431
+Progress: resolved 433, reused 433, downloaded 0, added 433, done
+
+dependencies:
++ @phosphor-icons/react 2.1.10
++ class-variance-authority 0.7.1
++ clsx 2.1.1
++ next 16.3.3
++ next-themes 0.4.6
++ radix-ui 1.6.7
++ react 19.2.8
++ react-dom 19.2.8
++ tailwind-merge 3.6.0
++ undici 7.22.0
+
+devDependencies:
++ @tailwindcss/postcss 4.3.3
++ @types/node 20.19.43
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ eslint 9.39.5
++ eslint-config-next 16.3.3
++ tailwindcss 4.3.3
++ typescript 5.9.3
+
+Done in 4.2s using pnpm v11.16.0
+✓ Lockfile passes supply-chain policies (verified 35d ago)
+Lockfile is up to date, resolution step is skipped
+Already up to date
+
+Done in 674ms using pnpm v11.16.0
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 11.16.0 → 12.18.0.   │
+   │   Changelog: https://pnpm.io/v/12.18.0   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+$ next build --webpack
+▲ Next.js 16.3.3 (webpack)
+✓ Running next.config.ts took 70ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 23.8s
+  Running TypeScript ...
+  Finished TypeScript in 18.8s ...
+  Collecting page data using 9 workers ...
+  Generating static pages using 9 workers (0/12) ...
+  Generating static pages using 9 workers (3/12) 
+
+  Generating static pages using 9 workers (6/12) 
+
+  Generating static pages using 9 workers (9/12) 
+
+✓ Generating static pages using 9 workers (12/12) in 918ms
+  Finalizing page optimization ...
+  Collecting build traces ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /api/[...path]
+├ ƒ /api/local-session
+├ ƒ /api/preview-session
+├ ƒ /api/v1/categories/[categoryId]/agent-conversations
+├ ƒ /api/v1/categories/[categoryId]/agent-input-sources
+├ ƒ /api/v1/categories/[categoryId]/agent-runs/[runId]/source-bindings
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/presentation
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/presentation/requests/[requestKey]
+├ ƒ /api/v1/categories/[categoryId]/agent-sessions/[sessionId]/runs
+├ ƒ /api/v1/categories/[categoryId]/agent-upload-receipts/[requestKey]
+├ ƒ /api/v1/categories/[categoryId]/agent-upload-target
+├ ƒ /api/v1/categories/[categoryId]/category-matrix
+├ ƒ /api/v1/categories/[categoryId]/competitors/[entryId]/segment-assignment
+├ ƒ /api/v1/categories/[categoryId]/embedding-profile
+├ ƒ /api/v1/categories/[categoryId]/originals
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/change-execution/[changeId]/similar-history/feedback
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/originals
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/quality-issues/[issueId]/similar-history
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/quality-issues/[issueId]/similar-history/feedback
+├ ƒ /api/v1/categories/[categoryId]/products/[productId]/similar-history
+├ ƒ /api/v1/categories/[categoryId]/proposals/[proposalId]/voices
+├ ƒ /api/v1/personal/agent-conversations
+├ ƒ /api/v1/personal/agent-sessions
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/presentation
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/presentation/requests/[requestKey]
+├ ƒ /api/v1/personal/agent-sessions/[sessionId]/runs
+├ ƒ /api/v1/personal/attention
+├ ƒ /api/v1/personal/g0-reviews
+├ ƒ /api/v1/personal/preferences
+├ ƒ /api/v1/personal/preferences/options
+├ ƒ /api/v1/personal/test-start-promises
+├ ƒ /categories/[categoryId]/proposals/[proposalId]
+├ ƒ /dingtalk/runs/[runId]
+├ ƒ /plan
+├ ƒ /preview
+├ ƒ /ui-lab/pai-controls
+├ ƒ /ui-lab/platform
+└ ƒ /ui-lab/s1
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+
+=== mvp-web-pinned-tests.log ===
+TAP version 13
+# (node:95559) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/pinned/web/src/app/api/preview-session/route.test.ts is not specified and it doesn't parse as CommonJS.
+# Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+# To eliminate this warning, add "type": "module" to /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/pinned/web/package.json.
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: allowlisted identity sets httpOnly session; response contains only destination
+ok 1 - allowlisted identity sets httpOnly session; response contains only destination
+  ---
+  duration_ms: 17.829458
+  type: 'test'
+  ...
+# Subtest: cross-origin and non-loopback cannot sign in
+ok 2 - cross-origin and non-loopback cannot sign in
+  ---
+  duration_ms: 2.067166
+  type: 'test'
+  ...
+# Subtest: forged role, cross-case role and arbitrary redirect never authenticate
+ok 3 - forged role, cross-case role and arbitrary redirect never authenticate
+  ---
+  duration_ms: 8.894791
+  type: 'test'
+  ...
+# Subtest: wrong identity, disabled/expired catalog and external API leave cookies intact
+ok 4 - wrong identity, disabled/expired catalog and external API leave cookies intact
+  ---
+  duration_ms: 4.234875
+  type: 'test'
+  ...
+# Subtest: page catalog never exposes tokens or private runtime fields
+ok 5 - page catalog never exposes tokens or private runtime fields
+  ---
+  duration_ms: 0.995042
+  type: 'test'
+  ...
+# Subtest: product preview opens the ordinary home with one server-selected identity
+ok 6 - product preview opens the ordinary home with one server-selected identity
+  ---
+  duration_ms: 1.279042
+  type: 'test'
+  ...
+# Subtest: product preview cannot switch to a case, identity or caller destination
+ok 7 - product preview cannot switch to a case, identity or caller destination
+  ---
+  duration_ms: 4.084125
+  type: 'test'
+  ...
+# Subtest: missing fixed persona fails closed instead of falling back to another case
+ok 8 - missing fixed persona fails closed instead of falling back to another case
+  ---
+  duration_ms: 2.22275
+  type: 'test'
+  ...
+# Subtest: standard matching forwards a scoped read-only POST without creating commands
+ok 9 - standard matching forwards a scoped read-only POST without creating commands
+  ---
+  duration_ms: 23.888041
+  type: 'test'
+  ...
+# Subtest: durable run candidates allow only scoped paginated reads
+ok 10 - durable run candidates allow only scoped paginated reads
+  ---
+  duration_ms: 4.959042
+  type: 'test'
+  ...
+# Subtest: proposal run history filter stays on the scoped category collection
+ok 11 - proposal run history filter stays on the scoped category collection
+  ---
+  duration_ms: 2.722875
+  type: 'test'
+  ...
+# Subtest: G0 handoff is an exact scoped no-store read without alternate targets
+ok 12 - G0 handoff is an exact scoped no-store read without alternate targets
+  ---
+  duration_ms: 1.662792
+  type: 'test'
+  ...
+# Subtest: platform collection, detail and product links forward scoped no-store reads
+ok 13 - platform collection, detail and product links forward scoped no-store reads
+  ---
+  duration_ms: 2.090333
+  type: 'test'
+  ...
+# Subtest: platform queries reject extra scope, repeated values and invalid filters
+ok 14 - platform queries reject extra scope, repeated values and invalid filters
+  ---
+  duration_ms: 1.646
+  type: 'test'
+  ...
+# Subtest: platform reads open no unscoped, write or standalone creation route
+ok 15 - platform reads open no unscoped, write or standalone creation route
+  ---
+  duration_ms: 4.286708
+  type: 'test'
+  ...
+# Subtest: standard matching rejects unscoped paths, queries and wrong origins
+ok 16 - standard matching rejects unscoped paths, queries and wrong origins
+  ---
+  duration_ms: 1.864334
+  type: 'test'
+  ...
+# Subtest: standard matching transport failure is a failed read with no uncertain write
+ok 17 - standard matching transport failure is a failed read with no uncertain write
+  ---
+  duration_ms: 1.542083
+  type: 'test'
+  ...
+# Subtest: positioning forwards the exact scoped GET and every parameter occurrence
+ok 18 - positioning forwards the exact scoped GET and every parameter occurrence
+  ---
+  duration_ms: 1.791041
+  type: 'test'
+  ...
+# Subtest: spec-benchmark forwards the exact scoped GET and every parameter occurrence
+ok 19 - spec-benchmark forwards the exact scoped GET and every parameter occurrence
+  ---
+  duration_ms: 1.05275
+  type: 'test'
+  ...
+# Subtest: feature-config forwards the exact scoped GET and every parameter occurrence
+ok 20 - feature-config forwards the exact scoped GET and every parameter occurrence
+  ---
+  duration_ms: 1.079125
+  type: 'test'
+  ...
+# Subtest: definition-maturity forwards the exact scoped GET and every parameter occurrence
+ok 21 - definition-maturity forwards the exact scoped GET and every parameter occurrence
+  ---
+  duration_ms: 0.946916
+  type: 'test'
+  ...
+# Subtest: parameter filters are optional but a single valid proposal id is mandatory for every view
+ok 22 - parameter filters are optional but a single valid proposal id is mandatory for every view
+  ---
+  duration_ms: 5.091375
+  type: 'test'
+  ...
+# Subtest: each repeated parameter is validated and extra scope or query keys are rejected
+ok 23 - each repeated parameter is validated and extra scope or query keys are rejected
+  ---
+  duration_ms: 1.950459
+  type: 'test'
+  ...
+# Subtest: only the four exact scoped paths are opened
+ok 24 - only the four exact scoped paths are opened
+  ---
+  duration_ms: 10.693667
+  type: 'test'
+  ...
+# Subtest: views reject writes and other methods without forwarding
+ok 25 - views reject writes and other methods without forwarding
+  ---
+  duration_ms: 2.887708
+  type: 'test'
+  ...
+# Subtest: existing proposal collection, document, items and participants reads preserve their URLs
+ok 26 - existing proposal collection, document, items and participants reads preserve their URLs
+  ---
+  duration_ms: 2.409625
+  type: 'test'
+  ...
+# Subtest: session and configuration requirements still guard the new reads
+ok 27 - session and configuration requirements still guard the new reads
+  ---
+  duration_ms: 1.676209
+  type: 'test'
+  ...
+# Subtest: backend denial and read transport failure never become a successful view
+ok 28 - backend denial and read transport failure never become a successful view
+  ---
+  duration_ms: 2.137209
+  type: 'test'
+  ...
+# Subtest: existing command body and same-origin write protection remain unchanged
+ok 29 - existing command body and same-origin write protection remain unchanged
+  ---
+  duration_ms: 7.096292
+  type: 'test'
+  ...
+# Subtest: proposal claims collection and fixed detail preserve the authenticated category scope
+ok 30 - proposal claims collection and fixed detail preserve the authenticated category scope
+  ---
+  duration_ms: 1.418833
+  type: 'test'
+  ...
+# Subtest: claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding
+ok 31 - claim reads reject ambiguous filters, unbound collections and extra scopes before forwarding
+  ---
+  duration_ms: 1.64875
+  type: 'test'
+  ...
+# Subtest: only exact claim GET routes are opened and writes remain domain commands
+ok 32 - only exact claim GET routes are opened and writes remain domain commands
+  ---
+  duration_ms: 1.36275
+  type: 'test'
+  ...
+# Subtest: claim reads propagate privacy denial and missing sessions without rewriting results
+ok 33 - claim reads propagate privacy denial and missing sessions without rewriting results
+  ---
+  duration_ms: 3.373583
+  type: 'test'
+  ...
+# Subtest: handoff binds actual named decision, project, fixed v1 and carried tasks
+ok 34 - handoff binds actual named decision, project, fixed v1 and carried tasks
+  ---
+  duration_ms: 0.648334
+  type: 'test'
+  ...
+# Subtest: variant result cannot masquerade as a new product or another variant
+ok 35 - variant result cannot masquerade as a new product or another variant
+  ---
+  duration_ms: 0.124958
+  type: 'test'
+  ...
+# Subtest: mismatched scope, receipt, definition or carried item is unavailable
+ok 36 - mismatched scope, receipt, definition or carried item is unavailable
+  ---
+  duration_ms: 0.2865
+  type: 'test'
+  ...
+# Subtest: source details retain exact identity, version, locator and unavailable status
+ok 37 - source details retain exact identity, version, locator and unavailable status
+  ---
+  duration_ms: 5.963208
+  type: 'test'
+  ...
+# Subtest: source addresses and markup remain inert text and missing content is not invented
+ok 38 - source addresses and markup remain inert text and missing content is not invented
+  ---
+  duration_ms: 0.701791
+  type: 'test'
+  ...
+# Subtest: empty references remain explicitly unavailable
+ok 39 - empty references remain explicitly unavailable
+  ---
+  duration_ms: 0.189292
+  type: 'test'
+  ...
+# Subtest: comparison preserves server groups, precision, reasons and sample counts
+ok 40 - comparison preserves server groups, precision, reasons and sample counts
+  ---
+  duration_ms: 1.681625
+  type: 'test'
+  ...
+# Subtest: feature booleans retain false and enum text; unmapped names are kept separate
+ok 41 - feature booleans retain false and enum text; unmapped names are kept separate
+  ---
+  duration_ms: 1.920041
+  type: 'test'
+  ...
+# Subtest: positioning plots known coordinates only and distinguishes evidence styles
+ok 42 - positioning plots known coordinates only and distinguishes evidence styles
+  ---
+  duration_ms: 2.706375
+  type: 'test'
+  ...
+# Subtest: separate server price facets remain separate even with identical parameter ids
+ok 43 - separate server price facets remain separate even with identical parameter ids
+  ---
+  duration_ms: 3.818667
+  type: 'test'
+  ...
+# Subtest: nonfinite numeric coordinates never generate invalid SVG or invented values
+ok 44 - nonfinite numeric coordinates never generate invalid SVG or invented values
+  ---
+  duration_ms: 0.77975
+  type: 'test'
+  ...
+# Subtest: every document identity dimension rejects an old result
+ok 45 - every document identity dimension rejects an old result
+  ---
+  duration_ms: 1.448167
+  type: 'test'
+  ...
+# Subtest: loading, failed reads, wrong view and incomplete payload hide old successful content
+ok 46 - loading, failed reads, wrong view and incomplete payload hide old successful content
+  ---
+  duration_ms: 0.610375
+  type: 'test'
+  ...
+# Subtest: maturity renders only server counts, question assignments and exact blocker reasons
+ok 47 - maturity renders only server counts, question assignments and exact blocker reasons
+  ---
+  duration_ms: 1.168084
+  type: 'test'
+  ...
+# Subtest: rendering never issues requests or starts an agent
+ok 48 - rendering never issues requests or starts an agent
+  ---
+  duration_ms: 4.583917
+  type: 'test'
+  ...
+# Subtest: nonmeasurement evidence uses a separate marker and retains the original nature
+ok 49 - nonmeasurement evidence uses a separate marker and retains the original nature
+  ---
+  duration_ms: 2.569542
+  type: 'test'
+  ...
+# Subtest: free-text feature sections remain separate and never become mapped feature values
+ok 50 - free-text feature sections remain separate and never become mapped feature values
+  ---
+  duration_ms: 0.893791
+  type: 'test'
+  ...
+# Subtest: nullable unavailable feature text retains its source identity without displaying hidden content
+ok 51 - nullable unavailable feature text retains its source identity without displaying hidden content
+  ---
+  duration_ms: 1.218625
+  type: 'test'
+  ...
+# Subtest: unknown positioning records drill into the returned redacted references
+ok 52 - unknown positioning records drill into the returned redacted references
+  ---
+  duration_ms: 0.6465
+  type: 'test'
+  ...
+# Subtest: unrepresentable decimal coordinates retain exact text and explain why they are not plotted
+ok 53 - unrepresentable decimal coordinates retain exact text and explain why they are not plotted
+  ---
+  duration_ms: 3.582625
+  type: 'test'
+  ...
+# Subtest: finite extreme endpoints do not overflow the SVG scale
+ok 54 - finite extreme endpoints do not overflow the SVG scale
+  ---
+  duration_ms: 1.206125
+  type: 'test'
+  ...
+# Subtest: true zero and equivalent decimal spellings remain plotable
+ok 55 - true zero and equivalent decimal spellings remain plotable
+  ---
+  duration_ms: 4.548875
+  type: 'test'
+  ...
+# Subtest: single numeric source bounds remain explicit constraints in the actual comparison view
+ok 56 - single numeric source bounds remain explicit constraints in the actual comparison view
+  ---
+  duration_ms: 1.778167
+  type: 'test'
+  ...
+# Subtest: human edits remain separate from the original, save keeps the workspace and opens the same document
+ok 57 - human edits remain separate from the original, save keeps the workspace and opens the same document
+  ---
+  duration_ms: 13.400875
+  type: 'test'
+  ...
+# Subtest: unknown writes restore the edited content and replay exactly without automatic resubmission
+ok 58 - unknown writes restore the edited content and replay exactly without automatic resubmission
+  ---
+  duration_ms: 12.917584
+  type: 'test'
+  ...
+# Subtest: storage failure prevents a write; a mismatched preview never enables confirmation
+ok 59 - storage failure prevents a write; a mismatched preview never enables confirmation
+  ---
+  duration_ms: 4.761375
+  type: 'test'
+  ...
+# Subtest: permission loss clears document and context even if the parent has not yet unmounted
+ok 60 - permission loss clears document and context even if the parent has not yet unmounted
+  ---
+  duration_ms: 4.3275
+  type: 'test'
+  ...
+# Subtest: a forged preview cannot replace the sealed source or human edits
+ok 61 - a forged preview cannot replace the sealed source or human edits
+  ---
+  duration_ms: 3.642958
+  type: 'test'
+  ...
+# Subtest: candidate revisions retain sealed original, source versions, numeric precision and question grouping
+ok 62 - candidate revisions retain sealed original, source versions, numeric precision and question grouping
+  ---
+  duration_ms: 1.230708
+  type: 'test'
+  ...
+# Subtest: patch candidates keep domain versions and existing removals, and newly added rows do not leak local ids
+ok 63 - patch candidates keep domain versions and existing removals, and newly added rows do not leak local ids
+  ---
+  duration_ms: 0.678167
+  type: 'test'
+  ...
+# Subtest: bulk document edits are one version-bound batch and refuse protected responsibility changes
+ok 64 - bulk document edits are one version-bound batch and refuse protected responsibility changes
+  ---
+  duration_ms: 0.228167
+  type: 'test'
+  ...
+1..64
+# tests 64
+# suites 0
+# pass 64
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 587.375292
+
+=== mvp-server-tests.log ===
+........................................................................ [ 80%]
+.................                                                        [100%]
+=============================== warnings summary ===============================
+tests/categories/preproject/test_g0.py: 17 warnings
+tests/categories/preproject/test_pilot_g0.py: 3 warnings
+tests/categories/preproject/test_g0_handoff_pg.py: 5 warnings
+tests/categories/preproject/test_proposal_views_pg.py: 11 warnings
+tests/agent/kernel/test_proposal_runs_pg.py: 3 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/service.py:727: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/categories/preproject/test_g0.py: 100 warnings
+tests/categories/preproject/test_pilot_g0.py: 18 warnings
+tests/categories/preproject/test_g0_handoff_pg.py: 36 warnings
+tests/categories/preproject/test_proposal_views_pg.py: 74 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/service.py:608: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([pointer])
+
+tests/categories/preproject/test_g0.py: 10 warnings
+tests/categories/preproject/test_pilot_g0.py: 3 warnings
+tests/categories/preproject/test_g0_handoff_pg.py: 5 warnings
+tests/categories/preproject/test_proposal_views_pg.py: 5 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/service.py:892: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([sub])
+
+tests/categories/preproject/test_g0.py: 7 warnings
+tests/categories/preproject/test_pilot_g0.py: 1 warning
+tests/categories/preproject/test_g0_handoff_pg.py: 5 warnings
+tests/categories/preproject/test_proposal_views_pg.py: 1 warning
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/service.py:947: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([decision])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/categories/preproject/test_proposal_views_pg.py::test_real_g0_product_retains_honest_fixed_baseline_and_target_price_uncertainty
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/products/service.py:68: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([product])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+tests/categories/preproject/test_proposal_views_pg.py::test_real_g0_product_retains_honest_fixed_baseline_and_target_price_uncertainty
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/products/definitions.py:205: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([subject])
+
+tests/categories/preproject/test_g0.py::test_private_proposal_and_read_only_reviewer_atomic_g0
+tests/categories/preproject/test_g0.py::test_fault_rolls_back_decision_results_receipt_and_confirmation
+tests/categories/preproject/test_g0.py::test_sealed_definition_and_database_independence_constraints
+tests/categories/preproject/test_g0.py::test_g0_keeps_native_definition_citations_immutable
+tests/categories/preproject/test_pilot_g0.py::test_pilot_owner_appears_and_named_decision_creates_project_once
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[customer_request]
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[new_product]
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+tests/categories/preproject/test_proposal_views_pg.py::test_real_g0_product_retains_honest_fixed_baseline_and_target_price_uncertainty
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/projects/service.py:275: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([project])
+
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/products/variants.py:1318: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/categories/preproject/test_g0_handoff_pg.py::test_actual_three_entry_handoff_retains_identity_v1_and_dispositions[derivative]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/products/variants.py:1352: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[positioning]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[spec-benchmark]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[feature-config]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[definition-maturity]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/category_creation.py:534: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([category])
+
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[positioning]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[spec-benchmark]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[feature-config]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[definition-maturity]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/category_creation.py:543: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([grant])
+
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[positioning]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[spec-benchmark]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[feature-config]
+tests/categories/preproject/test_proposal_views_pg.py::test_private_view_rechecks_actual_audience_tenant_and_category[definition-maturity]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/category_creation.py:686: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([receipt])
+
+tests/categories/preproject/test_proposal_views_pg.py: 12 warnings
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/category_service.py:560: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+tests/categories/preproject/test_proposal_views_pg.py::test_http_comparison_preserves_parameter_versions_conditions_nature_and_zero
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/pdos_next/domain/categories/preproject/category_service.py:610: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+89 passed, 357 warnings in 90.37s (0:01:30)
+
+=== docs/reports/evidence/pdos-next-bootstrap-2e4fa5cd/migration-roundtrip.log ===
+upgrade head: passed
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/__main__.py", line 4, in <module>
+    main(prog="alembic")
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1039, in main
+    CommandLine(prog=prog).main(argv=argv)
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 1029, in main
+    self.run_cmd(cfg, options)
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/config.py", line 963, in run_cmd
+    fn(
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/command.py", line 534, in downgrade
+    script.run_env()
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/script/base.py", line 550, in run_env
+    util.load_python_file(self.dir, "env.py")
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 114, in load_python_file
+    module = load_module_py(module_id, path)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/util/pyfiles.py", line 132, in load_module_py
+    spec.loader.exec_module(module)  # type: ignore
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/migrations/env.py", line 18, in <module>
+    context.run_migrations()
+  File "<string>", line 8, in run_migrations
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/runtime/environment.py", line 970, in run_migrations
+    self.get_context().run_migrations(**kw)
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/alembic/runtime/migration.py", line 616, in run_migrations
+    step.migration_fn(**kw)
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/migrations/versions/s0_0784_release_exceptions.py", line 46, in downgrade
+    _apply(EXCEPTION_FUNCTIONS, EXCEPTION_DEADLINE, DOWNGRADE_SQL)
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/server/migrations/versions/s0_0784_release_exceptions.py", line 34, in _apply
+    raise RuntimeError("Release exception requires its exact reviewed confirmation predecessor")
+RuntimeError: Release exception requires its exact reviewed confirmation predecessor
+
+=== mvp-local-check.log ===
+initial: production Web and FastAPI HTTP, 401 unauthenticated, 403 cross-origin, isolated category and local-session BFF passed
+ERROR:  database "pdos_test" is being accessed by other users
+DETAIL:  There are 4 other sessions using the database.
+Traceback (most recent call last):
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/mvp-local-check.py", line 100, in <module>
+    restore(state)
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.local/mvp-candidate-8e28a81f.afNUhy/mvp-local-check.py", line 86, in restore
+    subprocess.run([*psql, '-c', 'ALTER DATABASE pdos_test RENAME TO pdos_test_mvp_before_restore'], check=True)
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['docker', 'exec', 'pdos-next-test-20261002-2e4fa5cd', 'psql', '-X', '-v', 'ON_ERROR_STOP=1', '-U', 'postgres', '-d', 'postgres', '-c', 'ALTER DATABASE pdos_test RENAME TO pdos_test_mvp_before_restore']' returned non-zero exit status 1.
+
+=== mvp-local-restore.log ===
+ALTER DATABASE
+CREATE DATABASE
+s0_0854 (head)
+restored: production Web and FastAPI HTTP, 401 unauthenticated, 403 cross-origin, isolated category and local-session BFF passed
+
+=== mvp-pinned-smoke.log ===
+pinned: production Web and FastAPI HTTP, 401 unauthenticated, 403 cross-origin, isolated category and local-session BFF passed

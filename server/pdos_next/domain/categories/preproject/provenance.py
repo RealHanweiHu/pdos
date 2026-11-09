@@ -1,13 +1,14 @@
 """M3 admission ports over M2's actual model/tool ledger; no model-supplied authority."""
 
+from pydantic import ValidationError
+from sqlalchemy import select
+
 from pdos_next.agent.kernel.execution import (
     verify_source,
 )
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
 from pdos_next.core.models import Principal
 from pdos_next.core.service import digest
-from pydantic import ValidationError
-from sqlalchemy import select
 
 from .access import fail, human
 from .models import PreparedCandidate
@@ -137,6 +138,13 @@ def prepare_candidate(s, scope, operation, arguments, source, *, catalog, regist
 
 def prepare_from_intent(s, scope, operation, arguments, intent_key, *, catalog, registry, route):
     """The registered host receives the graph's server key, never a model identity."""
+    source = source_from_intent(s, scope, operation, intent_key, catalog=catalog)
+    return prepare_candidate(
+        s, scope, operation, arguments, source, catalog=catalog, registry=registry, route=route,
+    )
+
+
+def source_from_intent(s, scope, operation, intent_key, *, catalog):
     from uuid import UUID
 
     from pdos_next.agent.kernel import policy
@@ -167,16 +175,7 @@ def prepare_from_intent(s, scope, operation, arguments, intent_key, *, catalog, 
             skill_binding.key, scope, lambda _, value: policy.skill_enabled(s, scope, value)
         )
         if operation in skill.operations:
-            return prepare_candidate(
-                s,
-                scope,
-                operation,
-                arguments,
-                WriteSource(skill=skill_binding, model_call_id=model_id, response_index=index),
-                catalog=catalog,
-                registry=registry,
-                route=route,
-            )
+            return WriteSource(skill=skill_binding, model_call_id=model_id, response_index=index)
     fail("FORBIDDEN_SCOPE", "server_candidate_binding", "原模型输出没有加载对应技能。", 403)
 
 

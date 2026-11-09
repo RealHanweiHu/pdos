@@ -19,6 +19,7 @@ function matchesAction(item: DomainCandidate | undefined, value: Pending, catego
 const fields: Record<string, string> = {
   payload: "本次内容", product_name: "型号", variant_name: "变体", platform: "平台",
   operation: "办理类型",
+  reviewer_id: "具名评审人", no_alternative_reason: "无替代方案的理由",
   new_platform: "新建平台", code: "编号", name: "名称", title: "名称", description: "说明",
   compatibility: "兼容范围", platform_version: "平台版本", reason: "原因", effect: "本次影响",
   action: "动作", next_link_version: "新关联版本", expected_link_version: "原关联版本",

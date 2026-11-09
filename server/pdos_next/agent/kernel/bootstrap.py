@@ -99,17 +99,25 @@ class Bootstrap:
         route = version.metadata.route(material.credential, version.metadata.model_version)
         if self.ports.output_limit_for is not None:
             route = replace(route, max_output_tokens=self.ports.output_limit_for(scope, route))
-        # P67 (D252): the configured output limit only clamps the per-call budget, which
-        # sets the request's max_tokens, the context reserve R and the cost reservation.
-        route = replace(route, max_output_tokens=min(route.max_output_tokens, OUTPUT_BUDGET))
+        capped = replace(route, max_output_tokens=min(route.max_output_tokens, OUTPUT_BUDGET))
         if self.ports.development_budget_for is not None and (
-            self.ports.development_budget_for(scope, route)
+            self.ports.development_budget_for(scope, capped)
         ):
             from .development_budget import require_local_test_database
 
             require_local_test_database(session)
             route = replace(route, budget_policy="development_unlimited")
-        return replace(route, configuration_digest=version.binding_digest)
+            capped = replace(capped, budget_policy=route.budget_policy)
+        route = replace(route, configuration_digest=version.binding_digest)
+        # Resume an older request only if its full persisted route still matches.
+        # New runs and any changed configuration always use the current budget.
+        run_id = getattr(scope, "run_id", None)
+        if run_id is not None and route.max_output_tokens > OUTPUT_BUDGET:
+            run = session.get(AgentRun, run_id)
+            if (run is not None and run.tenant_id == scope.tenant_id
+                    and run.versions.get("model_route_digest") == route.digest):
+                return route
+        return replace(capped, configuration_digest=version.binding_digest)
 
     def route_for(self, scope):
         with self.commands.transaction(scope) as session:
@@ -504,7 +512,13 @@ class Bootstrap:
                 # Question confirmation uses the proposal revision supplied in
                 # the actual model response, rather than the category revision.
                 command.expected_revision = arguments["expected_revision"]
-            if spec.name in CONTENT_OPERATIONS:
+            if spec.name == "proposal.g0.submit":
+                from .domain_candidates import record_g0_submission
+
+                event_id = record_g0_submission(
+                    self, session, scope, command, arguments, intent_key,
+                )
+            elif spec.name in CONTENT_OPERATIONS:
                 from .domain_candidates import record
 
                 event_id = record(session, scope, command, intent_key)

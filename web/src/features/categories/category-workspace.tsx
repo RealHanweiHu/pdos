@@ -19,10 +19,11 @@ import type { PaiContext } from "@/features/xiaopai/pai-rail";
 type Category = { id: string; name: string; purpose: string; owner_name?: string | null; readable_product_count?: number; my_draft_count?: number };
 
 /** 产品品类工作区：品类选择 → 品类主页 → 品类工作台（内嵌）。 */
-export function CategoryArea({ area, categories, categoryId, projectId, onSelectCategory, onCreated, onPaiContext, onOpenPai }: {
+export function CategoryArea({ area, categories, categoryId, principalId, projectId, onSelectCategory, onCreated, onPaiContext, onOpenPai }: {
   area: "category" | "knowledge";
   categories: Category[];
   categoryId: string;
+  principalId: string;
   projectId: string;
   onSelectCategory: (id: string) => void;
   onCreated: (category: CreatedCategory) => void;
@@ -75,7 +76,7 @@ export function CategoryArea({ area, categories, categoryId, projectId, onSelect
     </>;
   }
 
-  if (!bench && proposals && category) return <section aria-label="立项提案"><div className="workspace-page-heading"><div><h1>立项提案</h1><p>把想法和需求整理为可判断的产品方案。</p></div><Button ref={proposalTrigger} size="sm" onClick={() => proposalDialog.current?.showModal()}><Plus/>新建提案</Button></div><ProposalList key={categoryId} categories={categories} categoryId={categoryId} api={browserApi}/><dialog ref={proposalDialog} aria-label="新建提案" onClose={() => proposalTrigger.current?.focus()}><div className={styles.dialogHeading}><h2>新建提案</h2><Button size="icon" variant="ghost" aria-label="关闭新建提案" onClick={() => proposalDialog.current?.close()}><X/></Button></div><button type="button" className={styles.paiCreate} onClick={() => { proposalDialog.current?.close(); updateMaterialContext({ kind: "proposal", title: `${category.name} · 新提案`, draft: { category_name: category.name, purpose: category.purpose }, request: { id: crypto.randomUUID(), prompt: "请根据当前品类的竞品、用户声音和规格字典，起草一份私有立项提案。先读取可用资料并列出待补充问题，提供可编辑候选，确认后保存。" } }); onOpenPai(); }}><Sparkle size={16}/>与小Pai一起起草<ArrowUpRight size={14}/></button><p className="mb-4 text-sm text-muted-foreground">小Pai 不可用时（未配置模型、预算已用完或服务商故障），可以直接手动创建，之后再让小Pai补全。</p><ProposalCreateForm categoryId={categoryId} api={browserApi} onCreated={id => { proposalDialog.current?.close(); router.push(`/categories/${categoryId}/proposals/${id}`); }}/></dialog></section>;
+  if (!bench && proposals && category) return <section aria-label="立项提案"><div className="workspace-page-heading"><div><h1>立项提案</h1><p>把想法和需求整理为可判断的产品方案。</p></div><Button ref={proposalTrigger} size="sm" onClick={() => proposalDialog.current?.showModal()}><Plus/>新建提案</Button></div><ProposalList key={categoryId} categories={categories} categoryId={categoryId} api={browserApi}/><dialog ref={proposalDialog} aria-label="新建提案" onClose={() => proposalTrigger.current?.focus()}><div className={styles.dialogHeading}><h2>新建提案</h2><Button size="icon" variant="ghost" aria-label="关闭新建提案" onClick={() => proposalDialog.current?.close()}><X/></Button></div><button type="button" className={styles.paiCreate} onClick={() => { proposalDialog.current?.close(); updateMaterialContext({ kind: "proposal", title: `${category.name} · 新提案`, draft: { category_name: category.name, purpose: category.purpose }, request: { id: crypto.randomUUID(), prompt: "请根据当前品类的竞品、用户声音和规格字典，起草一份私有立项提案。先读取可用资料并列出待补充问题，提供可编辑候选，确认后保存。" } }); onOpenPai(); }}><Sparkle size={16}/>与小Pai一起起草<ArrowUpRight size={14}/></button><p className="mb-4 text-sm text-muted-foreground">小Pai 不可用时（未配置模型、预算已用完或服务商故障），可以直接手动创建，之后再让小Pai补全。</p><ProposalCreateForm key={`${principalId}:${categoryId}`} categoryId={categoryId} principalId={principalId} api={browserApi} onCreated={id => { proposalDialog.current?.close(); router.push(`/categories/${categoryId}/proposals/${id}`); }}/></dialog></section>;
 
   if (!bench && area === "category") {
     return <>

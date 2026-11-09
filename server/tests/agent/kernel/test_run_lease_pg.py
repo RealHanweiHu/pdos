@@ -2,9 +2,11 @@
 
 import threading
 import time
+from contextlib import ExitStack
 from uuid import uuid4
 
 import pytest
+from sqlalchemy import text
 
 from pdos_next.agent.kernel.run_lease import RunBusy, run_lease
 
@@ -48,3 +50,13 @@ def test_the_lease_is_released_whatever_interrupts_the_attempt(engines):
             raise KeyboardInterrupt
     with run_lease(engine, run):
         pass
+
+
+def test_concurrent_leases_leave_the_business_connection_pool_free(engines):
+    engine = engines[1]
+    with ExitStack() as stack:
+        for _ in range(15):
+            stack.enter_context(run_lease(engine, uuid4()))
+        assert engine.pool.checkedout() == 0
+        with engine.connect() as conn:
+            assert conn.scalar(text("SELECT 1")) == 1

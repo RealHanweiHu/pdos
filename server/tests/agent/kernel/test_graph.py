@@ -1,8 +1,10 @@
+import json
 from dataclasses import replace
 from uuid import uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
+
 from pdos_next.agent.kernel.graph import AgentKernel, Budget
 from pdos_next.agent.kernel.registry import ToolRegistry, command_tools
 from pdos_next.agent.kernel.tools import default_registry
@@ -402,8 +404,6 @@ def test_required_work_state_over_budget_stops_partial_without_model():
 ])
 def test_skill_load_hands_back_the_row_schemas_extraction_needs(skill, declared):
     """D255: the declaration lives in skill metadata, which the content does not carry."""
-    import json
-
     host = Host([
         ModelTurn(calls=(ToolCall(id="load", name="skill.load", arguments={"name": skill}),)),
         final(),
@@ -413,3 +413,26 @@ def test_skill_load_hands_back_the_row_schemas_extraction_needs(skill, declared)
               if m.get("role") == "tool"]
     assert len(loaded) == 1 and loaded[0]["skill"] == skill
     assert loaded[0].get("row_schemas") == declared
+
+
+def test_preloaded_rfq_declares_the_required_schema_before_the_first_model_call():
+    host = Host([final()])
+    AgentKernel(host, default_registry()).execute(
+        scope(), goal="Synthetic RFQ", preload=("rfq_extraction",),
+    )
+    envelope = json.loads(host.captured_model_messages[0][0]["content"])
+    assert envelope["row_schemas"] == {
+        "rfq_extraction": [{"kind": "rfq_requirement", "version": "1"}]
+    }
+
+
+@pytest.mark.parametrize("name", [[], {}])
+def test_wrong_skill_name_type_is_returned_as_a_repairable_tool_error(name):
+    host = Host([
+        ModelTurn(calls=(ToolCall(id="bad", name="skill.load", arguments={"name": name}),)),
+        final(),
+    ])
+    result = AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic invalid skill")
+    answer = next(msg for msg in host.captured_model_messages[1] if msg["role"] == "tool")
+    assert json.loads(answer["content"])["error"]["code"] == "VALIDATION_FAILED"
+    assert result["output"]["status"] == "completed"

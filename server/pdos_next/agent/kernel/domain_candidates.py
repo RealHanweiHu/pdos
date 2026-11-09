@@ -1,6 +1,6 @@
 """Durable human candidates over actual prepared content and common receipts."""
 
-from uuid import UUID, uuid4
+from uuid import UUID, uuid4, uuid5
 
 from pydantic import ValidationError
 from sqlalchemy import func, select
@@ -15,6 +15,9 @@ from pdos_next.errors import DomainError
 
 from .execution import check_run_binding
 from .models import AgentEvent, AgentRun
+
+G0_SUBMIT = "proposal.g0.submit"
+G0_KIND = "g0_submit"
 
 
 def record(session, scope, command, intent_key):
@@ -35,6 +38,38 @@ def record(session, scope, command, intent_key):
         PAYLOADS[command.operation].model_validate(command.payload)
     ):
         fail("FORBIDDEN_SCOPE", "candidate_binding_invalid", "候选没有实际准备记录。", 403)
+    return _record(
+        session, scope, run, command, intent_key, uuid4(), candidate_id=str(candidate.id),
+    )
+
+
+def record_g0_submission(owner, session, scope, command, arguments, intent_key):
+    from pdos_next.domain.categories.preproject.provenance import source_from_intent
+
+    from .execution import verify_source
+
+    run = session.scalar(select(AgentRun).where(AgentRun.id == scope.run_id).with_for_update())
+    check_run_binding(run, scope)
+    source = source_from_intent(session, scope, G0_SUBMIT, intent_key, catalog=owner.catalog)
+    verify_source(
+        session, scope, run, owner.registry.get(G0_SUBMIT), arguments, source,
+        catalog=owner.catalog, registry=owner.registry, route=owner.route(session, scope),
+        prepare_only=True,
+    )
+    row = proposal(session, owner.commands.context(scope), scope.proposal_id)
+    if row.owner_id != scope.requester_id:
+        fail("NAMED_DECISION_REQUIRED", "owner_only", "提案由负责人本人提交评审。", 403)
+    if (row.revision != command.payload["expected_revision"]
+            or row.status not in {"draft", "returned"}):
+        fail("VERSION_CONFLICT", "proposal_revision_moved", "请重新读取当前可提交的提案。")
+    command.expected_revision = row.revision
+    return _record(
+        session, scope, run, command, intent_key, uuid5(command.command_id, G0_SUBMIT),
+        kind=G0_KIND,
+    )
+
+
+def _record(session, scope, run, command, intent_key, identity, **proof):
     previous = session.scalar(
         select(AgentEvent).where(
             AgentEvent.tenant_id == scope.tenant_id,
@@ -48,7 +83,6 @@ def record(session, scope, command, intent_key):
         if previous.body["command"] != frozen:
             fail("DUPLICATE_INTENT_CONFLICT", "candidate_command_changed", "原候选命令已变化。")
         return previous.id
-    identity = uuid4()
     session.add(
         AgentEvent(
             id=identity,
@@ -63,14 +97,54 @@ def record(session, scope, command, intent_key):
             body={
                 "type": "domain_candidate",
                 "intent_key": intent_key,
-                "candidate_id": str(candidate.id),
                 "cancel_epoch": run.cancel_epoch,
                 "command": frozen,
+                **proof,
             },
         )
     )
     session.flush()
     return identity
+
+
+def _g0_bound(event, run):
+    try:
+        command = Command.model_validate(event.body["command"])
+        payload = PAYLOADS[G0_SUBMIT].model_validate(command.payload)
+        if (command.operation == G0_SUBMIT and run.proposal_id == payload.proposal_id
+                and command.expected_revision == payload.expected_revision
+                and command.category_id == run.category_id and command.product_id is None
+                and run.product_id is None and payload.confirmation_token is None
+                and event.id == uuid5(command.command_id, G0_SUBMIT)
+                and event.body["intent_key"] == command.idempotency_key):
+            return command
+    except (KeyError, TypeError, ValueError, ValidationError):
+        pass
+    return None
+
+
+def g0_submission_event(session, ctx, command, payload):
+    """Resolve the server-issued Agent intent; ordinary manual commands have no candidate."""
+    if not command.idempotency_key.startswith("agent:"):
+        return None
+    event = session.get(AgentEvent, uuid5(command.command_id, G0_SUBMIT))
+    if (event is None or event.tenant_id != ctx.tenant_id
+            or event.body.get("type") != "domain_candidate" or event.body.get("kind") != G0_KIND):
+        fail("FORBIDDEN_SCOPE", "candidate_binding_invalid", "未找到原 G0 提交候选。", 403)
+    run = session.get(AgentRun, event.run_id, with_for_update=True)
+    if (run is None or run.tenant_id != ctx.tenant_id or run.requester_id != ctx.requester_id
+            or run.category_id != ctx.category_id):
+        fail("FORBIDDEN_SCOPE", "candidate_binding_invalid", "G0 提交候选不在本人范围。", 403)
+    frozen = _g0_bound(event, run)
+    if (frozen is None or frozen.model_dump(exclude={"payload"})
+            != command.model_dump(exclude={"payload"})
+            or PAYLOADS[G0_SUBMIT].model_validate(frozen.payload)
+            != payload.model_copy(update={"confirmation_token": None})):
+        fail("FORBIDDEN_SCOPE", "candidate_binding_invalid", "G0 提交内容与原候选不一致。", 403)
+    if (run.reverted_at or run.state == "cancelled"
+            or run.cancel_epoch != event.body["cancel_epoch"]):
+        fail("CANCELLED_RUN", "candidate_run_cancelled", "原 G0 提交候选已撤回或取消。")
+    return event.id
 
 
 def _bound(event, candidate, run):
@@ -118,7 +192,12 @@ def _snapshot_bound(event, run):
 
 def _pending_visible(session, ctx, run, command, event):
     if run.proposal_id is not None:
-        proposal(session, ctx, run.proposal_id)
+        row = proposal(session, ctx, run.proposal_id)
+        if command.operation == G0_SUBMIT and (
+            row.owner_id != ctx.requester_id or row.revision != command.expected_revision
+            or row.status not in {"draft", "returned"}
+        ):
+            fail("VERSION_CONFLICT", "proposal_revision_moved", "原提案不可按此候选提交。")
     for reference in command.source_read_set:
         source_for(session, ctx, run.product_id, reference.artifact_id, reference.expected_revision)
     if command.operation == "research.snapshot.register":
@@ -196,7 +275,7 @@ def project_rows(session, ctx, run, page):
         UUID(event.body["candidate_id"])
         for event in page
         if event.body["type"] == "domain_candidate"
-        and event.body.get("kind") != "work_followup"
+        and event.body.get("kind") not in {"work_followup", G0_KIND}
     ]
     candidates = {
         row.id: row
@@ -212,6 +291,8 @@ def project_rows(session, ctx, run, page):
         event.id: (
             _snapshot_bound(event, run)
             if event.body["type"] == "snapshot_candidate"
+            else _g0_bound(event, run)
+            if event.body.get("kind") == G0_KIND
             else _bound(event, candidates.get(UUID(event.body["candidate_id"])), run)
         )
         for event in page if event.body["type"] != "verification_candidate"
@@ -278,11 +359,15 @@ def project_rows(session, ctx, run, page):
                 saved_id = saved_receipt_id(session, UUID(event.body["candidate_id"]))
                 receipt = session.get(Receipt, saved_id) if saved_id else None
             if receipt and (
-                receipt.agent_run_id == run.id
-                and receipt.requester_id == ctx.requester_id
+                receipt.requester_id == ctx.requester_id
                 and receipt.category_id == run.category_id
                 and receipt.product_id == run.product_id
                 and receipt.operation == command.operation
+                and (
+                    receipt.agent_run_id == run.id if command.operation != G0_SUBMIT
+                    else receipt.result.get("g0_candidate_event_id") == str(event.id)
+                    and str(receipt.subject_id) == command.payload["proposal_id"]
+                )
                 and (
                     command.operation != "research.snapshot.register"
                     or receipt.subject_type == "public_web_snapshot"

@@ -250,7 +250,7 @@ def test_bootstrap_binds_host_output_cap_to_exact_registered_route(tmp_path, mon
         "pdos_next.agent.kernel.bootstrap.SessionConfigurationStore",
         lambda _: SimpleNamespace(current=lambda _: version),
     )
-    session = SimpleNamespace(scalar=lambda *_: 1)
+    session = SimpleNamespace(scalar=lambda *_: 1, get=lambda *_: None)
     owner = Bootstrap(SimpleNamespace(), ports=RuntimePorts(
         secrets=host, output_limit_for=host.output_limit_for,
     ))
@@ -259,11 +259,20 @@ def test_bootstrap_binds_host_output_cap_to_exact_registered_route(tmp_path, mon
     assert route.max_output_tokens == min(2048 if limit is None else limit, OUTPUT_BUDGET)
     assert route.configuration_digest == version.binding_digest
     assert route.digest != replace(route, max_output_tokens=2047).digest
+    if limit is not None and limit > OUTPUT_BUDGET:
+        legacy = replace(route, max_output_tokens=limit)
+        session.get = lambda *_: SimpleNamespace(
+            tenant_id=tenant, versions={"model_route_digest": legacy.digest},
+        )
+        bound_scope = SimpleNamespace(tenant_id=tenant, run_id=uuid4())
+        assert owner.route(session, bound_scope).digest == legacy.digest
     # Reloaded host policy changes the route binding without changing the secret or model.
     value["models"][0]["max_output_tokens"] = 4096
     write_config(path, value)
     updated = owner.route(session, SimpleNamespace(tenant_id=tenant))
     assert updated.max_output_tokens == 4096 and updated.digest != route.digest
+    if limit is not None and limit > OUTPUT_BUDGET:
+        assert owner.route(session, bound_scope).digest == updated.digest
 
 
 @pytest.mark.parametrize("limit", [0, -1, 32769, True, 1.5, "8192", None])

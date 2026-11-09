@@ -38,8 +38,8 @@ class ExtractInput(StrictModel):
     # silently becomes 'all'. Neither form grants source access on its own.
     artifact_version_ids: list[UUID] | None = Field(default=None, min_length=1)
     row_schema: RowSchemaDeclaration = Field(
-        description="Copy one kind/version pair exactly from the row_schemas that skill.load "
-        "returned for a loaded skill"
+        description="Copy one kind/version pair exactly from the loaded skill's row_schemas "
+        "in the initial context or the skill.load result"
     )
     focus: NonBlank | ParameterFocus | None = None
 

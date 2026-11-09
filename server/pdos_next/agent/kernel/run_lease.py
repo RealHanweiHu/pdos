@@ -10,7 +10,8 @@ the next safe point: before its next model call or tool call.
 import time
 from contextlib import contextmanager
 
-from sqlalchemy import text
+from sqlalchemy import create_engine, text
+from sqlalchemy.pool import NullPool
 
 _KEY = "xiaopai-run-attempt:"
 _TRY = text("SELECT pg_try_advisory_lock(hashtextextended(:key, 0))")
@@ -38,9 +39,11 @@ def run_lease(engine, run_id, *, waiting=None, interval=2.0):
     outlive a pooled connection, and closing the session releases the lock whatever
     interrupted the attempt, including the worker process dying.
     """
-    connection = engine.connect()
-    try:
-        connection = connection.execution_options(isolation_level="AUTOCOMMIT")
+    # A long-running lease must not reserve a slot in the business transaction pool.
+    lease_engine = create_engine(
+        engine.url, poolclass=NullPool, isolation_level="AUTOCOMMIT", hide_parameters=True,
+    )
+    with lease_engine.connect() as connection:
         key = {"key": _KEY + str(run_id)}
         while not connection.scalar(_TRY, key):
             if waiting is None:
@@ -48,9 +51,6 @@ def run_lease(engine, run_id, *, waiting=None, interval=2.0):
             waiting()
             time.sleep(interval)
         yield
-    finally:
-        connection.invalidate()
-        connection.close()
 
 
 def check_attempt(superseded):

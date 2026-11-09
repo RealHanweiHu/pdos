@@ -40,6 +40,20 @@ test("only an actual scoped domain candidate can be restored for confirmation", 
   ]) assert.equal(boundCandidateCommand({ ...command(), ...changes }, category, run), false);
 });
 
+test("G0 submission restores only the run's candidate and the same proposal revision", () => {
+  const event = "33333333-3333-4333-8333-333333333333";
+  const original = { ...command(), operation: "proposal.g0.submit", product_id: null,
+    idempotency_key: `agent:${run}:model:${event}:0`, expected_revision: 3,
+    payload: { proposal_id: category, reviewer_id: event, expected_revision: 3 } };
+  assert.equal(boundCandidateCommand(original, category, run, event), true);
+  assert.equal(boundCandidateCommand(original, category, category, event), false);
+  assert.equal(boundCandidateCommand({ ...original, expected_revision: 1 }, category, run, event), false);
+  const item = { event_id: event, state: "pending", command: original,
+    command_id: original.command_id, idempotency_key: original.idempotency_key };
+  const altered = { ...original, payload: { ...original.payload, reviewer_id: run } };
+  assert.equal(matchesPendingCandidate(item, altered, event, category, run), false);
+});
+
 test("preview comparison tolerates JSON key order and the one server confirmation token", () => {
   const original = command(), preview = structuredClone(original);
   preview.payload = Object.fromEntries(Object.entries(preview.payload).reverse());
