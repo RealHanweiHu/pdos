@@ -1,6 +1,6 @@
 ---
 key: quality_issue
-version: 0.1.2-draft
+version: 0.1.3-draft
 purpose: 按来源明确的测量或观察建立与分诊品质问题，登记围堵措施，起草 CAPA 的假设与措施，按固定规则登记复发观察，并为根因结论与 CAPA 有效性复核准备具名决定材料；根因与有效性结论本身由专业本人作出。
 input_schema:
   type: object
@@ -49,6 +49,7 @@ allowed_operations:
   - {tool: quality.capa.verification.candidate.record, tier: T1, note: "准备有效性复核的候选配对与映射"}
   - {tool: quality.issue.root_cause.decide, tier: T2-prepare-only, note: "只准备根因材料；根因结论由专业具名作出"}
   - {tool: quality.capa.verification.review, tier: T2-prepare-only, note: "只准备有效性复核材料；结论由专业具名作出"}
+  - {tool: quality.capa.effectiveness.decide, tier: T2-prepare-only, note: "只整理具名复核与观察记录，准备有效、无效或延长观察的决定材料；措施实施人不能决定"}
 evidence_policy: |
   建立问题必须有真实来源：测试 Run、测量记录与事件 id 三者齐备；聊天里的描述不足以建立问题。
   读数与判据的比较由 calc.spec_compare 给出；模型不自行判合格、不改写读数。

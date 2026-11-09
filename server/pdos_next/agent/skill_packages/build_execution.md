@@ -1,6 +1,6 @@
 ---
 key: build_execution
-version: 0.1.3-draft
+version: 0.1.4-draft
 purpose: 在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业授权材料，并用确定性工具算齐套与成本；实际数量、参数和时点只按真实记录写入。
 input_schema:
   type: object
@@ -57,6 +57,9 @@ allowed_operations:
   - {tool: build.engineering.authorize, tier: T2-prepare-only, note: "只准备工程授权材料，无执行权"}
   - {tool: build.manufacturing.authorize, tier: T2-prepare-only, note: "只准备制造授权材料，无执行权"}
   - {tool: npi.manufacturing_baseline.publish, tier: T2-prepare-only, note: "只准备发布材料，具名发布由专业本人办理"}
+  - {tool: engineering.interface.update, tier: T1, note: "预填接口合同（模块、专业、约束、负责人、受影响项）或某专业的确认/异议；猜测写进待核实线索，由本人确认一次"}
+  - {tool: npi.fixture.accept, tier: T2-prepare-only, note: "只准备治具验收材料，验收由制造角色具名办理"}
+  - {tool: supply.alternate.approve, tier: T2-prepare-only, note: "只准备替代料批准材料（证据运行、比例、有效期），批准由工程角色具名办理，不改 BOM"}
 evidence_policy: |
   实际配置、数量、参数、模穴与时点必须来自真实记录（页面登记、测量原件、供方资料）并带来源；没有来源的不写，写成未知。
   准备度、齐套、成本一律由 build.readiness.compute、supply.kit.compute、cost.estimate.compute 给出；模型不自算分数、齐套结论或金额。

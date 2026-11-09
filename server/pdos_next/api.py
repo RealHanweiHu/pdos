@@ -497,6 +497,21 @@ def create_app(
     )
 
     register_interface_routes(app, engine, auth_dependency)
+    from pdos_next.domain.quality.capa_effectiveness.api import (
+        register_routes as register_effectiveness_routes,
+    )
+
+    register_effectiveness_routes(app, engine, auth_dependency)
+    from pdos_next.domain.delivery.customer_acceptance.api import (
+        register_routes as register_customer_acceptance_routes,
+    )
+
+    register_customer_acceptance_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.alternate_approvals.api import (
+        register_routes as register_alternate_approval_routes,
+    )
+
+    register_alternate_approval_routes(app, engine, auth_dependency)
     from pdos_next.domain.manufacturing.fixture_acceptance.api import (
         register_routes as register_fixture_acceptance_routes,
     )

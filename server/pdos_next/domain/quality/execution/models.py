@@ -66,11 +66,12 @@ class QualityIssueVersion(Row, Base):
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
         ForeignKeyConstraint(["tenant_id", "writer_id"], ["principals.tenant_id", "principals.id"]),
         CheckConstraint("revision>0 AND visibility IN ('private','category','audience')"),
-        CheckConstraint("status IN ('open','triaged','actioning','awaiting_verification')"),
+        CheckConstraint("status IN ('open','triaged','actioning','awaiting_verification','closed')"),
         CheckConstraint(
             "operation IN ('quality.issue.create','quality.issue.merge','quality.issue.triage',"
             "'quality.issue.containment.record','quality.capa.draft',"
-            "'quality.issue.root_cause.decide','quality.capa.actions.complete')"
+            "'quality.issue.root_cause.decide','quality.capa.actions.complete',"
+            "'quality.capa.effectiveness.decide')"
         ),
         CheckConstraint(
             "jsonb_typeof(required_source_read_set)='array' "

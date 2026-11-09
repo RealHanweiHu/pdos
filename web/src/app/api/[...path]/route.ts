@@ -17,6 +17,8 @@ const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA
 const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|governance(?:\/review-inputs)?|forecast))?$/i;
 // D47 supplier commitments per fixed Build (READ); records use the common command entry.
 const supplyCommitmentPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/supply-commitments|supply-commitments\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i;
+// D47 (P95–P97, P100) read-only views: interfaces, fixture acceptances, CAPA effectiveness, alternates, customer acceptances.
+const d47ReadPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:interfaces|fixture-acceptances|capa-effectiveness)|interfaces\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:alternate-approvals|customer-acceptances))$/i;
 // D56 permission-filtered Excel exports (READ, named human only); one exact scope parameter each.
 const exportPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/exports\/(?:project|bom-diff|test-summary)|personal\/exports\/my-work)$/i;
 const exportScope: Record<string, string | null> = { project: "project_id", "bom-diff": "bom_id", "test-summary": "build_id", "my-work": null };
@@ -251,7 +253,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
   const projectPlanning = projectPlanningPaths.test(pathname);
-  const supplyCommitments = supplyCommitmentPaths.test(pathname);
+  const supplyCommitments = supplyCommitmentPaths.test(pathname) || d47ReadPaths.test(pathname);
   const exportView = exportPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);

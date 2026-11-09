@@ -1334,3 +1334,5 @@ import pdos_next.domain.manufacturing.supply_commitments.models  # noqa: E402,F4
 import pdos_next.domain.projects.forecast_refresh.models  # noqa: E402,F401
 import pdos_next.domain.engineering.interfaces.models  # noqa: E402,F401
 import pdos_next.domain.manufacturing.fixture_acceptance.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.alternate_approvals.models  # noqa: E402,F401
+import pdos_next.domain.delivery.customer_acceptance.models  # noqa: E402,F401

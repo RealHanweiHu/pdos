@@ -71,6 +71,9 @@ T2_OPERATIONS = frozenset(
         "quality.capa.verification.review",
         "npi.fixture.accept",
         "evidence.source.withdraw",
+        "supply.alternate.approve",
+        "quality.capa.effectiveness.decide",
+        "customer.acceptance.record",
     }
 )
 
@@ -350,6 +353,10 @@ def handler(operation):
         from pdos_next.domain.categories.products import platforms
 
         return platforms
+    if operation == "quality.capa.effectiveness.decide":
+        from pdos_next.domain.quality.capa_effectiveness import service as effectiveness
+
+        return effectiveness
     if operation == "evidence.source.withdraw":
         from pdos_next.originals import source_withdraw
 
@@ -358,6 +365,14 @@ def handler(operation):
         from pdos_next.domain.manufacturing.fixture_acceptance import service as fixture_service
 
         return fixture_service
+    if operation == "supply.alternate.approve":
+        from pdos_next.domain.manufacturing.alternate_approvals import service as alternate_approval
+
+        return alternate_approval
+    if operation == "customer.acceptance.record":
+        from pdos_next.domain.delivery.customer_acceptance import service as customer_acceptance
+
+        return customer_acceptance
     if operation == "engineering.interface.update":
         from pdos_next.domain.engineering.interfaces import service as interface_service
 

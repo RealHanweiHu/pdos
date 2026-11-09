@@ -563,6 +563,9 @@ from pdos_next.domain.engineering.interfaces.schemas import (  # noqa: E402
 from pdos_next.domain.manufacturing.fixture_acceptance.schemas import (  # noqa: E402
     PAYLOADS as FIXTURE_ACCEPTANCE_PAYLOADS,
 )
+from pdos_next.domain.quality.capa_effectiveness.schemas import (  # noqa: E402
+    PAYLOADS as CAPA_EFFECTIVENESS_PAYLOADS,
+)
 from pdos_next.originals.source_withdraw_schemas import (  # noqa: E402
     PAYLOADS as SOURCE_WITHDRAW_PAYLOADS,
 )
@@ -572,3 +575,16 @@ PAYLOADS["product.definition.update"] = DefinitionUpdatePayload
 PAYLOADS.update(INTERFACE_PAYLOADS)
 PAYLOADS.update(FIXTURE_ACCEPTANCE_PAYLOADS)
 PAYLOADS.update(SOURCE_WITHDRAW_PAYLOADS)
+PAYLOADS.update(CAPA_EFFECTIVENESS_PAYLOADS)
+from pdos_next.domain.manufacturing.alternate_approvals.schemas import (  # noqa: E402
+    PAYLOADS as ALTERNATE_APPROVAL_PAYLOADS,
+)
+
+# D47 (P96 第 5–7 项): alternate approval for one Build's kit, T2 named engineering decision.
+PAYLOADS.update(ALTERNATE_APPROVAL_PAYLOADS)
+from pdos_next.domain.delivery.customer_acceptance.schemas import (  # noqa: E402
+    PAYLOADS as CUSTOMER_ACCEPTANCE_PAYLOADS,
+)
+
+# D47 (P97 第 5–8 项): customer acceptance from a signed sample sheet, T2 named record.
+PAYLOADS.update(CUSTOMER_ACCEPTANCE_PAYLOADS)

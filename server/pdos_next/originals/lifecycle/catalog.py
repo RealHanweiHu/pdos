@@ -5613,4 +5613,22 @@ _D47_SCOPE["fixture_acceptance"] = (
     "product_id", "project_id", "resource_id", "purpose", "operation_id", "owner_id", "visibility"
 )
 GUARDED = (*GUARDED, *_d47_chain("fixture_acceptance"))
+_D47_SCOPE["alternate_approval"] = (
+    "product_id",
+    "project_id",
+    "build_id",
+    "item_id",
+    "alternate_material_id",
+    "owner_id",
+    "visibility",
+)
+GUARDED = (*GUARDED, *_d47_chain("alternate_approval"))
+_D47_SCOPE["customer_acceptance"] = (
+    "product_id",
+    "project_id",
+    "build_id",
+    "owner_id",
+    "visibility",
+)
+GUARDED = (*GUARDED, *_d47_chain("customer_acceptance"))
 GUARDED = (*GUARDED, *_d47_chain("engineering_interface"))

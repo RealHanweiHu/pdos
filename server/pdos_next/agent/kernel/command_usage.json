@@ -1247,6 +1247,27 @@
       "limit": "只能准备具名决定材料，不取得执行身份。",
       "tier": "T2",
       "source": "v1.1 附录 A"
+    },
+    "supply.alternate.approve": {
+      "when": "某 BOM 行缺料、有替代料且已有替代料的测试运行和具名复核时，准备这一轮 Build 的替代料批准材料（比例、单位、有效期、证据运行），交工程角色具名本人办理；批准不改 BOM，永久替换走变更单",
+      "produces": "alternate.approved",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "quality.capa.effectiveness.decide": {
+      "when": "CAPA 措施全部完成、观察期结束或需要延长时，整理具名复核与观察记录，准备有效、无效或延长观察的决定材料，交未实施措施的品质角色具名本人办理；判有效即关闭问题，判无效回到根因与措施",
+      "produces": "capa.effectiveness_decided",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "customer.acceptance.record": {
+      "when": "收到客户签样单后，按外观、尺寸、性能、包装标识、认证资料五类整理承认情况（条件、到期日）与签样单原件，交内部具名成员办理；小Pai 不能解析邮件代替客户签名",
+      "produces": "customer.acceptance_recorded",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
     }
   }
 }

@@ -600,7 +600,10 @@ def _new_write(s, ctx, command, product, payload, row, build):
         if previous is None or previous.id != row.id:
             raise DomainError("SNAPSHOT_VERSION_CONFLICT", "须按本轮当前供给快照计算齐套。")
         bound = _bound(s, ctx, product.id, build, as_of)
-        value = _rule(coverage_candidate, bound, _snapshot(row), (), as_of)
+        from pdos_next.domain.manufacturing.alternate_approvals.service import approved_alternates
+
+        qualified = approved_alternates(s, ctx, product.id, bound, as_of)
+        value = _rule(coverage_candidate, bound, _snapshot(row), qualified, as_of)
     return bound, pointer, previous, value, as_of
 
 
@@ -737,13 +740,18 @@ def _freshness(s, ctx, product_id, row, value, current):
                 historical=current is None or current.id != row.id,
             )
         else:
+            from pdos_next.domain.manufacturing.alternate_approvals.service import (
+                approved_alternates,
+            )
+
+            checked = now()
             freshness = _rule(
                 projection_freshness,
                 value,
                 live,
-                now(),
+                checked,
                 supply=_snapshot(current) if current else None,
-                alternates=(),
+                alternates=approved_alternates(s, ctx, product_id, live, checked),
             )
     except DomainError as error:
         if error.status == 403 or error.code not in {
