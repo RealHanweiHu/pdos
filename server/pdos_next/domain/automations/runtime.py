@@ -79,12 +79,23 @@ def preload(store, scope, fallback=()):
     return tuple(ref.key for ref in value[1].skill_keys) if value else tuple(fallback)
 
 
-def guard_tool(store, scope, name=None, *, writing=False):
+def guard_tool(store, scope, name=None, *, writing=False, preparing=False):
     value = scope_binding(store, scope)
     if value is not None and value[1].personal_summary is not None:
         raise DomainError(
             "FORBIDDEN_SCOPE", "确定性本人摘要不能调用模型、query embedding 或通用工具。", 403
         )
+    if (
+        value is not None
+        and preparing
+        and getattr(value[1], "template", None) == "status_update_draft"
+        and name == "work.status_update.create"
+        and getattr(scope, "project_id", None) is not None
+        and str(scope.project_id) == str(value[1].trigger_config.get("project_id"))
+    ):
+        # P65: the cadence rule only prepares this one T1 candidate for the project
+        # owner, who confirms and publishes it as themself. It never writes.
+        return
     if value is not None and (
         writing
         or name

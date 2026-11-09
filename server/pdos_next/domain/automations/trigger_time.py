@@ -2,6 +2,7 @@
 
 from datetime import UTC, datetime, timedelta
 from typing import Literal
+from uuid import UUID
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import (
@@ -47,12 +48,18 @@ class Schedule(BaseModel):
     original_timezone: str = Field(min_length=1, max_length=160)
     interval_seconds: int | None = Field(default=None, gt=0, strict=True)
     expires_at: AwareDatetime | None = None
+    # Only the status-update cadence binds a schedule to one project (P34-6, P65);
+    # the spec validator allows it with that template alone.
+    project_id: UUID | None = None
 
     @model_serializer(mode="wrap")
     def saved_shape(self, handler):
         value = handler(self)
         if value.get("calendar") is None:
             value.pop("calendar", None)
+        # An omitted project keeps every installed schedule's saved digest.
+        if value.get("project_id") is None:
+            value.pop("project_id", None)
         return value
 
     @field_validator("original_timezone")

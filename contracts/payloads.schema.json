@@ -21794,6 +21794,19 @@
               "default": false,
               "title": "Cross Object Write",
               "type": "boolean"
+            },
+            "template": {
+              "anyOf": [
+                {
+                  "const": "status_update_draft",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Template"
             }
           },
           "required": [
