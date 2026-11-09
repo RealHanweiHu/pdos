@@ -421,6 +421,13 @@ W3c · 想法已变但没有记录
     - D33：`test_session_presentation_pg` 和 `test_project_discussion_history_pg` 共用的 `_revoke_peer_project_fixture` 直接删除同事的项目受众行，而同事仍是当前成员，被 D33 新加的 `require_project_team_audience` 拒绝（“Project audience differs from its current members”）。产品代码里只有 D33 的团队服务会删项目受众，所以只是夹具过时；D33 已用“由负责人经团队命令移出成员”改过另外 3 个同类用例，这两个文件不在它的回归范围里。
     - D56：证据 README 链接的 `migration-roundtrip.log` 被 `.gitignore` 的 `*.log` 排除，只在 D56 自己的 worktree 里有，提交里没有；那个 worktree 清理后这份证据就丢了。可以改名为 `.txt` 后补提交。
   - 落地准备（只读，详见交接笔记）：主工作区 19 个未提交文件里有 6 个与集成分支重叠，三方试算 5 个自动合并，`web/src/features/shell/app-shell.tsx` 有 1 处冲突，是相邻两行各改一行，按行取两边即可，不涉及取舍。把集成分支和主工作区改动合在一起的完整树在草稿区试过：前端 typecheck 通过，后端无库 3832 通过（唯一失败就是上面 D42 那条），主工作区改过的 PG 测试与相关用例 54 个全部通过。主工作区要先提交自己的改动，集成分支才能合进去。
+- 落地记录 11-08：你选“我来提交再合并”。已落到本地 `pdos-next/design-v1.1`，未推送。
+  - `4e04de5f`：主工作区 11-07 代码审查修复（“首版 MVP 候选预检”那批）原样提交，含证据目录 `docs/reports/evidence/pdos-next-mvp-20261107/` 和 `proposal-create-form.test.mjs`。`web/next-env.d.ts`、`.claude/`、`tools/dev_reload.py`（D13）和 11-01、11-05 的逐运行原始文件不提交。
+  - `d6abcbf2`：合并集成分支 `f5379a0a`，迁移 head 为 `s0_0861`。唯一的冲突在 `app-shell.tsx`：`CategoryArea` 取主线的 `principalId`，`PlatformSettings` 取集成分支的 `administrator`。已核对两行除此以外完全相同。
+  - 复验：落地的树与草稿区的组合试算是同一内容（集成分支之上只多 11-07 那 21 个文件），所以按影响只复验重叠区域，PG 沿用试算的 54 个。
+    - typecheck 通过，lint 0 错误；`.mjs` 1918 个全部通过；合同校验通过（87 operations、92 events、67 acceptance）。
+    - 无库 kernel、model_configuration、enterprise_search、preproject 共 3832 通过，唯一失败是 D42 的过时测试。
+  - 后续：已知失败与过时测试由“W4 缺陷收尾”会话处理（D258–D262 等，迁移占位 `s0_0862`–`s0_0864`，新 D 编号 D284–D294）；并行的 M2a 占 `s0_0865`–`s0_0867`、D295–D304，D47 占 `s0_0868`–`s0_0872`、D305–D320。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
