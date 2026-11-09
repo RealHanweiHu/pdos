@@ -246,6 +246,17 @@ class AgentToolCall(KernelRow, Base):
         ForeignKeyConstraint(
             ["tenant_id", "receipt_id"], ["action_receipts.tenant_id", "action_receipts.id"]
         ),
+        # T0 quality facts per skill package (D117; migration s0_0890).
+        Index(
+            "ix_agent_tool_calls_t0_skill",
+            "tenant_id",
+            text("((execution_binding -> 'skill'::text) ->> 'key'::text)"),
+            "created_at",
+            postgresql_where=text(
+                "(((execution_binding ->> 'kind'::text) = 'domain_t0'::text) "
+                "AND ((state)::text = 'completed'::text))"
+            ),
+        ),
     )
 
 

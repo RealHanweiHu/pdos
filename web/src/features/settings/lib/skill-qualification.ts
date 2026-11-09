@@ -8,7 +8,7 @@ export type QualificationReading = {
   prompt_digest: string; prompt_version: string;
   model_label: string | null; model_version: string | null; model_enabled: boolean; pilot: boolean; draft_operations: string[];
   enabled: boolean; revision: number; can_edit: boolean; category_revision: number;
-  qualification: { state: string; id: string | null; reviewed_by_name: string | null; reviewed_at: string | null; case_count: number; receipt_id: string | null };
+  qualification: { state: string; id: string | null; reviewed_by_name: string | null; reviewed_at: string | null; case_count: number; receipt_id: string | null; downgrade_reason?: string | null };
   reviews: { id: string; skill_version: string; model_version: string; created_at: string; receipt_id: string; cases: ReviewCase[]; current: boolean }[];
   next_cursor: string | null;
 };

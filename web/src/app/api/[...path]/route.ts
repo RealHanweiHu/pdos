@@ -265,7 +265,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const modelConfiguration = pathname === "v1/model-configuration";
   const modelConnections = pathname === "v1/model-connections";
   const providerAgreement = /^v1\/provider-agreements(?:\/recover)?$/.test(pathname);
-  const skillQualification = /^v1\/agent-skill-qualification(?:\/recover)?$/.test(pathname);
+  const skillQualification = /^v1\/agent-skill-(?:qualification(?:\/recover)?|quality)$/.test(pathname);
   const mcpManagement = /^v1\/agent-mcp(?:\/(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/history)?|recover))?$/i.test(pathname);
   const agentSkill = /^v1\/agent-skills(?:\/recover)?$/.test(pathname);
   const agentBudget = /^v1\/agent-budgets(?:\/recover)?$/.test(pathname);

@@ -598,6 +598,14 @@ class Receipt(Row, Base):
             name="fk_action_receipts_agent_run",
         ),
         CheckConstraint("run_id IS NULL OR agent_run_id IS NULL", name="receipt_one_run_identity"),
+        # Later human changes and single-item withdrawals by subject (D117; s0_0890).
+        Index(
+            "ix_action_receipts_subject_history",
+            "tenant_id",
+            "subject_type",
+            "subject_id",
+            "created_at",
+        ),
     )
 
 

@@ -159,6 +159,18 @@ def register_routes(app, engine, auth_dependency):
             human(session, ctx)
             return qualification_reading(session, ctx, skill_key, cursor)
 
+    @app.get("/v1/categories/{category_id}/agent-skill-quality")
+    def skill_quality(
+        category_id: UUID,
+        skill_key: str = Query(min_length=1, max_length=160),
+        ctx: Context = auth_dependency,
+    ):
+        from .skill_quality import view as quality_view
+
+        with scope(ctx) as session:
+            human(session, ctx)
+            return quality_view(session, ctx, skill_key)
+
     @app.post("/v1/categories/{category_id}/agent-skill-qualification/recover")
     def qualification_recover(category_id: UUID, data: Command, ctx: Context = auth_dependency):
         from .skill_qualification import recover as qualification_receipt

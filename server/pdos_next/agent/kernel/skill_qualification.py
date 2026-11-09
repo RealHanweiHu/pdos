@@ -485,6 +485,13 @@ def reading(session, ctx, key, cursor=None):
         and row.qualified_model_digest == binding["model_digest"]
     )
     pilot = is_pilot(session, ctx.tenant_id)
+    from .skill_quality import qualification_breach
+
+    downgrade = (
+        qualification_breach(session, ctx.tenant_id, row)
+        if row and row.reviewed_by and not row.qualification_revoked and not row.quality_paused
+        else None
+    )
     state = (
         "not_recorded"
         if not row or not row.reviewed_by
@@ -492,6 +499,8 @@ def reading(session, ctx, key, cursor=None):
         if row.qualification_revoked
         else "paused"
         if row.quality_paused
+        else "downgraded"
+        if downgrade
         else "stale"
         if not current
         else "inactive"
@@ -529,6 +538,7 @@ def reading(session, ctx, key, cursor=None):
             "reviewed_at": row.reviewed_at.isoformat() if row and row.reviewed_at else None,
             "case_count": len(row.review_case_refs) if row else 0,
             "receipt_id": str(row.receipt_id) if row and row.receipt_id else None,
+            "downgrade_reason": downgrade,
         },
         "reviews": [
             {

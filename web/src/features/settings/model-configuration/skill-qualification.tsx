@@ -5,9 +5,10 @@ import { Button } from "@/components/ui/button";
 import { skillTitle, type SkillReading } from "@/lib/agent-skills";
 import { assessments, blankReview, dimensions, hasCurrentPromptBinding, matchesQualificationReceipt, parseQualificationPending, qualificationPendingKey, severities, type CaseReference, type QualificationCommand, type QualificationPreview, type QualificationReading, type QualificationReceipt, type RecoverableQualificationCommand, type ReviewCase } from "@/features/settings/lib/skill-qualification";
 import { proofClockCurrent } from "@/lib/proof-clock";
+import { SkillQualityPanel } from "@/features/settings/model-configuration/skill-quality";
 import type { WorkspaceTransport } from "@/lib/workspace-api";
 
-const states: Record<string, string> = { not_recorded: "尚无资格", revoked: "已撤销", paused: "发现严重错误，已暂停", stale: "版本已变化，须重新审阅", inactive: "当前停用", qualified: "当前版本已有试点资格" };
+const states: Record<string, string> = { not_recorded: "尚无资格", revoked: "已撤销", paused: "发现严重错误，已暂停", downgraded: "运行指标超过阈值，已降回一次确认", stale: "版本已变化，须重新审阅", inactive: "当前停用", qualified: "当前版本已有试点资格" };
 const fieldClass = "w-full min-w-0 rounded-lg border border-input bg-background px-3 py-2 text-sm";
 export function ConnectedSkillQualification({ api, principalId, categoryId, catalog, onUpdated }: { api: WorkspaceTransport; principalId: string; categoryId: string; catalog: SkillReading; onUpdated: () => Promise<unknown> }) {
   const epoch = useRef(0), locked = useRef(false), focus = useRef<HTMLElement>(null);
@@ -92,6 +93,7 @@ export function ConnectedSkillQualification({ api, principalId, categoryId, cata
     {skill && <Button variant="outline" disabled={frozen} onClick={() => void run(current => load(skill, current).then(() => undefined))}>刷新审阅与资格</Button>}
     {reading && <>
       <div className="space-y-2 rounded-lg bg-muted/40 p-3 text-sm"><p className="font-medium">{states[reading.qualification.state] ?? reading.qualification.state}</p><p className="break-all">技能 {reading.skill_version ?? "已移除"} · 模型 {reading.model_label ?? "未登记"} / {reading.model_version ?? "未登记"}</p><p>{reading.pilot ? "已登记试点租户" : "当前租户未登记为试点"} · {reading.enabled ? "技能已启用" : "技能未启用"} · 状态第 {reading.revision} 版</p>{reading.qualification.reviewed_by_name && <p>最近资格审阅人：{reading.qualification.reviewed_by_name} · {reading.qualification.case_count} 个案例</p>}<p>自动写入仍逐次核对当前权限、来源、协议及预算；正式批准与发布保留具名办理。</p></div>
+      {reading.can_edit && <SkillQualityPanel key={reading.skill_key} api={api} skill={reading.skill_key} />}
       <details open className="space-y-3"><summary className="cursor-pointer font-medium text-sm">登记本人案例审阅</summary>
         {cases.map((item, index) => <fieldset key={index} disabled={!canReview} className="mt-3 space-y-3 rounded-lg border border-border p-3"><legend className="px-1 text-sm">案例 {index + 1}</legend>
           <div className="grid gap-3 sm:grid-cols-[1fr_10rem]"><label className="space-y-1 text-sm"><span>案例 {index + 1} 材料定位</span><input className={fieldClass} maxLength={1000} value={item.source_ref} onChange={event => changeCase(index, { source_ref: event.target.value })} placeholder="已审阅材料的名称、编号或位置" /></label><label className="space-y-1 text-sm"><span>案例 {index + 1} 材料类型</span><select className={fieldClass} value={item.material_kind} onChange={event => changeCase(index, { material_kind: event.target.value as ReviewCase["material_kind"] })}><option value="own">本人自有材料</option><option value="synthetic">合成案例</option></select></label></div>
