@@ -15,7 +15,7 @@ from pdos_next.errors import DomainError
 
 from .models import SearchChunk, SearchCorpus, SearchSource, SearchTerm
 from .schemas import SOURCE_TYPES
-from .sources import prepare_read, select_sources
+from .sources import prepare_read, retrieval_catalog, select_sources
 from .tokenizer import CHUNKER, CODE_RULE, analyze, version
 
 CHUNK_CHARS = 1800
@@ -32,6 +32,28 @@ def _lock(session, ctx, kind, identity):
         session.execute(
             text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"), {"key": key}
         )
+
+
+def _scan_targets(session, source_type, source_id, source):
+    """Cached scan-target hint: the source's own originals plus, for knowledge,
+    the originals behind its current source_refs (D259).
+
+    Retrieval checks the dependency originals that retrieval_catalog adds; a
+    hint without them made such knowledge permanently unsafe. The hint only
+    widens the scan check: readability stays with the final current catalog.
+    """
+    if source is None:
+        return None
+    targets = list(source["original_ids"])
+    if source_type == "knowledge":
+        current = retrieval_catalog(["knowledge"])
+        dependency = session.scalar(
+            select(current.c.original_ids).where(
+                current.c.source_type == "knowledge", current.c.source_id == source_id
+            )
+        )
+        targets += [identity for identity in dependency or [] if identity not in targets]
+    return targets
 
 
 def chunks(body, *, seal=None):
@@ -189,6 +211,7 @@ def project(
             )
         )
     )
+    targets = _scan_targets(session, source_type, source_id, source)
     seal, parser = None, "structured-source/v1"
     if source and source_type == "artifact":
         seal, _ = seal_for(session, ctx, source["product_id"], source_id, source["source_revision"])
@@ -278,7 +301,7 @@ def project(
         )
         if not corrupted:
             previous.checked_at, previous.event_id, previous.last_error = now(), event_id, None
-            previous.original_ids = list(source["original_ids"])
+            previous.original_ids = targets
             return {"status": "ready", "changed": False, "chunks": len(old)}
     if repair_derived:
         # Internal recovery only. Identity parameters come from the ordinary
@@ -324,7 +347,7 @@ def project(
     )
     state.source_revision = source["source_revision"] if source else expected_revision
     state.original_id = source["original_id"] if source else state.original_id
-    state.original_ids = list(source["original_ids"]) if source else None
+    state.original_ids = targets
     state.content_hash = source["content_hash"] if source else None
     state.work_key, state.chunk_count = work_key, len(values)
     state.status, state.last_error = ("ready" if source else "unavailable"), None
