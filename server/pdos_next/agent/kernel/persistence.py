@@ -296,7 +296,7 @@ class KernelStore:
         fingerprint = digest([tool, payload])
         binding = execution_binding or {"kind": "unbound"}
         resumable_read = (
-            tool in {"research.fanout", "mcp.tools.list", "mcp.read",
+            tool in {"research.fanout", "mcp.tools.list", "mcp.read", "evidence.extract",
                      "assistant.search", "assistant.extract", "assistant.citations.read",
                      "assistant.materials.read", "assistant.compare"}
             and binding.get("kind") == "read"

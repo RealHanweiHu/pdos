@@ -3,6 +3,7 @@
 import json
 import re
 from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
 from copy import deepcopy
 from dataclasses import dataclass
 from typing import Protocol, TypedDict
@@ -498,7 +499,10 @@ class AgentKernel:
                     (index, call)
                 )
             with ThreadPoolExecutor(max_workers=min(4, len(parallel) or 1)) as executor:
-                futures = {c.id: executor.submit(call_tool, i, c) for i, c in parallel}
+                # Each read runs in a copy of this context, so the attempt's stop signal
+                # reaches the isolated children it starts (D269).
+                futures = {c.id: executor.submit(copy_context().run, call_tool, i, c)
+                           for i, c in parallel}
                 for _, call in parallel:
                     try:
                         answers[call.id] = futures[call.id].result()

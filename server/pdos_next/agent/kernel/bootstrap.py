@@ -783,6 +783,7 @@ class Bootstrap:
         )
         adapters.read_tools.update(extract_adapter.handlers())
         adapters.read_restores.update(extract_adapter.restores())
+        adapters.read_resumes.update(extract_adapter.resumes())
         from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
         from pdos_next.agent.enterprise_search.comparison_graph import AssistantComparisonGraph
 

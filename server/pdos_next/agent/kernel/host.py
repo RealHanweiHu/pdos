@@ -181,6 +181,7 @@ class BoundHost:
         """
         from .context_observability import record_call, record_failed
 
+        check_attempt(self.superseded)  # Before the gateway claims this model call.
         if scope.isolation == "main":
             from .context_projection import check_messages
 
@@ -205,7 +206,9 @@ class BoundHost:
             return max(0, run.token_limit - run.used_tokens - run.held_tokens)
 
     def context_guard(self, scope):
-        check_attempt(self.superseded)
+        # No attempt check here: the gateway also runs this guard after it has claimed
+        # the model call, and stopping there stranded the claim as an unknown call for
+        # the next attempt. The gateway checks the attempt just before claiming (D269).
         from pdos_next.domain.my_work.preferences import recheck_context_preferences
 
         if self.adapters.context_guard is not None:
@@ -406,6 +409,10 @@ class BoundHost:
         """
         from .deterministic_proofs import canonical_hash
         from .tools import default_registry
+
+        # The isolated children read through here on a host built at startup; a given-up
+        # attempt stops before claiming the read, so no new source request goes out (D269).
+        check_attempt(self.superseded)
         with self.store.transaction(scope) as (session, run):
             model = verify_read_source(
                 session, scope, run, spec, arguments, source,
