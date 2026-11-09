@@ -24030,7 +24030,8 @@
                   "synthetic",
                   "internal",
                   "customer",
-                  "customer_original"
+                  "customer_original",
+                  "owner_session"
                 ],
                 "type": "string"
               },

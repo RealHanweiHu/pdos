@@ -102,6 +102,13 @@ class BoundHost:
                 recent = frozen_catalog(session, run)
                 if recent is not None:
                     raw["memory"] = recent
+                # P86 第 6 项: the owner's confirmed notes, constraint and background
+                # zones, frozen for the Run; never in the fixed prefix.
+                from pdos_next.agent.memory.assemble import frozen as frozen_notes
+
+                notes = frozen_notes(session, run)
+                if notes is not None:
+                    raw["personal_memory"] = notes
             action = run.versions.get("verification_action")
             if action is not None:
                 from pdos_next.agent.enterprise_search.verification_actions import context_value

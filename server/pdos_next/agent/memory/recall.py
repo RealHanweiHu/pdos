@@ -127,10 +127,7 @@ def keyword_score(parsed, counts, codes):
     return score
 
 
-def _candidates(session, run, data, parsed, *, extra):
-    from pdos_next.agent.enterprise_search.tokenizer import analyze, or_query, version
-
-    tokenizer = version()
+def _base(run, data):
     base = [MemoryEpisode.owner_id == run.requester_id, MemoryEpisode.run_id != run.id]
     _kind, condition = scope_filter(run)
     if condition is not None:
@@ -142,6 +139,14 @@ def _candidates(session, run, data, parsed, *, extra):
     if data.until:
         base.append(MemoryEpisode.created_at
                     < datetime.combine(data.until + timedelta(days=1), time.min, UTC))
+    return base
+
+
+def _candidates(session, run, data, parsed, *, extra):
+    from pdos_next.agent.enterprise_search.tokenizer import analyze, or_query, version
+
+    tokenizer = version()
+    base = _base(run, data)
     base.extend(extra)
     scored = {}
     if parsed["terms"] or parsed["codes"]:
@@ -181,11 +186,30 @@ def _candidates(session, run, data, parsed, *, extra):
     return ranked, len(pending)
 
 
-def _final_order(ranked, state, now):
-    values = []
+def _fuse(session, ranked, vector_ids):
+    """RRF over the keyword and vector rankings (same k as enterprise search)."""
+    scores, rows = {}, {}
     for rank, (episode, _score) in enumerate(ranked, start=1):
+        scores[episode.id] = scores.get(episode.id, 0.0) + 1 / (RRF_K + rank)
+        rows[episode.id] = episode
+    missing = [identity for identity in vector_ids if identity not in rows]
+    if missing:
+        rows.update({row.id: row for row in session.scalars(
+            select(MemoryEpisode).where(MemoryEpisode.id.in_(missing)))})
+    for rank, identity in enumerate(vector_ids, start=1):
+        if identity in rows:
+            scores[identity] = scores.get(identity, 0.0) + 1 / (RRF_K + rank)
+    return [(rows[identity], value) for identity, value in sorted(
+        scores.items(), key=lambda item: (-item[1], -rows[item[0]].created_at.timestamp(),
+                                          str(item[0])))]
+
+
+def _final_order(ranked, state, now, *, fused=False):
+    values = []
+    for rank, (episode, score) in enumerate(ranked, start=1):
         age = max((now - episode.created_at).total_seconds() / 86400, 0)
-        value = (1 / (RRF_K + rank)) * math.pow(0.5, age / HALF_LIFE_DAYS)
+        base = score if fused else 1 / (RRF_K + rank)
+        value = base * math.pow(0.5, age / HALF_LIFE_DAYS)
         mark = state.get(episode.id, {})
         value *= 1 + 0.25 * bool(episode.body.get("receipts")) + 0.25 * bool(mark.get("pinned"))
         if mark.get("corrections"):
@@ -286,7 +310,8 @@ def card(episode, state, scope, receipts, mark, run):
     return value
 
 
-def record_usage(run, *, episodes=(), sessions=(), access=None, retrieval=None, catalog=None):
+def record_usage(run, *, episodes=(), sessions=(), access=None, retrieval=None, catalog=None,
+                 notes=()):
     """Server-fact usage list for "用到了 N 条记忆", the episode record and rechecks."""
     if run.state not in ACTIVE:
         return
@@ -295,6 +320,13 @@ def record_usage(run, *, episodes=(), sessions=(), access=None, retrieval=None, 
         merged = list(usage.get(key, []))
         merged.extend(value for value in map(str, values) if value not in merged)
         usage[key] = merged[:USAGE_LIMIT]
+    if notes:
+        merged = list(usage.get("notes", []))
+        seen = {item["note_id"] for item in merged}
+        merged.extend({"note_id": str(item["note_id"]), "revision": item["revision"],
+                       "zone": item.get("zone", "search")}
+                      for item in notes if str(item["note_id"]) not in seen)
+        usage["notes"] = merged[:USAGE_LIMIT]
     if access:
         usage["access"] = {**usage.get("access", {}), **access}
     if retrieval is not None:
@@ -321,8 +353,11 @@ def unavailable(run, session):
     return None
 
 
-def search(session, run, data, *, now=None):
+def search(session, run, data, *, now=None, semantic=None):
     from pdos_next.agent.enterprise_search.tokenizer import analyze_query
+
+    from .assemble import frozen_aliases
+    from .notes import alias_expansions
 
     now = now or datetime.now(UTC)
     kind, _condition = scope_filter(run)
@@ -332,26 +367,52 @@ def search(session, run, data, *, now=None):
         "items": [],
         "returned": 0,
         "next_offset": None,
-        "unavailable_kinds": [value for value in data.kinds if value != "episode"],
+        "unavailable_kinds": [value for value in data.kinds if value == "scope_note"],
         "retrieval": {"channels": ["keyword"], "semantic": SEMANTIC_OFF,
                       "ranking_version": RANKING, "index_pending": 0},
         "fact_policy": FACT_POLICY,
     }
     if response["unavailable_kinds"]:
-        response["kinds_note"] = "本期只有情景记录；个人记忆条目与团队备忘尚未启用。"
+        response["kinds_note"] = "团队备忘尚未启用（记忆层第 2 期 M2b）。"
     blocked = unavailable(run, session)
     if blocked is not None:
         response.update(status=blocked[0], message=blocked[1])
         return response
+    # P86 第 5 项: the owner's own aliases expand only the owner's own search.
+    extra, applied = alias_expansions(session, run, data.query, frozen_aliases(run))
+    if applied:
+        response["retrieval"]["alias_expansion"] = applied
+    if "note" in data.kinds:
+        from .note_search import search_notes
+
+        response.update(search_notes(session, run, data, extra=extra, now=now))
     if "episode" not in data.kinds:
         response["status"] = "completed"
         return response
-    parsed = analyze_query(data.query)
+    parsed = analyze_query(f"{data.query} {extra}".strip())
     ranked, pending = _candidates(session, run, data, parsed, extra=[])
+    fused = False
+    if semantic is not None:
+        # P85 第 3 项: vectors only when “本人会话记录” is selected; otherwise, or when
+        # the query embedding failed, the result says 仅关键词 instead of looking empty.
+        from .vectors import nearest
+
+        if semantic.get("status") == "ready":
+            vector_ids = nearest(session, run, semantic["vector"],
+                                 semantic["profile_version_id"], _base(run, data))
+            ranked, fused = _fuse(session, ranked, vector_ids), True
+            response["retrieval"]["channels"] = ["keyword", "vector"]
+            response["retrieval"]["semantic"] = {"status": "queried",
+                                                 "profile_version_id":
+                                                     str(semantic["profile_version_id"])}
+        else:
+            response["retrieval"]["semantic"] = {
+                "status": "unavailable", "reason": semantic.get("status"),
+                "message": "本次只做了关键词检索（向量检索不可用）。"}
     state = marks(session, [episode.id for episode, _score in ranked])
     ranked = [(episode, score) for episode, score in ranked
               if not state.get(episode.id, {}).get("hidden")]
-    ordered = _final_order(ranked, state, now)
+    ordered = _final_order(ranked, state, now, fused=fused)
     window = ordered[data.offset:]
     kept, access = recheck(session, run, window[:RECHECK_LIMIT], limit=data.page_size)
     response["items"] = [card(episode, item_state, scope, receipts, state.get(episode.id, {}), run)
@@ -362,7 +423,8 @@ def search(session, run, data, *, now=None):
         response["next_offset"] = data.offset + data.page_size
     response["status"] = "completed"
     record_usage(run, episodes=[item["run_id"] for item in response["items"]], access=access,
-                 retrieval={"channels": ["keyword"], "semantic": "not_enabled",
+                 retrieval={"channels": response["retrieval"]["channels"],
+                            "semantic": response["retrieval"]["semantic"]["status"],
                             "index_pending": pending})
     return response
 

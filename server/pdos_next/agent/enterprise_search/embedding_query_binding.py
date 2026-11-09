@@ -18,6 +18,8 @@ from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 
 TOOL = "embedding.query.internal"
+# memory.search binds a query vector only for the owner's episode vectors (P85 第 3 项).
+PARENT_TOOLS = frozenset({"assistant.search", "memory.search"})
 SNAPSHOT = "embedding_query_profile"
 
 
@@ -51,11 +53,11 @@ def source(session, scope, run, identity, arguments):
         not parent
         or parent.tenant_id != scope.tenant_id
         or parent.run_id != run.id
-        or parent.tool != "assistant.search"
+        or parent.tool not in PARENT_TOOLS
         or parent.state != "started"
         or parent.error_code is not None
         or parent.receipt_id is not None
-        or parent.input_digest != digest(["assistant.search", arguments])
+        or parent.input_digest != digest([parent.tool, arguments])
     ):
         raise DomainError("FORBIDDEN_SCOPE", "Query embedding 缺少实际主图检索调用。")
     try:
@@ -75,7 +77,7 @@ def source(session, scope, run, identity, arguments):
         expected = build_read_binding(
             scope,
             run,
-            default_registry().get("assistant.search"),
+            default_registry().get(parent.tool),
             ReadSource(model_call_id=model.id, response_index=binding.response_index),
             model_binding,
         )
@@ -84,7 +86,7 @@ def source(session, scope, run, identity, arguments):
             binding != expected
             or binding.read_kind != "ordinary/v1"
             or binding.isolation != "main"
-            or request["name"] != "assistant.search"
+            or request["name"] != parent.tool
             or request["arguments"] != arguments
             or not isinstance(arguments.get("query"), str)
             or not arguments["query"].strip()

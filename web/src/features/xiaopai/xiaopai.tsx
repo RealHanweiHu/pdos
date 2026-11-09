@@ -57,6 +57,7 @@ import { materialContextText, withMaterialContext } from "@/features/xiaopai/lib
 import { defaultSearchPreferences, type SearchPreferences } from "@/lib/search-preferences";
 import { SearchScope } from "@/features/xiaopai/search-scope";
 import { MemoryUsage } from "@/features/xiaopai/memory-usage";
+import { MemoryCandidates } from "@/features/xiaopai/memory-candidates";
 import { MemoryOffStart } from "@/features/xiaopai/memory-mode";
 
 type Props = { fullPage?: boolean; contextControl?: ReactNode; headerActions?: ReactNode;
@@ -326,6 +327,7 @@ function ScopedXiaopai({ api, productId, onComposeChange, initialRunId, category
       <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root="v1/agent-runs" presentation="conversation" onUnavailable={sourceUnavailable} />
       {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
       {!run.reverted && <MemoryUsage api={api} root="v1/agent-runs" runId={run.run_id} status={run.status} />}
+      {!run.reverted && <MemoryCandidates api={api} root="v1/agent-runs" runId={run.run_id} status={run.status} />}
       {!run.reverted && ["completed", "partial"].includes(run.status) && <PersonalSummaryRunResult output={run.result} principalId={principalId}/>}
 
       <ResearchResult value={run.result?.result?.research} />

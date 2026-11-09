@@ -13,7 +13,10 @@ from pdos_next.agent.model_configuration.ports import SecretBinding, SecretMater
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.errors import DomainError
 
-CATEGORIES = frozenset({"public", "synthetic", "internal", "customer", "customer_original"})
+# owner_session = 本人会话记录 (P85 第 3 项): only the episode owner's own words, opt-in.
+CATEGORIES = frozenset(
+    {"public", "synthetic", "internal", "customer", "customer_original", "owner_session"}
+)
 MAX_BATCH = 16
 MAX_CHARACTERS = 64_000
 
@@ -31,6 +34,7 @@ class EmbeddingMetadata(StrictModel):
             "internal",
             "customer",
             "customer_original",
+            "owner_session",
         ]
     ]
     include_customer_original: bool = False

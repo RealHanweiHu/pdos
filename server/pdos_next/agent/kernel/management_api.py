@@ -20,7 +20,8 @@ from .models import ProviderDataAgreement, TenantAdministrator
 class AgreementRequest(AgreementInput):
     provider: str = Field(pattern=r"^[A-Za-z0-9][A-Za-z0-9:_.@/-]{0,159}$")
     data_categories: list[
-        Literal["public", "synthetic", "internal", "customer", "customer_original"]
+        Literal["public", "synthetic", "internal", "customer", "customer_original",
+                "owner_session"]
     ] = Field(min_length=1)
     decision: Literal["批准"]
 

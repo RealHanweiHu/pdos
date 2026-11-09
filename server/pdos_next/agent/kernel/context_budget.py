@@ -205,6 +205,15 @@ def fit_messages(route, system, tools, messages, output_schema=None, *, compact_
         reductions.append({"kind": "memory_background", "field": "memory",
                            "read_more": {"tool": "memory.search", "arguments": {}}})
         commit_envelope()
+    notes = context.get("personal_memory") if isinstance(context, dict) else None
+    if isinstance(notes, dict) and notes.get("background") and over():
+        # §8: background-zone notes go with the catalog, before any other step.
+        notes["omitted"] = notes.get("omitted", 0) + len(notes["background"])
+        notes["background"] = []
+        reductions.append({"kind": "memory_background", "field": "personal_memory.background",
+                           "read_more": {"tool": "memory.search",
+                                         "arguments": {"kinds": ["note"]}}})
+        commit_envelope()
     conversation = envelope.get("context", {}).get("conversation", {})
     for phase, indices, limit in (
         ("history_directory", range(3, len(conversation.get("turns", []))), 60),
@@ -245,6 +254,21 @@ def fit_messages(route, system, tools, messages, output_schema=None, *, compact_
     reductions.extend(tool_reductions)
     if envelope:
         envelope = _envelope(result)
+    notes = envelope.get("context", {}).get("personal_memory") if envelope else None
+    if isinstance(notes, dict) and over():
+        # §8: before object details, personal notes keep only this range's own
+        # entries; the constraint zone is trimmed, never removed as a whole.
+        for zone in ("constraints", "aliases"):
+            kept = [item for item in notes.get(zone, [])
+                    if item.get("scope", {}).get("kind") != "global"]
+            if len(kept) != len(notes.get(zone, [])):
+                notes["omitted"] = notes.get("omitted", 0) + len(notes[zone]) - len(kept)
+                notes[zone] = kept
+                reductions.append({"kind": "memory_constraint_scope_only",
+                                   "field": f"personal_memory.{zone}",
+                                   "read_more": {"tool": "memory.search",
+                                                 "arguments": {"kinds": ["note"]}}})
+                commit_envelope()
     if over():
         proposal = envelope.get("context", {}).get("proposal", {})
         for index, item in enumerate(proposal.get("items", [])):
