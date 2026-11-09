@@ -484,6 +484,10 @@ def create_app(
 
     register_export_routes(app, engine, auth_dependency)
 
+    from pdos_next.ops.metrics import register_metrics
+
+    register_metrics(app, engine)
+
     @app.get("/health")
     def health():
         return {

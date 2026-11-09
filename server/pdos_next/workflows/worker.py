@@ -165,6 +165,46 @@ def activity_threads():
     return value
 
 
+def registered_workflows():
+    """Every workflow class the worker registers, in registration order.
+
+    The release replay check (tools/workflow_replay_check.py, D212) replays open
+    histories against exactly this list before a worker with new code is started.
+    """
+    from pdos_next.agent.enterprise_search.embedding_workflow import (
+        EnterpriseEmbedding,
+        EnterpriseEmbeddingProjection,
+        EnterpriseEmbeddingRebuild,
+    )
+    from pdos_next.agent.enterprise_search.events import EnterpriseProjection
+    from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
+    from pdos_next.agent.memory.index_workflow import MemoryEpisodeIndex
+    from pdos_next.integrations.dingtalk.summary_workflow import DingTalkSummaryDelivery
+    from pdos_next.integrations.dingtalk.workflow import DingTalkCompletion
+    from pdos_next.workflows.automation import AutomationRuleWork
+    from pdos_next.workflows.maintenance import TenantMaintenance
+    from pdos_next.workflows.xiaopai import XiaopaiWork
+
+    return [
+        XiaopaiWork,
+        DingTalkCompletion,
+        DingTalkSummaryDelivery,
+        AutomationRuleWork,
+        ParseOriginal,
+        QueueOriginalSecurity,
+        SecureOriginal,
+        OriginalLifecycle,
+        UploadTerminal,
+        EnterpriseProjection,
+        EnterpriseEmbedding,
+        EnterpriseEmbeddingProjection,
+        EnterpriseEmbeddingRebuild,
+        EnterpriseRebuild,
+        MemoryEpisodeIndex,
+        TenantMaintenance,
+    ]
+
+
 async def main(
     *, agent_runtime_ports=None, agent_kernel_adapters=None, embedding_ports=None,
     dingtalk_runtime=None,
@@ -175,8 +215,6 @@ async def main(
     dispatch_engine = engine_for(os.environ["DISPATCH_DATABASE_URL"])
     from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
     from pdos_next.domain.automations.transport import ServiceAutomationSender
-    from pdos_next.workflows.automation import AutomationRuleWork
-    from pdos_next.workflows.xiaopai import XiaopaiWork
 
     if agent_kernel_adapters is not None:
         configure_agent_kernel(engine, agent_kernel_adapters)
@@ -203,11 +241,6 @@ async def main(
     activities = Activities(engine, store, os.environ["PDOS_CHECKPOINT_DATABASE_URL"])
     from pdos_next.agent.enterprise_search.embedding_activities import EmbeddingActivities
     from pdos_next.agent.enterprise_search.embedding_composition import configured_ports
-    from pdos_next.agent.enterprise_search.embedding_workflow import (
-        EnterpriseEmbedding,
-        EnterpriseEmbeddingProjection,
-        EnterpriseEmbeddingRebuild,
-    )
 
     if embedding_ports is None:
         from pdos_next.agent.model_configuration.host import runtime_ports
@@ -220,10 +253,8 @@ async def main(
         engine, embedding_ports, checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
     )
     automation_sender = ServiceAutomationSender(client, engine, dispatch_engine)
-    from pdos_next.agent.enterprise_search.events import EnterpriseProjection, ProjectionSender
-    from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
+    from pdos_next.agent.enterprise_search.events import ProjectionSender
     from pdos_next.agent.memory.index import dispatch_pending as dispatch_memory_index
-    from pdos_next.agent.memory.index_workflow import MemoryEpisodeIndex
 
     sender = TemporalSender(
         client,
@@ -233,7 +264,7 @@ async def main(
     )
     from pdos_next.agent.kernel.temporal_port import TemporalPort, dispatch_pending_runs
     from pdos_next.workflows.checkpoint_retention import CheckpointRetention
-    from pdos_next.workflows.maintenance import MaintenanceSender, TenantMaintenance
+    from pdos_next.workflows.maintenance import MaintenanceSender
 
     maintenance = MaintenanceSender(client, task_queue=sender.task_queue)
     retention = CheckpointRetention(
@@ -246,13 +277,11 @@ async def main(
     kernel_sender = TemporalPort(client, task_queue=sender.task_queue)
     from pdos_next.integrations.dingtalk.runtime import configure as configure_dingtalk
     from pdos_next.integrations.dingtalk.summary_workflow import (
-        DingTalkSummaryDelivery,
         SummaryActivities,
     )
     from pdos_next.integrations.dingtalk.workflow import (
         ChannelActivities,
         ChannelSender,
-        DingTalkCompletion,
     )
 
     summary_channel_activities = SummaryActivities(
@@ -305,24 +334,7 @@ async def main(
         async with Worker(
             client,
             task_queue=sender.task_queue,
-            workflows=[
-                XiaopaiWork,
-                DingTalkCompletion,
-                DingTalkSummaryDelivery,
-                AutomationRuleWork,
-                ParseOriginal,
-                QueueOriginalSecurity,
-                SecureOriginal,
-                OriginalLifecycle,
-                UploadTerminal,
-                EnterpriseProjection,
-                EnterpriseEmbedding,
-                EnterpriseEmbeddingProjection,
-                EnterpriseEmbeddingRebuild,
-                EnterpriseRebuild,
-                MemoryEpisodeIndex,
-                TenantMaintenance,
-            ],
+            workflows=registered_workflows(),
             activities=[
                 kernel_activities.advance,
                 channel_activities.deliver,
