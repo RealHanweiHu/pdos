@@ -2,8 +2,10 @@
 
 Signals and where each comes from:
 
-- liveness: GET the API ``/health`` and the Web sign-in page;
-- error rate: 5xx share between two scrapes of the API's ``/ops/metrics`` counters;
+- liveness: GET the API ``/health`` and the Web sign-in page; the worker counts as
+  live when its own ``/ops/metrics`` answers (D349);
+- error rate: 5xx share between two scrapes of the API's ``/ops/metrics`` counters,
+  and failed Activity attempts between two scrapes of the worker's;
 - queue backlog: undelivered domain events (``ops_health_counters`` through the
   technical dispatch role, numbers only) and the Temporal task queue's backlog,
   backlog age and poller count;
@@ -46,7 +48,9 @@ class Alert:
 class Signals:
     api_live: bool | None = None
     web_live: bool | None = None
+    worker_live: bool | None = None
     responses: dict | None = None
+    activities: dict | None = None
     tenants: dict = field(default_factory=dict)
     temporal: dict | None = None
     errors: list = field(default_factory=list)
@@ -69,6 +73,16 @@ def parse_responses(text: str) -> dict:
     found = {}
     for line in text.splitlines():
         if line.startswith('pdos_http_responses_total{class="'):
+            label, value = line.split("}", 1)
+            found[label.split('"')[1]] = int(float(value.strip()))
+    return found
+
+
+def parse_activities(text: str) -> dict:
+    """``pdos_worker_activities_total{outcome="failed"} 2`` lines into {"failed": 2, ...}."""
+    found = {}
+    for line in text.splitlines():
+        if line.startswith('pdos_worker_activities_total{outcome="'):
             label, value = line.split("}", 1)
             found[label.split('"')[1]] = int(float(value.strip()))
     return found
@@ -142,6 +156,11 @@ def collect(config: dict, environ=os.environ) -> Signals:
         signals.responses = parse_responses(body) if ok else None
         if not ok:
             signals.errors.append("api_metrics_unavailable")
+    if (url := targets.get("worker_metrics_url")) and token:
+        # The worker has no other endpoint: an unanswered scrape is a liveness failure.
+        ok, body = http_ok(url, headers={"Authorization": f"Bearer {token}"})
+        signals.worker_live = ok
+        signals.activities = parse_activities(body) if ok else None
     tenants = [UUID(v) for v in environ.get("PDOS_WORKFLOW_TENANTS", "").split(",") if v.strip()]
     if tenants and environ.get("DISPATCH_DATABASE_URL"):
         try:
@@ -170,7 +189,11 @@ def collect(config: dict, environ=os.environ) -> Signals:
 def evaluate(signals: Signals, state: dict, thresholds: dict) -> tuple[list[Alert], dict]:
     """Pure: alerts that hold now, and the state to keep for the next round."""
     alerts, new_state = [], {"failures": dict(state.get("failures", {}))}
-    for name, live in (("api", signals.api_live), ("web", signals.web_live)):
+    for name, live in (
+        ("api", signals.api_live),
+        ("web", signals.web_live),
+        ("worker", signals.worker_live),
+    ):
         if live is None:
             continue
         count = 0 if live else new_state["failures"].get(name, 0) + 1
@@ -209,6 +232,9 @@ def evaluate(signals: Signals, state: dict, thresholds: dict) -> tuple[list[Aler
                             thresholds["error_rate_5xx_ratio"],
                         )
                     )
+    if signals.activities is not None:
+        new_state["activities"] = signals.activities
+        alerts += _activity_failures(signals.activities, state.get("activities"), thresholds)
     for tenant, row in sorted(signals.tenants.items()):
         short = tenant[:8]
         if row["outbox_oldest_seconds"] >= thresholds["outbox_oldest_seconds"]:
@@ -296,6 +322,33 @@ def evaluate(signals: Signals, state: dict, thresholds: dict) -> tuple[list[Aler
                     )
                 )
     return alerts, new_state
+
+
+def _activity_failures(current: dict, previous: dict | None, thresholds: dict) -> list[Alert]:
+    """Failed share of Activity attempts finished since the last scrape.
+
+    Cancelled attempts (worker shutdown, D348) are not failures. A restarted worker
+    starts its counters at zero, so a drop in the total skips that round.
+    """
+    if not previous or sum(current.values()) < sum(previous.values()):
+        return []
+    failed = current.get("failed", 0) - previous.get("failed", 0)
+    finished = failed + current.get("completed", 0) - previous.get("completed", 0)
+    minimum = thresholds.get("activity_failure_min_count", 5)
+    ratio_threshold = thresholds.get("activity_failure_ratio", 0.2)
+    if finished < minimum or failed / finished < ratio_threshold:
+        return []
+    ratio = failed / finished
+    return [
+        Alert(
+            "activity_failure:worker",
+            "error_rate",
+            "warning",
+            f"Worker Activity 失败 {ratio:.0%}（{failed}/{finished}）",
+            round(ratio, 4),
+            ratio_threshold,
+        )
+    ]
 
 
 def route(

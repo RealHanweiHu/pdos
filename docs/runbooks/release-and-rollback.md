@@ -55,7 +55,13 @@ Temporal 地址取 `PDOS_TEMPORAL_ADDRESS` 和 `PDOS_TEMPORAL_NAMESPACE`（本�
 ## 4. 发布步骤
 
 1. **迁移前快照。** 云上：RDS 手动快照，记下快照 ID 和时间。本地：`server/.venv/bin/python tools/backup_restore.py backup`。快照完成前不做下一步。
-2. **停 Worker。** API 进入维护页。Worker 目前没有优雅停机设置（D348）：停掉时手上的 Activity 会中断，由 Temporal 在心跳超时（小Pai运行为 45 秒）或执行超时后重试；Activity 每次都重读业务事实，小Pai运行的核对出口也不会重复推理或外部动作。所以停 Worker 前先看探针，等 Activity 队列空闲时再停。
+2. **停 Worker。** API 进入维护页。给 Worker 进程发 SIGTERM（`docker stop`、`systemctl stop` 都是先发它）。Worker 的停机办法（D348）：
+   - 立即停止取新任务，事件投递循环做完当前一轮就停；
+   - 正在跑的 Activity 最多再给 `PDOS_WORKER_SHUTDOWN_GRACE_SECONDS` 秒（默认 60，可设 0–3600）跑完；
+   - 到时还没跑完的取消掉，再最多等 15 秒；
+   - 仍不结束的（卡在数据库或网络调用里）放弃：进程以退出码 3 结束，这些 Activity 由 Temporal 在心跳超时（小Pai运行为 45 秒）或执行超时后重试。Activity 每次都重读业务事实，小Pai运行的核对出口也不会重复推理或外部动作。
+   - 停机中再收到 SIGTERM 或 SIGINT 只记一行日志，不会重新开始停机；要立即结束用 SIGKILL。
+   - 所以进程管理器给的停止等待时间要大于“宽限秒数 + 15 秒”：`docker stop -t`、compose 的 `stop_grace_period`、systemd 的 `TimeoutStopSec`，否则会在中途被强杀。停机期间指标 `pdos_worker_stopping` 为 1（[监控手册](monitoring-and-on-call.md)第 2.1 节）。
 3. **回放检查。** 用候选代码对正在运行的工作流跑第 3 节的检查。不通过就停在这里，Worker 继续跑旧版本。
 4. **迁移。** 用迁移账号执行 `alembic upgrade head`，记下前后的 head。
 5. **部署新版本。** API、Web、Worker 用同一提交号；部署配置（签发方、模型连接、扫描档）随发布目录一起检查。

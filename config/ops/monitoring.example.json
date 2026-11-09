@@ -6,6 +6,7 @@
     "api_health_url": "http://127.0.0.1:8898/health",
     "web_health_url": "http://127.0.0.1:3028/login",
     "api_metrics_url": "http://127.0.0.1:8898/ops/metrics",
+    "worker_metrics_url": "http://127.0.0.1:9464/ops/metrics",
     "temporal_task_queue": "pdos-next-domain-v1"
   },
   "thresholds": {
@@ -20,7 +21,9 @@
     "model_failure_ratio": 0.2,
     "model_failure_min_calls": 5,
     "model_window_seconds": 900,
-    "model_calls_open_long": 1
+    "model_calls_open_long": 1,
+    "activity_failure_ratio": 0.2,
+    "activity_failure_min_count": 5
   },
   "alerts": {
     "channel": "dingtalk-group-robot",

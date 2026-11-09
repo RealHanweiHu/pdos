@@ -101,6 +101,6 @@
 
 ## 8. 已知缺口
 
-- D346：`tools/agent_runtime_environment.py start` 在新环境上失败（传给 `install` 的 realm 是 `pdos`，状态库只接受 `pdos-next`），容器建好后 schema 没装上。演练时手动用正确 realm 补装。
+- ~~D346~~ 11-09 已修：`tools/agent_runtime_environment.py start` 改用状态库接受的 realm `pdos-next`；旧版建好容器却没装上 schema 的环境，下次 `start` 会补装（`status` 显示 `schema_installed`）。
 - D347：演练链缺测试结果一环（见第 6 节）。
 - D260 仍在：完整降级到 base 会在 `s0_0784` 处失败；不影响备份恢复，但发版时不能指望整链降级（见发布手册）。
