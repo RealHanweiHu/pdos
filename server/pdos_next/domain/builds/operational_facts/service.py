@@ -775,6 +775,25 @@ def _resource_report(s, ctx, fact, data, bound, scope, assets, issuer, at, exclu
                     ),
                 )
             )
+        if resource.resource.kind == "fixture":
+            # D306: the native fixture acceptance owner replaces imported acceptance
+            # facts for the same purpose and operation; others keep their issuer proof.
+            from pdos_next.domain.manufacturing.fixture_acceptance.service import readiness_facts
+
+            native = readiness_facts(s, ctx, fact.product_id, fact.project_id, resource.resource.id)
+            keys = {(v.kind, v.purpose, v.operation_id) for v in native}
+            decisions = [
+                v for v in decisions if (v.kind, v.purpose, v.operation_id) not in keys
+            ] + native
+            proofs.extend(
+                {
+                    "resource": str(resource.resource.id),
+                    "kind": v.kind,
+                    "operation_id": v.operation_id,
+                    "proof": {"native_acceptance": v.source.position, "status": v.status},
+                }
+                for v in native
+            )
         snapshots[resource.resource.id] = ResourceSnapshot(
             ref=resource.resource,
             scope=vscope,

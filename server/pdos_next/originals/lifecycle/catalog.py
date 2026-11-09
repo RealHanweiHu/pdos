@@ -5588,3 +5588,29 @@ COVERED_COLUMNS.update(
         ),
     }
 )
+
+# D47 named-person version chains (P95–P97, P100): one shared column layout.
+from pdos_next.domain.named_records.models import CURRENT_COLUMNS as _D47_CURRENT  # noqa: E402
+from pdos_next.domain.named_records.models import VERSION_COLUMNS as _D47_VERSION  # noqa: E402
+
+_D47_SCOPE = {
+    "engineering_interface": (
+        "product_id", "project_id", "configuration_series_id", "owner_id", "visibility"
+    ),
+}
+_D47_EXTRA = {"engineering_interface_versions": ("configuration_id",)}
+
+
+def _d47_chain(prefix):
+    scope = _D47_SCOPE[prefix]
+    versions, currents = f"{prefix}_versions", f"{prefix}_currents"
+    COVERED_COLUMNS[versions] = (*_D47_VERSION, *scope, *_D47_EXTRA.get(versions, ()))
+    COVERED_COLUMNS[currents] = (*_D47_CURRENT, *scope)
+    return versions, currents
+
+
+_D47_SCOPE["fixture_acceptance"] = (
+    "product_id", "project_id", "resource_id", "purpose", "operation_id", "owner_id", "visibility"
+)
+GUARDED = (*GUARDED, *_d47_chain("fixture_acceptance"))
+GUARDED = (*GUARDED, *_d47_chain("engineering_interface"))

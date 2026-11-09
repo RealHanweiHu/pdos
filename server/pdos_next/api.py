@@ -492,6 +492,16 @@ def create_app(
 
     register_supply_commitment_routes(app, engine, auth_dependency)
     register_forecast_routes(app, engine, auth_dependency)
+    from pdos_next.domain.engineering.interfaces.api import (
+        register_routes as register_interface_routes,
+    )
+
+    register_interface_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.fixture_acceptance.api import (
+        register_routes as register_fixture_acceptance_routes,
+    )
+
+    register_fixture_acceptance_routes(app, engine, auth_dependency)
 
     @app.get("/health")
     def health():

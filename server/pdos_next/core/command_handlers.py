@@ -21,6 +21,7 @@ CATEGORY_OPERATIONS = frozenset(
         "ai.budget.configure",
         "evidence.artifact.register",
         "evidence.original.withdraw",
+        "evidence.source.withdraw",
         "evidence.lifecycle.upload.abandon",
         "evidence.lifecycle.quarantine",
         "evidence.lifecycle.restore",
@@ -68,6 +69,8 @@ T2_OPERATIONS = frozenset(
         "npi.manufacturing_baseline.publish",
         "quality.issue.root_cause.decide",
         "quality.capa.verification.review",
+        "npi.fixture.accept",
+        "evidence.source.withdraw",
     }
 )
 
@@ -153,6 +156,8 @@ T1_OPERATIONS = frozenset(
         "quality.capa.followup.link",
         "quality.capa.verification.candidate.record",
         "quality.capa.observation.record",
+        "product.definition.update",
+        "engineering.interface.update",
     }
 )
 
@@ -345,6 +350,22 @@ def handler(operation):
         from pdos_next.domain.categories.products import platforms
 
         return platforms
+    if operation == "evidence.source.withdraw":
+        from pdos_next.originals import source_withdraw
+
+        return source_withdraw
+    if operation == "npi.fixture.accept":
+        from pdos_next.domain.manufacturing.fixture_acceptance import service as fixture_service
+
+        return fixture_service
+    if operation == "engineering.interface.update":
+        from pdos_next.domain.engineering.interfaces import service as interface_service
+
+        return interface_service
+    if operation == "product.definition.update":
+        from pdos_next.domain.categories.products import definition_update
+
+        return definition_update
     if operation == "product.definition.item.patch":
         from pdos_next.domain.categories.products import definition_items
 

@@ -555,3 +555,20 @@ from pdos_next.domain.projects.forecast_refresh.schemas import (  # noqa: E402
 # D47: canonical T0 supplier commitment (F25) and the deterministic forecast refresh.
 PAYLOADS.update(SUPPLY_COMMITMENT_PAYLOADS)
 PAYLOADS.update(FORECAST_REFRESH_PAYLOADS)
+
+# D47 remaining Appendix A operations (P95–P97, P100), decided 2026-11-09.
+from pdos_next.domain.engineering.interfaces.schemas import (  # noqa: E402
+    PAYLOADS as INTERFACE_PAYLOADS,
+)
+from pdos_next.domain.manufacturing.fixture_acceptance.schemas import (  # noqa: E402
+    PAYLOADS as FIXTURE_ACCEPTANCE_PAYLOADS,
+)
+from pdos_next.originals.source_withdraw_schemas import (  # noqa: E402
+    PAYLOADS as SOURCE_WITHDRAW_PAYLOADS,
+)
+from pdos_next.schemas.products.definition_update import DefinitionUpdatePayload  # noqa: E402
+
+PAYLOADS["product.definition.update"] = DefinitionUpdatePayload
+PAYLOADS.update(INTERFACE_PAYLOADS)
+PAYLOADS.update(FIXTURE_ACCEPTANCE_PAYLOADS)
+PAYLOADS.update(SOURCE_WITHDRAW_PAYLOADS)

@@ -630,35 +630,35 @@ W3c · 想法已变但没有记录
     - 前端：`.mjs` 1924 项、`.test.ts` 752 项通过，tsc、lint 均 0 错误。
     - 合同校验、迁移往返和降级保护通过；浏览器亮暗两套主题走通。
   - 余项：两条闭环的余项是 D314、D315；待定的 10 条是 D305–D312；规格冻结 `product.definition.publish` 归 D36。
-- D305 〔你〕`npi.tooltrial.create`（T1）：P79 D97 已定“轻量模具记录 + 试模，模具状态进 Build 准备度，验收以试模样件的测试与具名复核表达”，纯函数内核在 `manufacturing/trials/handlers.py`。缺两项：
+- D305 〔已定 11-09 [P95](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p95)，按推荐；实施中〕`npi.tooltrial.create`（T1）：P79 D97 已定“轻量模具记录 + 试模，模具状态进 Build 准备度，验收以试模样件的测试与具名复核表达”，纯函数内核在 `manufacturing/trials/handlers.py`。缺两项：
   - 模具记录由哪个入口建立（附录 A 只有试模命令）；
   - “测试 + 具名复核”如何折算成准备度规则要求的 `tooling` 验收事实（规则要求 `named_decision_id`，而 D97 不许设验收命令）。
-- D306 〔你〕`npi.fixture.accept`（T2）：准备度一侧的验收事实结构已经定了。缺这几项：
+- D306 〔已定 11-09 [P95](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p95)，按推荐；实施中〕`npi.fixture.accept`（T2）：准备度一侧的验收事实结构已经定了。缺这几项：
   - 签核角色：冻结设计没写，只有非冻结的 wave28 记录写“制造”；
   - 治具身份从哪来：现在没有治具登记表，资源只来自受控导入；
   - 撤销与有效期；
   - 设备验收是否共用本命令；
   - AT-17 标在 S4，本操作标在 S2，二者不一致。
-- D307 〔你〕`quality.capa.effectiveness.decide`（T2）：纯函数内核在 `quality/issues/handlers.py`，`quality.capa.verification.review` 不能代替它。缺这几项：
+- D307 〔已定 11-09 [P96](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p96)，按推荐；实施中〕`quality.capa.effectiveness.decide`（T2）：纯函数内核在 `quality/issues/handlers.py`，`quality.capa.verification.review` 不能代替它。缺这几项：
   - 判“无效”之后用哪条修订命令；
   - “延长观察”尚未冻结（F47 只是建议）；
   - `quality.issue.close` 不在任何合同；
   - 复核记录到有效性证据的适配；
   - `quality_issue_versions` 的检查约束要随之迁移。
-- D308 〔你〕`supply.alternate.approve`（T2）：§04.10 只写了“绑定可替代范围和验证”。缺这几项：
+- D308 〔已定 11-09 [P96](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p96)，按推荐；实施中〕`supply.alternate.approve`（T2）：§04.10 只写了“绑定可替代范围和验证”。缺这几项：
   - 签核角色：工程、品质还是采购；
   - 需要什么验证证据：测试结果还是适用性评估；
   - 范围：齐套引擎按 Build 绑定，设计写的是“可替代范围”；
   - 有效期与撤销；
   - 批准是否改 BOM（若改应走 `change.order.approve`）。
   选签核角色等于新增规则，按不可协商项 7 须你确认。D241 的替代方案依赖本条。
-- D309 〔你〕`customer.sample.send`、`customer.acceptance.record`（T2，S4）：
+- D309 〔已定 11-09 [P97](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p97)，按推荐；实施中〕`customer.sample.send`、`customer.acceptance.record`（T2，S4）：
   - 外发：授权人角色未定；未定复用外部移交管线还是另建（现有管线要求放行包和工程、制造两份放行，不适合 EVT/DVT 样品）；收件方只能记外部标签（P87 第 9 项）；真实外发须你授权。
   - 承认：拍板表 C11 的五类范围（外观、尺寸、性能、包装标识、认证资料）标“需（做时）”决策记录，尚无 P 号；谁可登记、是否必须关联交付记录、条件承认的条件与有效期都未定。
   本地合成部分在口径定后可做。
-- D310 〔你〕`evidence.source.withdraw`（T2）与已实现的 T1 辅助操作 `evidence.original.withdraw` 效果重叠，档位和事件名都不同（Q10 语义已由后者满足）。请定：本条作为 T2 正式操作并改动或退役后者；或者只用于已被消费或已共享的来源。还缺载荷、对象范围（原件、登记资料、公开快照）和签核人。
-- D311 〔你〕`product.definition.update`（T1）：新版本已由 `product.definition.draft` 承担，条目编辑已由 `product.definition.item.patch` 承担，本条要补什么没有定义。待定：改哪些字段；原地改草稿还是建新版（数据库触发器只允许发布和封存两种迁移）；`in_review` 与协审命令。
-- D312 〔你〕`engineering.interface.update`（T1）：无表无代码，§04.2 只有字段清单。缺接口对象结构与建立入口（附录 A 只有 update）、确认状态词、设计责任人语义、与工程配置的绑定、影响传播规则和执行人。与 D49“接口合同与设计责任人”同源。
+- D310 〔已定 11-09 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100)，按推荐；实施中〕`evidence.source.withdraw`（T2）与已实现的 T1 辅助操作 `evidence.original.withdraw` 效果重叠，档位和事件名都不同（Q10 语义已由后者满足）。请定：本条作为 T2 正式操作并改动或退役后者；或者只用于已被消费或已共享的来源。还缺载荷、对象范围（原件、登记资料、公开快照）和签核人。
+- D311 〔已定 11-09 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100)，按推荐；实施中〕`product.definition.update`（T1）：新版本已由 `product.definition.draft` 承担，条目编辑已由 `product.definition.item.patch` 承担，本条要补什么没有定义。待定：改哪些字段；原地改草稿还是建新版（数据库触发器只允许发布和封存两种迁移）；`in_review` 与协审命令。
+- D312 〔已定 11-09 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100)，按推荐；实施中〕`engineering.interface.update`（T1）：无表无代码，§04.2 只有字段清单。缺接口对象结构与建立入口（附录 A 只有 update）、确认状态词、设计责任人语义、与工程配置的绑定、影响传播规则和执行人。与 D49“接口合同与设计责任人”同源。
 - D313 既有测试失败：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot`，`GET /v1/personal/agent-input-sources` 期望 404、实际 500。在基点 `d6abcbf2` 源码上同样失败（11-08 第三轮集成带入 D42 后），与 D47 无关，未修。
 - D314 预测重算余项：
   - 已开始的任务缺“剩余工期”录入口，引擎要求 remaining，所以预测保持未知；
