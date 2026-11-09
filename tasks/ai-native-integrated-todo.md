@@ -207,7 +207,7 @@ W3b · 部署、合规与商业
 - D137 ✅ 采纳→W8：写约定，新代码遵守，存量清点列清单，动到时收口（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）守卫放置约定。须先确认它与 10-08 否决过的 C5 选项 1 不冲突（B16）。
 - D138 ✅ 逐项定：模板更新差异已由 P60 定；“我的记忆”页作为 P72 显式偏好管理页随 RAG 切片 B 做；FailureMode〔延后：S3 问题闭环上线并有 20 条以上同品类已关闭 Issue〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）三项暂缓的设计各自写明恢复条件：FailureMode；个人偏好记忆与“我的记忆”页；模板更新差异（B17）。（11-02：其中“模板更新差异”已由 [P60](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p60) 定为项目绑定框架版本、新版本只出差异，不再暂缓。）
 - D139 〔延后：准备对外演示或销售材料时〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）把已经领先竞品的 9 个点做成用户看得见的特性（缺口稿 §2）。
-- D241 〔延后：供应承诺与替代料命令实现后（D47），届时加进 build_execution〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）供应异常恢复方案：物料短缺或模具轮次异常时，小Pai 给出催交、替代、借料、模具恢复等选项，写明验证步骤和完成判据。原工程 `supplier_recovery` 未承接，`event_issue` 的缺料部分也没人接；现在 `build_execution` 只登记供应快照、计算齐套（见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)）。
+- D241 〔延后：供应承诺与替代料命令实现后（D47），届时加进 build_execution；11-08：`supply.commitment.record` 已实现并进 `build_execution` 0.1.3-draft，替代料批准仍待 D308，恢复方案继续延后〕（11-04，[P80](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p80)）供应异常恢复方案：物料短缺或模具轮次异常时，小Pai 给出催交、替代、借料、模具恢复等选项，写明验证步骤和完成判据。原工程 `supplier_recovery` 未承接，`event_issue` 的缺料部分也没人接；现在 `build_execution` 只登记供应快照、计算齐套（见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)）。
 
 W3b · 早期想法（10-08 之前）：丢失或口径变窄，需要定补回还是放弃
 - D180 ✅ 补回→W8，写进三个研究类技能包的使用原则（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）外贸出口的市场方向。这是你 09-28 的裁决：用户声音以英文平台为主（亚马逊评论、Reddit），认证先看 UL/CE/FCC 和欧盟电池法规，用卖家精灵作采集渠道。现在 v1.1、确认稿和技能包里都找不到（PM 方法目录 §2）。
@@ -608,7 +608,73 @@ W3c · 想法已变但没有记录
   - 主循环里，模型调用发出前的复核（`gateway._recheck_dispatch` → `context_guard`）在领取之后。信号恰好落在两次检查之间（毫秒级）时，这次调用留在 started，下一尝试会把它当成要对账的未知调用。概率很低；改法涉及 `gateway.py`，等 D248 合并后再看。
 
 **W9 业务域余项（实现缺口；按闭环推进）**
-- D47 14 条 not_implemented 操作：forecast.refresh、capa.effectiveness、tooltrial、fixture、customer.sample/acceptance、supply.commitment/alternate、source.withdraw 等。
+- D47 部分完成：12 条 not_implemented 实现 2 条，其余 10 条待你定口径（11-08，worktree `elastic-noyce-fad368`，本地提交未推送，[证据](../docs/reports/evidence/pdos-next-d47-operations-20261108/README.md)、[逐条盘点](../docs/reports/evidence/pdos-next-d47-operations-20261108/inventory.md)）。原写 14 条是 11-01 的数字；`my_work.query`、`provider.agreement.register` 此后已以接口实现。
+  - ✅ `supply.commitment.record`（T0；F25、AT-20）：
+    - 每条供方承诺是一条版本链，动作有建立、改期改量、关闭、重开，绑定固定 Build 的真实需求物料。
+    - 具名本人可用本人陈述作来源（`human_recorded`）；小Pai 只能引原文行，且须有当前资格和绑定运行。
+    - 检查日为承诺日 +1 天，到期后进“我的工作”外部队列。
+    - 承诺不计入库存与齐套；供应面板按 BOM 行显示需求、承诺、实到。
+    - 已加入 `build_execution` 0.1.3-draft。
+  - ✅ `work.forecast.refresh`（T0 确定性引擎；P82 D181、P58、P66，AT-18/19）：
+    - 用当前计划和任务的实际开始、提交时间重算区间、浮时和关键路径。
+    - 只写新预测，不改计划、基线和承诺；单列为“系统重算”。
+    - 意图绑定服务器算出的输入摘要：同日同输入时重放；输入变了返回 409，并附当前摘要。
+    - D181 固定案例用纯函数测试验证。
+    - 已加入 `work_management` 0.1.3-draft。
+  - 迁移占位 `s0_0868_supply_commitments`（down `s0_0861`）、`s0_0869_forecast_refreshes`（down `s0_0868`），**集成时按真实 head 重排**：文件名、revision、down_revision、快照 `schema_s0_0868.py`/`schema_s0_0869.py` 以及降级保护文字里的号要一起改。两次迁移都没有改共享函数（`m3_lifecycle_*`、工作管理公共守卫都没动），只新建本闭环的表、函数、策略和触发器。
+  - 验证：
+    - PG：供应承诺 6 项，预测重算 3 项。
+    - 纯函数：规则 8 项，合成 5 项。
+    - 受影响的公共 PG 371 项通过（2 项失败均为既有或并发干扰）。
+    - 无库全量 10770 项通过（1 项失败为基点既有，记 D313）。
+    - 前端：`.mjs` 1924 项、`.test.ts` 752 项通过，tsc、lint 均 0 错误。
+    - 合同校验、迁移往返和降级保护通过；浏览器亮暗两套主题走通。
+  - 余项：两条闭环的余项是 D314、D315；待定的 10 条是 D305–D312；规格冻结 `product.definition.publish` 归 D36。
+- D305 〔你〕`npi.tooltrial.create`（T1）：P79 D97 已定“轻量模具记录 + 试模，模具状态进 Build 准备度，验收以试模样件的测试与具名复核表达”，纯函数内核在 `manufacturing/trials/handlers.py`。缺两项：
+  - 模具记录由哪个入口建立（附录 A 只有试模命令）；
+  - “测试 + 具名复核”如何折算成准备度规则要求的 `tooling` 验收事实（规则要求 `named_decision_id`，而 D97 不许设验收命令）。
+- D306 〔你〕`npi.fixture.accept`（T2）：准备度一侧的验收事实结构已经定了。缺这几项：
+  - 签核角色：冻结设计没写，只有非冻结的 wave28 记录写“制造”；
+  - 治具身份从哪来：现在没有治具登记表，资源只来自受控导入；
+  - 撤销与有效期；
+  - 设备验收是否共用本命令；
+  - AT-17 标在 S4，本操作标在 S2，二者不一致。
+- D307 〔你〕`quality.capa.effectiveness.decide`（T2）：纯函数内核在 `quality/issues/handlers.py`，`quality.capa.verification.review` 不能代替它。缺这几项：
+  - 判“无效”之后用哪条修订命令；
+  - “延长观察”尚未冻结（F47 只是建议）；
+  - `quality.issue.close` 不在任何合同；
+  - 复核记录到有效性证据的适配；
+  - `quality_issue_versions` 的检查约束要随之迁移。
+- D308 〔你〕`supply.alternate.approve`（T2）：§04.10 只写了“绑定可替代范围和验证”。缺这几项：
+  - 签核角色：工程、品质还是采购；
+  - 需要什么验证证据：测试结果还是适用性评估；
+  - 范围：齐套引擎按 Build 绑定，设计写的是“可替代范围”；
+  - 有效期与撤销；
+  - 批准是否改 BOM（若改应走 `change.order.approve`）。
+  选签核角色等于新增规则，按不可协商项 7 须你确认。D241 的替代方案依赖本条。
+- D309 〔你〕`customer.sample.send`、`customer.acceptance.record`（T2，S4）：
+  - 外发：授权人角色未定；未定复用外部移交管线还是另建（现有管线要求放行包和工程、制造两份放行，不适合 EVT/DVT 样品）；收件方只能记外部标签（P87 第 9 项）；真实外发须你授权。
+  - 承认：拍板表 C11 的五类范围（外观、尺寸、性能、包装标识、认证资料）标“需（做时）”决策记录，尚无 P 号；谁可登记、是否必须关联交付记录、条件承认的条件与有效期都未定。
+  本地合成部分在口径定后可做。
+- D310 〔你〕`evidence.source.withdraw`（T2）与已实现的 T1 辅助操作 `evidence.original.withdraw` 效果重叠，档位和事件名都不同（Q10 语义已由后者满足）。请定：本条作为 T2 正式操作并改动或退役后者；或者只用于已被消费或已共享的来源。还缺载荷、对象范围（原件、登记资料、公开快照）和签核人。
+- D311 〔你〕`product.definition.update`（T1）：新版本已由 `product.definition.draft` 承担，条目编辑已由 `product.definition.item.patch` 承担，本条要补什么没有定义。待定：改哪些字段；原地改草稿还是建新版（数据库触发器只允许发布和封存两种迁移）；`in_review` 与协审命令。
+- D312 〔你〕`engineering.interface.update`（T1）：无表无代码，§04.2 只有字段清单。缺接口对象结构与建立入口（附录 A 只有 update）、确认状态词、设计责任人语义、与工程配置的绑定、影响传播规则和执行人。与 D49“接口合同与设计责任人”同源。
+- D313 既有测试失败：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot`，`GET /v1/personal/agent-input-sources` 期望 404、实际 500。在基点 `d6abcbf2` 源码上同样失败（11-08 第三轮集成带入 D42 后），与 D47 无关，未修。
+- D314 预测重算余项：
+  - 已开始的任务缺“剩余工期”录入口，引擎要求 remaining，所以预测保持未知；
+  - 按同品类历史实际用时校准排期（P33、D181）未做；
+  - 任务实际变化后不会自动重算，现在由人或小Pai 发起命令；
+  - AT-67 尚未写入附录 B 和 `acceptance.json`（P82 待同步）；
+  - 预测误差与承诺兑现率指标未做（D181、D191）；
+  - 预测记录只与计划自带的排期比较，不与已批准基线比较。
+- D315 供应承诺余项：
+  - 小Pai 经合格运行写入的端到端 PG 未验证，缺可复用的合格运行夹具，同 D280；
+  - 小Pai 写入的承诺不支持按运行撤回（与外部等待相同，`ai.run.revert` 尚未覆盖这类回执）；
+  - 检查日按自然日 +1，没有用工作日历（D221 接通后可改）；
+  - 承诺没有接入 `m3_lifecycle_*` 图遍历：原件级生命周期靠通用触发器，品类级图遍历不含这两张表；
+  - 页面没有原文引用选择器，人工只用本人陈述，原文引用由接口和小Pai 使用；
+  - D199 供方画像从现在起可以积累数据。
+- D316 本机开发环境问题：多个会话的本地预览都用 `localhost`（端口不同），浏览器共用 `pdos-next-session` cookie，会互相覆盖，导致偶发 401（11-08 走查时遇到，重新建立本地会话后正常）。改用 `127.0.0.1` 访问时开发服务器不完成水合。只影响本机多会话并行走查。
 - D48 S3–S5 余项：
   - S3：Issue 停在 awaiting_verification，要接真实观察、具名复核和 T2 关闭；
   - S4：7 张表有生命周期缺口；真实外发和外部接收〔你授权〕；

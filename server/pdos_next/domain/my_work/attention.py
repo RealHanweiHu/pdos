@@ -21,6 +21,9 @@ def records(ctx, queue):
     from pdos_next.domain.my_work import attention_decisions as personal_attention_decisions
     from pdos_next.domain.my_work import attention_external_wait as personal_attention_external_wait
     from pdos_next.domain.my_work import attention_project_risk as personal_attention_project_risk
+    from pdos_next.domain.my_work import (
+        attention_supply_commitment as personal_attention_supply_commitment,
+    )
     from pdos_next.domain.my_work import attention_verification as personal_attention_verification
     from pdos_next.domain.my_work import attention_work as personal_attention_work
 
@@ -33,6 +36,7 @@ def records(ctx, queue):
                 personal_attention_project_risk,
                 personal_attention_decisions,
                 personal_attention_verification,
+                personal_attention_supply_commitment,
             )
             for query in adapter.queries(ctx, queue)
         )

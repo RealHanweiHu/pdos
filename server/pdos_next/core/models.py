@@ -1329,3 +1329,6 @@ import pdos_next.domain.projects.team.models  # noqa: E402,F401
 
 # D56 export audit rows (append-only; human reader only).
 import pdos_next.domain.exports.models  # noqa: E402,F401
+
+import pdos_next.domain.manufacturing.supply_commitments.models  # noqa: E402,F401
+import pdos_next.domain.projects.forecast_refresh.models  # noqa: E402,F401

@@ -483,6 +483,15 @@ def create_app(
     from pdos_next.domain.exports.api import register_routes as register_export_routes
 
     register_export_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.supply_commitments.api import (
+        register_routes as register_supply_commitment_routes,
+    )
+    from pdos_next.domain.projects.forecast_refresh.api import (
+        register_routes as register_forecast_routes,
+    )
+
+    register_supply_commitment_routes(app, engine, auth_dependency)
+    register_forecast_routes(app, engine, auth_dependency)
 
     @app.get("/health")
     def health():

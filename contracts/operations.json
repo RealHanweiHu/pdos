@@ -160,7 +160,8 @@
       "ai_execution": "确定性引擎",
       "event": "forecast.refreshed",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.external_wait.record",
@@ -490,7 +491,8 @@
       "ai_execution": "需资格与授权",
       "event": "supply.commitment_recorded",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "supply.kit.compute",

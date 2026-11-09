@@ -1,6 +1,6 @@
 ---
 key: build_execution
-version: 0.1.2-draft
+version: 0.1.3-draft
 purpose: 在已立项项目内办理制造轮次：按固定计划配置建立 Build、登记实际配置与差异、产出批次与样件去向，记录制造基线/工艺/作业与控制计划，准备工程与制造双专业授权材料，并用确定性工具算齐套与成本；实际数量、参数和时点只按真实记录写入。
 input_schema:
   type: object
@@ -38,6 +38,7 @@ allowed_operations:
   - {tool: skill.load, tier: READ, note: "试模后交接加载 test_verification；缺陷处置加载 quality_issue"}
   - {tool: build.readiness.compute, tier: T0, note: "按规则算准备度，结论由规则给出，不由模型打分"}
   - {tool: supply.kit.compute, tier: T0, note: "按固定供应快照算齐套"}
+  - {tool: supply.commitment.record, tier: T0, note: "按原文登记供方承诺（声称）、改期改量或关闭跟进；不计入库存与齐套，须引用原文行"}
   - {tool: cost.estimate.compute, tier: T0, note: "按固定成本输入算估算"}
   - {tool: build.create, tier: T1, note: "一次确认；固定计划配置、计划数量、验证目标与处置要求"}
   - {tool: build.start, tier: T1, note: "须已有工程与制造两份授权及其版本/摘要"}
@@ -94,7 +95,7 @@ preload_when: []
 - **Build 固定计划配置**；每批次/每件记录实际配置与差异。一个 Build 可有多批 Lot；**混合配置必须拆分或逐件明确，不允许平均掉差异**。
 - **试次与自主级别不是一回事**：模具试模的 T0/T1/T2 是 `trial_round`；AI 写入档位是 `write_tier`，界面只说"自动 / 一次确认 / 具名决定"。
 - **样件**：保存实际配置、来源批次/工序/模穴、保管/位置、去向、预约、破坏性消耗与可用性。**破坏性消耗后不可再分配**；"测试任务还在列表"不是实物可用证明。
-- **供应**：需求、供方承诺、在途/库存快照、实际可用、质量限制是不同事实。**供方承诺到货不等于已齐套**。参数相近不构成替料依据（替代须有 AlternateQualification 的范围与验证）。
+- **供应**：需求、供方承诺、在途/库存快照、实际可用、质量限制是不同事实。**供方承诺到货不等于已齐套**。供方承诺用 `supply.commitment.record` 单独登记版本（建立、改期改量、关闭、重开），检查日是承诺日次日，只是内部跟进点；实到仍以供给快照的到货记录为准。参数相近不构成替料依据（替代须有 AlternateQualification 的范围与验证）。
 - **成本**：CostEstimate 记录 BOM、工艺、报价、币种、时点、数量与损耗假设，由确定性引擎计算；估算不替代 ERP 正式成本与财务批准。
 - **试产**：PilotRun 引用 Build、实际配置、制造基线、产线、人员、物料、工装设备、实际参数、首件结果、投入/产出、返工/报废、异常与处置。**首次通过率与最终合格率分开，分母与统计范围固定；只有相容批次才可汇总，百分比不简单平均**。
 - **成熟度**：产品验证成熟度、制造成熟度、交付适用性独立显示，不合成一个分；关键治具未验收、方法无效或必需证据过期时，不用其他项目的高分抵消。

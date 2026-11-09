@@ -7,6 +7,7 @@ import { ArrowClockwise, Calculator, ClipboardText, Plus, Trash, WarningCircle }
 import { projectBuildsPath } from "@/lib/project-build-scope";
 import { Button } from "@/components/ui/button";
 import { CoverageShortages, SupplySnapshotHistory } from "@/features/manufacturing/supply-cost";
+import { BuildSupplyCommitments } from "@/features/builds/build-supply-commitments";
 import { originalLocation } from "@/lib/original-location";
 import { buildTypeNames, type Build, type BuildList } from "@/lib/build-preparation-view";
 import { decimalText, plainReference, referenceKey, sourceLines, type DefinitionReference, type DefinitionSource } from "@/lib/product-view";
@@ -142,6 +143,7 @@ function SupplyPanel({ product, principalId, api, onSaved, projectId = "" }: Pro
       <div className="space-y-5">
         {build.readiness && <section className="panel"><h3 className="font-semibold">本轮固定物料需求</h3><p className="subtle mt-2">以下是原固定需求，未据供应记录改写数量；已知需求量不代表库存或齐套。</p><div className="mt-3 space-y-3">{build.readiness.result.demands.map(demand => <article key={demand.item_id} className="border-t border-border pt-3"><p className="font-medium">{materials.find(material => material.id === demand.material_id)?.name ?? "固定物料，当前名称待核对"}{demand.critical ? " · 关键件" : ""}</p><p className="mt-1 text-sm">计划需求：{decimalText(demand.required_quantity)} {demand.unit ?? "单位未知"}<br/>每件用量：{decimalText(demand.quantity_per_product)} {demand.unit ?? "单位未知"}</p>{demand.issues.length > 0 && <p className="subtle mt-1">用量、单位或损耗仍需补充；未知没有用零代替。</p>}</article>)}</div>{!build.readiness.is_current && <p className="mt-3 text-sm text-destructive">这是历史固定需求，当前来源需重核。</p>}</section>}
         <section className="panel"><h3 className="font-semibold">按当前固定供给快照核对齐套</h3>{snapshot ? <div className="mt-3 space-y-3"><p className="text-sm">当前供给快照 v{snapshot.revision} · {snapshot.freshness === "current" ? "依据当前" : "历史依据，当前需重核"}</p><p className="subtle">范围仍不完整，质量与可用性保持未知。计算保留已知需求和待补事实，不将未知缺口补零。</p>{snapshot.freshness !== "current" && <p className="text-sm text-destructive">此快照来源已变化或失效，当前不可继续计算；下方结果只描述当时固定输入。</p>}<Button disabled={!canCompute} onClick={event => compute(event.currentTarget)}><Calculator/>{kits.some(kit => kit.supply_snapshot_id === snapshot.id) ? "核对并读取已有齐套结果" : "按本版快照计算齐套"}</Button><p className="subtle">这是确定性计算，无需再确认；相同固定输入保留原回执与计算时点。它不产生占用、替代资格或开工许可。</p></div> : <p className="subtle mt-3">先完成本轮整版供给快照的一次确认，再计算齐套。</p>}</section>
+        <BuildSupplyCommitments key={`${principalId}:${product.id}:${build.id}:commitments`} api={api} product={product} build={build} principalId={principalId} materials={materials}/>
         <SupplySnapshotHistory key={`${principalId}:${product.id}:${local.buildId}:snapshots`} snapshots={snapshotViews} status={loading ? "loading" : "ready"}/>
         <CoverageShortages key={`${principalId}:${product.id}:${local.buildId}:kits`} projections={kitViews} status={loading ? "loading" : "ready"}/>
       </div>

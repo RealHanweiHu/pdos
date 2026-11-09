@@ -1,6 +1,6 @@
 ---
 key: work_management
-version: 0.1.2-draft
+version: 0.1.3-draft
 purpose: 按真实项目和原件起草任务、计划、阶段办理与外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。
 input_schema:
   type: object
@@ -196,6 +196,9 @@ allowed_operations:
 - tool: work.risk.followup.record
   tier: T1
   note: 具名人按精确 G0 风险和当前跟进版本关闭或重开跟进；不改写原 G0 决定
+- tool: work.forecast.refresh
+  tier: T0
+  note: 确定性引擎按当前计划与任务实际重算预测；只写新预测，不改计划、基线与承诺；输入摘要须来自本轮读取
 evidence_policy: 任务必须消费已登记原件或精确 G0 待决项；成果 present 必须有该项原件来源。模型不提供权限、人员职责、当前状态或业务回执事实。本人承接/承诺与接收者验收沿受控 T1，一次确认后由真实人员保存；T0
   仍须当前启用、资格和授权。
 failure_policy: 当前版本/本人身份/成果来源不明，只澄清缺项并继续已授权只读工作。失败或响应未知保留原 command/idempotency key，经实际回执核对后恢复，不新建第二任务/承诺。未实现的任务/承诺领域读取不可由
@@ -236,6 +239,7 @@ preload_when: []
 8. `work.plan.propose`（T0）使用注册 schema 的 schedule 与 expected_project_revision；`work.plan.apply`（T1）消费精确 proposal_id。不捏造计划估时、批准基线或 Forecast；需制造/测试动作时加载 build_execution/test_verification。
 9. `work.external_wait.record`（T0）使用 record.action 区分 create/details/initiate/delivery/commitment/reply/close/reopen/transfer_request/transfer_accept/transfer_cancel；create 之外必须给当前 wait 引用。发起、有效送达、对方承诺、部分回复与关闭分开，送达未知不宣称等待已有效开始；内部记录不发送消息或客户资料。
 10. `work.risk.followup.record`（T1）使用 risk={id,decision_id}、current、action=close/reopen 与来源；只保存具名跟进，不改 G0 风险原文或代替专业关闭。
+11. `work.forecast.refresh`（T0，确定性引擎）只带 project_id、当前 plan={id,revision} 与本轮读到的 expected_input_sha256；输入变了先重读。结果是“系统重算”：不改计划、基线或承诺，预测晚于承诺只说明差异；已开始任务缺剩余工期时预测保持未知，不由模型补日期。
 
 ## 事实与人员边界
 

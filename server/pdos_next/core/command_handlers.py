@@ -165,6 +165,8 @@ T0_OPERATIONS = frozenset(
         "ai.automation.draft.save",
         "work.task.create",
         "work.external_wait.record",
+        "work.forecast.refresh",
+        "supply.commitment.record",
         "integration.receipt.record",
         "build.readiness.compute",
         "category.knowledge.add",
@@ -268,6 +270,16 @@ def handler(operation):
         from pdos_next.domain.projects.external_wait import service as external_wait_service
 
         return external_wait_service
+    if operation == "work.forecast.refresh":
+        from pdos_next.domain.projects.forecast_refresh import service as forecast_service
+
+        return forecast_service
+    if operation == "supply.commitment.record":
+        from pdos_next.domain.manufacturing.supply_commitments import (
+            service as supply_commitment_service,
+        )
+
+        return supply_commitment_service
     if operation == "work.commitment.review":
         from pdos_next.domain.projects.fulfillment import service as fulfillment_service
 

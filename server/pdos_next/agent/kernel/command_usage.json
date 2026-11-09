@@ -1205,6 +1205,20 @@
       "limit": "仅assistant_compare隔离可见，只能读取当前父调用分配的变化，不能检索、续派或写入",
       "tier": "READ",
       "source": "企业 RAG 设计 v0.4 §7.9"
+    },
+    "supply.commitment.record": {
+      "when": "供方给出交期或数量承诺、改期改量或跟进结束时，按原文登记这条承诺；承诺不是到货，不计入库存与齐套",
+      "produces": "supply.commitment_recorded",
+      "limit": "需当前资格与授权；小Pai 须引用原文行，不能以本人陈述代替。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "work.forecast.refresh": {
+      "when": "任务实际开始或提交、计划或日期变化后，按当前计划与实际重算预测；只写新预测，不改计划、基线与承诺",
+      "produces": "forecast.refreshed",
+      "limit": "确定性引擎。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
     }
   }
 }

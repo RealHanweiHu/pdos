@@ -5553,3 +5553,38 @@ COVERED_COLUMNS.update({
         "byte_size", "marker_version",
     ),
 })
+
+# D47 supplier commitments: exact fields and retained direct original sources.
+COVERED_COLUMNS.update(
+    {
+        "supply_commitment_versions": (
+            "commitment_id", "revision", "previous_id", "previous_revision", "action", "state",
+            "material_id", "writer_id", "actor_id", "requester_id", "operation", "command_id",
+            "command", "sources", "reads", "source_basis", "body", "body_sha256",
+            "intent_digest", "request_digest", "receipt_id", "product_id", "project_id",
+            "build_id", "owner_id", "visibility", "id", "tenant_id", "created_at", "category_id"
+        ),
+        "supply_commitment_currents": (
+            "commitment_id", "version_id", "revision", "state", "product_id", "project_id",
+            "build_id", "owner_id", "visibility", "id", "tenant_id", "created_at", "category_id"
+        ),
+    }
+)
+GUARDED = (*GUARDED, "supply_commitment_versions", "supply_commitment_currents")
+
+# D47 forecast refreshes: computed times, task keys and identities only (non-consuming).
+COVERED_COLUMNS.update(
+    {
+        "work_forecast_refreshes": (
+            "revision", "previous_id", "previous_revision", "plan_id", "plan_revision", "as_of",
+            "input_sha256", "algorithm_version", "status", "result", "result_sha256",
+            "writer_id", "actor_id", "requester_id", "operation", "command_id",
+            "request_digest", "receipt_id", "product_id", "project_id", "owner_id",
+            "visibility", "id", "tenant_id", "created_at", "category_id"
+        ),
+        "work_forecast_currents": (
+            "version_id", "revision", "product_id", "project_id", "owner_id", "visibility",
+            "id", "tenant_id", "created_at", "category_id"
+        ),
+    }
+)

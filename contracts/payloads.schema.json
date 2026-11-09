@@ -24166,6 +24166,416 @@
       ],
       "title": "ReconcileEmbeddingCall",
       "type": "object"
+    },
+    "supply.commitment.record": {
+      "$defs": {
+        "Close": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "close",
+              "title": "Action",
+              "type": "string"
+            },
+            "result": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Result",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action",
+            "result"
+          ],
+          "title": "Close",
+          "type": "object"
+        },
+        "Create": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "quantity": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "decimal_places": 8,
+                  "ge": 0,
+                  "max_digits": 24
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "promised_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Promised At"
+            },
+            "text": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "action": {
+              "const": "create",
+              "title": "Action",
+              "type": "string"
+            },
+            "build_id": {
+              "format": "uuid",
+              "title": "Build Id",
+              "type": "string"
+            },
+            "expected_build_revision": {
+              "minimum": 1,
+              "title": "Expected Build Revision",
+              "type": "integer"
+            },
+            "material_id": {
+              "format": "uuid",
+              "title": "Material Id",
+              "type": "string"
+            },
+            "supplier_ref": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Supplier Ref",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "promised_at",
+            "text",
+            "action",
+            "build_id",
+            "expected_build_revision",
+            "material_id",
+            "supplier_ref"
+          ],
+          "title": "Create",
+          "type": "object"
+        },
+        "Reopen": {
+          "additionalProperties": false,
+          "properties": {
+            "action": {
+              "const": "reopen",
+              "title": "Action",
+              "type": "string"
+            }
+          },
+          "required": [
+            "action"
+          ],
+          "title": "Reopen",
+          "type": "object"
+        },
+        "Revise": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "quantity": {
+              "anyOf": [
+                {
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "integer"
+                    }
+                  ],
+                  "decimal_places": 8,
+                  "ge": 0,
+                  "max_digits": 24
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quantity"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            },
+            "promised_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Promised At"
+            },
+            "text": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Text",
+              "type": "string"
+            },
+            "action": {
+              "const": "revise",
+              "title": "Action",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "promised_at",
+            "text",
+            "action"
+          ],
+          "title": "Revise",
+          "type": "object"
+        },
+        "SourceRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "kind": {
+              "default": "artifact",
+              "enum": [
+                "artifact",
+                "domain",
+                "command"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "position": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Position",
+              "type": "string"
+            }
+          },
+          "required": [
+            "id",
+            "revision",
+            "position"
+          ],
+          "title": "SourceRef",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "commitment": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/VersionRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "sources": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/SourceRef"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "statement": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Statement"
+        },
+        "reason": {
+          "anyOf": [
+            {
+              "maxLength": 4000,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Reason"
+        },
+        "record": {
+          "discriminator": {
+            "mapping": {
+              "close": "#/$defs/Close",
+              "create": "#/$defs/Create",
+              "reopen": "#/$defs/Reopen",
+              "revise": "#/$defs/Revise"
+            },
+            "propertyName": "action"
+          },
+          "oneOf": [
+            {
+              "$ref": "#/$defs/Create"
+            },
+            {
+              "$ref": "#/$defs/Revise"
+            },
+            {
+              "$ref": "#/$defs/Close"
+            },
+            {
+              "$ref": "#/$defs/Reopen"
+            }
+          ],
+          "title": "Record"
+        }
+      },
+      "required": [
+        "record"
+      ],
+      "title": "Payload",
+      "type": "object"
+    },
+    "work.forecast.refresh": {
+      "$defs": {
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_id": {
+          "format": "uuid",
+          "title": "Project Id",
+          "type": "string"
+        },
+        "plan": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "expected_input_sha256": {
+          "pattern": "^[0-9a-f]{64}$",
+          "title": "Expected Input Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "project_id",
+        "plan",
+        "expected_input_sha256"
+      ],
+      "title": "Payload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"

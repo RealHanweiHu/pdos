@@ -544,3 +544,14 @@ PAYLOADS.update({
     "embedding.profile.save": SaveEmbeddingProfile,
     "embedding.call.reconcile": ReconcileEmbeddingCall,
 })
+
+from pdos_next.domain.manufacturing.supply_commitments.schemas import (  # noqa: E402
+    PAYLOADS as SUPPLY_COMMITMENT_PAYLOADS,
+)
+from pdos_next.domain.projects.forecast_refresh.schemas import (  # noqa: E402
+    PAYLOADS as FORECAST_REFRESH_PAYLOADS,
+)
+
+# D47: canonical T0 supplier commitment (F25) and the deterministic forecast refresh.
+PAYLOADS.update(SUPPLY_COMMITMENT_PAYLOADS)
+PAYLOADS.update(FORECAST_REFRESH_PAYLOADS)
