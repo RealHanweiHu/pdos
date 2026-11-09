@@ -113,6 +113,12 @@ def missing_next(assessment):
         ref = known.node.ref
         expected = NEXT.get(ref.kind)
         actual = {edge.target.kind for edge in graph.edges if edge.origin == ref}
+        if ref.kind == "spec":
+            # Same rule as domain/change/control/rules.py: a definition's real
+            # engineering configuration names its BOM, and that sourced path counts.
+            for edge in graph.edges:
+                if edge.origin == ref and edge.target.kind == "engineering_configuration":
+                    actual |= {e.target.kind for e in graph.edges if e.origin == edge.target}
         if expected and not actual.intersection(expected):
             facet = "manufacturing" if ref.kind in MANUFACTURING else "engineering"
             assert any(
