@@ -169,22 +169,23 @@ DOWNGRADE_SQL = ('DO $knowledge$ BEGIN IF EXISTS(SELECT 1 FROM public.confirmati
  'k.operation=action_receipts.operation AND k.actor_id=action_receipts.actor_id))))',
  'DROP FUNCTION public.knowledge_receipt_visible(uuid,uuid,uuid,text,uuid,integer,uuid,uuid)',
  'ALTER TABLE public.confirmations DROP CONSTRAINT ck_confirmations_decision_deadline',
+ # D260: restore with s0_0784's own reviewed input, not its rendered text. PostgreSQL
+ # reparses the rendered array cast into per-element casts, which s0_0784's exact
+ # predecessor check (EXCEPTION_DEADLINE) would then refuse on further downgrade.
  'ALTER TABLE public.confirmations ADD CONSTRAINT ck_confirmations_decision_deadline CHECK '
- '(((expires_at IS NOT NULL) OR ((operation)::text = ANY '
+ '(((((expires_at IS NOT NULL) OR ((operation)::text = ANY '
  "(ARRAY[('release.engineering.approve'::character varying)::text, "
  "('release.manufacturing.approve'::character varying)::text, "
  "('npi.manufacturing_baseline.publish'::character varying)::text, ('mcp.connector.allow'::character "
  "varying)::text, ('ai.skill.qualify'::character varying)::text, "
- "('build.engineering.authorize'::character varying)::text, "
- "('build.manufacturing.authorize'::character varying)::text, ('change.order.approve'::character "
- "varying)::text, ('change.selection.decide'::character varying)::text, "
- "('proposal.g0.decide'::character varying)::text, ('quality.capa.verification.review'::character "
- "varying)::text, ('quality.issue.root_cause.decide'::character varying)::text, "
- "('test.disposition.decide'::character varying)::text, ('test.run.review'::character "
- 'varying)::text])) OR ((expires_at IS NULL) AND ((operation)::text = '
- "'integration.handoff.authorize'::text)) OR ((expires_at IS NULL) AND ((operation)::text = ANY "
- "((ARRAY['release.exception.decide'::character varying, 'release.exception.withdraw'::character "
- 'varying])::text[])))))')
+ "('build.engineering.authorize'::character varying)::text, ('build.manufacturing.authorize'::character "
+ "varying)::text, ('change.order.approve'::character varying)::text, "
+ "('change.selection.decide'::character varying)::text, ('proposal.g0.decide'::character "
+ "varying)::text, ('quality.capa.verification.review'::character varying)::text, "
+ "('quality.issue.root_cause.decide'::character varying)::text, ('test.disposition.decide'::character "
+ "varying)::text, ('test.run.review'::character varying)::text])) OR ((expires_at IS NULL) AND "
+ "((operation)::text = 'integration.handoff.authorize'::text))))) OR (expires_at IS NULL AND operation "
+ "IN ('release.exception.decide','release.exception.withdraw')))")
 
 
 # PostgreSQL reparses an array cast into equivalent per-element casts on restore.
