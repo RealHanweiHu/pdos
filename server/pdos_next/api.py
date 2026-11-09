@@ -459,6 +459,10 @@ def create_app(
     from pdos_next.domain.my_work.preferences_api import register_routes as register_preferences
 
     register_preferences(app, engine, auth_dependency)
+    # D221 tenant working calendars (administrator-maintained tenant configuration).
+    from pdos_next.domain.work_calendar.api import register_routes as register_work_calendar
+
+    register_work_calendar(app, engine, auth_dependency)
     from pdos_next.agent.enterprise_search.similar_history_api import (
         register_routes as register_similar_history,
     )
