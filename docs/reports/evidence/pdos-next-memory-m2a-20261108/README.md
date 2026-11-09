@@ -1,6 +1,6 @@
 # M2a 本人记忆条目证据（2026-11-08）
 
-环境：本 worktree 用 `tools/local_environment.py create` 自建的独立临时库 `127.0.0.1:62043/pdos_test`（容器 `pdos-next-test-20261002-e2b216bb`），显式 `TEST_DATABASE_URL`，未用 `.env`，做完已 `destroy`。没有调用真实模型或真实嵌入服务（向量化用进程内合成嵌入端口）。没有检查点库，依赖 `M2_TEST_CHECKPOINT_URL` 的用例按环境缺口记。
+环境：本 worktree 用 `tools/local_environment.py create` 自建的独立临时库 `pdos_test`（11-08 一次，11-09 回归时重建一次；基点对照另在独立 worktree 里建库），显式 `TEST_DATABASE_URL`，未用 `.env`，做完已 `destroy`。没有调用真实模型或真实嵌入服务（向量化用进程内合成嵌入端口）。没有检查点库，依赖 `M2_TEST_CHECKPOINT_URL` 的用例按环境缺口记。
 
 迁移号是占位：`s0_0865_memory_notes`、`s0_0866_memory_episode_vectors`，接在 `s0_0861` 之后；集成时按真实 head 重排。
 
@@ -12,8 +12,8 @@
 | ORM 与数据库元数据比对 | 记忆表无差异；只剩 7 条既有的钉钉/向量索引差异 |
 | `tests/agent/memory`（M1 24 个 + M2a 19 个） | 43 通过 |
 | 生命周期目录相关（`test_m3_lifecycle_catalog` 等 3 个文件） | 106 通过 |
-| 无库全量（tests/agent、workflows、core、my_work 的非 `_pg` 文件与 `tools/tests`） | 3609 通过、15 失败、27 错误。失败与错误的名字都与已知清单一致（`citation_ids` 夹具 27、`test_local_host_profiles` 4、缺检查点库的 Temporal/活动用例 6、D42 的 `test_source_views` 1、ORM 比对的 7 条既有索引差异、`test_business_audience_summary`、`test_category_source_consumers`、`test_category_source_lifecycle_fence`），**本次未在基点上逐个复跑确认** |
-| kernel、企业检索、我的工作的 PG 批次 | **未跑完**（用量上限，中途停止），未验证 |
+| 无库全量（tests/agent、workflows、core、my_work 的非 `_pg` 文件与 `tools/tests`） | 3609 通过、15 失败、27 错误、12 跳过。这 42 个在基点 `07c023e5`（独立 worktree、独立 `pdos_test`）与分支上分别复跑：两边都是 14 失败、27 错误、1 通过，名单逐行一致；通过的 1 个（`test_category_source_lifecycle_fence`）在大批量运行时偶发失败。原因都是既有问题：`citation_ids` 夹具 27、`test_local_host_profiles` 4、缺检查点库 6、D42 的 `test_source_views` 1、ORM 比对的 7 条既有索引差异、`test_business_audience_summary`、`test_category_source_consumers`。名单见 [nodb-failing-ids.txt](nodb-failing-ids.txt)、[nodb-failing-on-base-too.txt](nodb-failing-on-base-too.txt) |
+| PG 回归（kernel、企业检索、记忆、我的工作、core 的 `*_pg.py`，127 个文件、599 个用例，4 片并行） | 490 通过、22 失败、24 错误、63 跳过。这 46 个在基点与分支上分别串行复跑：两边都是 15 失败、31 通过，名单逐行一致。15 个是既有问题（`test_extracted_claim_pg` 8、`test_eval_v0_history_state_pg` 2、D33 夹具的 `test_project_discussion_history_pg` 与 `test_session_presentation_pg`、知识依赖与检索权威各 1、检索 p95 1）；另 31 个是并行负载与计时造成的。没有 M2a 引入的失败。名单见 [pg-failing-ids.txt](pg-failing-ids.txt)、[pg-failing-on-base-too.txt](pg-failing-on-base-too.txt) |
 | 前端 `.mjs` 全量 | 1924 通过、0 失败 |
 | 前端 `.test.ts` 全量 | 752 通过、0 失败 |
 | 前端 `tsc --noEmit`、改动文件 eslint | 通过 |
@@ -54,5 +54,5 @@
 
 - 模型真的输出 `memory_candidates`：按提示词版本关闭，待新提示词版本与 Prompt A/B（D298）。
 - 真实 Temporal 下的向量化工作流与真实嵌入服务联调；生产默认没有查询嵌入端口（D300）。
-- 检查点库相关用例（无 `M2_TEST_CHECKPOINT_URL`）。
+- 检查点库相关用例（无 `M2_TEST_CHECKPOINT_URL`），在基点上同样失败，未单独补跑。
 - 过往运行检查点里信封副本的即时清除（D297，待定）。
