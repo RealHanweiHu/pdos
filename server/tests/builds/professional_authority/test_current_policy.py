@@ -24,6 +24,7 @@ from builds.professional_authority.test_transactions import (
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Grant, ObjectAudience, Product, now
 from pdos_next.domain.projects.models import Project
+from tests.team_fixture import add_member, remove_member
 
 
 def _parameters(setup, work, identity):
@@ -161,30 +162,47 @@ def test_current_and_fact_sql_share_live_audience_revocation(setup, authority_wo
         "fact": ("professional_authority_facts", identity),
         "project": ("projects", project),
     }
-    _revoke(setup, "products", "projects", "artifact_versions", "professional_authority_facts")
+
+    # D33 (P34-1): a project's audience follows its current members, so the
+    # project audience is withdrawn and restored through the owner's team
+    # command; the immutable sources keep their direct audience rows.
+    def withdraw(kind, target):
+        if kind == "projects":
+            assert remove_member(setup, target, setup.peer)["handover_pending"] is False
+            return
+        with Session(setup.admin) as session, session.begin():
+            removed = session.execute(
+                delete(ObjectAudience)
+                .where(
+                    ObjectAudience.tenant_id == setup.tenant,
+                    ObjectAudience.category_id == setup.category,
+                    ObjectAudience.object_type == kind,
+                    ObjectAudience.subject_id == target,
+                    ObjectAudience.owner_id == setup.human,
+                    ObjectAudience.principal_id == setup.peer,
+                )
+                .returning(ObjectAudience.id)
+            ).all()
+            assert len(removed) == 1
+
+    def give(kind, target):
+        if kind == "projects":
+            add_member(setup, target, setup.peer)
+        else:
+            _grant(setup, kind, target)
+
+    assert remove_member(setup, project, setup.peer)["handover_pending"] is False
+    _revoke(setup, "products", "artifact_versions", "professional_authority_facts")
     assert _visible_rows(setup, authority_work, identity, setup.peer) == ([], [])
     for kind, target in targets.values():
-        _grant(setup, kind, target)
+        give(kind, target)
     expected = ([identity], [identity])
     assert _visible_rows(setup, authority_work, identity, setup.peer) == expected
     kind, target = targets[revoked]
-    with Session(setup.admin) as session, session.begin():
-        removed = session.execute(
-            delete(ObjectAudience)
-            .where(
-                ObjectAudience.tenant_id == setup.tenant,
-                ObjectAudience.category_id == setup.category,
-                ObjectAudience.object_type == kind,
-                ObjectAudience.subject_id == target,
-                ObjectAudience.owner_id == setup.human,
-                ObjectAudience.principal_id == setup.peer,
-            )
-            .returning(ObjectAudience.id)
-        ).all()
-        assert len(removed) == 1
+    withdraw(kind, target)
     assert _visible_rows(setup, authority_work, identity, setup.peer) == ([], [])
     assert _visible_rows(setup, authority_work, identity, setup.human) == expected
-    _grant(setup, kind, target)
+    give(kind, target)
     assert _visible_rows(setup, authority_work, identity, setup.peer) == expected
 
 
