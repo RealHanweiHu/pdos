@@ -6,6 +6,7 @@ import { readPortfolio, type Portfolio } from "@/lib/portfolio-reads";
 import { forecastAxis, projectForecast, projectOwner } from "@/features/projects/lib/project-presentation";
 import type { browserApi } from "@/lib/browser-api";
 import { ProjectDirectoryView, type ProjectDirectoryEntry } from "./project-directory-view";
+import { ProjectManagerCockpit } from "./project-manager-cockpit";
 
 function dateLabel(value: string | null): string {
   if (!value) return "未知";
@@ -13,8 +14,8 @@ function dateLabel(value: string | null): string {
   return `${String(date.getUTCMonth() + 1).padStart(2, "0")}月${String(date.getUTCDate()).padStart(2, "0")}日`;
 }
 
-export function ProjectList({ api, principalId = "", onOpenProject, onOpenPlan = onOpenProject, onStartProposal }: {
-  api: typeof browserApi; principalId?: string;
+export function ProjectList({ api, principalId = "", onOpenProject, onOpenPlan = onOpenProject, onStartProposal, initialView }: {
+  api: typeof browserApi; principalId?: string; initialView?: string;
   onOpenProject: (categoryId: string, projectId: string) => void;
   onOpenPlan?: (categoryId: string, projectId: string) => void;
   onStartProposal?: () => void;
@@ -58,7 +59,8 @@ export function ProjectList({ api, principalId = "", onOpenProject, onOpenPlan =
   }
   const retry = <Button size="sm" variant="outline" onClick={() => setReload(value => value + 1)}>重新读取</Button>;
   return <ProjectDirectoryView entries={entries} timeScale={axis ? Array.from({ length: 4 }, (_, index) => dateLabel(new Date(axis.start + (axis.end - axis.start) * index / 3).toISOString())) : ["暂无可读日期"]}
-    onOpenProject={id => open(id, onOpenProject)} onOpenPlan={id => open(id, onOpenPlan)} onStartProposal={onStartProposal}>
+    onOpenProject={id => open(id, onOpenProject)} onOpenPlan={id => open(id, onOpenPlan)} onStartProposal={onStartProposal}
+    initialView={initialView} cockpit={<ProjectManagerCockpit api={api} principalId={principalId} onOpenProject={onOpenProject}/>}>
     {error && <div className="workspace-read-error" role="alert"><p>{error}</p>{retry}</div>}
     {!current && <p className="subtle" role="status">正在读取项目…</p>}
     {!!portfolio?.readErrors.length && <div className="workspace-read-error" role="status">{portfolio.readErrors.map(item => <p key={item.path}>部分范围暂不可读：{item.message}</p>)}{retry}</div>}

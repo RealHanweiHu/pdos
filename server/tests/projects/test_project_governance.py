@@ -106,6 +106,20 @@ def test_fixed_health_priority():
     assert health(gate_state="BLOCKED", overdue=1, pending=True, adopted=True)["state"] == "blocked"
     assert health(gate_state="UNKNOWN", overdue=1, pending=True, adopted=True)["state"] == "unknown"
     assert health(gate_state="READY", overdue=1, pending=True, adopted=True)["state"] == "risk"
+    # P61: five tiers with one label each; fixed conditions rank above a pending decision.
+    conditional = health(gate_state="READY_WITH_CONDITIONS", overdue=0, pending=True, adopted=True)
+    assert (conditional["state"], conditional["label"]) == ("risk", "有风险")
+    assert conditional["rule"] == {"id": "project.health.risk", "version": 1}
+    blocked = health(gate_state="BLOCKED", overdue=0, pending=False, adopted=True)
+    assert (blocked["label"], blocked["rule"]["id"]) == ("有阻塞", "project.health.blocked")
+    assert health(gate_state="READY", overdue=0, pending=False, adopted=False)["label"] == "待核对"
+    labels = {
+        health(gate_state=g, overdue=o, pending=p, adopted=True)["label"]
+        for g in ("BLOCKED", "UNKNOWN", "READY_WITH_CONDITIONS", "READY")
+        for o in (0, 1)
+        for p in (False, True)
+    }
+    assert labels == {"有阻塞", "待核对", "有风险", "待批准", "正常"}
 
 
 def test_baseline_binding_and_directory_share_facts(setup, definition, project):

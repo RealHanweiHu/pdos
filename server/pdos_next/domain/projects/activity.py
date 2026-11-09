@@ -150,8 +150,15 @@ def receipt_binding(source, receipt=Receipt):
     return conditions
 
 
-def activity_records(ctx, product_id, project_id):
-    """Never select whole documents, command bodies, source bodies or Run conversations."""
+def activity_records(
+    ctx, product_id, project_id, *, receipt_filter=(), operations=None, include_runs=True
+):
+    """Never select whole documents, command bodies, source bodies or Run conversations.
+
+    ``receipt_filter`` narrows the materialized receipts first (for example to 小Pai's
+    recent writes), ``operations`` keeps only the sources that record those operations,
+    and ``include_runs`` drops the requester's own Run events branch.
+    """
     # The same RLS-protected receipt/outbox metadata is used by every domain
     # branch. Materialize it once per read snapshot instead of repeating those
     # expensive authorization scans for every source. Domain/project predicates
@@ -187,7 +194,11 @@ def activity_records(ctx, product_id, project_id):
     receipt = aliased(
         Receipt,
         select(*(getattr(Receipt, key) for key in receipt_columns))
-        .where(Receipt.tenant_id == ctx.tenant_id, Receipt.category_id == ctx.category_id)
+        .where(
+            Receipt.tenant_id == ctx.tenant_id,
+            Receipt.category_id == ctx.category_id,
+            *receipt_filter,
+        )
         .cte("activity_receipts")
         .prefix_with("MATERIALIZED"),
     )
@@ -200,6 +211,8 @@ def activity_records(ctx, product_id, project_id):
     )
     branches = []
     for source in SOURCES:
+        if operations is not None and not set(source.operations) & set(operations):
+            continue
         actor, requester = aliased(Principal), aliased(Principal)
         columns = source.columns
 
@@ -264,6 +277,10 @@ def activity_records(ctx, product_id, project_id):
             .where(*source_binding(source, ctx.tenant_id, ctx.category_id, product_id, project_id))
         )
         branches.append(branch)
+    if not include_runs:
+        if not branches:
+            raise ValueError("activity_records needs at least one source or the Run branch")
+        return union_all(*branches).subquery("project_activity")
     # Existing requester-private Run/Event RLS remains in force. An explicit
     # project link grants no new audience and never exposes goal/result/body.
     actor, requester = aliased(Principal), aliased(Principal)

@@ -17,11 +17,14 @@ type Props = {
   entries: ProjectDirectoryEntry[]; phaseOrder?: string[]; timeScale: string[];
   onOpenProject: (id: string) => void; onOpenPlan: (id: string) => void;
   onStartProposal?: () => void; children?: ReactNode;
+  /** The manager cockpit (P75-2): a fourth reading of the same projects, shown only when given. */
+  cockpit?: ReactNode; initialView?: string;
 };
 
 /** The approved ui-lab project surface and the live directory share this presentation. */
-export function ProjectDirectoryView({ entries, phaseOrder = [], timeScale, onOpenProject, onOpenPlan, onStartProposal, children }: Props) {
-  const [view, setView] = useState("列表");
+export function ProjectDirectoryView({ entries, phaseOrder = [], timeScale, onOpenProject, onOpenPlan, onStartProposal, children, cockpit, initialView = "列表" }: Props) {
+  const [view, setView] = useState(cockpit || initialView !== "驾驶舱" ? initialView : "列表");
+  const views = cockpit ? ["列表", "看板", "时间轴", "驾驶舱"] : ["列表", "看板", "时间轴"];
   const phases = [...new Set([...phaseOrder, ...entries.map(p => p.phase ?? "阶段未提供")])];
   return <div className={s.page}>
     <header className={s.heading}>
@@ -29,10 +32,11 @@ export function ProjectDirectoryView({ entries, phaseOrder = [], timeScale, onOp
       {onStartProposal && <Button variant="outline" onClick={onStartProposal}><Plus aria-hidden="true"/>从提案开始</Button>}
     </header>
     <div className={s.tabs} role="group" aria-label="项目视图">
-      {["列表", "看板", "时间轴"].map(name => <button type="button" key={name} aria-pressed={view === name} onClick={() => setView(name)}>{name}</button>)}
+      {views.map(name => <button type="button" key={name} aria-pressed={view === name} onClick={() => setView(name)}>{name}</button>)}
     </div>
-    {children}
-    {entries.length > 0 && (view === "列表" ? <div className={s.tableWrap}>
+    {view === "驾驶舱" && cockpit}
+    {view !== "驾驶舱" && children}
+    {view !== "驾驶舱" && entries.length > 0 && (view === "列表" ? <div className={s.tableWrap}>
       <table><thead><tr>{["项目", "阶段", "健康度", "负责人", "下一门禁", "承诺 / 预测"].map(h => <th key={h} scope="col">{h}</th>)}</tr></thead>
         <tbody>{entries.map(p => <tr key={p.id}>
           <td><button type="button" onClick={() => onOpenProject(p.id)}>{p.name}<ArrowUpRight size={12} aria-hidden="true"/></button></td>
@@ -59,6 +63,6 @@ export function ProjectDirectoryView({ entries, phaseOrder = [], timeScale, onOp
         </div>; })}
       </section>)}
     </div>)}
-    <p className={s.footnote}>阶段表示所在位置。看板用于查看；推进阶段需进入门禁评审。</p>
+    {view !== "驾驶舱" && <p className={s.footnote}>阶段表示所在位置。看板用于查看；推进阶段需进入门禁评审。</p>}
   </div>;
 }

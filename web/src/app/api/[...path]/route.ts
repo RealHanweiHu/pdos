@@ -7,14 +7,14 @@ const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
 const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|agent-skills|agent-input-sources)$/i;
+const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|project-cockpit|agent-skills|agent-input-sources)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
 const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/platform-links)$/i;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
-const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|governance(?:\/review-inputs)?))?$/i;
+const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|overview|governance(?:\/review-inputs)?))?$/i;
 // D56 permission-filtered Excel exports (READ, named human only); one exact scope parameter each.
 const exportPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/exports\/(?:project|bom-diff|test-summary)|personal\/exports\/my-work)$/i;
 const exportScope: Record<string, string | null> = { project: "project_id", "bom-diff": "bom_id", "test-summary": "build_id", "my-work": null };
