@@ -88,9 +88,7 @@ def validate(s, ctx, command, product, payload):
     rules.require(
         command.expected_revision == product.revision, "型号范围版本已变化。", "VERSION_CONFLICT"
     )
-    from .notify import open_lane
-
-    open_lane(s, ctx, payload)
+    owner.handover_lane(s, ctx, payload)
     project = owner.project(s, ctx, product.id, payload.project_id, lock=True)
     if command.operation != CREATE:
         human(s, ctx)
@@ -490,9 +488,7 @@ def finalize_receipt(s, ctx, command, product, payload, subject, receipt):
     )
     owner.sources_current(s, ctx, product.id, value.source_basis)
     del subject._work_phase
-    from .notify import after
-
-    after(s, ctx, command.operation, subject)
+    owner.after_fact(s, ctx, command.operation, subject)
 
 
 def workspace(s, ctx, pid, project_id):

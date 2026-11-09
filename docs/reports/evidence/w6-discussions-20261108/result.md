@@ -42,7 +42,17 @@
 
 ## 受影响范围回归
 
-（待回归完成后填写）
+范围：`tests/projects`（含 work、fulfillment、external_wait、team、discussions）、`tests/exports`、`tests/core/test_accounts_pg.py`、`tests/my_work`、`tests/categories/preproject`、`tests/builds/test_build_project_scope.py`、`tests/core/command_catalog`、`tests/agent/kernel/test_domain_candidates_pg.py`。在本 worktree 的独立 `pdos_test`（`s0_0874`）上串行跑完：**1988 通过、28 失败、3 个准备阶段错误、1 跳过**（60 分钟）。
+
+| 失败 / 错误 | 个数 | 结论 |
+|---|---|---|
+| `tests/projects/work/test_service.py`（4）、`test_g0_service.py`（1） | 5 | **本次引起，已修。** 纯逻辑测试禁止 Session 读取，只替身 `owner` 上的 IO 接缝；交接通道与通知钩子原先直接写在 `validate` / `finalize_receipt` 里。已改为 `owner.handover_lane`、`owner.after_fact` 两个接缝，测试按原约定补桩。8 项通过 |
+| `test_export_pg.py::test_project_export_matches_page_for_two_roles_and_hides_private_project` | 1 | **预期变化，已改断言**：项目导出新增“讨论与评论”表（D279）。整个文件 6 项通过 |
+| `test_material_proofs_pg.py` | 19 | 基点既有（D262）。在 `git archive 07c023e5` 的干净副本上、同一库退回 `s0_0861` 后复跑，同样失败 |
+| `test_review_fixes.py::test_actual_owner_and_definers_are_non_superuser` | 1 | 基点既有：报 `change_receipt_key_bound` 的属主是 postgres，不是本次函数；基点副本上同样失败 |
+| `attention_pg/test_work.py` 1 个失败、`my_work/inbox/test_inbox.py` 2 个与 `attention_pg/test_work.py` 1 个准备阶段错误、`test_personal_views.py` 1 个失败 | 5 | 环境：07:01 UTC 数据库容器内一个后端被信号 9 杀掉（Docker 虚拟机内存压力，同机有多个并行会话的数据库容器），库进入恢复模式。单独重跑这些文件全部通过 |
+
+修复后复跑：`tests/projects/discussions_pg` 10 例、`work_pg/test_workflow.py`、`work/test_service.py`、`work/test_g0_service.py`、`tests/exports` 全部通过。迁移在清空讨论数据后从 `s0_0874` 降到 `s0_0861`，被替换的 7 个对象原文 md5 与升级前逐字一致、新函数全部移除，再升回 head 通过。
 
 ## 未做 / 未验证
 

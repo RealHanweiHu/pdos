@@ -15,6 +15,20 @@ from .rules import require
 from .schemas import CommitmentSnapshot, TaskSnapshot
 
 
+def handover_lane(s, ctx, payload):
+    """P56: a removed member may still act on their own open task, nothing else (IO seam)."""
+    from .notify import open_lane
+
+    open_lane(s, ctx, payload)
+
+
+def after_fact(s, ctx, operation, subject):
+    """Notifications, follows and handover settlement for one bound work fact (IO seam)."""
+    from .notify import after
+
+    after(s, ctx, operation, subject)
+
+
 def project(s, ctx, pid, identity, *, lock=False):
     require_access(s, ctx, pid, write=lock, lock=lock)
     query = select(Project).where(

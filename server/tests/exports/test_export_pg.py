@@ -141,7 +141,10 @@ def test_project_export_matches_page_for_two_roles_and_hides_private_project(wor
         )
         workbook = book(response)
         assert len(audits(setup)) == before + 1
-        assert workbook.sheetnames == ["说明", "任务", "风险与待决项", "承诺", "状态更新"]
+        # D279: discussions and comments follow the reader's audience like the page.
+        assert workbook.sheetnames == [
+            "说明", "任务", "风险与待决项", "承诺", "状态更新", "讨论与评论"
+        ]
         tasks = data_rows(workbook["任务"])
         assert len(tasks) == len(page.json()["tasks"]) == 1
         assert tasks[0][0] == HUMAN_LABEL and tasks[0][1] == '=HYPERLINK("http://x","合成图纸交付")'

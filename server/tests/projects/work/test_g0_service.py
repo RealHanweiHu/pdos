@@ -112,6 +112,8 @@ def test_empty_task_sources_require_the_actual_existing_native_basis(monkeypatch
     )
     monkeypatch.setattr(service.owner, "task", lambda *a, **kw: (row, task, object()))
     monkeypatch.setattr(service.owner, "sources_current", lambda *a, **kw: True)
+    monkeypatch.setattr(service.owner, "handover_lane", lambda *a, **kw: None)
+    monkeypatch.setattr(service.owner, "after_fact", lambda *a, **kw: None)
     monkeypatch.setattr(service, "human", lambda *a, **kw: None)
     p = PAYLOADS[ACCEPT](
         project_id=project_id,
