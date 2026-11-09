@@ -275,6 +275,7 @@ def test_purge_removes_the_body_everywhere_and_leaves_a_tombstone(setup):
                                 json={"request_key": str(uuid4()), "expected_revision": 1})
     assert deleted.status_code == 200, deleted.text
     assert deleted.json()["deleted"] is True and deleted.json()["purged_versions"] == 1
+    assert "最迟 30 天内随检查点清除" in deleted.json()["note"]  # P94 第 4 项
     with Session(setup.admin) as session:
         assert session.scalar(select(func.count()).select_from(MemoryNoteVersion).where(
             MemoryNoteVersion.note_id == note["note_id"])) == 0

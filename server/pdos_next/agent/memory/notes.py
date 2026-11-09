@@ -550,7 +550,9 @@ def purge(session, ctx, note_id, data):
 def deletion_view(row):
     return {"version": VERSION, "note_id": str(row.note_id), "deleted": True,
             "deleted_at": row.created_at.isoformat(), "purged_versions": row.purged_versions,
-            "note": "正文与历史版本已清除，只保留“某时删除了一条”的记录。"}
+            # P94: say plainly what is gone now and what expires with checkpoints.
+            "note": "正文与历史版本已清除，只保留“某时删除了一条”的记录。以往对话的运行检查点里"
+                    "可能仍留有带入时的副本，最迟 30 天内随检查点清除。"}
 
 
 # ---------------------------------------------------------------------------

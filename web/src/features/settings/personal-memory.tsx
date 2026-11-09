@@ -151,8 +151,8 @@ function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNot
       <div className={styles.actions}><Button type="submit" size="sm" disabled={busy}>{busy ? "正在保存…" : "保存修改"}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setMode("view")}>取消</Button></div>
     </form>}
     {mode === "delete" && <div className={styles.confirm} role="alertdialog" aria-label="确认删除">
-      <p>删除后，这条记忆的正文和全部历史版本会立即清除，不能恢复；只留下“某时删除了一条”的记录。</p>
-      <div className={styles.actions}><Button type="button" size="sm" variant="destructive" disabled={busy} onClick={() => void run(() => api(`${memoryBase}/notes/${note.note_id}/deletion`, { request_key: requestKey(), expected_revision: note.revision }), "已删除，正文已清除。")}>{busy ? "正在删除…" : "确认删除"}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setMode("view")}>取消</Button></div>
+      <p>删除后，这条记忆的正文和全部历史版本会立即清除，不能恢复；只留下“某时删除了一条”的记录。以往对话的运行检查点里可能仍留有带入时的副本，最迟 30 天内随检查点清除。</p>
+      <div className={styles.actions}><Button type="button" size="sm" variant="destructive" disabled={busy} onClick={() => void run(() => api(`${memoryBase}/notes/${note.note_id}/deletion`, { request_key: requestKey(), expected_revision: note.revision }), "已删除，正文和历史版本已清除；以往对话检查点里的副本最迟 30 天内清除。")}>{busy ? "正在删除…" : "确认删除"}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setMode("view")}>取消</Button></div>
     </div>}
     {mode === "history" && <div className={styles.history}>
       {history ? <ol>{history.map(item => <li key={item.revision}><span className={styles.meta}>第 {item.revision} 版 · {day(item.confirmed_at)}{item.state === "replaced" ? " · 已替换" : ""}</span><span>{item.text}</span></li>)}</ol> : !error && <p role="status" className={styles.meta}>正在读取历史…</p>}
