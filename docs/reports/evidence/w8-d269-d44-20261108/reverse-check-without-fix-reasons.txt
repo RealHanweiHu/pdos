@@ -1,0 +1,13 @@
+>       with attempt_scope(signal), pytest.raises(AttemptSuperseded):
+E       Failed: DID NOT RAISE AttemptSuperseded
+>       assert len(f.network) == 1 and children(f) == 1
+E       AssertionError: assert (1 == 1 and 2 == 1)
+E        +  where 1 = len([('https://synthetic-mcp.invalid/mcp', 'lookup', {'query': 'synthetic'})])
+E        +    where [('https://synthetic-mcp.invalid/mcp', 'lookup', {'query': 'synthetic'})] = namespace(setup=<isolated synthetic test scope>, store=<pdos_next.agent.kernel.persistence.KernelStore object at 0x15c...ject at 0x15d27ba10>, transport_hooks=[], main_saver=<langgraph.checkpoint.memory.InMemorySaver object at 0x15cffd970>).network
+E        +  and   2 = children(namespace(setup=<isolated synthetic test scope>, store=<pdos_next.agent.kernel.persistence.KernelStore object at 0x15c...ject at 0x15d27ba10>, transport_hooks=[], main_saver=<langgraph.checkpoint.memory.InMemorySaver object at 0x15cffd970>))
+tests/agent/kernel/test_child_attempt_stop_pg.py:267: AssertionError
+>       assert f.client.child_calls == 1
+E       assert 2 == 1
+E        +  where 2 = <tests.agent.enterprise_search.test_comparison_pg.CompareClient object at 0x15c27f410>.child_calls
+E        +    where <tests.agent.enterprise_search.test_comparison_pg.CompareClient object at 0x15c27f410> = <agent.kernel.test_child_attempt_stop_pg.SimpleFixture object at 0x15da474d0>.client
+tests/agent/kernel/test_child_attempt_stop_pg.py:348: AssertionError
