@@ -105,8 +105,9 @@ class ScriptedProvider:
     """Zero measured usage; real registered READs and gateway own all provenance."""
 
     def __init__(self, plan=(), *, summary="模型无关原生控制回放；答案质量未评分。",
-                 constraints=(), history=False, extract=False):
+                 constraints=(), history=False, extract=False, project_run=False):
         self.plan, self.summary, self.constraints = deque(plan), summary, list(constraints)
+        self.project_run = project_run
         self.history, self.calls = history, 0
         self.extract = extract
         self.requests, self.values, self.fragments, self.seen = [], [], {}, set()
@@ -117,9 +118,11 @@ class ScriptedProvider:
     def turn(self, route, *, system, tools, messages, output_schema, **_kwargs):
         assert in_registered_agent_graph()
         assert route.base_url == "https://synthetic-provider.test/v1"
-        # A category run (no bound project) is not shown project reads (P76 item 4a).
-        category_run = SimpleNamespace(category_id="bound", product_id=None, project_id=None)
-        assert tools == disclosure(default_registry(), "main", (), scope=category_run)
+        # A category run (no bound project) is not shown project reads; a run bound
+        # to a project (CTX-04) is (P76 item 4a). Either way no write is disclosed.
+        bound = "bound" if self.project_run else None
+        run_scope = SimpleNamespace(category_id="bound", product_id=bound, project_id=bound)
+        assert tools == disclosure(default_registry(), "main", (), scope=run_scope)
         assert output_schema == WireAgentOutput.model_json_schema()
         self.requests.append(deepcopy(messages))
         phase, self.calls = self.calls, self.calls + 1

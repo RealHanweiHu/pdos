@@ -33,10 +33,22 @@ def test_summary_cannot_expand_ancestor_audience_and_source_revoke_hides_build(
         targets = [(ref["type"], UUID(ref["id"])) for ref in dependencies]
         targets.extend([("builds", identity), ("artifact_versions", UUID(configuration["source"]))])
         targets = set(targets)
+        # G0 already shares its project, model and definition with the named
+        # reviewer (the peer), and a project audience must equal its members (D33).
+        # Withhold an ancestor the peer was never given: the engineering configuration.
+        existing = {
+            (kind, subject)
+            for kind, subject in s.execute(
+                select(ObjectAudience.object_type, ObjectAudience.subject_id).where(
+                    ObjectAudience.tenant_id == setup.tenant,
+                    ObjectAudience.principal_id == setup.peer,
+                )
+            )
+        }
+        withheld = next(item for item in targets if item[0] == "engineering_configurations")
+        assert withheld not in existing
     with Session(setup.admin) as s, s.begin():
-        for kind, target in sorted(targets):
-            if kind == "definition_revisions":
-                continue
+        for kind, target in sorted(targets - existing - {withheld}):
             s.add(
                 ObjectAudience(
                     tenant_id=setup.tenant,
@@ -65,8 +77,8 @@ def test_summary_cannot_expand_ancestor_audience_and_source_revoke_hides_build(
             ObjectAudience(
                 tenant_id=setup.tenant,
                 category_id=setup.category,
-                object_type="definition_revisions",
-                subject_id=UUID(configuration["definition"]),
+                object_type=withheld[0],
+                subject_id=withheld[1],
                 owner_id=setup.human,
                 principal_id=setup.peer,
             )

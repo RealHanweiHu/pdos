@@ -164,6 +164,19 @@ def test_actual_owner_and_definers_are_non_superuser(work):
             ).all()
             == []
         )
+        # D284: every public business table belongs to the ordinary owner as well;
+        # only the harness tables keep the migration identity.
+        assert (
+            s.scalars(
+                text(
+                    "SELECT c.relname FROM pg_class c JOIN pg_roles r ON r.oid=c.relowner "
+                    "WHERE c.relnamespace='public'::regnamespace AND c.relkind IN ('r','p') "
+                    "AND c.relname NOT IN ('environment_guard','alembic_version') "
+                    "AND r.rolname<>'pdos_next_owner' ORDER BY 1"
+                )
+            ).all()
+            == []
+        )
         assert not s.scalar(text("SELECT pg_has_role('pdos_next_app','pdos_next_owner','MEMBER')"))
         assert not s.scalar(text("SELECT has_schema_privilege('pdos_next_app','public','CREATE')"))
         assert not s.scalar(

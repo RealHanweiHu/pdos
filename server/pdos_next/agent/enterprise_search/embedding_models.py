@@ -9,15 +9,21 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     ForeignKeyConstraint,
+    Index,
     Integer,
     String,
     UniqueConstraint,
+    literal_column,
+    text,
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
 from sqlalchemy.types import UserDefinedType
 
 from pdos_next.core.models import Base, Row
+
+# Dimensions with a partial HNSW index in s0_0836.
+HNSW_DIMENSIONS = (2, 384, 768, 1024, 1536, 2000)
 
 
 class Vector(UserDefinedType):
@@ -183,5 +189,17 @@ class ChunkEmbedding(Base):
         ),
         CheckConstraint(
             "dimensions BETWEEN 1 AND 2000 AND vector_dims(vector)=dimensions AND norm=1"
+        ),
+        # s0_0836's per-dimension partial HNSW indexes, registered so the ORM and
+        # migration comparison sees the same schema (D261).
+        *(
+            Index(
+                f"ix_enterprise_embedding_hnsw_{dimensions}",
+                literal_column(f"(vector::vector({dimensions}))").label(f"vector_{dimensions}"),
+                postgresql_using="hnsw",
+                postgresql_ops={f"vector_{dimensions}": "vector_cosine_ops"},
+                postgresql_where=text(f"dimensions={dimensions}"),
+            )
+            for dimensions in HNSW_DIMENSIONS
         ),
     )

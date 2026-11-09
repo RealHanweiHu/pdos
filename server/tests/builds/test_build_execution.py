@@ -269,20 +269,12 @@ def test_unknown_preparation_does_not_enable_start_or_quality_execution(setup, p
         {"build_id": planned["build"]["subject_id"], "expected_build_revision": 1},
         planned["source"],
     )
-    assert response.status_code == (
-        422
-        if operation
-        in {
-            "build.start",
-            "verification.handoff.offer",
-            "verification.handoff.accept",
-            "test.run.start",
-        }
-        else 403
-    ), response.text
-    if response.status_code == 422:
-        assert response.json()["code"] == "VALIDATION_FAILED"
-        assert response.json()["detail"]["reason"] == "INVALID_PAYLOAD"
+    # When this was written (10-10) release.manufacturing.approve had no handler
+    # and answered 403; the release domain now validates its own payload first,
+    # like the other four, so a foreign build payload is refused as malformed.
+    assert response.status_code == 422, response.text
+    assert response.json()["code"] == "VALIDATION_FAILED"
+    assert response.json()["detail"]["reason"] == "INVALID_PAYLOAD"
     assert_plan_unchanged(setup, planned)
 
 

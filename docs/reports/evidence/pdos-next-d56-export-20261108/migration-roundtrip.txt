@@ -1,0 +1,13 @@
+export_audits rows before: 50
+expect refusal while history exists:
+alembic downgrade s0_0855: rc=1 (Background on this error at: https://sqlalche.me/e/21/f405)
+isolated test rows purged by admin (test DB only)
+alembic downgrade s0_0855: rc=0
+alembic upgrade s0_0861: rc=0
+alembic downgrade s0_0855: rc=0
+alembic upgrade s0_0861: rc=0
+current: s0_0861
+policies: export_audit_append, export_audit_read, owner_internal
+force_rls: True
+agent_can_write: False
+app_privileges: (True, True, False, False)

@@ -235,7 +235,11 @@ def test_readiness_unknowns_never_mean_start_and_readiness_replay_is_fixed(setup
     # A preparation result cannot serve as the newly implemented start payload:
     # start requires its own exact assessment, both approvals and actual event.
     assert post(setup, {**command, "operation": "build.start"}).status_code == 422
-    assert post(setup, {**command, "operation": "release.manufacturing.approve"}).status_code == 403
+    # Release approval now has its own handler and refuses the foreign payload as
+    # malformed too (it answered 403 before the release domain existed).
+    approval = post(setup, {**command, "operation": "release.manufacturing.approve"})
+    assert approval.status_code == 422, approval.text
+    assert approval.json()["detail"]["reason"] == "INVALID_PAYLOAD"
 
 
 def test_new_configuration_revision_never_rewrites_old_build(setup, configuration):

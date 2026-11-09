@@ -183,6 +183,11 @@ def create():
         "-p",
         "127.0.0.1::5432",
         "pgvector/pgvector:0.8.6-pg16-bookworm",
+        # The up/down/up check below downgrades the whole chain in one transaction;
+        # s0_0001's final drop needs more than the default 64 locks per transaction.
+        "postgres",
+        "-c",
+        "max_locks_per_transaction=256",
     )
     info = json.loads(docker("inspect", name))[0]
     port = int(info["NetworkSettings"]["Ports"]["5432/tcp"][0]["HostPort"])

@@ -154,8 +154,16 @@ def test_get_only_router_uses_current_context_and_read_snapshot(monkeypatch):
         seen.append((ctx, identity))
         return {"version": "agent-run-source-bindings/v1"}
 
+    def personal(_s, ctx, page):
+        seen.append((ctx, page))
+        return {"version": "personal-agent-input-sources/v1"}
+
+    from pdos_next.agent.kernel import personal_source_views
+
     monkeypatch.setattr(views, "read_list", listing)
     monkeypatch.setattr(views, "read_bindings", bindings)
+    # D42 (P91) serves the personal list from the same GET-only router.
+    monkeypatch.setattr(personal_source_views, "read_list", personal)
     ctx = context()
     app = FastAPI()
     app.include_router(
@@ -169,4 +177,10 @@ def test_get_only_router_uses_current_context_and_read_snapshot(monkeypatch):
             assert client.get(path + "/agent-input-sources", params=params).status_code == 422
         assert client.get(path + f"/agent-runs/{uuid4()}/source-bindings").status_code == 200
         assert client.post(path + "/agent-input-sources").status_code == 405
-        assert client.get("/v1/personal/agent-input-sources").status_code == 404
+        assert client.get("/v1/personal/agent-input-sources").status_code == 200
+        assert seen[-1][0] == ctx
+        assert (
+            client.get("/v1/personal/agent-input-sources", params={"page_size": 51}).status_code
+            == 422
+        )
+        assert client.post("/v1/personal/agent-input-sources").status_code == 405

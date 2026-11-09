@@ -13,7 +13,7 @@ from pathlib import Path
 from uuid import UUID, uuid4
 
 import pytest
-from sqlalchemy import delete, select
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from pdos_next.core.clock import using_clock
@@ -57,6 +57,7 @@ from pdos_next.agent.kernel.persistence import cancel_run, create_run
 from pdos_next.agent.kernel.session_presentation import PresentationInput, change
 from pdos_next.agent.kernel.session_presentation_models import AgentSessionPresentation
 from tests.g0_fixture import create_g0_project
+from tests.team_fixture import remove_member
 
 PROTECTED_MODELS = (
     AgentSession,
@@ -268,22 +269,25 @@ def _fixture(setup):
 
 
 def _revoke_peer_project_fixture(setup, project_id):
-    """Narrow exactly one synthetic Project, retaining its actual lifecycle clock."""
+    """Narrow exactly one synthetic Project, retaining its actual lifecycle clock.
+
+    D33 (P34-1): a project's audience follows its current members, so the peer
+    leaves through the owner's team command, as the product does; only the
+    visibility reduction itself remains a synthetic administrative update.
+    """
     verify_test_target(setup.admin)
-    with Session(setup.admin) as session, session.begin():
+    models = (Project, Product, ObjectAudience)
 
-        def rows(model):
-            return {
-                row["id"]: dict(row)
-                for row in session.execute(
-                    select(model.__table__)
-                    .where(model.tenant_id == setup.tenant)
-                    .order_by(model.id)
-                ).mappings()
-            }
+    def rows(session, model):
+        return {
+            row["id"]: dict(row)
+            for row in session.execute(
+                select(model.__table__).where(model.tenant_id == setup.tenant).order_by(model.id)
+            ).mappings()
+        }
 
-        models = (Project, Product, ObjectAudience)
-        before = {model.__tablename__: rows(model) for model in models}
+    with Session(setup.admin) as session:
+        before = {model.__tablename__: rows(session, model) for model in models}
         project = session.scalar(
             select(Project).where(
                 Project.tenant_id == setup.tenant,
@@ -298,87 +302,86 @@ def _revoke_peer_project_fixture(setup, project_id):
         product = session.get(Product, setup.product)
         assert product is not None and product.visibility == "category"
         assert project.product_id == product.id
-        expected = {
-            table: {identity: dict(row) for identity, row in values.items()}
-            for table, values in before.items()
-        }
-        expected[Project.__tablename__][project.id]["visibility"] = "private"
-        # The existing lifecycle_reference trigger on Project UPDATE increments
-        # only its Product's derived clock. Do not disable or undo that guard.
-        expected[Product.__tablename__][product.id]["lifecycle_epoch"] += 1
-        audience_ids = {
-            identity
-            for identity, row in before[ObjectAudience.__tablename__].items()
-            if row["category_id"] == setup.category
-            and row["object_type"] == "projects"
-            and row["subject_id"] == project.id
-            and row["owner_id"] == setup.human
-            and row["principal_id"] == setup.peer
-        }
-        for identity in audience_ids:
-            del expected[ObjectAudience.__tablename__][identity]
-        project.visibility = "private"
+        project_identity, product_identity = project.id, product.id
+    audience_ids = {
+        identity
+        for identity, row in before[ObjectAudience.__tablename__].items()
+        if row["category_id"] == setup.category
+        and row["object_type"] == "projects"
+        and row["subject_id"] == project_identity
+        and row["owner_id"] == setup.human
+        and row["principal_id"] == setup.peer
+    }
+    departed = None
+    if audience_ids:
+        # Nothing is left to hand over, so the team command withdraws the
+        # peer's project audience at once (no upstream claims on a category project).
+        departed = remove_member(setup, project_identity, setup.peer)
+        assert departed["handover_pending"] is False
+    expected = {
+        table: {identity: dict(row) for identity, row in values.items()}
+        for table, values in before.items()
+    }
+    expected[Project.__tablename__][project_identity]["visibility"] = "private"
+    # The existing lifecycle_reference trigger on Project UPDATE increments
+    # only its Product's derived clock. Do not disable or undo that guard.
+    expected[Product.__tablename__][product_identity]["lifecycle_epoch"] += 1
+    for identity in audience_ids:
+        del expected[ObjectAudience.__tablename__][identity]
+    with Session(setup.admin) as session, session.begin():
+        session.get(Project, project_identity).visibility = "private"
         session.flush()
-        removed = session.execute(
-            delete(ObjectAudience).where(
-                ObjectAudience.tenant_id == setup.tenant,
-                ObjectAudience.category_id == setup.category,
-                ObjectAudience.object_type == "projects",
-                ObjectAudience.subject_id == project.id,
-                ObjectAudience.owner_id == setup.human,
-                ObjectAudience.principal_id == setup.peer,
-            )
-        )
-        assert removed.rowcount == len(audience_ids)
-        after = {model.__tablename__: rows(model) for model in models}
-        assert after == expected
-        changed_tables = {
-            Project.__tablename__,
-            Product.__tablename__,
-            *({ObjectAudience.__tablename__} if audience_ids else set()),
-        }
-        assert {table for table in before if before[table] != after[table]} == changed_tables
-        changed_rows = []
-        for table in before:
-            for identity in before[table]:
-                previous, current = before[table][identity], after[table].get(identity)
-                if previous == current:
-                    continue
-                changed_rows.append(
-                    {
-                        "table": table,
-                        "id": str(identity),
-                        "operation": "delete" if current is None else "update",
-                        "changed_fields": sorted(
-                            key
-                            for key in previous
-                            if current is not None and previous[key] != current[key]
-                        ),
-                        "before_sha256": digest(previous),
-                        "after_sha256": digest(current) if current is not None else None,
-                    }
-                )
-        return {
-            "nature": "synthetic ACL reduction with the existing lifecycle_reference trigger",
-            "changed_tables": sorted(changed_tables),
-            "changes": changed_rows,
-            "row_hashes": {
-                table: {
-                    "before": {
-                        str(identity): digest(row) for identity, row in before[table].items()
-                    },
-                    "after": {str(identity): digest(row) for identity, row in after[table].items()},
+        after = {model.__tablename__: rows(session, model) for model in models}
+    assert after == expected
+    changed_tables = {
+        Project.__tablename__,
+        Product.__tablename__,
+        *({ObjectAudience.__tablename__} if audience_ids else set()),
+    }
+    assert {table for table in before if before[table] != after[table]} == changed_tables
+    changed_rows = []
+    for table in before:
+        for identity in before[table]:
+            previous, current = before[table][identity], after[table].get(identity)
+            if previous == current:
+                continue
+            changed_rows.append(
+                {
+                    "table": table,
+                    "id": str(identity),
+                    "operation": "delete" if current is None else "update",
+                    "changed_fields": sorted(
+                        key
+                        for key in previous
+                        if current is not None and previous[key] != current[key]
+                    ),
+                    "before_sha256": digest(previous),
+                    "after_sha256": digest(current) if current is not None else None,
                 }
-                for table in before
-            },
-            "project_visibility": {"before": "category", "after": "private"},
-            "product_lifecycle_epoch": {
-                "product_id": str(product.id),
-                "before": before[Product.__tablename__][product.id]["lifecycle_epoch"],
-                "after": after[Product.__tablename__][product.id]["lifecycle_epoch"],
-            },
-            "removed_peer_audience_ids": sorted(str(identity) for identity in audience_ids),
-        }
+            )
+    return {
+        "nature": (
+            "owner team command removes the peer (P34-1), then a synthetic visibility "
+            "reduction with the existing lifecycle_reference trigger"
+        ),
+        "team_departure": departed,
+        "changed_tables": sorted(changed_tables),
+        "changes": changed_rows,
+        "row_hashes": {
+            table: {
+                "before": {str(identity): digest(row) for identity, row in before[table].items()},
+                "after": {str(identity): digest(row) for identity, row in after[table].items()},
+            }
+            for table in before
+        },
+        "project_visibility": {"before": "category", "after": "private"},
+        "product_lifecycle_epoch": {
+            "product_id": str(product_identity),
+            "before": before[Product.__tablename__][product_identity]["lifecycle_epoch"],
+            "after": after[Product.__tablename__][product_identity]["lifecycle_epoch"],
+        },
+        "removed_peer_audience_ids": sorted(str(identity) for identity in audience_ids),
+    }
 
 
 def _export(setup, work, phases, commands, checks):

@@ -26,8 +26,9 @@ from tests.originals.test_original_security import security_work as security_wor
 
 
 def prepared_run(work, security_work):
+    # The claim is a T0 write: its main call must carry the qualified active prompt.
     owner, scope, host, client, calls, source, version_id, _, args = dispatch_fixture(
-        work, security_work, rows_factory=quote_row
+        work, security_work, rows_factory=quote_row, active_prompt=True
     )
     # The claim write path resolves its route through DomainCommands; use the same
     # synthetic stored-model route as the dispatch fixture's gateway.
