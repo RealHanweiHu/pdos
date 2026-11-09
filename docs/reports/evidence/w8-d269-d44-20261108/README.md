@@ -89,8 +89,8 @@
 已在隔离库上完整跑过的：
 
 - 新增的 D269 用例 8 个、D44 用例 3 个；
-- D257 的  5 个；
--  23 个、。
+- D257 的 `test_assistant_extract_concurrency_pg.py` 5 个；
+- `test_run_attempts.py` 23 个、`test_assistant_fanout.py`。
 
 以上全部通过。剩余受影响回归须在检查点集中补跑。
 
