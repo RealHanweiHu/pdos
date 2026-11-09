@@ -7,9 +7,11 @@ export type Pending = { tasks: number; commitments: number; external_waits: numb
 export type TeamMember = {
   member_id: string; principal_id: string; name: string; is_owner: boolean; roles: TeamRole[];
   joined_at: string; added_by: string; added_by_name: string; grant: GrantState; active_person: boolean;
-  pending: Pending | null; needs_model_access: { object: string; owner_name: string }[];
+  pending: Pending | null; needs_model_access: { object: string; owner_name: string }[]; pending_detail?: HandoverItem[];
 };
-export type DepartedMember = { member_id: string; principal_id: string; name: string; roles: TeamRole[]; joined_at: string; left_at: string; removed_by_name: string; handover_pending: boolean; pending: Pending | null };
+/** One unhanded item on the owner's handover card (design §4.4, P56, P99). */
+export type HandoverItem = { kind: string; kind_label: string; subject_id: string; task_id: string | null; label: string; state: string };
+export type DepartedMember = { member_id: string; principal_id: string; name: string; roles: TeamRole[]; joined_at: string; left_at: string; removed_by_name: string; handover_pending: boolean; pending: Pending | null; active_person?: boolean; pending_detail?: HandoverItem[] };
 export type TeamCandidate = { principal_id: string; name: string; grant: GrantState };
 export type TeamView = {
   project: { id: string; name: string; owner_id: string; owner_name: string; visibility: string };

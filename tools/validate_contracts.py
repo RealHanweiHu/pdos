@@ -81,6 +81,8 @@ REGISTERED_AREAS = (
     "/v1/accounts",
     "/v1/auth/",
     "/v1/role-catalog",
+    "/v1/personal/notifications",
+    "/v1/personal/notification-preferences",
 )
 for path, methods in paths.items():
     if path.startswith(REGISTERED_AREAS):

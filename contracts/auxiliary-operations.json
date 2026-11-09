@@ -1094,7 +1094,7 @@
       "executor": "named_human",
       "event": null,
       "record": "project_team_changes",
-      "purpose": "项目负责人本人添加、移出成员，设置角色与主责人；整张变更一次提交、一次确认。成员须已有品类授权，负责人不能代授；小Pai 不是成员，只能起草名单。私有项目中成员即项目受众，加入时一并加入负责人本人所有的型号与立项定义受众；有未交接事项的成员移出后保留可见并标待交接，交接完成后由负责人完成移出，随本项目加上的受众一并撤回（P56 临时口径）。",
+      "purpose": "项目负责人本人添加、移出成员，设置角色与主责人；整张变更一次提交、一次确认。成员须已有品类授权，负责人不能代授；小Pai 不是成员，只能起草名单。私有项目中成员即项目受众，加入时一并加入负责人本人所有的型号与立项定义受众；移出即结束项目受众；有未交接事项的成员只经交接通道保留本人未交接事项的查看与办理，交接完成后自动完全移出，随本项目加上的受众一并撤回（P56）；停用账号时负责人收到待接事项卡片（P99）。",
       "api_bindings": [
         {
           "method": "POST",
@@ -1179,6 +1179,170 @@
       ],
       "implementation": "implemented_local_endpoint",
       "source": "拍板表 C16、设计优化评估 F41、设计确认稿 P41 第 7 项（欠债总表 D56，2026-11-08）"
+    },
+    {
+      "operation": "discussion.message.post",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_messages",
+      "purpose": "仅人工：具名本人在项目讨论或对象评论（任务、文档）中发言，含 @成员、@角色、@全体（限负责人）与 @任务引用；被提及的人须能看到所挂对象，提及只通知并使其关注该串，不授予访问权、不构成分派。评论记下对象当时的版本。讨论不构成决定、承诺或批准。小Pai 身份对这些表零权限，@小Pai 在共享串的运行属 W6 ⑥。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/messages"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/comments/{subject_type}/{subject_id}"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "discussion.message.edit",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_message_versions",
+      "purpose": "仅作者本人编辑自己的消息，每次编辑保留版本；只通知新被提及的人。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/messages/{message_id}/edit"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "discussion.message.retract",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_message_versions",
+      "purpose": "仅作者本人撤回消息：串内显示“已撤回”，版本与审计保留，不硬删除；导出只给“已撤回”占位。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/messages/{message_id}/retract"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "discussion.follow.set",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_follows",
+      "purpose": "本人关注或取消关注一个讨论串或任务；自动关注（创建、评论、被分派、被提及）不覆盖本人的取消。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/follow"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "discussion.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_threads",
+      "purpose": "读取项目讨论、对象评论与可提及的人；每次按所挂对象当前受众复核，客户私有对象下的评论只对其受众可见。交接期的被移出成员只能看到本人未交接事项的评论串（P56）。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/comments/{subject_type}/{subject_id}"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/mentionable"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "notification.read",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "notifications",
+      "purpose": "本人站内通知：提及我、分派给我、要我确认或决定、关注的变化，以及稍后提醒、归档与每日摘要视图；实时投递为 SSE，断线回退 30 秒轮询并按游标补齐（D74）。通知不存正文，按读者当前权限从对象读取；本人的交接事项与通知设置也在此读取。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/personal/notifications"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/notifications/changes"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/notifications/stream"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/notification-preferences/{project_id}"
+        },
+        {
+          "method": "GET",
+          "path": "/v1/personal/handover"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "notification.state.set",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "notifications",
+      "purpose": "本人把通知标为已读或未读、归档或恢复、稍后提醒（到时重新显示为未读，30 天内，D73）；已读不等于完成。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/notifications/state"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "notification.preference.set",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "notification_preferences",
+      "purpose": "本人按项目设置通知级别（全部 / 重要变化 / 只看提及）、静音（只挡关注的变化和摘要，P98）与关注动态改为每日摘要。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/notification-preferences"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
     }
   ],
   "inbound_endpoints": [

@@ -130,6 +130,7 @@ def mine(s, ctx):
                     "title",
                     "goal",
                     "outcomes",
+                    "g0_open_item",
                     "assignee_id",
                     "recipient_id",
                     "actual_start",
@@ -142,6 +143,11 @@ def mine(s, ctx):
             text("SELECT name FROM principals WHERE tenant_id=:t AND id=:id"),
             {"t": ctx.tenant_id, "id": project.owner_id},
         ).scalar()
+        # The model revision the person's own task commands are checked against.
+        revision = s.execute(
+            text("SELECT revision FROM products WHERE tenant_id=:t AND id=:id"),
+            {"t": ctx.tenant_id, "id": project.product_id},
+        ).scalar()
         result.append(
             {
                 "project": {
@@ -152,6 +158,7 @@ def mine(s, ctx):
                     "owner_id": str(project.owner_id),
                     "owner_name": owner or "项目负责人",
                     "left_at": project.left_at.isoformat() if project.left_at else None,
+                    "product_revision": revision,
                 },
                 "items": own,
                 "counts": counts(own),

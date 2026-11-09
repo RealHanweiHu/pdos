@@ -103,8 +103,9 @@ def emit_followers(
     s.flush()
     return s.scalar(
         text(
-            "SELECT notification_emit_followers(:t, CAST(:kinds AS text[]), CAST(:targets AS uuid[]), "
-            "'follow', :reason, :important, :project, :kind, :subject, :thread, "
+            "SELECT notification_emit_followers(:t, CAST(:kinds AS text[]), "
+            "CAST(:targets AS uuid[]), 'follow', :reason, :important, :project, :kind, "
+            ":subject, :thread, "
             "CAST(:latest AS jsonb), :window, CAST(:exclude AS uuid[]))"
         ),
         {
@@ -451,7 +452,7 @@ def preferences(s, ctx, project_id):
             "important": "重要变化（状态、负责人、日期和评论）",
             "mentions": "只看提及",
         },
-        # 静音只挡关注的变化；提及、分派与待我确认照常送达（P98 待确认，默认按推荐 A）。
+        # P98: mute stops follow changes and the digest; mentions, assignments, decisions arrive.
         "mute_scope": "follow_only",
     }
 

@@ -30,12 +30,14 @@ import {
 import styles from "./inbox.module.css";
 import { PersonalSummaryInbox } from "./personal-summary-inbox";
 import { InboxFollowing } from "./inbox-following";
+import { WorkNotifications } from "./work-notifications";
 
 type Props = {
   api: typeof browserApi;
   principalId: string;
   onOpenRun: (id: string, categoryId: string) => void;
   onOpenProject?: (categoryId: string, id: string) => void;
+  onOpenTarget?: (href: string) => void;
 };
 const labels: Record<string, string> = {
   queued: "等待执行",
@@ -63,8 +65,9 @@ const time = (value: string) =>
 export function Inbox(props: Props) {
   return <ScopedInbox key={props.principalId} {...props} />;
 }
-function ScopedInbox({ api, principalId, onOpenRun, onOpenProject }: Props) {
-  const [tab, setTab] = useState<"activity" | "messages" | "followed" | "summaries">("activity"),
+function ScopedInbox({ api, principalId, onOpenRun, onOpenProject, onOpenTarget }: Props) {
+  const [tab, setTab] = useState<"work" | "activity" | "messages" | "followed" | "summaries">("activity"),
+    [workUnread, setWorkUnread] = useState(0),
     [filter, setFilter] = useState<"all" | "unread" | "archived" | "followed">(
       "all",
     );
@@ -153,6 +156,12 @@ function ScopedInbox({ api, principalId, onOpenRun, onOpenProject }: Props) {
       }
     }
   }, [api, clearPrivate]);
+  // Unread count for the 提及与工作 tab, read once on arrival; the tab itself stays live.
+  useEffect(() => {
+    let alive = true;
+    api<{ unread: Record<string, number> }>("v1/personal/notifications?page_size=1").then(value => { if (alive) setWorkUnread(Object.values(value.unread ?? {}).reduce((sum, count) => sum + count, 0)); }).catch(() => undefined);
+    return () => { alive = false; };
+  }, [api]);
   useEffect(() => {
     alive.current = true;
     const messageCounter = generation,
@@ -412,6 +421,7 @@ function ScopedInbox({ api, principalId, onOpenRun, onOpenProject }: Props) {
       </div>
       <div className={styles.toolbar}>
         <nav className="workspace-view-tabs" aria-label="收件箱视图">
+          <button aria-pressed={tab === "work"} onClick={() => setTab("work")}>提及与工作{workUnread > 0 ? ` ${workUnread}` : ""}</button>
           <button
             aria-pressed={tab === "activity"}
             onClick={() => setTab("activity")}
@@ -428,7 +438,7 @@ function ScopedInbox({ api, principalId, onOpenRun, onOpenProject }: Props) {
           <button aria-pressed={tab === "followed"} onClick={() => setTab("followed")}>关注动态</button>
         </nav>
       </div>
-      <div className={styles.listTools}><label className={styles.search}><MagnifyingGlass size={14}/><input type="search" aria-label={tab === "messages" ? "搜索聊天" : tab === "followed" ? "搜索项目动态" : "搜索通知"} placeholder={tab === "messages" ? "搜索聊天…" : tab === "followed" ? "搜索项目动态…" : "搜索通知…"} value={query} onChange={event => setQuery(event.target.value)}/></label>
+      <div className={styles.listTools} hidden={tab === "work"}><label className={styles.search}><MagnifyingGlass size={14}/><input type="search" aria-label={tab === "messages" ? "搜索聊天" : tab === "followed" ? "搜索项目动态" : "搜索通知"} placeholder={tab === "messages" ? "搜索聊天…" : tab === "followed" ? "搜索项目动态…" : "搜索通知…"} value={query} onChange={event => setQuery(event.target.value)}/></label>
         {tab !== "followed" && <select
           aria-label="筛选收件箱"
           value={filter}
@@ -464,7 +474,7 @@ function ScopedInbox({ api, principalId, onOpenRun, onOpenProject }: Props) {
           </Button>
         </div>
       )}
-      {!data ? (
+      {tab === "work" ? <WorkNotifications api={api} onOpenTarget={onOpenTarget} onUnread={setWorkUnread}/> : !data ? (
         <div className={styles.empty}>
           {error ? (
             <Button variant="outline" size="sm" onClick={() => void load()}>

@@ -29,6 +29,11 @@ from . import mentions
 from .models import DiscussionFollow, DiscussionMessage, DiscussionMessageVersion, DiscussionThread
 
 OBJECT_TYPES = {"work_task": "任务", "artifact": "文档"}
+
+
+def plain(body):
+    """Message text with @ tokens shown as "@名字" (notification snippets, exports)."""
+    return mentions.TOKEN.sub(lambda match: "@" + match.group("label"), body)
 RETRACTED = "已撤回"
 NOT_A_DECISION = "讨论不是正式记录：这里的结论不构成决定、承诺或批准，需要时请转为任务或决定草稿。"
 
@@ -820,7 +825,7 @@ def notification_text(s, ctx, row):
             )
         )
         if message is not None:
-            snippet = RETRACTED if message.state == "retracted" else message.body[:140]
+            snippet = RETRACTED if message.state == "retracted" else plain(message.body)[:140]
     return {
         "title": title,
         "snippet": snippet,
@@ -879,7 +884,7 @@ def export_rows(s, ctx, project_id):
                     "thread": where,
                     "sequence": message.sequence,
                     "author": names.get(message.author_id, "成员"),
-                    "body": RETRACTED if message.state == "retracted" else message.body,
+                    "body": RETRACTED if message.state == "retracted" else plain(message.body),
                     "state": {"posted": "已发表", "edited": "已编辑", "retracted": RETRACTED}[
                         message.state
                     ],

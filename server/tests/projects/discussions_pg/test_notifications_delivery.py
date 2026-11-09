@@ -21,7 +21,10 @@ def _mentioned(setup, project, times=1):
     topic = h.start_topic(setup, project, setup.human, "供应商沟通", "开始")
     for index in range(times):
         h.reply(
-            setup, project, setup.human, topic["thread"]["id"],
+            setup,
+            project,
+            setup.human,
+            topic["thread"]["id"],
             f"{h.mention(setup.peer, 'Synthetic peer')} 第 {index + 1} 次",
         )
     return topic
@@ -46,8 +49,13 @@ def test_snooze_returns_unread_and_digest_holds_follow_changes(setup):
     assert [n["id"] for n in h.notes(setup, peer, view="snoozed")["items"]] == [note["id"]]
     before = h.notes(setup, peer)["cursor"]
     # A new mention while snoozed opens a fresh row instead of merging into the hidden one.
-    h.reply(setup, project, setup.human, h.notes(setup, peer, view="snoozed")["items"][0]["thread_id"],
-            f"{h.mention(peer, 'Synthetic peer')} 补充")
+    h.reply(
+        setup,
+        project,
+        setup.human,
+        h.notes(setup, peer, view="snoozed")["items"][0]["thread_id"],
+        f"{h.mention(peer, 'Synthetic peer')} 补充",
+    )
     assert len(h.notes(setup, peer)["items"]) == 1
     with Session(setup.admin) as s, s.begin():
         s.execute(text("SET LOCAL session_replication_role = replica"))
@@ -73,15 +81,25 @@ def test_snooze_returns_unread_and_digest_holds_follow_changes(setup):
     saved = setup.client.post(
         "/v1/personal/notification-preferences",
         headers=h.headers(setup, setup.human),
-        json={"project_id": project.project_id, "level": "all", "muted": False, "digest": True,
-              "expected_revision": 0},
+        json={
+            "project_id": project.project_id,
+            "level": "all",
+            "muted": False,
+            "digest": True,
+            "expected_revision": 0,
+        },
     )
     assert saved.status_code == 200 and saved.json()["revision"] == 1
     stale = setup.client.post(
         "/v1/personal/notification-preferences",
         headers=h.headers(setup, setup.human),
-        json={"project_id": project.project_id, "level": "all", "muted": False, "digest": True,
-              "expected_revision": 0},
+        json={
+            "project_id": project.project_id,
+            "level": "all",
+            "muted": False,
+            "digest": True,
+            "expected_revision": 0,
+        },
     )
     assert stale.status_code == 409
     thread_id = note["thread_id"]
@@ -120,14 +138,16 @@ def test_sse_stream_and_thirty_second_polling_fallback(setup, monkeypatch):
     assert first["poll_seconds"] == 30 and first["changed"] is True
     since = first["cursor"]
     unchanged = setup.client.get(
-        "/v1/personal/notifications/changes", headers=h.headers(setup, peer),
+        "/v1/personal/notifications/changes",
+        headers=h.headers(setup, peer),
         params={"since": since},
     ).json()
     assert unchanged["changed"] is False
     topic = _mentioned(setup, project)
     # Polling fallback sees the change; the stream resumes and reports the gap at once.
     after = setup.client.get(
-        "/v1/personal/notifications/changes", headers=h.headers(setup, peer),
+        "/v1/personal/notifications/changes",
+        headers=h.headers(setup, peer),
         params={"since": since, "threads": topic["thread"]["id"]},
     ).json()
     assert after["changed"] is True and after["threads"][topic["thread"]["id"]] != "0"
@@ -137,7 +157,8 @@ def test_sse_stream_and_thirty_second_polling_fallback(setup, monkeypatch):
         assert _events(response.iter_lines(), 2) == ["ready", "changed"]
     # A thread the reader cannot see never yields a token.
     outsider = setup.client.get(
-        "/v1/personal/notifications/changes", headers=h.headers(setup, setup.other_human),
+        "/v1/personal/notifications/changes",
+        headers=h.headers(setup, setup.other_human),
         params={"threads": topic["thread"]["id"]},
     )
     assert outsider.status_code in {200, 401}
@@ -170,7 +191,8 @@ def test_sse_stream_and_thirty_second_polling_fallback(setup, monkeypatch):
         row.revoked = True
     assert sign_in.peek(setup.auth, setup.tokens[peer]) is False
     bad = setup.client.get(
-        "/v1/personal/notifications/changes", headers=h.headers(setup, setup.human),
+        "/v1/personal/notifications/changes",
+        headers=h.headers(setup, setup.human),
         params={"since": "x;drop"},
     )
     assert bad.status_code == 422
@@ -208,12 +230,17 @@ def test_customer_private_document_comments_follow_its_audience(setup):
         headers=h.headers(setup, owner),
         json={"body": f"{h.mention(peer, 'Synthetic peer')} 看下", "request_key": str(UUID(int=9))},
     )
-    assert refused.status_code == 422 and refused.json()["detail"]["reason"] == "mention_not_visible"
+    assert (
+        refused.status_code == 422 and refused.json()["detail"]["reason"] == "mention_not_visible"
+    )
 
     def exported(person):
         ctx = Context(setup.tenant, person, person, category_id=setup.category)
         with tenant_session(
-            setup.engine, setup.tenant, actor_id=person, category_id=setup.category,
+            setup.engine,
+            setup.tenant,
+            actor_id=person,
+            category_id=setup.category,
             read_snapshot=True,
         ) as s:
             rows = discussions.export_rows(s, ctx, UUID(project.project_id))
@@ -223,7 +250,8 @@ def test_customer_private_document_comments_follow_its_audience(setup):
     owner_rows, owner_view = exported(owner)
     peer_rows, peer_view = exported(peer)
     assert {row["thread"] for row in owner_rows} == {
-        "项目讨论：公开讨论", "文档：合成客户输入（私有）"
+        "项目讨论：公开讨论",
+        "文档：合成客户输入（私有）",
     }
     assert {row["thread"] for row in peer_rows} == {"项目讨论：公开讨论"}
     sheets = {sheet.name: sheet for sheet in owner_view.sheets}

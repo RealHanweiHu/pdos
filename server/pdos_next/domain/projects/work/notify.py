@@ -46,22 +46,44 @@ def after_task(s, ctx, operation, row):
     if operation == ASSIGN and assignee:
         notifications.follow(s, ctx, assignee, "work_task", task_id, project_id, "assigned")
         notifications.emit(
-            s, ctx, assignee, "assigned", "task.assigned", project_id=project_id,
-            kind="work_task", subject_id=task_id, latest=latest,
+            s,
+            ctx,
+            assignee,
+            "assigned",
+            "task.assigned",
+            project_id=project_id,
+            kind="work_task",
+            subject_id=task_id,
+            latest=latest,
         )
         exclude.append(assignee)
     if operation == SUBMIT and recipient:
         notifications.follow(s, ctx, recipient, "work_task", task_id, project_id, "assigned")
         notifications.emit(
-            s, ctx, recipient, "decide", "task.submitted", project_id=project_id,
-            kind="work_task", subject_id=task_id, latest=latest,
+            s,
+            ctx,
+            recipient,
+            "decide",
+            "task.submitted",
+            project_id=project_id,
+            kind="work_task",
+            subject_id=task_id,
+            latest=latest,
         )
         exclude.append(recipient)
     if human:
         notifications.follow(s, ctx, ctx.actor_id, "work_task", task_id, project_id, "commented")
     notifications.emit_followers(
-        s, ctx, [("work_task", task_id)], TASK_REASONS[operation], project_id=project_id,
-        kind="work_task", subject_id=task_id, latest=latest, important=True, exclude=exclude,
+        s,
+        ctx,
+        [("work_task", task_id)],
+        TASK_REASONS[operation],
+        project_id=project_id,
+        kind="work_task",
+        subject_id=task_id,
+        latest=latest,
+        important=True,
+        exclude=exclude,
     )
     if operation in {ASSIGN, REVIEW}:
         handover.settle(s, ctx, project_id)
@@ -69,8 +91,14 @@ def after_task(s, ctx, operation, row):
 
 def after_commitment(s, ctx, row):
     notifications.emit(
-        s, ctx, row.recipient_id, "follow", "commitment.accepted", project_id=row.project_id,
-        kind="work_task", subject_id=row.task_id,
+        s,
+        ctx,
+        row.recipient_id,
+        "follow",
+        "commitment.accepted",
+        project_id=row.project_id,
+        kind="work_task",
+        subject_id=row.task_id,
         latest={"promised_at": row.promised_at.isoformat() if row.promised_at else None},
     )
 
@@ -88,8 +116,15 @@ def after_status(s, ctx, row):
     )
     for person in sorted(set(members), key=str):
         notifications.emit(
-            s, ctx, person, "follow", "project.status_updated", project_id=row.project_id,
-            kind="project", subject_id=row.project_id, latest={"update_id": str(row.id)},
+            s,
+            ctx,
+            person,
+            "follow",
+            "project.status_updated",
+            project_id=row.project_id,
+            kind="project",
+            subject_id=row.project_id,
+            latest={"update_id": str(row.id)},
         )
 
 

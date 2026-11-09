@@ -14,7 +14,8 @@ def headers(setup, person):
 
 
 def project_root(setup, project):
-    return f"/v1/categories/{setup.category}/products/{project.product_id}/projects/{project.project_id}"
+    product, identity = project.product_id, project.project_id
+    return f"/v1/categories/{setup.category}/products/{product}/projects/{identity}"
 
 
 def start_topic(setup, project, person, title, body, *, expect=201):

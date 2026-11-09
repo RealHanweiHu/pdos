@@ -54,7 +54,11 @@ def test_topic_inherits_audience_and_mentions_notify_only_those_who_see_it(setup
     ]
 
     started = h.start_topic(
-        setup, project, owner, "样机评审安排", f"{h.mention(peer, 'Synthetic peer')} 周五前确认样机数量"
+        setup,
+        project,
+        owner,
+        "样机评审安排",
+        f"{h.mention(peer, 'Synthetic peer')} 周五前确认样机数量",
     )
     thread_id = started["thread"]["id"]
     assert started["thread"]["following"] is True
@@ -71,7 +75,7 @@ def test_topic_inherits_audience_and_mentions_notify_only_those_who_see_it(setup
         ("mention", "mention", 1)
     ]
     assert inbox["items"][0]["title"] == "样机评审安排"
-    assert "周五前确认样机数量" in inbox["items"][0]["snippet"]
+    assert inbox["items"][0]["snippet"] == "@Synthetic peer 周五前确认样机数量"
     assert inbox["unread"]["mention"] == 1
     # The operator never hears about their own action.
     assert h.notes(setup, owner)["items"] == []
@@ -225,7 +229,9 @@ def test_edit_keeps_versions_and_retraction_leaves_placeholder(setup):
                 .order_by(DiscussionMessageVersion.revision)
             )
         )
-    assert versions[0] == "初稿：电机选 A 型" and versions[1].startswith("修订") and versions[2] == ""
+    assert (
+        versions[0] == "初稿：电机选 A 型" and versions[1].startswith("修订") and versions[2] == ""
+    )
     with tenant_session(setup.engine, setup.tenant, actor_id=peer, category_id=setup.category) as s:
         assert s.scalar(select(func.count()).select_from(DiscussionMessageVersion)) == 0
     with tenant_session(
@@ -260,23 +266,40 @@ def test_idempotent_post_and_database_guards(setup):
             {"names": list(DISCUSSION_TABLES)},
         ).all()
         assert grants == []
-        message = s.scalar(select(DiscussionMessage).where(DiscussionMessage.thread_id == UUID(thread_id)))
+        message = s.scalar(
+            select(DiscussionMessage).where(DiscussionMessage.thread_id == UUID(thread_id))
+        )
     with tenant_session(
-        setup.engine, setup.tenant, actor_id=setup.agent, requester_id=owner,
+        setup.engine,
+        setup.tenant,
+        actor_id=setup.agent,
+        requester_id=owner,
         category_id=setup.category,
     ) as s:
         assert s.scalar(select(func.count()).select_from(DiscussionThread)) == 0
     try:
         with tenant_session(
-            setup.engine, setup.tenant, actor_id=setup.agent, requester_id=owner,
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.agent,
+            requester_id=owner,
             category_id=setup.category,
         ) as s:
             s.add(
                 DiscussionMessage(
-                    tenant_id=setup.tenant, thread_id=UUID(thread_id), sequence=3,
-                    author_id=setup.agent, revision=1, state="posted", body="AI 冒充发言",
-                    mentions=[], subject_revision=None, updated_at=message.updated_at,
-                    change_seq=0, request_key=uuid4(), request_sha256="0" * 64,
+                    tenant_id=setup.tenant,
+                    thread_id=UUID(thread_id),
+                    sequence=3,
+                    author_id=setup.agent,
+                    revision=1,
+                    state="posted",
+                    body="AI 冒充发言",
+                    mentions=[],
+                    subject_revision=None,
+                    updated_at=message.updated_at,
+                    change_seq=0,
+                    request_key=uuid4(),
+                    request_sha256="0" * 64,
                 )
             )
             s.flush()
@@ -296,8 +319,11 @@ def test_idempotent_post_and_database_guards(setup):
     except DBAPIError:
         pass
     with Session(setup.admin) as s:
-        assert s.scalar(
-            select(func.count()).select_from(DiscussionMessage).where(
-                DiscussionMessage.thread_id == UUID(thread_id)
+        assert (
+            s.scalar(
+                select(func.count())
+                .select_from(DiscussionMessage)
+                .where(DiscussionMessage.thread_id == UUID(thread_id))
             )
-        ) == 2
+            == 2
+        )

@@ -14,7 +14,7 @@ export type Account = {
   active_sessions: number; last_sign_in_at: string | null;
 };
 type Link = { token: string; purpose: "invite" | "reset"; expires_at: string };
-type Result = { account: Account; link?: Link; sessions_revoked?: number };
+type Result = { account: Account; link?: Link; sessions_revoked?: number; handover_cards?: number };
 type Api = <T>(path: string, body?: unknown) => Promise<T>;
 type Action = "invitation" | "password-reset" | "deactivate" | "reactivate" | "sessions/revoke" | "administrator";
 
@@ -64,7 +64,7 @@ export function AccountManagement({ api = browserApi }: { api?: Api }) {
       const result = await api<Result>(`v1/accounts/${account.principal_id}/${action}`, body);
       merge(result.account);
       if (result.link) showLink(result.account, result.link);
-      if (typeof result.sessions_revoked === "number" && action !== "password-reset") setNotice(`${result.account.name}：已结束 ${result.sessions_revoked} 个会话。`);
+      if (typeof result.sessions_revoked === "number" && action !== "password-reset") setNotice(`${result.account.name}：已结束 ${result.sessions_revoked} 个会话。${result.handover_cards ? `已通知 ${result.handover_cards} 个项目的负责人处理待接事项。` : ""}`);
     } catch (failure) { setError((failure as Error).message); void read(); }
     finally { setBusy(""); }
   }
