@@ -55,10 +55,16 @@ def run_lease(engine, run_id, *, waiting=None, interval=2.0):
         yield
 
 
-def check_attempt(superseded):
-    """Stop at a safe point when this attempt has been superseded."""
-    if superseded is not None and superseded.is_set():
-        raise AttemptSuperseded()
+def check_attempt(superseded=None):
+    """Stop at a safe point when this attempt has been superseded.
+
+    Safe points come before a model or tool call is claimed. Hosts built at startup
+    (the isolated children's) have no signal of their own, so the attempt's signal
+    from ``attempt_scope`` is checked as well (D269).
+    """
+    for signal in (superseded, _ATTEMPT.get()):
+        if signal is not None and signal.is_set():
+            raise AttemptSuperseded()
 
 
 @contextmanager

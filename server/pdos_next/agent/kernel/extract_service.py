@@ -6,6 +6,7 @@ replay instead of re-running the model.
 """
 
 from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
 from dataclasses import asdict
 from types import SimpleNamespace
 from uuid import UUID, uuid4
@@ -163,7 +164,11 @@ class ExtractionService:
 
         ordered = [binding.seals[identity] for identity in sorted(binding.seals, key=str)]
         with ThreadPoolExecutor(max_workers=min(self.concurrency, len(ordered) or 1)) as pool:
-            outcomes = list(pool.map(work, ordered))
+            # A copy of this context per artifact, taken here: the attempt's stop signal
+            # reaches each child, which stops before its next claim (D269).
+            contexts = [copy_context() for _ in ordered]
+            outcomes = list(pool.map(lambda context, seal: context.run(work, seal),
+                                     contexts, ordered))
         rows_out, rejected_out, coverage_out, failures = [], [], [], []
         for seal, rows, rejected, coverage, failure in outcomes:
             rows_out.extend(rows)

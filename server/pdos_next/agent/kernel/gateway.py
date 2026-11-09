@@ -13,6 +13,7 @@ from .disclosure import CHAIN_KEY, record_disclosure
 from .execution import validate_skill_load
 from .policy import egress
 from .pricing import CostUsage
+from .run_lease import check_attempt
 
 
 class AgentGateway:
@@ -263,6 +264,11 @@ class AgentGateway:
                 pricing.snapshot(),
             )
         reserve = input_upper + route.max_output_tokens
+        # The last safe point of a given-up attempt (D243, D269). Once claimed, the call
+        # is sent and settled as usual, so the next attempt replays it instead of meeting
+        # a started call it would have to reconcile; children on startup hosts see the
+        # attempt's signal through its scope.
+        check_attempt()
         call_id, saved = self.store.claim(
             scope, call_key, "model", request, reservation=reserve, cost_lease=cost_lease,
             execution_binding=binding,
