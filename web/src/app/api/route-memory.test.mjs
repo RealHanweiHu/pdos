@@ -53,3 +53,20 @@ test("memory endpoints forward only the owner's fixed paths and methods", async 
   assert.equal((await h.send("v1/categories/bad/agent-sessions/x/memory-mode")).status, 404);
   assert.equal(h.calls.length, forwarded);
 });
+
+test("M2a note, candidate and setting paths forward with fixed methods only", async () => {
+  const h = harness();
+  const note = "33333333-3333-4333-8333-333333333333";
+  const gets = ["v1/personal/memory/notes", `v1/personal/memory/notes/${note}/history`, "v1/personal/memory/candidates", "v1/personal/memory/settings", "v1/personal/memory-policy/statistics", `v1/categories/${run}/agent-runs/${run}/memory-candidates`, `v1/personal/agent-runs/${run}/memory-candidates`];
+  for (const item of gets) assert.equal((await h.send(item)).status, 200, item);
+  const posts = ["v1/personal/memory/notes", "v1/personal/memory/notes/conflicts", `v1/personal/memory/notes/${note}/revisions`, `v1/personal/memory/notes/${note}/deletion`, `v1/personal/memory/candidates/${note}/decision`, "v1/personal/memory/settings"];
+  for (const item of posts) assert.equal((await h.send(item, "POST", "", { request_key: session })).status, 200, item);
+  assert.equal(h.calls.at(-1).url, "http://synthetic-api.invalid/v1/personal/memory/settings");
+  const forwarded = h.calls.length;
+  for (const item of [`v1/personal/memory/notes/${note}/deletion`, "v1/personal/memory/notes/conflicts", `v1/personal/memory/candidates/${note}/decision`]) assert.equal((await h.send(item)).status, 405, item);
+  for (const item of ["v1/personal/memory/candidates", `v1/personal/memory/notes/${note}/history`, "v1/personal/memory-policy/statistics", `v1/personal/agent-runs/${run}/memory-candidates`]) assert.equal((await h.send(item, "POST", "", {})).status, 405, item);
+  assert.equal((await h.send("v1/personal/memory/notes", "GET", `owner_id=${session}`)).status, 422);
+  assert.equal((await h.send("v1/personal/memory/notes/not-a-uuid/history")).status, 404);
+  assert.equal((await h.send(`v1/categories/${run}/memory/notes`)).status, 404);
+  assert.equal(h.calls.length, forwarded);
+});

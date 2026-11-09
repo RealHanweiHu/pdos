@@ -1,0 +1,20 @@
+# 上述 46 个在基点 07c023e5（独立 worktree、独立 pdos_test）与分支上分别串行复跑
+# 基点：12 failed, 25 passed, 231 warnings in 743.43s (0:12:23)；3 failed, 6 passed, 196 warnings in 542.89s (0:09:02)
+# 分支：12 failed, 25 passed, 231 warnings in 765.99s (0:12:45)；3 failed, 6 passed, 196 warnings in 541.95s (0:09:01)
+# 两边失败名单逐行一致（15 个，均为基点已有）；其余 31 个两边串行都通过，是 4 片并行时的负载与计时问题
+# 两边都失败的 15 个：
+FAILED tests/agent/enterprise_search/test_knowledge_dependencies_pg.py::test_updated_knowledge_dependency_still_uses_actual_original_scan_proofs
+FAILED tests/agent/enterprise_search/test_knowledge_retrieval_authority_pg.py::test_knowledge_original_scan_proof_precedes_http_metadata
+FAILED tests/agent/enterprise_search/test_recovery_pg.py::test_registered_family_search_and_authority_batch_stay_constant_sql_and_under_one_second
+FAILED tests/agent/kernel/test_eval_v0_history_state_pg.py::test_eval_v0_history_state_native_controls[CTX-04-F48000]
+FAILED tests/agent/kernel/test_eval_v0_history_state_pg.py::test_eval_v0_history_state_native_controls[CTX-04-F64000]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_claim_without_real_consumption_is_refused[changes0-extraction_ref_required]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_claim_without_real_consumption_is_refused[changes1-extraction_call_invalid]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_claim_without_real_consumption_is_refused[changes2-extraction_ref_required]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_claim_without_real_consumption_is_refused[changes3-extraction_citation_mismatch]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_claim_without_real_consumption_is_refused[changes4-extraction_content_mismatch]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_claim_without_real_consumption_is_refused[changes5-extraction_row_missing]
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_legacy_shape_claim_also_consumes_the_row
+FAILED tests/agent/kernel/test_extracted_claim_pg.py::test_original_claim_consumes_the_actual_verified_extraction_row
+FAILED tests/agent/kernel/test_project_discussion_history_pg.py::test_project_discussions_filter_before_search_paging_and_actual_authority_recheck
+FAILED tests/agent/kernel/test_session_presentation_pg.py::test_actual_owner_metadata_replay_pagination_archive_and_current_parent_acl

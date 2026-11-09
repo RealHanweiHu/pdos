@@ -169,6 +169,15 @@ class AssistantReadAdapter:
                 ledger.deny("scope_expansion")
             updates["proposal_id"] = scope.proposal_id
         data = data.model_copy(update=updates)
+        # P86 第 5 项 / design §6.7: the requester's own confirmed aliases expand
+        # only this requester's keyword query; the model's arguments stay as sent.
+        with self.store.transaction(scope) as (session, run):
+            from pdos_next.agent.memory.assemble import frozen_aliases
+            from pdos_next.agent.memory.notes import alias_expansions
+
+            extra, aliases = alias_expansions(session, run, data.query, frozen_aliases(run))
+        if extra:
+            data = data.model_copy(update={"query": f"{data.query} {extra}"[:2000]})
         query = (
             self.query_embedding.prepare(scope, call_id, arguments)
             if self.query_embedding else None
@@ -187,6 +196,11 @@ class AssistantReadAdapter:
             items = [{**item, "citation_id": ledger.citation_id(scope.run_id, call_id, item)}
                      for item in result["items"]]
         result["items"], result["returned"] = items, len(items)
+        if aliases:
+            result["personal_alias_expansion"] = {
+                "applied": aliases,
+                "note": "按你本人确认的叫法补充了检索词，只影响你本人的检索。",
+            }
         return result
 
     def restore_search(self, scope, _arguments, previous):

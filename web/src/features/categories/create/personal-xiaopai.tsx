@@ -37,6 +37,7 @@ import { WorkProductActions } from "@/features/xiaopai/work-product-actions";
 import { WorkProductEditor } from "@/features/xiaopai/work-product-editor";
 import { useWorkProducts } from "@/features/xiaopai/use-work-products";
 import { MemoryUsage } from "@/features/xiaopai/memory-usage";
+import { MemoryCandidates } from "@/features/xiaopai/memory-candidates";
 import { MemoryOffStart } from "@/features/xiaopai/memory-mode";
 import { CarriedChips, PersonalAttachments, carriedReferences, type CarriedSource } from "@/features/xiaopai/personal-attachments";
 import type { DroppedFile } from "@/features/xiaopai/file-upload";
@@ -336,6 +337,7 @@ function ScopedPersonalXiaopai({ api, principalId, onCreated, initialRunId, onBa
       <RunProcess key={`progress:${run.run_id}`} value={run.process} api={api} root={root} presentation="conversation" onUnavailable={sourceUnavailable} />
       {(!active || !run.process || run.result?.summary) && <PaiResponse run={run} collapsedCitationIds={collapsedAnswerCitations(run.result?.result?.assistant, answerExclusions, run.run_id)} />}
       {!run.reverted && <MemoryUsage api={api} root={root} runId={run.run_id} status={run.status} />}
+      {!run.reverted && <MemoryCandidates api={api} root={root} runId={run.run_id} status={run.status} />}
 
       <RunReconciliation key={run.run_id} api={api} root={root} run={run} onSettled={async () => { await readRun(run.run_id); }} />
 

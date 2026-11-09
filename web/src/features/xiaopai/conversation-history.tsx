@@ -6,6 +6,7 @@ import { PaiMessage, PaiUnfinished, PaiResponse, PaiReplyDetails, PaiGoal, PaiHi
 import { ResearchResult } from "./research-result";
 import { RunProcess } from "./run-process";
 import { MemoryUsage } from "./memory-usage";
+import { MemoryCandidates } from "./memory-candidates";
 import type { RunProcessData } from "@/lib/run-process";
 import { assertHiddenRun, type PaiHiddenRun, type PaiSessionApi, type PaiRunStatus } from "@/lib/pai-sessions";
 
@@ -159,6 +160,7 @@ function History({
             <RunProcess key={`progress:${item.run_id}`} value={item.process} api={api} root={root} presentation="conversation" onUnavailable={onUnavailable} />
             <PaiResponse run={item} />
             {!item.reverted && <MemoryUsage api={api} root={root} runId={item.run_id} status={item.status} />}
+      {!item.reverted && <MemoryCandidates api={api} root={root} runId={item.run_id} status={item.status} />}
             <ResearchResult value={item.result?.result?.research} />
             {renderMaterials?.(item)}
             <PaiUnfinished items={item.result?.unfinished} />

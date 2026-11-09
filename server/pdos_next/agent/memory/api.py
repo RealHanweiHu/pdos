@@ -1,4 +1,4 @@
-"""Owner endpoints for M1 memory: mode switch, pin/hide, usage, tenant policy.
+"""Owner endpoints for personal memory: mode, pin/hide, usage, notes, candidates, policy.
 
 Every write is by the human owner acting for themself (AI identities are refused
 by the same database policies). Personal memory is not a business record, so
@@ -103,16 +103,40 @@ def usage(session, ctx, run):
               "in_catalog": str(row.run_id) in value.get("catalog", [])}
              for row, _state, scope, _receipts in kept]
     sessions = [item for item in value.get("sessions", [])]
+    notes = note_usage(session, value.get("notes") or [])
     return {
         "version": "memory-usage/v1",
         "run_id": str(run.id),
-        "count": len(items) + len(sessions),
+        "count": len(items) + len(sessions) + len(notes),
         "items": items,
         "sessions": [{"session_id": item} for item in sessions],
+        "notes": notes,
         "withheld": len(run_ids) - len(items),
         "retrieval": value.get("retrieval"),
-        "note": "这些是你本人以往的工作记录，只作背景，不是回答依据。",
+        "note": "这些是你本人以往的工作记录和你确认过的记忆条目，只作背景或口径，不是回答依据。",
     }
+
+
+def note_usage(session, used):
+    """Personal notes this Run used, as they are now: purged ones say only that."""
+    from .models import MemoryNoteDeletion
+    from .notes import KIND_LABELS, _latest
+
+    result = []
+    for item in used:
+        identity = UUID(item["note_id"])
+        if session.scalar(select(MemoryNoteDeletion.id).where(
+                MemoryNoteDeletion.note_id == identity)):
+            result.append({"note_id": item["note_id"], "deleted": True, "zone": item["zone"]})
+            continue
+        latest = _latest(session, identity)
+        if latest is None:
+            continue
+        result.append({"note_id": item["note_id"], "revision": item["revision"],
+                       "zone": item["zone"], "kind": latest.kind,
+                       "kind_label": KIND_LABELS[latest.kind], "text": latest.text,
+                       "changed_since": latest.revision != item["revision"]})
+    return result
 
 
 def router(*, transaction, context_dependency):
@@ -157,6 +181,85 @@ def router(*, transaction, context_dependency):
         with transaction(ctx, read_snapshot=True) as session:
             _human(session, ctx, None)
             return policy.view(policy.current(session))
+
+    @result.get("/v1/personal/memory-policy/statistics")
+    def reading_statistics(ctx=context_dependency):
+        # The administrator check takes a share lock, so this is not a read-only snapshot.
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return policy.statistics(session, ctx)
+
+    # M2a 本人记忆条目 (P86): the human owner only; AI identities are refused here
+    # and by the database policies.
+    from . import candidates, notes, settings
+
+    @result.get("/v1/personal/memory/notes")
+    def reading_notes(ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return notes.listing(session, ctx)
+
+    @result.get("/v1/personal/memory/notes/{note_id}/history")
+    def reading_history(note_id: UUID, ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return notes.history(session, ctx, note_id)
+
+    @result.post("/v1/personal/memory/notes/conflicts")
+    def checking_conflicts(data: notes.NoteDraft, ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return notes.conflicts(session, ctx, data)
+
+    @result.post("/v1/personal/memory/notes")
+    def creating_note(data: notes.CreateNote, ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return notes.create(session, ctx, data)
+
+    @result.post("/v1/personal/memory/notes/{note_id}/revisions")
+    def revising_note(note_id: UUID, data: notes.ReviseNote, ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return notes.revise(session, ctx, note_id, data)
+
+    @result.post("/v1/personal/memory/notes/{note_id}/deletion")
+    def deleting_note(note_id: UUID, data: notes.DeleteNote, ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return notes.purge(session, ctx, note_id, data)
+
+    @result.get("/v1/personal/memory/candidates")
+    def reading_candidates(ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return candidates.pending(session, ctx)
+
+    @result.post("/v1/personal/memory/candidates/{candidate_id}/decision")
+    def deciding_candidate(candidate_id: UUID, data: candidates.Decision,
+                           ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return candidates.decide(session, ctx, candidate_id, data)
+
+    @result.get("/v1/personal/agent-runs/{run_id}/memory-candidates")
+    @result.get("/v1/categories/{category_id}/agent-runs/{run_id}/memory-candidates")
+    def reading_run_candidates(run_id: UUID, ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return candidates.for_run(session, ctx, session.get(AgentRun, run_id))
+
+    @result.get("/v1/personal/memory/settings")
+    def reading_settings(ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return settings.view(settings.latest(session, ctx.requester_id), session)
+
+    @result.post("/v1/personal/memory/settings")
+    def changing_settings(data: settings.SettingInput, ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return settings.change(session, ctx, data)
 
     @result.post("/v1/personal/memory-policy")
     def changing_policy(data: policy.PolicyInput, ctx=context_dependency):

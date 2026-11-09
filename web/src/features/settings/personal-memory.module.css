@@ -1,0 +1,76 @@
+/* 我的记忆：沿用设置页的 token、8px 圆角与紧凑密度；亮暗两套主题都只用变量。 */
+.panel { max-width:800px; margin-block:28px; padding-top:24px; border-top:1px solid var(--border); min-width:0; }
+.panel h2 { font-weight:600; }
+.panel h3 { display:flex; align-items:baseline; gap:10px; font-weight:500; margin-bottom:8px; }
+.heading { display:flex; align-items:baseline; justify-content:space-between; gap:12px; }
+.note { color:var(--text-subtle); line-height:1.7; margin-block:8px 16px; }
+.meta { color:var(--text-subtle); font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+.hint { color:var(--text-subtle); font-size:11px; line-height:1.6; margin-block:4px; }
+.error { color:var(--destructive); font-size:12px; margin-top:6px; }
+.notice { color:var(--foreground); background:var(--primary-soft); border:1px solid var(--primary-border); border-radius:8px; padding:8px 10px; margin-bottom:12px; }
+.disabled { color:var(--text-subtle); background:var(--muted); border-radius:8px; padding:8px 10px; margin-bottom:12px; }
+.empty { color:var(--text-subtle); padding-block:12px; }
+.block { padding-block:12px; border-top:1px solid var(--border-soft); min-width:0; }
+.block:first-of-type { border-top:0; }
+.list { display:grid; min-width:0; }
+.row { padding-block:10px; border-bottom:1px solid var(--border-soft); min-width:0; }
+.row:last-child { border-bottom:0; }
+.row[data-state=replaced],.row[data-state=expired] { opacity:.75; }
+.rowMain { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:start; }
+.rowBody { min-width:0; }
+.rowActions { display:flex; gap:2px; flex-wrap:wrap; justify-content:flex-end; }
+.noteText { line-height:1.6; overflow-wrap:anywhere; }
+.chip { display:inline-flex; align-items:center; height:20px; padding:0 7px; border-radius:999px; font-size:11px; white-space:nowrap; background:var(--muted); color:var(--text-subtle); }
+.chip[data-kind=convention] { background:var(--primary-soft); color:var(--primary); }
+.chip[data-kind=alias] { border:1px solid var(--border); background:transparent; color:var(--foreground); }
+.state { display:inline-flex; margin-left:8px; padding:0 6px; border:1px solid var(--border); border-radius:999px; font-size:10px; color:var(--text-subtle); }
+.state[data-state=stale],.state[data-state=unavailable] { border-color:var(--primary-border); color:var(--primary); }
+.form { display:grid; gap:10px; margin-top:10px; padding:12px; border:1px solid var(--border); border-radius:8px; background:var(--surface); min-width:0; }
+.fields { display:grid; gap:10px; border:0; padding:0; margin:0; min-width:0; }
+.fields label,.mergeBox label { display:grid; gap:6px; min-width:0; }
+.fields :is(input:not([type=radio]):not([type=checkbox]),select,textarea),.mergeBox :is(select,textarea) { width:100%; min-height:34px; border:1px solid var(--border); border-radius:8px; padding:7px 10px; background:var(--background); color:var(--foreground); margin:0; font:inherit; }
+.fields textarea,.mergeBox textarea { resize:vertical; line-height:1.6; }
+.fields :is(input,select,textarea):focus-visible,.mergeBox :is(select,textarea):focus-visible,.choices input:focus-visible,.setting input:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+.kinds { display:flex; flex-wrap:wrap; gap:6px; }
+.kind { display:inline-flex !important; grid-template-columns:none; align-items:center; gap:6px; min-height:30px; padding:0 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; }
+.kind[data-checked=true] { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.kind input { position:absolute; opacity:0; width:1px; height:1px; }
+.kind:has(input:focus-visible) { outline:2px solid var(--ring); outline-offset:2px; }
+.aliasRow,.scopeRow { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; min-width:0; }
+.scopeRow > p { grid-column:1/-1; }
+.textLabel,.mergeBox { position:relative; }
+.counter { justify-self:end; color:var(--text-subtle); font-size:10px; font-family:var(--font-geist-mono),monospace; }
+.dateLabel input { max-width:220px; }
+.actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:10px; }
+.confirm { margin-top:8px; padding:10px 12px; border:1px solid var(--destructive); border-radius:8px; background:color-mix(in oklch, var(--destructive) 6%, transparent); line-height:1.6; }
+.history { margin-top:8px; padding:10px 12px; border-radius:8px; background:var(--surface-2); }
+.history ol { display:grid; gap:8px; margin-bottom:6px; }
+.history li { display:grid; gap:2px; overflow-wrap:anywhere; }
+.candidate { display:grid; gap:4px; margin-top:8px; padding:12px; border:1px solid var(--primary-border); border-radius:8px; background:var(--primary-soft); min-width:0; }
+.candidateTitle { display:flex; align-items:center; gap:8px; font-weight:500; }
+.quote { color:var(--text-subtle); font-size:11px; border-left:2px solid var(--primary-border); padding-left:8px; overflow-wrap:anywhere; }
+.conflict { display:grid; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--background); min-width:0; }
+.conflictTitle { font-weight:500; }
+.conflictList { display:grid; gap:6px; }
+.conflictList li { display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 8px; align-items:start; }
+.conflictList li .meta { grid-column:2; }
+.choices { display:flex; flex-wrap:wrap; gap:6px 16px; border:0; padding:0; margin:0; }
+.choices label { display:inline-flex; align-items:center; gap:6px; min-height:30px; cursor:pointer; }
+.choices input,.setting input { accent-color:var(--primary); width:16px; height:16px; margin:0; flex:none; }
+.mergeBox { display:grid; gap:6px; }
+.past { margin-top:8px; border-top:1px solid var(--border-soft); padding-top:10px; }
+.past summary { cursor:pointer; color:var(--text-subtle); min-height:30px; display:flex; align-items:center; }
+.setting { margin-top:16px; padding-top:14px; border-top:1px solid var(--border); }
+.setting label { display:flex; align-items:flex-start; gap:8px; line-height:1.6; cursor:pointer; }
+.setting label input { margin-top:3px; }
+@media(max-width:540px) {
+  .rowMain { grid-template-columns:auto minmax(0,1fr); }
+  .rowActions { grid-column:1/-1; justify-content:flex-start; margin-left:-8px; }
+  .aliasRow,.scopeRow { grid-template-columns:1fr; }
+  .panel { margin-top:20px; }
+  .dateLabel input { max-width:none; }
+}
+@media(pointer:coarse) {
+  .fields :is(input:not([type=radio]):not([type=checkbox]),select,textarea),.mergeBox :is(select,textarea) { min-height:44px; }
+  .kind,.choices label,.past summary { min-height:44px; }
+}

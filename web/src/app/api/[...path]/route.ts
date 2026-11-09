@@ -237,7 +237,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const workState = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-sessions\/[a-f0-9-]{36}\/work-state(?:\/context-options)?$/i.test(forwardPath.join("/"));
   const enterpriseSearch = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/enterprise-search$/i.test(forwardPath.join("/"));
   // P85 personal memory: the owner's own switch, pin/hide, usage and the tenant idle limit.
-  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/memory-usage|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy)$/i.test(forwardPath.join("/"));
+  // P86 (M2a): the owner's notes, candidates and setting; the administrator's switches and counts.
+  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|settings))$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
   const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
@@ -303,7 +304,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       query.set(key, value);
     }
   } else if (memory) {
-    const methods = pathname.endsWith("/memory-usage") ? ["GET"] : pathname.endsWith("/marks") ? ["POST"] : ["GET", "POST"];
+    const methods = /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|deletion|decision)$/.test(pathname) ? ["POST"] : ["GET", "POST"];
     if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "记忆入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "记忆只按本人与当前会话读取。" }, { status: 422 });
   } else if (projectSets) {

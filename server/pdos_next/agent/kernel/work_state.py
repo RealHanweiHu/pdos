@@ -222,7 +222,13 @@ def _record_finish(session, run, result):
     )
     if pending:
         merge_pending(body, pending)
-    rejected = [*rejected, *paraphrase_rejected]
+    from pdos_next.agent.memory.candidates import admit as admit_memory
+
+    memory_rejected = admit_memory(
+        session, run, proposals.get("memory_candidates") if isinstance(proposals, dict) else None,
+        goals, page_material=page_material(goals),
+    )
+    rejected = [*rejected, *paraphrase_rejected, *memory_rejected]
     body["root_goal"] = body["root_goal"] or {
         "run_id": str(rows[0].id),
         "text": user_goal(rows[0].goal),

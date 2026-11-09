@@ -178,6 +178,39 @@ class EmbeddingActivities:
             "truncated": any(row["truncated"] for row in results),
         }
 
+    @activity.defn(name="embed_memory_episodes")
+    def embed_memory(self, reference):
+        """P85 第 3 项: the episode owner's own words, as the owner, in a registered graph."""
+        from pdos_agent_runtime.graph import registered_graph_context
+
+        from pdos_next.agent.memory.vectors import execute, owner_context
+        from pdos_next.agent.memory.vectors import reference as memory_reference
+
+        ref = memory_reference(reference)
+        ctx = owner_context(ref)
+        graph = StateGraph(dict)
+
+        def dispatch(_state):
+            return execute(self.transaction, ctx, reference, secrets=self.ports.secrets,
+                           pricing_for=self.ports.pricing_for, client=self.ports.client)
+
+        graph.add_node("memory_vector_dispatch", dispatch)
+        graph.add_edge(START, "memory_vector_dispatch")
+        graph.add_edge("memory_vector_dispatch", END)
+        from pdos_next.core.service import digest
+
+        thread = digest([str(item) for item in ref["episode_ids"]])[:32]
+        with PostgresSaver.from_conn_string(self.checkpoint) as saver:
+            compiled = graph.compile(checkpointer=saver)
+            config = {"configurable": {
+                "thread_id": f"xiaopai:memory-vectors:{ctx.tenant_id}:{ctx.requester_id}:{thread}",
+            }}
+            with registered_graph_context("xiaopai"):
+                saved = compiled.get_state(config)
+                if saved.values and not saved.next:
+                    return saved.values
+                return compiled.invoke(None if saved.values else {"started": True}, config)
+
     @activity.defn(name="embed_enterprise_batch")
     def embed(self, reference):
         from pdos_agent_runtime.graph import registered_graph_context

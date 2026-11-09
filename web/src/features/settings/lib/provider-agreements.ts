@@ -1,6 +1,7 @@
 export const agreementCategories = {
   public: "公开资料", synthetic: "合成资料", internal: "内部资料",
   customer: "客户身份与资料", customer_original: "客户原件全文",
+  owner_session: "本人会话记录",
 } as const;
 export type AgreementCategory = keyof typeof agreementCategories;
 export type AgreementRequest = {

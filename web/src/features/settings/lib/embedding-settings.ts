@@ -1,7 +1,7 @@
 /** Independent embedding metadata and original COMMON T1 request binding. */
 import { proofClockCurrent } from "@/lib/proof-clock";
 
-export const embeddingCategories = ["public", "synthetic", "internal", "customer", "customer_original"] as const;
+export const embeddingCategories = ["public", "synthetic", "internal", "customer", "customer_original", "owner_session"] as const;
 export type EmbeddingCategory = typeof embeddingCategories[number];
 export type EmbeddingMetadata = { base_url: string; model: string; model_version: string; dimensions: number; connection_id: string; data_categories: EmbeddingCategory[]; include_customer_original: boolean };
 export type EmbeddingProfile = { profile_id: string; profile_version_id: string; revision: number; budget_revision: number; metadata: EmbeddingMetadata; enabled: boolean; credential_status: "bound" | "missing" };
@@ -20,7 +20,7 @@ function same(a: unknown, b: unknown): boolean {
   if (record(a) && record(b)) return Object.keys(a).length === Object.keys(b).length && Object.keys(a).every(key => key in b && same(a[key], b[key]));
   return a === b;
 }
-export const embeddingCategoryName = (value: string) => ({ public: "公开资料", synthetic: "合成资料", internal: "内部资料", customer: "客户资料", customer_original: "客户原件" } as Record<string, string>)[value] ?? "未识别类别";
+export const embeddingCategoryName = (value: string) => ({ public: "公开资料", synthetic: "合成资料", internal: "内部资料", customer: "客户资料", customer_original: "客户原件", owner_session: "本人会话记录" } as Record<string, string>)[value] ?? "未识别类别";
 export const embeddingStateName = (value: string) => ({ queued: "待处理", scheduled: "待处理", pending: "待处理", started: "处理中", running: "处理中", completed: "已完成", succeeded: "已完成", failed: "失败", skipped: "已跳过", unavailable: "不可用", unknown: "结果与用量待核对", unknown_usage: "用量待核对", reconciled: "已对账", retired: "已退役", cancelled: "已取消" } as Record<string, string>)[value] ?? "待核对状态";
 export function embeddingDollars(value: number) { return (value / 1_000_000).toFixed(6).replace(/\.?0+$/, "") || "0"; }
 export function embeddingMicroDollars(value: string): number {

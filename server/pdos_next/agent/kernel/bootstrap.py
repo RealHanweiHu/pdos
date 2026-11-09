@@ -367,9 +367,11 @@ class Bootstrap:
 
                 if run.versions.get("work_state"):
                     check_frozen(session, run, self.commands.context(scope))
+                from pdos_next.agent.memory.assemble import recheck as recheck_notes
                 from pdos_next.agent.memory.recall import recheck_frozen
 
                 recheck_frozen(session, run)
+                recheck_notes(session, run)
                 frozen = run.versions.get("conversation_memory")
                 if run.continued_from_id is None or frozen is None:
                     return
@@ -750,7 +752,9 @@ class Bootstrap:
         adapters.read_tools["conversation.history"] = self.conversation_history
         from pdos_next.agent.memory.tool import memory_search
 
-        adapters.read_tools["memory.search"] = memory_search(self.store)
+        adapters.read_tools["memory.search"] = memory_search(
+            self.store, query_embedding=lambda: assistant_adapter.query_embedding,
+        )
         from .extract_adapter import ExtractReadAdapter
         from .extract_graph import ExtractGraph
         from .extract_service import ExtractionService

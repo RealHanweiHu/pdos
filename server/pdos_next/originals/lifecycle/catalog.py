@@ -5468,8 +5468,51 @@ COVERED_COLUMNS.update({
         "request_sha256", "id", "tenant_id", "created_at",
     ),
     "memory_tenant_policies": (
-        "revision", "work_state_idle_days", "set_by", "request_key", "request_sha256",
+        "revision", "work_state_idle_days", "notes_enabled", "proposals_enabled", "set_by",
+        "request_key", "request_sha256", "id", "tenant_id", "created_at",
+    ),
+})
+# Personal memory notes (M2a, P86). Notes are the owner's own words; the owner's
+# purge deletes every version and its source candidate and leaves a tombstone.
+# Episode vectors and their receipts derive only from the owner's own episodes.
+COVERED_COLUMNS.update({
+    "memory_notes": ("owner_id", "id", "tenant_id", "created_at"),
+    "memory_note_versions": (
+        "owner_id", "note_id", "revision", "kind", "text", "scope_kind", "scope_id",
+        "category_id", "alias_term", "alias_canonical", "target_kind", "target_id",
+        "target_version", "status", "valid_until", "replaced_by", "origin", "candidate_id",
+        "request_key", "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "memory_note_deletions": (
+        "owner_id", "note_id", "purged_versions", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+    "memory_candidates": (
+        "owner_id", "session_id", "run_id", "candidate_key", "origin", "kind", "text",
+        "scope_kind", "scope_id", "category_id", "alias_term", "alias_canonical", "conflicts",
+        "trigger", "prompt_version", "expires_at", "id", "tenant_id", "created_at",
+    ),
+    "memory_candidate_decisions": (
+        "owner_id", "candidate_id", "decision", "note_id", "request_key", "request_sha256",
         "id", "tenant_id", "created_at",
+    ),
+    "memory_owner_settings": (
+        "owner_id", "revision", "proactive_off", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+    "memory_embedding_calls": (
+        "owner_id", "profile_version_id", "state", "revision", "episode_ids",
+        "character_count", "input_digest", "data_categories", "egress", "pricing",
+        "reserved_tokens", "reserved_micro_usd", "charged_micro_usd", "input_tokens",
+        "provider_request_id", "id", "tenant_id", "created_at",
+    ),
+    "memory_episode_vectors": (
+        "owner_id", "session_id", "episode_id", "profile_version_id", "call_id", "text_digest",
+        "dimensions", "vector", "norm", "id", "tenant_id", "created_at",
+    ),
+    "memory_vector_profiles": (
+        "profile_id", "profile_version_id", "enabled", "categories", "id", "tenant_id",
+        "created_at",
     ),
 })
 # Human sign-in (D214/D86/D192): identity and session bookkeeping, no source body.

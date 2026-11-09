@@ -51,3 +51,15 @@ test("no line when nothing was used, the run is unfinished, or the read is refus
   assert.equal(await view(async () => { throw Object.assign(Error("denied"), { status: 403 }); }).settle(), null);
   assert.equal(await view(async () => ({ ...usage, run_id: "other" })).settle(), null);
 });
+
+test("used notes are listed by zone and a purged note shows no text", async () => {
+  const value = text(await view(async () => ({ ...usage, count: 4, notes: [
+    { note_id: "n1", zone: "constraints", kind_label: "口径", text: "回答先给结论" },
+    { note_id: "n2", zone: "aliases", kind_label: "叫法", text: "我说“气嘴”指气门嘴", changed_since: true },
+    { note_id: "n3", zone: "background", deleted: true },
+  ] })).settle());
+  assert.match(value, /用到了 4 条记忆/);
+  assert.match(value, /口径 · 回答先给结论/);
+  assert.match(value, /叫法 · 我说“气嘴”指气门嘴（之后已修改）/);
+  assert.match(value, /已删除，正文已清除/);
+});

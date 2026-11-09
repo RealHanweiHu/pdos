@@ -224,6 +224,8 @@ async def main(
     from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
     from pdos_next.agent.memory.index import dispatch_pending as dispatch_memory_index
     from pdos_next.agent.memory.index_workflow import MemoryEpisodeIndex
+    from pdos_next.agent.memory.vector_workflow import MemoryEpisodeVectors
+    from pdos_next.agent.memory.vectors import dispatch_pending as dispatch_memory_vectors
 
     sender = TemporalSender(
         client,
@@ -293,6 +295,15 @@ async def main(
                     logging.getLogger(__name__).warning(
                         "Memory index discovery unavailable: %s", type(error).__name__
                     )
+                try:
+                    # P85 第 3 项: only when the profile selects “本人会话记录”.
+                    await dispatch_memory_vectors(
+                        dispatch_engine, tenant, client, task_queue=sender.task_queue,
+                    )
+                except Exception as error:
+                    logging.getLogger(__name__).warning(
+                        "Memory vector discovery unavailable: %s", type(error).__name__
+                    )
                 if dingtalk_runtime is not None:
                     await channel_sender.discover(tenant)
             try:
@@ -321,6 +332,7 @@ async def main(
                 EnterpriseEmbeddingRebuild,
                 EnterpriseRebuild,
                 MemoryEpisodeIndex,
+                MemoryEpisodeVectors,
                 TenantMaintenance,
             ],
             activities=[
@@ -338,6 +350,7 @@ async def main(
                 activities.enterprise_projection,
                 embedding_activities.plan,
                 embedding_activities.embed,
+                embedding_activities.embed_memory,
                 activities.enterprise_rebuild_plan,
                 activities.enterprise_rebuild_batch,
                 activities.memory_episode_index,
