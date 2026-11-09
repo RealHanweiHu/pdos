@@ -189,11 +189,13 @@ def _bom_view(s, ctx, product_id, row, cache=None):
                 "loss_rate": _decimal(line.loss_rate),
                 "critical": line.critical,
                 "notes": line.notes,
+                "reference_designators": list(line.reference_designators or ()),
             }
         )
         if part_view["source_status"] != "current":
             result["source_status"] = "needs_recheck"
     result["lines"] = lines
+    result["import_basis"] = deepcopy(row.import_basis)
     return result
 
 
@@ -327,6 +329,11 @@ def _inputs(s, ctx, product_id, payload):
         read_groups.append(previous.required_source_read_set)
         result["previous"] = previous
     if isinstance(payload, EngineeringBomRevisePayload):
+        if payload.import_basis is not None:
+            # The imported original is pinned like any other source of this revision.
+            basis = payload.import_basis
+            pinned = {"artifact_id": str(basis.artifact_id)}
+            read_groups.append([{**pinned, "expected_revision": basis.expected_revision}])
         for line in payload.lines:
             if line.part_id is None or line.part_id in result["parts"]:
                 continue
@@ -393,6 +400,13 @@ def _checked_inputs(s, ctx, command, product, payload):
         lines = source.content.splitlines()
         if reference["line"] > len(lines) or reference["quote"] not in lines[reference["line"] - 1]:
             raise DomainError("MISSING_REQUIRED_EVIDENCE", "引用须在指定原文行精确定位。")
+    inputs["import_record"] = None
+    if isinstance(payload, EngineeringBomRevisePayload) and payload.import_basis is not None:
+        from .bom_import import verify
+
+        previous = inputs["previous"]
+        before = get_bom(s, ctx, product.id, previous.id)[1] if previous else None
+        inputs["import_record"] = verify(s, ctx, product.id, payload, before)
     return inputs
 
 
@@ -476,6 +490,10 @@ def semantic(payload):
             for field in ("depends_on", "bom_line_keys"):
                 if field in item:
                     item[field] = sorted(item[field])
+    if result.get("import_basis") is not None:
+        basis = result["import_basis"]
+        basis["columns"] = sorted(basis["columns"], key=lambda entry: entry["field"])
+        basis["dispositions"] = sorted(basis["dispositions"], key=lambda entry: entry["row"])
     return result
 
 
@@ -525,9 +543,11 @@ def _after(s, ctx, product, payload, inputs):
                     "loss_rate": _decimal(line.loss_rate),
                     "critical": line.critical,
                     "notes": line.notes,
+                    "reference_designators": list(line.reference_designators),
                 }
             )
         result["lines"] = lines
+        result["import_basis"] = inputs.get("import_record")
     elif isinstance(payload, EngineeringConfigurationCreatePayload):
         result.update(
             {
@@ -599,15 +619,24 @@ def preview_view(s, ctx, command, product, payload):
             )
         )
         before = getter(s, ctx, product.id, previous.id)[1]
-    return {
+    after = _after(s, ctx, product, payload, inputs)
+    review = {
         "operation": command.operation,
         "name": payload.name,
         "visibility": payload.visibility,
         "before": before,
-        "after": _after(s, ctx, product, payload, inputs),
+        "after": after,
         "reason": payload.reason,
         "effect": "追加不可变配置草稿并固定物料、版本与来源；不构成批准、试制资格或正式放行。",
     }
+    if isinstance(payload, EngineeringBomRevisePayload):
+        from .bom_diff import compare
+        from .bom_rules import rule_card
+
+        # The whole version is confirmed once against its fixed predecessor (P79 D98).
+        review["diff"] = compare(before["lines"] if before else (), after["lines"])
+        review["rules"] = rule_card(after["lines"])
+    return review
 
 
 def apply(s, ctx, command, product, payload):
@@ -657,6 +686,8 @@ def apply(s, ctx, command, product, payload):
                 "operations": semantic(payload)["operations"],
             }
         )
+    if isinstance(payload, EngineeringBomRevisePayload):
+        values["import_basis"] = inputs["import_record"]
     row = model(**values)
     s.add(row)
     s.flush()
@@ -693,6 +724,7 @@ def apply(s, ctx, command, product, payload):
                     loss_rate=line.loss_rate,
                     critical=line.critical,
                     notes=line.notes,
+                    reference_designators=list(line.reference_designators),
                 )
             )
         s.flush()

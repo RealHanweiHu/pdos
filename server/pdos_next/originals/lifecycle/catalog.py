@@ -5628,3 +5628,10 @@ COVERED_COLUMNS.update({
         "id", "tenant_id", "created_at",
     ),
 })
+
+# D98 BOM import: designators are part of a line; the import basis names the parsed
+# original (also in the revision's required source read set), its mapping and dispositions.
+COVERED_COLUMNS.update({
+    "bom_lines": (*COVERED_COLUMNS["bom_lines"], "reference_designators"),
+    "bom_revisions": (*COVERED_COLUMNS["bom_revisions"], "import_basis"),
+})

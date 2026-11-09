@@ -31,6 +31,8 @@ from pdos_next.originals.object_storage import ObjectRef, StorageFailure
 MEDIA = {
     ".txt": "text/plain",
     ".md": "text/markdown",
+    # D98: CSV is UTF-8 text on the same isolated text path; BOM import splits its lines.
+    ".csv": "text/plain",
     ".pdf": "application/pdf",
     ".xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
@@ -89,7 +91,7 @@ def upload_contents(data):
     if not media:
         raise DomainError(
             "UNSUPPORTED_MEDIA_TYPE",
-            "当前可处理UTF-8文本、PDF、XLSX、DOCX和照片（JPG、PNG、WebP、HEIC）。",
+            "当前可处理UTF-8文本、CSV、PDF、XLSX、DOCX和照片（JPG、PNG、WebP、HEIC）。",
             422,
         )
     try:

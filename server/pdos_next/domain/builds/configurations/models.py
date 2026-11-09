@@ -76,7 +76,16 @@ def revision_constraints(table):
 
 class BomRevision(_Revision, Base):
     __tablename__ = "bom_revisions"
-    __table_args__ = revision_constraints(__tablename__)
+    # D98: the parsed original, mapping and per-row dispositions an import used.
+    # none_as_null: "no import" is SQL NULL, never a JSON null the check would refuse.
+    import_basis: Mapped[dict | None] = mapped_column(JSONB(none_as_null=True))
+    __table_args__ = (
+        *revision_constraints(__tablename__),
+        CheckConstraint(
+            "import_basis IS NULL OR jsonb_typeof(import_basis) = 'object'",
+            name="ck_bom_revisions_import_basis",
+        ),
+    )
 
 
 class BomLine(Row, Base):
@@ -91,6 +100,8 @@ class BomLine(Row, Base):
     loss_rate: Mapped[Decimal | None] = mapped_column(Numeric(38, 12))
     critical: Mapped[bool] = mapped_column(Boolean)
     notes: Mapped[str | None] = mapped_column(Text)
+    # D98: reference designators in source order; duplicates are a rule-card finding.
+    reference_designators: Mapped[list] = mapped_column(JSONB, default=list)
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "bom_id", "key"),
         ForeignKeyConstraint(
@@ -103,6 +114,10 @@ class BomLine(Row, Base):
         ),
         CheckConstraint("quantity IS NULL OR (quantity > 0 AND unit IS NOT NULL)"),
         CheckConstraint("loss_rate IS NULL OR loss_rate >= 0"),
+        CheckConstraint(
+            "jsonb_typeof(reference_designators) = 'array'",
+            name="ck_bom_lines_reference_designators",
+        ),
     )
 
 

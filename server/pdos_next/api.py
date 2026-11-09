@@ -35,6 +35,7 @@ from pdos_next.core.service import (
     receipt_view,
     require_access,
 )
+from pdos_next.domain.builds.configurations.schemas import BomImportRequest
 from pdos_next.domain.builds.start.schemas import BuildAssessmentPayload
 from pdos_next.domain.categories.products.definitions import list_definitions
 from pdos_next.domain.manufacturing.cost_execution.schemas import CostCaptureInput
@@ -1078,6 +1079,42 @@ def create_app(
             category_id=ctx.category_id,
         ) as s:
             return list_configurations(s, ctx, product_id)
+
+    @app.get(
+        "/v1/categories/{category_id}/products/{product_id}/configurations/boms/{bom_id}/review"
+    )
+    def bom_review(product_id: UUID, bom_id: UUID, ctx: Context = auth_dependency):
+        """D98/D282: this version against its fixed predecessor, plus the rule card."""
+        from pdos_next.domain.builds.configurations.bom_diff import get_bom_review
+
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            return get_bom_review(s, ctx, product_id, bom_id)
+
+    @app.post("/v1/categories/{category_id}/products/{product_id}/configurations/bom-import/inputs")
+    def bom_import_inputs(
+        product_id: UUID,
+        data: BomImportRequest,
+        ctx: Context = auth_dependency,
+    ):
+        """READ: deterministic conversion of a parsed original; saving is engineering.bom.revise."""
+        from pdos_next.domain.builds.configurations.bom_import import inputs
+
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            return inputs(s, ctx, product_id, data)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/builds")
     def builds(product_id: UUID, project_id: UUID | None = None, ctx: Context = auth_dependency):

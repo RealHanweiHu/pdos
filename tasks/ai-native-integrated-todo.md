@@ -160,6 +160,11 @@ W3b · NPI 业务域（对照 PLM/NPI 软件）
 - D96 ✅ 采纳→W8（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）私有提案在运行收尾时预填 promote，不放宽 K5/I22（B6）。
 - D97 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）模具记录与验收：不新增验收命令（B12）。
 - D98 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）BOM 导入与版本差异，加 BOM 确定性规则卡（B13、F35；对标 OpenBOM、Aras）。
+  - 11-09 部分实现（worktree `hopeful-joliot-438789`，本地提交未推送）：
+    - 可用：XLSX/CSV 原件经既有上传、扫描与隔离解析后，`POST …/configurations/bom-import/inputs`（READ）按表头同义词确定性建议列映射并逐行转换；不能照原样导入的行（数量非正、缺单位、公式、ERP 料号与已有物料一致等）须逐条处置（跳过 / 建新物料 / 关联已有物料）。保存仍走 `engineering.bom.revise`（T1，整版一次确认），载荷带 `import_basis`，服务端确认时重做转换，行不一致即拒；原件、映射与逐行处置随版本存档。BOM 行新增位号；同内部编号复用可见物料，ERP 料号只作关联提示。规则卡四条（重复位号、位号数与用量不符、缺单位、数量非正或未知），确定性、不经模型、只提示不阻止保存。CSV 按 UTF-8 文本走同一解析路径（不改隔离容器）。
+    - 迁移：占位 `s0_0900`（down `s0_0869`），只给 `bom_lines` 加 `reference_designators`、`bom_revisions` 加 `import_basis`，有数据时拒绝降级。
+    - 验证：无库 13 项；PG 2 项端到端（导入→处置→篡改被拒→保存→续版差异→导出）加受影响 31 项；前端 tsc、eslint、相关 `.mjs` 276 项；合同导出（只增 2 条读取路径）与校验通过。浏览器走查未做。
+    - 余项：D430 小Pai 建议列映射（改模型可见工具，需走 Prompt A/B）；D431 “替代料无资格”规则待协调会话定口径（A/B/C 已发）；D432 浏览器亮暗与 375px 走查。
 - D99 ✅ 采纳→W7（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）项目内的品类知识只读入口，不改权限（B14、G-31）。
 - D100 ✅ 采纳→W6、W9：只在挡住下一个冻结点或阶段节点时推送（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）未知项要有责任人和期限，但只在它挡住下一个不可逆动作时才推到人面前（9a1ab768 T15）。
 - D101 ✅ PCN 子流程采纳→W9；情报源〔延后：有可接入的数据源时〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）供方变更（PCN）子流程；供应链情报源（C10；对标 Arena SCI、Cofactr）。
@@ -800,7 +805,7 @@ W3c · 想法已变但没有记录
 - D279 ✅ 11-08 随 D37 ⑤：项目导出新增“讨论与评论”表，按读者当前受众过滤（客户私有文档下的评论对无权者不导出），撤回内容只导出“已撤回”，提及标记导出为“@姓名”；PG 用例 `test_customer_private_document_comments_follow_its_audience`。原记录：讨论导出（确认稿 P41 第 7 项并入 D56）：P34 讨论与对象评论尚未实现，没有可导出的数据。
 - D280 真实小Pai 运行写入的行在导出中标“AI 起草”，端到端 PG 未验证。原因是没有可复用的 `work_management` T0/T1 运行夹具（候选准备要走企业检索跟进上下文）。本次覆盖到的：真实版本行加“哪张回执算 AI”替身的字段级判定，以及真实 agent 主体识别。下次有小Pai 建任务或 BOM 候选的 PG 夹具时补一条。
 - D281 〔你〕隐式元数据（自定义文档属性 `AIGC`，字段名照 GB 45438-2025 文件元数据要素）是否满足合规要求，未做合规核对。（11-08 用户已确认导出按读者本人 READ 办理、不走 T2，原第二点关闭；所有导出都带显式加隐式标识。）
-- D282 BOM 版本差异的页面视图（D98）仍未做；本次只有导出。差异计算暂放在 `domain/exports/views.py`，D98 落地时移到配置领域，由页面和导出共用。
+- D282 ✅ 11-09（随 D98）差异计算移到 `domain/builds/configurations/bom_diff.py`，页面 `GET …/configurations/boms/{bom_id}/review` 与 Excel 导出共用；页面在 BOM 版本记录里显示增删改、用量与位号变化及规则卡，导出增加位号列。原记录：BOM 版本差异的页面视图（D98）仍未做；本次只有导出。差异计算暂放在 `domain/exports/views.py`，D98 落地时移到配置领域，由页面和导出共用。
 - D283 导出审计只能由导出人本人和租户管理员经数据库策略读取，没有查看页面或接口；需要审计查看时再补（管理员页）。
 
 **W10 阶段验收检查点（验证欠账；集中做，放在 W6–W9 之后）**
