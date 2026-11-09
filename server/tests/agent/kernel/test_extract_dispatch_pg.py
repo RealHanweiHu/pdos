@@ -76,7 +76,7 @@ def proposal_quote(work, version_id, quote):
 
 def fixture(
     work, security_work, *, rows_factory, extra_upload=False, skill_event=True,
-    extract_arguments=None, uploader=None, mount_quote=None,
+    extract_arguments=None, uploader=None, mount_quote=None, active_prompt=False,
 ):
     owner = Bootstrap(work.engine)
     root_id, version_id = (uploader or uploaded)(work, security_work)
@@ -143,7 +143,7 @@ def fixture(
                 ),
             )
     skill = owner.catalog._skills["rfq_extraction"]
-    _, prompt_identity = PromptCatalog().active.compose(owner.catalog.index)
+    active_system, prompt_identity = PromptCatalog().active.compose(owner.catalog.index)
     with Session(work.admin) as session, session.begin():
         if (
             session.scalar(
@@ -278,7 +278,9 @@ def fixture(
     with registered_graph_context("xiaopai"):
         turn = host.model(
             scope,
-            system="frozen synthetic main prefix",
+            # The qualification above binds the active prompt, as production does
+            # (graph.py); a later T0 write qualifies only with that same prefix.
+            system=active_system if active_prompt else "frozen synthetic main prefix",
             messages=[{"role": "user", "content": json.dumps(context, ensure_ascii=False)}],
             tools=disclosure(
                 owner.registry, operations=binding_operations(owner.catalog, bindings),

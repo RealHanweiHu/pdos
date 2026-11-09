@@ -97,7 +97,8 @@ def fixture():
     )
     data = asdict(scope)
     data["id"] = data.pop("run_id")
-    for key in ("isolation", "artifact_ids", "trigger"):
+    # RunScope.citation_ids (child-run citation scope) has no AgentRun column.
+    for key in ("isolation", "artifact_ids", "citation_ids", "trigger"):
         data.pop(key)
     data["data_categories"], data["customer_identities"] = ["public"], []
     session = MemorySession()
