@@ -96,8 +96,12 @@ def test_native_derivation_uses_latest_parent_in_its_actual_variant_lineage(work
     from migrations.schema_s0_0756 import DOWNGRADE_SQL
 
     definition_sql = "SELECT pg_get_functiondef('m3_derivation_scope_atom()'::regprocedure)"
+    version_sql = "SELECT version_num FROM alembic_version"
     with Session(work.admin) as session:
         guard = session.scalar(text(definition_sql))
+        # Written when s0_0756 was head; the refused DOWN must leave whatever head
+        # the database is at, and the accepted guard, unchanged.
+        version = session.scalar(text(version_sql))
     with pytest.raises(DBAPIError) as downgrade:
         with Session(work.admin) as session, session.begin():
             session.execute(text("SET LOCAL ROLE pdos_next_owner"))
@@ -107,5 +111,5 @@ def test_native_derivation_uses_latest_parent_in_its_actual_variant_lineage(work
                 )
     assert downgrade.value.orig.sqlstate == "23514"
     with Session(work.admin) as session:
-        assert session.scalar(text("SELECT version_num FROM alembic_version")) == "s0_0756"
+        assert session.scalar(text(version_sql)) == version
         assert session.scalar(text(definition_sql)) == guard
