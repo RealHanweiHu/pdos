@@ -451,7 +451,13 @@ def create_app(
     from pdos_next.domain.my_work.notifications.api import register_routes as register_notes
     from pdos_next.domain.projects.discussions.api import register_routes as register_discussions
 
-    register_discussions(app, engine, auth_dependency)
+    # @小Pai in a shared thread starts the one 小Pai workflow (D37 ⑥).
+    register_discussions(
+        app,
+        engine,
+        auth_dependency,
+        agent_ports=agent_api_ports or kernel_bootstrap.api_ports(kernel_temporal),
+    )
     register_notes(app, engine, auth_dependency, auth_engine)
     from pdos_next.domain.my_work.attention_api import register_routes as register_attention
 

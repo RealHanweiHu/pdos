@@ -1186,7 +1186,7 @@
       "executor": "named_human",
       "event": null,
       "record": "discussion_messages",
-      "purpose": "仅人工：具名本人在项目讨论或对象评论（任务、文档）中发言，含 @成员、@角色、@全体（限负责人）与 @任务引用；被提及的人须能看到所挂对象，提及只通知并使其关注该串，不授予访问权、不构成分派。评论记下对象当时的版本。讨论不构成决定、承诺或批准。小Pai 身份对这些表零权限，@小Pai 在共享串的运行属 W6 ⑥。",
+      "purpose": "仅人工：具名本人在项目讨论或对象评论（任务、文档）中发言，含 @成员、@角色、@全体（限负责人）与 @任务引用；被提及的人须能看到所挂对象，提及只通知并使其关注该串，不授予访问权、不构成分派。评论记下对象当时的版本。讨论不构成决定、承诺或批准。小Pai 身份对这些表零权限，@小Pai 由同一条消息在同一事务中发起 ai.thread.invoke。",
       "api_bindings": [
         {
           "method": "POST",
@@ -1343,6 +1343,74 @@
       ],
       "implementation": "implemented_local_endpoint",
       "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "ai.thread.invoke",
+      "write_tier": "READ",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_agent_requests",
+      "purpose": "在项目讨论或对象评论（任务、文档）中 @小Pai：发帖的同一事务按发起人本人发起一次小Pai 运行，范围由服务器从所挂对象的项目绑定，不从消息文字推断；每位发起人在一个串里各有一个会话（P52），截至 @ 时的串内公开内容冻结为本轮的动态背景，个人记忆不进入共享串。运行经唯一注册的小Pai 工作流（Temporal → LangGraph）执行，写入按各命令原档位。只经交接通道可见的人与看不到对象的人不能发起；回复的读取只对发起人，或对以链接分享后逐人复核了全部来源的读者。收件箱群聊 @小Pai 属第二批（P41 第 4 项）。",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/agent-requests/{request_id}/reply"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 4、5 项、P41 第 4、9 项、P52、P54、P62、P64（用户 2026-11-01—11-02）；欠债总表 D37 ⑥"
+    },
+    {
+      "operation": "discussion.ai_reply.deliver",
+      "write_tier": "T0",
+      "executor": "xiaopai_run_host",
+      "event": null,
+      "record": "discussion_messages",
+      "purpose": "运行投递（P54）：会话产出的投递，不是业务写入，不需要 T0 资格；只由 worker 在运行结束后、作为注册小Pai 执行图的确定性节点执行，模型不能作为工具调用。按发起人重建本次运行读取的全部来源，再按串内每位当前受众本人的权限逐一复核；全部可见才把运行自己的最终回复（由 SQL 从运行结果读取，不接受传入正文）以小Pai 署名、注明应某某请求贴回串里，否则只贴固定提示“小Pai 已回复发起人”。核对回执只记人数与来源种类。",
+      "implementation": "implemented_local_worker",
+      "source": "设计确认稿 P34 第 4、5 项、P41 第 4、9 项、P52、P54、P62、P64（用户 2026-11-01—11-02）；欠债总表 D37 ⑥"
+    },
+    {
+      "operation": "discussion.ai_reply.share",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_agent_requests",
+      "purpose": "仅发起人本人分享只给自己看的小Pai 回复（P62）：读取过客户私有资料的只能分享链接，读者打开时按本人权限复核全部来源；其他情形分享正文须先确认“正文可能含有部分成员无权看到的内容”，回执记录分享人、分享范围与未覆盖的来源种类。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/agent-requests/{request_id}/share"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 4、5 项、P41 第 4、9 项、P52、P54、P62、P64（用户 2026-11-01—11-02）；欠债总表 D37 ⑥"
+    },
+    {
+      "operation": "discussion.ai_reply.retract",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "record": "discussion_message_versions",
+      "purpose": "撤回小Pai 在串里的回复、提示或分享（P54 第 3 项）：仅该次请求的发起人或项目负责人；显示“已撤回”，版本与审计保留，不硬删除。小Pai 的回复不能编辑。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/discussions/{thread_id}/messages/{message_id}/retract"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P34 第 4、5 项、P41 第 4、9 项、P52、P54、P62、P64（用户 2026-11-01—11-02）；欠债总表 D37 ⑥"
+    },
+    {
+      "operation": "ai.mention.notify",
+      "write_tier": "T0",
+      "executor": "xiaopai",
+      "event": null,
+      "record": "notifications",
+      "purpose": "小Pai 主动提及（P34 第 5 项）：只限分派通知（受派人，P53）、补充信息和自动化规则例外；发起人或规则负责人与被提及人此刻都须能看到对象；同一对象、同一原因在冷却期内只发一条，已读也不重复（P41 第 9 项缺省 1 个工作日，工作日历接通前按周一至周五，租户可改另登记 D391）；自动写入成功时不提及其他人。规则触发的提及署名“小Pai · 按某某的规则”。补充信息时提及谁待用户拍板（D390）。",
+      "implementation": "implemented_local_function",
+      "source": "设计确认稿 P34 第 4、5 项、P41 第 4、9 项、P52、P54、P62、P64（用户 2026-11-01—11-02）；欠债总表 D37 ⑥"
     }
   ],
   "inbound_endpoints": [

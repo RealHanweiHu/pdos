@@ -82,6 +82,9 @@ def combine_contracts(catalog, skills):
     from pdos_next.agent.memory.assemble import CONTEXT_SCHEMA as NOTES_SCHEMA
 
     properties["personal_memory"] = deepcopy(NOTES_SCHEMA)
+    from pdos_next.domain.projects.discussions.agent import CONTEXT_SCHEMA as THREAD_SCHEMA
+
+    properties["discussion_thread"] = deepcopy(THREAD_SCHEMA)
     return {"type": "object", "properties": properties, "required": sorted(required),
             "additionalProperties": False, "$defs": schemas[0]["$defs"]}
 

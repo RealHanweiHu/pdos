@@ -180,6 +180,7 @@ def registered_workflows():
     from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
     from pdos_next.agent.memory.index_workflow import MemoryEpisodeIndex
     from pdos_next.agent.memory.vector_workflow import MemoryEpisodeVectors
+    from pdos_next.domain.projects.discussions.agent_delivery import DiscussionAgentReply
     from pdos_next.integrations.dingtalk.summary_workflow import DingTalkSummaryDelivery
     from pdos_next.integrations.dingtalk.workflow import DingTalkCompletion
     from pdos_next.workflows.automation import AutomationRuleWork
@@ -204,6 +205,7 @@ def registered_workflows():
         MemoryEpisodeIndex,
         MemoryEpisodeVectors,
         TenantMaintenance,
+        DiscussionAgentReply,
     ]
 
 
@@ -298,6 +300,14 @@ async def main(
     )
     if dingtalk_runtime is not None:
         configure_dingtalk(engine, dingtalk_runtime)
+    from pdos_next.domain.projects.discussions.agent_delivery import (
+        ReplyActivities,
+    )
+    from pdos_next.domain.projects.discussions.agent_delivery import (
+        dispatch_pending as dispatch_discussion_replies,
+    )
+
+    reply_activities = ReplyActivities(engine, dispatch_engine)
     stop = asyncio.Event()
 
     async def deliver():
@@ -334,6 +344,15 @@ async def main(
                     logging.getLogger(__name__).warning(
                         "Memory vector discovery unavailable: %s", type(error).__name__
                     )
+                try:
+                    # D37 ⑥: deliver 小Pai's thread replies once their Run has ended.
+                    await dispatch_discussion_replies(
+                        dispatch_engine, tenant, client, task_queue=sender.task_queue,
+                    )
+                except Exception as error:
+                    logging.getLogger(__name__).warning(
+                        "Discussion reply discovery unavailable: %s", type(error).__name__
+                    )
                 if dingtalk_runtime is not None:
                     await channel_sender.discover(tenant)
             try:
@@ -351,6 +370,7 @@ async def main(
                 kernel_activities.advance,
                 channel_activities.deliver,
                 channel_activities.cancel,
+                reply_activities.deliver,
                 summary_channel_activities.deliver,
                 activities.automation_rule_tick,
                 kernel_activities.reconcile,

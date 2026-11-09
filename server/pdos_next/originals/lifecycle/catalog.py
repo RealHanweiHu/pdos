@@ -5628,3 +5628,15 @@ COVERED_COLUMNS.update({
         "id", "tenant_id", "created_at",
     ),
 })
+
+# @小Pai in shared threads (D37 ⑥): request ↔ Run ↔ delivery; the manifest holds the
+# Run's dependency identities only and never adopts source material.
+COVERED_COLUMNS.update({
+    "discussion_agent_requests": (
+        "category_id", "product_id", "project_id", "thread_id", "message_id", "requester_id",
+        "writer_id", "session_id", "run_id", "private_only", "delivery", "reason",
+        "reply_message_id", "audience_check", "manifest", "shared_message_id", "share_mode",
+        "share_receipt", "settled_at", "updated_at", "change_seq", "id", "tenant_id",
+        "created_at",
+    ),
+})

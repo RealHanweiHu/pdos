@@ -22,6 +22,7 @@ from pdos_next.domain.categories.preproject.access import human
 from pdos_next.domain.projects.models import Project
 from pdos_next.errors import DomainError
 
+from . import agent_mentions
 from .models import Notification, NotificationPreference
 
 # P41-9 tenant default: changes to the same subject within 10 minutes merge into one.
@@ -46,6 +47,9 @@ REASON_LABELS = {
     "commitment.accepted": "作出了承诺",
     "project.status_updated": "发布了状态更新",
     "member.deactivated": "账号已停用，有待接事项",
+    # 小Pai's proactive mentions (P34-5, D37 ⑥).
+    "agent.needs_info": "需要你补充信息",
+    "agent.rule_exception": "按规则提醒你",
 }
 
 
@@ -252,6 +256,7 @@ def item_view(s, ctx, row, names, projects):
             "product_id": str(project.product_id) if project else None,
         },
         "actors": actors,
+        "signature": agent_mentions.signature(row, names),
         "event_count": row.event_count,
         "first_at": row.first_at.isoformat(),
         "last_at": row.last_at.isoformat(),
@@ -298,7 +303,12 @@ def listing(s, ctx, query: Query):
         s,
         ctx,
         {identity for row in page for identity in row.actor_ids}
-        | {row.subject_id for row in page if row.subject_kind == "member_handover"},
+        | {row.subject_id for row in page if row.subject_kind == "member_handover"}
+        | {
+            UUID(str(row.latest["rule_owner_id"]))
+            for row in page
+            if row.reason == "agent.rule_exception" and (row.latest or {}).get("rule_owner_id")
+        },
     )
     projects = {
         row.id: row

@@ -8,7 +8,8 @@ that thread: it never grants access and is never an assignment.
 - ``role``: current project members holding that role who can see the subject;
 - ``all``: only the project owner; every current member who can see it;
 - ``task``: a reference to a task of the same project (no notification);
-- ``agent``: @小Pai in a shared thread is W6 ⑥ (P34-4, P52, P54) and is refused here.
+- ``agent``: @小Pai starts one 小Pai Run for this message (W6 ⑥, P34-4); the caller
+  decides whether this message may start one (a new post, not an edit).
 """
 
 import re
@@ -31,6 +32,7 @@ class Resolved:
     stored: list = field(default_factory=list)
     recipients: set = field(default_factory=set)
     people: set = field(default_factory=set)
+    agent: bool = False
 
 
 def tokens(body):
@@ -90,17 +92,16 @@ def resolve(s, ctx, thread, project, body):
     if not found:
         return result
     if any(item["kind"] == "agent" for item in found):
-        fail(
-            "VALIDATION_FAILED",
-            "agent_mention_pending",
-            "在讨论中 @小Pai 还未开放，请在小Pai 对话中办理。",
-            422,
-        )
+        # 小Pai is not a member and never a recipient; the mention starts a Run (P34-4).
+        result.agent = True
+        result.stored.append({"kind": "agent"})
     members = None
     blocked = []
     seen = set()
     for item in found:
         kind, ref = item["kind"], item["ref"]
+        if kind == "agent":
+            continue
         key = (kind, ref)
         if key in seen:
             continue

@@ -90,8 +90,9 @@ def test_worker_registration_list_is_what_the_check_replays():
 
     names = [cls.__temporal_workflow_definition.name for cls in check.workflows()]
     assert names == [cls.__temporal_workflow_definition.name for cls in registered_workflows()]
-    # 16 on the W11 branch; M2a's MemoryEpisodeVectors makes 17 after the 11-09 merge.
-    assert len(names) == len(set(names)) == 17
+    # 16 on the W11 branch; M2a's MemoryEpisodeVectors makes 17 after the 11-09 merge;
+    # D37 ⑥'s DiscussionAgentReply makes 18.
+    assert len(names) == len(set(names)) == 18
 
 
 def test_rolling_back_after_the_patched_code_ran_fails_replay(tmp_path):
