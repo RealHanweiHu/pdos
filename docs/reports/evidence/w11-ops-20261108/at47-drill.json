@@ -1,0 +1,211 @@
+{
+  "environment": "local marked synthetic environment; native Temporal dev server (SQLite)",
+  "result": "passed",
+  "scenario": "AT-47 备份恢复重放：配置到交接链可核对，不重复外发",
+  "steps": {
+    "backup": {
+      "alembic_version": "s0_0879",
+      "bytes": 6342611,
+      "databases": {
+        "agent_runtime": {
+          "rows": 10,
+          "tables": 6
+        },
+        "business": {
+          "rows": 341,
+          "tables": 258
+        },
+        "checkpoints": {
+          "rows": 10,
+          "tables": 4
+        },
+        "temporal": {
+          "rows": 0,
+          "tables": 0
+        },
+        "temporal_visibility": {
+          "rows": 0,
+          "tables": 0
+        }
+      },
+      "kms": {
+        "included": false,
+        "reason": "Local profile has no KMS. Production keys stay in Alibaba Cloud KMS; only key references and the KMS recovery procedure are part of a backup."
+      },
+      "objects": 1,
+      "seconds": 13.63,
+      "taken_at_phase": "sent_outcome_unknown (receipt_count=1)",
+      "temporal_history_file": "temporal.sqlite"
+    },
+    "case_a_temporal_restored_too": {
+      "first_delivery": {
+        "delivered": 41,
+        "unknown": 0
+      },
+      "in_flight_workflows_present": {
+        "pdos-next:maintenance:checkpoint_retention:347c7760-9192-43f7-9067-8ccb45768ef5": 1,
+        "pdos-next:maintenance:original_rescan:347c7760-9192-43f7-9067-8ccb45768ef5": 1
+      },
+      "replay_check": {
+        "failures": [],
+        "histories": 2,
+        "passed": true,
+        "unregistered_types": [],
+        "workflow_types": [
+          "TenantMaintenance"
+        ]
+      },
+      "runs_per_workflow_id": {
+        "pdos-security-queue:347c7760-9192-43f7-9067-8ccb45768ef5:ceffcccc-6ad5-42b3-9eda-65b7ef36be7c": 1,
+        "pdos-security-scan:347c7760-9192-43f7-9067-8ccb45768ef5:c20dbaa7-34b2-49fb-a8e7-ad9a18d0fc5a": 1
+      },
+      "second_delivery": {
+        "delivered": 0,
+        "unknown": 0
+      }
+    },
+    "case_b_database_only": {
+      "events_redelivered": 41,
+      "runs_per_workflow_id_after": {
+        "pdos-security-queue:347c7760-9192-43f7-9067-8ccb45768ef5:ceffcccc-6ad5-42b3-9eda-65b7ef36be7c": 1,
+        "pdos-security-scan:347c7760-9192-43f7-9067-8ccb45768ef5:c20dbaa7-34b2-49fb-a8e7-ad9a18d0fc5a": 1
+      },
+      "runs_per_workflow_id_before": {
+        "pdos-security-queue:347c7760-9192-43f7-9067-8ccb45768ef5:ceffcccc-6ad5-42b3-9eda-65b7ef36be7c": 1,
+        "pdos-security-scan:347c7760-9192-43f7-9067-8ccb45768ef5:c20dbaa7-34b2-49fb-a8e7-ad9a18d0fc5a": 1
+      },
+      "workflow_ids_reused": [
+        "pdos-security-queue:347c7760-9192-43f7-9067-8ccb45768ef5:ceffcccc-6ad5-42b3-9eda-65b7ef36be7c",
+        "pdos-security-scan:347c7760-9192-43f7-9067-8ccb45768ef5:c20dbaa7-34b2-49fb-a8e7-ad9a18d0fc5a"
+      ]
+    },
+    "command_replay": {
+      "delivery_intents": 1,
+      "network_send": false,
+      "replayed": [
+        "external handoff authorization (T2)",
+        "first receipt (sent: unknown)"
+      ],
+      "row_counts_unchanged": {
+        "action_receipts": 40,
+        "audit_entries": 40,
+        "confirmations": 14,
+        "external_delivery_intents": 1,
+        "external_handoff_authorizations": 1,
+        "external_handoff_currents": 1,
+        "external_receipts": 1,
+        "outbox_events": 41,
+        "request_keys": 38
+      },
+      "same_receipts_returned": true
+    },
+    "in_flight_workflows_before_backup": {
+      "pdos-next:maintenance:checkpoint_retention:347c7760-9192-43f7-9067-8ccb45768ef5": "01a1be58-ec17-7124-a057-22be514e1938",
+      "pdos-next:maintenance:original_rescan:347c7760-9192-43f7-9067-8ccb45768ef5": "01a1be58-ec21-76be-801c-c5e025dbfa8b"
+    },
+    "outbound_audit": {
+      "all_tenants": {
+        "agent_runs": {
+          "count": 0,
+          "meaning": "小Pai runs not finished"
+        },
+        "agent_tool_calls": {
+          "count": 0,
+          "meaning": "tool calls started or with unknown outcome"
+        },
+        "dingtalk_deliveries": {
+          "count": 0,
+          "meaning": "DingTalk sends not confirmed"
+        },
+        "dingtalk_summary_deliveries": {
+          "count": 0,
+          "meaning": "DingTalk summaries not confirmed"
+        },
+        "external_handoff_currents": {
+          "count": 1,
+          "meaning": "handoff send result unknown"
+        },
+        "model_invocations": {
+          "count": 0,
+          "meaning": "model calls not finished"
+        },
+        "outbox_events": {
+          "count": 43,
+          "meaning": "domain events not yet delivered; redelivered once"
+        }
+      },
+      "drill_tenant_pending_events": 41,
+      "drill_tenant_unknown_handoff_sends": 1
+    },
+    "restore": {
+      "chain_reads_equal_backup_moment": [
+        "handoff",
+        "handoff_receipts",
+        "package",
+        "project_handoffs",
+        "project_packages",
+        "publication"
+      ],
+      "handoff_at_restore": {
+        "delivery_unknown": true,
+        "network_send": false,
+        "receipt_count": 1,
+        "status": "authorized"
+      },
+      "host_configuration_reapplied": [
+        "_pdos_handoff_evidence_epochs",
+        "_pdos_handoff_evidence_issuers",
+        "_pdos_professional_issuer_epochs",
+        "_pdos_professional_issuers",
+        "_pdos_professional_synthetic"
+      ],
+      "original_bytes_match": true,
+      "receipts_after_backup_not_in_restore": 5,
+      "seconds": 19.12,
+      "verify": {
+        "agent_runtime": "match",
+        "business": "match",
+        "checkpoints": "match",
+        "objects": "match",
+        "temporal": "match",
+        "temporal_sqlite": "match",
+        "temporal_visibility": "match"
+      },
+      "without_host_issuer_configuration": {
+        "degraded_fields": [
+          "applicability",
+          "source_status"
+        ],
+        "degraded_reads": {
+          "handoff": [
+            ".applicability"
+          ],
+          "package": [
+            ".applicability",
+            ".decisions[0].applicability",
+            ".decisions[1].applicability"
+          ],
+          "publication": [
+            ".source_status"
+          ]
+        },
+        "value_change": "current -> needs_recheck"
+      }
+    },
+    "source_after_backup": {
+      "events_delivered": 52,
+      "receipts_recorded_after_backup": 5,
+      "workflows_started": [
+        {
+          "event_type": "original.uploaded",
+          "workflow_id": "pdos-security-queue:347c7760-9192-43f7-9067-8ccb45768ef5:ceffcccc-6ad5-42b3-9eda-65b7ef36be7c"
+        },
+        {
+          "event_type": "original.scan_requested",
+          "workflow_id": "pdos-security-scan:347c7760-9192-43f7-9067-8ccb45768ef5:c20dbaa7-34b2-49fb-a8e7-ad9a18d0fc5a"
+        }
+      ]
+    }
+  },
+  "version": "pdos-at47-drill/v1"
+}

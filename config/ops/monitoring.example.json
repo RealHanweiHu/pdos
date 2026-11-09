@@ -1,0 +1,45 @@
+{
+  "schema_version": "pdos-monitoring-v1",
+  "environment_label": "pilot",
+  "interval_seconds": 60,
+  "targets": {
+    "api_health_url": "http://127.0.0.1:8898/health",
+    "web_health_url": "http://127.0.0.1:3028/login",
+    "api_metrics_url": "http://127.0.0.1:8898/ops/metrics",
+    "temporal_task_queue": "pdos-next-domain-v1"
+  },
+  "thresholds": {
+    "liveness_consecutive_failures": 3,
+    "error_rate_5xx_ratio": 0.05,
+    "error_rate_min_requests": 20,
+    "outbox_oldest_seconds": 300,
+    "outbox_pending": 200,
+    "temporal_backlog_count": 100,
+    "temporal_backlog_age_seconds": 300,
+    "temporal_min_pollers": 1,
+    "model_failure_ratio": 0.2,
+    "model_failure_min_calls": 5,
+    "model_window_seconds": 900,
+    "model_calls_open_long": 1
+  },
+  "alerts": {
+    "channel": "dingtalk-group-robot",
+    "webhook_env": "PDOS_ALERT_DINGTALK_WEBHOOK",
+    "secret_env": "PDOS_ALERT_DINGTALK_SECRET",
+    "mention_mobiles_env": "PDOS_ALERT_DINGTALK_MOBILES",
+    "repeat_minutes": 30
+  },
+  "on_call": {
+    "primary": null,
+    "backup": null,
+    "critical_response_minutes": null,
+    "warning_response_minutes": null,
+    "hours": null
+  },
+  "pending_user_decision": [
+    "thresholds: suggested starting values, final values decided by the user",
+    "on_call: who receives alerts and how fast they respond, decided by the user",
+    "alerts: DingTalk group and robot credentials wait for D64",
+    "targets: real addresses follow the deployment plan D210"
+  ]
+}

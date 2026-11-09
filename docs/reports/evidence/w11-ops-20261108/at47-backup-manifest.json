@@ -1,0 +1,1158 @@
+{
+  "created_at": "2026-11-09T03:28:03.913526+00:00",
+  "databases": {
+    "agent_runtime": {
+      "alembic_version": null,
+      "database": "pdos_agent_runtime",
+      "guard": "text",
+      "image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+      "server_version": "16.14 (Debian 16.14-1.pgdg12+1)",
+      "superuser": "pdos_runtime",
+      "tables": {
+        "agent_runtime_events": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_runtime_jobs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "checkpoint_blobs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "checkpoint_migrations": {
+          "digest": "97ffc42f4a0585d6949a1e423477c600",
+          "rows": 10
+        },
+        "checkpoint_writes": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "checkpoints": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        }
+      },
+      "temporal_persistence": null
+    },
+    "business": {
+      "alembic_version": "s0_0879",
+      "database": "pdos_test",
+      "guard": "uuid",
+      "image": "pgvector/pgvector:0.8.6-pg16-bookworm",
+      "server_version": "16.14 (Debian 16.14-1.pgdg12+1)",
+      "superuser": "postgres",
+      "tables": {
+        "account_events": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "account_invitations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "action_receipts": {
+          "digest": "0c49651c989e5fb7c38dee2a84651d8e",
+          "rows": 42
+        },
+        "actual_configurations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_run_events": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_run_inputs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_runs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_session_bindings": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_session_presentations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_sessions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_skill_qualifications": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_skill_review_batches": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_tool_calls": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_validation_budgets": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_work_products": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "agent_work_states": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "alembic_version": {
+          "digest": "4eb368cd5cdad403439d9ea7fc1d18b4",
+          "rows": 1
+        },
+        "artifact_versions": {
+          "digest": "649d772658dec6869ee968b55035bf65",
+          "rows": 14
+        },
+        "audit_entries": {
+          "digest": "010ac894750108e80d1a6d4087f274f4",
+          "rows": 42
+        },
+        "automation_causal_chains": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "automation_rule_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "automation_rule_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "automation_service_attempts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "automation_service_grants": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "automation_trigger_occurrences": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "bom_lines": {
+          "digest": "62f5bcfdcd8908ed4cbe193d33c82b70",
+          "rows": 1
+        },
+        "bom_revisions": {
+          "digest": "0ab766dab901cfb0fc383e151928bee6",
+          "rows": 1
+        },
+        "build_authorization_decisions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_current_authorizations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_current_execution_assessments": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_execution_assessments": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_lots": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_operational_current": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_operational_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_readiness": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "build_starts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "builds": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_current_observations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_current_verification_rules": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_named_verification_reviews": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_observation_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_remediation_links": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_verification_evidence": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "capa_verification_rule_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "categories": {
+          "digest": "da2d8d9ef36ef7cc5e5c640bd33542d0",
+          "rows": 5
+        },
+        "category_creation_confirmations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "category_knowledge_current": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "category_knowledge_entries": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_approval_records": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_completion_records": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_dependency_clocks": {
+          "digest": "5a344e243076d5da7fd87e777773a2d9",
+          "rows": 6
+        },
+        "change_graph_captures": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_implementation_captures": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_implementation_records": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_order_records": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_request_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "change_request_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "claim_consumptions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "claim_withdrawals": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "claims": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "confirmations": {
+          "digest": "3f2b9b16d29d0508008ce664a38bb966",
+          "rows": 14
+        },
+        "controlled_change_coverage_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "controlled_change_coverage_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "controlled_change_policy_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "controlled_change_policy_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "controlled_change_selection_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "controlled_change_selection_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "cost_current_inputs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "cost_estimates": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "cost_input_snapshots": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "cost_source_captures": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "definition_revisions": {
+          "digest": "15dee40bc59b692b6e4a2caf2bfd8d20",
+          "rows": 1
+        },
+        "definition_sources": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "definition_spec_current": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "definition_specs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_account_bindings": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_applications": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_binding_nonces": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_deliveries": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_messages": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_share_consents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "dingtalk_summary_deliveries": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "engineering_configurations": {
+          "digest": "a6e458950b299b68889b98c96c618e99",
+          "rows": 1
+        },
+        "enterprise_chunk_embeddings": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_embedding_batches": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_embedding_budgets": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_embedding_calls": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_embedding_profile_heads": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_embedding_profiles": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_search_chunks": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_search_corpus": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_search_sources": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "enterprise_search_terms": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "evidence_links": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "export_audits": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "external_delivery_intents": {
+          "digest": "019fcb2086fbc60fbda4c8c3cd6347fc",
+          "rows": 1
+        },
+        "external_handoff_authorizations": {
+          "digest": "7457c95242040e328a87a6629e525c2d",
+          "rows": 1
+        },
+        "external_handoff_currents": {
+          "digest": "bb981f200d93ee5ada84bcf376ceb3ff",
+          "rows": 1
+        },
+        "external_receipts": {
+          "digest": "cf48f3c66c3108318bd0b76183a9ee73",
+          "rows": 1
+        },
+        "external_wait_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "external_wait_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "field_feedback_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "field_feedback_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "field_response_records": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "grants": {
+          "digest": "f88c0fd89b9bf8d95aabc68393fbe144",
+          "rows": 13
+        },
+        "human_credentials": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "inbox_conversations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "inbox_deliveries": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "inbox_messages": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "inbox_states": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_answer_reviews": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_applicability_assessments": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_candidate_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_candidate_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_gap_attributions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_gap_submissions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_rule_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "knowledge_rule_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "lifecycle_candidates": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "lifecycle_intents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "lifecycle_objects": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "lifecycle_requests": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "login_sessions": {
+          "digest": "f1e4dbe5aa7221fcc4f7f7afe7dda281",
+          "rows": 13
+        },
+        "manufacturing_baseline_document_links": {
+          "digest": "47f1c12ccda3b253f6a91129bf464394",
+          "rows": 2
+        },
+        "manufacturing_baseline_publications": {
+          "digest": "0598ecb098a22f850bf3a43760577739",
+          "rows": 1
+        },
+        "manufacturing_preparation_currents": {
+          "digest": "4322803060fb904d14681638b547d28c",
+          "rows": 3
+        },
+        "manufacturing_preparation_versions": {
+          "digest": "f1ffdc7451af491e0420e63d8ba1fd47",
+          "rows": 3
+        },
+        "manufacturing_publication_currents": {
+          "digest": "e2ecdf1bb3a25ffe1c13b6e0a93e1611",
+          "rows": 1
+        },
+        "manufacturing_publication_documents": {
+          "digest": "628683dd04bd82ecf0b84eef156009a9",
+          "rows": 2
+        },
+        "mcp_connectors": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "mcp_control_records": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "mcp_tool_grants": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "measurement_import_captures": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "memory_episode_marks": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "memory_episodes": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "memory_index": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "memory_session_settings": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "memory_tenant_policies": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "model_budget_reservations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "model_configuration_heads": {
+          "digest": "4af0bf0a3306602a3812881d9453cff0",
+          "rows": 9
+        },
+        "model_configuration_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "model_invocations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "native_pilot_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "native_pilot_observations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "native_pilot_runs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "object_audiences": {
+          "digest": "2b721ac6840378c81f5b1aa6119e8cc6",
+          "rows": 6
+        },
+        "operational_asset_sentinels": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "operational_material_holds": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "operational_resource_occupancies": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "original_scan_requests": {
+          "digest": "c9775c601cfdbc7138d07dd977e09776",
+          "rows": 1
+        },
+        "original_scan_results": {
+          "digest": "655c29b705e7be0fded2ad4f9474d835",
+          "rows": 1
+        },
+        "original_security": {
+          "digest": "097061a66df02aba366a099cabdc40d1",
+          "rows": 1
+        },
+        "outbox_events": {
+          "digest": "4efc5189c4139888fcefbb64cd27e8f7",
+          "rows": 43
+        },
+        "parameter_current": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "parameter_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "parts": {
+          "digest": "9b4433c20c14fffbc614a09ea9665123",
+          "rows": 1
+        },
+        "personal_preferences": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "plan_proposals": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "plan_revisions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "platform_link_current": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "platform_product_links": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "platforms": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "principals": {
+          "digest": "34535f2456a72ec4c92104a3fed623c3",
+          "rows": 17
+        },
+        "process_revisions": {
+          "digest": "96665baa10de1231e0e13a759d6853cb",
+          "rows": 1
+        },
+        "product_target_segments": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "product_variants": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "products": {
+          "digest": "5a65005bddf02d9e713715b0bba8630e",
+          "rows": 6
+        },
+        "professional_authority_current": {
+          "digest": "2318042c34961100281a081421921d1c",
+          "rows": 8
+        },
+        "professional_authority_facts": {
+          "digest": "4d7e547997ba6f6efcc041c67328a557",
+          "rows": 8
+        },
+        "project_governance_events": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_member_audiences": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_member_roles": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_members": {
+          "digest": "072ab7a73ddee1f66eaa1a476e67d35a",
+          "rows": 2
+        },
+        "project_open_items": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_product_links": {
+          "digest": "a46bef1d7f1c5dd5b9942da23deb2bdb",
+          "rows": 1
+        },
+        "project_risk_followup_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_risk_followups": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_role_catalog_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_set_links": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_set_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_status_updates": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_tasks": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "project_team_changes": {
+          "digest": "146e9eed86ed90f9001345868b7e923f",
+          "rows": 1
+        },
+        "project_work_packages": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "projects": {
+          "digest": "256db2384f090333e7fd4c2416aec7e5",
+          "rows": 1
+        },
+        "promotion_proofs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "proposal_decisions": {
+          "digest": "0bab27491db06c52a6cefdc645d334e4",
+          "rows": 1
+        },
+        "proposal_item_versions": {
+          "digest": "cf6765a239756975db66498b00da3b15",
+          "rows": 3
+        },
+        "proposal_items": {
+          "digest": "cdc4af7c900e9663815ff10977fb9578",
+          "rows": 3
+        },
+        "proposal_prepared_candidates": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "proposal_revisions": {
+          "digest": "7b8db961155e034d358b39f50c8e90f3",
+          "rows": 4
+        },
+        "proposal_sources": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "proposal_submissions": {
+          "digest": "a799e9819c3a71dd17cf850186bfb257",
+          "rows": 1
+        },
+        "proposals": {
+          "digest": "153efefaef14fded94ce25f5b50d34af",
+          "rows": 1
+        },
+        "provider_data_agreements": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "public_web_snapshots": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "qualifications": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "quality_current_issues": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "quality_current_policies": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "quality_event_failure_links": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "quality_failure_maps": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "quality_issue_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "quality_policy_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "release_decisions": {
+          "digest": "a87769b2015d99de1264d2aaa133d5ed",
+          "rows": 2
+        },
+        "release_exception_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "release_exception_decisions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "release_package_currents": {
+          "digest": "f300c8c5e00e74aacc6fac089d2ebf5f",
+          "rows": 1
+        },
+        "release_packages": {
+          "digest": "39854f9b1e0341d2dedd69537c578c52",
+          "rows": 1
+        },
+        "release_policy_currents": {
+          "digest": "711f1614f60f2915b5694525275ac0d3",
+          "rows": 1
+        },
+        "release_policy_facts": {
+          "digest": "56a8dbeff75351defb7e06123e332654",
+          "rows": 1
+        },
+        "request_keys": {
+          "digest": "d2e734db6d4f025e507ef8279a35b600",
+          "rows": 40
+        },
+        "runs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sample_allocations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sample_current_readiness": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sample_readiness_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sample_run_usages": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sample_units": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sample_usage_sentinels": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "sign_in_attempts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "similar_history_feedback": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "supply_current_snapshots": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "supply_kit_projections": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "supply_snapshots": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "supply_source_captures": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "task_dependencies": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "tenant_administrators": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "tenant_pilot_admissions": {
+          "digest": "3adad1aa25b88b06403c938c9a330572",
+          "rows": 4
+        },
+        "tenant_skill_enablements": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "test_measurements": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "test_resource_current": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "test_resource_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "test_resource_reservations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "test_result_actions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "test_result_projections": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "upload_attempts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "uploaded_originals": {
+          "digest": "961df1ec872089e61da78bd15a57fce5",
+          "rows": 1
+        },
+        "variant_revisions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_actual_method_applicabilities": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_actual_method_batches": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_current_actual_methods": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_current_formal_requests": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_current_preparations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_current_runs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_formal_requests": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_handoff_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_launch_facts": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_method_applicabilities": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_preparations": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_run_identities": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_run_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "verification_window_proposals": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_commitment_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_commitment_review_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_commitment_reviews": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_commitment_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_requests": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_task_currents": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "work_task_versions": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        }
+      },
+      "temporal_persistence": null
+    },
+    "checkpoints": {
+      "alembic_version": null,
+      "database": "pdos_checkpoints",
+      "guard": "uuid",
+      "image": "postgres:16",
+      "server_version": "16.13",
+      "superuser": "postgres",
+      "tables": {
+        "checkpoint_blobs": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "checkpoint_migrations": {
+          "digest": "97ffc42f4a0585d6949a1e423477c600",
+          "rows": 10
+        },
+        "checkpoint_writes": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        },
+        "checkpoints": {
+          "digest": "d41d8cd98f00b204e9800998ecf8427e",
+          "rows": 0
+        }
+      },
+      "temporal_persistence": "local-sqlite-development"
+    },
+    "temporal": {
+      "alembic_version": null,
+      "database": "pdos_temporal",
+      "guard": "uuid",
+      "image": "postgres:16",
+      "server_version": "16.13",
+      "superuser": "postgres",
+      "tables": {},
+      "temporal_persistence": "local-sqlite-development"
+    },
+    "temporal_visibility": {
+      "alembic_version": null,
+      "database": "pdos_visibility",
+      "guard": "uuid",
+      "image": "postgres:16",
+      "server_version": "16.13",
+      "superuser": "postgres",
+      "tables": {},
+      "temporal_persistence": "local-sqlite-development"
+    }
+  },
+  "files": {
+    "agent_runtime.dump": "cdd1add5f208b2c810df042c4f949e84bef5690ad431982491668f0ae653646d",
+    "business.dump": "153b62fb436d17441d993e1e695207b906363eed2c0854d92aea8d025a014c9a",
+    "checkpoints.dump": "c7b8dfebae33cd3a4cdb68bad0f65771807caa620372fe892a8555b7c1ee6e7f",
+    "objects.tar": "bc3c267471bac7627a7fc157a0a3c4119aa2dd48efd67cb0e560cfe406cff7d3",
+    "roles-agent_runtime.sql": "ef363fbadb2c7fddbaf0e86ce3af633b4db48e38932f4b8c76930becd256b256",
+    "roles-business.sql": "ac438f941e5f9e2f0db6935a64a0e1cf5cd9e847b2d781297fa7dd590ca93e1f",
+    "roles-checkpoints.sql": "5d4e190991c3cd9a724af721a97205cf3940142269dcae8b4faa07da9218db5b",
+    "temporal.dump": "4ce7704a7541cbf5603180165717fa8458b81d4d4a4d61911b942595687d5993",
+    "temporal.sqlite": "fbd79704224b3d338ac8abcb7db8d709cec593838b9fa5b2edec8faa938e5bc0",
+    "temporal_visibility.dump": "48853b3310e2c2e2b95dd51486e6fdc21a1f7d64bfedf21ae64ab6db782ba737"
+  },
+  "kms": {
+    "included": false,
+    "reason": "Local profile has no KMS. Production keys stay in Alibaba Cloud KMS; only key references and the KMS recovery procedure are part of a backup."
+  },
+  "objects": {
+    "archive": "objects.tar",
+    "files": {
+      "originals/ceffcccc6ad542b39eda65b7ef36be7c/v1/8c446cb9a24069eff1f951f53b79d9d449ee726a5a3cb5b64acc014166770bf7": "8c446cb9a24069eff1f951f53b79d9d449ee726a5a3cb5b64acc014166770bf7"
+    }
+  },
+  "source_markers": [
+    "22be301c-7b34-44c2-ba38-04f838e4807b",
+    "3457c579-e9c6-4977-ad83-429dc56a1d2a"
+  ],
+  "temporal_sqlite": "temporal.sqlite",
+  "version": "pdos-local-backup/v1"
+}

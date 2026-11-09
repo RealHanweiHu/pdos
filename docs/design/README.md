@@ -64,7 +64,7 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 ## 六、资料与相邻目录
 
 - [category-seeds/](category-seeds/README.md)：品类种子资料（轮胎充气泵、自行车打气筒）。
-- [../runbooks/](../runbooks/)：pdos-next 运维与使用手册，以及原生产下线手册。
+- [../runbooks/](../runbooks/)：pdos-next 运维与使用手册，以及原生产下线手册。试点上线：[备份与恢复](../runbooks/backup-and-restore.md)、[发布与回滚](../runbooks/release-and-rollback.md)、[监控告警与值班](../runbooks/monitoring-and-on-call.md)。
 - [../evaluations/xiaopai-v0/](../evaluations/xiaopai-v0/README.md)：小Pai 评测题集。
 - [../research/](../research/report.md)：早期市场与产品调研综合报告。
 - [../reports/](../reports/)：评审报告与 `evidence/` 验证证据。
