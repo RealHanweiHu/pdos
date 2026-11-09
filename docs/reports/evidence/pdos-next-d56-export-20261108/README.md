@@ -23,7 +23,7 @@ worktree `xenodochial-tharp-12e9c0`，分支 `claude/xenodochial-tharp-12e9c0`�
 | 前端全部 `.mjs` | 1895 通过 | 新增 `route-export.test.mjs`（BFF 白名单）、`export-download.test.mjs`。两个组件测试按原有方式桩掉导出按钮 |
 | `tsc --noEmit`、`eslint src` | 通过，0 错误 | 1 个既有 warning（`external-wait-route.test.mjs`） |
 | `tools/validate_contracts.py` | 通过 | 87 operations / 92 events / 67 acceptance |
-| 迁移往返 | 通过 | [migration-roundtrip.log](migration-roundtrip.log)：有审计历史时降级被拒；清空隔离库测试行后 s0_0861→s0_0855→s0_0861 两轮通过；策略、FORCE RLS、`pdos_agent` 无写权限、应用角色只有 SELECT/INSERT |
+| 迁移往返 | 通过 | [migration-roundtrip.txt](migration-roundtrip.txt)：有审计历史时降级被拒；清空隔离库测试行后 s0_0861→s0_0855→s0_0861 两轮通过；策略、FORCE RLS、`pdos_agent` 无写权限、应用角色只有 SELECT/INSERT |
 | 后端受影响 PG：`tests/core` 等 158 项 | 153 通过、5 失败，5 项均为既有 | 4 项在基点代码上同样失败（用 `git archive 38f5a024` 在同一隔离库复跑）。`test_migration_matches_orm_and_test_guard` 的差异全是既有的钉钉索引和检索向量索引，`export_audits` 无差异 |
 | 后端无库全量 | 无新增失败 | 与基点逐项对照，见下文“无库全量对照” |
 
