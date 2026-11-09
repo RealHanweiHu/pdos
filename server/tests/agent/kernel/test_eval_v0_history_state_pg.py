@@ -134,7 +134,7 @@ def ctx04(setup, case, focus):
         finish(setup, current, summary,
             ["别帮我猜没人负责的那一行。"] if turn_index == 6 else ())
     final, _ = start(setup, continue_from_run_id=str(current), goal=case["final_prompt"])
-    provider = ScriptedProvider(plan=[("category.read", {})])
+    provider = ScriptedProvider(plan=[("category.read", {})], project_run=True)
     checked = execute(setup, final, case["final_prompt"], focus, provider)
     assert checked["output"]["status"] == "completed", checked["output"]
     context = context_of(checked)
