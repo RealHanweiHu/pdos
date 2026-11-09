@@ -1,4 +1,4 @@
-# D47 未实现操作：两条闭环落地，十条待定（2026-11-08）
+# D47 未实现操作：11-08 落地 2 条，11-09 按 P95–P97、P100 再落地 7 条，余 3 条
 
 分支 `claude/elastic-noyce-fad368`，基点 `pdos-next/design-v1.1` 的 `d6abcbf2`（迁移 head `s0_0861`）。本地提交，未推送。
 
@@ -76,3 +76,35 @@
 - 待你确认的条目是 D305–D312。
 - 开发环境问题 D316：本机多个预览共用 `localhost` 的会话 cookie。
 - D241 只解除了一半：供应承诺已可用，替代料批准仍待 D308。
+
+
+## 5. 11-09 第二轮：按拍板单实现 7 条
+
+用户 11-09 对拍板单（[decision-sheet.md](decision-sheet.md)）回复“按推荐”，记为确认稿 P95（试模、治具）、P96（CAPA 有效性、替代料）、P97（客户样品与承认）、P100（来源撤回、定义更新、接口更新）。P98、P99 已被 W6 占用。
+
+| 操作 | 档位 | 结果 | 主要位置 | PG 测试 |
+|---|---|---|---|---|
+| `product.definition.update` | T1 | 已实现：整体字段改为下一草稿版本，条目与来源原样带入，冻结后与派生定义被拒 | `domain/categories/products/definition_update.py`，迁移 `s0_0870` | `test_definition_update_pg.py` 3 项、规则 4 项 |
+| `engineering.interface.update` | T1 | 已实现：建立、修订、各专业确认或异议；负责人不能代替确认；修订后原确认转已取代；受影响项经变更图真实读取 | `domain/engineering/interfaces/`，变更图接口节点，迁移 `s0_0871` | `tests/engineering/test_interfaces_pg.py` 4 项 |
+| `npi.fixture.accept` | T2 | 已实现：制造具名接受、拒绝、撤销，带有效期与条件；准备度改用本地验收事实 | `domain/manufacturing/fixture_acceptance/`，`_resource_report`，迁移 `s0_0872` | `test_fixture_acceptance_pg.py` 6 项 |
+| `evidence.source.withdraw` | T2 | 已实现：已被签署决定使用或已共享的来源，由来源负责人或品类负责人撤回；依赖结果需重核、检索清理；T1 增加“本人、未被签署决定使用”守卫 | `originals/source_withdraw.py`，迁移 `s0_0873` | `test_source_withdraw_pg.py` 5 项；原 T1 撤回测试 5 项仍通过 |
+| `supply.alternate.approve` | T2 | 已实现：工程具名、须带当前具名复核的测试运行；只进本 Build 齐套，BOM 不变，过期或撤销后不计入 | `domain/manufacturing/alternate_approvals/`，齐套接入，迁移 `s0_0874` | `test_alternate_approval_pg.py` 3 项（真实测试结果链与齐套计算） |
+| `quality.capa.effectiveness.decide` | T2 | 已实现：有效即关闭、无效回到措施中并可走第二轮、延长观察；实施人不能决定 | `domain/quality/capa_effectiveness/`，迁移 `s0_0875` | `test_capa_effectiveness_pg.py` 3 项（“有效”路径的复核读取用替身，见 D320） |
+| `customer.acceptance.record` | T2 | 已实现：五类范围逐项登记，签样单须为上传原件；阶段页只列出 | `domain/delivery/customer_acceptance/`，迁移 `s0_0876` | `test_customer_acceptance_pg.py` 3 项（真实上传、扫描、解析的原件） |
+| `npi.tooltrial.create` | T1 | 未实现（D317）：具名处置没有接受/拒绝字段，已请用户补选；同确认生成验证请求要改共享守卫 | — | — |
+| `customer.sample.send` | T2 | 未实现（D318）：复用外部移交管线需改该模块的外键、用途分支与回执签发性质；真实外发仍未授权 | — | — |
+| `product.definition.publish` | T2 | 归 D36 | — | — |
+
+共同做法：
+- 每条新闭环都是“只追加版本 + 当前指针”，提交时由延迟约束触发器核对同事务的公共回执，并要求写入人是具名本人、无 AI 运行；`pdos_agent` 无任何权限。共用列与守卫在 `domain/named_records/`。
+- T2 预览不设到期，6 条新 T2 加入了 `ck_confirmations_decision_deadline`。专业职责矩阵新增 4 条（接口：工程；治具：制造；替代料：工程；CAPA 有效性：品质）；客户承认不要求专业角色（内部具名成员）。
+- 技能包：`build_execution` 0.1.4-draft（接口 T1、治具与替代料只准备）、`quality_issue` 0.1.3-draft、`release_handover` 0.1.3-draft、`gap_check` 0.2.3-draft。
+- 合同：导出后 `operations.json` 中 `not_implemented` 由 10 降为 3；校验通过。
+
+页面入口：定义页最新版本“修改整体字段”；Build 准备页“接口合同”；开工页资源依据中治具行的“治具验收”；资料面板“具名撤回来源”；供应页“替代料批准（本轮）”“客户承认（签样单）”；质量页“CAPA 有效性决定”；阶段页列出客户承认。
+
+浏览器走查（本地合成种子，同一隔离库）：
+- 定义更新：在页面上一次确认生成第 2 版草稿，库中第 1 版不变：[definition-update-preview-light.jpg](definition-update-preview-light.jpg)、[definition-update-light.jpg](definition-update-light.jpg)、[definition-update-dark.jpg](definition-update-dark.jpg)。
+- 具名撤回：品类负责人撤回共享资料，预览列出“无业务记录使用”，提交后库中为 withdrawn 并有 `source.withdrawn` 事件：[source-withdraw-preview-dark.jpg](source-withdraw-preview-dark.jpg)。
+- 替代料批准：种子人员没有工程职责，预览经网页代理到服务器后被拒并显示原因：[alternate-approval-refused-dark.jpg](alternate-approval-refused-dark.jpg)、[alternate-approval-refused-light.jpg](alternate-approval-refused-light.jpg)；客户承认面板渲染：[customer-acceptance-dark.jpg](customer-acceptance-dark.jpg)。
+- 接口合同、CAPA 有效性面板在对应页面渲染并经代理读取（“本项目尚无接口合同”）。需要专业职责的 T2 完整办理只在 PG 测试中覆盖：本地开发服务没有配置合成专业签发方。

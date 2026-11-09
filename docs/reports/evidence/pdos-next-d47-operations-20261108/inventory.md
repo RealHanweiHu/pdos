@@ -1,5 +1,7 @@
 # D47 未实现操作盘点（2026-11-08）
 
+> 11-09 更新：用户对拍板单“按推荐”（P95–P97、P100）。下表“本次处理”列中 D306–D308、D310–D312 与 `customer.acceptance.record` 已实现；`npi.tooltrial.create`（D317）、`customer.sample.send`（D318）未实现；规格冻结仍归 D36。详见 [README §5](README.md#5-11-09-第二轮按拍板单实现-7-条)。
+
 基点 `d6abcbf2`（迁移 head `s0_0861`）。来源：`contracts/operations.json` 中 `implementation: not_implemented` 的条目，对照 v1.1 附录 A、正文 §02–§08、确认稿、拍板表与现有代码。
 
 ## 数量核对

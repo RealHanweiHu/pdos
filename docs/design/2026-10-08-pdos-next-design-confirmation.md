@@ -1669,7 +1669,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   5. **治具验收**：`npi.fixture.accept` 由制造角色、当前有资格的具名本人签（T2）。治具身份用现有受控导入的运行资源，不新建治具登记表。同一命令办理接受、拒绝、撤销，可带有效期，每次都是新版本，历史保留。只管治具；设备的验收与校准仍走测试资源导入。
   6. AT-17 仍在 S4 检查点验收，命令在 S2 建设，不改合同阶段。
 - 不改变：寿命与保养留在 ERP/MES（D97）；准备度只按规则给结论，不由分数放行；供方只记外部标识，不建供应商实体（P87 第 9 项）；AI 不执行 T2（DC-11）。
-- 实施：D305、D306。
+- 实施：D306 已实现（`domain/manufacturing/fixture_acceptance/`，准备度接入 `builds/operational_facts/service.py` 的 `_resource_report`，迁移占位 `s0_0872`；测试 `tests/manufacturing/test_fixture_acceptance_pg.py`）。D305 未实现：第 2 项依赖的“具名处置判接受/判拒绝”在代码中不存在（`test.disposition.decide` 只记文字结论），已请用户补选，见欠债总表 D317。
 - 判据：首次试模同时产生模具记录第 1 版和一条验证请求，第二次试模引用同一模具；未处置时准备度的模具项为未知，具名处置接受或拒绝后分别变为已验收或未通过；非工程、制造角色发起被拒；治具接受、拒绝、撤销各成一版并进入准备度，非制造角色、AI 身份办理被拒。
 
 <a id="p96"></a>
@@ -1687,7 +1687,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   6. **替代料范围**：按 Build + BOM 版本 + 配置；同一命令可带有效期，也可撤销，历史保留；新的 Build 须重新批准（v1.1 §08.4）。
   7. **不改 BOM**：只让这一轮齐套计算把替代料算进去；永久改 BOM 走变更单（v1.1 §04.13、I03）。
 - 不改变：小Pai 只准备评效材料，不执行 T2；AT-21“未有适用验证和具名批准不得替代”；PCN 子流程（P79 D101）另议；不新增采购角色。
-- 实施：D307、D308；D241 的替代方案随之解除依赖。
+- 实施：D307 `domain/quality/capa_effectiveness/`（迁移占位 `s0_0875`，测试 `tests/quality/effectiveness/test_capa_effectiveness_pg.py`）；D308 `domain/manufacturing/alternate_approvals/`（齐套接入 `supply_execution/service.py`，迁移占位 `s0_0874`，测试 `tests/manufacturing/test_alternate_approval_pg.py`）；D241 的替代方案随之解除依赖。
 - 判据：措施实施人本人决定被拒；判无效后问题回到措施中，判有效后问题关闭，延长观察更新截止日；缺当前具名复核的替代料批准被拒；批准后只对该 Build 的齐套计算生效、BOM 不变，撤销或过期后恢复缺料。
 
 <a id="p97"></a>
@@ -1706,7 +1706,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   7. **关联外发**：可选；样品经 PDOS 外发的，必须关联那次外发。这一项按通用做法。
   8. **阶段评审**：评审材料列出承认情况作为依据，不自动阻断；阶段推进仍是具名决定（P41 第 1 项）。
 - 不改变：外部协作者入口延后（C11、D106）；真实外发与外部接收仍须用户授权（AGENTS.md 批准边界）；AI 不执行 T2。
-- 实施：D309。
+- 实施：承认部分 `domain/delivery/customer_acceptance/`（迁移占位 `s0_0876`，阶段页读取 `projects/governance/service.py`，测试 `tests/delivery/test_customer_acceptance_pg.py`）。外发部分未实现，见欠债总表 D318。
 - 判据：客户样品授权要求开工授权与已分配样件，缺一被拒；发送意图 `network_send=false`，没有任何网络调用；非工程角色或 AI 身份授权被拒；承认缺签样单原件被拒，五类范围逐项保存并可带条件与到期日；经 PDOS 外发的样品不关联外发记录被拒；阶段评审读取列出承认情况。
 
 <a id="p100"></a>
@@ -1723,5 +1723,5 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   5. **接口确认**：各参与专业分别确认，状态为待确认、已确认、有异议、已取代，不合成一次按钮（v1.1 §03.10）。每个接口指定一名具名负责人（须是项目成员），负责人与确认人分开（v1.1 §02.12）。
   6. **接口影响**：只按显式登记的受影响项传播，接入已有的变更影响计算；AI 线索单列，不混成确定结论（v1.1 §04.2）。工程角色具名本人一次确认（T1），小Pai 只预填。
 - 不改变：T1 撤回的日常路径不加严；公开研究快照不可撤回；规格冻结 `product.definition.publish` 仍归 D36；D312 定下后与 D49“接口合同与设计责任人”一并关闭。
-- 实施：D310、D311、D312；D49 的接口合同子项随 D312 关闭。
+- 实施：D310 `originals/source_withdraw.py`（T1 守卫在 `originals/actions.py`，迁移占位 `s0_0873`，测试 `tests/originals/test_source_withdraw_pg.py`）；D311 `domain/categories/products/definition_update.py`（迁移占位 `s0_0870`，测试 `tests/categories/products/test_definition_update_pg.py`）；D312 `domain/engineering/interfaces/`（变更图接口节点在 `change/execution/graph.py`，迁移占位 `s0_0871`，测试 `tests/engineering/test_interfaces_pg.py`）；D49 的接口合同子项随 D312 关闭。
 - 判据：已被签署决定使用的原件走 T1 被拒、走 T2 成功，非负责人办理被拒，撤回后依赖结果显示“需重核”且检索不再命中；定义更新生成新草稿版本、原版本不变，规格冻结后被拒；接口建立第 1 版、修订续版，非工程角色被拒，负责人不能兼任确认人，各专业确认状态分别保存，受影响项进入变更影响。
