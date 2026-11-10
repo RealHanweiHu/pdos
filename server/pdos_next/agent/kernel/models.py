@@ -15,7 +15,8 @@ from sqlalchemy import (
     UniqueConstraint,
     text,
 )
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy.dialects.postgresql import ARRAY, JSONB
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
 from pdos_next.core.clock import now
@@ -555,10 +556,17 @@ class SkillReviewBatch(KernelRow, Base):
     model_label: Mapped[str] = mapped_column(String(200))
     cases: Mapped[list] = mapped_column(JSONB)
     receipt_id: Mapped[UUID]
+    eval_set_id: Mapped[UUID | None]
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
         ForeignKeyConstraint(
             ["tenant_id", "reviewed_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "eval_set_id"],
+            ["agent_skill_eval_sets.tenant_id", "agent_skill_eval_sets.id"],
+            name="skill_review_eval_set_fk",
+            use_alter=True,
         ),
         ForeignKeyConstraint(
             ["tenant_id", "receipt_id"],
@@ -612,6 +620,151 @@ class SkillQualification(KernelRow, Base):
     @property
     def status(self):
         return "qualified" if self.decision == "批准" else "revoked"
+
+
+CRITICAL_KINDS = '["scope","fabrication","override","red_line","commitment_baseline"]'
+
+
+class SkillSpotCheck(KernelRow, Base):
+    """The named human's mark on one sampled T0 run (P42); append-only."""
+
+    __tablename__ = "agent_skill_spot_checks"
+    reviewed_by: Mapped[UUID]
+    skill_key: Mapped[str] = mapped_column(String(160))
+    qualification_id: Mapped[UUID]
+    skill_version: Mapped[str] = mapped_column(String(160))
+    model_version: Mapped[str] = mapped_column(String(200))
+    run_id: Mapped[UUID]
+    outcome: Mapped[str] = mapped_column(String(16))
+    critical_kinds: Mapped[list] = mapped_column(JSONB)
+    note: Mapped[str] = mapped_column(String(2000))
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "qualification_id", "run_id"),
+        ForeignKeyConstraint(
+            ["tenant_id", "reviewed_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "qualification_id"],
+            ["agent_skill_qualifications.tenant_id", "agent_skill_qualifications.id"],
+        ),
+        ForeignKeyConstraint(["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="skill_spot_check_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        CheckConstraint(
+            "outcome IN ('correct','ordinary_error','critical_error')",
+            name="skill_spot_check_outcome",
+        ),
+        CheckConstraint(
+            "jsonb_typeof(critical_kinds)='array' "
+            "AND (outcome='critical_error')=(jsonb_array_length(critical_kinds)>0) "
+            f"AND critical_kinds <@ '{CRITICAL_KINDS}'::jsonb",
+            name="skill_spot_check_critical",
+        ),
+        CheckConstraint(
+            "outcome='correct' OR char_length(btrim(note))>0", name="skill_spot_check_note"
+        ),
+        Index("ix_skill_spot_checks_run", "tenant_id", "run_id"),
+    )
+
+    @property
+    def revision(self):
+        return 1
+
+    @property
+    def status(self):
+        return self.outcome
+
+
+class SkillQualityHold(KernelRow, Base):
+    """T0 stopped for one qualification decision; written only by the database."""
+
+    __tablename__ = "agent_skill_quality_holds"
+    skill_key: Mapped[str] = mapped_column(String(160))
+    qualification_id: Mapped[UUID]
+    skill_version: Mapped[str] = mapped_column(String(160))
+    model_version: Mapped[str] = mapped_column(String(200))
+    reason: Mapped[str] = mapped_column(String(32))
+    threshold: Mapped[dict] = mapped_column(JSONB)
+    metrics: Mapped[dict] = mapped_column(JSONB)
+    basis_run_ids: Mapped[list[UUID]] = mapped_column(ARRAY(PG_UUID(as_uuid=True)))
+    spot_check_id: Mapped[UUID | None]
+    owner_id: Mapped[UUID | None]
+    triggered_by: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "qualification_id", "reason"),
+        ForeignKeyConstraint(
+            ["tenant_id", "qualification_id"],
+            ["agent_skill_qualifications.tenant_id", "agent_skill_qualifications.id"],
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "spot_check_id"],
+            ["agent_skill_spot_checks.tenant_id", "agent_skill_spot_checks.id"],
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "triggered_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        CheckConstraint(
+            "reason IN ('withdrawal','modification','framework_check','critical_spot_check')",
+            name="skill_quality_hold_reason",
+        ),
+        CheckConstraint(
+            "(reason='critical_spot_check')=(spot_check_id IS NOT NULL)",
+            name="skill_quality_hold_spot_check",
+        ),
+    )
+
+
+class SkillEvalSet(KernelRow, Base):
+    """A frozen, versioned evaluation case list per tenant × skill package."""
+
+    __tablename__ = "agent_skill_eval_sets"
+    registered_by: Mapped[UUID]
+    skill_key: Mapped[str] = mapped_column(String(160))
+    version: Mapped[int] = mapped_column(Integer)
+    title: Mapped[str] = mapped_column(String(200))
+    cases: Mapped[list] = mapped_column(JSONB)
+    case_count: Mapped[int] = mapped_column(Integer)
+    cases_sha256: Mapped[str] = mapped_column(String(64))
+    receipt_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "skill_key", "version"),
+        ForeignKeyConstraint(
+            ["tenant_id", "registered_by"], ["principals.tenant_id", "principals.id"]
+        ),
+        ForeignKeyConstraint(
+            ["tenant_id", "receipt_id"],
+            ["action_receipts.tenant_id", "action_receipts.id"],
+            name="skill_eval_set_receipt_fk",
+            deferrable=True,
+            initially="DEFERRED",
+            use_alter=True,
+        ),
+        CheckConstraint(
+            "version>0 AND case_count BETWEEN 1 AND 60 AND jsonb_typeof(cases)='array' "
+            "AND jsonb_array_length(cases)=case_count AND cases_sha256 ~ '^[0-9a-f]{64}$' "
+            "AND char_length(btrim(title)) BETWEEN 1 AND 200",
+            name="skill_eval_set_shape",
+        ),
+    )
+
+    @property
+    def revision(self):
+        return 1
+
+    @property
+    def status(self):
+        return "registered"
 
 
 class McpControlRecord(KernelRow, Base):

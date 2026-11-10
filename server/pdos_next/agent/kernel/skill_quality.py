@@ -13,9 +13,10 @@ from datetime import datetime
 
 from sqlalchemy import select, text
 
+from pdos_next.core.models import Principal
 from pdos_next.errors import DomainError
 
-from .models import TenantAdministrator, TenantSkillEnablement
+from .models import SkillQualityHold, TenantAdministrator, TenantSkillEnablement
 
 
 @dataclass(frozen=True)
@@ -54,10 +55,15 @@ FRAMEWORK = Rule(
 )
 RULES = (WITHDRAWAL, MODIFICATION, FRAMEWORK)
 
-# P41 item 8 states these thresholds for P33 project plans (work_management).
-# Whether draft packages also use the withdrawal threshold waits for the user's
-# decision (D37 ⑧ question 2); until then only the literal P41 scope gates T0.
+# P41 item 8 states these thresholds for P33 project plans (work_management). The
+# user extended the withdrawal threshold to every T0 skill package, stricter than
+# v1.1's wording (P109); modification and framework-check rates gate plans only.
 GATING = {"work_management": (WITHDRAWAL, MODIFICATION, FRAMEWORK)}
+DEFAULT_GATING = (WITHDRAWAL,)
+
+
+def gating(skill_key):
+    return GATING.get(skill_key, DEFAULT_GATING)
 
 # No source records framework check outcomes yet (deterministic checker: W6 ②, D34).
 UNAVAILABLE = {FRAMEWORK.key: "框架检查器尚未接入（W6 ② D34），没有可计算的记录。"}
@@ -118,7 +124,7 @@ def breach(session, tenant, skill_key, skill_version, model_version, since):
 
     An unreadable count fails closed: T0 steps back to one confirmation.
     """
-    rules = GATING.get(skill_key, ())
+    rules = gating(skill_key)
     if not rules:
         return None
     value = counts(session, tenant, skill_key, skill_version, model_version, since)
@@ -130,10 +136,26 @@ def breach(session, tenant, skill_key, skill_version, model_version, since):
     return None
 
 
-def qualification_breach(session, tenant, row: TenantSkillEnablement):
-    if not row or not row.reviewed_at:
+def open_hold(session, tenant, skill_key):
+    """The recorded hold on the current qualification decision, if any."""
+    return session.scalar(
+        text("SELECT kernel_skill_open_hold(:tenant,:skill)"),
+        {"tenant": tenant, "skill": skill_key},
+    )
+
+
+def qualification_breach(session, tenant, row: TenantSkillEnablement, *, persist=False):
+    """A recorded hold, else a crossed threshold computed now, else None.
+
+    With ``persist`` in a writable transaction a crossed threshold is recorded as a
+    hold by the database, which recomputes the facts itself.
+    """
+    if not row or not row.reviewed_at or not row.qualification_id:
         return None
-    return breach(
+    recorded = open_hold(session, tenant, row.skill_key)
+    if recorded:
+        return recorded
+    reason = breach(
         session,
         tenant,
         row.skill_key,
@@ -141,6 +163,77 @@ def qualification_breach(session, tenant, row: TenantSkillEnablement):
         row.qualified_model_version,
         row.reviewed_at,
     )
+    if reason and reason != "unavailable" and persist and not session.info.get("read_snapshot"):
+        rule = next(rule for rule in RULES if rule.key == reason)
+        session.execute(
+            text(
+                "SELECT kernel_skill_quality_hold(CAST(:tenant AS uuid),CAST(:skill AS varchar),"
+                "CAST(:reason AS varchar),NULL::uuid,CAST(:window AS integer),"
+                "CAST(:limit AS numeric))"
+            ),
+            {
+                "tenant": tenant,
+                "skill": row.skill_key,
+                "reason": reason,
+                "window": rule.window,
+                "limit": rule.limit,
+            },
+        )
+    return reason
+
+
+def record_breaches(session, tenant):
+    """After a human withdrawal, record holds for any qualification it pushed over."""
+    rows = session.scalars(
+        select(TenantSkillEnablement).where(
+            TenantSkillEnablement.tenant_id == tenant,
+            TenantSkillEnablement.qualification_id.is_not(None),
+            TenantSkillEnablement.reviewed_at.is_not(None),
+            TenantSkillEnablement.qualification_revoked.is_(False),
+        )
+    ).all()
+    return {
+        row.skill_key: reason
+        for row in rows
+        if (reason := qualification_breach(session, tenant, row, persist=True))
+    }
+
+
+def holds(session, ctx):
+    """Open holds on current qualification decisions, pinned on the skill page."""
+    rows = session.execute(
+        select(SkillQualityHold, Principal.name)
+        .join(
+            TenantSkillEnablement,
+            (TenantSkillEnablement.tenant_id == SkillQualityHold.tenant_id)
+            & (TenantSkillEnablement.skill_key == SkillQualityHold.skill_key)
+            & (TenantSkillEnablement.qualification_id == SkillQualityHold.qualification_id),
+        )
+        .outerjoin(
+            Principal,
+            (Principal.tenant_id == SkillQualityHold.tenant_id)
+            & (Principal.id == SkillQualityHold.owner_id),
+        )
+        .where(SkillQualityHold.tenant_id == ctx.tenant_id)
+        .order_by(SkillQualityHold.created_at.desc(), SkillQualityHold.id)
+        .limit(50)
+    ).all()
+    return [
+        {
+            "id": str(hold.id),
+            "skill_key": hold.skill_key,
+            "skill_version": hold.skill_version,
+            "model_version": hold.model_version,
+            "reason": hold.reason,
+            "threshold": hold.threshold,
+            "metrics": hold.metrics,
+            "basis_run_ids": [str(run) for run in hold.basis_run_ids],
+            "spot_check_id": str(hold.spot_check_id) if hold.spot_check_id else None,
+            "owner_name": owner,
+            "created_at": hold.created_at.isoformat(),
+        }
+        for hold, owner in rows
+    ]
 
 
 def _rate(numerator, denominator):
@@ -232,8 +325,7 @@ def _iso(value: datetime | None):
     return value.isoformat() if value else None
 
 
-def view(session, ctx, skill_key):
-    """Read-only AI value metrics and the current qualification's P41 judgement."""
+def require_admin(session, ctx):
     admin = session.scalar(
         select(TenantAdministrator.id).where(
             TenantAdministrator.tenant_id == ctx.tenant_id,
@@ -243,6 +335,11 @@ def view(session, ctx, skill_key):
     )
     if ctx.run_id or ctx.agent_run_id or ctx.actor_id != ctx.requester_id or not admin:
         raise DomainError("NAMED_DECISION_REQUIRED", "请由当前租户管理员本人查看资格指标。", 403)
+
+
+def view(session, ctx, skill_key):
+    """Read-only AI value metrics and the current qualification's P41 judgement."""
+    require_admin(session, ctx)
     groups = session.execute(
         text("SELECT * FROM kernel_skill_quality_groups(:tenant,:skill)"),
         {"tenant": ctx.tenant_id, "skill": skill_key},
@@ -284,7 +381,7 @@ def view(session, ctx, skill_key):
             row.reviewed_at,
         )
         value = counts(session, *binding)
-        gating = GATING.get(skill_key, ())
+        gating_rules = gating(skill_key)
         current = {
             "skill_version": row.qualified_skill_version,
             "model_version": row.qualified_model_version,
@@ -297,17 +394,19 @@ def view(session, ctx, skill_key):
                     "window": rule.window,
                     "limit": rule.limit,
                     "definition": rule.definition,
-                    "gating": rule in gating,
+                    "gating": rule in gating_rules,
                     **judge(rule, value),
                 }
                 for rule in RULES
             ],
             "breach": qualification_breach(session, ctx.tenant_id, row),
+            "spot_checks": spot_checks(session, ctx, row),
             "basis": _basis(session, *binding),
             "spot_check": _sample(session, *binding),
         }
     return {
         "skill_key": skill_key,
+        "holds": [hold for hold in holds(session, ctx) if hold["skill_key"] == skill_key],
         "definitions": {
             "withdrawal_rate": WITHDRAWAL.definition,
             "modification_rate": MODIFICATION.definition,
@@ -319,3 +418,34 @@ def view(session, ctx, skill_key):
         "current": current,
         "model_judgement": False,
     }
+
+
+def spot_checks(session, ctx, row):
+    from .models import SkillSpotCheck
+
+    marks = session.execute(
+        select(SkillSpotCheck, Principal.name)
+        .join(
+            Principal,
+            (Principal.tenant_id == SkillSpotCheck.tenant_id)
+            & (Principal.id == SkillSpotCheck.reviewed_by),
+        )
+        .where(
+            SkillSpotCheck.tenant_id == ctx.tenant_id,
+            SkillSpotCheck.qualification_id == row.qualification_id,
+        )
+        .order_by(SkillSpotCheck.created_at.desc())
+        .limit(200)
+    ).all()
+    return [
+        {
+            "id": str(mark.id),
+            "run_id": str(mark.run_id),
+            "outcome": mark.outcome,
+            "critical_kinds": mark.critical_kinds,
+            "note": mark.note,
+            "reviewed_by_name": name,
+            "created_at": mark.created_at.isoformat(),
+        }
+        for mark, name in marks
+    ]

@@ -18,6 +18,8 @@ CATEGORY_OPERATIONS = frozenset(
         "ai.skill.qualify",
         "ai.skill.enable",
         "ai.skill.review.record",
+        "ai.skill.spot_check.record",
+        "ai.skill.eval_set.register",
         "ai.budget.configure",
         "evidence.artifact.register",
         "evidence.original.withdraw",
@@ -96,6 +98,8 @@ T1_OPERATIONS = frozenset(
         "mcp.tool.grant",
         "ai.skill.enable",
         "ai.skill.review.record",
+        "ai.skill.spot_check.record",
+        "ai.skill.eval_set.register",
         "ai.budget.configure",
         "model.configuration.save",
         "ai.run.revert",
@@ -321,6 +325,10 @@ def handler(operation):
         from pdos_next.agent.kernel import skill_qualification
 
         return skill_qualification
+    if operation in {"ai.skill.spot_check.record", "ai.skill.eval_set.register"}:
+        from pdos_next.agent.kernel import skill_quality_records
+
+        return skill_quality_records
     if operation == "ai.budget.configure":
         from pdos_next.agent.kernel import budget_management
 

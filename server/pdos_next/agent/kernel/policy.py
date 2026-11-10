@@ -117,11 +117,12 @@ def qualified(
     )
     if not eligible:
         return False
-    # P41 item 8: a crossed run-metric threshold steps T0 back to one confirmation
-    # until a new named qualification; computed from receipts, never by a model.
+    # P41 item 8 / P42: a recorded hold or a crossed run-metric threshold steps T0
+    # back to one confirmation until a new named qualification; computed from
+    # receipts, never by a model. A crossed threshold is recorded as a hold here.
     from .skill_quality import qualification_breach
 
-    return qualification_breach(session, scope.tenant_id, row) is None
+    return qualification_breach(session, scope.tenant_id, row, persist=True) is None
 
 
 def mcp_admission(

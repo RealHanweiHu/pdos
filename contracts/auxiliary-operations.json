@@ -1343,6 +1343,36 @@
       ],
       "implementation": "implemented_local_endpoint",
       "source": "设计确认稿 P34 第 2、3、7 项、P41 第 6、7、9 项、P56、P77（D73、D74）、P98、P99（用户 2026-11-01—11-08）；欠债总表 D37 ⑤"
+    },
+    {
+      "operation": "ai.skill.spot_check.record",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "ai.skill_spot_checked",
+      "record": "agent_skill_spot_checks",
+      "purpose": "当前租户管理员本人对抽中的 T0 运行（每个“租户 × 技能包 × 模型版本”按运行编号抽 20%，每周不少于 min(2, 当周 T0 运行数)）标注正确、普通错误或关键错误（P42 五类）。关键错误在同一事务里由数据库记录暂停并降回一次确认；普通错误计入人工修改率。不授予或恢复资格，小Pai 与运行身份不能发起。",
+      "canonical_policy_preserved": [
+        "ai.skill.qualify:T2",
+        "ai.skill.enable:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "设计确认稿 P41 第 8 项、P42、P109、P110（用户 2026-11-02、11-09）；欠债总表 W6 D37 ⑧、W8 D117"
+    },
+    {
+      "operation": "ai.skill.eval_set.register",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "ai.skill_eval_set_registered",
+      "record": "agent_skill_eval_sets",
+      "purpose": "当前租户管理员本人按“租户 × 技能包”登记评测集的固定版本（评测规则 §5.2 案例字段，登记即固定内容与 sha256，只能追加新版本）；案例审阅可引用评测集案例，按模型版本统计覆盖。登记不授予任何资格，评测集定版与参考要点由用户本人负责，AI 身份不能写入。",
+      "canonical_policy_preserved": [
+        "ai.skill.qualify:T2",
+        "ai.skill.review.record:T1"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "设计确认稿 P41 第 8 项、P42、P109、P110（用户 2026-11-02、11-09）；欠债总表 W6 D37 ⑧、W8 D117"
     }
   ],
   "inbound_endpoints": [

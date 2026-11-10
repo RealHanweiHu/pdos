@@ -5,7 +5,7 @@ from typing import Literal
 from uuid import UUID, uuid4
 
 from pydantic import Field, ValidationError, model_validator
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 
 from pdos_next.agent.model_configuration.commands import CurrentAdministrator
 from pdos_next.agent.model_configuration.persistence import (
@@ -66,12 +66,24 @@ class BindingInput(StrictModel):
 class RecordReviews(BindingInput):
     cases: list[ReviewCase] = Field(min_length=1, max_length=20)
     personally_reviewed: Literal[True]
+    # Optional: which registered evaluation set and which of its cases were reviewed.
+    eval_set_id: UUID | None = None
+    eval_case_ids: list[str] | None = Field(default=None, max_length=20)
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
     @model_validator(mode="after")
     def unique_cases(self):
         if len({case.source_ref.strip() for case in self.cases}) != len(self.cases):
             raise ValueError("同一批案例材料不得重复。")
+        if self.eval_case_ids is not None and (
+            self.eval_set_id is None
+            or len(self.eval_case_ids) != len(self.cases)
+            or len(set(self.eval_case_ids)) != len(self.eval_case_ids)
+            or any(not value.strip() for value in self.eval_case_ids)
+        ):
+            raise ValueError("评测集案例须与本批案例一一对应且不重复。")
+        if self.eval_set_id is not None and self.eval_case_ids is None:
+            raise ValueError("引用评测集时请为每个案例选择评测集案例。")
         return self
 
 
@@ -116,7 +128,12 @@ class Prepared:
 
 
 def semantic(payload):
-    return payload.model_dump(mode="json", exclude={"confirmation_token", "approval_token"})
+    data = payload.model_dump(mode="json", exclude={"confirmation_token", "approval_token"})
+    # Requests that cite no evaluation set keep their original digest.
+    for key in ("eval_set_id", "eval_case_ids"):
+        if key in data and data[key] is None:
+            data.pop(key)
+    return data
 
 
 def registry():
@@ -224,10 +241,39 @@ def prepared(session, ctx, command, scope, payload):
         **binding,
     }
     if isinstance(payload, RecordReviews):
+        eval_set = None
+        if payload.eval_set_id is not None:
+            from .models import SkillEvalSet
+
+            eval_set = session.scalar(
+                select(SkillEvalSet).where(
+                    SkillEvalSet.tenant_id == ctx.tenant_id,
+                    SkillEvalSet.id == payload.eval_set_id,
+                    SkillEvalSet.skill_key == skill.key,
+                )
+            )
+            known = {case["case_id"] for case in eval_set.cases} if eval_set else set()
+            if not eval_set or not set(payload.eval_case_ids) <= known:
+                raise DomainError(
+                    "SOURCE_UNAVAILABLE", "所选评测集或案例不属于该技能的已登记评测集。"
+                )
         return Prepared(
             row,
             {
                 **common,
+                **(
+                    {
+                        "eval_set": {
+                            "id": str(eval_set.id),
+                            "version": eval_set.version,
+                            "title": eval_set.title,
+                            "cases_sha256": eval_set.cases_sha256,
+                        },
+                        "eval_case_ids": payload.eval_case_ids,
+                    }
+                    if eval_set
+                    else {}
+                ),
                 "case_count": len(payload.cases),
                 "cases": [case.model_dump() for case in payload.cases],
                 "critical_count": sum(case.severity == "critical" for case in payload.cases),
@@ -264,6 +310,14 @@ def prepared(session, ctx, command, scope, payload):
             )
         )
     }
+    from .models import SkillQualityHold
+
+    held_at = session.scalar(
+        select(func.max(SkillQualityHold.created_at)).where(
+            SkillQualityHold.tenant_id == ctx.tenant_id,
+            SkillQualityHold.skill_key == skill.key,
+        )
+    )
     selected = []
     for ref in payload.case_refs:
         batch = batches.get(ref.batch_id)
@@ -271,6 +325,8 @@ def prepared(session, ctx, command, scope, payload):
             not batch
             or ref.index >= len(batch.cases)
             or (row.quality_paused_at is not None and batch.created_at <= row.quality_paused_at)
+            # P42 / P110: after a hold only reviews recorded later can restore T0.
+            or (held_at is not None and batch.created_at <= held_at)
             or (batch.skill_digest, batch.tool_digest, batch.model_digest)
             != (binding["skill_digest"], binding["tool_digest"], binding["model_digest"])
             or receipts[batch.receipt_id].result.get("prompt_digest") != binding["prompt_digest"]
@@ -355,8 +411,13 @@ def apply_validated(session, ctx, command, scope, payload, plan):
             model_version=plan.model.metadata.model_version,
             model_digest=payload.model_digest,
             model_label=plan.model.metadata.model,
-            cases=[case.model_dump() for case in payload.cases],
+            cases=[
+                case.model_dump()
+                | ({"eval_case_id": payload.eval_case_ids[index]} if payload.eval_case_ids else {})
+                for index, case in enumerate(payload.cases)
+            ],
             receipt_id=receipt,
+            eval_set_id=payload.eval_set_id,
         )
         row = plan.row
         if (
@@ -498,7 +559,7 @@ def reading(session, ctx, key, cursor=None):
         else "revoked"
         if row.qualification_revoked
         else "paused"
-        if row.quality_paused
+        if row.quality_paused or downgrade == "critical_spot_check"
         else "downgraded"
         if downgrade
         else "stale"
@@ -558,7 +619,55 @@ def reading(session, ctx, key, cursor=None):
             for batch in batches[:20]
         ],
         "next_cursor": str(batches[19].id) if len(batches) > 20 else None,
+        "eval_sets": eval_sets(session, ctx, key, binding),
     }
+
+
+def eval_sets(session, ctx, key, binding):
+    """Registered evaluation sets and which cases have current-binding reviews."""
+    from .models import SkillEvalSet
+
+    sets = session.execute(
+        select(SkillEvalSet, Principal.name)
+        .join(
+            Principal,
+            (Principal.tenant_id == SkillEvalSet.tenant_id)
+            & (Principal.id == SkillEvalSet.registered_by),
+        )
+        .where(SkillEvalSet.tenant_id == ctx.tenant_id, SkillEvalSet.skill_key == key)
+        .order_by(SkillEvalSet.version.desc())
+        .limit(10)
+    ).all()
+    if not sets:
+        return []
+    reviewed = {}
+    for batch in session.scalars(
+        select(SkillReviewBatch).where(
+            SkillReviewBatch.tenant_id == ctx.tenant_id,
+            SkillReviewBatch.skill_key == key,
+            SkillReviewBatch.eval_set_id.in_([row.id for row, _ in sets]),
+            SkillReviewBatch.skill_digest == binding["skill_digest"],
+            SkillReviewBatch.tool_digest == binding["tool_digest"],
+            SkillReviewBatch.model_digest == binding["model_digest"],
+        )
+    ):
+        reviewed.setdefault(batch.eval_set_id, set()).update(
+            case["eval_case_id"] for case in batch.cases if case.get("eval_case_id")
+        )
+    return [
+        {
+            "id": str(row.id),
+            "version": row.version,
+            "title": row.title,
+            "case_count": row.case_count,
+            "cases_sha256": row.cases_sha256,
+            "registered_by_name": name,
+            "created_at": row.created_at.isoformat(),
+            "cases": row.cases,
+            "reviewed_case_ids": sorted(reviewed.get(row.id, set())),
+        }
+        for row, name in sets
+    ]
 
 
 def recovery_digest(command, *, legacy):

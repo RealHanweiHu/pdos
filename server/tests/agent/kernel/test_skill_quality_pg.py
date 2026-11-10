@@ -2,8 +2,7 @@
 
 A real named qualification is granted for ``public_research`` through the existing
 commands; synthetic completed T0 writes, withdrawals and later human changes are then
-written as facts. The gate scope is widened for one skill by monkeypatch only to prove
-the wiring: the default scope stays P41's literal one (``work_management``).
+written as facts. The withdrawal threshold gates every T0 skill package (P109).
 """
 
 from datetime import timedelta
@@ -173,16 +172,15 @@ def test_counts_follow_withdrawals_and_later_human_changes_only(f):
     [(20, 1, True), (20, 2, False), (19, 5, True)],
     ids=["five_percent_is_not_over", "over_five_percent", "window_not_full_is_na"],
 )
-def test_withdrawal_threshold_steps_t0_back_only_when_gated(
-    f, monkeypatch, total, withdrawn, eligible_after
-):
+def test_withdrawal_threshold_gates_every_t0_skill(f, total, withdrawn, eligible_after):
     version, model, _ = qualify(f)
     runs = [t0_run(f.setup, version, model) for _ in range(total)]
     for run_id, _ in runs[:withdrawn]:
         withdraw_run(f.setup, run_id)
-    # P41's literal scope is work_management; draft packages wait for the decision.
-    assert skill_quality.GATING.get(SKILL) is None and eligible(f)
-    monkeypatch.setitem(skill_quality.GATING, SKILL, (skill_quality.WITHDRAWAL,))
+    # P109: the withdrawal threshold applies to every T0 skill package; the
+    # modification and framework-check thresholds gate work_management only.
+    assert skill_quality.gating(SKILL) == (skill_quality.WITHDRAWAL,)
+    assert skill_quality.gating("work_management") == skill_quality.RULES
     assert eligible(f) is eligible_after
     state = reading(f)["qualification"]
     if eligible_after:
@@ -191,9 +189,8 @@ def test_withdrawal_threshold_steps_t0_back_only_when_gated(
         assert state["state"] == "downgraded" and state["downgrade_reason"] == "withdrawal"
 
 
-def test_downgrade_stays_until_a_new_named_qualification_starts_a_new_window(f, monkeypatch):
+def test_downgrade_stays_until_a_new_named_qualification_starts_a_new_window(f):
     version, model, _ = qualify(f)
-    monkeypatch.setitem(skill_quality.GATING, SKILL, (skill_quality.WITHDRAWAL,))
     runs = [t0_run(f.setup, version, model) for _ in range(20)]
     for run_id, _ in runs[:3]:
         withdraw_run(f.setup, run_id)
@@ -206,7 +203,7 @@ def test_downgrade_stays_until_a_new_named_qualification_starts_a_new_window(f, 
     assert eligible(f) and reading(f)["qualification"]["state"] == "qualified"
 
 
-def test_value_view_is_admin_only_and_lists_basis_runs(f, monkeypatch):
+def test_value_view_is_admin_only_and_lists_basis_runs(f):
     version, model, _ = qualify(f)
     runs = [t0_run(f.setup, version, model) for _ in range(3)]
     withdraw_run(f.setup, runs[1][0])
@@ -226,7 +223,8 @@ def test_value_view_is_admin_only_and_lists_basis_runs(f, monkeypatch):
         "modification": [str(runs[2][0])],
     }
     rules = {rule["key"]: rule for rule in current["rules"]}
-    assert rules["withdrawal"]["state"] == "insufficient" and not rules["withdrawal"]["gating"]
+    assert rules["withdrawal"]["state"] == "insufficient" and rules["withdrawal"]["gating"]
+    assert not rules["modification"]["gating"]
     assert rules["framework_check"]["state"] == "unavailable"
     # Spot check sample: fewer than two runs a week are all sampled (P42).
     sample = current["spot_check"]

@@ -4296,6 +4296,7 @@ COVERED_COLUMNS.update(
             "model_label",
             "cases",
             "receipt_id",
+            "eval_set_id",
             "id",
             "tenant_id",
             "created_at",
@@ -5626,5 +5627,24 @@ COVERED_COLUMNS.update({
     "notification_preferences": (
         "principal_id", "project_id", "level", "muted", "digest", "revision", "updated_at",
         "id", "tenant_id", "created_at",
+    ),
+})
+
+# Pilot T0 quality records (D37 ⑧, D117; P41-8, P42, P109–P110): spot-check marks,
+# database-written holds and frozen evaluation case lists. None references an original.
+COVERED_COLUMNS.update({
+    "agent_skill_spot_checks": (
+        "reviewed_by", "skill_key", "qualification_id", "skill_version", "model_version",
+        "run_id", "outcome", "critical_kinds", "note", "receipt_id", "id", "tenant_id",
+        "created_at",
+    ),
+    "agent_skill_quality_holds": (
+        "skill_key", "qualification_id", "skill_version", "model_version", "reason",
+        "threshold", "metrics", "basis_run_ids", "spot_check_id", "owner_id", "triggered_by",
+        "id", "tenant_id", "created_at",
+    ),
+    "agent_skill_eval_sets": (
+        "registered_by", "skill_key", "version", "title", "cases", "case_count",
+        "cases_sha256", "receipt_id", "id", "tenant_id", "created_at",
     ),
 })

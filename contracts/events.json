@@ -588,6 +588,20 @@
       "stage": "S1",
       "schema_version": 1,
       "auxiliary": true
+    },
+    {
+      "type": "ai.skill_spot_checked",
+      "operation": "ai.skill.spot_check.record",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "ai.skill_eval_set_registered",
+      "operation": "ai.skill.eval_set.register",
+      "stage": "S1",
+      "schema_version": 1,
+      "auxiliary": true
     }
   ]
 }
