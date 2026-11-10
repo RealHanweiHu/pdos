@@ -13,7 +13,7 @@ worktree `hopeful-joliot-438789`，分支 `claude/hopeful-joliot-438789`，2026-
 - 迁移：`tools/local_environment.py create` 用含 `s0_0900` 的链做了 head→base→head 往返，并跑了 seed（两次建库都通过）。
 - PG，隔离临时库 `pdos_test`，显式 `TEST_DATABASE_URL`：
   - `tests/builds/test_bom_import_pg.py` 2 项端到端：上传、扫描、隔离解析 → 转换 → 逐行处置 → 篡改行被拒 → 保存 → 续版：内部编号复用、ERP 提示、替代料、差异 → 导出带位号和替代料列 → CSV → 他人私有原件被拒、非 CSV 文本被拒。
-  - 受影响的既有用例：配置命令、BOM 差异导出、工程投影共 46 项；BOM 链（Build、供应与成本执行、开工、G0 下游、原件、上传视图）131 项，都通过。
+  - 受影响的既有用例：配置命令、BOM 差异导出、工程投影共 46 项；BOM 链（Build、供应与成本执行、开工、G0 下游、原件、上传视图）131 项；加了替代料之后，在重建的库上又跑了工程投影、Build、供应执行、开工、G0 下游、上传视图共 83 项。都通过。测试库已销毁。
   - 第一次跑时，既有配置用例有 17 项失败：空的导入依据被写成了 JSON null，撞上检查约束。改用 `JSONB(none_as_null=True)` 后全过。
 - 前端：`next typegen && tsc --noEmit`、`eslint src/features/builds` 0 错误；`bom-review.test.mjs` 5 项；上传与代理相关的 `.mjs`、`.test.ts` 共 276+131 项都通过。
 - 合同：`tools/export_contracts.py`，`openapi.json` 只增两条读取路径；`tools/validate_contracts.py` 通过。
