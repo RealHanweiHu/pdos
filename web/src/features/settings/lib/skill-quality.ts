@@ -13,13 +13,32 @@ export type SpotCheckSample = {
   weeks: { week_start: string; runs: number; sampled: number; required: number }[];
   runs: { run_id: string; first_at: string; week_start: string; reason: "hash_20_percent" | "weekly_minimum" }[];
 };
+export type QualityHold = {
+  id: string; skill_key: string; skill_version: string; model_version: string;
+  reason: "withdrawal" | "modification" | "framework_check" | "critical_spot_check";
+  threshold: { window?: number; limit?: number }; metrics: { sample: number; count: number };
+  basis_run_ids: string[]; spot_check_id: string | null; owner_name: string | null; created_at: string;
+};
+export type SpotCheckMark = { id: string; run_id: string; outcome: SpotOutcome; critical_kinds: CriticalKind[]; note: string; reviewed_by_name: string; created_at: string };
+export type SpotOutcome = "correct" | "ordinary_error" | "critical_error";
+export type CriticalKind = "scope" | "fabrication" | "override" | "red_line" | "commitment_baseline";
+// P42's five critical error kinds, in the decision record's own words.
+export const criticalKinds: Record<CriticalKind, string> = {
+  scope: "越权，或写错项目、品类、受众",
+  fabrication: "编造来源、数值或人员职责",
+  override: "覆盖人工值，或修改已承接、已提交的任务",
+  red_line: "缺少红线成果的计划仍然生效",
+  commitment_baseline: "把计划日期写成承诺，或改变基线",
+};
+export const spotOutcomes: Record<SpotOutcome, string> = { correct: "正确", ordinary_error: "普通错误（计入人工修改率）", critical_error: "关键错误（立即暂停）" };
 export type QualityView = {
   skill_key: string;
+  holds: QualityHold[];
   definitions: Record<"withdrawal_rate" | "modification_rate" | "retention_rate" | "untouched_rate" | "granularity", string>;
   groups: { skill_version: string; model_version: string; runs_total: number; writes_total: number; first_at: string | null; last_at: string | null; metrics: QualityMetrics | null }[];
   current: null | {
     skill_version: string; model_version: string; since: string; metrics: QualityMetrics | null; rules: QualityRule[];
-    breach: string | null; basis: { withdrawal: string[]; modification: string[] }; spot_check: SpotCheckSample;
+    breach: string | null; basis: { withdrawal: string[]; modification: string[] }; spot_check: SpotCheckSample; spot_checks: SpotCheckMark[];
   };
   model_judgement: false;
 };
@@ -46,8 +65,21 @@ export const breachLabels: Record<string, string> = {
   withdrawal: "撤回率超过阈值",
   modification: "人工修改率超过阈值",
   framework_check: "框架检查失败率超过阈值",
+  critical_spot_check: "抽检发现关键错误",
   unavailable: "指标读取失败，按未通过处理",
 };
+
+export function holdSummary(hold: QualityHold) {
+  const facts = hold.reason === "critical_spot_check" ? "抽检标注为关键错误" : `${hold.metrics.count}/${hold.metrics.sample}（阈值 >${percent(hold.threshold.limit)} · 最近 ${hold.threshold.window} 次）`;
+  const owner = hold.owner_name ? `资格负责人：${hold.owner_name}` : "资格负责人已停用，由当前租户管理员处理";
+  return `${breachLabels[hold.reason] ?? hold.reason} · ${facts} · ${owner}`;
+}
+
+// Marks still owed on the current sample: sampled runs without a recorded mark.
+export function unmarkedSample(sample: SpotCheckSample, marks: SpotCheckMark[]) {
+  const marked = new Set(marks.map(mark => mark.run_id));
+  return sample.runs.filter(run => !marked.has(run.run_id));
+}
 
 export const sampleReasons: Record<SpotCheckSample["runs"][number]["reason"], string> = {
   hash_20_percent: "20% 抽样",

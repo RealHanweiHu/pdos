@@ -29,7 +29,7 @@ function load(filename) {
   return mod.exports;
 }
 
-const { SkillQualityBody } = load(path.join(root, "src/features/settings/model-configuration/skill-quality.tsx"));
+const { SkillQualityBody, SkillQualityHoldsBanner } = load(path.join(root, "src/features/settings/model-configuration/skill-quality.tsx"));
 const metrics = { runs_window: 20, runs_withdrawn: 2, writes_window: 20, writes_changed: 3, writes_withdrawn: 2, withdrawal_rate: 0.1, modification_rate: 0.15, retention_rate: 0.9, untouched_rate: 0.75 };
 const rule = (key, label, state, gating, extra = {}) => ({ key, label, window: 20, limit: 0.05, definition: "", gating, state, sample: 20, count: 2, rate: 0.1, reason: null, ...extra });
 const view = {
@@ -61,4 +61,14 @@ test("without a current qualification only historical value metrics are listed",
   assert.match(html, /当前没有有效资格/);
   assert.match(html, /尚无自动写入记录/);
   assert.doesNotMatch(html, /降回一次确认，待重新审阅/);
+});
+
+test("open holds are pinned with their owner and basis runs, and hidden when none", () => {
+  const hold = { id: "h", skill_key: "public_research", skill_version: "1.0.0", model_version: "m", reason: "critical_spot_check", threshold: {}, metrics: { sample: 1, count: 1 }, basis_run_ids: ["run-x"], spot_check_id: "s", owner_name: "Synthetic owner", created_at: "2026-11-09T00:00:00Z" };
+  const html = renderToStaticMarkup(React.createElement(SkillQualityHoldsBanner, { holds: [hold] }));
+  assert.match(html, /待复审 · 1 项自动执行资格已降回一次确认/);
+  assert.match(html, /抽检发现关键错误 · 抽检标注为关键错误 · 资格负责人：Synthetic owner/);
+  assert.match(html, /依据运行：run-x/);
+  assert.equal(renderToStaticMarkup(React.createElement(SkillQualityHoldsBanner, { holds: [] })), "");
+  assert.equal(renderToStaticMarkup(React.createElement(SkillQualityHoldsBanner, { holds: null })), "");
 });

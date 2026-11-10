@@ -20,7 +20,6 @@ from pdos_next.agent.kernel.models import (
     SkillSpotCheck,
 )
 from pdos_next.core.database import tenant_session
-from tests.agent.kernel.test_skill_quality_pg import counts, qualify, t0_run, withdraw_run
 from tests.agent.kernel.test_skill_qualification import (
     command,
     confirmed,
@@ -31,6 +30,7 @@ from tests.agent.kernel.test_skill_qualification import (
     review,
 )
 from tests.agent.kernel.test_skill_qualification import f as f  # noqa: F401 (fixture)
+from tests.agent.kernel.test_skill_quality_pg import counts, qualify, t0_run, withdraw_run
 from tests.agent.kernel.test_transactions import human_session
 
 SKILL = "public_research"

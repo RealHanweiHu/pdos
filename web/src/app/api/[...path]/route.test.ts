@@ -643,6 +643,8 @@ test("案例审阅按明确技能读取并用完整原请求只读恢复", async
   assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-qualification?skill_key=public_research`);
   assert.equal((await h.send("v1/agent-skill-quality", { query: "skill_key=public_research" })).response.status, 200);
   assert.equal(h.calls[1].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-quality?skill_key=public_research`);
+  assert.equal((await h.send("v1/agent-skill-quality/holds")).response.status, 200);
+  assert.equal(h.calls[2].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-quality/holds`);
   const body = JSON.stringify({ operation: "ai.skill.qualify", payload: { decision: "撤销" } });
   assert.equal((await h.send("v1/agent-skill-qualification/recover", { method: "POST", body })).response.status, 200);
   assert.equal(h.calls.at(-1)?.init.body, body);
@@ -652,7 +654,7 @@ test("审阅入口拒绝伪造人和租户范围以及重复或不明确选择",
     ["v1/agent-skill-qualification", {}, 422], ["v1/agent-skill-qualification", { query: "skill_key=public_research&reviewed_by=forged" }, 422],
     ["v1/agent-skill-qualification", { query: "skill_key=a&skill_key=b" }, 422], ["v1/agent-skill-qualification", { query: "skill_key=a&cursor=bad" }, 422],
     ["v1/agent-skill-qualification", { unscoped: true, query: "skill_key=a" }, 404], ["v1/agent-skill-qualification/recover", {}, 405],
-    ["v1/agent-skill-quality", {}, 422], ["v1/agent-skill-quality", { query: "skill_key=a&tenant_id=forged" }, 422], ["v1/agent-skill-quality", { method: "POST", query: "skill_key=a" }, 405], ["v1/agent-skill-quality/recover", {}, 404],
+    ["v1/agent-skill-quality", {}, 422], ["v1/agent-skill-quality", { query: "skill_key=a&tenant_id=forged" }, 422], ["v1/agent-skill-quality", { method: "POST", query: "skill_key=a" }, 405], ["v1/agent-skill-quality/recover", {}, 404], ["v1/agent-skill-quality/holds", { query: "skill_key=a" }, 422], ["v1/agent-skill-quality/holds", { method: "POST" }, 405],
   ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
 });
 

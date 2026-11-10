@@ -22,3 +22,12 @@ test("weekly spot-check shortfall is computed from the server's own counts", () 
   const weeks = [{ week_start: "2026-11-02", runs: 1, sampled: 1, required: 1 }, { week_start: "2026-11-09", runs: 9, sampled: 1, required: 2 }];
   assert.deepEqual(sampleShortfall({ rule: "", weeks, runs: [] }), ["2026-11-09"]);
 });
+
+test("hold summaries name the facts and the owner, or the admins when the owner left", async () => {
+  const { holdSummary, unmarkedSample } = await import("./skill-quality");
+  const hold = { id: "h", skill_key: "public_research", skill_version: "1", model_version: "m", reason: "withdrawal" as const, threshold: { window: 20, limit: 0.05 }, metrics: { sample: 20, count: 2 }, basis_run_ids: ["a", "b"], spot_check_id: null, owner_name: "本人", created_at: "2026-11-09T00:00:00Z" };
+  assert.equal(holdSummary(hold), "撤回率超过阈值 · 2/20（阈值 >5.0% · 最近 20 次） · 资格负责人：本人");
+  assert.match(holdSummary({ ...hold, reason: "critical_spot_check", owner_name: null }), /^抽检发现关键错误 · 抽检标注为关键错误 · 资格负责人已停用，由当前租户管理员处理$/);
+  const sample = { rule: "", weeks: [], runs: [{ run_id: "a", first_at: "", week_start: "", reason: "hash_20_percent" as const }, { run_id: "b", first_at: "", week_start: "", reason: "weekly_minimum" as const }] };
+  assert.deepEqual(unmarkedSample(sample, [{ id: "x", run_id: "a", outcome: "correct", critical_kinds: [], note: "", reviewed_by_name: "", created_at: "" }]).map(run => run.run_id), ["b"]);
+});
