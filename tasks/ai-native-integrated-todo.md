@@ -828,7 +828,7 @@ W3c · 想法已变但没有记录
 - D212 发布与回滚（11-08 手册完成，[手册](../docs/runbooks/release-and-rollback.md)）：✅ 迁移前快照 → 迁移 → 冒烟 → 回滚；工作流改动必须用 patch，回放检查工具 `tools/workflow_replay_check.py` 及测试（含“记下 patch 标记后回滚旧代码会失败”）；`X-Real-IP` 写法。〔你〕通知提前量与维护窗口；服务器命令等 D210。
 - D213 监控告警与值班（11-08 实现，[手册](../docs/runbooks/monitoring-and-on-call.md)）：✅ 探活、错误率（`/ops/metrics`，令牌开关）、队列积压（迁移 `s0_0867`（分支上占位号 `s0_0879`，11-09 集成时改号）的 `ops_health_counters` + Temporal 队列）、模型失败率；探针 `pdos_next.ops.probe`。等 D64：钉钉群机器人地址与密钥；〔你〕阈值终值、值班人与响应时限。
 - D346 ✅ 11-09 realm 改为 `pdos-next`；旧版没装上 schema 的环境，下次 `start` 时补装，`status` 显示是否已装（[证据](../docs/reports/evidence/w11-ops-20261109/README.md)）。
-- D347 未做（11-09 用量到顶）：发布包的 `verifications` 引用 `test_run`，需要 build 和验证运行链。用公开命令造一条（可参照 `tests/manufacturing/native_pilot_transactions/fixtures.py` 的 `failure_run`），再在 `_reads` 里逐页读测试结果；跑演练还要有原生 Temporal 和运行时状态库。
+- D347 ✅ 11-10 AT-47 演练链补上测试结果一环：工程配置 → 测试结果（`test.results.import`，结果通过）→ 制造发布 → 固定该测试运行的发布包 → 决定 → 交接；恢复后测试结果页逐页与备份时刻一致；未补回签发方配置时，专业权威显示“签发方不可用”，演练逐项断言（[证据](../docs/reports/evidence/w11-ops-20261109/README.md)）。
 - D348 ✅ 11-09 收到 SIGTERM/SIGINT 后的停机办法（可重入）：
   - 立即停止取任务和事件投递；
   - 在途 Activity 有 `PDOS_WORKER_SHUTDOWN_GRACE_SECONDS`（默认 60）秒跑完，到时取消，再最多等 15 秒；

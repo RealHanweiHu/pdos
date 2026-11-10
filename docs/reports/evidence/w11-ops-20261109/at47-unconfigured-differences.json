@@ -1,0 +1,1385 @@
+{
+  "test_results": [
+    {
+      "path": ".runs[0].authority.disposition_decide.fact_refs",
+      "backup": [
+        {
+          "id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "fact_sha256": "a8fd6ee4d3291297daad66cb7630b745b8ba3a253fb600f7d35c4165e36462bf",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "fact_sha256": "dfe4e946b6e4c9b03bb6dc5f31b6f935ab9308d1ff9906134d72294d28aca048",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "fact_sha256": "a7c37361655398bb24b7b430c24d594f9cb5b9876ebbe5a3fbfb030b66c5ff5c",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "fact_sha256": "9e3504fa1b2d72bfd7d463e16cc86d050fcc9b74aa770ece43aac37c6da74461",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "fact_sha256": "e9b671cc66bad3ac848fea0e8a116472e16c54d10d3a21298220e03c0f565d0c",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "fact_sha256": "8e645994f8e3ce36f6344875685ded776b129e72cffd01149b557d8b6587b934",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "fact_sha256": "55677fc1310310f9eeda24c3f19181e938f3c883720b0b88deb2f5973b02aac5",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "fact_sha256": "f61591044dfc748c3be8a9370f72e740d5a07b547a407f9be3725e94c7e1456e",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "fact_sha256": "fb9a5360c95935bb1e667007971aa318d3b51aef54093372822159f64c0f009c",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "fact_sha256": "2156e7f1b7028afc82e762466998ccff9d02ce9ece6acccd3fbcaa05eb60395f",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "fact_sha256": "046823050d62ce97643f7a0af6438c496217dc3dc8daad987869a5a972a2ab14",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "fact_sha256": "db04d2d0d58d70179a8c965e3e63b2f4d299d49cbe27e805a46a0332f29f1400",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.disposition_decide.facts_revision",
+      "backup": "7da22391fed6385a46ee539c17d248dedf492fbc5a64f1e039960a935be4adab",
+      "restored": "0fb4047ac4311c89ec812be811c36b0a6550f1190c387083eb416456491d5d0d"
+    },
+    {
+      "path": ".runs[0].authority.disposition_decide.reason_codes",
+      "backup": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "restored": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED",
+        "SYNTHETIC_AUTHORITY_NOT_ALLOWED",
+        "TRUSTED_ISSUER_UNAVAILABLE"
+      ]
+    },
+    {
+      "path": ".runs[0].authority.disposition_decide.required_source_read_set",
+      "backup": [
+        {
+          "artifact_id": "11e9a366-b1f7-48ba-afcd-b4fead9d06f0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "2ddc657f-0ca8-4aa2-b3d9-d09335235a5d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7568b7d8-8f05-4d01-a1f5-3d2121c311b0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "782a1b71-0597-4e54-b172-551f3d9cb699",
+          "expected_revision": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.result_compute.fact_refs",
+      "backup": [
+        {
+          "id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "fact_sha256": "a8fd6ee4d3291297daad66cb7630b745b8ba3a253fb600f7d35c4165e36462bf",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "fact_sha256": "dfe4e946b6e4c9b03bb6dc5f31b6f935ab9308d1ff9906134d72294d28aca048",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "fact_sha256": "a7c37361655398bb24b7b430c24d594f9cb5b9876ebbe5a3fbfb030b66c5ff5c",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "fact_sha256": "9e3504fa1b2d72bfd7d463e16cc86d050fcc9b74aa770ece43aac37c6da74461",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "fact_sha256": "e9b671cc66bad3ac848fea0e8a116472e16c54d10d3a21298220e03c0f565d0c",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "fact_sha256": "8e645994f8e3ce36f6344875685ded776b129e72cffd01149b557d8b6587b934",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "fact_sha256": "55677fc1310310f9eeda24c3f19181e938f3c883720b0b88deb2f5973b02aac5",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "fact_sha256": "f61591044dfc748c3be8a9370f72e740d5a07b547a407f9be3725e94c7e1456e",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "fact_sha256": "fb9a5360c95935bb1e667007971aa318d3b51aef54093372822159f64c0f009c",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "fact_sha256": "2156e7f1b7028afc82e762466998ccff9d02ce9ece6acccd3fbcaa05eb60395f",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "fact_sha256": "046823050d62ce97643f7a0af6438c496217dc3dc8daad987869a5a972a2ab14",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "fact_sha256": "db04d2d0d58d70179a8c965e3e63b2f4d299d49cbe27e805a46a0332f29f1400",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.result_compute.facts_revision",
+      "backup": "b0b0705fcd0adfbfb8546355e9fd84158d16d36105d4776535eeb6534fbcf3b5",
+      "restored": "0992d8b21f87031369d0ed314d63a1ec1eb84c3cd90dc230ca6a2faa783d8bf7"
+    },
+    {
+      "path": ".runs[0].authority.result_compute.reason_codes",
+      "backup": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "restored": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED",
+        "SYNTHETIC_AUTHORITY_NOT_ALLOWED",
+        "TRUSTED_ISSUER_UNAVAILABLE"
+      ]
+    },
+    {
+      "path": ".runs[0].authority.result_compute.required_source_read_set",
+      "backup": [
+        {
+          "artifact_id": "11e9a366-b1f7-48ba-afcd-b4fead9d06f0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "2ddc657f-0ca8-4aa2-b3d9-d09335235a5d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7568b7d8-8f05-4d01-a1f5-3d2121c311b0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "782a1b71-0597-4e54-b172-551f3d9cb699",
+          "expected_revision": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.results_import.fact_refs",
+      "backup": [
+        {
+          "id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "fact_sha256": "a8fd6ee4d3291297daad66cb7630b745b8ba3a253fb600f7d35c4165e36462bf",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "fact_sha256": "dfe4e946b6e4c9b03bb6dc5f31b6f935ab9308d1ff9906134d72294d28aca048",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "fact_sha256": "a7c37361655398bb24b7b430c24d594f9cb5b9876ebbe5a3fbfb030b66c5ff5c",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "fact_sha256": "9e3504fa1b2d72bfd7d463e16cc86d050fcc9b74aa770ece43aac37c6da74461",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "fact_sha256": "e9b671cc66bad3ac848fea0e8a116472e16c54d10d3a21298220e03c0f565d0c",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "fact_sha256": "8e645994f8e3ce36f6344875685ded776b129e72cffd01149b557d8b6587b934",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "fact_sha256": "55677fc1310310f9eeda24c3f19181e938f3c883720b0b88deb2f5973b02aac5",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "fact_sha256": "f61591044dfc748c3be8a9370f72e740d5a07b547a407f9be3725e94c7e1456e",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "fact_sha256": "fb9a5360c95935bb1e667007971aa318d3b51aef54093372822159f64c0f009c",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "fact_sha256": "2156e7f1b7028afc82e762466998ccff9d02ce9ece6acccd3fbcaa05eb60395f",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "fact_sha256": "046823050d62ce97643f7a0af6438c496217dc3dc8daad987869a5a972a2ab14",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "fact_sha256": "db04d2d0d58d70179a8c965e3e63b2f4d299d49cbe27e805a46a0332f29f1400",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.results_import.facts_revision",
+      "backup": "0d03949ea4cda5955bdb66dcb00dca9f3e7a876408d87cb0235eb3285a5b6030",
+      "restored": "7994e18fde227a33ab772272a82891e4a65c9080b82b0f60352e6b4d81cdf001"
+    },
+    {
+      "path": ".runs[0].authority.results_import.reason_codes",
+      "backup": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "restored": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED",
+        "SYNTHETIC_AUTHORITY_NOT_ALLOWED",
+        "TRUSTED_ISSUER_UNAVAILABLE"
+      ]
+    },
+    {
+      "path": ".runs[0].authority.results_import.required_source_read_set",
+      "backup": [
+        {
+          "artifact_id": "11e9a366-b1f7-48ba-afcd-b4fead9d06f0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "2ddc657f-0ca8-4aa2-b3d9-d09335235a5d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7568b7d8-8f05-4d01-a1f5-3d2121c311b0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "782a1b71-0597-4e54-b172-551f3d9cb699",
+          "expected_revision": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.run_review.fact_refs",
+      "backup": [
+        {
+          "id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "2a010ef9-9812-4638-a1a4-092d4f0cf947",
+          "fact_sha256": "a8fd6ee4d3291297daad66cb7630b745b8ba3a253fb600f7d35c4165e36462bf",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "6856f8c2-e62f-4b38-aefd-6871ada54dd0",
+          "fact_sha256": "dfe4e946b6e4c9b03bb6dc5f31b6f935ab9308d1ff9906134d72294d28aca048",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "d4220af3-489e-467c-9a3e-956d224866e0",
+          "fact_sha256": "a7c37361655398bb24b7b430c24d594f9cb5b9876ebbe5a3fbfb030b66c5ff5c",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "f8fda9fb-558c-43c5-b2b5-1ed88eb69522",
+          "fact_sha256": "9e3504fa1b2d72bfd7d463e16cc86d050fcc9b74aa770ece43aac37c6da74461",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "af6be927-c4f7-49d1-829a-aef1545a6eb2",
+          "fact_sha256": "e9b671cc66bad3ac848fea0e8a116472e16c54d10d3a21298220e03c0f565d0c",
+          "state": "active",
+          "operations": [
+            "npi.control_plan.record",
+            "npi.manufacturing_baseline.publish",
+            "npi.manufacturing_baseline.record",
+            "npi.work_instruction.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:24.506556+00:00",
+          "valid_until": "2026-11-10T10:30:24.506556+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "a6e8747f-d890-49a7-870b-528dc729c3bb",
+          "fact_sha256": "8e645994f8e3ce36f6344875685ded776b129e72cffd01149b557d8b6587b934",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "3e203649-cbb1-4dd2-9692-733ad2d904f2",
+          "fact_sha256": "55677fc1310310f9eeda24c3f19181e938f3c883720b0b88deb2f5973b02aac5",
+          "state": "active",
+          "operations": [
+            "integration.handoff.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:52.588247+00:00",
+          "valid_until": "2026-11-10T10:25:52.588247+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0ccbe936-f50f-46c8-a40f-45534c285201",
+          "fact_sha256": "f61591044dfc748c3be8a9370f72e740d5a07b547a407f9be3725e94c7e1456e",
+          "state": "active",
+          "operations": [
+            "build.sample.readiness.record"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "73eeb02d-3ab3-4987-807e-d54dd9de62b4",
+          "fact_sha256": "fb9a5360c95935bb1e667007971aa318d3b51aef54093372822159f64c0f009c",
+          "state": "active",
+          "operations": [
+            "build.engineering.authorize"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "7696ef95-30da-46f4-9503-c94ddc5ca53b",
+          "fact_sha256": "2156e7f1b7028afc82e762466998ccff9d02ce9ece6acccd3fbcaa05eb60395f",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "duty",
+          "role": "manufacturing",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-professional-a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "v1",
+          "series_id": "0bca0a9c-15d6-4279-8f47-2797bc0d51b5",
+          "fact_sha256": "046823050d62ce97643f7a0af6438c496217dc3dc8daad987869a5a972a2ab14",
+          "state": "active",
+          "operations": [
+            "build.manufacturing.authorize",
+            "build.start"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:34:21.859823+00:00",
+          "valid_until": "2026-11-10T10:24:21.859823+00:00",
+          "issuer_epoch": 1
+        },
+        {
+          "id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "revision": 1,
+          "epoch": 1,
+          "kind": "qualification",
+          "role": "engineering",
+          "nature": "synthetic",
+          "issuer_key": "synthetic-publication:a3336ee1-0536-4f6a-ae6a-33018277e51d",
+          "issuer_version": "isolated-publication-v1",
+          "series_id": "5a7ce966-9e3b-42b0-bf5a-63beb61443ed",
+          "fact_sha256": "db04d2d0d58d70179a8c965e3e63b2f4d299d49cbe27e805a46a0332f29f1400",
+          "state": "active",
+          "operations": [
+            "release.engineering.approve",
+            "release.policy.import"
+          ],
+          "purposes": [
+            "Verify preparation"
+          ],
+          "valid_from": "2026-11-10T09:44:50.963779+00:00",
+          "valid_until": "2026-11-10T10:30:50.963779+00:00",
+          "issuer_epoch": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].authority.run_review.facts_revision",
+      "backup": "3963e6378092759a8128083f20a38155abe4e8d88422ff1f33439679e8a960df",
+      "restored": "d6abf501a0f2016bbe651565f4e68b9a19970c6849a7d0087d0105069bddda36"
+    },
+    {
+      "path": ".runs[0].authority.run_review.reason_codes",
+      "backup": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED"
+      ],
+      "restored": [
+        "PROFESSIONAL_DUTY_REQUIRED",
+        "PROFESSIONAL_QUALIFICATION_REQUIRED",
+        "SYNTHETIC_AUTHORITY_NOT_ALLOWED",
+        "TRUSTED_ISSUER_UNAVAILABLE"
+      ]
+    },
+    {
+      "path": ".runs[0].authority.run_review.required_source_read_set",
+      "backup": [
+        {
+          "artifact_id": "11e9a366-b1f7-48ba-afcd-b4fead9d06f0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "2ddc657f-0ca8-4aa2-b3d9-d09335235a5d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7568b7d8-8f05-4d01-a1f5-3d2121c311b0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "782a1b71-0597-4e54-b172-551f3d9cb699",
+          "expected_revision": 1
+        }
+      ],
+      "restored": []
+    },
+    {
+      "path": ".runs[0].required_source_read_set",
+      "backup": [
+        {
+          "artifact_id": "11e9a366-b1f7-48ba-afcd-b4fead9d06f0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "2ddc657f-0ca8-4aa2-b3d9-d09335235a5d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "36c50d1f-8941-4856-be41-62d3cd0d5d5c",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "59084d54-f946-4018-85d4-6883bbe543f5",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "7568b7d8-8f05-4d01-a1f5-3d2121c311b0",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "782a1b71-0597-4e54-b172-551f3d9cb699",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a2f1d609-4802-4b89-b408-9caad15f7b1d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "be36c0ed-4e66-4f24-af0c-09a82a8455c1",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "d30659a5-4f72-464e-9686-791e10a65a8d",
+          "expected_revision": 1
+        }
+      ],
+      "restored": [
+        {
+          "artifact_id": "2ddc657f-0ca8-4aa2-b3d9-d09335235a5d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "36c50d1f-8941-4856-be41-62d3cd0d5d5c",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "59084d54-f946-4018-85d4-6883bbe543f5",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "a2f1d609-4802-4b89-b408-9caad15f7b1d",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "be36c0ed-4e66-4f24-af0c-09a82a8455c1",
+          "expected_revision": 1
+        },
+        {
+          "artifact_id": "d30659a5-4f72-464e-9686-791e10a65a8d",
+          "expected_revision": 1
+        }
+      ]
+    }
+  ],
+  "publication": [
+    {
+      "path": ".source_status",
+      "backup": "current",
+      "restored": "needs_recheck"
+    }
+  ],
+  "package": [
+    {
+      "path": ".applicability",
+      "backup": "current",
+      "restored": "needs_recheck"
+    },
+    {
+      "path": ".decisions[0].applicability",
+      "backup": "current",
+      "restored": "needs_recheck"
+    },
+    {
+      "path": ".decisions[1].applicability",
+      "backup": "current",
+      "restored": "needs_recheck"
+    }
+  ],
+  "project_packages": [],
+  "handoff": [
+    {
+      "path": ".applicability",
+      "backup": "current",
+      "restored": "needs_recheck"
+    }
+  ],
+  "handoff_receipts": [],
+  "project_handoffs": []
+}
