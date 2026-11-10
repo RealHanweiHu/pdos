@@ -108,3 +108,17 @@
 - 具名撤回：品类负责人撤回共享资料，预览列出“无业务记录使用”，提交后库中为 withdrawn 并有 `source.withdrawn` 事件：[source-withdraw-preview-dark.jpg](source-withdraw-preview-dark.jpg)。
 - 替代料批准：种子人员没有工程职责，预览经网页代理到服务器后被拒并显示原因：[alternate-approval-refused-dark.jpg](alternate-approval-refused-dark.jpg)、[alternate-approval-refused-light.jpg](alternate-approval-refused-light.jpg)；客户承认面板渲染：[customer-acceptance-dark.jpg](customer-acceptance-dark.jpg)。
 - 接口合同、CAPA 有效性面板在对应页面渲染并经代理读取（“本项目尚无接口合同”）。需要专业职责的 T2 完整办理只在 PG 测试中覆盖：本地开发服务没有配置合成专业签发方。
+
+### 第二轮验证
+
+| 项 | 结果 |
+|---|---|
+| 新闭环 PG | 定义更新 3、接口 4、治具 6、来源撤回 5、替代料 3、CAPA 有效性 3、客户承认 3，单独运行全部通过；原 T1 撤回 5 项仍通过 |
+| 规则与纯函数 | 定义更新规则 4 项通过 |
+| 受影响 PG 组合 | 20 组 1858 项：1838 通过，13 失败、7 错误；归因见欠债总表 D378（新增测试单独重跑通过，2 项为既有失败，其余与高负载下的时间窗、确认过期一致） |
+| 无库全量 | 10775 通过，1 失败为既有 D313；其余 1996 项为缺数据库的 PG 用例 |
+| 技能与命令登记 | 106 项通过 |
+| 前端 | `.mjs` 1930 项、`.test.ts` 752 项通过；3 个 `.tsx` 测试本机加载器不支持（既有）；tsc 无错；eslint 0 错误（4 条既有警告） |
+| 合同 | 导出后校验通过，`not_implemented` 由 10 降为 3 |
+| 迁移 | 新建库上 `head→s0_0869→head`、`head→s0_0872→head` 往返通过；有历史时降级被拒（“Customer acceptance history requires s0_0876”）；ORM 对照只有 7 处既有索引差异 |
+| 环境 | `local_environment.py create` 建的隔离 `pdos_test`（降级仍停在既有 `s0_0784`，手动升到 head 后 seed），全部测试显式指向它，未回退 `.env`，未调用真实模型；收尾已 destroy |
