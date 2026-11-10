@@ -16,7 +16,9 @@ FIELDS = (
     ("critical", "关键件"),
     ("notes", "备注"),
     ("reference_designators", "位号"),
+    ("alternates", "替代料"),
 )
+LISTS = ("reference_designators", "alternates")
 TITLES = dict(FIELDS)
 
 
@@ -24,6 +26,10 @@ def part_label(line: dict) -> str:
     part = line.get("part") or {}
     label = " / ".join(str(v) for v in (part.get("internal_number"), part.get("name")) if v)
     return label or str(line.get("part_id") or "")
+
+
+def alternate_label(alternate: dict) -> str:
+    return part_label(alternate)
 
 
 def snapshot(line: dict) -> dict:
@@ -38,6 +44,9 @@ def snapshot(line: dict) -> dict:
         "critical": line.get("critical"),
         "notes": line.get("notes"),
         "reference_designators": list(line.get("reference_designators") or ()),
+        # Declared alternates only; a declaration is not a qualification (P113).
+        "alternates": [alternate_label(a) for a in line.get("alternates") or ()],
+        "alternate_ids": [a.get("part_id") for a in line.get("alternates") or ()],
     }
 
 
@@ -53,6 +62,10 @@ def _same_number(left, right) -> bool:
 def _changed(field, before, after) -> bool:
     if field in {"quantity", "loss_rate"}:
         return not _same_number(before.get(field), after.get(field))
+    if field == "alternates":
+        if all(before.get("alternate_ids") or ()) and all(after.get("alternate_ids") or ()):
+            return before.get("alternate_ids") != after.get("alternate_ids")
+        return before["alternates"] != after["alternates"]
     if field == "part":
         # A reused part keeps its ID; a new draft (no ID yet) is compared by label.
         if before.get("part_id") and after.get("part_id"):
@@ -61,8 +74,8 @@ def _changed(field, before, after) -> bool:
     return before.get(field) != after.get(field)
 
 
-def _designators(before, after):
-    old, new = before["reference_designators"], after["reference_designators"]
+def _members(before, after, field):
+    old, new = before[field], after[field]
     return {
         "added": [value for value in new if value not in old],
         "removed": [value for value in old if value not in new],
@@ -87,7 +100,9 @@ def compare(before_lines, after_lines) -> dict:
         summary[change] += 1
         row = {"key": key, "change": change, "fields": fields, "before": before, "after": after}
         if change == "changed" and "reference_designators" in fields:
-            row["designators"] = _designators(before, after)
+            row["designators"] = _members(before, after, "reference_designators")
+        if change == "changed" and "alternates" in fields:
+            row["alternates"] = _members(before, after, "alternates")
         rows.append(row)
     return {"summary": summary, "lines": rows}
 
@@ -113,6 +128,7 @@ def get_bom_review(s, ctx, product_id, bom_id) -> dict:
     Both sides go through ``get_bom`` (named human and product grant); the
     predecessor is the one fixed by ``previous_id``, never "the latest".
     """
+    from .bom_alternates import approved_alternates
     from .bom_rules import rule_card
     from .service import get_bom
 
@@ -122,6 +138,6 @@ def get_bom_review(s, ctx, product_id, bom_id) -> dict:
         "bom": header(after),
         "previous": header(before),
         "diff": compare(before["lines"] if before else (), after["lines"]),
-        "rules": rule_card(after["lines"]),
+        "rules": rule_card(after["lines"], approved_alternates(s, ctx, product_id, row)),
         "import_basis": after.get("import_basis"),
     }

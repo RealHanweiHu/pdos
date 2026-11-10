@@ -1,4 +1,4 @@
-"""BOM reference designators and import provenance (D98).
+"""BOM designators, declared alternates and import provenance (D98, P113).
 
 Placeholder s0_0900 from the W9 range (s0_0900–s0_0904), written on top of
 s0_0869. Renumber to the real head at integration: file name, revision,

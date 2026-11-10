@@ -102,6 +102,8 @@ class BomLine(Row, Base):
     notes: Mapped[str | None] = mapped_column(Text)
     # D98: reference designators in source order; duplicates are a rule-card finding.
     reference_designators: Mapped[list] = mapped_column(JSONB, default=list)
+    # P113: declared alternates [{part_id, part_revision}]; never a qualification.
+    alternates: Mapped[list] = mapped_column(JSONB, default=list)
     __table_args__ = (
         UniqueConstraint("tenant_id", "product_id", "bom_id", "key"),
         ForeignKeyConstraint(
@@ -118,6 +120,7 @@ class BomLine(Row, Base):
             "jsonb_typeof(reference_designators) = 'array'",
             name="ck_bom_lines_reference_designators",
         ),
+        CheckConstraint("jsonb_typeof(alternates) = 'array'", name="ck_bom_lines_alternates"),
     )
 
 

@@ -159,12 +159,18 @@ W3b · NPI 业务域（对照 PLM/NPI 软件）
 - D95 ✅ 采纳：维持 T1，“草稿可 T0”限于条目级草稿；v1.1 §05.5、§08 待同步（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）`proposal.create` 档位：代码一直是 T1，v1.1 正文和附录 A 自相矛盾。以附录 A 为准改正文（B5）。
 - D96 ✅ 采纳→W8（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）私有提案在运行收尾时预填 promote，不放宽 K5/I22（B6）。
 - D97 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）模具记录与验收：不新增验收命令（B12）。
-- D98 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）BOM 导入与版本差异，加 BOM 确定性规则卡（B13、F35；对标 OpenBOM、Aras）。
-  - 11-09 部分实现（worktree `hopeful-joliot-438789`，本地提交未推送）：
+- D98 ✅ 采纳→W9（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）BOM 导入与版本差异，加 BOM 确定性规则卡（B13、F35；对标 OpenBOM、Aras）。11-10 已实现（worktree `hopeful-joliot-438789`，本地提交未推送，[证据](../docs/reports/evidence/w9-bom-import-20261109/README.md)）。
+  - 11-09 实现：
     - 可用：XLSX/CSV 原件经既有上传、扫描与隔离解析后，`POST …/configurations/bom-import/inputs`（READ）按表头同义词确定性建议列映射并逐行转换；不能照原样导入的行（数量非正、缺单位、公式、ERP 料号与已有物料一致等）须逐条处置（跳过 / 建新物料 / 关联已有物料）。保存仍走 `engineering.bom.revise`（T1，整版一次确认），载荷带 `import_basis`，服务端确认时重做转换，行不一致即拒；原件、映射与逐行处置随版本存档。BOM 行新增位号；同内部编号复用可见物料，ERP 料号只作关联提示。规则卡四条（重复位号、位号数与用量不符、缺单位、数量非正或未知），确定性、不经模型、只提示不阻止保存。CSV 按 UTF-8 文本走同一解析路径（不改隔离容器）。
     - 迁移：占位 `s0_0900`（down `s0_0869`），只给 `bom_lines` 加 `reference_designators`、`bom_revisions` 加 `import_basis`，有数据时拒绝降级。
-    - 验证：无库 13 项；PG 2 项端到端（导入→处置→篡改被拒→保存→续版差异→导出）加受影响 31 项；前端 tsc、eslint、相关 `.mjs` 276 项；合同导出（只增 2 条读取路径）与校验通过。浏览器走查未做。
-    - 余项：D430 小Pai 建议列映射（改模型可见工具，需走 Prompt A/B）；D431 “替代料无资格”规则待协调会话定口径（A/B/C 已发）；D432 浏览器亮暗与 375px 走查。
+    - 验证（11-10 终版）：无库 16 项；PG 端到端 2 项加受影响 46 项、BOM 链 131 项；迁移往返（含替代料列）；前端 tsc、eslint、相关 node 测试；合同导出与校验；浏览器亮暗、375px 走查并经页面导入保存一版。
+    - 11-09 续（[P113](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p113)，用户选 A）：BOM 行可声明替代料（本型号已有物料的固定版本），声明不构成资格；规则卡第五条“替代料无资格”只读 Build 级批准，批准记录未接入时显示“暂不能判断”。导入新增替代料列，对应不上已有物料的替代料须逐行决定不导入；手工续版保留位号和替代料。
+    - 余项：D430、D431、D433、D434。
+- D430 小Pai 建议 BOM 列映射（P79 “小Pai 只建议列映射”）：要给小Pai 加读取解析表头的工具或技能说明，属于模型可见改动，走 Prompt A/B；转换仍由代码完成。
+- D431 导入时替代料只能引用本型号已有物料，同一次导入里新建的物料不能当替代料（要先导入建立，再在下一版引用）。试点出现批量新建替代料的需要时，再定“按内部编号在同一载荷内引用新物料”的写法。
+- D432 ✅ 11-10 D98 浏览器走查：亮暗两种主题、375px 宽度，并经页面导入、处置、一次确认保存一版，[证据](../docs/reports/evidence/w9-bom-import-20261109/README.md)。走查中修了差异表窄栏折行和导入确认框不居中。
+- D433 规则卡“替代料无资格”接入 D47 的批准记录：D47（`supply.alternate.approve`）合入后，在 `domain/builds/configurations/bom_alternates.py` 读取固定了本 BOM 版本、读者可见的 Build 的当前有效批准，返回（行标识, 替代料物料）集合（P113 第 3、4 项）。
+- D434 多处一次确认对话框没有 `m-auto`，被 Tailwind 的重置去掉了浏览器的居中，显示在左上角：`build-preparation`、`build-cost`、`build-verification`、`build-execution`、`build-supply`、`project-planning`、`original-files`、`product-variants`。D98 走查时发现，只改了导入确认框；其余各自加一个类即可，留给对应页面的负责会话或 W4 小修。
 - D99 ✅ 采纳→W7（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）项目内的品类知识只读入口，不改权限（B14、G-31）。
 - D100 ✅ 采纳→W6、W9：只在挡住下一个冻结点或阶段节点时推送（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）未知项要有责任人和期限，但只在它挡住下一个不可逆动作时才推到人面前（9a1ab768 T15）。
 - D101 ✅ PCN 子流程采纳→W9；情报源〔延后：有可接入的数据源时〕（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）供方变更（PCN）子流程；供应链情报源（C10；对标 Arena SCI、Cofactr）。

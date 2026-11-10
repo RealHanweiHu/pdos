@@ -44,6 +44,7 @@ FIELDS = (
     "critical",
     "notes",
     "reference_designators",
+    "alternates",
 )
 FIELD_TITLES = {
     "key": "行标识",
@@ -57,6 +58,7 @@ FIELD_TITLES = {
     "critical": "关键件",
     "notes": "备注",
     "reference_designators": "位号",
+    "alternates": "替代料",
 }
 # Exact matches after normalisation only; no fuzzy or model guessing.
 SYNONYMS = {
@@ -91,6 +93,17 @@ SYNONYMS = {
         "referencedesignators",
         "designator",
         "designators",
+    ),
+    "alternates": (
+        "替代料",
+        "替代料号",
+        "替代物料",
+        "替代编号",
+        "alternate",
+        "alternates",
+        "altp/n",
+        "altpn",
+        "substitute",
     ),
 }
 _NORMALISE = re.compile(r"[\s_\-.:：()（）\[\]【】]+")
@@ -389,6 +402,17 @@ def _parse(cells, columns):
                 )
             )
         values["reference_designators"] = designators
+    if "alternates" in text:
+        tokens = [token for token in _DESIGNATOR_SPLIT.split(text["alternates"]) if token]
+        if any(len(token) > 100 for token in tokens) or len(tokens) > 20:
+            issues.append(
+                _issue(
+                    "alternate_invalid",
+                    "替代料编号超过 100 字或多于 20 个。",
+                    columns["alternates"],
+                )
+            )
+        values["alternates"] = list(dict.fromkeys(tokens))
     if not any(values.get(n) for n in ("internal_number", "name", "erp_number", "customer_number")):
         issues.append(_issue("identity_missing", "这一行没有物料编号或名称。"))
     return values, issues
@@ -486,8 +510,14 @@ def convert(table, basis, *, previous_lines=(), parts=(), visibility="private") 
             ]
         disposition = dispositions.pop(number, None)
         report["disposition"] = disposition
-        if resolution == "new_part" and not row_issues:
-            report["allowed"] = ["skip", "new_part", "reuse"]
+        if not row_issues:
+            report["allowed"] = (
+                ["skip", "new_part", "reuse"]
+                if report["hints"]
+                else ["skip", "accept", "new_part", "reuse"]
+                if resolution == "new_part"
+                else ["skip", "accept"]
+            )
         if disposition is not None:
             action = disposition["action"]
             if action == "skip":
@@ -507,6 +537,33 @@ def convert(table, basis, *, previous_lines=(), parts=(), visibility="private") 
         elif report["hints"] and not row_issues:
             report["status"] = "needs_disposition"
             report["reason"] = "ERP 料号与已有物料一致，请选择关联已有物料、建新物料或跳过。"
+        # Declared alternates name existing parts by internal number; a declaration
+        # is never a qualification (P113), so nothing here approves anything.
+        own, resolved, unresolved = (part or {}).get("id"), [], []
+        for token in values.get("alternates") or ():
+            usable = [p for p in by_number.get(token, ()) if eligible(p)]
+            if token == number_value or (usable and usable[0]["id"] == own):
+                unresolved.append({"value": token, "reason": "与本行物料相同"})
+            elif not usable:
+                unresolved.append({"value": token, "reason": "不是本型号已有、可用的物料"})
+            elif usable[0]["id"] not in {a["part_id"] for a in resolved}:
+                resolved.append(
+                    {"part_id": usable[0]["id"], "expected_part_revision": usable[0]["revision"]}
+                )
+        values["alternates"] = resolved
+        report["alternates"] = {
+            "resolved": [part_for({"part_id": a["part_id"]}, parts) for a in resolved],
+            "unresolved": unresolved,
+        }
+        dropped = bool(disposition and disposition.get("drop_unresolved_alternates"))
+        if unresolved and not dropped and not row_issues:
+            report["status"] = "needs_disposition"
+            report["reason"] = (
+                "替代料未能对应本型号已有物料："
+                + "、".join(f"{u['value']}（{u['reason']}）" for u in unresolved)
+                + "。可选择不导入这些替代料，或先建立物料后重新转换。"
+            )
+        report["dropped_alternates"] = unresolved if dropped else []
         if row_issues:
             report["status"] = "needs_disposition"
             report["reason"] = "这一行不能按原样导入，请跳过或在原件中改正后重新转换。"
@@ -576,6 +633,7 @@ def convert(table, basis, *, previous_lines=(), parts=(), visibility="private") 
             "critical": values.get("critical", False),
             "notes": values.get("notes"),
             "reference_designators": values.get("reference_designators", []),
+            "alternates": values.get("alternates", []),
         }
         try:
             BomLineInput.model_validate(line)
@@ -595,6 +653,7 @@ def convert(table, basis, *, previous_lines=(), parts=(), visibility="private") 
     for report in reports:
         counts[report["status"]] += 1
     complete = not issues and not counts["needs_disposition"] and bool(lines)
+    by_row = {line["row"]: line for line in lines}
     rule_lines = [
         {
             "key": report.get("key") or f"row-{report['row']}",
@@ -602,6 +661,10 @@ def convert(table, basis, *, previous_lines=(), parts=(), visibility="private") 
             "quantity": report["values"].get("quantity_text"),
             "unit": report["values"].get("unit"),
             "reference_designators": report["values"].get("reference_designators") or [],
+            "alternates": [
+                {"part_id": a["part_id"], "part": part_for(a, parts)}
+                for a in by_row.get(report["row"], {}).get("alternates", ())
+            ],
         }
         for report in reports
         if report["status"] != "skipped"
@@ -632,7 +695,14 @@ def convert(table, basis, *, previous_lines=(), parts=(), visibility="private") 
         "rules": rule_card(rule_lines),
         "diff": compare(
             previous_lines,
-            [{**line, "part": line["part"] or {**part_for(line, parts)}} for line in lines],
+            [
+                {
+                    **line,
+                    "part": line["part"] or {**part_for(line, parts)},
+                    "alternates": [{**a, "part": part_for(a, parts)} for a in line["alternates"]],
+                }
+                for line in lines
+            ],
         ),
         "header_cells": header_cells,
     }
@@ -679,6 +749,11 @@ def record(table, basis, result) -> dict:
             if r["status"] == "skipped"
         ],
         "ignored_rows": result["counts"]["ignored"],
+        "dropped_alternates": [
+            {"row": r["row"], "alternates": r["dropped_alternates"]}
+            for r in result["rows"]
+            if r.get("dropped_alternates") and r["status"] != "skipped"
+        ],
         "unmapped_columns": result["unmapped_columns"],
     }
 

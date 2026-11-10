@@ -11,7 +11,7 @@ from decimal import Decimal, InvalidOperation
 from pdos_next.domain.manufacturing.supply_cost.engine.units import UNITS
 
 RULESET = "bom-rules.v1"
-ORDER = {"not_applicable": 0, "pass": 1, "warn": 2, "fail": 3}
+ORDER = {"not_applicable": 0, "pass": 1, "unknown": 2, "warn": 3, "fail": 4}
 
 
 def _quantity(value):
@@ -31,9 +31,11 @@ def _where(line):
     return where
 
 
-def _rule(code, title, items, explanation, *, applicable=True):
+def _rule(code, title, items, explanation, *, applicable=True, unknown=False):
     if not applicable:
         status = "not_applicable"
+    elif unknown:
+        status = "unknown"
     elif not items:
         status = "pass"
     else:
@@ -133,12 +135,51 @@ def quantity(lines):
     )
 
 
+def unqualified_alternates(lines, approvals):
+    """P113: a declared alternate counts only with a Build-level T2 approval (AT-21).
+
+    ``approvals`` is the set of (line key, alternate part ID) approved for a Build
+    fixing this version, or None while those records are not connected (D433).
+    """
+    from .bom_diff import part_label
+
+    declared = [
+        {**_where(line), "alternate": part_label(alternate), "part_id": alternate.get("part_id")}
+        for line in lines
+        for alternate in line.get("alternates") or ()
+    ]
+    if approvals is None:
+        items = [{**item, "level": "warn", "approval": "not_connected"} for item in declared]
+        return _rule(
+            "unqualified_alternate",
+            "替代料无资格",
+            items,
+            "替代料批准记录未接入，暂不能判断。BOM 上的替代料只是声明，不构成资格；"
+            "齐套只计入经具名批准（supply.alternate.approve）的替代料（AT-21）。",
+            applicable=bool(declared),
+            unknown=True,
+        )
+    items = [
+        {**item, "level": "warn", "approval": "missing"}
+        for item in declared
+        if (item.get("key"), item["part_id"]) not in approvals
+    ]
+    return _rule(
+        "unqualified_alternate",
+        "替代料无资格",
+        items,
+        "未经具名批准，齐套不计入（AT-21）。批准按 Build、BOM 版本与配置办理，声明本身不构成资格。",
+        applicable=bool(declared),
+    )
+
+
 RULES = (duplicate_designators, designator_count, missing_unit, quantity)
 
 
-def rule_card(lines) -> dict:
+def rule_card(lines, approvals=None) -> dict:
     lines = list(lines or ())
     rules = [rule(lines) for rule in RULES]
+    rules.append(unqualified_alternates(lines, approvals))
     worst = max((rule["status"] for rule in rules), key=ORDER.__getitem__, default="pass")
     return {
         "ruleset": RULESET,
@@ -146,4 +187,5 @@ def rule_card(lines) -> dict:
         "lines": len(lines),
         "rules": rules,
         "basis": "确定性规则，按本版 BOM 行计算，不经模型；结果只提示，不阻止保存。",
+        "alternate_approvals": "not_connected" if approvals is None else "connected",
     }

@@ -234,10 +234,11 @@ def test_import_converts_by_code_waits_for_dispositions_and_saves_one_confirmed_
     # row whose ERP number equals an existing part waits for a named choice.
     v2 = [
         ["RD-100", "Housing", 1, "pcs", "", "ERP-100", ""],
-        ["RD-200", "Resistor 10k", 4, "pcs", "R1-R4", "ERP-200", ""],
-        ["RD-500", "Spring", 2, "pcs", "", "ERP-100", ""],
+        ["RD-200", "Resistor 10k", 4, "pcs", "R1-R4", "ERP-200", "RD-300"],
+        ["RD-500", "Spring", 2, "pcs", "", "ERP-100", "RD-999"],
     ]
-    second_source = parsed_original(work, xlsx(v2), filename="bom-v2.xlsx")
+    header_v2 = [*HEADER[:6], "替代料"]
+    second_source = parsed_original(work, xlsx(v2, header_v2), filename="bom-v2.xlsx")
     previous = boms(work)[bom_id]
     pending = convert(
         work,
@@ -247,6 +248,9 @@ def test_import_converts_by_code_waits_for_dispositions_and_saves_one_confirmed_
     ).json()
     hint = {row["row"]: row for row in pending["rows"]}[5]
     assert hint["status"] == "needs_disposition" and len(hint["hints"]) == 1
+    assert hint["alternates"]["unresolved"] == [
+        {"value": "RD-999", "reason": "不是本型号已有、可用的物料"}
+    ]
     housing = lines["RD-100"]["part_id"]
     assert hint["hints"][0]["part_id"] == housing
     resolved = convert(
@@ -255,6 +259,15 @@ def test_import_converts_by_code_waits_for_dispositions_and_saves_one_confirmed_
         previous_id=bom_id,
         expected_previous_revision=1,
         dispositions=[{"row": 5, "action": "new_part"}],
+    ).json()
+    # The ERP choice alone is not enough: the unmatched alternate needs its own decision.
+    assert resolved["complete"] is False
+    resolved = convert(
+        work,
+        second_source,
+        previous_id=bom_id,
+        expected_previous_revision=1,
+        dispositions=[{"row": 5, "action": "new_part", "drop_unresolved_alternates": True}],
     ).json()
     assert resolved["complete"] is True
     # Same internal number reuses the existing part and keeps the predecessor's key.
@@ -273,8 +286,19 @@ def test_import_converts_by_code_waits_for_dispositions_and_saves_one_confirmed_
         f"{root(work)}/configurations/boms/{second_id}/review", headers=work.setup.headers
     ).json()
     changed = {row["key"]: row for row in page["diff"]["lines"]}
-    assert changed["RD-200"]["fields"] == ["quantity", "reference_designators"]
+    assert changed["RD-200"]["fields"] == ["quantity", "reference_designators", "alternates"]
     assert changed["RD-200"]["designators"] == {"added": ["R4"], "removed": []}
+    assert changed["RD-200"]["alternates"] == {"added": ["RD-300 / Capacitor"], "removed": []}
+    # P113: a declaration is not a qualification; approvals are not connected here (D433).
+    alternate_rule = next(r for r in page["rules"]["rules"] if r["code"] == "unqualified_alternate")
+    assert alternate_rule["status"] == "unknown" and alternate_rule["count"] == 1
+    saved_v2 = boms(work)[second_id]
+    assert saved_v2["import_basis"]["dropped_alternates"] == [
+        {"row": 5, "alternates": [{"value": "RD-999", "reason": "不是本型号已有、可用的物料"}]}
+    ]
+    capacitor = lines["RD-300"]["part_id"]
+    resistor = next(line for line in saved_v2["lines"] if line["key"] == "RD-200")
+    assert [a["part_id"] for a in resistor["alternates"]] == [capacitor]
     assert changed["RD-300"]["change"] == "removed" and changed["RD-500"]["change"] == "added"
     assert page["previous"]["revision"] == 1 and page["bom"]["revision"] == 2
 
@@ -294,6 +318,7 @@ def test_import_converts_by_code_waits_for_dispositions_and_saves_one_confirmed_
     )
     assert row["上一版位号"] == "R1、R2、R3" and row["本版位号"] == "R1、R2、R3、R4"
     assert "位号" in row["变化字段"] and row["本版用量"] == "4"
+    assert row["本版替代料"] == "RD-300 / Capacitor" and row["上一版替代料"] is None
 
     # Saved versions are immutable rows; the new version did not touch the first.
     with Session(work.setup.admin) as s:

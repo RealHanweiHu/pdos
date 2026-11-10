@@ -24,12 +24,18 @@ test("rule items read as places in the BOM or the original", () => {
   assert.equal(review.ruleItemText(quantity, { key: "x", problem: "non_positive", value: "-1", level: "fail" }), "行 x：数量 -1 不是正数");
   assert.equal(review.ruleItemText(quantity, { key: "x", problem: "unknown", level: "warn" }), "行 x：用量未知");
   assert.equal(review.ruleItemText({ ...duplicate, code: "missing_unit" }, { key: "y", level: "warn" }), "行 y：用量与单位都未知");
+  const alternate = { ...duplicate, code: "unqualified_alternate" };
+  assert.equal(review.ruleItemText(alternate, { key: "a", alternate: "RD-9 / Cap", approval: "not_connected", level: "warn" }), "行 a：替代料 RD-9 / Cap（批准记录未接入）");
+  assert.equal(review.ruleItemText(alternate, { key: "a", alternate: "RD-9", approval: "missing", level: "warn" }), "行 a：替代料 RD-9未经具名批准，齐套不计入");
+  assert.equal(review.ruleStatusTitles.unknown, "暂不能判断");
   assert.equal(review.ruleItemText({ ...duplicate, code: "designator_quantity_mismatch" }, { key: "z", quantity: "3", designators: 2, level: "warn" }), "行 z：用量 3，位号 2 个");
 });
 
 test("values show unknowns and lists in words", () => {
   assert.equal(review.valueText("reference_designators", snapshot({ reference_designators: ["R1", "R2"] })), "R1、R2");
   assert.equal(review.valueText("reference_designators", snapshot({ reference_designators: [] })), "未填");
+  assert.equal(review.valueText("alternates", snapshot({ alternates: [] })), "无");
+  assert.equal(review.valueText("alternates", snapshot({ alternates: ["RD-9 / Cap"] })), "RD-9 / Cap");
   assert.equal(review.valueText("quantity", snapshot({ quantity: null })), "未知");
   assert.equal(review.valueText("part_revision", snapshot({ part_revision: null })), "新物料");
   assert.equal(review.valueText("critical", snapshot({ critical: true })), "是");
@@ -46,8 +52,12 @@ test("review shape is checked before display", () => {
 });
 
 test("import request and command carry the server conversion unchanged", () => {
-  const body = review.importRequest({ artifactId: id(9), revision: 2, sheet: "BOM", headerRow: 2, columns: [{ field: "name", column: 1 }], dispositions: [{ row: 5, action: "skip", reason: "  " }, { row: 6, action: "reuse", part_id: id(3), expected_part_revision: 1 }], previous: null, visibility: "private" });
-  assert.deepEqual(JSON.parse(JSON.stringify(body.dispositions)), [{ row: 5, action: "skip", part_id: null, expected_part_revision: null, reason: null }, { row: 6, action: "reuse", part_id: id(3), expected_part_revision: 1, reason: null }]);
+  const body = review.importRequest({ artifactId: id(9), revision: 2, sheet: "BOM", headerRow: 2, columns: [{ field: "name", column: 1 }], dispositions: [{ row: 5, action: "skip", reason: "  ", drop_unresolved_alternates: true }, { row: 6, action: "reuse", part_id: id(3), expected_part_revision: 1 }, { row: 7, action: "accept", drop_unresolved_alternates: true }], previous: null, visibility: "private" });
+  assert.deepEqual(JSON.parse(JSON.stringify(body.dispositions)), [
+    { row: 5, action: "skip", part_id: null, expected_part_revision: null, reason: null, drop_unresolved_alternates: false },
+    { row: 6, action: "reuse", part_id: id(3), expected_part_revision: 1, reason: null, drop_unresolved_alternates: false },
+    { row: 7, action: "accept", part_id: null, expected_part_revision: null, reason: null, drop_unresolved_alternates: true },
+  ]);
   const lines = [{ key: "RD-1", part_id: null }];
   const result = { complete: true, payload: { lines, import_basis: { format: "xlsx" }, sources: [{ artifact_id: id(9), expected_revision: 2, line: 2, quote: "料号" }], required_source_read_set: [{ artifact_id: id(9), expected_revision: 2 }] } };
   const command = review.importCommand({ productId: id(1), productRevision: 3, name: " BOM v2 ", reason: "按回传更新", visibility: "private", previous: { id: id(4), revision: 1, required_source_read_set: [{ artifact_id: id(8), expected_revision: 1 }] }, result });
@@ -67,7 +77,9 @@ test("manual designators split and expand like the import", () => {
   assert.throws(() => preparation.parseDesignators("中文"), /无法识别/);
   const line = { ...preparation.blankBomLine(1), name: "Resistor", designators: "R1,R2" };
   assert.deepEqual(JSON.parse(JSON.stringify(preparation.bomLinesPayload([line], [])[0].reference_designators)), ["R1", "R2"]);
-  // Drafts saved before this field existed still produce a valid payload.
-  const old = { ...preparation.blankBomLine(2), name: "Old draft" }; delete old.designators;
+  const withAlternate = { ...line, alternates: [{ partId: id(5), partRevision: 1, label: "RD-9" }] };
+  assert.deepEqual(JSON.parse(JSON.stringify(preparation.bomLinesPayload([withAlternate], [])[0].alternates)), [{ part_id: id(5), expected_part_revision: 1 }]);
+  // Drafts saved before these fields existed still produce a valid payload.
+  const old = { ...preparation.blankBomLine(2), name: "Old draft" }; delete old.designators; delete old.alternates;
   assert.deepEqual(JSON.parse(JSON.stringify(preparation.bomLinesPayload([old], [])[0].reference_designators)), []);
 });

@@ -492,11 +492,11 @@ def _parse(value):
 
 # BOM diff ------------------------------------------------------------------
 # The difference itself is the configuration domain's (D282); this view only
-# flattens it into cells. Lists (designators) are joined for one cell.
+# flattens it into cells. Lists (designators, declared alternates) are joined for one cell.
 
 
 def _cell(field, value):
-    if field == "reference_designators":
+    if field in {"reference_designators", "alternates"}:
         return "、".join(value) if value else None
     return value
 

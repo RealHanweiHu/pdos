@@ -49,6 +49,17 @@ DESIGNATOR_PATTERN = r"^[A-Za-z0-9][A-Za-z0-9_.+/#-]*$"
 Designator = Annotated[str, Field(min_length=1, max_length=40, pattern=DESIGNATOR_PATTERN)]
 
 
+class BomAlternateInput(StrictModel):
+    """A declared alternate: an existing part of this product at a fixed version.
+
+    The declaration grants nothing; only a Build-level `supply.alternate.approve`
+    lets the kit count it (P113, P96, AT-21).
+    """
+
+    part_id: UUID
+    expected_part_revision: int = Field(ge=1)
+
+
 class BomLineInput(StrictModel):
     key: str = Field(min_length=1, max_length=80, pattern=r"^[a-zA-Z0-9_-]+$")
     part_id: UUID | None = None
@@ -62,6 +73,8 @@ class BomLineInput(StrictModel):
     notes: str | None = Field(default=None, min_length=1, max_length=2000)
     # Source order is kept; repeated designators are reported by the rule card, not refused.
     reference_designators: list[Designator] = Field(default_factory=list, max_length=2000)
+    # Declared alternates in priority order (P113); not a qualification.
+    alternates: list[BomAlternateInput] = Field(default_factory=list, max_length=20)
 
     @model_validator(mode="after")
     def explicit_part_and_quantity(self) -> Self:
@@ -72,6 +85,9 @@ class BomLineInput(StrictModel):
             raise ValueError("复用物料须固定ID与版本，不同时改写物料身份")
         if self.quantity is not None and self.unit is None:
             raise ValueError("已知BOM数量须明确单位，未知数量保持null")
+        alternates = [alternate.part_id for alternate in self.alternates]
+        if len(set(alternates)) != len(alternates) or self.part_id in alternates:
+            raise ValueError("替代料不能重复，也不能是本行物料自己")
         return self
 
 
@@ -107,6 +123,7 @@ BomImportField = Literal[
     "critical",
     "notes",
     "reference_designators",
+    "alternates",
 ]
 
 
@@ -119,10 +136,13 @@ class BomImportDisposition(StrictModel):
     """A named decision for one original row the conversion could not take as is."""
 
     row: int = Field(ge=1, le=100_000)
-    action: Literal["skip", "new_part", "reuse"]
+    # accept: take the row as converted; new_part/reuse: settle its part identity.
+    action: Literal["skip", "accept", "new_part", "reuse"]
     part_id: UUID | None = None
     expected_part_revision: int | None = Field(default=None, ge=1)
     reason: str | None = Field(default=None, min_length=1, max_length=500)
+    # Import the row without the alternates that match no usable existing part.
+    drop_unresolved_alternates: bool = Field(default=False, strict=True)
 
     @model_validator(mode="after")
     def reuse_names_part(self) -> Self:
@@ -145,7 +165,7 @@ class BomImportBasis(StrictModel):
     format: Literal["xlsx", "csv"]
     sheet: str | None = Field(default=None, min_length=1, max_length=200)
     header_row: int = Field(ge=1, le=100_000)
-    columns: list[BomImportColumn] = Field(min_length=1, max_length=11)
+    columns: list[BomImportColumn] = Field(min_length=1, max_length=12)
     dispositions: list[BomImportDisposition] = Field(default_factory=list, max_length=10_000)
 
     @model_validator(mode="after")
@@ -185,7 +205,7 @@ class BomImportRequest(StrictModel):
     sheet: str | None = Field(default=None, min_length=1, max_length=200)
     header_row: int | None = Field(default=None, ge=1, le=100_000)
     # None asks for the deterministic header suggestion.
-    columns: list[BomImportColumn] | None = Field(default=None, max_length=11)
+    columns: list[BomImportColumn] | None = Field(default=None, max_length=12)
     dispositions: list[BomImportDisposition] = Field(default_factory=list, max_length=10_000)
     previous_id: UUID | None = None
     expected_previous_revision: int | None = Field(default=None, ge=1)

@@ -48038,7 +48038,8 @@
               "loss_rate",
               "critical",
               "notes",
-              "reference_designators"
+              "reference_designators",
+              "alternates"
             ],
             "title": "Field"
           },
@@ -48069,6 +48070,7 @@
             "type": "string",
             "enum": [
               "skip",
+              "accept",
               "new_part",
               "reuse"
             ],
@@ -48110,6 +48112,11 @@
               }
             ],
             "title": "Reason"
+          },
+          "drop_unresolved_alternates": {
+            "type": "boolean",
+            "title": "Drop Unresolved Alternates",
+            "default": false
           }
         },
         "additionalProperties": false,
@@ -48166,7 +48173,7 @@
                   "$ref": "#/components/schemas/BomImportColumn"
                 },
                 "type": "array",
-                "maxItems": 11
+                "maxItems": 12
               },
               {
                 "type": "null"

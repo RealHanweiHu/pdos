@@ -4850,6 +4850,28 @@
     },
     "engineering.bom.revise": {
       "$defs": {
+        "BomAlternateInput": {
+          "additionalProperties": false,
+          "description": "A declared alternate: an existing part of this product at a fixed version.\n\nThe declaration grants nothing; only a Build-level `supply.alternate.approve`\nlets the kit count it (P113, P96, AT-21).",
+          "properties": {
+            "part_id": {
+              "format": "uuid",
+              "title": "Part Id",
+              "type": "string"
+            },
+            "expected_part_revision": {
+              "minimum": 1,
+              "title": "Expected Part Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "part_id",
+            "expected_part_revision"
+          ],
+          "title": "BomAlternateInput",
+          "type": "object"
+        },
         "BomImportBasis": {
           "additionalProperties": false,
           "description": "Which parsed original, sheet, header row and column mapping produce the lines.\n\nThe server converts again from this basis and refuses lines that differ, so\nthe conversion is the code's, not the caller's (P79 D98).",
@@ -4896,7 +4918,7 @@
               "items": {
                 "$ref": "#/$defs/BomImportColumn"
               },
-              "maxItems": 11,
+              "maxItems": 12,
               "minItems": 1,
               "title": "Columns",
               "type": "array"
@@ -4935,7 +4957,8 @@
                 "loss_rate",
                 "critical",
                 "notes",
-                "reference_designators"
+                "reference_designators",
+                "alternates"
               ],
               "title": "Field",
               "type": "string"
@@ -4967,6 +4990,7 @@
             "action": {
               "enum": [
                 "skip",
+                "accept",
                 "new_part",
                 "reuse"
               ],
@@ -5012,6 +5036,11 @@
               ],
               "default": null,
               "title": "Reason"
+            },
+            "drop_unresolved_alternates": {
+              "default": false,
+              "title": "Drop Unresolved Alternates",
+              "type": "boolean"
             }
           },
           "required": [
@@ -5155,6 +5184,14 @@
               },
               "maxItems": 2000,
               "title": "Reference Designators",
+              "type": "array"
+            },
+            "alternates": {
+              "items": {
+                "$ref": "#/$defs/BomAlternateInput"
+              },
+              "maxItems": 20,
+              "title": "Alternates",
               "type": "array"
             }
           },

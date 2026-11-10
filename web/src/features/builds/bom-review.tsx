@@ -10,7 +10,7 @@ import {
   type BomDiff, type BomReview, type Disposition, type ImportColumn, type ImportResult, type RuleCard, type RuleStatus,
 } from "@/features/builds/lib/bom-review";
 
-const statusTone: Record<RuleStatus, string> = { pass: "text-muted-foreground", warn: "text-primary", fail: "text-destructive", not_applicable: "text-muted-foreground" };
+const statusTone: Record<RuleStatus, string> = { pass: "text-muted-foreground", warn: "text-primary", fail: "text-destructive", unknown: "text-muted-foreground", not_applicable: "text-muted-foreground" };
 const XLSX = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
 
 function StatusIcon({ status }: { status: RuleStatus }) {
@@ -35,18 +35,18 @@ export function RuleCardView({ card }: { card: RuleCard }) {
 export function BomDiffView({ diff, previousLabel }: { diff: BomDiff; previousLabel: string }) {
   const { summary } = diff;
   return <section className="min-w-0 space-y-2" aria-label="BOM 版本差异">
-    <h4 className="text-sm font-medium">与{previousLabel}的差异</h4>
+    <h4 className="text-sm font-medium">对比{previousLabel}</h4>
     <p className="text-sm">新增 {summary.added} · 删除 {summary.removed} · 修改 {summary.changed} · 未变 {summary.unchanged}</p>
     {diff.lines.length === 0 ? <p className="subtle text-sm">没有行变化。</p> : <div className="min-w-0 overflow-x-auto" role="region" aria-label="差异行" tabIndex={0}>
-      <table className="w-full min-w-[520px] text-left text-sm"><thead><tr className="subtle"><th className="py-1 pr-3 font-normal">行标识</th><th className="py-1 pr-3 font-normal">变化</th><th className="py-1 pr-3 font-normal">物料</th><th className="py-1 font-normal">内容</th></tr></thead>
+      <table className="w-full min-w-[520px] text-left text-sm"><thead><tr className="subtle"><th className="whitespace-nowrap py-1 pr-3 font-normal">行标识</th><th className="whitespace-nowrap py-1 pr-3 font-normal">变化</th><th className="py-1 pr-3 font-normal">物料</th><th className="py-1 font-normal">内容</th></tr></thead>
         <tbody>{diff.lines.map(line => <tr key={line.key} className="border-t border-border align-top">
-          <td className="py-1.5 pr-3 font-mono [overflow-wrap:anywhere]">{line.key}</td>
-          <td className={`py-1.5 pr-3 ${line.change === "removed" ? "text-destructive" : line.change === "added" ? "text-primary" : ""}`}>{changeTitles[line.change]}</td>
+          <td className="whitespace-nowrap py-1.5 pr-3 font-mono">{line.key}</td>
+          <td className={`whitespace-nowrap py-1.5 pr-3 ${line.change === "removed" ? "text-destructive" : line.change === "added" ? "text-primary" : ""}`}>{changeTitles[line.change]}</td>
           <td className="py-1.5 pr-3 [overflow-wrap:anywhere]">{(line.after ?? line.before)?.part}</td>
           <td className="py-1.5 [overflow-wrap:anywhere]">{line.change === "changed" ? <ul className="space-y-0.5">{line.fields.map(field => <li key={field}>
-            {field === "reference_designators" && line.designators ? <>位号{line.designators.added.length > 0 && <> +{line.designators.added.join("、")}</>}{line.designators.removed.length > 0 && <> −{line.designators.removed.join("、")}</>}</>
+            {(field === "reference_designators" ? line.designators : field === "alternates" ? line.alternates : undefined) ? <>{fieldTitles[field]}{(() => { const members = (field === "alternates" ? line.alternates : line.designators) as { added: string[]; removed: string[] }; return <>{members.added.length > 0 && <> +{members.added.join("、")}</>}{members.removed.length > 0 && <> −{members.removed.join("、")}</>}</>; })()}</>
               : <>{fieldTitles[field] ?? field}：{valueText(field, line.before)} → {valueText(field, line.after)}</>}
-          </li>)}</ul> : <>{quantityText(line.after ?? line.before)}{(line.after ?? line.before)?.reference_designators.length ? ` · 位号 ${(line.after ?? line.before)?.reference_designators.join("、")}` : ""}</>}</td>
+          </li>)}</ul> : <>{quantityText(line.after ?? line.before)}{(line.after ?? line.before)?.reference_designators.length ? ` · 位号 ${(line.after ?? line.before)?.reference_designators.join("、")}` : ""}{(line.after ?? line.before)?.alternates?.length ? ` · 替代料 ${(line.after ?? line.before)?.alternates?.join("、")}（声明）` : ""}</>}</td>
         </tr>)}</tbody></table></div>}
   </section>;
 }
@@ -72,7 +72,7 @@ export function BomVersionReview({ api, productId, bomId }: { api: PreparationAp
       {review && <>
         <BomDiffView diff={review.diff} previousLabel={review.previous ? `上一版 v${review.previous.revision}` : "空 BOM（首版）"}/>
         <RuleCardView card={review.rules}/>
-        {review.import_basis && <p className="subtle text-xs [overflow-wrap:anywhere]">本版由原件导入：{review.import_basis.format === "xlsx" ? `工作表「${review.import_basis.sheet}」` : "CSV"}，表头第 {review.import_basis.header_row} 行，导入 {Object.keys(review.import_basis.rows).length} 行，跳过 {review.import_basis.skipped.length} 行{review.import_basis.unmapped_columns.length ? `，未导入的列：${review.import_basis.unmapped_columns.map(c => c.header ?? `第 ${c.column} 列`).join("、")}` : ""}。</p>}
+        {review.import_basis && <p className="subtle text-xs [overflow-wrap:anywhere]">本版由原件导入：{review.import_basis.format === "xlsx" ? `工作表「${review.import_basis.sheet}」` : "CSV"}，表头第 {review.import_basis.header_row} 行，导入 {Object.keys(review.import_basis.rows).length} 行，跳过 {review.import_basis.skipped.length} 行{review.import_basis.dropped_alternates?.length ? `，未导入替代料 ${review.import_basis.dropped_alternates.reduce((n, row) => n + row.alternates.length, 0)} 个（${review.import_basis.dropped_alternates.flatMap(row => row.alternates.map(a => a.value)).join("、")}）` : ""}{review.import_basis.unmapped_columns.length ? `，未导入的列：${review.import_basis.unmapped_columns.map(c => c.header ?? `第 ${c.column} 列`).join("、")}` : ""}。</p>}
       </>}
     </div>
   </details>;
@@ -153,7 +153,6 @@ export function BomImport({ api, product, boms, disabled, onSaved }: { api: Prep
       const receipt = await api<{ id: string; subject_id: string; subject_type: string }>("v1/commands", preview.command);
       if (!receipt?.subject_id || receipt.subject_type !== "bom_revision") throw new Error("保存回执尚未确认，请按原请求重试。");
       dialog.current?.close(); setPreview(null); setResult(null); setDispositions({}); setReason("");
-      setNotice("已保存为新的 BOM 草稿版本；原件、映射与逐行处置随版本保留。尚未发布或批准。");
       await onSaved(receipt.subject_id);
     } catch (failure) { setError((failure as Error).message); } finally { setBusy(false); }
   }
@@ -189,12 +188,13 @@ export function BomImport({ api, product, boms, disabled, onSaved }: { api: Prep
         {pending.length > 0 && <section className="min-w-0 space-y-2" aria-label="逐行处置"><h4 className="text-sm font-medium">逐行处置 · {pending.length} 行</h4>
           <ul className="space-y-2">{pending.map(row => { const chosen = dispositions[row.row]; return <li key={row.row} className="min-w-0 rounded-lg border border-border p-2 text-sm">
             <p className="font-medium [overflow-wrap:anywhere]">原件第 {row.row} 行{row.part ? ` · ${row.part}` : ""}</p>
-            {row.issues.map((issue, index) => <p key={index} className="text-destructive">{issue.message}</p>)}{row.reason && !row.issues.length && <p className="subtle">{row.reason}</p>}
+            {row.issues.map((issue, index) => <p key={index} className="text-destructive">{issue.message}</p>)}{row.reason && !row.issues.length && <p className="subtle [overflow-wrap:anywhere]">{row.reason}</p>}
             <div className="mt-1 grid min-w-0 gap-x-3 sm:grid-cols-2">
               <label>处置<select value={chosen ? chosen.action === "reuse" ? `reuse:${chosen.part_id}` : chosen.action : ""} onChange={event => { const value = event.target.value; if (!value) { decide(row.row, null); return; } if (value.startsWith("reuse:")) { const hint = row.hints.find(h => h.part_id === value.slice(6)); decide(row.row, { row: row.row, action: "reuse", part_id: hint?.part_id, expected_part_revision: hint?.revision }); return; } decide(row.row, { row: row.row, action: value as Disposition["action"], reason: chosen?.reason ?? null }); }}>
                 <option value="">请选择</option>{row.allowed.filter(action => action !== "reuse").map(action => <option key={action} value={action}>{actionTitles[action]}</option>)}{row.allowed.includes("reuse") && row.hints.map(hint => <option key={hint.part_id} value={`reuse:${hint.part_id}`}>关联已有物料：{hint.label} · v{hint.revision}</option>)}
               </select></label>
               {chosen?.action === "skip" && <label>跳过原因（可选）<input maxLength={500} value={chosen.reason ?? ""} onChange={event => decide(row.row, { ...chosen, reason: event.target.value })}/></label>}
+              {chosen && chosen.action !== "skip" && (row.alternates?.unresolved.length ?? 0) > 0 && <label className="flex items-start gap-2 sm:col-span-2"><input type="checkbox" className="!mt-1 !w-auto shrink-0" checked={!!chosen.drop_unresolved_alternates} onChange={event => decide(row.row, { ...chosen, drop_unresolved_alternates: event.target.checked })}/><span>不导入未对应的替代料：{row.alternates?.unresolved.map(u => u.value).join("、")}</span></label>}
             </div>
           </li>; })}</ul>
           <Button type="button" size="sm" variant="outline" onClick={() => void convert()}><ArrowsClockwise/>按处置重新转换</Button>
@@ -205,7 +205,7 @@ export function BomImport({ api, product, boms, disabled, onSaved }: { api: Prep
         {!result.complete && <p className="subtle text-sm">全部行处置完毕、映射有效后才能确认。</p>}
       </div>}
     </fieldset>
-    <dialog ref={dialog} className="!w-[min(760px,calc(100vw-32px))] max-h-[90vh] overflow-auto" onCancel={event => { event.preventDefault(); if (!busy) { dialog.current?.close(); setPreview(null); } }}>{preview && <div className="min-w-0 space-y-4">
+    <dialog ref={dialog} className="m-auto !w-[min(760px,calc(100vw-32px))] max-h-[90vh] overflow-auto" onCancel={event => { event.preventDefault(); if (!busy) { dialog.current?.close(); setPreview(null); } }}>{preview && <div className="min-w-0 space-y-4">
       <h2 className="text-lg font-semibold">一次确认：导入 BOM 新版本</h2>
       <p className="whitespace-pre-wrap [overflow-wrap:anywhere]">{preview.review.effect}</p>
       <p className="text-sm">名称：{name} · 可见范围：{visibility === "category" ? "品类授权成员" : "仅本人"} · {previous ? `续接 ${previous.name} v${previous.revision}` : "新建首版"}</p>

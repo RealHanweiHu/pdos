@@ -304,3 +304,68 @@ def test_designator_ranges(text, expected):
 def test_designator_problems_are_reported():
     assert bom_import._designators("R5-R1")[1] == ["R5-R1"]
     assert bom_import._designators("R1，R2；中文")[1] == ["中文"]
+
+
+def test_alternates_name_existing_parts_and_unmatched_ones_wait_for_a_decision():
+    known = part("RD-9")
+    header = ["料号", "名称", "用量", "单位", "替代料"]
+    t = table(
+        [["RD-1", "Cap", "1", "pcs", "RD-9, RD-77"], ["RD-2", "Res", "1", "pcs", "RD-9"]],
+        header=header,
+    )
+    result = convert(t, basis(t), parts=[known])
+    rows = by_row(result)
+    assert rows[3]["status"] == "needs_disposition"
+    assert rows[3]["alternates"]["unresolved"] == [
+        {"value": "RD-77", "reason": "不是本型号已有、可用的物料"}
+    ]
+    assert rows[4]["status"] == "ready"
+    line = next(line for line in result["lines"] if line["row"] == 4)
+    assert line["alternates"] == [{"part_id": known["id"], "expected_part_revision": 1}]
+    decided = convert(
+        t,
+        basis(t, [{"row": 3, "action": "accept", "drop_unresolved_alternates": True}]),
+        parts=[known],
+    )
+    assert decided["complete"] is True
+    first = next(line for line in decided["lines"] if line["row"] == 3)
+    assert [a["part_id"] for a in first["alternates"]] == [known["id"]]
+    alternate_rule = {r["code"]: r for r in decided["rules"]["rules"]}["unqualified_alternate"]
+    # Approval records are not connected on this branch: say so, never claim a pass.
+    assert alternate_rule["status"] == "unknown" and alternate_rule["count"] == 2
+    assert decided["rules"]["alternate_approvals"] == "not_connected"
+
+
+def test_alternate_rule_reads_build_approvals_when_connected():
+    alt = {"part_id": "p-9", "part": {"internal_number": "RD-9", "name": "Cap"}}
+    lines = [{"key": "a", "quantity": "1", "unit": "pcs", "alternates": [alt]}]
+    rule = {r["code"]: r for r in rule_card(lines, approvals=set())["rules"]}
+    assert rule["unqualified_alternate"]["status"] == "warn"
+    assert rule["unqualified_alternate"]["items"][0]["alternate"] == "RD-9 / Cap"
+    approved = {r["code"]: r for r in rule_card(lines, approvals={("a", "p-9")})["rules"]}
+    assert approved["unqualified_alternate"]["status"] == "pass"
+    none = {r["code"]: r for r in rule_card([{**lines[0], "alternates": []}])["rules"]}
+    assert none["unqualified_alternate"]["status"] == "not_applicable"
+
+
+def test_difference_reports_alternate_changes():
+    def line(alternates):
+        return {
+            "key": "a",
+            "part_id": "p-1",
+            "expected_part_revision": 1,
+            "part": {"internal_number": "A", "name": "a"},
+            "quantity": "1",
+            "unit": "pcs",
+            "loss_rate": None,
+            "critical": False,
+            "notes": None,
+            "reference_designators": [],
+            "alternates": alternates,
+        }
+
+    x = {"part_id": "p-2", "part": {"internal_number": "X", "name": "x"}}
+    y = {"part_id": "p-3", "part": {"internal_number": "Y", "name": "y"}}
+    [row] = compare([line([x])], [line([x, y])])["lines"]
+    assert row["fields"] == ["alternates"]
+    assert row["alternates"] == {"added": ["Y / y"], "removed": []}
