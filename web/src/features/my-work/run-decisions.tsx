@@ -23,6 +23,9 @@ const separate: Record<string, string> = { separate_entry: "需在对话中逐�
 const effect = (review: Record<string, unknown>) => typeof review.effect === "string" && review.effect.trim() ? review.effect : "核对本次保存范围。";
 const candidateTitle = (item: RunDecision["candidates"][number]) => {
   const payload = item.command?.payload ?? {};
+  // Platform links differ by platform and reason; show both so same-named items can be told apart.
+  const platform = payload.new_platform as { code?: unknown } | undefined;
+  if (platform && typeof platform.code === "string") return [platform.code, payload.reason].filter(value => typeof value === "string" && value.trim()).join(" · ");
   const title = payload.title ?? payload.name ?? payload.question ?? item.summary?.title;
   return typeof title === "string" && title.trim() ? title : null;
 };
@@ -51,6 +54,11 @@ function RunCard({ api, item, focusEvent, onOpenRun, onChanged }: { api: RunDeci
     if (stage && !element.open) element.showModal();
     else if (!stage && element.open) { element.close(); trigger.current?.focus(); }
   }, [stage]);
+  const label = (eventId: string, operation: string) => {
+    const entry = item.candidates.find(candidate => candidate.event_id === eventId);
+    const title = entry ? candidateTitle(entry) : null;
+    return `${candidateName({ operation } as RunDecision["candidates"][number])}${title ? ` · ${title}` : ""}`;
+  };
   const toggle = (id: string) => setSelected(old => old.includes(id) ? old.filter(value => value !== id) : [...old, id]);
   async function review() {
     setError(""); setStage({ kind: "previewing" });
@@ -96,7 +104,7 @@ function RunCard({ api, item, focusEvent, onOpenRun, onChanged }: { api: RunDeci
       {item.more_candidates && <p className={styles.note}>此运行的候选较多，只列出前 200 条，其余请在对话中查看。</p>}
       {eligible.length > 0 && <div className={styles.actions}>
         <Button ref={trigger} size="sm" disabled={busy || !selected.length} onClick={() => void review()}>{stage?.kind === "previewing" ? "正在核对…" : `核对整包（${selected.length} 项）`}</Button>
-        <span>{selected.length < eligible.length ? `已取消 ${eligible.length - selected.length} 项，取消的候选保留在原运行中。` : "默认全选，可取消单条。"}</span>
+        <span>{focusEvent && eligible.some(entry => entry.event_id === focusEvent) ? "已按链接预选这一版本，其他候选可自行勾选。" : selected.length < eligible.length ? `已取消 ${eligible.length - selected.length} 项，取消的候选保留在原运行中。` : "默认全选，可取消单条。"}</span>
       </div>}
     </section>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
@@ -106,8 +114,8 @@ function RunCard({ api, item, focusEvent, onOpenRun, onChanged }: { api: RunDeci
         <p className={styles.dialogScope}>{runTitle(item.goal)} · {item.category?.name}</p>
         {stage.kind === "previewing" && <p role="status">正在逐条生成预览…</p>}
         {stage.kind === "review" && <>
-          {stage.previews.length > 0 && <ol className={styles.previewList}>{stage.previews.map((preview, index) => <li key={preview.eventId}><strong>{candidateName({ operation: preview.operation } as RunDecision["candidates"][number])}</strong><p>{effect(preview.review)}</p><details className={styles.review} open={stage.previews.length === 1 || undefined}><summary>核对第 {index + 1} 项的原值、新值、来源与未定项</summary><CandidateReviewBody preview={{ command: preview.command, review: preview.review, expires_at: preview.expiresAt ?? "" }}/></details></li>)}</ol>}
-          {stage.failures.length > 0 && <div className={styles.failures} role="alert"><p>以下 {stage.failures.length} 项未能生成预览，不进入本次整包：</p><ul>{stage.failures.map(failure => <li key={failure.eventId}>{candidateName({ operation: failure.operation } as RunDecision["candidates"][number])}：{failure.message}</li>)}</ul></div>}
+          {stage.previews.length > 0 && <ol className={styles.previewList}>{stage.previews.map((preview, index) => <li key={preview.eventId}><strong>{label(preview.eventId, preview.operation)}</strong><p>{effect(preview.review)}</p><details className={styles.review} open={stage.previews.length === 1 || undefined}><summary>核对第 {index + 1} 项的原值、新值、来源与未定项</summary><CandidateReviewBody preview={{ command: preview.command, review: preview.review, expires_at: preview.expiresAt ?? "" }}/></details></li>)}</ol>}
+          {stage.failures.length > 0 && <div className={styles.failures} role="alert"><p>以下 {stage.failures.length} 项未能生成预览，不进入本次整包：</p><ul>{stage.failures.map(failure => <li key={failure.eventId}>{label(failure.eventId, failure.operation)}：{failure.message}</li>)}</ul></div>}
           <p className={styles.note}>每项仍按自身档位分别保存并各有回执；某项失败不影响其他项，结果逐条列出。预览 10 分钟内有效。</p>
           <div className={styles.actions}><Button disabled={!stage.previews.length} onClick={() => void save(stage.previews)}><CheckCircle/>确认整包（{stage.previews.length} 项）</Button><Button variant="outline" onClick={close}>返回</Button></div>
         </>}
@@ -115,7 +123,7 @@ function RunCard({ api, item, focusEvent, onOpenRun, onChanged }: { api: RunDeci
         {stage.kind === "result" && <>
           {stage.error ? <p role="alert">{stage.error} 已保存的候选以原运行为准，请刷新后核对。</p> : stage.result && <>
             <p role="status">已保存 {stage.result.adopted} 项{stage.result.items.length > stage.result.adopted ? `，另有 ${stage.result.items.length - stage.result.adopted} 项未保存` : ""}。</p>
-            <ol className={styles.previewList}>{stage.result.items.map(entry => <li key={entry.event_id} data-status={entry.status}><strong>{candidateName({ operation: entry.operation } as RunDecision["candidates"][number])}</strong><span>{statusNames[entry.status]}</span>{entry.error && <p>{entry.error.message}</p>}{entry.receipt?.subject_type === "proposal" && categoryId && <a href={`/categories/${categoryId}/proposals/${entry.receipt.subject_id}`}>打开立项提案</a>}</li>)}</ol>
+            <ol className={styles.previewList}>{stage.result.items.map(entry => <li key={entry.event_id} data-status={entry.status}><strong>{label(entry.event_id, entry.operation)}</strong><span>{statusNames[entry.status]}</span>{entry.error && <p>{entry.error.message}</p>}{entry.receipt?.subject_type === "proposal" && categoryId && <a href={`/categories/${categoryId}/proposals/${entry.receipt.subject_id}`}>打开立项提案</a>}</li>)}</ol>
           </>}
           <div className={styles.actions}><Button onClick={close}>完成</Button></div>
         </>}
