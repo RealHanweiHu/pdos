@@ -103,7 +103,11 @@ def artifact(setup, project, *, visibility):
                 status="active",
             )
         )
-    return {"artifact_id": str(identity), "expected_revision": 1, "product_id": str(project.product_id)}
+    return {
+        "artifact_id": str(identity),
+        "expected_revision": 1,
+        "product_id": str(project.product_id),
+    }
 
 
 def reply(setup, project, person, thread_id, request_id, *, expect=200):
@@ -149,13 +153,17 @@ def test_mention_starts_a_bound_run_in_the_requesters_own_session(setup):
         run = s.get(AgentRun, first.run_id)
         # Scope is the server's: this project, this requester, 小Pai as the writer.
         assert (run.requester_id, run.writer_id, run.project_id) == (
-            owner, setup.agent, UUID(str(project.project_id))
+            owner,
+            setup.agent,
+            UUID(str(project.project_id)),
         )
         assert run.trigger == "conversation" and run.state == "queued"
         assert run.goal == "帮我整理样机评审的待办"
         thread_context = run.versions["discussion_thread"]
         assert thread_context["zone"] == "background"
-        assert [item["text"] for item in thread_context["messages"]] == ["@小Pai 帮我整理样机评审的待办"]
+        assert [item["text"] for item in thread_context["messages"]] == [
+            "@小Pai 帮我整理样机评审的待办"
+        ]
         accepted = s.scalar(select(AgentEvent).where(AgentEvent.run_id == run.id))
         assert accepted.body["channel"] == "discussion"
         # Personal memory stays out of a shared thread (P34 §9, P85 第 5 项).
@@ -166,7 +174,11 @@ def test_mention_starts_a_bound_run_in_the_requesters_own_session(setup):
 
     # Another member sees the card, not the Run; an outsider sees nothing.
     seen = h.thread(setup, project, peer, thread_id)["messages"][0]["agent_request"]
-    assert seen["own"] is False and "run_id" not in seen and seen["requester_name"] == "Synthetic owner"
+    assert (
+        seen["own"] is False
+        and "run_id" not in seen
+        and seen["requester_name"] == "Synthetic owner"
+    )
     h.thread(setup, project, outsider, thread_id, expect=403)
 
     # One request at a time per requester and thread.
@@ -226,10 +238,17 @@ def test_reply_reaches_the_thread_only_when_every_source_is_visible_to_its_audie
     assert deliver(setup, private.id)["verdict"] == "private"
     view = h.thread(setup, project, peer, thread_id)
     notice = view["messages"][-1]
-    assert notice["author_kind"] == "agent" and notice["body"] == "小Pai 已回复发起人（只给发起人看）。"
+    assert (
+        notice["author_kind"] == "agent"
+        and notice["body"] == "小Pai 已回复发起人（只给发起人看）。"
+    )
     assert notice["agent"]["kind"] == "notice"
     assert "供应商" not in str(view)
-    card = next(m for m in view["messages"] if m["agent_request"] and m["agent_request"]["request_id"] == str(private.id))
+    card = next(
+        m
+        for m in view["messages"]
+        if m["agent_request"] and m["agent_request"]["request_id"] == str(private.id)
+    )
     assert card["agent_request"]["delivery"] == "private"
     assert card["agent_request"]["reason"] == "audience_not_covered"
     with Session(setup.admin) as s:
@@ -246,11 +265,15 @@ def test_reply_reaches_the_thread_only_when_every_source_is_visible_to_its_audie
     share(setup, project, peer, thread_id, private.id, "body", acknowledged=True, expect=403)
     view = share(setup, project, owner, thread_id, private.id, "body", acknowledged=True)
     shared_message = view["messages"][-1]
-    assert shared_message["agent"]["kind"] == "share" and shared_message["body"].startswith("私有报告")
+    assert shared_message["agent"]["kind"] == "share" and shared_message["body"].startswith(
+        "私有报告"
+    )
     with Session(setup.admin) as s:
         receipt = s.get(DiscussionAgentRequest, private.id).share_receipt
         assert receipt["mode"] == "body" and receipt["acknowledged"] is True
-        assert receipt["shared_by"] == str(owner) and receipt["uncovered_source_kinds"] == ["artifact"]
+        assert receipt["shared_by"] == str(owner) and receipt["uncovered_source_kinds"] == [
+            "artifact"
+        ]
 
 
 def test_customer_derived_reply_shares_a_link_and_rechecks_each_reader(setup):
@@ -260,7 +283,10 @@ def test_customer_derived_reply_shares_a_link_and_rechecks_each_reader(setup):
     thread_id = post_topic(setup, project, owner, f"{XIAOPAI} 客户反馈怎么说")["thread"]["id"]
     [row] = requests(setup, thread_id)
     finish(
-        setup, row.run_id, "客户反馈：包装受潮。", read_sources=[hidden],
+        setup,
+        row.run_id,
+        "客户反馈：包装受潮。",
+        read_sources=[hidden],
         categories=["customer_original", "internal"],
     )
     assert deliver(setup, row.id)["verdict"] == "private"
@@ -270,7 +296,9 @@ def test_customer_derived_reply_shares_a_link_and_rechecks_each_reader(setup):
     share(setup, project, owner, thread_id, row.id, "body", acknowledged=True, expect=403)
     view = share(setup, project, owner, thread_id, row.id, "link")
     assert "包装" not in str(view)
-    card = next(m for m in h.thread(setup, project, peer, thread_id)["messages"] if m["agent_request"])
+    card = next(
+        m for m in h.thread(setup, project, peer, thread_id)["messages"] if m["agent_request"]
+    )
     assert card["agent_request"]["can_open_link"] is True
     # Each reader opens it under their own access, rechecked on every read.
     refused = reply(setup, project, peer, thread_id, row.id, expect=403)
@@ -278,9 +306,12 @@ def test_customer_derived_reply_shares_a_link_and_rechecks_each_reader(setup):
     with Session(setup.admin) as s, s.begin():
         s.add(
             ObjectAudience(
-                tenant_id=setup.tenant, category_id=setup.category,
-                object_type="artifact_versions", subject_id=UUID(hidden["artifact_id"]),
-                owner_id=owner, principal_id=peer,
+                tenant_id=setup.tenant,
+                category_id=setup.category,
+                object_type="artifact_versions",
+                subject_id=UUID(hidden["artifact_id"]),
+                owner_id=owner,
+                principal_id=peer,
             )
         )
     assert reply(setup, project, peer, thread_id, row.id)["body"] == "客户反馈：包装受潮。"
@@ -322,23 +353,30 @@ def test_people_who_cannot_see_the_object_neither_start_nor_read_and_retraction_
     assert public["can_retract"] is True  # the owner
     path = h.project_root(setup, project) + f"/discussions/{thread_id}/messages/{public['id']}"
     edit = setup.client.post(
-        path + "/edit", headers=h.headers(setup, owner),
+        path + "/edit",
+        headers=h.headers(setup, owner),
         json={"body": "改写", "expected_revision": 1, "request_key": str(uuid4())},
     )
     assert edit.status_code == 403
     third = add_category_human(setup, name="合成第三人")
-    assert setup.client.post(
-        path + "/retract", headers=h.headers(setup, third),
-        json={"expected_revision": 1, "request_key": str(uuid4())},
-    ).status_code == 403
+    assert (
+        setup.client.post(
+            path + "/retract",
+            headers=h.headers(setup, third),
+            json={"expected_revision": 1, "request_key": str(uuid4())},
+        ).status_code
+        == 403
+    )
     key = str(uuid4())
     done = setup.client.post(
-        path + "/retract", headers=h.headers(setup, owner),
+        path + "/retract",
+        headers=h.headers(setup, owner),
         json={"expected_revision": 1, "request_key": key},
     )
     assert done.status_code == 200, done.text
     again = setup.client.post(
-        path + "/retract", headers=h.headers(setup, owner),
+        path + "/retract",
+        headers=h.headers(setup, owner),
         json={"expected_revision": 1, "request_key": key},
     )
     assert again.status_code == 200, again.text  # same request, same result
@@ -357,11 +395,16 @@ def test_agent_identity_has_no_direct_write(setup):
         for role in ("pdos_agent", "pdos_next_auth", "pdos_next_dispatch"):
             for privilege in ("SELECT", "INSERT", "UPDATE", "DELETE"):
                 assert not s.scalar(
-                    text("SELECT has_table_privilege(:role, 'public.discussion_agent_requests', :p)"),
+                    text(
+                        "SELECT has_table_privilege(:role, 'public.discussion_agent_requests', :p)"
+                    ),
                     {"role": role, "p": privilege},
                 ), (role, privilege)
         assert not s.scalar(
-            text("SELECT has_table_privilege('pdos_next_app', 'public.discussion_agent_requests', 'UPDATE')")
+            text(
+                "SELECT has_table_privilege('pdos_next_app', "
+                "'public.discussion_agent_requests', 'UPDATE')"
+            )
         )
         assert not s.scalar(
             text(
@@ -372,40 +415,77 @@ def test_agent_identity_has_no_direct_write(setup):
 
     def as_agent():
         return tenant_session(
-            setup.engine, setup.tenant, actor_id=setup.agent, requester_id=owner,
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.agent,
+            requester_id=owner,
             category_id=setup.category,
         )
 
     thread = UUID(thread_id)
     # 小Pai as actor cannot insert a message, even with the delivery setting forged.
     with pytest.raises(DBAPIError), as_agent() as s:
-        s.execute(text("SELECT set_config('pdos.discussion_agent_settle', :r, true)"), {"r": str(row.id)})
+        s.execute(
+            text("SELECT set_config('pdos.discussion_agent_settle', :r, true)"), {"r": str(row.id)}
+        )
         s.add(
             DiscussionMessage(
-                tenant_id=setup.tenant, thread_id=thread, sequence=2, author_id=setup.agent,
-                revision=1, state="posted", body="伪造", mentions=[], subject_revision=None,
-                updated_at=datetime.now(UTC), change_seq=0, request_key=uuid4(),
+                tenant_id=setup.tenant,
+                thread_id=thread,
+                sequence=2,
+                author_id=setup.agent,
+                revision=1,
+                state="posted",
+                body="伪造",
+                mentions=[],
+                subject_revision=None,
+                updated_at=datetime.now(UTC),
+                change_seq=0,
+                request_key=uuid4(),
                 request_sha256="0" * 64,
             )
         )
         s.flush()
     # A human cannot post as 小Pai either.
-    with pytest.raises(DBAPIError), tenant_session(
-        setup.engine, setup.tenant, actor_id=owner, requester_id=owner, category_id=setup.category,
-    ) as s:
+    with (
+        pytest.raises(DBAPIError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=owner,
+            requester_id=owner,
+            category_id=setup.category,
+        ) as s,
+    ):
         s.add(
             DiscussionMessage(
-                tenant_id=setup.tenant, thread_id=thread, sequence=2, author_id=setup.agent,
-                revision=1, state="posted", body="伪造", mentions=[], subject_revision=None,
-                updated_at=datetime.now(UTC), change_seq=0, request_key=uuid4(),
+                tenant_id=setup.tenant,
+                thread_id=thread,
+                sequence=2,
+                author_id=setup.agent,
+                revision=1,
+                state="posted",
+                body="伪造",
+                mentions=[],
+                subject_revision=None,
+                updated_at=datetime.now(UTC),
+                change_seq=0,
+                request_key=uuid4(),
                 request_sha256="0" * 64,
             )
         )
         s.flush()
     # The delivery refuses anyone but the bound writer for the bound requester.
-    with pytest.raises(DBAPIError), tenant_session(
-        setup.engine, setup.tenant, actor_id=owner, requester_id=owner, category_id=setup.category,
-    ) as s:
+    with (
+        pytest.raises(DBAPIError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=owner,
+            requester_id=owner,
+            category_id=setup.category,
+        ) as s,
+    ):
         s.execute(
             text("SELECT discussion_agent_deliver(:t, :r, 'public', NULL, '{}'::jsonb, NULL)"),
             {"t": setup.tenant, "r": row.id},
@@ -435,13 +515,22 @@ def test_proactive_mention_reaches_a_person_once_per_cooldown(setup):
 
     def mention(recipient, reason, **latest):
         with tenant_session(
-            setup.engine, setup.tenant, actor_id=setup.agent, requester_id=owner,
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.agent,
+            requester_id=owner,
             category_id=setup.category,
         ) as s:
             ctx = Context(setup.tenant, setup.agent, owner, category_id=setup.category)
             return agent_mentions.notify(
-                s, ctx, recipient, reason, project_id=project.project_id, kind="project",
-                subject_id=project.project_id, latest=latest,
+                s,
+                ctx,
+                recipient,
+                reason,
+                project_id=project.project_id,
+                kind="project",
+                subject_id=project.project_id,
+                latest=latest,
             )
 
     assert mention(peer, "agent.needs_info") is not None
@@ -461,12 +550,23 @@ def test_proactive_mention_reaches_a_person_once_per_cooldown(setup):
     h.age_notifications(setup, peer, minutes=60 * 24 * 4)
     assert mention(peer, "agent.needs_info") is not None
     # Only 小Pai mentions proactively.
-    with pytest.raises(DBAPIError), tenant_session(
-        setup.engine, setup.tenant, actor_id=owner, requester_id=owner, category_id=setup.category,
-    ) as s:
+    with (
+        pytest.raises(DBAPIError),
+        tenant_session(
+            setup.engine,
+            setup.tenant,
+            actor_id=owner,
+            requester_id=owner,
+            category_id=setup.category,
+        ) as s,
+    ):
         agent_mentions.notify(
-            s, Context(setup.tenant, owner, owner, category_id=setup.category), peer,
-            "agent.needs_info", project_id=project.project_id, kind="project",
+            s,
+            Context(setup.tenant, owner, owner, category_id=setup.category),
+            peer,
+            "agent.needs_info",
+            project_id=project.project_id,
+            kind="project",
             subject_id=project.project_id,
         )
 
@@ -496,10 +596,14 @@ def test_dispatcher_starts_one_delivery_per_ended_run(setup):
     thread_id = post_topic(setup, project, setup.human, f"{XIAOPAI} 看一下")["thread"]["id"]
     [row] = requests(setup, thread_id)
     client = _Client()
-    asyncio.run(agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q"))
+    asyncio.run(
+        agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q")
+    )
     assert client.started == []  # the Run has not ended
     finish(setup, row.run_id, "", state="failed")
-    asyncio.run(agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q"))
+    asyncio.run(
+        agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q")
+    )
     assert client.started == [
         (
             {"tenant_id": str(setup.tenant), "request_id": str(row.id)},
@@ -513,7 +617,9 @@ def test_dispatcher_starts_one_delivery_per_ended_run(setup):
     card = view["messages"][0]["agent_request"]
     assert card["label"] == "失败" and card["reason"] == "run_failed"
     client.started.clear()
-    asyncio.run(agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q"))
+    asyncio.run(
+        agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q")
+    )
     assert client.started == []
 
 
@@ -521,6 +627,7 @@ def test_thread_content_reaches_the_model_context_as_a_dynamic_field(setup):
     """The registered host appends the frozen thread after the fixed prefix; no memory."""
     from pdos_next.agent.kernel.bootstrap import Bootstrap
     from pdos_next.agent.kernel.host import BoundHost
+
     project = create_g0_project(setup, visibility="private")
     started = post_topic(setup, project, setup.human, "先说背景：模具延期两天")
     thread_id = started["thread"]["id"]
@@ -528,8 +635,11 @@ def test_thread_content_reaches_the_model_context_as_a_dynamic_field(setup):
     [row] = requests(setup, thread_id)
     owner = Bootstrap(setup.engine)
     scope = owner.store.scope(
-        tenant_id=setup.tenant, requester_id=setup.peer, writer_id=setup.agent,
-        category_id=setup.category, run_id=row.run_id,
+        tenant_id=setup.tenant,
+        requester_id=setup.peer,
+        writer_id=setup.agent,
+        category_id=setup.category,
+        run_id=row.run_id,
     )
     envelope = BoundHost(owner.store, owner.adapters()).skill_context(
         scope, "延期影响哪些任务", bindings=()
@@ -561,11 +671,17 @@ def test_xiaopai_assignment_reaches_the_assignee_once_per_cooldown(private_work)
 
     def assign(revision):
         row = SimpleNamespace(
-            project_id=work.project_id, task_id=task_id, revision=revision, state="assigned",
+            project_id=work.project_id,
+            task_id=task_id,
+            revision=revision,
+            state="assigned",
             body={"assignee_id": str(peer), "recipient_id": str(owner)},
         )
         with tenant_session(
-            setup.engine, setup.tenant, actor_id=setup.agent, requester_id=owner,
+            setup.engine,
+            setup.tenant,
+            actor_id=setup.agent,
+            requester_id=owner,
             category_id=setup.category,
         ) as s:
             notify.after_task(s, ctx, ASSIGN, row)
@@ -577,3 +693,68 @@ def test_xiaopai_assignment_reaches_the_assignee_once_per_cooldown(private_work)
         ("assigned", "task.assigned", 1)
     ]
     assert h.notes(setup, owner)["items"] == []
+
+
+def _wait(setup, run_id, sequence):
+    """Test-only stand-in for the graph pausing on a question (no model is called)."""
+    with Session(setup.admin) as s, s.begin():
+        s.execute(text("SET LOCAL session_replication_role = replica"))
+        s.execute(update(AgentRun).where(AgentRun.id == run_id).values(state="waiting_input"))
+        s.add(
+            AgentEvent(
+                tenant_id=setup.tenant,
+                run_id=run_id,
+                sequence=sequence,
+                body={
+                    "type": "needs_input",
+                    "questions": [{"id": "q", "question": "私密问题原文"}],
+                },
+            )
+        )
+
+
+def test_missing_information_mentions_the_person_bound_from_the_object(private_work):  # noqa: F811
+    """P105: a task thread reaches its assignee or owner, with a link and no question."""
+    import asyncio
+
+    work, setup = private_work, private_work.setup
+    owner, peer = setup.human, setup.peer
+    task_id = _task(work)
+    project = work.g0
+    h.comment(setup, project, peer, "work_task", task_id, f"{XIAOPAI} 这项要哪些资料")
+    with Session(setup.admin) as s:
+        row = s.scalar(
+            select(DiscussionAgentRequest).where(DiscussionAgentRequest.requester_id == peer)
+        )
+    topic = post_topic(setup, project, peer, f"{XIAOPAI} 项目层面的问题")["thread"]["id"]
+    [project_row] = requests(setup, topic)
+    _wait(setup, row.run_id, 2)
+    _wait(setup, project_row.run_id, 2)
+
+    client = _Client()
+    asyncio.run(
+        agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q")
+    )
+    waits = sorted((ref["request_id"], ref.get("wait")) for ref, _ in client.started)
+    assert waits == sorted([(str(row.id), 2), (str(project_row.id), 2)])
+    for reference, _ in client.started:
+        agent_delivery.execute(setup.engine, setup.dispatch, reference)
+    # The task has no assignee: its owner hears; nobody else, and never the question.
+    inbox = h.notes(setup, owner)["items"]
+    assert [
+        (n["category"], n["reason"], n["title"], n["snippet"])
+        for n in inbox
+        if n["category"] == "agent"
+    ] == [("agent", "agent.needs_info", "任务「合成样机图纸」的评论", None)]
+    assert "私密问题原文" not in str(inbox)
+    assert [n for n in h.notes(setup, peer)["items"] if n["category"] == "agent"] == []
+    # The same wait is not repeated; a new question within the cooldown is marked only.
+    client.started.clear()
+    asyncio.run(
+        agent_delivery.dispatch_pending(setup.dispatch, setup.tenant, client, task_queue="q")
+    )
+    assert client.started == []
+    _wait(setup, row.run_id, 3)
+    reference = {"tenant_id": str(setup.tenant), "request_id": str(row.id), "wait": 3}
+    assert agent_delivery.execute(setup.engine, setup.dispatch, reference)["state"] == "marked"
+    assert len(h.notes(setup, owner, category="agent")["items"]) == 1

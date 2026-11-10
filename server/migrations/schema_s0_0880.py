@@ -17,6 +17,9 @@
   information and rule exceptions only; the requester (or rule owner) and the
   recipient must both see the subject now; same object and reason once per cooldown
   (P41-9: one working day, computed by the caller and bounded here).
+- `discussion_agent_waiting` / `discussion_agent_mark_wait`: a Run waiting for an
+  answer is found once per needs_input event, so the P105 mention of the person bound
+  from the thread's object is sent once (never the question itself).
 
 Placeholder s0_0880 on s0_0869 (D37 ⑥ range s0_0880–s0_0884); renumber at integration.
 Upgrade asserts the two replaced functions are exactly the s0_0869 texts.
@@ -34,7 +37,7 @@ EXPECTED_MD5 = {
 }
 
 TABLE_SQL = (
-    "\nCREATE TABLE discussion_agent_requests (\n\tcategory_id UUID NOT NULL, \n\tproduct_id UUID NOT NULL, \n\tproject_id UUID NOT NULL, \n\tthread_id UUID NOT NULL, \n\tmessage_id UUID NOT NULL, \n\trequester_id UUID NOT NULL, \n\twriter_id UUID NOT NULL, \n\tsession_id UUID NOT NULL, \n\trun_id UUID NOT NULL, \n\tprivate_only BOOLEAN NOT NULL, \n\tdelivery VARCHAR(16) NOT NULL, \n\treason VARCHAR(40), \n\treply_message_id UUID, \n\taudience_check JSONB, \n\tmanifest JSONB, \n\tshared_message_id UUID, \n\tshare_mode VARCHAR(8), \n\tshare_receipt JSONB, \n\tsettled_at TIMESTAMP WITH TIME ZONE, \n\tupdated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tchange_seq BIGINT NOT NULL, \n\tid UUID NOT NULL, \n\ttenant_id UUID NOT NULL, \n\tcreated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (tenant_id, id), \n\tUNIQUE (tenant_id, message_id), \n\tUNIQUE (tenant_id, run_id), \n\tCONSTRAINT discussion_agent_thread_fk FOREIGN KEY(tenant_id, thread_id) REFERENCES discussion_threads (tenant_id, id), \n\tCONSTRAINT discussion_agent_message_fk FOREIGN KEY(tenant_id, message_id) REFERENCES discussion_messages (tenant_id, id), \n\tCONSTRAINT discussion_agent_reply_fk FOREIGN KEY(tenant_id, reply_message_id) REFERENCES discussion_messages (tenant_id, id), \n\tCONSTRAINT discussion_agent_share_fk FOREIGN KEY(tenant_id, shared_message_id) REFERENCES discussion_messages (tenant_id, id), \n\tCONSTRAINT discussion_agent_run_fk FOREIGN KEY(tenant_id, run_id) REFERENCES agent_runs (tenant_id, id), \n\tCONSTRAINT discussion_agent_session_fk FOREIGN KEY(tenant_id, session_id) REFERENCES agent_sessions (tenant_id, id), \n\tCONSTRAINT discussion_agent_requester_fk FOREIGN KEY(tenant_id, requester_id) REFERENCES principals (tenant_id, id), \n\tCONSTRAINT discussion_agent_writer_fk FOREIGN KEY(tenant_id, writer_id) REFERENCES principals (tenant_id, id), \n\tCONSTRAINT discussion_agent_request_shape CHECK (delivery IN ('pending','public','private','none') AND ((delivery='pending') = (settled_at IS NULL)) AND (reply_message_id IS NULL OR delivery IN ('public','private')) AND (shared_message_id IS NULL OR delivery='private') AND ((shared_message_id IS NULL) = (share_mode IS NULL)) AND ((shared_message_id IS NULL) = (share_receipt IS NULL)) AND (share_mode IS NULL OR share_mode IN ('body','link')))\n)\n\n",
+    "\nCREATE TABLE discussion_agent_requests (\n\tcategory_id UUID NOT NULL, \n\tproduct_id UUID NOT NULL, \n\tproject_id UUID NOT NULL, \n\tthread_id UUID NOT NULL, \n\tmessage_id UUID NOT NULL, \n\trequester_id UUID NOT NULL, \n\twriter_id UUID NOT NULL, \n\tsession_id UUID NOT NULL, \n\trun_id UUID NOT NULL, \n\tprivate_only BOOLEAN NOT NULL, \n\tdelivery VARCHAR(16) NOT NULL, \n\treason VARCHAR(40), \n\treply_message_id UUID, \n\taudience_check JSONB, \n\tmanifest JSONB, \n\tshared_message_id UUID, \n\tshare_mode VARCHAR(8), \n\tshare_receipt JSONB, \n\tsettled_at TIMESTAMP WITH TIME ZONE, \n\tnotified_wait INTEGER, \n\tupdated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tchange_seq BIGINT NOT NULL, \n\tid UUID NOT NULL, \n\ttenant_id UUID NOT NULL, \n\tcreated_at TIMESTAMP WITH TIME ZONE NOT NULL, \n\tPRIMARY KEY (id), \n\tUNIQUE (tenant_id, id), \n\tUNIQUE (tenant_id, message_id), \n\tUNIQUE (tenant_id, run_id), \n\tCONSTRAINT discussion_agent_thread_fk FOREIGN KEY(tenant_id, thread_id) REFERENCES discussion_threads (tenant_id, id), \n\tCONSTRAINT discussion_agent_message_fk FOREIGN KEY(tenant_id, message_id) REFERENCES discussion_messages (tenant_id, id), \n\tCONSTRAINT discussion_agent_reply_fk FOREIGN KEY(tenant_id, reply_message_id) REFERENCES discussion_messages (tenant_id, id), \n\tCONSTRAINT discussion_agent_share_fk FOREIGN KEY(tenant_id, shared_message_id) REFERENCES discussion_messages (tenant_id, id), \n\tCONSTRAINT discussion_agent_run_fk FOREIGN KEY(tenant_id, run_id) REFERENCES agent_runs (tenant_id, id), \n\tCONSTRAINT discussion_agent_session_fk FOREIGN KEY(tenant_id, session_id) REFERENCES agent_sessions (tenant_id, id), \n\tCONSTRAINT discussion_agent_requester_fk FOREIGN KEY(tenant_id, requester_id) REFERENCES principals (tenant_id, id), \n\tCONSTRAINT discussion_agent_writer_fk FOREIGN KEY(tenant_id, writer_id) REFERENCES principals (tenant_id, id), \n\tCONSTRAINT discussion_agent_request_shape CHECK (delivery IN ('pending','public','private','none') AND ((delivery='pending') = (settled_at IS NULL)) AND (reply_message_id IS NULL OR delivery IN ('public','private')) AND (shared_message_id IS NULL OR delivery='private') AND ((shared_message_id IS NULL) = (share_mode IS NULL)) AND ((shared_message_id IS NULL) = (share_receipt IS NULL)) AND (share_mode IS NULL OR share_mode IN ('body','link')) AND (notified_wait IS NULL OR notified_wait>0))\n)\n\n",
     "CREATE INDEX ix_discussion_agent_requests_category_id ON discussion_agent_requests (category_id)",
     "CREATE INDEX ix_discussion_agent_requests_pending ON discussion_agent_requests (tenant_id, created_at) WHERE delivery='pending'",
     "CREATE INDEX ix_discussion_agent_requests_tenant_id ON discussion_agent_requests (tenant_id)",
@@ -139,7 +142,8 @@ BEGIN
    OR NOT EXISTS(SELECT 1 FROM agent_sessions x WHERE x.tenant_id=NEW.tenant_id AND x.id=NEW.session_id AND x.owner_id=NEW.requester_id
     AND x.project_id=NEW.project_id)
    OR NEW.delivery<>'pending' OR NEW.reason IS NOT NULL OR NEW.reply_message_id IS NOT NULL OR NEW.audience_check IS NOT NULL
-   OR NEW.manifest IS NOT NULL OR NEW.shared_message_id IS NOT NULL OR NEW.settled_at IS NOT NULL THEN
+   OR NEW.manifest IS NOT NULL OR NEW.shared_message_id IS NOT NULL OR NEW.settled_at IS NOT NULL
+   OR NEW.notified_wait IS NOT NULL THEN
    RAISE EXCEPTION 'Invalid 小Pai request' USING ERRCODE='23514'; END IF;
  ELSE
   IF current_setting('pdos.discussion_agent_settle',true) IS DISTINCT FROM OLD.id::text
@@ -151,7 +155,9 @@ BEGIN
     OR NEW.reply_message_id IS DISTINCT FROM OLD.reply_message_id OR NEW.audience_check IS DISTINCT FROM OLD.audience_check
     OR NEW.manifest IS DISTINCT FROM OLD.manifest OR NEW.settled_at IS DISTINCT FROM OLD.settled_at
     OR OLD.shared_message_id IS NOT NULL))
-   OR (OLD.delivery='pending' AND NEW.shared_message_id IS NOT NULL) THEN
+   OR (OLD.delivery='pending' AND NEW.shared_message_id IS NOT NULL)
+   OR (NEW.notified_wait IS DISTINCT FROM OLD.notified_wait AND (OLD.delivery<>'pending'
+    OR NEW.notified_wait IS NULL OR NEW.notified_wait<=coalesce(OLD.notified_wait,0))) THEN
    RAISE EXCEPTION '小Pai requests change only through delivery or share' USING ERRCODE='23514'; END IF;
  END IF;
  NEW.updated_at=statement_timestamp();
@@ -375,6 +381,47 @@ $$""",
  ORDER BY q.created_at LIMIT GREATEST(0, LEAST(maximum, 100))
 $$""",
         ("pdos_next_dispatch",),
+    ),
+    (
+        "discussion_agent_waiting(uuid,integer)",
+        """CREATE FUNCTION public.discussion_agent_waiting(t uuid, maximum integer)
+ RETURNS TABLE(request_id uuid, wait_sequence integer)
+ LANGUAGE sql STABLE SECURITY DEFINER SET search_path=pg_catalog,public,pg_temp AS $$
+ -- Dispatcher view: requests whose Run waits for a newer answer than the last P105
+ -- mention; identities and the event number only, never the question.
+ SELECT q.id, w.sequence FROM discussion_agent_requests q
+ JOIN agent_runs r ON r.tenant_id=q.tenant_id AND r.id=q.run_id
+ CROSS JOIN LATERAL (SELECT max(e.sequence)::integer AS sequence FROM agent_run_events e
+  WHERE e.tenant_id=q.tenant_id AND e.run_id=q.run_id AND e.body->>'type'='needs_input') w
+ WHERE t=nullif(current_setting('pdos.tenant_id',true),'')::uuid AND q.tenant_id=t AND q.delivery='pending'
+  AND r.state='waiting_input' AND r.reverted_at IS NULL AND w.sequence IS NOT NULL
+  AND w.sequence>coalesce(q.notified_wait,0)
+ ORDER BY q.created_at LIMIT GREATEST(0, LEAST(maximum, 100))
+$$""",
+        ("pdos_next_dispatch",),
+    ),
+    (
+        "discussion_agent_mark_wait(uuid,uuid,integer)",
+        """CREATE FUNCTION public.discussion_agent_mark_wait(t uuid, p_request uuid, p_sequence integer) RETURNS boolean
+ LANGUAGE plpgsql SECURITY DEFINER SET search_path=pg_catalog,public,pg_temp AS $$
+DECLARE req discussion_agent_requests; latest integer;
+BEGIN
+ IF t IS DISTINCT FROM nullif(current_setting('pdos.tenant_id',true),'')::uuid THEN
+  RAISE EXCEPTION 'Invalid wait mark' USING ERRCODE='23514'; END IF;
+ SELECT * INTO req FROM discussion_agent_requests WHERE tenant_id=t AND id=p_request FOR UPDATE;
+ IF NOT FOUND OR scope_actor() IS DISTINCT FROM req.writer_id OR scope_requester() IS DISTINCT FROM req.requester_id
+  OR NOT EXISTS(SELECT 1 FROM principals w WHERE w.tenant_id=t AND w.id=req.writer_id AND w.active AND w.kind='agent') THEN
+  RAISE EXCEPTION 'Wait marks need the bound writer and requester' USING ERRCODE='23514'; END IF;
+ SELECT max(e.sequence) INTO latest FROM agent_run_events e WHERE e.tenant_id=t AND e.run_id=req.run_id
+  AND e.body->>'type'='needs_input';
+ IF req.delivery<>'pending' OR latest IS DISTINCT FROM p_sequence OR p_sequence<=coalesce(req.notified_wait,0) THEN
+  RETURN false; END IF;
+ PERFORM set_config('pdos.discussion_agent_settle', req.id::text, true);
+ UPDATE discussion_agent_requests SET notified_wait=p_sequence WHERE tenant_id=t AND id=req.id;
+ PERFORM set_config('pdos.discussion_agent_settle', '', true);
+ RETURN true;
+END $$""",
+        ("pdos_next_app",),
     ),
     (
         "discussion_agent_reference(uuid,uuid)",

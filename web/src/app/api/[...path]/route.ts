@@ -282,7 +282,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const projectWork = projectWorkPaths.test(pathname);
   const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   // P34-2/3: project topics, object comments, mention candidates; scope stays in the path.
-  const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?)?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
+  const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?|\/agent-requests\/[a-f0-9-]{36}\/(?:reply|share))?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
@@ -318,7 +318,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
   } else if (discussion) {
-    const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36})$/i.test(pathname), write = /\/(?:follow|edit|retract|messages)$/.test(pathname);
+    // @小Pai (D37 ⑥): the reply is read with GET, a share is a POST of its requester.
+    const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36}|reply)$/i.test(pathname), write = /\/(?:follow|edit|retract|messages|share)$/.test(pathname);
     const methods = read ? ["GET"] : write ? ["POST"] : ["GET", "POST"];
     if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "讨论入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
     for (const [key, value] of request.nextUrl.searchParams) {

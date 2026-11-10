@@ -246,9 +246,7 @@ def invoke(s, ctx, project, thread, message, *, private_only, ports, full_projec
     if ports is None:
         raise DomainError("SOURCE_UNAVAILABLE", "小Pai 运行服务未配置，未发起运行。")
     if not full_project:
-        raise DomainError(
-            "FORBIDDEN_SCOPE", "交接期间只能办理本人事项，不能在讨论中 @小Pai。", 403
-        )
+        raise DomainError("FORBIDDEN_SCOPE", "交接期间只能办理本人事项，不能在讨论中 @小Pai。", 403)
     goal = goal_text(message.body)
     if not goal:
         raise DomainError("VALIDATION_FAILED", "请在 @小Pai 后写上要它做什么。", 422)
@@ -308,7 +306,12 @@ def invoke(s, ctx, project, thread, message, *, private_only, ports, full_projec
         subject_title = _subject(s, ctx, project, thread.subject_type, thread.subject_id)["title"]
     requester = s.get(Principal, ctx.requester_id)
     context = thread_context(
-        s, ctx, project, thread, message.sequence, requester.name if requester else "发起人",
+        s,
+        ctx,
+        project,
+        thread,
+        message.sequence,
+        requester.name if requester else "发起人",
         subject_title,
     )
     run.versions = {
@@ -529,7 +532,9 @@ def share(s, ctx, project, thread, request_id, data: ShareRequest):
     check = row.audience_check or {}
     if data.mode == "body" and check.get("customer_derived"):
         raise DomainError(
-            "FORBIDDEN_SCOPE", "这次运行读取过客户私有资料，只能分享链接。", 403,
+            "FORBIDDEN_SCOPE",
+            "这次运行读取过客户私有资料，只能分享链接。",
+            403,
         )
     if data.mode == "body" and not data.acknowledged:
         raise DomainError(

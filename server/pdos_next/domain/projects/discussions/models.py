@@ -225,6 +225,8 @@ class DiscussionAgentRequest(Row, Base):
     share_mode: Mapped[str | None] = mapped_column(String(8))
     share_receipt: Mapped[dict | None] = mapped_column(JSONB)
     settled_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    # The latest “needs_input” event of the Run already answered by a P105 mention.
+    notified_wait: Mapped[int | None] = mapped_column(Integer)
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     change_seq: Mapped[int] = mapped_column(BigInteger)
     __table_args__ = (
@@ -283,7 +285,8 @@ class DiscussionAgentRequest(Row, Base):
             "AND (shared_message_id IS NULL OR delivery='private') "
             "AND ((shared_message_id IS NULL) = (share_mode IS NULL)) "
             "AND ((shared_message_id IS NULL) = (share_receipt IS NULL)) "
-            "AND (share_mode IS NULL OR share_mode IN ('body','link'))",
+            "AND (share_mode IS NULL OR share_mode IN ('body','link')) "
+            "AND (notified_wait IS NULL OR notified_wait>0)",
             name="discussion_agent_request_shape",
         ),
     )

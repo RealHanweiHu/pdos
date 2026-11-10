@@ -35,6 +35,8 @@ SOURCE_GROUPS = ("dependencies", "citations", "projects", "mcp")
 class ReplyReference(StrictModel):
     tenant_id: UUID
     request_id: UUID
+    # Present only for a P105 “needs information” mention: the Run's needs_input event.
+    wait: int | None = None
 
 
 def _manifest_parts(manifest):
@@ -156,11 +158,15 @@ def deliver(engine, dispatch_engine, tenant_id, request_id):
             except (DomainError, KeyError, TypeError, ValueError):
                 manifest = None
             # Keep plain copies; the ORM rows do not outlive this transaction.
-            run = type("RunFacts", (), {
-                "requester_id": run.requester_id,
-                "customer_identities": list(run.customer_identities or ()),
-                "data_categories": list(run.data_categories or ()),
-            })()
+            run = type(
+                "RunFacts",
+                (),
+                {
+                    "requester_id": run.requester_id,
+                    "customer_identities": list(run.customer_identities or ()),
+                    "data_categories": list(run.data_categories or ()),
+                },
+            )()
         else:
             run = None
     verdict, reason, receipt, frozen = "none", "requester_no_access", {}, None
@@ -183,8 +189,15 @@ def deliver(engine, dispatch_engine, tenant_id, request_id):
         if manifest is not None:
             frozen = {
                 key: manifest.get(key)
-                for key in ("version", "dependencies", "citations", "projects", "mcp",
-                            "unverified", "unavailable")
+                for key in (
+                    "version",
+                    "dependencies",
+                    "citations",
+                    "projects",
+                    "mcp",
+                    "unverified",
+                    "unavailable",
+                )
                 if key in manifest
             }
             frozen["dependencies"] = [
@@ -235,6 +248,93 @@ def deliver(engine, dispatch_engine, tenant_id, request_id):
     }
 
 
+def responsible(s, ctx, thread):
+    """P105: the person to @ when 小Pai needs information, bound from the thread's object.
+
+    A task's comment thread reaches the task's assignee, or its owner when nobody is
+    assigned, and nobody when that is the requester; a project topic reaches nobody
+    else (the requester already sees “等你回答” on the card).
+    """
+    from sqlalchemy import select
+
+    from pdos_next.domain.projects.work.models import WorkTaskCurrent, WorkTaskVersion
+
+    if thread.subject_type != "work_task":
+        return None
+    pointer = s.scalar(
+        select(WorkTaskCurrent).where(
+            WorkTaskCurrent.tenant_id == ctx.tenant_id,
+            WorkTaskCurrent.project_id == thread.project_id,
+            WorkTaskCurrent.task_id == thread.subject_id,
+        )
+    )
+    version = s.get(WorkTaskVersion, pointer.version_id) if pointer is not None else None
+    if version is None:
+        return None
+    assignee = (version.body or {}).get("assignee_id")
+    person = UUID(str(assignee)) if assignee else version.owner_id
+    return None if person == ctx.requester_id else person
+
+
+def notify_wait(engine, dispatch_engine, tenant_id, request_id, wait):
+    """`ai.mention.notify` for missing information (P34-5 第 2 种, P105).
+
+    The notification carries the thread and a link only, never the question; the
+    recipient must see the object now; one per object and reason within the cooldown.
+    """
+    from sqlalchemy import text
+
+    from pdos_next.core.database import tenant_session
+    from pdos_next.core.service import Context
+    from pdos_next.domain.my_work.notifications import agent_mentions
+
+    from .models import DiscussionAgentRequest, DiscussionThread
+
+    ref = _reference(dispatch_engine, tenant_id, request_id)
+    if ref is None or ref["delivery"] != "pending":
+        return {"state": "skipped"}
+    requester = ref["requester_id"]
+    ctx = Context(tenant_id, requester, requester, category_id=ref["category_id"])
+    with tenant_session(
+        engine,
+        tenant_id,
+        actor_id=requester,
+        requester_id=requester,
+        category_id=ctx.category_id,
+        read_snapshot=True,
+    ) as s:
+        row = s.get(DiscussionAgentRequest, request_id)
+        thread = s.get(DiscussionThread, row.thread_id) if row is not None else None
+        person = responsible(s, ctx, thread) if thread is not None else None
+        target = (thread.id, thread.project_id) if thread is not None else None
+    writer = Context(tenant_id, ref["writer_id"], requester, category_id=ref["category_id"])
+    sent = None
+    with tenant_session(
+        engine,
+        tenant_id,
+        actor_id=ref["writer_id"],
+        requester_id=requester,
+        category_id=ref["category_id"],
+    ) as s:
+        marked = s.scalar(
+            text("SELECT discussion_agent_mark_wait(:t, :r, :w)"),
+            {"t": tenant_id, "r": request_id, "w": wait},
+        )
+        if marked and person is not None and target is not None:
+            sent = agent_mentions.notify(
+                s,
+                writer,
+                person,
+                "agent.needs_info",
+                project_id=target[1],
+                kind="thread",
+                subject_id=target[0],
+                thread_id=target[0],
+                latest={"request_id": str(request_id), "needs_info": True},
+            )
+    return {"state": "notified" if sent else "marked" if marked else "skipped"}
+
+
 def execute(engine, dispatch_engine, reference):
     """The delivery as a deterministic node of the registered 小Pai graph (no model)."""
     from typing import TypedDict
@@ -249,12 +349,24 @@ def execute(engine, dispatch_engine, reference):
         delivery: dict
 
     graph = StateGraph(State)
-    graph.add_node(
-        "deliver_discussion_reply",
-        lambda _: {"delivery": deliver(engine, dispatch_engine, ref.tenant_id, ref.request_id)},
-    )
-    graph.add_edge(START, "deliver_discussion_reply")
-    graph.add_edge("deliver_discussion_reply", END)
+    if ref.wait is not None:
+        node = "notify_discussion_wait"
+        graph.add_node(
+            node,
+            lambda _: {
+                "delivery": notify_wait(
+                    engine, dispatch_engine, ref.tenant_id, ref.request_id, ref.wait
+                )
+            },
+        )
+    else:
+        node = "deliver_discussion_reply"
+        graph.add_node(
+            node,
+            lambda _: {"delivery": deliver(engine, dispatch_engine, ref.tenant_id, ref.request_id)},
+        )
+    graph.add_edge(START, node)
+    graph.add_edge(node, END)
     compiled = graph.compile(name="xiaopai")
     with registered_graph_context("xiaopai"):
         return compiled.invoke({"reference": reference})["delivery"]
@@ -282,8 +394,9 @@ class ReplyActivities:
         return execute(self.engine, self.dispatch_engine, reference)
 
 
-def workflow_id(tenant_id, request_id):
-    return f"pdos-next:discussion-reply:{UUID(str(tenant_id))}:{UUID(str(request_id))}"
+def workflow_id(tenant_id, request_id, wait=None):
+    base = f"pdos-next:discussion-reply:{UUID(str(tenant_id))}:{UUID(str(request_id))}"
+    return base if wait is None else f"{base}:wait:{int(wait)}"
 
 
 async def dispatch_pending(dispatch_engine, tenant_id, client, *, task_queue):
@@ -293,20 +406,28 @@ async def dispatch_pending(dispatch_engine, tenant_id, client, *, task_queue):
     from pdos_next.core.database import tenant_session
 
     with tenant_session(dispatch_engine, tenant_id) as s:
-        rows = (
-            s.execute(
+        rows = [
+            (request_id, None)
+            for request_id in s.execute(
                 text("SELECT request_id FROM discussion_agent_pending(:t, 100)"), {"t": tenant_id}
-            )
-            .scalars()
-            .all()
-        )
+            ).scalars()
+        ]
+        rows += [
+            (row["request_id"], row["wait_sequence"])
+            for row in s.execute(
+                text("SELECT * FROM discussion_agent_waiting(:t, 100)"), {"t": tenant_id}
+            ).mappings()
+        ]
     started = 0
-    for request_id in rows:
+    for request_id, wait in rows:
+        reference = {"tenant_id": str(tenant_id), "request_id": str(request_id)}
+        if wait is not None:
+            reference["wait"] = wait
         try:
             await client.start_workflow(
                 DiscussionAgentReply.run,
-                {"tenant_id": str(tenant_id), "request_id": str(request_id)},
-                id=workflow_id(tenant_id, request_id),
+                reference,
+                id=workflow_id(tenant_id, request_id, wait),
                 task_queue=task_queue,
                 # A failed delivery may be started again; a running or completed one not.
                 id_reuse_policy=WorkflowIDReusePolicy.ALLOW_DUPLICATE_FAILED_ONLY,

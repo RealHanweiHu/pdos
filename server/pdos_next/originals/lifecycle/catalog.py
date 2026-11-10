@@ -5636,7 +5636,7 @@ COVERED_COLUMNS.update({
         "category_id", "product_id", "project_id", "thread_id", "message_id", "requester_id",
         "writer_id", "session_id", "run_id", "private_only", "delivery", "reason",
         "reply_message_id", "audience_check", "manifest", "shared_message_id", "share_mode",
-        "share_receipt", "settled_at", "updated_at", "change_seq", "id", "tenant_id",
-        "created_at",
+        "share_receipt", "settled_at", "notified_wait", "updated_at", "change_seq", "id",
+        "tenant_id", "created_at",
     ),
 })
