@@ -72,3 +72,16 @@ test("manual rule authorization and origin guards precede forwarding", async () 
   assert.equal((await h.send(trigger, { method: 'POST', body: original, origin: 'https://other.invalid' })).status, 403);
   assert.equal(h.calls.length, 0);
 });
+
+test("the fixed template catalog and a project's status cadence are plain scoped reads", async () => {
+  const h = harness(), templates = `v1/categories/${id(1)}/automation-templates`;
+  assert.equal((await h.send(templates)).status, 200);
+  assert.equal(h.calls.at(-1).url, `http://synthetic-api.invalid/${templates}`);
+  assert.equal((await h.send(templates, { method: "POST", body: {} })).status, 405);
+  assert.equal((await h.send(`${templates}?owner_id=${id(9)}`)).status, 422);
+  const cadence = `v1/categories/${id(1)}/products/${id(4)}/project-work/status-cadence`;
+  assert.equal((await h.send(`${cadence}?project_id=${id(5)}`)).status, 200);
+  assert.equal(h.calls.at(-1).url, `http://synthetic-api.invalid/${cadence}?project_id=${id(5)}`);
+  assert.equal((await h.send(cadence)).status, 422);
+  assert.equal((await h.send(`${cadence}?project_id=${id(5)}&owner_id=${id(9)}`)).status, 422);
+});
