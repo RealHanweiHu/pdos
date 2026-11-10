@@ -2,7 +2,7 @@
 
 export type EntryKind = "holiday" | "makeup_workday" | "shutdown";
 export type CalendarEntry = { kind: EntryKind; start: string; end: string; label: string; kind_label?: string; days?: number };
-export type Basis = { basis: "tenant_calendar" | "weekdays_estimate"; basis_label: string; timezone: string; calendar_id?: string; calendar_revision?: number };
+export type Basis = { basis: "tenant_calendar" | "weekdays_estimate"; basis_label: string; timezone: string; calendar_id?: string; calendar_name?: string; calendar_revision?: number };
 export type WorkCalendar = {
   calendar_id: string; kind: "factory" | "supplier"; name: string; label: string; revision: number;
   timezone: string; working_weekdays: number[]; entries: CalendarEntry[]; reason: string;

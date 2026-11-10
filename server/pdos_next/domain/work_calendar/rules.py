@@ -203,6 +203,7 @@ def basis(calendar: Calendar | None) -> dict:
         "basis_label": f"按{calendar_label(calendar)}第 {calendar.revision} 版计算",
         "timezone": calendar.definition.timezone,
         "calendar_id": calendar.calendar_id,
+        "calendar_name": calendar_label(calendar),
         "calendar_revision": calendar.revision,
     }
 

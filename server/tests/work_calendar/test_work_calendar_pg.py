@@ -89,6 +89,7 @@ def test_administrator_maintains_and_every_member_reads(calendars):
         "basis_label": "按工厂日历第 1 版计算",
         "timezone": "Asia/Shanghai",
         "calendar_id": created["calendar_id"],
+        "calendar_name": "工厂日历",
         "calendar_revision": 1,
     }
     assert setup.client.get(PATH, headers=setup.headers).json()["can_manage"] is True

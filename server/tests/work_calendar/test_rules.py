@@ -105,6 +105,7 @@ def test_supplier_calendar_is_its_own_and_says_so():
         "basis_label": "按供应商日历（合成电芯厂）第 3 版计算",
         "timezone": "Asia/Shanghai",
         "calendar_id": "c-1",
+        "calendar_name": "供应商日历（合成电芯厂）",
         "calendar_revision": 3,
     }
 
