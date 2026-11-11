@@ -20,7 +20,7 @@ from pdos_next.domain.quality.capa import anchor as a, anchor_owner, candidate_a
 from pdos_next.domain.quality.capa import fact_atom_storage as guards
 from pdos_next.domain.quality.capa import fact_commands as commands, fact_storage_models as models
 from pdos_next.domain.quality.capa.fact_registry_storage import read_stored_fact
-from pdos_next.domain.quality.capa.fact_write import CurrentSeries, FactWriteMaterial
+from pdos_next.domain.quality.capa.fact_write import CurrentSeries, FactWriteMaterial, _json
 from pdos_next.domain.quality.capa.facts import IssuerRef, _action_bindings, _all_source_refs
 from pdos_next.domain.builds.professional_authority import service as professional
 from pdos_next.domain.builds.professional_authority.models import ProfessionalFact
@@ -562,7 +562,9 @@ class ActualFactOwner:
                 *payload.sources,
                 *authority_sources,
                 *(a.SourceRef.model_validate(ref) for ref in active_policy["sources"]),
-                *_all_source_refs(body_extra),
+                # Walk the JSON form: a tuple of DTOs (coverage sources, failures,
+                # actions) would otherwise hide its refs from this closure (D287).
+                *_all_source_refs(_json(body_extra)),
             )
         )
         reads = [
