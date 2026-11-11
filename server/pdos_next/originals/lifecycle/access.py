@@ -77,6 +77,8 @@ NON_CONSUMING = frozenset(
         "discussion_follows",
         "notifications",
         "notification_preferences",
+        # D37 ⑥: @小Pai requests in a shared thread; a frozen manifest of identities only.
+        "discussion_agent_requests",
         "products",
         "upload_attempts",
         "lifecycle_objects",

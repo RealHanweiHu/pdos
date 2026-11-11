@@ -20,7 +20,7 @@ import { ObjectComments } from "./discussion-thread";
 import { exportHref } from "@/features/exports/lib/export-download";
 import styles from "./project-work.module.css";
 
-type Props = WorkScope & { onCloseEditor?: () => void; view?: "all" | "tasks" | "plan" | "updates"; planSection?: "resources" | "commitments"; api: ProjectWorkApi; productRevision: number; onRefresh?: () => void | Promise<void>; readVersion?: number };
+type Props = WorkScope & { onCloseEditor?: () => void; view?: "all" | "tasks" | "plan" | "updates"; planSection?: "resources" | "commitments"; api: ProjectWorkApi; productRevision: number; onRefresh?: () => void | Promise<void>; readVersion?: number; onOpenRun?: (runId: string) => void };
 const states: Record<WorkTask["state"], string> = { proposed: "待分派", assigned: "待本人承接", accepted: "已承接", in_progress: "实际进行中", submitted: "待成果验收", completed: "成果已验收" };
 const print = (v: unknown) => v == null || v === "" ? "未知 / 未登记" : String(v);
 const json = (v: unknown) => JSON.stringify(v, null, 2);
@@ -47,7 +47,7 @@ function draftPayload(local: WorkLocal, task: WorkTask | undefined, scope: WorkS
 
 export function ProjectWork(props: Props) { return <ScopedProjectWork key={JSON.stringify([props.principalId, props.categoryId, props.productId, props.projectId])} {...props}/>; }
 
-function ScopedProjectWork({ api, categoryId, productId, projectId, principalId, productRevision, onRefresh, onCloseEditor, readVersion = 0, view = "all", planSection }: Props) {
+function ScopedProjectWork({ api, categoryId, productId, projectId, principalId, productRevision, onRefresh, onCloseEditor, readVersion = 0, view = "all", planSection, onOpenRun }: Props) {
   const scope = { categoryId, productId, projectId, principalId }, storageKey = workStorageKey(scope) + (view === "updates" ? ":status-update" : "");
   const [editorOpen, setEditorOpen] = useState(view === "updates");
   // A notification may open one task with its comments (`?task=`), within this project only.
@@ -182,7 +182,7 @@ function ScopedProjectWork({ api, categoryId, productId, projectId, principalId,
     {local.receipt && !denied && <p className={styles.success}>已保存：{workOperationNames[local.receipt.operation]} · 回执 {local.receipt.id}。刷新只读回结果。</p>}
   </>;
   return <div className={styles.root}>
-    {inspected && !denied && !showEditor && <DetailSheet title="任务详情" onClose={() => setInspectedId(null)}><h2>{inspected.title}</h2>{taskDetail(inspected)}<ObjectComments api={api as typeof browserApi} scope={{ categoryId, productId, projectId }} subjectType="work_task" subjectId={inspected.id}/></DetailSheet>}
+    {inspected && !denied && !showEditor && <DetailSheet title="任务详情" onClose={() => setInspectedId(null)}><h2>{inspected.title}</h2>{taskDetail(inspected)}<ObjectComments api={api as typeof browserApi} scope={{ categoryId, productId, projectId }} subjectType="work_task" subjectId={inspected.id} onOpenRun={onOpenRun}/></DetailSheet>}
     {view !== "tasks" && <header className={styles.heading}><div><h2 className={view === "updates" || planSection ? "sr-only" : undefined}>{view === "plan" ? "承诺与协调" : "项目任务"}</h2></div><div className={styles.actions}>{view === "all" && data && (<div className={styles.actions}>{!showEditor && Boolean(local.taskId || local.draft.title || local.draft.factSummary) && <Button size="sm" variant="ghost" onClick={() => setEditorOpen(true)}>继续编辑</Button>}<Button size="sm" variant="outline" disabled={!editable} onClick={() => select("work.task.create")}><Plus aria-hidden="true"/>新建任务</Button><NpiTaskPicker api={api} scope={scope} disabled={!editable} onChoose={chooseTemplate}/><Button size="sm" variant="outline" disabled={!editable} onClick={() => select("work.status_update.create")}><ClipboardText aria-hidden="true"/>写具名周报</Button></div>)}<Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => setAttempt(v => v + 1)}><ArrowClockwise aria-hidden="true"/>刷新任务</Button>{view === "all" && <ExportButton exportUrl={exportHref("project", { categoryId, productId }, projectId)} label="导出 Excel"/>}</div></header>}
     {notice && <p className={styles.notice} role="status">{notice}</p>}{error && <p className={styles.error} role="alert">{error}</p>}
     {!storageOk && hydrated && !(view !== "all" && showEditor) && <Button type="button" variant="outline" onClick={() => saveEvent(localRef.current)}>重试本机保存</Button>}

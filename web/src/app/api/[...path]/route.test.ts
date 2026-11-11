@@ -1023,12 +1023,12 @@ test("project team and tenant role catalog use only their path scope", async () 
 test("project discussions and personal notifications keep server scope and strict queries", async () => {
   const project = `${base}/projects/${issue}`, h = harness();
   const body = JSON.stringify({ body: "@[许晴](person:" + change + ") 请看", request_key: run });
-  for (const path of [`${project}/discussions`, `${project}/discussions/${run}`, `${project}/comments/work_task/${run}`, `${project}/mentionable`]) {
+  for (const path of [`${project}/discussions`, `${project}/discussions/${run}`, `${project}/comments/work_task/${run}`, `${project}/mentionable`, `${project}/discussions/${run}/agent-requests/${change}/reply`]) {
     assert.equal((await h.send(path)).response.status, 200, path);
     assert.equal(h.calls.at(-1)?.url.includes(`/v1/categories/${category}/products/`), true);
   }
   assert.equal((await h.send(`${project}/mentionable`, { query: `subject_type=work_task&subject_id=${run}` })).response.status, 200);
-  for (const path of [`${project}/discussions`, `${project}/discussions/${run}/messages`, `${project}/discussions/${run}/messages/${change}/edit`, `${project}/discussions/${run}/messages/${change}/retract`, `${project}/discussions/${run}/follow`, `${project}/comments/artifact/${run}`]) {
+  for (const path of [`${project}/discussions`, `${project}/discussions/${run}/messages`, `${project}/discussions/${run}/messages/${change}/edit`, `${project}/discussions/${run}/messages/${change}/retract`, `${project}/discussions/${run}/follow`, `${project}/comments/artifact/${run}`, `${project}/discussions/${run}/agent-requests/${change}/share`]) {
     assert.equal((await h.send(path, { method: "POST", body })).response.status, 200, path);
     assert.equal(h.calls.at(-1)?.init.body, body);
   }
@@ -1044,6 +1044,10 @@ test("project discussions and personal notifications keep server scope and stric
     [`${project}/discussions/${run}/messages`, {}],
     [`${project}/comments/build/${run}`, {}],
     [`${project}/mentionable`, { query: "subject_type=project&recipient=all" }],
+    [`${project}/discussions/${run}/agent-requests/${change}/reply`, { method: "POST" as const, body }],
+    [`${project}/discussions/${run}/agent-requests/${change}/share`, {}],
+    [`${project}/discussions/${run}/agent-requests/${change}/run`, {}],
+    [`${project}/discussions/${run}/agent-requests/${change}/reply`, { query: `requester_id=${run}` }],
     [`${project}/discussions/${run}/messages`, { method: "POST" as const, body, origin: "http://untrusted.invalid" }],
     ["v1/personal/notifications", { unscoped: true, query: `recipient_id=${run}` }],
     ["v1/personal/notifications", { unscoped: true, query: "view=everyone" }],

@@ -109,6 +109,11 @@ class BoundHost:
                 notes = frozen_notes(session, run)
                 if notes is not None:
                     raw["personal_memory"] = notes
+                # P34-4/P52: a shared thread's public content up to the @小Pai,
+                # frozen at the mention; dynamic context, never the fixed prefix.
+                thread = run.versions.get("discussion_thread")
+                if thread is not None:
+                    raw["discussion_thread"] = thread
             action = run.versions.get("verification_action")
             if action is not None:
                 from pdos_next.agent.enterprise_search.verification_actions import context_value
