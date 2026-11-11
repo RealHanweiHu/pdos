@@ -6,6 +6,7 @@ import { categoryTransport } from "@/lib/category-transport";
 import { ConnectedModelSettings } from "./model-configuration/connected-settings";
 import { ConnectedEmbeddingSettings } from "./model-configuration/embedding-settings";
 import { ConnectedAgentSkills } from "./model-configuration/agent-skills";
+import { useQualityHolds } from "./model-configuration/skill-quality";
 import { ConnectedAgentBudgets } from "./model-configuration/agent-budgets";
 import { ConnectedMcpManagement } from "./model-configuration/mcp-management";
 import { ConnectedProviderAgreements } from "./model-configuration/provider-agreements";
@@ -69,7 +70,9 @@ function Members({ categoryId }: { categoryId: string }) {
 function ScopedSettings({ categoryId, principalId, tab, onOpenRun, administrator }: { categoryId: string; principalId: string; tab: string; onOpenRun: (runId: string, categoryId: string) => void; administrator: boolean }) {
   const api = useMemo(() => categoryTransport(categoryId, browserApi), [categoryId]);
   const [modelView, setModelView] = useState("model"), [integration, setIntegration] = useState("connections");
-  const modelTabs = [["model", "模型配置"], ["skills", "技能与资格"], ["budgets", "预算与用量"], ["rules", "自动化规则"], ...(administrator ? [["memory", "记忆策略"]] : [])];
+  // Open quality holds pinned for administrators (P110 Q4).
+  const holds = useQualityHolds(api, administrator);
+  const modelTabs = [["model", "模型配置"], ["skills", holds?.length ? `技能与资格 · ${holds.length} 待复审` : "技能与资格"], ["budgets", "预算与用量"], ["rules", "自动化规则"], ...(administrator ? [["memory", "记忆策略"]] : [])];
   const integrationTabs = [["connections", "外部连接"], ["agreements", "服务商协议"]];
   return <>
     <Retained active={tab === "members"}><Members categoryId={categoryId}/></Retained>

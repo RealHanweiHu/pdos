@@ -246,14 +246,18 @@ def apply(s, ctx, command, scope, payload):
 
 
 def finalize_receipt(s, ctx, command, scope, payload, subject, receipt):
-    if not payload.run_id:
-        return
-    from pdos_next.agent.kernel.persistence import finish_run_revert
+    if payload.run_id:
+        from pdos_next.agent.kernel.persistence import finish_run_revert
 
-    finish_run_revert(
-        s,
-        ctx,
-        payload.run_id,
-        revert_receipt_id=receipt.id,
-        expected_cancel_epoch=command.expected_revision - 1,
-    )
+        finish_run_revert(
+            s,
+            ctx,
+            payload.run_id,
+            revert_receipt_id=receipt.id,
+            expected_cancel_epoch=command.expected_revision - 1,
+        )
+    # P41 item 8 / P109: a withdrawal can push a pilot T0 qualification over its
+    # threshold; the database records the hold from the facts in this transaction.
+    from pdos_next.agent.kernel.skill_quality import record_breaches
+
+    record_breaches(s, ctx.tenant_id)

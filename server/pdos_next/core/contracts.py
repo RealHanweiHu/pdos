@@ -132,6 +132,14 @@ PAYLOADS["mcp.tool.grant"] = GrantTool
 PAYLOADS["ai.skill.qualify"] = QualifySkill
 PAYLOADS["ai.skill.review.record"] = RecordReviews
 
+from pdos_next.agent.kernel.skill_quality_records import (  # noqa: E402
+    RecordSpotCheck,
+    RegisterEvalSet,
+)
+
+PAYLOADS["ai.skill.spot_check.record"] = RecordSpotCheck
+PAYLOADS["ai.skill.eval_set.register"] = RegisterEvalSet
+
 from pdos_next.agent.kernel.budget_management import ConfigureBudget  # noqa: E402
 
 PAYLOADS["ai.budget.configure"] = ConfigureBudget

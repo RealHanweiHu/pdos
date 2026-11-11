@@ -65,6 +65,20 @@
       "tier": "T1",
       "source": "DC-11 档位政策"
     },
+    "ai.skill.spot_check.record": {
+      "when": "仅由当前租户管理员本人在技能资格页对抽中的 T0 运行标注正确、普通错误或关键错误；小Pai 不调用、不能代办",
+      "produces": "ai.skill_spot_checked",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
+    "ai.skill.eval_set.register": {
+      "when": "仅由当前租户管理员本人登记技能包评测集的固定版本；小Pai 不调用、不能代办，登记不授予资格",
+      "produces": "ai.skill_eval_set_registered",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "DC-11 档位政策"
+    },
     "build.configuration.actual.record": {
       "when": null,
       "produces": "actual_configuration.recorded",

@@ -266,7 +266,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const modelConfiguration = pathname === "v1/model-configuration";
   const modelConnections = pathname === "v1/model-connections";
   const providerAgreement = /^v1\/provider-agreements(?:\/recover)?$/.test(pathname);
-  const skillQualification = /^v1\/agent-skill-qualification(?:\/recover)?$/.test(pathname);
+  const skillQualification = /^v1\/agent-skill-(?:qualification(?:\/recover)?|quality(?:\/holds)?)$/.test(pathname);
   const mcpManagement = /^v1\/agent-mcp(?:\/(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/history)?|recover))?$/i.test(pathname);
   const agentSkill = /^v1\/agent-skills(?:\/recover)?$/.test(pathname);
   const agentBudget = /^v1\/agent-budgets(?:\/recover)?$/.test(pathname);
@@ -367,7 +367,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择技能和审阅分页。" }, { status: 422 });
       query.set(key, value);
     }
-    if (!recovering && !query.has("skill_key")) return Response.json({ code: "VALIDATION_FAILED", message: "请选择一个技能。" }, { status: 422 });
+    const holds = pathname.endsWith("/holds");
+    if (holds && query.size) return Response.json({ code: "VALIDATION_FAILED", message: "待复审列表不接受查询条件。" }, { status: 422 });
+    if (!recovering && !holds && !query.has("skill_key")) return Response.json({ code: "VALIDATION_FAILED", message: "请选择一个技能。" }, { status: 422 });
   } else if (agentBudget) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用预算读取或原请求回执核对入口。" }, { status: 405, headers: { Allow: method } });

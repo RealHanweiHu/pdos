@@ -3237,6 +3237,35 @@
           "title": "Personally Reviewed",
           "type": "boolean"
         },
+        "eval_set_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Eval Set Id"
+        },
+        "eval_case_ids": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Eval Case Ids"
+        },
         "confirmation_token": {
           "anyOf": [
             {
@@ -3262,6 +3291,222 @@
         "personally_reviewed"
       ],
       "title": "RecordReviews",
+      "type": "object"
+    },
+    "ai.skill.spot_check.record": {
+      "additionalProperties": false,
+      "properties": {
+        "skill_key": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Skill Key",
+          "type": "string"
+        },
+        "run_id": {
+          "format": "uuid",
+          "title": "Run Id",
+          "type": "string"
+        },
+        "outcome": {
+          "enum": [
+            "correct",
+            "ordinary_error",
+            "critical_error"
+          ],
+          "title": "Outcome",
+          "type": "string"
+        },
+        "critical_kinds": {
+          "items": {
+            "enum": [
+              "scope",
+              "fabrication",
+              "override",
+              "red_line",
+              "commitment_baseline"
+            ],
+            "type": "string"
+          },
+          "maxItems": 5,
+          "title": "Critical Kinds",
+          "type": "array"
+        },
+        "note": {
+          "default": "",
+          "maxLength": 2000,
+          "title": "Note",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "skill_key",
+        "run_id",
+        "outcome"
+      ],
+      "title": "RecordSpotCheck",
+      "type": "object"
+    },
+    "ai.skill.eval_set.register": {
+      "$defs": {
+        "EvalCase": {
+          "additionalProperties": false,
+          "properties": {
+            "case_id": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$",
+              "title": "Case Id",
+              "type": "string"
+            },
+            "case_type": {
+              "enum": [
+                "C",
+                "D",
+                "N",
+                "M"
+              ],
+              "title": "Case Type",
+              "type": "string"
+            },
+            "category_ref": {
+              "maxLength": 160,
+              "minLength": 1,
+              "title": "Category Ref",
+              "type": "string"
+            },
+            "material_kind": {
+              "enum": [
+                "own",
+                "synthetic"
+              ],
+              "title": "Material Kind",
+              "type": "string"
+            },
+            "inputs": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "minItems": 1,
+              "title": "Inputs",
+              "type": "array"
+            },
+            "must_cover": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 30,
+              "title": "Must Cover",
+              "type": "array"
+            },
+            "must_not": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 30,
+              "title": "Must Not",
+              "type": "array"
+            },
+            "keep_unknown": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 30,
+              "title": "Keep Unknown",
+              "type": "array"
+            },
+            "traps": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "title": "Traps",
+              "type": "array"
+            },
+            "key_points": {
+              "items": {
+                "type": "string"
+              },
+              "maxItems": 20,
+              "title": "Key Points",
+              "type": "array"
+            }
+          },
+          "required": [
+            "case_id",
+            "case_type",
+            "category_ref",
+            "material_kind",
+            "inputs"
+          ],
+          "title": "EvalCase",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "skill_key": {
+          "maxLength": 160,
+          "minLength": 1,
+          "title": "Skill Key",
+          "type": "string"
+        },
+        "title": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Title",
+          "type": "string"
+        },
+        "cases": {
+          "items": {
+            "$ref": "#/$defs/EvalCase"
+          },
+          "maxItems": 60,
+          "minItems": 1,
+          "title": "Cases",
+          "type": "array"
+        },
+        "reference_points_signed": {
+          "const": true,
+          "title": "Reference Points Signed",
+          "type": "boolean"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "skill_key",
+        "title",
+        "cases",
+        "reference_points_signed"
+      ],
+      "title": "RegisterEvalSet",
       "type": "object"
     },
     "ai.budget.configure": {

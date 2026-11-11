@@ -96,7 +96,7 @@ def qualified(
         )
     )
     # A case list is evidence of the user's review, never automatically created by the Agent.
-    return bool(
+    eligible = bool(
         row
         and row.enabled
         and is_pilot(session, scope.tenant_id, lock=lock)
@@ -115,6 +115,14 @@ def qualified(
         and row.reviewed_at
         and len(set(row.review_case_refs)) >= 10
     )
+    if not eligible:
+        return False
+    # P41 item 8 / P42: a recorded hold or a crossed run-metric threshold steps T0
+    # back to one confirmation until a new named qualification; computed from
+    # receipts, never by a model. A crossed threshold is recorded as a hold here.
+    from .skill_quality import qualification_breach
+
+    return qualification_breach(session, scope.tenant_id, row, persist=True) is None
 
 
 def mcp_admission(

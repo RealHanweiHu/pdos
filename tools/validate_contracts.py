@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md"
 source = SOURCE.read_text()
 items = {}
-for name, count in [("operations", 87), ("events", 86), ("acceptance", 67)]:
+for name, count in [("operations", 87), ("events", 86), ("acceptance", 70)]:
     data = json.loads((ROOT / "contracts" / f"{name}.json").read_text())
     assert data["provenance"]["sha256"] == hashlib.sha256(SOURCE.read_bytes()).hexdigest()
     assert data["provenance"]["original_contract_package_received"] is False
@@ -27,9 +27,10 @@ for op, tier, _ai, event in re.findall(
 ):
     assert operations[op]["write_tier"] == tier
     assert operations[op]["event"] == (None if tier == "READ" else event.strip())
-# P90: AT-71–AT-74 are registered; AT-64–AT-70 are allocated but not yet written.
+# P90: AT-71–AT-74 are registered; P41 item 11: AT-64–AT-66 are registered (2026-11-09).
+# AT-67–AT-70 are allocated (P82, P83) but not yet written.
 assert {a["id"] for a in items["acceptance"]} == {
-    f"AT-{n:02}" for n in (*range(1, 64), *range(71, 75))
+    f"AT-{n:02}" for n in (*range(1, 67), *range(71, 75))
 }
 # P51: each scenario and expected result matches appendix B word for word.
 appendix_b = source.split("# 附录 B", 1)[1]

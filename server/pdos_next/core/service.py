@@ -113,6 +113,8 @@ EVENTS = {
     "ai.skill.enable": "ai.skill_enabled",
     "ai.skill.qualify": "ai.skill_qualified",
     "ai.skill.review.record": "ai.skill_review_recorded",
+    "ai.skill.spot_check.record": "ai.skill_spot_checked",
+    "ai.skill.eval_set.register": "ai.skill_eval_set_registered",
     "ai.budget.configure": "ai.budget_configured",
     "proposal.create": "proposal.created",
     "proposal.item.patch": "proposal.item_patched",

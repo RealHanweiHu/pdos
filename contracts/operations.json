@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "18378bf54ab40a52e4a648afac99349f9e6e109f0820bb61376a421f45e1953f",
+    "sha256": "27fcd3d63aadb7073369c17e2ed335d4ad00930721058523bd753df6754c838c",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",

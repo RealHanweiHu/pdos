@@ -40,3 +40,8 @@ test("legacy pending commands recover receipts without being treated as current 
   assert.equal(hasCurrentPromptBinding(approval), true);
   assert.throws(() => parseQualificationPending(JSON.stringify({ ...approval, payload: { ...approval.payload, prompt_digest: "stale" } }), category));
 });
+test("evaluation case lists are parsed as unique case ids before the server validates fields", async () => {
+  const { parseEvalCases } = await import("./skill-qualification");
+  assert.equal(parseEvalCases(JSON.stringify([{ case_id: "N-01" }, { case_id: "N-02" }])).length, 2);
+  for (const raw of ["{", "[]", JSON.stringify([{ case_id: "" }]), JSON.stringify([{ case_id: "A" }, { case_id: "A" }]), JSON.stringify({ case_id: "A" })]) assert.throws(() => parseEvalCases(raw));
+});
