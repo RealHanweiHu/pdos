@@ -16,9 +16,13 @@ import type {
 import styles from "./proposal-document.module.css";
 
 export type NewQuestion = { key: string; question: string; owner_id: string; due_date: string };
+/** `can_read_proposal` comes from the participants read (D337); a server without it lists everyone. */
+export type ProposalPerson = { id: string; name: string; can_read_proposal?: boolean };
+/** Question owners must be able to read this proposal; the server rule is the same. */
+export const questionOwners = (people: ProposalPerson[]) => people.filter(person => person.can_read_proposal !== false);
 type Props = ProposalDrafts & {
   items: ProposalEditableItem[];
-  people: { id: string; name: string }[];
+  people: ProposalPerson[];
   editable: boolean;
   busy: boolean;
   mutate: (ops: ProposalPatch[]) => Promise<boolean>;
@@ -50,11 +54,13 @@ function OptionComparison({ items, editable, busy, mutate, drafts = {}, onDraft 
   const addButton = useRef<HTMLButtonElement>(null);
   const newName = useRef<HTMLInputElement>(null);
   const focusAfter = useRef<"new" | "add" | null>(null);
+  // The target waits while a save is busy: disabled controls cannot take focus (D336).
   useLayoutEffect(() => {
+    if (busy) return;
     if (focusAfter.current === "new") newName.current?.focus();
     else if (focusAfter.current === "add") addButton.current?.focus();
     focusAfter.current = null;
-  }, [adding, items.length]);
+  }, [adding, items.length, busy]);
   const columns = items.map(currentItem => {
     const entry = drafts[currentItem.item_id];
     const item = entry?.item ?? currentItem;
@@ -200,6 +206,8 @@ function QuestionRow({ item: currentItem, index, people, editable, busy, mutate,
   const locked = busy || !editable || carried;
   const label = String(currentItem.content.question ?? `问题 ${index + 1}`);
   const owner = people.find(person => person.id === content.owner_id)?.name ?? "未取得姓名";
+  const eligible = questionOwners(people);
+  const ownerUnreadable = people.some(person => person.id === content.owner_id && person.can_read_proposal === false);
   if (!editable)
     return (
       <tr>
@@ -216,10 +224,11 @@ function QuestionRow({ item: currentItem, index, people, editable, busy, mutate,
         <small className={styles.cellNote}>{stale ? "版本已更新，草稿已保留；撤销后重新编辑。" : reassigning ? "问题、负责人或期限有变化，需核对一次责任安排。" : `v${item.version} · ${item.origin === "ai_draft" ? "AI 起草" : "人工记录"}`}</small>
       </td>
       <td>
-        <select aria-label={`问题负责人 ${index + 1}`} disabled={locked} value={String(content.owner_id ?? "")} onChange={event => change("owner_id", event.target.value)}>
-          {!people.some(person => person.id === content.owner_id) && <option value={String(content.owner_id ?? "")}>未取得姓名</option>}
-          {people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}
+        <select aria-label={`问题负责人 ${index + 1}`} aria-describedby={ownerUnreadable ? `question-owner-note-${currentItem.item_id}` : undefined} disabled={locked} value={String(content.owner_id ?? "")} onChange={event => change("owner_id", event.target.value)}>
+          {!eligible.some(person => person.id === content.owner_id) && <option value={String(content.owner_id ?? "")}>{ownerUnreadable ? `${owner}（不能读此提案）` : "未取得姓名"}</option>}
+          {eligible.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}
         </select>
+        {ownerUnreadable && <small id={`question-owner-note-${currentItem.item_id}`} className={styles.cellNote}>该负责人不能读此提案，改派前先共享提案或另选负责人。</small>}
       </td>
       <td><input type="date" aria-label={`问题期限 ${index + 1}`} required disabled={locked} value={String(content.due_date ?? "")} onChange={event => change("due_date", event.target.value)} /></td>
       <td>
@@ -270,6 +279,7 @@ function QuestionTable(props: Props) {
   const table = useRef<HTMLTableSectionElement>(null);
   const focusAfter = useRef<number | "add" | null>(null);
   useLayoutEffect(() => {
+    if (busy) return;
     const target = focusAfter.current;
     focusAfter.current = null;
     if (target === "add") addButton.current?.focus();
@@ -278,8 +288,10 @@ function QuestionTable(props: Props) {
       const next = inputs?.[Math.min(target, inputs.length - 1)];
       if (next) next.focus(); else addButton.current?.focus();
     }
-  }, [items.length, newQuestions.length]);
+  }, [items.length, newQuestions.length, busy]);
   const updateNew = (key: string, values: Partial<NewQuestion>) => onNewQuestions?.(newQuestions.map(row => row.key === key ? { ...row, ...values } : row));
+  const eligible = questionOwners(people);
+  const hidden = people.length - eligible.length;
   const canAdd = editable && !!onNewQuestions && !!onCreateQuestion;
   return (
     <section className={styles.panel} aria-label="待决问题">
@@ -313,8 +325,9 @@ function QuestionTable(props: Props) {
                   <td>
                     <select aria-label={`新问题负责人 ${index + 1}`} disabled={busy} value={row.owner_id} onChange={event => updateNew(row.key, { owner_id: event.target.value })}>
                       <option value="">选择负责人</option>
-                      {people.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}
+                      {eligible.map(person => <option key={person.id} value={person.id}>{person.name}</option>)}
                     </select>
+                    {hidden > 0 && <small className={styles.cellNote}>只列能读此提案的 {eligible.length} 人</small>}
                   </td>
                   <td><input type="date" aria-label={`新问题期限 ${index + 1}`} required disabled={busy} value={row.due_date} onChange={event => updateNew(row.key, { due_date: event.target.value })} /></td>
                   <td>待答复</td>
@@ -345,7 +358,7 @@ function QuestionTable(props: Props) {
         </button>
       )}
       {editable && (items.length > 0 || newQuestions.length > 0) && (
-        <p className={styles.note}>状态与答复随“保存修订”一起保存；新增问题或修改问题、负责人、期限时，会预览一次新的责任安排，原记录保留。</p>
+        <p className={styles.note}>状态与答复随“保存修订”一起保存；新增问题或修改问题、负责人、期限时，会预览一次新的责任安排，原记录保留。{hidden > 0 && ` 负责人只列能读此提案的成员，另有 ${hidden} 位品类成员需先共享提案后才能指定。`}</p>
       )}
       {!items.length && !newQuestions.length && (
         <p className={styles.empty}>暂无待决问题{canAdd ? "，可直接添加，或与旁边的小Pai继续完善。" : "。"}</p>

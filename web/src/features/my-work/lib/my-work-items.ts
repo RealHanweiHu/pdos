@@ -8,7 +8,7 @@ import {
   testStartWorkbenchHref,
   type PersonalTestStartPromise,
 } from "./personal-test-start-promises";
-import type { ActivityRun, MyOpenItem } from "@/lib/portfolio-reads";
+import type { MyOpenItem } from "@/lib/portfolio-reads";
 
 export type WorkKind =
   | "decide"
@@ -19,6 +19,7 @@ export type WorkKind =
   | "risk"
   | "pai"
   | "commitment"
+  | "received"
   | "test";
 export const workKindNames: Record<WorkKind, string> = {
   decide: "待决定",
@@ -29,12 +30,15 @@ export const workKindNames: Record<WorkKind, string> = {
   risk: "风险",
   pai: "小Pai",
   commitment: "交付承诺",
+  received: "给我的承诺",
   test: "开测承诺",
 };
 export type WorkRow = {
   id: string;
   title: string;
   project: string;
+  /** Who promised whom, for commitment rows. */
+  party?: string;
   kind: WorkKind;
   state: string;
   due: string | null;
@@ -77,11 +81,11 @@ export function workDate(value: string | null, zone?: string): string | null {
     parts.find((item) => item.type === type)?.value;
   return `${part("year")}-${part("month")}-${part("day")}`;
 }
+/** 小Pai runs waiting on me are shown per run in 要我决定 (D78), not as rows here. */
 export function responsibilityRows(
   attention: PersonalAttentionItem[],
   tasks: PersonalWorkItem[],
   legacy: MyOpenItem[],
-  runs: ActivityRun[],
 ): WorkRow[] {
   // A task needing acceptance is one responsibility, even when two authorized projections include it.
   const attentionTasks = new Set(
@@ -152,18 +156,6 @@ export function responsibilityRows(
       target: { categoryId: item.categoryId, projectId: item.projectId },
     });
   }
-  for (const run of runs.filter((item) => item.status === "waiting_input"))
-    rows.push({
-      id: `run:${run.run_id}`,
-      title: run.goal.split(/\n|【当前页面/)[0],
-      project: run.categoryName || "个人对话",
-      kind: "pai",
-      state: "需查看",
-      due: null,
-      dateKind: "",
-      facts: [["待处理", "查看对话中的缺项、配置或执行结果。"]],
-      target: { runId: run.run_id, categoryId: run.categoryId },
-    });
   return sortWorkRows(rows);
 }
 export function taskRow(item: PersonalWorkItem): WorkRow {
@@ -204,6 +196,7 @@ export function commitmentRows(
               : "日期未知",
         due: workDate(c.promised_at, c.original_timezone),
         dateKind: "承诺",
+        party: `我 → ${item.recipient?.name ?? "接收人未记录"}`,
         facts: [
           ["接收人", item.recipient?.name ?? "尚未记录"],
           ["成果范围", c.outcome_keys.join("、")],
@@ -232,6 +225,7 @@ export function commitmentRows(
       }[item.timing],
       due: workDate(item.promise.occurred_at, item.promise.original_timezone),
       dateKind: "承诺",
+      party: "我 → 接收人未记录",
       facts: [
         ["承诺开测", originalTestStartTime(item.promise)],
         [
@@ -254,6 +248,36 @@ export function commitmentRows(
       target: { href: testStartWorkbenchHref(item) },
     });
   return sortWorkRows(rows);
+}
+const timingNames = { overdue: "期限已过", pending: "尚未到期", unknown: "日期未知" } as const;
+/** 别人承诺给我的 (P35, D38): the promisor's open commitments to me, newest facts only. */
+export function receivedRows(items: PersonalWorkItem[]): WorkRow[] {
+  return sortWorkRows(
+    items.flatMap((item) => {
+      const c = item.commitment;
+      if (!c) return [];
+      return [
+        {
+          id: `received:${c.id}`,
+          title: item.task.title,
+          project: item.project.name,
+          party: `${item.promisor?.name ?? "承诺人未取得姓名"} → 我`,
+          kind: "received",
+          state: timingNames[item.timing ?? "unknown"],
+          due: workDate(c.promised_at, c.original_timezone),
+          dateKind: "承诺",
+          facts: [
+            ["承诺人", item.promisor?.name ?? "未取得姓名"],
+            ["成果范围", c.outcome_keys.join("、")],
+            ["承诺原值", `${c.promised_at ?? "未知"} · ${c.original_timezone}`],
+            ["任务进展", stateNames[item.task.state]],
+            ["履行结论", "由你在项目中核对接收；聊天回复或任务状态不代表承诺已履行。"],
+          ],
+          target: { categoryId: item.category.id, projectId: item.project.id },
+        } as WorkRow,
+      ];
+    }),
+  );
 }
 export function sortWorkRows(rows: WorkRow[]) {
   return rows.sort(

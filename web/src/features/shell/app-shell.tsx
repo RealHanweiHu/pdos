@@ -18,7 +18,7 @@ import { ProjectSets } from "../projects/project-sets";
 import { KnowledgeIndex } from "@/features/knowledge/knowledge-index";
 import { PaiRail, type PaiContext } from "@/features/xiaopai/pai-rail";
 import { ObjectSearch } from "@/features/shell/object-search";
-import { countText, defaultHomeArea, readPendingCount, shellPreferences, type ShellPreferences } from "@/features/shell/lib/shell-preferences";
+import { bareEntry, countText, defaultHomeArea, homeWaitMs, readPendingCount, shellPreferences, type ShellPreferences } from "@/features/shell/lib/shell-preferences";
 import { preferencesSavedEvent } from "@/lib/personal-preferences";
 import styles from "./app-shell.module.css";
 
@@ -62,6 +62,8 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
   const [interfacePreferences, setInterfacePreferences] = useState<ShellPreferences | null>(null);
   const [pendingCount, setPendingCount] = useState<number | null>(null);
   const homeApplied = useRef(false);
+  // D341: a bare entry waits briefly for the saved home instead of flashing 我的工作 first.
+  const [homeReady, setHomeReady] = useState(false);
   const mobileDialog = useRef<HTMLDialogElement>(null);
   const mobileTrigger = useRef<HTMLButtonElement>(null);
   const searchControl = useRef<HTMLDivElement>(null);
@@ -129,21 +131,29 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
   useEffect(() => {
     if (!principalId) return;
     let active = true;
+    // Only a bare entry can be redirected; any named page shows at once.
+    if (documentMode || runPageId || !bareEntry(window.location.search)) homeApplied.current = true;
+    const settle = () => { homeApplied.current = true; if (active) setHomeReady(true); };
+    // A slow read shows the app default; a late answer then no longer moves the page.
+    const timer = homeApplied.current ? undefined : setTimeout(settle, homeWaitMs);
+    if (homeApplied.current) void Promise.resolve().then(settle);
     browserApi<unknown>("v1/personal/preferences").then(value => {
       if (!active) return;
       const preferences = shellPreferences(value);
       setInterfacePreferences(preferences);
-      if (homeApplied.current || documentMode || runPageId) return;
-      homeApplied.current = true;
+      if (homeApplied.current) return;
+      clearTimeout(timer);
       const home = defaultHomeArea(window.location.search, preferences);
-      if (!home) return;
-      const href = globalHref({ area: home, categoryId: "", projectId: "" });
-      window.history.replaceState(null, "", href);
-      setLocation(resolveGlobalLocation(href));
-    }).catch(() => { if (active) { homeApplied.current = true; setInterfacePreferences(shellPreferences(null)); } });
+      if (home) {
+        const href = globalHref({ area: home, categoryId: "", projectId: "" });
+        window.history.replaceState(null, "", href);
+        setLocation(resolveGlobalLocation(href));
+      }
+      settle();
+    }).catch(() => { if (active) { clearTimeout(timer); setInterfacePreferences(shellPreferences(null)); settle(); } });
     const saved = (event: Event) => setInterfacePreferences(shellPreferences((event as CustomEvent).detail));
     window.addEventListener(preferencesSavedEvent, saved);
-    return () => { active = false; window.removeEventListener(preferencesSavedEvent, saved); };
+    return () => { active = false; clearTimeout(timer); window.removeEventListener(preferencesSavedEvent, saved); };
   }, [principalId, documentMode, runPageId]);
   const reminders = !!principalId && !!interfacePreferences?.pending_reminders;
   useEffect(() => {
@@ -287,6 +297,7 @@ export function AppShell({ children, documentPage, runPage, localPreview = false
 
   let content: ReactNode;
   if (documentMode) content = children;
+  else if (!homeReady) content = <p role="status" className="workspace-empty">正在打开你的首页…</p>;
   else if (location.area === "work") content = <MyWork api={browserApi} session={session!} onOpenRun={openRun} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })} onOpenPai={() => setPaiOpen(true)} />;
   else if (location.area === "inbox") content = <Inbox api={browserApi} principalId={session!.principal_id} onOpenRun={openRun} onOpenProject={(categoryId, projectId) => navigate("cockpit", { categoryId, projectId })} onOpenTarget={pushAndApply}/>;
   else if (location.area === "pai") content = null;

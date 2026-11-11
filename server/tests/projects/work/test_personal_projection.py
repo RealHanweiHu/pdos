@@ -27,9 +27,12 @@ def head(ctx, queue="receive", ordinal=1, **changes):
         "verify": "submitted",
         "tasks": "accepted",
         "commitments": "in_progress",
+        "received": "in_progress",
     }[queue]
-    assignee = uuid4() if queue == "verify" else ctx.requester_id
-    recipient = ctx.requester_id if queue == "verify" else uuid4()
+    assignee = uuid4() if queue in {"verify", "received"} else ctx.requester_id
+    recipient = ctx.requester_id if queue in {"verify", "received"} else uuid4()
+    # "commitments": I promised; "received": someone else promised to me (D38).
+    promisor = uuid4() if queue == "received" else ctx.requester_id
     row = {f"task_{key}": value for key, value in binding.items()}
     row.update(
         task_id=version,
@@ -68,7 +71,7 @@ def head(ctx, queue="receive", ordinal=1, **changes):
         if prefix == "project":
             for key in ("product_id", "owner_id", "visibility"):
                 row[f"project_{key}"] = binding[key]
-    if queue == "commitments":
+    if queue in {"commitments", "received"}:
         commitment_id, series = UUID(int=200 - ordinal), uuid4()
         for key, value in binding.items():
             row[f"commitment_{key}"] = row[f"commitment_pointer_{key}"] = value
@@ -78,7 +81,7 @@ def head(ctx, queue="receive", ordinal=1, **changes):
             commitment_revision=2,
             commitment_task_id=stable,
             commitment_task_revision=3,
-            commitment_promisor_id=ctx.requester_id,
+            commitment_promisor_id=promisor,
             commitment_recipient_id=recipient,
             commitment_outcome_keys=["report"],
             commitment_promised_at=AT + timedelta(hours=1),
@@ -86,10 +89,11 @@ def head(ctx, queue="receive", ordinal=1, **changes):
             commitment_calendar_id=None,
             commitment_created_at=AT - timedelta(hours=1),
             commitment_pointer_id=uuid4(),
+            promisor_name="可读承诺人",
         )
         for key, value in {
             "task_id": stable,
-            "promisor_id": ctx.requester_id,
+            "promisor_id": promisor,
             "recipient_id": recipient,
             "series_id": series,
             "version_id": commitment_id,
@@ -185,12 +189,13 @@ def test_exact_dto_uses_stable_task_and_current_fact_refs(world):
                 "recorded_at": row["task_created_at"].isoformat(),
                 "commitment": None,
                 "timing": None,
+                "promisor": None,
             }
         ],
     }
 
 
-@pytest.mark.parametrize("queue", ["receive", "verify", "tasks", "commitments"])
+@pytest.mark.parametrize("queue", ["receive", "verify", "tasks", "commitments", "received"])
 def test_each_queue_has_its_actual_current_state_and_person_predicate(world, queue):
     world.rows = [head(world.ctx, queue)]
     result = read(world, queue)
@@ -198,8 +203,13 @@ def test_each_queue_has_its_actual_current_state_and_person_predicate(world, que
     records = projection._records(world.ctx, queue)
     sql = query_sql(records)
     assert str(world.ctx.requester_id) in sql
-    if queue == "commitments":
-        assert "work_commitment_versions.promisor_id =" in sql
+    if queue in {"commitments", "received"}:
+        side = "promisor_id" if queue == "commitments" else "recipient_id"
+        assert f"work_commitment_versions.{side} =" in sql
+        assert result["items"][0]["promisor"] == {
+            "id": str(world.rows[0]["commitment_promisor_id"]),
+            "name": "可读承诺人",
+        }
         assert "work_task_versions.state != 'completed'" not in sql
         assert result["items"][0]["id"] == str(world.rows[0]["commitment_id"])
         assert result["items"][0]["commitment"]["task_revision"] == 3
@@ -311,6 +321,11 @@ def test_commitment_current_chain_and_actual_promisor_cannot_drift(world):
     assert_invalid(world, "commitments")
     world.rows = [head(world.ctx, "commitments", commitment_promisor_id=uuid4())]
     assert_invalid(world, "commitments")
+    # D38: a promise to me must still name me as its recipient on both heads.
+    world.rows = [head(world.ctx, "received", commitment_recipient_id=uuid4())]
+    assert_invalid(world, "received")
+    world.rows = [head(world.ctx, "received", commitment_pointer_promisor_id=uuid4())]
+    assert_invalid(world, "received")
     world.rows = [
         head(
             world.ctx,

@@ -762,6 +762,23 @@ def create_app(
 
         return category_transaction(engine, ctx, preview)
 
+    from pdos_next.agent.kernel.candidate_package import CandidatePackage
+
+    @app.post("/v1/categories/{category_id}/agent-runs/{run_id}/candidates/confirm")
+    def candidate_package(run_id: UUID, data: CandidatePackage, ctx: Context = auth_dependency):
+        """D77: each item is its own command in its own transaction (see candidate_package)."""
+        from pdos_next.agent.kernel.candidate_package import confirm
+
+        def execute_one(item):
+            def apply_command(s):
+                s.info["model_configuration_secrets"] = kernel_bootstrap.ports.secrets
+                bind_session(s, embedding_host)
+                return execute(s, ctx, item, synthetic_mode=synthetic_mode)
+
+            return category_transaction(engine, ctx, apply_command)
+
+        return confirm(engine, ctx, run_id, data, execute_one)
+
     @app.get("/v1/categories/{category_id}/model-configuration")
     def model_configuration(ctx: Context = auth_dependency):
         from pdos_next.agent.model_configuration.commands import reading

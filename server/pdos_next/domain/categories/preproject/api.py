@@ -5,7 +5,7 @@ from typing import Annotated, Literal
 from uuid import UUID
 
 from fastapi import Query
-from sqlalchemy import select, text
+from sqlalchemy import func, select, text
 
 from pdos_next.core.database import tenant_session
 from pdos_next.core.service import Context, require_access
@@ -243,6 +243,16 @@ def register_routes(app, engine, auth_dependency):
             if cursor:
                 query = query.where(Proposal.id > cursor)
             rows = list(s.scalars(query))
+            # 我的工作 · 继续提案 shows 入口 and 更新 (D38); the latest revision is the update.
+            from .models import ProposalRevision
+
+            updated = dict(
+                s.execute(
+                    select(ProposalRevision.proposal_id, func.max(ProposalRevision.created_at))
+                    .where(ProposalRevision.proposal_id.in_([p.id for p in rows[:page_size]]))
+                    .group_by(ProposalRevision.proposal_id)
+                ).all()
+            ) if rows else {}
             return {
                 "items": [
                     {
@@ -252,6 +262,9 @@ def register_routes(app, engine, auth_dependency):
                         "revision": p.revision,
                         "owner_id": str(p.owner_id),
                         "visibility": p.effective_visibility,
+                        "entry_kind": p.entry_kind,
+                        "updated_at": max(p.created_at, updated.get(p.id) or p.created_at)
+                        .isoformat(),
                     }
                     for p in rows[:page_size]
                 ],
@@ -315,8 +328,11 @@ def register_routes(app, engine, auth_dependency):
             require_access(s, ctx, None)
             row = proposal(s, ctx, proposal_id)
             pilot_self_review = is_pilot(s, ctx.tenant_id)
+            # D337: the same audience rule that `proposal.question.create` enforces,
+            # so the page can list only eligible question owners. Read-only.
+            audience = func.m3_audience_member(row.tenant_id, row.category_id, row.id, Principal.id)
             query = (
-                select(Principal, Grant)
+                select(Principal, Grant, audience)
                 .join(
                     Grant,
                     (Grant.tenant_id == Principal.tenant_id) & (Grant.principal_id == Principal.id),
@@ -336,8 +352,9 @@ def register_routes(app, engine, auth_dependency):
                         "can_write": grant.can_write,
                         "reviewer_eligible": grant.product_manager
                         and (person.id != row.owner_id or pilot_self_review),
+                        "can_read_proposal": bool(readable),
                     }
-                    for person, grant in s.execute(query)
+                    for person, grant, readable in s.execute(query)
                 ]
             }
 

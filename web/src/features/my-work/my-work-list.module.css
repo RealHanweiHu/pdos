@@ -185,3 +185,9 @@
 .row > summary > svg:last-child { color:var(--text-subtle); }
 @media(max-width:900px) { .row > summary { grid-template-columns:18px minmax(0,1fr) 90px 70px 12px; gap:8px; } .row > summary > .muted { display:none; } }
 @media(max-width:600px) { .row > summary { grid-template-columns:18px minmax(0,1fr) 70px 12px; } .state { display:none; } .date { grid-column:3; grid-row:1; } .row > summary > svg:last-child { grid-column:4; } .toolbar > span { width:auto; } .toolbar > small { display:none; } .filters { margin-left:auto; } }
+
+/* P35 groups inside 待我处理 (D38). */
+.group { min-width:0; margin-top:14px; }
+.group:first-of-type { margin-top:0; }
+.groupHeading { display:flex; align-items:center; gap:6px; padding:6px 0; color:var(--text-subtle); font-size:12px; font-weight:600; }
+.groupHeading > span { font-family:var(--font-geist-mono),monospace; font-weight:400; }
