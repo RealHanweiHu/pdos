@@ -1,0 +1,63 @@
+/* D221 Settings → 工作日历; tokens and density follow 账户与邀请. */
+.section { display: grid; gap: 16px; min-width: 0; }
+.head h2 { margin: 0; }
+.head p { margin: 4px 0 0; color: var(--text-subtle); font-size: 11px; line-height: 1.65; max-width: 72ch; }
+.basis { display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; }
+.basis svg { flex: none; color: var(--primary); }
+.basis[data-basis=weekdays_estimate] { border-color: var(--primary-border); background: var(--primary-soft); }
+.alert { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; color: var(--destructive); font-size: 12px; }
+.muted { margin: 0; color: var(--text-subtle); font-size: 12px; line-height: 1.6; }
+.picker { display: flex; flex-wrap: wrap; align-items: center; gap: 4px; }
+.picker > button:not([data-slot]) { min-height: 30px; padding: 6px 10px; border-radius: 6px; color: var(--text-subtle); cursor: pointer; }
+.picker > button[aria-pressed=true], .picker > button:not([data-slot]):hover { background: var(--muted); color: var(--foreground); }
+.picker > button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+.view { display: grid; gap: 16px; min-width: 0; }
+.facts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 24px; margin: 0; }
+.facts div { min-width: 0; }
+.facts dt { color: var(--text-subtle); font-size: 11px; }
+.facts dd { margin: 2px 0 0; font-size: 12px; overflow-wrap: anywhere; }
+.tableWrap { overflow-x: auto; min-width: 0; }
+.table { width: 100%; min-width: 480px; border-collapse: collapse; text-align: left; }
+.table th { padding: 8px 12px 8px 0; font-size: 11px; font-weight: 400; color: var(--text-subtle); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.table td { padding: 10px 12px 10px 0; border-bottom: 1px solid var(--border); font-size: 12px; vertical-align: middle; }
+.dates { white-space: nowrap; font-variant-numeric: tabular-nums; }
+.badge { display: inline-flex; align-items: center; min-height: 20px; padding: 0 7px; border-radius: 999px; background: var(--muted); color: var(--text-subtle); font-size: 11px; white-space: nowrap; }
+.badge[data-kind=shutdown] { background: color-mix(in oklch, var(--destructive), transparent 90%); color: var(--destructive); }
+.badge[data-kind=holiday] { background: var(--primary-soft); color: var(--primary); }
+.badge[data-kind=makeup_workday] { background: color-mix(in oklch, #16a34a, transparent 88%); color: color-mix(in oklch, #16a34a, var(--foreground) 25%); }
+.actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; }
+.editor { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; min-width: 0; }
+.editor h3 { margin: 0; }
+.field { display: grid; gap: 4px; margin: 0; font-size: 11px; color: var(--text-subtle); }
+.field input { min-height: 32px; font-size: 12px; color: var(--foreground); }
+.weekdays { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0; padding: 0; border: 0; }
+.weekdays legend { margin-bottom: 6px; font-size: 11px; color: var(--text-subtle); }
+.weekdays label { display: inline-flex; align-items: center; gap: 4px; margin: 0; font-size: 12px; color: var(--foreground); white-space: nowrap; }
+.weekdays input { width: auto; min-height: 0; margin: 0; }
+.entries { display: grid; gap: 8px; min-width: 0; }
+.entriesHead { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 11px; color: var(--text-subtle); }
+.entryRow { display: grid; grid-template-columns: 112px 140px 140px minmax(0, 1fr) auto; gap: 8px; align-items: end; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.entryRow label { display: grid; gap: 4px; margin: 0; font-size: 11px; color: var(--text-subtle); min-width: 0; }
+.entryRow :is(input, select) { min-height: 32px; font-size: 12px; color: var(--foreground); }
+.problems { margin: 0; padding-left: 18px; color: var(--destructive); font-size: 12px; line-height: 1.6; }
+.tryIt { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px; border-radius: 8px; background: var(--muted); font-size: 12px; }
+.tryIt > span:first-child { color: var(--text-subtle); font-size: 11px; }
+.tryIt label { display: inline-flex; align-items: center; gap: 6px; margin: 0; font-size: 12px; }
+.tryIt input { min-height: 30px; font-size: 12px; }
+.tryIt input[type=number] { width: 72px; }
+.tryIt output { flex-basis: 100%; font-weight: 500; }
+.zone { color: var(--text-subtle); font-size: 11px; }
+.history { display: grid; gap: 8px; justify-items: start; }
+.versions { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; width: 100%; }
+.versions li { display: grid; gap: 2px; padding-bottom: 8px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.versions li span { color: var(--text-subtle); font-size: 11px; overflow-wrap: anywhere; }
+@media (max-width: 720px) {
+  .facts { grid-template-columns: 1fr; }
+  .entryRow { grid-template-columns: 1fr 1fr; grid-template-areas: "kind remove" "start end" "label label"; }
+  .entryRow > :nth-child(1) { grid-area: kind; }
+  .entryRow > :nth-child(2) { grid-area: start; }
+  .entryRow > :nth-child(3) { grid-area: end; }
+  .entryRow > :nth-child(4) { grid-area: label; }
+  .entryRow > :nth-child(5) { grid-area: remove; justify-self: end; }
+}
+@media (pointer: coarse) { .picker > button, .entryRow :is(input, select), .field input, .tryIt input { min-height: 44px; } }

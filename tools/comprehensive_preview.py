@@ -53,9 +53,10 @@ def main():
             raise RuntimeError("Worker requires an explicit model runtime configuration")
         import asyncio
 
+        from pdos_next.workflows.shutdown import exit_after
         from pdos_next.workflows.worker import main as run_worker
 
-        asyncio.run(run_worker())
+        exit_after(asyncio.run(run_worker()))
         return
     if args.action == "api":
         if not enabled:

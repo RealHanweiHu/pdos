@@ -1333,3 +1333,6 @@ import pdos_next.domain.exports.models  # noqa: E402,F401
 # P34 discussions, comments and notifications (D37 ⑤).
 import pdos_next.domain.projects.discussions.models  # noqa: E402,F401
 import pdos_next.domain.my_work.notifications.models  # noqa: E402,F401
+
+# D221 tenant working calendars (administrator-maintained, append-only versions).
+import pdos_next.domain.work_calendar.models  # noqa: E402,F401

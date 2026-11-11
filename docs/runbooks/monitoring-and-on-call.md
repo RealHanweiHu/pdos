@@ -8,8 +8,9 @@
 
 | 信号 | 指标来源 | 告警条件（建议起步值〔你〕） | 级别 |
 |---|---|---|---|
-| 探活 | 探针请求 API `GET /health` 和 Web 登录页 | 连续 3 次失败（每分钟一次，约 3 分钟） | 严重 |
+| 探活 | 探针请求 API `GET /health`、Web 登录页和 Worker 的指标端点（第 2.1 节） | 连续 3 次失败（每分钟一次，约 3 分钟） | 严重 |
 | 错误率 | API 进程的 `GET /ops/metrics`：按状态类别累计的响应数；探针取两次之差 | 两次之间至少 20 个请求，且 5xx 占比 ≥ 5% | 严重 |
+| Activity 失败率 | Worker 进程的 `/ops/metrics`：按结果累计的 Activity 次数；探针取两次之差 | 两次之间至少 5 次结束，且失败 ≥ 20%（停机取消不算失败） | 警告 |
 | 队列积压：事件外发 | 数据库函数 `ops_health_counters`（迁移 `s0_0867`）：每个租户未投递事件数、最早一条的等待秒数 | 最早一条等待 ≥ 300 秒，或未投递 ≥ 200 条 | 警告 |
 | 队列积压：Temporal | Temporal `DescribeTaskQueue`：`pdos-next-domain-v1` 的工作流、Activity 两类任务的取任务 Worker 数、积压数、最早任务等待时间 | 没有 Worker 在取任务（严重）；积压 ≥ 100 个，或最早任务等待 ≥ 300 秒（警告） | 严重 / 警告 |
 | 模型失败率 | 同一函数：最近 15 分钟小Pai模型调用中失败和结果未知的比例；超过 10 分钟仍未结束的调用数 | 至少 5 次调用且失败或未知 ≥ 20%；或有 1 个调用超过 10 分钟未结束 | 警告 |
@@ -27,6 +28,17 @@
 - 默认关闭。设置环境变量 `PDOS_METRICS_TOKEN`（至少 32 个字符）后开启，请求要带 `Authorization: Bearer <令牌>`，错误令牌返回 401。
 - 不在 OpenAPI 文档里，Web 的 BFF 不转发它；只在内网给探针读（见发布手册第 6 节）。
 - 实现在 `server/pdos_next/ops/metrics.py`，只加了计数中间件，不改任何业务逻辑。
+
+### 2.1 Worker 指标端点（D349）
+
+Worker 进程自己开一个只答 `GET /ops/metrics` 的监听，口径与上面相同：Prometheus 文本格式、同一个 `PDOS_METRICS_TOKEN` 作 Bearer 令牌、不带 Activity 名、工作流、用户、租户标签。
+
+- 没有令牌（或不足 32 个字符）时**不开监听**，端口不存在；有令牌时监听 `PDOS_WORKER_METRICS_ADDRESS`（默认 `127.0.0.1:9464`）。部署在容器里时改成内网地址，不对公网开放。
+- 错误令牌返回 401，其他路径和方法返回 404。
+- 内容：`pdos_up`、`pdos_process_start_time_seconds`、`pdos_database_up`（应用角色 `SELECT 1`）、`pdos_worker_stopping`（停机中为 1，见[发布手册](release-and-rollback.md)第 4 节第 2 步）、`pdos_worker_activity_slots`（并发上限）、`pdos_worker_activities_running`、`pdos_worker_activities_total{outcome="completed|failed|cancelled"}`、Activity 耗时直方图、`pdos_worker_discovery_errors_total`（投递循环里各发现步骤失败的轮数）。
+- 计数由 Temporal 拦截器完成，不改任何 Activity。“失败”按每次尝试计；Temporal 重试后成功的，前一次仍记一次失败。
+- 探针配置里填 `targets.worker_metrics_url` 后才读；Worker 没有别的端点，取不到就记一次 Worker 探活失败。
+- 实现在 `server/pdos_next/ops/worker_metrics.py`。
 
 ## 3. 探针
 
@@ -72,6 +84,8 @@
 |---|---|---|
 | `liveness:api` / `liveness:web` | 进程是否在、最近一次发布、主机资源 | 进程退出、发布中、端口或证书问题 |
 | `error_rate:api` | API 日志里 5xx 的接口和报错 | 数据库不可用（同时看 `pdos_database_up`）、新版本缺陷（按发布手册判断是否回滚） |
+| `liveness:worker` | Worker 进程是否在；`pdos_worker_stopping` 是否为 1 | Worker 退出或正在停机；令牌或监听地址改了 |
+| `activity_failure:worker` | Worker 日志里失败的 Activity 和报错 | Activity 依赖不可用（数据库、扫描器、模型服务商）；新版本缺陷 |
 | `backlog:pollers:*` | Worker 进程是否在、能否连上 Temporal | Worker 退出或卡住；发布后没启动 Worker |
 | `backlog:temporal_*` | Worker 日志里的 Activity 报错和耗时 | Activity 依赖不可用、并发不够（`PDOS_WORKER_ACTIVITY_THREADS`） |
 | `backlog:outbox_*` | Worker 投递循环的日志 | Worker 停了、调度角色连不上数据库、某个事件反复失败 |
@@ -82,6 +96,5 @@
 
 ## 7. 已知缺口
 
-- D349：Worker 进程本身没有指标端点。Activity 失败只能从 Temporal 队列积压和模型失败率间接看到；需要时用 Temporal SDK 自带的 Prometheus 输出补上。
 - D350：主机、磁盘、RDS 指标和云监控告警随 D210。
 - 阈值是起步建议，试点两周后按实际数据调整〔你〕。
