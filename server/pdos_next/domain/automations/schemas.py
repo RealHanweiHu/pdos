@@ -126,6 +126,9 @@ class AutomationSpec(DTO):
     allow_network: Literal[False] = False
     mcp_tools: list[str] = Field(default_factory=list, max_length=0)
     cross_object_write: Literal[False] = False
+    # A server-owned rule template (templates.py). Only the status-update cadence is
+    # instantiated as a rule; the deterministic follow-up templates need no rule row.
+    template: Literal["status_update_draft"] | None = None
 
     @property
     def walletless_summary(self):
@@ -137,6 +140,8 @@ class AutomationSpec(DTO):
         # An omitted new selection cannot change any installed rule's digest.
         if value.get("personal_summary") is None:
             value.pop("personal_summary", None)
+        if value.get("template") is None:
+            value.pop("template", None)
         # Preserve the canonical request digest of installed manual rules and
         # their original idempotency keys. New optional defaults add no authority.
         if self.trigger_kind == "manual":
@@ -199,6 +204,23 @@ class AutomationSpec(DTO):
             object.__setattr__(self, "trigger_config", parsed.model_dump(mode="json"))
         if self.trigger_kind == "relative_milestone" and self.product_id is None:
             raise ValueError("Relative clocks require the actual product scope")
+        project = (
+            self.trigger_config.get("project_id") if self.trigger_kind == "schedule" else None
+        )
+        if self.template == "status_update_draft":
+            # P65: 小Pai drafts one T1 candidate for the project owner on each slot.
+            if (
+                self.trigger_kind != "schedule"
+                or project is None
+                or self.product_id is None
+                or self.personal_summary is not None
+                or "work_management" not in {ref.key for ref in self.skill_keys}
+            ):
+                raise ValueError(
+                    "A status-update cadence is a project schedule with the work skill"
+                )
+        elif project is not None:
+            raise ValueError("Only the status-update cadence binds a schedule to a project")
         return self
 
 

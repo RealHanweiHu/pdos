@@ -121,8 +121,9 @@ def run_binding(s, run, *, for_execution=True):
         or run.token_limit != spec.token_limit
         or run.proposal_id is not None
         or getattr(run, "project_id", None) is not None and (
-            spec.trigger_kind != "relative_milestone"
-            or str(run.project_id) != str(spec.trigger_config["project_id"])
+            # A relative milestone or the status-update cadence (P65) binds a project.
+            spec.trigger_kind not in {"relative_milestone", "schedule"}
+            or str(run.project_id) != str(spec.trigger_config.get("project_id"))
         )
     ):
         raise DomainError("FORBIDDEN_SCOPE", "运行超出固定服务授权。", 403)
@@ -351,6 +352,11 @@ def tick(engine, ref):
                 raise DomainError("CANCELLED_RUN", "MAX_RUNS")
             if grant.expires_at is not None:
                 wake_at = min(wake_at, grant.expires_at)
+            if getattr(spec, "template", None) is not None:
+                # P57/P65: rechecked on every wake; a former project owner's cadence stops.
+                from .templates import check_status_update
+
+                check_status_update(s, ctx, spec, enabled=False)
             # A fixed recipient's fulfilled promise stops even with an unknown
             # date or while a separate explicit Task condition is waiting.
             relative = (

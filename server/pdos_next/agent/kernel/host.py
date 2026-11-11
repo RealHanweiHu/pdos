@@ -469,7 +469,7 @@ class BoundHost:
         check_attempt(self.superseded)
         from pdos_next.domain.automations.runtime import guard_tool
 
-        guard_tool(self.store, scope, writing=True)
+        guard_tool(self.store, scope, getattr(spec, "name", None), writing=True, preparing=True)
         from pdos_next.integrations.dingtalk.guards import guard_writing
 
         guard_writing(self.store, scope)

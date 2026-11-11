@@ -128,11 +128,11 @@
 
 W3b · 协作、通知与项目管理
 - D70 ✅ 11-02 随 D150 定掉：承接时默认一并承诺，后台分开记录，见[P58](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p58)。实施归 W6。 原记录：〔采纳→W6〕承接即承诺：受派人一键“承接并承诺这个日期”，或者提出另一个日期。后台仍分开记录，只是合并展示（a28e836c T2；v1.1 §03.3）。
-- D71 ✅ 采纳→W9，并入 D190：未回复和未推进分别计时（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）未回复自动升级：1 个工作日没有回复，就给负责人一条注意项。用确定性规则，不经模型（拍板表 B1②；对标 Linear Asks）。
+- D71 ✅ 11-09 已实现（[见 W9 末](#automation-templates-20261109)）。采纳→W9，并入 D190：未回复和未推进分别计时（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）未回复自动升级：1 个工作日没有回复，就给负责人一条注意项。用确定性规则，不经模型（拍板表 B1②；对标 Linear Asks）。
 - D72 〔延后：D114 上线后〕（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）待分拣来源标签（B1④；对标 Linear Triage）。
 - D73 ✅ 采纳→W6⑤（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）收件箱加“稍后提醒”。目前只有已读、归档、关注（驾驶舱稿 §3.1；对标 Linear）。
 - D74 ✅ 采纳→W6⑤，定为 SSE，断线回退 30 秒轮询（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）定下聊天和通知的实时投递方式（轮询还是 SSE），要在 P34 讨论上线前定。目前收件箱前端没有推送（UI 候选 §5.1）。
-- D75 ✅ 采纳→W6，负责人与范围按 P57，状态更新起草按 P65（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）自动化规则模板的最小版：承诺到期提醒、外部等待升级、状态更新起草（G-28、C8；对标 Linear Loops、Notion Custom Agents）。
+- D75 ✅ 11-09 已实现最小版（[见 W9 末](#automation-templates-20261109)）。采纳→W6，负责人与范围按 P57，状态更新起草按 P65（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）自动化规则模板的最小版：承诺到期提醒、外部等待升级、状态更新起草（G-28、C8；对标 Linear Loops、Notion Custom Agents）。
 - D76 ✅ 采纳→W6⑦（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）跨项目对比改按出口成果计算。P33 之后各项目的任务不同，按任务比没有意义（NPI 稿 §12）。
 - D77 ✅ 采纳→W7、W8（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）同一运行产生的候选整包确认，减轻审批疲劳（B7；对标 Asana、Linear）。
 - D78 ✅ 采纳→W7，放在“要我决定”内按运行聚合（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）定下待确认候选和待答问题放在哪里，深链时预选版本（B8、G-10）。
@@ -228,7 +228,7 @@ W3b · 早期想法（10-08 之前）：丢失或口径变窄，需要定补回�
 - D187 ✅ 补回→W8：产品方法技能包与实验设计技能包（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）方法技能：SWOT、PESTLE、五力、安索夫（你当时说“四项全借”），以及确认稿 C3 写明的实验设计技能包。现有 18 个技能包里都没有。
 - D188 ✅ 并入 D93 一起采纳（11-04，[P79](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p79)）上市准备：卖点证据与销售资料，宣传口径要与实测能力一致（PDOS 产品空间.pdf p1）。
 - D189 ✅ 补成只读视图→W7：品类矩阵与路线图（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）产品家族、矩阵与路线图（产品空间.pdf p4、原 N6-04）。v1.1 §01.5 仍写产品经理负责“产品路线”，全文却没有路线图。（11-02 补：原工程 `product_matrix` 产品矩阵解释未承接，并入本条，见[34 项对照](../docs/reports/evidence/debt-consolidation-20261101/shadow-capabilities-mapping.md)。）
-- D190 ✅ 并入 D71 一起采纳（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）“未推进”也要升级：“收到”不算推进，未回复和未推进分别计时（DC-12 Q10/Q14，已批准）。
+- D190 ✅ 11-09 随 D71 实现（[见 W9 末](#automation-templates-20261109)）。并入 D71 一起采纳（11-04，[P77](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p77)）“未推进”也要升级：“收到”不算推进，未回复和未推进分别计时（DC-12 Q10/Q14，已批准）。
 - D191 ✅ 补回：纪律进 §09.5 与 D218，原指标进试点报表，真人走查进 D218（11-04，[P82](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p82)）指标纪律与原业务指标：
   - 纪律：阈值先冻结，看到结果后不下调；分母为 0 记 N/A；主动时间要计入审核和纠错；
   - 原指标：兑现率；Issue 重开与复发；齐套与快照新鲜度；员工价值按岗位分场景；
@@ -802,6 +802,33 @@ W3c · 想法已变但没有记录
 - D281 〔你〕隐式元数据（自定义文档属性 `AIGC`，字段名照 GB 45438-2025 文件元数据要素）是否满足合规要求，未做合规核对。（11-08 用户已确认导出按读者本人 READ 办理、不走 T2，原第二点关闭；所有导出都带显式加隐式标识。）
 - D282 BOM 版本差异的页面视图（D98）仍未做；本次只有导出。差异计算暂放在 `domain/exports/views.py`，D98 落地时移到配置领域，由页面和导出共用。
 - D283 导出审计只能由导出人本人和租户管理员经数据库策略读取，没有查看页面或接口；需要审计查看时再补（管理员页）。
+
+<a id="automation-templates-20261109"></a>
+- D71 + D190、D75、W6 ⑦ 状态更新周期 ✅ 11-09 自动化规则模板最小版（worktree `suspicious-babbage-15fcbf`，分支 `claude/suspicious-babbage-15fcbf`，本地提交未推送，[证据](../docs/reports/evidence/automation-templates-20261109/result.md)）。用户 11-09 定 [P115](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p115)（跟进规则对每个项目默认生效）、[P116](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p116)（状态更新起草的目标文本、缺失判定与周期归属）。
+  - 可用能力：
+    - 四条确定性跟进规则（分派未回复、承接未推进、承诺到期提醒、外部等待升级）对每个项目默认生效。
+    - 规则负责人和接收人是项目负责人；结果是“要我决定”里的只读注意项，零模型。
+    - 未回复与未推进分别计时，都是 1 个工作日（按周一至周五估算并标注）；事情一有进展注意项即消失；不给负责人自己升级。
+    - 项目负责人可在“设置 · 自动化规则”选“项目状态更新起草”，为本人负责的项目设一个周期（每项目一条），到点由小Pai 经 Temporal→LangGraph 起草，只准备 `work.status_update.create` 一种 T1 候选，本人确认后具名发布。
+    - 起草后 1 个工作日未发布显示“状态更新缺失”；周期时间与缺失状态对项目可见者开放（`GET …/project-work/status-cadence`），规则本身只有负责人可读。
+    - 模板目录 `GET /v1/categories/{c}/automation-templates`。
+  - 验证：
+    - 纯函数测试 421 个通过（含 `test_personal_attention` 一条按新设计更新的断言）。
+    - 受影响 PG 范围（attention_pg、automations/pg、work_pg、external_wait_pg）首轮 56 通过、2 跳过、5 失败；5 个失败都是缺检查点库的环境问题，补检查点库后两个摘要文件 12 个全部通过。其中新增 PG 用例 5 个。
+    - 迁移 `s0_0905`、`s0_0906` 升降往返通过；合同重导出后校验通过。
+    - 前端 tsc、eslint 通过；automation 相关 node 测试 53 个、全部 BFF 路由测试 277 个通过。
+    - 浏览器走查：负责人“我的工作”4 条升级，亮色、暗色与 375px 暗色；设置页选“项目状态更新起草”、选项目、预填与保存草稿（暗色）。走查中发现两个新接口不在 BFF 白名单（404），已修并补测试。页面上“预览启用”返回 401，此后预览会话整体失效，同一 token 直连 API 仍正常，判断为开发模式本地会话问题，未追查；激活由 PG 覆盖，设置页 375px 未截图。
+  - 迁移：占位号 `s0_0905`（down `s0_0869`）、`s0_0906`，**集成时按真实 head 重排**（11-10 第五轮集成改为 `s0_0871`、`s0_0872`）。`s0_0906` 先用 SHA-256 核对 `automation_service_start`、`assert_automation_service_run` 仍是 `s0_0840` 原文，别的分支改过这两条函数时须重新生成 `schema_s0_0906.py`。
+  - 冲突风险：`my_work/attention.py` 加两个数据源（W7）；`agent/kernel/host.py` 一行（W6 ⑥、W8）；`contracts/openapi.json` 整份导出。
+  - 余项：D440–D447。
+- D440 跟进规则参数固定为 1 个工作日，不能按项目关闭或调参（P115 定“以后再按 B 补”）。
+- D441 跟进升级只进注意项，不推送收件箱：通知管线的 SQL 丢弃小Pai 身份的非分派类通知。等 W6 ⑥ 的“小Pai 主动提及·自动化例外”，集成时处理。
+- D442 周期起草的候选进“要我决定”依赖 W7 D78（按运行聚合候选）；现在候选只在规则的运行记录里，负责人从规则详情打开原运行确认。
+- D443 任务两个计时的时区暂用常量 `Asia/Shanghai`（任务本身不带时区），承诺和外部等待用各自记录的时区。租户工作日历（D221）接通后，`work_weekday_add` 与 `add_weekdays` 一起换成日历。
+- D444 “状态更新缺失”只出了接口；概览、项目列表、管理者驾驶舱的展示归 W6 ⑦。
+- D445 受理后的小Pai 运行实际准备出状态更新候选未端到端跑过（需脚本模型夹具，真实模型回归要授权）；PG 只验证到受理绑定项目，单元测试验证守卫只放开这一种候选。
+- D446 承诺到期提醒只给项目负责人；承诺人本人的到期提示不在四类分诊里，需随 W7 D38 在“承诺”页显示到期状态。
+- D447 周期设置用通用规则表单，首次时点须手填含时区的 ISO 时间，没有“每周几、几点”的选择器。
 
 **W10 阶段验收检查点（验证欠账；集中做，放在 W6–W9 之后）**
 - D50 整仓回归：S0 之后没跑过（5603 项基于 s0_0728，现在 head 是 s0_0854）。23 项修复要在本分支的环境里复跑，并跑 make check。

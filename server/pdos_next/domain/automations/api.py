@@ -32,6 +32,20 @@ def register_routes(app, engine, auth_dependency, ports):
         with transaction(ctx, reading=True) as s:
             return workspace(s, ctx)
 
+    @app.get("/v1/categories/{category_id}/automation-templates")
+    def templates(request: Request, ctx: Context = auth_dependency):
+        """D75: the fixed minimal templates; reading them grants and starts nothing."""
+        from pdos_next.core.service import require_access
+        from pdos_next.domain.categories.preproject.access import human
+
+        from .templates import catalog
+
+        _query(request, set())
+        with transaction(ctx, reading=True) as s:
+            require_access(s, ctx, None)
+            human(s, ctx)
+            return catalog()
+
     @app.get("/v1/categories/{category_id}/automation-rules/{rule_id}")
     def rule(request: Request, rule_id: UUID, ctx: Context = auth_dependency):
         from .service import detail
