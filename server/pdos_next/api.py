@@ -447,6 +447,10 @@ def create_app(
     from pdos_next.domain.projects.team.api import register_routes as register_project_team
 
     register_project_team(app, engine, auth_dependency)
+    # Read-only single-project overview and manager cockpit (D37 ⑦).
+    from pdos_next.domain.projects.cockpit.api import register_routes as register_cockpit
+
+    register_cockpit(app, engine, auth_dependency)
     # P34 discussions, comments, notifications and live delivery (D37 ⑤).
     from pdos_next.domain.my_work.notifications.api import register_routes as register_notes
     from pdos_next.domain.projects.discussions.api import register_routes as register_discussions
