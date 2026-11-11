@@ -5668,3 +5668,13 @@ COVERED_COLUMNS.update({
     "bom_lines": (*COVERED_COLUMNS["bom_lines"], "reference_designators", "alternates"),
     "bom_revisions": (*COVERED_COLUMNS["bom_revisions"], "import_basis"),
 })
+
+# Tenant working calendars (D221, P117): tenant configuration like the accounts above
+# (P78). Versions are append-only and reference no original.
+COVERED_COLUMNS.update({
+    "work_calendars": ("kind", "name", "created_by", "id", "tenant_id", "created_at"),
+    "work_calendar_versions": (
+        "calendar_id", "revision", "timezone", "working_weekdays", "entries", "reason",
+        "author_id", "request_key", "request_sha256", "id", "tenant_id", "created_at",
+    ),
+})
