@@ -1670,8 +1670,8 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   6. AT-17 仍在 S4 检查点验收，命令在 S2 建设，不改合同阶段。
 - 不改变：寿命与保养留在 ERP/MES（D97）；准备度只按规则给结论，不由分数放行；供方只记外部标识，不建供应商实体（P87 第 9 项）；AI 不执行 T2（DC-11）。
 - 补充确认（305-2，用户 2026-11-09 选 A，原话“给处置加接受/拒绝字段 (Recommended)”）：拍板单把具名处置写成“结论明确（接受或拒绝）”与代码不符。改为给 `test.disposition.decide` 加一个可选的“处置结论：接受/拒绝”，只在该测试含试模样件时必填；模具验收读这个字段：接受记为已验收，拒绝记为未通过，没有处置记为未知。其他测试的处置行为不变。
-- 待定（D317）：305-3 与 305-4 在只有制造职责的人发起试模时冲突——同确认生成的验证请求复用 `verification.request.create` 的校验，只认工程或品质。已请用户选择（11-10）。
-- 实施：D306 已实现（`domain/manufacturing/fixture_acceptance/`，准备度接入 `builds/operational_facts/service.py` 的 `_resource_report`，迁移占位 `s0_0872`；测试 `tests/manufacturing/test_fixture_acceptance_pg.py`）。D305 未实现：第 2 项依赖的“具名处置判接受/判拒绝”在代码中不存在（`test.disposition.decide` 只记文字结论），已请用户补选，见欠债总表 D317。
+- 补充确认（305-3 与 305-4 冲突，用户 2026-11-10 选 A，原话“试模带出的请求按试模职责校验 (Recommended)”）：由 `npi.tooltrial.create` 在同一次确认里带出的验证请求，按试模的职责（工程或制造）校验，请求的其余结构与校验不变；单独新建 `verification.request.create` 仍只认工程或品质。共享代码中“按发起命令校验职责”的入口只对试模这一个调用方开放。
+- 实施：D306 已实现（`domain/manufacturing/fixture_acceptance/`，准备度接入 `builds/operational_facts/service.py` 的 `_resource_report`，迁移占位 `s0_0872`；测试 `tests/manufacturing/test_fixture_acceptance_pg.py`）。D305 按两条补充确认实现（2026-11-10）：`domain/manufacturing/tool_trials/`（模具与试模两条版本链，同一张公共回执；迁移占位 `s0_0877`）；试模带出的请求走 `domain/verification/preparation/service.py` 末尾只对 `npi.tooltrial.create` 开放的入口（`trial_request_review` / `create_trial_request`），单独新建请求的职责不变；处置结论字段在 `verification/results/schemas.py` 的 `DispositionPayload.outcome`，请求来自试模而未填时拒绝；准备度的模具项在 `_resource_report` 读最近一次试模的具名处置。测试：`tests/manufacturing/test_tool_trials_pg.py`（含“制造人员发起试模成功带出请求”“制造人员单独新建验证请求仍被拒”）、`test_tool_trials_rules.py`、`tests/verification/results/test_disposition_outcome_pg.py`。
 - 判据：首次试模同时产生模具记录第 1 版和一条验证请求，第二次试模引用同一模具；未处置时准备度的模具项为未知，具名处置接受或拒绝后分别变为已验收或未通过；非工程、制造角色发起被拒；治具接受、拒绝、撤销各成一版并进入准备度，非制造角色、AI 身份办理被拒。
 
 <a id="p96"></a>

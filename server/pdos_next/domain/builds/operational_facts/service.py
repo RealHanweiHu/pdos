@@ -775,12 +775,29 @@ def _resource_report(s, ctx, fact, data, bound, scope, assets, issuer, at, exclu
                     ),
                 )
             )
+        native = None
         if resource.resource.kind == "fixture":
             # D306: the native fixture acceptance owner replaces imported acceptance
             # facts for the same purpose and operation; others keep their issuer proof.
             from pdos_next.domain.manufacturing.fixture_acceptance.service import readiness_facts
 
             native = readiness_facts(s, ctx, fact.product_id, fact.project_id, resource.resource.id)
+        elif resource.resource.kind == "tooling":
+            # D305: the latest tool trial's named disposition decides tooling acceptance.
+            from pdos_next.domain.manufacturing.tool_trials.service import (
+                readiness_facts as tooling_facts,
+            )
+
+            native = tooling_facts(
+                s,
+                ctx,
+                fact.product_id,
+                fact.project_id,
+                resource.resource,
+                resource.purposes,
+                resource.operation_ids,
+            )
+        if native:
             keys = {(v.kind, v.purpose, v.operation_id) for v in native}
             decisions = [
                 v for v in decisions if (v.kind, v.purpose, v.operation_id) not in keys

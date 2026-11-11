@@ -497,6 +497,11 @@ def create_app(
     )
 
     register_interface_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.tool_trials.api import (
+        register_routes as register_tool_trial_routes,
+    )
+
+    register_tool_trial_routes(app, engine, auth_dependency)
     from pdos_next.domain.quality.capa_effectiveness.api import (
         register_routes as register_effectiveness_routes,
     )

@@ -31,6 +31,8 @@ class Chain:
     extra_atom: str = ""  # additional checks on NEW inside the atom
     visibility: bool = False  # the receipt's visibility must equal NEW.visibility
     lifecycle: bool = True  # attach the generic original-lifecycle triggers
+    # Replaces the receipt-subject clause when rows share another subject's receipt.
+    subject_sql: str = ""
 
     @property
     def tables(self):
@@ -47,12 +49,14 @@ class Chain:
 
 def atom(chain):
     vis = " OR r.visibility<>NEW.visibility" if chain.visibility else ""
+    subject = chain.subject_sql or (
+        f"r.subject_type<>'{chain.subject}' OR r.subject_id<>NEW.id\n  OR r.subject_revision<>NEW.revision"
+    )
     return f"""
 DECLARE r public.action_receipts; p public.principals; cur public.{chain.c};
 BEGIN
  SELECT * INTO r FROM public.action_receipts WHERE tenant_id=NEW.tenant_id AND id=NEW.receipt_id;
- IF NOT FOUND OR r.operation<>NEW.operation OR r.subject_type<>'{chain.subject}' OR r.subject_id<>NEW.id
-  OR r.subject_revision<>NEW.revision OR r.actor_id<>NEW.actor_id OR r.requester_id<>NEW.requester_id
+ IF NOT FOUND OR r.operation<>NEW.operation OR {subject} OR r.actor_id<>NEW.actor_id OR r.requester_id<>NEW.requester_id
   OR r.command_id<>NEW.command_id OR r.category_id<>NEW.category_id OR r.product_id IS DISTINCT FROM NEW.product_id{vis}
   OR r.request_digest<>NEW.request_digest THEN
   RAISE EXCEPTION '{chain.prefix} requires its exact common receipt' USING ERRCODE='23514'; END IF;

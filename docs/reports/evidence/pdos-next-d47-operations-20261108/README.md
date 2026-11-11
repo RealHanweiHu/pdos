@@ -91,7 +91,7 @@
 | `supply.alternate.approve` | T2 | 已实现：工程具名、须带当前具名复核的测试运行；只进本 Build 齐套，BOM 不变，过期或撤销后不计入 | `domain/manufacturing/alternate_approvals/`，齐套接入，迁移 `s0_0874` | `test_alternate_approval_pg.py` 3 项（真实测试结果链与齐套计算） |
 | `quality.capa.effectiveness.decide` | T2 | 已实现：有效即关闭、无效回到措施中并可走第二轮、延长观察；实施人不能决定 | `domain/quality/capa_effectiveness/`，迁移 `s0_0875` | `test_capa_effectiveness_pg.py` 3 项（“有效”路径的复核读取用替身，见 D320） |
 | `customer.acceptance.record` | T2 | 已实现：五类范围逐项登记，签样单须为上传原件；阶段页只列出 | `domain/delivery/customer_acceptance/`，迁移 `s0_0876` | `test_customer_acceptance_pg.py` 3 项（真实上传、扫描、解析的原件） |
-| `npi.tooltrial.create` | T1 | 未实现（D317）：具名处置没有接受/拒绝字段，已请用户补选；同确认生成验证请求要改共享守卫 | — | — |
+| `npi.tooltrial.create` | T1 | 11-09 未实现（D317）；11-10 用户补选后实现，见 §6 | — | — |
 | `customer.sample.send` | T2 | 未实现（D318）：复用外部移交管线需改该模块的外键、用途分支与回执签发性质；真实外发仍未授权 | — | — |
 | `product.definition.publish` | T2 | 归 D36 | — | — |
 
@@ -122,3 +122,32 @@
 | 合同 | 导出后校验通过，`not_implemented` 由 10 降为 3 |
 | 迁移 | 新建库上 `head→s0_0869→head`、`head→s0_0872→head` 往返通过；有历史时降级被拒（“Customer acceptance history requires s0_0876”）；ORM 对照只有 7 处既有索引差异 |
 | 环境 | `local_environment.py create` 建的隔离 `pdos_test`（降级仍停在既有 `s0_0784`，手动升到 head 后 seed），全部测试显式指向它，未回退 `.env`，未调用真实模型；收尾已 destroy |
+
+
+## 6. 11-10 第三轮：试模 `npi.tooltrial.create`（D305）
+
+依据 P95 与两条补充确认：处置加可选“接受/拒绝”（用户 11-09 选 A）；试模带出的验证请求按试模职责校验（用户 11-10 选 A，原话“试模带出的请求按试模职责校验 (Recommended)”）。
+
+做了什么：
+- 一次确认（T1，工程或制造具名本人）写三样东西：模具版本（首次试模建立，信息变化时续版，引用不变时不写）、试模记录、验证请求。模具与试模共用一张公共回执，回执主体是试模；数据库核对模具版本正是该试模引用的那一版，试模也必须有同 Build 的第 1 版验证请求。
+- 验证请求的结构与校验照搬 `verification.request.create`，只把职责改按试模核对；这个入口在共享代码里只对 `npi.tooltrial.create` 开放（其他调用方得到 `FORBIDDEN_OPERATION`）。单独新建请求仍只认工程或品质。正式请求表守卫没有改。
+- `test.disposition.decide` 新增可选 `outcome`（accept/reject）。请求来自试模而未填时拒绝；未填时保存的输入里没有这个键，旧处置的摘要不变。CAPA 配对核验（`quality/capa/paired.py`）原来要求保存的输入键与载荷模型的键完全一致，加字段后会把所有未填结论的处置判为缺语义，已同步改为“未填结论时不要求该键”。
+- Build 准备度：模具资源读最近一次试模所在测试的具名处置，接受为已验收（带处置记录与办理人），拒绝为未通过，尚无处置为未知。
+- 入口：供应页“试模登记”（Build 选定后出现），读取 `GET …/builds/{build}/tool-trials`；每轮显示它当时使用的模具版本。迁移占位 `s0_0877`（只新建两条链）。
+
+验证：
+
+| 项 | 结果 |
+|---|---|
+| D305 PG | `test_tool_trials_pg.py` 4 项：制造人员发起试模，模具第 1 版、试模、验证请求一起建立且重放同一回执；制造人员单独新建验证请求被拒（`FORBIDDEN_OPERATION`）；第二次试模改版本后模具续到第 2 版、无变化被拒、旧版本号冲突；Build 版本冲突、两种模具写法同时给出、AI 身份被拒，表只追加、`pdos_agent` 无权限 |
+| 处置结论 PG | `test_disposition_outcome_pg.py` 1 项：在真实结果链上，把请求标为来自试模（替身）后，未填结论的处置被拒（422），填“接受”后保存并可映射为已验收 |
+| 受影响 PG | 结果事务与守卫、处置结论、品质根因请求选项、CAPA 参与人、验证准备事务、试模：7 个文件 112 项全部通过 |
+| 规则 | `test_tool_trials_rules.py` 5 项（登记、只对试模开放的入口、载荷二选一、结论映射、旧摘要不变）；`d47-records` 解析 1 项 |
+| 无库全量 | 10779 通过；失败 2 项：既有 D313，另 1 项为上面 CAPA 配对核验的问题，修复后质量、验证、制造目录无库用例 3158 项全部通过 |
+| 迁移 | `s0_0877` 升级通过；有试模历史时降级被拒（“Tool trial history requires s0_0877”）；降级与再升级的 SQL 在同一事务内执行后回滚（库中已有测试数据，未用新建库做 alembic 往返）；ORM 对照仍只有 7 处既有索引差异 |
+| 合同 | 导出后校验通过，`not_implemented` 由 3 降为 2 |
+| 前端 | `.mjs` 1931 项通过；tsc 无错，改动文件 eslint 0 错误 |
+| 浏览器 | 本地合成签发方按 `.local/professional-synthetic-profiles.json` 配到开发服务（不入库），种子人员只有制造职责：预览通过并一次确认（[tool-trial-preview-light.jpg](tool-trial-preview-light.jpg)）；第二轮改模具版本后续到第 2 版，每轮显示各自的模具版本（[tool-trial-dark.jpg](tool-trial-dark.jpg)）。库中核对：一张回执（主体为试模、无 AI 运行）、模具两版均绑定各自回执、验证请求草稿第 1 版、`tooltrial.created` 事件 |
+
+余项见欠债总表 D379。
+

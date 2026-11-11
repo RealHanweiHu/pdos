@@ -5631,4 +5631,16 @@ _D47_SCOPE["customer_acceptance"] = (
     "visibility",
 )
 GUARDED = (*GUARDED, *_d47_chain("customer_acceptance"))
+_D47_SCOPE["tooling"] = ("product_id", "project_id", "owner_id", "visibility")
+_D47_EXTRA["tooling_versions"] = ("resource_id",)
+_D47_EXTRA["tool_trial_versions"] = ("tooling_id", "tooling_revision", "request_id")
+GUARDED = (*GUARDED, *_d47_chain("tooling"))
+_D47_SCOPE["tool_trial"] = (
+    "product_id",
+    "project_id",
+    "build_id",
+    "owner_id",
+    "visibility",
+)
+GUARDED = (*GUARDED, *_d47_chain("tool_trial"))
 GUARDED = (*GUARDED, *_d47_chain("engineering_interface"))

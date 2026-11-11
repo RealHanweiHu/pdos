@@ -608,7 +608,7 @@ W3c · 想法已变但没有记录
   - 主循环里，模型调用发出前的复核（`gateway._recheck_dispatch` → `context_guard`）在领取之后。信号恰好落在两次检查之间（毫秒级）时，这次调用留在 started，下一尝试会把它当成要对账的未知调用。概率很低；改法涉及 `gateway.py`，等 D248 合并后再看。
 
 **W9 业务域余项（实现缺口；按闭环推进）**
-- D47 部分完成：12 条 not_implemented 已实现 9 条，余 3 条（11-08 实现 2 条；11-09 按 P95–P97、P100 实现 7 条；worktree `elastic-noyce-fad368`，本地提交未推送，[证据](../docs/reports/evidence/pdos-next-d47-operations-20261108/README.md)、[逐条盘点](../docs/reports/evidence/pdos-next-d47-operations-20261108/inventory.md)）。原写 14 条是 11-01 的数字；`my_work.query`、`provider.agreement.register` 此后已以接口实现。余下：`npi.tooltrial.create`（D317）、`customer.sample.send`（D318）、规格冻结 `product.definition.publish`（归 D36）。
+- D47 部分完成：12 条 not_implemented 已实现 10 条，余 2 条（11-08 实现 2 条；11-09 按 P95–P97、P100 实现 7 条；11-10 按 P95 两条补充确认实现试模；worktree `elastic-noyce-fad368`，本地提交未推送，[证据](../docs/reports/evidence/pdos-next-d47-operations-20261108/README.md)、[逐条盘点](../docs/reports/evidence/pdos-next-d47-operations-20261108/inventory.md)）。原写 14 条是 11-01 的数字；`my_work.query`、`provider.agreement.register` 此后已以接口实现。余下：`customer.sample.send`（D318）、规格冻结 `product.definition.publish`（归 D36）。
   - ✅ `supply.commitment.record`（T0；F25、AT-20）：
     - 每条供方承诺是一条版本链，动作有建立、改期改量、关闭、重开，绑定固定 Build 的真实需求物料。
     - 具名本人可用本人陈述作来源（`human_recorded`）；小Pai 只能引原文行，且须有当前资格和绑定运行。
@@ -630,7 +630,11 @@ W3c · 想法已变但没有记录
     - 前端：`.mjs` 1924 项、`.test.ts` 752 项通过，tsc、lint 均 0 错误。
     - 合同校验、迁移往返和降级保护通过；浏览器亮暗两套主题走通。
   - 余项：两条闭环的余项是 D314、D315；待定的 10 条是 D305–D312；规格冻结 `product.definition.publish` 归 D36。
-- D305 〔已定 11-09 [P95](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p95)，未实现，转 D317〕试模 `npi.tooltrial.create`。
+- D305 ✅ 11-10 按 [P95](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p95) 及两条补充确认实现 `npi.tooltrial.create`（T1，工程或制造具名本人一次确认）：
+  - 首次试模同时登记模具第 1 版（零件、版本、供方模具编号、穴数，可选关联本 Build 受控导入的模具资源），之后的试模引用模具，信息变化时续版；试模记录轮次、目的、材料批次、参数、穴位、问题与纠正措施。模具、试模与验证请求在同一事务，模具版本与试模共用一张公共回执（回执主体是试模，数据库核对模具版本正是该试模引用的版本）。
+  - 验证请求按已有验证准备建立，结构与校验同 `verification.request.create`，只是职责按试模（工程或制造）核对；这个入口只对试模开放，单独新建请求仍只认工程或品质。正式请求表守卫未改：请求第 1 版仍记为 `verification.request.create`，试模记录持有请求标识。
+  - `test.disposition.decide` 加可选处置结论（接受/拒绝）：请求来自试模而未填时拒绝；其他处置不变，未填时保存的输入没有这个键、摘要与原来一致。CAPA 配对核验（`quality/capa/paired.py`）的闭合键检查同步改为“未填结论时不要求该键”，否则所有未填结论的处置都会被判为缺语义（无库全量发现）。准备度（`_resource_report`）的模具项读最近一次试模所在测试的具名处置：接受为已验收，拒绝为未通过，尚无处置为未知。
+  - 入口：供应页“试模登记”；读取 `GET …/builds/{build}/tool-trials`。迁移占位 `s0_0877`（只新建两条版本链）。技能包 `build_execution` 增加 T1 条目（仍为本分支未发布的 0.1.4-draft）。余项见 D379。
 - D306 ✅ 11-09 按 [P95](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p95) 实现 `npi.fixture.accept`（T2，制造具名）：
   - 治具身份取 Build 当前受控导入的资源（kind=fixture），同一命令办理接受、拒绝、撤销，可带有效期与条件，每次一个新版本；
   - 准备度计算（`_resource_report`）用本地验收决定替换同用途同工序的导入验收事实：接受为已验收，拒绝或撤销为阻断，有效期外阻断，无记录为未知；
@@ -646,7 +650,7 @@ W3c · 想法已变但没有记录
 - D310 ✅ 11-09 按 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100) 实现 `evidence.source.withdraw`（T2，来源负责人或品类负责人）：只办理已被签署决定使用（封存或发布的定义引用、被批准决定或封存定义消费的事实）或已共享的原件与登记资料；撤回后列出使用它的业务记录并在读取时显示需重核，同时触发企业检索清理。T1 `evidence.original.withdraw` 增加两条守卫：只能撤回本人上传、未被签署决定使用的原件（P9）。入口：资料面板“具名撤回来源”。迁移占位 `s0_0873`（两个只读判定函数）。余项见 D319。
 - D311 ✅ 11-09 按 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100) 实现 `product.definition.update`（T1）：修改整体字段生成下一草稿版本，原样带入条目与来源，原版本不变；规格冻结后与派生型号的定义被拒。入口：定义页最新版本“修改整体字段”。迁移占位 `s0_0870`（扩展 `protect_fixed_definition`、`m3_definition_item_atom` 的操作清单）。
 - D312 ✅ 11-09 按 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100) 实现 `engineering.interface.update`（T1）：同一命令建立、修订、各专业确认或提出异议；挂在工程配置系列的当前版本下；负责人须为项目成员且不能代替确认；修订后原确认转为已取代；受影响项须经变更图真实所有者读取，变更图新增接口节点只沿登记项传播，待核实线索单列。入口：Build 准备页“接口合同”。迁移占位 `s0_0871`。D49 的“接口合同与设计责任人”随之关闭。余项见 D319。
-- 11-09 迁移占位 `s0_0870`–`s0_0876`（down 依次接 `s0_0869`），**集成时按真实 head 重排**（文件名、revision、down_revision、快照 `schema_s0_087x.py` 与降级保护文字一起改）。其中 `s0_0870`、`s0_0872`、`s0_0875` 修改了共享函数或约束（`protect_fixed_definition`、`m3_definition_item_atom`、`ck_confirmations_decision_deadline`、`quality_issue_versions` 两个检查约束、`assert_quality_change_receipt`），集成时须与其他分支对同一函数的改动合并，不能整段覆盖。
+- 11-09/11-10 迁移占位 `s0_0870`–`s0_0877`（down 依次接 `s0_0869`），**集成时按真实 head 重排**（文件名、revision、down_revision、快照 `schema_s0_087x.py` 与降级保护文字一起改）。其中 `s0_0870`、`s0_0872`、`s0_0875` 修改了共享函数或约束（`protect_fixed_definition`、`m3_definition_item_atom`、`ck_confirmations_decision_deadline`、`quality_issue_versions` 两个检查约束、`assert_quality_change_receipt`），集成时须与其他分支对同一函数的改动合并，不能整段覆盖。`s0_0877` 只新建模具与试模两条链。
 - D313 既有测试失败：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot`，`GET /v1/personal/agent-input-sources` 期望 404、实际 500。在基点 `d6abcbf2` 源码上同样失败（11-08 第三轮集成带入 D42 后），与 D47 无关，未修。
 - D314 预测重算余项：
   - 已开始的任务缺“剩余工期”录入口，引擎要求 remaining，所以预测保持未知；
@@ -663,13 +667,13 @@ W3c · 想法已变但没有记录
   - 页面没有原文引用选择器，人工只用本人陈述，原文引用由接口和小Pai 使用；
   - D199 供方画像从现在起可以积累数据。
 - D316 本机开发环境问题：多个会话的本地预览都用 `localhost`（端口不同），浏览器共用 `pdos-next-session` cookie，会互相覆盖，导致偶发 401（11-08 走查时遇到，重新建立本地会话后正常）。改用 `127.0.0.1` 访问时开发服务器不完成水合。只影响本机多会话并行走查。
-- D317 试模 `npi.tooltrial.create` 未实现（P95 已定）。两处阻塞：
-  - ✅ 已定（用户 11-09 选 A）：给 `test.disposition.decide` 加可选的“处置结论：接受/拒绝”，含试模样件时必填，模具验收读它；记入 P95 补充确认。尚未实施。
-  - 〔你〕305-3 与 305-4 冲突：只有制造职责的人发起试模时，同确认生成的验证请求按 `verification.request.create` 的校验只认工程或品质，会被拒。已请你选：A 试模带出的请求按试模职责（工程或制造）校验，通用请求创建不变（推荐）；B 制造发起时请求由工程或品质另建，试模引用；C 试模只限工程。（11-10）
-  - 同一确认生成验证请求：正式请求表的守卫（`protect_formal_verification_binding`）只接受 `verification.request.create` 写第 1 版，且请求要先有验证策划记录；需要放开守卫或由验证所有者在同事务内写入，属共享守卫改动。
+- D317 ✅ 11-10 试模的两处阻塞已解决并实现（见 D305）：
+  - 处置结论字段：用户 11-09 选 A（“给处置加接受/拒绝字段 (Recommended)”），已实施。
+  - 305-3 与 305-4 冲突：用户 11-10 选 A（“试模带出的请求按试模职责校验 (Recommended)”），已实施；两条指定测试（制造人员发起试模成功带出请求、制造人员单独新建验证请求仍被拒）通过。
+  - 原记的“需放开正式请求表守卫”未发生：请求由验证模块在同一事务内按原样写入，守卫不变。
 - D318 客户样品外发 `customer.sample.send` 未实现（P97 已定，真实外发仍未授权）。按 P97 要复用外部移交管线，需要：授权表的放行包与两份放行外键改为按用途可空；材料所有者增加“客户样品”用途分支（前置：工程与制造开工授权、样件已分配）；回执现在要求宿主配置的受信签发方，P97 的“内部具名人手工登记回执”需要在该管线新增人工登记的签发性质。改动集中在 `external_handoff`（约 3.8k 行，含 AT-29/30 对账），本轮未做。客户承认的“经 PDOS 外发必须关联”在外发接通后补。
 - D319 11-09 实现部分的余项（D306、D308、D310–D312）：
-  - D306：资源读取（`manufacturing/resources/owner.py`）仍报告 `NATIVE_ACCEPTANCE_OWNER_UNCONNECTED`、治具验收显示未知；测试资源服务的同类读取未接；模具（tooling）验收待 D317。
+  - D306：资源读取（`manufacturing/resources/owner.py`）仍报告 `NATIVE_ACCEPTANCE_OWNER_UNCONNECTED`、治具验收显示未知；测试资源服务的同类读取未接；模具（tooling）验收已由 D305 接入准备度。
   - D308：没有核对证据运行实际测的是该替代料（运行到物料只有间接关联）；批准后要重新记录供给快照再算齐套才计入（齐套命令按意图去重），旧齐套显示需重算。
   - D310：撤回判定沿生命周期图遍历，资料多时有性能风险；“已被签署决定使用”按现有 `m3_evidence_signed_consumed` 口径（封存或发布定义、被批准决定或封存定义消费的事实），不含其他 T2 决定表；T1 撤回新增的“本人上传”守卫改变了原行为（原先品类可见原件任何写入者可撤）。
   - D311：派生型号的定义不在本命令内；协审与“评审中”归 D36。
@@ -678,6 +682,12 @@ W3c · 想法已变但没有记录
   - “有效”路径的 PG 测试中，具名复核读取用替身；现有夹具链没有走到具名复核，独立品质人员也不存在（夹具只有一名同时实施措施的品质人员）。真实的具名复核链与独立决定人待补端到端测试。
   - 观察到期注意项仍按 CAPA 要求的原截止日，延长后的截止日未进“我的工作”。
   - 页面证据选择只列出当前复核与观察记录。
+- D379 D305 试模余项（11-10）：
+  - “测试含试模样件”按“该验证请求由试模带出”判断，没有逐个样件核对来源；同一请求混入非试模样件的情形未区分。
+  - 准备度只对关联了受控导入模具资源的模具生效；页面登记新模具时还不能选导入资源（接口支持 `tooling_new.resource`），未关联的模具不进准备度。
+  - 处置结论必填的 PG 测试用替身把请求标为来自试模；从试模一路走到开测、结果与处置的端到端链未测（现有夹具链太长）。准备度接入只有映射单测，未用带模具资源的 Build 做 PG。
+  - 模具清单只按项目读取，跨项目复用同一副模具未设计（P95 未要求）。
+  - 既有纯函数内核 `manufacturing/trials/handlers.py`（`ToolTrialCreate` 合同，要求已存在的模具引用，问题与批次为引用对象）未被本实现使用，也从未登记到命令管线；其合同与 P95 第 1 项（首次试模同时登记模具）不一致。集成时决定收敛或退役。
 - D378 11-09/11-10 受影响 PG 组合回归（20 组、1858 项，机器负载 26–39，单轮 2 小时）中 13 项失败、7 项错误。逐项归因：
   - 本次新增的接口、治具测试单独重跑全部通过（10 项）；组合运行中失败是一次确认超过 10 分钟有效期。
   - `test_definition_parent_lineage_pg.py::test_native_derivation_uses_latest_parent_in_its_actual_variant_lineage` 写死 `alembic_version == 's0_0756'`，任何更新的 head 都会失败，属既有。

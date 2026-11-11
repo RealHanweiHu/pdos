@@ -588,3 +588,9 @@ from pdos_next.domain.delivery.customer_acceptance.schemas import (  # noqa: E40
 
 # D47 (P97 第 5–8 项): customer acceptance from a signed sample sheet, T2 named record.
 PAYLOADS.update(CUSTOMER_ACCEPTANCE_PAYLOADS)
+from pdos_next.domain.manufacturing.tool_trials.schemas import (  # noqa: E402
+    PAYLOADS as TOOL_TRIAL_PAYLOADS,
+)
+
+# D47 (P95, D305): tool trial with tooling record and its verification request, T1 one confirmation.
+PAYLOADS.update(TOOL_TRIAL_PAYLOADS)

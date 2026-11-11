@@ -47,3 +47,21 @@ export function timeText(value: string | null | undefined): string {
 }
 
 export function splitLines(text: string): string[] { return text.split(/\n/).map(item => item.trim()).filter(Boolean); }
+
+// D305 (P95): tool-trial form parsing. One parameter per line as "name = value unit".
+export type TrialParameter = { name: string; value: string; unit: string | null };
+export function trialParameters(text: string): TrialParameter[] {
+  return splitLines(text).map(row => {
+    const at = row.indexOf("=");
+    if (at < 1) throw new Error(`参数“${row}”请写成“名称 = 数值 单位”。`);
+    const name = row.slice(0, at).trim(), rest = row.slice(at + 1).trim().split(/\s+/);
+    if (!name || !rest[0]) throw new Error(`参数“${row}”缺少名称或数值。`);
+    return { name, value: rest[0], unit: rest.slice(1).join(" ") || null };
+  });
+}
+export function trialCavities(text: string): number[] {
+  const values = text.split(/[,，\s]+/).filter(Boolean).map(Number);
+  if (values.some(value => !Number.isInteger(value) || value < 1)) throw new Error("穴位请填正整数，用逗号分隔。");
+  return values;
+}
+export const toolingStatusNames: Record<string, string> = { accepted: "已验收", rejected: "未通过", unknown: "尚无处置（未知）" };

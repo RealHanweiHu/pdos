@@ -10,6 +10,7 @@ import { CoverageShortages, SupplySnapshotHistory } from "@/features/manufacturi
 import { BuildSupplyCommitments } from "@/features/builds/build-supply-commitments";
 import { AlternateApprovals, type DemandLine } from "@/features/d47/alternate-approvals";
 import { CustomerAcceptances } from "@/features/d47/customer-acceptances";
+import { ToolTrials } from "@/features/d47/tool-trials";
 import type { ProjectApi } from "@/lib/project-plan-view";
 import { originalLocation } from "@/lib/original-location";
 import { buildTypeNames, type Build, type BuildList } from "@/lib/build-preparation-view";
@@ -154,6 +155,7 @@ function SupplyPanel({ product, principalId, api, onSaved, projectId = "", sheet
         <section className="panel"><h3 className="font-semibold">按当前固定供给快照核对齐套</h3>{snapshot ? <div className="mt-3 space-y-3"><p className="text-sm">当前供给快照 v{snapshot.revision} · {snapshot.freshness === "current" ? "依据当前" : "历史依据，当前需重核"}</p><p className="subtle">范围仍不完整，质量与可用性保持未知。计算保留已知需求和待补事实，不将未知缺口补零。</p>{snapshot.freshness !== "current" && <p className="text-sm text-destructive">此快照来源已变化或失效，当前不可继续计算；下方结果只描述当时固定输入。</p>}<Button disabled={!canCompute} onClick={event => compute(event.currentTarget)}><Calculator/>{kits.some(kit => kit.supply_snapshot_id === snapshot.id) ? "核对并读取已有齐套结果" : "按本版快照计算齐套"}</Button><p className="subtle">这是确定性计算，无需再确认；相同固定输入保留原回执与计算时点。它不产生占用、替代资格或开工许可。</p></div> : <p className="subtle mt-3">先完成本轮整版供给快照的一次确认，再计算齐套。</p>}</section>
         <BuildSupplyCommitments key={`${principalId}:${product.id}:${build.id}:commitments`} api={api} product={product} build={build} principalId={principalId} materials={materials}/>
         <AlternateApprovals key={`${principalId}:${product.id}:${build.id}:alternates`} api={api as ProjectApi} product={product} build={build} lines={demandLines(build)}/>
+        <ToolTrials key={`${principalId}:${product.id}:${build.id}:trials`} api={api as ProjectApi} product={product} build={build}/>
         <CustomerAcceptances key={`${principalId}:${product.id}:${build.id}:acceptances`} api={api as ProjectApi} product={product} build={build} sources={sheetSources ?? []} originals={originals ?? []}/>
         <SupplySnapshotHistory key={`${principalId}:${product.id}:${local.buildId}:snapshots`} snapshots={snapshotViews} status={loading ? "loading" : "ready"}/>
         <CoverageShortages key={`${principalId}:${product.id}:${local.buildId}:kits`} projections={kitViews} status={loading ? "loading" : "ready"}/>

@@ -379,7 +379,8 @@
       "ai_execution": "一次确认后",
       "event": "tooltrial.created",
       "stage": "S2",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "npi.fixture.accept",

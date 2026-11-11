@@ -161,6 +161,7 @@ T1_OPERATIONS = frozenset(
         "quality.capa.observation.record",
         "product.definition.update",
         "engineering.interface.update",
+        "npi.tooltrial.create",
     }
 )
 
@@ -373,6 +374,10 @@ def handler(operation):
         from pdos_next.domain.delivery.customer_acceptance import service as customer_acceptance
 
         return customer_acceptance
+    if operation == "npi.tooltrial.create":
+        from pdos_next.domain.manufacturing.tool_trials import service as tool_trial
+
+        return tool_trial
     if operation == "engineering.interface.update":
         from pdos_next.domain.engineering.interfaces import service as interface_service
 

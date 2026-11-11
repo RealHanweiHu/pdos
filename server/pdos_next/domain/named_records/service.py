@@ -77,6 +77,7 @@ def write(
     sources=(),
     reads=None,
     extra=None,
+    receipt_id=None,
 ):
     """Append one human-decided version and advance its Current in this transaction."""
     envelope = command.model_dump(mode="json", exclude={"idempotency_key"})
@@ -111,7 +112,7 @@ def write(
         else [r.model_dump(mode="json") for r in command.source_read_set],
         body=body,
         body_sha256=digest(body),
-        receipt_id=uuid4(),
+        receipt_id=receipt_id or uuid4(),
         request_digest=command_digest(command),
         intent_digest=digest(
             {

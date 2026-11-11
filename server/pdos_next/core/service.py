@@ -141,6 +141,7 @@ EVENTS = {
     "product.definition.item.patch": "definition.item_patched",
     "product.definition.update": "definition.updated",
     "engineering.interface.update": "interface.updated",
+    "npi.tooltrial.create": "tooltrial.created",
     "customer.acceptance.record": "customer.acceptance_recorded",
     "supply.alternate.approve": "alternate.approved",
     "evidence.source.withdraw": "source.withdrawn",

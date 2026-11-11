@@ -60,6 +60,7 @@ allowed_operations:
   - {tool: engineering.interface.update, tier: T1, note: "预填接口合同（模块、专业、约束、负责人、受影响项）或某专业的确认/异议；猜测写进待核实线索，由本人确认一次"}
   - {tool: npi.fixture.accept, tier: T2-prepare-only, note: "只准备治具验收材料，验收由制造角色具名办理"}
   - {tool: supply.alternate.approve, tier: T2-prepare-only, note: "只准备替代料批准材料（证据运行、比例、有效期），批准由工程角色具名办理，不改 BOM"}
+  - {tool: npi.tooltrial.create, tier: T1, note: "预填试模登记（轮次、目的、材料批次、参数、穴位、问题与纠正措施），首次试模带出模具登记，并按本 Build 已有验证准备带出验证请求；工程或制造本人确认一次，参数只按真实记录写"}
 evidence_policy: |
   实际配置、数量、参数、模穴与时点必须来自真实记录（页面登记、测量原件、供方资料）并带来源；没有来源的不写，写成未知。
   准备度、齐套、成本一律由 build.readiness.compute、supply.kit.compute、cost.estimate.compute 给出；模型不自算分数、齐套结论或金额。

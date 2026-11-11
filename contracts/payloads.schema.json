@@ -10816,6 +10816,22 @@
           ],
           "default": null,
           "title": "Approval Token"
+        },
+        "outcome": {
+          "anyOf": [
+            {
+              "enum": [
+                "accept",
+                "reject"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Outcome"
         }
       },
       "required": [
@@ -25868,6 +25884,382 @@
         "customer",
         "scopes",
         "signed_sheet",
+        "reason"
+      ],
+      "title": "Payload",
+      "type": "object"
+    },
+    "npi.tooltrial.create": {
+      "$defs": {
+        "Parameter": {
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "value": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Value",
+              "type": "string"
+            },
+            "unit": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Unit"
+            }
+          },
+          "required": [
+            "name",
+            "value"
+          ],
+          "title": "Parameter",
+          "type": "object"
+        },
+        "RequestCreatePayload": {
+          "additionalProperties": false,
+          "properties": {
+            "request_id": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            },
+            "preparation_id": {
+              "format": "uuid",
+              "title": "Preparation Id",
+              "type": "string"
+            },
+            "expected_preparation_revision": {
+              "minimum": 1,
+              "title": "Expected Preparation Revision",
+              "type": "integer"
+            },
+            "preparation_sha256": {
+              "pattern": "^[0-9a-f]{64}$",
+              "title": "Preparation Sha256",
+              "type": "string"
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 1,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "request_id",
+            "preparation_id",
+            "expected_preparation_revision",
+            "preparation_sha256",
+            "reason"
+          ],
+          "title": "RequestCreatePayload",
+          "type": "object"
+        },
+        "ToolingChanges": {
+          "additionalProperties": false,
+          "properties": {
+            "part": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Part"
+            },
+            "version": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Version"
+            },
+            "supplier_ref": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Supplier Ref"
+            },
+            "cavities": {
+              "anyOf": [
+                {
+                  "maximum": 1000,
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Cavities"
+            }
+          },
+          "title": "ToolingChanges",
+          "type": "object"
+        },
+        "ToolingNew": {
+          "additionalProperties": false,
+          "properties": {
+            "part": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Part",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            },
+            "supplier_ref": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Supplier Ref",
+              "type": "string"
+            },
+            "cavities": {
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Cavities",
+              "type": "integer"
+            },
+            "resource": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/VersionRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "part",
+            "version",
+            "supplier_ref",
+            "cavities"
+          ],
+          "title": "ToolingNew",
+          "type": "object"
+        },
+        "ToolingRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "changes": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ToolingChanges"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "ToolingRef",
+          "type": "object"
+        },
+        "Trial": {
+          "additionalProperties": false,
+          "properties": {
+            "round": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Round",
+              "type": "string"
+            },
+            "purpose": {
+              "maxLength": 4000,
+              "minLength": 1,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "material_lots": {
+              "items": {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Material Lots",
+              "type": "array"
+            },
+            "parameters": {
+              "items": {
+                "$ref": "#/$defs/Parameter"
+              },
+              "maxItems": 100,
+              "title": "Parameters",
+              "type": "array"
+            },
+            "cavities": {
+              "items": {
+                "type": "integer"
+              },
+              "maxItems": 1000,
+              "title": "Cavities",
+              "type": "array"
+            },
+            "issues": {
+              "items": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Issues",
+              "type": "array"
+            },
+            "corrective_actions": {
+              "items": {
+                "maxLength": 4000,
+                "minLength": 1,
+                "type": "string"
+              },
+              "maxItems": 50,
+              "title": "Corrective Actions",
+              "type": "array"
+            }
+          },
+          "required": [
+            "round",
+            "purpose"
+          ],
+          "title": "Trial",
+          "type": "object"
+        },
+        "VersionRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "VersionRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "build": {
+          "$ref": "#/$defs/VersionRef"
+        },
+        "tooling_new": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolingNew"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "tooling": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ToolingRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "trial": {
+          "$ref": "#/$defs/Trial"
+        },
+        "verification": {
+          "$ref": "#/$defs/RequestCreatePayload"
+        },
+        "reason": {
+          "maxLength": 4000,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "build",
+        "trial",
+        "verification",
         "reason"
       ],
       "title": "Payload",
