@@ -75,7 +75,7 @@ function OriginalPanel({ product, originals, api, onSaved }: Props) {
   function upload(element: HTMLElement) { void perform(async () => {
     if (pendingRef.current) return pendingRef.current;
     if (!file || !label.trim()) throw new Error("请选择原件并说明来源。");
-    if (!file.size || file.size > 8_388_608 || !/\.(txt|md|pdf|xlsx)$/i.test(file.name)) throw new Error("请使用 8MB 以内的 UTF-8 文本、PDF 或 XLSX。");
+    if (!file.size || file.size > 8_388_608 || !/\.(txt|md|csv|pdf|xlsx)$/i.test(file.name)) throw new Error("请使用 8MB 以内的 UTF-8 文本、CSV、PDF 或 XLSX。");
     const bytes = new Uint8Array(await file.arrayBuffer()); let binary = "";
     for (let offset = 0; offset < bytes.length; offset += 8192) binary += String.fromCharCode(...bytes.subarray(offset, offset + 8192));
     return { stage: "upload", request: { filename: file.name, title: file.name, source_label: label.trim(), visibility, content_base64: btoa(binary), expected_revision: product.revision, idempotency_key: crypto.randomUUID() } };

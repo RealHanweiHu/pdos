@@ -5095,6 +5095,206 @@
     },
     "engineering.bom.revise": {
       "$defs": {
+        "BomAlternateInput": {
+          "additionalProperties": false,
+          "description": "A declared alternate: an existing part of this product at a fixed version.\n\nThe declaration grants nothing; only a Build-level `supply.alternate.approve`\nlets the kit count it (P113, P96, AT-21).",
+          "properties": {
+            "part_id": {
+              "format": "uuid",
+              "title": "Part Id",
+              "type": "string"
+            },
+            "expected_part_revision": {
+              "minimum": 1,
+              "title": "Expected Part Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "part_id",
+            "expected_part_revision"
+          ],
+          "title": "BomAlternateInput",
+          "type": "object"
+        },
+        "BomImportBasis": {
+          "additionalProperties": false,
+          "description": "Which parsed original, sheet, header row and column mapping produce the lines.\n\nThe server converts again from this basis and refuses lines that differ, so\nthe conversion is the code's, not the caller's (P79 D98).",
+          "properties": {
+            "artifact_id": {
+              "format": "uuid",
+              "title": "Artifact Id",
+              "type": "string"
+            },
+            "expected_revision": {
+              "minimum": 1,
+              "title": "Expected Revision",
+              "type": "integer"
+            },
+            "format": {
+              "enum": [
+                "xlsx",
+                "csv"
+              ],
+              "title": "Format",
+              "type": "string"
+            },
+            "sheet": {
+              "anyOf": [
+                {
+                  "maxLength": 200,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Sheet"
+            },
+            "header_row": {
+              "maximum": 100000,
+              "minimum": 1,
+              "title": "Header Row",
+              "type": "integer"
+            },
+            "columns": {
+              "items": {
+                "$ref": "#/$defs/BomImportColumn"
+              },
+              "maxItems": 12,
+              "minItems": 1,
+              "title": "Columns",
+              "type": "array"
+            },
+            "dispositions": {
+              "items": {
+                "$ref": "#/$defs/BomImportDisposition"
+              },
+              "maxItems": 10000,
+              "title": "Dispositions",
+              "type": "array"
+            }
+          },
+          "required": [
+            "artifact_id",
+            "expected_revision",
+            "format",
+            "header_row",
+            "columns"
+          ],
+          "title": "BomImportBasis",
+          "type": "object"
+        },
+        "BomImportColumn": {
+          "additionalProperties": false,
+          "properties": {
+            "field": {
+              "enum": [
+                "key",
+                "internal_number",
+                "name",
+                "erp_number",
+                "customer_number",
+                "quantity",
+                "unit",
+                "loss_rate",
+                "critical",
+                "notes",
+                "reference_designators",
+                "alternates"
+              ],
+              "title": "Field",
+              "type": "string"
+            },
+            "column": {
+              "maximum": 1000,
+              "minimum": 1,
+              "title": "Column",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "field",
+            "column"
+          ],
+          "title": "BomImportColumn",
+          "type": "object"
+        },
+        "BomImportDisposition": {
+          "additionalProperties": false,
+          "description": "A named decision for one original row the conversion could not take as is.",
+          "properties": {
+            "row": {
+              "maximum": 100000,
+              "minimum": 1,
+              "title": "Row",
+              "type": "integer"
+            },
+            "action": {
+              "enum": [
+                "skip",
+                "accept",
+                "new_part",
+                "reuse"
+              ],
+              "title": "Action",
+              "type": "string"
+            },
+            "part_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Part Id"
+            },
+            "expected_part_revision": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Expected Part Revision"
+            },
+            "reason": {
+              "anyOf": [
+                {
+                  "maxLength": 500,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Reason"
+            },
+            "drop_unresolved_alternates": {
+              "default": false,
+              "title": "Drop Unresolved Alternates",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "row",
+            "action"
+          ],
+          "title": "BomImportDisposition",
+          "type": "object"
+        },
         "BomLineInput": {
           "additionalProperties": false,
           "properties": {
@@ -5219,6 +5419,25 @@
               ],
               "default": null,
               "title": "Notes"
+            },
+            "reference_designators": {
+              "items": {
+                "maxLength": 40,
+                "minLength": 1,
+                "pattern": "^[A-Za-z0-9][A-Za-z0-9_.+/#-]*$",
+                "type": "string"
+              },
+              "maxItems": 2000,
+              "title": "Reference Designators",
+              "type": "array"
+            },
+            "alternates": {
+              "items": {
+                "$ref": "#/$defs/BomAlternateInput"
+              },
+              "maxItems": 20,
+              "title": "Alternates",
+              "type": "array"
             }
           },
           "required": [
@@ -5494,6 +5713,17 @@
           "minItems": 1,
           "title": "Lines",
           "type": "array"
+        },
+        "import_basis": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/BomImportBasis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [

@@ -5660,3 +5660,11 @@ COVERED_COLUMNS.update({
         "cases_sha256", "receipt_id", "id", "tenant_id", "created_at",
     ),
 })
+
+# D98 BOM import: designators and declared alternates (part IDs of the same product,
+# P113) are part of a line; the import basis names the parsed
+# original (also in the revision's required source read set), its mapping and dispositions.
+COVERED_COLUMNS.update({
+    "bom_lines": (*COVERED_COLUMNS["bom_lines"], "reference_designators", "alternates"),
+    "bom_revisions": (*COVERED_COLUMNS["bom_revisions"], "import_basis"),
+})

@@ -10,8 +10,10 @@ export type ConfigurationBase = {
 };
 export type ExternalReference = { system: string; external_id: string; revision: string | null; as_of: string | null; content_sha256: string | null; basis: DefinitionReference | null };
 export type PartInput = { name: string; internal_number: string | null; erp_number: string | null; customer_number: string | null; mapping_version: string | null; external_design_refs: ExternalReference[] };
-export type BomLineInput = { key: string; part_id: string | null; expected_part_revision: number | null; part: PartInput | null; quantity: string | null; unit: string | null; loss_rate: string | null; critical: boolean; notes: string | null };
-export type BomLine = Omit<BomLineInput, "part"> & { part: PartInput & ConfigurationBase };
+export type BomLineInput = { key: string; part_id: string | null; expected_part_revision: number | null; part: PartInput | null; quantity: string | null; unit: string | null; loss_rate: string | null; critical: boolean; notes: string | null; reference_designators?: string[]; alternates?: BomAlternateInput[] };
+/** A declared alternate (P113): an existing part at a fixed version; never a qualification. */
+export type BomAlternateInput = { part_id: string; expected_part_revision: number };
+export type BomLine = Omit<BomLineInput, "part" | "alternates"> & { part: PartInput & ConfigurationBase; alternates?: (BomAlternateInput & { part: PartInput & ConfigurationBase })[] };
 export type BomConfiguration = ConfigurationBase & { lines: BomLine[] } & Record<string, unknown>;
 export type EngineeringConfiguration = ConfigurationBase & { definition_id: string; bom_id: string; bom: BomConfiguration; design_versions: { mechanical: ExternalReference | null; electronic: ExternalReference | null; firmware: ExternalReference | null } } & Record<string, unknown>;
 export type ManufacturingConfiguration = ConfigurationBase & { engineering_configuration_id: string; site: string | null; line: string | null; operations: OperationInput[] } & Record<string, unknown>;
@@ -73,7 +75,7 @@ export type PreparationDraft = {
   references: DefinitionReference[];
 };
 export type ExternalDraft = { system: string; externalId: string; revision: string; asOfUtc: string; asOfOriginal?: string; hash: string; referenceKey: string };
-export type BomLineDraft = { key: string; partId: string; partRevision: number | null; name: string; internal: string; erp: string; customer: string; mappingVersion: string; quantity: string; unit: string; loss: string; critical: boolean; notes: string; designRefs: ExternalDraft[] };
+export type BomLineDraft = { key: string; partId: string; partRevision: number | null; name: string; internal: string; erp: string; customer: string; mappingVersion: string; quantity: string; unit: string; loss: string; critical: boolean; notes: string; designRefs: ExternalDraft[]; designators?: string; alternates?: { partId: string; partRevision: number; label: string }[] };
 export type RevisionDraft = { name: string; previousId: string; visibility: Visibility; reason: string };
 export type BomDraft = RevisionDraft & { lines: BomLineDraft[] };
 export type EngineeringDraft = RevisionDraft & { definitionId: string; bomId: string; designs: { mechanical: ExternalDraft; electronic: ExternalDraft; firmware: ExternalDraft } };
@@ -98,7 +100,7 @@ export function blankPreparation(purpose: string): PreparationDraft {
   };
 }
 export function blankExternal(): ExternalDraft { return { system: "", externalId: "", revision: "", asOfUtc: "", hash: "", referenceKey: "" }; }
-export function blankBomLine(index: number): BomLineDraft { return { key: `line-${index}`, partId: "", partRevision: null, name: "", internal: "", erp: "", customer: "", mappingVersion: "", quantity: "", unit: "", loss: "", critical: false, notes: "", designRefs: [] }; }
+export function blankBomLine(index: number): BomLineDraft { return { key: `line-${index}`, partId: "", partRevision: null, name: "", internal: "", erp: "", customer: "", mappingVersion: "", quantity: "", unit: "", loss: "", critical: false, notes: "", designRefs: [], designators: "", alternates: [] }; }
 export function blankOperation(index: number): OperationDraft { return { key: `operation-${index}`, name: "", kind: "assembly", dependencies: "", bomLineKeys: [], cycle: "", acceptance: "", notes: "", sop: blankExternal(), resources: [] }; }
 export function externalDraft(value: ExternalReference | null): ExternalDraft { return value ? { system: value.system, externalId: value.external_id, revision: value.revision ?? "", asOfUtc: value.as_of ? new Date(value.as_of).toISOString().slice(0, -1) : "", asOfOriginal: value.as_of ?? "", hash: value.content_sha256 ?? "", referenceKey: value.basis ? JSON.stringify([value.basis.artifact_id, value.basis.expected_revision, value.basis.line, value.basis.quote]) : "" } : blankExternal(); }
 function isRecord(value: unknown): value is Record<string, unknown> { return value !== null && typeof value === "object" && !Array.isArray(value); }
@@ -153,8 +155,27 @@ export function bomLinesPayload(lines: BomLineDraft[], refs: DefinitionReference
     if (quantity && !line.unit.trim()) throw new Error(`${line.name}已填写用量，请补充单位。`);
     return { key: line.key, part_id: line.partId || null, expected_part_revision: line.partId ? line.partRevision : null,
       part: line.partId ? null : { name: line.name.trim(), internal_number: line.internal.trim() || null, erp_number: line.erp.trim() || null, customer_number: line.customer.trim() || null, mapping_version: line.mappingVersion.trim() || null, external_design_refs: line.designRefs.map(ref => externalPayload(ref, refs)).filter((ref): ref is ExternalReference => ref !== null) },
-      quantity, unit: line.unit.trim() || null, loss_rate, critical: line.critical, notes: line.notes.trim() || null };
+      quantity, unit: line.unit.trim() || null, loss_rate, critical: line.critical, notes: line.notes.trim() || null,
+      reference_designators: parseDesignators(line.designators ?? "", line.name),
+      alternates: (line.alternates ?? []).map(alternate => ({ part_id: alternate.partId, expected_part_revision: alternate.partRevision })) };
   });
+}
+const designatorPattern = /^[A-Za-z0-9][A-Za-z0-9_.+/#-]{0,39}$/;
+/** Reference designators as the server stores them; "R1-R4" expands like the import (D98). */
+export function parseDesignators(text: string, label = "本行"): string[] {
+  const values: string[] = [];
+  for (const token of text.split(/[,;，；、\s]+/).filter(Boolean)) {
+    const range = /^([A-Za-z]+)(\d+)-(?:\1)?(\d+)$/.exec(token);
+    if (range) {
+      const first = Number(range[2]), last = Number(range[3]);
+      if (first > last || last - first >= 1000) throw new Error(`${label}位号范围 ${token} 无法展开。`);
+      for (let n = first; n <= last; n += 1) values.push(`${range[1]}${n}`);
+    } else values.push(token);
+  }
+  const bad = values.find(value => !designatorPattern.test(value));
+  if (bad) throw new Error(`${label}位号 ${bad} 无法识别；位号用字母数字，多个用逗号分隔。`);
+  if (values.length > 2000) throw new Error(`${label}位号超过 2000 个。`);
+  return values;
 }
 export function operationsPayload(operations: OperationDraft[], refs: DefinitionReference[]): OperationInput[] {
   if (!operations.length || operations.length > 200 || new Set(operations.map(operation => operation.key)).size !== operations.length) throw new Error("制造配置须有 1–200 个标识不重复的工序。");
