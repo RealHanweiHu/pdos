@@ -374,6 +374,7 @@ W3c · 想法已变但没有记录
 - D287 11-09 PG 全量中发现（`d6abcbf2` 上同样失败，未修）：`tests/change/execution/test_partial_observation_review_chain.py` 在记录部分观察时被拒，`MISSING_REQUIRED_EVIDENCE`（“缺本次真实事实owner、来源或共同写入材料”），出在 `partial_observation_chain_helpers.py:173`。还没分清是产品缺陷还是夹具过时；单次运行约 25 分钟。
 - D288 11-09（未改）：`tests/ui/test_project_external_handoffs_projection_pg.py` 要显式设置 `PDOS_EXTERNAL_HANDOFF_LINK=1`（只走合成的隔离两地区链路），不设时断言失败而不是跳过，所以默认的整仓回归里总是失败。带开关单独跑通过。W10 D50 回归要么带上开关，要么把它改成跳过。
 - D377 ✅ 11-09 已修（你 11-09 选定修法“`s0_0001` 排除扩展成员”、落地方式“修完 D377 再落地”；本地提交、未推送）：`s0_0001` 的整体收回 `REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC,pdos_agent` 改为逐个收回 `public` 里的函数，跳过扩展成员（`pg_depend` 的 `deptype='e'`，口径同 `s0_0720`、`s0_0727`）；范围仍同 `ALL FUNCTIONS`（不含存储过程），非扩展函数照样全部收回，不放宽。只改 `schema_s0_0001.py` 这一条语句和文件说明（`s0_0001` 原样执行它），没有新增迁移，`s0_0836` 不动；空库首次升级时 `public` 里没有扩展函数，结果与原来相同。验证（`create` 新建隔离 `pdos_test`，显式 `TEST_DATABASE_URL`，用完已销毁）：head→base→head 往返和 seed 通过，第二次升级经过 `s0_0727` 的函数指纹核对（含全部非扩展函数的权限）原样通过；往返后 pgvector 118 个函数的权限都是默认值，`pdos_next_app`、`pdos_agent`、`pdos_next_auth` 都能调 `vector_norm`、`vector_dims`；`s0_0001` 建的 97 个函数对 PUBLIC 和 `pdos_agent` 都不可执行，`lock_change_dependency_clock` 对 `pdos_agent`、`pdos_next_auth`、PUBLIC 都不可执行；原来失败的 6 个向量用例全部通过；受影响的 PG 文件 24 个（向量 5 个、函数属主/定义者/执行权 11 个、迁移与基线 5 个、检索角色 3 个）共 216 个用例：212 通过、1 跳过（ANN 诊断要绑 53502）、3 失败都是已知的——D286、检索 p95（1.13 秒，单跑通过）、`test_recovery_pg[statistics_only]`（比对没有 `ORDER BY` 的查询摘要，单跑两轮通过）；无库的迁移、schema、基线测试 28 个文件 409 通过、0 失败（23 个缺库错误已在 PG 上跑过）。原问题（第四轮集成 PG 全量中发现）：W4 修好 D260 后 `create` 的往返能走完，测试库是“降到 base 再升级”后的状态；`s0_0836` 降级时有意保留 pgvector，再次升级时 `s0_0001` 的整体收回把扩展 118 个函数的执行权一起收掉，`CREATE EXTENSION IF NOT EXISTS vector` 不会补回，企业检索向量 4 个、M2a 记忆向量 2 个 PG 用例失败。生产和预览库是一次性顺序升级，不受影响。
+- D470 11-10 第五轮集成无库检查中发现（`c13c3fd6` 上同样失败，未修）：`tools/tests/test_local_host_profiles.py::test_bad_explicit_list_never_falls_back_to_old_profile` 的 4 个参数都失败。测试要求报错含 “Invalid finite OPERATIONAL”，代码实际报 “Invalid nonempty OPERATIONAL host profile list of mappings”。小Pai 真实评测一段曾记为“原有的”，此前没有编号；要先确认以测试还是以代码的措辞为准。
 - 集成记录 11-08（第一轮）：本地集成分支 `claude/frosty-villani-38f085`，未推送，尚未落到 `pdos-next/design-v1.1`（主工作区另有未提交改动，等你定）。
   - 基点：`pdos-next/design-v1.1` 的 `38f5a024`。M1（`claude/m1-episodic-memory-324cdf`）11-08 已快进进主线，已在基点里，无需合并，迁移保持 `s0_0855_memory_episodes`。
   - 合并：D27 `refs/heads/claude/w4-d27-test-debt-6147cc`（`7cf4351d`，只有测试，无迁移），D214 `refs/heads/claude/gracious-hofstadter-311cb9`（`b1854243`）。
@@ -503,6 +504,33 @@ W3c · 想法已变但没有记录
     - D377 11-09 补修：你选了“`s0_0001` 排除扩展成员”并修完再落地；已在本分支修好并验证（见 D377），第一段那 6 个失败随之消除。
     - 三套测试库、检查点库和草稿区副本都已销毁。
   - 落地：本轮停在集成分支，等你确认后再落到 `pdos-next/design-v1.1`。集成分支是 `4ba32f97` 的后代，可以快进。
+- 集成记录 11-10（第五轮第一批）：集成分支 `claude/frosty-villani-38f085` 从主线 `c13c3fd6`（与本分支 tip 一致）起合 7 个分支；未推送，`pdos-next/design-v1.1`、主工作区和预览库都没动。D47、W4 小修下一批合入，PG 全量等它们合入后统一跑。
+  - 合并（按此顺序）：W11 `refs/heads/claude/trusting-poitras-e6aea6`（`ee8514d9`）、自动化规则 `refs/heads/claude/suspicious-babbage-15fcbf`（`e7ce05e7`）、W6 ⑥ `refs/heads/claude/fervent-vaughan-7ad67a`（`005477af`）、W6 ⑦ `refs/heads/claude/relaxed-swartz-67a3a9`（`210bdd58`，无迁移）、W6 ⑧ `refs/heads/claude/epic-chatterjee-780576`（`a0fafa8b`）、W7 `refs/heads/claude/wonderful-visvesvaraya-922b5d`（`7b1a1c05`，无迁移）、W9 BOM `refs/heads/claude/hopeful-joliot-438789`（`168712a7`）。之后单独提交重导的 `openapi.json` 和一处修复。
+  - 迁移按合并顺序从 `s0_0870` 起排，现 head `s0_0876`，链条线性：
+    - W11 `s0_0910` → `s0_0870`；自动化规则 `s0_0905`、`s0_0906` → `s0_0871`、`s0_0872`；W6 ⑥ `s0_0880` → `s0_0873`；W6 ⑧ `s0_0890`、`s0_0891` → `s0_0874`、`s0_0875`；W9 `s0_0900` → `s0_0876`。
+    - 文件名、revision、down_revision、`schema_s0_xxxx` 模块名与 import、降级保护和前置核对的报错文字，以及代码注释、清单、确认稿、证据里的号一起改，SQL 都没动。D47 分支上的 `s0_0868`、`s0_0869`、`s0_0870`–`s0_0879` 是占位号，下一批按真实 head 再排。
+  - 前置核对原样保留：`s0_0872`（原 `s0_0906`）按 SHA-256 核对 `automation_service_start`、`assert_automation_service_run` 仍是 `s0_0840` 原文；`s0_0873`（原 `s0_0880`）按 md5 核对 `guard_discussion_message`、`require_discussion_version` 仍是 `s0_0869` 原文。本批其他迁移都没碰这四个函数；`create` 往返的两次升级都通过。
+  - 确认稿：P105、P109、P110、P111、P113、P115、P116、P117 按编号排在 P99 之后，全部保留。
+  - 冲突按各自原位保留：清单里 W6 ⑥、⑦、⑧ 各段和 D390–D447 各段都留；D38、D39、D41、D75–D78、D341 这几行逐行取改过的一边。语义合并三处：
+    - `worker.py`：保留 W11 的优雅停机 `main()`，加入 W6 ⑥ 的回复投递 activity 和讨论回复发现，告警走 W11 的 `unavailable()`；注册工作流 18 个；
+    - `project-workspace.tsx`：W6 ⑦ 把“现在”页整块换成概览，W6 ⑥ 在这个文件里仅有的两处改动（任务视图和项目讨论的 `onOpenRun`）带到新结构上；
+    - `route.ts` 个人视图白名单：W6 ⑦ 的 `project-cockpit` 和 W7 的 `run-decisions` 都留。
+    - 另外，`auxiliary-operations.json` 合成 97 项、无重复；原件生命周期目录里 W6 ⑥、⑧、W9 三段各与原分支一致。
+  - 跨分支衔接，都没接上，保留登记：
+    - 工作日计算：W11 的日历接口与自动化规则的周一至周五估算对不上，没有切，原因写在 D443（W6 ⑥ 冷却期 D391 同理）；
+    - 跟进升级推送收件箱：W6 ⑥ 已提供规则例外的主动提及，但调用方还缺，原因写在 D441；
+    - W6 ⑧ 降级通知接通知中心：D413；W9 替代料批准接 D47：D433（D47 合入后）；W6 ⑦ 概览与驾驶舱接状态更新周期：D401、D444。
+  - 合同：`openapi.json` 用 `tools/export_contracts.py` 重导，相对主线只增（接口操作 322→339、结构 151→161；讨论的 `NewMessage` 改为带模块前缀，D398）；`payloads.schema.json`、`operations.json`、`acceptance.json` 导出无变化。v1.1 只有 W6 ⑧ 改过，三份合同里的 sha256 与现文一致；合同校验通过（87 operations、94 events、70 acceptance）。
+  - 修复一处（`0fcd13f4`）：W11 新增的 `work_calendars`、`work_calendar_versions` 没登记进原件生命周期目录，3 个“目录等于模型”的无库用例在 W11 分支上本来就失败；已按实际列登记。
+  - 验证（`tools/local_environment.py create` 建独立临时 `pdos_test`，显式 `TEST_DATABASE_URL`，未用 `.env`，未碰预览库）：
+    - 前端：typecheck 通过，lint 0 错误（4 条警告是原有的），`.mjs` 1978 个、`.test.ts` 757 个全部通过。
+    - 合同校验通过。
+    - 无库全量：10917 通过、3 失败、111 跳过，3 个失败就是上面的目录用例，修复后通过；2024 个 ERROR 全是缺库。`tools/tests` 72 个里 4 个失败，`c13c3fd6` 上同样失败，登记 D470。
+    - 迁移：`create` 的 head→base→head 往返和 seed 通过；往返后 pgvector 函数权限是默认值（D377 修复仍有效）。
+    - 7 个分支受影响的 PG 用例，61 个文件共 458 个：441 通过、3 跳过（AT-47 演练要显式开启；两个自动化 Temporal 用例要本机 Temporal 服务）、14 个失败或报错。这 14 个都是本机合盖睡眠造成的：运行中途 16:28—16:42 睡眠（`pmset` 有记录），醒来后预览和限期复核都过期了（`PREVIEW_EXPIRED`、`PROFESSIONAL_REVIEW_EXPIRED`）；在同一库上单独重跑，14 个全部通过。
+    - 没有合并引起的失败。
+    - 测试库、检查点库和草稿区副本都已销毁。
+  - 下一批：D47、W4 小修合入后统一跑 PG 全量，再等你确认落地。
 
 **W5 人工审阅与资格准备（验证欠账；你本人做，会话只负责出查阅单）**
 - D30 〔你〕52 题和 24 份资料逐题审阅定版（目前还不是 golden）；回放回答按六维和硬失败具名审阅（代理审阅不能算真人审阅）。
@@ -887,9 +915,9 @@ W3c · 想法已变但没有记录
   - 冲突风险：`my_work/attention.py` 加两个数据源（W7）；`agent/kernel/host.py` 一行（W6 ⑥、W8）；`contracts/openapi.json` 整份导出。
   - 余项：D440–D447。
 - D440 跟进规则参数固定为 1 个工作日，不能按项目关闭或调参（P115 定“以后再按 B 补”）。
-- D441 跟进升级只进注意项，不推送收件箱：通知管线的 SQL 丢弃小Pai 身份的非分派类通知。等 W6 ⑥ 的“小Pai 主动提及·自动化例外”，集成时处理。
+- D441 跟进升级只进注意项，不推送收件箱：通知管线的 SQL 丢弃小Pai 身份的非分派类通知。等 W6 ⑥ 的“小Pai 主动提及·自动化例外”，集成时处理。11-10 第五轮集成核对：W6 ⑥ 已提供规则例外的主动提及 `agent_mentions.notify(..., "agent.rule_exception", latest={"rule_owner_id": …})`，但还接不上：跟进升级是读取时算出的注意项，没有小Pai 运行上下文，也没有规则负责人（P115 每个项目默认生效）；提及要求小Pai 代一位在职的人写入且收件人不是这个人，而升级的收件人正是项目负责人本人。接入要新增按租户的发现步骤，并定“小Pai 代谁发出”，保留登记。
 - D442 周期起草的候选进“要我决定”依赖 W7 D78（按运行聚合候选）；现在候选只在规则的运行记录里，负责人从规则详情打开原运行确认。
-- D443 任务两个计时的时区暂用常量 `Asia/Shanghai`（任务本身不带时区），承诺和外部等待用各自记录的时区。租户工作日历（D221）接通后，`work_weekday_add` 与 `add_weekdays` 一起换成日历。
+- D443 任务两个计时的时区暂用常量 `Asia/Shanghai`（任务本身不带时区），承诺和外部等待用各自记录的时区。租户工作日历（D221）接通后，`work_weekday_add` 与 `add_weekdays` 一起换成日历。11-10 第五轮集成核对：W11 的租户工作日历已合入，但接口对不上，没有切：Python 侧 `rules.add_working_days(calendar, at, days)` 要先按租户用 `service.factory(s, tenant)` 读日历，而 `status_cadence.state()` 是不带会话的纯函数；SQL 侧 `work_calendar_add(at, days)` 按会话租户读日历、不带时区参数，而跟进与模板注意项在 SQL 里写死了“按周一至周五估算”的依据和标签，换成日历后要带日历名称与版本（P117 回执口径）；`project_status_cadence` 是定义者函数，它读日历表时的 RLS 也要核对。W6 ⑥ 冷却期（D391）同理。需要单独改，保留登记。
 - D444 “状态更新缺失”只出了接口；概览、项目列表、管理者驾驶舱的展示归 W6 ⑦。
 - D445 受理后的小Pai 运行实际准备出状态更新候选未端到端跑过（需脚本模型夹具，真实模型回归要授权）；PG 只验证到受理绑定项目，单元测试验证守卫只放开这一种候选。
 - D446 承诺到期提醒只给项目负责人；承诺人本人的到期提示不在四类分诊里，需随 W7 D38 在“承诺”页显示到期状态。
