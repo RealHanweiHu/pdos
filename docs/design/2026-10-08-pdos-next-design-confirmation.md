@@ -1723,7 +1723,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
 ### P119 具名复核核对参与者材料里的命令回执与仪器报告（用户 2026-11-11，选 A）
 
 - 起因：D287 修好记录观察后，带真实验证运行的独立具名复核仍被拒（D463）。复核正文内嵌参与者 owner 读到的原行，原行里有启动事实的命令回执（`command`/`receipt`）、测量导入的仪器报告（`artifact`/`measurement-report`）和整行引用。材料核对要求正文里的每个来源都在 `sources` 内并经过来源闭包核对，但复核只并入了各参与者自己的来源，来源闭包对领域来源注明“owner 接上前一律记为缺失”，对 `measurement-report` 直接拒绝。所以现设计下这类复核记不下来。会话提出三案：A 补齐两类来源的核对 owner，参与者与复核把内嵌原行的全部来源纳入闭包，规则不变、更严；B 材料核对不再遍历已由参与者闭包封住的原行，收窄守卫；C 暂不修。
-- 用户原话：“Go with A”（2026-11-11，在 A/B/C 三案中选 A，本会话的下一步按钮）。
+- 用户原话：“补齐来源核对，D47 合入后做 (Recommended)”（2026-11-10，在 A/B/C 三案中选 A，经“设计优化汇总与优先级排序”会话转达）；W4 小修会话里另点“Go with A”（2026-11-11）。
 - 细化：DC-11 的 T2 具名复核与 v1.1 的“事实来源须经核对”在参与者材料上的适用；不是新规则，“正文里的全部来源须在 `sources` 内”这条守卫不变。
   1. 命令回执：来源 `{kind: command, position: receipt, id: 命令编号, revision: 1}` 须在本型号恰有一条当前读者可读的回执；私有回执不能进入品类可见的事实。
   2. 仪器报告：来源 `{kind: artifact, position: measurement-report}` 须是当前可读、精确版本的已上传原件（原生文本永远不是仪器报告），字节与安全状态照常核对；私有报告不能进入品类可见的事实。
@@ -1731,5 +1731,5 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   4. 具名复核把参与者的来源集与读集一并纳入自己的来源闭包。
   5. 其他领域来源（如 `kind: domain`）仍按“owner 未接，记为缺失”处理。
 - 不改变：材料核对的守卫；T2 具名复核仍须本人签核；AI 不执行 T2；复核结论与有效性判定的规则（D47/D307）。
-- 实施：D463，`domain/quality/capa/fact_sources_owner.py`（两类来源的核对）、`participants_owner.py`（收齐内嵌来源）、`named_review_owner.py`（并入参与者来源集）。无迁移、无接口变化。
+- 实施：D463，`domain/quality/capa/fact_sources_owner.py`（两类来源的核对）、`participants_owner.py`（收齐内嵌来源）、`named_review_owner.py`（并入参与者来源集）。无迁移、无接口变化。排序：按 11-10 原话排在 D47 合入主线之后；实现已于 11-11 在 W4 小修分支先行提交（`0f658e21`，与 D47 分支无文件重叠），集成时在 D47 之后合入并复跑本条判据与 D307 的用例。
 - 判据：`tests/quality/capa/test_fact_sources_owner.py` 的命令回执与仪器报告用例（正例，以及未知回执、他型号回执、版本不为 1、私有回执、原生文本冒充报告的负例）；`tests/change/execution/test_partial_observation_review_chain.py` 整链记录部分观察与结论为 unknown 的独立具名复核。
