@@ -1344,3 +1344,13 @@ import pdos_next.domain.my_work.notifications.models  # noqa: E402,F401
 
 # D221 tenant working calendars (administrator-maintained, append-only versions).
 import pdos_next.domain.work_calendar.models  # noqa: E402,F401
+
+# D47 operations (supply commitments, forecasts, interfaces, fixtures, alternates,
+# customer acceptance, tooling and tool trials).
+import pdos_next.domain.manufacturing.supply_commitments.models  # noqa: E402,F401
+import pdos_next.domain.projects.forecast_refresh.models  # noqa: E402,F401
+import pdos_next.domain.engineering.interfaces.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.fixture_acceptance.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.alternate_approvals.models  # noqa: E402,F401
+import pdos_next.domain.delivery.customer_acceptance.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.tool_trials.models  # noqa: E402,F401

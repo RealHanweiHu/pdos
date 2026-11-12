@@ -1219,6 +1219,76 @@
       "limit": "仅assistant_compare隔离可见，只能读取当前父调用分配的变化，不能检索、续派或写入",
       "tier": "READ",
       "source": "企业 RAG 设计 v0.4 §7.9"
+    },
+    "supply.commitment.record": {
+      "when": "供方给出交期或数量承诺、改期改量或跟进结束时，按原文登记这条承诺；承诺不是到货，不计入库存与齐套",
+      "produces": "supply.commitment_recorded",
+      "limit": "需当前资格与授权；小Pai 须引用原文行，不能以本人陈述代替。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "work.forecast.refresh": {
+      "when": "任务实际开始或提交、计划或日期变化后，按当前计划与实际重算预测；只写新预测，不改计划、基线与承诺",
+      "produces": "forecast.refreshed",
+      "limit": "确定性引擎。",
+      "tier": "T0",
+      "source": "v1.1 附录 A"
+    },
+    "product.definition.update": {
+      "when": "用户要改定义的标题、目的、使用场景、需求、约束、排除项或未知项时，按所读的固定版本预填新的整体字段与改版原因，由本人确认一次生成新草稿版本；条目级修改用条目编辑，规格冻结后走变更单",
+      "produces": "definition.updated",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "engineering.interface.update": {
+      "when": "需要建立或修订一个接口合同（参与模块与专业、约束、单位、负责人、验证方式、受影响项），或某个参与专业要确认、提出异议时，预填本命令，由工程角色本人或该专业成员确认一次；受影响项只填显式引用，猜测写进待核实线索",
+      "produces": "interface.updated",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
+    },
+    "npi.fixture.accept": {
+      "when": "导入的治具需要验收、拒收或撤销验收时，准备该治具在某用途与工序下的验收材料（有效期、条件、理由），交制造角色具名本人办理；只管治具，设备仍走测试资源导入",
+      "produces": "fixture.accepted",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "evidence.source.withdraw": {
+      "when": "已被业务记录使用、或已共享到品类的原件或登记资料需要撤回时，准备撤回材料（受影响的记录与理由），交来源负责人或品类负责人具名办理；本人未被使用的原件用一次确认撤回",
+      "produces": "source.withdrawn",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "supply.alternate.approve": {
+      "when": "某 BOM 行缺料、有替代料且已有替代料的测试运行和具名复核时，准备这一轮 Build 的替代料批准材料（比例、单位、有效期、证据运行），交工程角色具名本人办理；批准不改 BOM，永久替换走变更单",
+      "produces": "alternate.approved",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "quality.capa.effectiveness.decide": {
+      "when": "CAPA 措施全部完成、观察期结束或需要延长时，整理具名复核与观察记录，准备有效、无效或延长观察的决定材料，交未实施措施的品质角色具名本人办理；判有效即关闭问题，判无效回到根因与措施",
+      "produces": "capa.effectiveness_decided",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "customer.acceptance.record": {
+      "when": "收到客户签样单后，按外观、尺寸、性能、包装标识、认证资料五类整理承认情况（条件、到期日）与签样单原件，交内部具名成员办理；小Pai 不能解析邮件代替客户签名",
+      "produces": "customer.acceptance_recorded",
+      "limit": "只能准备具名决定材料，不取得执行身份。",
+      "tier": "T2",
+      "source": "v1.1 附录 A"
+    },
+    "npi.tooltrial.create": {
+      "when": "Build 进入试模、已有该 Build 的验证准备时，预填一次试模登记（轮次、目的、材料批次、关键参数、穴位、问题与纠正措施），首次试模同时登记模具，并按已有验证准备带出验证请求；由工程或制造具名本人一次确认",
+      "produces": "tooltrial.created",
+      "limit": "预填候选，须一次实质确认后才生效。",
+      "tier": "T1",
+      "source": "v1.1 附录 A"
     }
   }
 }

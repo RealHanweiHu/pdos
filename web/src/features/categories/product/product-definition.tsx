@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { RetainedSheet } from "@/components/ui/detail-sheet";
 import { availabilityLabels, isLatestDefinition, natureLabels, plainReference, referenceKey, sourceLines, specificationValue, type DefinitionApi, type DefinitionList, type DefinitionPayload, type DefinitionReference, type DefinitionRevision, type DefinitionSource, type DefinitionSpec } from "@/lib/product-view";
 import { DefinitionDraftActions } from "./definition-draft-actions";
+import { DefinitionHeaderUpdate } from "@/features/d47/definition-header-update";
 import { ReadingPanel } from "./reading";
 
 type Product = { id: string; name: string; purpose: string; revision: number };
@@ -249,6 +250,7 @@ function DefinitionPanel({ product, principalId, sources, api, onSaved, onAccess
           <p className="subtle break-words">本版原因：{item.change_reason}{item.parent_definition_id ? " · 固定前一草稿，历史未覆盖" : " · 首版"}</p>
           {item.differences.length > 0 && <details><summary className="cursor-pointer text-sm font-medium">与固定父版的变化 · {item.differences.length}处</summary><div className="mt-3 space-y-3">{item.differences.map(change => <div key={change.path} className="min-w-0 rounded-lg border border-border p-3"><p className="mb-2 text-sm font-medium">{pathLabels[change.path] ?? `规格 ${change.path.replace("specs/", "")}`}</p><div className="grid gap-3 sm:grid-cols-2"><div><p className="subtle">前版</p><div className="break-words whitespace-pre-wrap text-sm">{changeValue(change.before)}</div></div><div><p className="subtle">此版</p><div className="break-words whitespace-pre-wrap text-sm">{change.after == null ? "从新版本移除，前版保留" : changeValue(change.after)}</div></div></div></div>)}</div></details>}
           <section className="border-t border-border pt-4"><h4 className="mb-3 font-medium">维护定义与条目</h4><DefinitionDraftActions key={item.id} definition={item} product={product} principalId={principalId} sources={sources} api={api} onSaved={definitionSaved} isLatest={isLatestDefinition(item, items)} onAccessDenied={clearPrivate}/></section>
+          {isLatestDefinition(item, items) && <DefinitionHeaderUpdate definition={item} product={product} api={api} onSaved={definitionSaved}/>}
         </div>)(viewed)}
     </RetainedSheet>}
   </section>;

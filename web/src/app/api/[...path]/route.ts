@@ -14,7 +14,11 @@ const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
 const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/platform-links)$/i;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
-const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|overview|governance(?:\/review-inputs)?))?$/i;
+const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|overview|governance(?:\/review-inputs)?|forecast))?$/i;
+// D47 supplier commitments per fixed Build (READ); records use the common command entry.
+const supplyCommitmentPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/supply-commitments|supply-commitments\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i;
+// D47 (P95–P97, P100) read-only views: interfaces, fixture acceptances, CAPA effectiveness, alternates, customer acceptances.
+const d47ReadPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:interfaces|fixture-acceptances|capa-effectiveness)|interfaces\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:alternate-approvals|customer-acceptances|tool-trials))$/i;
 // D56 permission-filtered Excel exports (READ, named human only); one exact scope parameter each.
 const exportPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/exports\/(?:project|bom-diff|test-summary)|personal\/exports\/my-work)$/i;
 const exportScope: Record<string, string | null> = { project: "project_id", "bom-diff": "bom_id", "test-summary": "build_id", "my-work": null };
@@ -253,6 +257,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
   const projectPlanning = projectPlanningPaths.test(pathname);
+  const supplyCommitments = supplyCommitmentPaths.test(pathname) || d47ReadPaths.test(pathname);
   const exportView = exportPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
@@ -290,7 +295,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !supplyCommitments && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -398,7 +403,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       query.set(key, value);
     }
     if (scopeKey && !query.has(scopeKey)) return Response.json({ code: "VALIDATION_FAILED", message: "请先选择要导出的范围。" }, { status: 422 });
-  } else if (projectPlanning) {
+  } else if (projectPlanning || supplyCommitments) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     for (const [key,value] of request.nextUrl.searchParams) {
       const accepted = pathname.endsWith("/plan-comparison") ? key === "proposal_id" : pathname.endsWith("/governance/review-inputs") ? key === "package_id" : false;

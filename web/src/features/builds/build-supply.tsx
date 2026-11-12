@@ -7,13 +7,18 @@ import { ArrowClockwise, Calculator, ClipboardText, Plus, Trash, WarningCircle }
 import { projectBuildsPath } from "@/lib/project-build-scope";
 import { Button } from "@/components/ui/button";
 import { CoverageShortages, SupplySnapshotHistory } from "@/features/manufacturing/supply-cost";
+import { BuildSupplyCommitments } from "@/features/builds/build-supply-commitments";
+import { AlternateApprovals, type DemandLine } from "@/features/d47/alternate-approvals";
+import { CustomerAcceptances } from "@/features/d47/customer-acceptances";
+import { ToolTrials } from "@/features/d47/tool-trials";
+import type { ProjectApi } from "@/lib/project-plan-view";
 import { originalLocation } from "@/lib/original-location";
 import { buildTypeNames, type Build, type BuildList } from "@/lib/build-preparation-view";
 import { decimalText, plainReference, referenceKey, sourceLines, type DefinitionReference, type DefinitionSource } from "@/lib/product-view";
 import { utcText } from "@/lib/project-plan-view";
 import { blankSupplyDraft, blankSupplyRow, checkPrepared, createCaptureInput, draftFromCapture, emptySupply, isObject, kitDisplay, kitPayload, materialsFromBuild, restoreSupply, snapshotCanCompute, snapshotDisplay, supplyKindNames, supplyNames, supplySubjects, type PreparedSupply, type SupplyApi, type SupplyCapture, type SupplyCommand, type SupplyDraft, type SupplyList, type SupplyLocal, type SupplyPreview, type SupplyRowDraft, type SupplyWaiting } from "@/lib/build-supply-view";
 
-type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: SupplyApi; onSaved: () => void | Promise<void> };
+type Props = { projectId?: string; product: { id: string; name: string; purpose: string; revision: number }; principalId: string; api: SupplyApi; onSaved: () => void | Promise<void>; sheetSources?: { id: string; title: string; content: string; revision: number }[]; originals?: { artifact_id: string | null }[] };
 type Receipt = { id: string; subject_id: string; subject_type: string };
 const labels: Record<string, string> = {
   snapshot: "本次整版供给快照", proposed_snapshot: "本次整版供给快照", capture: "未应用来源记录", input_snapshot: "固定来源输入", records: "整版来源记录", record_kind: "记录类别", record_id: "稳定外部记录标识", material_id: "固定物料", quantity: "来源数量", unit: "来源单位", sources: "精确原文依据", source_system: "来源系统", pool_id: "外部物理池标识", supplier_id: "外部供方标识", expected_at: "原来源预计到达时间", received_at: "实际到货发生时间", commitment_id: "已有承诺关联", quality: "原来源质量状态", availability: "原来源可用状态", note: "来源说明", reason: "整版记录原因", scope_complete: "供给及占用范围完整", build_id: "固定 Build", build_revision: "固定 Build 版本", revision: "快照版本", previous_snapshot_id: "固定前版快照", previous_revision: "固定前版版本", captured_at: "来源捕获时点", expires_at: "来源记录有效期", state: "来源有效状态", status: "记录状态", visibility: "可见范围", version: "固定来源版本", source_id: "固定来源", ref: "固定来源", source: "固定来源", pools: "当前物理池记录", reservations: "全部占用记录", commitments: "已有供方承诺", in_transit: "在途记录", receipts: "实际到货记录", restrictions: "质量或可用限制", key: "固定物理池身份", stage: "供给阶段", affected_quantity: "限制涉及数量", basis: "固定 Build 与工程依据", binding: "固定依据", basis_binding: "固定依据", build: "固定 Build", bom: "固定 BOM", engineering_configuration: "固定工程配置", manufacturing_configuration: "固定制造配置", product_unit: "计划成品单位", before: "前版", after: "本版", changes: "前后差异", reconciliation: "与前版对账", deltas: "来源差异", freshness: "当前依据状态", freshness_reasons: "需重核事项", record_key: "对应来源记录", field: "差异字段", difference: "服务器核对差值", warnings: "待核对事项", effect: "此次保存的影响",
@@ -38,9 +43,15 @@ function Value({ value, field, sources, identities }: { value: unknown; field?: 
   return null;
 }
 
+// D308: the fixed demand lines of this Build, read from its saved readiness result.
+function demandLines(build: { readiness: unknown }): DemandLine[] {
+  const result = (build.readiness as { result?: { demands?: { item_id?: string; material_id?: string | null; unit?: string | null }[] } } | null)?.result;
+  return (result?.demands ?? []).filter(row => typeof row.item_id === "string").map(row => ({ item_id: row.item_id as string, material_id: row.material_id ?? null, unit: row.unit ?? null }));
+}
+
 export function BuildSupply(props: Props) { return <SupplyPanel key={`${props.principalId}:${props.product.id}:${props.projectId ?? ""}`} {...props}/>; }
 
-function SupplyPanel({ product, principalId, api, onSaved, projectId = "" }: Props) {
+function SupplyPanel({ product, principalId, api, onSaved, projectId = "", sheetSources, originals }: Props) {
   const storageKey = `pdos-next:build-supply:${principalId}:${product.id}${projectId ? `:project:${projectId}` : ""}`;
   const [local, setLocal] = useState<SupplyLocal>({ buildId: "", drafts: {}, prepared: {}, pending: null });
   const localRef = useRef(local), alive = useRef(true), lock = useRef(false), dialog = useRef<HTMLDialogElement>(null), trigger = useRef<HTMLElement | null>(null);
@@ -142,6 +153,10 @@ function SupplyPanel({ product, principalId, api, onSaved, projectId = "" }: Pro
       <div className="space-y-5">
         {build.readiness && <section className="panel"><h3 className="font-semibold">本轮固定物料需求</h3><p className="subtle mt-2">以下是原固定需求，未据供应记录改写数量；已知需求量不代表库存或齐套。</p><div className="mt-3 space-y-3">{build.readiness.result.demands.map(demand => <article key={demand.item_id} className="border-t border-border pt-3"><p className="font-medium">{materials.find(material => material.id === demand.material_id)?.name ?? "固定物料，当前名称待核对"}{demand.critical ? " · 关键件" : ""}</p><p className="mt-1 text-sm">计划需求：{decimalText(demand.required_quantity)} {demand.unit ?? "单位未知"}<br/>每件用量：{decimalText(demand.quantity_per_product)} {demand.unit ?? "单位未知"}</p>{demand.issues.length > 0 && <p className="subtle mt-1">用量、单位或损耗仍需补充；未知没有用零代替。</p>}</article>)}</div>{!build.readiness.is_current && <p className="mt-3 text-sm text-destructive">这是历史固定需求，当前来源需重核。</p>}</section>}
         <section className="panel"><h3 className="font-semibold">按当前固定供给快照核对齐套</h3>{snapshot ? <div className="mt-3 space-y-3"><p className="text-sm">当前供给快照 v{snapshot.revision} · {snapshot.freshness === "current" ? "依据当前" : "历史依据，当前需重核"}</p><p className="subtle">范围仍不完整，质量与可用性保持未知。计算保留已知需求和待补事实，不将未知缺口补零。</p>{snapshot.freshness !== "current" && <p className="text-sm text-destructive">此快照来源已变化或失效，当前不可继续计算；下方结果只描述当时固定输入。</p>}<Button disabled={!canCompute} onClick={event => compute(event.currentTarget)}><Calculator/>{kits.some(kit => kit.supply_snapshot_id === snapshot.id) ? "核对并读取已有齐套结果" : "按本版快照计算齐套"}</Button><p className="subtle">这是确定性计算，无需再确认；相同固定输入保留原回执与计算时点。它不产生占用、替代资格或开工许可。</p></div> : <p className="subtle mt-3">先完成本轮整版供给快照的一次确认，再计算齐套。</p>}</section>
+        <BuildSupplyCommitments key={`${principalId}:${product.id}:${build.id}:commitments`} api={api} product={product} build={build} principalId={principalId} materials={materials}/>
+        <AlternateApprovals key={`${principalId}:${product.id}:${build.id}:alternates`} api={api as ProjectApi} product={product} build={build} lines={demandLines(build)}/>
+        <ToolTrials key={`${principalId}:${product.id}:${build.id}:trials`} api={api as ProjectApi} product={product} build={build}/>
+        <CustomerAcceptances key={`${principalId}:${product.id}:${build.id}:acceptances`} api={api as ProjectApi} product={product} build={build} sources={sheetSources ?? []} originals={originals ?? []}/>
         <SupplySnapshotHistory key={`${principalId}:${product.id}:${local.buildId}:snapshots`} snapshots={snapshotViews} status={loading ? "loading" : "ready"}/>
         <CoverageShortages key={`${principalId}:${product.id}:${local.buildId}:kits`} projections={kitViews} status={loading ? "loading" : "ready"}/>
       </div>

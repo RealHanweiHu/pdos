@@ -41,12 +41,14 @@ from pdos_next.domain.manufacturing.external_handoff.models import (
 from pdos_next.domain.manufacturing.release.exceptions.models import ReleaseExceptionDecision
 from pdos_next.domain.manufacturing.release.models import ReleaseDecision, ReleasePackage
 from pdos_next.domain.manufacturing.release.policy_models import ReleasePolicyFact
+from pdos_next.domain.manufacturing.supply_commitments.models import SupplyCommitmentVersion
 from pdos_next.domain.manufacturing.supply_execution.models import KitProjection, SupplySnapshot
 from pdos_next.domain.manufacturing.trials.native_models import (
     NativePilotObservation,
     NativePilotRun,
 )
 from pdos_next.domain.projects.external_wait.models import ExternalWaitVersion
+from pdos_next.domain.projects.forecast_refresh.models import WorkForecastRefresh
 from pdos_next.domain.projects.fulfillment.models import WorkCommitmentReview
 from pdos_next.domain.projects.models import PlanProposal, PlanRevision
 from pdos_next.domain.projects.risk.models import ProjectRiskFollowup
@@ -233,6 +235,14 @@ SOURCES = (
     ),
     ActivitySource(PlanProposal, "plan_proposal", ("work.plan.propose",), "plan", "计划候选"),
     ActivitySource(PlanRevision, "plan_revision", ("work.plan.apply",), "plan", "应用的计划"),
+    # P66: an engine recompute is listed as 系统重算, never as a 小Pai action.
+    ActivitySource(
+        WorkForecastRefresh,
+        "forecast_refresh",
+        ("work.forecast.refresh",),
+        "plan",
+        "系统重算的预测",
+    ),
     ActivitySource(
         BomRevision,
         "bom_revision",
@@ -355,6 +365,17 @@ SOURCES = (
     ),
     ActivitySource(
         KitProjection, "supply_coverage", ("supply.kit.compute",), "supply", "齐套计算记录"
+    ),
+    ActivitySource(
+        SupplyCommitmentVersion,
+        "supply_commitment",
+        ("supply.commitment.record",),
+        "supply",
+        "供方承诺登记",
+        columns={
+            "title": SupplyCommitmentVersion.body["supplier_ref"].astext,
+            "sources": SupplyCommitmentVersion.sources,
+        },
     ),
     ActivitySource(
         CostInputSnapshot,
@@ -752,6 +773,8 @@ SOURCES = (
 OPERATION_LABELS = MappingProxyType(
     {
         "work.external_wait.record": "登记外部等待",
+        "work.forecast.refresh": "预测已重算（系统重算，不改计划与承诺）",
+        "supply.commitment.record": "供方承诺已登记（不计入库存与齐套）",
         "proposal.g0.decide": "项目建立决定已保存",
         "work.plan.propose": "计划候选已保存",
         "work.plan.apply": "计划应用已记录",

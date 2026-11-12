@@ -121,6 +121,8 @@ def runrow(
 def semantic(payload):
     # Fixture supplies exact normalized semantics, never an authorization claim.
     value = payload.model_dump(mode="json", exclude={"confirmation_token", "approval_token"})
+    if value.get("outcome", "") is None:
+        value.pop("outcome")  # Same as the results service: no D305 outcome, old digest.
     value["sources"].sort(key=lambda v: json.dumps(v, sort_keys=True))
     if "coverage" in value:
         value["coverage"].sort(key=lambda v: (v["sample_id"], v["item_id"]))

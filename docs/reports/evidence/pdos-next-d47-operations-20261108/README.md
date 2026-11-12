@@ -1,0 +1,155 @@
+# D47 未实现操作：11-08 落地 2 条，11-09 按 P95–P97、P100 再落地 7 条，余 3 条
+
+分支 `claude/elastic-noyce-fad368`，基点 `pdos-next/design-v1.1` 的 `d6abcbf2`（迁移 head `s0_0861`）。本地提交，未推送。
+
+> 11-11 第五轮集成改号：本文的迁移号都是 D47 会话的占位号。集成时整体改为 `s0_0877`–`s0_0886`（`s0_0868`→`s0_0877` 起按序加 9，第一条 down 接 `s0_0876`），下面的记录保留当时的号。
+
+- 12 条 `not_implemented` 的逐条盘点见 [inventory.md](inventory.md)。清单原写 14 条，其中 2 条在 11-01 之后已以接口方式实现。
+- 本次实现 2 条：`supply.commitment.record`（T0）、`work.forecast.refresh`（T0，确定性引擎）。
+- 其余 10 条设计不完整或有冲突，没有自己定口径，分别登记为 D305–D312；规格冻结归 W6 的 D36。
+
+## 1. 供方承诺登记 `supply.commitment.record`（T0）
+
+依据：v1.1 §03.5、§04.10、§05.5，AT-20；拍板表 §5.3 F25（设计已覆盖、排期即可）；F15 本人陈述作来源（§5.2，按 v1.1 改回，不是新口径）。
+
+能做的事：
+- 一条承诺是独立的版本链：建立、改期改量、关闭、重开，历史全部保留，可为 D199 供方画像积累数据。
+- 绑定固定 Build 和它固定需求里的真实物料。供方只记外部标识，不建供应商实体（P87 第 9 项）。
+- 来源二选一或并用：具名本人可写本人陈述（`time_basis=human_recorded`）或引用原文行；小Pai 只能引用原文行（`source_claim`），而且须有当前 T0 资格与绑定运行。
+- 检查日 = 承诺日 + 1 天（F25）。到期仍未关闭的承诺进“我的工作”外部队列，注意项是只读投影，不另建待办，原因写明“不表示违约，也不表示未到货”。
+- 承诺不计入库存与齐套（AT-20）；齐套仍只按供给快照计算。供应面板按 BOM 行三列显示需求、承诺、实到。
+- 维护人：建立人、Build 负责人或项目负责人。
+
+入口：
+- 命令：`POST /v1/categories/{c}/commands`，T0 直接写，不开放人工预览。
+- 读取：`GET .../products/{p}/builds/{b}/supply-commitments`（按行视图与历史）、`GET .../products/{p}/supply-commitments/{id}`。
+- 前端：项目 → 产品与工程 → 物料齐套 → 维护记录与专业办理 → 选 Build，右栏“供方承诺（声称）与实到”。可登记、改期改量、关闭、重开。
+- 技能包：`build_execution` 升到 0.1.3-draft，加入 T0 工具和用法说明。
+
+存储（迁移占位 `s0_0868`）：
+- `supply_commitment_versions` 只追加，`supply_commitment_currents` 是当前指针。
+- 读写都跟随 Build 的可见范围（行级安全）。
+- 提交时有两道约束触发器：每个版本必须绑定同事务的公共回执，人工版本是本人陈述或本人引用，AI 版本必须有绑定运行和原文行；当前指针只能单步前进。
+- `pdos_agent` 没有任何权限。挂上原件生命周期的两个通用触发器，并登记到 `COVERED_COLUMNS` 和 `GUARDED`。
+
+## 2. 预测重算 `work.forecast.refresh`（T0，确定性引擎）
+
+依据：v1.1 §03.5 四种时间分开、I08；P82 D181（关键路径与浮时、延期只传给受影响的后继）；P58（预测晚于承诺只显示差异）；P41 第 10 项（工作日历接通前标“未扣节假日与停线”）；P66（单列“系统重算”，不可撤回，不算小Pai 动作）；AT-18、AT-19。
+
+能做的事：
+- 读当前已应用计划的固定输入（工期上下限、依赖、日历），再读关联计划任务的工作任务的实际开始与提交时间，用现有的 `projects/planning/engine` 计算区间、浮时和关键路径。
+- 已完成的任务按实际时间固定，并在实际完成时放行后继。计划依赖都是零间隔 FS，所以这是等价化简，没有改动共享引擎。
+- 只写新的预测记录和项目当前指针；计划版本、计划任务、基线和承诺都不变。与计划排期、与承诺的差异只做显示。
+- 信息不足时给未知或区间：没有工期上限、已开始但缺剩余工期，都不补日期。
+- 意图指纹绑定服务器算出的输入摘要（计划、事实、承诺、日历当天）。同一天输入不变，重放原回执；输入变了必须带新摘要，否则返回 VERSION_CONFLICT，并在 detail 里附当前摘要。
+- 活动记录里单列为“系统重算的预测”。
+
+入口：
+- 命令：`work.forecast.refresh`，参数为 `project_id`、当前 `plan={id,revision}`、`expected_input_sha256`。
+- 读取：`GET .../products/{p}/projects/{project}/forecast`，返回当前预测、下一轮输入摘要和最近 20 次记录。
+- 前端：项目 → 计划，“计划 vN 已应用”下方的“预测（系统重算）”面板，有“重算预测”按钮，并显示与计划比的偏移、浮时、关键路径和承诺对照。
+- 技能包：`work_management` 升到 0.1.3-draft，加入 T0 工具和用法说明。
+
+存储（迁移占位 `s0_0869`）：
+- `work_forecast_refreshes` 只追加，`work_forecast_currents` 每个项目一个指针。
+- 读写跟随项目的可见范围。提交时约束触发器检查回执绑定、执行人（本人或绑定运行）、是否为当前计划，以及当前指针单步前进。
+- 结果只含计算时间、任务键和标识，不复制来源内容，登记为非消费表（`NON_CONSUMING`）。
+
+## 3. 验证
+
+| 项 | 结果 |
+|---|---|
+| 供应承诺 PG（`tests/manufacturing/test_supply_commitments.py`） | 6 项通过：本人陈述建立与回执/审计/事件；不进快照与齐套；重放、新键同意图、同键异载荷冲突；改期、关闭、重开与版本链；“我的工作”检查日；越范围物料、过期 Build 版本、私有 Build 对同事与他租户不可见、缺读集、错行、AI 无绑定运行被拒且零写入；数据库只追加、伪造版本在提交时被拒、`pdos_agent` 无权限 |
+| 供应承诺规则（`test_supply_commitment_rules.py`） | 8 项通过：检查日、未知日期、AI 不能用本人陈述、维护人限制、关闭后须重开、载荷形状 |
+| 预测重算 PG（`tests/projects/test_forecast_refresh_pg.py`） | 3 项通过：只写预测、计划预测、项目版本、当前计划和承诺数都不变；未知工期保持未知；重放与新键同意图；过期摘要和旧计划版本返回 409；真实开工后输入变化，“已开始、缺剩余工期”保持未知，版本链与指针前进；他租户不可读写；数据库只追加、指针不能删、`pdos_agent` 无权限 |
+| 预测合成纯函数（`test_forecast_refresh_compose.py`） | 5 项通过，含 D181 固定案例：A 延 6 天、B 延 3 天时只推后各自的后继；C 延 3 天被浮时吸收；关键路径只有 A→X；未知不编日期；实际完成放行后继；预测晚于承诺只显示差异 |
+| 合同 | `tools/export_contracts.py` 后 `validate_contracts.py` 通过；`operations.json` 中这两条变为 `implemented_local_slice`（`not_implemented` 由 12 降为 10）；OpenAPI 只新增 3 条读取路径 |
+| 迁移 | 升到 `s0_0869`；`s0_0869→s0_0861→head`、`head→s0_0868→head` 往返通过；有预测记录时降级被拒（“Forecast refresh history requires s0_0869”） |
+| 受影响的公共 PG | 生命周期目录覆盖、原件生命周期、我的工作、项目活动、命令目录与调用须知共 371 通过。2 项失败均与本次无关：ORM 对照的 7 处既有索引差异（钉钉摘要、企业检索向量索引，无本次的表）；`test_personal_views` 全库回执计数与并行浏览器种子重叠，单独重跑通过 |
+| 无库全量 | 10770 通过，1 失败：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot`，在基点 `d6abcbf2` 源码上同样失败（登记 D313） |
+| 前端 | `.mjs` 1924 项、`.test.ts` 752 项全过；`tsc --noEmit` 无错；eslint 0 错误（4 条警告在既有测试文件） |
+| 浏览器 | 合成种子（同一隔离租户）：“我的工作”出现两条供方承诺跟进项；供应面板按行显示需求、承诺、实到，在页面上真实办理一次改期改量，版本记录变为 2 条；计划页“预测（系统重算）”在任务开工后真实重算一次，记录变为 2 次，已开始任务显示“缺剩余工期估计”。亮暗截图：[supply-commitments-light.jpg](supply-commitments-light.jpg)、[supply-commitments-dark.jpg](supply-commitments-dark.jpg)、[forecast-refresh-light.jpg](forecast-refresh-light.jpg)、[forecast-refresh-dark.jpg](forecast-refresh-dark.jpg) |
+
+环境：`tools/local_environment.py create` 建的隔离 `pdos_test`。它在降级到 base 时仍停在既有的 `s0_0784`（D260），之后手动升到 head 并 seed。全部测试显式指向该库，没有回退到 `.env`，没有调用真实模型；收尾时已 destroy。
+
+## 4. 余项
+
+- 本次两条闭环的余项是 D314、D315。
+- 待你确认的条目是 D305–D312。
+- 开发环境问题 D316：本机多个预览共用 `localhost` 的会话 cookie。
+- D241 只解除了一半：供应承诺已可用，替代料批准仍待 D308。
+
+
+## 5. 11-09 第二轮：按拍板单实现 7 条
+
+用户 11-09 对拍板单（[decision-sheet.md](decision-sheet.md)）回复“按推荐”，记为确认稿 P95（试模、治具）、P96（CAPA 有效性、替代料）、P97（客户样品与承认）、P100（来源撤回、定义更新、接口更新）。P98、P99 已被 W6 占用。
+
+| 操作 | 档位 | 结果 | 主要位置 | PG 测试 |
+|---|---|---|---|---|
+| `product.definition.update` | T1 | 已实现：整体字段改为下一草稿版本，条目与来源原样带入，冻结后与派生定义被拒 | `domain/categories/products/definition_update.py`，迁移 `s0_0870` | `test_definition_update_pg.py` 3 项、规则 4 项 |
+| `engineering.interface.update` | T1 | 已实现：建立、修订、各专业确认或异议；负责人不能代替确认；修订后原确认转已取代；受影响项经变更图真实读取 | `domain/engineering/interfaces/`，变更图接口节点，迁移 `s0_0871` | `tests/engineering/test_interfaces_pg.py` 4 项 |
+| `npi.fixture.accept` | T2 | 已实现：制造具名接受、拒绝、撤销，带有效期与条件；准备度改用本地验收事实 | `domain/manufacturing/fixture_acceptance/`，`_resource_report`，迁移 `s0_0872` | `test_fixture_acceptance_pg.py` 6 项 |
+| `evidence.source.withdraw` | T2 | 已实现：已被签署决定使用或已共享的来源，由来源负责人或品类负责人撤回；依赖结果需重核、检索清理；T1 增加“本人、未被签署决定使用”守卫 | `originals/source_withdraw.py`，迁移 `s0_0873` | `test_source_withdraw_pg.py` 5 项；原 T1 撤回测试 5 项仍通过 |
+| `supply.alternate.approve` | T2 | 已实现：工程具名、须带当前具名复核的测试运行；只进本 Build 齐套，BOM 不变，过期或撤销后不计入 | `domain/manufacturing/alternate_approvals/`，齐套接入，迁移 `s0_0874` | `test_alternate_approval_pg.py` 3 项（真实测试结果链与齐套计算） |
+| `quality.capa.effectiveness.decide` | T2 | 已实现：有效即关闭、无效回到措施中并可走第二轮、延长观察；实施人不能决定 | `domain/quality/capa_effectiveness/`，迁移 `s0_0875` | `test_capa_effectiveness_pg.py` 3 项（“有效”路径的复核读取用替身，见 D320） |
+| `customer.acceptance.record` | T2 | 已实现：五类范围逐项登记，签样单须为上传原件；阶段页只列出 | `domain/delivery/customer_acceptance/`，迁移 `s0_0876` | `test_customer_acceptance_pg.py` 3 项（真实上传、扫描、解析的原件） |
+| `npi.tooltrial.create` | T1 | 11-09 未实现（D317）；11-10 用户补选后实现，见 §6 | — | — |
+| `customer.sample.send` | T2 | 未实现（D318）：复用外部移交管线需改该模块的外键、用途分支与回执签发性质；真实外发仍未授权 | — | — |
+| `product.definition.publish` | T2 | 归 D36 | — | — |
+
+共同做法：
+- 每条新闭环都是“只追加版本 + 当前指针”，提交时由延迟约束触发器核对同事务的公共回执，并要求写入人是具名本人、无 AI 运行；`pdos_agent` 无任何权限。共用列与守卫在 `domain/named_records/`。
+- T2 预览不设到期，6 条新 T2 加入了 `ck_confirmations_decision_deadline`。专业职责矩阵新增 4 条（接口：工程；治具：制造；替代料：工程；CAPA 有效性：品质）；客户承认不要求专业角色（内部具名成员）。
+- 技能包：`build_execution` 0.1.4-draft（接口 T1、治具与替代料只准备）、`quality_issue` 0.1.3-draft、`release_handover` 0.1.3-draft、`gap_check` 0.2.3-draft。
+- 合同：导出后 `operations.json` 中 `not_implemented` 由 10 降为 3；校验通过。
+
+页面入口：定义页最新版本“修改整体字段”；Build 准备页“接口合同”；开工页资源依据中治具行的“治具验收”；资料面板“具名撤回来源”；供应页“替代料批准（本轮）”“客户承认（签样单）”；质量页“CAPA 有效性决定”；阶段页列出客户承认。
+
+浏览器走查（本地合成种子，同一隔离库）：
+- 定义更新：在页面上一次确认生成第 2 版草稿，库中第 1 版不变：[definition-update-preview-light.jpg](definition-update-preview-light.jpg)、[definition-update-light.jpg](definition-update-light.jpg)、[definition-update-dark.jpg](definition-update-dark.jpg)。
+- 具名撤回：品类负责人撤回共享资料，预览列出“无业务记录使用”，提交后库中为 withdrawn 并有 `source.withdrawn` 事件：[source-withdraw-preview-dark.jpg](source-withdraw-preview-dark.jpg)。
+- 替代料批准：种子人员没有工程职责，预览经网页代理到服务器后被拒并显示原因：[alternate-approval-refused-dark.jpg](alternate-approval-refused-dark.jpg)、[alternate-approval-refused-light.jpg](alternate-approval-refused-light.jpg)；客户承认面板渲染：[customer-acceptance-dark.jpg](customer-acceptance-dark.jpg)。
+- 接口合同、CAPA 有效性面板在对应页面渲染并经代理读取（“本项目尚无接口合同”）。需要专业职责的 T2 完整办理只在 PG 测试中覆盖：本地开发服务没有配置合成专业签发方。
+
+### 第二轮验证
+
+| 项 | 结果 |
+|---|---|
+| 新闭环 PG | 定义更新 3、接口 4、治具 6、来源撤回 5、替代料 3、CAPA 有效性 3、客户承认 3，单独运行全部通过；原 T1 撤回 5 项仍通过 |
+| 规则与纯函数 | 定义更新规则 4 项通过 |
+| 受影响 PG 组合 | 20 组 1858 项：1838 通过，13 失败、7 错误；归因见欠债总表 D378（新增测试单独重跑通过，2 项为既有失败，其余与高负载下的时间窗、确认过期一致） |
+| 无库全量 | 10775 通过，1 失败为既有 D313；其余 1996 项为缺数据库的 PG 用例 |
+| 技能与命令登记 | 106 项通过 |
+| 前端 | `.mjs` 1930 项、`.test.ts` 752 项通过；3 个 `.tsx` 测试本机加载器不支持（既有）；tsc 无错；eslint 0 错误（4 条既有警告） |
+| 合同 | 导出后校验通过，`not_implemented` 由 10 降为 3 |
+| 迁移 | 新建库上 `head→s0_0869→head`、`head→s0_0872→head` 往返通过；有历史时降级被拒（“Customer acceptance history requires s0_0876”）；ORM 对照只有 7 处既有索引差异 |
+| 环境 | `local_environment.py create` 建的隔离 `pdos_test`（降级仍停在既有 `s0_0784`，手动升到 head 后 seed），全部测试显式指向它，未回退 `.env`，未调用真实模型；收尾已 destroy |
+
+
+## 6. 11-10 第三轮：试模 `npi.tooltrial.create`（D305）
+
+依据 P95 与两条补充确认：处置加可选“接受/拒绝”（用户 11-09 选 A）；试模带出的验证请求按试模职责校验（用户 11-10 选 A，原话“试模带出的请求按试模职责校验 (Recommended)”）。
+
+做了什么：
+- 一次确认（T1，工程或制造具名本人）写三样东西：模具版本（首次试模建立，信息变化时续版，引用不变时不写）、试模记录、验证请求。模具与试模共用一张公共回执，回执主体是试模；数据库核对模具版本正是该试模引用的那一版，试模也必须有同 Build 的第 1 版验证请求。
+- 验证请求的结构与校验照搬 `verification.request.create`，只把职责改按试模核对；这个入口在共享代码里只对 `npi.tooltrial.create` 开放（其他调用方得到 `FORBIDDEN_OPERATION`）。单独新建请求仍只认工程或品质。正式请求表守卫没有改。
+- `test.disposition.decide` 新增可选 `outcome`（accept/reject）。请求来自试模而未填时拒绝；未填时保存的输入里没有这个键，旧处置的摘要不变。CAPA 配对核验（`quality/capa/paired.py`）原来要求保存的输入键与载荷模型的键完全一致，加字段后会把所有未填结论的处置判为缺语义，已同步改为“未填结论时不要求该键”。
+- Build 准备度：模具资源读最近一次试模所在测试的具名处置，接受为已验收（带处置记录与办理人），拒绝为未通过，尚无处置为未知。
+- 入口：供应页“试模登记”（Build 选定后出现），读取 `GET …/builds/{build}/tool-trials`；每轮显示它当时使用的模具版本。迁移占位 `s0_0877`（只新建两条链）。
+
+验证：
+
+| 项 | 结果 |
+|---|---|
+| D305 PG | `test_tool_trials_pg.py` 4 项：制造人员发起试模，模具第 1 版、试模、验证请求一起建立且重放同一回执；制造人员单独新建验证请求被拒（`FORBIDDEN_OPERATION`）；第二次试模改版本后模具续到第 2 版、无变化被拒、旧版本号冲突；Build 版本冲突、两种模具写法同时给出、AI 身份被拒，表只追加、`pdos_agent` 无权限 |
+| 处置结论 PG | `test_disposition_outcome_pg.py` 1 项：在真实结果链上，把请求标为来自试模（替身）后，未填结论的处置被拒（422），填“接受”后保存并可映射为已验收 |
+| 受影响 PG | 结果事务与守卫、处置结论、品质根因请求选项、CAPA 参与人、验证准备事务、试模：7 个文件 112 项全部通过 |
+| 规则 | `test_tool_trials_rules.py` 5 项（登记、只对试模开放的入口、载荷二选一、结论映射、旧摘要不变）；`d47-records` 解析 1 项 |
+| 无库全量 | 10779 通过；失败 2 项：既有 D313，另 1 项为上面 CAPA 配对核验的问题，修复后质量、验证、制造目录无库用例 3158 项全部通过 |
+| 迁移 | `s0_0877` 升级通过；有试模历史时降级被拒（“Tool trial history requires s0_0877”）；降级与再升级的 SQL 在同一事务内执行后回滚（库中已有测试数据，未用新建库做 alembic 往返）；ORM 对照仍只有 7 处既有索引差异 |
+| 合同 | 导出后校验通过，`not_implemented` 由 3 降为 2 |
+| 前端 | `.mjs` 1931 项通过；tsc 无错，改动文件 eslint 0 错误 |
+| 浏览器 | 本地合成签发方按 `.local/professional-synthetic-profiles.json` 配到开发服务（不入库），种子人员只有制造职责：预览通过并一次确认（[tool-trial-preview-light.jpg](tool-trial-preview-light.jpg)）；第二轮改模具版本后续到第 2 版，每轮显示各自的模具版本（[tool-trial-dark.jpg](tool-trial-dark.jpg)）。库中核对：一张回执（主体为试模、无 AI 运行）、模具两版均绑定各自回执、验证请求草稿第 1 版、`tooltrial.created` 事件 |
+
+余项见欠债总表 D379。
+

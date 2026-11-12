@@ -504,6 +504,45 @@ def create_app(
     from pdos_next.domain.exports.api import register_routes as register_export_routes
 
     register_export_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.supply_commitments.api import (
+        register_routes as register_supply_commitment_routes,
+    )
+    from pdos_next.domain.projects.forecast_refresh.api import (
+        register_routes as register_forecast_routes,
+    )
+
+    register_supply_commitment_routes(app, engine, auth_dependency)
+    register_forecast_routes(app, engine, auth_dependency)
+    from pdos_next.domain.engineering.interfaces.api import (
+        register_routes as register_interface_routes,
+    )
+
+    register_interface_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.tool_trials.api import (
+        register_routes as register_tool_trial_routes,
+    )
+
+    register_tool_trial_routes(app, engine, auth_dependency)
+    from pdos_next.domain.quality.capa_effectiveness.api import (
+        register_routes as register_effectiveness_routes,
+    )
+
+    register_effectiveness_routes(app, engine, auth_dependency)
+    from pdos_next.domain.delivery.customer_acceptance.api import (
+        register_routes as register_customer_acceptance_routes,
+    )
+
+    register_customer_acceptance_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.alternate_approvals.api import (
+        register_routes as register_alternate_approval_routes,
+    )
+
+    register_alternate_approval_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.fixture_acceptance.api import (
+        register_routes as register_fixture_acceptance_routes,
+    )
+
+    register_fixture_acceptance_routes(app, engine, auth_dependency)
 
     from pdos_next.ops.metrics import register_metrics
 

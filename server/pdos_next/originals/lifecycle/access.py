@@ -136,6 +136,9 @@ NON_CONSUMING = frozenset(
         # D56 export audit: who exported which scope, counts and file digest only;
         # it never copies or adopts source material.
         "export_audits",
+        # D47 forecast refreshes hold computed times, task keys and identities only.
+        "work_forecast_refreshes",
+        "work_forecast_currents",
         "agent_tool_calls",
         "agent_run_events",
         "agent_run_inputs",

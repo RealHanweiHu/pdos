@@ -1,5 +1,6 @@
 """Closed wrapper inputs: measurements, authority and computed results are server facts."""
 
+from typing import Literal
 from uuid import UUID
 
 from pydantic import Field, model_validator
@@ -86,3 +87,7 @@ class ReviewPayload(ResultBase):
 
 class DispositionPayload(ReviewPayload):
     """A named conclusion about this Run; no resource release or external approval."""
+
+    # D305 (P95 补充确认，用户 2026-11-09 选 A): optional accept/reject, required when the
+    # tested samples come from a tool trial; tooling acceptance in readiness reads it.
+    outcome: Literal["accept", "reject"] | None = None

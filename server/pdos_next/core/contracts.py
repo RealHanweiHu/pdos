@@ -552,3 +552,53 @@ PAYLOADS.update({
     "embedding.profile.save": SaveEmbeddingProfile,
     "embedding.call.reconcile": ReconcileEmbeddingCall,
 })
+
+from pdos_next.domain.manufacturing.supply_commitments.schemas import (  # noqa: E402
+    PAYLOADS as SUPPLY_COMMITMENT_PAYLOADS,
+)
+from pdos_next.domain.projects.forecast_refresh.schemas import (  # noqa: E402
+    PAYLOADS as FORECAST_REFRESH_PAYLOADS,
+)
+
+# D47: canonical T0 supplier commitment (F25) and the deterministic forecast refresh.
+PAYLOADS.update(SUPPLY_COMMITMENT_PAYLOADS)
+PAYLOADS.update(FORECAST_REFRESH_PAYLOADS)
+
+# D47 remaining Appendix A operations (P95–P97, P100), decided 2026-11-09.
+from pdos_next.domain.engineering.interfaces.schemas import (  # noqa: E402
+    PAYLOADS as INTERFACE_PAYLOADS,
+)
+from pdos_next.domain.manufacturing.fixture_acceptance.schemas import (  # noqa: E402
+    PAYLOADS as FIXTURE_ACCEPTANCE_PAYLOADS,
+)
+from pdos_next.domain.quality.capa_effectiveness.schemas import (  # noqa: E402
+    PAYLOADS as CAPA_EFFECTIVENESS_PAYLOADS,
+)
+from pdos_next.originals.source_withdraw_schemas import (  # noqa: E402
+    PAYLOADS as SOURCE_WITHDRAW_PAYLOADS,
+)
+from pdos_next.schemas.products.definition_update import DefinitionUpdatePayload  # noqa: E402
+
+PAYLOADS["product.definition.update"] = DefinitionUpdatePayload
+PAYLOADS.update(INTERFACE_PAYLOADS)
+PAYLOADS.update(FIXTURE_ACCEPTANCE_PAYLOADS)
+PAYLOADS.update(SOURCE_WITHDRAW_PAYLOADS)
+PAYLOADS.update(CAPA_EFFECTIVENESS_PAYLOADS)
+from pdos_next.domain.manufacturing.alternate_approvals.schemas import (  # noqa: E402
+    PAYLOADS as ALTERNATE_APPROVAL_PAYLOADS,
+)
+
+# D47 (P96 第 5–7 项): alternate approval for one Build's kit, T2 named engineering decision.
+PAYLOADS.update(ALTERNATE_APPROVAL_PAYLOADS)
+from pdos_next.domain.delivery.customer_acceptance.schemas import (  # noqa: E402
+    PAYLOADS as CUSTOMER_ACCEPTANCE_PAYLOADS,
+)
+
+# D47 (P97 第 5–8 项): customer acceptance from a signed sample sheet, T2 named record.
+PAYLOADS.update(CUSTOMER_ACCEPTANCE_PAYLOADS)
+from pdos_next.domain.manufacturing.tool_trials.schemas import (  # noqa: E402
+    PAYLOADS as TOOL_TRIAL_PAYLOADS,
+)
+
+# D47 (P95, D305): tool trial with tooling record and its verification request, T1 one confirmation.
+PAYLOADS.update(TOOL_TRIAL_PAYLOADS)

@@ -5678,3 +5678,94 @@ COVERED_COLUMNS.update({
         "author_id", "request_key", "request_sha256", "id", "tenant_id", "created_at",
     ),
 })
+
+# D47 supplier commitments: exact fields and retained direct original sources.
+COVERED_COLUMNS.update(
+    {
+        "supply_commitment_versions": (
+            "commitment_id", "revision", "previous_id", "previous_revision", "action", "state",
+            "material_id", "writer_id", "actor_id", "requester_id", "operation", "command_id",
+            "command", "sources", "reads", "source_basis", "body", "body_sha256",
+            "intent_digest", "request_digest", "receipt_id", "product_id", "project_id",
+            "build_id", "owner_id", "visibility", "id", "tenant_id", "created_at", "category_id"
+        ),
+        "supply_commitment_currents": (
+            "commitment_id", "version_id", "revision", "state", "product_id", "project_id",
+            "build_id", "owner_id", "visibility", "id", "tenant_id", "created_at", "category_id"
+        ),
+    }
+)
+GUARDED = (*GUARDED, "supply_commitment_versions", "supply_commitment_currents")
+
+# D47 forecast refreshes: computed times, task keys and identities only (non-consuming).
+COVERED_COLUMNS.update(
+    {
+        "work_forecast_refreshes": (
+            "revision", "previous_id", "previous_revision", "plan_id", "plan_revision", "as_of",
+            "input_sha256", "algorithm_version", "status", "result", "result_sha256",
+            "writer_id", "actor_id", "requester_id", "operation", "command_id",
+            "request_digest", "receipt_id", "product_id", "project_id", "owner_id",
+            "visibility", "id", "tenant_id", "created_at", "category_id"
+        ),
+        "work_forecast_currents": (
+            "version_id", "revision", "product_id", "project_id", "owner_id", "visibility",
+            "id", "tenant_id", "created_at", "category_id"
+        ),
+    }
+)
+
+# D47 named-person version chains (P95–P97, P100): one shared column layout.
+from pdos_next.domain.named_records.models import CURRENT_COLUMNS as _D47_CURRENT  # noqa: E402
+from pdos_next.domain.named_records.models import VERSION_COLUMNS as _D47_VERSION  # noqa: E402
+
+_D47_SCOPE = {
+    "engineering_interface": (
+        "product_id", "project_id", "configuration_series_id", "owner_id", "visibility"
+    ),
+}
+_D47_EXTRA = {"engineering_interface_versions": ("configuration_id",)}
+
+
+def _d47_chain(prefix):
+    scope = _D47_SCOPE[prefix]
+    versions, currents = f"{prefix}_versions", f"{prefix}_currents"
+    COVERED_COLUMNS[versions] = (*_D47_VERSION, *scope, *_D47_EXTRA.get(versions, ()))
+    COVERED_COLUMNS[currents] = (*_D47_CURRENT, *scope)
+    return versions, currents
+
+
+_D47_SCOPE["fixture_acceptance"] = (
+    "product_id", "project_id", "resource_id", "purpose", "operation_id", "owner_id", "visibility"
+)
+GUARDED = (*GUARDED, *_d47_chain("fixture_acceptance"))
+_D47_SCOPE["alternate_approval"] = (
+    "product_id",
+    "project_id",
+    "build_id",
+    "item_id",
+    "alternate_material_id",
+    "owner_id",
+    "visibility",
+)
+GUARDED = (*GUARDED, *_d47_chain("alternate_approval"))
+_D47_SCOPE["customer_acceptance"] = (
+    "product_id",
+    "project_id",
+    "build_id",
+    "owner_id",
+    "visibility",
+)
+GUARDED = (*GUARDED, *_d47_chain("customer_acceptance"))
+_D47_SCOPE["tooling"] = ("product_id", "project_id", "owner_id", "visibility")
+_D47_EXTRA["tooling_versions"] = ("resource_id",)
+_D47_EXTRA["tool_trial_versions"] = ("tooling_id", "tooling_revision", "request_id")
+GUARDED = (*GUARDED, *_d47_chain("tooling"))
+_D47_SCOPE["tool_trial"] = (
+    "product_id",
+    "project_id",
+    "build_id",
+    "owner_id",
+    "visibility",
+)
+GUARDED = (*GUARDED, *_d47_chain("tool_trial"))
+GUARDED = (*GUARDED, *_d47_chain("engineering_interface"))

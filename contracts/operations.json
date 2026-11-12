@@ -54,7 +54,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "source.withdrawn",
       "stage": "S0",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "product.definition.draft",
@@ -71,7 +72,8 @@
       "ai_execution": "一次确认后",
       "event": "definition.updated",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "product.definition.publish",
@@ -160,7 +162,8 @@
       "ai_execution": "确定性引擎",
       "event": "forecast.refreshed",
       "stage": "S1",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "work.external_wait.record",
@@ -196,7 +199,8 @@
       "ai_execution": "一次确认后",
       "event": "interface.updated",
       "stage": "S2",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "engineering.bom.revise",
@@ -357,7 +361,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "capa.effectiveness_decided",
       "stage": "S3",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "npi.process.revise",
@@ -374,7 +379,8 @@
       "ai_execution": "一次确认后",
       "event": "tooltrial.created",
       "stage": "S2",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "npi.fixture.accept",
@@ -382,7 +388,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "fixture.accepted",
       "stage": "S2",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "npi.pilot.create",
@@ -482,7 +489,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "customer.acceptance_recorded",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "supply.commitment.record",
@@ -490,7 +498,8 @@
       "ai_execution": "需资格与授权",
       "event": "supply.commitment_recorded",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "supply.kit.compute",
@@ -507,7 +516,8 @@
       "ai_execution": "仅准备/不可代决定",
       "event": "alternate.approved",
       "stage": "S4",
-      "implementation": "not_implemented"
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
     },
     {
       "operation": "cost.estimate.compute",

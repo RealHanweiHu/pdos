@@ -329,7 +329,7 @@ class Bound:
     at: datetime
 
 
-def _load(s, ctx, command, product, payload, *, require_reads=True):
+def _load(s, ctx, command, product, payload, *, require_reads=True, authorizing_operation=None):
     write = not getattr(s, "info", {}).get("read_snapshot", False)
     _human(s, ctx, product.id, write=write)
     require_access(s, ctx, product.id, write=True, lock=write)
@@ -380,8 +380,16 @@ def _load(s, ctx, command, product, payload, *, require_reads=True):
     }
     references = [refs[key] for key in sorted(refs)]
     at = now()
+    # Only create_trial_request passes authorizing_operation (D305, P95; user 2026-11-10).
     authority = _assess(
-        s, ctx, product.id, build.project_id, command.operation, base.purpose, write=write, at=at
+        s,
+        ctx,
+        product.id,
+        build.project_id,
+        authorizing_operation or command.operation,
+        base.purpose,
+        write=write,
+        at=at,
     )
     reads = _merge_reads(
         planned_reads,
@@ -639,7 +647,17 @@ def _kernel_payload(command, payload, bound, children):
 
 
 def _kernel(
-    s, ctx, command, product, bound, children, record, *, accepted=False, prospective=False
+    s,
+    ctx,
+    command,
+    product,
+    bound,
+    children,
+    record,
+    *,
+    accepted=False,
+    prospective=False,
+    factory=handler,
 ):
     sealed = {row.id: row for row in children}
     artifact_refs = {
@@ -718,7 +736,7 @@ def _kernel(
         record,
         accepted_confirmation=accepted,
     )
-    return handler(commands, bound.base.build, bound.build.status, check_source), commands
+    return factory(commands, bound.base.build, bound.build.status, check_source), commands
 
 
 def _invocation(command, payload, kernel_payload):
@@ -1220,3 +1238,108 @@ def list_verification(s, ctx, product_id):
         "has_more": False,
         "unavailable_count": unavailable,
     }
+
+
+# --- D305 (P95 补充确认，用户 2026-11-10 选 A) -----------------------------------
+# A tool trial creates its verification request in the same confirmation. That one
+# request is authorized by the trial's duties (engineering or manufacturing); every
+# other part of request creation is unchanged. Standalone verification.request.create
+# keeps engineering or quality. This entry is open to npi.tooltrial.create only.
+TRIAL_OPERATION = "npi.tooltrial.create"
+TRIAL_ROLES = frozenset({"engineering", "manufacturing"})
+
+
+def _trial_only(caller):
+    if caller != TRIAL_OPERATION:
+        raise DomainError("FORBIDDEN_OPERATION", "按发起命令校验职责只对试模开放。", 403)
+
+
+def _trial_factory(commands, build_ref, build_status, check_source):
+    from pdos_next.domain.verification.handlers import VerificationHandler
+    from pdos_next.domain.verification.ports import Ports
+
+    from .adapters import BoundEvidence, FixedBuilds
+
+    class TrialRequestHandler(VerificationHandler):
+        def _authorize(self, authority, operation):
+            if operation != "verification.request.create":
+                raise DomainError("FORBIDDEN_OPERATION", "试模入口只建立验证请求。", 403)
+            if authority.now.tzinfo is None or authority.now.utcoffset() is None:
+                raise DomainError("INVALID_AUTHORITY", "服务器时间必须带时区。", 503)
+            if not authority.authorized or not TRIAL_ROLES.intersection(authority.roles):
+                raise DomainError("FORBIDDEN_OPERATION", "当前范围及职责未获试模授权。", 403)
+            if not authority.qualified:
+                raise DomainError(
+                    "QUALIFICATION_REQUIRED", "当前操作所需能力/专业资格未满足。", 403
+                )
+
+    return TrialRequestHandler(
+        Ports(
+            commands=commands,
+            builds=FixedBuilds(build_ref, build_status),
+            evidence=BoundEvidence(check_source),
+        )
+    )
+
+
+def _trial_command(trial_command, payload):
+    from pdos_next.core.contracts import Command
+
+    return Command(
+        category_id=trial_command.category_id,
+        product_id=trial_command.product_id,
+        command_id=uuid5(NAMESPACE_URL, f"pdos-tooltrial-request:{trial_command.command_id}"),
+        idempotency_key=f"tooltrial-request:{trial_command.command_id}",
+        operation="verification.request.create",
+        expected_revision=trial_command.expected_revision,
+        source_read_set=trial_command.source_read_set,
+        payload=payload.model_dump(mode="json"),
+    )
+
+
+def _trial_bound(s, ctx, command, product, payload):
+    bound = _load(s, ctx, command, product, payload, authorizing_operation=TRIAL_OPERATION)
+    authority = authority_dto(bound.authority, ctx.requester_id, bound.at)
+    if not authority.authorized or not TRIAL_ROLES.intersection(authority.roles):
+        raise DomainError("FORBIDDEN_OPERATION", "当前范围及职责未获试模授权。", 403)
+    if not authority.qualified:
+        raise DomainError("QUALIFICATION_REQUIRED", "当前操作所需能力/专业资格未满足。", 403)
+    return bound
+
+
+def trial_request_review(s, ctx, trial_command, product, payload, *, caller):
+    """Validate the trial's request exactly as creation does, without writing."""
+    _trial_only(caller)
+    command = _trial_command(trial_command, payload)
+    bound = _trial_bound(s, ctx, command, product, payload)
+    _new_write(s, ctx, command, product, payload, bound)
+    return {
+        "request_id": str(payload.request_id),
+        "preparation": {"id": str(bound.preparation.id), "revision": bound.preparation.revision},
+        "build_id": str(bound.build.id),
+        "purpose": bound.base.purpose,
+        "roles": sorted(TRIAL_ROLES.intersection(bound.authority["roles"])),
+    }, bound
+
+
+def create_trial_request(s, ctx, trial_command, product, payload, *, caller):
+    """Write the request rows in the trial's transaction; no second receipt or ledger."""
+    _trial_only(caller)
+    command = _trial_command(trial_command, payload)
+    bound = _trial_bound(s, ctx, command, product, payload)
+    pointer = _new_write(s, ctx, command, product, payload, bound)
+    children = _children(ctx, command, payload, bound)
+    for row in children:
+        s.add(row)
+    s.flush()
+    kernel_payload = _kernel_payload(command, payload, bound, children)
+    recorded = []
+
+    def save(mutation):
+        row = _record(s, ctx, command, product, payload, bound, pointer, mutation, children)
+        recorded.append(row)
+        return row
+
+    kernel, _ = _kernel(s, ctx, command, product, bound, children, save, factory=_trial_factory)
+    kernel.execute(_invocation(command, payload, kernel_payload), kernel_payload)
+    return recorded[0]
