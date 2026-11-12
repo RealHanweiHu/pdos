@@ -19,7 +19,8 @@ from uuid import UUID
 
 from pdos_next.core.service import Context, digest, source_for
 from pdos_next.errors import DomainError
-from pdos_next.core.models import Grant, Principal
+from pdos_next.core.models import Grant, Principal, Receipt
+from pdos_next.core.request_proof import snapshot_rows
 from pdos_next.originals.security import require_safe
 from pdos_next.originals.access import object_reference, read_registered_bytes, require_original
 from pdos_next.originals.object_storage import StorageFailure
@@ -28,6 +29,7 @@ from pdos_next.domain.builds.professional_authority import service as profession
 from pdos_next.domain.builds.professional_authority.models import ProfessionalFact
 from pdos_next.domain.builds.professional_authority.schemas import DefinitionReference
 from pdos_next.schemas.verification.contracts import SourceRef
+from sqlalchemy import select
 from . import anchor as a
 from . import anchor_storage
 from . import fact_atom_storage as guards
@@ -59,6 +61,41 @@ class FactSourcesRead:
 def _require(value, code="SOURCE_STALE", status=409):
     if not value:
         raise DomainError(code, "完整来源、原件或当前调用范围需重新核对。", status)
+
+
+# Domain sources with a wired owner (P119). Other non-artifact refs stay explicit missing.
+REPORT_POSITION = "measurement-report"
+RECEIPT_POSITION = "receipt"
+
+
+def _report_source(s, ctx, product_id, ref, visibility):
+    """An instrument report: the exact uploaded original, its bytes read below."""
+    row = source_for(s, ctx, product_id, ref.id, ref.revision)
+    # Native text is never an instrument report.
+    _require(row.original_id is not None, "MISSING_REQUIRED_EVIDENCE", 422)
+    if visibility == "category" and row.visibility == "private":
+        raise DomainError("FORBIDDEN_SCOPE", "私有报告不能扩大事实受众。", 403)
+
+
+def _receipt_source(s, ctx, product_id, ref, visibility):
+    """A command clock: the one accepted receipt of that command in this model."""
+    _require(ref.revision == 1, "MISSING_REQUIRED_EVIDENCE", 422)
+    rows = snapshot_rows(
+        s,
+        (Receipt, "command-receipt", ref.id),
+        select(Receipt)
+        .where(
+            Receipt.tenant_id == ctx.tenant_id,
+            Receipt.product_id == product_id,
+            Receipt.command_id == ref.id,
+        )
+        .limit(2),
+        scope_id=product_id,
+    )
+    if len(rows) != 1:
+        raise DomainError("SOURCE_UNAVAILABLE", "命令回执不在当前授权范围。", 403)
+    if visibility == "category" and rows[0].visibility == "private":
+        raise DomainError("FORBIDDEN_SCOPE", "私有回执不能扩大事实受众。", 403)
 
 
 def _wire(value):
@@ -151,7 +188,8 @@ def read_source_closure(
 
     Native text is never an instrument report. Uploaded files require the real
     configured store; bytes are consumed internally and never returned.
-    Non-artifact domain refs remain explicit missing until their owner is wired.
+    Instrument reports and command receipts have owners (P119); other
+    non-artifact domain refs remain explicit missing until their owner is wired.
     """
     _require(isinstance(ctx, Context) and isinstance(product_id, UUID), "INTEGRATION_REQUIRED", 503)
     _require(
@@ -185,8 +223,12 @@ def read_source_closure(
         if visibility == "category" and private:
             raise DomainError("FORBIDDEN_SCOPE", "私有来源不能扩大事实受众。", 403)
         for ref in sources:
-            if ref.kind == "artifact":
+            if ref.kind == "artifact" and ref.position == REPORT_POSITION:
+                _report_source(s, ctx, product_id, ref, visibility)
+            elif ref.kind == "artifact":
                 evidence.check_source(s, ctx, product_id, ref)
+            elif ref.kind == "command" and ref.position == RECEIPT_POSITION:
+                _receipt_source(s, ctx, product_id, ref, visibility)
             else:
                 missing.add("DOMAIN_SOURCE_OWNER_REQUIRED")
         for read in reads:

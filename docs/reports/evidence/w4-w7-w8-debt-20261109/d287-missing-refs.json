@@ -1,0 +1,24 @@
+{
+ "note": "D287 probe on base c13c3fd6 (scratch copy, same isolated pdos_test): at fact_write._check_material, the refs found in the serialized body but absent from body.sources, and where they sit.",
+ "line": 453,
+ "function": "_check_material",
+ "missing": [
+  {
+   "id": "36d3f476-c0da-494c-9bfa-063a7ea0195b",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "line:1;quote_sha256:ee44fb35a9863c3b88a999b1f592cfd59a9e72a2b4d5c15d2d977c7e653e1787"
+  },
+  {
+   "id": "c732cb11-7341-4acb-ab08-883c347920d5",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "line:1;quote_sha256:29eaf96ae9e5b599a71cebfa10362b3855acd29c61f911db9b478846f9a76739"
+  }
+ ],
+ "paths": [
+  "body.coverage_sources[0]",
+  "body.coverage_sources[2]"
+ ],
+ "body_sources_count": 31
+}

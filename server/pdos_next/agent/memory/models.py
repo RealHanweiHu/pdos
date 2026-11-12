@@ -20,7 +20,7 @@ from sqlalchemy.dialects.postgresql import ARRAY, JSONB, TSVECTOR
 from sqlalchemy.orm import Mapped, mapped_column
 
 from pdos_next.agent.enterprise_search.embedding_models import Vector
-from pdos_next.agent.kernel.models import KernelRow
+from pdos_next.agent.kernel.kernel_row import KernelRow
 from pdos_next.core.models import Base
 
 

@@ -26,6 +26,9 @@ from .persistence import KernelStore
 from .run_lease import AttemptSuperseded, RunBusy, attempt_scope, run_lease
 from .tools import default_registry
 
+# The attempt's heartbeat; it also probes the run lease (D358).
+HEARTBEAT_SECONDS = 10
+
 
 def configure_agent_kernel(engine, adapters):
     engine._pdos_agent_kernel_adapters = adapters
@@ -123,10 +126,14 @@ class KernelActivities:
             raise
         # D243: one attempt works on a run at a time. A later attempt (after a timeout)
         # waits here, heartbeating, until the earlier one has stopped at a safe point.
-        with run_lease(self.engine, run_id, waiting=lambda: activity.heartbeat(str(run_id))):
-            return self._advance_owned(ctx, run_id, scope, reference, writer, goal, summary_run)
+        with run_lease(
+            self.engine, run_id, waiting=lambda: activity.heartbeat(str(run_id))
+        ) as lease:
+            return self._advance_owned(
+                ctx, run_id, scope, reference, writer, goal, summary_run, lease=lease
+            )
 
-    def _advance_owned(self, ctx, run_id, scope, reference, writer, goal, summary_run):
+    def _advance_owned(self, ctx, run_id, scope, reference, writer, goal, summary_run, lease=None):
         # The attempt this one waited for may have finished the round meanwhile.
         with self.store.transaction(scope) as (_, row):
             if row.reverted_at:
@@ -170,10 +177,12 @@ class KernelActivities:
         heartbeat_context = copy_context()
 
         def heartbeat():
-            while not stopped.wait(10):
+            while not stopped.wait(HEARTBEAT_SECONDS):
                 activity.heartbeat(str(scope.run_id))
-                if activity.is_cancelled():
-                    # Temporal gave this attempt up; stop before the next model/tool call.
+                # Temporal gave this attempt up, or the lease's connection dropped and
+                # released the run to a next attempt (D358): either way stop before the
+                # next model/tool call and leave the run to the next attempt.
+                if activity.is_cancelled() or (lease is not None and not lease.held()):
                     superseded.set()
 
         thread = Thread(target=lambda: heartbeat_context.run(heartbeat), daemon=True)

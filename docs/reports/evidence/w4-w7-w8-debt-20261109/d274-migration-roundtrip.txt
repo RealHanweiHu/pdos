@@ -1,0 +1,20 @@
+# D274 migration s0_0915 (placeholder) on the isolated pdos_test created by
+# tools/local_environment.py create (head s0_0869 after its own head->base->head + seed).
+# MIGRATION_DATABASE_URL set explicitly from .local/runtime.json; no .env.
+# Each step runs require_functions against the exact predecessor / new definition.
+
+$ alembic heads
+s0_0915 (business_s0) (head)
+$ alembic upgrade head && alembic current
+s0_0915 (head)
+$ alembic downgrade s0_0869 && alembic current
+s0_0869
+$ alembic upgrade head && alembic current
+s0_0915 (head)
+
+# Contrast run (same database): the purge-planning test, with its node assertion turned
+# into a print, at each revision. lifecycle_reference_summary for the pinned original:
+#   at s0_0869: reference_count 19 before the personal Run, 19 after  (Run not seen)
+#   at s0_0915: reference_count 19 before the personal Run, 20 after  (Run counted)
+# Both D274 tests fail at s0_0869 (the Run is no node in either category graph) and
+# pass at s0_0915. The database was left at s0_0915.

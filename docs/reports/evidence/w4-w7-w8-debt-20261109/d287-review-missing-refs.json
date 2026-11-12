@@ -1,0 +1,199 @@
+{
+ "note": "D287 probe on this branch after the observation fix (48ba2d4d's code), same isolated pdos_test: the named-review preparation refused at fact_write._check_material; refs in the serialized review body that are absent from body.sources, and where they sit (all inside participant_owner_material).",
+ "line": 453,
+ "function": "_check_material",
+ "stack": [
+  "domain/quality/capa/fact_write.py:453 _check_material",
+  "domain/quality/capa/fact_write.py:635 prepare",
+  "domain/quality/capa/fact_write.py:744 prepare_fact",
+  "domain/quality/capa/fact_api.py:623 inputs"
+ ],
+ "missing": [
+  {
+   "id": "40b467dc-9051-4c7e-8319-141036048d6f",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "line:1;quote_sha256:6c96c294f8bf8fc383047f05d3d6fd2d390e9fa0beef091f13ddc698a08f6dd6"
+  },
+  {
+   "id": "5e494cd7-15f5-446b-9b6a-98188851f42d",
+   "revision": 1,
+   "kind": "command",
+   "position": "receipt"
+  },
+  {
+   "id": "aca5d5b1-f1e8-47a4-bbb2-e3a576190878",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "measurement-report"
+  },
+  {
+   "id": "c071d5ff-5dc0-4af5-8330-2397fad6a2b7",
+   "revision": 1,
+   "kind": "command",
+   "position": "receipt"
+  },
+  {
+   "id": "e6ed1868-0c6c-43b4-aa99-4838980ba336",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "measurement-report"
+  },
+  {
+   "id": "ed37797d-0280-4546-8b27-6fbe3ac4c96f",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "line:1;quote_sha256:f7a417e30ee30474a858777448147dbf786b95cc5c69fbe405f185314abe7ee3"
+  },
+  {
+   "id": "f93b2b3c-02d2-4aba-b2fd-dab28ec4d043",
+   "revision": 1,
+   "kind": "artifact",
+   "position": "line:1;quote_sha256:ba21a2c06318ce13d81d28b764b77ad0afd60ab419c0f2d3945c9f7a7468aa25"
+  }
+ ],
+ "paths": [
+  {
+   "path": "body.participant_owner_material.rows[35].value.kernel_event.at.source",
+   "node": {
+    "id": "c071d5ff-5dc0-4af5-8330-2397fad6a2b7",
+    "kind": "command",
+    "position": "receipt",
+    "revision": 1
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[37].value.report_binding.report",
+   "node": {
+    "id": "aca5d5b1-f1e8-47a4-bbb2-e3a576190878",
+    "kind": "artifact",
+    "position": "measurement-report",
+    "revision": 1
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[48].value.report_binding.report",
+   "node": {
+    "id": "aca5d5b1-f1e8-47a4-bbb2-e3a576190878",
+    "kind": "artifact",
+    "position": "measurement-report",
+    "revision": 1
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[61].value.input_snapshot.resource_dependency_proof.material.proofs[2].decision.sources[0]",
+   "node": {
+    "line": 1,
+    "artifact_id": "ed37797d-0280-4546-8b27-6fbe3ac4c96f",
+    "expected_revision": 1,
+    "quote_prefix": "{\"calendar\":{\"calendar_id\":\"SYN-RETEST-8"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[66].value.input_snapshot.resource_dependency_proof.material.proofs[2].decision.sources[0]",
+   "node": {
+    "line": 1,
+    "artifact_id": "ed37797d-0280-4546-8b27-6fbe3ac4c96f",
+    "expected_revision": 1,
+    "quote_prefix": "{\"calendar\":{\"calendar_id\":\"SYN-RETEST-8"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[71].value.sources[0]",
+   "node": {
+    "line": 1,
+    "artifact_id": "40b467dc-9051-4c7e-8319-141036048d6f",
+    "expected_revision": 1,
+    "quote_prefix": "{\"sample_id\": \"78882444-f8c9-442d-9a45-e"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[71].value.sources[5]",
+   "node": {
+    "line": 1,
+    "artifact_id": "ed37797d-0280-4546-8b27-6fbe3ac4c96f",
+    "expected_revision": 1,
+    "quote_prefix": "{\"calendar\":{\"calendar_id\":\"SYN-RETEST-8"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[71].value.sources[7]",
+   "node": {
+    "line": 1,
+    "artifact_id": "f93b2b3c-02d2-4aba-b2fd-dab28ec4d043",
+    "expected_revision": 1,
+    "quote_prefix": "{\"sample_id\": \"a647d166-8438-4abd-aa01-9"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[78].value.kernel_event.at.source",
+   "node": {
+    "id": "5e494cd7-15f5-446b-9b6a-98188851f42d",
+    "kind": "command",
+    "position": "receipt",
+    "revision": 1
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[78].value.sources[0]",
+   "node": {
+    "line": 1,
+    "artifact_id": "40b467dc-9051-4c7e-8319-141036048d6f",
+    "expected_revision": 1,
+    "quote_prefix": "{\"sample_id\": \"78882444-f8c9-442d-9a45-e"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[78].value.sources[5]",
+   "node": {
+    "line": 1,
+    "artifact_id": "ed37797d-0280-4546-8b27-6fbe3ac4c96f",
+    "expected_revision": 1,
+    "quote_prefix": "{\"calendar\":{\"calendar_id\":\"SYN-RETEST-8"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[78].value.sources[7]",
+   "node": {
+    "line": 1,
+    "artifact_id": "f93b2b3c-02d2-4aba-b2fd-dab28ec4d043",
+    "expected_revision": 1,
+    "quote_prefix": "{\"sample_id\": \"a647d166-8438-4abd-aa01-9"
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[80].value.report_binding.report",
+   "node": {
+    "id": "e6ed1868-0c6c-43b4-aa99-4838980ba336",
+    "kind": "artifact",
+    "position": "measurement-report",
+    "revision": 1
+   }
+  },
+  {
+   "path": "body.participant_owner_material.rows[91].value.report_binding.report",
+   "node": {
+    "id": "e6ed1868-0c6c-43b4-aa99-4838980ba336",
+    "kind": "artifact",
+    "position": "measurement-report",
+    "revision": 1
+   }
+  }
+ ],
+ "same_artifact_in_body_sources_at": {
+  "40b467dc-9051-4c7e-8319-141036048d6f": null,
+  "5e494cd7-15f5-446b-9b6a-98188851f42d": null,
+  "aca5d5b1-f1e8-47a4-bbb2-e3a576190878": [
+   "line:1;quote_sha256:c880704dffeb437740003b5c44b438209ed4ab41434cd1c46e3b442e17225db2",
+   "line:2;quote_sha256:a31bc4bed413a2ae63a120a092c9df18cf2a9ca190e6e6491bca30919cb1fff3"
+  ],
+  "c071d5ff-5dc0-4af5-8330-2397fad6a2b7": null,
+  "e6ed1868-0c6c-43b4-aa99-4838980ba336": [
+   "line:1;quote_sha256:1f275c21698f1911c33b95c5fcb21658d2f043e1efead5e4be16a59403dc6eb1",
+   "line:2;quote_sha256:8e6763df5cdbb493c9cc1cada6a1ba681e7db50fd93218da99a86180a0b52e56"
+  ],
+  "ed37797d-0280-4546-8b27-6fbe3ac4c96f": null,
+  "f93b2b3c-02d2-4aba-b2fd-dab28ec4d043": null
+ },
+ "body_sources_count": 51
+}

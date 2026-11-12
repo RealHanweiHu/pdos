@@ -1,7 +1,7 @@
 """M2-owned metadata and work references; Agent role has no direct DML grants."""
 
 from datetime import datetime
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from sqlalchemy import (
     Boolean,
@@ -23,12 +23,7 @@ from pdos_next.core.clock import now
 from pdos_next.core.models import Base
 
 from .execution_schema import SHAPE
-
-
-class KernelRow:
-    id: Mapped[UUID] = mapped_column(primary_key=True, default=uuid4)
-    tenant_id: Mapped[UUID] = mapped_column(index=True)
-    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+from .kernel_row import KernelRow
 
 
 class AgentSession(KernelRow, Base):

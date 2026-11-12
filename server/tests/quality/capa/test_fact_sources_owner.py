@@ -187,6 +187,76 @@ def test_domain_reference_remains_explicit_owner_missing(work):
     assert not result.current_evidence_authorized
 
 
+def command_receipt(work, *, visibility="category", product_id=None):
+    command = uuid4()
+    work.s.seed(
+        Receipt,
+        id=uuid4(),
+        tenant_id=work.ctx.tenant_id,
+        product_id=product_id or work.pid,
+        command_id=command,
+        actor_id=work.actor,
+        requester_id=work.actor,
+        run_id=None,
+        operation="test.run.start",
+        subject_type="verification_run",
+        subject_id=uuid4(),
+        subject_revision=1,
+        visibility=visibility,
+        result={},
+    )
+    return SourceRef(id=command, revision=1, kind="command", position="receipt")
+
+
+def test_command_receipt_source_has_an_owner(work):
+    """P119: a command clock is checked against its one receipt, not left missing."""
+    project(work)
+    _row, _receipt, ref, read = native(work)
+    clock = command_receipt(work)
+    result = closure(work, [ref, clock], [read])
+    assert clock in result.sources and result.missing == ()
+
+
+@pytest.mark.parametrize("change", ["unknown", "other_model", "revision", "private"])
+def test_command_receipt_must_be_this_models_one_readable_receipt(work, change):
+    project(work)
+    _row, _receipt, ref, read = native(work)
+    clock = command_receipt(
+        work,
+        visibility="private" if change == "private" else "category",
+        product_id=uuid4() if change == "other_model" else None,
+    )
+    if change == "unknown":
+        clock = clock.model_copy(update={"id": uuid4()})
+    if change == "revision":
+        clock = clock.model_copy(update={"revision": 2})
+    with pytest.raises(DomainError) as error:
+        closure(work, [ref, clock], [read])
+    assert error.value.reason == {
+        "unknown": "SOURCE_UNAVAILABLE",
+        "other_model": "SOURCE_UNAVAILABLE",
+        "revision": "MISSING_REQUIRED_EVIDENCE",
+        "private": "FORBIDDEN_SCOPE",
+    }[change]
+
+
+def test_instrument_report_from_native_text_is_refused(work):
+    """Native text is never an instrument report (P119)."""
+    project(work)
+    _row, _receipt, ref, read = native(work)
+    report = ref.model_copy(update={"position": "measurement-report"})
+    with pytest.raises(DomainError) as error:
+        closure(work, [report], [read])
+    assert error.value.reason == "MISSING_REQUIRED_EVIDENCE"
+
+
+def test_instrument_report_of_an_uploaded_original_reads_its_bytes(work, monkeypatch):
+    _row, ref, read, _original, _epoch, store, _ = uploaded(work, monkeypatch)
+    report = ref.model_copy(update={"position": "measurement-report"})
+    result = closure(work, [report], [read])
+    assert result.sources == (report,) and result.missing == () and store.calls == 1
+
+
 def test_source_changes_during_later_project_read_are_rejected(work):
     project(work)
     row, _receipt, ref, read = native(work)

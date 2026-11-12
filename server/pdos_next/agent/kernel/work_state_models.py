@@ -8,7 +8,7 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from pdos_next.core.models import Base
 
-from .models import KernelRow
+from .kernel_row import KernelRow
 
 
 class AgentWorkState(KernelRow, Base):

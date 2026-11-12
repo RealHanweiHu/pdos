@@ -5,17 +5,38 @@ old thread may still be inside a model or tool call. Two attempts then advanced 
 run, which broke its ledgers and failed the run. Now each attempt holds a per-run lease
 for its whole duration, a later attempt waits for it, and a superseded attempt stops at
 the next safe point: before its next model call or tool call.
+
+The lease's connection can drop on its own; its lock is then released and the next
+attempt could start while this one runs on. The Activity probes the lease on every
+heartbeat and stops the attempt the same way once it is lost (D358).
 """
 
 import time
 from contextlib import contextmanager
 from contextvars import ContextVar
+from threading import Lock
 
 from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.pool import NullPool
 
 _KEY = "xiaopai-run-attempt:"
 _TRY = text("SELECT pg_try_advisory_lock(hashtextextended(:key, 0))")
+# A bigint advisory key shows in pg_locks as its high (classid) and low (objid) halves.
+_HELD = text(
+    "SELECT EXISTS (SELECT 1 FROM pg_locks l, (SELECT hashtextextended(:key, 0) AS k) h"
+    " WHERE l.locktype = 'advisory' AND l.pid = pg_backend_pid() AND l.granted"
+    " AND l.objsubid = 1 AND l.classid::bigint = ((h.k >> 32) & 4294967295)"
+    " AND l.objid::bigint = (h.k & 4294967295))"
+)
+# A dead peer surfaces within about half a minute instead of hanging the probe.
+_KEEPALIVE = {
+    "keepalives": 1,
+    "keepalives_idle": 10,
+    "keepalives_interval": 5,
+    "keepalives_count": 3,
+    "tcp_user_timeout": 30000,
+}
 _ATTEMPT = ContextVar("xiaopai_attempt_superseded", default=None)
 
 
@@ -30,6 +51,30 @@ class RunBusy(Exception):
     """Another attempt still holds the run, and this caller does not wait."""
 
 
+class RunLease:
+    """The lease an attempt holds; ``held()`` finds out whether it still does (D358)."""
+
+    def __init__(self, connection, key):
+        self._connection, self._key = connection, key
+        self._probe = Lock()
+        self._lost = False
+
+    def held(self):
+        """Ask the lease's own session whether it still holds the run's lock.
+
+        The driver may reconnect quietly after a drop, so a query that merely succeeds
+        proves nothing: the probe looks for the lock among this backend's own locks.
+        Once lost, the lease stays lost.
+        """
+        with self._probe:
+            if not self._lost:
+                try:
+                    self._lost = not self._connection.scalar(_HELD, self._key)
+                except SQLAlchemyError:
+                    self._lost = True
+            return not self._lost
+
+
 @contextmanager
 def run_lease(engine, run_id, *, waiting=None, interval=2.0):
     """Hold the run's session advisory lock while this attempt works on it.
@@ -40,10 +85,16 @@ def run_lease(engine, run_id, *, waiting=None, interval=2.0):
     transaction stays open, and the connection is discarded afterwards: session locks
     outlive a pooled connection, and closing the session releases the lock whatever
     interrupted the attempt, including the worker process dying.
+
+    Yields the RunLease, whose ``held()`` the attempt probes while it works.
     """
     # A long-running lease must not reserve a slot in the business transaction pool.
     lease_engine = create_engine(
-        engine.url, poolclass=NullPool, isolation_level="AUTOCOMMIT", hide_parameters=True,
+        engine.url,
+        poolclass=NullPool,
+        isolation_level="AUTOCOMMIT",
+        hide_parameters=True,
+        connect_args=_KEEPALIVE,
     )
     with lease_engine.connect() as connection:
         key = {"key": _KEY + str(run_id)}
@@ -52,7 +103,7 @@ def run_lease(engine, run_id, *, waiting=None, interval=2.0):
                 raise RunBusy(str(run_id))
             waiting()
             time.sleep(interval)
-        yield
+        yield RunLease(connection, key)
 
 
 def check_attempt(superseded=None):

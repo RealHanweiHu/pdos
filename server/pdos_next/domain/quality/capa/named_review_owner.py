@@ -510,6 +510,9 @@ class ActualNamedReviewOwner:
                     *_checked_refs(s, ctx, pid, payload),
                     *_checked_refs(s, ctx, pid, [v[0].material for v in pairs]),
                     *(ref for v in participants.participants for ref in v.owner_sources),
+                    # The body embeds the participants' raw material; its sources are
+                    # checked here like its reads below (P119).
+                    *participants.sources,
                     *(ref for v in observations for ref in v.fact.sources),
                     *(a.SourceRef.model_validate(v) for v in policy_value["sources"]),
                     *(applicability.sources if applicability else ()),
