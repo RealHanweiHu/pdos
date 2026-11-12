@@ -1671,7 +1671,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
 - 不改变：寿命与保养留在 ERP/MES（D97）；准备度只按规则给结论，不由分数放行；供方只记外部标识，不建供应商实体（P87 第 9 项）；AI 不执行 T2（DC-11）。
 - 补充确认（305-2，用户 2026-11-09 选 A，原话“给处置加接受/拒绝字段 (Recommended)”）：拍板单把具名处置写成“结论明确（接受或拒绝）”与代码不符。改为给 `test.disposition.decide` 加一个可选的“处置结论：接受/拒绝”，只在该测试含试模样件时必填；模具验收读这个字段：接受记为已验收，拒绝记为未通过，没有处置记为未知。其他测试的处置行为不变。
 - 补充确认（305-3 与 305-4 冲突，用户 2026-11-10 选 A，原话“试模带出的请求按试模职责校验 (Recommended)”）：由 `npi.tooltrial.create` 在同一次确认里带出的验证请求，按试模的职责（工程或制造）校验，请求的其余结构与校验不变；单独新建 `verification.request.create` 仍只认工程或品质。共享代码中“按发起命令校验职责”的入口只对试模这一个调用方开放。
-- 实施：D306 已实现（`domain/manufacturing/fixture_acceptance/`，准备度接入 `builds/operational_facts/service.py` 的 `_resource_report`，迁移占位 `s0_0872`；测试 `tests/manufacturing/test_fixture_acceptance_pg.py`）。D305 按两条补充确认实现（2026-11-10）：`domain/manufacturing/tool_trials/`（模具与试模两条版本链，同一张公共回执；迁移占位 `s0_0877`）；试模带出的请求走 `domain/verification/preparation/service.py` 末尾只对 `npi.tooltrial.create` 开放的入口（`trial_request_review` / `create_trial_request`），单独新建请求的职责不变；处置结论字段在 `verification/results/schemas.py` 的 `DispositionPayload.outcome`，请求来自试模而未填时拒绝；准备度的模具项在 `_resource_report` 读最近一次试模的具名处置。测试：`tests/manufacturing/test_tool_trials_pg.py`（含“制造人员发起试模成功带出请求”“制造人员单独新建验证请求仍被拒”）、`test_tool_trials_rules.py`、`tests/verification/results/test_disposition_outcome_pg.py`。
+- 实施：D306 已实现（`domain/manufacturing/fixture_acceptance/`，准备度接入 `builds/operational_facts/service.py` 的 `_resource_report`，迁移 `s0_0881`（分支上占位 `s0_0872`）；测试 `tests/manufacturing/test_fixture_acceptance_pg.py`）。D305 按两条补充确认实现（2026-11-10）：`domain/manufacturing/tool_trials/`（模具与试模两条版本链，同一张公共回执；迁移 `s0_0886`（分支上占位 `s0_0877`））；试模带出的请求走 `domain/verification/preparation/service.py` 末尾只对 `npi.tooltrial.create` 开放的入口（`trial_request_review` / `create_trial_request`），单独新建请求的职责不变；处置结论字段在 `verification/results/schemas.py` 的 `DispositionPayload.outcome`，请求来自试模而未填时拒绝；准备度的模具项在 `_resource_report` 读最近一次试模的具名处置。测试：`tests/manufacturing/test_tool_trials_pg.py`（含“制造人员发起试模成功带出请求”“制造人员单独新建验证请求仍被拒”）、`test_tool_trials_rules.py`、`tests/verification/results/test_disposition_outcome_pg.py`。
 - 判据：首次试模同时产生模具记录第 1 版和一条验证请求，第二次试模引用同一模具；未处置时准备度的模具项为未知，具名处置接受或拒绝后分别变为已验收或未通过；非工程、制造角色发起被拒；治具接受、拒绝、撤销各成一版并进入准备度，非制造角色、AI 身份办理被拒。
 
 <a id="p96"></a>
@@ -1690,7 +1690,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   7. **不改 BOM**：只让这一轮齐套计算把替代料算进去；永久改 BOM 走变更单（v1.1 §04.13、I03）。
 - 不改变：小Pai 只准备评效材料，不执行 T2；AT-21“未有适用验证和具名批准不得替代”；PCN 子流程（P79 D101）另议；不新增采购角色。
 - 补充确认（用户 2026-11-09 经会话转达）：判“无效”后可以再走一轮根因和 CAPA，每轮一次，每一轮都以上一轮的“无效”决定为前提；沿用现有命令，不另设命令。实现上，只有“无效”决定会把问题退回“措施中”并清空根因与 CAPA，现有根因与 CAPA 命令才可能再次办理。
-- 实施：D307 `domain/quality/capa_effectiveness/`（迁移占位 `s0_0875`，测试 `tests/quality/effectiveness/test_capa_effectiveness_pg.py`）；D308 `domain/manufacturing/alternate_approvals/`（齐套接入 `supply_execution/service.py`，迁移占位 `s0_0874`，测试 `tests/manufacturing/test_alternate_approval_pg.py`）；D241 的替代方案随之解除依赖。
+- 实施：D307 `domain/quality/capa_effectiveness/`（迁移 `s0_0884`（分支上占位 `s0_0875`），测试 `tests/quality/effectiveness/test_capa_effectiveness_pg.py`）；D308 `domain/manufacturing/alternate_approvals/`（齐套接入 `supply_execution/service.py`，迁移 `s0_0883`（分支上占位 `s0_0874`），测试 `tests/manufacturing/test_alternate_approval_pg.py`）；D241 的替代方案随之解除依赖。
 - 判据：措施实施人本人决定被拒；判无效后问题回到措施中，判有效后问题关闭，延长观察更新截止日；缺当前具名复核的替代料批准被拒；批准后只对该 Build 的齐套计算生效、BOM 不变，撤销或过期后恢复缺料。
 
 <a id="p97"></a>
@@ -1709,7 +1709,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   7. **关联外发**：可选；样品经 PDOS 外发的，必须关联那次外发。这一项按通用做法。
   8. **阶段评审**：评审材料列出承认情况作为依据，不自动阻断；阶段推进仍是具名决定（P41 第 1 项）。
 - 不改变：外部协作者入口延后（C11、D106）；真实外发与外部接收仍须用户授权（AGENTS.md 批准边界）；AI 不执行 T2。
-- 实施：承认部分 `domain/delivery/customer_acceptance/`（迁移占位 `s0_0876`，阶段页读取 `projects/governance/service.py`，测试 `tests/delivery/test_customer_acceptance_pg.py`）。外发部分未实现，见欠债总表 D318。
+- 实施：承认部分 `domain/delivery/customer_acceptance/`（迁移 `s0_0885`（分支上占位 `s0_0876`），阶段页读取 `projects/governance/service.py`，测试 `tests/delivery/test_customer_acceptance_pg.py`）。外发部分未实现，见欠债总表 D318。
 - 判据：客户样品授权要求开工授权与已分配样件，缺一被拒；发送意图 `network_send=false`，没有任何网络调用；非工程角色或 AI 身份授权被拒；承认缺签样单原件被拒，五类范围逐项保存并可带条件与到期日；经 PDOS 外发的样品不关联外发记录被拒；阶段评审读取列出承认情况。
 
 <a id="p100"></a>
@@ -1726,5 +1726,5 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   5. **接口确认**：各参与专业分别确认，状态为待确认、已确认、有异议、已取代，不合成一次按钮（v1.1 §03.10）。每个接口指定一名具名负责人（须是项目成员），负责人与确认人分开（v1.1 §02.12）。
   6. **接口影响**：只按显式登记的受影响项传播，接入已有的变更影响计算；AI 线索单列，不混成确定结论（v1.1 §04.2）。工程角色具名本人一次确认（T1），小Pai 只预填。
 - 不改变：T1 撤回的日常路径不加严；公开研究快照不可撤回；规格冻结 `product.definition.publish` 仍归 D36；D312 定下后与 D49“接口合同与设计责任人”一并关闭。
-- 实施：D310 `originals/source_withdraw.py`（T1 守卫在 `originals/actions.py`，迁移占位 `s0_0873`，测试 `tests/originals/test_source_withdraw_pg.py`）；D311 `domain/categories/products/definition_update.py`（迁移占位 `s0_0870`，测试 `tests/categories/products/test_definition_update_pg.py`）；D312 `domain/engineering/interfaces/`（变更图接口节点在 `change/execution/graph.py`，迁移占位 `s0_0871`，测试 `tests/engineering/test_interfaces_pg.py`）；D49 的接口合同子项随 D312 关闭。
+- 实施：D310 `originals/source_withdraw.py`（T1 守卫在 `originals/actions.py`，迁移 `s0_0882`（分支上占位 `s0_0873`），测试 `tests/originals/test_source_withdraw_pg.py`）；D311 `domain/categories/products/definition_update.py`（迁移 `s0_0879`（分支上占位 `s0_0870`），测试 `tests/categories/products/test_definition_update_pg.py`）；D312 `domain/engineering/interfaces/`（变更图接口节点在 `change/execution/graph.py`，迁移 `s0_0880`（分支上占位 `s0_0871`），测试 `tests/engineering/test_interfaces_pg.py`）；D49 的接口合同子项随 D312 关闭。
 - 判据：已被签署决定使用的原件走 T1 被拒、走 T2 成功，非负责人办理被拒，撤回后依赖结果显示“需重核”且检索不再命中；定义更新生成新草稿版本、原版本不变，规格冻结后被拒；接口建立第 1 版、修订续版，非工程角色被拒，负责人不能兼任确认人，各专业确认状态分别保存，受影响项进入变更影响。

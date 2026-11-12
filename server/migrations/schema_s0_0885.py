@@ -1,8 +1,8 @@
 """Customer acceptances (D309, P97): append-only versions, exact Current, receipt atom.
 
-Placeholder revision s0_0876 (down s0_0875) allocated to the D47 session; the
-integration renumbers it to the real head (file, revision, down_revision,
-this snapshot's name and the downgrade guard text together).
+Assigned s0_0885 (down s0_0884) at the 11-11 integration; placeholder
+s0_0876 (down s0_0875) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together).
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.
@@ -45,7 +45,7 @@ SCHEMA_SQL = (
 
 DOWNGRADE_SQL = (
     'ALTER TABLE public.customer_acceptance_versions NO FORCE ROW LEVEL SECURITY',
-    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.customer_acceptance_versions) THEN\n     RAISE EXCEPTION 'Customer acceptance history requires s0_0876'; END IF; END $$",
+    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.customer_acceptance_versions) THEN\n     RAISE EXCEPTION 'Customer acceptance history requires s0_0885'; END IF; END $$",
     'DROP TABLE public.customer_acceptance_currents',
     'DROP TABLE public.customer_acceptance_versions',
     'DROP FUNCTION public.protect_customer_acceptance_current()',

@@ -2,6 +2,8 @@
 
 分支 `claude/elastic-noyce-fad368`，基点 `pdos-next/design-v1.1` 的 `d6abcbf2`（迁移 head `s0_0861`）。本地提交，未推送。
 
+> 11-11 第五轮集成改号：本文的迁移号都是 D47 会话的占位号。集成时整体改为 `s0_0877`–`s0_0886`（`s0_0868`→`s0_0877` 起按序加 9，第一条 down 接 `s0_0876`），下面的记录保留当时的号。
+
 - 12 条 `not_implemented` 的逐条盘点见 [inventory.md](inventory.md)。清单原写 14 条，其中 2 条在 11-01 之后已以接口方式实现。
 - 本次实现 2 条：`supply.commitment.record`（T0）、`work.forecast.refresh`（T0，确定性引擎）。
 - 其余 10 条设计不完整或有冲突，没有自己定口径，分别登记为 D305–D312；规格冻结归 W6 的 D36。

@@ -1,12 +1,12 @@
-"""Fixture acceptance (D306, P95): append-only versions, exact Current, receipt atom."""
+"""Interface contracts (D312, P100): append-only versions, exact Current, receipt atom."""
 
 from alembic import op
 
-from migrations.schema_s0_0872 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0880 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0872"
-down_revision = "s0_0871"
+revision = "s0_0880"
+down_revision = "s0_0879"
 branch_labels = depends_on = None
 
 

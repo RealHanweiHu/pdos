@@ -1,12 +1,12 @@
-"""Customer acceptances (D309, P97)."""
+"""Forecast refreshes (D47, P82 D181): append-only engine results and project Current."""
 
 from alembic import op
 
-from migrations.schema_s0_0876 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0878 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0876"
-down_revision = "s0_0875"
+revision = "s0_0878"
+down_revision = "s0_0877"
 branch_labels = depends_on = None
 
 

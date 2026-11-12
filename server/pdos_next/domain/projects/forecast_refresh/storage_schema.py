@@ -123,7 +123,7 @@ def downgrade_sql():
     return (
         f"ALTER TABLE public.{REFRESHES} NO FORCE ROW LEVEL SECURITY",
         f"""DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.{REFRESHES}) THEN
-     RAISE EXCEPTION 'Forecast refresh history requires s0_0869'; END IF; END $$""",
+     RAISE EXCEPTION 'Forecast refresh history requires s0_0878'; END IF; END $$""",
         f"DROP TABLE public.{CURRENTS}",
         f"DROP TABLE public.{REFRESHES}",
         *(f"DROP FUNCTION public.{signature}" for signature, _ in FUNCTIONS),

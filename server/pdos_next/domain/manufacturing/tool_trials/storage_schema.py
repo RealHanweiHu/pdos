@@ -34,7 +34,7 @@ TOOLING = storage.Chain(
     subject="tooling",
     prefix="tooling",
     read=PROJECT_READ,
-    history="Tooling history requires s0_0877",
+    history="Tooling history requires s0_0886",
     subject_sql=TOOLING_SUBJECT,
 )
 TRIAL = storage.Chain(
@@ -43,7 +43,7 @@ TRIAL = storage.Chain(
     subject=SUBJECT,
     prefix="tool_trial",
     read=BUILD_READ,
-    history="Tool trial history requires s0_0877",
+    history="Tool trial history requires s0_0886",
     extra_atom=TRIAL_LINKS,
     visibility=True,
 )

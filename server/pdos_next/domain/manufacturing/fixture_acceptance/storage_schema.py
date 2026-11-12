@@ -22,7 +22,7 @@ CHAIN = storage.Chain(
     subject=SUBJECT,
     prefix="fixture_acceptance",
     read=PROJECT_READ,
-    history="Fixture acceptance history requires s0_0872",
+    history="Fixture acceptance history requires s0_0881",
     visibility=True,
 )
 
@@ -78,7 +78,7 @@ def downgrade_sql():
     listed = ",".join(repr(value) for value in D47_T2)
     return (
         f"""DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.confirmations WHERE expires_at IS NULL AND operation IN ({listed})) THEN
-     RAISE EXCEPTION 'D47 named approvals require s0_0872'; END IF; END $$""",
+     RAISE EXCEPTION 'D47 named approvals require s0_0881'; END IF; END $$""",
         *_deadline(INSTALLED_DEADLINE),
         *storage.downgrade_sql(CHAIN),
     )

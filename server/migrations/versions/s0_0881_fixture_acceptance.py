@@ -1,12 +1,12 @@
-"""Tooling records and tool trials (D305, P95)."""
+"""Fixture acceptance (D306, P95): append-only versions, exact Current, receipt atom."""
 
 from alembic import op
 
-from migrations.schema_s0_0877 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0881 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0877"
-down_revision = "s0_0876"
+revision = "s0_0881"
+down_revision = "s0_0880"
 branch_labels = depends_on = None
 
 

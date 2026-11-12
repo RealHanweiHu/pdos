@@ -1,12 +1,12 @@
-"""Definition header update (D311, P100): copied items accept the update receipt."""
+"""Customer acceptances (D309, P97)."""
 
 from alembic import op
 
-from migrations.schema_s0_0870 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0885 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0870"
-down_revision = "s0_0869"
+revision = "s0_0885"
+down_revision = "s0_0884"
 branch_labels = depends_on = None
 
 

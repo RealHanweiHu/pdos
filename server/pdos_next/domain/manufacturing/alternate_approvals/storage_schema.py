@@ -22,7 +22,7 @@ CHAIN = storage.Chain(
     subject=SUBJECT,
     prefix="alternate_approval",
     read=BUILD_READ,
-    history="Alternate approval history requires s0_0874",
+    history="Alternate approval history requires s0_0883",
     visibility=True,
 )
 

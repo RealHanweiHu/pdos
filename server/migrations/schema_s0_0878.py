@@ -1,7 +1,8 @@
 """Forecast refreshes (D47, P82 D181): append-only engine results and project Current.
 
-Placeholder revision s0_0869 (down s0_0868) allocated to the D47 session; the
-integration renumbers it to the real head together with s0_0868.
+Assigned s0_0878 (down s0_0877) at the 11-11 integration; placeholder
+s0_0869 (down s0_0868) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together).
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.
@@ -40,7 +41,7 @@ SCHEMA_SQL = (
 
 DOWNGRADE_SQL = (
     'ALTER TABLE public.work_forecast_refreshes NO FORCE ROW LEVEL SECURITY',
-    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.work_forecast_refreshes) THEN\n     RAISE EXCEPTION 'Forecast refresh history requires s0_0869'; END IF; END $$",
+    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.work_forecast_refreshes) THEN\n     RAISE EXCEPTION 'Forecast refresh history requires s0_0878'; END IF; END $$",
     'DROP TABLE public.work_forecast_currents',
     'DROP TABLE public.work_forecast_refreshes',
     'DROP FUNCTION public.protect_work_forecast_current()',

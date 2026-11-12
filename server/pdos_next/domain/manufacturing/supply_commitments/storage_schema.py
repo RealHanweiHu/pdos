@@ -137,7 +137,7 @@ def downgrade_sql():
     return (
         f"ALTER TABLE public.{VERSIONS} NO FORCE ROW LEVEL SECURITY",
         f"""DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.{VERSIONS}) THEN
-     RAISE EXCEPTION 'Supply commitment history requires s0_0868'; END IF; END $$""",
+     RAISE EXCEPTION 'Supply commitment history requires s0_0877'; END IF; END $$""",
         f"DROP TABLE public.{CURRENTS}",
         f"DROP TABLE public.{VERSIONS}",
         *(f"DROP FUNCTION public.{signature}" for signature, _ in FUNCTIONS),

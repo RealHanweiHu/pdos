@@ -1,12 +1,12 @@
-"""Forecast refreshes (D47, P82 D181): append-only engine results and project Current."""
+"""Definition header update (D311, P100): copied items accept the update receipt."""
 
 from alembic import op
 
-from migrations.schema_s0_0869 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0879 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0869"
-down_revision = "s0_0868"
+revision = "s0_0879"
+down_revision = "s0_0878"
 branch_labels = depends_on = None
 
 

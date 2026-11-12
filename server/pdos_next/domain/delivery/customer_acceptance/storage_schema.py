@@ -14,7 +14,7 @@ CHAIN = storage.Chain(
     subject=SUBJECT,
     prefix="customer_acceptance",
     read=BUILD_READ,
-    history="Customer acceptance history requires s0_0876",
+    history="Customer acceptance history requires s0_0885",
     visibility=True,
 )
 

@@ -1,12 +1,12 @@
-"""Source use read for named withdrawal (D310, P100)."""
+"""Tooling records and tool trials (D305, P95)."""
 
 from alembic import op
 
-from migrations.schema_s0_0873 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0886 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0873"
-down_revision = "s0_0872"
+revision = "s0_0886"
+down_revision = "s0_0885"
 branch_labels = depends_on = None
 
 

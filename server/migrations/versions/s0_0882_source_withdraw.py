@@ -1,12 +1,12 @@
-"""Supplier commitments (D47, F25): append-only versions, exact Current, receipt atom."""
+"""Source use read for named withdrawal (D310, P100)."""
 
 from alembic import op
 
-from migrations.schema_s0_0868 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0882 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0868"
-down_revision = "s0_0861"
+revision = "s0_0882"
+down_revision = "s0_0881"
 branch_labels = depends_on = None
 
 

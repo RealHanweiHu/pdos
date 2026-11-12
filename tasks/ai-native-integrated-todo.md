@@ -621,7 +621,7 @@ W3c · 想法已变但没有记录
     - 意图绑定服务器算出的输入摘要：同日同输入时重放；输入变了返回 409，并附当前摘要。
     - D181 固定案例用纯函数测试验证。
     - 已加入 `work_management` 0.1.3-draft。
-  - 迁移占位 `s0_0868_supply_commitments`（down `s0_0861`）、`s0_0869_forecast_refreshes`（down `s0_0868`），**集成时按真实 head 重排**：文件名、revision、down_revision、快照 `schema_s0_0868.py`/`schema_s0_0869.py` 以及降级保护文字里的号要一起改。两次迁移都没有改共享函数（`m3_lifecycle_*`、工作管理公共守卫都没动），只新建本闭环的表、函数、策略和触发器。
+  - 迁移占位 `s0_0868_supply_commitments`（down `s0_0861`）、`s0_0869_forecast_refreshes`（down `s0_0868`），**集成时按真实 head 重排**（11-11 第五轮集成改为 `s0_0877`、`s0_0878`，down 接 `s0_0876`）：文件名、revision、down_revision、快照 `schema_s0_0868.py`/`schema_s0_0869.py` 以及降级保护文字里的号要一起改。两次迁移都没有改共享函数（`m3_lifecycle_*`、工作管理公共守卫都没动），只新建本闭环的表、函数、策略和触发器。
   - 验证：
     - PG：供应承诺 6 项，预测重算 3 项。
     - 纯函数：规则 8 项，合成 5 项。
@@ -634,15 +634,15 @@ W3c · 想法已变但没有记录
   - 首次试模同时登记模具第 1 版（零件、版本、供方模具编号、穴数，可选关联本 Build 受控导入的模具资源），之后的试模引用模具，信息变化时续版；试模记录轮次、目的、材料批次、参数、穴位、问题与纠正措施。模具、试模与验证请求在同一事务，模具版本与试模共用一张公共回执（回执主体是试模，数据库核对模具版本正是该试模引用的版本）。
   - 验证请求按已有验证准备建立，结构与校验同 `verification.request.create`，只是职责按试模（工程或制造）核对；这个入口只对试模开放，单独新建请求仍只认工程或品质。正式请求表守卫未改：请求第 1 版仍记为 `verification.request.create`，试模记录持有请求标识。
   - `test.disposition.decide` 加可选处置结论（接受/拒绝）：请求来自试模而未填时拒绝；其他处置不变，未填时保存的输入没有这个键、摘要与原来一致。CAPA 配对核验（`quality/capa/paired.py`）的闭合键检查同步改为“未填结论时不要求该键”，否则所有未填结论的处置都会被判为缺语义（无库全量发现）。准备度（`_resource_report`）的模具项读最近一次试模所在测试的具名处置：接受为已验收，拒绝为未通过，尚无处置为未知。
-  - 入口：供应页“试模登记”；读取 `GET …/builds/{build}/tool-trials`。迁移占位 `s0_0877`（只新建两条版本链）。技能包 `build_execution` 增加 T1 条目（仍为本分支未发布的 0.1.4-draft）。余项见 D379。
+  - 入口：供应页“试模登记”；读取 `GET …/builds/{build}/tool-trials`。迁移占位 `s0_0877`（11-11 第五轮集成改为 `s0_0886`；只新建两条版本链）。技能包 `build_execution` 增加 T1 条目（仍为本分支未发布的 0.1.4-draft）。余项见 D379。
 - D306 ✅ 11-09 按 [P95](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p95) 实现 `npi.fixture.accept`（T2，制造具名）：
   - 治具身份取 Build 当前受控导入的资源（kind=fixture），同一命令办理接受、拒绝、撤销，可带有效期与条件，每次一个新版本；
   - 准备度计算（`_resource_report`）用本地验收决定替换同用途同工序的导入验收事实：接受为已验收，拒绝或撤销为阻断，有效期外阻断，无记录为未知；
-  - 入口：资源依据面板的治具行；读取 `GET …/projects/{project}/fixture-acceptances`。迁移占位 `s0_0872`（同时把 6 条新 T2 加入具名决定无到期清单）。余项见 D319。
+  - 入口：资源依据面板的治具行；读取 `GET …/projects/{project}/fixture-acceptances`。迁移占位 `s0_0872`（11-11 第五轮集成改为 `s0_0881`；同时把 6 条新 T2 加入具名决定无到期清单）。余项见 D319。
 - D307 ✅ 11-09 按 [P96](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p96) 实现 `quality.capa.effectiveness.decide`（T2，品质具名）：
   - 有效：同一事务关闭问题（状态 closed、关闭结论、有效性决定）；无效：回到措施中，根因与 CAPA 清空，用现有 CAPA 起草、根因决定重新办理，上一轮留在历史版本；延长观察：新截止日须晚于当前截止日；
   - 措施实施人不能决定；有效须有结论为“适用”的当前具名复核且观察期已满；无效须引用复核或观察记录；
-  - 入口：质量页“CAPA 有效性决定”，读取 `GET …/projects/{project}/capa-effectiveness`。迁移占位 `s0_0875`（问题状态加 closed、操作清单与事件映射）。余项见 D320。
+  - 入口：质量页“CAPA 有效性决定”，读取 `GET …/projects/{project}/capa-effectiveness`。迁移占位 `s0_0875`（11-11 第五轮集成改为 `s0_0884`；问题状态加 closed、操作清单与事件映射）。余项见 D320。
 - D308 ✅ 11-09 按 [P96](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p96) 实现 `supply.alternate.approve`（T2，工程具名）：绑定 Build + BOM 行 + 当前 BOM/配置摘要，须引用带当前具名复核的测试运行；可带有效期、可撤销、可重新批准；只进入该 Build 的齐套计算（`approved_alternates` 接入齐套与新鲜度），BOM 不变，过期、撤销或 BOM 变化后不再计入。入口：供应页“替代料批准（本轮）”。迁移占位 `s0_0874`。余项见 D319。D241 的替代料依赖解除。
 - D309 部分完成 11-09 按 [P97](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p97)：
   - ✅ `customer.acceptance.record`（T2，内部具名成员）：五类范围逐项登记（承认、条件承认、未承认、不涉及，带条件与到期日），签样单须为上传原件并核对原文行；阶段评审读取只列出承认情况，不进门禁检查；入口：供应页“客户承认（签样单）”与阶段页。迁移占位 `s0_0876`。
@@ -650,7 +650,7 @@ W3c · 想法已变但没有记录
 - D310 ✅ 11-09 按 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100) 实现 `evidence.source.withdraw`（T2，来源负责人或品类负责人）：只办理已被签署决定使用（封存或发布的定义引用、被批准决定或封存定义消费的事实）或已共享的原件与登记资料；撤回后列出使用它的业务记录并在读取时显示需重核，同时触发企业检索清理。T1 `evidence.original.withdraw` 增加两条守卫：只能撤回本人上传、未被签署决定使用的原件（P9）。入口：资料面板“具名撤回来源”。迁移占位 `s0_0873`（两个只读判定函数）。余项见 D319。
 - D311 ✅ 11-09 按 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100) 实现 `product.definition.update`（T1）：修改整体字段生成下一草稿版本，原样带入条目与来源，原版本不变；规格冻结后与派生型号的定义被拒。入口：定义页最新版本“修改整体字段”。迁移占位 `s0_0870`（扩展 `protect_fixed_definition`、`m3_definition_item_atom` 的操作清单）。
 - D312 ✅ 11-09 按 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100) 实现 `engineering.interface.update`（T1）：同一命令建立、修订、各专业确认或提出异议；挂在工程配置系列的当前版本下；负责人须为项目成员且不能代替确认；修订后原确认转为已取代；受影响项须经变更图真实所有者读取，变更图新增接口节点只沿登记项传播，待核实线索单列。入口：Build 准备页“接口合同”。迁移占位 `s0_0871`。D49 的“接口合同与设计责任人”随之关闭。余项见 D319。
-- 11-09/11-10 迁移占位 `s0_0870`–`s0_0877`（down 依次接 `s0_0869`），**集成时按真实 head 重排**（文件名、revision、down_revision、快照 `schema_s0_087x.py` 与降级保护文字一起改）。其中 `s0_0870`、`s0_0872`、`s0_0875` 修改了共享函数或约束（`protect_fixed_definition`、`m3_definition_item_atom`、`ck_confirmations_decision_deadline`、`quality_issue_versions` 两个检查约束、`assert_quality_change_receipt`），集成时须与其他分支对同一函数的改动合并，不能整段覆盖。`s0_0877` 只新建模具与试模两条链。
+- 11-09/11-10 迁移占位 `s0_0870`–`s0_0877`（down 依次接 `s0_0869`），**集成时按真实 head 重排**（11-11 第五轮集成改为 `s0_0879`–`s0_0886`，`s0_0870`→`s0_0879` 起按序加 9）（文件名、revision、down_revision、快照 `schema_s0_087x.py` 与降级保护文字一起改）。其中 `s0_0870`、`s0_0872`、`s0_0875` 修改了共享函数或约束（`protect_fixed_definition`、`m3_definition_item_atom`、`ck_confirmations_decision_deadline`、`quality_issue_versions` 两个检查约束、`assert_quality_change_receipt`），集成时须与其他分支对同一函数的改动合并，不能整段覆盖。`s0_0877` 只新建模具与试模两条链。
 - D313 既有测试失败：`tests/agent/kernel/test_source_views.py::test_get_only_router_uses_current_context_and_read_snapshot`，`GET /v1/personal/agent-input-sources` 期望 404、实际 500。在基点 `d6abcbf2` 源码上同样失败（11-08 第三轮集成带入 D42 后），与 D47 无关，未修。
 - D314 预测重算余项：
   - 已开始的任务缺“剩余工期”录入口，引擎要求 remaining，所以预测保持未知；

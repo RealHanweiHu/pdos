@@ -1,9 +1,10 @@
 """Definition header update (D311, P100): copied items accept the update receipt.
 
-Placeholder revision s0_0870 (down s0_0869) allocated to the D47 session; the
-integration renumbers it to the real head (file, revision, down_revision and
-this snapshot's name together). Bodies are the installed definitions with only
-the listed operation names added; the downgrade restores the installed bodies.
+Assigned s0_0879 (down s0_0878) at the 11-11 integration; placeholder
+s0_0870 (down s0_0869) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together). Bodies are the
+installed definitions with only the listed operation names added; the downgrade
+restores the installed bodies; s0_0862–s0_0876 do not touch these objects.
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.

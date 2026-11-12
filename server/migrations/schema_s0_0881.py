@@ -1,8 +1,8 @@
 """Fixture acceptance (D306, P95): append-only versions, exact Current, receipt atom; named-approval deadline list for the D47 T2 operations.
 
-Placeholder revision s0_0872 (down s0_0871) allocated to the D47 session; the
-integration renumbers it to the real head (file, revision, down_revision,
-this snapshot's name and the downgrade guard text together).
+Assigned s0_0881 (down s0_0880) at the 11-11 integration; placeholder
+s0_0872 (down s0_0871) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together).
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.
@@ -46,11 +46,11 @@ SCHEMA_SQL = (
 )
 
 DOWNGRADE_SQL = (
-    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.confirmations WHERE expires_at IS NULL AND operation IN ('npi.fixture.accept','quality.capa.effectiveness.decide','supply.alternate.approve','customer.sample.send','customer.acceptance.record','evidence.source.withdraw')) THEN\n     RAISE EXCEPTION 'D47 named approvals require s0_0872'; END IF; END $$",
+    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.confirmations WHERE expires_at IS NULL AND operation IN ('npi.fixture.accept','quality.capa.effectiveness.decide','supply.alternate.approve','customer.sample.send','customer.acceptance.record','evidence.source.withdraw')) THEN\n     RAISE EXCEPTION 'D47 named approvals require s0_0881'; END IF; END $$",
     'ALTER TABLE confirmations DROP CONSTRAINT ck_confirmations_decision_deadline',
     "ALTER TABLE confirmations ADD CONSTRAINT ck_confirmations_decision_deadline CHECK(expires_at IS NOT NULL OR operation IN ('ai.skill.qualify','build.engineering.authorize','build.manufacturing.authorize','change.close','change.order.approve','change.selection.decide','change.verification.record','integration.handoff.authorize','knowledge.rule.publish','mcp.connector.allow','npi.manufacturing_baseline.publish','proposal.g0.decide','quality.capa.verification.review','quality.issue.root_cause.decide','release.engineering.approve','release.exception.decide','release.exception.withdraw','release.manufacturing.approve','test.disposition.decide','test.run.review','work.baseline.approve','work.stage.decide'))",
     'ALTER TABLE public.fixture_acceptance_versions NO FORCE ROW LEVEL SECURITY',
-    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.fixture_acceptance_versions) THEN\n     RAISE EXCEPTION 'Fixture acceptance history requires s0_0872'; END IF; END $$",
+    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.fixture_acceptance_versions) THEN\n     RAISE EXCEPTION 'Fixture acceptance history requires s0_0881'; END IF; END $$",
     'DROP TABLE public.fixture_acceptance_currents',
     'DROP TABLE public.fixture_acceptance_versions',
     'DROP FUNCTION public.protect_fixture_acceptance_current()',

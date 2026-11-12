@@ -1,9 +1,10 @@
 """CAPA effectiveness decision (D307, P96): closed issue status, operation and event.
 
-Placeholder revision s0_0875 (down s0_0874) allocated to the D47 session; the
-integration renumbers it to the real head (file, revision, down_revision and
-this snapshot's name together). Bodies are the installed definitions with only
-the listed operation names added; the downgrade restores the installed bodies.
+Assigned s0_0884 (down s0_0883) at the 11-11 integration; placeholder
+s0_0875 (down s0_0874) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together). Bodies are the
+installed definitions with only the listed operation names added; the downgrade
+restores the installed bodies; s0_0862–s0_0876 do not touch these objects.
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.
@@ -17,7 +18,7 @@ SCHEMA_SQL = (
 )
 
 DOWNGRADE_SQL = (
-    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.quality_issue_versions WHERE operation='quality.capa.effectiveness.decide') THEN\n     RAISE EXCEPTION 'CAPA effectiveness history requires s0_0875'; END IF; END $$",
+    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.quality_issue_versions WHERE operation='quality.capa.effectiveness.decide') THEN\n     RAISE EXCEPTION 'CAPA effectiveness history requires s0_0884'; END IF; END $$",
     'ALTER TABLE quality_issue_versions DROP CONSTRAINT quality_issue_versions_operation_check',
     "ALTER TABLE quality_issue_versions ADD CONSTRAINT quality_issue_versions_operation_check CHECK (operation IN ('quality.issue.create','quality.issue.merge','quality.issue.triage','quality.issue.containment.record','quality.capa.draft','quality.issue.root_cause.decide','quality.capa.actions.complete'))",
     'ALTER TABLE quality_issue_versions DROP CONSTRAINT quality_issue_versions_status_check',

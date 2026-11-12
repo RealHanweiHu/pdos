@@ -1,8 +1,8 @@
 """Interface contracts (D312, P100): append-only versions, exact Current, receipt atom.
 
-Placeholder revision s0_0871 (down s0_0870) allocated to the D47 session; the
-integration renumbers it to the real head (file, revision, down_revision,
-this snapshot's name and the downgrade guard text together).
+Assigned s0_0880 (down s0_0879) at the 11-11 integration; placeholder
+s0_0871 (down s0_0870) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together).
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.
@@ -45,7 +45,7 @@ SCHEMA_SQL = (
 
 DOWNGRADE_SQL = (
     'ALTER TABLE public.engineering_interface_versions NO FORCE ROW LEVEL SECURITY',
-    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.engineering_interface_versions) THEN\n     RAISE EXCEPTION 'Interface contract history requires s0_0871'; END IF; END $$",
+    "DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.engineering_interface_versions) THEN\n     RAISE EXCEPTION 'Interface contract history requires s0_0880'; END IF; END $$",
     'DROP TABLE public.engineering_interface_currents',
     'DROP TABLE public.engineering_interface_versions',
     'DROP FUNCTION public.protect_engineering_interface_current()',

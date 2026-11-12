@@ -1,12 +1,12 @@
-"""Interface contracts (D312, P100): append-only versions, exact Current, receipt atom."""
+"""Alternate approvals (D308, P96)."""
 
 from alembic import op
 
-from migrations.schema_s0_0871 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0883 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0871"
-down_revision = "s0_0870"
+revision = "s0_0883"
+down_revision = "s0_0882"
 branch_labels = depends_on = None
 
 

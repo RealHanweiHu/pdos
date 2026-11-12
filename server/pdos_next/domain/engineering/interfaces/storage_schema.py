@@ -23,7 +23,7 @@ CHAIN = storage.Chain(
     subject=SUBJECT,
     prefix="engineering_interface",
     read=READ,
-    history="Interface contract history requires s0_0871",
+    history="Interface contract history requires s0_0880",
     visibility=True,
     extra_atom=""" IF NOT EXISTS(SELECT 1 FROM public.engineering_configurations c WHERE c.tenant_id=NEW.tenant_id
    AND c.product_id=NEW.product_id AND c.id=NEW.configuration_id AND c.series_id=NEW.configuration_series_id

@@ -1,8 +1,8 @@
 """Source use reads for named withdrawal (D310, P100): signed use and business dependents.
 
-Placeholder revision s0_0873 (down s0_0872) allocated to the D47 session; the
-integration renumbers it to the real head (file, revision, down_revision,
-this snapshot's name and the downgrade guard text together).
+Assigned s0_0882 (down s0_0881) at the 11-11 integration; placeholder
+s0_0873 (down s0_0872) in the D47 session (file, revision, down_revision,
+this snapshot's name and the downgrade guard text moved together).
 """
 
 # ruff: noqa: E501 -- Reviewed applied SQL literals remain byte-identical.
