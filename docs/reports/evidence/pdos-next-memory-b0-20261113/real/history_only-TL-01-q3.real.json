@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q3",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 77.9,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 151486,
+  "held_tokens": 0,
+  "answer": "上周试产不良前三项为：气嘴漏气、外壳缩水、按键卡滞。结论取自本人在同品类（汽车充气泵）上一会话的已完成汇总记录（run 5614d932，记录状态 current）。本轮未能复核原始明细：企业检索对 issue/build/test_run/field_feedback/制造文件返回 0 条且检索预算已用尽，平台、基线、证据检索、品类知识路径在当前范围无可读数据。排序口径（件数/占比）与三项各自发生数量属未知，不作推断。若需可追溯版本，可在同会话下一轮深入检索试产批次与不良明细。",
+  "answer_blob": "{\"result\": {\"scope\": {\"category_id\": \"fe03d665-c716-4fcf-bf25-7cb969a4b0a1\", \"category_name\": \"汽车充气泵\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:44:17.472878+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"三项不良各自的发生件数与占比（前三项的排序口径）未在可读资料中登记\", \"本轮无法读取上周试产批次与不良明细原始记录：企业检索返回 0 条且检索预算已用尽，平台/基线/证据检索/品类知识在当前范围无可读数据\", \"历史汇总记录未附带可引用的来源行，无法定位到具体试产批次或不良登记\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"defect_top3\": [{\"rank\": 1, \"basis\": \"同品类上一会话已完成汇总记录（conversation.history，run 5614d932-5c1a-436f-92db-a72ba7f70ebf，session 84e51da9-7b0d-4070-b37b-c51bb1d52881，outcome_state=current，未附引用）\", \"defect\": \"气嘴漏气\"}, {\"rank\": 2, \"basis\": \"同品类上一会话已完成汇总记录（run 5614d932，outcome_state=current，未附引用）\", \"defect\": \"外壳缩水\"}, {\"rank\": 3, \"basis\": \"同品类上一会话已完成汇总记录（run 5614d932，outcome_state=current，未附引用）\", \"defect\": \"按键卡滞\"}], \"verification\": {\"recheck_detail\": \"assistant.search（issue/build/test_run/field_feedback/manufacturing_document，品类限定）返回 0 条；evidence.search 返回 0 条；platform.read 返回 0 条；category.read 显示 model_count=1、parameter_count=0、knowledge 计数全为 0；mcp 无可用只读工具；检索预算已耗尽（MODEL_BUDGET_EXCEEDED）\", \"live_source_recheck\": \"failed\"}}, \"status\": \"partial\", \"summary\": \"上周试产不良前三项为：气嘴漏气、外壳缩水、按键卡滞。结论取自本人在同品类（汽车充气泵）上一会话的已完成汇总记录（run 5614d932，记录状态 current）。本轮未能复核原始明细：企业检索对 issue/build/test_run/field_feedback/制造文件返回 0 条且检索预算已用尽，平台、基线、证据检索、品类知识路径在当前范围无可读数据。排序口径（件数/占比）与三项各自发生数量属未知，不作推断。若需可追溯版本，可在同会话下一轮深入检索试产批次与不良明细。\", \"questions\": [], \"unfinished\": [\"上周试产不良前三项的原始明细来源、发生件数与排序口径尚未复核（检索预算已用尽，待下一轮深入检索试产批次与不良明细）\"]}",
+  "unfinished": [
+    "上周试产不良前三项的原始明细来源、发生件数与排序口径尚未复核（检索预算已用尽，待下一轮深入检索试产批次与不良明细）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r3"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

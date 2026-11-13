@@ -1,0 +1,45 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 91.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 149889,
+  "held_tokens": 0,
+  "answer": "结果未通过完整核对。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"goal\": \"气泵报价对比\", \"as_of\": \"2026-11-13T13:08:45.525987+00:00\", \"scope\": {\"id\": \"4471633a-0f58-4f86-9938-2c163091b5df\", \"kind\": \"category\", \"title\": \"汽车充气泵\"}, \"pinned\": false, \"run_id\": \"32192a6a-4dac-4073-b966-383d27604615\", \"skills\": [], \"status\": \"completed\", \"receipts\": [], \"session_id\": \"9d913da7-63a7-45a3-b573-a188bee0ca98\", \"corrections\": [], \"same_session\": false, \"candidate_count\": 0}], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 1, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"eval-history-only/v0;own-words+answer-summary\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"c11e2e33-fb7a-4389-a9a5-e867c5a27acb\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"做气泵报价对比时，我以前交代过按什么口径比吗？\", \"session_id\": \"8cd69af3-7a07-455b-b244-b9c949dadb63\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"ca168ef9-ad11-4c50-a93a-27442d1b2ae4\", \"execution_ref\": {\"call_id\": \"87e81b19-6f58-492f-8595-cc2f8aaad8ac\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [{\"goal\": \"气泵报价对比\", \"run_id\": \"32192a6a-4dac-4073-b966-383d27604615\", \"status\": \"completed\", \"sources\": [], \"outcome_state\": \"current\", \"original_record\": {\"run_id\": \"32192a6a-4dac-4073-b966-383d27604615\", \"session_id\": \"9d913da7-63a7-45a3-b573-a188bee0ca98\"}, \"historical_outcome\": {\"notes\": [], \"summary\": \"报价对比已完成。\", \"research\": [], \"truncated\": false, \"unfinished\": []}}], \"status\": \"completed\", \"session_id\": \"9d913da7-63a7-45a3-b573-a188bee0ca98\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。其他会话的回答只是当时的记录，其中的引用不能直接沿用。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"85998917-067a-42f0-b0aa-cfcf4a5c93ce\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-13T13:09:02.081566+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"4471633a-0f58-4f86-9938-2c163091b5df\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"交期\", \"促销\", \"促销价\", \"口径\", \"含\", \"售价\", \"对比\", \"币种\", \"报价\", \"气泵\", \"渠道\", \"税\", \"销价\", \"零售\", \"零售价\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"e84832de-8b3b-4764-a325-44878bc5daa3\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:09:06.226755+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4c9c4e64-408a-4b10-986e-a5927117a1ab\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:09:06.256626+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4a0a7d3f-6f0a-41be-97a4-cccccedf35e5\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"94564b20-a69e-4cfa-8383-1035747c55a8\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"结果未通过完整核对。\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

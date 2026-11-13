@@ -1,0 +1,109 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 65.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 228133,
+  "held_tokens": 0,
+  "answer": "运行预算已用完，保留已完成动作与已核对结果。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"d0fa1fe8-9abf-472c-85f2-260224d0d1b9\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我记得之前有一次提到过外壳缩水，是哪次工作？当时一起列出的还有哪些问题？\", \"session_id\": \"1e2b39ee-d5a1-462f-95d2-2fbf886c7c8c\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"b91d3d9e-0a07-44ce-b18b-21dc185ceb8b\", \"execution_ref\": {\"call_id\": \"4137024d-ab85-402c-94e9-dd9c625bce06\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我记得之前有一次提到过外壳缩水，是哪次工作？当时一起列出的还有哪些问题？\", \"session_id\": \"1e2b39ee-d5a1-462f-95d2-2fbf886c7c8c\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"b91d3d9e-0a07-44ce-b18b-21dc185ceb8b\", \"execution_ref\": {\"call_id\": \"5eb534f1-efda-49d1-8fc7-c359cc4e6aeb\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-13T13:31:49.021973+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"a5864b6e-f4b3-49ae-b190-c98e13c2a387\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"外壳\", \"缩水\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"8ad2c8bd-79d1-4a25-9c43-84bf4a49322f\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"dcc44e96-4070-4e0b-8e2e-c9443bb5011f\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"32d44128-8787-4ca7-91fc-f0a479cbc9e9\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:31:59.981050+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"01192211-b45c-4cf7-afde-c0c3f7158b3e\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"c6d3fa9a-476c-4b9a-92c7-4de80914754d\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"cd636219-74af-4153-b347-297bbf873bb4\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"VALIDATION_FAILED\", \"detail\": {\"fields\": [{\"path\": \"page_size\", \"type\": \"extra_forbidden\", \"message\": \"Extra inputs are not permitted\"}], \"reason\": \"VALIDATION_FAILED\"}, \"message\": \"读取参数不符合要求，请按工具定义修正。\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"3b891f2d-21e4-427a-a5d5-55567fd8fa92\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"a5864b6e-f4b3-49ae-b190-c98e13c2a387\", \"key\": \"category-63ed1d9878814915a08c677125fccc3a\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"e507a816-7d9a-492c-a5e1-02ff7ef3fe35\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"e507a816-7d9a-492c-a5e1-02ff7ef3fe35\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"1cda7487-b240-434f-ae66-c24cf09cfca3\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"a5864b6e-f4b3-49ae-b190-c98e13c2a387\", \"key\": \"category-63ed1d9878814915a08c677125fccc3a\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"e507a816-7d9a-492c-a5e1-02ff7ef3fe35\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"e507a816-7d9a-492c-a5e1-02ff7ef3fe35\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"59268cd2-d34a-4c10-934d-a774751cd576\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"aa04bd91-4180-44bc-beac-4943554e6d5e\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"mcp.tools.list\", \"taint\": \"trusted\", \"value\": {\"taint\": \"admitted_metadata\", \"tools\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"b6e1e11c-3488-4536-b565-c2a2e8c7cb1b\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"ea2b0528-9293-4242-ba4a-b8891ca60162\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我记得之前有一次提到过外壳缩水，是哪次工作？当时一起列出的还有哪些问题？\", \"session_id\": \"1e2b39ee-d5a1-462f-95d2-2fbf886c7c8c\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"b91d3d9e-0a07-44ce-b18b-21dc185ceb8b\", \"execution_ref\": {\"call_id\": \"bf521e7f-5b1c-4c70-bcc8-ee76085fcdbb\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"d350f7ff-355f-4142-9d71-0daac19568f7\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:32:37.037150+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"6ab6f5f1-8b78-4e30-a97f-a90b60d64220\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"f5d37674-efd4-4bad-a175-5dea9e0a86d3\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:32:44.233682+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"3c3c6fa0-474e-4d39-ac31-33071d24e6c9\", \"read_kind\": \"ordinary/v1\"}}}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:31:49.021973+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"运行预算已用完，保留已完成动作与已核对结果。\", \"questions\": [], \"unfinished\": [\"剩余目标尚未完成\"]}",
+  "unfinished": [
+    "剩余目标尚未完成"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:4",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:5",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

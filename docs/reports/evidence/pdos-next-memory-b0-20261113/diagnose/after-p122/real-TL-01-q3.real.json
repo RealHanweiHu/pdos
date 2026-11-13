@@ -1,0 +1,88 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q3",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 48.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 103901,
+  "held_tokens": 0,
+  "answer": "按我本人上一轮工作记录（as_of 2026-11-13，goal「汇总上周试产的不良项」），上周试产不良前三项是：①气嘴漏气 ②外壳缩水 ③按键卡滞。但本轮在「汽车充气泵」品类范围内检索（企业检索 + 证据检索 + 平台对象读取）均返回 0 条，检索预算已用完，未能取到可核对的原始试产汇总/不良明细，因此这三项在本轮属于「本人历史工作记录」，尚无本轮签发的引用支撑；那次记录本身也未附来源引用。三项的确切缺陷件数、涉及批次与「上周」的具体起止口径目前未知。可在本会话继续深入查原始汇总记录来确认。",
+  "answer_blob": "{\"result\": {\"answer\": {\"top3\": [{\"rank\": 1, \"defect\": \"气嘴漏气\"}, {\"rank\": 2, \"defect\": \"外壳缩水\"}, {\"rank\": 3, \"defect\": \"按键卡滞\"}], \"basis\": \"本人上一轮工作记录：session_id d24ffbed-0a54-4d54-b758-cd0faf0a0370 / run_id 7cafbfc0-1a22-4956-b7f7-596e9554d5fe，as_of 2026-11-13，goal「汇总上周试产的不良项」，historical_outcome.summary「不良前三项：气嘴漏气、外壳缩水、按键卡滞。」\", \"evidence_state\": \"本轮未取到原始试产汇总/不良明细（品类范围检索 0 条、证据检索 0 条、平台对象读取 0 条），三项为本轮无签发引用支撑的历史记录\"}, \"unknowns\": [\"三项各自的不良件数/比例与发生批次\", \"「上周」对应的具体起止日期窗口\", \"试产汇总的判定口径与统计来源文档\", \"是否还有并列或口径更接近的第四项记录\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:50:55.139391+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"如需确认，可在同一会话授权后深入检索试产汇总与不良明细原始记录并逐项取证\", \"citation_ids\": []}, \"status\": \"partial\", \"summary\": \"按我本人上一轮工作记录（as_of 2026-11-13，goal「汇总上周试产的不良项」），上周试产不良前三项是：①气嘴漏气 ②外壳缩水 ③按键卡滞。但本轮在「汽车充气泵」品类范围内检索（企业检索 + 证据检索 + 平台对象读取）均返回 0 条，检索预算已用完，未能取到可核对的原始试产汇总/不良明细，因此这三项在本轮属于「本人历史工作记录」，尚无本轮签发的引用支撑；那次记录本身也未附来源引用。三项的确切缺陷件数、涉及批次与「上周」的具体起止口径目前未知。可在本会话继续深入查原始汇总记录来确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"目前这三项只有本人历史工作记录支撑，本轮检索未取到原始来源；排名与数量口径尚无法核对。\", \"options\": [{\"label\": \"继续深入查原始记录并取证\", \"value\": \"verify_now\"}, {\"label\": \"就按现有结论使用\", \"value\": \"keep_as_is\"}], \"question\": \"是否需要我继续深入查原始试产汇总与不良明细记录，把这三项的缺陷件数、发生批次和「上周」时间口径核实到可引用？\", \"depends_on\": [], \"recommended\": {\"value\": \"verify_now\", \"reason\": \"成本低且能消除“历史记录无引用”的口径风险\"}, \"allow_free_text\": true}], \"unfinished\": [\"取回上周试产汇总/不良明细原始记录，核实三项的件数与批次口径（本轮检索预算已用完）\"]}",
+  "unfinished": [
+    "取回上周试产汇总/不良明细原始记录，核实三项的件数与批次口径（本轮检索预算已用完）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

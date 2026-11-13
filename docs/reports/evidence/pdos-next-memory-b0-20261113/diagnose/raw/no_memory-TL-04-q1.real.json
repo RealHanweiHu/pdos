@@ -1,0 +1,59 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 32.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 84772,
+  "held_tokens": 0,
+  "answer": "在本次已搜索范围内未找到你此前交代的气泵报价对比口径：会话历史为空、本会话记忆被关闭、当前品类资料/知识/平台对象/证据检索均 0 命中；个人记忆层与其它会话历史未覆盖，故不能据此判定你从未交代。建议现在确认一次并固定口径。",
+  "answer_blob": "{\"result\": {\"caveat\": \"以上仅说明检索范围内的结果，不构成对你是否交代过的判定。\", \"question\": \"做气泵报价对比时，我以前交代过按什么口径比吗？\", \"unknowns\": [\"本会话之外的其他会话历史未覆盖\", \"个人记忆层在本会话不可读（memory_off）\", \"团队备忘层未启用，无法核对\", \"不存在任何已签发引用可供引用\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:27:30.757629+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"conclusion\": \"在本次已搜索范围内，未找到你此前交代过的气泵报价对比口径记录；未找到 ≠ 不存在，未覆盖范围见 unknowns。\", \"citation_ids\": [], \"searched_scopes\": [{\"scope\": \"本会话历史 conversation.history\", \"result\": \"无更早轮次记录，本会话为首次提问\"}, {\"scope\": \"个人记忆/情景记录 memory.search\", \"result\": \"返回 status=memory_off，本会话未读取个人记忆\"}, {\"scope\": \"当前品类资料检索 assistant.search（知识/文档，含历史）\", \"result\": \"0 条命中\"}, {\"scope\": \"当前品类知识条目 category.knowledge.list\", \"result\": \"0 条\"}, {\"scope\": \"当前品类平台对象 platform.read（按品类）\", \"result\": \"0 条\"}, {\"scope\": \"证据检索 evidence.search\", \"result\": \"0 条\"}], \"next_step_options\": [\"由你口述一次口径并作为长期约定固定\", \"按上述标准六维度统一对齐\", \"先接收各报价原件再逐份判定口径差异\"], \"standard_alignment_dimensions\": [\"币种与汇率日期\", \"地区与销售渠道\", \"零售价或促销价口径\", \"是否含税\", \"是否含运\", \"配置是否同档\"]}, \"status\": \"partial\", \"summary\": \"在本次已搜索范围内未找到你此前交代的气泵报价对比口径：会话历史为空、本会话记忆被关闭、当前品类资料/知识/平台对象/证据检索均 0 命中；个人记忆层与其它会话历史未覆盖，故不能据此判定你从未交代。建议现在确认一次并固定口径。\", \"questions\": [{\"id\": \"q1\", \"why\": \"已核对范围内没有你此前交代口径的记录，需要你本人确定一次，否则我只能按各报价原样列出并标注差异，无法做同口径可比。\", \"options\": [{\"label\": \"统一标准口径：同币种同汇率日、同地区同渠道、同档配置，价含税含运，注明零售/促销\", \"value\": \"standard_aligned\"}, {\"label\": \"保留各报价原样（各自币种/税运/配置），只标注差异，不做同口径换算\", \"value\": \"as_quoted\"}, {\"label\": \"等我提供各家报价原件后再逐份判定并标注口径差异\", \"value\": \"by_source_doc\"}], \"question\": \"这次气泵报价对比，统一按哪个口径比？定下来后我会作为固定约定沿用，并把它写进后续对比表头。\", \"depends_on\": [], \"recommended\": {\"value\": \"standard_aligned\", \"reason\": \"可比性来自同口径对齐；口径维度已列明，便于直接执行与复用\"}, \"allow_free_text\": true}], \"unfinished\": [\"若需彻底确认是否曾交代过：待个人记忆层或其它会话历史可读后再重查，或由你直接口述一次并存为长期约定\", \"本轮查找预算已用尽（assistant.search 返回 RATE_LIMITED），更宽范围的检索需在同会话继续\"]}",
+  "unfinished": [
+    "若需彻底确认是否曾交代过：待个人记忆层或其它会话历史可读后再重查，或由你直接口述一次并存为长期约定",
+    "本轮查找预算已用尽（assistant.search 返回 RATE_LIMITED），更宽范围的检索需在同会话继续"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

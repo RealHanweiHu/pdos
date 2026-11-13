@@ -1,0 +1,84 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 49.5,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 107356,
+  "held_tokens": 0,
+  "answer": "上次的结论（情景记录，非当前事实）：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12% 被排除。上次未完成两项：补 C 家含税报价单、核对 B 家交期单位。本轮在当前品类范围内检索到 0 条供应商报价/交期资料（竞品、知识、平台、证据均为空），未能复算验证上述数字，本轮无引用可发。需补齐 A/B/C 报价与交期原件及口径后重算。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:50:08.188430+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"A/B/C 三家当前报价与交期原值\", \"报价币种、日期、是否含税含运、交期单位口径\", \"我方目标价口径与数值\", \"C 家含税报价单是否已收到及是否与 12% 结论一致\", \"更宽范围（历史/其他品类）是否存在供应商台账\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"open_risks\": [\"C 家排除依据依赖尚未补齐的含税报价单\", \"B 家交期单位未确认，短 2 周的结论可能随单位变化反转\"], \"unfinished\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"], \"next_actions\": [\"取得 A/B/C 报价与交期原件（币种/日期/含税含运/交期单位）\", \"确认我方目标价口径\", \"补 C 家含税报价单并核对 B 家交期单位\", \"以同口径对比与价格带工具重算并闭合对比结论\"], \"prior_conclusion\": {\"nature\": \"scenario_record_not_business_fact\", \"points\": [\"B 家交期比 A 家短 2 周\", \"C 家含税报价超目标价 12%，已排除\"], \"source\": \"conversation.history run 6ebbd535 / session 36a33c9e (as_of 2026-11-13)\", \"recommended\": \"B 家\"}, \"current_verification\": {\"note\": \"本轮检索预算用尽，未在更宽范围复核是否存在供应商台账\", \"scope\": \"品类 汽车充气泵 (961d4736-7727-42fc-9e3e-f4d3409b0131)\", \"citations_issued\": 0, \"platform_records\": 0, \"knowledge_entries\": 0, \"competitor_entries\": 0, \"artifact_search_hits\": 0, \"evidence_search_hits\": 0}}, \"status\": \"partial\", \"summary\": \"上次的结论（情景记录，非当前事实）：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12% 被排除。上次未完成两项：补 C 家含税报价单、核对 B 家交期单位。本轮在当前品类范围内检索到 0 条供应商报价/交期资料（竞品、知识、平台、证据均为空），未能复算验证上述数字，本轮无引用可发。需补齐 A/B/C 报价与交期原件及口径后重算。\", \"questions\": [{\"id\": \"q_materials\", \"why\": \"没有原件就只能承接上次的说法，'超目标价 12%'和'短 2 周'都无法复算闭合。\", \"options\": [{\"label\": \"我可以上传报价单/邮件/表格原件\", \"value\": \"upload_docs\"}, {\"label\": \"暂时只有口头数字，先按口头数字登记并标注来源为人工口述\", \"value\": \"verbal_only\"}, {\"label\": \"暂时拿不到，先只做已有部分\", \"value\": \"hold\"}], \"question\": \"A/B/C 三家的报价单与交期资料，现在能提供吗（含 C 家含税报价单、B 家交期单位依据）？\", \"depends_on\": [], \"recommended\": {\"value\": \"upload_docs\", \"reason\": \"原件是重算与闭合的前提，也便于把 C 家含税报价单这一悬空项补齐。\"}, \"allow_free_text\": true}, {\"id\": \"q_caliber\", \"why\": \"币种、日期、是否含税含运、地区渠道口径不同，数值不可直接比。\", \"options\": [{\"label\": \"沿用上次的口径（请补充说明具体币种/日期/含税含运/目标价）\", \"value\": \"keep_previous\"}, {\"label\": \"重新定义一套口径再比\", \"value\": \"redefine\"}], \"question\": \"这次对比沿用上次的口径，还是重新定一套统一口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_previous\", \"reason\": \"承接上轮工作、减少返工；但需你补齐口径细节。\"}, \"allow_free_text\": true}, {\"id\": \"q_priority\", \"why\": \"资料未齐时，先补证据还是先推进决策路径，节奏不同。\", \"options\": [{\"label\": \"先补齐资料重算同口径对比，把结论改成可核对的版本\", \"value\": \"recompute_first\"}, {\"label\": \"先按 B 家方向推进（同时标注前提未验证）\", \"value\": \"push_b_first\"}, {\"label\": \"先让我在更宽范围（历史/其他品类）再查一遍供应商台账\", \"value\": \"deeper_lookup\"}], \"question\": \"下一步先做哪一件？\", \"depends_on\": [], \"recommended\": {\"value\": \"recompute_first\", \"reason\": \"两个悬空项都指向证据缺口，先闭合证据再定方向最稳。\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家含税报价单原件（上次结论所依赖的 12% 排除依据未闭合）\", \"核对 B 家交期单位（周/天），以确认“短 2 周”结论\", \"取得 A/B/C 报价与交期原件并统一币种/日期/含税含运/交期单位口径\", \"确认我方目标价口径与数值\", \"在更宽范围复核是否存在供应商台账（本轮检索预算用尽，未查）\"]}",
+  "unfinished": [
+    "补 C 家含税报价单原件（上次结论所依赖的 12% 排除依据未闭合）",
+    "核对 B 家交期单位（周/天），以确认“短 2 周”结论",
+    "取得 A/B/C 报价与交期原件并统一币种/日期/含税含运/交期单位口径",
+    "确认我方目标价口径与数值",
+    "在更宽范围复核是否存在供应商台账（本轮检索预算用尽，未查）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

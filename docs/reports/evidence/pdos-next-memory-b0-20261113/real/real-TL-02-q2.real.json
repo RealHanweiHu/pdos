@@ -1,0 +1,44 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 38.1,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 34126,
+  "held_tokens": 0,
+  "answer": "已按你\"给这个客户的材料一律用英文\"的口径起草一封 3 句英文消息，只承诺\"本周内出报价\"，不涉及具体价格与交期，可直接发出。想改成中文版、或把时间写成具体截止日（如 by Friday, XX），说一声就调。",
+  "answer_blob": "{\"result\": {\"draft\": {\"text\": \"Thank you for your inquiry about the air pump. We are working on the quotation and will send it to you by the end of this week. If you need any additional specifications or configuration options in the meantime, please just let me know.\", \"language\": \"en\", \"sentences\": 3, \"not_claimed\": [\"specific price\", \"specific lead time\", \"named delivery date\", \"specific configuration or model\"], \"content_scope\": [\"acknowledge the inquiry\", \"commit to sending the quotation within this week\", \"offer to collect additional requirements\"]}, \"notes\": [\"按个人口径『给这个客户的报告一律用英文』输出为英文客户消息。\", \"消息只做时间承诺，未写价格、交期、型号与配置，避免客户据此外推。\", \"内部前提（供应商选定是否已定、报价要素是否齐备）由你确认；若未定稿，本周内交付依赖该步骤按时完成。\"], \"unknowns\": [\"本周内交付的具体日期未写明（可按需填入）。\", \"当前供应商选型与报价要素齐备状态未在本次会话核实。\"], \"variants\": {\"with_explicit_deadline\": \"Thank you for your inquiry about the air pump. We are working on the quotation and will send it to you by [Friday, XX]. If you need any additional specifications or configuration options in the meantime, please just let me know.\"}}, \"status\": \"completed\", \"summary\": \"已按你\\\"给这个客户的材料一律用英文\\\"的口径起草一封 3 句英文消息，只承诺\\\"本周内出报价\\\"，不涉及具体价格与交期，可直接发出。想改成中文版、或把时间写成具体截止日（如 by Friday, XX），说一声就调。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "conversation.history:completed:2",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [
+      "other",
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false
+}

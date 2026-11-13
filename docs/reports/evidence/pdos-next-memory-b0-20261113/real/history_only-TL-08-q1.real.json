@@ -1,0 +1,42 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 40.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 86535,
+  "held_tokens": 0,
+  "answer": "结果未通过完整核对。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-13T08:55:20.923337+00:00\", \"scope\": {\"id\": \"035ca309-5334-40ff-a4ab-16943934f2fb\", \"kind\": \"category\", \"title\": \"汽车充气泵\"}, \"pinned\": false, \"run_id\": \"4e040f9e-0732-4114-a6b8-0e76249a14a3\", \"skills\": [], \"status\": \"completed\", \"receipts\": [], \"session_id\": \"829b479c-5552-458c-9f3f-c8182142346b\", \"corrections\": [], \"same_session\": false, \"candidate_count\": 0}], \"notes\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 1, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"eval-history-only/v0;own-words+answer-summary\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"notes_status\": \"completed\", \"execution_ref\": {\"call_id\": \"4fa5f3e7-29aa-4935-8efa-a23b1c02506a\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": [\"scope_note\"]}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"379f7f9f-fe75-40a0-8f8d-4f401ed598aa\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [{\"goal\": \"汇总上周试产的不良项\", \"run_id\": \"4e040f9e-0732-4114-a6b8-0e76249a14a3\", \"status\": \"completed\", \"sources\": [], \"outcome_state\": \"current\", \"original_record\": {\"run_id\": \"4e040f9e-0732-4114-a6b8-0e76249a14a3\", \"session_id\": \"829b479c-5552-458c-9f3f-c8182142346b\"}, \"historical_outcome\": {\"notes\": [], \"summary\": \"不良前三项：气嘴漏气、外壳缩水、按键卡滞。\", \"research\": [], \"truncated\": false, \"unfinished\": []}}], \"status\": \"completed\", \"session_id\": \"829b479c-5552-458c-9f3f-c8182142346b\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。其他会话的回答只是当时的记录，其中的引用不能直接沿用。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"fa3af53e-7c79-4313-80d7-7ee82a457aa1\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}]}, \"status\": \"partial\", \"summary\": \"结果未通过完整核对。\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

@@ -1,0 +1,65 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 30.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 69801,
+  "held_tokens": 0,
+  "answer": "未能在本人当前权限与本品类范围内找到“三家气泵供应商比选”的记录，因此无法确认当时建议选哪家。本人在“汽车充气泵”品类下仅有一条此前记录（2026-11-13，“整理气泵供应商的联系人”），其结果只是“联系人已整理”，没有候选方案、结论或可引用的依据行。品类竞品清单、品类知识（竞品类目）与证据检索均为空；本次另一次公司资料检索触发查找预算上限未能完成。可继续在同会话深入查（例如放开到其他品类/含客户私密资料范围，或按供应商名定向找比选文档）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:30:57.215942+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"在本人当前可读范围（品类：汽车充气泵，same_category 范围，不含客户私密资料）内，未检索到任何“三家气泵供应商比较/比选并给出推荐”的记录、文档或结论\", \"本人在该品类仅有一条历史工作记录：2026-11-13“整理气泵供应商的联系人”，其产出仅为联系人整理，无供应商候选、无比选结论、无来源引用\", \"品类竞品清单（category.competitors.list）为空\", \"品类知识中竞品类目（category.knowledge.list, kind=competitor, 含历史）为空\", \"证据检索（evidence.search「气泵 供应商 比选」）无命中\", \"一次覆盖 artifact/knowledge/external_wait/supply/build/project_status/issue/change/manufacturing_document 的公司资料检索因查找预算上限（MODEL_BUDGET_EXCEEDED）未能执行，该部分范围未核实\", \"若该比较发生在其他品类范围、客户私密资料范围内或由他人完成，本次未覆盖到\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"未能在本人当前权限与本品类范围内找到“三家气泵供应商比选”的记录，因此无法确认当时建议选哪家。本人在“汽车充气泵”品类下仅有一条此前记录（2026-11-13，“整理气泵供应商的联系人”），其结果只是“联系人已整理”，没有候选方案、结论或可引用的依据行。品类竞品清单、品类知识（竞品类目）与证据检索均为空；本次另一次公司资料检索触发查找预算上限未能完成。可继续在同会话深入查（例如放开到其他品类/含客户私密资料范围，或按供应商名定向找比选文档）。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前检索只覆盖本品类且不含客户私密资料，比选记录可能落在范围之外；本轮查找预算已用完，需要你确认是否继续。\", \"options\": [{\"label\": \"继续深挖（放开品类范围并含客户私密资料，优先找比选文档）\", \"value\": \"deepen_same_session\"}, {\"label\": \"仅在当前品类范围内再查一次\", \"value\": \"stay_scope\"}, {\"label\": \"先不查，我直接说明三家供应商名称或来源\", \"value\": \"stop\"}], \"question\": \"是否需要我在同一会话继续深入查：放开到全部品类并包含客户私密资料范围，再检索一次供应商比选/选型文档？\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen_same_session\", \"reason\": \"比选结论最可能落在品类范围外的资料或客户私密资料中，放开范围后命中率最高；本轮预算已用完，需要你确认再继续。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"按供应商名定向检索比按关键词更可靠，也能直接定位原始比选材料；若有具体名称，可避免大范围无效检索。\", \"options\": [{\"label\": \"我可以提供三家名称\", \"value\": \"will_provide\"}, {\"label\": \"只记得文档/项目名\", \"value\": \"only_doc_name\"}, {\"label\": \"记不清了\", \"value\": \"not_sure\"}], \"question\": \"那次比较的三家供应商名称（或对应的项目/文档名）是否还记得？\", \"depends_on\": [], \"recommended\": {\"value\": \"will_provide\", \"reason\": \"你直接给出名称可把检索从关键词猜测变为精确定向，显著提高命中率。\"}, \"allow_free_text\": true}], \"unfinished\": [\"覆盖 artifact/knowledge/external_wait/supply/build/project_status/issue/change/manufacturing_document 的第二次公司资料检索未执行（查找预算上限），该范围是否含比选文档未核实\", \"其他品类范围与客户私密资料范围未检索（需你确认后继续）\"]}",
+  "unfinished": [
+    "覆盖 artifact/knowledge/external_wait/supply/build/project_status/issue/change/manufacturing_document 的第二次公司资料检索未执行（查找预算上限），该范围是否含比选文档未核实",
+    "其他品类范围与客户私密资料范围未检索（需你确认后继续）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

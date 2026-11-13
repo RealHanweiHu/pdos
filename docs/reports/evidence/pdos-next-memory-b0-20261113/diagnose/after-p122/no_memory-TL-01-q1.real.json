@@ -1,0 +1,106 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 154.8,
+  "clarifications": [
+    "上次的供应商对比对象从哪里取？平台内没有留存记录，我需要来源才能继续。",
+    "这次对比的主口径是哪一类？（可多选，但请指一个主口径）",
+    "我方这边的对比基线是什么？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 233684,
+  "held_tokens": 0,
+  "answer": "已核对当前可读的全部范围，未找到上次供应商对比的任何留存记录：会话历史为空（含 research rows）、个人记忆在本会话关闭、品类知识/竞品/参数条目均为 0、品类下产品与平台记录读取为空、证据行与已签发引用为 0、无对外连接器。首轮品类内检索无命中，后续两次扩大范围的检索被本轮预算上限拒绝，故全库是否存在相关历史资料未能验证。因此\"上次的结论\"与\"上次未完成事项\"两项均报查不到，未做任何推测性复述，也未执行任何业务写入。",
+  "answer_blob": "{\"result\": {\"verified\": [{\"tool\": \"conversation.history\", \"check\": \"本会话历史（含 research rows）\", \"result\": \"turns=[]，工作链上除本次提问外无既往回合\"}, {\"tool\": \"memory.search\", \"check\": \"个人记忆\", \"result\": \"未读取，本会话 memory_off\"}, {\"tool\": \"category.knowledge.list / category.read\", \"check\": \"品类知识条目\", \"result\": \"boundary/segment/competitor/voice/regulation/research_question 计数均为 0\"}, {\"tool\": \"category.competitors.list\", \"check\": \"竞品条目\", \"result\": \"空\"}, {\"tool\": \"category.parameters.list\", \"check\": \"规格参数字典\", \"result\": \"空（parameter_count=0）\"}, {\"tool\": \"platform.read\", \"check\": \"品类下产品/平台记录\", \"result\": \"按品类、名称『充气泵』、编码三种口径读取均为空\"}, {\"tool\": \"product.baseline.read\", \"check\": \"产品基线\", \"result\": \"无法读取，缺少具体基线型号（baseline_product_required）\"}, {\"tool\": \"evidence.search\", \"check\": \"证据行\", \"result\": \"查询『供应商』『对比』均为空\"}, {\"tool\": \"assistant.citations.read\", \"check\": \"已签发引用\", \"result\": \"0 条，has_more=false\"}, {\"tool\": \"mcp.tools.list\", \"check\": \"对外连接器\", \"result\": \"无获授权工具\"}, {\"tool\": \"assistant.search\", \"check\": \"公司资料检索\", \"result\": \"品类内首轮无命中；后续两次全库扩大检索被本轮预算上限拒绝（MODEL_BUDGET_EXCEEDED），全库范围未验证\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:50:11.081693+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次供应商对比的来源会话或文档不可定位\", \"上次的对比对象、口径与产出物不可核\", \"我方现款/目标规格参数基线未知\", \"竞品参数记录未知\", \"全库范围是否存在相关历史资料因检索预算耗尽未验证\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"not_found\": [\"上次供应商对比由谁、在哪个会话或哪份文档中完成\", \"上次的对比对象名单与对比口径（规格/成本/产能）\", \"上次的结论内容\", \"上次未完成的事项清单\", \"我方现款/目标的规格参数基线型号\", \"竞品参数记录\"], \"implications\": [\"『查不到』不等于『上次没做过』——记录可能位于不可读范围（他人会话、未挂载的外部文档等）\", \"继续做同口径对比缺两块前置件：我方参数基线、竞品参数记录；不补则只能做叙述性对比，无法进入确定性参数比较\"], \"actions_taken\": {\"business_writes\": 0, \"comparisons_run\": 0, \"research_started\": 0, \"proposals_drafted\": 0}, \"prior_work_found\": false, \"unfinished_items\": [], \"prior_conclusions\": []}, \"status\": \"completed\", \"summary\": \"已核对当前可读的全部范围，未找到上次供应商对比的任何留存记录：会话历史为空（含 research rows）、个人记忆在本会话关闭、品类知识/竞品/参数条目均为 0、品类下产品与平台记录读取为空、证据行与已签发引用为 0、无对外连接器。首轮品类内检索无命中，后续两次扩大范围的检索被本轮预算上限拒绝，故全库是否存在相关历史资料未能验证。因此\\\"上次的结论\\\"与\\\"上次未完成事项\\\"两项均报查不到，未做任何推测性复述，也未执行任何业务写入。\", \"questions\": [], \"unfinished\": [\"未取得上次供应商对比的原始结论与未完成事项：会话历史、个人记忆、品类知识与竞品与参数条目、证据行、已签发引用、公司检索在可读范围内均无留存记录\", \"全库范围是否存在相关历史资料未验证：两次扩大范围的检索被本轮检索预算上限拒绝\", \"未建立我方现款/目标的规格参数基线：品类参数字典 0 条，product.baseline.read 缺少具体基线型号\", \"未建立竞品参数记录：品类竞品条目为 0，无法进行同口径参数对齐\"]}",
+  "unfinished": [
+    "未取得上次供应商对比的原始结论与未完成事项：会话历史、个人记忆、品类知识与竞品与参数条目、证据行、已签发引用、公司检索在可读范围内均无留存记录",
+    "全库范围是否存在相关历史资料未验证：两次扩大范围的检索被本轮检索预算上限拒绝",
+    "未建立我方现款/目标的规格参数基线：品类参数字典 0 条，product.baseline.read 缺少具体基线型号",
+    "未建立竞品参数记录：品类竞品条目为 0，无法进行同口径参数对齐"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

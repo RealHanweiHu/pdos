@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 90.8,
+  "clarifications": [
+    "当时比较的是哪三家供应商？能否提供名称，或指出那份对比材料现在在哪儿（文档、聊天记录、邮件、附件）？",
+    "找不到旧结论的情况下，接下来怎么做？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 213751,
+  "held_tokens": 0,
+  "answer": "查不到。我把能读的范围都查过了：企业检索（\"气泵供应商比较/选型评估\"）0 条、证据库检索 0 条、品类知识库（供应商/竞品）0 条、参数库 0 条、平台与型号目录 0 条、引用目录 0 条；个人历史里唯一与气泵相关的是 2026-11-13 的「整理气泵供应商的联系人」，里面没有比较结论或推荐对象。三家气泵供应商的对比与推荐结论，在我能查到的记录里不存在。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:26:46.435300+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"三家气泵供应商比较及其推荐结论在当前可读范围内未找到\", \"企业检索、证据库、品类知识库、参数库、平台型号目录、引用目录均为空\", \"个人历史中与气泵相关的唯一会话为『整理气泵供应商的联系人』，不含比较结论或推荐对象\", \"本轮查找预算用尽，更宽关键词口径的检索未能执行\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查不到。我把能读的范围都查过了：企业检索（\\\"气泵供应商比较/选型评估\\\"）0 条、证据库检索 0 条、品类知识库（供应商/竞品）0 条、参数库 0 条、平台与型号目录 0 条、引用目录 0 条；个人历史里唯一与气泵相关的是 2026-11-13 的「整理气泵供应商的联系人」，里面没有比较结论或推荐对象。三家气泵供应商的对比与推荐结论，在我能查到的记录里不存在。\", \"questions\": [], \"unfinished\": [\"三家气泵供应商比较的既有结论与推荐对象未能在可读范围内定位\", \"本轮查找预算用尽，跨来源类型的扩大关键词检索未执行\"]}",
+  "unfinished": [
+    "三家气泵供应商比较的既有结论与推荐对象未能在可读范围内定位",
+    "本轮查找预算用尽，跨来源类型的扩大关键词检索未执行"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

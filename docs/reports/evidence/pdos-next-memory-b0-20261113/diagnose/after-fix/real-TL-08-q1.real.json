@@ -1,0 +1,76 @@
+{
+  "diagnostics": {
+    "verification_feedback": [
+      "[{\"path\": \"result\", \"type\": \"dict_type\"}]"
+    ],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"NoneType\", \"questions\": [{\"allow_free_text\": \"true\", \"depends_on\": [], \"id\": \"q1\", \"options\": [{\"label\": \"扩大到全部品类＋我的全部历史记录\", \"value\": \"all_scopes\"}, {\"label\": \"仍只看当前品类\", \"value\": \"keep_category\"}], \"question\": \"是否允许我在同一会话内把检索范围扩大到其他品类和你的全部个人历史记录（不再只看当前\\\"汽车充气泵\\\"品类）？\", \"recommended\": {\"reason\": \"同一品类内已无相关记录，扩大范围才可能命中\", \"value\": \"all_scopes\"}, \"why\": \"当前检索被限定在\\\"汽车充气泵\\\"品类与该品类下的个人工作记录，跨范围才能定位那条记录。\"}, {\"allow_free_text\": \"true\", \"depends_on\": [], \"id\": \"q2\", \"options\": [{\"label\": \"塌陷／收缩／缩水率（注塑）\", \"value\": \"collapse\"}, {\"label\": \"外观变形／外观不良\", \"value\": \"appearance\"}, {\"label\": \"就是\\\"外壳缩水\\\"原文\", \"value\": \"literal\"}], \"question\": \"当时的说法可能不是\\\"外壳缩水\\\"，以下哪个更接近？\", \"recommended\": {\"reason\": \"\\\"外壳缩水\\\"在注塑工艺语境中常记为塌陷或缩水率\", \"value\": \"collapse\"}, \"why\": \"公司资料检索按字面词未命中，换成同义术语可能命中当时实际记录的写法。\"}, {\"allow_free_text\": \"true\", \"depends_on\": [], \"id\": \"q3\", \"options\": [{\"label\": \"大致时间\", \"value\": \"time\"}, {\"label\": \"项目／型号名\", \"value\": \"project\"}, {\"label\": \"当时一起列出的其他问题\", \"value\": \"other_issue\"}, {\"label\": \"暂时没有\", \"value\": \"none\"}], \"question\": \"能提供任意一个线索吗（大致时间、项目或型号名、当时一起列的问题关键词）？\", \"recommended\": {\"reason\": \"并列问题关键词对定位原始记录最有效\", \"value\": \"other_issue\"}, \"why\": \"直接给定线索可在同一次检索中定位到具体那次工作。\"}]}"
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 46.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 91255,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内没有找到“外壳缩水”的记录。我已核对本人近期三次工作（整理认证资料清单／更新项目周会纪要模板／核对模具保养计划）及其会话记录，摘要中都没有外壳缩水或外观收缩相关内容；公司资料按“外壳缩水”“缩水 外观不良 变形”检索也返回 0 条。因此你记忆中的那一次工作目前无法确认，当时并列的其他问题也查不到依据；本轮检索预算已用尽，扩大范围或换用同义术语的核查可在同会话继续。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:31:38.874163+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未在当前品类（汽车充气泵）公司资料中检索到“外壳缩水”相关内容，检索返回 0 条\", \"未在本人近期三次工作记录（整理认证资料清单、更新项目周会纪要模板、核对模具保养计划）及其会话记录中找到外壳缩水或其表述\", \"因此无法确定提及外壳缩水的那次工作，也无法确定当时一并列出的其他问题\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"在当前可读范围内没有找到“外壳缩水”的记录。我已核对本人近期三次工作（整理认证资料清单／更新项目周会纪要模板／核对模具保养计划）及其会话记录，摘要中都没有外壳缩水或外观收缩相关内容；公司资料按“外壳缩水”“缩水 外观不良 变形”检索也返回 0 条。因此你记忆中的那一次工作目前无法确认，当时并列的其他问题也查不到依据；本轮检索预算已用尽，扩大范围或换用同义术语的核查可在同会话继续。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前检索被限定在\\\"汽车充气泵\\\"品类及该品类下的个人工作记录，跨范围才可能定位那条记录。\", \"options\": [{\"label\": \"扩大到全部品类＋我的全部历史记录\", \"value\": \"all_scopes\"}, {\"label\": \"仍只看当前品类\", \"value\": \"keep_category\"}], \"question\": \"是否允许我在同一会话内把检索范围扩大到其他品类和你的全部个人历史记录（不再只看当前\\\"汽车充气泵\\\"品类）？\", \"depends_on\": [], \"recommended\": {\"value\": \"all_scopes\", \"reason\": \"同一品类内已无相关记录，扩大范围才可能命中\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"按字面词检索未命中，换同义术语可能命中当时实际的记录写法。\", \"options\": [{\"label\": \"塌陷／收缩／缩水率（注塑）\", \"value\": \"collapse\"}, {\"label\": \"外观变形／外观不良\", \"value\": \"appearance\"}, {\"label\": \"就是\\\"外壳缩水\\\"原文\", \"value\": \"literal\"}], \"question\": \"当时的说法可能不是\\\"外壳缩水\\\"，以下哪个更接近？\", \"depends_on\": [], \"recommended\": {\"value\": \"collapse\", \"reason\": \"公司资料按字面词未命中，\\\"外壳缩水\\\"在注塑工艺语境中常记为塌陷或缩水率\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"直接给定线索可在同一次检索中定位到具体那次工作。\", \"options\": [{\"label\": \"大致时间\", \"value\": \"time\"}, {\"label\": \"项目／型号名\", \"value\": \"project\"}, {\"label\": \"当时一起列出的其他问题\", \"value\": \"other_issue\"}, {\"label\": \"暂时没有\", \"value\": \"none\"}], \"question\": \"能提供任意一个线索吗（大致时间、项目或型号名、当时一起列的问题关键词）？\", \"depends_on\": [], \"recommended\": {\"value\": \"other_issue\", \"reason\": \"并列问题关键词对定位原始记录最有效\"}, \"allow_free_text\": true}], \"unfinished\": [\"扩大到其他品类与本人全部历史记录，复核是否存在“外壳缩水”工作记录\", \"以替代术语（塌陷／收缩／缩水率／外观变形）再次检索公司资料\"]}",
+  "unfinished": [
+    "扩大到其他品类与本人全部历史记录，复核是否存在“外壳缩水”工作记录",
+    "以替代术语（塌陷／收缩／缩水率／外观变形）再次检索公司资料"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:4",
+    "memory.search:completed:2",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

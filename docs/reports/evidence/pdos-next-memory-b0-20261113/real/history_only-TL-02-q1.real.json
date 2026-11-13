@@ -1,0 +1,44 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 46.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 65753,
+  "held_tokens": 0,
+  "answer": "上次那轮对比（2026-11-13，主题「比较三家气泵供应商的报价和交期」）的结论是：建议选 B 家。就这一条结论本身我可以确定地告诉你。但需要两点如实说明：一是那次回答没有留下引用来源（sources 为空），二是我在当前「汽车充气泵」品类内重新检索了供应/报价/交期与证据行，均没有返回可读记录——也就是说 B 家具体是哪一家（名称）、报价与交期数字，现在无法从可读资料里核实。历史结论可作参考，但若要据此下单或定供应商，建议我现在重拉一次三家的报价与交期做同口径核对。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:45:52.192433+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"B 家对应的具体供应商名称未找到可读记录\", \"B 家与其他两家的报价、交期对比数据未找到可读记录\", \"上次结论对应的原始证据（来源引用）在历史记录中缺失，且当前品类内未检索到供应/报价/交期资料\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次那轮对比（2026-11-13，主题「比较三家气泵供应商的报价和交期」）的结论是：建议选 B 家。就这一条结论本身我可以确定地告诉你。但需要两点如实说明：一是那次回答没有留下引用来源（sources 为空），二是我在当前「汽车充气泵」品类内重新检索了供应/报价/交期与证据行，均没有返回可读记录——也就是说 B 家具体是哪一家（名称）、报价与交期数字，现在无法从可读资料里核实。历史结论可作参考，但若要据此下单或定供应商，建议我现在重拉一次三家的报价与交期做同口径核对。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史结论只有「建议选 B 家」一句，缺少 B 家名称与支撑数据，无法直接用于定供应商。\", \"options\": [{\"label\": \"好，重新拉三家报价与交期，同口径对比后给出建议\", \"value\": \"recompare\"}, {\"label\": \"只要确认 B 家是哪一家名称即可\", \"value\": \"identify_only\"}, {\"label\": \"暂时不用，我自己去核\", \"value\": \"skip\"}], \"question\": \"要我按现在的口径重新拉一次三家气泵供应商的报价与交期，把「B 家」对应到具体名称并复核上次结论吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"recompare\", \"reason\": \"结论可复用，但支撑它的报价/交期数据当前不可读，复核成本低且能避免按不完整依据选供应商。\"}, \"allow_free_text\": true}], \"unfinished\": [\"B 家的具体名称与报价/交期明细未在当前可读资料中核实\", \"若需按当前报价与交期复核对供应商选择，尚未执行新的同口径对比\"]}",
+  "unfinished": [
+    "B 家的具体名称与报价/交期明细未在当前可读资料中核实",
+    "若需按当前报价与交期复核对供应商选择，尚未执行新的同口径对比"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

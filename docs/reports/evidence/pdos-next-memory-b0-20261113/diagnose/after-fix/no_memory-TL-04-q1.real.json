@@ -1,0 +1,58 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 43.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 85226,
+  "held_tokens": 0,
+  "answer": "在本次可核对范围内，没有找到你以前交代过\"气泵报价对比按什么口径比\"的记录。会话历史为空、本会话未进记忆（memory 关闭）、当前品类（汽车充气泵）内的资料/知识/证据/产品对象检索均无命中；唯一可参照的是工具层的默认口径字段（币种、日期、地区、渠道、零售或促销、含税、含运、配置口径），那是方法定义，不是你的交代。我不据此断定你从未说过，只是已核对范围内查无实据。",
+  "answer_blob": "{\"result\": {\"answer\": \"在已核对范围内未找到你此前交代的气泵报价对比口径。\", \"unknowns\": [\"你以前的口径是否记在别的品类、其他历史会话或未随本次带入的附件中——本轮未能覆盖\", \"跨品类/放宽关键词的全局检索因本轮查找预算用尽未完成\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:30:57.525891+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未找到既有口径交代；跨品类与全局检索本轮未完成\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_steps\": [\"下一轮扩大检索：跨品类 + 历史会话 + 提案条目/问题清单，再确认一次\", \"若你直接给出口径，我按上述统一口径字段建价格点并用 calc.price_band 出价格带\"], \"citation_ids\": [], \"no_hit_reason\": \"各来源返回 0 条；全局检索在本轮触发预算上限，未能覆盖跨品类与更宽关键词。\", \"searched_scope\": [\"本次会话对话历史（turns 为空）\", \"个人记忆记录（本会话 memory 关闭，未读取）\", \"当前品类 汽车充气泵（976b8d8f-0ff4-4844-90e7-9906b9328f7b）的可读资料检索：气泵/报价/对比/口径/币种/含税/渠道/配置（含历史版本）\", \"品类知识条目（active + withdrawn）\", \"证据行索引（报价/口径/币种/含税/渠道/气泵）\", \"平台对象（该品类下的产品/变体/提案，含历史）\"], \"only_available_caliber\": {\"owner\": \"计算工具 calc.price_band\", \"fields\": [\"币种\", \"日期\", \"地区\", \"渠道\", \"零售或促销\", \"含税\", \"含运\", \"配置口径\"], \"source\": \"工具/技能默认定义（非你的口头交代）\", \"processing\": [\"分组\", \"分档\", \"分位\", \"换汇\"]}, \"found_prior_instruction\": false}, \"status\": \"completed\", \"summary\": \"在本次可核对范围内，没有找到你以前交代过\\\"气泵报价对比按什么口径比\\\"的记录。会话历史为空、本会话未进记忆（memory 关闭）、当前品类（汽车充气泵）内的资料/知识/证据/产品对象检索均无命中；唯一可参照的是工具层的默认口径字段（币种、日期、地区、渠道、零售或促销、含税、含运、配置口径），那是方法定义，不是你的交代。我不据此断定你从未说过，只是已核对范围内查无实据。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮全局检索触发预算上限，只覆盖了当前品类；口径交代可能落在别的品类、历史会话或提案的条目/问题清单里。\", \"options\": [{\"label\": \"要，跨品类 + 历史会话 + 提案条目/问题清单再查一遍\", \"value\": \"widen\"}, {\"label\": \"不用，只在当前汽车充气泵品类内再查\", \"value\": \"same_category_only\"}, {\"label\": \"不用再查，我直接告诉你口径\", \"value\": \"no_more_search\"}], \"question\": \"要不要我在下一轮扩大检索范围，专门把你以前交代口径的痕迹再找一遍？\", \"depends_on\": [], \"recommended\": {\"value\": \"widen\", \"reason\": \"口径类交代常留在提案条目或历史会话里，只查当前品类容易漏掉。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"口径决定价格点怎么录、怎么分组换汇，缺了就没法做可比的价格带。\", \"options\": [{\"label\": \"按工具默认统一口径（币种、日期、地区、渠道、零售/促销、含税、含运、配置）先建价格点\", \"value\": \"standard\"}, {\"label\": \"先等我确认口径再录任何价格点\", \"value\": \"wait_for_user\"}], \"question\": \"本轮要按哪套口径先往下走？\", \"depends_on\": [], \"recommended\": {\"value\": \"standard\", \"reason\": \"有统一的默认字段可以先把价格点结构定下来，差异项后续再标注。\"}, \"allow_free_text\": true}], \"unfinished\": [\"跨品类与放宽关键词的全局检索因本轮查找预算用尽，尚未完成；若你选“扩大检索”，下一轮继续。\"]}",
+  "unfinished": [
+    "跨品类与放宽关键词的全局检索因本轮查找预算用尽，尚未完成；若你选“扩大检索”，下一轮继续。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

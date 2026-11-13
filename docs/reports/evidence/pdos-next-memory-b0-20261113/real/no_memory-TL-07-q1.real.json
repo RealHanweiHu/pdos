@@ -1,0 +1,44 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 59.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 105037,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:31:14.658867+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商对比的具体对比对象、关键差异与存档位置未在公司可检索资料中找到\", \"报价单需覆盖的供应商范围、报价口径（币种/含税运/交期）与完成时点未登记\", \"本轮无可引用的已签发引用（citation_ids 为空），正文依据仅为本人本次陈述\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"search_log\": [{\"tool\": \"assistant.search\", \"query\": \"汽车充气泵 供应商对比 报价单 立项\", \"scope\": \"品类 44ed362c-5759-4228-952e-4f36cba59cc2\", \"returned\": 0}, {\"tool\": \"platform.read(category+名称检索)\", \"scope\": \"同品类\", \"returned\": 0}, {\"tool\": \"category.competitors.list\", \"scope\": \"同品类\", \"returned\": 0}, {\"tool\": \"category.knowledge.list\", \"scope\": \"同品类\", \"returned\": 0}, {\"tool\": \"evidence.search\", \"scope\": \"证据索引\", \"returned\": 0}], \"weekly_report\": {\"note\": \"正文严格按本人指定的两条起草；公司可检索范围内未找到供应商对比或报价单的相关记录，故未写入任何供应商名称、价格、结论或日期等未核实内容。\", \"items\": [{\"line\": 1, \"state\": \"本周完成\", \"title\": \"供应商对比\", \"record_found\": false, \"evidence_basis\": \"user_statement\"}, {\"line\": 2, \"state\": \"下周计划\", \"title\": \"补报价单\", \"record_found\": false, \"evidence_basis\": \"user_statement\"}], \"period\": \"本周\", \"category\": \"汽车充气泵\"}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"我在公司可检索范围内没找到这次对比的记录，无法引用对比对象、关键差异或结论；若要写具体内容，需要你口述或指存放位置。\", \"options\": [], \"question\": \"供应商对比的结论要写进周报正文，还是就保留\\\"已完成\\\"一行？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_two_lines\", \"reason\": \"与你\\\"内容就两条\\\"的约束一致，也不引入未核实信息\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"报价单的范围、币种、是否含税运与完成时点目前都未登记，直接影响\\\"下周补报价单\\\"这条能否被他人跟进。\", \"options\": [{\"label\": \"按已对比的供应商全部补报价\", \"value\": \"all_compared_suppliers\"}, {\"label\": \"只补推荐/入围供应商\", \"value\": \"shortlist_only\"}, {\"label\": \"暂不限定，先出模板\", \"value\": \"template_first\"}], \"question\": \"下周报价单覆盖哪些供应商/型号，报价口径和交期怎么定？\", \"depends_on\": [], \"recommended\": {\"value\": \"shortlist_only\", \"reason\": \"通常只需对入围供应商取价，可减少工作量；但具体名单需你确认\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商对比的结论与存放位置未确认（公司可检索范围内无记录）\", \"下周报价单的供应商范围、报价口径与截止时点未确认\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "供应商对比的结论与存放位置未确认（公司可检索范围内无记录）",
+    "下周报价单的供应商范围、报价口径与截止时点未确认",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

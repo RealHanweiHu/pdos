@@ -1,0 +1,93 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 57.0,
+  "clarifications": [
+    "要我在同一会话继续做一轮更宽的检索（项目状态、制造文档、试产/测试记录、变更与品质记录），把命中“缩水/收缩”的会话原文和问题清单取回吗？",
+    "关于那次工作，你能提供任何一点线索吗？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 138597,
+  "held_tokens": 0,
+  "answer": "查不到：在我能查到的以往记录里，没有任何一条提到过“外壳缩水”，因此也无法给出当时一起列出的其他问题。\n\n已核对到的全部依据：\n1. 你本人在当前范围最近三次工作（情景记录，as_of 2026-11-13）：核对模具保养计划（保养计划已核对，两处日期待确认）、整理认证资料清单（清单已整理，缺两份证书扫描件）、更新项目周会纪要模板（模板已更新）。三条记录里都没有“外壳缩水”或收缩/变形一类表述。\n2. 本次会话与该品类范围的会话历史：没有更早的轮次。\n3. 品类范围企业检索（问题、资料、现场反馈、CAPA、知识，关键词含外壳、缩水、收缩、注塑、尺寸、变形）：0 条。\n4. 证据检索（“外壳缩水”“缩水”“收缩 变形 外壳 注塑”）：0 条。\n5. 个人记忆关键词检索（“外壳缩水”“缩水”，含当前会话与全范围）：0 条。\n\n说明：上面三条是历史情景卡，不是当前业务事实；这里只用来回答“哪次工作”这个问题。更宽来源类型（项目状态、制造文档、试产、测试记录）和他人共享记录本轮因查找预算用尽未能检索，所以结论是“在已查范围内未检索到”，不是“确定不存在”。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:17:20.445951+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围内未检索到任何包含“外壳缩水”表述的历史工作记录（品类企业检索、证据检索、个人记忆关键词检索均返回 0 条）\", \"无法确认哪一次工作提到过外壳缩水\", \"无法确认当时一起列出的其他问题清单\", \"未覆盖：他人在共享记录中的表述、更宽来源类型（项目状态/制造文档/试产/测试记录）的检索——本轮查找预算用尽未执行\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查不到：在我能查到的以往记录里，没有任何一条提到过“外壳缩水”，因此也无法给出当时一起列出的其他问题。\\n\\n已核对到的全部依据：\\n1. 你本人在当前范围最近三次工作（情景记录，as_of 2026-11-13）：核对模具保养计划（保养计划已核对，两处日期待确认）、整理认证资料清单（清单已整理，缺两份证书扫描件）、更新项目周会纪要模板（模板已更新）。三条记录里都没有“外壳缩水”或收缩/变形一类表述。\\n2. 本次会话与该品类范围的会话历史：没有更早的轮次。\\n3. 品类范围企业检索（问题、资料、现场反馈、CAPA、知识，关键词含外壳、缩水、收缩、注塑、尺寸、变形）：0 条。\\n4. 证据检索（“外壳缩水”“缩水”“收缩 变形 外壳 注塑”）：0 条。\\n5. 个人记忆关键词检索（“外壳缩水”“缩水”，含当前会话与全范围）：0 条。\\n\\n说明：上面三条是历史情景卡，不是当前业务事实；这里只用来回答“哪次工作”这个问题。更宽来源类型（项目状态、制造文档、试产、测试记录）和他人共享记录本轮因查找预算用尽未能检索，所以结论是“在已查范围内未检索到”，不是“确定不存在”。\", \"questions\": [], \"unfinished\": [\"更宽来源类型（项目状态/制造文档/试产/测试记录）与他人共享记录中的检索本轮因查找预算用尽未执行，结论限于已查范围\"]}",
+  "unfinished": [
+    "更宽来源类型（项目状态/制造文档/试产/测试记录）与他人共享记录中的检索本轮因查找预算用尽未执行，结论限于已查范围"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "conversation.history:completed:5",
+    "evidence.search:completed:3",
+    "memory.search:completed:2",
+    "model:completed:7"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 5
+  },
+  "usage": {
+    "episodes": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

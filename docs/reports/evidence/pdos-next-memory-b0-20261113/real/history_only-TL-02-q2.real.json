@@ -1,0 +1,37 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.1,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 32321,
+  "held_tokens": 0,
+  "answer": "已起草两版可直接发给客户的气泵报价说明（主稿三句 + 简短两句版），只承诺\"本周内给出报价\"，未承诺价格、折扣与交期。已检索当前品类范围，未找到对应的客户或报价项目记录，故客户称呼、型号与具体交付日以占位符留待你确认替换。",
+  "answer_blob": "{\"result\": {\"draft\": {\"primary\": \"您好，感谢您的询价。气泵的报价我们正在整理中，预计在本周内（本方于本周X日之前）向您提交完整报价，报价中会包含规格/型号、单价及交期信息。如您对某些规格或认证有特别要求，也请在本周内告知，我会在报价中一并说明。\", \"variants\": [{\"text\": \"您好，感谢询价。气泵报价我们正在整理中，预计本周内发给您；如需指定规格或认证要求，请提前告知，我会在报价中注明。\", \"label\": \"简短两句版\"}], \"placeholders\": [\"客户称呼/公司名\", \"本周X日（具体交付日）\", \"气泵型号/规格\"], \"commitment_scope\": \"仅承诺本周内提供报价；未包含价格、折扣、交期或认证结论\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:46:27.561133+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"source_check\": {\"scope\": \"当前品类 汽车充气泵（same_category）\", \"result\": \"检索返回 0 条相关记录\", \"implication\": \"客户名称、型号、具体交付日无可核依据，需由用户确认后填写\"}}, \"status\": \"completed\", \"summary\": \"已起草两版可直接发给客户的气泵报价说明（主稿三句 + 简短两句版），只承诺\\\"本周内给出报价\\\"，未承诺价格、折扣与交期。已检索当前品类范围，未找到对应的客户或报价项目记录，故客户称呼、型号与具体交付日以占位符留待你确认替换。\", \"questions\": [{\"id\": \"q1\", \"why\": \"具体日期对客户更有约束力，也便于后续跟踪；模糊表述更灵活但客户可能反复追问。\", \"options\": [{\"label\": \"保持“本周内”\", \"value\": \"keep_vague\"}, {\"label\": \"写明具体日期（我给日期）\", \"value\": \"specific_date\"}], \"question\": \"文中要写明具体交付日（如本周五）还是保持“本周内”的模糊表述？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_vague\", \"reason\": \"目前无任何记录确认可承诺的交付日，写死具体日期属于未经证实承诺。\"}, \"allow_free_text\": true}], \"unfinished\": [\"客户称呼与气泵型号/规格尚未填入（无可核记录，需用户确认）。\", \"若需具体交付日，需用户给出日期后再替换占位符。\"]}",
+  "unfinished": [
+    "客户称呼与气泵型号/规格尚未填入（无可核记录，需用户确认）。",
+    "若需具体交付日，需用户给出日期后再替换占位符。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": false
+}

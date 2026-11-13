@@ -1,0 +1,47 @@
+{
+  "diagnostics": {
+    "verification_feedback": [
+      "[{\"path\": \"questions.0.options\", \"type\": \"list_type\"}, {\"path\": \"questions.0.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.1.options\", \"type\": \"list_type\"}, {\"path\": \"questions.1.depends_on\", \"type\": \"list_type\"}]"
+    ],
+    "domain_errors": []
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 70.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 112795,
+  "held_tokens": 0,
+  "answer": "结果未通过完整核对。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"kinds_note\": \"团队备忘尚未启用（记忆层第 2 期 M2b）。\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"5f1f18d3-67c2-4f33-8666-43b3e431e2c3\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": [\"scope_note\"]}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"做气泵报价对比时，我以前交代过按什么口径比吗？\", \"session_id\": \"0f40f94c-5ffb-4284-9b62-fa6e83b01bf8\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"41de64b5-9c54-4e50-b773-7cd24cf09bbc\", \"execution_ref\": {\"call_id\": \"db604020-f2a5-415e-8596-77086217b42c\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-13T13:16:03.100452+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"20ef8cce-f928-40c8-90a5-03c0d945dded\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"一口\", \"价格\", \"口径\", \"含\", \"售价\", \"对比\", \"币种\", \"报价\", \"气泵\", \"税\", \"统一\", \"统一口径\", \"运费\", \"零售\", \"零售价\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"ec5491cc-8d96-4016-ba04-fdc46432f1ac\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"085b6028-2e33-4d09-9cb7-9adaa70e5253\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4c80336d-9c33-4f26-994d-b4030629f89a\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:16:13.735515+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"28f645c8-08f0-4adc-a231-e421a4673a2c\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"结果未通过完整核对。\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

@@ -1,0 +1,100 @@
+{
+  "diagnostics": {
+    "verification_feedback": [
+      "[{\"path\": \"questions.0.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.1.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.2.depends_on\", \"type\": \"list_type\"}]",
+      "[{\"path\": \"result\", \"type\": \"dict_type\"}, {\"path\": \"questions.0.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.1.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.2.depends_on\", \"type\": \"list_type\"}]"
+    ],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"NoneType\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q1\", \"options\": [{\"label\": \"我提供公司/品牌名称\", \"value\": \"brand\"}, {\"label\": \"用内部代号 A/B/C 对应，我给对照表\", \"value\": \"code\"}], \"question\": \"\\\"C 家\\\" 具体指哪一家供应商（公司名称/品牌/内部代号）？\", \"recommended\": {\"reason\": \"给出真实名称最容易在资料中直接命中\", \"value\": \"brand\"}, \"why\": \"当前品类知识库里没有任何供应商条目，需要一个可定位的主体名才能查到排除记录。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q2\", \"options\": [{\"label\": \"我上传/附上评估表、报价对比或邮件\", \"value\": \"attach\"}, {\"label\": \"在另一次历史会话中做过，我指认该会话\", \"value\": \"past_session\"}, {\"label\": \"没有留存材料，只能凭印象\", \"value\": \"none\"}], \"question\": \"这次供应商比较的原始材料在哪里？\", \"recommended\": {\"reason\": \"有原件才能给出可核对的排除依据\", \"value\": \"attach\"}, \"why\": \"排除原因通常写在评估表、报价对比或纪要里，这些原件没有进入当前可检索范围。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q3\", \"options\": [{\"label\": \"就是当前这个品类\", \"value\": \"same\"}, {\"label\": \"是别的品类，我说明名称\", \"value\": \"other\"}], \"question\": \"比较的品类范围是否就是当前的「汽车充气泵」？\", \"recommended\": {\"reason\": \"默认按当前范围处理\", \"value\": \"same\"}, \"why\": \"当前品类标注为\\\"隔离合成品类\\\"，若实际比较发生在其他品类，需按正确范围重新检索。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"NoneType\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q1\", \"options\": [{\"label\": \"我提供公司/品牌名称\", \"value\": \"brand\"}, {\"label\": \"用内部代号 A/B/C 对应，我给对照表\", \"value\": \"code\"}], \"question\": \"\\\"C 家\\\" 具体指哪一家供应商（公司名称/品牌/内部代号）？\", \"recommended\": {\"reason\": \"给出真实名称最容易在资料中直接命中\", \"value\": \"brand\"}, \"why\": \"当前品类知识库里没有任何供应商条目，需要一个可定位的主体名才能查到排除记录。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q2\", \"options\": [{\"label\": \"我上传/附上评估表、报价对比或邮件\", \"value\": \"attach\"}, {\"label\": \"在另一次历史会话中做过，我指认该会话\", \"value\": \"past_session\"}, {\"label\": \"没有留存材料，只能凭印象\", \"value\": \"none\"}], \"question\": \"这次供应商比较的原始材料在哪里？\", \"recommended\": {\"reason\": \"有原件才能给出可核对的排除依据\", \"value\": \"attach\"}, \"why\": \"排除原因通常写在评估表、报价对比或纪要里，这些原件没有进入当前可检索范围。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q3\", \"options\": [{\"label\": \"就是当前这个品类\", \"value\": \"same\"}, {\"label\": \"是别的品类，我说明名称\", \"value\": \"other\"}], \"question\": \"比较的品类范围是否就是当前的「汽车充气泵」？\", \"recommended\": {\"reason\": \"默认按当前范围处理\", \"value\": \"same\"}, \"why\": \"当前品类标注为\\\"隔离合成品类\\\"，若实际比较发生在其他品类，需按正确范围重新检索。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q1\", \"options\": [{\"label\": \"我提供公司/品牌名称\", \"value\": \"brand\"}, {\"label\": \"用内部代号 A/B/C 对应，我给对照表\", \"value\": \"code\"}], \"question\": \"“C 家”具体指哪一家供应商（公司名称/品牌/内部代号）？\", \"recommended\": {\"reason\": \"给出真实名称最容易在资料中直接命中\", \"value\": \"brand\"}, \"why\": \"当前品类知识库里没有任何供应商条目，需要一个可定位的主体名才能查到排除记录。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q2\", \"options\": [{\"label\": \"我上传/附上评估表、报价对比或邮件\", \"value\": \"attach\"}, {\"label\": \"在另一次历史会话中做过，我指认该会话\", \"value\": \"past_session\"}, {\"label\": \"没有留存材料，只能凭印象\", \"value\": \"none\"}], \"question\": \"这次供应商比较的原始材料在哪里？\", \"recommended\": {\"reason\": \"有原件才能给出可核对的排除依据\", \"value\": \"attach\"}, \"why\": \"排除原因通常写在评估表、报价对比或纪要里，这些原件没有进入当前可检索范围。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q3\", \"options\": [{\"label\": \"就是当前这个品类\", \"value\": \"same\"}, {\"label\": \"是别的品类，我说明名称\", \"value\": \"other\"}], \"question\": \"比较的品类范围是否就是当前的「汽车充气泵」？\", \"recommended\": {\"reason\": \"默认按当前范围处理\", \"value\": \"same\"}, \"why\": \"当前品类标注为“隔离合成品类”，若实际比较发生在其他品类，需按正确范围重新检索。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q1\", \"options\": [{\"label\": \"我提供公司/品牌名称\", \"value\": \"brand\"}, {\"label\": \"用内部代号 A/B/C 对应，我给对照表\", \"value\": \"code\"}], \"question\": \"“C 家”具体指哪一家供应商（公司名称/品牌/内部代号）？\", \"recommended\": {\"reason\": \"给出真实名称最容易在资料中直接命中\", \"value\": \"brand\"}, \"why\": \"当前品类知识库里没有任何供应商条目，需要一个可定位的主体名才能查到排除记录。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q2\", \"options\": [{\"label\": \"我上传/附上评估表、报价对比或邮件\", \"value\": \"attach\"}, {\"label\": \"在另一次历史会话中做过，我指认该会话\", \"value\": \"past_session\"}, {\"label\": \"没有留存材料，只能凭印象\", \"value\": \"none\"}], \"question\": \"这次供应商比较的原始材料在哪里？\", \"recommended\": {\"reason\": \"有原件才能给出可核对的排除依据\", \"value\": \"attach\"}, \"why\": \"排除原因通常写在评估表、报价对比或纪要里，这些原件没有进入当前可检索范围。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q3\", \"options\": [{\"label\": \"就是当前这个品类\", \"value\": \"same\"}, {\"label\": \"是别的品类，我说明名称\", \"value\": \"other\"}], \"question\": \"比较的品类范围是否就是当前的「汽车充气泵」？\", \"recommended\": {\"reason\": \"默认按当前范围处理\", \"value\": \"same\"}, \"why\": \"当前品类标注为“隔离合成品类”，若实际比较发生在其他品类，需按正确范围重新检索。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q1\", \"options\": [{\"label\": \"我提供公司/品牌名称\", \"value\": \"brand\"}, {\"label\": \"用内部代号 A/B/C 对应，我给对照表\", \"value\": \"code\"}], \"question\": \"“C 家”具体指哪一家供应商（公司名称/品牌/内部代号）？\", \"recommended\": {\"reason\": \"给出真实名称最容易在资料中直接命中\", \"value\": \"brand\"}, \"why\": \"当前品类知识库里没有任何供应商条目，需要一个可定位的主体名才能查到排除记录。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q2\", \"options\": [{\"label\": \"我上传/附上评估表、报价对比或邮件\", \"value\": \"attach\"}, {\"label\": \"在另一次历史会话中做过，我指认该会话\", \"value\": \"past_session\"}, {\"label\": \"没有留存材料，只能凭印象\", \"value\": \"none\"}], \"question\": \"这次供应商比较的原始材料在哪里？\", \"recommended\": {\"reason\": \"有原件才能给出可核对的排除依据\", \"value\": \"attach\"}, \"why\": \"排除原因通常写在评估表、报价对比或纪要里，这些原件没有进入当前可检索范围。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q3\", \"options\": [{\"label\": \"就是当前这个品类\", \"value\": \"same\"}, {\"label\": \"是别的品类，我说明名称\", \"value\": \"other\"}], \"question\": \"比较的品类范围是否就是当前的「汽车充气泵」？\", \"recommended\": {\"reason\": \"默认按当前范围处理\", \"value\": \"same\"}, \"why\": \"当前品类标注为“隔离合成品类”，若实际比较发生在其他品类，需按正确范围重新检索。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q1\", \"options\": [{\"label\": \"我提供公司/品牌名称\", \"value\": \"brand\"}, {\"label\": \"用内部代号 A/B/C 对应，我给对照表\", \"value\": \"code\"}], \"question\": \"“C 家”具体指哪一家供应商（公司名称/品牌/内部代号）？\", \"recommended\": {\"reason\": \"给出真实名称最容易在资料中直接命中\", \"value\": \"brand\"}, \"why\": \"当前品类知识库里没有任何供应商条目，需要一个可定位的主体名才能查到排除记录。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q2\", \"options\": [{\"label\": \"我上传/附上评估表、报价对比或邮件\", \"value\": \"attach\"}, {\"label\": \"在另一次历史会话中做过，我指认该会话\", \"value\": \"past_session\"}, {\"label\": \"没有留存材料，只能凭印象\", \"value\": \"none\"}], \"question\": \"这次供应商比较的原始材料在哪里？\", \"recommended\": {\"reason\": \"有原件才能给出可核对的排除依据\", \"value\": \"attach\"}, \"why\": \"排除原因通常写在评估表、报价对比或纪要里，这些原件没有进入当前可检索范围。\"}, {\"allow_free_text\": true, \"depends_on\": {}, \"id\": \"q3\", \"options\": [{\"label\": \"就是当前这个品类\", \"value\": \"same\"}, {\"label\": \"是别的品类，我说明名称\", \"value\": \"other\"}], \"question\": \"比较的品类范围是否就是当前的「汽车充气泵」？\", \"recommended\": {\"reason\": \"默认按当前范围处理\", \"value\": \"same\"}, \"why\": \"当前品类标注为“隔离合成品类”，若实际比较发生在其他品类，需按正确范围重新检索。\"}]}"
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 44.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 147797,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内没有找到任何“上次比较供应商”的记录，因此无法给出排除 C 家的原因。已核对的范围：本会话历史无往轮对话；个人记忆本次会话未启用；当前品类「汽车充气泵」知识库中 competitor 类条目为 0（其余各类目计数也均为 0）、参数 0 个、关联平台型号 0 条；证据检索与公司资料检索（品类范围、多来源类型）关键词“供应商比较 / C家 / 排除 / 原因”均返回 0 条。该品类本身标注为“隔离合成品类”，不承载真实供应商记录，因此我不会推测排除理由；需要 C 家的具体名称或原始对比材料后继续追查。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"bd4e8937-ff68-4050-8d9d-3ae2674bc484\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"上次比较供应商的时候，为什么排除了 C 家？\", \"session_id\": \"3b8ac0a5-9a3a-4ae0-b995-00758eb9bee2\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"40c9bbc5-fd88-41d6-91c9-976d42296864\", \"execution_ref\": {\"call_id\": \"cb170426-eeb0-4dc9-8f99-517a20d3fa87\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:52:37.334204+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"71e0836c-478c-4880-955c-4eb115754de0\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-13T13:52:42.979937+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"2c7e4917-2551-40d4-9717-d166f0413ff2\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"c\", \"供应\", \"供应商\", \"原因\", \"家\", \"排除\", \"比较\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"6d6ab2b4-0413-4145-a1d8-b473cba124c6\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:52:42.417887+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"135646bc-3548-49ad-ba44-42f87ec7d811\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"6b83fde6-adf5-4895-b516-6192f584268e\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"37d4da45-53df-4560-ad34-49e0c8569e59\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"2c7e4917-2551-40d4-9717-d166f0413ff2\", \"key\": \"category-c82d5a48fd9e4d10b9d12840e2838f20\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"dcb33a9d-9d6f-46bd-a348-711032dc0fff\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"dcb33a9d-9d6f-46bd-a348-711032dc0fff\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4fdea295-d7db-4bf9-908a-9e213ebcde17\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"cf25ae0f-6a50-4b80-9ba6-aef77a2c8b07\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"2c7e4917-2551-40d4-9717-d166f0413ff2\", \"key\": \"category-c82d5a48fd9e4d10b9d12840e2838f20\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"dcb33a9d-9d6f-46bd-a348-711032dc0fff\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"dcb33a9d-9d6f-46bd-a348-711032dc0fff\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"5dac52ca-86fa-44ae-bcba-6c9ab0320a1f\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}]}, \"status\": \"partial\", \"summary\": \"在当前可读范围内没有找到任何“上次比较供应商”的记录，因此无法给出排除 C 家的原因。已核对的范围：本会话历史无往轮对话；个人记忆本次会话未启用；当前品类「汽车充气泵」知识库中 competitor 类条目为 0（其余各类目计数也均为 0）、参数 0 个、关联平台型号 0 条；证据检索与公司资料检索（品类范围、多来源类型）关键词“供应商比较 / C家 / 排除 / 原因”均返回 0 条。该品类本身标注为“隔离合成品类”，不承载真实供应商记录，因此我不会推测排除理由；需要 C 家的具体名称或原始对比材料后继续追查。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

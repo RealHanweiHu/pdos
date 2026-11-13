@@ -1,0 +1,105 @@
+{
+  "diagnostics": {
+    "verification_feedback": [
+      "[{\"path\": \"questions.0.options\", \"type\": \"list_type\"}, {\"path\": \"questions.0.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.1.options\", \"type\": \"list_type\"}, {\"path\": \"questions.1.depends_on\", \"type\": \"list_type\"}, {\"path\": \"questions.2.options\", \"type\": \"list_type\"}, {\"path\": \"questions.2.depends_on\", \"type\": \"list_type\"}]"
+    ],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": \"true\", \"depends_on\": \"\", \"id\": \"q_scope\", \"options\": {\"item\": [{\"label\": \"就是汽车充气泵品类内的某次工作\", \"value\": \"汽车充气泵\"}, {\"label\": \"是别的品类（我会说明品类名）\", \"value\": \"其他品类\"}, {\"label\": \"记不清品类，只记得内容\", \"value\": \"不确定\"}]}, \"question\": \"那次工作大概属于哪个品类/哪段时间？当前检索范围只覆盖“汽车充气泵”这个合成品类，其他品类我没有检索权限或未纳入范围。\", \"recommended\": {\"reason\": \"当前工作范围与记忆都只覆盖该品类，先在此范围内定位成本最低。\", \"value\": \"汽车充气泵\"}, \"why\": \"范围越具体，才能定位到具体的那次工作记录与当时的问题清单。\"}, {\"allow_free_text\": \"true\", \"depends_on\": \"\", \"id\": \"q_carrier\", \"options\": {\"item\": [{\"label\": \"品质问题单 / CAPA\", \"value\": \"quality_issue\"}, {\"label\": \"客户 RFQ 或规格书要求\", \"value\": \"rfq_or_spec\"}, {\"label\": \"评审 / 试产 / 制造记录\", \"value\": \"review_or_build\"}, {\"label\": \"用户评论或退货原因归因\", \"value\": \"voice\"}]}, \"question\": \"“外壳缩水”当时大概出现在哪种材料里？（例如品质问题单/CAPA、客户 RFQ 或规格书、评审或试产记录、评论归因）\", \"recommended\": {\"reason\": \"“外壳缩水”最常见的登记载体是品质问题记录，优先按此路径检索。\", \"value\": \"quality_issue\"}, \"why\": \"不同载体的存放位置不同，缩小载体后可按对应来源定向检索。\"}, {\"allow_free_text\": \"true\", \"depends_on\": \"\", \"id\": \"q_memory\", \"options\": {\"item\": [{\"label\": \"为本会话开启记忆读取后我重查\", \"value\": \"开启记忆\"}, {\"label\": \"我直接把当时的内容粘给你\", \"value\": \"我提供内容\"}, {\"label\": \"不用，就在当前品类里继续查\", \"value\": \"继续当前范围检索\"}]}, \"question\": \"是否为本会话开启记忆读取，或由你提供当时的原文片段/附件？\", \"recommended\": {\"reason\": \"即使开启记忆也需你确认授权；由你提供原文可直接定位并核对并列问题。\", \"value\": \"我提供内容\"}, \"why\": \"服务器提示本会话已关闭个人记忆读取，这是目前最直接的定位路径。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": \"true\", \"depends_on\": \"\", \"id\": \"q_scope\", \"options\": {\"item\": [{\"label\": \"就是汽车充气泵品类内的某次工作\", \"value\": \"汽车充气泵\"}, {\"label\": \"是别的品类（我会说明品类名）\", \"value\": \"其他品类\"}, {\"label\": \"记不清品类，只记得内容\", \"value\": \"不确定\"}]}, \"question\": \"那次工作大概属于哪个品类/哪段时间？当前检索范围只覆盖“汽车充气泵”这个合成品类，其他品类我没有检索权限或未纳入范围。\", \"recommended\": {\"reason\": \"当前工作范围与记忆都只覆盖该品类，先在此范围内定位成本最低。\", \"value\": \"汽车充气泵\"}, \"why\": \"范围越具体，才能定位到具体的那次工作记录与当时的问题清单。\"}, {\"allow_free_text\": \"true\", \"depends_on\": \"\", \"id\": \"q_carrier\", \"options\": {\"item\": [{\"label\": \"品质问题单 / CAPA\", \"value\": \"quality_issue\"}, {\"label\": \"客户 RFQ 或规格书要求\", \"value\": \"rfq_or_spec\"}, {\"label\": \"评审 / 试产 / 制造记录\", \"value\": \"review_or_build\"}, {\"label\": \"用户评论或退货原因归因\", \"value\": \"voice\"}]}, \"question\": \"“外壳缩水”当时大概出现在哪种材料里？（例如品质问题单/CAPA、客户 RFQ 或规格书、评审或试产记录、评论归因）\", \"recommended\": {\"reason\": \"“外壳缩水”最常见的登记载体是品质问题记录，优先按此路径检索。\", \"value\": \"quality_issue\"}, \"why\": \"不同载体的存放位置不同，缩小载体后可按对应来源定向检索。\"}, {\"allow_free_text\": \"true\", \"depends_on\": \"\", \"id\": \"q_memory\", \"options\": {\"item\": [{\"label\": \"为本会话开启记忆读取后我重查\", \"value\": \"开启记忆\"}, {\"label\": \"我直接把当时的内容粘给你\", \"value\": \"我提供内容\"}, {\"label\": \"不用，就在当前品类里继续查\", \"value\": \"继续当前范围检索\"}]}, \"question\": \"是否为本会话开启记忆读取，或由你提供当时的原文片段/附件？\", \"recommended\": {\"reason\": \"即使开启记忆也需你确认授权；由你提供原文可直接定位并核对并列问题。\", \"value\": \"我提供内容\"}, \"why\": \"服务器提示本会话已关闭个人记忆读取，这是目前最直接的定位路径。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"dict\", \"questions\": [{\"allow_free_text\": \"true\", \"depends_on\": \"[]\", \"id\": \"q_scope\", \"options\": \"[{\\\"value\\\": \\\"汽车充气泵\\\", \\\"label\\\": \\\"就是汽车充气泵品类内的某次工作\\\"}, {\\\"value\\\": \\\"其他品类\\\", \\\"label\\\": \\\"是别的品类（我会说明品类名）\\\"}, {\\\"value\\\": \\\"不确定\\\", \\\"label\\\": \\\"记不清品类，只记得内容\\\"}]\", \"question\": \"那次工作大概属于哪个品类/哪段时间？当前检索范围只覆盖“汽车充气泵”这个合成品类，其他品类我没有纳入检索范围。\", \"recommended\": {\"reason\": \"当前工作范围与记忆都只覆盖该品类，先在此范围内定位成本最低。\", \"value\": \"汽车充气泵\"}, \"why\": \"范围越具体，才能定位到具体的那次工作记录与当时的问题清单。\"}, {\"allow_free_text\": \"true\", \"depends_on\": \"[]\", \"id\": \"q_carrier\", \"options\": \"[{\\\"value\\\": \\\"quality_issue\\\", \\\"label\\\": \\\"品质问题单 / CAPA\\\"}, {\\\"value\\\": \\\"rfq_or_spec\\\", \\\"label\\\": \\\"客户 RFQ 或规格书要求\\\"}, {\\\"value\\\": \\\"review_or_build\\\", \\\"label\\\": \\\"评审 / 试产 / 制造记录\\\"}, {\\\"value\\\": \\\"voice\\\", \\\"label\\\": \\\"用户评论或退货原因归因\\\"}]\", \"question\": \"“外壳缩水”当时大概出现在哪种材料里？（例如品质问题单/CAPA、客户 RFQ 或规格书、评审或试产记录、评论归因）\", \"recommended\": {\"reason\": \"“外壳缩水”最常见的登记载体是品质问题记录，优先按此路径检索。\", \"value\": \"quality_issue\"}, \"why\": \"不同载体的存放位置不同，缩小载体后可按对应来源定向检索。\"}, {\"allow_free_text\": \"true\", \"depends_on\": \"[]\", \"id\": \"q_memory\", \"options\": \"[{\\\"value\\\": \\\"开启记忆\\\", \\\"label\\\": \\\"为本会话开启记忆读取后我重查\\\"}, {\\\"value\\\": \\\"我提供内容\\\", \\\"label\\\": \\\"我直接把当时的内容粘给你\\\"}, {\\\"value\\\": \\\"继续当前范围检索\\\", \\\"label\\\": \\\"不用，就在当前品类里继续查\\\"}]\", \"question\": \"是否为本会话开启记忆读取，或由你提供当时的原文片段/附件？\", \"recommended\": {\"reason\": \"即使开启记忆也需你确认授权；由你提供原文可直接定位并核对并列问题。\", \"value\": \"我提供内容\"}, \"why\": \"服务器提示本会话已关闭个人记忆读取，这是目前最直接的定位路径。\"}]}"
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 74.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 212093,
+  "held_tokens": 0,
+  "answer": "结果未通过完整核对。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": \"current_session\"}, \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"55070be3-3e24-485c-92c5-98fc8495b3cd\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-13T13:28:03.794405+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"4c9ce904-7046-4f16-ae56-580ffe31c583\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"品质\", \"外壳\", \"注塑\", \"缩水\", \"问题\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"8fe61c86-6575-48b5-8d32-dbb46a673d8e\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我记得之前有一次提到过外壳缩水，是哪次工作？当时一起列出的还有哪些问题？\", \"session_id\": \"76818b2e-972d-481e-b71a-938085b42203\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"54fe6843-b872-4f6e-a033-b1fb49ffe619\", \"execution_ref\": {\"call_id\": \"6d89ed33-00f9-44ba-83fa-05000143be13\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"a44384e9-fb2d-45af-a51b-6f3e7bbe1ae7\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:28:12.932806+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"7ce8281e-dd05-4e97-93dc-624fa4627fa6\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:28:18.782444+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"bc8d2981-3ac5-4d34-9134-58b2cdb7fb5e\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"2f8bde0d-1b11-491b-88ce-86bc9de4c912\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"5029ee8a-fb94-42df-8404-11c9b55a4e2a\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我记得之前有一次提到过外壳缩水，是哪次工作？当时一起列出的还有哪些问题？\", \"session_id\": \"76818b2e-972d-481e-b71a-938085b42203\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"54fe6843-b872-4f6e-a033-b1fb49ffe619\", \"execution_ref\": {\"call_id\": \"01d75d0e-97fd-483c-9fa9-524926b7e1d6\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"VALIDATION_FAILED\", \"detail\": {\"fields\": [{\"path\": \"page_size\", \"type\": \"extra_forbidden\", \"message\": \"Extra inputs are not permitted\"}], \"reason\": \"VALIDATION_FAILED\"}, \"message\": \"读取参数不符合要求，请按工具定义修正。\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"b5c4a6f0-7ea9-4255-8753-674724cd2b21\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"4c9ce904-7046-4f16-ae56-580ffe31c583\", \"key\": \"category-dffb4451d66f4948ac418f12c5bcc46a\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"a04d5ac6-171d-4bdb-a810-e721c57ad595\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"a04d5ac6-171d-4bdb-a810-e721c57ad595\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"06c5cf06-e33d-4f0b-8e25-6db6bf87df77\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:28:35.315393+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"0a06c061-1c50-44d5-a78a-a0dbb3a73323\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-13T13:28:35.383625+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"27be6652-fb4c-46b2-a28a-055696424aaa\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"4c9ce904-7046-4f16-ae56-580ffe31c583\", \"key\": \"category-dffb4451d66f4948ac418f12c5bcc46a\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"a04d5ac6-171d-4bdb-a810-e721c57ad595\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"a04d5ac6-171d-4bdb-a810-e721c57ad595\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"7a90a818-1bde-49e9-bf43-342a60ec5b91\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"session_id\": \"00000000-0000-0000-0000-000000000000\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"de752cfc-c0a1-433e-b5a9-ba1df06fe4ec\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"f15a163a-aaa9-4f1f-801d-3e7e4f72b2ad\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"结果未通过完整核对。\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:3",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

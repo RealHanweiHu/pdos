@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 67.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 86203,
+  "held_tokens": 0,
+  "answer": "上次的排除理由只有一条：C 家的含税报价超出目标价 12%（对比口径是「含税报价 vs 目标价」），不是因为交期或技术指标——当时交期短 2 周的是 B 家，最终建议选 B 家。这是我上一轮（run 7768688c，会话 d66aacb8）给出的结论记录。需要提醒的是：那一轮的遗留项里就有「补 C 家的含税报价单」未完成，本轮在该品类（汽车充气泵）范围内做企业检索与证据检索均零命中，没有取到报价单、目标价等原始记录，因此 12% 这个数字目前没有可核底稿，我不把它当作已核实的业务事实。另外还有一轮「接着上次的供应商对比往下做」的会话（run bb70cbfc）当时是部分完成，其结论在本轮不可见，所以 C 家被排除后是否被复议过，我这边无法确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:43:10.968378+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家「含税报价超目标价 12%」所依据的含税报价单与目标价原始记录：本轮品类内企业检索与证据检索均零命中，未取得任何可引用来源，该比例目前只能作为上次会话的记录转述，不能当作已核实的业务事实\", \"目标价的口径（币种、是否含税、时点、地区/渠道）在可读范围内没有登记记录，12% 的比较基准无法复核\", \"上轮遗留项「补 C 家的含税报价单」当时未完成，本轮也未能补齐；「核对 B 家交期的单位」同样仍悬空\", \"后续会话（run bb70cbfc「接着上次的供应商对比往下做」）结论在本轮不可见，C 家排除是否被复议未知\", \"本轮查找预算已用尽，未能再扩大检索来源范围\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次的排除理由只有一条：C 家的含税报价超出目标价 12%（对比口径是「含税报价 vs 目标价」），不是因为交期或技术指标——当时交期短 2 周的是 B 家，最终建议选 B 家。这是我上一轮（run 7768688c，会话 d66aacb8）给出的结论记录。需要提醒的是：那一轮的遗留项里就有「补 C 家的含税报价单」未完成，本轮在该品类（汽车充气泵）范围内做企业检索与证据检索均零命中，没有取到报价单、目标价等原始记录，因此 12% 这个数字目前没有可核底稿，我不把它当作已核实的业务事实。另外还有一轮「接着上次的供应商对比往下做」的会话（run bb70cbfc）当时是部分完成，其结论在本轮不可见，所以 C 家被排除后是否被复议过，我这边无法确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前只能转述上次的结论，没有报价单与目标价的原始记录可比对。\", \"options\": [{\"label\": \"继续检索/调取 C 家含税报价单与目标价记录，核实 12%\", \"value\": \"search_more\"}, {\"label\": \"沿用上次结论，先把 C 家排除当作既定前提往下做\", \"value\": \"keep_as_is\"}, {\"label\": \"重新把 C 家放回比较范围，按现有报价重排\", \"value\": \"reopen_c\"}], \"question\": \"要不要我在下一轮继续把 C 家的底稿找出来，确认那 12% 的来源？\", \"depends_on\": [], \"recommended\": {\"value\": \"search_more\", \"reason\": \"排除理由目前只有一条且无底稿，先核实成本更低。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"12% 的分母（目标价）口径不明，不同口径会得出不同差距。\", \"options\": [{\"label\": \"我方现行目标价（含税、同配置）\", \"value\": \"internal_target\"}, {\"label\": \"当次报价单上写明的目标价/对标价\", \"value\": \"quote_sheet_target\"}, {\"label\": \"我不确定，需要先查内部记录\", \"value\": \"unknown_needs_owner\"}], \"question\": \"目标价以哪一份为准？\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown_needs_owner\", \"reason\": \"当前可读范围内没有目标价登记记录，不宜替你认定。\"}, \"allow_free_text\": true}], \"unfinished\": [\"补齐 C 家含税报价单底稿并与目标价做同口径差额核对（本轮无可引用来源）\", \"确认后续会话（run bb70cbfc）是否已对 C 家排除结论做过复议\", \"核对 B 家交期单位（上轮遗留项，本轮未处理）\"]}",
+  "unfinished": [
+    "补齐 C 家含税报价单底稿并与目标价做同口径差额核对（本轮无可引用来源）",
+    "确认后续会话（run bb70cbfc）是否已对 C 家排除结论做过复议",
+    "核对 B 家交期单位（上轮遗留项，本轮未处理）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

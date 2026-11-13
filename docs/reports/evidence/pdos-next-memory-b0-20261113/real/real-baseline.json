@@ -1,0 +1,942 @@
+{
+  "version": "xiaopai-memory-timeline-real/v0",
+  "judged_by": "rules",
+  "groups": {
+    "no_memory": {
+      "label": "基线 0：全部会话不进记忆",
+      "questions": 9,
+      "status": {
+        "partial": 9
+      },
+      "fact_questions": 5,
+      "fact_questions_answered": 0,
+      "fact_questions_retrieved": 0,
+      "facts_hit": 0,
+      "facts_retrieved": 0,
+      "facts_total": 12,
+      "answers_withheld": 3,
+      "budget_exhausted": 5,
+      "unknown_expected": 2,
+      "unknown_admitted": 1,
+      "language_expected": 1,
+      "language_met": 0,
+      "text_flags": 0,
+      "clarifications": 8,
+      "memory_tool_calls": 19,
+      "mean_seconds": 102.6,
+      "mean_used_tokens": 178739.6
+    },
+    "history_only": {
+      "label": "基线 1：只在评测进程里把 memory.search 换成搜本人原话加回答摘要，不带条目和目录",
+      "questions": 9,
+      "status": {
+        "partial": 6,
+        "completed": 3
+      },
+      "fact_questions": 5,
+      "fact_questions_answered": 4,
+      "fact_questions_retrieved": 5,
+      "facts_hit": 10,
+      "facts_retrieved": 12,
+      "facts_total": 12,
+      "answers_withheld": 2,
+      "budget_exhausted": 0,
+      "unknown_expected": 2,
+      "unknown_admitted": 1,
+      "language_expected": 1,
+      "language_met": 0,
+      "text_flags": 0,
+      "clarifications": 3,
+      "memory_tool_calls": 22,
+      "mean_seconds": 62.4,
+      "mean_used_tokens": 104934.1
+    },
+    "real": {
+      "label": "基线 2：当前实现",
+      "questions": 9,
+      "status": {
+        "partial": 3,
+        "completed": 6
+      },
+      "fact_questions": 5,
+      "fact_questions_answered": 2,
+      "fact_questions_retrieved": 4,
+      "facts_hit": 3,
+      "facts_retrieved": 10,
+      "facts_total": 12,
+      "answers_withheld": 2,
+      "budget_exhausted": 1,
+      "unknown_expected": 2,
+      "unknown_admitted": 2,
+      "language_expected": 1,
+      "language_met": 1,
+      "text_flags": 1,
+      "clarifications": 2,
+      "memory_tool_calls": 31,
+      "mean_seconds": 94.0,
+      "mean_used_tokens": 151444.4
+    }
+  },
+  "rows": [
+    {
+      "group": "no_memory",
+      "timeline": "TL-01",
+      "question": "q1",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 139.6,
+      "used_tokens": 252125,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 4,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": true,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-01",
+      "question": "q2",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 119.0,
+      "used_tokens": 238485,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 2,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": true,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-01",
+      "question": "q3",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 129.4,
+      "used_tokens": 229889,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 3,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": true,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-02",
+      "question": "q1",
+      "kind": "isolation",
+      "status": "partial",
+      "seconds": 92.5,
+      "used_tokens": 233055,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 1,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": true,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-02",
+      "question": "q2",
+      "kind": "convention",
+      "status": "partial",
+      "seconds": 51.2,
+      "used_tokens": 73380,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "language_met": false,
+      "expected_notes_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-04",
+      "question": "q1",
+      "kind": "deletion",
+      "status": "partial",
+      "seconds": 105.5,
+      "used_tokens": 128560,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "unknown_expected": true
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-06",
+      "question": "q1",
+      "kind": "memory_off",
+      "status": "partial",
+      "seconds": 98.8,
+      "used_tokens": 230318,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": true,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "unknown_expected": true
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-07",
+      "question": "q1",
+      "kind": "correction",
+      "status": "partial",
+      "seconds": 59.8,
+      "used_tokens": 105037,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_notes_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-08",
+      "question": "q1",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 127.5,
+      "used_tokens": 117807,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 2,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "expected_memory_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-01",
+      "question": "q1",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 46.8,
+      "used_tokens": 87116,
+      "usage": {
+        "episodes": [
+          "r1"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 4,
+      "facts_total": 4,
+      "answered": true,
+      "facts_retrieved": 4,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-01",
+      "question": "q2",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 67.4,
+      "used_tokens": 86203,
+      "usage": {
+        "episodes": [
+          "other",
+          "r1"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 2,
+      "facts_total": 2,
+      "answered": true,
+      "facts_retrieved": 2,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-01",
+      "question": "q3",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 77.9,
+      "used_tokens": 151486,
+      "usage": {
+        "episodes": [
+          "r3"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r3"
+        ],
+        "notes": []
+      },
+      "facts_hit": 3,
+      "facts_total": 3,
+      "answered": true,
+      "facts_retrieved": 3,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-02",
+      "question": "q1",
+      "kind": "isolation",
+      "status": "partial",
+      "seconds": 46.6,
+      "used_tokens": 65753,
+      "usage": {
+        "episodes": [
+          "r1"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 1,
+      "facts_total": 1,
+      "answered": true,
+      "facts_retrieved": 1,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-02",
+      "question": "q2",
+      "kind": "convention",
+      "status": "completed",
+      "seconds": 26.1,
+      "used_tokens": 32321,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "language_met": false,
+      "expected_notes_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-04",
+      "question": "q1",
+      "kind": "deletion",
+      "status": "partial",
+      "seconds": 91.4,
+      "used_tokens": 149889,
+      "usage": {
+        "episodes": [
+          "r1"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "unknown_expected": true
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-06",
+      "question": "q1",
+      "kind": "memory_off",
+      "status": "completed",
+      "seconds": 109.1,
+      "used_tokens": 202745,
+      "usage": {
+        "episodes": [
+          "r2"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r2"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "unknown_expected": true
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-07",
+      "question": "q1",
+      "kind": "correction",
+      "status": "completed",
+      "seconds": 56.2,
+      "used_tokens": 82359,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_notes_used": false,
+      "unknown_expected": false
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-08",
+      "question": "q1",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 40.4,
+      "used_tokens": 86535,
+      "usage": {
+        "episodes": [
+          "r1"
+        ],
+        "catalog": [],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 2,
+      "answered": false,
+      "facts_retrieved": 2,
+      "retrieved": true,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-01",
+      "question": "q1",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 86.6,
+      "used_tokens": 143715,
+      "usage": {
+        "episodes": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "catalog": [
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 4,
+      "answered": false,
+      "facts_retrieved": 4,
+      "retrieved": true,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-01",
+      "question": "q2",
+      "kind": "recall",
+      "status": "completed",
+      "seconds": 111.1,
+      "used_tokens": 137340,
+      "usage": {
+        "episodes": [
+          "other",
+          "r1",
+          "r2",
+          "r3"
+        ],
+        "catalog": [
+          "other",
+          "r2",
+          "r3"
+        ],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 2,
+      "facts_total": 2,
+      "answered": true,
+      "facts_retrieved": 2,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-01",
+      "question": "q3",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 111.7,
+      "used_tokens": 244637,
+      "usage": {
+        "episodes": [
+          "other",
+          "r3"
+        ],
+        "catalog": [
+          "other",
+          "r3"
+        ],
+        "sessions_read": [
+          "r3"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 3,
+      "answered": false,
+      "facts_retrieved": 3,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": true,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-02",
+      "question": "q1",
+      "kind": "isolation",
+      "status": "completed",
+      "seconds": 41.8,
+      "used_tokens": 89830,
+      "usage": {
+        "episodes": [
+          "r1"
+        ],
+        "catalog": [
+          "r1"
+        ],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": [
+          "n1"
+        ]
+      },
+      "facts_hit": 1,
+      "facts_total": 1,
+      "answered": true,
+      "facts_retrieved": 1,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-02",
+      "question": "q2",
+      "kind": "convention",
+      "status": "completed",
+      "seconds": 38.1,
+      "used_tokens": 34126,
+      "usage": {
+        "episodes": [
+          "other",
+          "r1"
+        ],
+        "catalog": [
+          "other",
+          "r1"
+        ],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": [
+          "n1"
+        ]
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "language_met": true,
+      "expected_notes_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-04",
+      "question": "q1",
+      "kind": "deletion",
+      "status": "completed",
+      "seconds": 79.5,
+      "used_tokens": 150958,
+      "usage": {
+        "episodes": [
+          "r1"
+        ],
+        "catalog": [
+          "r1"
+        ],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [
+        "含税"
+      ],
+      "admits_unknown": true,
+      "unknown_expected": true
+    },
+    {
+      "group": "real",
+      "timeline": "TL-06",
+      "question": "q1",
+      "kind": "memory_off",
+      "status": "completed",
+      "seconds": 90.8,
+      "used_tokens": 213751,
+      "usage": {
+        "episodes": [
+          "r2"
+        ],
+        "catalog": [
+          "r2"
+        ],
+        "sessions_read": [
+          "r2"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "unknown_expected": true
+    },
+    {
+      "group": "real",
+      "timeline": "TL-07",
+      "question": "q1",
+      "kind": "correction",
+      "status": "completed",
+      "seconds": 152.1,
+      "used_tokens": 163754,
+      "usage": {
+        "episodes": [],
+        "catalog": [],
+        "sessions_read": [],
+        "notes": [
+          "n1"
+        ]
+      },
+      "facts_hit": 0,
+      "facts_total": 0,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": true,
+      "expected_notes_used": true,
+      "unknown_expected": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-08",
+      "question": "q1",
+      "kind": "recall",
+      "status": "partial",
+      "seconds": 134.1,
+      "used_tokens": 184889,
+      "usage": {
+        "episodes": [
+          "r4",
+          "r5",
+          "r6"
+        ],
+        "catalog": [
+          "r4",
+          "r5",
+          "r6"
+        ],
+        "sessions_read": [
+          "r4",
+          "r5",
+          "r6"
+        ],
+        "notes": []
+      },
+      "facts_hit": 0,
+      "facts_total": 2,
+      "answered": false,
+      "facts_retrieved": 0,
+      "retrieved": false,
+      "answer_withheld": true,
+      "budget_exhausted": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "expected_memory_used": false,
+      "unknown_expected": false
+    }
+  ],
+  "gates": {
+    "cross_access": 0,
+    "deletion_residue": 0,
+    "memory_off_access": 0,
+    "baseline_setup": 0
+  },
+  "violations": [],
+  "models": [
+    "MiniMax-M3/MiniMax-M3"
+  ],
+  "not_scored": [
+    "answer_quality_beyond_key_facts",
+    "fabrication",
+    "run_to_run_variance"
+  ],
+  "runs_per_cell": 1,
+  "missing": [],
+  "groups_not_run": [],
+  "answered_gain_over_no_memory": 2,
+  "answered_by_group": {
+    "no_memory": "0/5",
+    "history_only": "4/5",
+    "real": "2/5"
+  },
+  "retrieved_by_group": {
+    "no_memory": "0/5",
+    "history_only": "5/5",
+    "real": "4/5"
+  },
+  "blocked": false
+}

@@ -1,0 +1,65 @@
+{
+  "diagnostics": {
+    "verification_feedback": [
+      "[{\"path\": \"result\", \"type\": \"dict_type\"}]"
+    ],
+    "domain_errors": []
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 81.0,
+  "clarifications": [
+    "三家供应商的报价单与交期依据能否提供给我（文件 / 系统内记录 / 名称线索）？",
+    "这次“往下做”要走到哪一步？",
+    "比价口径沿用上次吗（币种、含税/未税、数量档位、含运费、交期起算点）？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 141517,
+  "held_tokens": 0,
+  "answer": "上次结论（来自你本人上一次会话 session 5a2e5609 / run 4f70e2f1，目标“比较三家气泵供应商的报价和交期”，as_of 2026-11-13，状态 completed 的情景卡）：建议选 B 家，交期比 A 家短 2 周；C 家因含税报价超出目标价 12% 已排除。上次记下的未完成两项：补 C 家的含税报价单、核对 B 家交期的单位。其余可查记录里没有供应商信息——另两个会话（上周试产不良项汇总、样件编号规则）都不含供应商内容，本品类（汽车充气泵）当前可读范围内企业检索（供应/知识/资料类）0 条、竞品清单空、品类知识中的竞品条目空、平台对象空。因此 C 家报价单、B 家交期依据、供应商名称、目标价口径在可查范围内都查不到，本轮没有可执行的实质动作：既补不了报价单，也核不了交期单位，更无法重做同口径对比或价格带计算。请知悉：以上是当时会话记录中的结论，不是可引用的业务事实，本轮未产生任何业务对象写入。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T13:16:01.243820+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家的含税报价单：可查范围内查不到\", \"B 家交期的单位与起算口径：可查范围内查不到\", \"三家供应商的真实名称：可查范围内查不到\", \"目标价的金额与计算基数（“超 12%”所依据的口径）：可查范围内查不到\", \"A 家的报价与交期原始数值：可查范围内查不到\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次结论（来自你本人上一次会话 session 5a2e5609 / run 4f70e2f1，目标“比较三家气泵供应商的报价和交期”，as_of 2026-11-13，状态 completed 的情景卡）：建议选 B 家，交期比 A 家短 2 周；C 家因含税报价超出目标价 12% 已排除。上次记下的未完成两项：补 C 家的含税报价单、核对 B 家交期的单位。其余可查记录里没有供应商信息——另两个会话（上周试产不良项汇总、样件编号规则）都不含供应商内容，本品类（汽车充气泵）当前可读范围内企业检索（供应/知识/资料类）0 条、竞品清单空、品类知识中的竞品条目空、平台对象空。因此 C 家报价单、B 家交期依据、供应商名称、目标价口径在可查范围内都查不到，本轮没有可执行的实质动作：既补不了报价单，也核不了交期单位，更无法重做同口径对比或价格带计算。请知悉：以上是当时会话记录中的结论，不是可引用的业务事实，本轮未产生任何业务对象写入。\", \"questions\": [], \"unfinished\": [\"补 C 家的含税报价单 —— 无来源可查，本轮未动\", \"核对 B 家交期的单位（周/天/自然日与起算点） —— 无依据可核，本轮未动\", \"三家供应商名称与目标价口径 —— 可查范围内查不到，本轮无法补齐\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单 —— 无来源可查，本轮未动",
+    "核对 B 家交期的单位（周/天/自然日与起算点） —— 无依据可核，本轮未动",
+    "三家供应商名称与目标价口径 —— 可查范围内查不到，本轮无法补齐"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:4",
+    "memory.search:completed:2",
+    "model:completed:7",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

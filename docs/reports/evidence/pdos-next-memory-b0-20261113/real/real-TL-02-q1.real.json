@@ -1,0 +1,46 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 41.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 89830,
+  "held_tokens": 0,
+  "answer": "你上次的结论是：建议选 B 家。\n\n依据是你本人上一次工作记录（会话 run 864e3c09-cd87-4634-9dc3-6de9f085cb63，目标「比较三家气泵供应商的报价和交期」，as_of 2026-11-13），当时的收尾结论记录为「建议选 B 家」。\n\n两点需要说明：\n1. 这是你本人当时的工作记录，不是可引用的业务事实，不能直接当作当前的供应商事实。\n2. 我在当前品类（汽车充气泵）范围内按供应/报价/交期检索过，没有返回任何在册的供应商报价或交期记录，所以无法当场核对 B 家的报价与交期是否仍然有效，也未能在册资料里看到甲/乙/丙与具体供应商名称的对应关系。\n\n下一步可选：若要「按现在口径复核后仍然建议谁」，可在同一会话重新拉一遍三家的当前报价与交期再比——你说一声我就做。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"当前品类范围内未检索到在册的供应商报价/交期记录，无法核对 B 家当前报价与交期是否仍有效\", \"历史记录未保留甲/乙/丙与具体供应商名称、报价数字的对应关系\", \"历史结论所依据的报价口径（币种、日期、含税运、配置）未在本次可读资料中找到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:24:05.870442+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"recommendation\": {\"basis\": \"本人上一次工作记录（conversation.history, run_id=864e3c09-cd87-4634-9dc3-6de9f085cb63, session_id=853a20a1-d22b-4e31-af9b-56e0e473a2cc, goal='比较三家气泵供应商的报价和交期', as_of=2026-11-13），历史结论摘要为「建议选 B 家」\", \"supplier\": \"B\"}, \"current_fact_check\": {\"result\": \"no_records_found\", \"attempted\": true, \"source_types\": [\"supply\"], \"scope_category_id\": \"3f27fc79-4aeb-46a0-a5ca-70244d98756c\"}, \"next_optional_step\": \"如需按当前口径复核 B 家结论，可在同一会话重新拉取三家报价与交期后再比\"}, \"status\": \"completed\", \"summary\": \"你上次的结论是：建议选 B 家。\\n\\n依据是你本人上一次工作记录（会话 run 864e3c09-cd87-4634-9dc3-6de9f085cb63，目标「比较三家气泵供应商的报价和交期」，as_of 2026-11-13），当时的收尾结论记录为「建议选 B 家」。\\n\\n两点需要说明：\\n1. 这是你本人当时的工作记录，不是可引用的业务事实，不能直接当作当前的供应商事实。\\n2. 我在当前品类（汽车充气泵）范围内按供应/报价/交期检索过，没有返回任何在册的供应商报价或交期记录，所以无法当场核对 B 家的报价与交期是否仍然有效，也未能在册资料里看到甲/乙/丙与具体供应商名称的对应关系。\\n\\n下一步可选：若要「按现在口径复核后仍然建议谁」，可在同一会话重新拉一遍三家的当前报价与交期再比——你说一声我就做。\", \"questions\": [], \"unfinished\": [\"三家气泵供应商的当前报价与交期未在可读范围内找到，B 家结论尚未按当前口径复核\"]}",
+  "unfinished": [
+    "三家气泵供应商的当前报价与交期未在可读范围内找到，B 家结论尚未按当前口径复核"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false
+}

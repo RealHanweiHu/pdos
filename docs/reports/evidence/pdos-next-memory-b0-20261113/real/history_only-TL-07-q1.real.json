@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 56.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 82359,
+  "held_tokens": 0,
+  "answer": "已按两条内容出具本周周报草稿（本周完成供应商对比；下周补报价单）。说明：当前可读范围（汽车充气泵品类）内检索\"供应商对比\"\"报价单/询价\"及证据库均无命中，因此两条内容按你口头给出的事实登记，未附任何对比结论、供应商名称或报价数值；相关事实与依据目前为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T08:54:30.436669+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商对比记录的可核出处（文档/项目/知识条目）未在当前可读范围内检索到\", \"报价单计划完成日期与负责方未在当前可读范围内检索到\", \"下周报价单对应的供应商范围与报价口径未在当前可读范围内检索到\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"weekly_report\": {\"planned\": [\"补齐报价单\"], \"category\": \"汽车充气泵\", \"completed\": [\"完成供应商对比\"], \"unverified\": [\"供应商对比的具体对象、结论与记录出处未在可读范围中检索到\", \"报价单的下周完成时点与所需供应商清单未在可读范围中检索到\"]}}, \"status\": \"completed\", \"summary\": \"已按两条内容出具本周周报草稿（本周完成供应商对比；下周补报价单）。说明：当前可读范围（汽车充气泵品类）内检索\\\"供应商对比\\\"\\\"报价单/询价\\\"及证据库均无命中，因此两条内容按你口头给出的事实登记，未附任何对比结论、供应商名称或报价数值；相关事实与依据目前为待确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读范围内检索\\\"供应商对比\\\"零命中，周报现在只有结论句、没有可核依据。\", \"options\": [{\"label\": \"只保留结论句，不附细节（现状）\", \"value\": \"keep_summary_only\"}, {\"label\": \"我给文件/项目位置，你去读后补齐对比对象与结论\", \"value\": \"provide_source\"}, {\"label\": \"让我在同会话继续深查该品类的供应商/竞品资料后补\", \"value\": \"draft_from_available\"}], \"question\": \"供应商对比的结论要写进周报正文吗？如果要，对比对象和结果存在哪里（哪份文档/哪个项目），我按可核记录补进去。\", \"depends_on\": [], \"recommended\": {\"value\": \"provide_source\", \"reason\": \"两条内容要成立，需要一条可核的对比记录；你直接指位置最快。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"周报第二条目前是待办句，没有时点与范围；我不会替你定日期或承诺。\", \"options\": [{\"label\": \"周报里不写具体日期，保持\\\"下周补报价单\\\"\", \"value\": \"no_date_needed\"}, {\"label\": \"我给目标日期和供应商范围\", \"value\": \"provide_date\"}], \"question\": \"下周补报价单需要写清哪一个完成时点（具体日期）与范围（对哪些供应商、什么报价口径）？\", \"depends_on\": [], \"recommended\": {\"value\": \"no_date_needed\", \"reason\": \"用户已明确\\\"内容就两条\\\"，加日期属于超出其要求的信息。\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"决定我把草稿写成可直接粘贴的文本还是分栏表格版本。\", \"options\": [{\"label\": \"直接给可粘贴的纯文本两行版\", \"value\": \"plain_text\"}, {\"label\": \"给\\\"本周完成/下周计划\\\"两栏表格版\", \"value\": \"table\"}], \"question\": \"周报要交到哪里、以什么形式发？\", \"depends_on\": [], \"recommended\": {\"value\": \"plain_text\", \"reason\": \"两条内容的周报，纯文本最通用。\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商对比的可核记录出处未确认（检索零命中）\", \"报价单的计划时点、供应商范围与口径未确认\"]}",
+  "unfinished": [
+    "供应商对比的可核记录出处未确认（检索零命中）",
+    "报价单的计划时点、供应商范围与口径未确认"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.read:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": false
+}

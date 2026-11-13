@@ -13,7 +13,7 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 | 文档 | 作用 |
 |---|---|
 | [完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) | 2026-10-08 批准并冻结；产品、领域、体验、运行架构与验收（附录 A 操作、附录 B 验收场景）的唯一设计依据 |
-| [设计确认与决策记录](2026-10-08-pdos-next-design-confirmation.md) | 冻结后经用户确认的变更 P1–P120（最新 [P120 来源撤回、定义更新与接口更新](2026-10-08-pdos-next-design-confirmation.md#p120)，原 P100，落地时撞号改号；[P101 下线小Pai 原执行路径](2026-10-08-pdos-next-design-confirmation.md#p101)；[P100 LangGraph 执行迁移到 Temporal 官方插件](2026-10-08-pdos-next-design-confirmation.md#p100)；P102–P104、P106–P108、P112、P114、P118 未使用或不在本分支）；与 v1.1 冲突时以较新的决策为准 |
+| [设计确认与决策记录](2026-10-08-pdos-next-design-confirmation.md) | 冻结后经用户确认的变更 P1–P122（最新 [P122 最终回答出不来的三处修正](2026-10-08-pdos-next-design-confirmation.md#p122)；[P121 记忆系统目标架构九处修订](2026-10-08-pdos-next-design-confirmation.md#p121)；[P120 来源撤回、定义更新与接口更新](2026-10-08-pdos-next-design-confirmation.md#p120)，原 P100，落地时撞号改号；[P101 下线小Pai 原执行路径](2026-10-08-pdos-next-design-confirmation.md#p101)；[P100 LangGraph 执行迁移到 Temporal 官方插件](2026-10-08-pdos-next-design-confirmation.md#p100)；P102–P104、P106–P108、P112、P114、P118 未使用或不在本分支）；与 v1.1 冲突时以较新的决策为准 |
 | [架构导读](2026-10-08-pdos-next-architecture-overview.md) | 汇总权威文档与实现现状的阅读入口，不新增权威 |
 | [AI 写入分级 DC-11](2026-09-20-ai-direct-write-tier-policy.md) | T0/T1/T2 政策，AGENTS.md 不可协商项 1 |
 | [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md) | LangGraph + Temporal 的统一运行规则 |
@@ -59,7 +59,8 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 |---|---|
 | [NPI 框架与 Agent 任务规划](2026-11-01-npi-framework-agent-task-planning-design.md) | 设计草案 v0.2；P33 已确认，未实施 |
 | [项目协作、驾驶舱与提及](2026-11-01-project-team-cockpit-mentions-design.md) | 设计草案 v0.1；P34 已确认，未实施 |
-| [小Pai 记忆层优化](2026-11-05-xiaopai-memory-layer-design.md) | v0.4 已确认（用户 2026-11-07，Q1–Q19，[P84–P90](2026-10-08-pdos-next-design-confirmation.md#p84)）；含业务场景记忆、具体架构、节点衔接与评测方案、语言习惯；未实施，按 §13 分期交清单 W8 D45 |
+| [小Pai 记忆层优化](2026-11-05-xiaopai-memory-layer-design.md) | v0.4 已确认（用户 2026-11-07，Q1–Q19，[P84–P90](2026-10-08-pdos-next-design-confirmation.md#p84)）；含业务场景记忆、具体架构、节点衔接与评测方案、语言习惯；其中 9 处由 [P121](2026-10-08-pdos-next-design-confirmation.md#p121) 修订（2026-11-12）；M1、M2a 已实施并合入（11-08、11-09），M2b、M3、M4 未实施，按 §13 分期交清单 W8 D45 |
+| [小Pai 记忆系统评估与目标架构](2026-11-12-xiaopai-memory-system-assessment-and-target-architecture.md) | v0.1；与 v0.4 和 P84–P94 不同的 9 处已由用户 2026-11-12 逐条确认（[P121](2026-10-08-pdos-next-design-confirmation.md#p121)）；含现状证据、目标架构、数据契约、评测方案；未实施，开工时间未定（清单 D473） |
 | [v1.1 缺口与竞品对照](2026-10-22-pdos-v1.1-gap-analysis-and-competitive-review.md) | 分析稿，不构成合同；改变范围的条目须先有决策记录 |
 
 ## 六、资料与相邻目录
@@ -67,5 +68,6 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 - [category-seeds/](category-seeds/README.md)：品类种子资料（轮胎充气泵、自行车打气筒）。
 - [../runbooks/](../runbooks/)：pdos-next 运维与使用手册，以及原生产下线手册。试点上线：[备份与恢复](../runbooks/backup-and-restore.md)、[发布与回滚](../runbooks/release-and-rollback.md)、[监控告警与值班](../runbooks/monitoring-and-on-call.md)。
 - [../evaluations/xiaopai-v0/](../evaluations/xiaopai-v0/README.md)：小Pai 评测题集。
+- [../evaluations/xiaopai-memory-v0/](../evaluations/xiaopai-memory-v0/README.md)：小Pai 记忆评测的时间线候选（8 条，未经确认）。
 - [../research/](../research/report.md)：早期市场与产品调研综合报告。
 - [../reports/](../reports/)：评审报告与 `evidence/` 验证证据。
