@@ -598,6 +598,14 @@ class Receipt(Row, Base):
             name="fk_action_receipts_agent_run",
         ),
         CheckConstraint("run_id IS NULL OR agent_run_id IS NULL", name="receipt_one_run_identity"),
+        # Later human changes and single-item withdrawals by subject (D117; s0_0874).
+        Index(
+            "ix_action_receipts_subject_history",
+            "tenant_id",
+            "subject_type",
+            "subject_id",
+            "created_at",
+        ),
     )
 
 
@@ -1333,3 +1341,16 @@ import pdos_next.domain.exports.models  # noqa: E402,F401
 # P34 discussions, comments and notifications (D37 ⑤).
 import pdos_next.domain.projects.discussions.models  # noqa: E402,F401
 import pdos_next.domain.my_work.notifications.models  # noqa: E402,F401
+
+# D221 tenant working calendars (administrator-maintained, append-only versions).
+import pdos_next.domain.work_calendar.models  # noqa: E402,F401
+
+# D47 operations (supply commitments, forecasts, interfaces, fixtures, alternates,
+# customer acceptance, tooling and tool trials).
+import pdos_next.domain.manufacturing.supply_commitments.models  # noqa: E402,F401
+import pdos_next.domain.projects.forecast_refresh.models  # noqa: E402,F401
+import pdos_next.domain.engineering.interfaces.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.fixture_acceptance.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.alternate_approvals.models  # noqa: E402,F401
+import pdos_next.domain.delivery.customer_acceptance.models  # noqa: E402,F401
+import pdos_next.domain.manufacturing.tool_trials.models  # noqa: E402,F401

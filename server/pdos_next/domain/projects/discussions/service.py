@@ -2,7 +2,8 @@
 
 Rules kept here and in the database:
 - only a named human acting for themself posts, edits or retracts; 小Pai's identity
-  has no privilege on these tables at all (DC-11; its own replies are W6 ⑥, P54);
+  has no privilege on these tables at all (DC-11). Its replies arrive only through the
+  delivery function after the audience check (W6 ⑥, P54), see `agent.py`;
 - a thread inherits its subject's audience and is re-checked on every read;
 - a comment records the object version it was written against (P41-6);
 - editing keeps every version; retraction leaves "已撤回" and keeps the history;
@@ -25,7 +26,7 @@ from pdos_next.domain.projects.models import Project
 from pdos_next.domain.projects.team import handover
 from pdos_next.errors import DomainError
 
-from . import mentions
+from . import agent, mentions
 from .models import DiscussionFollow, DiscussionMessage, DiscussionMessageVersion, DiscussionThread
 
 OBJECT_TYPES = {"work_task": "任务", "artifact": "文档"}
@@ -38,7 +39,7 @@ RETRACTED = "已撤回"
 NOT_A_DECISION = "讨论不是正式记录：这里的结论不构成决定、承诺或批准，需要时请转为任务或决定草稿。"
 
 
-class NewMessage(StrictModel):
+class _Body(StrictModel):
     body: str = Field(min_length=1, max_length=8000)
     request_key: UUID
 
@@ -48,6 +49,11 @@ class NewMessage(StrictModel):
         if not value.strip():
             raise ValueError("请输入内容")
         return value.strip()
+
+
+class NewMessage(_Body):
+    # With @小Pai only: the reply goes to the requester alone (P34-4 “只给我看”).
+    agent_private: bool = False
 
 
 class NewTopic(NewMessage):
@@ -61,7 +67,7 @@ class NewTopic(NewMessage):
         return value.strip()
 
 
-class EditMessage(NewMessage):
+class EditMessage(_Body):
     expected_revision: int = Field(ge=1)
 
 
@@ -72,6 +78,14 @@ class RetractMessage(StrictModel):
 
 class FollowChange(StrictModel):
     followed: bool
+
+
+def _dump(data):
+    """Request fingerprint fields; the 小Pai switch only counts when it is on."""
+    value = data.model_dump(mode="json")
+    if not value.get("agent_private", True):
+        value.pop("agent_private")
+    return value
 
 
 # Scope --------------------------------------------------------------------------
@@ -203,13 +217,18 @@ def _people(s, ctx, ids):
     }
 
 
-def message_view(row, names, me):
+def message_view(row, names, me, *, agents=frozenset(), by_reply=None, by_message=None):
     retracted = row.state == "retracted"
+    from_agent = row.author_id in agents
+    reply = (by_reply or {}).get(row.id)
     return {
         "id": str(row.id),
         "sequence": row.sequence,
         "author_id": str(row.author_id),
-        "author_name": names.get(row.author_id, "成员"),
+        "author_name": "小Pai" if from_agent else names.get(row.author_id, "成员"),
+        "author_kind": "agent" if from_agent else "human",
+        "agent": reply,
+        "agent_request": (by_message or {}).get(row.id),
         "state": row.state,
         "retracted": retracted,
         "body": "" if retracted else row.body,
@@ -222,7 +241,9 @@ def message_view(row, names, me):
         "updated_at": row.updated_at.isoformat(),
         "change_seq": row.change_seq,
         "own": row.author_id == me,
-        "can_edit": row.author_id == me and not retracted,
+        "can_edit": row.author_id == me and not retracted and not from_agent,
+        "can_retract": not retracted
+        and ((row.author_id == me and not from_agent) or bool(reply and reply["can_retract"])),
     }
 
 
@@ -255,6 +276,8 @@ def _thread_view(s, ctx, project, thread, *, before=None, page_size=50, full=Tru
             if item.get("kind") == "person":
                 ids.add(UUID(item["id"]))
     names = _people(s, ctx, ids)
+    agents = agent._agent_ids(s, ctx, {row.author_id for row in page})
+    by_message, by_reply = agent.cards(s, ctx, project, thread, page)
     subject = None
     if thread.subject_type != "project":
         subject = {
@@ -277,7 +300,13 @@ def _thread_view(s, ctx, project, thread, *, before=None, page_size=50, full=Tru
             "token": thread_tokens(s, ctx, [thread.id]).get(str(thread.id)),
         },
         "subject": subject,
-        "messages": [message_view(row, names, ctx.requester_id) for row in page],
+        "messages": [
+            message_view(
+                row, names, ctx.requester_id, agents=agents, by_reply=by_reply,
+                by_message=by_message,
+            )
+            for row in page
+        ],
         "people": {str(key): value for key, value in names.items()},
         "next_before": page[0].sequence if len(rows) > page_size else None,
         "can_post": True,
@@ -306,7 +335,11 @@ def thread_tokens(s, ctx, thread_ids):
         .where(DiscussionThread.tenant_id == ctx.tenant_id, DiscussionThread.id.in_(ids[:20]))
         .group_by(DiscussionThread.id)
     ).all()
-    return {str(identity): str(token) for identity, token in rows}
+    # A 小Pai delivery or share moves the thread too (its card changes state).
+    requests = agent.tokens(s, ctx, [identity for identity, _ in rows])
+    return {
+        str(identity): str(max(token, requests.get(identity) or 0)) for identity, token in rows
+    }
 
 
 def topics(s, ctx, product_id, project_id):
@@ -351,6 +384,7 @@ def topics(s, ctx, product_id, project_id):
     names = _people(
         s, ctx, {row.author_id for row in rows} | {row.author_id for row in latest.values()}
     )
+    agents = agent._agent_ids(s, ctx, {row.author_id for row in latest.values()})
     items = [
         {
             "id": str(row.id),
@@ -359,7 +393,7 @@ def topics(s, ctx, product_id, project_id):
             "created_at": row.created_at.isoformat(),
             "messages": stats.get(row.id, (0, 0))[0],
             "token": str(stats.get(row.id, (0, 0))[1] or 0),
-            "latest": message_view(latest[row.id], names, ctx.requester_id)
+            "latest": message_view(latest[row.id], names, ctx.requester_id, agents=agents)
             if row.id in latest
             else None,
             "following": _following(s, ctx, row),
@@ -429,8 +463,14 @@ def _anchor(s, ctx, project, thread):
 
 
 def _append(s, ctx, project, thread, data, fingerprint):
-    """Insert one message and its first version; notify mentions and followers."""
+    """Insert one message and its first version; notify mentions and followers.
+
+    With @小Pai the same transaction starts the requester's Run (P34-4, P52); its
+    Temporal reference is started after commit by the route.
+    """
     resolved = mentions.resolve(s, ctx, thread, project, data.body)
+    if getattr(data, "agent_private", False) and not resolved.agent:
+        fail("VALIDATION_FAILED", "agent_private_without_agent", "“只给我看”只用于 @小Pai。", 422)
     _lock(s, f"discussion-thread:{thread.id}")
     sequence = (
         s.scalar(
@@ -487,6 +527,13 @@ def _append(s, ctx, project, thread, data, fingerprint):
         "created" if sequence == 1 and thread.author_id == ctx.actor_id else "commented",
     )
     _notify(s, ctx, project, thread, row, resolved.recipients, first=sequence == 1)
+    if resolved.agent:
+        started = agent.invoke(
+            s, ctx, project, thread, row,
+            private_only=bool(getattr(data, "agent_private", False)),
+            ports=s.info.get("agent_ports"), full_project=_full(s, ctx, project),
+        )
+        s.info.setdefault("agent_runs", []).append(started)
     s.refresh(row)
     return row
 
@@ -527,7 +574,7 @@ def start_topic(s, ctx, product_id, project_id, data: NewTopic):
     project = _project(s, ctx, product_id, project_id, write=True, lane=None)
     if not _full(s, ctx, project):
         raise DomainError("FORBIDDEN_SCOPE", "项目讨论只对项目受众可见。", 403)
-    fingerprint = digest({"project_id": str(project.id), **data.model_dump(mode="json")})
+    fingerprint = digest({"project_id": str(project.id), **_dump(data)})
     _lock(s, f"discussion-request:{ctx.tenant_id}:{ctx.actor_id}:{data.request_key}")
     prior = _prior(
         s, ctx, DiscussionThread, DiscussionThread.author_id, data.request_key, fingerprint
@@ -549,13 +596,20 @@ def start_topic(s, ctx, product_id, project_id, data: NewTopic):
     s.add(row)
     s.flush()
     _append(
-        s, ctx, project, row, NewMessage(body=data.body, request_key=data.request_key), fingerprint
+        s,
+        ctx,
+        project,
+        row,
+        NewMessage(
+            body=data.body, request_key=data.request_key, agent_private=data.agent_private
+        ),
+        fingerprint,
     )
     return _thread_view(s, ctx, project, row)
 
 
 def _reply(s, ctx, project, thread, data):
-    fingerprint = digest({"thread_id": str(thread.id), **data.model_dump(mode="json")})
+    fingerprint = digest({"thread_id": str(thread.id), **_dump(data)})
     _lock(s, f"discussion-request:{ctx.tenant_id}:{ctx.actor_id}:{data.request_key}")
     prior = _prior(
         s, ctx, DiscussionMessage, DiscussionMessage.author_id, data.request_key, fingerprint
@@ -617,6 +671,8 @@ def _message(s, ctx, thread, message_id):
     row = s.scalar(query)
     if row is None:
         raise DomainError("FORBIDDEN_SCOPE", "消息不存在或权限已变化。", 403)
+    if agent._agent_ids(s, ctx, {row.author_id}):
+        return row  # 小Pai's message: only retraction, by its requester or the owner.
     if row.author_id != ctx.actor_id:
         fail("FORBIDDEN_SCOPE", "author_only", "只有作者本人可以编辑或撤回。", 403)
     # Only the author's own row passes the update policy, so the lock comes second.
@@ -639,6 +695,13 @@ def _revise(s, ctx, project, thread, message_id, data, *, retract):
     if prior is not None:
         return _thread_view(s, ctx, project, thread, full=_full(s, ctx, project))
     row = _message(s, ctx, thread, message_id)
+    if row.author_id != ctx.actor_id:
+        if not retract:
+            fail("FORBIDDEN_SCOPE", "author_only", "小Pai 的回复不能编辑，只能撤回。", 403)
+        # Idempotent replay and “already retracted” are decided in SQL: the
+        # retraction version of a 小Pai message is not readable through RLS.
+        agent.retract(s, ctx, row, data.expected_revision, data.request_key, fingerprint)
+        return _thread_view(s, ctx, project, thread, full=_full(s, ctx, project))
     if row.state == "retracted":
         fail("INVALID_STATE", "retracted", "消息已撤回，不能再编辑或撤回。")
     if row.revision != data.expected_revision:
@@ -650,6 +713,14 @@ def _revise(s, ctx, project, thread, message_id, data, *, retract):
         body, stored, recipients, revision = "", [], set(), row.subject_revision
     else:
         resolved = mentions.resolve(s, ctx, thread, project, data.body)
+        if resolved.agent and not any(item.get("kind") == "agent" for item in row.mentions or ()):
+            # An edit never starts a Run; @小Pai again in a new message (P34-4).
+            fail(
+                "VALIDATION_FAILED",
+                "agent_mention_edit",
+                "编辑不会发起小Pai，请另发一条消息 @小Pai。",
+                422,
+            )
         body, stored, revision = data.body, resolved.stored, _anchor(s, ctx, project, thread)
         recipients = resolved.recipients - previous_people
     row.revision += 1
@@ -791,7 +862,40 @@ def mentionable(s, ctx, product_id, project_id, subject_type, subject_id):
         ],
         "can_mention_all": ctx.requester_id == project.owner_id,
         "can_invite": ctx.requester_id == project.owner_id,
-        "agent": {"available": False, "note": "在讨论中 @小Pai 将随 W6 ⑥ 开放。"},
+        "agent": _agent_option(s, ctx),
+    }
+
+
+def _agent_option(s, ctx):
+    """@小Pai is offered when the tenant has its one active 小Pai with category access."""
+    from pdos_next.core.models import Grant
+
+    rows = list(
+        s.scalars(
+            select(Principal.id).where(
+                Principal.tenant_id == ctx.tenant_id,
+                Principal.kind == "agent",
+                Principal.active.is_(True),
+            )
+        )
+    )
+    at = now()
+    granted = len(rows) == 1 and s.scalar(
+        select(Grant.id).where(
+            Grant.tenant_id == ctx.tenant_id,
+            Grant.category_id == ctx.category_id,
+            Grant.principal_id == rows[0],
+            (Grant.expires_at.is_(None)) | (Grant.expires_at > at),
+        )
+    )
+    if not granted:
+        return {"available": False, "note": "小Pai 当前不可用（未登记或没有本品类的读取授权）。"}
+    return {
+        "available": True,
+        "note": (
+            "@小Pai 会按你的权限发起一次运行；来源都对串里的人可见时回复贴回串里，"
+            "否则只给你看。"
+        ),
     }
 
 

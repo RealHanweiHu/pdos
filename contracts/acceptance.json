@@ -2,7 +2,7 @@
   "provenance": {
     "kind": "derived_from_consolidated_markdown",
     "source": "docs/design/2026-10-08-pdos-complete-target-architecture-v1.1.md",
-    "sha256": "18378bf54ab40a52e4a648afac99349f9e6e109f0820bb61376a421f45e1953f",
+    "sha256": "27fcd3d63aadb7073369c17e2ed335d4ad00930721058523bd753df6754c838c",
     "original_contract_package_received": false,
     "revision": "v1.1 (approved 2026-10-08)",
     "previous_source": "docs/design/2026-10-02-pdos-complete-target-architecture-v1.md",
@@ -481,6 +481,30 @@
       "stage": "S1",
       "definition_only": true,
       "s1_first_loop": true
+    },
+    {
+      "id": "AT-64",
+      "scenario": "NPI 框架与自主计划（P33、P41）",
+      "expected": "G0 批准后无需人工操作，项目即有完整计划，且框架检查全部通过；缺少任一红线成果对应任务的计划不生效；含电池、需开新模、需要新认证、含首次使用的关键部件四项均为“否”才走轻量路径，任一项未知按“是”，G0 评审人只能把轻量升为完整；受派人承接前没有承诺记录；小Pai 不能未经承接人确认就修改已承接任务，基线批准后不能直接改变基线；未取得资格的租户中，上述动作走一次确认；按“租户 × 技能包 × 模型版本”滚动计算，撤回率（最近 20 次运行）超过 5%、人工修改率（最近 50 个小Pai 建立的任务）超过 30% 或框架检查失败率（最近 20 次生成或修改）超过 10% 时自动降回一次确认，关键错误出现 1 次即暂停，样本不足时只记录为 N/A、不判定；整次撤回能撤销小Pai 生成的计划，已被人修改或承接的条目逐条列为未撤回并说明原因。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
+    },
+    {
+      "id": "AT-65",
+      "scenario": "项目成员与讨论（P34 第 1–3 项）",
+      "expected": "没有品类授权的人不能被加为成员；小Pai 不能被设为项目成员或任务负责人；指定受众的项目中，移除成员后此人立即看不到项目讨论，其历史发言保留署名；提及看不到对象的人被拒绝；讨论里的“同意”不产生决定记录。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
+    },
+    {
+      "id": "AT-66",
+      "scenario": "共享串 @小Pai 与通知（P34 第 4–7 项）",
+      "expected": "本次运行读取的来源有串内受众看不到的，@小Pai 的回复不自动贴进串里；发起人看不到的内容，@小Pai 的回复里也不会出现；确认卡只有有权的人能确认；小Pai 不回复未 @ 它的讨论；同一对象同一原因的提醒，冷却期内只有一条；自动化规则负责人失去某项目权限后，规则的下一次运行不再读取该项目；操作人不收到自己操作产生的通知。",
+      "stage": "S1",
+      "definition_only": true,
+      "s1_first_loop": false
     },
     {
       "id": "AT-71",

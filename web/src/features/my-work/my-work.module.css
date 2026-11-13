@@ -141,3 +141,25 @@
 .continueProject:hover { background:var(--sidebar); }
 .asOf { font-size:10px; text-align:right; }
 @media(max-width:600px) { .continueRow { grid-template-columns:18px minmax(0,1fr) 50px 16px; } }
+
+/* P35 承诺 direction (D38): 我承诺的 / 别人承诺给我的. */
+.direction { display:flex; align-items:center; flex-wrap:wrap; gap:6px; }
+.direction > button { min-height:28px; padding:3px 10px; border:1px solid var(--border); border-radius:6px; background:var(--surface); color:var(--text-subtle); font-size:12px; cursor:pointer; }
+.direction > button:hover { background:var(--muted); color:var(--foreground); }
+.direction > button[aria-pressed="true"] { border-color:var(--primary-border); background:var(--primary-soft); color:var(--primary); font-weight:600; }
+.direction > span { margin-left:auto; color:var(--text-subtle); font-size:11px; }
+@media (max-width:600px) { .direction > span { width:100%; margin-left:0; } }
+/* 继续提案: 提案 / 入口 / 状态 / 更新, private proposals marked (D38). */
+.proposalTable { width:100%; border-collapse:collapse; table-layout:fixed; font-size:12px; }
+.proposalTable th { padding:6px 8px 6px 0; border-bottom:1px solid var(--border); color:var(--text-subtle); font-size:11px; font-weight:400; text-align:left; }
+.proposalTable td { padding:0 8px 0 0; height:44px; border-bottom:1px solid var(--border-soft); color:var(--text-subtle); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.proposalTable th:nth-child(2), .proposalTable td:nth-child(2) { width:92px; }
+.proposalTable th:nth-child(3), .proposalTable td:nth-child(3) { width:72px; }
+.proposalTable th:nth-child(4), .proposalTable td:nth-child(4) { width:96px; text-align:right; padding-right:0; }
+.proposalTable a { display:inline-flex; max-width:100%; align-items:center; gap:8px; color:var(--foreground); text-decoration:none; }
+.proposalTable a:hover strong { color:var(--primary); }
+.proposalTable a > svg { flex-shrink:0; color:var(--text-subtle); }
+.proposalTable strong { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-weight:500; }
+.proposalStatus { display:inline-flex; padding:1px 6px; border-radius:6px; background:var(--surface-2); font-size:11px; }
+.proposalStatus[data-status="returned"] { background:var(--primary-soft); color:var(--primary); }
+@media (max-width:600px) { .proposalTable th:nth-child(2), .proposalTable td:nth-child(2) { display:none; } .proposalTable th:nth-child(4), .proposalTable td:nth-child(4) { width:72px; } }

@@ -6,6 +6,7 @@ import { categoryTransport } from "@/lib/category-transport";
 import { ConnectedModelSettings } from "./model-configuration/connected-settings";
 import { ConnectedEmbeddingSettings } from "./model-configuration/embedding-settings";
 import { ConnectedAgentSkills } from "./model-configuration/agent-skills";
+import { useQualityHolds } from "./model-configuration/skill-quality";
 import { ConnectedAgentBudgets } from "./model-configuration/agent-budgets";
 import { ConnectedMcpManagement } from "./model-configuration/mcp-management";
 import { ConnectedProviderAgreements } from "./model-configuration/provider-agreements";
@@ -15,12 +16,15 @@ import { PersonalPreferences } from "./personal-preferences";
 import { PersonalMemory } from "./personal-memory";
 import { MemoryPolicySettings } from "./memory-policy-settings";
 import { AccountManagement } from "./accounts";
+import { WorkCalendarSettings } from "./work-calendar";
 import { Button } from "@/components/ui/button";
 import { readPortfolio } from "@/lib/portfolio-reads";
 import { memberRows, readTeams, responsibilityText, type MemberRow, type Participant, type ProjectRef } from "./lib/member-responsibilities";
 import styles from "./platform-settings.module.css";
 
 const tabs = [["preferences", "个人偏好"], ["members", "成员与范围"], ["pai", "小Pai与模型"], ["integrations", "集成与治理"]] as const;
+// Tenant-wide pages: no category scope selector (D214 accounts, D221 working calendar).
+const tenantTabs = new Set(["preferences", "accounts", "calendar"]);
 function Retained({ active, children }: { active: boolean; children: ReactNode }) {
   const [visited, setVisited] = useState(active);
   if (active && !visited) setVisited(true);
@@ -66,7 +70,9 @@ function Members({ categoryId }: { categoryId: string }) {
 function ScopedSettings({ categoryId, principalId, tab, onOpenRun, administrator }: { categoryId: string; principalId: string; tab: string; onOpenRun: (runId: string, categoryId: string) => void; administrator: boolean }) {
   const api = useMemo(() => categoryTransport(categoryId, browserApi), [categoryId]);
   const [modelView, setModelView] = useState("model"), [integration, setIntegration] = useState("connections");
-  const modelTabs = [["model", "模型配置"], ["skills", "技能与资格"], ["budgets", "预算与用量"], ["rules", "自动化规则"], ...(administrator ? [["memory", "记忆策略"]] : [])];
+  // Open quality holds pinned for administrators (P110 Q4).
+  const holds = useQualityHolds(api, administrator);
+  const modelTabs = [["model", "模型配置"], ["skills", holds?.length ? `技能与资格 · ${holds.length} 待复审` : "技能与资格"], ["budgets", "预算与用量"], ["rules", "自动化规则"], ...(administrator ? [["memory", "记忆策略"]] : [])];
   const integrationTabs = [["connections", "外部连接"], ["agreements", "服务商协议"]];
   return <>
     <Retained active={tab === "members"}><Members categoryId={categoryId}/></Retained>
@@ -94,10 +100,11 @@ export function PlatformSettings({ categories, initialCategoryId, principalId, p
   const categoryId = categories.find(item => item.id === selected)?.id ?? categories[0]?.id ?? "";
   return <section className={styles.page} aria-label="设置">
     <div className="workspace-page-heading"><div><h1>设置</h1><p>低频配置集中管理，日常工作保持简洁。</p></div></div>
-    <nav className={styles.tabs} aria-label="设置视图">{(administrator ? [tabs[0], ["accounts", "账户与邀请"] as const, ...tabs.slice(1)] : tabs).map(([id, label]) => <button type="button" key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
+    <nav className={styles.tabs} aria-label="设置视图">{[tabs[0], ...(administrator ? [["accounts", "账户与邀请"] as const] : []), ["calendar", "工作日历"] as const, ...tabs.slice(1)].map(([id, label]) => <button type="button" key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
     <div hidden={tab !== "preferences"} className={styles.retained}>{preferences}<PersonalPreferences key={principalId}/><PersonalMemory key={`memory:${principalId}`}/><DingTalkSettings key={`dingtalk:${principalId}`} principalId={principalId}/></div>
     {administrator && <Retained active={tab === "accounts"}><AccountManagement key={`accounts:${principalId}`}/></Retained>}
-    {tab !== "preferences" && tab !== "accounts" && <div className={styles.scope}><label>品类范围<select value={categoryId} onChange={event => setSelected(event.target.value)}>{!categoryId && <option value="">暂无可用范围</option>}{categories.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>}
-    {categoryId ? <ScopedSettings key={`${principalId}:${categoryId}`} principalId={principalId} categoryId={categoryId} tab={tab} onOpenRun={onOpenRun} administrator={administrator}/> : tab !== "preferences" && tab !== "accounts" && <p className={styles.note}>当前没有可用的品类范围。</p>}
+    <Retained active={tab === "calendar"}><WorkCalendarSettings key={`calendar:${principalId}`}/></Retained>
+    {!tenantTabs.has(tab) && <div className={styles.scope}><label>品类范围<select value={categoryId} onChange={event => setSelected(event.target.value)}>{!categoryId && <option value="">暂无可用范围</option>}{categories.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>}
+    {categoryId ? <ScopedSettings key={`${principalId}:${categoryId}`} principalId={principalId} categoryId={categoryId} tab={tab} onOpenRun={onOpenRun} administrator={administrator}/> : !tenantTabs.has(tab) && <p className={styles.note}>当前没有可用的品类范围。</p>}
   </section>;
 }

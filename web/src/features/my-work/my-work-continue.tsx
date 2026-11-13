@@ -2,11 +2,14 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, FileText } from "@phosphor-icons/react";
+import { ArrowRight, FileText, LockSimple } from "@phosphor-icons/react";
 import type { browserApi } from "@/lib/browser-api";
 import styles from "./my-work.module.css";
 
-type Proposal = { id: string; title: string; status: string; owner_id: string; categoryId: string; categoryName: string };
+type Proposal = { id: string; title: string; status: string; owner_id: string; visibility?: string; entry_kind?: string; updated_at?: string; categoryId: string; categoryName: string };
+const entries: Record<string, string> = { new_product: "自主新品", derivative: "派生迭代", customer_request: "客户需求" };
+/** Short calendar date for 更新; an older server without the field shows a dash. */
+const updated = (value?: string) => value && Number.isFinite(Date.parse(value)) ? new Date(value).toLocaleDateString("zh-CN", { month: "numeric", day: "numeric" }) : "—";
 export function MyWorkContinue({ api, principalId, reload }: { api: typeof browserApi; principalId: string; reload: number }) {
   const [reading, setReading] = useState<{ api: typeof browserApi; principalId: string; reload: number; items: Proposal[]; error: string } | null>(null);
   const current = reading?.api === api && reading.principalId === principalId && reading.reload === reload ? reading : null;
@@ -38,6 +41,14 @@ export function MyWorkContinue({ api, principalId, reload }: { api: typeof brows
       window.history.pushState(null, "", "/?area=category&focus=proposals");
       window.dispatchEvent(new PopStateEvent("popstate"));
     }}>全部提案<ArrowRight size={12}/></Link></div>
-    {!current ? <p className={styles.queueNote} role="status">正在读取你的提案…</p> : <>{current.error && <p className={styles.queueNote} role="status">{current.error}</p>}{!current.items.length && !current.error && <p className={styles.queueNote}>暂无需要继续完善的提案。</p>}{current.items.slice(0,6).map(item => <a key={item.id} className={styles.continueRow} href={`/categories/${item.categoryId}/proposals/${item.id}`}><FileText size={14}/><strong>{item.title}</strong><span>{item.categoryName}</span><span>{item.status === "returned" ? "已退回" : "草稿"}</span><ArrowRight size={13}/></a>)}</>}
+    {!current ? <p className={styles.queueNote} role="status">正在读取你的提案…</p> : <>{current.error && <p className={styles.queueNote} role="status">{current.error}</p>}{!current.items.length && !current.error && <p className={styles.queueNote}>暂无需要继续完善的提案。</p>}
+      {current.items.length > 0 && <table className={styles.proposalTable}><thead><tr><th scope="col">提案</th><th scope="col">入口</th><th scope="col">状态</th><th scope="col">更新</th></tr></thead><tbody>
+        {[...current.items].sort((a, b) => (b.updated_at ?? "").localeCompare(a.updated_at ?? "")).slice(0, 6).map(item => <tr key={item.id}>
+          <td><a href={`/categories/${item.categoryId}/proposals/${item.id}`} title={`${item.title} · ${item.categoryName}`}><FileText size={14} aria-hidden="true"/><strong>{item.title}</strong>{item.visibility === "private" && <LockSimple size={12} aria-label="私有提案"/>}</a></td>
+          <td>{entries[item.entry_kind ?? ""] ?? "—"}</td>
+          <td><span className={styles.proposalStatus} data-status={item.status}>{item.status === "returned" ? "已退回" : "草稿"}</span></td>
+          <td>{updated(item.updated_at)}</td>
+        </tr>)}
+      </tbody></table>}</>}
   </section>;
 }

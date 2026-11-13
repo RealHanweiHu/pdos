@@ -109,6 +109,11 @@ class BoundHost:
                 notes = frozen_notes(session, run)
                 if notes is not None:
                     raw["personal_memory"] = notes
+                # P34-4/P52: a shared thread's public content up to the @小Pai,
+                # frozen at the mention; dynamic context, never the fixed prefix.
+                thread = run.versions.get("discussion_thread")
+                if thread is not None:
+                    raw["discussion_thread"] = thread
             action = run.versions.get("verification_action")
             if action is not None:
                 from pdos_next.agent.enterprise_search.verification_actions import context_value
@@ -469,7 +474,7 @@ class BoundHost:
         check_attempt(self.superseded)
         from pdos_next.domain.automations.runtime import guard_tool
 
-        guard_tool(self.store, scope, writing=True)
+        guard_tool(self.store, scope, getattr(spec, "name", None), writing=True, preparing=True)
         from pdos_next.integrations.dingtalk.guards import guard_writing
 
         guard_writing(self.store, scope)

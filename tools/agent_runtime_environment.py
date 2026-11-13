@@ -18,6 +18,8 @@ ROOT = Path(__file__).resolve().parents[1]
 DIRECTORY = ROOT / ".local" / "agent-runtime"
 CONFIG = DIRECTORY / "environment.json"
 IMAGE = "pgvector/pgvector:0.8.6-pg16-bookworm"
+# The only realm the runtime store accepts (D346: "pdos" made every new install fail).
+REALM = "pdos-next"
 
 
 def free_port() -> int:
@@ -41,6 +43,32 @@ def inspect_container(value: dict) -> None:
         or container["NetworkSettings"]["Ports"]["5432/tcp"][0]["HostPort"] != str(value["port"])
     ):
         raise RuntimeError("Local runtime identity changed; refusing to operate")
+
+
+def connect(url: str):
+    for _ in range(80):
+        try:
+            return psycopg.connect(url, connect_timeout=1)
+        except psycopg.OperationalError:
+            time.sleep(0.25)
+    raise RuntimeError("Independent Agent PostgreSQL startup timeout")
+
+
+def install_schema(value: dict) -> None:
+    """Install (or finish installing) the runtime schema, then record that it is there.
+
+    Environments created before D346 kept their configuration but never got the
+    schema, so an existing configuration without the record is repaired here.
+    """
+    environment = value["environment"]
+    connect(environment["PDOS_AGENT_RUNTIME_DATABASE_URL"]).close()
+    install(
+        environment["PDOS_AGENT_RUNTIME_DATABASE_URL"],
+        realm=REALM,
+        marker=environment["PDOS_AGENT_RUNTIME_DB_MARKER"],
+    )
+    value["schema_installed"] = True
+    private_write(CONFIG, value)
 
 
 def initialize() -> dict:
@@ -115,18 +143,10 @@ def initialize() -> dict:
     }
     # Persist identity before initialization so a failed startup cannot create duplicates.
     private_write(CONFIG, value)
-    for _ in range(80):
-        try:
-            connection = psycopg.connect(url, connect_timeout=1)
-            break
-        except psycopg.OperationalError:
-            time.sleep(0.25)
-    else:
-        raise RuntimeError("Independent Agent PostgreSQL startup timeout")
-    with connection:
+    with connect(url) as connection:
         connection.execute("CREATE TABLE environment_guard(marker text NOT NULL)")
         connection.execute("INSERT INTO environment_guard VALUES(%s)", (marker,))
-    install(url, realm="pdos", marker=marker)
+    install_schema(value)
     return value
 
 
@@ -185,6 +205,8 @@ def main() -> None:
         return
     value = initialize()
     if action == "start":
+        if not value.get("schema_installed"):
+            install_schema(value)
         start(value)
     print(
         json.dumps(
@@ -193,6 +215,7 @@ def main() -> None:
                 "database_port": value["port"],
                 "temporal_port": value["temporal_port"],
                 "temporal_running": temporal_running(value),
+                "schema_installed": bool(value.get("schema_installed")),
                 "profile": "local-development",
                 "configuration": str(CONFIG),
             },

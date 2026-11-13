@@ -49,8 +49,31 @@
 .live[data-mode="live"]::before { background:#16a34a; }
 .comments { margin-top:16px; padding-top:12px; border-top:1px solid var(--border); }
 .comments > h3 { font-size:13px; font-weight:550; margin-bottom:4px; }
+/* @小Pai in a shared thread (D37 ⑥): run cards and 小Pai's messages. */
+.message[data-agent="true"] > header strong { color:var(--primary); }
+.agentMark { color:var(--primary); align-self:center; }
+.agentBy { color:var(--text-subtle); font-size:11px; }
+.agentOption { display:inline-flex; align-self:flex-start; align-items:center; gap:6px; font-size:12px; color:var(--foreground); cursor:pointer; }
+.agentOption input { accent-color:var(--primary); width:auto; height:auto; flex:none; margin:0; padding:0; }
+.picker li[data-kind="agent"] > span:first-child { display:inline-flex; align-items:center; gap:4px; color:var(--primary); }
+.agentCard { margin-top:6px; padding:7px 9px; border:1px solid var(--border-soft); border-radius:8px; background:var(--surface); display:flex; flex-direction:column; gap:4px; min-width:0; }
+.agentCard[data-tone="running"], .agentCard[data-tone="waiting"] { border-color:var(--primary-border); }
+.agentCardHead { display:flex; align-items:center; gap:6px; flex-wrap:wrap; min-width:0; color:var(--primary); }
+.agentState { display:inline-block; padding:0 7px; border-radius:999px; font-size:11px; font-weight:550; line-height:18px; background:var(--surface-2); color:var(--foreground); }
+.agentState[data-tone="running"], .agentState[data-tone="waiting"] { background:var(--primary-soft); color:var(--primary); }
+.agentState[data-tone="failed"] { color:var(--destructive); }
+.agentActions { display:flex; gap:2px; margin-left:auto; }
+.agentActions button { font-size:11px; color:var(--primary); padding:1px 6px; border-radius:6px; }
+.agentActions button:hover { background:var(--primary-soft); }
+.agentActions button:disabled { opacity:.5; }
+.agentNote { font-size:12px; color:var(--text-subtle); line-height:1.5; }
+.agentReply { border-left:2px solid var(--primary-soft); padding:2px 0 2px 9px; display:flex; flex-direction:column; gap:6px; align-items:flex-start; }
+.agentShare { display:flex; flex-direction:column; gap:6px; width:100%; }
+.agentShare .row { flex-wrap:wrap; }
+.agentWarning { font-size:12px; color:var(--foreground); background:var(--surface-2); border-radius:6px; padding:6px 8px; line-height:1.5; }
 @media (max-width: 600px) {
   .message > header { gap:6px; }
   .tools { margin-left:0; width:100%; }
   .picker { max-height:200px; }
+  .agentActions { margin-left:0; width:100%; }
 }

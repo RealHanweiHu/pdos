@@ -3,8 +3,6 @@
 from datetime import date
 from uuid import UUID
 
-from pdos_next.agent.kernel.models import AgentRun  # noqa: F401 -- lazy FK metadata
-from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     Boolean,
     CheckConstraint,
@@ -16,6 +14,9 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
+
+import pdos_next.agent.kernel.models  # noqa: F401 -- lazy FK metadata
+from pdos_next.core.models import Base, Row
 
 
 class PreparedCandidate(Row, Base):
@@ -342,5 +343,5 @@ TABLES = tuple(
 
 for _table in TABLES:
     for _foreign_key in _table.foreign_key_constraints:
-        if _foreign_key.referred_table.name == "action_receipts":
+        if _foreign_key.elements[0].target_fullname.rsplit(".", 1)[0] == "action_receipts":
             _foreign_key.deferrable, _foreign_key.initially = True, "DEFERRED"

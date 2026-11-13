@@ -103,7 +103,8 @@ def test_current_leaf_sql_does_not_project_frozen_documents():
 @pytest.mark.parametrize(
     "queue,present,absent",
     [
-        ("decide", "proposal_submissions", "work_task_versions"),
+        # D71/D190 and D75 put the project owner's follow-up escalations in “要我决定”.
+        ("decide", "proposal_submissions", "external_handoff_currents"),
         ("external", "external_handoff_currents", "verification_formal_requests"),
         ("verify", "work_commitment_currents", "external_handoff_currents"),
         ("receive", "verification_current_formal_requests", "work_commitment_currents"),

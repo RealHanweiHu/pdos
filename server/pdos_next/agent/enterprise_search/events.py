@@ -30,6 +30,7 @@ EVENTS = business_events.EVENTS | frozenset(
         "original.scan_recorded",
         "original.parsed",
         "original.withdrawn",
+        "source.withdrawn",
         "original.scan_requested",
         "original.lifecycle_requested",
     }

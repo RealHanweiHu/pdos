@@ -246,6 +246,12 @@ def promise_facts(s, ctx, pid, project_id):
     return results
 
 
+def _customer_acceptances(s, ctx, pid, project_id):
+    from pdos_next.domain.delivery.customer_acceptance.service import project_listing
+
+    return project_listing(s, ctx, pid, project_id)
+
+
 def view(s, ctx, pid, project_id):
     project, _, _ = _project(s, ctx, pid, project_id)
     rows = events(s, ctx, project.id)
@@ -358,6 +364,8 @@ def view(s, ctx, pid, project_id):
         "revision": rows[-1].revision if rows else 0,
         "timeline": timeline,
         "plan_tasks": plan_tasks,
+        # P97 第 8 项: customer acceptances are listed as review basis, never a gate check.
+        "customer_acceptances": _customer_acceptances(s, ctx, pid, project.id),
         "plan": {"id": str(plan.id), "revision": plan.revision} if plan else None,
         "bindings": body["bindings"],
         "template": body["template"],

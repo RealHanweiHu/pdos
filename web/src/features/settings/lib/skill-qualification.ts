@@ -8,12 +8,28 @@ export type QualificationReading = {
   prompt_digest: string; prompt_version: string;
   model_label: string | null; model_version: string | null; model_enabled: boolean; pilot: boolean; draft_operations: string[];
   enabled: boolean; revision: number; can_edit: boolean; category_revision: number;
-  qualification: { state: string; id: string | null; reviewed_by_name: string | null; reviewed_at: string | null; case_count: number; receipt_id: string | null };
+  qualification: { state: string; id: string | null; reviewed_by_name: string | null; reviewed_at: string | null; case_count: number; receipt_id: string | null; downgrade_reason?: string | null };
   reviews: { id: string; skill_version: string; model_version: string; created_at: string; receipt_id: string; cases: ReviewCase[]; current: boolean }[];
   next_cursor: string | null;
+  eval_sets?: EvalSet[];
 };
+export type EvalCase = { case_id: string; case_type: "C" | "D" | "N" | "M"; category_ref: string; material_kind: "own" | "synthetic"; inputs: string[]; must_cover?: string[]; must_not?: string[]; keep_unknown?: string[]; traps?: string[]; key_points?: string[] };
+export type EvalSet = { id: string; version: number; title: string; case_count: number; cases_sha256: string; registered_by_name: string; created_at: string; cases: EvalCase[]; reviewed_case_ids: string[] };
+// The admin pastes the case list as JSON; the server validates every field.
+export function parseEvalCases(raw: string): EvalCase[] {
+  let value: unknown;
+  try { value = JSON.parse(raw); } catch { throw new Error("案例清单不是有效的 JSON 数组。"); }
+  if (!Array.isArray(value) || value.length < 1 || value.length > 60) throw new Error("案例清单须为 1–60 个案例的数组。");
+  const ids = new Set<string>();
+  for (const item of value) {
+    if (!item || typeof item !== "object" || typeof (item as EvalCase).case_id !== "string" || !(item as EvalCase).case_id.trim()) throw new Error("每个案例须有 case_id。");
+    if (ids.has((item as EvalCase).case_id)) throw new Error(`案例编号重复：${(item as EvalCase).case_id}`);
+    ids.add((item as EvalCase).case_id);
+  }
+  return value as EvalCase[];
+}
 export type CaseReference = { batch_id: string; index: number };
-export type ReviewPayload = { skill_key: string; skill_digest: string; tool_digest: string; model_digest: string; prompt_digest: string; cases: ReviewCase[]; personally_reviewed: true; confirmation_token?: string };
+export type ReviewPayload = { skill_key: string; skill_digest: string; tool_digest: string; model_digest: string; prompt_digest: string; cases: ReviewCase[]; personally_reviewed: true; eval_set_id?: string; eval_case_ids?: string[]; confirmation_token?: string };
 export type QualificationPayload = { skill_key: string; expected_revision: number; decision: "批准" | "撤销"; reason: string; case_refs: CaseReference[]; skill_digest?: string; tool_digest?: string; model_digest?: string; prompt_digest?: string; approval_token?: string };
 export type QualificationCommand = { category_id: string; product_id: null; command_id: string; idempotency_key: string; expected_revision: number; source_read_set: []; } & ({ operation: "ai.skill.review.record"; payload: ReviewPayload } | { operation: "ai.skill.qualify"; payload: QualificationPayload });
 export type LegacyQualificationCommand = { category_id: string; product_id: null; command_id: string; idempotency_key: string; expected_revision: number; source_read_set: []; } & ({ operation: "ai.skill.review.record"; payload: Omit<ReviewPayload, "prompt_digest"> & { prompt_digest?: undefined } } | { operation: "ai.skill.qualify"; payload: Omit<QualificationPayload, "prompt_digest"> & { prompt_digest?: undefined } });

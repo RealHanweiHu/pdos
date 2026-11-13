@@ -20,7 +20,9 @@ from pdos_next.domain.projects.work.models import (
 from pdos_next.errors import DomainError
 
 VERSION = "personal-project-work/v1"
-QUEUES = frozenset({"receive", "verify", "tasks", "commitments"})
+QUEUES = frozenset({"receive", "verify", "tasks", "commitments", "received"})
+# "commitments": what I promised; "received": what others promised to me (P35, D38).
+COMMITMENT_QUEUES = frozenset({"commitments", "received"})
 SCOPE = ("tenant_id", "category_id", "product_id", "project_id")
 BINDING = (*SCOPE, "owner_id", "visibility")
 TASK_STATES = {
@@ -40,11 +42,11 @@ def _records(ctx, queue):
     task, pointer = WorkTaskVersion, WorkTaskCurrent
     commitment, commitment_pointer = WorkCommitmentVersion, WorkCommitmentCurrent
     assignee, recipient = aliased(Principal, name="assignee"), aliased(Principal, name="recipient")
+    promisor = aliased(Principal, name="promisor")
+    committed = queue in COMMITMENT_QUEUES
     body_assignee = task.body["assignee_id"].astext
     recipient_id = (
-        cast(commitment.recipient_id, String)
-        if queue == "commitments"
-        else task.body["recipient_id"].astext
+        cast(commitment.recipient_id, String) if committed else task.body["recipient_id"].astext
     )
     heads = [
         ("task", task, ("id", *BINDING, "task_id", "revision", "state", "created_at")),
@@ -57,7 +59,7 @@ def _records(ctx, queue):
             ("id", "tenant_id", "category_id", "product_id", "owner_id", "visibility", "name"),
         ),
     ]
-    if queue == "commitments":
+    if committed:
         heads.extend(
             (
                 (
@@ -110,6 +112,7 @@ def _records(ctx, queue):
             assignee.name.label("assignee_name"),
             recipient_id.label("recipient_id"),
             recipient.name.label("recipient_name"),
+            *((promisor.name.label("promisor_name"),) if committed else ()),
         )
         .select_from(pointer)
         .join(
@@ -144,13 +147,15 @@ def _records(ctx, queue):
             and_(assignee.tenant_id == task.tenant_id, cast(assignee.id, String) == body_assignee),
         )
     )
-    if queue == "commitments":
+    if committed:
+        # The pointer and the version both carry the side the caller stands on.
+        side = "promisor_id" if queue == "commitments" else "recipient_id"
         query = (
             query.join(
                 commitment_pointer,
                 and_(
                     _same(commitment_pointer, task, (*BINDING, "task_id")),
-                    commitment_pointer.promisor_id == ctx.requester_id,
+                    getattr(commitment_pointer, side) == ctx.requester_id,
                 ),
             )
             .join(
@@ -171,8 +176,15 @@ def _records(ctx, queue):
                     commitment.id == commitment_pointer.version_id,
                 ),
             )
+            .outerjoin(
+                promisor,
+                and_(
+                    promisor.tenant_id == commitment.tenant_id,
+                    promisor.id == commitment.promisor_id,
+                ),
+            )
             .where(
-                commitment.promisor_id == ctx.requester_id,
+                getattr(commitment, side) == ctx.requester_id,
                 ~select(WorkCommitmentReviewCurrent.id)
                 .where(
                     _same(WorkCommitmentReviewCurrent, commitment, BINDING),
@@ -272,14 +284,15 @@ def _entry(row, ctx, queue, as_of):
         _person(row["assignee_id"], row["assignee_name"]),
         _person(row["recipient_id"], row["recipient_name"]),
     )
-    commitment, timing = None, None
+    commitment, timing, promisor = None, None, None
     recorded = row["task_created_at"]
     identity = row["task_task_id"]
-    if queue == "commitments":
+    if queue in COMMITMENT_QUEUES:
+        side = "promisor_id" if queue == "commitments" else "recipient_id"
         _matches(
             row,
             "commitment",
-            {**binding, "task_id": row["task_task_id"], "promisor_id": ctx.requester_id},
+            {**binding, "task_id": row["task_task_id"], side: ctx.requester_id},
         )
         _matches(
             row,
@@ -287,7 +300,7 @@ def _entry(row, ctx, queue, as_of):
             {
                 **binding,
                 "task_id": row["task_task_id"],
-                "promisor_id": ctx.requester_id,
+                "promisor_id": row["commitment_promisor_id"],
                 "recipient_id": row["commitment_recipient_id"],
                 "series_id": row["commitment_series_id"],
                 "version_id": row["commitment_id"],
@@ -333,6 +346,7 @@ def _entry(row, ctx, queue, as_of):
         # Date status alone cannot establish fulfillment, even after task completion.
         timing = "unknown" if promised is None else "overdue" if promised < as_of else "pending"
         identity, recorded = row["commitment_id"], row["commitment_created_at"]
+        promisor = _person(row["commitment_promisor_id"], row["promisor_name"])
     elif (
         row["task_state"] not in TASK_STATES[queue]
         or (recipient if queue == "verify" else assignee) is None
@@ -357,6 +371,7 @@ def _entry(row, ctx, queue, as_of):
         "recorded_at": _aware(recorded).isoformat(),
         "commitment": commitment,
         "timing": timing,
+        "promisor": promisor,
     }
 
 
@@ -383,7 +398,7 @@ def read(s, ctx, queue, cursor=None, page_size=20):
     records = _records(ctx, queue)
     identity, created = (
         (WorkCommitmentVersion.id, WorkCommitmentVersion.created_at)
-        if queue == "commitments"
+        if queue in COMMITMENT_QUEUES
         else (WorkTaskVersion.task_id, WorkTaskVersion.created_at)
     )
     page = records
@@ -393,7 +408,7 @@ def read(s, ctx, queue, cursor=None, page_size=20):
             raise DomainError("FORBIDDEN_SCOPE", "分页位置已不属于当前可读队列，请刷新。", 403)
         _entry(anchor, ctx, queue, as_of)
         anchor_created = anchor[
-            "commitment_created_at" if queue == "commitments" else "task_created_at"
+            "commitment_created_at" if queue in COMMITMENT_QUEUES else "task_created_at"
         ]
         page = page.where(
             or_(created < anchor_created, and_(created == anchor_created, identity < cursor))

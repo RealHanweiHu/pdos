@@ -491,64 +491,42 @@ def _parse(value):
 
 
 # BOM diff ------------------------------------------------------------------
-
-_LINE_FIELDS = (
-    ("part", "物料"),
-    ("part_revision", "物料版本"),
-    ("quantity", "用量"),
-    ("unit", "单位"),
-    ("loss_rate", "损耗率"),
-    ("critical", "关键件"),
-    ("notes", "备注"),
-)
+# The difference itself is the configuration domain's (D282); this view only
+# flattens it into cells. Lists (designators, declared alternates) are joined for one cell.
 
 
-def _line(line):
-    part = line.get("part") or {}
-    label = (
-        " / ".join(str(v) for v in (part.get("internal_number"), part.get("name")) if v)
-        or line["part_id"]
-    )
-    return {
-        "part": label,
-        "part_revision": line["expected_part_revision"],
-        "quantity": line["quantity"],
-        "unit": line["unit"],
-        "loss_rate": line["loss_rate"],
-        "critical": line["critical"],
-        "notes": line["notes"],
-    }
+def _cell(field, value):
+    if field in {"reference_designators", "alternates"}:
+        return "、".join(value) if value else None
+    return value
 
 
 def bom_diff(s, ctx, product_id, bom_id) -> ExportView:
+    from pdos_next.domain.builds.configurations.bom_diff import FIELDS, TITLES, compare
     from pdos_next.domain.builds.configurations.service import get_bom
 
     row, after = get_bom(s, ctx, product_id, bom_id)
     before = get_bom(s, ctx, product_id, row.previous_id)[1] if row.previous_id else None
     prov = Provenance(s, ctx, subjects=[row.id, *([row.previous_id] if row.previous_id else [])])
     ai_after = prov.ai(subject=row.id)
-    old = {line["key"]: _line(line) for line in (before or {}).get("lines", ())}
-    new = {line["key"]: _line(line) for line in after["lines"]}
     rows = []
-    for key in sorted(old.keys() | new.keys()):
-        a, b = old.get(key), new.get(key)
-        if a == b:
-            continue
-        change = "新增" if a is None else "删除" if b is None else "修改"
-        changed = [
-            title for field, title in _LINE_FIELDS if (a or {}).get(field) != (b or {}).get(field)
-        ]
-        values = {"key": key, "change": change, "fields": changed if change == "修改" else None}
-        for field, _ in _LINE_FIELDS:
-            values[f"before_{field}"] = (a or {}).get(field)
-            values[f"after_{field}"] = (b or {}).get(field)
+    for line in compare((before or {}).get("lines", ()), after["lines"])["lines"]:
+        change = {"added": "新增", "removed": "删除", "changed": "修改"}[line["change"]]
+        values = {
+            "key": line["key"],
+            "change": change,
+            "fields": [TITLES[field] for field in line["fields"]] if line["fields"] else None,
+        }
+        for field, _ in FIELDS:
+            values[f"before_{field}"] = _cell(field, (line["before"] or {}).get(field))
+            values[f"after_{field}"] = _cell(field, (line["after"] or {}).get(field))
         rows.append(SheetRow(values, ai_row=ai_after))
     columns = [
         Column("key", "行号", 10),
         Column("change", "变化", 8),
         Column("fields", "变化字段", 18),
     ]
-    for field, title in _LINE_FIELDS:
+    for field, title in FIELDS:
         columns += [
             Column(f"before_{field}", f"上一版{title}", 16),
             Column(f"after_{field}", f"本版{title}", 16),

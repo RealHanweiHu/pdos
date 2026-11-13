@@ -41,6 +41,17 @@ def register_routes(app, engine, auth_dependency):
         with session(ctx) as s:
             return inputs(s, ctx, product_id, data)
 
+    @app.get("/v1/categories/{category_id}/products/{product_id}/project-work/status-cadence")
+    def status_cadence(
+        request: Request, product_id: UUID, project_id: UUID, ctx: Context = auth_dependency
+    ):
+        """P34-6/P65: the cadence timing and "状态更新缺失", for anyone who sees the project."""
+        from .status_cadence import cadence_view
+
+        _query(request, {"project_id"})
+        with session(ctx, reading=True) as s:
+            return cadence_view(s, ctx, product_id, project_id)
+
     @app.get("/v1/categories/{category_id}/products/{product_id}/project-work/templates")
     def work_templates(
         request: Request, product_id: UUID, project_id: UUID, ctx: Context = auth_dependency

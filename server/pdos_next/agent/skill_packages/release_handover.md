@@ -1,6 +1,6 @@
 ---
 key: release_handover
-version: 0.1.2-draft
+version: 0.1.3-draft
 purpose: 组装放行包并办理对外移交：按固定主体配置与放行范围收集定义、双配置、验证结果、试产、遗留与例外，为工程发布、制造放行、有限例外及其撤回准备具名决定材料，准备 ERP/MES 移交授权，并登记外部回执；四类决定与移交授权由各专业本人作出。
 input_schema:
   type: object
@@ -43,6 +43,7 @@ allowed_operations:
   - {tool: release.exception.decide, tier: T2-prepare-only, note: "只准备有限例外材料，含检查项、限制与风险控制"}
   - {tool: release.exception.withdraw, tier: T2-prepare-only, note: "只准备例外撤回材料"}
   - {tool: integration.handoff.authorize, tier: T2-prepare-only, note: "只准备移交授权材料；外发由具名决定办理"}
+  - {tool: customer.acceptance.record, tier: T2-prepare-only, note: "只按签样单整理五类承认范围，不解析邮件代替客户签名；登记由内部具名成员办理"}
 evidence_policy: |
   放行包只收录有版本引用的真实证据；缺的项如实留空并列为缺口，不用相邻批次或其他项目的结果补位。
   每项证据的当前适用性（适用/不适用/未知/已过期）必须有依据；来源撤回或配置改变后重新判断。

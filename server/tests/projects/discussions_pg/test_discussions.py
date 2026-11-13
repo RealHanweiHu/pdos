@@ -156,19 +156,21 @@ def test_roles_all_and_agent_mentions(setup):
     )
     assert denied.status_code == 403
     assert denied.json()["detail"]["reason"] == "mention_all_owner_only"
-    # @小Pai in a shared thread is W6 ⑥; the interface refuses it clearly for now.
+    # @小Pai starts a Run (W6 ⑥, see test_agent_thread.py); 小Pai is never a recipient.
     agent = setup.client.post(
         h.project_root(setup, project) + f"/discussions/{topic['thread']['id']}/messages",
         headers=h.headers(setup, owner),
         json={"body": "@[小Pai](agent:xiaopai) 帮我总结", "request_key": str(uuid4())},
     )
-    assert agent.status_code == 422 and agent.json()["detail"]["reason"] == "agent_mention_pending"
+    assert agent.status_code == 201, agent.text
+    assert agent.json()["messages"][-1]["mentions"] == [{"kind": "agent"}]
+    assert agent.json()["messages"][-1]["agent_request"]["label"] == "进行中"
     mentionable = setup.client.get(
         h.project_root(setup, project) + "/mentionable", headers=h.headers(setup, owner)
     ).json()
     people = {p["principal_id"]: p for p in mentionable["people"]}
     assert people[str(peer)]["can_see"] is True and people[str(peer)]["roles"] == ["品质"]
-    assert mentionable["can_mention_all"] is True and mentionable["agent"]["available"] is False
+    assert mentionable["can_mention_all"] is True and mentionable["agent"]["available"] is True
 
 
 def test_edit_keeps_versions_and_retraction_leaves_placeholder(setup):
@@ -305,9 +307,11 @@ def test_idempotent_post_and_database_guards(setup):
             s.flush()
         raise AssertionError("agent identity wrote a discussion message")
     except DBAPIError as error:
-        # Refused by the author guard (author = actor = requester) before RLS even runs.
-        assert "Invalid discussion message" in str(error.orig) or "row-level security" in str(
-            error.orig
+        # Refused by the author guard before RLS even runs: an agent-authored row needs
+        # a request bound by the delivery function (D37 ⑥, P54).
+        assert any(
+            text in str(error.orig)
+            for text in ("Invalid discussion message", "Invalid 小Pai reply", "row-level security")
         )
     # History is append-only: no hard delete even for the author.
     try:

@@ -19,6 +19,7 @@ function load(filename) {
   const loaded = new Module(filename); cache.set(filename, loaded);
   loaded.require = name => name === "react" ? react : name === "@/components/ui/button" ? { Button: props => React.createElement("button", props) }
     : name === "./project-workspace" ? { ProjectWorkspace: props => React.createElement("div", { "data-project-workspace": props.entry.project.id }) }
+    : name === "./project-list" ? { ProjectList: props => React.createElement("div", { "data-project-list": props.initialView, "data-principal": props.principalId }) }
     : name === "@phosphor-icons/react" ? new Proxy({}, { get: () => () => React.createElement("svg") })
     : name.startsWith("@/") ? load(path.join(web, "src", name.slice(2))) : name.startsWith(".") ? load(path.resolve(path.dirname(filename), name)) : dependency(name);
   loaded._compile(ts.transpileModule(readFileSync(filename, "utf8"), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022, jsx: ts.JsxEmit.ReactJSX, esModuleInterop: true } }).outputText, filename);
@@ -36,8 +37,14 @@ test("a project in another category never becomes the requested category workspa
   const html = await env.ready(); assert.match(html, /此项目当前不可见/); assert.doesNotMatch(html, /PRIVATE_NAMED_SUMMARY|data-project-workspace/);
 });
 test("principal and requested-project changes hide the previous named summary synchronously", async () => {
+  // D37 ⑦: without a project the old count-card page is gone; the cockpit area opens the
+  // 项目 page's 驾驶舱 view, whose rows carry their own named-update first sentence.
   const env = driver({ area: "cockpit", categoryId: "", projectId: "" });
-  assert.match(await env.ready(), /PRIVATE_NAMED_SUMMARY/);
-  env.setProps({ session: { principal_id: "another-user", name: "Another" } }); assert.doesNotMatch(env.render(), /PRIVATE_NAMED_SUMMARY/);
-  env.setProps({ location: { area: "cockpit", categoryId: "actual-category", projectId: "different-project" } }); assert.doesNotMatch(env.render(), /PRIVATE_NAMED_SUMMARY/);
+  const overview = await env.ready();
+  assert.match(overview, /data-project-list="驾驶舱"/); assert.match(overview, /data-principal="owner"/); assert.doesNotMatch(overview, /PRIVATE_NAMED_SUMMARY/);
+  env.setProps({ location: { area: "cockpit", categoryId: "actual-category", projectId: "actual-project" } }); env.render();
+  env.requests.shift()({ items: [entry], next_cursor: null, unavailable_count: 0, as_of: "2026-10-18T01:00:00Z" }); await new Promise(resolve => setImmediate(resolve));
+  assert.match(env.render(), /data-project-workspace="actual-project"/);
+  env.setProps({ session: { principal_id: "another-user", name: "Another" } }); assert.doesNotMatch(env.render(), /PRIVATE_NAMED_SUMMARY|data-project-workspace/);
+  env.setProps({ location: { area: "cockpit", categoryId: "actual-category", projectId: "different-project" } }); assert.doesNotMatch(env.render(), /PRIVATE_NAMED_SUMMARY|data-project-workspace/);
 });

@@ -10,6 +10,7 @@ from uuid import UUID
 
 from sqlalchemy import select
 
+from pdos_next.domain.my_work.notifications import agent_mentions
 from pdos_next.domain.my_work.notifications import service as notifications
 from pdos_next.domain.projects.team import handover
 
@@ -45,17 +46,30 @@ def after_task(s, ctx, operation, row):
     exclude = [ctx.actor_id]
     if operation == ASSIGN and assignee:
         notifications.follow(s, ctx, assignee, "work_task", task_id, project_id, "assigned")
-        notifications.emit(
-            s,
-            ctx,
-            assignee,
-            "assigned",
-            "task.assigned",
-            project_id=project_id,
-            kind="work_task",
-            subject_id=task_id,
-            latest=latest,
-        )
+        if human:
+            notifications.emit(
+                s,
+                ctx,
+                assignee,
+                "assigned",
+                "task.assigned",
+                project_id=project_id,
+                kind="work_task",
+                subject_id=task_id,
+                latest=latest,
+            )
+        else:
+            # 小Pai's assignment reaches the assignee once per cooldown (P34-5, P53).
+            agent_mentions.notify(
+                s,
+                ctx,
+                assignee,
+                "task.assigned",
+                project_id=project_id,
+                kind="work_task",
+                subject_id=task_id,
+                latest=latest,
+            )
         exclude.append(assignee)
     if operation == SUBMIT and recipient:
         notifications.follow(s, ctx, recipient, "work_task", task_id, project_id, "assigned")

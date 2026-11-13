@@ -77,6 +77,8 @@ NON_CONSUMING = frozenset(
         "discussion_follows",
         "notifications",
         "notification_preferences",
+        # D37 ⑥: @小Pai requests in a shared thread; a frozen manifest of identities only.
+        "discussion_agent_requests",
         "products",
         "upload_attempts",
         "lifecycle_objects",
@@ -134,6 +136,9 @@ NON_CONSUMING = frozenset(
         # D56 export audit: who exported which scope, counts and file digest only;
         # it never copies or adopts source material.
         "export_audits",
+        # D47 forecast refreshes hold computed times, task keys and identities only.
+        "work_forecast_refreshes",
+        "work_forecast_currents",
         "agent_tool_calls",
         "agent_run_events",
         "agent_run_inputs",

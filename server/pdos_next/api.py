@@ -35,6 +35,7 @@ from pdos_next.core.service import (
     receipt_view,
     require_access,
 )
+from pdos_next.domain.builds.configurations.schemas import BomImportRequest
 from pdos_next.domain.builds.start.schemas import BuildAssessmentPayload
 from pdos_next.domain.categories.products.definitions import list_definitions
 from pdos_next.domain.manufacturing.cost_execution.schemas import CostCaptureInput
@@ -447,11 +448,21 @@ def create_app(
     from pdos_next.domain.projects.team.api import register_routes as register_project_team
 
     register_project_team(app, engine, auth_dependency)
+    # Read-only single-project overview and manager cockpit (D37 ⑦).
+    from pdos_next.domain.projects.cockpit.api import register_routes as register_cockpit
+
+    register_cockpit(app, engine, auth_dependency)
     # P34 discussions, comments, notifications and live delivery (D37 ⑤).
     from pdos_next.domain.my_work.notifications.api import register_routes as register_notes
     from pdos_next.domain.projects.discussions.api import register_routes as register_discussions
 
-    register_discussions(app, engine, auth_dependency)
+    # @小Pai in a shared thread starts the one 小Pai workflow (D37 ⑥).
+    register_discussions(
+        app,
+        engine,
+        auth_dependency,
+        agent_ports=agent_api_ports or kernel_bootstrap.api_ports(kernel_temporal),
+    )
     register_notes(app, engine, auth_dependency, auth_engine)
     from pdos_next.domain.my_work.attention_api import register_routes as register_attention
 
@@ -459,6 +470,10 @@ def create_app(
     from pdos_next.domain.my_work.preferences_api import register_routes as register_preferences
 
     register_preferences(app, engine, auth_dependency)
+    # D221 tenant working calendars (administrator-maintained tenant configuration).
+    from pdos_next.domain.work_calendar.api import register_routes as register_work_calendar
+
+    register_work_calendar(app, engine, auth_dependency)
     from pdos_next.agent.enterprise_search.similar_history_api import (
         register_routes as register_similar_history,
     )
@@ -489,6 +504,45 @@ def create_app(
     from pdos_next.domain.exports.api import register_routes as register_export_routes
 
     register_export_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.supply_commitments.api import (
+        register_routes as register_supply_commitment_routes,
+    )
+    from pdos_next.domain.projects.forecast_refresh.api import (
+        register_routes as register_forecast_routes,
+    )
+
+    register_supply_commitment_routes(app, engine, auth_dependency)
+    register_forecast_routes(app, engine, auth_dependency)
+    from pdos_next.domain.engineering.interfaces.api import (
+        register_routes as register_interface_routes,
+    )
+
+    register_interface_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.tool_trials.api import (
+        register_routes as register_tool_trial_routes,
+    )
+
+    register_tool_trial_routes(app, engine, auth_dependency)
+    from pdos_next.domain.quality.capa_effectiveness.api import (
+        register_routes as register_effectiveness_routes,
+    )
+
+    register_effectiveness_routes(app, engine, auth_dependency)
+    from pdos_next.domain.delivery.customer_acceptance.api import (
+        register_routes as register_customer_acceptance_routes,
+    )
+
+    register_customer_acceptance_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.alternate_approvals.api import (
+        register_routes as register_alternate_approval_routes,
+    )
+
+    register_alternate_approval_routes(app, engine, auth_dependency)
+    from pdos_next.domain.manufacturing.fixture_acceptance.api import (
+        register_routes as register_fixture_acceptance_routes,
+    )
+
+    register_fixture_acceptance_routes(app, engine, auth_dependency)
 
     from pdos_next.ops.metrics import register_metrics
 
@@ -747,6 +801,23 @@ def create_app(
             return preview_command(s, ctx, data)
 
         return category_transaction(engine, ctx, preview)
+
+    from pdos_next.agent.kernel.candidate_package import CandidatePackage
+
+    @app.post("/v1/categories/{category_id}/agent-runs/{run_id}/candidates/confirm")
+    def candidate_package(run_id: UUID, data: CandidatePackage, ctx: Context = auth_dependency):
+        """D77: each item is its own command in its own transaction (see candidate_package)."""
+        from pdos_next.agent.kernel.candidate_package import confirm
+
+        def execute_one(item):
+            def apply_command(s):
+                s.info["model_configuration_secrets"] = kernel_bootstrap.ports.secrets
+                bind_session(s, embedding_host)
+                return execute(s, ctx, item, synthetic_mode=synthetic_mode)
+
+            return category_transaction(engine, ctx, apply_command)
+
+        return confirm(engine, ctx, run_id, data, execute_one)
 
     @app.get("/v1/categories/{category_id}/model-configuration")
     def model_configuration(ctx: Context = auth_dependency):
@@ -1078,6 +1149,42 @@ def create_app(
             category_id=ctx.category_id,
         ) as s:
             return list_configurations(s, ctx, product_id)
+
+    @app.get(
+        "/v1/categories/{category_id}/products/{product_id}/configurations/boms/{bom_id}/review"
+    )
+    def bom_review(product_id: UUID, bom_id: UUID, ctx: Context = auth_dependency):
+        """D98/D282: this version against its fixed predecessor, plus the rule card."""
+        from pdos_next.domain.builds.configurations.bom_diff import get_bom_review
+
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            return get_bom_review(s, ctx, product_id, bom_id)
+
+    @app.post("/v1/categories/{category_id}/products/{product_id}/configurations/bom-import/inputs")
+    def bom_import_inputs(
+        product_id: UUID,
+        data: BomImportRequest,
+        ctx: Context = auth_dependency,
+    ):
+        """READ: deterministic conversion of a parsed original; saving is engineering.bom.revise."""
+        from pdos_next.domain.builds.configurations.bom_import import inputs
+
+        with tenant_session(
+            engine,
+            ctx.tenant_id,
+            actor_id=ctx.actor_id,
+            requester_id=ctx.requester_id,
+            category_id=ctx.category_id,
+            read_snapshot=True,
+        ) as s:
+            return inputs(s, ctx, product_id, data)
 
     @app.get("/v1/categories/{category_id}/products/{product_id}/builds")
     def builds(product_id: UUID, project_id: UUID | None = None, ctx: Context = auth_dependency):

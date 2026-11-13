@@ -16,6 +16,8 @@ from sqlalchemy import String, and_, cast, func, select
 from sqlalchemy.orm import load_only
 
 from pdos_next.core.database import require_context
+from pdos_next.core.models import Artifact, Audit, OriginalSecurity, Outbox, Principal, Product
+from pdos_next.core.models import Receipt, UploadedOriginal
 from pdos_next.domain.categories.preproject.models import ProjectOpenItem
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
 from pdos_next.domain.projects.work import g0_sources
@@ -26,8 +28,6 @@ from pdos_next.domain.projects.work.models import (
 from pdos_next.domain.projects.work.schemas import CommitmentSnapshot, TaskSnapshot
 from pdos_next.agent.enterprise_search.safety import safe_originals
 from pdos_next.errors import DomainError
-from pdos_next.core.models import Artifact, Audit, OriginalSecurity, Outbox, Principal, Product
-from pdos_next.core.models import Receipt, UploadedOriginal
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest
 

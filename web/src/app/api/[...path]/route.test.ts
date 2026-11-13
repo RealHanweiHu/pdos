@@ -604,6 +604,31 @@ test("个人视图只读，拒绝伪造范围和无效分页", async () => {
   }
 });
 
+test("要我决定 · 小Pai 运行：个人只读读取，整包确认只作为该运行的一次 POST 转发（D77/D78）", async () => {
+  const h = harness();
+  assert.equal((await h.send("v1/personal/run-decisions", { unscoped: true })).response.status, 200);
+  assert.equal(h.calls[0].url, "http://synthetic-api.invalid/v1/personal/run-decisions");
+  assert.equal((await h.send("v1/personal/project-work", { unscoped: true, query: "queue=received&page_size=20" })).response.status, 200);
+  assert.equal(h.calls[1].url, "http://synthetic-api.invalid/v1/personal/project-work?queue=received&page_size=20");
+  const body = JSON.stringify({ items: [{ event_id: issue, command: { operation: "platform.link.create" } }] });
+  const sent = await h.send(`v1/agent-runs/${run}/candidates/confirm`, { method: "POST", body });
+  assert.equal(sent.response.status, 200);
+  assert.equal(h.calls[2].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-runs/${run}/candidates/confirm`);
+  assert.equal(h.calls[2].init.method, "POST"); assert.equal(h.calls[2].init.body, body);
+  assert.equal(h.timeouts.at(-1), 180000);
+  for (const input of [
+    { path: "v1/personal/run-decisions", method: "POST" as const, body: "{}", unscoped: true, status: 405 },
+    { path: "v1/personal/run-decisions", query: "page_size=1", unscoped: true, status: 422 },
+    { path: `v1/agent-runs/${run}/candidates/confirm`, status: 405 },
+    { path: `v1/personal/agent-runs/${run}/candidates/confirm`, method: "POST" as const, body, unscoped: true, status: 404 },
+  ]) {
+    const denied = harness();
+    const result = await denied.send(input.path, input);
+    assert.equal(result.response.status, input.status, input.path);
+    assert.equal(denied.calls.length, 0);
+  }
+});
+
 test("对象搜索保持个人只读路径和文字，不放行伪造范围或无效条件", async () => {
   const h = harness();
   const query = new URLSearchParams({ q: "100%_充气", kind: "project", page_size: "20", cursor: `project:${product}:0123456789abcdef` }).toString();
@@ -641,6 +666,10 @@ test("案例审阅按明确技能读取并用完整原请求只读恢复", async
   const h = harness();
   assert.equal((await h.send("v1/agent-skill-qualification", { query: "skill_key=public_research" })).response.status, 200);
   assert.equal(h.calls[0].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-qualification?skill_key=public_research`);
+  assert.equal((await h.send("v1/agent-skill-quality", { query: "skill_key=public_research" })).response.status, 200);
+  assert.equal(h.calls[1].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-quality?skill_key=public_research`);
+  assert.equal((await h.send("v1/agent-skill-quality/holds")).response.status, 200);
+  assert.equal(h.calls[2].url, `http://synthetic-api.invalid/v1/categories/${category}/agent-skill-quality/holds`);
   const body = JSON.stringify({ operation: "ai.skill.qualify", payload: { decision: "撤销" } });
   assert.equal((await h.send("v1/agent-skill-qualification/recover", { method: "POST", body })).response.status, 200);
   assert.equal(h.calls.at(-1)?.init.body, body);
@@ -650,6 +679,7 @@ test("审阅入口拒绝伪造人和租户范围以及重复或不明确选择",
     ["v1/agent-skill-qualification", {}, 422], ["v1/agent-skill-qualification", { query: "skill_key=public_research&reviewed_by=forged" }, 422],
     ["v1/agent-skill-qualification", { query: "skill_key=a&skill_key=b" }, 422], ["v1/agent-skill-qualification", { query: "skill_key=a&cursor=bad" }, 422],
     ["v1/agent-skill-qualification", { unscoped: true, query: "skill_key=a" }, 404], ["v1/agent-skill-qualification/recover", {}, 405],
+    ["v1/agent-skill-quality", {}, 422], ["v1/agent-skill-quality", { query: "skill_key=a&tenant_id=forged" }, 422], ["v1/agent-skill-quality", { method: "POST", query: "skill_key=a" }, 405], ["v1/agent-skill-quality/recover", {}, 404], ["v1/agent-skill-quality/holds", { query: "skill_key=a" }, 422], ["v1/agent-skill-quality/holds", { method: "POST" }, 405],
   ] as const) { const h = harness(); assert.equal((await h.send(path, options)).response.status, status); assert.equal(h.calls.length, 0); }
 });
 
@@ -1023,12 +1053,12 @@ test("project team and tenant role catalog use only their path scope", async () 
 test("project discussions and personal notifications keep server scope and strict queries", async () => {
   const project = `${base}/projects/${issue}`, h = harness();
   const body = JSON.stringify({ body: "@[许晴](person:" + change + ") 请看", request_key: run });
-  for (const path of [`${project}/discussions`, `${project}/discussions/${run}`, `${project}/comments/work_task/${run}`, `${project}/mentionable`]) {
+  for (const path of [`${project}/discussions`, `${project}/discussions/${run}`, `${project}/comments/work_task/${run}`, `${project}/mentionable`, `${project}/discussions/${run}/agent-requests/${change}/reply`]) {
     assert.equal((await h.send(path)).response.status, 200, path);
     assert.equal(h.calls.at(-1)?.url.includes(`/v1/categories/${category}/products/`), true);
   }
   assert.equal((await h.send(`${project}/mentionable`, { query: `subject_type=work_task&subject_id=${run}` })).response.status, 200);
-  for (const path of [`${project}/discussions`, `${project}/discussions/${run}/messages`, `${project}/discussions/${run}/messages/${change}/edit`, `${project}/discussions/${run}/messages/${change}/retract`, `${project}/discussions/${run}/follow`, `${project}/comments/artifact/${run}`]) {
+  for (const path of [`${project}/discussions`, `${project}/discussions/${run}/messages`, `${project}/discussions/${run}/messages/${change}/edit`, `${project}/discussions/${run}/messages/${change}/retract`, `${project}/discussions/${run}/follow`, `${project}/comments/artifact/${run}`, `${project}/discussions/${run}/agent-requests/${change}/share`]) {
     assert.equal((await h.send(path, { method: "POST", body })).response.status, 200, path);
     assert.equal(h.calls.at(-1)?.init.body, body);
   }
@@ -1044,6 +1074,10 @@ test("project discussions and personal notifications keep server scope and stric
     [`${project}/discussions/${run}/messages`, {}],
     [`${project}/comments/build/${run}`, {}],
     [`${project}/mentionable`, { query: "subject_type=project&recipient=all" }],
+    [`${project}/discussions/${run}/agent-requests/${change}/reply`, { method: "POST" as const, body }],
+    [`${project}/discussions/${run}/agent-requests/${change}/share`, {}],
+    [`${project}/discussions/${run}/agent-requests/${change}/run`, {}],
+    [`${project}/discussions/${run}/agent-requests/${change}/reply`, { query: `requester_id=${run}` }],
     [`${project}/discussions/${run}/messages`, { method: "POST" as const, body, origin: "http://untrusted.invalid" }],
     ["v1/personal/notifications", { unscoped: true, query: `recipient_id=${run}` }],
     ["v1/personal/notifications", { unscoped: true, query: "view=everyone" }],

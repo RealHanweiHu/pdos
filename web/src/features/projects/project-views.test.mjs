@@ -115,7 +115,15 @@ test("directory identity changes hide prior entries before the next read complet
 test("workspace retains Build and commitments, separates maturity, and all execution links keep project scope", () => {
   const props = { entry: entries[0], api: async () => {}, session: { name: "合成人员", principal_id: "me" }, today: "2026-10-17", readVersion: 3, initialView: "now", onBack() {}, onOpenWorkbench() {} };
   const component = driver(ProjectWorkspace, props); let tree = component.render();
-  assert.match(markup(tree), /试制轮次/); assert.match(markup(tree), /关键承诺/);
+  // D37 ⑦: the overview is one server read model; Build and key commitments render from it in the same screen.
+  const overview = elements(tree, e => e.type?.name === "ProjectOverviewView")[0]; assert.ok(overview);
+  assert.deepEqual(overview.props.scope, { categoryId: "cat", productId: "model", projectId: "one" });
+  assert.equal(overview.props.api, props.api); assert.equal(overview.props.readVersion, 3); assert.equal(overview.props.principalId, "me");
+  overview.props.onOpen("plan", "commitments"); tree = component.render();
+  assert.equal(elements(tree, e => e.props?.id === "project-tab-plan")[0].props["aria-selected"], true);
+  assert.equal(elements(tree, e => e.type === "button" && e.props["aria-pressed"] === true && e.props.children === "承诺与外部等待").length, 1);
+  overview.props.onOpen("unknown-view"); tree = component.render();
+  assert.equal(elements(tree, e => e.props?.id === "project-tab-tasks")[0].props["aria-selected"], true);
   for (const anchor of elements(tree, e => e.type === "a")) {
     const params = new URLSearchParams(anchor.props.href); assert.equal(params.get("project"), "one"); assert.equal(params.get("product"), "model");
   }
@@ -129,9 +137,10 @@ test("one real activity stream occupies the overview main column and leaves when
   const props = { entry: entries[0], api: async () => {}, session: { name: "本人", principal_id: "me" }, today: "2026-10-18", readVersion: 5, initialView: "now", onBack() {}, onOpenWorkbench() {} };
   const component = driver(ProjectWorkspace, props); let tree = component.render();
   const activity = elements(tree, e => e.type === ProjectActivity); assert.equal(activity.length, 1);
-  const grid = elements(tree, e => e.props?.className === "workspaceGrid")[0], main = grid.props.children[0], right = grid.props.children[1];
-  assert.equal(elements(main, e => e.type === ProjectActivity).length, 1);
-  assert.equal(elements(right, e => e.props?.className === "updatePrompt").length, 1);
+  const overview = elements(tree, e => e.type?.name === "ProjectOverviewView")[0];
+  assert.equal(elements(overview.props.children, e => e.type === ProjectActivity).length, 1);
+  overview.props.onWriteUpdate(); tree = component.render();
+  assert.equal(elements(tree, e => e.props?.["aria-label"] === "写项目状态更新").length, 1);
   assert.equal(activity[0].props.api, props.api); assert.equal(activity[0].props.readVersion, 5); assert.deepEqual(activity[0].props.scope, { categoryId: "cat", productId: "model", projectId: "one", principalId: "me" });
   assert.doesNotMatch(markup(tree), /项目已建立|更早的具名更新可进入工作与计划查看/);
   elements(tree, e => e.props?.id === "project-tab-plan")[0].props.onClick(); tree = component.render(); assert.equal(elements(tree, e => e.type === ProjectActivity).length, 0);
@@ -176,11 +185,10 @@ test("the main project view delegates professional work without losing scope acr
   const retained = elements(tree, e => e.props?.className === "professionalSlot")[0];
   assert.equal(retained.props.hidden, true); assert.equal(elements(retained, e => e.type === ProjectProfessional).length, 1);
 });
-test("cockpit task read failures remain unknown rather than claiming zero risks or no conflicts", async () => {
-  const unreadable = entry("one"); unreadable.openItemsError = "合成任务权限待核对";
-  const component = driver(ProjectCockpit, { api: async () => ({ items: [unreadable], next_cursor: null, unavailable_count: 0 }), session: { name: "本人", principal_id: "me" }, location: { area: "cockpit", categoryId: "", projectId: "" }, onOpenProject() {}, onOpenOverview() {}, onOpenWorkbench() {} });
-  component.render(); component.mount(); await tick(); const html = markup(component.render());
-  assert.match(html, /合成任务权限待核对/); assert.match(html, /未完整读取/); assert.doesNotMatch(html, /无开放风险或到期冲突/); assert.match(html, /可见项目/);
+test("without a project the cockpit area opens the 项目 page's 驾驶舱 view instead of count cards", async () => {
+  const component = driver(ProjectCockpit, { api: async () => ({ items: [entries[0]], next_cursor: null, unavailable_count: 0 }), session: { name: "本人", principal_id: "me" }, location: { area: "cockpit", categoryId: "", projectId: "" }, onOpenProject() {}, onOpenOverview() {}, onOpenWorkbench() {} });
+  component.render(); component.mount(); await tick(); const tree = component.render();
+  assert.equal(tree.type, ProjectList); assert.equal(tree.props.initialView, "驾驶舱"); assert.equal(tree.props.principalId, "me");
 });
 test("cockpit identity, category, project and API changes synchronously hide prior private reads", async () => {
   const pending = [], api = path => new Promise(resolve => pending.push({ path, resolve }));

@@ -12,6 +12,7 @@ from copy import deepcopy
 from pathlib import Path
 from uuid import UUID
 
+import pytest
 from manufacturing.external_handoff_transactions import harness
 from manufacturing.preparation import publication_pg_helpers as upstream
 from manufacturing.preparation.publication_pg_helpers import publication_case as publication_case
@@ -24,6 +25,12 @@ from pdos_next.domain.builds.configurations.models import EngineeringConfigurati
 from pdos_next.domain.manufacturing.external_handoff.evidence_owner import revoke_issuer
 from pdos_next.domain.manufacturing.release.policy_owner import ActualReleasePolicyOwner
 from tests.ui import test_project_release_packages_projection_pg as release_ui
+
+# The chain runs only on its explicit isolated opt-in; the default suite skips it (D288).
+pytestmark = pytest.mark.skipif(
+    os.environ.get("PDOS_EXTERNAL_HANDOFF_LINK") != "1",
+    reason="External handoff chain is explicit isolated opt-in (PDOS_EXTERNAL_HANDOFF_LINK=1)",
+)
 
 PHASES = (
     "authorized_without_receipts",

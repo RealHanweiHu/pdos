@@ -113,6 +113,21 @@ class _Read:
                 ) from exc
         return tuple(refs)
 
+    def embedded_refs(self, value):
+        """Every source ref inside raw material, found the way a fact body is checked.
+
+        Exact quotes resolve through ``source_refs`` to the whole-line locator.
+        """
+        if isinstance(value, dict):
+            if {"id", "revision", "kind", "position"} <= value.keys():
+                return (SourceRef.model_validate(value),)
+            if {"artifact_id", "expected_revision", "line", "quote"} <= value.keys():
+                return self.source_refs((value,))
+            return tuple(ref for child in value.values() for ref in self.embedded_refs(child))
+        if isinstance(value, (list, tuple)):
+            return tuple(ref for child in value for ref in self.embedded_refs(child))
+        return ()
+
     def one(self, table, *, columns=None, scoped=True, **keys):
         where = [table.c.tenant_id == self.ctx.tenant_id]
         if scoped:
@@ -758,8 +773,6 @@ def read_participants(
             Participant(id=k, roles=tuple(sorted(v[0])), owner_sources=a.canonical_sources(v[1]))
             for k, v in sorted(reader.people.items(), key=lambda item: str(item[0]))
         )
-        refs = a.canonical_sources((*anchor.origin_sources, *reader.refs))
-        reads = a.canonical_reads((*anchor.origin_required_source_read_set, *reader.reads))
         material = {
             "scope": anchor.origin.scope.model_dump(mode="json"),
             "origin_ref": anchor.origin.ref.model_dump(mode="json"),
@@ -768,6 +781,21 @@ def read_participants(
             "participants": [v.model_dump(mode="json") for v in participants],
         }
         material = _wire(material)
+        # A review embeds this raw material, so every source it carries joins the
+        # checked closure, not only each row's top-level sources (P119).
+        embedded = reader.embedded_refs(material)
+        refs = a.canonical_sources((*anchor.origin_sources, *reader.refs, *embedded))
+        reads = a.canonical_reads(
+            (
+                *anchor.origin_required_source_read_set,
+                *reader.reads,
+                *(
+                    a.SourceRead(artifact_id=v.id, expected_revision=v.revision)
+                    for v in embedded
+                    if v.kind == "artifact"
+                ),
+            )
+        )
         reader.finish()
         final = origin_storage.read_origin_descriptor(
             s, ctx, product_id, anchor.origin.issue_id, anchor.origin.ref

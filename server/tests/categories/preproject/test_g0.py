@@ -629,6 +629,27 @@ def test_participant_selector_excludes_owner_without_manager_capability(work):
     people = {p["id"]: p for p in response.json()["items"]}
     assert not people[str(work.human)]["reviewer_eligible"]
     assert people[str(work.peer)]["reviewer_eligible"]
+    # D337: the flag follows the rule `proposal.question.create` enforces on a private draft.
+    assert people[str(work.human)]["can_read_proposal"] is True
+    assert people[str(work.peer)]["can_read_proposal"] is False
+    row = read(work, proposal_id).json()
+    refused = post(
+        work,
+        request(
+            work,
+            "proposal.question.create",
+            {
+                "proposal_id": proposal_id,
+                "expected_revision": row["revision"],
+                "question": "合成的不在受众内负责人",
+                "owner_id": str(work.peer),
+                "due_date": "2026-10-30",
+            },
+            revision=row["revision"],
+        ),
+        preview=True,
+    )
+    assert refused.json()["detail"]["reason"] == "assignee_not_audience", refused.text
 
 
 def test_question_creation_and_reassignment_require_confirmation(work):

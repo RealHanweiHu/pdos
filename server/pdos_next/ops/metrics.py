@@ -16,6 +16,17 @@ from fastapi.responses import PlainTextResponse, Response
 
 PATH = "/ops/metrics"
 BUCKETS = (0.1, 0.25, 0.5, 1.0, 2.0, 5.0, 10.0)
+MEDIA_TYPE = "text/plain; version=0.0.4"
+
+
+def metrics_token(environ=os.environ) -> str | None:
+    """The scrape token, or None when metrics are off (unset or under 32 characters)."""
+    value = environ.get("PDOS_METRICS_TOKEN", "")
+    return value if len(value) >= 32 else None
+
+
+def authorized(header: str, token: str) -> bool:
+    return hmac.compare_digest(header.encode(), f"Bearer {token}".encode())
 
 
 class RequestMetrics:
@@ -100,7 +111,8 @@ class CountingMiddleware:
             self.metrics.observe(status, time.monotonic() - started)
 
 
-def _database_up(engine) -> int:
+def database_up(engine) -> int:
+    """1 when the application role can run SELECT 1, else 0."""
     from sqlalchemy import text
 
     try:
@@ -118,15 +130,14 @@ def register_metrics(app, engine) -> RequestMetrics:
 
     @app.get(PATH, include_in_schema=False)
     def ops_metrics(request: Request):
-        expected = os.environ.get("PDOS_METRICS_TOKEN", "")
-        if len(expected) < 32:
+        expected = metrics_token()
+        if expected is None:
             return Response(status_code=404)
-        supplied = request.headers.get("authorization", "")
-        if not hmac.compare_digest(supplied.encode(), f"Bearer {expected}".encode()):
+        if not authorized(request.headers.get("authorization", ""), expected):
             return Response(status_code=401, headers={"WWW-Authenticate": "Bearer"})
         return PlainTextResponse(
-            metrics.render(database_up=_database_up(engine) if engine is not None else None),
-            media_type="text/plain; version=0.0.4",
+            metrics.render(database_up=database_up(engine) if engine is not None else None),
+            media_type=MEDIA_TYPE,
             headers={"Cache-Control": "no-store"},
         )
 

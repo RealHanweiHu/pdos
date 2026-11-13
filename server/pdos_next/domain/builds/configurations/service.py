@@ -164,20 +164,39 @@ def _bom_view(s, ctx, product_id, row, cache=None):
         .order_by(BomLine.key),
         scope_id=product_id,
     )
-    stored_parts = batch_read(s, PartIdentity, [line.part_id for line in stored_lines])
+    alternate_ids = [UUID(a["part_id"]) for line in stored_lines for a in line.alternates or ()]
+    stored_parts = batch_read(
+        s, PartIdentity, [*(line.part_id for line in stored_lines), *alternate_ids]
+    )
     all_reads = [*row.required_source_read_set]
     for part in stored_parts.values():
         if part is not None:
             all_reads.extend(part.required_source_read_set)
     cache.update(batch_read(s, Artifact, [UUID(ref["artifact_id"]) for ref in all_reads]))
     result = _base_view(s, ctx, product_id, row, cache)
-    for line in stored_lines:
-        if line.part_id not in parts:
-            part = _row(s, ctx, product_id, PartIdentity, line.part_id)
-            parts[line.part_id] = _part_view(s, ctx, product_id, part, cache)
-        part_view = parts[line.part_id]
-        if part_view["revision"] != line.part_revision:
+
+    def fixed_part(identity, revision):
+        if identity not in parts:
+            part = _row(s, ctx, product_id, PartIdentity, identity)
+            parts[identity] = _part_view(s, ctx, product_id, part, cache)
+        if parts[identity]["revision"] != revision:
             raise DomainError("VERSION_CONFLICT", "固定物料身份版本不一致。")
+        return parts[identity]
+
+    for line in stored_lines:
+        part_view = fixed_part(line.part_id, line.part_revision)
+        alternates = []
+        for alternate in line.alternates or ():
+            alternate_view = fixed_part(UUID(alternate["part_id"]), alternate["part_revision"])
+            alternates.append(
+                {
+                    "part_id": alternate["part_id"],
+                    "expected_part_revision": alternate["part_revision"],
+                    "part": deepcopy(alternate_view),
+                }
+            )
+            if alternate_view["source_status"] != "current":
+                result["source_status"] = "needs_recheck"
         lines.append(
             {
                 "key": line.key,
@@ -189,11 +208,14 @@ def _bom_view(s, ctx, product_id, row, cache=None):
                 "loss_rate": _decimal(line.loss_rate),
                 "critical": line.critical,
                 "notes": line.notes,
+                "reference_designators": list(line.reference_designators or ()),
+                "alternates": alternates,
             }
         )
         if part_view["source_status"] != "current":
             result["source_status"] = "needs_recheck"
     result["lines"] = lines
+    result["import_basis"] = deepcopy(row.import_basis)
     return result
 
 
@@ -327,16 +349,28 @@ def _inputs(s, ctx, product_id, payload):
         read_groups.append(previous.required_source_read_set)
         result["previous"] = previous
     if isinstance(payload, EngineeringBomRevisePayload):
-        for line in payload.lines:
-            if line.part_id is None or line.part_id in result["parts"]:
+        if payload.import_basis is not None:
+            # The imported original is pinned like any other source of this revision.
+            basis = payload.import_basis
+            pinned = {"artifact_id": str(basis.artifact_id)}
+            read_groups.append([{**pinned, "expected_revision": basis.expected_revision}])
+        fixed = [
+            (identity, revision)
+            for line in payload.lines
+            for identity, revision in (
+                *([(line.part_id, line.expected_part_revision)] if line.part_id else []),
+                *((a.part_id, a.expected_part_revision) for a in line.alternates),
+            )
+        ]
+        for identity, _ in fixed:
+            if identity in result["parts"]:
                 continue
-            part = _row(s, ctx, product_id, PartIdentity, line.part_id)
+            part = _row(s, ctx, product_id, PartIdentity, identity)
             _no_wider(part, payload.visibility)
             result["parts"][part.id] = (part, _part_view(s, ctx, product_id, part))
             read_groups.append(part.required_source_read_set)
-        for line in payload.lines:
-            if line.part_id is not None:
-                _version(result["parts"][line.part_id][0], line.expected_part_revision)
+        for identity, revision in fixed:
+            _version(result["parts"][identity][0], revision)
     elif isinstance(payload, EngineeringConfigurationCreatePayload):
         definition, defined = _definition(s, ctx, product_id, payload.definition_id)
         bom, bom_view = get_bom(s, ctx, product_id, payload.bom_id)
@@ -393,6 +427,13 @@ def _checked_inputs(s, ctx, command, product, payload):
         lines = source.content.splitlines()
         if reference["line"] > len(lines) or reference["quote"] not in lines[reference["line"] - 1]:
             raise DomainError("MISSING_REQUIRED_EVIDENCE", "引用须在指定原文行精确定位。")
+    inputs["import_record"] = None
+    if isinstance(payload, EngineeringBomRevisePayload) and payload.import_basis is not None:
+        from .bom_import import verify
+
+        previous = inputs["previous"]
+        before = get_bom(s, ctx, product.id, previous.id)[1] if previous else None
+        inputs["import_record"] = verify(s, ctx, product.id, payload, before)
     return inputs
 
 
@@ -476,6 +517,10 @@ def semantic(payload):
             for field in ("depends_on", "bom_line_keys"):
                 if field in item:
                     item[field] = sorted(item[field])
+    if result.get("import_basis") is not None:
+        basis = result["import_basis"]
+        basis["columns"] = sorted(basis["columns"], key=lambda entry: entry["field"])
+        basis["dispositions"] = sorted(basis["dispositions"], key=lambda entry: entry["row"])
     return result
 
 
@@ -525,9 +570,19 @@ def _after(s, ctx, product, payload, inputs):
                     "loss_rate": _decimal(line.loss_rate),
                     "critical": line.critical,
                     "notes": line.notes,
+                    "reference_designators": list(line.reference_designators),
+                    "alternates": [
+                        {
+                            "part_id": str(alternate.part_id),
+                            "expected_part_revision": alternate.expected_part_revision,
+                            "part": deepcopy(inputs["parts"][alternate.part_id][1]),
+                        }
+                        for alternate in line.alternates
+                    ],
                 }
             )
         result["lines"] = lines
+        result["import_basis"] = inputs.get("import_record")
     elif isinstance(payload, EngineeringConfigurationCreatePayload):
         result.update(
             {
@@ -599,15 +654,24 @@ def preview_view(s, ctx, command, product, payload):
             )
         )
         before = getter(s, ctx, product.id, previous.id)[1]
-    return {
+    after = _after(s, ctx, product, payload, inputs)
+    review = {
         "operation": command.operation,
         "name": payload.name,
         "visibility": payload.visibility,
         "before": before,
-        "after": _after(s, ctx, product, payload, inputs),
+        "after": after,
         "reason": payload.reason,
         "effect": "追加不可变配置草稿并固定物料、版本与来源；不构成批准、试制资格或正式放行。",
     }
+    if isinstance(payload, EngineeringBomRevisePayload):
+        from .bom_diff import compare
+        from .bom_rules import rule_card
+
+        # The whole version is confirmed once against its fixed predecessor (P79 D98).
+        review["diff"] = compare(before["lines"] if before else (), after["lines"])
+        review["rules"] = rule_card(after["lines"])
+    return review
 
 
 def apply(s, ctx, command, product, payload):
@@ -657,6 +721,8 @@ def apply(s, ctx, command, product, payload):
                 "operations": semantic(payload)["operations"],
             }
         )
+    if isinstance(payload, EngineeringBomRevisePayload):
+        values["import_basis"] = inputs["import_record"]
     row = model(**values)
     s.add(row)
     s.flush()
@@ -693,6 +759,11 @@ def apply(s, ctx, command, product, payload):
                     loss_rate=line.loss_rate,
                     critical=line.critical,
                     notes=line.notes,
+                    reference_designators=list(line.reference_designators),
+                    alternates=[
+                        {"part_id": str(a.part_id), "part_revision": a.expected_part_revision}
+                        for a in line.alternates
+                    ],
                 )
             )
         s.flush()

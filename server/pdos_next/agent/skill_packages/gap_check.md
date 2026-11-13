@@ -1,6 +1,6 @@
 ---
 key: gap_check
-version: 0.2.2-draft
+version: 0.2.3-draft
 purpose: 检查立项提案或型号定义的缺项、冲突与口径问题（缺单位/工况/方法、未映射参数、来源缺失、方案不足、未知项没有待决问题等），按严重度排序，并把需要人处理的项整理成待决问题候选。
 input_schema:
   type: object
@@ -51,6 +51,7 @@ allowed_operations:
   - {tool: product.definition.item.patch, tier: T0, note: 定义上下文中同上}
   - {tool: proposal.g0.submit, tier: T1, note: 提交前检查完成后预填提交候选；只有提案负责人本人能一次确认}
   - {tool: proposal.g0.decide, tier: T2-prepare-only, note: 只为评审人准备处置表草稿，决定由评审人具名作出}
+  - {tool: product.definition.update, tier: T1, note: "预填新的整体字段，生成新草稿版本；规格冻结后走变更单"}
 evidence_policy: |
   每个 finding 指向具体条目与字段；冲突类要给两边的证据。规则类检查（缺单位、缺工况、版本不一致）以条目字段为准，不凭印象。
   只按 v1.1 与 M3 合同的 G0 提交检查判 blocks_g0，不自加门槛。

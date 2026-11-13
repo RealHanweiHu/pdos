@@ -1,5 +1,6 @@
 import { parsePersonalAttention, type AttentionQueue } from "@/features/my-work/lib/personal-attention";
 import type { GlobalArea } from "@/lib/global-navigation";
+import { parseRunDecisions, runDecisionsPath } from "@/features/my-work/lib/run-decisions-read";
 
 /** The two interface settings the shell uses (D40); everything else stays in settings. */
 export type ShellPreferences = { default_home: "work" | "inbox" | "projects"; pending_reminders: boolean };
@@ -17,19 +18,31 @@ export function shellPreferences(value: unknown): ShellPreferences {
   };
 }
 
-/** Only a bare entry (no page, category or project named) opens the chosen home. */
-export function defaultHomeArea(search: string, preferences: ShellPreferences): GlobalArea | null {
+/** A bare entry names no page, category or project; only it opens the chosen home. */
+export function bareEntry(search: string): boolean {
   const params = new URLSearchParams(search);
-  if (["area", "category", "project", "bench"].some(key => params.has(key))) return null;
+  return !["area", "category", "project", "bench"].some(key => params.has(key));
+}
+export function defaultHomeArea(search: string, preferences: ShellPreferences): GlobalArea | null {
+  if (!bareEntry(search)) return null;
   return preferences.default_home === "work" ? null : preferences.default_home;
 }
+/** D341: how long a bare entry waits for the saved home before showing the app default. */
+export const homeWaitMs = 1500;
 
-/** Items that need me: 要我决定 + 接收 + 验证. Waiting on others is not counted. */
+/**
+ * Items that need me (D341): 要我决定 (named reviews and, per D78, each 小Pai run waiting on
+ * my confirmation or answer, counted once per run) + 要我接收 + 要我验证. Waiting on
+ * others and my own in-progress tasks are not reminders.
+ */
 export const reminderQueues: AttentionQueue[] = ["decide", "receive", "verify"];
 export async function readPendingCount(api: Api, principalId: string): Promise<number> {
-  const pages = await Promise.all(reminderQueues.map(queue =>
-    api<unknown>(`v1/personal/attention?${new URLSearchParams({ queue, page_size: "1" })}`).then(value => parsePersonalAttention(value, principalId, queue))));
-  return pages.reduce((total, page) => total + page.total_records, 0);
+  const [pages, runs] = await Promise.all([
+    Promise.all(reminderQueues.map(queue =>
+      api<unknown>(`v1/personal/attention?${new URLSearchParams({ queue, page_size: "1" })}`).then(value => parsePersonalAttention(value, principalId, queue)))),
+    api<unknown>(runDecisionsPath).then(value => parseRunDecisions(value, principalId)),
+  ]);
+  return pages.reduce((total, page) => total + page.total_records, runs.total_runs);
 }
 
 export const countText = (count: number) => count > 99 ? "99+" : String(count);

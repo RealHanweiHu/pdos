@@ -18,6 +18,9 @@ label > input, label > textarea, label > select { display: block; margin-top: 5p
 .source-line[aria-pressed=true] { background: var(--muted); }
 dialog { color: var(--foreground); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; width: min(480px, calc(100vw - 32px)); padding: 24px; }
 dialog::backdrop { background: rgb(0 0 0 / .35); }
+/* D271: Tailwind preflight zeroes every margin, so modal dialogs fell to the top-left.
+   Restore the browser's centring in the base layer; drawers set their own margin. */
+@layer base { dialog { margin: auto; } }
 @media (max-width: 639px) { .panel { padding: 16px; } }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 

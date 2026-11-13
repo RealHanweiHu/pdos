@@ -28,6 +28,10 @@ def validate(s, ctx, command, product, payload):
         raise DomainError("VERSION_CONFLICT", "原件安全状态已变化，请重新预览。")
     if command.source_read_set:
         raise DomainError("INVALID_PAYLOAD", "撤回原件不接受额外来源输入。", 422)
+    if state.source_state == "active":
+        from pdos_next.originals.source_withdraw import check_t1
+
+        check_t1(s, ctx, product.id, original)
 
 
 def preview_view(s, ctx, command, product, payload):

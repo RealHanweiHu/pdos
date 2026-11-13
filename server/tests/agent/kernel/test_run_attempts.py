@@ -2,6 +2,7 @@
 
 from contextlib import contextmanager, nullcontext
 from threading import Event
+from time import monotonic
 from types import SimpleNamespace
 from uuid import uuid4
 
@@ -33,7 +34,7 @@ class Store:
         pass
 
 
-def owned(monkeypatch, store, execute, reference=None):
+def owned(monkeypatch, store, execute, reference=None, lease=None):
     """Run the lease-owned part of advance with the kernel replaced by ``execute``."""
     acts = activities.KernelActivities.__new__(activities.KernelActivities)
     acts.engine = SimpleNamespace(_pdos_agent_kernel_adapters=SimpleNamespace(tool_registry=None))
@@ -50,7 +51,7 @@ def owned(monkeypatch, store, execute, reference=None):
     monkeypatch.setattr("pdos_next.agent.kernel.work_state.record_finish", lambda *_: None)
     reference = reference or {"subject_id": str(RUN)}
     return ActivityEnvironment().run(
-        acts._advance_owned, None, RUN, SCOPE, reference, uuid4(), "goal", False
+        acts._advance_owned, None, RUN, SCOPE, reference, uuid4(), "goal", False, lease=lease
     )
 
 
@@ -67,6 +68,45 @@ def test_superseded_attempt_raises_cancelled_and_leaves_the_run_running(monkeypa
     with pytest.raises(CancelledError):
         owned(monkeypatch, store, execute)
     assert store.row.state == "running" and "failed" not in store.states
+
+
+class Lease:
+    """A run lease whose probe answers from ``held`` and counts its calls."""
+
+    def __init__(self, held):
+        self.answer, self.probes = held, 0
+
+    def held(self):
+        self.probes += 1
+        return self.answer
+
+
+def test_a_lost_lease_stops_the_attempt_like_a_superseded_one(monkeypatch):
+    """D358: the heartbeat finds the dropped lease and the attempt stops at its safe point."""
+    monkeypatch.setattr(activities, "HEARTBEAT_SECONDS", 0.01)
+    store, lease = Store("queued"), Lease(False)
+
+    def execute(host):
+        assert host.superseded.wait(5)  # Set by the heartbeat, not by Temporal.
+        check_attempt(host.superseded)  # The next model or tool call is a safe point.
+
+    with pytest.raises(CancelledError):
+        owned(monkeypatch, store, execute, lease=lease)
+    assert lease.probes and store.row.state == "running" and "failed" not in store.states
+
+
+def test_a_held_lease_lets_the_attempt_finish(monkeypatch):
+    monkeypatch.setattr(activities, "HEARTBEAT_SECONDS", 0.01)
+    store, lease = Store("queued"), Lease(True)
+
+    def execute(host):
+        deadline = monotonic() + 5
+        while lease.probes < 3:  # Several heartbeats probe the lease meanwhile.
+            assert not host.superseded.wait(0.01) and monotonic() < deadline
+        return {"output": {"status": "completed"}}
+
+    result = owned(monkeypatch, store, execute, lease=lease)
+    assert result == {"run_id": str(RUN), "status": "completed"}
 
 
 def test_ordinary_domain_failure_still_fails_the_run(monkeypatch):

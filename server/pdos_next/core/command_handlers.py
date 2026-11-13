@@ -18,9 +18,12 @@ CATEGORY_OPERATIONS = frozenset(
         "ai.skill.qualify",
         "ai.skill.enable",
         "ai.skill.review.record",
+        "ai.skill.spot_check.record",
+        "ai.skill.eval_set.register",
         "ai.budget.configure",
         "evidence.artifact.register",
         "evidence.original.withdraw",
+        "evidence.source.withdraw",
         "evidence.lifecycle.upload.abandon",
         "evidence.lifecycle.quarantine",
         "evidence.lifecycle.restore",
@@ -68,6 +71,11 @@ T2_OPERATIONS = frozenset(
         "npi.manufacturing_baseline.publish",
         "quality.issue.root_cause.decide",
         "quality.capa.verification.review",
+        "npi.fixture.accept",
+        "evidence.source.withdraw",
+        "supply.alternate.approve",
+        "quality.capa.effectiveness.decide",
+        "customer.acceptance.record",
     }
 )
 
@@ -96,6 +104,8 @@ T1_OPERATIONS = frozenset(
         "mcp.tool.grant",
         "ai.skill.enable",
         "ai.skill.review.record",
+        "ai.skill.spot_check.record",
+        "ai.skill.eval_set.register",
         "ai.budget.configure",
         "model.configuration.save",
         "ai.run.revert",
@@ -153,6 +163,9 @@ T1_OPERATIONS = frozenset(
         "quality.capa.followup.link",
         "quality.capa.verification.candidate.record",
         "quality.capa.observation.record",
+        "product.definition.update",
+        "engineering.interface.update",
+        "npi.tooltrial.create",
     }
 )
 
@@ -165,6 +178,8 @@ T0_OPERATIONS = frozenset(
         "ai.automation.draft.save",
         "work.task.create",
         "work.external_wait.record",
+        "work.forecast.refresh",
+        "supply.commitment.record",
         "integration.receipt.record",
         "build.readiness.compute",
         "category.knowledge.add",
@@ -268,6 +283,16 @@ def handler(operation):
         from pdos_next.domain.projects.external_wait import service as external_wait_service
 
         return external_wait_service
+    if operation == "work.forecast.refresh":
+        from pdos_next.domain.projects.forecast_refresh import service as forecast_service
+
+        return forecast_service
+    if operation == "supply.commitment.record":
+        from pdos_next.domain.manufacturing.supply_commitments import (
+            service as supply_commitment_service,
+        )
+
+        return supply_commitment_service
     if operation == "work.commitment.review":
         from pdos_next.domain.projects.fulfillment import service as fulfillment_service
 
@@ -321,6 +346,10 @@ def handler(operation):
         from pdos_next.agent.kernel import skill_qualification
 
         return skill_qualification
+    if operation in {"ai.skill.spot_check.record", "ai.skill.eval_set.register"}:
+        from pdos_next.agent.kernel import skill_quality_records
+
+        return skill_quality_records
     if operation == "ai.budget.configure":
         from pdos_next.agent.kernel import budget_management
 
@@ -333,6 +362,38 @@ def handler(operation):
         from pdos_next.domain.categories.products import platforms
 
         return platforms
+    if operation == "quality.capa.effectiveness.decide":
+        from pdos_next.domain.quality.capa_effectiveness import service as effectiveness
+
+        return effectiveness
+    if operation == "evidence.source.withdraw":
+        from pdos_next.originals import source_withdraw
+
+        return source_withdraw
+    if operation == "npi.fixture.accept":
+        from pdos_next.domain.manufacturing.fixture_acceptance import service as fixture_service
+
+        return fixture_service
+    if operation == "supply.alternate.approve":
+        from pdos_next.domain.manufacturing.alternate_approvals import service as alternate_approval
+
+        return alternate_approval
+    if operation == "customer.acceptance.record":
+        from pdos_next.domain.delivery.customer_acceptance import service as customer_acceptance
+
+        return customer_acceptance
+    if operation == "npi.tooltrial.create":
+        from pdos_next.domain.manufacturing.tool_trials import service as tool_trial
+
+        return tool_trial
+    if operation == "engineering.interface.update":
+        from pdos_next.domain.engineering.interfaces import service as interface_service
+
+        return interface_service
+    if operation == "product.definition.update":
+        from pdos_next.domain.categories.products import definition_update
+
+        return definition_update
     if operation == "product.definition.item.patch":
         from pdos_next.domain.categories.products import definition_items
 

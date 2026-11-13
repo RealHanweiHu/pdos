@@ -5,22 +5,27 @@ worktree's marked local environment: business database, LangGraph checkpoint
 database, Agent runtime state database and the native Temporal dev server.
 
 1. Build the real chain through public commands: engineering configuration and
-   process, manufacturing publication with an uploaded original, release package,
-   named engineering and manufacturing decisions, handoff authorization and its
-   fixed delivery intent. Long-waiting maintenance workflows are in flight.
+   process, a test result imported from an uploaded report and computed against
+   the accepted plan (D347), manufacturing publication with an uploaded original,
+   a release package that fixes that test run, named engineering and
+   manufacturing decisions, handoff authorization and its fixed delivery intent.
+   Long-waiting maintenance workflows are in flight.
 2. Back up every store at the moment the first send result is recorded as unknown.
 3. The source keeps going (reconciliation, acceptances, effectiveness, conflict, and
    event delivery that starts a workflow), as production would after the backup.
 4. Restore into a new marked environment and check: every table and the original
    file match the backup; the chain reads exactly as it did at the backup; replaying
    the original commands returns the original receipts and writes nothing; the
-   unknown send stays unknown (no network send, one intent); undelivered events are
+   unknown send stays unknown (no network send, one intent); the test result page
+   reads as it did at the backup; undelivered events are
    delivered once, and their deterministic workflow IDs are not run a second time,
    both when Temporal is restored to the same point and when only the database is.
    The restored in-flight workflows replay against this checkout's workflow code.
 
 No model, connector, socket to an external service or real delivery is used.
 """
+
+# ruff: noqa: F811 - imported fixtures register the existing S2 dependency tree
 
 import asyncio
 import json
@@ -39,12 +44,21 @@ import pytest
 from fastapi.testclient import TestClient
 from manufacturing.external_handoff_transactions import harness
 from manufacturing.preparation import publication_pg_helpers as upstream
-from manufacturing.preparation.publication_pg_helpers import publication_case as publication_case
 from manufacturing.release_policy_transactions import test_decisions as flow
-from projects.test_project_first_plan import post
+from projects.test_project_first_plan import accepted, post
+from quality.execution.fixtures import (  # noqa: F401 - registers the S2 fixture tree
+    accepted_work,
+    known_configuration,
+    launch_work,
+    operational_work,
+    ready_work,
+    results_work,
+)
 from security_fixture import synthetic_runtime
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
+from verification.results.fixtures import capture, current_rows
+from verification.results.fixtures import command as result_command
 
 from pdos_next.api import create_app
 from pdos_next.core.database import engine_for, tenant_session
@@ -70,9 +84,10 @@ MAINTENANCE_QUEUE = "pdos-next-drill-maintenance"
 
 
 def _reads(work, client, package_id, publication_ref, handoff_id):
-    """The chain as a person sees it: publication, package with decisions, handoff."""
+    """The chain as a person sees it: test result, publication, package, handoff."""
     root = harness._root(work)
     paths = {
+        "test_results": (root + "/verification-results", {"build_id": work.results.build_id}),
         "publication": (
             upstream.root_url(work) + f"/{publication_ref['id']}",
             {"revision": publication_ref["revision"]},
@@ -262,13 +277,46 @@ def _differences(left, right, path=""):
     return [] if left == right else [{"path": path, "backup": left, "restored": right}]
 
 
+@pytest.fixture
+def drill_case(results_work, tmp_path, monkeypatch):
+    """The publication chain on top of an actual, passing test result (D347).
+
+    As native_case does for its failing run: the publication reuses the tested
+    configuration and the results' original store, so one project holds the whole
+    configuration → test → publication → decision → handoff chain.
+    """
+    results = results_work
+    draft, _ = capture(
+        results, tuple(range(len(results.report_rows))), artifact_id=results.report_artifact
+    )
+    results.result_receipt, _ = accepted(
+        results.quality, result_command(results, "test.results.import", captured=draft, final=True)
+    )
+    fixed = current_rows(results)
+    assert fixed.run.result == "pass"
+    assert all(row.result == "pass" for row in fixed.run.computed_results)
+    monkeypatch.setattr(
+        upstream, "initial_configuration", lambda selected: deepcopy(results.config)
+    )
+    monkeypatch.setattr(upstream, "LocalPrivateObjectStore", lambda _path: results.report_store)
+    factory = upstream.publication_case.__wrapped__(results.setup, tmp_path)
+    work = next(factory)
+    work.results, work.test_run = results, fixed.run
+    work.objects_root = tmp_path / "result-originals"
+    try:
+        yield work
+    finally:
+        factory.close()
+
+
 def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
-    publication_case, monkeypatch, tmp_path
+    drill_case, monkeypatch, tmp_path
 ):
     assert os.environ.get("PDOS_EXTERNAL_HANDOFF_LINK") == "1", "Explicit isolated opt-in"
     evidence_dir = Path(os.environ["PDOS_RESTORE_DRILL_EVIDENCE"])
     assert evidence_dir.is_absolute()
-    work, setup = publication_case, publication_case.setup
+    work, setup = drill_case, drill_case.setup
+    test_run = {"id": str(work.test_run.id), "revision": work.test_run.revision}
     workflows_state = json.loads((ROOT / ".local/workflows.json").read_text())
     source_temporal = f"127.0.0.1:{workflows_state['server_port']}"
     evidence = {
@@ -334,6 +382,7 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
             "release_scope": release_scope,
             "purpose": work.purpose,
             "manufacturing_publication": publication_ref,
+            "verifications": [test_run],
             "documents": [document],
             "sources": [flow.source(work.document_source, upstream.LINES[0])],
             "visibility": "category",
@@ -343,6 +392,17 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
     response = flow.send(work, command)
     assert response.status_code == 200, response.text
     package = flow.fixed(work, response.json()["subject_id"])
+    # The package fixes the actual test run, not a copy of its conclusion.
+    assert test_run["id"] in json.dumps(package), "test run missing from the fixed package"
+    evidence["steps"]["chain"] = {
+        "links": ["configuration", "test_result", "publication", "decisions", "handoff"],
+        "test_run": {
+            **test_run,
+            "status": work.test_run.status,
+            "result": work.test_run.result,
+            "import_receipt": work.results.result_receipt["id"],
+        },
+    }
     decisions = []
     for discipline, actor in (("engineering", setup.human), ("manufacturing", setup.peer)):
         command, material = flow.inputs(
@@ -387,9 +447,7 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
             )
             at_backup["counts"] = _counts(setup.admin, setup.tenant, harness.MODELS)
             started = time.monotonic()
-            at_backup["directory"] = backup_restore.backup(
-                objects=tmp_path / "publication-originals"
-            )
+            at_backup["directory"] = backup_restore.backup(objects=work.objects_root)
             at_backup["seconds"] = round(time.monotonic() - started, 2)
             at_backup["commands"] = list(sent_commands)
         return actual
@@ -476,7 +534,9 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
         restored_work = SimpleNamespace(**{**vars(work), "setup": SimpleNamespace(**vars(setup))})
         restored_work.setup.client = client
         # Without the host's issuer configuration (process config, not data) every
-        # currentness answer degrades to needs_recheck; nothing else differs.
+        # currentness answer degrades to needs_recheck, and a professional authority
+        # (the test result page's disposition authority) reads "issuer unavailable"
+        # with no facts; nothing else differs.
         unconfigured = _reads(
             restored_work, client, package["id"], publication_ref, summary["handoff_id"]
         )
@@ -487,12 +547,64 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
         degraded_fields = sorted(
             {row["path"].rsplit(".", 1)[-1] for rows in degraded.values() for row in rows}
         )
-        assert set(degraded_fields) <= {"applicability", "source_status"}, degraded
-        assert all(
-            row["backup"] == "current" and row["restored"] == "needs_recheck"
+        evidence_dir.mkdir(parents=True, exist_ok=True)
+        (evidence_dir / "at47-unconfigured-differences.json").write_text(
+            json.dumps(degraded, ensure_ascii=False, indent=2, default=str) + "\n"
+        )
+        authority = [
+            row for rows in degraded.values() for row in rows if ".authority." in row["path"]
+        ]
+        # A run's read set includes its authority's sources: unconfigured, it only
+        # loses those entries and never gains or changes one.
+        read_sets = [
+            row
             for rows in degraded.values()
             for row in rows
+            if ".authority." not in row["path"]
+            and row["path"].endswith(".required_source_read_set")
+        ]
+        currentness = [
+            row
+            for rows in degraded.values()
+            for row in rows
+            if row not in authority and row not in read_sets
+        ]
+        assert all(
+            row["path"].startswith(".runs[")
+            and isinstance(row["restored"], list)
+            and all(item in row["backup"] for item in row["restored"])
+            and len(row["restored"]) < len(row["backup"])
+            for row in read_sets
+        ), read_sets
+        assert {row["path"].rsplit(".", 1)[-1] for row in currentness} <= {
+            "applicability",
+            "source_status",
+        }, degraded
+        assert all(
+            row["backup"] == "current" and row["restored"] == "needs_recheck" for row in currentness
         ), degraded
+        assert all(row["path"].startswith(".runs[") for row in authority), authority
+        # Issuer and synthetic-authority policy are host configuration: unconfigured,
+        # each authority keeps its own reasons, adds only these two, holds no facts or
+        # source reads, and its basis digest (over that state) changes accordingly.
+        host_reasons = {"TRUSTED_ISSUER_UNAVAILABLE", "SYNTHETIC_AUTHORITY_NOT_ALLOWED"}
+        unavailable = {
+            "reason_codes": lambda before, after: (
+                "TRUSTED_ISSUER_UNAVAILABLE" in after
+                and set(before) <= set(after)
+                and set(after) - set(before) <= host_reasons
+            ),
+            "fact_refs": lambda before, after: after == [],
+            "required_source_read_set": lambda before, after: after == [],
+            "facts_revision": lambda before, after: isinstance(after, str) and after != before,
+            "authorized": lambda before, after: after is False,
+            "qualified": lambda before, after: after in (None, False),
+            "valid_until": lambda before, after: after is None,
+        }
+        assert all(
+            unavailable[row["path"].rsplit(".", 1)[-1]](row["backup"], row["restored"])
+            for row in authority
+        ), authority
         # A redeploy brings the same issuer configuration back; then the chain reads
         # exactly as at the backup moment, not as the source does now.
         host_configuration = sorted(
@@ -511,6 +623,9 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
             for name in restored_reads
         }
         assert all(not paths for paths in differences.values()), differences
+        # The test result page reads as at the backup moment, with the same run.
+        assert test_run["id"] in json.dumps(restored_reads["test_results"])
+        assert restored_reads["test_results"] == at_backup["reads"]["test_results"]
         handoff = restored_reads["handoff"]
         assert handoff["as_of"]["receipt_count"] == 1
         assert handoff["reading"]["delivery_unknown"] is True
@@ -526,6 +641,10 @@ def test_at47_backup_restore_replay_keeps_chain_and_sends_nothing_twice(
             "chain_reads_equal_backup_moment": sorted(restored_reads),
             "without_host_issuer_configuration": {
                 "degraded_fields": degraded_fields,
+                "authority_reads_issuer_unavailable": sorted({row["path"] for row in authority}),
+                "run_read_sets_without_authority_sources": sorted(
+                    {row["path"] for row in read_sets}
+                ),
                 "degraded_reads": {
                     name: [row["path"] for row in rows] for name, rows in degraded.items() if rows
                 },

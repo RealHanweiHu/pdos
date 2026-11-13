@@ -3,18 +3,22 @@ import { NextRequest } from "next/server";
 import { sameOrigin } from "@/lib/server/request-origin";
 import { candidateTransportOptions } from "@/lib/server/candidate-transport";
 
-const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
+const paths = /^(?:v1\/(?:session|products|commands(?:\/preview)?)|v1\/products\/[a-f0-9-]+\/(?:workspace|definitions|projects|configurations(?:\/bom-import\/inputs|\/boms\/[a-f0-9-]{36}\/review)?|builds|supply|supply-captures|costs|cost-captures|verification|verification-professional|verification-handoff|verification-launch(?:\/inputs)?|verification-results(?:\/(?:inputs|captures))?|sample-handoff|build-start(?:\/assessment-inputs)?|build-execution(?:\/compare)?|model-calls|variants(?:\/[a-f0-9-]+\/compare)?|original-lifecycle(?:\/[a-f0-9-]+\/candidate|\/intents\/[a-f0-9-]+\/reconcile)?|originals(?:\/[a-f0-9-]+\/(?:download|scan))?|receipts\/[a-f0-9-]+\/revert-preview))$/;
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
-const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
+const agentPaths = /^v1\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|candidates(?:\/confirm)?|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
 const personalAgentPaths = /^v1\/personal\/agent-runs(?:\/[a-f0-9-]{36}(?:\/(?:events|answers|cancel|reconciliation|process|feedback|continuation|calls\/[a-f0-9-]{36}\/recover))?)?$/i;
-const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|search|project-work|agent-skills|agent-input-sources)$/i;
+const personalViewPaths = /^v1\/personal\/(?:projects(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|run-activity|run-decisions|search|project-work|project-cockpit|agent-skills|agent-input-sources)$/i;
 const preprojectPaths = /^v1\/(?:proposals(?:\/[a-f0-9-]{36}(?:\/(?:items|participants|handoff))?)?|g0-definitions\/[a-f0-9-]{36}|projects\/[a-f0-9-]{36}\/open-items)$/i;
 const proposalViewPaths = /^v1\/views\/(?:positioning|spec-benchmark|feature-config|definition-maturity)$/;
 const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
 const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/platform-links)$/i;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
-const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|governance(?:\/review-inputs)?))?$/i;
+const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|overview|governance(?:\/review-inputs)?|forecast))?$/i;
+// D47 supplier commitments per fixed Build (READ); records use the common command entry.
+const supplyCommitmentPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/supply-commitments|supply-commitments\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i;
+// D47 (P95–P97, P120) read-only views: interfaces, fixture acceptances, CAPA effectiveness, alternates, customer acceptances.
+const d47ReadPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:interfaces|fixture-acceptances|capa-effectiveness)|interfaces\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}|builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:alternate-approvals|customer-acceptances|tool-trials))$/i;
 // D56 permission-filtered Excel exports (READ, named human only); one exact scope parameter each.
 const exportPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/exports\/(?:project|bom-diff|test-summary)|personal\/exports\/my-work)$/i;
 const exportScope: Record<string, string | null> = { project: "project_id", "bom-diff": "bom_id", "test-summary": "build_id", "my-work": null };
@@ -25,13 +29,14 @@ const manufacturingPublicationCommands = new Set(["npi.manufacturing_baseline.pu
 const nativePilotPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/pilots(?:\/inputs|\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const nativePilotCommands = new Set(["npi.pilot.create", "npi.pilot.result.record"]);
 const releasePaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:release\/inputs|release-packages(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?)$/i;
-const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/templates|\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/risks(?:\/inputs)?|\/inputs)?$/i;
+const projectWorkPaths = /^v1\/products\/[a-f0-9-]{36}\/project-work(?:\/templates|\/status-cadence|\/activity|\/fulfillment(?:\/inputs)?|\/external-waits(?:\/inputs)?|\/risks(?:\/inputs)?|\/inputs)?$/i;
 const projectWorkCommands = new Set(["work.risk.followup.record", "work.external_wait.record", "work.task.create", "work.task.assign", "work.task.accept", "work.commitment.accept", "work.commitment.review", "work.task.start", "work.task.submit", "work.task.review", "work.status_update.create"]);
 const knowledgeExperiencePaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?experience(?:\/inputs)?$/i;
 const fieldFeedbackPaths = /^v1\/(?:products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/)?field-feedback(?:\/inputs)?$/i;
 const fieldCommands = new Set(["field.feedback.create", "field.feedback.locate", "field.feedback.action.record", "field.feedback.followup.link"]);
 const knowledgeCommands = new Set(["knowledge.candidate.create", "knowledge.rule.publish"]);
-const automationPaths = /^v1\/automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?$/i;
+// D75: the fixed rule-template catalog is a read beside the owner's rules.
+const automationPaths = /^v1\/(?:automation-rules(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/trigger)?)?|automation-templates)$/i;
 const releaseCommands = new Set(["release.package.assemble", "release.engineering.approve", "release.manufacturing.approve"]);
 const externalHandoffPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:external-handoff\/inputs|external-handoffs(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/receipts)?)?)$/i;
 const externalHandoffCommands = new Set(["integration.handoff.authorize", "integration.receipt.record"]);
@@ -252,6 +257,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const pathname = path.join("/");
   const resourceInspect = resourceInspectPaths.test(pathname);
   const projectPlanning = projectPlanningPaths.test(pathname);
+  const supplyCommitments = supplyCommitmentPaths.test(pathname) || d47ReadPaths.test(pathname);
   const exportView = exportPaths.test(pathname);
   const preproject = preprojectPaths.test(pathname);
   const proposalView = proposalViewPaths.test(pathname);
@@ -265,7 +271,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const modelConfiguration = pathname === "v1/model-configuration";
   const modelConnections = pathname === "v1/model-connections";
   const providerAgreement = /^v1\/provider-agreements(?:\/recover)?$/.test(pathname);
-  const skillQualification = /^v1\/agent-skill-qualification(?:\/recover)?$/.test(pathname);
+  const skillQualification = /^v1\/agent-skill-(?:qualification(?:\/recover)?|quality(?:\/holds)?)$/.test(pathname);
   const mcpManagement = /^v1\/agent-mcp(?:\/(?:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/history)?|recover))?$/i.test(pathname);
   const agentSkill = /^v1\/agent-skills(?:\/recover)?$/.test(pathname);
   const agentBudget = /^v1\/agent-budgets(?:\/recover)?$/.test(pathname);
@@ -282,14 +288,14 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const projectWork = projectWorkPaths.test(pathname);
   const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   // P34-2/3: project topics, object comments, mention candidates; scope stays in the path.
-  const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?)?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
+  const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?|\/agent-requests\/[a-f0-9-]{36}\/(?:reply|share))?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
   const knowledgeExperience = knowledgeExperiencePaths.test(pathname);
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !supplyCommitments && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -318,7 +324,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
   } else if (discussion) {
-    const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36})$/i.test(pathname), write = /\/(?:follow|edit|retract|messages)$/.test(pathname);
+    // @小Pai (D37 ⑥): the reply is read with GET, a share is a POST of its requester.
+    const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36}|reply)$/i.test(pathname), write = /\/(?:follow|edit|retract|messages|share)$/.test(pathname);
     const methods = read ? ["GET"] : write ? ["POST"] : ["GET", "POST"];
     if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "讨论入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
     for (const [key, value] of request.nextUrl.searchParams) {
@@ -365,7 +372,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       if (!valid || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请明确选择技能和审阅分页。" }, { status: 422 });
       query.set(key, value);
     }
-    if (!recovering && !query.has("skill_key")) return Response.json({ code: "VALIDATION_FAILED", message: "请选择一个技能。" }, { status: 422 });
+    const holds = pathname.endsWith("/holds");
+    if (holds && query.size) return Response.json({ code: "VALIDATION_FAILED", message: "待复审列表不接受查询条件。" }, { status: 422 });
+    if (!recovering && !holds && !query.has("skill_key")) return Response.json({ code: "VALIDATION_FAILED", message: "请选择一个技能。" }, { status: 422 });
   } else if (agentBudget) {
     const recovering = pathname.endsWith("/recover"), method = recovering ? "POST" : "GET";
     if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用预算读取或原请求回执核对入口。" }, { status: 405, headers: { Allow: method } });
@@ -394,7 +403,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       query.set(key, value);
     }
     if (scopeKey && !query.has(scopeKey)) return Response.json({ code: "VALIDATION_FAILED", message: "请先选择要导出的范围。" }, { status: 422 });
-  } else if (projectPlanning) {
+  } else if (projectPlanning || supplyCommitments) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
     for (const [key,value] of request.nextUrl.searchParams) {
       const accepted = pathname.endsWith("/plan-comparison") ? key === "proposal_id" : pathname.endsWith("/governance/review-inputs") ? key === "package_id" : false;
@@ -416,7 +425,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     const searching = pathname === "v1/personal/search";
     const projectWorkQueue = pathname === "v1/personal/project-work";
     for (const [key, value] of request.nextUrl.searchParams) {
-      const valid = projectWorkQueue ? (key === "queue" ? ["receive", "verify", "tasks", "commitments"].includes(value)
+      const valid = projectWorkQueue ? (key === "queue" ? ["receive", "verify", "tasks", "commitments", "received"].includes(value)
         : key === "page_size" ? /^[1-9]\d*$/.test(value) && Number(value) <= 100
         : key === "cursor" && uuid.test(value))
         : searching ? (key === "q" ? !!value.trim() && value.length <= 200
@@ -463,7 +472,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     if ((agentPath[2] && !uuid.test(agentPath[2])) || (agentPath[3] === "calls" && !uuid.test(agentPath[4] ?? ""))) return Response.json({ code: "VALIDATION_FAILED", message: "运行或调用编号无效。" }, { status: 422 });
     const collection = agentPath.length === 2;
     const create = collection && request.method === "POST";
-    const action = /\/(?:answers|cancel|recover)$/.test(pathname);
+    // D77: a run's candidate package is one POST; each item still runs its own command.
+    const action = /\/(?:answers|cancel|recover|candidates\/confirm)$/.test(pathname);
     const reconciliation = pathname.endsWith("/reconciliation");
     const feedback = pathname.endsWith("/feedback");
     const method = create || action || (reconciliation || feedback) && request.method === "POST" ? "POST" : "GET";
@@ -771,7 +781,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     // the same source locks. Keep their transport budget aligned without retries.
     const deepRead = request.method === "GET" && (qualityChange || qualityFollowup || /\/verification-results$/.test(pathname) || /\/exports\/test-summary$/.test(pathname));
     const extendedTransport = candidateCommand || factCommand || factPath || deepRead;
-    const timeout = extendedTransport ? 600000 : longCommand || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || externalHandoff || releaseException || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
+    const timeout = extendedTransport ? 600000 : longCommand || pathname.endsWith("/candidates/confirm") || qualityChange || qualityFollowup || manufacturingPreparation || manufacturingPublication || nativePilot || release || externalHandoff || releaseException || /\/verification-results(?:\/|$)/.test(pathname) ? 180000 : 60000;
     const response = await fetch(`${base}/${forwardPath.join("/")}${query.size ? `?${query}` : ""}`, {
       ...candidateTransportOptions(extendedTransport),
       method: request.method, headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },

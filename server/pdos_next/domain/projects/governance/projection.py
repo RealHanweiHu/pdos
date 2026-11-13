@@ -6,6 +6,7 @@ from pdos_next.core.database import tenant_session
 from sqlalchemy import select
 
 from .models import GovernanceEvent
+from .rules import health
 from .service import view
 
 
@@ -19,11 +20,13 @@ def summary(s, ctx, project):
         return {
             "current_stage": None,
             "stages": [],
-            "health": {"state": "unknown", "label": "待核对", "reason": "尚未采用阶段模板"},
+            "health": health(gate_state="UNKNOWN", overdue=0, pending=False, adopted=False),
             "gate_state": "UNKNOWN",
             "next_gate_name": None,
             "timeline": None,
             "completed": False,
+            "exit_conditions": [],
+            "review_pending": False,
         }
     if ctx.category_id is None:
         scoped = replace(ctx, category_id=project.category_id)
@@ -43,4 +46,11 @@ def summary(s, ctx, project):
     } | {
         "gate_state": data["gate"]["state"],
         "next_gate_name": data["current_stage"]["name"] + "出口" if data["current_stage"] else None,
+        # The current stage's exit conditions as rule results only (state per check),
+        # so cross-project comparison reads the same facts as the gate (D76, P61-3).
+        "exit_conditions": [
+            {"key": check["key"], "label": check["label"], "state": check["state"]}
+            for check in data["gate"]["checks"]
+        ],
+        "review_pending": bool(data["gate"].get("review_current")),
     }

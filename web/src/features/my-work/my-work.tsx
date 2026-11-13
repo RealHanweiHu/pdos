@@ -9,22 +9,23 @@ import { exportHref } from "@/features/exports/lib/export-download";
 import {
   myOpenItems,
   readPortfolio,
-  readRunActivity,
-  type ActivityRun,
   type MyOpenItem,
   type Portfolio,
 } from "@/lib/portfolio-reads";
 import type { browserApi } from "@/lib/browser-api";
 import { useMyWorkPromises } from "./my-work-promises";
 import { usePersonalProjectWork } from "@/features/my-work/lib/personal-project-work";
-import { MyWorkList, type WorkReading } from "./my-work-list";
+import { MyWorkList, type WorkGroup, type WorkReading } from "./my-work-list";
 import { usePersonalAttention } from "@/features/my-work/lib/personal-attention";
 import {
   responsibilityRows,
   commitmentRows,
+  receivedRows,
   taskRow,
   sortWorkRows,
 } from "@/features/my-work/lib/my-work-items";
+import { decideTarget, runTitle, useRunDecisions } from "@/features/my-work/lib/run-decisions";
+import { RunDecisions } from "./run-decisions";
 import { MyWorkContinue } from "./my-work-continue";
 import styles from "./my-work.module.css";
 import { HandoverItems } from "./handover-items";
@@ -74,7 +75,6 @@ export function MyWork({
   onOpenPai: () => void;
 }) {
   const [portfolioResult, setPortfolio] = useState<Portfolio | null>(null);
-  const [runResults, setRuns] = useState<ActivityRun[]>([]);
   const [recentProjectResults, setRecentProjectIds] = useState<string[]>([]);
   const [reload, setReload] = useState(0);
   const [readError, setError] = useState("");
@@ -85,10 +85,17 @@ export function MyWork({
   const [view, setView] = useState<"active" | "commitments" | "completed">(
     "active",
   );
+  // P35: 承诺 shows 我承诺的 or 别人承诺给我的.
+  const [direction, setDirection] = useState<"mine" | "theirs">("mine");
+  // B8 deep link: ?area=work&decide=<run>&candidate=<event> preselects one version.
+  const [focus, setFocus] = useState<{ runId: string; eventId: string | null } | null>(null);
+  useEffect(() => {
+    const target = typeof window === "undefined" ? null : decideTarget(window.location.search);
+    if (target) void Promise.resolve().then(() => { setFocus(target); setView("active"); });
+  }, []);
   const scope = JSON.stringify([session.principal_id, reload]);
   const current = readIdentity?.scope === scope && readIdentity.api === api;
   const portfolio = current ? portfolioResult : null;
-  const runs = current ? runResults : [];
   const recentProjectIds = current ? recentProjectResults : [];
   const error = current ? readError : "";
   const promises = useMyWorkPromises(api, session.principal_id, reload);
@@ -104,6 +111,13 @@ export function MyWork({
     reload,
     "commitments",
   );
+  const receivedWork = usePersonalProjectWork(
+    api,
+    session.principal_id,
+    reload,
+    "received",
+  );
+  const runDecisions = useRunDecisions(api, session.principal_id, reload);
   const decide = usePersonalAttention(
     api,
     session.principal_id,
@@ -133,26 +147,15 @@ export function MyWork({
     let active = true;
     void (async () => {
       try {
-        const [next, awaiting, recent] = await Promise.all([
-          readPortfolio(api),
-          readRunActivity(api, true),
-          readRunActivity(api),
-        ]);
+        const next = await readPortfolio(api);
         if (!active) return;
-        const merged = [
-          ...new Map(
-            [...awaiting, ...recent].map((run) => [run.run_id, run]),
-          ).values(),
-        ].sort((a, b) => b.created_at.localeCompare(a.created_at));
         setPortfolio(next);
-        setRuns(merged);
         setRecentProjectIds(readRecentProjects(session.principal_id));
         setError("");
         setReadIdentity({ scope, api });
       } catch (failure) {
         if (active) {
           setPortfolio(null);
-          setRuns([]);
           setRecentProjectIds([]);
           setError((failure as Error).message);
           setReadIdentity({ scope, api });
@@ -219,9 +222,11 @@ export function MyWork({
   });
   const rows =
     view === "active"
-      ? responsibilityRows(attention, taskWork.items, items, runs)
+      ? responsibilityRows(attention, taskWork.items, items)
       : view === "commitments"
-        ? commitmentRows(commitmentWork.items, promises.items)
+        ? direction === "mine"
+          ? commitmentRows(commitmentWork.items, promises.items)
+          : receivedRows(receivedWork.items)
         : sortWorkRows(
             taskWork.items
               .filter((item) => item.task.state === "completed")
@@ -236,7 +241,14 @@ export function MyWork({
           read("等外部", external),
           read("项目任务", taskWork),
           {
-            name: "项目安排与小Pai",
+            name: "小Pai 运行",
+            loading: runDecisions.status === "loading",
+            error: runDecisions.error,
+            more: false,
+            retry: runDecisions.retry,
+          },
+          {
+            name: "项目安排",
             loading: !current,
             error:
               error ||
@@ -246,6 +258,8 @@ export function MyWork({
             retry: () => setReload((value) => value + 1),
           },
         ]
+      : view === "commitments" && direction === "theirs"
+        ? [read("给我的承诺", receivedWork)]
       : view === "commitments"
         ? [
             read("交付承诺", commitmentWork),
@@ -260,6 +274,45 @@ export function MyWork({
             },
           ]
         : [read("已完成任务", taskWork)];
+  const decisionRuns = runDecisions.page?.runs ?? [];
+  // P35 four groups (P75: coordination joins 要我决定), then the person's own tasks.
+  const groups: WorkGroup[] | undefined =
+    view === "active"
+      ? [
+          {
+            key: "decide",
+            label: "要我决定",
+            kinds: ["decide"],
+            extra: (query) => {
+              const shown = decisionRuns.filter((item) =>
+                `${runTitle(item.goal)} ${item.category?.name ?? "个人对话"}`
+                  .toLocaleLowerCase()
+                  .includes(query),
+              );
+              return shown.length
+                ? {
+                    count: shown.length,
+                    node: (
+                      <RunDecisions
+                        api={api}
+                        runs={shown}
+                        focus={focus}
+                        truncated={runDecisions.page?.truncated}
+                        unavailable={runDecisions.page?.unavailable_runs}
+                        onOpenRun={onOpenRun}
+                        onChanged={() => setReload((value) => value + 1)}
+                      />
+                    ),
+                  }
+                : null;
+            },
+          },
+          { key: "receive", label: "要我接收", kinds: ["receive"] },
+          { key: "verify", label: "要我验证", kinds: ["verify"] },
+          { key: "external", label: "等外部回复", kinds: ["external"] },
+          { key: "mine", label: "我的任务", kinds: ["task", "risk"] },
+        ]
+      : undefined;
 
   return (
     <div className={styles.page}>
@@ -267,7 +320,7 @@ export function MyWork({
         <div>
           <h1>我的工作</h1>
           <p>处理产品取舍，继续提案，跟进定义与项目。</p>
-        </div><div className="inline-flex items-center gap-1"><ExportButton exportUrl={exportHref("my-work")} label="导出 Excel"/><Button size="icon" variant="ghost" aria-label="刷新我的工作" title="刷新我的工作" onClick={() => { setPortfolio(null); setRuns([]); setError(""); setReload(value => value + 1); }}><ArrowClockwise size={15}/></Button></div>
+        </div><div className="inline-flex items-center gap-1"><ExportButton exportUrl={exportHref("my-work")} label="导出 Excel"/><Button size="icon" variant="ghost" aria-label="刷新我的工作" title="刷新我的工作" onClick={() => { setPortfolio(null); setError(""); setReload(value => value + 1); }}><ArrowClockwise size={15}/></Button></div>
       </div>
       <HandoverItems api={api} principalId={session.principal_id}/>
       <nav className="workspace-view-tabs" aria-label="我的工作视图">
@@ -293,15 +346,41 @@ export function MyWork({
           {error}
         </p>
       )}
+      {focus && runDecisions.status === "ready" && !decisionRuns.some((item) => item.run_id === focus.runId) && (
+        <p role="status" className={styles.readNotice}>
+          链接中的小Pai 运行已没有待你决定的候选或问题。
+        </p>
+      )}
       {portfolio?.readErrors.map((item) => (
         <p key={item.path} role="status" className={styles.readNotice}>
           {item.message}
         </p>
       ))}
+      {view === "commitments" && (
+        <div className={styles.direction} role="group" aria-label="承诺方向">
+          {(
+            [
+              { id: "mine", label: "我承诺的" },
+              { id: "theirs", label: "别人承诺给我的" },
+            ] as const
+          ).map((item) => (
+            <button
+              type="button"
+              key={item.id}
+              aria-pressed={direction === item.id}
+              onClick={() => setDirection(item.id)}
+            >
+              {item.label}
+            </button>
+          ))}
+          <span>对谁 · 交付什么 · 何时兑现</span>
+        </div>
+      )}
       <MyWorkList
-        key={`${session.principal_id}:${view}`}
+        key={`${session.principal_id}:${view}:${direction}`}
         rows={rows}
         readings={readings}
+        groups={groups}
         onOpenProject={openProject}
         onOpenRun={onOpenRun}
       />

@@ -204,6 +204,14 @@ class OwnerReader:
                     "current_policy": wrapper.get("policy"),
                 },
             )
+        if ref.kind == "interface":
+            from pdos_next.domain.engineering.interfaces.service import change_owner
+
+            if ref.key is not None:
+                raise DomainError("FIXED_REFERENCE_MISMATCH", "接口引用不能附任意字段key。")
+            row, view = change_owner(s, ctx, pid, ref.id, ref.revision)
+            basis = {"interface_version_id": str(row.id), "body_sha256": row.body_sha256}
+            return row, view, [], basis
         if ref.kind == "engineering_configuration":
             row, view = cs.get_engineering(s, ctx, pid, ref.id)
         elif ref.kind in {"manufacturing_configuration", "operation", "sop"}:
@@ -425,6 +433,17 @@ class OwnerReader:
                     ("test_run", failure["run"]),
                 ):
                     add(kind, value["id"], value["revision"], "固定失败引用")
+        elif ref.kind == "interface":
+            configuration = v["configuration"]
+            add(
+                "engineering_configuration",
+                configuration["id"],
+                configuration["revision"],
+                "接口挂接的工程配置",
+            )
+            for item in v["content"]["affected"]:
+                key = item.get("key")
+                add(item["kind"], item["id"], item["revision"], "接口登记的受影响项", key)
         elif ref.kind == "engineering_configuration":
             add("spec", v["definition_id"], v["definition_revision"], "固定工程定义")
             add("bom", v["bom_id"], v["bom_revision"], "固定工程BOM")

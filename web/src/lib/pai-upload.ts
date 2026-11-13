@@ -58,7 +58,7 @@ function inputScope(scope: PaiUploadScope): Scope {
   return { category_id: scope.categoryId, product_id: scope.productId, proposal_id: scope.proposalId };
 }
 /** Server upload allowlist (agent-upload-target constraints); photos are registered without OCR. */
-export const UPLOAD_EXTENSIONS = [".txt", ".md", ".pdf", ".xlsx", ".docx", ".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"] as const;
+export const UPLOAD_EXTENSIONS = [".txt", ".md", ".csv", ".pdf", ".xlsx", ".docx", ".jpg", ".jpeg", ".png", ".webp", ".heic", ".heif"] as const;
 export const UPLOAD_ACCEPT = UPLOAD_EXTENSIONS.join(",");
 export const uploadExtensionAllowed = (filename: string) => UPLOAD_EXTENSIONS.some(ext => filename.toLowerCase().endsWith(ext));
 export const isPhotoFilename = (filename: string) => /\.(jpe?g|png|webp|hei[cf])$/i.test(filename);

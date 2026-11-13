@@ -521,6 +521,11 @@ def test_actual_candidate_rule_and_observation_keep_complete_sources_current_and
         work.quality, json.dumps(observation_original), "Actual structured synthetic observation"
     )
     observation_ref = exact_source(work, original).model_dump(mode="json")
+    # D287: a coverage source cited nowhere else must still join the fact's checked closure.
+    coverage = artifact(
+        work.quality, "Synthetic actual coverage interval line", "Observation coverage"
+    )
+    coverage_ref = exact_source(work, coverage).model_dump(mode="json")
     value = cmd(
         work.quality,
         fact_commands.OBSERVATION_OPERATION,
@@ -534,7 +539,7 @@ def test_actual_candidate_rule_and_observation_keep_complete_sources_current_and
             "observed_until": observation_original["observed_until"],
             "at": {**observation_original["at"], "source": observation_ref},
             "records": [{**record, "sources": [observation_ref]}],
-            "coverage_sources": [source],
+            "coverage_sources": [source, coverage_ref],
             "sources": [observation_ref],
             "reason": "Save original actual observation without deciding effectiveness",
             "visibility": "private",
@@ -544,6 +549,7 @@ def test_actual_candidate_rule_and_observation_keep_complete_sources_current_and
     response = work.quality.client.post(url, headers=work.quality.headers, json=value)
     assert response.status_code == 200, response.text
     value = response.json()["command"]
+    assert coverage_ref["id"] in {read["artifact_id"] for read in value["source_read_set"]}
     observation_receipt, approved = accepted(work.quality, value)
     assert observation_receipt["subject_type"] == "capa_observation"
     assert fixed_issue(work).id == current.id

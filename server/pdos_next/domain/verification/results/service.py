@@ -94,6 +94,8 @@ def configure_store(engine, store):
 
 def semantic(payload):
     raw = payload.model_dump(mode="json", exclude={"confirmation_token", "approval_token"})
+    if raw.get("outcome", "") is None:
+        raw.pop("outcome")  # Dispositions without a result keep their previous digests.
     if "sources" in raw:
         raw["sources"].sort(key=lambda v: json.dumps(v, sort_keys=True))
     if len(json.dumps(raw, ensure_ascii=False).encode()) > 1_000_000:
@@ -828,6 +830,11 @@ def _authority_guard(ctx, payload, a):
 
 def _guards(s, ctx, command, product, payload, bound):
     _authority_guard(ctx, payload, bound.authority)
+    if isinstance(payload, DispositionPayload) and payload.outcome is None:
+        from pdos_next.domain.manufacturing.tool_trials.service import trial_for_request
+
+        if trial_for_request(s, ctx, product.id, payload.request_id) is not None:
+            raise DomainError("INVALID_PAYLOAD", "该测试含试模样件，处置须写明接受或拒绝。", 422)
     if hasattr(payload, "at"):
         _event(s, ctx, product.id, bound, payload, payload.at, command.operation)
     if isinstance(payload, ImportPayload) and payload.actual_end:

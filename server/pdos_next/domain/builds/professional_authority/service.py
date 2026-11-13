@@ -73,6 +73,12 @@ OPERATION_ROLES = {
     "change.selection.decide": frozenset({"engineering", "manufacturing", "quality"}),
     "change.request.create": frozenset({"quality", "engineering", "manufacturing"}),
     "change.impact.compute": frozenset({"quality", "engineering", "manufacturing"}),
+    # D47 (P95–P97, P120): roles decided for the remaining Appendix A operations.
+    "engineering.interface.update": frozenset({"engineering"}),
+    "npi.tooltrial.create": frozenset({"engineering", "manufacturing"}),
+    "quality.capa.effectiveness.decide": frozenset({"quality"}),
+    "supply.alternate.approve": frozenset({"engineering"}),
+    "npi.fixture.accept": frozenset({"manufacturing"}),
 }
 _CAPABILITY = object()
 

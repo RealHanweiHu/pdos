@@ -365,8 +365,11 @@ def _payload(material):
         payload = PAYLOAD_TYPES[material.fact.operation].model_validate(raw)
     except ValidationError:
         return None
-    keys = payload.model_dump(exclude={"confirmation_token", "approval_token"}).keys()
-    return payload if raw.keys() == keys else None
+    dumped = payload.model_dump(exclude={"confirmation_token", "approval_token"})
+    if dumped.get("outcome", "") is None:
+        # D305: a disposition without accept/reject is saved without the key (results semantic).
+        dumped.pop("outcome")
+    return payload if raw.keys() == dumped.keys() else None
 
 
 def _event(time):

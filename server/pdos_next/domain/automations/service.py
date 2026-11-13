@@ -43,9 +43,13 @@ def owned(s, ctx, rule_id, *, lock=False):
     return row
 
 
-def spec_current(s, ctx, spec, *, enabled=False):
+def spec_current(s, ctx, spec, *, enabled=False, rule_id=None):
     """A saved selection narrows real configuration; it does not confer a skill or wallet."""
     require_access(s, ctx, spec.product_id)
+    if spec.template is not None:
+        from .templates import check_status_update
+
+        check_status_update(s, ctx, spec, enabled=enabled, rule_id=rule_id)
     from .trigger_sources import condition_state, relative_due
 
     if spec.trigger_kind == "domain_event":
@@ -150,7 +154,13 @@ def prepared(s, ctx, command, scope, payload):
         spec = AutomationSpec.model_validate(fixed.spec)
         saved_spec = deepcopy(fixed.spec)
     if command.operation != PAUSE:
-        spec_current(s, ctx, spec, enabled=command.operation == ACTIVATE)
+        spec_current(
+            s,
+            ctx,
+            spec,
+            enabled=command.operation == ACTIVATE,
+            rule_id=pointer.rule_id if pointer else None,
+        )
     rule_id = pointer.rule_id if pointer else uuid4()
     after = {
         "rule_id": str(rule_id),

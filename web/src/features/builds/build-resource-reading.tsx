@@ -8,9 +8,10 @@ import { resourceInspectBody, resourceOperations, resourceReading, type Resource
 import { safeStartError, type BuildStartApi, type ScopeDraft } from "@/features/builds/lib/build-start-view";
 import { originalLocation } from "@/lib/original-location";
 import type { DefinitionReference, DefinitionSource } from "@/lib/product-view";
-import { utcText } from "@/lib/project-plan-view";
+import { utcText, type ProjectApi } from "@/lib/project-plan-view";
+import { FixtureAcceptance } from "@/features/d47/fixture-acceptance";
 
-type Props = { productId: string; build: Build; scope: ScopeDraft; sources: DefinitionSource[]; api: BuildStartApi };
+type Props = { productId: string; productRevision?: number; build: Build; scope: ScopeDraft; sources: DefinitionSource[]; api: BuildStartApi };
 const kinds = { equipment: "设备", fixture: "夹具", person: "人员", line: "产线", tooling: "工装" };
 function Originals({ refs, sources }: { refs: DefinitionReference[]; sources: DefinitionSource[] }) {
   return refs.map((ref, index) => {
@@ -19,7 +20,7 @@ function Originals({ refs, sources }: { refs: DefinitionReference[]; sources: De
   });
 }
 
-export function BuildResourceReading({ productId, build, scope, sources, api }: Props) {
+export function BuildResourceReading({ productId, productRevision, build, scope, sources, api }: Props) {
   const [operation, setOperation] = useState(""), [reading, setReading] = useState<ResourceReading | null>(null);
   const [busy, setBusy] = useState(false), [error, setError] = useState("");
   const alive = useRef(true), locked = useRef(false);
@@ -47,6 +48,7 @@ export function BuildResourceReading({ productId, build, scope, sources, api }: 
       {reading.resources.map(row => <article key={row.resource.id} className="min-w-0 space-y-3 border-t border-border pt-3">
         <h4 className="font-medium [overflow-wrap:anywhere]">{kinds[row.resource.kind]} · {row.resource.id} · 固定v{row.resource.revision}</h4>
         <p className="text-sm">验收：未知 · 校准：未知 · 资格：未知</p>
+        {row.resource.kind === "fixture" && productRevision !== undefined && operation && <FixtureAcceptance api={api as ProjectApi} product={{ id: productId, revision: productRevision }} build={{ id: build.id, project_id: build.project_id }} resource={{ id: row.resource.id, revision: row.resource.revision }} purpose={scope.purpose} operationId={operation}/>}
         {reading.relations.filter(relation => relation.resource.id === row.resource.id).map((relation, index) => <div key={index} className="space-y-3"><p className="text-sm">本工序声明使用量：{relation.units}</p><Originals refs={relation.relation_originals} sources={sources}/><details><summary className="cursor-pointer text-sm">关系原件定位</summary><p className="mt-2 text-sm [overflow-wrap:anywhere]">固定事实v{relation.relation_source.revision} · {relation.relation_source.id}<br/>{relation.relation_source.position}</p></details></div>)}
         <details><summary className="cursor-pointer text-sm">资源原文依据</summary><div className="mt-3 space-y-3"><Originals refs={row.originals} sources={sources}/></div></details>
       </article>)}
