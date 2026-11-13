@@ -770,6 +770,15 @@ W3c · 想法已变但没有记录
   - `evidence.extract` 子图的说明（`extract_graph.py`）没写正文不可信；企业检索抽取和 MCP 子图写了。
   - 后两项是模型可见文字，须走 Prompt A/B。
 - D358 运行租约的连接断开不会被发现（11-08 做 D269 时发现，未修）：
+- D378 🟡 11-12 LangGraph 执行迁移到 Temporal 官方插件（`temporalio-langgraph==0.1.0`）。[决策记录](../docs/design/2026-11-12-langgraph-temporal-plugin-migration-decision.md)经你 11-12 确认（“全部按推荐”），登记为 [P100](../docs/design/2026-10-08-pdos-next-design-confirmation.md#p100)，AGENTS.md 第 6 条和运行架构收口合同已修订。均未提交。
+  - 阶段 1 试点 ✅：个人摘要图已能在插件上按节点执行（`PersonalSummaryGraphWork`，只由测试启动，不接生产派发；worker 已注册插件）。可用能力：节点外壳（心跳、取代信号、错误映射）、Workflow 驱动与 `resume` 信号队列、图外的 open/close Activity。[证据](../docs/reports/evidence/langgraph-temporal-plugin-20261112/README.md)：7 项试点测试通过（正常完成并回放、节点内杀 worker 后已完成节点不重跑、重复与乱序信号、超时重试、停止后收尾、拒绝非固定信封），真实数据库端到端 4 项通过（另建隔离库 `pdos-next-test-20261002-de9db19e`，状态文件 `.local/graph-plugin-runtime-20261112.json`，原 `pdos_test` 未动）；连同原有工作流测试与回放检查共 68 通过、3 跳过。实测结论见决策记录 §10：不需要升级 temporalio；同步节点须包异步外壳才能发心跳；continue-as-new 的 `cache()` 带的是全部节点输出，主图改用只带 state 的续接。
+  - 阶段 1 余项：continue-as-new 和 workflow 侧节点中断只做过一次性实测，未入测试套件，随阶段 2 的主图测试补；隔离库 `de9db19e` 保留给阶段 2，清理放检查点。
+  - 阶段 2 主内核 ✅：`XiaopaiGraphWork` 与主图（`agent/kernel/plugin_graph.py`）已实现，开关 `PDOS_XIAOPAI_GRAPH_TENANTS` 默认空，生产路径不变；`xiaopai.py`、`activities.py` 未改。可用能力：主图 7 个节点各为一个 Activity、答复与采用按引用恢复、读取结果与服务商续接数据存账本引用、结果未知的模型调用不重发并转对账、历史过大时 continue-as-new。证据同上（“阶段 2”一节）：主图端到端 13 项、等待与引用恢复 10 项、旧工作流历史回放与条件边确定性 16 项，共 39 通过；旧路径回归 128 通过；经过内核图的 171 个测试文件整批回归 3630 通过、1 项偶发失败（单独运行在改动前后都通过，见 D380）。设计细化与实测体积见决策记录 §11。
+  - 阶段 2 缺口 G1–G5 ✅ 11-12 补完（决策记录 §11.4）：品类采用真实全链路、隔离抽取子任务在新路径 `tools` 节点内、真实 worker 进程被杀后不重发并转对账、工具执行中取消与模型应答期间真实撤回、重试的进度事件与每节点重建耗时（中位约 60–70 毫秒）。合并复跑 153 通过、2 跳过。
+  - 下一步：阶段 3（先合成租户、后试点租户打开开关）须〔你〕另行授权；前置是核对 Temporal 库的访问权限和历史保留期，留到阶段 3 实测的项见决策记录 §11.5。隔离库 `de9db19e` 与其检查点库（状态文件 `.local/graph-plugin-runtime-20261112.json`、`.local/graph-plugin-workflows-20261112.json`）保留，清理放检查点。
+- D379 `agent.kernel.models` 有循环导入（11-12 做 D378 时发现）：新进程里先导入 `domain.my_work.summary_runtime` 或 `summary_graph` 会报 `cannot import name 'KernelRow'`（出错点在 `session_presentation_models`）；先导入 `pdos_next.workflows.worker` 则正常，所以 worker 入口不受影响。试点的测试 worker 用“先导入 worker 模块”绕开，未修。
+- D380 `tests/knowledge/pg/test_answer_footprint_pg.py::test_uncited_private_parent_footprint_remains_when_only_public_source_is_requeried` 在整批运行中偶发失败（11-12 做 D378 阶段 2 回归时出现 1 次：模型节点内报“当前身份没有这个品类的操作权限”）。单独运行通过，且在原始 `graph.py` 上同样通过；原因未查，怀疑与同批其他用例的顺序或时间窗有关。
+- D381 节点或 Activity 重试时会重复发出 `model_started` 进度事件，过程视图多显示一个步骤（11-12 做 D378 时实测；旧路径 Activity 重试时同样如此）。账本调用、出站检查和调用计数不受影响。要修应在过程视图按轮次去重。
   - D243 的租约是独立连接上的会话级 advisory lock。连接一断锁就释放，本次尝试并不知道；这时 Temporal 若开下一尝试，两次尝试会重叠。
   - 改法：心跳线程每 10 秒探测租约连接，断了就置停止信号。要完全隔开，落账时还得核对租约仍在本会话。
 

@@ -1,0 +1,5 @@
+{"case": "xiaopai_completed_one_tool_round", "workflow_executions": 1, "history_events": [47], "history_json_bytes": [349518], "activities": 7}
+{"case": "xiaopai_two_questions", "workflow_executions": 1, "history_events": [91], "history_json_bytes": [577377], "activities": 11}
+{"case": "xiaopai_two_tool_rounds_rolled_over", "workflow_executions": 3, "history_events": [29, 17, 23], "history_json_bytes": [228930, 230196, 204718], "activities": 9}
+{"case": "xiaopai_read_by_ledger_reference", "workflow_executions": 1, "history_events": [47], "history_json_bytes": [352114], "activities": 7}
+{"case": "xiaopai_node_setup_seconds", "nodes": 6, "median": 0.0603, "max": 0.0825, "total": 0.3715}

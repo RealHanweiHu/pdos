@@ -1,0 +1,4 @@
+{"case": "summary_normal", "history_events": 23, "history_json_bytes": 19903, "activities": ["open_xiaopai_graph_run", "personal-summary.read_personal_summary", "personal-summary.persist_personal_summary"]}
+{"case": "summary_worker_killed", "history_events": 23, "history_json_bytes": 20122, "activities": ["open_xiaopai_graph_run", "personal-summary.read_personal_summary", "personal-summary.persist_personal_summary"]}
+{"case": "ask_two_interrupts", "history_events": 52, "history_json_bytes": 44182, "activities": ["ask.prepare", "ask.ask", "ask.ask", "ask.ask", "ask.ask", "ask.finish"]}
+{"case": "summary_real_database", "history_events": 23, "history_json_bytes": 32403, "activities": ["open_xiaopai_graph_run", "personal-summary.read_personal_summary", "personal-summary.persist_personal_summary"]}
