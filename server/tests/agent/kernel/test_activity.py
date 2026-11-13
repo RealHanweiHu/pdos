@@ -1,4 +1,3 @@
-import os
 from contextlib import nullcontext
 from datetime import timedelta
 from uuid import UUID
@@ -7,18 +6,19 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.host import KernelAdapters
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun
 from pdos_next.agent.kernel.persistence import record_answers
 from pdos_next.agent.kernel.types import ModelTurn
 from pdos_next.core.models import Grant, now
 from pdos_next.providers.types import ProviderError, ProviderUsage
+from tests.agent.kernel.graph_inline import InlineRun
 from tests.agent.kernel.test_gateway import configured_route
 from tests.agent.kernel.test_transactions import human_session, run
 
 
-def test_activity_restarts_with_committed_answer_and_persistent_graph_checkpoint(
+def test_run_waits_for_a_committed_answer_then_completes_and_is_not_repeated(
     setup, monkeypatch
 ):
     from temporalio import activity
@@ -87,10 +87,7 @@ def test_activity_restarts_with_committed_answer_and_persistent_graph_checkpoint
         "requester_id": str(setup.human),
         "subject_id": str(bound.run_id),
     }
-    checkpoint = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
-        "postgresql://", "postgresql+psycopg://", 1
-    )
-    first = KernelActivities(setup.engine, checkpoint_url=checkpoint).advance(reference)
+    first = InlineRun(setup.engine).advance(reference)
     assert first["status"] == "needs_input" and len(client.calls) == 1
     with human_session(setup) as s:
         answer_id = record_answers(
@@ -100,7 +97,7 @@ def test_activity_restarts_with_committed_answer_and_persistent_graph_checkpoint
             answers={"region": "US"},
             idempotency_key="same committed answer",
         ).id
-    second = KernelActivities(setup.engine, checkpoint_url=checkpoint).advance(
+    second = InlineRun(setup.engine).advance(
         {**reference, "answer_ref": str(answer_id)}
     )
     assert second["status"] == "completed" and len(client.calls) == 2
@@ -112,16 +109,16 @@ def test_activity_restarts_with_committed_answer_and_persistent_graph_checkpoint
             and row.used_tokens == 62
         )
         assert s.scalar(select(AgentEvent.id).where(AgentEvent.run_id == bound.run_id))
-    # A completed Activity replay returns prior status without another provider attempt.
+    # Opening a completed run again returns its status without another provider attempt.
     assert (
-        KernelActivities(setup.engine, checkpoint_url=checkpoint).advance(reference)["status"]
+        InlineRun(setup.engine).advance(reference)["status"]
         == "completed"
     )
     assert len(client.calls) == 2 and UUID(first["run_id"]) == bound.run_id
 
 
 @pytest.mark.parametrize("native_cancellation", [False, True])
-def test_activity_revocation_during_provider_attempt_has_visible_terminal_failure(
+def test_revocation_during_provider_attempt_has_visible_terminal_failure(
     setup, monkeypatch, native_cancellation
 ):
     from temporalio import activity
@@ -158,12 +155,7 @@ def test_activity_revocation_during_provider_attempt_has_visible_terminal_failur
             cost_required=False,
         ),
     )
-    checkpoint = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
-        "postgresql://", "postgresql+psycopg://", 1
-    )
-    result = KernelActivities(
-        setup.engine, checkpoint_url=checkpoint, technical_engine=setup.dispatch
-    ).advance(
+    result = InlineRun(setup.engine, technical_engine=setup.dispatch).advance(
         {
             "tenant_id": str(setup.tenant),
             "category_id": str(setup.category),

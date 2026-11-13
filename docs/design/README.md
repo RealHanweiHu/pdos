@@ -13,11 +13,11 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 | 文档 | 作用 |
 |---|---|
 | [完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) | 2026-10-08 批准并冻结；产品、领域、体验、运行架构与验收（附录 A 操作、附录 B 验收场景）的唯一设计依据 |
-| [设计确认与决策记录](2026-10-08-pdos-next-design-confirmation.md) | 冻结后经用户确认的变更 P1–P100（最新 [P100 LangGraph 执行迁移到 Temporal 官方插件](2026-10-08-pdos-next-design-confirmation.md#p100)）；与 v1.1 冲突时以较新的决策为准 |
+| [设计确认与决策记录](2026-10-08-pdos-next-design-confirmation.md) | 冻结后经用户确认的变更 P1–P101（最新 [P101 下线小Pai 原执行路径](2026-10-08-pdos-next-design-confirmation.md#p101)）；与 v1.1 冲突时以较新的决策为准 |
 | [架构导读](2026-10-08-pdos-next-architecture-overview.md) | 汇总权威文档与实现现状的阅读入口，不新增权威 |
 | [AI 写入分级 DC-11](2026-09-20-ai-direct-write-tier-policy.md) | T0/T1/T2 政策，AGENTS.md 不可协商项 1 |
 | [Agent 运行架构收口合同](2026-10-07-agent-runtime-convergence.md) | LangGraph + Temporal 的统一运行规则 |
-| [LangGraph 执行迁移到 Temporal 官方插件](2026-11-12-langgraph-temporal-plugin-migration-decision.md) | 用户 2026-11-12 确认（P100）；修订上一行的执行与检查点分工，新旧路径并存；实施状态见清单 D378 |
+| [LangGraph 执行迁移到 Temporal 官方插件](2026-11-12-langgraph-temporal-plugin-migration-decision.md) | 用户 2026-11-12 确认（P100、P101）；取代上一行的执行与检查点分工，原路径已下线；实施状态见清单 D378 |
 | [UI 基线](2026-08-09-ui-baseline.md) 与[原稿](ui-baseline-mockup.html) | shadcn/ui + Tailwind v4 + Geist，橙色主色，双主题 |
 
 ## 二、建设计划与切片合同

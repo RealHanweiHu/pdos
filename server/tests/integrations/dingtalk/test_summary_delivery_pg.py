@@ -19,7 +19,6 @@ from sqlalchemy.orm import Session
 from temporalio.client import Client
 from temporalio.worker import Worker
 
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
 from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
 from pdos_next.core.models import Grant, now
@@ -34,7 +33,7 @@ from pdos_next.integrations.dingtalk.summary_workflow import (
     SummaryActivities,
     SummarySender,
 )
-from pdos_next.workflows.xiaopai import XiaopaiWork
+from tests.agent.kernel.graph_inline import InlineRun, graph_worker
 from tests.automations.pg.test_personal_summary_pg import (
     original_security_work,
     work_case,
@@ -108,11 +107,7 @@ def summary_channel(summary_work, request, monkeypatch):
         "pdos_next.agent.kernel.activities.activity.shield_thread_cancel_exception", nullcontext
     )
     monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.is_cancelled", lambda: False)
-    activity = KernelActivities(
-        setup.engine,
-        checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
-        technical_engine=setup.dispatch,
-    )
+    activity = InlineRun(setup.engine, technical_engine=setup.dispatch)
     service = SummaryDeliveryService(setup.engine, setup.dispatch, runtime=wire.runtime)
     return NS(
         setup=setup,
@@ -273,16 +268,14 @@ def test_actual_summary_temporal_delivery_uses_original_run_and_official_mock(su
         )
         sender = SummarySender(client, work.setup.dispatch, task_queue=native.task_queue)
         with ThreadPoolExecutor(max_workers=4) as executor:
-            async with Worker(
+            async with graph_worker(
                 client,
-                task_queue=native.task_queue,
-                workflows=[XiaopaiWork, DingTalkSummaryDelivery],
-                activities=[
-                    work.activity.advance,
-                    work.activity.reconcile,
-                    summary_activity.deliver,
-                ],
-                activity_executor=executor,
+                native.task_queue,
+                work.setup.engine,
+                executor,
+                technical_engine=work.setup.dispatch,
+                activities=[summary_activity.deliver],
+                workflows=[DingTalkSummaryDelivery],
             ):
                 await native.start(work.envelope)
                 result = await asyncio.wait_for(

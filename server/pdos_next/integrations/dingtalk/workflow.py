@@ -1,4 +1,4 @@
-"""Reference-only channel completion orchestration; native XiaopaiWork owns all inference."""
+"""Reference-only channel completion orchestration; the 小Pai workflow owns all inference."""
 
 from datetime import timedelta
 

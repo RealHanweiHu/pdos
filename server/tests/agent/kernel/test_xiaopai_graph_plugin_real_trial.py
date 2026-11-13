@@ -30,10 +30,9 @@ from temporalio.worker import Replayer, Worker
 from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, TenantAdministrator
-from pdos_next.agent.kernel.temporal_port import SWITCH, TemporalPort, workflow_id
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
 from pdos_next.api import create_app
 from pdos_next.workflows.worker import graph_plugin
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 from tests.agent.enterprise_search.test_retrieval_pg import index, register
 from tests.agent.kernel import test_budget_management as budgets
@@ -139,7 +138,6 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
     monkeypatch.setenv("PDOS_ENVIRONMENT", "development")
     monkeypatch.setenv("PDOS_STATE_DB_PORT", os.environ["TEST_DATABASE_PORT"])
     monkeypatch.setenv("PDOS_STATE_DB_MARKER", os.environ["TEST_DATABASE_MARKER"])
-    monkeypatch.setenv(SWITCH, str(setup.tenant))
     from pdos_next.agent.model_configuration.host import runtime_ports
     from pdos_next.schemas.model_configuration import ModelMetadata
 
@@ -215,7 +213,7 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
             with ThreadPoolExecutor(max_workers=4) as executor:
                 async with Worker(
                     environment.client, task_queue=port.task_queue,
-                    workflows=[XiaopaiWork, XiaopaiGraphWork],
+                    workflows=[XiaopaiGraphWork],
                     activities=[*run_activities, legacy.reconcile],
                     plugins=[plugin], activity_executor=executor,
                 ), httpx.AsyncClient(

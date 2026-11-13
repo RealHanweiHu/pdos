@@ -25,8 +25,8 @@ from pdos_next.agent.kernel.models import AgentRun
 from pdos_next.agent.kernel.persistence import cancel_run
 from pdos_next.core.database import tenant_session
 from pdos_next.domain.my_work import summary_plugin_graph
-from pdos_next.workflows.personal_summary_graph import PersonalSummaryGraphWork
 from pdos_next.workflows.worker import graph_plugin
+from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 from tests.automations.pg.test_personal_summary_pg import (
     admit,
     checked,
@@ -54,14 +54,14 @@ def execute(summary_work, envelope, *, workflow_ids=("first",), before=None):
             outcomes = []
             with ThreadPoolExecutor(max_workers=4) as executor:
                 async with Worker(
-                    environment.client, task_queue=queue, workflows=[PersonalSummaryGraphWork],
+                    environment.client, task_queue=queue, workflows=[XiaopaiGraphWork],
                     activities=run_activities, plugins=[plugin], activity_executor=executor,
                 ), asyncio.timeout(120):
                     for name in workflow_ids:
                         if before:
                             await asyncio.to_thread(before, name)
                         handle = await environment.client.start_workflow(
-                            PersonalSummaryGraphWork.run, envelope,
+                            XiaopaiGraphWork.run, envelope,
                             id=f"summary-plugin:{name}:{envelope['subject_id']}",
                             task_queue=queue,
                         )

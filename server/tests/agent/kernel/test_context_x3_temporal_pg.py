@@ -12,12 +12,12 @@ from copy import deepcopy
 from uuid import UUID, uuid4
 
 import pytest
-from langgraph.checkpoint.postgres import PostgresSaver
 from sqlalchemy import select
 
 from pdos_next.agent.kernel.context_runtime import protected_result
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
-from pdos_next.agent.kernel.session_checkpoints import main_checkpoint_config
+from pdos_next.agent.kernel.plugin_graph import PluginHooks
+from pdos_next.agent.kernel.temporal_port import workflow_id
 from pdos_next.core.database import tenant_session
 from pdos_next.core.service import digest
 from tests.agent.enterprise_search.test_retrieval_pg import index
@@ -39,24 +39,43 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def actual_state(runtime, identity):
-    """Read the real Run-scoped Postgres checkpoint; never a fake/memory Store."""
+async def actual_state(runtime, identity):
+    """The graph state as Temporal recorded it: never a fake or in-memory store.
+
+    The main graph runs on the plugin (P100), so its state is the input of the node
+    Activity scheduled last, plus that node's own update once it has completed. Read
+    results are held by ledger reference there and restored here by the real hook.
+    """
     person = runtime.person
+    handle = runtime.temporal.get_workflow_handle(workflow_id(person.tenant, identity))
+    history = await handle.fetch_history()
+    scheduled, results = [], {}
+    for event in history.events:
+        if event.HasField('activity_task_scheduled_event_attributes'):
+            value = event.activity_task_scheduled_event_attributes
+            if value.activity_type.name.startswith('xiaopai.'):
+                scheduled.append((event.event_id, json.loads(value.input.payloads[0].data)))
+        if event.HasField('activity_task_completed_event_attributes'):
+            value = event.activity_task_completed_event_attributes
+            results[value.scheduled_event_id] = json.loads(value.result.payloads[0].data)
+    assert scheduled
+    event_id, activity_input = scheduled[-1]
+    state = deepcopy(activity_input['args'][0])
+    state.update((results.get(event_id) or {}).get('result') or {})
     with tenant_session(person.engine, person.tenant, actor_id=person.human,
                         category_id=person.category) as session:
         run = session.get(AgentRun, identity)
         assert run and run.requester_id == person.human
-        writer, layout = run.writer_id, run.versions.get('checkpoint_layout')
-    scope = runtime.bootstrap.store.scope(
+        writer = run.writer_id
+        assert run.versions['execution_engine'] == 'temporal-langgraph/v1'
+    store = runtime.bootstrap.store
+    scope = store.scope(
         tenant_id=person.tenant, requester_id=person.human, writer_id=writer,
         category_id=person.category, run_id=identity,
     )
-    with PostgresSaver.from_conn_string(runtime.checkpoint) as saver:
-        saved = saver.get_tuple(main_checkpoint_config(scope, layout))
-        assert saved is not None
-        if layout:
-            assert saved.metadata['pdos_run_id'] == str(identity)
-        state = deepcopy(saved.checkpoint['channel_values'])
+    state['tool_results'] = PluginHooks(store, person.engine).unpack(
+        scope, state['tool_results'],
+    )
     assert state['run_id'] == str(identity)
     return state
 
@@ -145,7 +164,7 @@ def test_actual_http_temporal_32k_cleanup_preserves_ledger_then_worker_resume_do
                 event = await question_ready(runtime, identity)
                 assert event['questions'][0]['id'] == 'context_resume'
                 assert provider.main_calls == 7 and provider.child.child_calls == 2
-                waiting = actual_state(runtime, identity)
+                waiting = await actual_state(runtime, identity)
                 calls_before, events_before, versions_before = actual_ledger(runtime, identity)
                 assert_full_results(waiting, calls_before)
                 assert_protected_survives(provider, waiting)
@@ -202,7 +221,7 @@ def test_actual_http_temporal_32k_cleanup_preserves_ledger_then_worker_resume_do
                 assert outcome['status'] == 'completed', outcome
                 assert resumed_provider.main_calls == 1 and resumed_provider.child.calls == 0
                 assert runtime.source_calls == before_io
-                finished = actual_state(runtime, identity)
+                finished = await actual_state(runtime, identity)
                 calls_after, events_after, _versions = actual_ledger(runtime, identity)
                 assert_full_results(finished, calls_after)
                 for call_id, row in calls_before.items():

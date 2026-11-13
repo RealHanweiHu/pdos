@@ -9,7 +9,9 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from pdos_next.agent.kernel import activities
+from sqlalchemy import select
+from sqlalchemy.sql.elements import TextClause
+
 from pdos_next.agent.kernel import category_adoption as adoption
 from pdos_next.agent.kernel.graph import VerifiedCategoryAdoption
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun
@@ -22,9 +24,7 @@ from pdos_next.core.models import Category, Principal, Receipt
 from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
 from pdos_next.workflows.transport import TemporalSender
-from pdos_next.workflows.xiaopai import XiaopaiWork
-from sqlalchemy import select
-from sqlalchemy.sql.elements import TextClause
+from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 
 
 class MemorySession:
@@ -335,7 +335,7 @@ def test_transport_sends_only_exact_three_uuid_metadata(ledger, monkeypatch):
     monkeypatch.setattr(adoption, "dispatch_reference", lambda engine, actual: meta)
     identity = asyncio.run(TemporalSender(client, dispatch_engine=object())(event))
     assert identity == workflow_id(f.scope.tenant_id, f.scope.run_id)
-    assert client.calls == [(identity, XiaopaiWork.resume, str(f.entry.id))]
+    assert client.calls == [(identity, XiaopaiGraphWork.resume, str(f.entry.id))]
 
 
 def test_outbox_unknown_retries_same_input_reference_then_acknowledges(ledger, monkeypatch):
@@ -366,70 +366,6 @@ def test_nonadoption_or_terminal_metadata_miss_does_not_signal(ledger, monkeypat
     monkeypatch.setattr(adoption, "dispatch_reference", lambda *_: None)
     assert asyncio.run(TemporalSender(client, dispatch_engine=object())(event_for(ledger))) is None
     assert not client.calls
-
-
-def test_activity_delivers_proof_and_never_reopens_terminal_run(ledger, monkeypatch):
-    f = ledger
-    monkeypatch.setattr(activities, "tenant_session", f.s.bound)
-    adapters = NS(preload=None, tool_registry=object())
-    f.engine._pdos_agent_kernel_adapters = adapters
-    runner = activities.KernelActivities(f.engine, checkpoint_url="synthetic")
-
-    @contextmanager
-    def transaction(*args, **kwargs):
-        yield f.s, f.run
-
-    runner.store = NS(scope=lambda **kwargs: f.scope, transaction=transaction)
-    monkeypatch.setattr(activities, "BoundHost", lambda *_: NS(
-        catalog=object(), gateway=NS(close=lambda: None),
-    ))
-    captured = []
-
-    class Kernel:
-        def __init__(self, *args, **kwargs):
-            pass
-
-        def execute(self, scope, **kwargs):
-            captured.append((scope, kwargs["answer"]))
-            return {"__interrupt__": ["synthetic next wait"]}
-
-    @contextmanager
-    def saver(url):
-        yield object()
-
-    monkeypatch.setattr(activities, "AgentKernel", Kernel)
-    monkeypatch.setattr(activities, "PostgresSaver", NS(from_conn_string=saver))
-    monkeypatch.setattr(activities, "verified_checkpoint_url", lambda url: url)
-    monkeypatch.setattr(activities.activity, "heartbeat", lambda *_: None)
-    # D243 lease and cancellation shield need a real engine and Activity context.
-    monkeypatch.setattr(activities, "run_lease", lambda *_a, **_k: nullcontext())
-    monkeypatch.setattr(activities.activity, "shield_thread_cancel_exception", nullcontext)
-    monkeypatch.setattr(activities.activity, "is_cancelled", lambda: False)
-    ref = {"tenant_id": str(f.scope.tenant_id), "category_id": "",
-           "actor_id": str(f.scope.requester_id), "requester_id": str(f.scope.requester_id),
-           "subject_id": str(f.scope.run_id), "answer_ref": str(f.entry.id)}
-    assert runner.advance(ref)["status"] == "needs_input"
-    assert captured[0][0] == f.scope and isinstance(captured[0][1], VerifiedCategoryAdoption)
-    for state in ("completed", "partial"):
-        f.run.state = state
-        assert runner.advance(ref)["status"] == state
-        assert f.run.state == state and len(captured) == 1
-    f.run.state = "waiting_input"
-    f.entry.payload_digest = "f" * 64
-    failed = runner.advance(ref)
-    assert failed["status"] == "failed" and failed["error_code"] == "FORBIDDEN_SCOPE"
-    assert len(captured) == 1 and f.run.state == "failed"
-    assert f.run.error_code == "FORBIDDEN_SCOPE"
-    memory = [row for (cls, _), row in f.s.rows.items() if cls is AgentWorkState]
-    assert len(memory) == 1 and memory[0].revision == 1
-    assert memory[0].body["root_goal"] == {"run_id": str(f.run.id), "text": f.run.goal}
-    assert memory[0].body["candidates"] == [{
-        "event_id": str(f.candidate.id), "run_id": str(f.run.id),
-    }]
-    assert memory[0].body["completed"] == []  # Human category receipt is not an Agent receipt.
-    assert [row.body for row in f.s.adopted if row.body.get("type") == "run_state"] == [{
-        "type": "run_state", "status": "failed", "error_code": "FORBIDDEN_SCOPE",
-    }]
 
 
 def test_dispatch_reference_queries_only_metadata_using_actual_event_uuid(ledger, monkeypatch):

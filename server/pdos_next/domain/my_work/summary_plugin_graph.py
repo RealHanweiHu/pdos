@@ -1,9 +1,9 @@
-"""Personal summary graph for the Temporal LangGraph plugin (P100, stage 1 pilot).
+"""The no-model personal summary graph, run on the Temporal LangGraph plugin (P100).
 
-Same two deterministic steps as ``summary_graph``; each is its own Activity and the
-workflow history, not a checkpoint database, records which step has finished. The graph
-is built once at worker start. A node receives only the fixed run reference and the
-state below, and rebuilds the server scope from the database on every execution.
+Two deterministic steps, each its own Activity; the workflow history records which step
+has finished. The graph is built once at worker start. A node receives only the fixed
+run reference and the state below, and rebuilds the server scope from the database on
+every execution.
 """
 
 from datetime import timedelta

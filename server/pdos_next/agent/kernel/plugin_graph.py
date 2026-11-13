@@ -304,7 +304,8 @@ def _options(minutes, *, heartbeat=True, attempts=3):
     }
 
 
-def build():
+def build(*, gate=rollover_gate):
+    """``gate`` is replaceable only so the graph can be driven outside a workflow."""
     graph = StateGraph(State)
     for name, body, options in (
         ("prepare_context", prepare_context, _options(5)),
@@ -318,7 +319,7 @@ def build():
         ("finalize", finalize, _options(1, attempts=None)),
     ):
         graph.add_node(name, activity_node(body), metadata=options)
-    graph.add_node("rollover_gate", rollover_gate, metadata={"execute_in": "workflow"})
+    graph.add_node("rollover_gate", gate, metadata={"execute_in": "workflow"})
     graph.add_edge(START, "prepare_context")
     graph.add_edge("prepare_context", "model")
     graph.add_conditional_edges("model", choose, ["tools", "model", "route", "verify"])

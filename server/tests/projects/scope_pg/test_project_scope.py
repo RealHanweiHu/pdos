@@ -17,7 +17,6 @@ import pytest
 from sqlalchemy import event, select
 from sqlalchemy.orm import Session, load_only
 
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentSession, AgentToolCall
 from pdos_next.agent.kernel.persistence import KernelStore
@@ -28,6 +27,7 @@ from pdos_next.domain.automations.service_models import AutomationServiceAttempt
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.projects.work.constants import ACCEPT, ASSIGN, CREATE
 from pdos_next.errors import DomainError
+from tests.agent.kernel.graph_inline import InlineRun
 from tests.automations.pg.test_service_automation_pg import _activate, _ready, _spec
 from tests.automations.pg.test_service_relative_pg import _commit
 from tests.projects.work_pg import test_workflow as flow
@@ -299,7 +299,7 @@ def test_project_acl_revoke_hides_private_run_and_releases_real_technical_reserv
     with pytest.raises(DomainError) as error:
         store.current(scope)
     assert error.value.code == "FORBIDDEN_SCOPE"
-    result = KernelActivities(setup.engine, technical_engine=setup.dispatch).advance(
+    result = InlineRun(setup.engine, technical_engine=setup.dispatch).advance(
         {
             "tenant_id": str(setup.tenant),
             "category_id": str(setup.category),

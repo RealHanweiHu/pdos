@@ -14,11 +14,10 @@ from uuid import UUID, uuid4
 import httpx
 from langgraph.checkpoint.postgres import PostgresSaver
 from temporalio.client import Client
-from temporalio.worker import Worker
 
 from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
 from pdos_next.agent.enterprise_search.comparison_graph import AssistantComparisonGraph
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.skills import SkillCatalog
@@ -30,8 +29,8 @@ from pdos_next.domain.builds.service import _build, _linked
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.schemas.verification.contracts import BuildRef, ConfigurationRef
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent.enterprise_search.test_assistant_pg import SyntheticClient
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 
 PREPARATION = "verification.preparation.record"
@@ -239,14 +238,16 @@ async def actual_runtime(person, provider, monkeypatch):
 
         app = create_app(person.engine, person.auth, agent_runtime_ports=runtime,
                          agent_api_ports=replace(ports, binding_for=binding))
-        activities = KernelActivities(person.engine, checkpoint_url=checkpoint_url,
-                                      technical_engine=person.dispatch)
         transport = LostResponseTransport(app)
         with ThreadPoolExecutor(max_workers=2) as executor:
             async with (
-                Worker(temporal, task_queue=port.task_queue, workflows=[XiaopaiWork],
-                       activities=[activities.advance, activities.reconcile],
-                       activity_executor=executor),
+                graph_worker(
+                    temporal,
+                    port.task_queue,
+                    person.engine,
+                    executor,
+                    technical_engine=person.dispatch,
+                ),
                 httpx.AsyncClient(transport=transport, base_url="http://synthetic.local") as http,
             ):
                 yield SimpleNamespace(http=http, temporal=temporal, provider=provider,

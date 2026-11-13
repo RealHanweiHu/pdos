@@ -11,18 +11,17 @@ import httpx
 import pytest
 from langgraph.checkpoint.postgres import PostgresSaver
 from temporalio.client import Client
-from temporalio.worker import Worker
 
 from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
 from pdos_next.api import create_app
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent.enterprise_search.test_assistant_pg import SyntheticClient
 from tests.agent.enterprise_search.test_retrieval_pg import index, register
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 
 
@@ -114,17 +113,14 @@ def run_http_case(
             agent_runtime_ports=runtime,
             agent_api_ports=replace(ports, binding_for=synthetic_binding),
         )
-        activities = KernelActivities(
-            setup.engine, checkpoint_url=checkpoint_url, technical_engine=setup.dispatch
-        )
         with ThreadPoolExecutor(max_workers=2) as executor:
             async with (
-                Worker(
+                graph_worker(
                     temporal,
-                    task_queue=port.task_queue,
-                    workflows=[XiaopaiWork],
-                    activities=[activities.advance, activities.reconcile],
-                    activity_executor=executor,
+                    port.task_queue,
+                    setup.engine,
+                    executor,
+                    technical_engine=setup.dispatch,
                 ),
                 httpx.AsyncClient(
                     transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local"

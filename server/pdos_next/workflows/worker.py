@@ -209,12 +209,10 @@ def registered_workflows():
     from pdos_next.integrations.dingtalk.workflow import DingTalkCompletion
     from pdos_next.workflows.automation import AutomationRuleWork
     from pdos_next.workflows.maintenance import TenantMaintenance
-    from pdos_next.workflows.personal_summary_graph import PersonalSummaryGraphWork
-    from pdos_next.workflows.xiaopai import XiaopaiWork
     from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 
     return [
-        XiaopaiWork,
+        XiaopaiGraphWork,
         DingTalkCompletion,
         DingTalkSummaryDelivery,
         AutomationRuleWork,
@@ -231,8 +229,6 @@ def registered_workflows():
         MemoryEpisodeIndex,
         MemoryEpisodeVectors,
         TenantMaintenance,
-        PersonalSummaryGraphWork,
-        XiaopaiGraphWork,
     ]
 
 
@@ -253,11 +249,7 @@ async def main(
         from pdos_next.agent.kernel.bootstrap import Bootstrap
 
         configure_agent_kernel(engine, Bootstrap(engine, ports=agent_runtime_ports).adapters())
-    kernel_activities = KernelActivities(
-        engine,
-        checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
-        technical_engine=dispatch_engine,
-    )
+    kernel_activities = KernelActivities(engine, technical_engine=dispatch_engine)
     store = OriginalStore(os.environ["PDOS_OBJECT_ROOT"])
     from pdos_next.originals.lifecycle.worker import configure_lifecycle
 
@@ -378,7 +370,6 @@ async def main(
             task_queue=sender.task_queue,
             workflows=registered_workflows(),
             activities=[
-                kernel_activities.advance,
                 channel_activities.deliver,
                 channel_activities.cancel,
                 summary_channel_activities.deliver,

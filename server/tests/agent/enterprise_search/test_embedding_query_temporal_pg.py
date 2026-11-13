@@ -17,7 +17,6 @@ from langgraph.checkpoint.postgres import PostgresSaver
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio.client import Client
-from temporalio.worker import Worker
 
 from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
 from pdos_next.agent.enterprise_search.embedding_activities import (
@@ -26,14 +25,13 @@ from pdos_next.agent.enterprise_search.embedding_activities import (
 )
 from pdos_next.agent.enterprise_search.embedding_query import QueryPorts
 from pdos_next.agent.enterprise_search.embedding_query_binding import TOOL
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.models import AgentToolCall, ValidationBudget
 from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
 from pdos_next.api import create_app
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent.enterprise_search.embedding_harness import (
     SyntheticEmbedding,
     command_for,
@@ -43,6 +41,7 @@ from tests.agent.enterprise_search.embedding_harness import (
 from tests.agent.enterprise_search.test_assistant_pg import SyntheticClient
 from tests.agent.enterprise_search.test_assistant_temporal_pg import fixed_quote
 from tests.agent.enterprise_search.test_retrieval_pg import index, query, register
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_cost_budget import rate, wallet
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 
@@ -149,17 +148,14 @@ def test_actual_run_query_embedding_is_read_derived_accounted_once_and_not_page_
             agent_runtime_ports=runtime,
             agent_api_ports=replace(native_ports, binding_for=binding),
         )
-        activities = KernelActivities(
-            setup.engine, checkpoint_url=checkpoint_url, technical_engine=setup.dispatch
-        )
         with ThreadPoolExecutor(max_workers=3) as executor:
             async with (
-                Worker(
+                graph_worker(
                     temporal,
-                    task_queue=temporal_port.task_queue,
-                    workflows=[XiaopaiWork],
-                    activities=[activities.advance, activities.reconcile],
-                    activity_executor=executor,
+                    temporal_port.task_queue,
+                    setup.engine,
+                    executor,
+                    technical_engine=setup.dispatch,
                 ),
                 httpx.AsyncClient(
                     transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local"

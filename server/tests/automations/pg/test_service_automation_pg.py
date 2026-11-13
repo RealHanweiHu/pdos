@@ -264,8 +264,8 @@ def test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run(set
     # stored agent actor. Missing adapters remain visible without a model call.
     import asyncio
 
-    from pdos_next.agent.kernel.activities import KernelActivities
     from pdos_next.agent.kernel.temporal_port import dispatch_pending_runs
+    from tests.agent.kernel.graph_inline import InlineRun
 
     references = []
 
@@ -281,7 +281,7 @@ def test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run(set
     original = getattr(setup.engine, "_pdos_agent_kernel_adapters", sentinel)
     setup.engine._pdos_agent_kernel_adapters = None
     try:
-        result = KernelActivities(setup.engine, technical_engine=setup.dispatch).advance(
+        result = InlineRun(setup.engine, technical_engine=setup.dispatch).advance(
             references[0]
         )
     finally:
@@ -305,7 +305,7 @@ def test_actual_t1_schedule_grant_single_tick_and_pause_keep_original_ai_run(set
             )
         )
         session.delete(revoked)
-    stopped = KernelActivities(setup.engine, technical_engine=setup.dispatch).advance(references[0])
+    stopped = InlineRun(setup.engine, technical_engine=setup.dispatch).advance(references[0])
     assert stopped["status"] == "failed" and stopped["error_code"] == "FORBIDDEN_SCOPE"
     with Session(setup.admin) as session:
         assert session.get(AgentRun, run_id).state == "failed"

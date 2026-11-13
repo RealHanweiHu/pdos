@@ -7,13 +7,9 @@ from types import SimpleNamespace as NS
 from uuid import uuid4
 
 import pytest
-from langgraph.checkpoint.memory import InMemorySaver
-from pdos_agent_runtime.graph import in_registered_agent_graph
 from pydantic import ValidationError
 from sqlalchemy.dialects.postgresql import dialect
-from sqlalchemy.exc import OperationalError
 
-from pdos_next.agent.kernel import activities
 from pdos_next.agent.kernel.models import AgentRun
 from pdos_next.agent.kernel.types import RunScope
 from pdos_next.core.models import Principal, Receipt
@@ -21,7 +17,6 @@ from pdos_next.core.service import Context, digest
 from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.schemas import AutomationSpec
 from pdos_next.domain.my_work import summary as personal_summary
-from pdos_next.domain.my_work import summary_graph as personal_summary_graph
 from pdos_next.domain.my_work import summary_runtime as runtime
 from pdos_next.domain.my_work.summary_schemas import ObjectRef, Selection
 from pdos_next.errors import DomainError
@@ -224,92 +219,6 @@ def test_partial_coverage_persists_partial_not_invented_complete(bound):
     assert output["status"] == bound.run.state == "partial" and output["unfinished"]
 
 
-def test_actual_registered_graph_restores_read_checkpoint_and_rechecks_sources(bound, monkeypatch):
-    saver, generations, attempts = InMemorySaver(), [], []
-    snapshot = empty(bound)
-
-    def generate(store, scope):
-        assert in_registered_agent_graph()
-        generations.append(scope.run_id)
-        return snapshot
-
-    original = runtime.persist
-
-    def interrupted(store, scope, value):
-        assert in_registered_agent_graph()
-        attempts.append(value)
-        if len(attempts) == 1:
-            raise RuntimeError("synthetic worker interruption before terminal commit")
-        return original(store, scope, value)
-
-    monkeypatch.setattr(runtime, "generate", generate)
-    monkeypatch.setattr(runtime, "persist", interrupted)
-    with pytest.raises(RuntimeError):
-        personal_summary_graph.execute(bound.store, bound.scope, checkpointer=saver)
-    assert bound.run.result is None
-    output = personal_summary_graph.execute(bound.store, bound.scope, checkpointer=saver)
-    assert output["output"]["status"] == "completed" and len(generations) == 1
-    assert attempts == [snapshot, snapshot] and len(bound.calls) >= 3
-
-
-@pytest.mark.parametrize("transient", [False, True])
-def test_activity_without_adapters_runs_summary_and_retries_sql(bound, monkeypatch, transient):
-    @contextmanager
-    def initial(*_args, **_kwargs):
-        yield bound.session
-
-    def binding(s, run):
-        assert run is bound.run
-        return NS(), bound.spec
-
-    def no_gateway(*_a, **_k):
-        pytest.fail("deterministic summary must not instantiate model host")
-
-    memory, persist_calls = InMemorySaver(), []
-    original_persist = runtime.persist
-
-    def persist(store, scope, value):
-        persist_calls.append(value)
-        if transient and len(persist_calls) == 1:
-            raise OperationalError("synthetic no-SQL disconnect", {}, ConnectionError())
-        return original_persist(store, scope, value)
-
-    @contextmanager
-    def saver(_url):
-        yield memory
-
-    def generate(*_a):
-        assert in_registered_agent_graph()
-        return empty(bound)
-
-    monkeypatch.setattr(activities, "tenant_session", initial)
-    monkeypatch.setattr("pdos_next.domain.automations.runtime.binding", binding)
-    monkeypatch.setattr(activities, "BoundHost", no_gateway)
-    monkeypatch.setattr(activities.activity, "heartbeat", lambda *_a: None)
-    # D243 lease and cancellation shield need a real engine and Activity context.
-    monkeypatch.setattr(activities, "run_lease", lambda *_a, **_k: nullcontext())
-    monkeypatch.setattr(activities.activity, "shield_thread_cancel_exception", nullcontext)
-    monkeypatch.setattr(activities.activity, "is_cancelled", lambda: False)
-    monkeypatch.setattr(activities, "verified_checkpoint_url", lambda url: url)
-    monkeypatch.setattr(activities.PostgresSaver, "from_conn_string", saver)
-    monkeypatch.setattr(runtime, "generate", generate)
-    monkeypatch.setattr(runtime, "persist", persist)
-    worker = activities.KernelActivities(bound.store.engine, checkpoint_url="synthetic-local-only")
-    worker.store = bound.store
-    ref = {"tenant_id": str(bound.run.tenant_id), "category_id": str(bound.run.category_id),
-           "actor_id": str(bound.run.writer_id), "requester_id": str(bound.owner),
-           "subject_id": str(bound.run.id)}
-    if transient:
-        with pytest.raises(OperationalError):
-            worker.advance(ref)
-        assert bound.run.result is None and bound.run.state == "running"
-    output = worker.advance(ref)
-    assert output == {"run_id": str(bound.run.id), "status": "completed"}
-    assert bound.run.result["result"]["personal_summary"]["model_used"] is False
-    assert bound.run.used_tokens == 0
-    assert worker.advance(ref) == output
-
-
 def test_history_read_is_ordinary_human_and_never_returns_other_owner_snapshot(bound):
     runtime.persist(bound.store, bound.scope, empty(bound))
     ctx = Context(bound.run.tenant_id, bound.owner, bound.owner, category_id=bound.run.category_id)
@@ -429,28 +338,17 @@ def test_summary_binding_rejects_forged_or_mismatched_actual_authority(row, fiel
     assert error.value.code == "FORBIDDEN_SCOPE"
 
 
-def test_checkpoint_replay_after_committed_response_loss_preserves_exact_output(bound, monkeypatch):
-    saver, calls = InMemorySaver(), []
-    original = runtime.persist
+def test_persist_repeated_after_a_lost_response_returns_the_committed_output(bound):
+    """A node whose result was committed but not delivered is run again by Temporal.
 
-    def committed_but_lost(store, scope, value):
-        assert in_registered_agent_graph()
-        output = original(store, scope, value)
-        calls.append(output)
-        if len(calls) == 1:
-            raise RuntimeError("synthetic response loss after terminal commit")
-        return output
-
-    monkeypatch.setattr(runtime, "generate", lambda *_a: empty(bound))
-    monkeypatch.setattr(runtime, "persist", committed_but_lost)
-    with pytest.raises(RuntimeError):
-        personal_summary_graph.execute(bound.store, bound.scope, checkpointer=saver)
-    assert bound.run.state == "completed"
-    result = personal_summary_graph.execute(bound.store, bound.scope, checkpointer=saver)
-    assert result["output"] == calls[0] == bound.run.result
-    # An already-complete graph checkpoint still checks current READ.
-    completed = personal_summary_graph.execute(bound.store, bound.scope, checkpointer=saver)
-    assert completed["output"] == bound.run.result
+    Which steps a run repeats is the workflow's concern (see the plugin tests); what this
+    step guarantees is that repeating it returns the stored result unchanged.
+    """
+    snapshot = empty(bound)
+    first = runtime.persist(bound.store, bound.scope, snapshot)
+    assert bound.run.state == "completed" and first == bound.run.result
+    again = runtime.persist(bound.store, bound.scope, snapshot)
+    assert again == first == bound.run.result
 
 
 def test_expired_service_still_requires_live_execution_but_retains_authorized_history():

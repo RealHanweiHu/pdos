@@ -1,6 +1,6 @@
 # LangGraph 执行迁移到 Temporal 官方插件 · 决策记录（用户 2026-11-12 确认）
 
-- 状态：**已确认**。用户 2026-11-12 对 §9 的 Q1–Q8 答复“全部按推荐”，登记为确认稿 [P100](2026-10-08-pdos-next-design-confirmation.md#p100)；AGENTS.md 第 6 条和[运行架构收口合同](2026-10-07-agent-runtime-convergence.md)已同步修订。阶段 3 切换仍需另行授权。
+- 状态：**已确认并已切换**。用户 2026-11-12 对 §9 的 Q1–Q8 答复“全部按推荐”（确认稿 [P100](2026-10-08-pdos-next-design-confirmation.md#p100)）；同日在合成租户验证后要求直接下线原路径（[P101](2026-10-08-pdos-next-design-confirmation.md#p101)），见 §13。§8.3 的开关、§8.4 的回退和文中“新旧并存”的说法已被 §13 取代，保留原文作为过程记录。
 - 起因：用户 2026-11-12 的任务书，要求把小Pai 从“一个大 Activity 里跑整张图 + PostgresSaver”迁到 Temporal 官方 LangGraph 插件：图在 Workflow 中运行，有 I/O 的节点各自成为 Activity。
 - 清单条目：[D378](../../tasks/ai-native-integrated-todo.md#debt-board)。
 
@@ -468,3 +468,38 @@ Temporal 的界限：单 payload 2 MB，单个历史 50 MB 或 51,200 个事件�
 
 - 是否在试点租户打开开关。前提是先有部署环境及其 Temporal 持久库的访问控制与保留期决定；目前仓库里没有试点部署（清单 D210）。
 - 旧路径（`XiaopaiWork`、`advance_xiaopai_run`、主图检查点）的下线时间，按任务书另行确认。
+
+## 13. 下线原路径（2026-11-12）
+
+用户 2026-11-12：“帮我直接下线旧路径就好了，现在本来也没有发布。”登记为 [P101](2026-10-08-pdos-next-design-confirmation.md#p101)。
+
+### 13.1 删除与改动
+
+| 项 | 处理 |
+|---|---|
+| `workflows/xiaopai.py`（`XiaopaiWork`） | 删除 |
+| `KernelActivities.advance`（`advance_xiaopai_run`） | 删除。`KernelActivities` 只剩 `reconcile`、`preload` 和范围失效判断，不再接收检查点库地址 |
+| 租户开关 `PDOS_XIAOPAI_GRAPH_TENANTS` | 删除。`TemporalPort.start` 一律启动 `XiaopaiGraphWork` |
+| `workflows/personal_summary_graph.py`（试点工作流类型） | 删除。个人摘要由 `XiaopaiGraphWork` 承接 |
+| `domain/my_work/summary_graph.py`（原个人摘要图） | 删除，由 `summary_plugin_graph` 取代 |
+| worker 注册表 | 19 个工作流类型变为 17 个：去掉 `XiaopaiWork` 和试点类型，`XiaopaiGraphWork` 排在原 `XiaopaiWork` 的位置 |
+| 评测工具 `tools/xiaopai_real_eval_runtime.py` | 改用插件 worker |
+
+因为没有发布，没有为未结束的 `XiaopaiWork` 历史保留回放能力。本机开发环境里这类未结束的工作流在升级后会因类型未注册而停住，需要取消后重新发起。
+
+### 13.2 测试的迁移
+
+- 新增测试支持 `tests/agent/kernel/graph_inline.py`：`InlineRun(engine).advance(reference)` 在进程内用真实的 open/close、真实注册图和真实节点外壳推进一次运行，不需要 Temporal 服务；`graph_worker(...)` 是带插件的测试 worker。
+- 原来直接调用 `advance` 的测试改用 `InlineRun`；原来用 `XiaopaiWork` 起 worker 的端到端测试改用 `graph_worker`。
+- 删除：只测 `XiaopaiWork` 自身的两个文件、原路径的对账工作流测试、原个人摘要的重启测试。它们的行为由新路径的对应用例覆盖（信号队列、结果未知转对账、杀进程后不重跑）。
+- 个人摘要运行时测试中三个依赖原摘要图检查点重放的用例，改为直接验证“落库步骤重复执行返回已提交结果”。
+
+### 13.3 留待单独清理（清单 D382）
+
+主图不再写检查点后，下面这些代码只有测试和隔离子任务会经过：
+
+- `AgentKernel.execute` 中只服务主图检查点恢复的分支。
+- 会话检查点布局：`session_checkpoints.py`、运行记录里的 `checkpoint_layout`、`BoundHost.checkpoint_layout`。
+- 检查点保留清理（D58）中针对主图线程的部分。
+
+它们与隔离子任务共用 `execute` 和同一个检查点库，拆分需要单独核对，所以没有放进这次下线。

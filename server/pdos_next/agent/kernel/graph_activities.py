@@ -1,8 +1,8 @@
-"""Run bookkeeping around a plugin-executed graph (P100); never a model or tool call.
+"""Run bookkeeping around the plugin-executed graph (P100); never a model or tool call.
 
-``open`` does what ``advance_xiaopai_run`` checks before it enters its graph, ``close``
-what it records when the graph fails. The graph itself runs node by node as plugin
-Activities between the two.
+``open`` validates the fixed run reference and marks the run running before the graph
+starts; ``close`` records a graph that stopped. The graph itself runs node by node as
+plugin Activities between the two.
 """
 
 from uuid import UUID
@@ -22,7 +22,7 @@ from .persistence import KernelStore
 KEYS = frozenset({"tenant_id", "category_id", "actor_id", "requester_id", "subject_id"})
 TERMINAL = frozenset({"completed", "partial", "failed", "cancelled"})
 PERSONAL_SUMMARY, KERNEL = "personal_summary", "kernel"
-# Grace before the automatic receipt check of an unknown outcome, as in XiaopaiWork.
+# Grace before the automatic receipt check of an unknown outcome.
 # Read here, in an Activity, so the workflow only ever sees the recorded value.
 RECONCILE_AFTER_SECONDS = 300
 

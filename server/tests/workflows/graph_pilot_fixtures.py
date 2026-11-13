@@ -74,7 +74,7 @@ def open_run(reference):
     note("open")
     return {"run_id": reference["subject_id"], "status": "running",
             "kind": "personal_summary", "cancel_epoch": 0,
-            "writer_id": reference["actor_id"]}
+            "writer_id": reference["actor_id"], "reconcile_after_seconds": 1}
 
 
 @activity.defn(name="close_xiaopai_graph_run")

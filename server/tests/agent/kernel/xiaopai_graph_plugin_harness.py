@@ -1,7 +1,7 @@
 """Authenticated API → Temporal → plugin-executed 小Pai graph → real PG domain owner.
 
 Only the provider is synthetic: a scripted client that counts every request it is sent.
-The tenant switch, worker wiring, graph, node shell, ledger, reconciliation and API are
+The worker wiring, graph, node shell, ledger, reconciliation and API are
 the real ones. The checkpoint database is not used.
 """
 
@@ -28,14 +28,13 @@ from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.management import AgreementInput, register_agreement
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
 from pdos_next.agent.kernel.qualification_binding import model_identity
-from pdos_next.agent.kernel.temporal_port import SWITCH, TemporalPort, workflow_id
+from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
 from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.api import create_app
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import now
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.workflows.worker import graph_plugin
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 from tests.agent.kernel.test_domain_adapter_transactions import fixture
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
@@ -80,7 +79,7 @@ class Scripted:
         pass
 
 
-def prepare(setup, monkeypatch, steps, *, tenants=None):
+def prepare(setup, monkeypatch, steps):
     f = fixture(setup)
     management_client, runtime_ports, configuration = configured(setup)
     saved, _ = submit(setup, management_client, configuration)
@@ -109,7 +108,6 @@ def prepare(setup, monkeypatch, steps, *, tenants=None):
             training_terms="synthetic only", signed_on=now() - timedelta(minutes=1),
             expires_at=now() + timedelta(hours=1),
         ))
-    monkeypatch.setenv(SWITCH, str(setup.tenant) if tenants is None else tenants)
     monkeypatch.setattr(graph_activities, "RECONCILE_AFTER_SECONDS", 1)
     return SimpleNamespace(
         setup=setup, f=f, client=client, bootstrap=bootstrap, runtime_ports=runtime_ports,
@@ -146,8 +144,7 @@ def serve(stack, body, *, token_limit=500000, timeout=90, in_process_worker=True
             with ThreadPoolExecutor(max_workers=4) as executor:
                 async with (Worker(
                     environment.client, task_queue=port.task_queue,
-                    # Both types registered, as in the production worker.
-                    workflows=[XiaopaiWork, XiaopaiGraphWork],
+                    workflows=[XiaopaiGraphWork],
                     activities=[*run_activities, legacy.reconcile],
                     plugins=[plugin], activity_executor=executor,
                 ) if in_process_worker else contextlib.nullcontext()), httpx.AsyncClient(
@@ -220,7 +217,7 @@ class Context:
     async def replay(self, history):
         plugin, _ = graph_plugin(self.setup.engine, technical_engine=self.setup.dispatch)
         await Replayer(
-            workflows=[XiaopaiWork, XiaopaiGraphWork], plugins=[plugin],
+            workflows=[XiaopaiGraphWork], plugins=[plugin],
         ).replay_workflow(history)
 
 

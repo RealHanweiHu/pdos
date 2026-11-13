@@ -25,7 +25,7 @@ from temporalio.testing import WorkflowEnvironment
 from temporalio.worker import Replayer, Worker
 
 from pdos_next.domain.my_work import summary_plugin_graph
-from pdos_next.workflows.personal_summary_graph import PersonalSummaryGraphWork
+from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 from tests.workflows import graph_pilot_fixtures as fixtures
 from tests.workflows.graph_pilot_workflow import AskWork
 
@@ -56,7 +56,7 @@ def plugin():
 
 def worker(client, queue, executor):
     return Worker(
-        client, task_queue=queue, workflows=[PersonalSummaryGraphWork, AskWork],
+        client, task_queue=queue, workflows=[XiaopaiGraphWork, AskWork],
         activities=fixtures.RUN_ACTIVITIES, plugins=[plugin()], activity_executor=executor,
     )
 
@@ -107,7 +107,7 @@ def test_summary_completes_node_by_node_and_replays(pilot):
         queue, ref = "pilot-" + str(uuid4()), reference()
         async with worker(environment.client, queue, executor):
             handle = await environment.client.start_workflow(
-                PersonalSummaryGraphWork.run, ref, id="pilot-" + ref["subject_id"],
+                XiaopaiGraphWork.run, ref, id="pilot-" + ref["subject_id"],
                 task_queue=queue,
             )
             assert await handle.result() == {"run_id": ref["subject_id"], "status": "completed"}
@@ -125,7 +125,7 @@ def test_summary_completes_node_by_node_and_replays(pilot):
         assert fixtures.SECRET not in recorded
         # Nondeterminism check: the recorded history replays against the same code.
         await Replayer(
-            workflows=[PersonalSummaryGraphWork], plugins=[plugin()],
+            workflows=[XiaopaiGraphWork], plugins=[plugin()],
         ).replay_workflow(history)
         assert fixtures.notes().count("generate") == 1
 
@@ -152,7 +152,7 @@ def test_worker_killed_inside_a_node_does_not_rerun_the_finished_node(pilot):
         try:
             await until("worker:ready")
             handle = await environment.client.start_workflow(
-                PersonalSummaryGraphWork.run, ref, id="pilot-" + ref["subject_id"],
+                XiaopaiGraphWork.run, ref, id="pilot-" + ref["subject_id"],
                 task_queue=queue,
             )
             await until("persist:start")
@@ -186,11 +186,11 @@ def test_signals_are_deduplicated_and_consumed_in_arrival_order(pilot):
         async with worker(environment.client, queue, executor):
             # The summary never asks: stray signals of any shape leave it untouched.
             summary = await environment.client.start_workflow(
-                PersonalSummaryGraphWork.run, reference(), id="pilot-" + str(uuid4()),
+                XiaopaiGraphWork.run, reference(), id="pilot-" + str(uuid4()),
                 task_queue=queue,
             )
             for value in (late, "not-a-reference", late, early):
-                await summary.signal(PersonalSummaryGraphWork.resume, value)
+                await summary.signal(XiaopaiGraphWork.resume, value)
             assert (await summary.result())["status"] == "completed"
 
             handle = await environment.client.start_workflow(
@@ -261,7 +261,7 @@ def test_stopped_node_closes_the_run_with_its_code_and_is_not_retried(pilot):
         fixtures.flag("fail-generate").touch()
         async with worker(environment.client, queue, executor):
             handle = await environment.client.start_workflow(
-                PersonalSummaryGraphWork.run, ref, id="pilot-" + ref["subject_id"],
+                XiaopaiGraphWork.run, ref, id="pilot-" + ref["subject_id"],
                 task_queue=queue,
             )
             result = await handle.result()
@@ -279,7 +279,7 @@ def test_workflow_rejects_anything_but_the_fixed_reference(pilot):
         queue = "pilot-" + str(uuid4())
         async with worker(environment.client, queue, executor):
             handle = await environment.client.start_workflow(
-                PersonalSummaryGraphWork.run, {**reference(), "api_key": fixtures.SECRET},
+                XiaopaiGraphWork.run, {**reference(), "api_key": fixtures.SECRET},
                 id="pilot-" + str(uuid4()), task_queue=queue,
             )
             with pytest.raises(WorkflowFailureError):

@@ -191,14 +191,16 @@ async def serve(args):
     from pdos_next.agent.kernel.temporal_port import TemporalPort
     from pdos_next.agent.model_configuration.host import runtime_ports
     from pdos_next.api import create_app
-    from pdos_next.workflows.xiaopai import XiaopaiWork
+    from pdos_next.workflows.worker import graph_plugin
+    from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 
     observe_domain_errors(args.evidence)
     provider = observe_provider(args.evidence)
     ports = replace(runtime_ports(engine), provider_client=provider)
     bootstrap = Bootstrap(engine, ports=ports)
     configure_agent_kernel(engine, bootstrap.adapters())
-    activities = KernelActivities(engine, checkpoint_url=checkpoint, technical_engine=dispatch)
+    activities = KernelActivities(engine, technical_engine=dispatch)
+    plugin, run_activities = graph_plugin(engine, technical_engine=dispatch)
     queue = args.queue
     temporal = TemporalPort(client, task_queue=queue)
     app = create_app(engine, auth, workflow_enabled=True, agent_runtime_ports=ports,
@@ -216,8 +218,8 @@ async def serve(args):
         if args.role in ('both', 'worker'):
             executor = stack.enter_context(ThreadPoolExecutor(max_workers=4))
             await stack.enter_async_context(Worker(
-                client, task_queue=queue, workflows=[XiaopaiWork],
-                activities=[activities.advance, activities.reconcile],
+                client, task_queue=queue, workflows=[XiaopaiGraphWork],
+                activities=[*run_activities, activities.reconcile], plugins=[plugin],
                 activity_executor=executor, max_concurrent_activities=2))
         public = {'role':args.role, 'task_queue':queue, 'temporal':args.temporal,
                   'namespace':args.namespace, 'database':'pdos_test',
