@@ -136,6 +136,36 @@ class Budget:
     validation_retries: int = 2
 
 
+class NodeHooks:
+    """Where the two execution paths differ; these defaults are the checkpointed path.
+
+    The plugin path (P100) overrides them so that a human answer arrives as a committed
+    reference, and large or provider-private values stay in the run's ledger instead of
+    graph state. Node logic itself is shared.
+    """
+
+    def answer(self, scope, wait):
+        return wait()
+
+    def adoption(self, scope, wait, trusted):
+        return wait(), trusted
+
+    def hydrate(self, scope, messages):
+        return messages
+
+    def dehydrate(self, scope, messages):
+        return messages
+
+    def pack(self, scope, entry):
+        return entry
+
+    def unpack(self, scope, entries):
+        return entries
+
+    def final(self, scope, output):
+        return output
+
+
 class AgentKernel:
     def __init__(self, ports, registry: ToolRegistry, catalog=None, budget=None, prompt=None):
         self.ports, self.registry = ports, registry
@@ -147,10 +177,10 @@ class AgentKernel:
         # system prefix, and nothing here is sent to the model as-is.
         self.definitions = self.registry.definitions()
 
-    def compile(
-        self, scope: RunScope, *, checkpointer=None, preload=(), trusted_adoption=None
-    ):
+    def nodes(self, scope: RunScope, *, preload=(), trusted_adoption=None, hooks=None):
+        """The node bodies bound to one run, by graph node name."""
         ports, registry, catalog, budget = self.ports, self.registry, self.catalog, self.budget
+        hooks = hooks or NodeHooks()
 
         def disclosed(loaded):
             """Only the loaded skills' commands reach the model this turn.
@@ -247,6 +277,7 @@ class AgentKernel:
             if state["turns"] >= budget.model_turns or state["tools_used"] >= budget.tool_calls:
                 return partial(state)
             ports.emit(scope, {"type": "model_started", "turn": state["turns"] + 1})
+            messages = hooks.hydrate(scope, state["messages"])
             try:
                 envelope = json.loads(state["messages"][0]["content"])
                 work_state = envelope.get("context", {}).get("work_state", {})
@@ -254,7 +285,7 @@ class AgentKernel:
                     from .context_budget import required_items
 
                     missing = [item for item in required_items(
-                        self.system, disclosed(loaded), state["messages"],
+                        self.system, disclosed(loaded), messages,
                     ) if item["field"] in {
                         "work_state.root_goal", "work_state.current_goal", "work_state.constraints",
                         "work_state.exclusions", "work_state.focus_objects", "work_state.citations",
@@ -272,14 +303,14 @@ class AgentKernel:
                 response = (model_step if callable(model_step) else ports.model)(
                     scope,
                     system=self.system,
-                    messages=state["messages"],
+                    messages=messages,
                     tools=disclosed(loaded),
                     output_schema=WireAgentOutput.model_json_schema(),
                     loaded_skills=tuple(SkillBinding.model_validate(b) for b in state["loaded"]),
                     prompt_identity=self.prompt_identity,
                 )
                 turn, admitted_messages = response if callable(model_step) else (
-                    response, state["messages"],
+                    response, messages,
                 )
             except DomainError as error:
                 if error.reason == "CONTEXT_INCOMPLETE":
@@ -312,7 +343,7 @@ class AgentKernel:
             if calls:
                 assistant["tool_calls"] = calls
             return {
-                "messages": [*admitted_messages, assistant],
+                "messages": hooks.dehydrate(scope, [*admitted_messages, assistant]),
                 "calls": calls,
                 "output": turn.structured or {},
                 "turns": state["turns"] + 1,
@@ -336,12 +367,12 @@ class AgentKernel:
                         "questions": [q.model_dump(mode="json") for q in questions],
                     },
                 )
-                answer = interrupt(
+                answer = hooks.answer(scope, lambda: interrupt(
                     {
                         "run_id": str(scope.run_id),
                         "questions": [q.model_dump(mode="json") for q in questions],
                     }
-                )
+                ))
                 ports.current(scope)
                 return {
                     "messages": [
@@ -354,11 +385,6 @@ class AgentKernel:
                     "output": {},
                 }
             return {}
-
-        def choose(state):
-            if state["calls"]:
-                return "tools"
-            return "model" if not state["output"] else "verify"
 
         def tools(state):
             ports.current(scope)
@@ -580,7 +606,7 @@ class AgentKernel:
                 "tool_results": [
                     *state["tool_results"],
                     *[
-                        {
+                        hooks.pack(scope, {
                             "tool": c.name,
                             "tier": registry.get(c.name).tier,
                             "taint": registry.get(c.name).taint,
@@ -589,7 +615,7 @@ class AgentKernel:
                                 "result_handle", "page", "total_pages",
                             )}} if isinstance(views[c.id], dict) and views[c.id].get("truncated")
                                 and "result_handle" in views[c.id] else {}),
-                        }
+                        })
                         for c in calls
                     ],
                 ],
@@ -603,11 +629,14 @@ class AgentKernel:
             if not pending:
                 return {}
             current = pending[0]
-            answer = interrupt({"type": "category_adoption", **current})
+            answer, trusted = hooks.adoption(
+                scope, lambda: interrupt({"type": "category_adoption", **current}),
+                trusted_adoption,
+            )
             ports.current(scope)
-            if not isinstance(trusted_adoption, VerifiedCategoryAdoption):
+            if not isinstance(trusted, VerifiedCategoryAdoption):
                 raise DomainError("FORBIDDEN_SCOPE", "普通答复不能代替实际品类采用回执。")
-            envelope = trusted_adoption.envelope()
+            envelope = trusted.envelope()
             if answer != envelope or envelope["input_ref"] in state.get("consumed_input_refs", []):
                 raise DomainError("FORBIDDEN_SCOPE", "采用输入未核对或已被消费。")
             adopted_index = _adoption_index(scope, pending, envelope)
@@ -634,13 +663,13 @@ class AgentKernel:
                 if scope.isolation != "main":
                     from .result_continuation import incomplete_views
 
-                    pending = incomplete_views(state["tool_results"])
+                    pending = incomplete_views(hooks.unpack(scope, state["tool_results"]))
                     if pending:
                         raise DomainError(
                             "MISSING_REQUIRED_EVIDENCE", "隔离读取仍有未续读的结果片段。",
                             detail={"result_pages": pending},
                         )
-                result = ports.verify(scope, result, state["tool_results"])
+                result = ports.verify(scope, result, hooks.unpack(scope, state["tool_results"]))
                 AgentOutput.model_validate(result)
                 return {"output": result}
             except (ValueError, ValidationError, DomainError) as error:
@@ -683,12 +712,11 @@ class AgentKernel:
 
         def finalize(state):
             ports.current(scope)
-            ports.finish(scope, state["output"])
+            ports.finish(scope, hooks.final(scope, state["output"]))
             ports.emit(scope, {"type": "finished", "status": state["output"]["status"]})
             return {}
 
-        graph = StateGraph(GraphState)
-        for name, node in {
+        return {
             "prepare_context": prepare,
             "model": model,
             "route": route,
@@ -696,7 +724,20 @@ class AgentKernel:
             "await_category_adoption": await_category_adoption,
             "verify": verify,
             "finalize": finalize,
-        }.items():
+        }
+
+    def compile(
+        self, scope: RunScope, *, checkpointer=None, preload=(), trusted_adoption=None
+    ):
+        def choose(state):
+            if state["calls"]:
+                return "tools"
+            return "model" if not state["output"] else "verify"
+
+        graph = StateGraph(GraphState)
+        for name, node in self.nodes(
+            scope, preload=preload, trusted_adoption=trusted_adoption,
+        ).items():
             graph.add_node(name, node)
         graph.add_edge(START, "prepare_context")
         graph.add_edge("prepare_context", "model")

@@ -165,6 +165,31 @@ def activity_threads():
     return value
 
 
+def graph_plugin(engine, *, technical_engine=None):
+    """The Temporal LangGraph plugin with every graph this worker runs node by node (P100).
+
+    Graphs are built once here, at worker start. Their nodes reach the database through
+    the dependencies configured below, never through graph state or runtime context.
+    Returns the plugin and the plain Activities that open and close a graph's run.
+    """
+    from temporalio.langgraph import LangGraphPlugin
+
+    from pdos_next.agent.kernel.graph_activities import GraphRunActivities
+    from pdos_next.agent.kernel.persistence import KernelStore
+    from pdos_next.domain.my_work import summary_plugin_graph
+    from pdos_next.workflows.graph_nodes import configure_graph_dependencies
+
+    configure_graph_dependencies(kernel_store=KernelStore(engine))
+    runs = GraphRunActivities(engine, technical_engine=technical_engine)
+    from pdos_next.agent.kernel import plugin_graph
+
+    plugin = LangGraphPlugin(graphs={
+        summary_plugin_graph.GRAPH: summary_plugin_graph.build(),
+        plugin_graph.GRAPH: plugin_graph.build(),
+    })
+    return plugin, [runs.open, runs.close]
+
+
 def registered_workflows():
     """Every workflow class the worker registers, in registration order.
 
@@ -184,7 +209,9 @@ def registered_workflows():
     from pdos_next.integrations.dingtalk.workflow import DingTalkCompletion
     from pdos_next.workflows.automation import AutomationRuleWork
     from pdos_next.workflows.maintenance import TenantMaintenance
+    from pdos_next.workflows.personal_summary_graph import PersonalSummaryGraphWork
     from pdos_next.workflows.xiaopai import XiaopaiWork
+    from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 
     return [
         XiaopaiWork,
@@ -204,6 +231,8 @@ def registered_workflows():
         MemoryEpisodeIndex,
         MemoryEpisodeVectors,
         TenantMaintenance,
+        PersonalSummaryGraphWork,
+        XiaopaiGraphWork,
     ]
 
 
@@ -342,6 +371,7 @@ async def main(
                 pass
 
     threads = activity_threads()
+    plugin, graph_run_activities = graph_plugin(engine, technical_engine=dispatch_engine)
     with ThreadPoolExecutor(max_workers=threads) as executor:
         async with Worker(
             client,
@@ -368,7 +398,9 @@ async def main(
                 activities.memory_episode_index,
                 retention.purge,
                 rescans.rescan,
+                *graph_run_activities,
             ],
+            plugins=[plugin],
             activity_executor=executor,
             max_concurrent_activities=threads,
         ):

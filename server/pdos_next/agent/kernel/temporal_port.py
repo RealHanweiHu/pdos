@@ -7,6 +7,22 @@ from temporalio.exceptions import WorkflowAlreadyStartedError
 
 from pdos_next.workflows.xiaopai import XiaopaiWork
 
+SWITCH = "PDOS_XIAOPAI_GRAPH_TENANTS"
+
+
+def graph_tenants():
+    """Tenants whose new runs start on the plugin path (P100). Empty by default.
+
+    A comma-separated list of tenant UUIDs. Anything else in it is an operator error
+    and stops the start, rather than silently choosing a path.
+    """
+    import os
+
+    return frozenset(
+        str(UUID(value.strip())) for value in os.environ.get(SWITCH, "").split(",")
+        if value.strip()
+    )
+
 
 def workflow_id(tenant_id, run_id):
     return f"pdos-next:xiaopai:{UUID(str(tenant_id))}:{UUID(str(run_id))}"
@@ -23,9 +39,16 @@ class TemporalPort:
         for key, value in reference.items():
             if key != "category_id" or value:
                 UUID(value)
+        # Chosen once, here. Both types share the id, so a run that already has a
+        # workflow keeps the type it started on, and signals and cancels need no switch.
+        target = XiaopaiWork.run
+        if reference["tenant_id"] in graph_tenants():
+            from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
+
+            target = XiaopaiGraphWork.run
         try:
             return await self.client.start_workflow(
-                XiaopaiWork.run,
+                target,
                 reference,
                 id=workflow_id(reference["tenant_id"], reference["subject_id"]),
                 task_queue=self.task_queue,
