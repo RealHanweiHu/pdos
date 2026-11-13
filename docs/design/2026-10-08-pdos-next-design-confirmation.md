@@ -1717,3 +1717,27 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
 - 不改变：P56 第 1、2 项；P48；停用即吊销全部会话（D86、D192）。
 - 实施：D37 ⑤ 随 D214 停用路径接上（`notify_deactivated_handover`，迁移 `s0_0869`，分支上占位 `s0_0874`）。
 - 判据：停用有未交接事项的成员后，负责人收到一张列出任务、承诺、外部等待数量的卡片；此人所有请求 401；团队页显示“账号已停用”并列出待接事项。
+
+<a id="p100"></a>
+
+### P100 LangGraph 执行迁移到 Temporal 官方插件（修订 AGENTS.md 第 6 条；用户 2026-11-12，全部按推荐）
+
+- 起因：用户 2026-11-12 的任务书要求把小Pai 从“一个大 Activity 里跑整张图 + PostgresSaver”迁到 Temporal 官方 LangGraph 插件 `temporalio-langgraph`。这改变了 AGENTS.md 第 6 条的分工，阶段 0 先写了[决策记录](2026-11-12-langgraph-temporal-plugin-migration-decision.md)，其 §9 列 Q1–Q8。
+- 用户原话：“数据隐私不再是约束，允许消息、模型输出、业务状态进入 Temporal 事件历史。但密钥、凭据、令牌、签名 URL 一律不得进入 graph state、runtime context 或任何 Activity 参数和返回值。”（2026-11-12 任务书）；“全部按推荐”（2026-11-12，答 Q1–Q8）。
+- 取代与修订：
+  1. AGENTS.md 第 6 条“LangGraph 管理能力内执行/检查点，Temporal 管理持久任务、等待、取消和恢复”，在新路径上改为：LangGraph 只定义图的结构、状态和路由；节点执行、检查点、等待、取消、恢复由 Temporal 承担，图内只用 `InMemorySaver`。
+  2. [运行架构收口合同](2026-10-07-agent-runtime-convergence.md)和 v1.1“执行结构”图中的“Workflow 历史只存引用”，在新路径上放开为消息、模型输出、业务状态可进历史；密钥、凭据、令牌、签名 URL 仍不得进入（v1.1 冻结原文不改）。
+  3. 新路径的主图不再写独立检查点库。
+- 采纳（对应 Q1–Q8）：
+  1. 批准上述三处变更。
+  2. 隔离子任务（研究、抽取、MCP 等）本次不迁移，继续在 `tools` Activity 内用 PostgresSaver；主图稳定后另行评估。
+  3. `messages` 先内联进历史，实测常见运行超过 10 MB 再改引用；`tool_results` 的值必须改存账本引用。
+  4. 阶段 3 前核对 Temporal 库的访问权限和历史保留期。
+  5. `provider_continuation` 不进 state，按账本引用取。
+  6. 试点选个人摘要图；阶段 1 的试点工作流只由测试和评测工具启动，不接生产派发。
+  7. 开关用环境变量租户列表 `PDOS_XIAOPAI_GRAPH_TENANTS`，不做数据库配置和管理界面，下线旧路径时一并删除。
+  8. 钉钉两张单节点图和 `pdos-agent-runtime` 的 `AgentWork` 不迁移。
+- 不改变：唯一 Agent 小Pai；模型网关拒绝登记图之外的调用；DC-11 写入分级；模型传参不作为政策事实（runtime context 只带 ID，scope 由服务器从数据库重建）；worker 错误路径零 LLM（结果未知的模型调用不重发，走对账）；固定技术栈。
+- 约束：插件为 Public Preview，精确锁定版本；新工作流类型与 `XiaopaiWork` 并存，不以不兼容方式修改旧工作流；开关默认关；阶段 3 切换与旧路径下线需用户另行授权。
+- 实施：清单 D378，分阶段 1（试点）、2（主内核）、3（切换）。
+- 判据：决策记录 §8.2 各阶段的测试，以及任务书“阶段 1”“阶段 2”列出的测试项。

@@ -2,6 +2,8 @@
 
 2026-10-07 用户明确所有 Agent 必须遵循 LangGraph + Temporal。本合同补充完整目标架构的执行边界；业务职责、T0/T1/T2、独立身份与资格保持。Agent 拓扑以[目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §06 为准：唯一 Agent 小Pai，经工具、MCP 与技能包完成工作（2026-10-08 补注）。
 
+> **2026-11-12 补注（确认稿 [P100](2026-10-08-pdos-next-design-confirmation.md#p100)）**：小Pai 主图正在迁往 Temporal 官方 LangGraph 插件。新路径上，下表“能力内执行和检查点”一行改为由 Temporal 按节点执行并承担检查点，图内只用 `InMemorySaver`；“Workflow 历史只接收固定工作引用”放开为消息、模型输出、业务状态可进历史，密钥、凭据、令牌、签名 URL 仍不得进入。旧路径（`XiaopaiWork` + 独立检查点库）和隔离子任务在下线前仍按本合同原文。详见[决策记录](2026-11-12-langgraph-temporal-plugin-migration-decision.md)。
+
 ```mermaid
 flowchart LR
   A[用户请求 / 领域事件] --> B[服务器绑定身份与工作引用]
