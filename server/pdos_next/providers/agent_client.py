@@ -244,6 +244,14 @@ def parse_turn(body, route, request_id=None):
             # None (not an object) fails AgentOutput, so verification asks for a repair;
             # an absent result would silently default to an empty one.
             structured["result"] = _final_object(structured.pop("result_json"))
+        if isinstance(structured, dict) and isinstance(structured.get("questions"), list):
+            # D477: a clarifying question's two list fields, written in another unambiguous
+            # encoding, are read as the list they are. Anything else still goes to repair.
+            for question in structured["questions"]:
+                if isinstance(question, dict):
+                    for name in ("options", "depends_on"):
+                        if name in question:
+                            question[name] = _listed(question[name])
         if not calls and not isinstance(structured, dict):
             structured = {}
         return ModelTurn(text, tuple(calls), usage, valid_request_id, structured,
@@ -264,6 +272,32 @@ def _final_object(content):
     except (ValueError, RecursionError):
         return None
     return value if isinstance(value, dict) else None
+
+
+def _listed(value):
+    """A JSON array the model encoded another way, else the value unchanged (D477).
+
+    Captured from MiniMax-M3 final calls on 2026-11-13: an empty list written as
+    ``""``; a list wrapped as ``{"item": [...]}``; a list written as its own JSON text
+    ``"[...]"``; and, in the rerun the same day, an empty list written as ``{}``.
+    ``null`` is read as empty too. The items are not touched and nothing is guessed:
+    a value in any other form is returned as it came, so the structure check still
+    rejects it and the model is asked to rewrite it.
+    """
+    if value is None or value == "" or value == {}:
+        return []
+    if isinstance(value, dict) and len(value) == 1:
+        (name, inner), = value.items()
+        if name in {"item", "items"} and isinstance(inner, list):
+            return inner
+    if isinstance(value, str):
+        try:
+            parsed = json_value(value)
+        except (ValueError, RecursionError):
+            return value
+        if isinstance(parsed, list):
+            return parsed
+    return value
 
 
 class StreamAccumulator:

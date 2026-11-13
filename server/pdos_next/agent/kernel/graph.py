@@ -136,6 +136,31 @@ class Budget:
     validation_retries: int = 2
 
 
+# P122 (D477): told to the model on its last turn of the main graph, at the context tail.
+FINAL_TURN = (
+    "运行预算只剩这最后一轮。不要再调用任何工具，也不要再追问；"
+    "请只依据已经取得的结果给出最终答复：写明核对到了什么、没有查到什么。"
+)
+# P122 (D477): appended when format repair ran out and the model's own summary is kept.
+UNVERIFIED = "\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）"
+
+
+def kept_summary(output):
+    """The model's own summary text when its final output failed only the structure check."""
+    text = output.get("summary") if isinstance(output, dict) else None
+    return text.strip() if isinstance(text, str) and text.strip() else None
+
+
+def without_questions(output):
+    """A question on the last turn can never be answered in this Run: list it as unfinished."""
+    asked = [item["question"] for item in output.get("questions") or []
+             if isinstance(item, dict) and isinstance(item.get("question"), str)]
+    unfinished = output.get("unfinished")
+    return {**output, "status": "partial", "questions": [],
+            "unfinished": [*(unfinished if isinstance(unfinished, list) else []),
+                           *(f"待你确认：{question}" for question in asked)]}
+
+
 class NodeHooks:
     """Where the two execution paths differ; these defaults are the checkpointed path.
 
@@ -274,10 +299,17 @@ class AgentKernel:
         def model(state):
             ports.current(scope)
             loaded = restore_loaded(state)
-            if state["turns"] >= budget.model_turns or state["tools_used"] >= budget.tool_calls:
+            main = scope.isolation == "main"
+            tools_out = state["tools_used"] >= budget.tool_calls
+            if state["turns"] >= budget.model_turns or (tools_out and not main):
                 return partial(state)
+            # P122 (D477): the main graph's last turn is for answering. The model is told
+            # so at the context tail; the tool definitions and the prefix do not change.
+            last = main and (tools_out or state["turns"] == budget.model_turns - 1)
             ports.emit(scope, {"type": "model_started", "turn": state["turns"] + 1})
             messages = hooks.hydrate(scope, state["messages"])
+            if last:
+                messages = [*messages, {"role": "user", "content": FINAL_TURN}]
             try:
                 envelope = json.loads(state["messages"][0]["content"])
                 work_state = envelope.get("context", {}).get("work_state", {})
@@ -340,12 +372,20 @@ class AgentKernel:
             assistant = {"role": "assistant", "content": turn.text}
             if turn.continuation is not None:
                 assistant["provider_continuation"] = turn.continuation
+            if calls and tools_out:
+                # The tool allowance is spent, so these calls are not run.
+                stopped = partial(state)
+                stopped["turns"] = state["turns"] + 1
+                return stopped
             if calls:
                 assistant["tool_calls"] = calls
+            output = turn.structured or {}
+            if last and not calls and output.get("status") == "needs_input":
+                output = without_questions(output)
             return {
                 "messages": hooks.dehydrate(scope, [*admitted_messages, assistant]),
                 "calls": calls,
-                "output": turn.structured or {},
+                "output": output,
                 "turns": state["turns"] + 1,
                 "model_skills": list(state["loaded"]),
                 "model_call_id": str(turn.ledger_call_id) if turn.ledger_call_id else None,
@@ -656,8 +696,13 @@ class AgentKernel:
 
         def verify(state):
             ports.current(scope)
+            structural = False
             try:
-                result = AgentOutput.model_validate(state["output"]).model_dump(mode="json")
+                try:
+                    result = AgentOutput.model_validate(state["output"]).model_dump(mode="json")
+                except ValidationError:
+                    structural = True  # Never reached reference verification.
+                    raise
                 if state.get("exhausted") and result["result"].get("context_incomplete"):
                     return {"output": result}
                 if scope.isolation != "main":
@@ -674,11 +719,17 @@ class AgentKernel:
                 return {"output": result}
             except (ValueError, ValidationError, DomainError) as error:
                 failures = state["validation_failures"] + 1
-                if failures > budget.validation_retries or state.get("exhausted"):
+                main = scope.isolation == "main"
+                spent = main and state["turns"] >= budget.model_turns  # No turn left to repair.
+                if failures > budget.validation_retries or state.get("exhausted") or spent:
+                    # P122 (D477): a result that only failed the structure check keeps the
+                    # model's own summary, marked as unverified. One that reference
+                    # verification rejected is still withheld.
+                    kept = kept_summary(state["output"]) if structural and main else None
                     return {
                         "output": {
                             "status": "partial",
-                            "summary": "结果未通过完整核对。",
+                            "summary": kept + UNVERIFIED if kept else "结果未通过完整核对。",
                             "result": {"actions": state["tool_results"]},
                             "questions": [],
                             "unfinished": ["最终结构或引用尚未核对"],

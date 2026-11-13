@@ -380,6 +380,87 @@ def test_plain_text_final_is_a_known_turn_with_an_empty_object(text):
     assert turn.structured == {} and turn.usage.output_tokens == 5
 
 
+OPTIONS = [{"value": "quality_issue", "label": "品质问题单"},
+           {"value": "rfq_or_spec", "label": "客户 RFQ 或规格书"}]
+
+
+def asking(options, depends_on):
+    return json.dumps({
+        "status": "needs_input", "summary": "需要先确认范围。", "result_json": "{}",
+        "unfinished": [], "questions": [{
+            "id": "q_scope", "question": "那次工作属于哪种材料？", "why": "范围越具体越好找。",
+            "options": options, "recommended": None, "allow_free_text": True,
+            "depends_on": depends_on,
+        }],
+    }, ensure_ascii=False)
+
+
+@pytest.mark.parametrize("options, depends_on", [
+    ({"item": OPTIONS}, ""),  # 2026-11-13 capture, first two attempts.
+    (json.dumps(OPTIONS, ensure_ascii=False), "[]"),  # Same run, third attempt.
+    ({"items": OPTIONS}, None),
+    (OPTIONS, {}),  # 2026-11-13 rerun: six attempts in one run wrote the empty list as {}.
+    (OPTIONS, []),
+])
+def test_question_lists_in_another_unambiguous_encoding_are_read_as_lists(options, depends_on):
+    """D477: these encodings cost real runs their whole answer after two repairs."""
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    turn = parse_turn(finish_with(asking(options, depends_on)), minimax())
+    question = AgentOutput.model_validate(turn.structured).questions[0]
+    assert [item.model_dump() for item in question.options] == OPTIONS
+    assert question.depends_on == []
+
+
+def test_empty_question_lists_are_empty_and_dependencies_keep_their_items():
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    turn = parse_turn(finish_with(asking("", '["q_other"]')), minimax())
+    question = AgentOutput.model_validate(turn.structured).questions[0]
+    assert question.options == [] and question.depends_on == ["q_other"]
+    empty = parse_turn(finish_with(asking({}, {})), minimax())
+    question = AgentOutput.model_validate(empty.structured).questions[0]
+    assert question.options == [] and question.depends_on == []
+
+
+@pytest.mark.parametrize("options", [
+    "品质问题单、客户规格书",  # Prose is not a list.
+    {"choices": OPTIONS},  # Not one of the captured wrappers.
+    {"item": OPTIONS, "more": 1},
+    {"item": OPTIONS[0]},  # A single object is not read as a list.
+    '{"value": "a", "label": "b"}',
+    {"q_other": True},  # Only the empty object is read as an empty list.
+    "{}",
+    5,
+])
+def test_any_other_form_is_left_for_format_repair(options):
+    from pydantic import ValidationError
+
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    turn = parse_turn(finish_with(asking(options, [])), minimax())
+    assert turn.structured["questions"][0]["options"] == options  # Returned as it came.
+    with pytest.raises(ValidationError):
+        AgentOutput.model_validate(turn.structured)
+
+
+def test_list_items_are_not_touched_and_other_fields_are_not_read_this_way():
+    from pydantic import ValidationError
+
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    wrong_item = parse_turn(finish_with(asking({"item": ["只有文字"]}, "")), minimax())
+    assert wrong_item.structured["questions"][0]["options"] == ["只有文字"]
+    with pytest.raises(ValidationError):
+        AgentOutput.model_validate(wrong_item.structured)
+    value = json.loads(asking(OPTIONS, []))
+    value["unfinished"] = ""
+    untouched = parse_turn(finish_with(json.dumps(value, ensure_ascii=False)), minimax())
+    assert untouched.structured["unfinished"] == ""
+    with pytest.raises(ValidationError):
+        AgentOutput.model_validate(untouched.structured)
+
+
 REPEATED_ID = "chatcmpl-tool-afcb05bc4727a0b1"
 
 
