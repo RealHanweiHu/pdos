@@ -54,12 +54,67 @@ MATERIAL = (
     "二、噪声：满载 1 米处 78 dB(A)，目标 75 dB(A)，未达标，待改电机支架减振垫。\n"
     "三、温升：连续工作 15 分钟缸体表面 92 ℃，低于 105 ℃ 限值。\n"
 )
-CASES = [
-    ("plain_answer", "personal", "用三句话说明 IP67 防护等级的含义，不需要查资料。"),
-    ("material_question", "category",
-     "根据已登记的试产记录，TP-200 的漏气问题原因是什么、采取了什么措施？请给出依据。"),
-    ("needs_scope", "category", "帮我整理一下还没解决的问题。"),
+CASES = {
+    "basic": [
+        ("plain_answer", "personal", "用三句话说明 IP67 防护等级的含义，不需要查资料。"),
+        ("material_question", "category",
+         "根据已登记的试产记录，TP-200 的漏气问题原因是什么、采取了什么措施？请给出依据。"),
+        ("needs_scope", "category", "帮我整理一下还没解决的问题。"),
+    ],
+    # Worded so that the model asks one well-formed question before doing anything.
+    "ask": [
+        ("ask_then_answer", "personal",
+         "我想了解一款车载充气泵出口需要的主要认证。开始之前，请先只向我提一个澄清问题，"
+         "问清目标市场，并给出“美国”“欧盟”两个选项；等我回答后再继续，不要自行假设市场，"
+         "回答时不需要查资料。"),
+    ],
+    # One session, each question continuing the previous run, over several long records.
+    "long": [
+        (f"long_turn_{number}", "category", goal) for number, goal in enumerate([
+            "根据已登记的各批试产记录，逐批列出气密不合格的台数和判定原因，给出依据。",
+            "接着上面的结论，各批的噪声实测值分别是多少，哪些批次没有达到目标？给出依据。",
+            "继续：各批的温升结果如何，有没有超过限值的批次？给出依据。",
+            "基于前面三轮的结论，按批次汇总仍未关闭的问题和对应的待办措施。",
+            "最后，把以上内容整理成一份给项目负责人的简要汇报，说明风险最高的两项。",
+        ], start=1)
+    ],
+}
+SELECTED = [
+    case for name in os.environ.get("PDOS_GRAPH_PLUGIN_REAL_TRIAL_CASES", "basic").split(",")
+    for case in CASES[name.strip()]
 ]
+
+
+CAUSES = ["出气嘴 O 型圈压缩量不足", "缸盖平面度超差", "单向阀座毛刺"]
+
+
+def long_records():
+    """Eight synthetic pilot-build records of a few thousand characters each."""
+    records = []
+    for batch in range(1, 9):
+        lines = [f"TP-200 车载充气泵 第 {batch} 批试产记录（合成资料，仅用于联验）。"]
+        leaks = (batch * 3) % 7
+        lines.append(
+            f"一、气密：本批 60 台，8 bar 保压 60 秒，{leaks} 台压降超过 0.3 bar 判定漏气；"
+            f"原因判定为{CAUSES[batch % 3]}。"
+        )
+        lines.append(
+            f"二、噪声：满载 1 米处实测 {72 + batch} dB(A)，目标 75 dB(A)，"
+            f"{'达标' if 72 + batch <= 75 else '未达标，待改电机支架减振垫'}。"
+        )
+        lines.append(
+            f"三、温升：连续工作 15 分钟缸体表面 {88 + batch * 3} ℃，限值 105 ℃，"
+            f"{'合格' if 88 + batch * 3 <= 105 else '超限，待加大散热筋'}。"
+        )
+        for station in range(1, 41):
+            lines.append(
+                f"工位 {station:02d} 巡检：扭矩 {2.0 + (station * batch) % 9 / 10:.1f} N·m，"
+                f"电流 {8.0 + (station + batch) % 12 / 10:.1f} A，外观无异常，"
+                f"记录人 合成检验员{(station + batch) % 5 + 1}，"
+                f"备注：按第 {batch} 批作业指导书执行。"
+            )
+        records.append((f"TP-200 第 {batch} 批试产记录", "\n".join(lines)))
+    return records
 
 
 def host_config(tmp_path, tenant):
@@ -110,6 +165,9 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
     # development policy for this provider keeps accounting but does not cap it.
     budgets.allocate(setup)
     index(setup, register(setup, "TP-200 试产记录", MATERIAL))
+    if any(name.startswith("long_turn") for name, _, _ in SELECTED):
+        for title, body in long_records():
+            index(setup, register(setup, title, body))
     bootstrap = Bootstrap(setup.engine, ports=ports)
     monkeypatch.setattr(setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
     configure_agent_kernel(setup.engine, bootstrap.adapters())
@@ -163,17 +221,24 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
                 ), httpx.AsyncClient(
                     transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local",
                 ) as http:
-                    for name, where, goal in CASES:
-                        observed.append(await one(environment, http, name, where, goal))
+                    previous = None
+                    for name, where, goal in SELECTED:
+                        record = await one(
+                            environment, http, name, where, goal,
+                            continue_from=previous if name.startswith("long_turn") else None,
+                        )
+                        observed.append(record)
+                        previous = record.pop("run_id")
         finally:
             await environment.shutdown()
 
-    async def one(environment, http, name, where, goal):
+    async def one(environment, http, name, where, goal, *, continue_from=None):
         path = ("/v1/personal/agent-runs" if where == "personal"
                 else f"/v1/categories/{setup.category}/agent-runs")
         began = time.monotonic()
         started = await http.post(path, headers=setup.headers, json={
             "goal": goal, "idempotency_key": str(uuid4()),
+            **({"continue_from_run_id": continue_from} if continue_from else {}),
         })
         assert started.status_code == 202, started.text
         run_id = UUID(started.json()["run_id"])
@@ -187,7 +252,10 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
             pending = await handle.query(XiaopaiGraphWork.pending_input)
             if pending and "questions" in pending[0] and answered < 2:
                 answers = {
-                    question["id"]: "只看 TP-200 这个型号，范围是已登记试产记录里未达标的项目。"
+                    question["id"]: (
+                        "欧盟" if name == "ask_then_answer"
+                        else "只看 TP-200 这个型号，范围是已登记试产记录里未达标的项目。"
+                    )
                     for question in pending[0]["questions"]
                 }
                 submitted = await http.post(
@@ -216,6 +284,7 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
             ).all()
             summary = (run.result or {}).get("summary")
             record = {
+                "run_id": str(run_id),
                 "case": name, "status": result.get("status"),
                 "error_code": result.get("error_code") or run.error_code,
                 "seconds": round(elapsed, 1), "answers_given": answered,
@@ -230,6 +299,10 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
                 ),
                 "activities": [name for h in histories for name in scheduled(h)],
                 "summary_chars": len(summary or ""),
+                "resumed_after_answer": sum(
+                    1 for h in histories for event in h.events
+                    if event.HasField("workflow_execution_signaled_event_attributes")
+                ),
             }
         record["domain_errors"] = [
             f"{item['code']}/{item['reason']}@{item['frames'][0] if item['frames'] else '?'}"
@@ -246,16 +319,25 @@ def test_real_provider_runs_on_the_plugin_path(setup, tmp_path, monkeypatch):
         for item in feedback:
             print("VERIFY", name, item[:500])
         reasons.clear()
-        print("TRIAL", json.dumps(record, ensure_ascii=False))
+        print("TRIAL", json.dumps({k: v for k, v in record.items() if k != "run_id"},
+                                  ensure_ascii=False))
         if summary:
             print("ANSWER", name, summary[:300])
         target = os.environ.get("PDOS_GRAPH_PILOT_EVIDENCE")
         if target:
             with Path(target).open("a") as handle_:
-                handle_.write(json.dumps(record, ensure_ascii=False) + "\n")
+                handle_.write(json.dumps(
+                    {k: v for k, v in record.items() if k != "run_id"}, ensure_ascii=False,
+                ) + "\n")
         return record
 
     asyncio.run(actual())
-    assert [item["workflow_type"] for item in observed] == ["XiaopaiGraphWork"] * len(CASES)
+    assert [item["workflow_type"] for item in observed] == ["XiaopaiGraphWork"] * len(SELECTED)
     assert all(item["held_tokens"] == 0 for item in observed)
-    assert all(item["status"] in {"completed", "partial"} for item in observed), observed
+    # A real provider may return nothing usable. That run must then have gone through
+    # reconciliation rather than a second request; nothing else may fail.
+    for item in observed:
+        assert item["status"] in {"completed", "partial"} or (
+            item["error_code"] == "EXTERNAL_OUTCOME_UNKNOWN"
+            and item["activities"][-1] == "reconcile_xiaopai_run"
+        ), item

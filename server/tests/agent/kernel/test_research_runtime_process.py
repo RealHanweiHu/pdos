@@ -408,9 +408,21 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                             (prefix + "%",),
                         )
                         threads = {row["thread_id"] for row in cursor.fetchall()}
-                    assert len(threads) == 2 and prefix in threads
+                        # The main graph's checkpoints live in the session thread under
+                        # this run's namespace (session layout), not under the run prefix.
+                        cursor.execute(
+                            "SELECT count(*) AS n FROM checkpoints WHERE thread_id = %s"
+                            " AND checkpoint_ns LIKE %s",
+                            (f"xiaopai:{run.tenant_id}:{run.session_id}", f"run:{run.id}%"),
+                        )
+                        main_checkpoints = cursor.fetchone()["n"]
+                    # One durable child thread on either path. The plugin path (P100)
+                    # keeps the main graph in workflow history and writes no checkpoint.
+                    plugin = run.versions.get("execution_engine") == "temporal-langgraph/v1"
+                    assert len(threads) == 1 and prefix not in threads
+                    assert (main_checkpoints == 0) if plugin else (main_checkpoints > 0)
                     child = saver.get_tuple(
-                        {"configurable": {"thread_id": next(iter(threads - {prefix}))}}
+                        {"configurable": {"thread_id": next(iter(threads))}}
                     )
                     assert {
                         r["tool"] for r in child.checkpoint["channel_values"]["tool_results"]
@@ -426,7 +438,7 @@ def test_default_research_worker_retains_child_checkpoint_and_actual_snapshot(
                             "job_id": job_id,
                             "model_calls": 7,
                             "cost_micro_usd": 840,
-                            "checkpoint_threads": 2,
+                            "checkpoint_threads": 1 + (0 if plugin else 1),
                             "exact_job_replay": True,
                             "external_model_calls": 0,
                             "external_search_read_calls": 0,
