@@ -4,7 +4,6 @@ No model qualification, arbitrary fixed skill, model wallet, business fact or
 clock is manufactured. Negative cases touch only explicit authorization/Run guards.
 """
 
-import os
 from contextlib import nullcontext
 from datetime import timedelta
 from types import SimpleNamespace as NS
@@ -18,7 +17,6 @@ from sqlalchemy.orm import Session
 
 from pdos_next.agent.enterprise_search.assistant_adapter import AssistantReadAdapter
 from pdos_next.agent.enterprise_search.embedding_query import QueryEmbedding, QueryPorts
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.models import (
     AgentRun,
     AgentToolCall,
@@ -32,6 +30,7 @@ from pdos_next.domain.automations import service_runtime
 from pdos_next.domain.automations.schemas import ZERO_MODEL_BUDGET
 from pdos_next.domain.automations.service_models import AutomationServiceAttempt
 from pdos_next.errors import DomainError
+from tests.agent.kernel.graph_inline import InlineRun
 from tests.automations.pg.test_service_automation_pg import _activate
 
 
@@ -124,11 +123,7 @@ def worker(work, monkeypatch):
         "pdos_next.agent.kernel.activities.activity.shield_thread_cancel_exception", nullcontext
     )
     monkeypatch.setattr("pdos_next.agent.kernel.activities.activity.is_cancelled", lambda: False)
-    return KernelActivities(
-        work.setup.engine,
-        checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
-        technical_engine=work.setup.dispatch,
-    )
+    return InlineRun(work.setup.engine, technical_engine=work.setup.dispatch)
 
 
 def test_actual_native_authorized_summary_runs_without_model_skill_wallet_or_adapter(

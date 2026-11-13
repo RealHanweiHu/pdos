@@ -16,7 +16,7 @@ from temporalio.client import Client
 from temporalio.worker import Worker
 
 from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.host import BoundHost
 from pdos_next.agent.kernel.models import AgentRun
@@ -28,9 +28,9 @@ from pdos_next.integrations.dingtalk.workflow import (
     DingTalkCompletion,
 )
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent.enterprise_search.test_assistant_pg import SyntheticClient
 from tests.agent.enterprise_search.test_retrieval_pg import index, register
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 from tests.integrations.dingtalk.test_channel_pg import channel as channel
 from tests.integrations.dingtalk.test_official_pg import bind_official, incoming_official, protocol
@@ -94,18 +94,17 @@ def test_official_wire_uses_same_temporal_graph_and_current_private_delivery(
             os.environ["PDOS_TEMPORAL_ADDRESS"], namespace=os.environ["PDOS_TEMPORAL_NAMESPACE"]
         )
         native = TemporalPort(client, task_queue="dingtalk-offline-" + str(uuid4()))
-        kernel = KernelActivities(
-            setup.engine, checkpoint_url=checkpoint_url, technical_engine=setup.dispatch
-        )
         delivery = ChannelActivities(setup.engine, setup.dispatch, native, runtime=wire.runtime)
         sender = ChannelSender(client, setup.dispatch, native, task_queue=native.task_queue)
         with ThreadPoolExecutor(max_workers=4) as executor:
-            async with Worker(
+            async with graph_worker(
                 client,
-                task_queue=native.task_queue,
-                workflows=[XiaopaiWork, DingTalkCompletion],
-                activities=[kernel.advance, kernel.reconcile, delivery.deliver, delivery.cancel],
-                activity_executor=executor,
+                native.task_queue,
+                setup.engine,
+                executor,
+                technical_engine=setup.dispatch,
+                activities=[delivery.deliver, delivery.cancel],
+                workflows=[DingTalkCompletion],
             ):
                 await sender.discover(setup.tenant)
                 native_handle = client.get_workflow_handle(workflow_id(setup.tenant, run_id))

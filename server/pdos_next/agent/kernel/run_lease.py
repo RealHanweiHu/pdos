@@ -8,13 +8,14 @@ the next safe point: before its next model call or tool call.
 
 The lease's connection can drop on its own; its lock is then released and the next
 attempt could start while this one runs on. The Activity probes the lease on every
-heartbeat and stops the attempt the same way once it is lost (D358).
+heartbeat and stops the attempt the same way once it is lost (D358); on the plugin path
+each node's lease is probed by ``lease_watch``.
 """
 
 import time
 from contextlib import contextmanager
 from contextvars import ContextVar
-from threading import Lock
+from threading import Event, Lock, Thread
 
 from sqlalchemy import create_engine, text
 from sqlalchemy.exc import SQLAlchemyError
@@ -104,6 +105,30 @@ def run_lease(engine, run_id, *, waiting=None, interval=2.0):
             waiting()
             time.sleep(interval)
         yield RunLease(connection, key)
+
+
+@contextmanager
+def lease_watch(lease, stop, *, interval=10.0):
+    """Probe ``lease`` every ``interval`` seconds and set ``stop`` once it is lost (D358).
+
+    The attempt then stops at its next safe point, as a superseded one does, and leaves
+    the run to the next attempt. The probe uses the lease's own idle connection.
+    """
+    done = Event()
+
+    def watch():
+        while not done.wait(interval):
+            if not lease.held():
+                stop.set()
+                return
+
+    thread = Thread(target=watch, name="run-lease-watch", daemon=True)
+    thread.start()
+    try:
+        yield
+    finally:
+        done.set()
+        thread.join(timeout=1)
 
 
 def check_attempt(superseded=None):

@@ -24,7 +24,7 @@ from pdos_next.workflows.graph_nodes import activity_node, dependency
 
 from .graph import AgentKernel, GraphState, NodeHooks, VerifiedCategoryAdoption
 from .models import AgentToolCall
-from .run_lease import attempt_scope, check_attempt, run_lease
+from .run_lease import attempt_scope, check_attempt, lease_watch, run_lease
 
 GRAPH = "xiaopai"
 CONTINUATION_REF = "provider_continuation_ref"
@@ -227,9 +227,10 @@ def _node(name):
         host.superseded = stop
         try:
             # One attempt works on a run at a time; an attempt Temporal gave up may
-            # still be on its thread, and stops at its next safe point (D243).
-            with run_lease(engine, scope.run_id, waiting=lambda: check_attempt(stop)), \
-                    attempt_scope(stop):
+            # still be on its thread, and stops at its next safe point (D243). A lease
+            # whose connection dropped stops the attempt the same way (D358).
+            with run_lease(engine, scope.run_id, waiting=lambda: check_attempt(stop)) as lease, \
+                    lease_watch(lease, stop), attempt_scope(stop):
                 kernel = AgentKernel(
                     host, adapters.tool_registry or default_registry(), catalog=host.catalog,
                 )
@@ -304,7 +305,8 @@ def _options(minutes, *, heartbeat=True, attempts=3):
     }
 
 
-def build():
+def build(*, gate=rollover_gate):
+    """``gate`` is replaceable only so the graph can be driven outside a workflow."""
     graph = StateGraph(State)
     for name, body, options in (
         ("prepare_context", prepare_context, _options(5)),
@@ -318,7 +320,7 @@ def build():
         ("finalize", finalize, _options(1, attempts=None)),
     ):
         graph.add_node(name, activity_node(body), metadata=options)
-    graph.add_node("rollover_gate", rollover_gate, metadata={"execute_in": "workflow"})
+    graph.add_node("rollover_gate", gate, metadata={"execute_in": "workflow"})
     graph.add_edge(START, "prepare_context")
     graph.add_edge("prepare_context", "model")
     graph.add_conditional_edges("model", choose, ["tools", "model", "route", "verify"])

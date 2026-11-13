@@ -1,33 +1,22 @@
-"""Temporal Activity is the sole complete 小Pai entry; history contains references only."""
+"""Kernel bookkeeping Activities that never run a model: reconciliation and helpers.
 
-import logging
-import traceback
-from contextvars import copy_context
-from threading import Event, Thread
+The 小Pai graph itself runs node by node on the Temporal LangGraph plugin (P100); see
+``plugin_graph`` and ``graph_activities``.
+"""
+
 from uuid import UUID
 
-from langgraph.checkpoint.postgres import PostgresSaver
-from psycopg import OperationalError as CheckpointUnavailable
 from sqlalchemy import text
-from sqlalchemy.exc import OperationalError
 from temporalio import activity
-from temporalio.exceptions import ApplicationError, CancelledError
+from temporalio.exceptions import ApplicationError
 
 from pdos_next.core.database import tenant_session
 from pdos_next.core.dispatch.context import event_context
 from pdos_next.core.service import Context
 from pdos_next.errors import DomainError
-from pdos_next.workflows.checkpoints import verified_checkpoint_url
 
-from .graph import AgentKernel
-from .host import BoundHost
-from .models import AgentRun
 from .persistence import KernelStore
-from .run_lease import AttemptSuperseded, RunBusy, attempt_scope, run_lease
-from .tools import default_registry
-
-# The attempt's heartbeat; it also probes the run lease (D358).
-HEARTBEAT_SECONDS = 10
+from .run_lease import RunBusy, run_lease
 
 
 def configure_agent_kernel(engine, adapters):
@@ -35,9 +24,8 @@ def configure_agent_kernel(engine, adapters):
 
 
 class KernelActivities:
-    def __init__(self, engine, *, checkpoint_url=None, technical_engine=None):
-        self.engine, self.checkpoint_url = engine, checkpoint_url
-        self.technical_engine = technical_engine
+    def __init__(self, engine, *, technical_engine=None):
+        self.engine, self.technical_engine = engine, technical_engine
         self.store = KernelStore(engine)
 
     def scope_failed(self, ctx, run_id):
@@ -57,225 +45,6 @@ class KernelActivities:
     @staticmethod
     def scope_failure(run_id):
         return {"run_id": str(run_id), "status": "failed", "error_code": "FORBIDDEN_SCOPE"}
-
-    @activity.defn(name="advance_xiaopai_run")
-    def advance(self, reference):
-        keys = {"tenant_id", "category_id", "actor_id", "requester_id", "subject_id"}
-        if (
-            not isinstance(reference, dict)
-            or not keys <= reference.keys()
-            or set(reference) - keys - {"answer_ref"}
-        ):
-            raise DomainError("FORBIDDEN_SCOPE", "工作须使用固定的服务器运行信封。")
-        if reference.get("category_id"):
-            ctx = event_context(reference)
-        else:
-            try:
-                ctx = Context(
-                    *(UUID(reference[key]) for key in ("tenant_id", "actor_id", "requester_id"))
-                )
-            except (KeyError, ValueError, TypeError):
-                raise DomainError("FORBIDDEN_SCOPE", "缺少服务器个人范围信封。") from None
-        run_id = UUID(reference["subject_id"])
-        with tenant_session(
-            self.engine,
-            ctx.tenant_id,
-            actor_id=ctx.actor_id,
-            requester_id=ctx.requester_id,
-            category_id=ctx.category_id,
-        ) as s:
-            row = s.get(AgentRun, run_id)
-            if (
-                not row
-                or row.requester_id != ctx.requester_id
-                or ctx.actor_id
-                != (row.writer_id if row.trigger == "automation_service" else ctx.requester_id)
-                or row.category_id != ctx.category_id
-            ):
-                if self.scope_failed(ctx, run_id):
-                    return self.scope_failure(run_id)
-                raise DomainError("FORBIDDEN_SCOPE", "工作信封不属于当前运行。")
-            if row.reverted_at:
-                return {"run_id": str(row.id), "status": "cancelled", "reverted": True}
-            if row.state in {"completed", "partial", "failed", "cancelled"}:
-                return {"run_id": str(row.id), "status": row.state}
-            writer, goal = row.writer_id, row.goal
-            summary_run = False
-            if row.trigger in {"automation_manual", "automation_service"}:
-                from pdos_next.domain.automations.runtime import binding
-
-                _, rule_spec = binding(s, row)
-                from pdos_next.domain.my_work.summary_runtime import selected
-
-                summary_run = selected(rule_spec)
-                goal += (
-                    f"\n\n用途：{rule_spec.purpose}\n停止条件：{rule_spec.stop_condition}"
-                    "\n本规则只读取资料并返回结果，禁止联网、MCP 和业务写入。"
-                )
-        try:
-            scope = self.store.scope(
-                tenant_id=ctx.tenant_id,
-                requester_id=ctx.requester_id,
-                writer_id=writer,
-                category_id=ctx.category_id,
-                run_id=run_id,
-            )
-        except DomainError:
-            if self.scope_failed(ctx, run_id):
-                return self.scope_failure(run_id)
-            raise
-        # D243: one attempt works on a run at a time. A later attempt (after a timeout)
-        # waits here, heartbeating, until the earlier one has stopped at a safe point.
-        with run_lease(
-            self.engine, run_id, waiting=lambda: activity.heartbeat(str(run_id))
-        ) as lease:
-            return self._advance_owned(
-                ctx, run_id, scope, reference, writer, goal, summary_run, lease=lease
-            )
-
-    def _advance_owned(self, ctx, run_id, scope, reference, writer, goal, summary_run, lease=None):
-        # The attempt this one waited for may have finished the round meanwhile.
-        with self.store.transaction(scope) as (_, row):
-            if row.reverted_at:
-                return {"run_id": str(row.id), "status": "cancelled", "reverted": True}
-            if row.state in {"completed", "partial", "failed", "cancelled"}:
-                return {"run_id": str(row.id), "status": row.state}
-            if row.state == "waiting_input" and "answer_ref" not in reference:
-                # Only this Activity sets waiting_input; return what that attempt returned.
-                if row.error_code == "EXTERNAL_OUTCOME_UNKNOWN":
-                    return {"run_id": str(row.id), "status": "needs_reconciliation",
-                            "error_code": row.error_code}
-                if row.error_code:
-                    return {"run_id": str(row.id), "status": "waiting_input",
-                            "error_code": row.error_code}
-                return {"run_id": str(row.id), "status": "needs_input"}
-        adapters = getattr(self.engine, "_pdos_agent_kernel_adapters", None)
-        if adapters is None and not summary_run:
-            with self.store.transaction(scope, lock=True) as (session, row):
-                row.state, row.error_code = "waiting_input", "SOURCE_UNAVAILABLE"
-                from .process_view import record_state
-
-                record_state(session, row)
-            self.store.emit(scope, {"type": "model_unavailable", "code": "SOURCE_UNAVAILABLE"})
-            return {
-                "run_id": str(scope.run_id),
-                "status": "waiting_input",
-                "error_code": "SOURCE_UNAVAILABLE",
-            }
-        answer = None
-        host = None if summary_run else BoundHost(self.store, adapters)
-        with self.store.transaction(scope, lock=True) as (_, row):
-            row.state, row.error_code = "running", None
-        kernel = (
-            None if summary_run else AgentKernel(
-                host, adapters.tool_registry or default_registry(), catalog=host.catalog
-            )
-        )
-        stopped, superseded = Event(), Event()
-        if host is not None:
-            host.superseded = superseded
-        heartbeat_context = copy_context()
-
-        def heartbeat():
-            while not stopped.wait(HEARTBEAT_SECONDS):
-                activity.heartbeat(str(scope.run_id))
-                # Temporal gave this attempt up, or the lease's connection dropped and
-                # released the run to a next attempt (D358): either way stop before the
-                # next model/tool call and leave the run to the next attempt.
-                if activity.is_cancelled() or (lease is not None and not lease.held()):
-                    superseded.set()
-
-        thread = Thread(target=lambda: heartbeat_context.run(heartbeat), daemon=True)
-        try:
-            # The stop signal also reaches isolated children whose hosts were built at
-            # startup, and the threads an extraction starts for them (D257).
-            with activity.shield_thread_cancel_exception(), attempt_scope(superseded):
-                if reference.get("answer_ref") and not summary_run:
-                    from .category_adoption import resolve
-
-                    answer = resolve(self.engine, scope, reference["answer_ref"])
-                activity.heartbeat(str(scope.run_id))
-                thread.start()
-                # No in-memory fallback in the production Activity.
-                if not self.checkpoint_url:
-                    raise DomainError("SOURCE_UNAVAILABLE", "检查点存储未配置。")
-                with PostgresSaver.from_conn_string(
-                    verified_checkpoint_url(self.checkpoint_url)
-                ) as saver:
-                    if summary_run:
-                        from pdos_next.domain.my_work.summary_graph import execute
-
-                        result = execute(self.store, scope, checkpointer=saver)
-                    else:
-                        result = kernel.execute(
-                            scope,
-                            goal=goal,
-                            answer=answer,
-                            checkpointer=saver,
-                            preload=self.preload(scope, adapters),
-                        )
-                if result.get("__interrupt__"):
-                    with self.store.transaction(scope, lock=True) as (_, row):
-                        row.state = "waiting_input"
-                    return {"run_id": str(scope.run_id), "status": "needs_input"}
-                return {"run_id": str(scope.run_id), "status": result["output"]["status"]}
-        except (AttemptSuperseded, CancelledError):
-            # This attempt was given up; the next attempt or the workflow owns the run now.
-            # Leave the run's state alone instead of marking it failed.
-            raise CancelledError("小Pai attempt superseded") from None
-        except Exception as exc:
-            if summary_run and isinstance(exc, (OperationalError, CheckpointUnavailable)):
-                # No inference or external/business write occurred. Let the same
-                # Temporal Activity retry its persisted graph/terminal result.
-                raise
-            if not isinstance(exc, DomainError):
-                # Unexpected worker failures remain visible and never retry a model from here.
-                # Frames and exception type are diagnostic; values/SQL parameters stay private.
-                logging.getLogger(__name__).error(
-                    "Unexpected %s in Run %s: %s",
-                    type(exc).__name__,
-                    scope.run_id,
-                    "".join(traceback.format_tb(exc.__traceback__)),
-                )
-                exc = DomainError("INTERNAL_ERROR", "执行未完成，已提交结果保留，请核对运行记录。")
-            if exc.code != "CANCELLED_RUN":
-                try:
-                    with self.store.transaction(scope, lock=True) as (session, row):
-                        if summary_run and row.state in {"completed", "partial"}:
-                            return {"run_id": str(scope.run_id), "status": row.state}
-                        row.error_code = exc.code
-                        row.state = (
-                            "waiting_input" if exc.code == "EXTERNAL_OUTCOME_UNKNOWN" else "failed"
-                        )
-                        from .process_view import record_state
-
-                        if row.state == "failed":
-                            from .work_state import record_finish
-
-                            record_finish(session, row, row.result or {})
-                        record_state(session, row)
-                    if exc.code == "EXTERNAL_OUTCOME_UNKNOWN":
-                        from .run_reconciliation import mark_required
-
-                        mark_required(self.store, scope)
-                except DomainError:
-                    if self.scope_failed(ctx, run_id):
-                        return self.scope_failure(run_id)
-            return {
-                "run_id": str(scope.run_id),
-                "status": "cancelled"
-                if exc.code == "CANCELLED_RUN"
-                else "needs_reconciliation"
-                if exc.code == "EXTERNAL_OUTCOME_UNKNOWN"
-                else "failed",
-                "error_code": exc.code,
-            }
-        finally:
-            stopped.set()
-            if thread.is_alive():
-                thread.join(timeout=1)
-            if host is not None:
-                host.gateway.close()
 
     def preload(self, scope, adapters):
         from pdos_next.domain.automations.runtime import preload

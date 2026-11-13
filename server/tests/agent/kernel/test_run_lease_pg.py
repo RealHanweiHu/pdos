@@ -7,11 +7,15 @@ from uuid import uuid4
 
 import pytest
 from sqlalchemy import text
-from temporalio.exceptions import CancelledError
 
-from pdos_next.agent.kernel import activities
-from pdos_next.agent.kernel.run_lease import RunBusy, RunLease, check_attempt, run_lease
-from tests.agent.kernel.test_run_attempts import RUN, Store, owned
+from pdos_next.agent.kernel.run_lease import (
+    AttemptSuperseded,
+    RunBusy,
+    RunLease,
+    check_attempt,
+    lease_watch,
+    run_lease,
+)
 
 
 def test_one_holder_per_run_and_other_runs_are_independent(engines):
@@ -125,18 +129,12 @@ def test_a_session_that_does_not_hold_the_lock_is_not_the_lease(engines):
         assert not RunLease(fresh, {"key": "xiaopai-run-attempt:" + str(run)}).held()
 
 
-def test_a_dropped_lease_stops_the_attempt_at_its_next_safe_point(engines, monkeypatch):
-    """The Activity's heartbeat finds the drop; the attempt stops as a superseded one."""
+def test_a_dropped_lease_stops_the_attempt_at_its_next_safe_point(engines):
+    """The node's lease watch finds the drop; the attempt stops as a superseded one."""
     admin, engine = engines[0], engines[1]
-    monkeypatch.setattr(activities, "HEARTBEAT_SECONDS", 0.05)
-    store = Store("queued")
-    with run_lease(engine, RUN) as lease:
-
-        def execute(host):
-            drop(admin, holder(admin, RUN))
-            assert host.superseded.wait(5)
-            check_attempt(host.superseded)  # The next model or tool call.
-
-        with pytest.raises(CancelledError):
-            owned(monkeypatch, store, execute, lease=lease)
-    assert store.row.state == "running" and "failed" not in store.states
+    run, stop = uuid4(), threading.Event()
+    with run_lease(engine, run) as lease, lease_watch(lease, stop, interval=0.05):
+        drop(admin, holder(admin, run))
+        assert stop.wait(5)
+        with pytest.raises(AttemptSuperseded):
+            check_attempt(stop)  # The next model or tool call.

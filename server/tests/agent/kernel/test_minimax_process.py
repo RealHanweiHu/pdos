@@ -33,11 +33,7 @@ from pdos_next.providers.agent_client import AgentProviderClient, tool_name
 from pdos_next.providers.agent_wire import FINISH_TOOL
 from tests.agent.kernel.test_cost_budget import wallet
 from tests.agent.kernel.test_domain_adapter_transactions import fixture
-from tests.agent.kernel.test_worker_process_recovery import (
-    saved_checkpoint,
-    temporal_state,
-    wait_for,
-)
+from tests.agent.kernel.test_worker_process_recovery import temporal_state, wait_for
 from tests.agent.model_configuration.test_host_runtime import KmsSdk, document, write_config
 
 pytestmark = pytest.mark.skipif(
@@ -317,7 +313,6 @@ def test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_propos
                 seconds=60,
             )
             original_temporal, _ = temporal_state(identity, setup)
-            original_checkpoint = saved_checkpoint(identity, setup)
             stop_worker()
             answer = api.post(
                 agent_path + f"/{identity}/answers",
@@ -338,11 +333,8 @@ def test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_propos
                 seconds=60,
             )
             temporal_run, _, history = temporal_state(identity, setup, result=True)
+            # P101: progress survives the restart in workflow history, not a checkpoint store.
             assert temporal_run == original_temporal
-            checkpoint = saved_checkpoint(identity, setup)
-            assert (
-                checkpoint[0] == original_checkpoint[0] and checkpoint[2] > original_checkpoint[2]
-            )
             events = api.get(agent_path + f"/{identity}/events", headers=setup.headers)
             candidate = next(
                 row["event"]

@@ -1,4 +1,8 @@
-"""Actual API lifespan, production Worker subprocess, Temporal and PG checkpoints."""
+"""Actual API lifespan, production Worker subprocess and Temporal.
+
+The main graph runs on the Temporal LangGraph plugin (P100): a waiting run survives a
+worker restart because its progress is in workflow history, not in a checkpoint store.
+"""
 
 import asyncio
 import json
@@ -11,16 +15,13 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from langgraph.checkpoint.postgres import PostgresSaver
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio.client import Client
 
 from pdos_next.agent.kernel.bootstrap import Bootstrap
-from pdos_next.agent.kernel.execution import scope_for_run
 from pdos_next.agent.kernel.management import AgreementInput, register_agreement
 from pdos_next.agent.kernel.models import AgentRun, TenantSkillEnablement
-from pdos_next.agent.kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
 from pdos_next.agent.kernel.temporal_port import workflow_id
 from pdos_next.api import create_app
 from pdos_next.core.database import tenant_session
@@ -151,7 +152,15 @@ def temporal_state(identity, setup, *, result=False):
                     target.extend(json.loads(p.data) for p in getattr(event, field).input.payloads)
         fields = {"tenant_id", "category_id", "actor_id", "requester_id", "subject_id"}
         assert len(starts) == 1 and set(starts[0]) == fields
-        assert all(set(value) <= fields | {"answer_ref"} for value in activities)
+        # The workflow is started and signalled with references only. Node Activities
+        # carry graph state (P100); the bookkeeping ones still take the fixed reference.
+        names = [
+            event.activity_task_scheduled_event_attributes.activity_type.name
+            for event in history.events
+            if event.HasField("activity_task_scheduled_event_attributes")
+        ]
+        assert names[0] == "open_xiaopai_graph_run" and set(activities[0]) == fields | {"kind"}
+        assert all(name.startswith("xiaopai.") for name in names[1:])
         assert all(str(UUID(value)) == value for value in signals)
         return description.run_id, output, {
             "history_reference_fields": sorted(fields),
@@ -159,20 +168,6 @@ def temporal_state(identity, setup, *, result=False):
         }
 
     return asyncio.run(read())
-
-
-def saved_checkpoint(identity, setup):
-    with Session(setup.admin) as session:
-        row = session.get(AgentRun, identity)
-        config = main_checkpoint_config(scope_for_run(row), row.versions.get(LAYOUT_KEY))
-    url = os.environ["M2_TEST_CHECKPOINT_URL"].replace("postgresql+psycopg://", "postgresql://")
-    with PostgresSaver.from_conn_string(url) as saver:
-        checkpoint = saver.get_tuple(config)
-        assert checkpoint is not None
-        return (
-            config["configurable"]["thread_id"],
-            checkpoint.checkpoint["id"], checkpoint.metadata["step"],
-        )
 
 
 def test_production_worker_restarts_waiting_run_and_committed_answer_becomes_real_t1_claim(
@@ -195,7 +190,6 @@ def test_production_worker_restarts_waiting_run_and_committed_answer_becomes_rea
 
             wait_for(waiting, process)
             initial_temporal_run, _ = temporal_state(identity, setup)
-            before_checkpoint = saved_checkpoint(identity, setup)
             worker.stop()
             answer = api.post(path + f"/{identity}/answers", headers=setup.headers, json={
                 "answers": {"region": "US"}, "idempotency_key": str(uuid4()),
@@ -206,10 +200,6 @@ def test_production_worker_restarts_waiting_run_and_committed_answer_becomes_rea
                      .json()["status"] == "completed", restarted)
             temporal_run, result, history = temporal_state(identity, setup, result=True)
             assert temporal_run == initial_temporal_run
-            after_checkpoint = saved_checkpoint(identity, setup)
-            assert after_checkpoint[0] == before_checkpoint[0]
-            assert after_checkpoint[1] != before_checkpoint[1]
-            assert after_checkpoint[2] > before_checkpoint[2]
             assert result["status"] == "completed"
             replay = api.post(path, headers=setup.headers, json=payload)
             assert replay.json()["run_id"] == str(identity)
@@ -236,7 +226,6 @@ def test_production_worker_restarts_waiting_run_and_committed_answer_becomes_rea
                 assert session.get(AgentRun, identity).held_tokens == 0
             print(json.dumps({"run_id": str(identity), "temporal_run_id": temporal_run,
                               "same_temporal_run": True, **history,
-                              "same_checkpoint_thread": True,
                               "worker_processes": 2, "actual_claims": 1, "real_model_calls": 0}))
     finally:
         worker.close()
@@ -280,7 +269,7 @@ def test_cancel_while_production_worker_is_offline_remains_cancelled_after_resta
         worker.close()
 
 
-def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_restart(
+def test_continuation_recovers_its_own_wait_after_worker_restart(
     setup, monkeypatch, tmp_path
 ):
     ports, arguments, app, payload = prepare(setup, monkeypatch)
@@ -311,7 +300,6 @@ def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_
             confirmed = api.post(command_path, headers=setup.headers,
                                  json=preview.json()["command"])
             assert confirmed.status_code == 200, confirmed.text
-            root_checkpoint = saved_checkpoint(root, setup)
             worker.stop()
 
             continuation = {
@@ -326,10 +314,6 @@ def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_
             wait_for(lambda: api.get(path + f"/{child}", headers=setup.headers)
                      .json()["status"] == "waiting_input", process)
             child_temporal, _ = temporal_state(child, setup)
-            child_checkpoint = saved_checkpoint(child, setup)
-            assert child_checkpoint[0] == root_checkpoint[0]
-            assert child_checkpoint[1] != root_checkpoint[1]
-            assert saved_checkpoint(root, setup) == root_checkpoint
             worker.stop()
 
             answer = api.post(path + f"/{child}/answers", headers=setup.headers, json={
@@ -342,8 +326,6 @@ def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_
                      .json()["status"] == "completed", process)
             temporal_run, result, history = temporal_state(child, setup, result=True)
             assert temporal_run == child_temporal and result["status"] == "completed"
-            assert saved_checkpoint(root, setup) == root_checkpoint
-            assert saved_checkpoint(child, setup)[2] > child_checkpoint[2]
             replay = api.post(path, headers=setup.headers, json=continuation)
             assert replay.status_code == 202 and replay.json()["run_id"] == str(child)
             with Session(setup.admin) as session:
@@ -360,20 +342,16 @@ def test_continuation_uses_one_pg_thread_and_recovers_its_own_wait_after_worker_
                 )))
                 assert len(receipts) == 1 and receipts[0].agent_run_id == root
                 assert session.get(Claim, receipts[0].subject_id) is not None
-            url = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
-                "postgresql+psycopg://", "postgresql://"
-            )
-            with PostgresSaver.from_conn_string(url) as saver:
-                rows = list(saver.list({"configurable": {"thread_id": root_checkpoint[0]}}))
-            assert {row.config["configurable"]["checkpoint_ns"] for row in rows} == {
-                f"run:{root}", f"run:{child}",
-            }
-            assert {row.metadata["pdos_run_id"] for row in rows} == {str(root), str(child)}
+            with Session(setup.admin) as session:
+                engines = {
+                    session.get(AgentRun, identity).versions["execution_engine"]
+                    for identity in (root, child)
+                }
+            assert engines == {"temporal-langgraph/v1"}
             print(json.dumps({
                 "root_run_id": str(root), "continued_run_id": str(child),
                 "temporal_run_id": temporal_run, "same_temporal_run_after_restart": True,
-                "one_conversation_thread": True, "independent_run_namespaces": 2,
-                "root_checkpoint_unchanged": True, "worker_processes": 3,
+                "worker_processes": 3,
                 "history": history, "root_history": root_history,
                 "actual_claims": 1, "child_claims": 0, "held_tokens": 0,
                 "real_model_calls": 0,

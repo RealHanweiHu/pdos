@@ -1,7 +1,7 @@
-"""小Pai on the Temporal LangGraph plugin (P100): one workflow, one Activity per node.
+"""The one durable 小Pai workflow: the registered graph runs one Activity per node.
 
-Runs beside ``XiaopaiWork``. A run is started on one of the two and stays there; the
-workflow id and the ``resume`` signal are the same for both.
+Temporal owns node execution, waiting, cancellation and recovery (P100). Questions and
+confirmations resume the same graph by committed answer reference.
 """
 
 from datetime import timedelta

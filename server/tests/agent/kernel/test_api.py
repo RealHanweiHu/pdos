@@ -7,11 +7,11 @@ from fastapi.testclient import TestClient
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.api import ApiPorts, router
 from pdos_next.agent.kernel.models import AgentRun
 from pdos_next.core.models import Grant
 from pdos_next.errors import DomainError
+from tests.agent.kernel.graph_inline import InlineRun
 
 
 def client(setup, *, binding_state=None, cancel_calls=None):
@@ -70,7 +70,7 @@ def test_run_returns_stable_work_id_and_missing_model_wait_has_zero_inference(se
     ref = calls[0][1]
     assert set(ref) == {"tenant_id", "category_id", "actor_id", "requester_id", "subject_id"}
     assert "Synthetic public research" not in str(ref)
-    result = KernelActivities(setup.engine).advance(ref)
+    result = InlineRun(setup.engine).advance(ref)
     assert result["status"] == "waiting_input" and result["error_code"] == "SOURCE_UNAVAILABLE"
     read = api.get(path + "/" + first.json()["run_id"])
     assert read.json()["status"] == "waiting_input"
@@ -97,7 +97,7 @@ def test_answer_signal_contains_only_committed_reference(setup):
         path, json={"goal": "Synthetic question", "idempotency_key": "api:" + str(uuid4())}
     ).json()
     ref = calls[0][1]
-    KernelActivities(setup.engine).advance(ref)
+    InlineRun(setup.engine).advance(ref)
     submitted = api.post(
         path + "/" + response["run_id"] + "/answers",
         json={"answers": {"question": "US"}, "idempotency_key": "answer:" + str(uuid4())},

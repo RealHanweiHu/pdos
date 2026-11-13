@@ -176,7 +176,7 @@ def admit(session, ctx, event, bootstrap):
     session.add(message)
     session.flush()
     # Commit is the outbox boundary. Existing kernel_pending_run_references recovers
-    # this exact Run if starting the original XiaopaiWork loses its response.
+    # this exact Run if starting the 小Pai workflow loses its response.
     return message
 
 

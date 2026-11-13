@@ -6,10 +6,10 @@ from sqlalchemy import func, select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Audit, Grant, Outbox, Product, now
+from tests.agent.kernel.graph_inline import InlineRun
 from tests.agent.kernel.test_cost_budget import rate, wallet
 from tests.agent.kernel.test_transactions import run
 
@@ -105,7 +105,7 @@ def test_revoked_terminal_does_not_reopen_or_change_existing_terminal_state(setu
 def test_revocation_before_activity_start_records_failed_without_any_model_call(setup):
     _, scope = run(setup)
     revoke(setup)
-    result = KernelActivities(setup.engine, technical_engine=setup.dispatch).advance(
+    result = InlineRun(setup.engine, technical_engine=setup.dispatch).advance(
         {
             "tenant_id": str(setup.tenant),
             "category_id": str(setup.category),

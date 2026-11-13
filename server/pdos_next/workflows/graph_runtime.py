@@ -117,6 +117,6 @@ async def close_run(reference, error: ActivityError, *, grace_seconds=300):
     )
     if closed["status"] != "needs_reconciliation":
         return closed
-    # Same grace as XiaopaiWork before the automatic receipt check.
+    # Grace before the automatic receipt check; the value was recorded by open.
     await workflow.sleep(timedelta(seconds=grace_seconds))
     return await workflow.execute_activity("reconcile_xiaopai_run", reference, **RECONCILE)

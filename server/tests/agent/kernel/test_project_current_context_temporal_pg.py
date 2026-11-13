@@ -23,7 +23,7 @@ from sqlalchemy.orm import Session
 from temporalio.client import Client
 from temporalio.worker import Worker
 
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
 from pdos_next.agent.kernel.project_current_context import KEY
@@ -35,7 +35,7 @@ from pdos_next.core.models import Grant, now
 from pdos_next.domain.projects.work.constants import STATUS
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 from tests.agent.kernel.test_project_current_context_pg import (
     original_security_work,
@@ -119,17 +119,19 @@ def test_actual_project_native_context_runs_main_graph_and_retains_history_after
 
         app = create_app(setup.engine, setup.auth, agent_runtime_ports=runtime,
                          agent_api_ports=replace(bootstrap.api_ports(port), binding_for=binding))
-        activities = KernelActivities(setup.engine, checkpoint_url=checkpoint_url,
-                                      technical_engine=setup.dispatch)
         path = f"/v1/categories/{setup.category}/agent-runs"
         payload = {"goal": "这个项目为什么还没进入DVT？请保留未知与截至时间。",
                    "product_id": str(setup.product), "project_id": str(work.project_id),
                    "idempotency_key": str(uuid4())}
         with ThreadPoolExecutor(max_workers=2) as executor:
             async with (
-                Worker(temporal, task_queue=port.task_queue, workflows=[XiaopaiWork],
-                       activities=[activities.advance, activities.reconcile],
-                       activity_executor=executor),
+                graph_worker(
+                    temporal,
+                    port.task_queue,
+                    setup.engine,
+                    executor,
+                    technical_engine=setup.dispatch,
+                ),
                 httpx.AsyncClient(transport=httpx.ASGITransport(app=app),
                                   base_url="http://synthetic.local") as http,
             ):

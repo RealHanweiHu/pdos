@@ -1,4 +1,4 @@
-"""Stage 2 of the Temporal LangGraph plugin migration (P100): the 小Pai main graph."""
+"""The 小Pai main graph on the Temporal LangGraph plugin (P100), end to end on PostgreSQL."""
 
 import pytest
 from sqlalchemy import select
@@ -304,34 +304,6 @@ def test_long_run_continues_as_new_without_rerunning_finished_nodes(setup, monke
     saved = harness.row(setup, run_id)
     assert saved.state == "completed" and saved.calls.count(("model", "completed")) == 3
     assert saved.events.count("skill_loaded") == 1
-
-
-def test_switch_off_keeps_new_runs_on_the_original_workflow(setup, monkeypatch):
-    stack = prepare(setup, monkeypatch, [final()], tenants="")
-
-    async def body(context):
-        run_id = await context.start()
-        description = await context.handle(run_id).describe()
-        await context.handle(run_id).terminate("synthetic: no legacy Activity in this worker")
-        return description.workflow_type
-
-    assert serve(stack, body) == "XiaopaiWork"
-    assert stack.client.calls == 0
-
-
-def test_switch_lists_only_tenant_ids():
-    import pytest as _pytest
-
-    from pdos_next.agent.kernel.temporal_port import SWITCH, graph_tenants
-
-    with _pytest.MonkeyPatch.context() as patch:
-        patch.setenv(SWITCH, " 6f1f0d0e-3b0a-4c58-9d9a-0f6a4f6f0a11 ,")
-        assert graph_tenants() == {"6f1f0d0e-3b0a-4c58-9d9a-0f6a4f6f0a11"}
-        patch.setenv(SWITCH, "all")
-        with _pytest.raises(ValueError):
-            graph_tenants()
-        patch.delenv(SWITCH)
-        assert graph_tenants() == frozenset()
 
 
 def _read_turn(stack):

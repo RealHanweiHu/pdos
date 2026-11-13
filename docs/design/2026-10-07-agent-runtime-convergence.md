@@ -2,7 +2,7 @@
 
 2026-10-07 用户明确所有 Agent 必须遵循 LangGraph + Temporal。本合同补充完整目标架构的执行边界；业务职责、T0/T1/T2、独立身份与资格保持。Agent 拓扑以[目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §06 为准：唯一 Agent 小Pai，经工具、MCP 与技能包完成工作（2026-10-08 补注）。
 
-> **2026-11-12 补注（确认稿 [P100](2026-10-08-pdos-next-design-confirmation.md#p100)）**：小Pai 主图正在迁往 Temporal 官方 LangGraph 插件。新路径上，下表“能力内执行和检查点”一行改为由 Temporal 按节点执行并承担检查点，图内只用 `InMemorySaver`；“Workflow 历史只接收固定工作引用”放开为消息、模型输出、业务状态可进历史，密钥、凭据、令牌、签名 URL 仍不得进入。旧路径（`XiaopaiWork` + 独立检查点库）和隔离子任务在下线前仍按本合同原文。详见[决策记录](2026-11-12-langgraph-temporal-plugin-migration-decision.md)。
+> **2026-11-12 补注（确认稿 [P100](2026-10-08-pdos-next-design-confirmation.md#p100)、[P101](2026-10-08-pdos-next-design-confirmation.md#p101)）**：小Pai 主图已改为经 Temporal 官方 LangGraph 插件运行，原路径（`XiaopaiWork` + 单个 `advance_xiaopai_run` Activity + 主图检查点）已下线。下表“能力内执行和检查点”一行现在是：Temporal 按节点执行并承担检查点，图内只用 `InMemorySaver`；“Workflow 历史只接收固定工作引用”改为消息、模型输出、业务状态可进历史，密钥、凭据、令牌、签名 URL 仍不得进入。下图中的“独立 PostgreSQL 检查点”只剩隔离子任务在用。本合同其余内容（网关、领域服务、会话范围的边界）不变。详见[决策记录](2026-11-12-langgraph-temporal-plugin-migration-decision.md)。
 
 ```mermaid
 flowchart LR

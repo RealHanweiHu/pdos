@@ -8,7 +8,6 @@ from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall, ValidationBudget
 from pdos_next.agent.kernel.persistence import (
     finish_run_revert,
@@ -17,6 +16,7 @@ from pdos_next.agent.kernel.persistence import (
 )
 from pdos_next.core.models import Grant, Receipt
 from pdos_next.errors import DomainError
+from tests.agent.kernel.graph_inline import InlineRun
 from tests.agent.kernel.test_api import client
 from tests.agent.kernel.test_cost_budget import rate, wallet
 from tests.agent.kernel.test_revoked_terminal import close
@@ -122,7 +122,7 @@ def test_revert_retains_completed_result_and_blocks_all_future_execution(setup):
         "actor_id": str(setup.human), "requester_id": str(setup.human),
         "subject_id": str(scope.run_id),
     }
-    assert KernelActivities(setup.engine).advance(reference)["reverted"] is True
+    assert InlineRun(setup.engine).advance(reference)["reverted"] is True
     with human_session(setup) as s, pytest.raises(DomainError) as exc:
         record_answers(s, setup.ctx, scope.run_id, answers={}, idempotency_key="after-revert")
     assert exc.value.code == "CANCELLED_RUN"

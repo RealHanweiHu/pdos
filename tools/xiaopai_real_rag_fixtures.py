@@ -495,8 +495,8 @@ def build_run_specs(category_id, *, namespace, native_bindings=None):
             "expected_behavior": deepcopy(case["expected_behavior"]),
             "truth_evidence": {key: deepcopy(value) for key, value in binding.items()
                                if key.endswith("evidence")},
-            "execution_contract": "HTTP 202 -> XiaopaiWork -> advance_xiaopai_run "
-                                  "-> registered main/assistant_extract LangGraph",
+            "execution_contract": "HTTP 202 -> XiaopaiGraphWork -> one Activity per node "
+                                  "of the registered main graph -> assistant_extract child",
             "confirmation_boundary": "Stop at needs_input/candidate; no Human confirmation, "
                                      "business save, formal request or external send in RAG40",
         })
@@ -589,7 +589,8 @@ def score_observations(bound_sources, observations):
             "normal_execution_path": _check(
                 row.get("http_start_status") == 202
                 and str(row.get("temporal_workflow_id", "")).endswith(":" + str(row.get("run_id")))
-                and row.get("activity_name") == "advance_xiaopai_run"
+                # Evidence recorded before P100 names the original single Activity.
+                and row.get("activity_name") in {"advance_xiaopai_run", "xiaopai.model"}
                 and row.get("registered_graph_calls", 0) > 0,
                 {k: row.get(k) for k in ("http_start_status", "temporal_workflow_id",
                                         "activity_name", "registered_graph_calls")},

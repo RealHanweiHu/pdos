@@ -1,7 +1,6 @@
 """Offline synthetic provider, real authenticated API/Temporal/graph/PG domain owner."""
 
 import asyncio
-import os
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import replace
 from datetime import timedelta
@@ -13,9 +12,8 @@ import pytest
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 from temporalio.testing import WorkflowEnvironment
-from temporalio.worker import Worker
 
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.management import AgreementInput, register_agreement
 from pdos_next.agent.kernel.models import AgentRun, AgentToolCall
@@ -26,7 +24,7 @@ from pdos_next.api import create_app
 from pdos_next.core.database import tenant_session
 from pdos_next.core.models import Claim, Receipt, now
 from pdos_next.providers.types import ProviderUsage
-from pdos_next.workflows.xiaopai import XiaopaiWork
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_domain_adapter_transactions import fixture
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 
@@ -132,20 +130,13 @@ def test_actual_authenticated_run_uses_temporal_graph_and_common_claim_owner(
                 agent_runtime_ports=runtime_ports,
                 agent_api_ports=replace(ports, binding_for=synthetic_binding),
             )
-            activities = KernelActivities(
-                setup.engine,
-                checkpoint_url=os.environ["M2_TEST_CHECKPOINT_URL"].replace(
-                    "postgresql://", "postgresql+psycopg://", 1
-                ),
-                technical_engine=setup.dispatch,
-            )
             with ThreadPoolExecutor(max_workers=2) as executor:
-                async with Worker(
+                async with graph_worker(
                     environment.client,
-                    task_queue=port.task_queue,
-                    workflows=[XiaopaiWork],
-                    activities=[activities.advance],
-                    activity_executor=executor,
+                    port.task_queue,
+                    setup.engine,
+                    executor,
+                    technical_engine=setup.dispatch,
                 ):
                     async with httpx.AsyncClient(
                         transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local"

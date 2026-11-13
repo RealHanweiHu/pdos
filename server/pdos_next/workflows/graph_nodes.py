@@ -21,6 +21,7 @@ from sqlalchemy.exc import OperationalError
 from temporalio import activity
 from temporalio.exceptions import ApplicationError
 
+from pdos_next.agent.kernel.run_lease import AttemptSuperseded
 from pdos_next.errors import DomainError
 
 HEARTBEAT_SECONDS = 10
@@ -43,6 +44,11 @@ def _guarded(body, state, context, stop):
     try:
         with registered_graph_context("xiaopai"):
             return body(state, context, stop)
+    except AttemptSuperseded:
+        # The attempt stopped at a safe point because its run lease was lost (D358); after a
+        # Temporal cancellation the node has already raised. Nothing was claimed past that
+        # point, so the next attempt takes the run over.
+        raise ApplicationError("小Pai attempt superseded", type="ATTEMPT_SUPERSEDED") from None
     except DomainError as error:
         # The run's ledgers decide what happened; Temporal must not repeat the node.
         raise ApplicationError(error.message, type=error.code, non_retryable=True) from None

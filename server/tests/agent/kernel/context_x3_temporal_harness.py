@@ -19,10 +19,9 @@ from uuid import uuid4
 import httpx
 from langgraph.checkpoint.postgres import PostgresSaver
 from temporalio.client import Client
-from temporalio.worker import Worker
 
 from pdos_next.agent.enterprise_search.assistant_graph import AssistantExtractGraph
-from pdos_next.agent.kernel.activities import KernelActivities, configure_agent_kernel
+from pdos_next.agent.kernel.activities import configure_agent_kernel
 from pdos_next.agent.kernel.bootstrap import Bootstrap
 from pdos_next.agent.kernel.context_budget import segments
 from pdos_next.agent.kernel.host import BoundHost
@@ -33,9 +32,9 @@ from pdos_next.core.models import Receipt
 from pdos_next.core.service import receipt_view
 from pdos_next.providers.types import ProviderUsage
 from pdos_next.workflows.checkpoints import verified_checkpoint_url
-from pdos_next.workflows.xiaopai import XiaopaiWork
 from tests.agent.enterprise_search.test_assistant_pg import SyntheticClient
 from tests.agent.kernel.context_x3_capacity import capacity_result, registry
+from tests.agent.kernel.graph_inline import graph_worker
 from tests.agent.kernel.test_model_configuration_transactions import configured, submit
 
 
@@ -247,12 +246,14 @@ async def actual_runtime(person, provider, receipt_id, monkeypatch):
                 configure_agent_kernel(person.engine, replace(
                     adapters, provider_client=next_provider,
                 ))
-            activities = KernelActivities(person.engine, checkpoint_url=checkpoint_url,
-                                          technical_engine=person.dispatch)
             with ThreadPoolExecutor(max_workers=2) as executor:
-                async with Worker(temporal, task_queue=port.task_queue, workflows=[XiaopaiWork],
-                                  activities=[activities.advance, activities.reconcile],
-                                  activity_executor=executor):
+                async with graph_worker(
+                    temporal,
+                    port.task_queue,
+                    person.engine,
+                    executor,
+                    technical_engine=person.dispatch,
+                ):
                     yield
 
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app),

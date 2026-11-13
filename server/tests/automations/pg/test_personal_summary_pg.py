@@ -17,7 +17,6 @@ from g0_fixture import create_g0_project
 from sqlalchemy import func, select, update
 from sqlalchemy.orm import Session
 
-from pdos_next.agent.kernel.activities import KernelActivities
 from pdos_next.agent.kernel.models import AgentEvent, AgentRun, AgentToolCall
 from pdos_next.agent.kernel.persistence import cancel_run
 from pdos_next.core.database import tenant_session
@@ -29,6 +28,7 @@ from pdos_next.domain.my_work import summary_runtime as personal_summary_runtime
 from pdos_next.domain.projects.models import Project
 from pdos_next.domain.projects.work.constants import STATUS
 from pdos_next.errors import DomainError
+from tests.agent.kernel.graph_inline import InlineRun
 from tests.automations.pg.test_service_automation_pg import _activate, _ready, _spec
 from tests.projects.work_pg import test_workflow as flow
 from tests.projects.work_pg.test_workflow import original_security_work
@@ -84,10 +84,7 @@ def admit(summary_work):
 def kernel(summary_work, monkeypatch):
     setup = summary_work.setup
     monkeypatch.setattr(setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
-    return KernelActivities(
-        setup.engine, checkpoint_url=os.environ["PDOS_CHECKPOINT_DATABASE_URL"],
-        technical_engine=setup.dispatch,
-    )
+    return InlineRun(setup.engine, technical_engine=setup.dispatch)
 
 
 def saved(summary_work, envelope):

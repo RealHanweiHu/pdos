@@ -20,14 +20,14 @@ async def main(address, namespace, queue):
     from temporalio.langgraph import LangGraphPlugin
 
     from pdos_next.domain.my_work import summary_plugin_graph
-    from pdos_next.workflows.personal_summary_graph import PersonalSummaryGraphWork
+    from pdos_next.workflows.xiaopai_graph import XiaopaiGraphWork
 
     fixtures.patch_summary()
     client = await Client.connect(address, namespace=namespace)
     plugin = LangGraphPlugin(graphs={summary_plugin_graph.GRAPH: summary_plugin_graph.build()})
     with ThreadPoolExecutor(max_workers=4) as executor:
         async with Worker(
-            client, task_queue=queue, workflows=[PersonalSummaryGraphWork],
+            client, task_queue=queue, workflows=[XiaopaiGraphWork],
             activities=fixtures.RUN_ACTIVITIES, plugins=[plugin], activity_executor=executor,
         ):
             fixtures.note("worker:ready")
