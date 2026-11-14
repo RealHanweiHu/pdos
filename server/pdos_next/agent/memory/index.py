@@ -1,15 +1,18 @@
 """Background keyword index for episodes (design §6.2, §14.5; P121 第 1 项).
 
-Two rows per episode. The ``episode`` row holds the owner's own words (the user
+Three rows per episode. The ``episode`` row holds the owner's own words (the user
 goal, page material already removed). The ``answer`` row holds 小Pai's side of
 the same record: the answer summary and the unfinished items (P121 第 1 项
-revises "首期不收回答正文"; D482). They stay apart so
-the owner's Session list search matches own words only, and so a hit can say
-which side matched. Nothing here is returned as text: memory.search rechecks
-each hit against the dependency manifest before showing it.
+revises "首期不收回答正文"; D482). The ``object`` row holds the titles of the
+specific objects the Run focused on (materials it read, the source it was pinned
+to), as they read when the episode was indexed (P121 第 1 项 "当时对象的标题";
+D482 余项 ①). The rows stay apart so the owner's Session list search matches
+own words only, and so a hit can say which side matched. Nothing here is
+returned as text: memory.search rechecks each hit against the dependency
+manifest before showing it.
 
 The activity writes as the owner under ordinary row-level security, so an
-answer the owner can no longer read is not indexed. Failures are retried by
+answer or an object the owner can no longer read is not indexed. Failures are retried by
 Temporal and never touch the answer path, which scans unindexed episodes
 itself. Idempotency key = source ID + source version + embedding profile
 version (+ tokenizer and code rule, so a new tokenizer re-indexes).
@@ -28,11 +31,18 @@ from .models import MemoryEpisode, MemoryIndexEntry
 PROFILE_NONE = "none"  # Episode vectorization is M2a ("本人会话记录" category).
 SOURCE_VERSION = 1  # Episodes are immutable projections; corrections are separate marks.
 REFERENCE_KEYS = {"tenant_id", "owner_id", "episode_id"}
-KINDS = ("episode", "answer")
+# The last kind is the newest; an episode without it is still pending (s0_0960).
+KINDS = ("episode", "answer", "object")
 ANSWER_CHARS = 8000
 ANSWERED = ("completed", "partial")
 # Fixed sentences the kernel writes when there is no answer of the model's own.
 NO_ANSWER = ("结果未通过完整核对。", "运行预算已用完")
+# Specific objects only. A scope object (category, product, proposal, project) is
+# shared by every episode in that scope; with no rarity weighting its title would
+# make each of them match any query that names the scope (D482).
+TITLED = frozenset({"artifact", "source"})
+OBJECTS_PER_EPISODE = 20
+TITLE_CHARS = 200
 
 
 def idempotency_key(episode_id, *, kind="episode", profile_version=PROFILE_NONE):
@@ -43,9 +53,9 @@ def idempotency_key(episode_id, *, kind="episode", profile_version=PROFILE_NONE)
 
 
 def workflow_id(reference):
-    # Keyed on the answer row, so episodes indexed before it existed are dispatched again.
+    # Keyed on the newest row kind, so episodes indexed before it existed are dispatched again.
     return (f"pdos-memory-index:{UUID(reference['tenant_id'])}:{UUID(reference['episode_id'])}:"
-            f"{idempotency_key(reference['episode_id'], kind='answer')[:16]}")
+            f"{idempotency_key(reference['episode_id'], kind=KINDS[-1])[:16]}")
 
 
 def summaries(session, episodes):
@@ -74,10 +84,7 @@ def summaries(session, episodes):
 def answer_texts(session, episodes):
     """Text of the ``answer`` row per episode: the answer summary and the unfinished items.
 
-    The scope object's title is left out on purpose: every episode in a scope
-    shares it, and with no rarity weighting it would make each of them match any
-    query that names the scope. Titles of the objects a Run focused on are not
-    resolved yet (D482 余项).
+    Object titles are a row of their own (``object_texts``).
     """
     answers = summaries(session, episodes)
     texts = {}
@@ -87,6 +94,56 @@ def answer_texts(session, episodes):
         parts.extend(item for item in unfinished if isinstance(item, str))
         texts[episode.id] = "\n".join(part for part in parts if part)
     return texts
+
+
+def object_texts(session, episodes):
+    """Text of the ``object`` row per episode: titles of the specific objects its Run focused on.
+
+    Each kind is resolved through the enterprise source catalog, which runs under
+    this reader's ordinary row-level security: an object the reader cannot read
+    now (revoked, withdrawn, deleted) is simply not found and not indexed. Scope
+    objects are left out (see ``TITLED``).
+    """
+    from sqlalchemy import select
+
+    from pdos_next.agent.enterprise_search.schemas import SOURCE_TYPES
+    from pdos_next.agent.enterprise_search.sources import catalog, prepare_read
+
+    wanted = {}
+    for episode in episodes:
+        ids = []
+        for item in (episode.body.get("focus_objects") or [])[:OBJECTS_PER_EPISODE]:
+            if not isinstance(item, dict) or item.get("kind") not in TITLED:
+                continue
+            try:
+                ids.append(UUID(str(item["id"])))
+            except (KeyError, ValueError):
+                continue
+        wanted[episode.id] = ids
+    identities = sorted({identity for ids in wanted.values() for identity in ids}, key=str)
+    titles = {}
+    if identities:
+        prepare_read(session, SOURCE_TYPES)
+        source = catalog()
+        # "artifact" focus IDs are artifact IDs and "source" focus IDs are the
+        # catalog's object IDs; the artifact branch uses its own ID as object ID.
+        for identity, title in session.execute(
+            select(source.c.object_id, source.c.title)
+            .where(source.c.object_id.in_(identities), source.c.is_current)
+            .order_by(source.c.object_id, source.c.source_type)
+        ).all():
+            if isinstance(title, str) and title.strip():
+                titles.setdefault(identity, " ".join(title.split())[:TITLE_CHARS])
+    return {episode_id: "\n".join(dict.fromkeys(titles[i] for i in ids if i in titles))
+            for episode_id, ids in wanted.items()}
+
+
+def texts_for(session, episodes):
+    """{episode id: {kind: text}} for every index row kind, as this reader can read now."""
+    answers = answer_texts(session, episodes)
+    objects = object_texts(session, episodes)
+    return {episode.id: {"episode": episode.goal, "answer": answers[episode.id],
+                         "object": objects[episode.id]} for episode in episodes}
 
 
 def _reference(value):
@@ -105,10 +162,10 @@ def index_episode(engine, reference):
         episode = session.get(MemoryEpisode, ref["episode_id"])
         if episode is None or episode.owner_id != ref["owner_id"]:
             raise DomainError("FORBIDDEN_SCOPE", "情景记录已不在本人可读范围。")
-        texts = {"episode": episode.goal, "answer": answer_texts(session, [episode])[episode.id]}
+        texts = texts_for(session, [episode])[episode.id]
         created = []
         for kind in KINDS:
-            # The answer row is written even when empty, so the episode stops being pending.
+            # Empty rows are written too, so the episode stops being pending.
             words = analyze(texts[kind])
             statement = insert(MemoryIndexEntry).values(
                 tenant_id=episode.tenant_id, owner_id=episode.owner_id,

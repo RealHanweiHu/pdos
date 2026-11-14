@@ -22,7 +22,7 @@ from pdos_next.errors import DomainError
 from .models import MemoryEpisode, MemoryEpisodeMark, MemoryIndexEntry
 
 VERSION = "memory-search/v1"
-RANKING = ("memory-rrf/v2;keyword-sat-1.2;own-words+answer-side;k=60;half-life-30d;"
+RANKING = ("memory-rrf/v3;keyword-sat-1.2;own-words+answer-side+object-titles;k=60;half-life-30d;"
            "receipt+0.25;pin+0.25;corrected*0.5")
 KEYWORD_POOL = 50
 PENDING_SCAN = 200
@@ -156,13 +156,13 @@ def _merged(found, episode, kind, counts, codes):
 
 
 def _candidates(session, run, data, parsed, *, extra):
-    """Keyword candidates over both index rows of each episode (own words, answer side).
+    """Keyword candidates over every index row of each episode (own words, answer, objects).
 
     Returns (ranked, pending count, {episode id: which side matched}).
     """
     from pdos_next.agent.enterprise_search.tokenizer import analyze, or_query, version
 
-    from .index import KINDS, answer_texts
+    from .index import KINDS, texts_for
 
     tokenizer = version()
     base = _base(run, data)
@@ -189,22 +189,23 @@ def _candidates(session, run, data, parsed, *, extra):
         # matched rows scores the same as merging both.
         for episode, kind, counts, codes in rows:
             _merged(found, episode, kind, counts, codes)["matched"].append(kind)
-    # Index lag must never look like "nothing found": episodes in range without both
-    # rows are scored here with the same tokenizer (the 伪零结果 gate for M1).
+    # Index lag must never look like "nothing found": episodes in range without every
+    # row are scored here with the same tokenizer (the 伪零结果 gate for M1). All rows
+    # of an episode are written in one transaction, so the newest kind stands for all.
     indexed = select(MemoryIndexEntry.episode_id).where(
         MemoryIndexEntry.episode_id == MemoryEpisode.id,
         MemoryIndexEntry.tokenizer_version == tokenizer,
-        MemoryIndexEntry.source_kind == "answer",
+        MemoryIndexEntry.source_kind == KINDS[-1],
     ).exists()
     pending = session.scalars(
         select(MemoryEpisode).where(*base, ~indexed)
         .order_by(MemoryEpisode.created_at.desc(), MemoryEpisode.id).limit(PENDING_SCAN)
     ).all()
-    answers = answer_texts(session, pending)
+    texts = texts_for(session, pending)
     for episode in pending:
         found.pop(episode.id, None)
-        for kind, value in (("episode", episode.goal), ("answer", answers[episode.id])):
-            words = analyze(value)
+        for kind in KINDS:
+            words = analyze(texts[episode.id][kind])
             entry = _merged(found, episode, kind, words["counts"], words["codes"])
             if keyword_score(parsed, words["counts"], words["codes"]) > 0:
                 entry["matched"].append(kind)
@@ -319,7 +320,9 @@ def recheck(session, run, episodes, *, limit):
     return result, kept_access
 
 
-SIDES = {"episode": "own_words", "answer": "answer"}
+# What a hit matched: the owner's own words, 小Pai's answer side, or the title of a
+# specific object the Run focused on (the title itself is not returned).
+SIDES = {"episode": "own_words", "answer": "answer", "object": "object_title"}
 
 
 def card(episode, state, scope, receipts, mark, run, *, answer=None, matched=()):
@@ -444,9 +447,11 @@ def search(session, run, data, *, now=None, semantic=None):
                                  semantic["profile_version_id"], _base(run, data))
             ranked, fused = _fuse(session, ranked, vector_ids), True
             response["retrieval"]["channels"] = ["keyword", "vector"]
-            response["retrieval"]["semantic"] = {"status": "queried",
-                                                 "profile_version_id":
-                                                     str(semantic["profile_version_id"])}
+            response["retrieval"]["semantic"] = {
+                "status": "queried", "profile_version_id": str(semantic["profile_version_id"]),
+                # Partial: the space is still catching up; keyword results cover the rest.
+                **{key: semantic[key] for key in ("coverage", "vector_pending", "switching")
+                   if key in semantic}}
         else:
             response["retrieval"]["semantic"] = {
                 "status": "unavailable", "reason": semantic.get("status"),

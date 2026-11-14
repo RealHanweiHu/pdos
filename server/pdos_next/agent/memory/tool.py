@@ -20,30 +20,42 @@ def _started_call(session, run, arguments):
     return rows[0] if len(rows) == 1 else None
 
 
+MEMORY_SNAPSHOT = "memory_query_profile"
+
+
 def semantic_query(store, embedder, scope, arguments):
     """Query vector for the owner's episode vectors, run-accounted (P30, P85 第 3 项).
 
     None when “本人会话记录” is not selected: then nothing goes out. Otherwise the
-    status says why recall stays keyword-only, never a silent empty result.
+    status says why recall stays keyword-only, never a silent empty result. The
+    space is the owner's serving version (``vectors.serving``), frozen at the
+    Run's first memory.search, so one Run never mixes two vector spaces.
     """
     from .models import MemoryEpisodeVector
-    from .policy import episode_vectors
+    from .vectors import active_versions, coverage, serving
 
     with store.transaction(scope, lock=True) as (session, run):
         if unavailable(run, session) is not None:
             return None
-        enabled = episode_vectors(session)
-        if not enabled["enabled"]:
+        chosen = serving(session, run.requester_id)
+        if chosen is None:
             return None
         if embedder is None or scope.isolation != "main":
             return {"status": "query_port_unavailable"}
+        snapshot = embedder.frozen_profile(session, scope, run)
+        if snapshot is None:
+            return {"status": "query_profile_unavailable"}
+        current = {version.id: version for version in active_versions(session)}
+        version = current.get(snapshot.profile_version_id)
+        if version is None:
+            # The space this Run started with was disabled or superseded meanwhile.
+            return {"status": "query_profile_mismatch"}
         if not session.scalar(select(exists().where(
                 MemoryEpisodeVector.owner_id == run.requester_id,
-                MemoryEpisodeVector.profile_version_id == enabled["profile_version_id"]))):
+                MemoryEpisodeVector.profile_version_id == version.id))):
             return {"status": "not_indexed_yet"}
-        snapshot = embedder.frozen_profile(session, scope, run)
-        if snapshot is None or str(snapshot.profile_version_id) != enabled["profile_version_id"]:
-            return {"status": "query_profile_mismatch"}
+        state = (chosen if chosen["profile_version_id"] == version.id
+                 else coverage(session, run.requester_id, version))
         call_id = _started_call(session, run, arguments)
     if call_id is None:
         return {"status": "query_unavailable"}
@@ -51,7 +63,9 @@ def semantic_query(store, embedder, scope, arguments):
     if result.status != "ready" or result.vector is None:
         return {"status": result.status}
     return {"status": "ready", "vector": result.vector,
-            "profile_version_id": snapshot.profile_version_id}
+            "profile_version_id": snapshot.profile_version_id,
+            "coverage": state["coverage"], "vector_pending": state["backlog"],
+            "switching": chosen["switching"]}
 
 
 def memory_search(store, query_embedding=None):
