@@ -19,6 +19,11 @@ Three groups:
   prompts keep it closed (D298); this group shows what the server's
   deterministic admission would do once a prompt version is released.
 
+Some timelines also publish category parameters through the ordinary command
+API (``parameter`` events) so a question has a domain truth that memory must not
+override (T03, T05, T24); the ``domain`` probe reads them back through the
+registered ``category.parameters.list`` tool in a fresh Run.
+
 Observations go to ``PDOS_MEMORY_TIMELINE_OUTPUT_DIR`` when it is set, so
 ``tools/xiaopai_memory_timeline_baseline.py`` can score them; otherwise to the
 test's temporary folder. The gates are scored by that tool, not asserted here.
@@ -59,6 +64,7 @@ class Replay:
         self.actor_of = {value: key for key, value in self.people.items()}
         self.runs, self.notes, self.revisions = {}, {}, {}
         self.created_notes = 0
+        self._reads = None
 
     # -- helpers ----------------------------------------------------------
     def headers(self, actor):
@@ -113,6 +119,17 @@ class Replay:
                 index_episode(self.setup.engine, {
                     "tenant_id": str(self.setup.tenant), "owner_id": str(row.owner_id),
                     "episode_id": str(row.id)})
+
+    def parameter(self, event):
+        """A domain fact: a category parameter a person published (category.parameter.publish)."""
+        from tests.categories.preproject.test_g0 import request, save
+
+        fields = ("key", "name", "value_type", "unit", "direction", "standard_condition",
+                  "method", "acceptance_criterion", "change_note")
+        payload = {"parameter_id": None, "expected_current_version": 0,
+                   **{name: event.get(name) for name in fields}}
+        save(self.setup, request(self.setup, "category.parameter.publish", payload),
+             actor=self.people[event["actor"]])
 
     def note(self, event):
         response = self.setup.client.post(
@@ -176,6 +193,9 @@ class Replay:
         result = memory_search(KernelStore(self.setup.engine))(
             self.run_scope(probe["actor"], run_id), {"query": probe["query"], "kinds": kinds})
         retrieval = result.get("retrieval", {})
+        from pdos_next.agent.memory.recall import ANSWER_LABEL
+
+        answers = [item["answer"] for item in result.get("items", []) if item.get("answer")]
         return {
             "status": result.get("status"),
             "returned": [{"run": self.run_key(item["run_id"]),
@@ -186,6 +206,10 @@ class Replay:
             "index_pending": retrieval.get("index_pending", 0),
             "semantic": (retrieval.get("semantic") or {}).get("status"),
             "channels": retrieval.get("channels", []),
+            # T03-T05: whatever memory returns is labelled as not being a business fact.
+            "fact_policy": bool(result.get("fact_policy")),
+            "answers_labelled": bool(answers) and all(
+                item.get("label") == ANSWER_LABEL for item in answers),
         }
 
     def resident(self, probe):
@@ -209,6 +233,20 @@ class Replay:
             "target_in_catalog": set(probe.get("expect_catalog", [])) <= {
                 self.run_key(item["run_id"]) for item in catalog},
         }
+
+    def domain(self, probe):
+        """The domain truth a question rests on, read through the registered tool in a new Run."""
+        if self._reads is None:
+            from pdos_next.agent.kernel.bootstrap import Bootstrap, RuntimePorts
+
+            self._reads = Bootstrap(self.setup.engine, ports=RuntimePorts()).adapters().read_tools
+        run_id = self.begin(probe["actor"], probe["goal"], off=self.off(probe))
+        items = self._reads["category.parameters.list"](
+            self.run_scope(probe["actor"], run_id), {}).get("items", [])
+        found = [item for item in items if item.get("key") == probe["parameter_key"]]
+        return {"found": len(found),
+                "criterion": found[0].get("acceptance_criterion") if found else None,
+                "origin": found[0].get("origin") if found else None}
 
     def candidates(self, probe):
         if self.group == "history_only":
@@ -259,9 +297,10 @@ def test_case_file_is_a_candidate_set_with_known_shapes():
     for timeline in CASES["timelines"]:
         assert timeline["status"] in {"candidate", "confirmed"}
         assert timeline["split"] in {"dev", "holdout"}
-        assert {event["op"] for event in timeline["events"]} <= {"run", "note", "revise", "forget"}
+        assert {event["op"] for event in timeline["events"]} <= {
+            "run", "note", "revise", "forget", "parameter"}
         assert {probe["probe"] for probe in timeline["probes"]} <= {
-            "search", "resident", "candidates"}
+            "search", "resident", "candidates", "domain"}
 
 
 @pytest.mark.parametrize("group", GROUPS)

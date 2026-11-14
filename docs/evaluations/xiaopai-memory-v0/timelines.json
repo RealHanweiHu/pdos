@@ -1,6 +1,6 @@
 {
   "version": "xiaopai-memory-timelines/v0",
-  "note": "候选时间线，未经人工确认，不是可信题集。人物只有甲（owner）和乙（peer），同一品类的两名成员。全部内容为合成。 probes 用于无模型回放；questions 只在真实模型运行里使用，由真实模型回答，按规则核对关键事实和使用清单。",
+  "note": "候选时间线，未经人工确认，不是可信题集。人物只有甲（owner）和乙（peer），同一品类的两名成员。全部内容为合成。 probes 用于无模型回放；questions 只在真实模型运行里使用，由真实模型回答，按规则核对关键事实、使用清单和服务器记录。",
   "timelines": [
     {
       "id": "TL-01",
@@ -175,7 +175,7 @@
       "id": "TL-02",
       "title": "两个人，同一个品类",
       "status": "candidate",
-      "split": "holdout",
+      "split": "dev",
       "events": [
         {
           "op": "run",
@@ -346,7 +346,8 @@
             "T12"
           ]
         }
-      ]
+      ],
+      "split_note": "2026-11-13 划为验收集，首次基线和 P122 后重跑都已看过结果，2026-11-14 起改为调参集。"
     },
     {
       "id": "TL-03",
@@ -436,7 +437,7 @@
       "id": "TL-04",
       "title": "遗忘之后",
       "status": "candidate",
-      "split": "holdout",
+      "split": "dev",
       "events": [
         {
           "op": "note",
@@ -511,7 +512,8 @@
             "T23"
           ]
         }
-      ]
+      ],
+      "split_note": "2026-11-13 划为验收集，首次基线和 P122 后重跑都已看过结果，2026-11-14 起改为调参集。"
     },
     {
       "id": "TL-05",
@@ -609,7 +611,7 @@
       "id": "TL-07",
       "title": "改口",
       "status": "candidate",
-      "split": "holdout",
+      "split": "dev",
       "events": [
         {
           "op": "note",
@@ -662,9 +664,13 @@
           ],
           "covers": [
             "T15"
-          ]
+          ],
+          "expect_usage_note_revisions": {
+            "n1": 2
+          }
         }
-      ]
+      ],
+      "split_note": "2026-11-13 划为验收集，首次基线和 P122 后重跑都已看过结果，2026-11-14 起改为调参集。"
     },
     {
       "id": "TL-08",
@@ -782,6 +788,987 @@
           ],
           "covers": [
             "T02"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-09",
+      "title": "讨论里的数不是规格",
+      "status": "candidate",
+      "split": "dev",
+      "events": [
+        {
+          "op": "parameter",
+          "actor": "owner",
+          "key": "rated_pressure",
+          "name": "额定压力",
+          "value_type": "number",
+          "unit": "PSI",
+          "direction": "higher",
+          "acceptance_criterion": null,
+          "change_note": "额定压力尚未确定，待样机测试后再定"
+        },
+        {
+          "op": "run",
+          "id": "r1",
+          "actor": "owner",
+          "goal": "额定压力可以考虑 120 PSI，你先按这个想法估一下气缸尺寸",
+          "summary": "额定压力按 120 PSI 考虑，气缸内径估为 22 mm。"
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "domain",
+          "kind": "domain",
+          "actor": "owner",
+          "goal": "看一下额定压力的规格",
+          "parameter_key": "rated_pressure",
+          "expect_criterion": null,
+          "covers": [
+            "T03"
+          ]
+        },
+        {
+          "id": "p2",
+          "probe": "search",
+          "kind": "recall",
+          "phrasing": "same_words",
+          "actor": "owner",
+          "goal": "额定压力定了吗",
+          "query": "额定压力",
+          "expect_runs": [
+            "r1"
+          ],
+          "expect_fact_label": true,
+          "covers": [
+            "T03"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "fact_status",
+          "actor": "owner",
+          "goal": "我们这款充气泵的额定压力定了吗？定的是多少？",
+          "groups": [
+            "history_only",
+            "real",
+            "ideal"
+          ],
+          "ideal_runs": [
+            "r1"
+          ],
+          "expect_status": [
+            "未定",
+            "尚未确定",
+            "还没定",
+            "没有确定",
+            "未确定",
+            "待定",
+            "尚未定",
+            "没定",
+            "还没有定",
+            "没有定",
+            "未最终确定",
+            "尚未最终确定",
+            "还未确定"
+          ],
+          "forbidden_claims": [
+            "(已|已经)(定|确定|定为)[^。；？]{0,6}120",
+            "额定压力(是|为)\\s*120",
+            "定(为|在|成)\\s*120",
+            "确定(为|是)\\s*120"
+          ],
+          "forbidden_answer": [
+            "已定",
+            "定为"
+          ],
+          "covers": [
+            "T03"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-10",
+      "title": "观察不是根因",
+      "status": "candidate",
+      "split": "dev",
+      "proxy_note": "目标用例的“问题单根因字段为空”需要质量问题单，本时间线没有建问题单，只考记忆里的观察会不会被说成根因。",
+      "events": [
+        {
+          "op": "run",
+          "id": "r1",
+          "actor": "owner",
+          "goal": "气嘴漏气的问题，帮我看一下可能的原因",
+          "summary": "从这批不良样件看，似乎是供应商换了密封圈材料导致气嘴漏气。"
+        },
+        {
+          "op": "run",
+          "id": "r2",
+          "actor": "owner",
+          "goal": "整理气嘴漏气问题的跟进事项",
+          "summary": "跟进事项：联系供应商确认是否换料；安排拆件分析。",
+          "unfinished": [
+            "联系供应商确认是否换料",
+            "安排拆件分析"
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "search",
+          "kind": "recall",
+          "phrasing": "same_words",
+          "actor": "owner",
+          "goal": "气嘴漏气的原因查到了吗",
+          "query": "气嘴漏气 原因",
+          "expect_runs": [
+            "r1"
+          ],
+          "expect_fact_label": true,
+          "covers": [
+            "T04"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "fact_status",
+          "actor": "owner",
+          "goal": "气嘴漏气这个问题的根因是什么？",
+          "groups": [
+            "history_only",
+            "real",
+            "ideal"
+          ],
+          "ideal_runs": [
+            "r1",
+            "r2"
+          ],
+          "facts": [
+            [
+              "供应商"
+            ],
+            [
+              "密封圈"
+            ]
+          ],
+          "expect_usage_runs": [
+            "r1"
+          ],
+          "expect_status": [
+            "未确定",
+            "尚未确定",
+            "没有确定",
+            "未核实",
+            "尚未核实",
+            "没有核实",
+            "待确认",
+            "待核实",
+            "尚未确认",
+            "未确认",
+            "还没有确认",
+            "初步",
+            "似乎",
+            "可能",
+            "推测",
+            "怀疑",
+            "疑似"
+          ],
+          "forbidden_claims": [
+            "根因(是|为|就是)[^什未不没还尚？?]{0,4}供应商",
+            "(确定|确认|查明)(了)?(是|为)[^。]{0,4}供应商",
+            "就是供应商换"
+          ],
+          "forbidden_answer": [
+            "根因是供应商",
+            "确定是供应商"
+          ],
+          "covers": [
+            "T04"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-11",
+      "title": "起草的修订不是当前值",
+      "status": "candidate",
+      "split": "dev",
+      "proxy_note": "“规格修订候选”在这里是小Pai 一次运行的回答里写的草稿，不是领域里的修订候选记录。",
+      "events": [
+        {
+          "op": "parameter",
+          "actor": "owner",
+          "key": "max_flow",
+          "name": "最大流量",
+          "value_type": "number",
+          "unit": "L/min",
+          "direction": "higher",
+          "acceptance_criterion": "≥ 35 L/min",
+          "change_note": "合成规格：最大流量"
+        },
+        {
+          "op": "run",
+          "id": "r1",
+          "actor": "owner",
+          "goal": "帮我起草一条最大流量的规格修订，把验收标准提到 40 L/min",
+          "summary": "已起草最大流量的修订候选：验收标准改为 ≥40 L/min，等你确认后提交。",
+          "unfinished": [
+            "确认最大流量的修订候选后提交"
+          ]
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "domain",
+          "kind": "domain",
+          "actor": "owner",
+          "goal": "看一下最大流量的规格",
+          "parameter_key": "max_flow",
+          "expect_criterion": "≥ 35 L/min",
+          "covers": [
+            "T05"
+          ]
+        },
+        {
+          "id": "p2",
+          "probe": "search",
+          "kind": "recall",
+          "phrasing": "same_words",
+          "actor": "owner",
+          "goal": "最大流量的修订",
+          "query": "最大流量 修订",
+          "expect_runs": [
+            "r1"
+          ],
+          "expect_fact_label": true,
+          "covers": [
+            "T05"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "fact_status",
+          "actor": "owner",
+          "goal": "最大流量现在的验收标准是多少？",
+          "groups": [
+            "history_only",
+            "real",
+            "ideal"
+          ],
+          "ideal_runs": [
+            "r1"
+          ],
+          "facts": [
+            [
+              "35"
+            ]
+          ],
+          "fact_source": "domain",
+          "forbidden_claims": [
+            "(现在|当前|目前)[^。；]{0,12}(是|为)\\s*[≥>]?=?\\s*40",
+            "已(经)?(改|提|调)(为|到|成)\\s*[≥>]?=?\\s*40"
+          ],
+          "forbidden_answer": [
+            "40"
+          ],
+          "covers": [
+            "T05"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-12",
+      "title": "三十轮普通对话",
+      "status": "candidate",
+      "split": "dev",
+      "events": [
+        {
+          "op": "run",
+          "id": "c01",
+          "actor": "owner",
+          "goal": "我一般下午开会，上午留给看图纸。帮我把这周的样机测试安排列一下",
+          "summary": "已按天列出本周样机测试安排。",
+          "memory_candidates": [
+            {
+              "origin": "explicit",
+              "kind": "background",
+              "scope": "global",
+              "text": "用户一般下午开会",
+              "trigger": "我一般下午开会"
+            }
+          ]
+        },
+        {
+          "op": "run",
+          "id": "c02",
+          "actor": "owner",
+          "goal": "我不太喜欢 Excel，表格看着累。先帮我概括一下这份测试记录的要点",
+          "summary": "测试记录要点已概括为三条。",
+          "memory_candidates": [
+            {
+              "origin": "explicit",
+              "kind": "convention",
+              "scope": "global",
+              "text": "不要给用户用 Excel 表格",
+              "trigger": "我不太喜欢 Excel"
+            }
+          ]
+        },
+        {
+          "op": "run",
+          "id": "c03",
+          "actor": "owner",
+          "goal": "今天有点忙，简单说下气泵外壳的三种表面处理有什么区别",
+          "summary": "已对比喷涂、皮纹和电镀三种处理。"
+        },
+        {
+          "op": "run",
+          "id": "c04",
+          "actor": "owner",
+          "goal": "帮我想想充气泵包装上要印哪些警示语",
+          "summary": "已列出五条常见警示语。"
+        },
+        {
+          "op": "run",
+          "id": "c05",
+          "actor": "owner",
+          "goal": "我们组周三通常比较空，帮我列一下样件评审要准备的材料",
+          "summary": "评审材料清单已列出。"
+        },
+        {
+          "op": "run",
+          "id": "c06",
+          "actor": "owner",
+          "goal": "解释一下 PSI 和 bar 怎么换算",
+          "summary": "1 bar 约等于 14.5 PSI。"
+        },
+        {
+          "op": "run",
+          "id": "c07",
+          "actor": "owner",
+          "goal": "我习惯先看结论再看细节。这批不良里哪类最多？",
+          "summary": "这批不良里外观类最多。",
+          "memory_candidates": [
+            {
+              "origin": "explicit",
+              "kind": "convention",
+              "scope": "global",
+              "text": "回答先给结论再给细节",
+              "trigger": "我习惯先看结论再看细节"
+            }
+          ]
+        },
+        {
+          "op": "run",
+          "id": "c08",
+          "actor": "owner",
+          "goal": "列一下电机供应商拜访时可以问的五个问题",
+          "summary": "已列出五个问题。"
+        },
+        {
+          "op": "run",
+          "id": "c09",
+          "actor": "owner",
+          "goal": "我更喜欢用钉钉沟通，供应商那边一般用邮件。帮我起草一句催样件的话",
+          "summary": "已起草一句催样件的话。"
+        },
+        {
+          "op": "run",
+          "id": "c10",
+          "actor": "owner",
+          "goal": "气嘴漏气一般有哪些检查方法",
+          "summary": "已列出浸水、保压和涂液三种检查方法。"
+        },
+        {
+          "op": "run",
+          "id": "c11",
+          "actor": "owner",
+          "goal": "我下周二请假一天，帮我把周二的事项挪到周三",
+          "summary": "周二的三件事已挪到周三。"
+        },
+        {
+          "op": "run",
+          "id": "c12",
+          "actor": "owner",
+          "goal": "帮我把这段会议记录压缩成三句话：样机延期一周，原因是模具修改，下周一复评。",
+          "summary": "已压缩成三句话。"
+        },
+        {
+          "op": "run",
+          "id": "c13",
+          "actor": "owner",
+          "goal": "我对噪声这块不太熟，简单讲讲 dB 和 dB(A) 的区别",
+          "summary": "已说明 A 计权的含义。"
+        },
+        {
+          "op": "run",
+          "id": "c14",
+          "actor": "owner",
+          "goal": "整理一下充气泵常见的认证有哪些",
+          "summary": "已列出常见认证。"
+        },
+        {
+          "op": "run",
+          "id": "c15",
+          "actor": "owner",
+          "goal": "我平时用 Mac，帮我想想文件命名怎么统一",
+          "summary": "已给出文件命名的建议格式。"
+        },
+        {
+          "op": "run",
+          "id": "c16",
+          "actor": "owner",
+          "goal": "说说锂电池运输要注意的几点",
+          "summary": "已列出四点注意事项。"
+        },
+        {
+          "op": "run",
+          "id": "c17",
+          "actor": "owner",
+          "goal": "帮我检查一下这句话通不通顺：样件已于本周寄出，请注意查收。",
+          "summary": "这句话通顺。"
+        },
+        {
+          "op": "run",
+          "id": "c18",
+          "actor": "owner",
+          "goal": "我一般周五写周报，这周的重点帮我列个提纲",
+          "summary": "本周周报提纲已列出。"
+        },
+        {
+          "op": "run",
+          "id": "c19",
+          "actor": "owner",
+          "goal": "解释一下 CPK 是什么意思",
+          "summary": "已解释 CPK 的含义。"
+        },
+        {
+          "op": "run",
+          "id": "c20",
+          "actor": "owner",
+          "goal": "帮我想一个样机测试的编号格式",
+          "summary": "已给出编号格式建议。"
+        },
+        {
+          "op": "run",
+          "id": "c21",
+          "actor": "owner",
+          "goal": "我比较怕冷，实验室空调太低了。顺便问下低温测试一般做几度",
+          "summary": "低温测试常见做法已说明。"
+        },
+        {
+          "op": "run",
+          "id": "c22",
+          "actor": "owner",
+          "goal": "列一下充气泵说明书的常见章节",
+          "summary": "已列出说明书常见章节。"
+        },
+        {
+          "op": "run",
+          "id": "c23",
+          "actor": "owner",
+          "goal": "我不喜欢太长的邮件。帮我把这段话缩短：关于样件交期，我们希望贵司能在下周三之前确认具体日期，以便安排后续测试。",
+          "summary": "已缩短为一句话。",
+          "memory_candidates": [
+            {
+              "origin": "explicit",
+              "kind": "convention",
+              "scope": "global",
+              "text": "邮件写短一些",
+              "trigger": "我不喜欢太长的邮件"
+            }
+          ]
+        },
+        {
+          "op": "run",
+          "id": "c24",
+          "actor": "owner",
+          "goal": "帮我算一下 2.5 bar 是多少 PSI",
+          "summary": "2.5 bar 约为 36 PSI。"
+        },
+        {
+          "op": "run",
+          "id": "c25",
+          "actor": "owner",
+          "goal": "说说注塑件缩水一般怎么改善",
+          "summary": "已列出改善缩水的常见做法。"
+        },
+        {
+          "op": "run",
+          "id": "c26",
+          "actor": "owner",
+          "goal": "我今天在外面，手机上看。简单讲下按键卡滞可能的原因",
+          "summary": "已列出按键卡滞的常见原因。"
+        },
+        {
+          "op": "run",
+          "id": "c27",
+          "actor": "owner",
+          "goal": "帮我列三条和供应商谈价格的要点",
+          "summary": "已列出三条要点。"
+        },
+        {
+          "op": "run",
+          "id": "c28",
+          "actor": "owner",
+          "goal": "我中午一般不看消息。帮我整理一下下午要回复的三件事：报价、样件、认证",
+          "summary": "已整理三件待回复事项。"
+        },
+        {
+          "op": "run",
+          "id": "c29",
+          "actor": "owner",
+          "goal": "介绍一下 IP 防护等级里 IP54 是什么意思",
+          "summary": "已说明 IP54 的含义。"
+        },
+        {
+          "op": "run",
+          "id": "c30",
+          "actor": "owner",
+          "goal": "我们项目快到 DVT 了，帮我列一下 DVT 前要确认的事项",
+          "summary": "DVT 前确认事项已列出。"
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "candidates",
+          "kind": "profiling",
+          "actor": "owner",
+          "of_runs": [
+            "c01",
+            "c02",
+            "c03",
+            "c04",
+            "c05",
+            "c06",
+            "c07",
+            "c08",
+            "c09",
+            "c10",
+            "c11",
+            "c12",
+            "c13",
+            "c14",
+            "c15",
+            "c16",
+            "c17",
+            "c18",
+            "c19",
+            "c20",
+            "c21",
+            "c22",
+            "c23",
+            "c24",
+            "c25",
+            "c26",
+            "c27",
+            "c28",
+            "c29",
+            "c30"
+          ],
+          "expect_admitted": 0,
+          "covers": [
+            "T13"
+          ]
+        },
+        {
+          "id": "p2",
+          "probe": "resident",
+          "kind": "profiling",
+          "actor": "owner",
+          "goal": "帮我写本周周报",
+          "expect_no_notes": true,
+          "forbidden_texts": [
+            "下午开会",
+            "Excel",
+            "先看结论",
+            "邮件写短"
+          ],
+          "covers": [
+            "T13"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "profiling",
+          "actor": "owner",
+          "goal": "我一般下午开会，也不太喜欢用 Excel。帮我列一下明天拜访气泵供应商要带的三样东西。",
+          "groups": [
+            "real"
+          ],
+          "expect_no_new_notes": true,
+          "covers": [
+            "T13"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-13",
+      "title": "记忆读不到的时候",
+      "status": "candidate",
+      "split": "dev",
+      "events": [
+        {
+          "op": "parameter",
+          "actor": "owner",
+          "key": "noise",
+          "name": "噪声",
+          "value_type": "number",
+          "unit": "dB(A)",
+          "direction": "lower",
+          "standard_condition": "1 m，空载",
+          "acceptance_criterion": "≤ 62 dB(A)",
+          "change_note": "合成规格：噪声"
+        },
+        {
+          "op": "note",
+          "id": "n1",
+          "actor": "owner",
+          "kind": "convention",
+          "text": "噪声一律按 1 m 距离、空载条件来比"
+        },
+        {
+          "op": "run",
+          "id": "r1",
+          "actor": "owner",
+          "goal": "整理噪声测试的条件",
+          "summary": "噪声按 1 m、空载测。"
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "domain",
+          "kind": "domain",
+          "actor": "owner",
+          "goal": "噪声的验收标准",
+          "parameter_key": "noise",
+          "expect_criterion": "≤ 62 dB(A)",
+          "covers": [
+            "T24"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "degradation",
+          "actor": "owner",
+          "fault": "memory_unavailable",
+          "goal": "噪声的验收标准是多少？我以前有没有交代过噪声要在什么条件下测？",
+          "groups": [
+            "real"
+          ],
+          "facts": [
+            [
+              "62"
+            ]
+          ],
+          "fact_source": "domain",
+          "expect_degradation_notice": [
+            "未读取记忆",
+            "没有读取记忆",
+            "没能读取记忆",
+            "未能读取记忆",
+            "无法读取记忆",
+            "记忆暂时无法读取",
+            "记忆无法读取",
+            "记忆不可用",
+            "记忆暂不可用",
+            "记忆读取失败",
+            "无法读取个人记忆",
+            "个人记忆暂时无法读取",
+            "读取记忆失败",
+            "记忆服务",
+            "没有读到记忆",
+            "未读到记忆",
+            "记忆暂时不可用"
+          ],
+          "forbidden_usage_notes": [
+            "n1"
+          ],
+          "covers": [
+            "T24"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-14",
+      "title": "隔了几次运行，只记得一个结论里的说法",
+      "status": "candidate",
+      "split": "holdout",
+      "events": [
+        {
+          "op": "run",
+          "id": "r1",
+          "actor": "owner",
+          "goal": "评估两种电机方案的成本和噪声",
+          "summary": "推荐无刷电机方案：单价高 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。",
+          "unfinished": [
+            "向电机厂确认无刷方案的最小起订量"
+          ]
+        },
+        {
+          "op": "run",
+          "id": "r2",
+          "actor": "owner",
+          "goal": "整理充气泵说明书的章节",
+          "summary": "说明书章节已整理。"
+        },
+        {
+          "op": "run",
+          "id": "r3",
+          "actor": "owner",
+          "goal": "核对包装上的警示语",
+          "summary": "警示语已核对，一处措辞待改。"
+        },
+        {
+          "op": "run",
+          "id": "r4",
+          "actor": "owner",
+          "goal": "起草样机测试计划",
+          "summary": "测试计划已起草，共八项。"
+        },
+        {
+          "op": "run",
+          "id": "r5",
+          "actor": "owner",
+          "goal": "汇总认证进度",
+          "summary": "两项认证进行中，一项待送样。"
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "search",
+          "kind": "recall",
+          "phrasing": "outcome_words",
+          "actor": "owner",
+          "goal": "之前说有刷电机噪声超标的是哪次",
+          "query": "有刷 噪声超标",
+          "expect_runs": [
+            "r1"
+          ],
+          "covers": [
+            "T01",
+            "T02"
+          ]
+        },
+        {
+          "id": "p2",
+          "probe": "resident",
+          "kind": "capability",
+          "actor": "owner",
+          "goal": "电机方案评估做到哪了",
+          "target": {
+            "target_in_catalog": true
+          },
+          "expect_catalog": [
+            "r1"
+          ],
+          "covers": [
+            "T01"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "recall",
+          "actor": "owner",
+          "goal": "我记得有一次评估里说有刷电机噪声超标，那次最后推荐的是哪种方案？还有什么事没做完？",
+          "facts": [
+            [
+              "无刷"
+            ],
+            [
+              "起订量"
+            ]
+          ],
+          "expect_usage_runs": [
+            "r1"
+          ],
+          "covers": [
+            "T01",
+            "T02"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-15",
+      "title": "同一件事，两个人各做了一次",
+      "status": "candidate",
+      "split": "holdout",
+      "events": [
+        {
+          "op": "run",
+          "id": "r1",
+          "actor": "owner",
+          "goal": "整理充气泵的包装方案",
+          "summary": "甲：包装选方案二（纸托加收缩膜），单件成本 1.8 元。"
+        },
+        {
+          "op": "run",
+          "id": "rp1",
+          "actor": "peer",
+          "goal": "整理充气泵的包装方案（乙的会话）",
+          "summary": "乙：倾向方案一（EPE 内衬），单件成本 2.6 元。"
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "search",
+          "kind": "isolation",
+          "phrasing": "same_words",
+          "actor": "owner",
+          "goal": "上次的包装方案",
+          "query": "包装方案",
+          "expect_runs": [
+            "r1"
+          ],
+          "forbidden_runs": [
+            "rp1"
+          ],
+          "covers": [
+            "T12",
+            "T14"
+          ]
+        },
+        {
+          "id": "p2",
+          "probe": "search",
+          "kind": "isolation",
+          "phrasing": "same_words",
+          "actor": "peer",
+          "goal": "上次的包装方案",
+          "query": "包装方案",
+          "expect_runs": [
+            "rp1"
+          ],
+          "forbidden_runs": [
+            "r1"
+          ],
+          "covers": [
+            "T12",
+            "T14"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "isolation",
+          "actor": "owner",
+          "goal": "上次整理充气泵包装方案，我选的是哪个方案？单件成本多少？",
+          "facts": [
+            [
+              "方案二"
+            ],
+            [
+              "1.8"
+            ]
+          ],
+          "forbidden_answer": [
+            "EPE",
+            "2.6"
+          ],
+          "expect_usage_runs": [
+            "r1"
+          ],
+          "forbidden_usage_runs": [
+            "rp1"
+          ],
+          "covers": [
+            "T12",
+            "T14"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "TL-16",
+      "title": "改过一次的约定",
+      "status": "candidate",
+      "split": "holdout",
+      "events": [
+        {
+          "op": "note",
+          "id": "n1",
+          "actor": "owner",
+          "kind": "convention",
+          "text": "给供应商的邮件一律带上项目编号 PX-204"
+        },
+        {
+          "op": "revise",
+          "note": "n1",
+          "actor": "owner",
+          "kind": "convention",
+          "text": "给供应商的邮件一律带上项目编号 PX-305"
+        }
+      ],
+      "probes": [
+        {
+          "id": "p1",
+          "probe": "resident",
+          "kind": "correction",
+          "actor": "owner",
+          "goal": "给供应商写邮件",
+          "expect_notes": [
+            "n1"
+          ],
+          "expect_texts": [
+            "PX-305"
+          ],
+          "forbidden_texts": [
+            "PX-204"
+          ],
+          "covers": [
+            "T15"
+          ]
+        }
+      ],
+      "questions": [
+        {
+          "id": "q1",
+          "kind": "correction",
+          "actor": "owner",
+          "goal": "帮我写一封给气泵供应商的简短邮件，催一下样件交期。",
+          "facts": [
+            [
+              "PX-305"
+            ]
+          ],
+          "fact_source": "note",
+          "forbidden_answer": [
+            "PX-204"
+          ],
+          "expect_usage_notes": [
+            "n1"
+          ],
+          "expect_usage_note_revisions": {
+            "n1": 2
+          },
+          "covers": [
+            "T15"
           ]
         }
       ]
