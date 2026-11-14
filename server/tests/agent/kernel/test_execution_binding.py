@@ -38,6 +38,7 @@ from pdos_next.core.models import Receipt, now
 from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 from pdos_next.providers.agent_client import AgentProviderClient, tool_name
+from tests.agent.kernel import pure_graph
 from tests.agent.kernel.test_gateway import configured_route
 from tests.agent.kernel.test_graph import Host, final, scope
 
@@ -68,7 +69,7 @@ def test_selected_skill_and_response_index_use_server_model_identity():
     first = kernel.catalog._skills["proposal_drafting"]
     kernel.catalog._skills["another"] = replace(first, key="another", version="another@1")
     actual = scope()
-    kernel.execute(actual, goal="synthetic", preload=["proposal_drafting", "another"])
+    pure_graph.execute(kernel, actual, goal="synthetic", preload=["proposal_drafting", "another"])
     assert len(host.writes) == 1
     _, _, _, key, source = host.writes[0]
     assert source.skill.key == first.key and source.skill.digest == first.digest
@@ -85,15 +86,18 @@ def test_loading_skill_in_same_reply_does_not_authorize_that_output():
     ), ledger_call_id=uuid4())
     later = patch_turn()
     host = WriterHost([first, later, final()])
-    AgentKernel(host, default_registry()).execute(scope(), goal="synthetic")
+    pure_graph.execute(AgentKernel(host, default_registry()), scope(), goal="synthetic")
     assert len(host.prepared) == 1 and len(host.writes) == 1
     assert host.writes[0][-1].model_call_id == later.ledger_call_id
 
 
 def test_missing_actual_model_ledger_cannot_execute_t0():
     host = WriterHost([patch_turn(ledger=False), final()])
-    state = AgentKernel(host, default_registry()).execute(
-        scope(), goal="synthetic", preload=["proposal_drafting"]
+    state = pure_graph.execute(
+        AgentKernel(host, default_registry()),
+        scope(),
+        goal="synthetic",
+        preload=["proposal_drafting"],
     )
     assert not host.writes
     assert state["tool_results"][0]["value"]["error"]["code"] == "SOURCE_UNAVAILABLE"
@@ -133,8 +137,11 @@ def test_duplicate_protocol_ids_are_rejected_before_any_tool_dispatch():
     native = patch_turn().calls[0]
     host = WriterHost([ModelTurn(calls=(native, native), ledger_call_id=uuid4())])
     with pytest.raises(DomainError) as error:
-        AgentKernel(host, default_registry()).execute(
-            scope(), goal="synthetic", preload=["proposal_drafting"]
+        pure_graph.execute(
+            AgentKernel(host, default_registry()),
+            scope(),
+            goal="synthetic",
+            preload=["proposal_drafting"],
         )
     assert error.value.code == "VALIDATION_FAILED" and not host.writes
 
@@ -147,7 +154,7 @@ def test_checkpoint_restore_rejects_skill_drift_before_another_model_turn(change
     })
     saver, actual = InMemorySaver(), scope()
     kernel = AgentKernel(Host([question]), default_registry())
-    assert kernel.execute(actual, goal="synthetic", preload=["proposal_drafting"],
+    assert pure_graph.execute(kernel, actual, goal="synthetic", preload=["proposal_drafting"],
                           checkpointer=saver)["__interrupt__"]
     host = WriterHost([patch_turn(), final()])
     changed = SkillCatalog()
@@ -155,8 +162,11 @@ def test_checkpoint_restore_rejects_skill_drift_before_another_model_turn(change
     value = {"version": "different", "content": "changed", "operations": frozenset()}
     changed._skills[old.key] = replace(old, **{change: value[change]})
     with pytest.raises(DomainError) as error:
-        AgentKernel(host, default_registry(), catalog=changed).execute(
-            actual, answer={"q": "US"}, checkpointer=saver
+        pure_graph.execute(
+            AgentKernel(host, default_registry(), catalog=changed),
+            actual,
+            answer={"q": "US"},
+            checkpointer=saver,
         )
     assert error.value.code == "VERSION_CONFLICT" and not host.prefixes and not host.writes
 

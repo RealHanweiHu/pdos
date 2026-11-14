@@ -12,7 +12,7 @@ from uuid import uuid4
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
-from langgraph.graph import END, START, StateGraph
+from langgraph.graph import StateGraph
 from langgraph.types import Command
 from pdos_agent_runtime.graph import registered_graph_context
 
@@ -51,18 +51,7 @@ def drive(monkeypatch, *, count=1, question=False):
         return {}
 
     graph.add_node("rollover_gate", gate)
-    graph.add_edge(START, "prepare_context")
-    graph.add_edge("prepare_context", "model")
-    graph.add_conditional_edges("model", plugin_graph.choose,
-                                ["tools", "model", "route", "verify"])
-    graph.add_conditional_edges("route", plugin_graph.after_route, ["model", "verify"])
-    graph.add_conditional_edges("tools", plugin_graph.after_tools,
-                                ["await_category_adoption", "rollover_gate"])
-    graph.add_conditional_edges("await_category_adoption", plugin_graph.after_tools,
-                                ["await_category_adoption", "rollover_gate"])
-    graph.add_edge("rollover_gate", "model")
-    graph.add_conditional_edges("verify", plugin_graph.after_verify, ["finalize", "model"])
-    graph.add_edge("finalize", END)
+    plugin_graph.wire(graph)
     app = graph.compile(checkpointer=InMemorySaver())
     config = {"configurable": {"thread_id": str(scope.run_id)}, "recursion_limit": 50}
 
@@ -139,3 +128,18 @@ def test_resume_must_be_exactly_one_committed_reference(monkeypatch, payload):
     run = drive(monkeypatch)
     with pytest.raises(DomainError, match="恢复输入须是服务器已提交的答复引用"):
         run.invoke(Command(resume=payload))
+
+
+@pytest.mark.parametrize(("key", "value"), [
+    ("candidate_event_id", str(uuid4())), ("candidate_digest", "f" * 64),
+    ("run_id", str(uuid4())), ("cancel_epoch", 1), ("cancel_epoch", False),
+    ("receipt_id", "not-a-uuid"), ("category_id", None), ("extra", True),
+])
+def test_wrong_or_malformed_adoption_cannot_release_the_wait(monkeypatch, key, value):
+    run = drive(monkeypatch)
+    adopted = proof(run.scope, run.host)
+    adopted.category_adoption[key] = value
+    # On the plugin path this stops the node, and the workflow closes the run as failed.
+    with pytest.raises(DomainError):
+        run.invoke(run.commit(adopted))
+    assert len(run.host.prepared) == 1 and len(run.host.prefixes) == 1

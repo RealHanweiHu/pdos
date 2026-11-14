@@ -11,6 +11,7 @@ from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.errors import DomainError
+from tests.agent.kernel import pure_graph
 
 
 def scope(**kwargs):
@@ -113,7 +114,7 @@ def test_progressive_load_preserves_prefix_and_unqualified_t0_becomes_candidate(
     )
     kernel = AgentKernel(host, default_registry())
     kernel.catalog.validate_registry(kernel.registry)
-    state = kernel.execute(scope(), goal="Synthetic proposal")
+    state = pure_graph.execute(kernel, scope(), goal="Synthetic proposal")
     assert state["output"]["result"]["tool_count"] == 2
     assert len(host.prepared) == 1 and not host.writes
     systems = [system for system, _ in host.prefixes]
@@ -146,7 +147,11 @@ def test_raw_read_and_model_authority_are_rejected_before_host_callback():
             final(),
         ]
     )
-    result = AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic injection")
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry()),
+        scope(),
+        goal="Synthetic injection",
+    )
     assert all(v["value"]["error"]["code"] == "FORBIDDEN_SCOPE" for v in result["tool_results"])
     assert not host.prepared and not host.writes
 
@@ -162,7 +167,7 @@ def test_t2_has_no_executing_operation_and_only_prepares():
     )
     kernel = AgentKernel(host, default_registry())
     assert kernel.registry.get("proposal.g0.decide").operation_key is None
-    kernel.execute(scope(), goal="Synthetic decision", preload=["gap_check"])
+    pure_graph.execute(kernel, scope(), goal="Synthetic decision", preload=["gap_check"])
     assert len(host.prepared) == 1 and not host.writes
 
 
@@ -176,8 +181,11 @@ def test_t2_preparation_without_a_skill_that_lists_it_is_refused():
             final(),
         ]
     )
-    result = AgentKernel(host, default_registry()).execute(
-        scope(), goal="Synthetic decision", preload=["proposal_drafting"],
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry()),
+        scope(),
+        goal="Synthetic decision",
+        preload=["proposal_drafting"],
     )
     assert result["tool_results"][0]["value"]["error"]["code"] == "FORBIDDEN_SCOPE"
     assert not host.prepared and not host.writes
@@ -206,7 +214,12 @@ def test_whole_run_revert_target_is_t1_preparation_and_never_execution_identity(
         base, operations=frozenset({"ai.run.revert"})
     )
     actual = scope()
-    kernel.execute(actual, goal="Synthetic whole-run reversal", preload=["proposal_drafting"])
+    pure_graph.execute(
+        kernel,
+        actual,
+        goal="Synthetic whole-run reversal",
+        preload=["proposal_drafting"],
+    )
     assert host.prepared and not host.writes and str(actual.run_id) != target
     with pytest.raises(DomainError):
         registry.authorize(
@@ -225,8 +238,11 @@ def test_private_context_cannot_promote_shared_knowledge():
             final(),
         ]
     )
-    result = AgentKernel(host, default_registry()).execute(
-        scope(private_context=True), goal="Synthetic private", preload=["public_research"]
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry()),
+        scope(private_context=True),
+        goal="Synthetic private",
+        preload=["public_research"],
     )
     assert result["tool_results"][0]["value"]["error"]["code"] == "FORBIDDEN_SCOPE"
     assert not host.prepared
@@ -250,9 +266,9 @@ def test_interrupt_resumes_same_thread_without_repeating_model_or_actions():
         ]
     )
     kernel, bound, saver = AgentKernel(host, default_registry()), scope(), InMemorySaver()
-    result = kernel.execute(bound, goal="Synthetic question", checkpointer=saver)
+    result = pure_graph.execute(kernel, bound, goal="Synthetic question", checkpointer=saver)
     assert result["__interrupt__"]
-    result = kernel.execute(bound, answer={"q": "US"}, checkpointer=saver)
+    result = pure_graph.execute(kernel, bound, answer={"q": "US"}, checkpointer=saver)
     assert result["output"]["status"] == "completed" and len(host.prefixes) == 2
 
 
@@ -266,8 +282,11 @@ def test_malformed_question_enters_bounded_repair_instead_of_crashing(repair):
         }], "unfinished": [],
     })
     host = Host([malformed, final() if repair else malformed])
-    result = AgentKernel(host, default_registry(), budget=Budget(validation_retries=1)).execute(
-        scope(), goal="你好", checkpointer=InMemorySaver(),
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry(), budget=Budget(validation_retries=1)),
+        scope(),
+        goal="你好",
+        checkpointer=InMemorySaver(),
     )
     assert result["output"]["status"] == ("completed" if repair else "partial")
     assert len(host.prefixes) == 2
@@ -297,12 +316,20 @@ def test_graph_resume_answer_cannot_replace_actual_category_run_or_identity():
     ])
     actual, saver = scope(), InMemorySaver()
     kernel = AgentKernel(host, default_registry())
-    paused = kernel.execute(actual, goal="Synthetic question", checkpointer=saver)
+    paused = pure_graph.execute(kernel, actual, goal="Synthetic question", checkpointer=saver)
     assert paused["__interrupt__"]
-    resumed = kernel.execute(actual, answer={
-        "q": "US", "category_id": str(uuid4()), "run_id": str(uuid4()),
-        "tenant_id": str(uuid4()), "writer_id": str(uuid4()),
-    }, checkpointer=saver)
+    resumed = pure_graph.execute(
+        kernel,
+        actual,
+        answer={
+            "q": "US",
+            "category_id": str(uuid4()),
+            "run_id": str(uuid4()),
+            "tenant_id": str(uuid4()),
+            "writer_id": str(uuid4()),
+        },
+        checkpointer=saver,
+    )
     assert resumed["output"]["status"] == "completed"
     assert checked and all(bound == actual for bound in checked)
     assert len(host.prefixes) == 2 and not host.writes
@@ -310,8 +337,10 @@ def test_graph_resume_answer_cannot_replace_actual_category_run_or_identity():
 
 def test_budget_forced_partial_keeps_actual_tool_results():
     host = Host([ModelTurn(calls=(ToolCall(id="r", name="category.read", arguments={}),))])
-    result = AgentKernel(host, default_registry(), budget=Budget(model_turns=1)).execute(
-        scope(), goal="Synthetic budget"
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry(), budget=Budget(model_turns=1)),
+        scope(),
+        goal="Synthetic budget",
     )
     assert result["output"]["status"] == "partial"
     assert len(result["output"]["result"]["actions"]) == 1
@@ -321,7 +350,7 @@ def test_cancel_never_calls_model():
     host = Host([])
     host.cancelled = True
     with pytest.raises(DomainError) as e:
-        AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic cancel")
+        pure_graph.execute(AgentKernel(host, default_registry()), scope(), goal="Synthetic cancel")
     assert e.value.code == "CANCELLED_RUN" and host.prefixes == []
 
 
@@ -333,7 +362,9 @@ def test_durable_wallet_limit_returns_partial_without_retrying_model():
             return super().model(bound, **kwargs)
 
     host = Limited([ModelTurn(calls=(ToolCall(id="r", name="category.read", arguments={}),))])
-    result = AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic budget")
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry()), scope(), goal="Synthetic budget"
+    )
     assert result["output"]["status"] == "partial"
     assert len(result["output"]["result"]["actions"]) == 1 and len(host.prefixes) == 1
 
@@ -358,15 +389,15 @@ def test_interleaved_runs_in_same_session_cannot_resume_each_others_checkpoint()
     original, saver = scope(), InMemorySaver()
     later = replace(original, run_id=uuid4())
     first, second = Capture([question]), Capture([question])
-    assert AgentKernel(first, default_registry()).execute(
-        original, goal="original goal", checkpointer=saver
+    assert pure_graph.execute(
+        AgentKernel(first, default_registry()), original, goal="original goal", checkpointer=saver
     )["__interrupt__"]
-    assert AgentKernel(second, default_registry()).execute(
-        later, goal="later goal", checkpointer=saver
+    assert pure_graph.execute(
+        AgentKernel(second, default_registry()), later, goal="later goal", checkpointer=saver
     )["__interrupt__"]
     restored = Capture([final()])
-    output = AgentKernel(restored, default_registry()).execute(
-        original, answer={"q": "US"}, checkpointer=saver
+    output = pure_graph.execute(
+        AgentKernel(restored, default_registry()), original, answer={"q": "US"}, checkpointer=saver
     )
     assert output["output"]["status"] == "completed"
     assert "original goal" in restored.messages[0]["content"]
@@ -380,7 +411,7 @@ def test_revoked_history_stops_with_partial_before_model_egress():
         raise DomainError("CONVERSATION_HISTORY_REVOKED", "synthetic revocation")
 
     host.model = revoked
-    result = AgentKernel(host, default_registry()).execute(scope(), goal="继续")
+    result = pure_graph.execute(AgentKernel(host, default_registry()), scope(), goal="继续")
     assert result["output"]["status"] == "partial"
     assert result["output"]["summary"] == (
         "会话中引用的资料已无权读取或已撤回，本次处理已停止。请重新发起，小Pai会按当前权限重新整理。"
@@ -389,36 +420,48 @@ def test_revoked_history_stops_with_partial_before_model_egress():
 
 def test_required_work_state_over_budget_stops_partial_without_model():
     host = Host([])
-    host.context = lambda *_: {"work_state": {"context_incomplete": True,
-                                            "missing": ["必需约束超出预算"]}}
-    result = AgentKernel(host, default_registry()).execute(scope(), goal="保留全部明确约束")
+    host.context = lambda *_: {
+        "work_state": {"context_incomplete": True, "missing": ["必需约束超出预算"]}
+    }
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry()), scope(), goal="保留全部明确约束"
+    )
     assert result["output"]["status"] == "partial"
     assert result["output"]["result"]["context_incomplete"] is True
     assert result["output"]["unfinished"] == ["必需约束超出预算"]
     assert host.captured_model_messages == []
 
 
-@pytest.mark.parametrize(("skill", "declared"), [
-    ("rfq_extraction", [{"kind": "rfq_requirement", "version": "1"}]),
-    ("proposal_drafting", None),
-])
+@pytest.mark.parametrize(
+    ("skill", "declared"),
+    [
+        ("rfq_extraction", [{"kind": "rfq_requirement", "version": "1"}]),
+        ("proposal_drafting", None),
+    ],
+)
 def test_skill_load_hands_back_the_row_schemas_extraction_needs(skill, declared):
     """D255: the declaration lives in skill metadata, which the content does not carry."""
-    host = Host([
-        ModelTurn(calls=(ToolCall(id="load", name="skill.load", arguments={"name": skill}),)),
-        final(),
-    ])
-    AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic extraction")
-    loaded = [json.loads(m["content"]) for m in host.captured_model_messages[1]
-              if m.get("role") == "tool"]
+    host = Host(
+        [
+            ModelTurn(calls=(ToolCall(id="load", name="skill.load", arguments={"name": skill}),)),
+            final(),
+        ]
+    )
+    pure_graph.execute(AgentKernel(host, default_registry()), scope(), goal="Synthetic extraction")
+    loaded = [
+        json.loads(m["content"]) for m in host.captured_model_messages[1] if m.get("role") == "tool"
+    ]
     assert len(loaded) == 1 and loaded[0]["skill"] == skill
     assert loaded[0].get("row_schemas") == declared
 
 
 def test_preloaded_rfq_declares_the_required_schema_before_the_first_model_call():
     host = Host([final()])
-    AgentKernel(host, default_registry()).execute(
-        scope(), goal="Synthetic RFQ", preload=("rfq_extraction",),
+    pure_graph.execute(
+        AgentKernel(host, default_registry()),
+        scope(),
+        goal="Synthetic RFQ",
+        preload=("rfq_extraction",),
     )
     envelope = json.loads(host.captured_model_messages[0][0]["content"])
     assert envelope["row_schemas"] == {
@@ -428,11 +471,15 @@ def test_preloaded_rfq_declares_the_required_schema_before_the_first_model_call(
 
 @pytest.mark.parametrize("name", [[], {}])
 def test_wrong_skill_name_type_is_returned_as_a_repairable_tool_error(name):
-    host = Host([
-        ModelTurn(calls=(ToolCall(id="bad", name="skill.load", arguments={"name": name}),)),
-        final(),
-    ])
-    result = AgentKernel(host, default_registry()).execute(scope(), goal="Synthetic invalid skill")
+    host = Host(
+        [
+            ModelTurn(calls=(ToolCall(id="bad", name="skill.load", arguments={"name": name}),)),
+            final(),
+        ]
+    )
+    result = pure_graph.execute(
+        AgentKernel(host, default_registry()), scope(), goal="Synthetic invalid skill"
+    )
     answer = next(msg for msg in host.captured_model_messages[1] if msg["role"] == "tool")
     assert json.loads(answer["content"])["error"]["code"] == "VALIDATION_FAILED"
     assert result["output"]["status"] == "completed"

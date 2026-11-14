@@ -68,11 +68,6 @@ class BoundHost:
     def current(self, scope):
         self.store.current(scope)
 
-    def checkpoint_layout(self, scope):
-        from .session_checkpoints import LAYOUT_KEY
-        with self.store.transaction(scope) as (_, run):
-            return run.versions.get(LAYOUT_KEY)
-
     def context(self, scope, goal):
         return self.skill_context(scope, goal, bindings=())["context"]
 

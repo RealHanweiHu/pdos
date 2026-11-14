@@ -59,7 +59,6 @@ def test_followup_keeps_actual_session_goal_outcome_sources_and_no_old_authority
         assert old.state == "completed" and new.state == "queued"
         assert new.continued_from_id == parent
         assert new.versions == {
-            "checkpoint_layout": "session-run-ns/v1",
             "assistant_depth": {"version": 1, "mode": "quick", "parent_run_id": str(parent)},
             "requested_context_selection": None,
             "requested_context_selection_digest": digest(None),

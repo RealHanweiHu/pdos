@@ -1811,7 +1811,7 @@ availability=not_applicable（须写理由）只豁免值未知/冲突条件；i
   2. 因为没有发布，不为未结束的 `XiaopaiWork` 历史保留回放能力。本机开发环境里如有这类未结束的工作流，升级后不能继续，按取消后重新发起处理。
   3. 隔离子任务仍按 P100 第 2 项，不在本次范围。
 - 不改变：P100 的其余内容；`reconcile_xiaopai_run` 与人工对账入口；账本、取消、撤回的规则。
-- 余项（清单 D382）：`AgentKernel.execute` 里只服务主图检查点的分支、会话检查点布局（`session_checkpoints`、运行记录里的 `checkpoint_layout`）和检查点保留清理中针对主图线程的部分，现在只有测试和隔离子任务会经过，留待单独清理。
+- 余项（清单 D382）：主图检查点的遗留代码已于 2026-11-12 清理（`AgentKernel.execute` 的主图恢复分支、会话检查点布局、`BoundHost.checkpoint_layout`、应用代码写入的 `checkpoint_layout`）。保留两处并说明了原因：检查点保留清理仍识别主图的旧线程形态，以便已有检查点按期清除；数据库函数 `automation_service_start` 仍写入无人读取的 `checkpoint_layout` 键，去掉它需要单独的迁移。见决策记录 §13.3。
 - 实施：清单 D378“下线旧路径”。
 - 判据：worker 注册表不含 `XiaopaiWork`；依赖原路径的测试全部迁到新路径或删除后通过。
 

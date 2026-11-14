@@ -16,6 +16,8 @@ from uuid import NAMESPACE_URL, uuid4, uuid5
 
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
+from pydantic import SecretStr
+
 from pdos_next.agent.kernel.context_budget import estimate_tokens, fit_messages
 from pdos_next.agent.kernel.context_runtime import protected_result
 from pdos_next.agent.kernel.disclosure import disclosure, record_disclosure
@@ -27,7 +29,7 @@ from pdos_next.agent.kernel.types import ModelTurn, RunScope, ToolCall, WireAgen
 from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 from pdos_next.providers.types import ProviderRoute
-from pydantic import SecretStr
+from tests.agent.kernel import pure_graph
 
 GOAL = "只核对合成密封圈措施；保留回执、依据和错误，等本人继续。"
 CONSTRAINT = "只核对合成密封圈措施"
@@ -250,7 +252,7 @@ def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(
     bound = RunScope(*(uuid4() for _ in range(6)))
     provider.scope = bound
     baseline = deepcopy(disclosure(host.registry, "main", (), scope=bound))
-    paused = kernel.execute(bound, goal=GOAL, checkpointer=saver)
+    paused = pure_graph.execute(kernel, bound, goal=GOAL, checkpointer=saver)
     assert paused["__interrupt__"] and provider.calls == 6
     assert paused["tools_used"] == 13
     assert host.disclosures == [baseline] * 6
@@ -311,8 +313,11 @@ def test_full_initial_disclosure_long_run_cleans_and_resumes_at_declared_window(
     next_provider = ScriptedProvider(recovery=True, registry=registry)
     next_provider.scope = bound
     next_host = OfflineHost(window, next_provider, registry)
-    finished = AgentKernel(next_host, next_host.registry).execute(
-        bound, answer={"continue": "继续"}, checkpointer=saver,
+    finished = pure_graph.execute(
+        AgentKernel(next_host, next_host.registry),
+        bound,
+        answer={"continue": "继续"},
+        checkpointer=saver,
     )
     assert finished["output"]["status"] == "completed" and next_provider.calls == 1
     assert not next_host.reads
@@ -339,7 +344,7 @@ def test_oversized_initial_disclosure_32k_stops_registered_graph_before_fake_pro
     host = OfflineHost(window, provider)
     host.registry = oversized_registry()
     bound = RunScope(*(uuid4() for _ in range(6)))
-    state = AgentKernel(host, host.registry).execute(bound, goal=GOAL)
+    state = pure_graph.execute(AgentKernel(host, host.registry), bound, goal=GOAL)
     output = state["output"]
     assert output["status"] == "partial" and output["result"]["context_incomplete"]
     budget = output["result"]["context_budget"]

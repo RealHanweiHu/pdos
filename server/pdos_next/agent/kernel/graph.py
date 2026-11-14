@@ -10,7 +10,6 @@ from typing import Protocol, TypedDict
 from uuid import UUID, uuid4
 
 from langgraph.graph import END, START, StateGraph
-from langgraph.types import Command as GraphCommand
 from langgraph.types import interrupt
 from pydantic import ValidationError
 
@@ -162,18 +161,20 @@ def without_questions(output):
 
 
 class NodeHooks:
-    """Where the two execution paths differ; these defaults are the checkpointed path.
+    """What a node body leaves to its caller; these defaults keep everything in state.
 
-    The plugin path (P100) overrides them so that a human answer arrives as a committed
-    reference, and large or provider-private values stay in the run's ledger instead of
-    graph state. Node logic itself is shared.
+    The main graph runs with ``plugin_graph.PluginHooks``: a human answer arrives as a
+    committed reference and is read from the database, and large or provider-private
+    values stay in the run's ledger instead of graph state. Isolated children, which
+    never wait for a person, use the defaults.
     """
 
     def answer(self, scope, wait):
         return wait()
 
-    def adoption(self, scope, wait, trusted):
-        return wait(), trusted
+    def adoption(self, scope, wait):
+        # (answer, server-verified adoption). No witness exists without the database.
+        return wait(), None
 
     def hydrate(self, scope, messages):
         return messages
@@ -202,7 +203,7 @@ class AgentKernel:
         # system prefix, and nothing here is sent to the model as-is.
         self.definitions = self.registry.definitions()
 
-    def nodes(self, scope: RunScope, *, preload=(), trusted_adoption=None, hooks=None):
+    def nodes(self, scope: RunScope, *, preload=(), hooks=None):
         """The node bodies bound to one run, by graph node name."""
         ports, registry, catalog, budget = self.ports, self.registry, self.catalog, self.budget
         hooks = hooks or NodeHooks()
@@ -671,7 +672,6 @@ class AgentKernel:
             current = pending[0]
             answer, trusted = hooks.adoption(
                 scope, lambda: interrupt({"type": "category_adoption", **current}),
-                trusted_adoption,
             )
             ports.current(scope)
             if not isinstance(trusted, VerifiedCategoryAdoption):
@@ -777,18 +777,18 @@ class AgentKernel:
             "finalize": finalize,
         }
 
-    def compile(
-        self, scope: RunScope, *, checkpointer=None, preload=(), trusted_adoption=None
-    ):
+    def compile(self, scope: RunScope, *, checkpointer=None, preload=()):
+        """The in-process graph of an isolated child task.
+
+        The main graph is assembled by ``plugin_graph`` and run by Temporal (P100).
+        """
         def choose(state):
             if state["calls"]:
                 return "tools"
             return "model" if not state["output"] else "verify"
 
         graph = StateGraph(GraphState)
-        for name, node in self.nodes(
-            scope, preload=preload, trusted_adoption=trusted_adoption,
-        ).items():
+        for name, node in self.nodes(scope, preload=preload).items():
             graph.add_node(name, node)
         graph.add_edge(START, "prepare_context")
         graph.add_edge("prepare_context", "model")
@@ -805,29 +805,19 @@ class AgentKernel:
         graph.add_edge("finalize", END)
         return graph.compile(checkpointer=checkpointer)
 
-    def execute(
-        self, scope, *, goal=None, answer=None, checkpointer=None, preload=(), execution_key=None
-    ):
+    def execute(self, scope, *, goal=None, checkpointer=None, preload=(), execution_key=None):
+        """Run an isolated child task to its end inside the caller's tool call.
+
+        With a checkpointer, a child that was cut off resumes from its last checkpoint
+        and a finished one returns its stored result. A child cannot be answered: if
+        its graph stops to ask, the caller sees the interruption and treats it as
+        unfinished.
+        """
         from pdos_agent_runtime.graph import registered_graph_context
 
-        trusted = answer if isinstance(answer, VerifiedCategoryAdoption) else None
-        envelope = trusted.envelope() if trusted else answer
-        from .session_checkpoints import SESSION_LAYOUT, SessionRunSaver, main_checkpoint_config
-
         self.ports.current(scope)
-        layout = None
-        layout_for = getattr(self.ports, "checkpoint_layout", None)
-        if scope.isolation == "main" and callable(layout_for):
-            layout = layout_for(scope)
-        address = main_checkpoint_config(scope, layout)["configurable"]
-        thread_id = address["thread_id"]
-        graph_saver = (
-            SessionRunSaver(checkpointer, scope)
-            if checkpointer is not None and layout == SESSION_LAYOUT else checkpointer
-        )
-        compiled = self.compile(
-            scope, checkpointer=graph_saver, preload=preload, trusted_adoption=trusted,
-        )
+        compiled = self.compile(scope, checkpointer=checkpointer, preload=preload)
+        thread_id = f"xiaopai:{scope.tenant_id}:{scope.session_id}:{scope.run_id}"
         if scope.isolation != "main":
             from pdos_next.core.service import digest
 
@@ -847,44 +837,11 @@ class AgentKernel:
                 restore_checkpoint(scope, saved.values)
             if not saved.next:
                 return saved.values
-            pending = saved.values.get("pending_categories", [])
-            duplicate = trusted and envelope["input_ref"] in saved.values.get(
-                "consumed_input_refs", []
-            )
             interruptions = [i for task in saved.tasks for i in task.interrupts]
-            if interruptions and (answer is None or duplicate):
+            if interruptions:
                 return {**saved.values, "__interrupt__": interruptions}
-            if answer is not None and not duplicate:
-                if pending:
-                    if trusted is None:
-                        raise DomainError("FORBIDDEN_SCOPE", "普通答复不能释放品类采用等待。")
-                    _adoption_index(scope, pending, envelope)
-                elif trusted and interruptions:
-                    raise DomainError("FORBIDDEN_SCOPE", "当前检查点没有该待采用候选。")
-                if not interruptions:
-                    # Finish an interrupted Activity from its last checkpoint first.
-                    # Its committed input remains available for the subsequent wait.
-                    payload = None
-                else:
-                    payload = GraphCommand(resume=envelope)
-            else:
-                payload = None
+            payload = None
         else:
-            if answer is not None:
-                raise DomainError("SOURCE_UNAVAILABLE", "恢复输入缺少原运行的持久检查点。")
             payload = {"goal": goal, "run_id": str(scope.run_id)}
         with registered_graph_context("xiaopai"):
-            result = compiled.invoke(payload, config)
-            if (payload is None and answer is not None and not duplicate
-                    and result.get("__interrupt__")):
-                # Adoption can commit after tools checkpoint but before interrupt is saved.
-                # Keep the same verified input while advancing to that durable wait.
-                pending = result.get("pending_categories", [])
-                if trusted:
-                    if envelope["input_ref"] in result.get("consumed_input_refs", []):
-                        return result
-                    _adoption_index(scope, pending, envelope)
-                elif pending:
-                    raise DomainError("FORBIDDEN_SCOPE", "普通答复不能释放品类采用等待。")
-                result = compiled.invoke(GraphCommand(resume=envelope), config)
-            return result
+            return compiled.invoke(payload, config)

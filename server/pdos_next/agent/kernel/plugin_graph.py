@@ -70,7 +70,7 @@ class PluginHooks(NodeHooks):
             raise DomainError("FORBIDDEN_SCOPE", "当前检查点没有该待采用候选。")
         return answer
 
-    def adoption(self, scope, wait, _trusted):
+    def adoption(self, scope, wait):
         trusted = self._resolved(scope, wait)
         if not isinstance(trusted, VerifiedCategoryAdoption):
             raise DomainError("FORBIDDEN_SCOPE", "普通答复不能释放品类采用等待。")
@@ -321,6 +321,11 @@ def build(*, gate=rollover_gate):
     ):
         graph.add_node(name, activity_node(body), metadata=options)
     graph.add_node("rollover_gate", gate, metadata={"execute_in": "workflow"})
+    return wire(graph)
+
+
+def wire(graph):
+    """The main graph's edges, for a graph that already has its eight nodes."""
     graph.add_edge(START, "prepare_context")
     graph.add_edge("prepare_context", "model")
     graph.add_conditional_edges("model", choose, ["tools", "model", "route", "verify"])

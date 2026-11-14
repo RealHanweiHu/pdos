@@ -10,11 +10,9 @@ from uuid import UUID, uuid4
 import httpx
 import pytest
 from fastapi.testclient import TestClient
-from langgraph.checkpoint.postgres import PostgresSaver
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from pdos_next.agent.kernel.execution import scope_for_run
 from pdos_next.agent.kernel.management import AgreementInput, register_agreement
 from pdos_next.agent.kernel.models import (
     AgentEvent,
@@ -24,7 +22,6 @@ from pdos_next.agent.kernel.models import (
     TenantSkillEnablement,
     ValidationBudget,
 )
-from pdos_next.agent.kernel.session_checkpoints import LAYOUT_KEY, main_checkpoint_config
 from pdos_next.agent.model_configuration.kms import AliyunKms
 from pdos_next.api import create_app
 from pdos_next.core.database import tenant_session
@@ -394,22 +391,22 @@ def test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_propos
                     )
                     for marker in (PRIVATE_Q, PRIVATE_ACTION, PRIVATE_FINAL)
                 )
-                address = main_checkpoint_config(scope_for_run(row), row.versions.get(LAYOUT_KEY))
-            url = os.environ["M2_TEST_CHECKPOINT_URL"].replace(
-                "postgresql+psycopg://", "postgresql://"
-            )
-            with PostgresSaver.from_conn_string(url) as saver:
-                persisted = saver.get_tuple(address)
+                # The provider's private continuation stays in the run's ledger; graph
+                # state, and so workflow history, carries only a reference to it (P100).
+                recorded = [
+                    call.result for call in session.scalars(select(AgentToolCall).where(
+                        AgentToolCall.run_id == identity, AgentToolCall.tool == "model",
+                    ))
+                ]
                 assert all(
-                    marker in str(persisted.checkpoint["channel_values"])
-                    for marker in (PRIVATE_Q, PRIVATE_ACTION, PRIVATE_FINAL)
+                    marker in str(recorded) for marker in (PRIVATE_Q, PRIVATE_ACTION, PRIVATE_FINAL)
                 )
+                assert row.versions["execution_engine"] == "temporal-langgraph/v1"
             print(
                 json.dumps(
                     {
                         "run_id": str(identity),
                         "same_temporal_run": True,
-                        "same_checkpoint_thread": True,
                         "worker_processes": 2,
                         "native_http_attempts": 3,
                         "private_continuation_persisted": True,

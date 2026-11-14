@@ -203,3 +203,17 @@ PDOS_GRAPH_PLUGIN_REAL_TRIAL=<本机模型运行时元数据文件的绝对路�
 对照方法：把上一个提交检出到临时目录，用同一个数据库运行同一组测试。
 
 **没有覆盖**：没有再跑一次经过内核图的全部 171 个测试文件（阶段 2 那次约 44 分钟）；这次只跑了改动涉及的文件和上面列出的目录。真实模型试运行没有重跑。
+
+## 清理主图检查点遗留代码（2026-11-13，D382）
+
+改动见决策记录 §13.3。候选：提交 `74e4e745` 之上的未提交改动。为回归另建了一套隔离环境（标记 `ee1da33d`，测试库与检查点库各一个容器，另起一个内存态 Temporal 开发服务），回归结束后已全部删除；其他环境没有动。
+
+**第一批**：`tests/agent/kernel`、`tests/agent/enterprise_search`、`tests/workflows`、`tests/my_work` 四个目录加 `tools/tests/test_workflow_replay_check.py`，共 3961 项，用时 1 小时 50 分：3900 通过、60 跳过（需要外部 Temporal 地址或真实模型的显式开启用例）、1 失败。
+
+失败的是 `tests/agent/enterprise_search/test_recovery_pg.py::test_registered_family_search_and_authority_batch_stay_constant_sql_and_under_one_second`，断言“1 秒内”，实测 1.086 秒。对照：同一个库上单独再跑三次，当前代码 1 次失败、1 次通过，上一个提交 1 次失败（1.042 秒）。它不经过内核图，结果贴着阈值随机器负载波动，与本次清理无关（D385）。
+
+**第二批**（显式开启，接临时 Temporal 服务）：worker 进程恢复、研究子任务进程用例、MiniMax 进程用例、品类采纳、MCP 子任务、检查点保留清理的数据库用例。13 项中 12 通过、1 失败；失败在 `test_worker_process_recovery.py`（等待 worker 状态超时），该文件随即单独重跑 3 项全部通过，属于整批负载下的等待超时（D385）。
+
+**静态检查**：本次改动涉及的 Python 文件 ruff 全部通过。
+
+**没有覆盖**：没有跑服务端全量；知识、自动化、钉钉等目录这次没有跑，它们不引用被删的名字（已用全仓搜索核对 `session_checkpoints`、`checkpoint_layout`、`execute(` 的 `answer` 参数）。真实模型试运行没有重跑。数据库函数 `automation_service_start` 仍写 `checkpoint_layout` 键，未改。

@@ -54,10 +54,14 @@ def owner(thread_id, namespace, tenant_id):
 
     Thread ids, all built by the server:
     - ``xiaopai:embedding:{tenant}:{batch}``                  embedding batch
-    - ``xiaopai:{tenant}:{session}`` + ns ``run:{run}[|...]``  session layout
-    - ``xiaopai:{tenant}:{session}:{run}``                    main Run
     - ``xiaopai:{tenant}:{session}:{run}:{digest}``           isolated subtask
-    - ``xiaopai:{tenant}:{run}:personal-summary:{epoch}``     personal summary
+    - ``xiaopai:{tenant}:{session}`` + ns ``run:{run}[|...]``  main Run, before P101
+    - ``xiaopai:{tenant}:{session}:{run}``                    main Run, before P101
+    - ``xiaopai:{tenant}:{run}:personal-summary:{epoch}``     personal summary, before P101
+
+    Since P101 the main graph and the personal summary run on the Temporal LangGraph
+    plugin and write no checkpoint. Their three earlier forms are still recognised so
+    that rows already in a checkpoint database age out like any other.
     """
     tenant = str(tenant_id)
     parts = thread_id.split(":")

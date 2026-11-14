@@ -1,28 +1,23 @@
 """Actual adoption/dispatch rows and PostgreSQL checkpoints; synthetic model turns."""
 
 import asyncio
-import os
 from dataclasses import replace
 from types import SimpleNamespace
 from uuid import UUID, uuid4
 
 import pytest
-from langgraph.checkpoint.postgres import PostgresSaver
 from sqlalchemy import select, text
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy.orm import Session
 
 from pdos_next.agent.kernel.category_adoption import dispatch_reference, resolve
-from pdos_next.agent.kernel.graph import AgentKernel, VerifiedCategoryAdoption
-from pdos_next.agent.kernel.host import BoundHost, KernelAdapters
-from pdos_next.agent.kernel.models import AgentEvent, AgentInput, AgentRun
-from pdos_next.agent.kernel.types import ModelTurn, ToolCall
+from pdos_next.agent.kernel.graph import VerifiedCategoryAdoption
+from pdos_next.agent.kernel.models import AgentEvent, AgentInput
 from pdos_next.core.database import tenant_session
 from pdos_next.core.dispatch.outbox import acknowledge, claim_events, delivery_unknown
 from pdos_next.core.models import Grant, Outbox
 from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
-from pdos_next.workflows.checkpoints import verified_checkpoint_url
 from pdos_next.workflows.transport import TemporalSender
 from tests.agent.kernel.test_category_candidate_transactions import adopted, personal_fixture
 from tests.confirmation_fixture import confirmation_clock  # noqa: F401
@@ -76,89 +71,6 @@ def test_adoption_resolves_without_agent_grant_and_dispatches_same_reference(set
             )
             is None
         )
-
-
-def test_category_wait_survives_postgres_checkpoint_and_new_host(setup, tmp_path):
-    f = personal_fixture(setup, tmp_path)
-    adapters = KernelAdapters(
-        route_for=lambda *_: f.route,
-        project_context=f.bootstrap.project_context,
-        verify_result=lambda _, result, __: result,
-        prepare_candidate=f.bootstrap.prepare_candidate,
-        execute_command=lambda *_: pytest.fail("No direct write"),
-        tool_registry=f.registry,
-        skill_catalog=f.catalog,
-    )
-
-    class Host(BoundHost):
-        # Since 10-31 the graph prefers BoundHost.model_step (gateway admission and
-        # provider call) over model(); this host scripts model() and calls no provider.
-        model_step = None
-
-        def __init__(self, turns):
-            super().__init__(f.store, adapters)
-            self.turns, self.model_count = iter(turns), 0
-
-        def model(self, *_args, **_kwargs):
-            self.model_count += 1
-            return next(self.turns)
-
-    target = verified_checkpoint_url(
-        os.environ["M2_TEST_CHECKPOINT_URL"].replace(
-            "postgresql://",
-            "postgresql+psycopg://",
-            1,
-        )
-    )
-    first_host = Host(
-        [
-            ModelTurn(
-                calls=(
-                    ToolCall(
-                        id="synthetic-native",
-                        name="category.create",
-                        arguments=f.arguments,
-                    ),
-                ),
-                ledger_call_id=f.model_id,
-            )
-        ]
-    )
-    with PostgresSaver.from_conn_string(target) as saver:
-        first = AgentKernel(first_host, f.registry, catalog=f.catalog).execute(
-            f.scope,
-            goal="synthetic category",
-            preload=["category_framing"],
-            checkpointer=saver,
-        )
-        assert first["__interrupt__"] and first_host.model_count == 1
-    receipt, _ = adopted(setup, f)
-    witness = resolve(setup.engine, f.scope, receipt["result"]["adoption_input_ref"])
-    restored = Host(
-        [
-            ModelTurn(
-                structured={
-                    "status": "completed",
-                    "summary": "合成采用完成",
-                    "result": {},
-                    "questions": [],
-                    "unfinished": [],
-                }
-            )
-        ]
-    )
-    with PostgresSaver.from_conn_string(target) as saver:
-        graph = AgentKernel(restored, f.registry, catalog=f.catalog)
-        with pytest.raises(DomainError):
-            graph.execute(f.scope, answer=witness.envelope(), checkpointer=saver)
-        second = graph.execute(f.scope, answer=witness, checkpointer=saver)
-        assert second["output"]["status"] == "completed" and restored.model_count == 1
-        assert (
-            graph.execute(f.scope, answer=witness, checkpointer=saver)["output"] == second["output"]
-        )
-        assert restored.model_count == 1
-    with Session(setup.admin) as session:
-        assert session.get(AgentRun, f.run.id).state == "completed"
 
 
 @pytest.mark.parametrize("change", ["requester", "reserved", "immutable_input", "immutable_event"])

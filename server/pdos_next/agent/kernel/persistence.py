@@ -674,8 +674,6 @@ def create_run(
         session.add(conversation)
         session.flush()
     # Taint is supplied by the trusted host source read-set, never by model arguments.
-    from .session_checkpoints import LAYOUT_KEY, SESSION_LAYOUT
-
     project_metadata, project_facts = None, None
     if project_id is not None:
         from .project_object_reads import bind_project_metadata
@@ -715,7 +713,6 @@ def create_run(
         token_limit=token_limit,
         read_sources=list(read_sources),
         versions={
-            LAYOUT_KEY: SESSION_LAYOUT,
             **({"proposal_context": outbound_context} if outbound_context is not None else {}),
             **({"project_metadata_context": project_metadata} if project_metadata else {}),
             **({"project_current_context": project_facts} if project_facts else {}),
