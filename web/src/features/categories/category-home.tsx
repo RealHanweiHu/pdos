@@ -10,6 +10,7 @@ import { CategoryMatrix } from "@/features/categories/preproject/category-matrix
 import { CompetitorSegments } from "@/features/categories/preproject/competitor-segments";
 import { StandardMatch } from "@/features/categories/preproject/standard-match";
 import { CategoryMetadataEditor } from "./category-metadata-editor";
+import { ScopeNotesSection } from "@/features/scope-notes/scope-notes-section";
 import { CategoryMaterialEditor, type MaterialContext } from "./category-material-editor";
 import type { MaterialKind, CategoryParameter } from "@/lib/category-materials";
 import styles from "./category-home.module.css";
@@ -121,6 +122,7 @@ export function CategoryHome({ categoryId, categoryName, categoryPurpose = "", c
       <button type="button" className={styles.overviewRow} onClick={() => onOpenPai({ kind: "category", title: categoryName, id: categoryId, draft: { name: categoryName, purpose: categoryPurpose } })}><span><strong>用户与场景</strong><small>当前产品方向 · 待持续核对</small></span><span>{categoryPurpose || "主要场景尚未填写"}</span><ArrowUpRight size={14}/></button>
       {([{ id: "competitor", label: "竞品库", note: "实测 / 宣传 / 推断分别记录 · 查看与维护" }, { id: "voice", label: "用户声音", note: "保留出处与样本量 · 查看与维护" }, { id: "regulation", label: "法规认证", note: "已登记资料 · 版本与适用性待复核" }] as const).map(item => <button type="button" className={styles.overviewRow} key={item.id} onClick={() => { setView(item.id); setQuery(""); }}><span><strong>{item.label}</strong><small>{item.note}</small></span><span>{errors.knowledge ? "暂不可读" : knowledge ? `${knowledge.filter(row => row.kind === item.id).length} 条${item.id === "competitor" ? "竞品" : item.id === "voice" ? "声音" : "法规"}记录` : "读取中…"}</span><ArrowUpRight size={14}/></button>)}
       <p className={styles.overviewNote}>{parameters ? `已登记 ${parameters.length} 个参数。` : ""}客户原件保留在私有提案中，经人工去标识后才能沉淀为共享知识。</p>
+      <div className={styles.overviewMemo}><ScopeNotesSection key={categoryId} categoryId={categoryId} anchor={{ kind: "category", id: categoryId }}/></div>
     </section> : <>
     <div className={styles.listToolbar}><span>{viewError || loading ? activeView.label : view === "parameters" ? `${parameters?.length ?? 0} 个参数` : view === "products" ? `${products?.length ?? 0} 个型号` : `${relevant.length} 条记录`}</span>{(view === "competitor" || view === "voice") && <label className={styles.withdrawnToggle}><input type="checkbox" aria-label="显示已撤回" checked={withdrawn} onChange={event => { setWithdrawn(event.target.checked); refresh(); }}/>显示已撤回</label>}<span className={styles.toolbarSpacer}/><Button variant="ghost" size="xs" onClick={openPai}><Sparkle/>小Pai新增</Button><label className={styles.search}><MagnifyingGlass size={14} aria-hidden="true"/><input type="search" aria-label={`搜索${activeView.label}`} placeholder="搜索资料" value={query} onChange={event => setQuery(event.target.value)}/></label>{materialKind && <Button size="xs" variant="outline" onClick={() => setMaterial({ categoryId, api, kind: materialKind, item: null })}><Plus/>新增{materialKind === "parameter" ? "参数" : materialKind === "competitor" ? "竞品" : "声音"}</Button>}</div>
     <section className={styles.panel} id={panelId} aria-label={activeView.label}>

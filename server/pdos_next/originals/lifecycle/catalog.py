@@ -5769,3 +5769,32 @@ _D47_SCOPE["tool_trial"] = (
 )
 GUARDED = (*GUARDED, *_d47_chain("tool_trial"))
 GUARDED = (*GUARDED, *_d47_chain("engineering_interface"))
+
+# Scope notes (M2b; P87, P121 第 3、4、6 项). Team notes attached to a business scope: they
+# hold object references and evidence links only (type, ID, version, quote digest) and
+# never adopt source material; readers follow the attached object's own audience.
+COVERED_COLUMNS.update({
+    "scope_notes": (
+        "claim_key", "author_id", "category_id", "product_id", "proposal_id", "project_id",
+        "anchor_kind", "kind", "id", "tenant_id", "created_at",
+    ),
+    "scope_note_versions": (
+        "note_id", "revision", "action", "lifecycle", "statement", "subject_kind", "subject_id",
+        "subject_version", "customer_identity", "stage", "topic", "sensitivity",
+        "source_authority", "epistemic", "confirmation", "formal_kind", "formal_id",
+        "formal_version", "generated_by", "occurred_at", "valid_from", "valid_to",
+        "review_due_at", "pinned", "writer_id", "requester_id", "confirmed_by", "run_id",
+        "reason", "origin", "operation", "command_id", "receipt_id", "request_digest",
+        "category_id", "product_id", "proposal_id", "project_id", "anchor_kind", "kind", "id",
+        "tenant_id", "created_at",
+    ),
+    "scope_note_evidence": (
+        "category_id", "note_id", "revision", "source_type", "source_kind", "source_id",
+        "source_version", "locator", "quote_sha256", "root_source_id", "stance", "writer_id",
+        "run_id", "retracts_id", "receipt_id", "id", "tenant_id", "created_at",
+    ),
+    "scope_note_relations": (
+        "category_id", "from_note_id", "to_note_id", "type", "created_by", "receipt_id", "id",
+        "tenant_id", "created_at",
+    ),
+})

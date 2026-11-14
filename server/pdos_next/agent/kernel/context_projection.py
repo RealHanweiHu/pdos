@@ -32,6 +32,11 @@ def load_contracts(directory):
     local_refs(data)
     for schema in data["profiles"].values():
         Draft202012Validator.check_schema({**schema, "$defs": data["$defs"]})
+        if "x-memory" in schema:
+            # P87 第 8 项: the memory recipe is part of the context contract.
+            from pdos_next.agent.memory.scope_assemble import validate_recipe
+
+            validate_recipe(schema["x-memory"])
     return data
 
 
@@ -82,6 +87,11 @@ def combine_contracts(catalog, skills):
     from pdos_next.agent.memory.assemble import CONTEXT_SCHEMA as NOTES_SCHEMA
 
     properties["personal_memory"] = deepcopy(NOTES_SCHEMA)
+    from pdos_next.agent.memory.scope_assemble import CONTEXT_SCHEMA as TEAM_SCHEMA
+    from pdos_next.agent.memory.scope_assemble import RECENT_SCHEMA
+
+    properties["team_memory"] = deepcopy(TEAM_SCHEMA)
+    properties["scope_recent"] = deepcopy(RECENT_SCHEMA)
     from pdos_next.domain.projects.discussions.agent import CONTEXT_SCHEMA as THREAD_SCHEMA
 
     properties["discussion_thread"] = deepcopy(THREAD_SCHEMA)

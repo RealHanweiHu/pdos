@@ -372,6 +372,9 @@ class Bootstrap:
 
                 recheck_frozen(session, run)
                 recheck_notes(session, run)
+                from pdos_next.agent.memory.scope_assemble import recheck as recheck_scope
+
+                recheck_scope(session, run)
                 frozen = run.versions.get("conversation_memory")
                 if run.continued_from_id is None or frozen is None:
                     return

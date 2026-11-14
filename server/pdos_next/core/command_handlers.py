@@ -44,6 +44,9 @@ CATEGORY_OPERATIONS = frozenset(
         "evidence.link.create",
         "evidence.claim.withdraw",
         "proposal.share",
+        "scope_note.save",
+        "scope_note.retire",
+        "scope_note.observation.record",
     }
 )
 
@@ -166,6 +169,8 @@ T1_OPERATIONS = frozenset(
         "product.definition.update",
         "engineering.interface.update",
         "npi.tooltrial.create",
+        "scope_note.save",
+        "scope_note.retire",
     }
 )
 
@@ -201,6 +206,9 @@ T0_OPERATIONS = frozenset(
         "verification.schedule.propose",
         "release.package.assemble",
         "work.plan.propose",
+        # P121 第 4 项: only an unverified observation or an evidence link; without a
+        # qualification the registered graph prepares it for a person (T1 handling).
+        "scope_note.observation.record",
     }
 )
 
@@ -255,6 +263,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation.startswith("scope_note."):
+        from pdos_next.domain.knowledge.scope_notes import service as scope_notes
+
+        return scope_notes
     if operation in {"embedding.profile.save", "embedding.call.reconcile"}:
         from pdos_next.agent.enterprise_search import embedding_profiles
 

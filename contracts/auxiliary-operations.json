@@ -1441,6 +1441,54 @@
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice",
       "source": "设计确认稿 P41 第 8 项、P42、P109、P110（用户 2026-11-02、11-09）；欠债总表 W6 D37 ⑧、W8 D117"
+    },
+    {
+      "operation": "scope_note.save",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "scope_note.saved",
+      "record": "scope_note_versions",
+      "purpose": "对挂靠范围有写权限的成员本人新建或修订一条范围条目（团队备忘）：挂在品类上，可细到产品、提案、项目；约定、关注点、决策背景、观察四种，另记可信状态与业务确认状态；决策背景要挂正式决定或对象版本，没有就标“未形成正式决定”；替代按生效时间判断。小Pai 只能预填，AI 身份不能执行。挂靠对象、对象版本、来源权威性、确认人、复核日期由服务器绑定；条目不是业务事实。",
+      "canonical_policy_preserved": [
+        "ai.run.revert:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "设计确认稿 P87、P121 第 3、4、6 项（用户 2026-11-07、11-12）；记忆层设计 §7.2、§13 M2b；欠债总表 W8 D45"
+    },
+    {
+      "operation": "scope_note.retire",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "scope_note.retired",
+      "record": "scope_note_versions",
+      "purpose": "成员本人停用或撤回一条范围条目，或按运行撤回小Pai 在那次运行里自动记下、尚无成员接手的观察与证据链接。只停用或撤回，不删除，版本历史保留。",
+      "canonical_policy_preserved": [
+        "ai.run.revert:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "设计确认稿 P87、P121 第 3、4、6 项（用户 2026-11-07、11-12）；记忆层设计 §7.2、§13 M2b；欠债总表 W8 D45"
+    },
+    {
+      "operation": "scope_note.observation.record",
+      "write_tier": "T0",
+      "executor": "qualified_authorized_actor",
+      "event": "scope_note.observation_recorded",
+      "record": "scope_note_versions",
+      "purpose": "P121 第 4 项的 T0 通道，只做两件事：记一条新的未核实观察，或给已有条目补充证据链接。须“租户 × 技能包 × 模型版本”资格；没有资格时由注册执行图转为待成员一次确认。自动写入署小Pai 名、标未核实、只进背景区、不置顶，只能记在本次运行自己的范围上，可按运行撤回。登记不授予资格。",
+      "canonical_policy_preserved": [
+        "ai.run.revert:T1",
+        "knowledge.candidate.create:T0",
+        "knowledge.rule.publish:T2"
+      ],
+      "payload_schema": "payloads.schema.json",
+      "implementation": "implemented_local_slice",
+      "source": "设计确认稿 P87、P121 第 3、4、6 项（用户 2026-11-07、11-12）；记忆层设计 §7.2、§13 M2b；欠债总表 W8 D45"
     }
   ],
   "inbound_endpoints": [

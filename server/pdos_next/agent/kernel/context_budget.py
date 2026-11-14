@@ -214,6 +214,21 @@ def fit_messages(route, system, tools, messages, output_schema=None, *, compact_
                            "read_more": {"tool": "memory.search",
                                          "arguments": {"kinds": ["note"]}}})
         commit_envelope()
+    if isinstance(context, dict) and isinstance(context.get("scope_recent"), dict) and over():
+        # §8 第 1 步: 范围近况 goes with the episode catalog (background zone first).
+        context.pop("scope_recent")
+        reductions.append({"kind": "memory_background", "field": "scope_recent",
+                           "read_more": {"tool": "memory.search",
+                                         "arguments": {"kinds": ["scope_note"]}}})
+        commit_envelope()
+    team = context.get("team_memory") if isinstance(context, dict) else None
+    if isinstance(team, dict) and team.get("background") and over():
+        team["omitted"] = team.get("omitted", 0) + len(team["background"])
+        team["background"] = []
+        reductions.append({"kind": "memory_background", "field": "team_memory.background",
+                           "read_more": {"tool": "memory.search",
+                                         "arguments": {"kinds": ["scope_note"]}}})
+        commit_envelope()
     conversation = envelope.get("context", {}).get("conversation", {})
     for phase, indices, limit in (
         ("history_directory", range(3, len(conversation.get("turns", []))), 60),

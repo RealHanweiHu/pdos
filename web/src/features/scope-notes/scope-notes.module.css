@@ -1,0 +1,67 @@
+/* 团队备忘：沿用平台 token、8px 圆角、13px 正文与紧凑密度；亮暗两套主题都只用变量。 */
+.section { display:flex; flex-direction:column; gap:6px; min-width:0; font-size:13px; }
+.head { display:flex; align-items:center; gap:8px; padding:0 0 8px; border-bottom:1px solid var(--border-soft); }
+.head h3 { flex:1; min-width:0; display:flex; align-items:center; gap:6px; font-size:13px; font-weight:550; }
+.head small { color:var(--text-subtle); font-size:11px; font-weight:400; font-family:var(--font-geist-mono),monospace; }
+.note,.meta,.hint,.empty { color:var(--text-subtle); font-size:11px; line-height:1.6; overflow-wrap:anywhere; }
+.empty { padding-block:8px; font-size:12px; }
+.error { color:var(--destructive); font-size:12px; }
+.notice { color:var(--foreground); background:var(--primary-soft); border:1px solid var(--primary-border); border-radius:8px; padding:7px 10px; font-size:12px; }
+.strong { font-weight:550; }
+.list { display:grid; min-width:0; list-style:none; margin:0; padding:0; }
+.row { padding-block:10px; border-bottom:1px solid var(--border-soft); min-width:0; }
+.row:last-child { border-bottom:0; }
+.row:not([data-state=active]) { opacity:.75; }
+.rowMain { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:10px; align-items:start; }
+.rowBody { min-width:0; display:grid; gap:2px; }
+.rowActions { display:flex; gap:2px; flex-wrap:wrap; justify-content:flex-end; }
+.text { line-height:1.6; overflow-wrap:anywhere; }
+.pin { display:inline-block; margin-right:5px; color:var(--primary); vertical-align:-1px; }
+.chip { display:inline-flex; align-items:center; height:20px; padding:0 7px; border-radius:999px; font-size:11px; white-space:nowrap; background:var(--muted); color:var(--text-subtle); }
+.chip[data-kind=convention] { background:var(--primary-soft); color:var(--primary); }
+.chip[data-kind=decision_context] { border:1px solid var(--border); background:transparent; color:var(--foreground); }
+.state { display:inline-flex; margin-left:8px; padding:0 6px; border:1px solid var(--border); border-radius:999px; font-size:10px; line-height:16px; color:var(--text-subtle); white-space:nowrap; }
+.state[data-tone=primary] { border-color:var(--primary-border); color:var(--primary); }
+.form { display:grid; gap:10px; margin-top:8px; padding:12px; border:1px solid var(--border); border-radius:8px; background:var(--surface); min-width:0; }
+.fields { display:grid; gap:10px; border:0; padding:0; margin:0; min-width:0; }
+.fields label,.reason { display:grid; gap:6px; min-width:0; font-size:12px; }
+.fields :is(input:not([type=radio]):not([type=checkbox]),select,textarea),.reason input { width:100%; min-height:34px; border:1px solid var(--border); border-radius:8px; padding:7px 10px; background:var(--background); color:var(--foreground); margin:0; font:inherit; font-size:13px; }
+.fields textarea { resize:vertical; line-height:1.6; }
+.fields :is(input,select,textarea):focus-visible,.reason input:focus-visible,.choices input:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+.kinds { display:flex; flex-wrap:wrap; gap:6px; }
+.kind { display:inline-flex !important; align-items:center; gap:6px; min-height:30px; padding:0 12px; border:1px solid var(--border); border-radius:999px; cursor:pointer; }
+.kind[data-checked=true] { border-color:var(--primary); background:var(--primary-soft); color:var(--primary); }
+.kind input { position:absolute; opacity:0; width:1px; height:1px; }
+.kind:has(input:focus-visible) { outline:2px solid var(--ring); outline-offset:2px; }
+.pair { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; min-width:0; }
+.counter { justify-self:end; margin-top:-6px; color:var(--text-subtle); font-size:10px; font-family:var(--font-geist-mono),monospace; }
+.checks { display:grid; gap:4px; }
+.checks label,.choices label { display:inline-flex !important; align-items:center; gap:8px; min-height:30px; cursor:pointer; line-height:1.5; }
+.checks input,.choices input { accent-color:var(--primary); width:16px; height:16px; margin:0; flex:none; }
+.choices { display:flex; flex-wrap:wrap; gap:4px 16px; border:0; padding:0; margin:0; font-size:12px; }
+.actions { display:flex; flex-wrap:wrap; align-items:center; gap:8px; }
+.similar,.review { display:grid; gap:8px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--background); min-width:0; }
+.review { border-color:var(--primary-border); background:var(--primary-soft); }
+.similar ul { display:grid; gap:6px; list-style:none; margin:0; padding:0; }
+.similar li { display:grid; grid-template-columns:auto minmax(0,1fr); gap:2px 8px; align-items:start; }
+.similar li .meta { grid-column:2; }
+.review dl { display:grid; grid-template-columns:auto minmax(0,1fr); gap:4px 12px; margin:0; font-size:12px; line-height:1.6; }
+.review dt { color:var(--text-subtle); white-space:nowrap; }
+.review dd { margin:0; overflow-wrap:anywhere; }
+.share { display:grid; gap:8px; margin-top:8px; padding:10px 12px; border:1px solid var(--border); border-radius:8px; background:var(--background); min-width:0; font-size:12px; }
+.reason select { width:100%; min-height:34px; border:1px solid var(--border); border-radius:8px; padding:7px 10px; background:var(--background); color:var(--foreground); font:inherit; font-size:13px; }
+.confirm { display:grid; gap:8px; margin-top:8px; padding:10px 12px; border:1px solid var(--destructive); border-radius:8px; background:color-mix(in oklch, var(--destructive) 6%, transparent); font-size:12px; line-height:1.6; }
+.history { margin-top:8px; padding:10px 12px; border-radius:8px; background:var(--surface-2); display:grid; gap:6px; }
+.history ol { display:grid; gap:8px; list-style:none; margin:0; padding:0; }
+.history li { display:grid; gap:2px; overflow-wrap:anywhere; }
+.past { margin-top:4px; border-top:1px solid var(--border-soft); padding-top:6px; }
+.past summary { cursor:pointer; color:var(--text-subtle); font-size:12px; min-height:30px; display:flex; align-items:center; }
+@media(max-width:540px) {
+  .rowMain { grid-template-columns:auto minmax(0,1fr); }
+  .rowActions { grid-column:1/-1; justify-content:flex-start; margin-left:-8px; }
+  .pair { grid-template-columns:1fr; }
+}
+@media(pointer:coarse) {
+  .fields :is(input:not([type=radio]):not([type=checkbox]),select,textarea),.reason input { min-height:44px; }
+  .kind,.checks label,.choices label,.past summary { min-height:44px; }
+}

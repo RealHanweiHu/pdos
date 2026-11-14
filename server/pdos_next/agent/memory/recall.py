@@ -373,7 +373,9 @@ def search(session, run, data, *, now=None, semantic=None):
         "fact_policy": FACT_POLICY,
     }
     if response["unavailable_kinds"]:
-        response["kinds_note"] = "团队备忘尚未启用（记忆层第 2 期 M2b）。"
+        from .scope_note_search import search_scope_notes
+
+        response.update(search_scope_notes(session, run, data, now=now))
     blocked = unavailable(run, session)
     if blocked is not None:
         response.update(status=blocked[0], message=blocked[1])

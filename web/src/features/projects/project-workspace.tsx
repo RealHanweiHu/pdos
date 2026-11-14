@@ -16,6 +16,7 @@ import { ProjectDiscussions } from "./project-discussions";
 import { ProjectOverviewView } from "./project-overview";
 import { ProjectProfessional } from "./project-professional";
 import { ProjectTeam } from "./project-team";
+import { ScopeNotesSection } from "@/features/scope-notes/scope-notes-section";
 import { projectViews as tabs, isProfessionalView, type ProjectViewId, type ProfessionalView } from "@/lib/project-workspace-navigation";
 import styles from "./project-views.module.css";
 
@@ -76,6 +77,7 @@ export function ProjectWorkspace({ entry, api, session, onBack, onOpenRun, onRef
       {tab === "now" && <ProjectOverviewView api={api} scope={{ categoryId: category.id, productId: product.id, projectId: project.id }} principalId={session.principal_id} readVersion={readVersion} onOpen={openFromOverview} onWriteUpdate={() => setWritingUpdate(true)}>
         <div className={styles.activitySlot}><ProjectActivity compact api={api} scope={{ categoryId: category.id, productId: product.id, projectId: project.id, principalId: session.principal_id }} readVersion={readVersion} onOpenRun={onOpenRun ? id => onOpenRun(id, category.id) : undefined}/></div>
         <div className={styles.activitySlot}><ProjectDiscussions api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion} initialThread={typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("thread")} onOpenRun={onOpenRun ? id => onOpenRun(id, category.id) : undefined}/></div>
+        <div className={styles.activitySlot}><ScopeNotesSection categoryId={category.id} productId={product.id} anchor={{ kind: "project", id: project.id }} readVersion={readVersion}/></div>
       </ProjectOverviewView>}
       {tab === "team" && <ProjectTeam api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion}/>}
       {tab === "gates" && <ProjectGovernance api={api} categoryId={category.id} productId={product.id} projectId={project.id} principalId={session.principal_id} readVersion={readVersion} onSaved={onRefresh}/>}

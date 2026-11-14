@@ -26753,6 +26753,876 @@
       ],
       "title": "Payload",
       "type": "object"
+    },
+    "scope_note.save": {
+      "$defs": {
+        "Anchor": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "category",
+                "product",
+                "proposal",
+                "project"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "title": "Anchor",
+          "type": "object"
+        },
+        "EvidenceInput": {
+          "additionalProperties": false,
+          "properties": {
+            "source_type": {
+              "enum": [
+                "run",
+                "discussion",
+                "receipt",
+                "original",
+                "business_object"
+              ],
+              "title": "Source Type",
+              "type": "string"
+            },
+            "source_id": {
+              "format": "uuid",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "source_kind": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "category",
+                    "product",
+                    "proposal",
+                    "project",
+                    "proposal_decision"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Source Kind"
+            },
+            "locator": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "maxProperties": 6,
+              "title": "Locator",
+              "type": "object"
+            },
+            "quote": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote"
+            },
+            "stance": {
+              "default": "supports",
+              "enum": [
+                "supports",
+                "opposes",
+                "context"
+              ],
+              "title": "Stance",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_type",
+            "source_id"
+          ],
+          "title": "EvidenceInput",
+          "type": "object"
+        },
+        "FormalRef": {
+          "additionalProperties": false,
+          "description": "正式决定或对象版本 a 决策背景 hangs on; the server binds the version.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "category",
+                "product",
+                "proposal",
+                "project",
+                "proposal_decision"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "title": "FormalRef",
+          "type": "object"
+        },
+        "NoteBody": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "convention",
+                "concern",
+                "decision_context",
+                "observation"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "statement": {
+              "maxLength": 300,
+              "minLength": 1,
+              "title": "Statement",
+              "type": "string"
+            },
+            "subject": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/ObjectRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "customer": {
+              "anyOf": [
+                {
+                  "maxLength": 80,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Customer"
+            },
+            "stage": {
+              "anyOf": [
+                {
+                  "maxLength": 40,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Stage"
+            },
+            "topic": {
+              "anyOf": [
+                {
+                  "maxLength": 40,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Topic"
+            },
+            "epistemic": {
+              "default": "stated",
+              "enum": [
+                "stated",
+                "verified",
+                "inferred",
+                "disputed"
+              ],
+              "title": "Epistemic",
+              "type": "string"
+            },
+            "confirmation": {
+              "default": "member_confirmed",
+              "enum": [
+                "discussion",
+                "member_confirmed"
+              ],
+              "title": "Confirmation",
+              "type": "string"
+            },
+            "formal": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/FormalRef"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "occurred_at": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Occurred At"
+            },
+            "valid_from": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid From"
+            },
+            "valid_until": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Valid Until"
+            },
+            "pinned": {
+              "default": false,
+              "title": "Pinned",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "kind",
+            "statement"
+          ],
+          "title": "NoteBody",
+          "type": "object"
+        },
+        "NoteRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "NoteRef",
+          "type": "object"
+        },
+        "ObjectRef": {
+          "additionalProperties": false,
+          "description": "A business object; the server reads it now and binds its current version.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "category",
+                "product",
+                "proposal",
+                "project"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "title": "ObjectRef",
+          "type": "object"
+        },
+        "RelationInput": {
+          "additionalProperties": false,
+          "properties": {
+            "type": {
+              "enum": [
+                "supersedes",
+                "conflicts",
+                "duplicates",
+                "refines",
+                "derived_from"
+              ],
+              "title": "Type",
+              "type": "string"
+            },
+            "note": {
+              "$ref": "#/$defs/NoteRef"
+            }
+          },
+          "required": [
+            "type",
+            "note"
+          ],
+          "title": "RelationInput",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "anchor": {
+          "$ref": "#/$defs/Anchor"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NoteRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "body": {
+          "$ref": "#/$defs/NoteBody"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceInput"
+          },
+          "maxItems": 10,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "relations": {
+          "items": {
+            "$ref": "#/$defs/RelationInput"
+          },
+          "maxItems": 5,
+          "title": "Relations",
+          "type": "array"
+        },
+        "kept_similar": {
+          "items": {
+            "format": "uuid",
+            "type": "string"
+          },
+          "maxItems": 20,
+          "title": "Kept Similar",
+          "type": "array"
+        },
+        "shared_from_note": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Shared From Note"
+        },
+        "request_ref": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Request Ref"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "anchor",
+        "body"
+      ],
+      "title": "SavePayload",
+      "type": "object"
+    },
+    "scope_note.retire": {
+      "$defs": {
+        "NoteRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "NoteRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "description": "停用 (no longer applies) or 撤回 (was wrong); or 按运行撤回 小Pai's own writes.",
+      "properties": {
+        "note": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NoteRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "run_id": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Run Id"
+        },
+        "action": {
+          "default": "retire",
+          "enum": [
+            "retire",
+            "withdraw"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "reason"
+      ],
+      "title": "RetirePayload",
+      "type": "object"
+    },
+    "scope_note.observation.record": {
+      "$defs": {
+        "Anchor": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "category",
+                "product",
+                "proposal",
+                "project"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "title": "Anchor",
+          "type": "object"
+        },
+        "EvidenceInput": {
+          "additionalProperties": false,
+          "properties": {
+            "source_type": {
+              "enum": [
+                "run",
+                "discussion",
+                "receipt",
+                "original",
+                "business_object"
+              ],
+              "title": "Source Type",
+              "type": "string"
+            },
+            "source_id": {
+              "format": "uuid",
+              "title": "Source Id",
+              "type": "string"
+            },
+            "source_kind": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "category",
+                    "product",
+                    "proposal",
+                    "project",
+                    "proposal_decision"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Source Kind"
+            },
+            "locator": {
+              "additionalProperties": {
+                "anyOf": [
+                  {
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  }
+                ]
+              },
+              "maxProperties": 6,
+              "title": "Locator",
+              "type": "object"
+            },
+            "quote": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Quote"
+            },
+            "stance": {
+              "default": "supports",
+              "enum": [
+                "supports",
+                "opposes",
+                "context"
+              ],
+              "title": "Stance",
+              "type": "string"
+            }
+          },
+          "required": [
+            "source_type",
+            "source_id"
+          ],
+          "title": "EvidenceInput",
+          "type": "object"
+        },
+        "NoteRef": {
+          "additionalProperties": false,
+          "properties": {
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "id",
+            "revision"
+          ],
+          "title": "NoteRef",
+          "type": "object"
+        },
+        "ObjectRef": {
+          "additionalProperties": false,
+          "description": "A business object; the server reads it now and binds its current version.",
+          "properties": {
+            "kind": {
+              "enum": [
+                "category",
+                "product",
+                "proposal",
+                "project"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            }
+          },
+          "required": [
+            "kind",
+            "id"
+          ],
+          "title": "ObjectRef",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "mode": {
+          "enum": [
+            "observation",
+            "evidence"
+          ],
+          "title": "Mode",
+          "type": "string"
+        },
+        "anchor": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Anchor"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "statement": {
+          "anyOf": [
+            {
+              "maxLength": 300,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Statement"
+        },
+        "subject": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ObjectRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "customer": {
+          "anyOf": [
+            {
+              "maxLength": 80,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Customer"
+        },
+        "stage": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Stage"
+        },
+        "topic": {
+          "anyOf": [
+            {
+              "maxLength": 40,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Topic"
+        },
+        "inferred": {
+          "default": false,
+          "title": "Inferred",
+          "type": "boolean"
+        },
+        "occurred_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Occurred At"
+        },
+        "note": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/NoteRef"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceInput"
+          },
+          "maxItems": 10,
+          "title": "Evidence",
+          "type": "array"
+        },
+        "request_ref": {
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Request Ref"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "title": "ObservePayload",
+      "type": "object"
     }
   },
   "scope": "implemented local domain slices; real AI qualification and formal exits are separate"
