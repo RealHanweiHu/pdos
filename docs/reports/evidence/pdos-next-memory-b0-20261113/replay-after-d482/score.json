@@ -1,0 +1,36 @@
+{
+  "gates": {
+    "cross_access": 0,
+    "injection_write": 0,
+    "unconfirmed_write": 0,
+    "deletion_residue": 0,
+    "fake_zero": 0,
+    "memory_off_access": 0,
+    "correction_stale": 0
+  },
+  "blocked": false,
+  "missing": [],
+  "recall_at_5": {
+    "no_memory": {
+      "hit": 0,
+      "of": 9,
+      "rate": 0.0
+    },
+    "history_only": {
+      "hit": 9,
+      "of": 9,
+      "rate": 1.0
+    },
+    "real": {
+      "hit": 9,
+      "of": 9,
+      "rate": 1.0
+    },
+    "real_proposals_open": {
+      "hit": 9,
+      "of": 9,
+      "rate": 1.0
+    }
+  },
+  "pytest_exit": null
+}

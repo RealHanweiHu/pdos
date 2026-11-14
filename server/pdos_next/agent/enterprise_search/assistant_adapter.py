@@ -175,7 +175,8 @@ class AssistantReadAdapter:
             from pdos_next.agent.memory.assemble import frozen_aliases
             from pdos_next.agent.memory.notes import alias_expansions
 
-            extra, aliases = alias_expansions(session, run, data.query, frozen_aliases(run))
+            extra, aliases = alias_expansions(session, run, data.query,
+                                              frozen_aliases(session, run))
         if extra:
             data = data.model_copy(update={"query": f"{data.query} {extra}"[:2000]})
         query = (

@@ -1,0 +1,74 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p3",
+      "probe": "resident",
+      "notes": [],
+      "texts": [],
+      "catalog": [
+        "r6",
+        "r5",
+        "r4"
+      ],
+      "catalog_fields": [
+        "as_of",
+        "goal",
+        "run_id",
+        "session_id"
+      ],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": false
+    }
+  ],
+  "episodes_written": [
+    "r1",
+    "r2",
+    "r3",
+    "r4",
+    "r5",
+    "r6"
+  ],
+  "unexpected_notes": 0
+}

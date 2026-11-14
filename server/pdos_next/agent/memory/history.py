@@ -3,8 +3,11 @@
 The server checks the Session belongs to the Run's requester. Turns are shown
 under P32: revoked sources hide the answer and keep the owner's words; changed
 sources keep it with "资料已更新". A turn whose outbound class (private,
-customer) is wider than this Run's binding is withheld. The page is a dated
-memory record: its citations are never inherited as this Run's evidence.
+customer) is wider than this Run's binding is withheld whole: only its
+identity and state are returned, not its words (D483). Every returned ``goal``
+is the owner's own words; page material the composer appended is page data,
+not something the owner said, and stays out. The page is a dated memory
+record: its citations are never inherited as this Run's evidence.
 """
 
 from sqlalchemy import select
@@ -27,6 +30,7 @@ def other_session(store, scope, payload, readers):
     from pdos_next.agent.kernel.conversation_acl import classify, manifests
     from pdos_next.agent.kernel.execution import scope_for_run
     from pdos_next.agent.kernel.models import AgentRun, AgentSession
+    from pdos_next.agent.kernel.work_state import user_goal
 
     from .recall import FACT_POLICY, covered, record_usage, unavailable
 
@@ -65,9 +69,9 @@ def other_session(store, scope, payload, readers):
         for row in selected:
             if row not in sendable:
                 turns.append({
-                    "run_id": str(row.id), "goal": row.goal, "status": row.state,
+                    "run_id": str(row.id), "status": row.state,
                     "historical_outcome": None, "outcome_state": "hidden",
-                    "note": "本次运行未绑定该轮的资料类别，回答未发送。", "sources": [],
+                    "note": "本次运行未绑定该轮的资料类别，这一轮的内容未发送。", "sources": [],
                     "original_record": {"run_id": str(row.id), "session_id": str(row.session_id)},
                 })
                 continue
@@ -82,7 +86,7 @@ def other_session(store, scope, payload, readers):
                 outcome["summary"] = outcome["summary"][:ANSWER_CHARS]
             turns.append({
                 "run_id": str(row.id),
-                "goal": row.goal,
+                "goal": user_goal(row.goal),
                 "status": row.state,
                 "historical_outcome": outcome,
                 "outcome_state": classified["state"],

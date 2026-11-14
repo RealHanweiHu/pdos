@@ -3,9 +3,13 @@
 At the Run's first context assembly the server takes the requester's usable
 notes for this range (global notes plus notes on the Run's own category,
 product, proposal or project), splits them into the constraint zone (口径 and
-叫法) and the background zone (背景, and anything marked 可能过期), and freezes
-the result for the Run. Nothing goes into the fixed prefix (不可协商项 4); no
+叫法) and the background zone (背景, and anything marked 可能过期), and fixes the
+selection for the Run. Nothing goes into the fixed prefix (不可协商项 4); no
 model or embedding call is made; at most 1,000 tokens. Neither zone can be cited.
+
+The Run row keeps which notes and revisions were chosen and where they go, never
+their words (D481): the words are read from the note versions each time, so a
+deleted note leaves nothing behind on the Run.
 """
 
 import json
@@ -83,33 +87,97 @@ def build(session, run):
     return value, entries
 
 
+BODY_KEYS = ("text", "term", "means")
+
+
+def _versions(session, entries):
+    keys = {(entry["note_id"], entry["revision"]) for entry in entries}
+    if not keys:
+        return {}
+    rows = session.scalars(select(MemoryNoteVersion).where(
+        MemoryNoteVersion.note_id.in_({note_id for note_id, _revision in keys}))).all()
+    return {(str(row.note_id), row.revision): row for row in rows
+            if (str(row.note_id), row.revision) in keys}
+
+
+def _with_words(session, stored):
+    """The envelope for the model: the chosen entries with their words read now.
+
+    Words kept on a Run before D481 are ignored; an entry whose version is gone
+    (the note was deleted) is left out.
+    """
+    from .notes import means
+
+    zones = ("constraints", "aliases", "background")
+    rows = _versions(session, [entry for zone in zones for entry in stored[zone]])
+    value = {key: item for key, item in stored.items() if key not in zones}
+    for zone in zones:
+        value[zone] = []
+        for entry in stored[zone]:
+            row = rows.get((entry["note_id"], entry["revision"]))
+            if row is None:
+                continue
+            item = {key: entry[key] for key in entry if key not in BODY_KEYS}
+            item["text"] = row.text
+            if zone == "aliases":
+                meaning = means(session, row)
+                if not meaning or not meaning.get("text") or meaning.get("readable") is False:
+                    continue
+                item.update(term=row.alias_term, means=meaning["text"])
+            value[zone].append(item)
+    return value
+
+
 def frozen(session, run):
     """Fixed at the Run's first assembly, including after skill.load."""
     from .recall import ACTIVE, record_usage
 
     if KEY in run.versions:
-        return run.versions[KEY]
+        stored = run.versions[KEY]
+        return None if stored is None else _with_words(session, stored)
     value, aliases = build(session, run)
     if run.state in ACTIVE:
-        envelope = None
+        envelope = stored = None
         if value is not None:
             envelope = {key: item for key, item in value.items() if key != "used"}
-        run.versions = {**run.versions, KEY: envelope,
-                        ALIASES: [{key: item[key] for key in ("note_id", "revision", "term",
-                                                               "expand")} for item in aliases]}
+            stored = {key: ([{name: entry[name] for name in entry if name not in BODY_KEYS}
+                             for entry in item] if isinstance(item, list) else item)
+                      for key, item in envelope.items()}
+        run.versions = {**run.versions, KEY: stored,
+                        ALIASES: [{key: item[key] for key in ("note_id", "revision")}
+                                  for item in aliases]}
         if value is not None:
             record_usage(run, notes=value["used"])
         return envelope
     return None
 
 
-def frozen_aliases(run):
-    return list((run.versions or {}).get(ALIASES) or [])
+def frozen_aliases(session, run):
+    """The owner's aliases chosen for this Run, with their words read now."""
+    from .notes import alias_entries
+
+    stored = list((run.versions or {}).get(ALIASES) or [])
+    rows = _versions(session, stored)
+    found = [(rows[key], "active") for key in ((item["note_id"], item["revision"])
+                                                for item in stored) if key in rows]
+    return [{key: item[key] for key in ("note_id", "revision", "term", "expand")}
+            for item in alias_entries(session, found)]
 
 
-def recheck(session, run):
-    """Before each model call: a note deleted, replaced or out of reach stops the Run."""
-    from .notes import state
+STOPPED = {
+    "deleted": "已删除", "revised": "已修改或替换", "replaced": "已替换", "expired": "已过期",
+    "unavailable": "范围已不可读",
+}
+
+
+def recheck(session, run, *, now=None):
+    """Before each model call: a note that is no longer the one this Run took stops the Run.
+
+    Deleted, revised or replaced (a newer version exists), expired, or out of
+    reach. The model has already seen the old words, so dropping them from the
+    next context would not undo that; the Run stops and the owner starts again.
+    """
+    from .notes import _latest_versions, state
 
     used = ((run.versions or {}).get("memory_usage") or {}).get("notes") or []
     if not used:
@@ -119,14 +187,27 @@ def recheck(session, run):
         MemoryNoteDeletion.note_id.in_(ids))).all()))
     versions = {(str(row.note_id), row.revision): row for row in session.scalars(
         select(MemoryNoteVersion).where(MemoryNoteVersion.note_id.in_(ids))).all()}
+    latest = {str(row.note_id): row.revision
+              for row in _latest_versions(session, run.requester_id, note_ids=ids)}
+    reasons = {}
     for item in used:
-        row = versions.get((item["note_id"], item["revision"]))
-        if item["note_id"] in deleted or row is None or state(session, row) == "unavailable":
-            raise DomainError(
-                "CONVERSATION_HISTORY_REVOKED",
-                "本次带入的个人记忆已删除或范围已不可读，请重新发起。",
-                detail={"note_ids": sorted({item["note_id"]})},
-            )
+        identity = item["note_id"]
+        row = versions.get((identity, item["revision"]))
+        if identity in deleted or row is None:
+            reasons[identity] = "deleted"
+        elif latest.get(identity) != item["revision"]:
+            reasons[identity] = "revised"
+        else:
+            current = state(session, row, now=now)
+            if current in {"replaced", "expired", "unavailable"}:
+                reasons[identity] = current
+    if reasons:
+        said = "、".join(dict.fromkeys(STOPPED[reason] for reason in reasons.values()))
+        raise DomainError(
+            "CONVERSATION_HISTORY_REVOKED",
+            f"本次带入的个人记忆{said}，请重新发起。",
+            detail={"note_ids": sorted(reasons), "reasons": reasons},
+        )
 
 
 _ENTRY = {

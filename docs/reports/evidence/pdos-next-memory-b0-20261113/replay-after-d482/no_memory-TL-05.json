@@ -1,0 +1,25 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-05",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "status": "memory_off",
+      "returned": [],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    }
+  ],
+  "episodes_written": [],
+  "unexpected_notes": 0
+}

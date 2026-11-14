@@ -1,0 +1,155 @@
+{
+  "version": "xiaopai-memory-timeline-real/v0",
+  "judged_by": "rules",
+  "groups": {
+    "no_memory": {
+      "label": "基线 0：全部会话不进记忆",
+      "questions": 0,
+      "status": {},
+      "fact_questions": 0,
+      "fact_questions_answered": 0,
+      "fact_questions_retrieved": 0,
+      "facts_hit": 0,
+      "facts_retrieved": 0,
+      "facts_total": 0,
+      "answers_withheld": 0,
+      "budget_exhausted": 0,
+      "answers_unverified": 0,
+      "unknown_expected": 0,
+      "unknown_admitted": 0,
+      "language_expected": 0,
+      "language_met": 0,
+      "text_flags": 0,
+      "clarifications": 0,
+      "memory_tool_calls": 0,
+      "mean_seconds": null,
+      "mean_used_tokens": null
+    },
+    "history_only": {
+      "label": "基线 1：只在评测进程里把 memory.search 换成搜本人原话加回答摘要，不带条目和目录",
+      "questions": 0,
+      "status": {},
+      "fact_questions": 0,
+      "fact_questions_answered": 0,
+      "fact_questions_retrieved": 0,
+      "facts_hit": 0,
+      "facts_retrieved": 0,
+      "facts_total": 0,
+      "answers_withheld": 0,
+      "budget_exhausted": 0,
+      "answers_unverified": 0,
+      "unknown_expected": 0,
+      "unknown_admitted": 0,
+      "language_expected": 0,
+      "language_met": 0,
+      "text_flags": 0,
+      "clarifications": 0,
+      "memory_tool_calls": 0,
+      "mean_seconds": null,
+      "mean_used_tokens": null
+    },
+    "real": {
+      "label": "基线 2：当前实现",
+      "questions": 1,
+      "status": {
+        "completed": 1
+      },
+      "fact_questions": 1,
+      "fact_questions_answered": 1,
+      "fact_questions_retrieved": 1,
+      "facts_hit": 2,
+      "facts_retrieved": 2,
+      "facts_total": 2,
+      "answers_withheld": 0,
+      "budget_exhausted": 0,
+      "answers_unverified": 0,
+      "unknown_expected": 0,
+      "unknown_admitted": 0,
+      "language_expected": 0,
+      "language_met": 0,
+      "text_flags": 0,
+      "clarifications": 0,
+      "memory_tool_calls": 3,
+      "mean_seconds": 31.0,
+      "mean_used_tokens": 50042.0
+    }
+  },
+  "rows": [
+    {
+      "group": "real",
+      "timeline": "TL-08",
+      "question": "q1",
+      "kind": "recall",
+      "status": "completed",
+      "seconds": 31.0,
+      "used_tokens": 50042,
+      "usage": {
+        "episodes": [
+          "r1",
+          "r4",
+          "r5",
+          "r6"
+        ],
+        "catalog": [
+          "r4",
+          "r5",
+          "r6"
+        ],
+        "sessions_read": [
+          "r1"
+        ],
+        "notes": []
+      },
+      "facts_hit": 2,
+      "facts_total": 2,
+      "answered": true,
+      "facts_retrieved": 2,
+      "retrieved": true,
+      "answer_withheld": false,
+      "budget_exhausted": false,
+      "answer_unverified": false,
+      "gates": [],
+      "text_flags": [],
+      "admits_unknown": false,
+      "expected_memory_used": true,
+      "unknown_expected": false
+    }
+  ],
+  "gates": {
+    "cross_access": 0,
+    "deletion_residue": 0,
+    "memory_off_access": 0,
+    "baseline_setup": 0
+  },
+  "violations": [],
+  "models": [
+    "MiniMax-M3/MiniMax-M3"
+  ],
+  "not_scored": [
+    "answer_quality_beyond_key_facts",
+    "fabrication",
+    "run_to_run_variance"
+  ],
+  "runs_per_cell": 1,
+  "missing": [
+    "real/TL-01/q1",
+    "real/TL-01/q2",
+    "real/TL-01/q3",
+    "real/TL-02/q1",
+    "real/TL-02/q2",
+    "real/TL-04/q1",
+    "real/TL-06/q1",
+    "real/TL-07/q1"
+  ],
+  "groups_not_run": [
+    "history_only",
+    "no_memory"
+  ],
+  "answered_by_group": {
+    "real": "1/1"
+  },
+  "retrieved_by_group": {
+    "real": "1/1"
+  },
+  "blocked": false
+}

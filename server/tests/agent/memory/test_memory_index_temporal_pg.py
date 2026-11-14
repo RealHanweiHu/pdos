@@ -96,11 +96,11 @@ def test_pending_episode_is_indexed_through_temporal_and_only_references_enter_h
 
     sent, result, again, history, retention = asyncio.run(actual())
     assert sent == {"pending": 1, "delivered": 1, "unavailable": 0}
-    assert result == {"episode_id": str(row.id), "indexed": True}
+    assert result == {"episode_id": str(row.id), "indexed": True, "rows": ["episode", "answer"]}
     assert again == {"pending": 0, "delivered": 0, "unavailable": 0}
     with Session(setup.admin) as session:
         assert session.scalar(select(func.count()).select_from(MemoryIndexEntry).where(
-            MemoryIndexEntry.episode_id == row.id)) == 1
+            MemoryIndexEntry.episode_id == row.id)) == 2  # Own words, and the answer side.
     after = search(setup, current)
     assert [item["run_id"] for item in after["items"]] == [str(first)]
     assert after["retrieval"]["index_pending"] == 0

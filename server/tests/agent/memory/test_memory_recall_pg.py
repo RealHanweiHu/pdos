@@ -39,8 +39,7 @@ def test_last_weeks_plan_is_found_and_other_peoples_memory_never_appears(setup):
     earlier, first = start(setup)
     finish(setup, earlier)
     indexed(setup, earlier)
-    other, _ = start(setup, goal="整理样件编号规则")
-    finish(setup, other)
+    other, _ = answered(setup, "整理样件编号规则", "编号规则已整理成表。", unfinished=())
     indexed(setup, other)
     peer_run, _ = start(setup, headers=peer_headers(setup), goal=PEER)
     finish(setup, peer_run, requester=setup.peer)
@@ -176,6 +175,40 @@ def test_cross_session_history_reads_only_own_sessions(setup):
     assert usage["sessions"] == [first["session_id"]]
 
 
+def test_cross_session_history_returns_no_page_material_and_no_words_of_an_uncovered_turn(setup):
+    """D483: what the registered tool hands back is what the model is sent."""
+    import json
+
+    from sqlalchemy import text
+
+    from pdos_next.agent.kernel.work_state import PAGE_MATERIAL_BOUNDARY
+
+    marker, private_words = "PAGE-MATERIAL-7F3A", "私有提案的目标成本"
+    earlier, first = start(setup, goal="比较三家气泵供应商的报价和交期"
+                           + PAGE_MATERIAL_BOUNDARY + marker)
+    finish(setup, earlier)
+    private, second = start(setup, goal=private_words + PAGE_MATERIAL_BOUNDARY + marker)
+    with Session(setup.admin) as session, session.begin():
+        # Synthetic fixture only: mark this Run as private, as a private-proposal Run is.
+        session.execute(text("SET LOCAL session_replication_role = replica"))
+        session.get(AgentRun, private).private_context = True
+    finish(setup, private)
+    current, _ = start(setup, goal="上次那三家供应商")
+    host = Bootstrap(setup.engine)
+    covered = host.conversation_history(scope(setup, current),
+                                        {"session_id": first["session_id"], "page_size": 5})
+    assert covered["turns"][0]["goal"] == "比较三家气泵供应商的报价和交期"
+    assert covered["turns"][0]["outcome_state"] == "current"
+    withheld = host.conversation_history(scope(setup, current),
+                                         {"session_id": second["session_id"], "page_size": 5})
+    turn = withheld["turns"][0]
+    assert turn["outcome_state"] == "hidden" and turn["historical_outcome"] is None
+    assert set(turn) == {"run_id", "status", "historical_outcome", "outcome_state", "note",
+                         "sources", "original_record"}
+    sent = json.dumps([covered, withheld], ensure_ascii=False)
+    assert marker not in sent and private_words not in sent
+
+
 def test_recent_catalog_is_background_same_scope_and_never_for_personal_runs(setup):
     for goal in ("比较三家气泵供应商的报价和交期", "整理气泵样件编号", "核对气泵噪音测试工况",
                  "汇总气泵客户关注点"):
@@ -288,3 +321,124 @@ def test_session_list_search_uses_the_same_keyword_index(setup):
     finish(setup, peer_run, requester=setup.peer)
     indexed(setup, peer_run)
     assert found("同事") == []  # Another person's words never match my list.
+
+
+# --- D482 (P121 第 1 项): an old conclusion is found by the words of its conclusion. ---
+
+CAUSE = "结论：外壳缩水来自保压不足，建议把保压时间加到 8 秒。"
+
+
+def answered(setup, goal, summary=CAUSE, *, unfinished=("复测翘曲",), **kwargs):
+    run_id, body = start(setup, goal=goal, **kwargs)
+    KernelStore(setup.engine).finish(scope(setup, run_id), {
+        "status": "completed", "summary": summary, "questions": [],
+        "unfinished": list(unfinished), "result": {"context_proposals": {"constraints": []}},
+    })
+    return run_id, body
+
+
+def reference(setup, run_id):
+    row = episode(setup, run_id)
+    return {"tenant_id": str(setup.tenant), "owner_id": str(row.owner_id),
+            "episode_id": str(row.id)}
+
+
+@pytest.mark.parametrize("index_first", [True, False])
+def test_an_old_conclusion_is_found_by_the_words_of_its_answer(setup, index_first):
+    earlier, first = answered(setup, "分析注塑件不良的原因")
+    other, _ = answered(setup, "整理样件编号规则", "编号规则已整理成表。", unfinished=())
+    if index_first:
+        assert index_episode(setup.engine, reference(setup, earlier))["rows"] == [
+            "episode", "answer"]
+        index_episode(setup.engine, reference(setup, other))
+    current, _ = start(setup, goal="上次外壳缩水是什么原因？")
+    result = search(setup, current, query="外壳缩水 保压")
+    assert [item["run_id"] for item in result["items"]] == [str(earlier)]
+    assert result["retrieval"]["index_pending"] == (0 if index_first else 2)
+    card = result["items"][0]
+    assert card["goal"] == "分析注塑件不良的原因" and card["matched_in"] == ["answer"]
+    assert card["answer"]["excerpt"] == CAUSE and card["answer"]["truncated"] is False
+    assert "不能作为依据引用" in card["answer"]["label"]
+    assert "不能作为回答依据引用" in result["fact_policy"]
+    # The unfinished items are on the answer side too; the shared scope title is not indexed.
+    assert search(setup, current, query="复测翘曲")["items"][0]["matched_in"] == ["answer"]
+    assert search(setup, current, query="汽车充气泵")["items"] == []
+    # Own words still match as before, and say so.
+    own = search(setup, current, query="注塑件不良")
+    assert own["items"][0]["run_id"] == str(earlier)
+    assert own["items"][0]["matched_in"] == ["own_words"]
+
+
+def test_the_session_list_search_still_matches_own_words_only(setup):
+    earlier, first = answered(setup, "分析注塑件不良的原因")
+    index_episode(setup.engine, reference(setup, earlier))
+    path = f"/v1/categories/{setup.category}/agent-conversations"
+
+    def found(q):
+        response = setup.client.get(path, headers=setup.headers, params={"q": q})
+        assert response.status_code == 200, response.text
+        return [item["session_id"] for item in response.json()["items"]]
+
+    assert found("注塑件 原因") == [first["session_id"]]
+    assert found("缩水 保压") == []
+
+
+def test_no_answer_of_the_models_own_is_indexed_or_shown(setup):
+    withheld, _ = answered(setup, "分析注塑件不良的原因", "结果未通过完整核对。", unfinished=())
+    spent, _ = answered(setup, "核对气泵噪音", "运行预算已用完，保留已完成动作与已核对结果。",
+                        unfinished=())
+    for run_id in (withheld, spent):
+        index_episode(setup.engine, reference(setup, run_id))
+    current, _ = start(setup, goal="继续")
+    assert search(setup, current, query="核对 结果 预算")["items"][0]["run_id"] == str(spent)
+    found = search(setup, current, query="注塑件 核对")
+    assert all("answer" not in item for item in found["items"])
+    assert all(item["matched_in"] == ["own_words"] for item in found["items"])
+
+
+def test_an_answer_of_a_wider_outbound_class_is_not_found_by_its_words(setup):
+    from sqlalchemy import text
+
+    private, _ = start(setup, goal="私有提案的目标成本")
+    with Session(setup.admin) as session, session.begin():
+        # Synthetic fixture only: mark this Run as private, as a private-proposal Run is.
+        session.execute(text("SET LOCAL session_replication_role = replica"))
+        session.get(AgentRun, private).private_context = True
+    KernelStore(setup.engine).finish(scope(setup, private), {
+        "status": "completed", "summary": CAUSE, "questions": [], "unfinished": [],
+        "result": {"context_proposals": {"constraints": []}}})
+    index_episode(setup.engine, reference(setup, private))
+    current, _ = start(setup, goal="上次外壳缩水是什么原因？")
+    result = search(setup, current, query="外壳缩水 保压")
+    assert result["items"] == [] and "缩水" not in str(result["items"])
+
+
+def test_an_episode_indexed_before_the_answer_row_existed_is_pending_until_it_has_one(
+        setup, monkeypatch):
+    from sqlalchemy import text
+
+    from pdos_next.agent.enterprise_search.tokenizer import version
+    from pdos_next.agent.memory import index
+
+    earlier, _ = answered(setup, "分析注塑件不良的原因")
+    monkeypatch.setattr(index, "KINDS", ("episode",))
+    assert index_episode(setup.engine, reference(setup, earlier))["rows"] == ["episode"]
+    monkeypatch.undo()
+
+    def pending():
+        with Session(setup.admin) as session, session.begin():
+            session.execute(text("SELECT set_config('pdos.tenant_id',:t,true)"),
+                            {"t": str(setup.tenant)})
+            return [row.episode_id for row in session.execute(text(
+                "SELECT * FROM memory_pending_index_references(:t,:v,100)"),
+                {"t": setup.tenant, "v": version()})]
+
+    row = episode(setup, earlier)
+    assert pending() == [row.id]
+    current, _ = start(setup, goal="上次外壳缩水是什么原因？")
+    lagging = search(setup, current, query="外壳缩水")  # Found by the lag scan meanwhile.
+    assert [item["run_id"] for item in lagging["items"]] == [str(earlier)]
+    assert lagging["retrieval"]["index_pending"] == 1
+    assert index_episode(setup.engine, reference(setup, earlier))["rows"] == ["answer"]
+    assert pending() == []
+    assert search(setup, current, query="外壳缩水")["retrieval"]["index_pending"] == 0

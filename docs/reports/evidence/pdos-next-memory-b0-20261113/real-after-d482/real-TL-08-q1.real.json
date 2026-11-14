@@ -1,0 +1,46 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 31.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 50042,
+  "held_tokens": 0,
+  "answer": "定位到该次历史工作：会话 f86aa0cf-0d52-430f-a741-8acc40512ff3 / 运行 c4932b7b-34a2-478a-92b3-03a5cef7dffa，目标「汇总上周试产的不良项」，as_of 2026-11-14。当时摘要为「不良前三项：气嘴漏气、外壳缩水、按键卡滞」，即与外壳缩水并列列出的另两项是气嘴漏气与按键卡滞。该历史存档未附带来源引用，属个人工作记录，不能作为当前业务事实；第四项及以后的不良项在存档中没有留存。",
+  "answer_blob": "{\"result\": {\"history_recall\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-14\", \"run_id\": \"c4932b7b-34a2-478a-92b3-03a5cef7dffa\", \"matched\": true, \"session_id\": \"f86aa0cf-0d52-430f-a741-8acc40512ff3\", \"lookup_note\": \"memory.search 为关键词检索（语义检索未启用），范围为当前品类 汽车充气泵\", \"record_sources\": [], \"recorded_summary\": \"不良前三项：气嘴漏气、外壳缩水、按键卡滞。\", \"next_step_optional\": \"可在当前品类重新检索试产/不良记录，与当时三条对照\", \"issue_listed_with_shrinkage\": [\"气嘴漏气\", \"按键卡滞\"]}}, \"status\": \"completed\", \"summary\": \"定位到该次历史工作：会话 f86aa0cf-0d52-430f-a741-8acc40512ff3 / 运行 c4932b7b-34a2-478a-92b3-03a5cef7dffa，目标「汇总上周试产的不良项」，as_of 2026-11-14。当时摘要为「不良前三项：气嘴漏气、外壳缩水、按键卡滞」，即与外壳缩水并列列出的另两项是气嘴漏气与按键卡滞。该历史存档未附带来源引用，属个人工作记录，不能作为当前业务事实；第四项及以后的不良项在存档中没有留存。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

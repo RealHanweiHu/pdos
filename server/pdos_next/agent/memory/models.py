@@ -89,7 +89,7 @@ class MemoryEpisodeMark(KernelRow, Base):
 
 
 class MemoryIndexEntry(KernelRow, Base):
-    """Keyword index rows for the owner's own words; filled by a background activity."""
+    """Keyword index rows per episode: the owner's own words, and 小Pai's answer side."""
 
     __tablename__ = "memory_index"
     owner_id: Mapped[UUID]
@@ -112,7 +112,7 @@ class MemoryIndexEntry(KernelRow, Base):
             ["tenant_id", "episode_id"], ["memory_episodes.tenant_id", "memory_episodes.id"]
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("source_kind IN ('episode')", name="memory_index_source_kind"),
+        CheckConstraint("source_kind IN ('episode','answer')", name="memory_index_source_kind"),
         CheckConstraint("source_version > 0 AND token_count >= 0", name="memory_index_counts"),
         CheckConstraint("idempotency_key ~ '^[0-9a-f]{64}$'", name="memory_index_key"),
         Index("ix_memory_index_owner", "tenant_id", "owner_id", "tokenizer_version"),

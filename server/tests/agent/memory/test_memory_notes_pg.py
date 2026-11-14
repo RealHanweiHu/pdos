@@ -202,7 +202,7 @@ def test_aliases_go_to_the_envelope_and_expand_only_the_owners_search(setup):
     assert "不是业务事实" in value["label"] and "不能作为依据引用" in value["label"]
     assert frozen_notes(setup, run_id) == value  # Frozen for the Run.
     with KernelStore(setup.engine).transaction(scope(setup, run_id), lock=True) as (s, run):
-        extra, applied = alias_expansions(s, run, "气嘴漏气", assemble.frozen_aliases(run))
+        extra, applied = alias_expansions(s, run, "气嘴漏气", assemble.frozen_aliases(s, run))
         usage = run.versions["memory_usage"]["notes"]
     assert extra == "气门嘴" and applied[0]["term"] == "气嘴"
     assert {item["zone"] for item in usage} == {"aliases", "constraints", "background"}
@@ -215,7 +215,7 @@ def test_aliases_go_to_the_envelope_and_expand_only_the_owners_search(setup):
     with KernelStore(setup.engine).transaction(scope(setup, peer_run, requester=setup.peer),
                                                lock=True) as (s, run):
         assert assemble.frozen(s, run) is None
-        assert assemble.frozen_aliases(run) == []
+        assert assemble.frozen_aliases(s, run) == []
     peer_result = memory_search(KernelStore(setup.engine))(
         scope(setup, peer_run, requester=setup.peer), {"query": "气嘴", "kinds": ["note"]})
     assert peer_result["notes"] == [] and "alias_expansion" not in peer_result["retrieval"]
@@ -301,6 +301,91 @@ def test_purge_removes_the_body_everywhere_and_leaves_a_tombstone(setup):
                              headers=setup.headers).json()
     assert usage["notes"] == [{"note_id": note["note_id"], "deleted": True,
                                "zone": "constraints"}]
+
+
+def run_versions(setup, run_id):
+    with Session(setup.admin) as session:
+        return json.dumps(session.get(AgentRun, run_id).versions, ensure_ascii=False)
+
+
+def stopped(setup, run_id, **kwargs):
+    with KernelStore(setup.engine).transaction(scope(setup, run_id), lock=True) as (s, run):
+        with pytest.raises(DomainError) as refused:
+            assemble.recheck(s, run, **kwargs)
+    assert refused.value.reason == "CONVERSATION_HISTORY_REVOKED"
+    return refused.value.detail["reasons"]
+
+
+def test_the_run_row_keeps_no_note_words_so_a_deleted_note_leaves_none_behind(setup):
+    """D481: the Run keeps which notes it took, the words stay in the note versions."""
+    note = add(setup, "气泵报价按含税价比较")["note"]
+    alias = add(setup, "", kind="alias", alias_term="气嘴", alias_canonical="气门嘴")["note"]
+    run_id, _ = start(setup, goal="气嘴报价")
+    value = frozen_notes(setup, run_id)
+    assert value["constraints"][0]["text"] == "气泵报价按含税价比较"
+    assert value["aliases"][0]["term"] == "气嘴" and value["aliases"][0]["means"] == "气门嘴"
+    stored = run_versions(setup, run_id)
+    assert note["note_id"] in stored and alias["note_id"] in stored
+    for words in ("含税价", "气嘴", "气门嘴"):
+        assert words not in stored
+    assert frozen_notes(setup, run_id) == value  # Same words every time while they exist.
+    finish(setup, run_id)  # A finished Run can no longer be edited; nothing needs editing.
+    for item in (note, alias):
+        deleted = setup.client.post(f"{BASE}/notes/{item['note_id']}/deletion",
+                                    headers=setup.headers,
+                                    json={"request_key": str(uuid4()), "expected_revision": 1})
+        assert deleted.status_code == 200, deleted.text
+    with KernelStore(setup.engine).transaction(scope(setup, run_id), lock=True) as (s, run):
+        after = assemble.frozen(s, run)
+        assert assemble.frozen_aliases(s, run) == []
+    assert after["constraints"] == [] and after["aliases"] == []
+    with Session(setup.admin) as session:
+        left = json.dumps([row.body for row in session.execute(text(
+            "SELECT to_jsonb(r) AS body FROM agent_runs r WHERE r.id=:run"),
+            {"run": run_id}).all()], default=str, ensure_ascii=False)
+    assert "含税价" not in left and "气门嘴" not in left
+
+
+def test_a_revised_replaced_or_expired_note_stops_the_run_that_took_it(setup):
+    """D481: not only deletion. The Run already showed the model the old words."""
+    from datetime import timedelta
+
+    revised = add(setup, "气泵报价按含税价比较")["note"]
+    first, _ = start(setup, goal="气泵报价")
+    frozen_notes(setup, first)
+    with KernelStore(setup.engine).transaction(scope(setup, first), lock=True) as (s, run):
+        assemble.recheck(s, run)  # Unchanged: goes on.
+    response = setup.client.post(
+        f"{BASE}/notes/{revised['note_id']}/revisions", headers=setup.headers,
+        json={"request_key": str(uuid4()), "expected_revision": 1,
+              "note": {"kind": "convention", "text": "气泵报价按不含税价比较"}})
+    assert response.status_code == 200, response.text
+    assert stopped(setup, first) == {revised["note_id"]: "revised"}
+    with KernelStore(setup.engine).transaction(scope(setup, first), lock=True) as (s, run):
+        with pytest.raises(DomainError, match="已修改或替换"):
+            assemble.recheck(s, run)
+    # A later Run takes the new words.
+    later, _ = start(setup, goal="气泵报价")
+    assert [item["text"] for item in frozen_notes(setup, later)["constraints"]] == [
+        "气泵报价按不含税价比较"]
+    # Replaced by a new note.
+    second, _ = start(setup, goal="气泵报价")
+    frozen_notes(setup, second)
+    replaced = add(setup, "气泵报价一律按不含税价比较", conflict={
+        "resolution": "replace", "note_ids": [revised["note_id"]], "expected_revisions": [2]})
+    assert replaced["resolution"] == "replace"
+    assert stopped(setup, second) == {revised["note_id"]: "revised"}
+    # Expired while the Run was going.
+    until = now() + timedelta(hours=1)
+    dated = add(setup, "本周周报用表格", valid_until=until.isoformat(), conflict={
+        "resolution": "keep_both", "note_ids": [], "expected_revisions": []})["note"]
+    third, _ = start(setup, goal="周报")
+    taken = frozen_notes(setup, third)
+    assert dated["note_id"] in [item["note_id"] for item in taken["constraints"]]
+    with KernelStore(setup.engine).transaction(scope(setup, third), lock=True) as (s, run):
+        assemble.recheck(s, run)
+    reasons = stopped(setup, third, now=until + timedelta(seconds=1))
+    assert reasons[dated["note_id"]] == "expired"
 
 
 def test_administrator_sees_counts_only(setup):

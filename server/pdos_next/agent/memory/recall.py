@@ -22,7 +22,8 @@ from pdos_next.errors import DomainError
 from .models import MemoryEpisode, MemoryEpisodeMark, MemoryIndexEntry
 
 VERSION = "memory-search/v1"
-RANKING = "memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5"
+RANKING = ("memory-rrf/v2;keyword-sat-1.2;own-words+answer-side;k=60;half-life-30d;"
+           "receipt+0.25;pin+0.25;corrected*0.5")
 KEYWORD_POOL = 50
 PENDING_SCAN = 200
 RECHECK_LIMIT = 30
@@ -32,11 +33,14 @@ CATALOG_SIZE = 3
 CATALOG_TOKENS = 300
 GOAL_CHARS = 80
 CATALOG_GOAL_CHARS = 40
+ANSWER_EXCERPT_CHARS = 200
+ANSWER_LABEL = "小Pai 当时的回答（摘录）：只是当时的记录，不是业务事实，不能作为依据引用"
 ACTIVE = frozenset({"queued", "running", "waiting_input"})
 USAGE_LIMIT = 50
 FACT_POLICY = (
     "情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。"
-    "要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。"
+    "卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；"
+    "要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。"
 )
 SEMANTIC_OFF = {
     "status": "not_enabled",
@@ -142,13 +146,28 @@ def _base(run, data):
     return base
 
 
+def _merged(found, episode, kind, counts, codes):
+    entry = found.setdefault(episode.id, {"episode": episode, "counts": {}, "codes": set(),
+                                          "matched": []})
+    for term, count in counts.items():
+        entry["counts"][term] = entry["counts"].get(term, 0) + count
+    entry["codes"].update(codes)
+    return entry
+
+
 def _candidates(session, run, data, parsed, *, extra):
+    """Keyword candidates over both index rows of each episode (own words, answer side).
+
+    Returns (ranked, pending count, {episode id: which side matched}).
+    """
     from pdos_next.agent.enterprise_search.tokenizer import analyze, or_query, version
+
+    from .index import KINDS, answer_texts
 
     tokenizer = version()
     base = _base(run, data)
     base.extend(extra)
-    scored = {}
+    found = {}
     if parsed["terms"] or parsed["codes"]:
         matches = []
         if parsed["terms"]:
@@ -157,33 +176,45 @@ def _candidates(session, run, data, parsed, *, extra):
         if parsed["codes"]:
             matches.append(MemoryIndexEntry.codes.overlap(parsed["codes"]))
         rows = session.execute(
-            select(MemoryEpisode, MemoryIndexEntry.term_counts, MemoryIndexEntry.codes)
+            select(MemoryEpisode, MemoryIndexEntry.source_kind, MemoryIndexEntry.term_counts,
+                   MemoryIndexEntry.codes)
             .join(MemoryIndexEntry, MemoryIndexEntry.episode_id == MemoryEpisode.id)
             .where(*base, MemoryIndexEntry.tokenizer_version == tokenizer,
-                   MemoryIndexEntry.profile_version == "none", or_(*matches))
+                   MemoryIndexEntry.profile_version == "none",
+                   MemoryIndexEntry.source_kind.in_(KINDS), or_(*matches))
             .order_by(MemoryEpisode.created_at.desc(), MemoryEpisode.id)
-            .limit(KEYWORD_POOL * 4)
+            .limit(KEYWORD_POOL * 4 * len(KINDS))
         ).all()
-        for episode, counts, codes in rows:
-            scored[episode.id] = (episode, keyword_score(parsed, counts, codes))
-    # Index lag must never look like "nothing found": unindexed episodes in range
-    # are scored here with the same tokenizer (the 伪零结果 gate for M1).
+        # A row that did not match holds none of the query's words, so merging the
+        # matched rows scores the same as merging both.
+        for episode, kind, counts, codes in rows:
+            _merged(found, episode, kind, counts, codes)["matched"].append(kind)
+    # Index lag must never look like "nothing found": episodes in range without both
+    # rows are scored here with the same tokenizer (the 伪零结果 gate for M1).
     indexed = select(MemoryIndexEntry.episode_id).where(
         MemoryIndexEntry.episode_id == MemoryEpisode.id,
         MemoryIndexEntry.tokenizer_version == tokenizer,
+        MemoryIndexEntry.source_kind == "answer",
     ).exists()
     pending = session.scalars(
         select(MemoryEpisode).where(*base, ~indexed)
         .order_by(MemoryEpisode.created_at.desc(), MemoryEpisode.id).limit(PENDING_SCAN)
     ).all()
+    answers = answer_texts(session, pending)
     for episode in pending:
-        words = analyze(episode.goal)
-        score = keyword_score(parsed, words["counts"], words["codes"])
-        if score > 0:
-            scored[episode.id] = (episode, score)
-    ranked = sorted(scored.values(), key=lambda item: (-item[1], -item[0].created_at.timestamp(),
-                                                       str(item[0].id)))[:KEYWORD_POOL]
-    return ranked, len(pending)
+        found.pop(episode.id, None)
+        for kind, value in (("episode", episode.goal), ("answer", answers[episode.id])):
+            words = analyze(value)
+            entry = _merged(found, episode, kind, words["counts"], words["codes"])
+            if keyword_score(parsed, words["counts"], words["codes"]) > 0:
+                entry["matched"].append(kind)
+    scored = [(entry["episode"], keyword_score(parsed, entry["counts"], sorted(entry["codes"])))
+              for entry in found.values()]
+    ranked = sorted(((episode, score) for episode, score in scored if score > 0),
+                    key=lambda item: (-item[1], -item[0].created_at.timestamp(),
+                                      str(item[0].id)))[:KEYWORD_POOL]
+    matched = {identity: sorted(set(entry["matched"])) for identity, entry in found.items()}
+    return ranked, len(pending), matched
 
 
 def _fuse(session, ranked, vector_ids):
@@ -288,7 +319,10 @@ def recheck(session, run, episodes, *, limit):
     return result, kept_access
 
 
-def card(episode, state, scope, receipts, mark, run):
+SIDES = {"episode": "own_words", "answer": "answer"}
+
+
+def card(episode, state, scope, receipts, mark, run, *, answer=None, matched=()):
     value = {
         "run_id": str(episode.run_id),
         "session_id": str(episode.session_id),
@@ -303,6 +337,14 @@ def card(episode, state, scope, receipts, mark, run):
         "pinned": bool(mark.get("pinned")),
         "corrections": mark.get("corrections", []),
     }
+    if matched:
+        value["matched_in"] = [SIDES[kind] for kind in matched]
+    if answer:
+        value["answer"] = {
+            "label": ANSWER_LABEL,
+            "excerpt": answer[:ANSWER_EXCERPT_CHARS],
+            "truncated": len(answer) > ANSWER_EXCERPT_CHARS,
+        }
     if state == "updated":
         value["note"] = "当时读过的资料已更新，涉及事实须重新读取"
     if mark.get("corrections"):
@@ -379,7 +421,7 @@ def search(session, run, data, *, now=None, semantic=None):
         response.update(status=blocked[0], message=blocked[1])
         return response
     # P86 第 5 项: the owner's own aliases expand only the owner's own search.
-    extra, applied = alias_expansions(session, run, data.query, frozen_aliases(run))
+    extra, applied = alias_expansions(session, run, data.query, frozen_aliases(session, run))
     if applied:
         response["retrieval"]["alias_expansion"] = applied
     if "note" in data.kinds:
@@ -390,7 +432,7 @@ def search(session, run, data, *, now=None, semantic=None):
         response["status"] = "completed"
         return response
     parsed = analyze_query(f"{data.query} {extra}".strip())
-    ranked, pending = _candidates(session, run, data, parsed, extra=[])
+    ranked, pending, matched = _candidates(session, run, data, parsed, extra=[])
     fused = False
     if semantic is not None:
         # P85 第 3 项: vectors only when “本人会话记录” is selected; otherwise, or when
@@ -415,7 +457,13 @@ def search(session, run, data, *, now=None, semantic=None):
     ordered = _final_order(ranked, state, now, fused=fused)
     window = ordered[data.offset:]
     kept, access = recheck(session, run, window[:RECHECK_LIMIT], limit=data.page_size)
-    response["items"] = [card(episode, item_state, scope, receipts, state.get(episode.id, {}), run)
+    # Only records that passed the recheck above (covered, sources still readable).
+    from .index import summaries
+
+    answers = summaries(session, [item[0] for item in kept])
+    response["items"] = [card(episode, item_state, scope, receipts, state.get(episode.id, {}), run,
+                              answer=answers.get(episode.run_id),
+                              matched=matched.get(episode.id, ()))
                          for episode, item_state, scope, receipts in kept]
     response["returned"] = len(response["items"])
     response["retrieval"]["index_pending"] = pending
@@ -511,7 +559,9 @@ def matching_runs(q):
     return (
         select(MemoryEpisode.run_id)
         .join(MemoryIndexEntry, MemoryIndexEntry.episode_id == MemoryEpisode.id)
-        .where(MemoryIndexEntry.tokenizer_version == version(), or_(*matches))
+        # Own words only: the answer rows stay out of the list search (see index.py).
+        .where(MemoryIndexEntry.tokenizer_version == version(),
+               MemoryIndexEntry.source_kind == "episode", or_(*matches))
     )
 
 
