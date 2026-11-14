@@ -130,6 +130,8 @@ NON_CONSUMING = frozenset(
         "memory_candidates",
         "memory_candidate_decisions",
         "memory_owner_settings",
+        "memory_suppressions",
+        "memory_proposal_voids",
         "memory_embedding_calls",
         "memory_episode_vectors",
         "memory_vector_profiles",

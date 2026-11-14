@@ -141,3 +141,12 @@ def merge_pending(body, accepted):
     merged = [*body.get("pending_constraints", []),
               *(item for item in accepted if item["id"] not in existing | active)]
     body["pending_constraints"] = merged[-PENDING_LIMIT:]
+
+
+def void_pending(body):
+    """The owner said it was only discussion: drop every unconfirmed paraphrase for good."""
+    pending = body.get("pending_constraints", [])
+    if pending:
+        body["removed_constraints"] = sorted(
+            set(body["removed_constraints"]) | {value["id"] for value in pending})
+        body["pending_constraints"] = []

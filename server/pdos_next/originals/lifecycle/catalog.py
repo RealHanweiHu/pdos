@@ -5501,6 +5501,15 @@ COVERED_COLUMNS.update({
         "owner_id", "revision", "proactive_off", "request_key", "request_sha256", "id",
         "tenant_id", "created_at",
     ),
+    # P121 第 8 项: content-free guards on proposals (a salted digest and Run
+    # references; a marker that a Run was only discussion).
+    "memory_suppressions": (
+        "owner_id", "note_id", "salt", "fingerprint", "source_spans", "id", "tenant_id",
+        "created_at",
+    ),
+    "memory_proposal_voids": (
+        "owner_id", "session_id", "run_id", "id", "tenant_id", "created_at",
+    ),
     "memory_embedding_calls": (
         "owner_id", "profile_version_id", "state", "revision", "episode_ids",
         "character_count", "input_digest", "data_categories", "egress", "pricing",

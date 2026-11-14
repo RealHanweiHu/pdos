@@ -160,12 +160,25 @@ def test_proactive_proposal_needs_two_corrections_once_per_session_and_can_be_of
     released(setup, second)
     proposal = {"origin": "proactive", "kind": "convention", "scope": "run",
                 "text": "样件编号按 项目-批次-序号",
-                "trigger": [{"run_id": str(first), "text": "样件编号按项目-批次-序号"},
-                            {"run_id": str(second), "text": "编号是项目-批次-序号"}]}
+                "trigger": [{"run_id": str(first), "text": "不对，样件编号按项目-批次-序号"},
+                            {"run_id": str(second), "text": "又错了，编号是项目-批次-序号"}]}
     single = {**proposal, "trigger": proposal["trigger"][:1]}
-    rejected = finish_with(setup, second, [single, proposal, {**proposal, "text": "再提一次"}])
+    # 纠正两次以上 is a server judgment (D298): two Runs of this Session, each quote a
+    # correction in the owner's own words, each about what is proposed.
+    unmarked = {**proposal, "trigger": [
+        {"run_id": str(first), "text": "样件编号按项目-批次-序号"},
+        {"run_id": str(second), "text": "编号是项目-批次-序号"}]}
+    unrelated = {**proposal, "text": "报价一律含税"}
+    rejected = finish_with(setup, second, [single, unmarked, unrelated])
     assert [item["reason"] for item in rejected] == [
-        "trigger_not_owner_corrections", "proactive_once_per_session"]
+        "trigger_not_owner_corrections", "trigger_not_corrections",
+        "corrections_not_same_matter"]
+    assert stored(setup, second) == []
+    third, _ = start(setup, goal="继续", continue_from_run_id=str(second))
+    released(setup, third)
+    rejected = finish_with(setup, third, [proposal, {**proposal, "text": "编号再提一次"}])
+    assert [item["reason"] for item in rejected] == ["proactive_once_per_session"]
+    second = third
     assert [row.origin for row in stored(setup, second)] == ["proactive"]
     # The owner switches proactive proposals off for themself.
     settings = setup.client.post(f"{BASE}/settings", headers=setup.headers, json={
@@ -175,8 +188,9 @@ def test_proactive_proposal_needs_two_corrections_once_per_session_and_can_be_of
     finish_with(setup, other, [])
     third, _ = start(setup, goal="还是不对，按欧标", continue_from_run_id=str(other))
     released(setup, third)
-    rejected = finish_with(setup, third, [{**proposal, "trigger": [
-        {"run_id": str(other), "text": "是欧标"}, {"run_id": str(third), "text": "按欧标"}]}])
+    rejected = finish_with(setup, third, [{**proposal, "text": "按欧标", "trigger": [
+        {"run_id": str(other), "text": "不对，是欧标"},
+        {"run_id": str(third), "text": "还是不对，按欧标"}]}])
     assert [item["reason"] for item in rejected] == ["proactive_proposals_off"]
 
 

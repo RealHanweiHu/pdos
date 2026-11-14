@@ -51,6 +51,9 @@ class MemorySearchInput(StrictModel):
     )
     since: date | None = None
     until: date | None = None
+    # P121 第 8 项: a query condition only (what was recorded or in effect up to the end of
+    # that day); the person, the range and every permission recheck stay as of now.
+    as_of: date | None = None
     narrow_to: Literal["current_session"] | None = None
     offset: int = Field(default=0, ge=0, le=40)
     page_size: int = Field(default=5, ge=1, le=10)
@@ -139,6 +142,9 @@ def _base(run, data):
     if data.until:
         base.append(MemoryEpisode.created_at
                     < datetime.combine(data.until + timedelta(days=1), time.min, UTC))
+    if data.as_of:
+        base.append(MemoryEpisode.created_at
+                    < datetime.combine(data.as_of + timedelta(days=1), time.min, UTC))
     return base
 
 
