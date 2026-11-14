@@ -127,6 +127,7 @@ NON_CONSUMING = frozenset(
         "memory_notes",
         "memory_note_versions",
         "memory_note_deletions",
+        "memory_session_deletions",
         "memory_candidates",
         "memory_candidate_decisions",
         "memory_owner_settings",

@@ -7,6 +7,8 @@ import { readSessionRuns } from "@/lib/pai-sessions";
 import { readConversations, writePresentation, recoverPresentation } from "@/features/xiaopai/lib/pai-session-presentation";
 import type { PaiConversationList, PaiConversation, PresentationAction, PresentationRequest } from "@/features/xiaopai/lib/pai-session-presentation";
 import type { PaiSessionApi, PaiSessionRuns, PaiSessionScope } from "@/lib/pai-sessions";
+import type { SessionDeleted } from "@/lib/session-deletion";
+import { SessionDeleteConfirm, SessionDeletedNotice } from "./session-delete";
 import styles from "./session-history.module.css";
 
 type Props = {
@@ -52,6 +54,8 @@ function HistoryPages({ api, scope, principalId, currentSessionId, currentRunId,
   const [editor, setEditor] = useState<{ key: string; item: PaiConversation; title: string } | null>(null);
   const [operation, setOperation] = useState<{ request: PresentationRequest; key: string; state: "sending" | "unknown" | "recovering"; error: string } | null>(null);
   const [operationError, setOperationError] = useState("");
+  const [deleting, setDeleting] = useState<{ key: string; item: PaiConversation } | null>(null);
+  const [deleted, setDeleted] = useState<SessionDeleted | null>(null);
   const operationGeneration = useRef(0);
   const [list, setList] = useState<{ key: string; value: PaiConversationList | null; error: string; loading: boolean }>({ key: "", value: null, error: "", loading: true });
   const [selectedSession, setSelectedSession] = useState<string | null>(null);
@@ -106,8 +110,14 @@ function HistoryPages({ api, scope, principalId, currentSessionId, currentRunId,
       if ([401, 403].includes((failure as { status?: number }).status ?? 0) && onPermissionDenied) onPermissionDenied(); else onClearSelection();
     } }
   };
-  function clear(parent = false) { setEditor(null); runGeneration.current++; setSelectedSession(null); setRuns({ key: "", value: null, loading: false, error: "" }); if (parent) onClearSelection(); }
+  function clear(parent = false) { setEditor(null); setDeleting(null); runGeneration.current++; setSelectedSession(null); setRuns({ key: "", value: null, loading: false, error: "" }); if (parent) onClearSelection(); }
   const visibleEditor = editor?.key === listKey ? editor : null;
+  const visibleDeleting = deleting?.key === listKey ? deleting : null;
+  function finishDeletion(item: PaiConversation, result: SessionDeleted) {
+    // The open conversation is cleared only when it is the Session that was deleted.
+    clear(currentSessionId === item.session_id || sessionId === item.session_id);
+    setDeleted(result); setRefresh(value => value + 1);
+  }
   const pending = operation && { ...operation, state: operation.key === listKey ? operation.state : "unknown" };
   async function manage(request: PresentationRequest, recovery = false) {
     const own = ++operationGeneration.current, key = listKey;
@@ -140,6 +150,7 @@ function HistoryPages({ api, scope, principalId, currentSessionId, currentRunId,
     <div className={styles.tabs} role="group" aria-label="会话视图">{(["active", "archived"] as const).map(value => <Button key={value} size="sm" variant={view === value ? "secondary" : "ghost"} disabled={disabled} aria-pressed={view === value} onClick={() => { clear(); setView(value); }}>{value === "active" ? "最近" : "已归档"}</Button>)}</div>
     <div className={styles.heading}><Button size="sm" variant="ghost" disabled={disabled || listCurrent.loading} onClick={() => { clear(); setRefresh(value => value + 1); }} aria-label="刷新会话" title="刷新会话"><ArrowClockwise size={13}/></Button></div>
     {operationError && <p role="alert">{operationError}</p>}
+    {deleted && <SessionDeletedNotice result={deleted} onDismiss={() => setDeleted(null)}/>}
     {pending && <section className={styles.recovery} aria-label="核对原会话修改">
       <p role="status">{pending.state === "unknown" ? "会话修改结果尚未核对。原请求已保留；“刷新会话”只重新读取，不会再次提交。" : pending.state === "recovering" ? "正在查询原请求回执…" : "正在提交会话修改…"}</p>
       {pending.error && <p role="alert">{pending.error}</p>}
@@ -154,10 +165,11 @@ function HistoryPages({ api, scope, principalId, currentSessionId, currentRunId,
       {item.latest_run.status === "hidden" && <span className={styles.meta}>原回答已隐藏</span>}
 
     </button><details className={styles.sessionMenu} onKeyDown={event => { if (event.key === "Escape") { event.currentTarget.open = false; event.currentTarget.querySelector("summary")?.focus(); } }} onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) event.currentTarget.open = false; }}><summary aria-label={`管理会话：${conversationTitle(item)}`}>···</summary><div className={styles.actions}>
-      <Button size="sm" variant="ghost" disabled={disabled || !!operation || listCurrent.loading} onClick={() => setEditor({ key: listKey, item, title: item.presentation.title ?? "" })}>重命名</Button>
+      <Button size="sm" variant="ghost" disabled={disabled || !!operation || listCurrent.loading} onClick={() => { setDeleting(null); setEditor({ key: listKey, item, title: item.presentation.title ?? "" }); }}>重命名</Button>
       <Button size="sm" variant="ghost" disabled={disabled || !!operation || listCurrent.loading} onClick={() => startManagement(item, item.presentation.pinned ? "unpin" : "pin")}>{item.presentation.pinned ? "取消置顶" : "置顶"}</Button>
       <Button size="sm" variant="ghost" disabled={disabled || !!operation || listCurrent.loading} onClick={() => startManagement(item, item.presentation.archived ? "restore" : "archive")}>{item.presentation.archived ? "恢复会话" : "归档"}</Button>
-    </div></details>{visibleEditor?.item.session_id === item.session_id && <form className={styles.editor} onSubmit={event => { event.preventDefault(); if (visibleEditor.title.trim() && [...visibleEditor.title.trim()].length <= 160) startManagement(item, "rename", visibleEditor.title.trim()); }}>
+      <Button size="sm" variant="ghost" className={styles.danger} disabled={disabled || !!operation || listCurrent.loading} onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); setEditor(null); setDeleted(null); setDeleting({ key: listKey, item }); }}>删除</Button>
+    </div></details>{visibleDeleting?.item.session_id === item.session_id && <SessionDeleteConfirm api={api} categoryId={scope.categoryId || null} sessionId={item.session_id} title={conversationTitle(item)} disabled={disabled || !!operation} onCancel={() => setDeleting(null)} onDeleted={result => finishDeletion(item, result)}/>}{visibleEditor?.item.session_id === item.session_id && <form className={styles.editor} onSubmit={event => { event.preventDefault(); if (visibleEditor.title.trim() && [...visibleEditor.title.trim()].length <= 160) startManagement(item, "rename", visibleEditor.title.trim()); }}>
       <label>会话名称<input aria-label="会话名称" value={visibleEditor.title} disabled={disabled || !!operation} onChange={event => setEditor({ ...visibleEditor, title: event.target.value })} /></label>
       <p className={styles.hint}>名称最多 160 个字符；恢复原目标会移除自定义名称。</p>
       <div className={styles.actions}><Button type="submit" size="sm" disabled={disabled || !!operation || !visibleEditor.title.trim() || [...visibleEditor.title.trim()].length > 160}>保存名称</Button><Button type="button" size="sm" variant="ghost" disabled={disabled || !!operation} onClick={() => startManagement(item, "rename", null)}>恢复原目标名称</Button><Button type="button" size="sm" variant="ghost" onClick={() => setEditor(null)}>取消</Button></div>

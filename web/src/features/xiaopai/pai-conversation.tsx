@@ -1,5 +1,5 @@
 import { useEffect, useRef, type ReactNode, type RefObject } from "react";
-import { ArrowUpRight, CaretDown, Check, DotsThree, FileText, Folder, Minus, SidebarSimple, Plus, Sparkle, X } from "@phosphor-icons/react";
+import { ArrowUpRight, CaretDown, Check, DotsThree, FileText, Folder, Minus, SidebarSimple, Plus, Sparkle, Trash, X } from "@phosphor-icons/react";
 import { Button } from "@/components/ui/button";
 import { usedSkillName } from "@/lib/run-process";
 import { AnswerSources } from "./answer-sources";
@@ -34,9 +34,11 @@ export function loadedSkillFacts(events: { event: { type: string; key?: string; 
     ? [[`${event.key}:${event.version ?? ""}`, { key: event.key, version: event.version }] as const] : [])).values()];
 }
 
-export function PaiScope({ scope, skills, hasRun, title, historyOpen, onHistoryToggle, onNewConversation, onBackground, disabled, actions }: {
+export function PaiScope({ scope, skills, hasRun, title, historyOpen, onHistoryToggle, onNewConversation, onBackground, onDeleteSession, disabled, actions }: {
   actions?: ReactNode;
   onBackground?: () => void;
+  /** P121 第 8 项: opens the delete confirmation for the conversation on screen. */
+  onDeleteSession?: () => void;
   scope: string; skills: LoadedSkill[]; hasRun: boolean; title?: string; historyOpen?: boolean; onHistoryToggle?: () => void; onNewConversation?: () => void; disabled?: boolean;
 }) {
   return <div className={styles.scopeBar}>
@@ -48,6 +50,7 @@ export function PaiScope({ scope, skills, hasRun, title, historyOpen, onHistoryT
       <p>范围：{scope}</p>
       {hasRun && <><p>已使用的技能</p>{skills.map(skill => <span key={`${skill.key}:${skill.version ?? ""}`} className={styles.skillChip}><Check size={11} aria-hidden="true" />{usedSkillName(skill.key)}{skill.version ? ` · ${skill.version}` : ""}</span>)}{!skills.length && <p>尚无加载记录</p>}</>}
       <PaiPolicy />
+      {onDeleteSession && <button type="button" className={`${styles.backgroundAction} ${styles.deleteAction}`} disabled={disabled} title="删除这个会话" onClick={event => { event.currentTarget.closest("details")?.removeAttribute("open"); onDeleteSession(); }}><Trash size={15} aria-hidden="true"/>删除会话</button>}
     </div></details>{actions}
   </div>;
 }

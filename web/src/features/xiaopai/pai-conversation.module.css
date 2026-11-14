@@ -479,11 +479,16 @@
   color: var(--foreground);
 }
 
+.objectPicker > summary[data-active="true"] {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
 .objectOptions {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 160px;
+  max-height: 240px;
   overflow-y: auto;
   padding: 8px 7px;
   font-size: 11.5px;
@@ -859,3 +864,4 @@
 .composerBox[data-dragging] { border-color:var(--primary); border-style:dashed; }
 .composerBox[data-dragging] > .dropHint { display:flex; }
 .dropHint { position:absolute; inset:0; z-index:2; display:none; align-items:center; justify-content:center; padding:12px; border-radius:inherit; background:color-mix(in srgb, var(--background) 88%, var(--primary)); color:var(--primary); font-size:12px; pointer-events:none; text-align:center; }
+.backgroundAction.deleteAction { margin:8px 0 0; color:var(--destructive); }

@@ -372,6 +372,9 @@ class Bootstrap:
 
                 recheck_frozen(session, run)
                 recheck_notes(session, run)
+                from pdos_next.agent.memory.session_deletion import recheck as recheck_deleted
+
+                recheck_deleted(session, run)
                 frozen = run.versions.get("conversation_memory")
                 if run.continued_from_id is None or frozen is None:
                     return
@@ -444,9 +447,10 @@ class Bootstrap:
         from .conversation import HistoryInput, memory
         payload = tool_arguments(HistoryInput, arguments)
         if payload.session_id is not None and payload.session_id != scope.session_id:
-            from pdos_next.agent.memory.history import other_session
+            from pdos_next.agent.memory.session_deletion import read_other_session
 
-            return other_session(self.store, scope, payload, getattr(self, "_history_readers", {}))
+            return read_other_session(
+                self.store, scope, payload, getattr(self, "_history_readers", {}))
         with self.store.transaction(scope, lock=True) as (session, run):
             access = {}
             value = memory(session, run, readers=getattr(self, "_history_readers", {}),

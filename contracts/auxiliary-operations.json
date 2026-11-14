@@ -961,6 +961,26 @@
       "source": "设计确认稿 P85、P90（用户 2026-11-07）"
     },
     {
+      "operation": "agent.session.delete",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": null,
+      "record": "memory_session_deletions",
+      "purpose": "本人删除自己的小Pai 会话：该会话的情景记录、标记、检索索引、向量和未采纳的记忆提议立即清除，只留一条不含正文的删除记录；会话从列表、搜索和回忆中消失，不能再继续。运行记录、回执与审计不删除（I17、P83 D193）。只能由本人以真人身份发起，小Pai 不能执行也不能代为准备；有进行中的运行时拒绝。这是本人对自己会话的控制，不是业务领域命令。",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/personal/agent-sessions/{session_id}/deletion"
+        },
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/agent-sessions/{session_id}/deletion"
+        }
+      ],
+      "implementation": "implemented_local_endpoint",
+      "source": "设计确认稿 P121 第 8 项（用户 2026-11-12）；修订 P20 的“不提供删除”"
+    },
+    {
       "operation": "account.read",
       "write_tier": "READ",
       "executor": "named_human",

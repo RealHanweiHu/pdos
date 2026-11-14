@@ -243,7 +243,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const enterpriseSearch = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/enterprise-search$/i.test(forwardPath.join("/"));
   // P85 personal memory: the owner's own switch, pin/hide, usage and the tenant idle limit.
   // P86 (M2a): the owner's notes, candidates and setting; the administrator's switches and counts.
-  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|settings))$/i.test(forwardPath.join("/"));
+  // P121 第 8 项: the owner's preview (GET) and deletion (POST) of one own Session.
+  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/(?:memory-mode|deletion)|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|settings|scope-options))$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
   const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
@@ -314,9 +315,17 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       query.set(key, value);
     }
   } else if (memory) {
-    const methods = /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|deletion|decision)$/.test(pathname) ? ["POST"] : ["GET", "POST"];
+    const scopeOptions = pathname.endsWith("/memory/scope-options");
+    const methods = scopeOptions || /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|notes\/[a-f0-9-]{36}\/deletion|decision)$/.test(pathname) ? ["POST"] : ["GET", "POST"];
     if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "记忆入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
-    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "记忆只按本人与当前会话读取。" }, { status: 422 });
+    if (scopeOptions) {
+      // D301: products or proposals the owner can pick as a note's scope.
+      for (const [key, value] of request.nextUrl.searchParams) {
+        if (query.has(key) || !(key === "kind" && ["product", "proposal"].includes(value) || key === "query" && [...value].length <= 80)) return Response.json({ code: "VALIDATION_FAILED", message: "作用范围选项的查询条件无效。" }, { status: 422 });
+        query.set(key, value);
+      }
+      if (!query.has("kind")) return Response.json({ code: "VALIDATION_FAILED", message: "作用范围选项须指明产品或提案。" }, { status: 422 });
+    } else if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "记忆只按本人与当前会话读取。" }, { status: 422 });
   } else if (projectSets) {
     if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });

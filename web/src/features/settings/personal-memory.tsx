@@ -13,6 +13,7 @@ import styles from "./personal-memory.module.css";
 
 type Api = typeof browserApi;
 type Option = { id: string; label: string };
+const scopeKindNames: Record<ScopeKind, string> = { global: "全局", category: "品类", product: "产品", proposal: "提案", project: "项目" };
 const emptyDraft = (): NoteDraft => ({ kind: "convention", text: "", scope: { kind: "global", id: null }, valid_until: "", alias_term: "", alias_canonical: "" });
 const message = (failure: unknown, fallback: string) => failure instanceof Error ? failure.message : fallback;
 const day = (value: string) => value.slice(0, 10);
@@ -45,18 +46,21 @@ export function ConflictPicker({ conflicts, newer, busy, onChoose, onCancel, act
 
 function ScopeField({ api, value, onChange, disabled }: { api: Api; value: NoteDraft["scope"]; onChange: (scope: NoteDraft["scope"]) => void; disabled: boolean }) {
   const [options, setOptions] = useState<{ kind: string; items: Option[]; error: string } | null>(null);
-  const listed = value.kind === "category" || value.kind === "project";
+  const listed = value.kind !== "global";
   useEffect(() => {
     if (!listed) return;
     let live = true;
-    api<{ items: { id: string; label: string }[] }>(`v1/personal/preferences/options?kind=${value.kind}`).then(result => { if (live) setOptions({ kind: value.kind, items: result.items.map(item => ({ id: item.id, label: item.label })), error: "" }); })
+    // D301: products and proposals come from the memory scope options; both lists hold only what you can read now.
+    const source = value.kind === "product" || value.kind === "proposal" ? "v1/personal/memory/scope-options" : "v1/personal/preferences/options";
+    api<{ items: { id: string; label: string }[] }>(`${source}?kind=${value.kind}`).then(result => { if (live) setOptions({ kind: value.kind, items: result.items.map(item => ({ id: item.id, label: item.label })), error: "" }); })
       .catch(failure => { if (live) setOptions({ kind: value.kind, items: [], error: message(failure, "范围读取失败。") }); });
     return () => { live = false; };
   }, [api, value.kind, listed]);
   const current = options?.kind === value.kind ? options : null;
   return <div className={styles.scopeRow}>
-    <label>作用范围<select value={value.kind} disabled={disabled} onChange={event => onChange({ kind: event.target.value as ScopeKind, id: null })}><option value="global">全局（所有对话）</option><option value="category">某个品类</option><option value="project">某个项目</option>{(value.kind === "product" || value.kind === "proposal") && <option value={value.kind}>{value.kind === "product" ? "产品（来自提议）" : "提案（来自提议）"}</option>}</select></label>
-    {listed && <label>{value.kind === "category" ? "品类" : "项目"}<select value={value.id ?? ""} disabled={disabled || !current} onChange={event => onChange({ kind: value.kind, id: event.target.value || null })}><option value="">{current ? "请选择" : "正在读取…"}</option>{current?.items.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>}
+    <label>作用范围<select value={value.kind} disabled={disabled} onChange={event => onChange({ kind: event.target.value as ScopeKind, id: null })}><option value="global">全局（所有对话）</option><option value="category">某个品类</option><option value="product">某个产品</option><option value="proposal">某个提案</option><option value="project">某个项目</option></select></label>
+    {listed && <label>{scopeKindNames[value.kind]}<select value={value.id ?? ""} disabled={disabled || !current} onChange={event => onChange({ kind: value.kind, id: event.target.value || null })}><option value="">{current ? "请选择" : "正在读取…"}</option>{value.id && current && !current.items.some(item => item.id === value.id) && <option value={value.id}>当前所选{scopeKindNames[value.kind]}</option>}{current?.items.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>}
+    {current && !current.error && current.items.length === 0 && <p role="status" className={styles.meta}>没有你当前可读的{scopeKindNames[value.kind]}。</p>}
     {current?.error && <p role="alert" className={styles.error}>{current.error}</p>}
   </div>;
 }

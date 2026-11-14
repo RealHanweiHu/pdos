@@ -3,6 +3,9 @@
 Off means: no personal memory is read, no episode is recorded, no memory
 proposal is made and no episode catalog is injected. Scope memos (M2b), Run
 receipts and audit stay as they are. A Run freezes the mode when it is created.
+
+“本轮不记” (P121 第 8 项) is the same effect for one Run: the Run is frozen off
+with ``turn`` set and the Session's own switch is left alone.
 """
 
 from uuid import NAMESPACE_URL, UUID, uuid5
@@ -85,6 +88,31 @@ def configure_start(session, ctx, run, requested, *, new_session):
             fingerprint=digest({"memory_off": True, "start_run_id": str(run.id)}), revision=1,
         )
     run.versions = {**run.versions, "memory_mode": {"off": True}}
+
+
+def configure_turn(run, requested):
+    """“本轮不记” (P121 第 8 项): this Run only, same effect as the Session switch.
+
+    Nothing is written to the Session's setting, so the next turn follows the
+    Session again. A Run already frozen off by the Session switch stays as it is.
+    """
+    if requested and not is_off(run):
+        run.versions = {**run.versions, "memory_mode": {"off": True, "turn": True}}
+
+
+def is_turn(run):
+    """Off for this Run only, by the owner's “本轮不记”."""
+    return bool((run.versions or {}).get("memory_mode", {}).get("turn"))
+
+
+TURN_MESSAGE = "本轮已设为不记，未读取个人记忆，也不会留下这一轮的情景记录。"
+
+
+def turn_notice(run, value):
+    """Say "本轮" instead of "本会话" in a memory_off tool result of such a Run."""
+    if is_turn(run) and isinstance(value, dict) and value.get("status") == "memory_off":
+        return {**value, "message": TURN_MESSAGE}
+    return value
 
 
 def run_is_off(session, run):
