@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-13",
+  "question": "q1",
+  "repeat": 0,
+  "fault": "memory_unavailable",
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 151.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 267230,
+  "held_tokens": 0,
+  "answer": "已核对到的（来源：品类「汽车充气泵」规格字典，参数 key=noise，版本 1，品类 id 1652fcd3-4030-4b33-be2f-f75755a6461e）：\n\n一、噪声验收标准 = ≤ 62 dB(A)。单位 dB(A)，方向 lower（越低越好），来源 origin=human，写入人 dc83dbc9-43bd-488a-bac7-1f56802f0427（即本品类负责人账号），写入回执 413c8261-48f1-48f1-8a52-a01c8083039a，建立时间 2026-11-14。\n\n二、测试条件确实登记过：standard_condition =「1 m，空载」。即测量距离 1 m、工况为空载；这条与标准 ≤ 62 dB(A) 属同一条参数记录、同一次人工写入。参数 method 字段为空 —— 未登记引用标准、测量仪器、背景噪声、平均方式等方法信息；confirmed_by 为空 —— 该判据没有专业确认记录。\n\n没有查到的（明确为未找到，不等于不存在）：\n- 本次会话内没有任何更早的对话记录（history 为空），因此除这条参数记录外，你在此系统里是否另有关于噪声测量的交代，无法证否。\n- 品类知识库条目为 0，未检索到第二份载有噪声测试条件的文件。\n- 未检索到任何噪声实测/测试记录（证据检索命中 0），所以验收标准是否已被实际执行、实测值多少，均无据可依。\n- 品类下 model_count=1，但 platform.read 与 product.baseline.read 在当前范围读不到该机型，无法核验「≤ 62 dB(A) @1 m 空载」是否已落到具体机型的工程配置/规格基线。\n- 个人记忆库本次返回 SOURCE_UNAVAILABLE，未能检索你过去的个人记录。\n\n需要继续时：我可以补查噪声的测量方法登记、实测/测试记录、以及该机型的基线落地情况；也可以在你确认后起草参数补登/变更条目（例如把带载、充气中、不同距离或电压工况写进 standard_condition，或补 method）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T13:00:33.418525+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"除已登记的「1 m，空载」外，本系统内无法证否是否另有噪声测试条件交代：本次会话历史为空、个人记忆库返回 SOURCE_UNAVAILABLE、检索预算已用尽\", \"规格参数 noise 的 method 字段为空：未登记引用标准、测量仪器、背景噪声、平均方式等方法信息\", \"规格参数 noise 的 confirmed_by 为空：≤ 62 dB(A) 判据尚无专业确认记录\", \"可读范围内未检索到任何噪声实测/测试记录，无法给出实测值或判定结果\", \"品类下 model_count=1，但 platform.read 与 product.baseline.read 在当前范围读不到具体机型，无法核验该判据是否已写入该机型的工程配置/规格基线\", \"品类知识库条目为 0，未检索到第二份载有噪声测试条件的文件\", \"本次未签发可引用 citation_id：噪声事实来自已登记的品类规格字典参数读取，非检索引用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已核对到的（来源：品类「汽车充气泵」规格字典，参数 key=noise，版本 1，品类 id 1652fcd3-4030-4b33-be2f-f75755a6461e）：\\n\\n一、噪声验收标准 = ≤ 62 dB(A)。单位 dB(A)，方向 lower（越低越好），来源 origin=human，写入人 dc83dbc9-43bd-488a-bac7-1f56802f0427（即本品类负责人账号），写入回执 413c8261-48f1-48f1-8a52-a01c8083039a，建立时间 2026-11-14。\\n\\n二、测试条件确实登记过：standard_condition =「1 m，空载」。即测量距离 1 m、工况为空载；这条与标准 ≤ 62 dB(A) 属同一条参数记录、同一次人工写入。参数 method 字段为空 —— 未登记引用标准、测量仪器、背景噪声、平均方式等方法信息；confirmed_by 为空 —— 该判据没有专业确认记录。\\n\\n没有查到的（明确为未找到，不等于不存在）：\\n- 本次会话内没有任何更早的对话记录（history 为空），因此除这条参数记录外，你在此系统里是否另有关于噪声测量的交代，无法证否。\\n- 品类知识库条目为 0，未检索到第二份载有噪声测试条件的文件。\\n- 未检索到任何噪声实测/测试记录（证据检索命中 0），所以验收标准是否已被实际执行、实测值多少，均无据可依。\\n- 品类下 model_count=1，但 platform.read 与 product.baseline.read 在当前范围读不到该机型，无法核验「≤ 62 dB(A) @1 m 空载」是否已落到具体机型的工程配置/规格基线。\\n- 个人记忆库本次返回 SOURCE_UNAVAILABLE，未能检索你过去的个人记录。\\n\\n需要继续时：我可以补查噪声的测量方法登记、实测/测试记录、以及该机型的基线落地情况；也可以在你确认后起草参数补登/变更条目（例如把带载、充气中、不同距离或电压工况写进 standard_condition，或补 method）。\", \"questions\": [{\"id\": \"q1\", \"why\": \"缺口集中在方法、实测与机型落地三处，继续查可补齐这三处证据。\", \"options\": [{\"label\": \"继续深入查（方法/测试记录/机型基线）\", \"value\": \"continue\"}, {\"label\": \"先按现状交付，后续再查\", \"value\": \"stop\"}], \"question\": \"是否要在本会话继续深入查噪声的测量方法登记、实测/测试记录，以及该判据在唯一机型基线上的落地情况？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue\", \"reason\": \"当前只核对到规格字典参数本身；方法字段为空、无实测记录、机型基线读不到，深入查能直接回答“该验收标准是否真的被这么执行”。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"若实际验收在其他工况下做，判据与条件需按你给的工况补齐。\", \"options\": [{\"label\": \"只要 1 m 空载，暂不补其他工况\", \"value\": \"only_current\"}, {\"label\": \"需要补登其他工况，我具体说明\", \"value\": \"need_more\"}], \"question\": \"除「1 m、空载」外，是否需要补登其他噪声测试工况（带载/充气中、不同测距、不同电压或负载）？\", \"depends_on\": [], \"recommended\": {\"value\": \"only_current\", \"reason\": \"当前登记只覆盖一个工况；是否扩展属于你的验收口径决定，先按已登记工况为准最稳妥。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未核验该噪声判据是否已写入唯一机型的工程配置与规格基线（platform.read / product.baseline.read 在当前范围读不到产品）\", \"未找到任何噪声实测/测试记录，验收标准是否已被实际执行未知\", \"未找到测量方法（引用标准、仪器、背景噪声、平均方式）的登记\", \"本轮检索预算已用尽且个人记忆库不可读，未能复核历史记录中是否另有噪声条件交代\"]}",
+  "unfinished": [
+    "未核验该噪声判据是否已写入唯一机型的工程配置与规格基线（platform.read / product.baseline.read 在当前范围读不到产品）",
+    "未找到任何噪声实测/测试记录，验收标准是否已被实际执行未知",
+    "未找到测量方法（引用标准、仪器、背景噪声、平均方式）的登记",
+    "本轮检索预算已用尽且个人记忆库不可读，未能复核历史记录中是否另有噪声条件交代"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:4",
+    "mcp.tools.list:completed:1",
+    "memory.search:failed:2",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

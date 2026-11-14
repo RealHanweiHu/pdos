@@ -1,0 +1,545 @@
+{
+  "version": "xiaopai-memory-timeline-baseline/v0",
+  "real_model_calls": 0,
+  "quality_status": "not_scored",
+  "not_scored": [
+    "answer_correctness",
+    "task_completion",
+    "repeated_clarification",
+    "real_usage_latency_cost"
+  ],
+  "gates": {
+    "cross_access": 0,
+    "injection_write": 0,
+    "unconfirmed_write": 0,
+    "deletion_residue": 0,
+    "fake_zero": 0,
+    "memory_off_access": 0,
+    "correction_stale": 0
+  },
+  "violations": [],
+  "groups": {
+    "no_memory": {
+      "label": "基线 0：全部会话不进记忆",
+      "recall_at_5": {
+        "all": {
+          "hit": 0,
+          "of": 15,
+          "rate": 0.0
+        },
+        "dev": {
+          "hit": 0,
+          "of": 12,
+          "rate": 0.0
+        },
+        "holdout": {
+          "hit": 0,
+          "of": 3,
+          "rate": 0.0
+        },
+        "outcome_words": {
+          "hit": 0,
+          "of": 4,
+          "rate": 0.0
+        },
+        "same_words": {
+          "hit": 0,
+          "of": 11,
+          "rate": 0.0
+        }
+      }
+    },
+    "history_only": {
+      "label": "基线 1（模拟）：只搜本人以往运行的原话和回答摘要",
+      "recall_at_5": {
+        "all": {
+          "hit": 15,
+          "of": 15,
+          "rate": 1.0
+        },
+        "dev": {
+          "hit": 12,
+          "of": 12,
+          "rate": 1.0
+        },
+        "holdout": {
+          "hit": 3,
+          "of": 3,
+          "rate": 1.0
+        },
+        "outcome_words": {
+          "hit": 4,
+          "of": 4,
+          "rate": 1.0
+        },
+        "same_words": {
+          "hit": 11,
+          "of": 11,
+          "rate": 1.0
+        }
+      }
+    },
+    "real": {
+      "label": "基线 2：当前实现",
+      "recall_at_5": {
+        "all": {
+          "hit": 15,
+          "of": 15,
+          "rate": 1.0
+        },
+        "dev": {
+          "hit": 12,
+          "of": 12,
+          "rate": 1.0
+        },
+        "holdout": {
+          "hit": 3,
+          "of": 3,
+          "rate": 1.0
+        },
+        "outcome_words": {
+          "hit": 4,
+          "of": 4,
+          "rate": 1.0
+        },
+        "same_words": {
+          "hit": 11,
+          "of": 11,
+          "rate": 1.0
+        }
+      }
+    },
+    "real_proposals_open": {
+      "label": "当前实现，测试进程内打开对话提议的版本闸门",
+      "recall_at_5": {
+        "all": {
+          "hit": 15,
+          "of": 15,
+          "rate": 1.0
+        },
+        "dev": {
+          "hit": 12,
+          "of": 12,
+          "rate": 1.0
+        },
+        "holdout": {
+          "hit": 3,
+          "of": 3,
+          "rate": 1.0
+        },
+        "outcome_words": {
+          "hit": 4,
+          "of": 4,
+          "rate": 1.0
+        },
+        "same_words": {
+          "hit": 11,
+          "of": 11,
+          "rate": 1.0
+        }
+      }
+    }
+  },
+  "capability": [
+    {
+      "group": "no_memory",
+      "timeline": "TL-01",
+      "probe": "p4",
+      "target": {
+        "catalog_has_unfinished": true
+      },
+      "observed": {
+        "catalog_has_unfinished": false
+      },
+      "met": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-03",
+      "probe": "p2",
+      "target": {
+        "admitted": 1
+      },
+      "observed": {
+        "admitted": 0
+      },
+      "met": false,
+      "rejected": [
+        "memory_candidate_prompt_not_released"
+      ]
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-08",
+      "probe": "p3",
+      "target": {
+        "target_in_catalog": true
+      },
+      "observed": {
+        "target_in_catalog": false
+      },
+      "met": false
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-14",
+      "probe": "p2",
+      "target": {
+        "target_in_catalog": true
+      },
+      "observed": {
+        "target_in_catalog": false
+      },
+      "met": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-01",
+      "probe": "p4",
+      "target": {
+        "catalog_has_unfinished": true
+      },
+      "observed": {
+        "catalog_has_unfinished": false
+      },
+      "met": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-03",
+      "probe": "p2",
+      "target": {
+        "admitted": 1
+      },
+      "observed": {
+        "admitted": 0
+      },
+      "met": false,
+      "rejected": [
+        "memory_candidate_prompt_not_released"
+      ]
+    },
+    {
+      "group": "real",
+      "timeline": "TL-08",
+      "probe": "p3",
+      "target": {
+        "target_in_catalog": true
+      },
+      "observed": {
+        "target_in_catalog": false
+      },
+      "met": false
+    },
+    {
+      "group": "real",
+      "timeline": "TL-14",
+      "probe": "p2",
+      "target": {
+        "target_in_catalog": true
+      },
+      "observed": {
+        "target_in_catalog": false
+      },
+      "met": false
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-01",
+      "probe": "p4",
+      "target": {
+        "catalog_has_unfinished": true
+      },
+      "observed": {
+        "catalog_has_unfinished": false
+      },
+      "met": false
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-03",
+      "probe": "p2",
+      "target": {
+        "admitted": 1
+      },
+      "observed": {
+        "admitted": 0
+      },
+      "met": false,
+      "rejected": [
+        "trigger_not_explicit_remember"
+      ]
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-08",
+      "probe": "p3",
+      "target": {
+        "target_in_catalog": true
+      },
+      "observed": {
+        "target_in_catalog": false
+      },
+      "met": false
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-14",
+      "probe": "p2",
+      "target": {
+        "target_in_catalog": true
+      },
+      "observed": {
+        "target_in_catalog": false
+      },
+      "met": false
+    }
+  ],
+  "unmet_expectations": [
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-12",
+      "probe": "p1"
+    }
+  ],
+  "fact_labels": [
+    {
+      "group": "real",
+      "timeline": "TL-09",
+      "probe": "p2",
+      "met": true
+    },
+    {
+      "group": "real",
+      "timeline": "TL-10",
+      "probe": "p1",
+      "met": true
+    },
+    {
+      "group": "real",
+      "timeline": "TL-11",
+      "probe": "p2",
+      "met": true
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-09",
+      "probe": "p2",
+      "met": true
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-10",
+      "probe": "p1",
+      "met": true
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-11",
+      "probe": "p2",
+      "met": true
+    }
+  ],
+  "domain": [
+    {
+      "group": "no_memory",
+      "timeline": "TL-09",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": null,
+        "origin": "human"
+      }
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-11",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≥ 35 L/min",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "no_memory",
+      "timeline": "TL-13",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≤ 62 dB(A)",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-09",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": null,
+        "origin": "human"
+      }
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-11",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≥ 35 L/min",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "history_only",
+      "timeline": "TL-13",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≤ 62 dB(A)",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "real",
+      "timeline": "TL-09",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": null,
+        "origin": "human"
+      }
+    },
+    {
+      "group": "real",
+      "timeline": "TL-11",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≥ 35 L/min",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "real",
+      "timeline": "TL-13",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≤ 62 dB(A)",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-09",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": null,
+        "origin": "human"
+      }
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-11",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≥ 35 L/min",
+        "origin": "human"
+      }
+    },
+    {
+      "group": "real_proposals_open",
+      "timeline": "TL-13",
+      "probe": "p1",
+      "met": true,
+      "observed": {
+        "found": 1,
+        "criterion": "≤ 62 dB(A)",
+        "origin": "human"
+      }
+    }
+  ],
+  "candidates": [
+    "TL-01",
+    "TL-02",
+    "TL-03",
+    "TL-04",
+    "TL-05",
+    "TL-06",
+    "TL-07",
+    "TL-08",
+    "TL-09",
+    "TL-10",
+    "TL-11",
+    "TL-12",
+    "TL-13",
+    "TL-14",
+    "TL-15",
+    "TL-16"
+  ],
+  "covers": [
+    "AT-71",
+    "C1",
+    "T01",
+    "T02",
+    "T03",
+    "T04",
+    "T05",
+    "T12",
+    "T13",
+    "T14",
+    "T15",
+    "T16",
+    "T17",
+    "T18",
+    "T24"
+  ],
+  "missing": [],
+  "blocked": false,
+  "at_utc": "2026-11-14T12:59:09.718666+00:00",
+  "pytest_exit": 0,
+  "source_sha256": {
+    "docs/evaluations/xiaopai-memory-v0/timelines.json": "cc2bae314f78921439f3a760b6d46db18c38298a6eed6fcccab38e0c5ab2d956",
+    "server/tests/agent/memory/test_eval_memory_timeline_pg.py": "383e9c46fbd1d323acca4c21f319afcb4f656eb277139f1ed06b301ba392856a",
+    "tools/xiaopai_memory_timeline_baseline.py": "31c722d13278b25e6f3b6b16b460c0fa86e11fe7871f0c7e4158e42a6310593c",
+    "server/pdos_next/agent/memory/__init__.py": "8e7efb4cd3ab8622e2a695009184539cc183d164217f23491979245d920d3605",
+    "server/pdos_next/agent/memory/api.py": "b79790ee03f4e617d9b01bc017c08efba88a2d54f322d8c12d117cdb02845fcb",
+    "server/pdos_next/agent/memory/assemble.py": "09fd6880f515650d6ce89d525a0f8125f9e6280f225ebf199d0de24c52fd5088",
+    "server/pdos_next/agent/memory/candidates.py": "be81918135923bf8a513a19305b972e574d89370692dab6d911d3b152fea8c77",
+    "server/pdos_next/agent/memory/constraints.py": "b12a4377d40652ae2d836ba426168f28cf3d16565e50a3eeb6d15f05a4a48284",
+    "server/pdos_next/agent/memory/history.py": "4c51f0f3cb539f4c5c152437eba9e1a1b454bd18e343b046d6a4eccccfe499e4",
+    "server/pdos_next/agent/memory/index.py": "c0312342eacfa3a1d6a70796342ed8bd795a49218a4d79868d8bd6dee4185868",
+    "server/pdos_next/agent/memory/index_workflow.py": "03d030c66bb0dcedcba148d5391bcdec264f11e7bde3b792f292a5fd4142fe4f",
+    "server/pdos_next/agent/memory/mode.py": "80f0fd22b0f37bfe77fcf00dbe2f3af476715443b4d7896fcb2f1faebf63b782",
+    "server/pdos_next/agent/memory/models.py": "9a1fe5364e09c856c43786d4038276d5c7f3fe8e04f6011a21626402b04b80e7",
+    "server/pdos_next/agent/memory/note_search.py": "2c5656523c7442e383c6d9f6275283d1874fdef0d17bfbbf19403776f03b259e",
+    "server/pdos_next/agent/memory/notes.py": "20c259962c77bd34443eb4755cdd180d9d306f663c571afcd201308661f91a16",
+    "server/pdos_next/agent/memory/policy.py": "b2e4687003b52d1ca8d9e7d64eedc80daf1d14f4e1b7b18f6adfae29992f7076",
+    "server/pdos_next/agent/memory/recall.py": "e23a1c431d7f683dcdb6e1c54c9bd2a51eba123e19b086f73091941ebda3f36d",
+    "server/pdos_next/agent/memory/settings.py": "7cbd1da3e35242cde0e89213381af40544f3326f6bcaa983cc1b10657642c50b",
+    "server/pdos_next/agent/memory/tool.py": "c36c8178a6ecdfe2e94653d988aa1db0dea3c5ed3bac7a1ac25139d95d0e55a9",
+    "server/pdos_next/agent/memory/vector_workflow.py": "8683e7fc8799fd2425d8fe88ef6d7f16f10a3b69eec23148d592ea17d13f4099",
+    "server/pdos_next/agent/memory/vectors.py": "13347fee34a6f554bc70e22860e808dc04f64e08635a92840e1c6ee026ca211a"
+  },
+  "input_bytes_unchanged": true,
+  "test_database": "pdos_test",
+  "test_port": 52491,
+  "test_marker": "b174dbc9",
+  "scope": "memory entry points, isolation, write gates and recall; scripted finishes",
+  "rescored_note": "Re-scored after the run: fact-label check now counts only probes that returned memory."
+}

@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real",
+  "timeline": "TL-09",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "domain",
+      "found": 1,
+      "criterion": null,
+      "origin": "human"
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ],
+      "fact_policy": true,
+      "answers_labelled": true
+    }
+  ],
+  "episodes_written": [
+    "r1"
+  ],
+  "unexpected_notes": 0
+}

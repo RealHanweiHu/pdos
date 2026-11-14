@@ -1,0 +1,49 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real",
+  "timeline": "TL-03",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "candidates",
+      "admitted": 0,
+      "rejected": [
+        "memory_candidate_prompt_not_released"
+      ]
+    },
+    {
+      "id": "p2",
+      "probe": "candidates",
+      "admitted": 0,
+      "rejected": [
+        "memory_candidate_prompt_not_released"
+      ]
+    },
+    {
+      "id": "p3",
+      "probe": "resident",
+      "notes": [],
+      "texts": [],
+      "catalog": [
+        "r2",
+        "r1"
+      ],
+      "catalog_fields": [
+        "as_of",
+        "goal",
+        "run_id",
+        "session_id"
+      ],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    }
+  ],
+  "episodes_written": [
+    "r1",
+    "r2"
+  ],
+  "unexpected_notes": 0
+}

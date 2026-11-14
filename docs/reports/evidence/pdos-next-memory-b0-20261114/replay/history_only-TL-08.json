@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-08",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "emulated": true,
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ]
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "emulated": true,
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ]
+    },
+    {
+      "id": "p3",
+      "probe": "resident",
+      "not_applicable": true
+    }
+  ],
+  "episodes_written": [
+    "r1",
+    "r2",
+    "r3",
+    "r4",
+    "r5",
+    "r6"
+  ],
+  "unexpected_notes": 0
+}
