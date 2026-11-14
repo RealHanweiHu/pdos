@@ -1,11 +1,13 @@
 """Owner deletes a Session; episode usage lists the personal notes used (P121 第 8 项, D475).
 
-PLACEHOLDER NUMBER: written in a parallel worktree on head s0_0887. At integration
-the revision, down_revision and this file's name move together to the real head
-(不可协商项 3). If another branch also rewrites ``memory_project_episode``, merge the
-function bodies: this file derives its body from the s0_0855 text by anchors.
+PLACEHOLDER NUMBER: written in a parallel worktree on head s0_0887, now on s0_0888.
+At integration the revision, down_revision and this file's name move together to
+the real head (不可协商项 3). If another branch also rewrites
+``memory_project_episode``, merge the function bodies: this file derives its body
+from the s0_0855 text by anchors (unchanged through s0_0888, checked 2026-11-14).
 
-Deleting a Session removes its episodes, episode marks, keyword index rows (every
+Deleting a Session removes its episodes, episode marks, keyword index rows (both
+the ``episode`` and the ``answer`` row of s0_0888; the delete is by Session, not by
 ``source_kind``) and episode vectors, plus proposals from it that the owner never
 adopted. One row without content stays in ``memory_session_deletions``. Run
 records, action receipts and audit are not touched (I17, P83 D193).

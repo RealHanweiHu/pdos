@@ -93,7 +93,7 @@ def second_index_row(setup, row):
 
 
 def remembered_session(setup):
-    """A finished Session with an episode, a pin, two index rows, a vector and a proposal."""
+    """A finished Session with an episode, a pin, both index rows, a vector and a proposal."""
     from tests.agent.memory.test_memory_candidates_pg import explicit, finish_with
     from tests.agent.memory.test_memory_vectors_pg import embed, pending, profile
 
@@ -108,8 +108,7 @@ def remembered_session(setup):
             trigger="记住：给这个客户的报告一律用英文")]) == []
     finally:
         candidates.MEMORY_CANDIDATE_PROMPT_VERSIONS = original
-    row = indexed(setup, run_id)
-    second_index_row(setup, row)
+    row = indexed(setup, run_id)  # Writes both index rows: own words, and the answer side.
     marks = f"/v1/categories/{setup.category}/memory/episodes/{run_id}/marks"
     assert setup.client.post(marks, headers=setup.headers, json={
         "request_key": str(uuid4()), "kind": "pin"}).status_code == 200
@@ -124,6 +123,13 @@ def test_owner_deletes_a_session_and_its_memory_rows_are_gone(setup):
     assert counts(setup, session_id) == {
         "memory_episodes": 1, "memory_episode_marks": 1, "memory_index": 2,
         "memory_episode_vectors": 1, "memory_candidates": 1}
+    with Session(setup.admin) as session:
+        # s0_0888: one row for the owner's words, one for the answer summary.
+        assert sorted(session.scalars(select(MemoryIndexEntry.source_kind).where(
+            MemoryIndexEntry.episode_id == row.id))) == ["answer", "episode"]
+        assert session.scalar(select(MemoryIndexEntry.token_count).where(
+            MemoryIndexEntry.episode_id == row.id,
+            MemoryIndexEntry.source_kind == "answer")) > 0
     preview = setup.client.get(deletion_path(setup, session_id), headers=setup.headers)
     assert preview.status_code == 200, preview.text
     assert preview.json()["deleted"] is False and preview.json()["blocked"] is None
@@ -145,6 +151,9 @@ def test_owner_deletes_a_session_and_its_memory_rows_are_gone(setup):
         assert session.scalar(select(func.count()).select_from(MemorySessionDeletion).where(
             MemorySessionDeletion.session_id == session_id)) == 1
         # Nothing of the owner's words is left in the memory layer.
+        assert session.scalar(select(func.count()).select_from(MemoryIndexEntry).where(
+            MemoryIndexEntry.episode_id == row.id,
+            MemoryIndexEntry.source_kind.in_(["episode", "answer"]))) == 0
         for table in ("memory_episodes", "memory_index", "memory_episode_marks",
                       "memory_episode_vectors", "memory_candidates"):
             assert "供应商" not in json.dumps([item.body for item in session.execute(text(
@@ -262,7 +271,10 @@ def test_runs_that_drew_on_a_deleted_session_stop_before_the_next_model_call(set
     finish(setup, earlier)
     indexed(setup, earlier)
     other, second = start(setup, goal="核对帐篷面料清单")
-    finish(setup, other)
+    # Its own answer text, so the answer-side index (s0_0888) does not match the query below.
+    KernelStore(setup.engine).finish(scope(setup, other), {
+        "status": "completed", "summary": "面料清单已核对。", "questions": [], "unfinished": [],
+        "result": {"context_proposals": {"constraints": []}}})
     by_search, _ = start(setup, goal="上次那三家供应商后来定了哪家？")
     assert [item["run_id"] for item in search(setup, by_search)["items"]] == [str(earlier)]
     by_history, _ = start(setup, goal="上次怎么答的")

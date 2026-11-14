@@ -1,6 +1,8 @@
 # 会话级记忆控制：删除会话、本轮不记、D301、D475 第 1 条（2026-11-13）
 
-分支 `claude/memory-session-controls-bb2951`，本地提交，未推送。迁移占位号 `s0_0940`（接 `s0_0887`），集成时按真实 head 重排。
+分支 `claude/memory-session-controls-bb2951`，本地提交，未推送。迁移占位号 `s0_0940`，11-14 起接 `s0_0888`，集成时按真实 head 重排。
+
+11-14 补验的结果在文末“11-14 补验”，以那一节为准；下面“跑过什么”“没有做”是 11-13 的记录。
 
 ## 环境
 
@@ -26,3 +28,25 @@
 - 浏览器只看了桌面宽度和个人入口；品类范围的小Pai 侧栏、375px 没看；删除确认面板在暗色下只看了列表里的那一处。
 - `memory_index` 的 `source_kind='answer'` 行要等主会话的 `s0_0888`；删除按 `session_id` 清，不看 `source_kind`，测试里用同一情景的第二条索引行代替验证。
 - 真实 Temporal 下的索引、向量化工作流对已删除会话的行为没有联调，只测了活动函数和待办查询函数。
+
+## 11-14 补验（变基到 `f7425553` 之后）
+
+分支变基到 `pdos-next/design-v1.1` 的 `f7425553`（含 `s0_0888`：`memory_index` 每个情景两行，`episode` 与 `answer`），无冲突。`s0_0940` 的 `down_revision` 改接 `s0_0888`。
+
+环境：销毁了 11-13 的容器，新建本会话自己的独立临时库 `pdos-next-test-20261002-c232f6ae`（`127.0.0.1:51505/pdos_test`，标记 `c232f6ae-…`，状态文件在本工作区 `.local/runtime.json`）。没有用 57105。
+
+| 检查 | 结果 |
+|---|---|
+| 整链迁移往返：全新库上升到 head、降到 base、再升到 head（`tools/local_environment.py create`，每步非零退出即中止） | 三步都通过；结束后 `alembic current` 为 `s0_0940 (head)`，链为 `s0_0887 → s0_0888 → s0_0940` |
+| 删除会话时两种索引行都清掉 | `test_owner_deletes_a_session_and_its_memory_rows_are_gone` 先确认该情景有 `episode`、`answer` 两行且 `answer` 行有词，删除后该情景两种行都是 0，租户内 `memory_index` 里查不到原话里的词 |
+| `tests/agent/memory/test_memory_session_controls_pg.py` | 11 通过 |
+| 完整受影响回归（记忆全部含主线新增用例、会话列表与显示设置、发起运行、续接、会话历史与撤权、工作状态、生命周期目录、检查点保留、讨论中 @小Pai） | 401 通过、13 跳过、0 失败（跳过的是默认关闭的真实模型评测 12 项和 1 项真实 Temporal 用例） |
+| `tools/validate_contracts.py`；`openapi.json` 重导出 | 通过；重导出后合同文件无变化 |
+| 前端 `pnpm typecheck`、`pnpm lint`、受影响测试 12 个文件 | 类型无错误；lint 0 错误、4 个警告（都在没改过的文件里）；179 通过 |
+
+变基后改过的测试（都不是产品代码）：
+
+- 主线的回答侧索引让“用同一句合成回答收尾的另一个会话”也被检索到，`test_runs_that_drew_on_a_deleted_session_stop_before_the_next_model_call` 里那个无关会话改用自己的回答文字收尾。
+- 删除测试不再手工插第二条索引行，改为断言 `index_episode` 写出的两种行。
+
+仍然没做：无库全量和更大范围回归；浏览器的品类侧栏、375px；真实 Temporal 下索引与向量化工作流对已删除会话的联调。浏览器检查是 11-13 在变基前做的，变基没有改前端文件，没有重做。
