@@ -1,0 +1,66 @@
+{
+  "diagnostics": {
+    "verification_feedback": [
+      "[{\"path\": \"result\", \"type\": \"dict_type\"}]"
+    ],
+    "domain_errors": [
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"NoneType\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": [], \"id\": \"basis_anchor\", \"options\": [{\"label\": \"出厂价（不含税、不含运）\", \"value\": \"exw_untaxed\"}, {\"label\": \"到岸价（含运，税另计）\", \"value\": \"cif_shipping\"}, {\"label\": \"零售价（含税含运）\", \"value\": \"retail_incl_tax_ship\"}], \"question\": \"这次报价对比以哪个价格口径为基准？\", \"recommended\": {\"reason\": \"客户报价单多为工厂出厂价，同口径可比性最强，且最易与 BOM 成本对齐。\", \"value\": \"exw_untaxed\"}, \"why\": \"没有可沿用的历史口径，需要先锚定可比基准，否则价格点无法同口径对齐。\"}, {\"allow_free_text\": true, \"depends_on\": [], \"id\": \"data_source\", \"options\": [{\"label\": \"我上传客户 RFQ / 报价单原件\", \"value\": \"customer_rfq\"}, {\"label\": \"用品类内已登记的竞品价（当前库为空）\", \"value\": \"registered_competitors\"}, {\"label\": \"从公开渠道检索竞品价格\", \"value\": \"public_sources\"}], \"question\": \"对比用的报价数据从哪里取？\", \"recommended\": {\"reason\": \"你之前的报价对比基于你手上的报价单，原始件才有可比的价格类型与配置信息。\", \"value\": \"customer_rfq\"}, \"why\": \"当前品类内没有登记的竞品价格数据，也没有可读的报价单原件，需确定取数入口。\"}, {\"allow_free_text\": false, \"depends_on\": [\"basis_anchor\", \"data_source\"], \"id\": \"redo_now\", \"options\": [{\"label\": \"是，立刻按该口径做对比\", \"value\": \"yes_compare_now\"}, {\"label\": \"先只登记口径，数据稍后\", \"value\": \"register_basis_only\"}], \"question\": \"口径定下后现在就重新做一版对比吗？\", \"recommended\": {\"reason\": \"口径需你确认后才能作为后续所有报价对比的固定基准，先固化更稳妥。\", \"value\": \"register_basis_only\"}, \"why\": \"先登记口径再取数可以避免同一批价格点重复比较。\"}]}"
+      },
+      {
+        "code": "OUTPUT_STRUCTURE",
+        "reason": "raw",
+        "frames": [],
+        "message": "{\"result_type\": \"NoneType\", \"questions\": [{\"allow_free_text\": true, \"depends_on\": [], \"id\": \"basis_anchor\", \"options\": [{\"label\": \"出厂价（不含税、不含运）\", \"value\": \"exw_untaxed\"}, {\"label\": \"到岸价（含运，税另计）\", \"value\": \"cif_shipping\"}, {\"label\": \"零售价（含税含运）\", \"value\": \"retail_incl_tax_ship\"}], \"question\": \"这次报价对比以哪个价格口径为基准？\", \"recommended\": {\"reason\": \"客户报价单多为工厂出厂价，同口径可比性最强，且最易与 BOM 成本对齐。\", \"value\": \"exw_untaxed\"}, \"why\": \"没有可沿用的历史口径，需要先锚定可比基准，否则价格点无法同口径对齐。\"}, {\"allow_free_text\": true, \"depends_on\": [], \"id\": \"data_source\", \"options\": [{\"label\": \"我上传客户 RFQ / 报价单原件\", \"value\": \"customer_rfq\"}, {\"label\": \"用品类内已登记的竞品价（当前库为空）\", \"value\": \"registered_competitors\"}, {\"label\": \"从公开渠道检索竞品价格\", \"value\": \"public_sources\"}], \"question\": \"对比用的报价数据从哪里取？\", \"recommended\": {\"reason\": \"你之前的报价对比基于你手上的报价单，原始件才有可比的价格类型与配置信息。\", \"value\": \"customer_rfq\"}, \"why\": \"当前品类内没有登记的竞品价格数据，也没有可读的报价单原件，需确定取数入口。\"}, {\"allow_free_text\": false, \"depends_on\": [\"basis_anchor\", \"data_source\"], \"id\": \"redo_now\", \"options\": [{\"label\": \"是，立刻按该口径做对比\", \"value\": \"yes_compare_now\"}, {\"label\": \"先只登记口径，数据稍后\", \"value\": \"register_basis_only\"}], \"question\": \"口径定下后现在就重新做一版对比吗？\", \"recommended\": {\"reason\": \"口径需你确认后才能作为后续所有报价对比的固定基准，先固化更稳妥。\", \"value\": \"register_basis_only\"}, \"why\": \"先登记口径再取数可以避免同一批价格点重复比较。\"}]}"
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 57.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 140787,
+  "held_tokens": 0,
+  "answer": "没找到你明确交代过口径的记录。你在“汽车充气泵”品类范围内的历史工作只有一次：2026-11-13 的「气泵报价对比」，情景卡显示状态为已完成、摘要只有“报价对比已完成。”，但没有保存任何引用、备注或研究行，看不到你当时指定过币种、含税、渠道或价格层级等口径。品类知识库在本次可读范围内为空（含 human 口径条目 0 条），竞品价格登记也为空，公司资料检索未命中相关知识、文档或问题单。所以我不能替你复原一个“你之前说过的口径”——那属于未记录，不能推断。要继续这次对比，需要你先锚定一个基准口径（下面给了默认建议），再给报价数据来源。",
+  "answer_blob": "{\"result\": {\"result\": [{\"kind\": \"recall\", \"episodes\": [{\"goal\": \"气泵报价对比\", \"as_of\": \"2026-11-13\", \"scope\": \"汽车充气泵\", \"status\": \"completed\", \"record_detail_available\": false}], \"checked_scope\": [\"conversation.history(session_id=e59ebe70-35c5-48cb-aea1-e886532b3d88)\", \"memory.search(episode|note, 关键词检索)\", \"assistant.search(品类内 knowledge/artifact/issue)\", \"category.knowledge.list(全部来源, 含历史)\", \"category.competitors.list\"], \"explicit_basis_recorded\": false}, {\"kind\": \"proposed_basis\", \"note\": \"以下为通用建议，非你此前已确认的口径，也非公司既定标准\", \"items\": [\"币种：统一到一个目标币种，换汇率需注明来源与日期\", \"时间：同一观测窗口内报价单\", \"渠道/对象：同一客户或同一 B2B 报价单，不与零售价混用\", \"价格类型：同一层级（出厂价 / 到岸价 / 零售价），促销价单列\", \"税运：统一含税含运或统一不含税不含运，不混用\", \"配置：同型号同配置同包装，样机价与量产价分开\", \"数量档：同一 MOQ 阶梯\"], \"status\": \"candidate_only_not_registered\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:55:09.291627+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"2026-11-13「气泵报价对比」的历史记录未保留口径说明（摘要仅为“报价对比已完成。”，无引用、无备注、无研究行），无法确认当时是否指定过币种/含税/渠道/价格层级\", \"当前品类（汽车充气泵）范围内 human 口径知识条目为 0 条，品类知识列表整体为空\", \"品类竞品价格登记为空，无法从已登记报价点反推当时的统一口径\", \"公司资料检索（knowledge/artifact/issue）未命中与报价口径相关的文档\", \"团队备忘类口径（scope_note）在本人范围内不可用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"没找到你明确交代过口径的记录。你在“汽车充气泵”品类范围内的历史工作只有一次：2026-11-13 的「气泵报价对比」，情景卡显示状态为已完成、摘要只有“报价对比已完成。”，但没有保存任何引用、备注或研究行，看不到你当时指定过币种、含税、渠道或价格层级等口径。品类知识库在本次可读范围内为空（含 human 口径条目 0 条），竞品价格登记也为空，公司资料检索未命中相关知识、文档或问题单。所以我不能替你复原一个“你之前说过的口径”——那属于未记录，不能推断。要继续这次对比，需要你先锚定一个基准口径（下面给了默认建议），再给报价数据来源。\", \"questions\": [{\"id\": \"basis_anchor\", \"why\": \"没有可沿用的历史口径，需要先锚定可比基准，否则价格点无法同口径对齐。\", \"options\": [{\"label\": \"出厂价（不含税、不含运）\", \"value\": \"exw_untaxed\"}, {\"label\": \"到岸价（含运，税另计）\", \"value\": \"cif_shipping\"}, {\"label\": \"零售价（含税含运）\", \"value\": \"retail_incl_tax_ship\"}], \"question\": \"这次报价对比以哪个价格口径为基准？\", \"depends_on\": [], \"recommended\": {\"value\": \"exw_untaxed\", \"reason\": \"客户报价单多为工厂出厂价，同口径可比性最强，且最易与 BOM 成本对齐。\"}, \"allow_free_text\": true}, {\"id\": \"data_source\", \"why\": \"当前品类内没有登记的竞品价格数据，也没有可读的报价单原件，需确定取数入口。\", \"options\": [{\"label\": \"我上传客户 RFQ / 报价单原件\", \"value\": \"customer_rfq\"}, {\"label\": \"用品类内已登记的竞品价（当前库为空）\", \"value\": \"registered_competitors\"}, {\"label\": \"从公开渠道检索竞品价格\", \"value\": \"public_sources\"}], \"question\": \"对比用的报价数据从哪里取？\", \"depends_on\": [], \"recommended\": {\"value\": \"customer_rfq\", \"reason\": \"你之前的报价对比基于你手上的报价单，原始件才有可比的价格类型与配置信息。\"}, \"allow_free_text\": true}, {\"id\": \"redo_now\", \"why\": \"先登记口径再取数可以避免同一批价格点重复比较。\", \"options\": [{\"label\": \"是，立刻按该口径做对比\", \"value\": \"yes_compare_now\"}, {\"label\": \"先只登记口径，数据稍后\", \"value\": \"register_basis_only\"}], \"question\": \"口径定下后现在就重新做一版对比吗？\", \"depends_on\": [\"basis_anchor\", \"data_source\"], \"recommended\": {\"value\": \"register_basis_only\", \"reason\": \"口径需你确认后才能作为后续所有报价对比的固定基准，先固化更稳妥。\"}, \"allow_free_text\": false}], \"unfinished\": [\"未找到你此前指定的报价对比口径记录，需你确认基准口径（币种/税运/渠道/价格层级/数量档）\", \"未获取本次对比的报价数据来源（客户 RFQ 或已登记竞品价）\"]}",
+  "unfinished": [
+    "未找到你此前指定的报价对比口径记录，需你确认基准口径（币种/税运/渠道/价格层级/数量档）",
+    "未获取本次对比的报价数据来源（客户 RFQ 或已登记竞品价）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:7"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

@@ -1,0 +1,99 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      },
+      {
+        "code": "SOURCE_UNAVAILABLE",
+        "reason": "SOURCE_UNAVAILABLE",
+        "message": "此读取能力尚未配置。",
+        "frames": [
+          "agent/kernel/host.py:314:_registered_read",
+          "agent/kernel/host.py:300:read",
+          "agent/kernel/graph.py:492:call_tool"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 80.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 224886,
+  "held_tokens": 0,
+  "answer": "已核对范围（品类「汽车充气泵」242cb6d0…，隔离合成品类，active/rev1，model_count=1，但 knowledge_counts 全 0、parameter_count=0）：\n\n1) 会话历史：当前 session ca8b99c4… 及默认历史均 0 条历史对话 —— 没有\"上次\"那轮记录。\n2) 个人记忆：本会话 memory 检索已关闭（memory_off），无法回溯本人过往工作记录。\n3) 企业资料检索（同品类范围、含历史）：0 条命中。\n4) 品类知识库（全类型、含历史）：0 条；竞品条目 0、参数字典 0。\n5) 竞品清单 category.competitors.list：0 条。\n6) 平台/产品/基线 platform.read（含 history、按品类/名称/code 过滤）：0 条；product.baseline.read 提示\"请选择实际基线型号\"，无可读型号。\n7) 证据检索 evidence.search：0 条。\n8) MCP 只读连接器：0 个可用外部供应商数据源；公开研究 fanout 未配置（SOURCE_UNAVAILABLE），本次无法自动补公开资料。\n\n结论：当前可读范围内没有留下任何\"上次供应商对比\"的结论、对比对象、参数/价格口径或未完成清单（work_state 的 completed/unfinished/candidates/citations 全为空）。因此无法复述上次的结论，也无法给出有依据的未完成事项——任何具体供应商名单或结论都会是臆造，本次不予给出。\n\n未完成/待接手：① 找到上次对比的落点（原文/提案 ID/外部文件）；② 在此品类重建可比口径：竞品条目、参数字典、实测与宣称区分；③ 用同口径完成供应商参数与价格带对比并留出处；④ 对比结果回写为提案条目与待决问题。以上需先有①或本人指定对比对象才能继续，否则无任何可核对的存量工作可\"接着做\"。",
+  "answer_blob": "{\"result\": {\"research\": {\"jobs\": [{\"ledger\": [], \"status\": \"unavailable\", \"coverage\": [], \"failures\": [{\"reason\": \"SOURCE_UNAVAILABLE\", \"message\": \"此读取能力尚未配置。\"}], \"snapshots\": []}], \"version\": 1, \"row_count\": 0, \"source_count\": 0}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:52:01.887947+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次供应商对比的结论内容——本轮在可读范围内未检索到任何历史回答、知识条目、竞品条目或证据，故无法复述\", \"上次对比涉及的供应商/品牌清单——竞品清单与品类知识库均为空，无从确认\", \"上次对比所用的规格参数口径与价格口径（币种/日期/地区/渠道/含税运）——无记录\", \"上次遗留的未完成事项与责任归属——work_state 的 completed/unfinished/candidates/citations 全为空，无记录可依据\", \"个人记忆回溯——本会话 memory 检索已关闭（memory_off），无法调取本人过往情景记录\", \"公开资料补充——research.fanout 未配置（SOURCE_UNAVAILABLE），本轮无法自动补齐供应商公开信息\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"suggested_next_steps\": [\"由本人提供上次对比的落点（原文、提案 ID 或外部文件），或直接指定本次要对比的供应商名单\", \"在此品类重建对比基线：竞品条目 + 参数字典，并区分实测/宣传/推断/未知\", \"用同口径比较参数与价格带（计算工具给出数值，分组与分位不手算），并把结论与未知项回写为提案条目与待决问题\"]}, \"status\": \"partial\", \"summary\": \"已核对范围（品类「汽车充气泵」242cb6d0…，隔离合成品类，active/rev1，model_count=1，但 knowledge_counts 全 0、parameter_count=0）：\\n\\n1) 会话历史：当前 session ca8b99c4… 及默认历史均 0 条历史对话 —— 没有\\\"上次\\\"那轮记录。\\n2) 个人记忆：本会话 memory 检索已关闭（memory_off），无法回溯本人过往工作记录。\\n3) 企业资料检索（同品类范围、含历史）：0 条命中。\\n4) 品类知识库（全类型、含历史）：0 条；竞品条目 0、参数字典 0。\\n5) 竞品清单 category.competitors.list：0 条。\\n6) 平台/产品/基线 platform.read（含 history、按品类/名称/code 过滤）：0 条；product.baseline.read 提示\\\"请选择实际基线型号\\\"，无可读型号。\\n7) 证据检索 evidence.search：0 条。\\n8) MCP 只读连接器：0 个可用外部供应商数据源；公开研究 fanout 未配置（SOURCE_UNAVAILABLE），本次无法自动补公开资料。\\n\\n结论：当前可读范围内没有留下任何\\\"上次供应商对比\\\"的结论、对比对象、参数/价格口径或未完成清单（work_state 的 completed/unfinished/candidates/citations 全为空）。因此无法复述上次的结论，也无法给出有依据的未完成事项——任何具体供应商名单或结论都会是臆造，本次不予给出。\\n\\n未完成/待接手：① 找到上次对比的落点（原文/提案 ID/外部文件）；② 在此品类重建可比口径：竞品条目、参数字典、实测与宣称区分；③ 用同口径完成供应商参数与价格带对比并留出处；④ 对比结果回写为提案条目与待决问题。以上需先有①或本人指定对比对象才能继续，否则无任何可核对的存量工作可\\\"接着做\\\"。\", \"questions\": [], \"unfinished\": [\"上次的供应商对比产出尚未定位（历史会话/记忆/检索/知识库/证据均为空），未取回原文\", \"品类内竞品条目与参数字典仍为空，未建立可比口径\", \"未开展同口径的参数与价格带对比，未产生任何带出处的对比结论\"]}",
+  "unfinished": [
+    "上次的供应商对比产出尚未定位（历史会话/记忆/检索/知识库/证据均为空），未取回原文",
+    "品类内竞品条目与参数字典仍为空，未建立可比口径",
+    "未开展同口径的参数与价格带对比，未产生任何带出处的对比结论"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:5",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

@@ -1,0 +1,53 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-02",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 14.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 32413,
+  "held_tokens": 0,
+  "answer": "已起草一封三句话的客户消息：我们会在本周内给出汽车充气泵报价，并请对方补充数量与目标交期以便报价口径对齐。当前范围未检索到既有报价承诺记录，交付时间点按你给的口径写入。",
+  "answer_blob": "{\"result\": {\"tone\": \"专业、简洁、面向客户\", \"message\": \"您好，感谢您对汽车充气泵的关注。我们正在整理相关规格与配置，并会在本周内为您提交气泵的正式报价。为让报价口径与您的需求一致，方便的话请在本周内告知预计采购数量与目标交期，我们据此出一版对应配置。\", \"evidence\": {\"note\": \"在当前品类范围检索外部等待/项目状态/问题记录，未找到与该客户报价承诺相关的已登记条目；文中除时间口径外无引用业务事实\", \"citation_ids\": []}, \"language\": \"zh\", \"unknowns\": [\"“本周”对应的具体截止日期未在当前范围登记\", \"客户名称、型号与配置口径未在当前范围登记，未写入正文\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:57:12.714014+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"sentences\": 3, \"commitment\": {\"source\": \"用户口述（本轮指令），非系统登记\", \"timing\": \"本周内\", \"deliverable\": \"气泵正式报价\"}, \"deliverable\": \"customer_message_draft\"}, \"status\": \"completed\", \"summary\": \"已起草一封三句话的客户消息：我们会在本周内给出汽车充气泵报价，并请对方补充数量与目标交期以便报价口径对齐。当前范围未检索到既有报价承诺记录，交付时间点按你给的口径写入。\", \"questions\": [], \"unfinished\": [\"如需点名客户、型号或配置以加严正文，请提供这些信息，我再改一版\", \"若贵方实际报价口径含税运、币种或有效期，需要确认后再补进第二版措辞\"]}",
+  "unfinished": [
+    "如需点名客户、型号或配置以加严正文，请提供这些信息，我再改一版",
+    "若贵方实际报价口径含税运、币种或有效期，需要确认后再补进第二版措辞"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

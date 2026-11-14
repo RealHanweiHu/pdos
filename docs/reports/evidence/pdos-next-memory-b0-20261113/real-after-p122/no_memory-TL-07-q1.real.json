@@ -1,0 +1,62 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 67.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 121712,
+  "held_tokens": 0,
+  "answer": "周报已出，严格两条：本周完成供应商对比；下周补报价单。需说明：本范围内（汽车充气泵品类）检索不到供应商对比、竞品条目或报价单等任何已登记记录——品类知识计数全为 0、无竞品/参数/平台条目，资料检索与证据检索均为空，因此这两条是按你本人陈述写入的周报内容，未挂到系统记录上。供应商名单、对比口径与结论、报价单对哪几家及出具时间均未记录，暂列未知。需要的话我可以把这两条登记进品类记录，或在同会话继续查对比资料。",
+  "answer_blob": "{\"result\": {\"report\": {\"basis\": \"user_statement\", \"title\": \"周报（汽车充气泵）\", \"sections\": [{\"items\": [\"完成供应商对比\"], \"heading\": \"本周完成\"}, {\"items\": [\"补报价单\"], \"heading\": \"下周计划\"}]}, \"unknowns\": [\"本范围内未检索到“供应商对比”的任何已登记记录（品类知识计数：boundary/segment/competitor/voice/regulation/research_question 均为 0，无竞品、无规格参数、无平台/产品条目，资料与证据检索均为空），故该条为本人陈述，未附记录级依据\", \"对比涉及的供应商名单、对比口径与结论：未记录\", \"下周报价单覆盖的供应商范围、模板要求、出具人与具体完成时间：未记录\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:59:11.647138+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"周报已出，严格两条：本周完成供应商对比；下周补报价单。需说明：本范围内（汽车充气泵品类）检索不到供应商对比、竞品条目或报价单等任何已登记记录——品类知识计数全为 0、无竞品/参数/平台条目，资料检索与证据检索均为空，因此这两条是按你本人陈述写入的周报内容，未挂到系统记录上。供应商名单、对比口径与结论、报价单对哪几家及出具时间均未记录，暂列未知。需要的话我可以把这两条登记进品类记录，或在同会话继续查对比资料。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前范围内检索不到任何对比或报价记录，周报两条目前只以你的口头陈述存在。\", \"options\": [{\"label\": \"登记这两条到品类记录\", \"value\": \"register\"}, {\"label\": \"只保留周报文本，不做登记\", \"value\": \"text_only\"}], \"question\": \"是否把“完成供应商对比 / 下周补报价单”这两条登记为汽车充气泵品类的可查记录（便于后续追溯与交接）？\", \"depends_on\": [], \"recommended\": {\"value\": \"text_only\", \"reason\": \"周报文本已按你的要求交付，登记属于额外的业务写入，由你决定。\"}, \"allow_free_text\": true}], \"unfinished\": [\"“供应商对比”的具体内容（供应商名单、对比口径、结论）尚未在系统内登记，周报条目暂无记录级依据\", \"“下周补报价单”的供应商范围、模板/口径与出具时间未确定\"]}",
+  "unfinished": [
+    "“供应商对比”的具体内容（供应商名单、对比口径、结论）尚未在系统内登记，周报条目暂无记录级依据",
+    "“下周补报价单”的供应商范围、模板/口径与出具时间未确定"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

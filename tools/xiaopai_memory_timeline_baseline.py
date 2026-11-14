@@ -325,6 +325,8 @@ def load_questions(value):
 
 
 WITHHELD = re.compile(r"未通过[^。]*核对")
+# P122: the model's own summary was kept after format repair ran out; nothing in it was verified.
+UNVERIFIED = "未经系统核对"
 
 
 def answer_body(seen):
@@ -377,6 +379,7 @@ def judge(question, seen, group):
         "facts_retrieved": found, "retrieved": bool(facts) and found == len(facts),
         "answer_withheld": bool(WITHHELD.search(seen.get("answer") or "")),
         "budget_exhausted": "预算已用完" in (seen.get("answer") or "")[:40],
+        "answer_unverified": UNVERIFIED in (seen.get("answer") or ""),
         "gates": gates,
         # Literal matches in the answer are shown for a person to read; a guess can match.
         "text_flags": [item for item in question.get("forbidden_answer", [])
@@ -422,7 +425,7 @@ def score_real(case_file, observations):
         body = {"label": label, "questions": 0, "status": {}, "fact_questions": 0,
                 "fact_questions_answered": 0, "fact_questions_retrieved": 0,
                 "facts_hit": 0, "facts_retrieved": 0, "facts_total": 0, "answers_withheld": 0,
-                "budget_exhausted": 0,
+                "budget_exhausted": 0, "answers_unverified": 0,
                 "unknown_expected": 0, "unknown_admitted": 0, "language_expected": 0,
                 "language_met": 0, "text_flags": 0, "clarifications": 0, "seconds": [],
                 "used_tokens": [], "memory_tool_calls": 0}
@@ -449,6 +452,7 @@ def score_real(case_file, observations):
             body["text_flags"] += len(verdict["text_flags"])
             body["answers_withheld"] += verdict["answer_withheld"]
             body["budget_exhausted"] += verdict["budget_exhausted"]
+            body["answers_unverified"] += verdict["answer_unverified"]
             body["clarifications"] += len(seen.get("clarifications", []))
             body["seconds"].append(seen.get("seconds") or 0)
             body["used_tokens"].append(seen.get("used_tokens") or 0)
@@ -492,12 +496,14 @@ def write_real_report(folder, value):
             "回答有没有编造、表述好不好，没有评分。", "",
             "“回答里写出”只看模型自己写的摘要和结果正文；“检索到”还算上运行结果里记录的工具返回，"
             "表示事实被找到了，但最终回答不一定说了。“回答被换掉”指摘要被核对步骤换成"
-            "“结果未通过……核对”一类的句子；“预算用完”指摘要是“运行预算已用完……”。", "",
+            "“结果未通过……核对”一类的句子；“预算用完”指摘要是“运行预算已用完……”；"
+            "“正文保留未核对”指格式修复用尽后保留了模型写的摘要，系统没有核对其中的内容和引用，"
+            "这类回答照样参加事实匹配。", "",
             "## 分组结果", "",
             "| 组 | 题数 | 结束状态 | 回答里写出全部关键事实的题 | 检索到全部关键事实的题 | "
-            "回答被换掉 | 预算用完 | 该说不知道时说了 | 按约定用英文 | 追问次数 | "
+            "回答被换掉 | 预算用完 | 正文保留未核对 | 该说不知道时说了 | 按约定用英文 | 追问次数 | "
             "平均用时（秒） | 平均 token | 记忆工具调用 |",
-            "| --- | ---: | --- | --- | --- | ---: | ---: | --- | --- | ---: | ---: | ---: "
+            "| --- | ---: | --- | --- | --- | ---: | ---: | ---: | --- | --- | ---: | ---: | ---: "
             "| ---: |"]
     for body in value["groups"].values():
         if not body["questions"]:
@@ -508,6 +514,7 @@ def write_real_report(folder, value):
             f"{body['fact_questions_answered']}/{body['fact_questions']} | "
             f"{body['fact_questions_retrieved']}/{body['fact_questions']} | "
             f"{body['answers_withheld']} | {body['budget_exhausted']} | "
+            f"{body['answers_unverified']} | "
             f"{body['unknown_admitted']}/{body['unknown_expected']} | "
             f"{body['language_met']}/{body['language_expected']} | {body['clarifications']} | "
             f"{body['mean_seconds']} | {body['mean_used_tokens']} | {body['memory_tool_calls']} |")
@@ -533,6 +540,8 @@ def write_real_report(folder, value):
             remarks.append("回答被换掉")
         if row["budget_exhausted"]:
             remarks.append("预算用完")
+        if row["answer_unverified"]:
+            remarks.append("正文保留未核对")
         if row["gates"]:
             remarks.append("门禁：" + "、".join(row["gates"]))
         rows.append(

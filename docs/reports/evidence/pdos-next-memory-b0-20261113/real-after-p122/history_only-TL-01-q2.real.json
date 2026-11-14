@@ -1,0 +1,52 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": []
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 70.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 104679,
+  "held_tokens": 0,
+  "answer": "上次比较供应商（A/B/C 三家气泵供应商报价与交期，2026-11-13 的会话记录）给出的排除理由是：C 家含税报价超出目标价 12%。同时那次会话留下两项未完成：补 C 家的含税报价单、核对 B 家交期单位——也就是说该排除所依据的含税报价单当时还没补齐；紧接其后的\"接着上次的供应商对比往下做\"一节因来源已不可读而没有留下正文。本次在当前品类范围内检索不到任何供应商对比记录（品类内竞品/知识条目为 0、无相关资料与证据行），所以 12% 这一数值只能作为当时的记录转述，无法现在回溯原始报价单与目标价核对。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"C 家含税报价的原始报价单未找到，12% 的超出幅度无法回溯核对\", \"比较所依据的目标价来源未找到\", \"排除动作是否形成正式决定记录，当前范围内查不到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T18:03:05.296116+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"follow_up_run\": {\"goal\": \"接着上次的供应商对比往下做：上次的结论是什么，还有哪些事没做完\", \"note\": \"当时答案因来源不再可读而未留存\", \"run_id\": \"75deb76b-07a6-4820-ac4a-3e0f9266a099\", \"session_id\": \"446977b8-95ff-4106-9906-c542f0aa7e5b\", \"outcome_state\": \"hidden\"}, \"historical_run\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-13T18:01:29Z\", \"run_id\": \"9dba3b48-372a-42fe-813f-a7c4f962b95d\", \"session_id\": \"61d737db-10ae-497b-a431-9825066d1b24\", \"outcome_state\": \"current\", \"registered_sources\": []}, \"reason_recorded\": {\"reason\": \"含税报价超出目标价 12%\", \"source\": \"历史会话记录（当时回答未登记来源引用）\", \"competitor\": \"C 家\"}, \"current_scope_check\": {\"conclusion\": \"当前品类范围内未检索到任何供应商报价/交期对比的登记资料\", \"category_id\": \"78531671-f7c9-4de1-b8d9-caa65c76a2e7\", \"artifacts_found\": 0, \"evidence_rows_found\": 0, \"category_knowledge_rows\": 0, \"competitor_knowledge_count\": 0}, \"suggested_next_step\": \"若需要确认或推翻该排除，请提供 C 家含税报价单与目标价口径来源，或授权我在当前品类内新建供应商对比的登记记录。\", \"historical_unfinished\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"]}, \"status\": \"completed\", \"summary\": \"上次比较供应商（A/B/C 三家气泵供应商报价与交期，2026-11-13 的会话记录）给出的排除理由是：C 家含税报价超出目标价 12%。同时那次会话留下两项未完成：补 C 家的含税报价单、核对 B 家交期单位——也就是说该排除所依据的含税报价单当时还没补齐；紧接其后的\\\"接着上次的供应商对比往下做\\\"一节因来源已不可读而没有留下正文。本次在当前品类范围内检索不到任何供应商对比记录（品类内竞品/知识条目为 0、无相关资料与证据行），所以 12% 这一数值只能作为当时的记录转述，无法现在回溯原始报价单与目标价核对。\", \"questions\": [], \"unfinished\": [\"历史未完成项仍在开放：C 家的含税报价单尚未补齐，故 12% 这一数值目前无法核对原始凭据\", \"历史未完成项仍在开放：B 家交期单位未核对\"]}",
+  "unfinished": [
+    "历史未完成项仍在开放：C 家的含税报价单尚未补齐，故 12% 这一数值目前无法核对原始凭据",
+    "历史未完成项仍在开放：B 家交期单位未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

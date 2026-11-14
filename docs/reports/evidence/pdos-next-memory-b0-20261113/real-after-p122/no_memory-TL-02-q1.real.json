@@ -1,0 +1,76 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 102.0,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 179622,
+  "held_tokens": 0,
+  "answer": "我没能找到\"上次那结论\"本身：当前会话历史里没有任何更早的回合，本会话个人记忆读取已关闭；当前品类\"汽车充气泵\"范围内，竞品清单、品类知识、参数、证据、平台产品/变体与可用 MCP 连接器全部为空，唯一一次企业检索（品类内\"气泵 供应商 对比 选型\"）返回 0 条。结论：我无法从可读范围内还原你上次的推荐对象，也不能凭印象替你点名某一家。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:55:47.896367+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次的供应商对比对话记录未在本会话历史中找到（本会话无更早回合）\", \"本会话个人记忆读取被关闭（status=memory_off），无法回溯本人其他工作记录\", \"当前品类『汽车充气泵』范围内未找到任何供应商/竞品对比资料：competitors.list 为空、knowledge（boundary/segment/competitor/voice/regulation/research_question）计数全为 0、parameters.list 为空、evidence.search 为空、platform.read 在含历史情况下也为空\", \"平台当前仅登记 1 个型号（model_count=1），但按品类、名称等条件读取均未返回可用产品/变体记录，无法据其重建供应商对比\", \"第二次更宽范围的企业检索（artifact/knowledge/supply/project_status）因本轮查找预算用尽未执行成功，故供应商资料可能存在于未及检索的范围中——不能据此断定不存在\", \"当前没有任何已签发引用可供引用的结论行，故无法给出建议供应商名称\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"我没能找到\\\"上次那结论\\\"本身：当前会话历史里没有任何更早的回合，本会话个人记忆读取已关闭；当前品类\\\"汽车充气泵\\\"范围内，竞品清单、品类知识、参数、证据、平台产品/变体与可用 MCP 连接器全部为空，唯一一次企业检索（品类内\\\"气泵 供应商 对比 选型\\\"）返回 0 条。结论：我无法从可读范围内还原你上次的推荐对象，也不能凭印象替你点名某一家。\", \"questions\": [{\"id\": \"q1_where_prior_comparison\", \"why\": \"我需要先定位到那份原始对比，才能还原你当时的结论和依据，而不是重新推断。\", \"options\": [{\"label\": \"在另一个会话/对话里（我告诉你大概日期或主题）\", \"value\": \"other_session\"}, {\"label\": \"在一份文档或附件里（我再附一次）\", \"value\": \"attachment\"}, {\"label\": \"没有可比对的既有记录，希望现在重新做一次对比\", \"value\": \"rebuild_now\"}], \"question\": \"上次的供应商对比记录我这边读不到，它更可能在哪里？\", \"depends_on\": [], \"recommended\": {}, \"allow_free_text\": true}, {\"id\": \"q2_supplier_inputs\", \"why\": \"对比需要同口径参数与可比价格，否则只能给出不可核的印象式推荐。\", \"options\": [{\"label\": \"我提供候选名单＋统一口径参数（价格含税/运、地区、渠道、规格版本）\", \"value\": \"provide_full_inputs\"}, {\"label\": \"先只按现有规格参数做定性对比，价格待补\", \"value\": \"qualitative_only\"}, {\"label\": \"等我把资料整理好再说\", \"value\": \"later\"}], \"question\": \"如果要现在重做对比，请给我候选供应商名单和统一口径（哪些参数、什么价格口径、什么交期/付款条件）？\", \"depends_on\": [], \"recommended\": {}, \"allow_free_text\": true}], \"unfinished\": [\"定位并读取上次的供应商对比原始记录（对话历史/附件/其他会话），还原当时给出的推荐对象及其依据\", \"如需重做对比：收集候选供应商在同一规格字典与价格口径下的参数与报价，交由 calc.spec_compare / calc.price_band 计算后再给建议\"]}",
+  "unfinished": [
+    "定位并读取上次的供应商对比原始记录（对话历史/附件/其他会话），还原当时给出的推荐对象及其依据",
+    "如需重做对比：收集候选供应商在同一规格字典与价格口径下的参数与报价，交由 calc.spec_compare / calc.price_band 计算后再给建议"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:10",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

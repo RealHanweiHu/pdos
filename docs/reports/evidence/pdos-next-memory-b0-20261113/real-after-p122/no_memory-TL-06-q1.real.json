@@ -1,0 +1,76 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-06",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 49.9,
+  "clarifications": [
+    "那次三家供应商比选，原始材料现在在哪里？",
+    "如果原始记录确实找不到，是否需要我在本会话重建一份三家气泵供应商的比选与推荐？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 163266,
+  "held_tokens": 0,
+  "answer": "查不到。我按你要求只依据本次能查到的记录回答：在我能读取的范围内，没有找到那次\"三家气泵供应商比较\"的任何记录，因此也没有当时的\"建议选哪家\"结论——我不会用推测来补这个答案。\n\n已核查且均为空的范围：\n- 品类「汽车充气泵」的企业资料检索（关键词含 气泵/供应商/比选/推荐/结论）：0 条。\n- 品类知识库：竞品、细分、边界、用户声音、法规、研究问题均 0 条；品类参数 0 条。\n- 品类关联的产品/型号/平台对象：读取为空；证据库检索 0 条。\n- 本会话对话历史：无更早轮次；本会话未开启个人记忆（memory 返回 status=memory_off），因此无法回溯\"当时答过什么\"。\n- 无已授权的外部连接器（无供应商/采购系统可查）。\n\n补充说明：本轮查找预算已用尽，无法再扩大检索范围或翻历史版本。\n\n结论：你问的那份比选记录不在我当前可读的范围内。建议你在别处找原始材料（当时的邮件、评审纪要或文件）；若之后把材料放进可读范围，我可以在本会话继续帮你核对结论与依据。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:58:17.255014+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"三家气泵供应商比选记录：在本次可读范围内未找到\", \"当时的推荐供应商与推荐理由\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"searched_scope\": [\"品类「汽车充气泵」企业资料检索（0 条）\", \"品类知识库：竞品/细分/边界/用户声音/法规/研究问题（均 0 条）\", \"品类参数库（0 条）\", \"品类关联产品/型号/平台对象（空）\", \"证据库检索（0 条）\", \"本会话历史（无更早轮次）\", \"个人记忆（本会话未开启）\", \"外部连接器（无）\"]}, \"status\": \"completed\", \"summary\": \"查不到。我按你要求只依据本次能查到的记录回答：在我能读取的范围内，没有找到那次\\\"三家气泵供应商比较\\\"的任何记录，因此也没有当时的\\\"建议选哪家\\\"结论——我不会用推测来补这个答案。\\n\\n已核查且均为空的范围：\\n- 品类「汽车充气泵」的企业资料检索（关键词含 气泵/供应商/比选/推荐/结论）：0 条。\\n- 品类知识库：竞品、细分、边界、用户声音、法规、研究问题均 0 条；品类参数 0 条。\\n- 品类关联的产品/型号/平台对象：读取为空；证据库检索 0 条。\\n- 本会话对话历史：无更早轮次；本会话未开启个人记忆（memory 返回 status=memory_off），因此无法回溯\\\"当时答过什么\\\"。\\n- 无已授权的外部连接器（无供应商/采购系统可查）。\\n\\n补充说明：本轮查找预算已用尽，无法再扩大检索范围或翻历史版本。\\n\\n结论：你问的那份比选记录不在我当前可读的范围内。建议你在别处找原始材料（当时的邮件、评审纪要或文件）；若之后把材料放进可读范围，我可以在本会话继续帮你核对结论与依据。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:9",
+    "platform.read:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

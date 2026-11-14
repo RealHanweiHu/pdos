@@ -1,0 +1,40 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": []
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 17.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 17182,
+  "held_tokens": 0,
+  "answer": "按用户要求起草了两版客户沟通文案（3 句主稿 + 2 句短版），说明我们将在本周内给出气泵报价，并附带规格/批量/交期/付款条件口径；未发送任何消息，另就\"是否写具体截止日期\"\"是否先给价格区间\"提出两个待确认问题。",
+  "answer_blob": "{\"result\": {\"sent\": false, \"draft\": {\"primary\": {\"text\": \"您好，感谢您的询价。关于汽车充气泵的报价，我们正在做最后的成本与配置确认，预计本周内向您提供正式报价，并同步注明对应规格、批量、交期与付款条件。如果您希望我们先给出一个大致的价格区间，也请告知型号与数量，我们尽量在正式报价前一并附上。\", \"sentence_count\": 3}, \"language\": \"zh\", \"short_wechat\": {\"text\": \"您好，感谢询价。气泵报价我们正在做最后的成本与配置确认，预计本周内发给您，报价会注明规格、批量与交期。\", \"sentence_count\": 2}}, \"unknowns\": [\"具体报价截止日期\", \"是否需要先给出参考价格区间\", \"收件渠道与客户抬头/联系人未知\"], \"assistant\": {\"kind\": \"general\", \"lookup\": \"not_run\", \"version\": 1}, \"citations\": [], \"assumptions\": [\"品类为汽车充气泵（来自当前会话品类上下文）\", \"本周内 = 自然周内，未写具体日期\", \"报价口径默认含规格、数量与交期说明，未承诺价格水平\"]}, \"status\": \"completed\", \"summary\": \"按用户要求起草了两版客户沟通文案（3 句主稿 + 2 句短版），说明我们将在本周内给出气泵报价，并附带规格/批量/交期/付款条件口径；未发送任何消息，另就\\\"是否写具体截止日期\\\"\\\"是否先给价格区间\\\"提出两个待确认问题。\", \"questions\": [{\"id\": \"q1_deadline_date\", \"why\": \"相对时间在客户侧容易被读成模糊承诺，写明日期更利于推进；改写只需替换一处表述。\", \"options\": [{\"label\": \"保留“本周内”，不写具体日期\", \"value\": \"keep_relative\"}, {\"label\": \"改写为具体日期（我来给截止点）\", \"value\": \"use_explicit_date\"}], \"question\": \"是否要把“本周内”改写成具体截止日期（例如“本周五前”）？如果要，请给我期望的截止点。\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_relative\", \"reason\": \"在报价范围和交期尚未确认前，写死具体日期容易形成超期风险；如客户需要可再补。\"}, \"allow_free_text\": true}, {\"id\": \"q2_price_range\", \"why\": \"主稿已写明可按型号与数量提供参考区间，但配置与批量口径尚未确认，先给区间可能带来偏差；是否保留该句由你决定。\", \"options\": [{\"label\": \"不给区间，只承诺本周出正式报价\", \"value\": \"no_range\"}, {\"label\": \"保留“如需可先给大致区间”一句\", \"value\": \"offer_range\"}], \"question\": \"是否在正式报价前一并给出大致价格区间？\", \"depends_on\": [], \"recommended\": {\"value\": \"no_range\", \"reason\": \"型号、数量与配置口径未定，过早给区间易与正式报价不一致；主稿中该句为条件式承诺，如不需要可整句删除。\"}, \"allow_free_text\": true}], \"unfinished\": [\"客户收件渠道与收件人抬头未确认，文案仍为通用称呼\", \"报价所需的具体型号、数量与配置口径待用户提供后，文案可进一步定制\"]}",
+  "unfinished": [
+    "客户收件渠道与收件人抬头未确认，文案仍为通用称呼",
+    "报价所需的具体型号、数量与配置口径待用户提供后，文案可进一步定制"
+  ],
+  "ledger": [
+    "model:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": false
+}

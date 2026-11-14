@@ -1,0 +1,111 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:587:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:587:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q3",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 61.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 204384,
+  "held_tokens": 0,
+  "answer": "你问的\"上周试产不良前三项\"，在本品类（汽车充气泵）范围内我能给出的答案是：气嘴漏气、外壳缩水、按键卡滞。但必须说清证据状态——这三项目前只追溯到你自己上一场会话（约 2026-11-13 18:01，run 7d469fa5，\"汇总上周试产的不良项\"）里给出的排序记录，本轮我尝试重新取证没有成功：检索\"试产/不良/缺陷/汇总/排名\"在该品类下返回 0 条，平台/基线/知识读取同样为空，查找预算已用尽且本轮未签发任何引用。所以这三个名称请当作待核对的线索，而不是已核对的当前业务事实；同时\"上周\"对应的试产批次、样本量与判定口径我这边没有可核来源，无法确认排序是否按发生次数、缺陷数还是其他口径。建议你补上原始汇总件（试产不良汇总表/批次记录）作为选定的材料，或让我在同会话解除预算限制后继续深入检索核对。",
+  "answer_blob": "{\"result\": {\"items\": [{\"rank\": 1, \"trace\": \"conversation.history：session 9856afb6-2aae-4be7-ae9e-c8860ee132b1 / run 7d469fa5-cf67-4024-9c93-b8585b3a90a4（as_of 2026-11-13T18:01:30Z）\", \"defect\": \"气嘴漏气\", \"evidence_status\": \"unverified_historical_record\"}, {\"rank\": 2, \"trace\": \"同上\", \"defect\": \"外壳缩水\", \"evidence_status\": \"unverified_historical_record\"}, {\"rank\": 3, \"trace\": \"同上\", \"defect\": \"按键卡滞\", \"evidence_status\": \"unverified_historical_record\"}], \"scope\": {\"category_id\": \"78531671-f7c9-4de1-b8d9-caa65c76a2e7\", \"category_name\": \"汽车充气泵\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T18:03:49.472293+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"不良前三项（气嘴漏气、外壳缩水、按键卡滞）本轮未取得可核对来源，仅有本人早前会话的历史回答记录，不能作为当前业务事实引用\", \"未确认“上周”对应的试产批次范围与统计口径（样本量、判定标准、排序依据是发生次数/缺陷数/其他）\", \"本轮在“汽车充气泵”品类范围内检索试产/不良/缺陷/汇总记录返回 0 条，平台、基线、知识读取为空，且本轮未签发任何引用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"你问的\\\"上周试产不良前三项\\\"，在本品类（汽车充气泵）范围内我能给出的答案是：气嘴漏气、外壳缩水、按键卡滞。但必须说清证据状态——这三项目前只追溯到你自己上一场会话（约 2026-11-13 18:01，run 7d469fa5，\\\"汇总上周试产的不良项\\\"）里给出的排序记录，本轮我尝试重新取证没有成功：检索\\\"试产/不良/缺陷/汇总/排名\\\"在该品类下返回 0 条，平台/基线/知识读取同样为空，查找预算已用尽且本轮未签发任何引用。所以这三个名称请当作待核对的线索，而不是已核对的当前业务事实；同时\\\"上周\\\"对应的试产批次、样本量与判定口径我这边没有可核来源，无法确认排序是否按发生次数、缺陷数还是其他口径。建议你补上原始汇总件（试产不良汇总表/批次记录）作为选定的材料，或让我在同会话解除预算限制后继续深入检索核对。\", \"questions\": [{\"id\": \"q1\", \"why\": \"三项名称目前只有历史回答记录支撑，没有可引用的当前来源；继续查才能确认它们确实来自上周试产汇总、且排序口径一致。\", \"options\": [{\"label\": \"继续深入查并核对来源与口径\", \"value\": \"continue_deep\"}, {\"label\": \"先按现有记录用，不再查\", \"value\": \"stop\"}], \"question\": \"要不要我在同一会话继续深入检索试产批次/不良记录，核对这三项的出处与排序口径（本轮查找预算已用尽，需你在下一轮放开）？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue_deep\", \"reason\": \"直接引用未经核对的名称作为结论存在风险，继续检索可获得可核引用\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"附上原件后可直接登记为证据，让这三项及其发生数、占比成为有依据的结论。\", \"options\": [{\"label\": \"我附上试产不良汇总件\", \"value\": \"attach\"}, {\"label\": \"手上没有原件\", \"value\": \"none\"}], \"question\": \"你手上是否有上周的试产不良汇总原件（汇总表、批次不良记录或 QC 报告）可以附上作为选定材料？\", \"depends_on\": [], \"recommended\": {\"value\": \"attach\", \"reason\": \"有原件才能把三项与“上周”的批次、数量、口径对应起来\"}, \"allow_free_text\": true}], \"unfinished\": [\"未取得“上周试产不良汇总”的可核对来源（检索 0 条、平台/基线/知识为空、查找预算用尽、本轮无引用签发）\", \"未确认“上周”对应的试产批次范围与排序口径（样本量、判定标准、按次数还是缺陷数排序）\"]}",
+  "unfinished": [
+    "未取得“上周试产不良汇总”的可核对来源（检索 0 条、平台/基线/知识为空、查找预算用尽、本轮无引用签发）",
+    "未确认“上周”对应的试产批次范围与排序口径（样本量、判定标准、按次数还是缺陷数排序）"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r3"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

@@ -249,6 +249,22 @@ def test_facts_only_in_tool_results_count_as_retrieved_not_answered():
     assert report["groups"]["real"]["answers_withheld"] == 1
 
 
+def test_a_kept_but_unverified_answer_is_counted_apart_from_a_withheld_one():
+    """P122: the kept summary still takes part in fact matching, and is reported as unverified."""
+    questions = load_questions(REAL_CASES)
+    answer = ("建议选 B 家，C 家超出目标价 12%"
+              "\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）")
+    seen = {**real("real", "q1", answer, episodes=["r1"]),
+            "answer_blob": json.dumps({"summary": answer, "result": {"actions": []}},
+                                      ensure_ascii=False)}
+    verdict = judge(questions[("TL-A", "q1")], seen, "real")
+    assert verdict["answer_unverified"] is True and verdict["answer_withheld"] is False
+    assert verdict["answered"] is True
+    report = score_real(REAL_CASES, [seen])
+    assert report["groups"]["real"]["answers_unverified"] == 1
+    assert report["groups"]["real"]["answers_withheld"] == 0
+
+
 def test_committed_questions_are_well_formed():
     questions = load_questions(json.loads(CASE_FILE.read_text()))
     assert len(questions) >= 8

@@ -1,0 +1,61 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 21.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 34508,
+  "held_tokens": 0,
+  "answer": "已写好一段可直接发出的英文客户话术（3 句），核心是：感谢询价、正在整理报价细节、承诺本周内发出完整报价，并附一句邀请补充型号/配置。理由：你此前确认过「给这个客户的报告一律用英文」，所以客户正文用英文，备注用中文。当前品类范围检索「气泵 报价 客户 交期 项目」无结果，也没有可引用的公司资料，因此正文不写任何未经核实的内部进度或数字；客户称谓用 [Name] 占位，「本周内」未写具体日期。",
+  "answer_blob": "{\"result\": {\"draft\": {\"text\": \"Hi [Name], thank you for your inquiry about our automotive air pump. We are currently finalizing the quotation details, and I will send you the complete price offer by the end of this week. If there are any specific models or configurations you would like included in the quotation, please let me know and I will add them in.\", \"channel\": \"unspecified\", \"language\": \"en\", \"shorter_variant\": \"Hi [Name], thanks for your inquiry about our automotive air pump. I am finalizing the quotation and will send you the full price offer by the end of this week. Let me know if you need any particular configuration included.\"}, \"unknowns\": [\"客户联系人称谓未知，正文以 [Name] 占位\", \"「本周内」未指定具体日期，未写入日期\", \"发送渠道（邮件／微信／其他）未指定\", \"报价所含型号与配置未确认，正文未提及任何规格或价格\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:54:44.645873+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"source_check\": \"已在当前品类范围检索「气泵 报价 客户 交期 项目」，返回 0 条，未引用公司资料；正文不含任何未核实的内部进度、价格或型号。\", \"language_note\": \"按你已确认的口径，给这个客户的材料一律用英文，因此客户话术为英文。\"}, \"status\": \"completed\", \"summary\": \"已写好一段可直接发出的英文客户话术（3 句），核心是：感谢询价、正在整理报价细节、承诺本周内发出完整报价，并附一句邀请补充型号/配置。理由：你此前确认过「给这个客户的报告一律用英文」，所以客户正文用英文，备注用中文。当前品类范围检索「气泵 报价 客户 交期 项目」无结果，也没有可引用的公司资料，因此正文不写任何未经核实的内部进度或数字；客户称谓用 [Name] 占位，「本周内」未写具体日期。\", \"questions\": [], \"unfinished\": [\"若要写明具体承诺日期（如“by Friday, Nov 20”）或替换收件人称谓，告诉我具体值，我改写后再发\", \"如需把这条承诺登记进工作管理记录，需先启用对应技能（当前租户/范围下该技能未启用）\"]}",
+  "unfinished": [
+    "若要写明具体承诺日期（如“by Friday, Nov 20”）或替换收件人称谓，告诉我具体值，我改写后再发",
+    "如需把这条承诺登记进工作管理记录，需先启用对应技能（当前租户/范围下该技能未启用）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [
+      "other",
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false
+}

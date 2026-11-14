@@ -1,0 +1,50 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": []
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 24.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51564,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-13，会话“比较三家气泵供应商的报价和交期”）我给的结论是：建议选 B 家。我随后在当前品类（汽车充气泵）的可读公司资料里检索了“供应商 报价 交期 对比”，检索结果为空，因此现在只能确认结论本身——B 家具体是哪一家、三家的报价与交期明细、结论所依据的原始文档都取不到；如这条结论要用于当前采购或写进客户报告，需要重新取一次依据。客户报告用英文版本：Recommendation: Supplier B.",
+  "answer_blob": "{\"result\": {\"answer\": {\"as_of\": \"2026-11-13\", \"source_goal\": \"比较三家气泵供应商的报价和交期\", \"source_run_id\": \"a8a83974-70fc-4bf6-93a4-f98b4d0e85d3\", \"recommendation\": \"B 家\", \"recorded_answer\": \"建议选 B 家\", \"source_session_id\": \"587abbf1-0983-4393-8ecd-e489487fd212\"}, \"unknowns\": [\"B 家对应的具体供应商名称未知\", \"三家供应商的报价与交期明细未知\", \"上次对比所依据的原始文档/报价单在当前可读公司资料中检索无结果（category db57e33c-6ed8-4682-a117-b459ca2ff931，检索返回 0 条）\", \"该结论对应的报价与交期当前是否仍有效未知\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:54:23.724053+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"如需用于采购决策或客户报告，可在同会话重新执行三家报价与交期对比并附可核依据，并输出英文版结论\", \"evidence_note\": \"结论来自本人上次会话的情景记录（as_of 2026-11-13），属本人既往工作记录，不是当前业务事实，不可直接作为当前采购依据引用。\"}, \"status\": \"completed\", \"summary\": \"上次（2026-11-13，会话“比较三家气泵供应商的报价和交期”）我给的结论是：建议选 B 家。我随后在当前品类（汽车充气泵）的可读公司资料里检索了“供应商 报价 交期 对比”，检索结果为空，因此现在只能确认结论本身——B 家具体是哪一家、三家的报价与交期明细、结论所依据的原始文档都取不到；如这条结论要用于当前采购或写进客户报告，需要重新取一次依据。客户报告用英文版本：Recommendation: Supplier B.\", \"questions\": [], \"unfinished\": [\"三家气泵供应商的报价与交期原始依据在当前公司资料中未找到，若要沿用“B 家”结论需重新取数核对。\"]}",
+  "unfinished": [
+    "三家气泵供应商的报价与交期原始依据在当前公司资料中未找到，若要沿用“B 家”结论需重新取数核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false
+}

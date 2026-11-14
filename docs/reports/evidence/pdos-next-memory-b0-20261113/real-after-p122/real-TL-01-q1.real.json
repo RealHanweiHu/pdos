@@ -1,0 +1,59 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": []
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 43.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 88407,
+  "held_tokens": 0,
+  "answer": "上次的结论（来自 2026-11-13 那次会话的工作记录，非当前已核实事实）：建议选 B 家，其交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。当时明确留了两件没做完——补 C 家的含税报价单、核对 B 家交期的单位。本次我在「汽车充气泵」品类范围内查了 supply/artifact/knowledge/external_wait 资料、证据库、竞品清单和平台产品记录，均为空，本次运行也没有附加材料，所以“接着往下做”暂时卡在缺原件上；需要你把三家报价/交期材料给进来，并确认 A/B/C 对应关系与比较口径（目标价的币种/含税含运/日期，以及交期单位统一为哪种），我才能把 C 家含税价补齐并重算。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:52:03.126118+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"A/B/C 三家供应商在系统内没有可核对的报价单、交期或含税口径记录（品类内 supply/artifact/knowledge/external_wait 检索、证据库检索、竞品清单、平台产品记录均为空）\", \"C 家含税报价单原件缺失，无法核对其是否确实超出目标价 12%\", \"B 家交期的单位（周/天/工作日）未确认，短 2 周的结论口径无法复核\", \"“目标价”的基准（币种、日期、含税与运费、配置型号）未在系统内登记\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"decisions\": {\"value\": \"待本人决定：①重新提供三家供应商报价/交期原件或指明其登记位置；②确认 A/B/C 对应的具体供应商（是否按新报价单重新编号）；③确定比较口径——目标价的币种/日期/含税与运费/配置型号，以及交期统一使用的单位。\", \"status\": \"to_confirm\"}, \"key_changes\": {\"value\": \"上一次会话（2026-11-13，我本人的工作记录）给出的结论：建议选 B 家，B 家交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。该结论仅为当时的记录，本次未检索到任何可核对的报价单/交期原件，不能当作已核实的业务事实引用。\", \"status\": \"to_confirm\"}, \"unresolved_issues\": {\"value\": \"当时留的两件未完成：①补 C 家的含税报价单（系统内无该单据）；②核对 B 家交期的单位（原始报价或规格资料缺失）。当前进展：品类范围内资料、证据库、竞品与平台记录均为空，本次运行无附加材料，两项均无法凭现有登记推进。\", \"status\": \"not_recorded\"}}}], \"format\": \"review\"}}, \"status\": \"partial\", \"summary\": \"上次的结论（来自 2026-11-13 那次会话的工作记录，非当前已核实事实）：建议选 B 家，其交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。当时明确留了两件没做完——补 C 家的含税报价单、核对 B 家交期的单位。本次我在「汽车充气泵」品类范围内查了 supply/artifact/knowledge/external_wait 资料、证据库、竞品清单和平台产品记录，均为空，本次运行也没有附加材料，所以“接着往下做”暂时卡在缺原件上；需要你把三家报价/交期材料给进来，并确认 A/B/C 对应关系与比较口径（目标价的币种/含税含运/日期，以及交期单位统一为哪种），我才能把 C 家含税价补齐并重算。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类范围内和证据库里都查不到任何报价单/交期记录，本次运行也没有附上材料；没有原件既补不了 C 家含税报价，也无法复核 B 家交期单位。\", \"options\": [{\"label\": \"我把文件附到这一轮\", \"value\": \"本轮直接附加三家报价单/规格书（PDF、表格、邮件都行）\"}, {\"label\": \"已在系统内，我指位置\", \"value\": \"文件已在平台里（资料/供应链/外部等待），我告诉你大概在哪\"}, {\"label\": \"暂时没有原件，先用口述要点\", \"value\": \"手头没有原件，我直接口述关键数字（金额、币种、含税、交期）\"}], \"question\": \"三家供应商的报价单与交期原件，怎么给我最省事？\", \"depends_on\": [], \"recommended\": {\"value\": \"本轮直接附加三家报价单/规格书（PDF、表格、邮件都行）\", \"reason\": \"有原件才能把 C 家含税价补齐、并把 B 家交期单位核准到可比较口径\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"系统里没有供应商名单与对照关系；换新报价单后若编号错位，结论（选 B、C 出局）会张冠李戴。\", \"options\": [{\"label\": \"沿用上次编号\", \"value\": \"沿用上次：A/B/C 对应关系不变，我另附说明\"}, {\"label\": \"按新材料重新编号\", \"value\": \"按这次报价单重新编号，我提供对照表\"}, {\"label\": \"改用真名重做对比\", \"value\": \"直接用供应商真名重新做一次三家对比，不沿用 A/B/C\"}], \"question\": \"上次的 A/B/C 分别对应哪几家供应商？\", \"depends_on\": [], \"recommended\": {\"value\": \"按这次报价单重新编号，我提供对照表\", \"reason\": \"材料更新后逐家对齐可避免旧编号与新报价错位\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"“C 家超目标价 12%”依赖目标价的币种、日期、含税与运费、配置型号；交期“天/周/工作日”不统一就不可比。\", \"options\": [{\"label\": \"出厂价+日历周\", \"value\": \"目标价：CNY、不含税、当前目标配置、出厂价口径；交期统一为日历周\"}, {\"label\": \"到仓含税含运+日历周\", \"value\": \"目标价：CNY、含税含运到仓、当前目标配置；交期统一为日历周\"}, {\"label\": \"参照市场价带+只标注单位\", \"value\": \"目标价以市场/竞品带为参照、交期按各报原样只标注单位\"}], \"question\": \"比较口径怎么定？（目标价基准 + 交期单位）\", \"depends_on\": [\"q1\"], \"recommended\": {\"value\": \"目标价：CNY、含税含运到仓、当前目标配置；交期统一为日历周\", \"reason\": \"含税含运到仓口径可直接对齐 C 家含税报价并支持交期承诺\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家的含税报价单（需原件或登记位置）\", \"核对 B 家交期的单位口径（周/天/工作日）\", \"在统一口径下重算三家报价与交期、形成选型建议（缺数据）\", \"确认目标价基准与 A/B/C 对应供应商（待本人决定）\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单（需原件或登记位置）",
+    "核对 B 家交期的单位口径（周/天/工作日）",
+    "在统一口径下重算三家报价与交期、形成选型建议（缺数据）",
+    "确认目标价基准与 A/B/C 对应供应商（待本人决定）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

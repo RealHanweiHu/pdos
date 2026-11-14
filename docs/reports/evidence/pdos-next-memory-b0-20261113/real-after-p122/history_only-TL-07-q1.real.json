@@ -1,0 +1,53 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:587:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 17.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 32491,
+  "held_tokens": 0,
+  "answer": "已出本周周报，两条内容：本周完成供应商对比；下周补报价单。当前品类（汽车充气泵）范围内未检索到相关可核记录，周报按用户口述口径整理，未附加数据；报价单的供应商范围、报价口径与提交时点仍为空白。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T18:09:23.679995+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"weekly_report\": {\"title\": \"本周周报\", \"category\": \"汽车充气泵\", \"completed\": [{\"item\": \"完成供应商对比\"}], \"next_week\": [{\"item\": \"补报价单\"}], \"category_id\": \"f23cd385-f0ca-49fd-ad3c-47faba21e57b\", \"open_fields\": [\"报价单供应商范围\", \"报价口径\", \"提交时点\"], \"evidence_note\": \"当前品类可读范围内未检索到供应商对比/报价单相关记录，内容依用户口述整理\"}}, \"status\": \"completed\", \"summary\": \"已出本周周报，两条内容：本周完成供应商对比；下周补报价单。当前品类（汽车充气泵）范围内未检索到相关可核记录，周报按用户口述口径整理，未附加数据；报价单的供应商范围、报价口径与提交时点仍为空白。\", \"questions\": [], \"unfinished\": [\"报价单的供应商范围、报价口径与提交时点尚未确定，未写入周报\", \"供应商对比与报价单在当前品类可读范围内无可核记录，未做核对\"]}",
+  "unfinished": [
+    "报价单的供应商范围、报价口径与提交时点尚未确定，未写入周报",
+    "供应商对比与报价单在当前品类可读范围内无可核记录，未做核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": false
+}

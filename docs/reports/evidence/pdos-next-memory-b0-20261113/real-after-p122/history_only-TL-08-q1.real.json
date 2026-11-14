@@ -1,0 +1,75 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "引用须来自本次运行的实际读取账本。",
+        "frames": [
+          "agent/enterprise_search/assistant_ledger.py:25:deny",
+          "agent/enterprise_search/assistant_inheritance.py:139:page",
+          "agent/enterprise_search/assistant_adapter.py:108:citations",
+          "agent/kernel/host.py:324:<lambda>"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 59.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 208633,
+  "held_tokens": 0,
+  "answer": "找到了：你说的是那轮「汇总上周试产的不良项」的工作（会话 ac11ecc3-46f9-4f79-9f7d-4c43dbe1ca46，run ef700f6a-3da2-4c23-bf92-ffbbd046c41b，记录时间 2026-11-13）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——也就是外壳缩水是和气嘴漏气、按键卡滞一起列出的。需要说明的是，这条是当时的回答记录（含 \"上周试产\" 这样的相对时间表述），不是我刚核对的现况：我在本品类下按 issue/capa/field_feedback/test_run/build 检索到的相关记录为 0 条，证据检索与平台资料也未返回可引用的当前对象，所以现在的封装备注、不良项状态、有没有关闭都还没核过。要不要我在同会话里深挖，把这三项当前的登记状态、责任人与围堵/整改进展拉出来？",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"上述三项在当前业务对象中的登记状态、责任人、围堵与整改进展未核对\", \"试产批次的实际日期未知，历史记录仅以相对表述『上周』标注\", \"记录中未载明各项的量化口径（数量/占比/判定标准）\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T18:09:46.048056+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"matched_work\": {\"goal\": \"汇总上周试产的不良项\", \"run_id\": \"ef700f6a-3da2-4c23-bf92-ffbbd046c41b\", \"session_id\": \"ac11ecc3-46f9-4f79-9f7d-4c43dbe1ca46\", \"recorded_as_of\": \"2026-11-13T18:09:33Z\", \"historical_summary\": \"不良前三项：气嘴漏气、外壳缩水、按键卡滞。\"}, \"evidence_basis\": \"conversation.history（本人历史会话记录，outcome_state=current；该记录 sources 为空）\", \"suggested_next_step\": \"在同会话继续深查三项不良的当前登记状态与处置进展\", \"current_lookup_result\": {\"note\": \"本次运行的查找预算已用尽，未找到可引用的当前记录\", \"platform_objects\": 0, \"category_knowledge\": 0, \"evidence_search_hits\": 0, \"enterprise_search_hits\": 0}, \"listed_issues_together\": [{\"name\": \"气嘴漏气\", \"rank\": 1}, {\"name\": \"外壳缩水\", \"rank\": 2}, {\"name\": \"按键卡滞\", \"rank\": 3}]}, \"status\": \"completed\", \"summary\": \"找到了：你说的是那轮「汇总上周试产的不良项」的工作（会话 ac11ecc3-46f9-4f79-9f7d-4c43dbe1ca46，run ef700f6a-3da2-4c23-bf92-ffbbd046c41b，记录时间 2026-11-13）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——也就是外壳缩水是和气嘴漏气、按键卡滞一起列出的。需要说明的是，这条是当时的回答记录（含 \\\"上周试产\\\" 这样的相对时间表述），不是我刚核对的现况：我在本品类下按 issue/capa/field_feedback/test_run/build 检索到的相关记录为 0 条，证据检索与平台资料也未返回可引用的当前对象，所以现在的封装备注、不良项状态、有没有关闭都还没核过。要不要我在同会话里深挖，把这三项当前的登记状态、责任人与围堵/整改进展拉出来？\", \"questions\": [], \"unfinished\": [\"三项不良（气嘴漏气、外壳缩水、按键卡滞）当前的登记状态与责任人尚未核对，需在同会话继续检索（本轮查找预算已用尽）\"]}",
+  "unfinished": [
+    "三项不良（气嘴漏气、外壳缩水、按键卡滞）当前的登记状态与责任人尚未核对，需在同会话继续检索（本轮查找预算已用尽）"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.citations.read:failed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:5",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

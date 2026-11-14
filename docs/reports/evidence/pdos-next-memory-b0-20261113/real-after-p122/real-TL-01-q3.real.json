@@ -1,0 +1,102 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q3",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 64.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 185733,
+  "held_tokens": 0,
+  "answer": "按我上次同一问题的会话记录（as_of 2026-11-13），上周试产不良前三项是：气嘴漏气、外壳缩水、按键卡滞。但本次我没能从公司业务数据里重新读回那份试产不良汇总来核对，所以这三条目前只是\"上次结论\"的复述，排序口径与数量未证实。检索侧的现状：品类\"汽车充气泵\"范围内两次检索均 0 命中、evidence 检索无结果、platform/knowledge/citations 读取为空，品质问题与试产技能在当前租户与范围未启用，检索预算已用尽。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:53:08.016206+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本次未取得上周试产不良汇总的原始记录：assistant.search 在品类范围内返回 0 命中且后续检索预算用尽，evidence.search 无结果，platform.read / category.knowledge.list / citations.read 均为空，quality_issue 与 build_execution 技能在当前租户与范围未启用\", \"三项不良的排序口径（发生台数／批次数／不良率）与各自数量未知\", \"排序结果的唯一来源是本人上次会话的情景记录（run_id c5513b11-08c4-4da7-8605-5fca3df379a1，as_of 2026-11-13，sources 为空），该记录不是业务事实，不能作为依据引用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"prior_session_record\": {\"as_of\": \"2026-11-13\", \"run_id\": \"c5513b11-08c4-4da7-8605-5fca3df379a1\", \"session_id\": \"4da9b1ed-510e-440f-b070-fd75acfd8510\", \"status_note\": \"本人以往工作记录的情景卡，非业务事实，未附引用来源\", \"recorded_top3\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"]}}, \"status\": \"partial\", \"summary\": \"按我上次同一问题的会话记录（as_of 2026-11-13），上周试产不良前三项是：气嘴漏气、外壳缩水、按键卡滞。但本次我没能从公司业务数据里重新读回那份试产不良汇总来核对，所以这三条目前只是\\\"上次结论\\\"的复述，排序口径与数量未证实。检索侧的现状：品类\\\"汽车充气泵\\\"范围内两次检索均 0 命中、evidence 检索无结果、platform/knowledge/citations 读取为空，品质问题与试产技能在当前租户与范围未启用，检索预算已用尽。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前检索预算已用尽且品类范围内读不到试产记录，只有靠原件才能核对排序与数量。\", \"options\": [], \"question\": \"能否把上周那份试产不良汇总的原件（文件/记录编号/缺陷明细表）绑进来，我按原始台数重排一次前三项？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"用原始试产不良台账核对\\\"气嘴漏气／外壳缩水／按键卡滞\\\"的排序口径与数量\"]}",
+  "unfinished": [
+    "用原始试产不良台账核对\"气嘴漏气／外壳缩水／按键卡滞\"的排序口径与数量"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:3",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:10",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

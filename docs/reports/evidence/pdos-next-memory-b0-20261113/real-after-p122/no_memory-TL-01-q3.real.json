@@ -1,0 +1,145 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "引用须来自本次运行的实际读取账本。",
+        "frames": [
+          "agent/enterprise_search/assistant_ledger.py:25:deny",
+          "agent/enterprise_search/assistant_materials.py:35:read",
+          "agent/enterprise_search/assistant_adapter.py:86:materials",
+          "agent/kernel/host.py:324:<lambda>"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q3",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 74.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 223915,
+  "held_tokens": 0,
+  "answer": "未能在可读范围内查到\"上周试产汇总\"，因此无法给出不良前三项。核对情况：品类\"汽车充气泵\"（242cb6d0-aa54-4da0-9965-d43266deb700，active，model_count 1）本身可读，但它是隔离合成品类，知识条目 0、参数字典 0、竞品 0；在该品类范围内按 issue/build/test_run/manufacturing_document/field_feedback 检索\"试产 不良 汇总 前三项\"（含历史）返回 0 条；evidence.search 同样 0 条；platform.read（品类、无过滤、名称、含历史）0 条；本会话无既往轮次、个人记忆关闭、无授权 MCP 只读工具、quality_issue/build_execution 技能在当前范围未启用、无本轮固定材料可读。也就是说：没有读到任何试产批次、试产 Run、不良项清单或汇总文件，既没有前三项，也没有可排序的不良原始记录。缺口在于：品类范围外的检索因本轮查找预算用尽未执行，故只能表述为\"在已搜索范围内未找到\"，不能断定该汇总不存在。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:54:10.669664+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上周试产汇总文件本身（来源、位置、是否已上传/登记）未知\", \"试产批次与试产 Run 记录未知（检索 0 命中）\", \"不良项清单及各不良的计数/数量口径未知\", \"不良前三项的排序结果未知——无可排序的不良原始记录\", \"品类范围之外的仓库/项目资料是否含该汇总未检索（本轮查找预算用尽）\", \"'上周'的时间区间未由用户确认；本次按检索时点 2026-11-13 推算约为 2026-11-02 至 2026-11-08\", \"可用的具名责任人与判定口径（按件数还是按不良次数/批次）未知\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"未能在可读范围内查到\\\"上周试产汇总\\\"，因此无法给出不良前三项。核对情况：品类\\\"汽车充气泵\\\"（242cb6d0-aa54-4da0-9965-d43266deb700，active，model_count 1）本身可读，但它是隔离合成品类，知识条目 0、参数字典 0、竞品 0；在该品类范围内按 issue/build/test_run/manufacturing_document/field_feedback 检索\\\"试产 不良 汇总 前三项\\\"（含历史）返回 0 条；evidence.search 同样 0 条；platform.read（品类、无过滤、名称、含历史）0 条；本会话无既往轮次、个人记忆关闭、无授权 MCP 只读工具、quality_issue/build_execution 技能在当前范围未启用、无本轮固定材料可读。也就是说：没有读到任何试产批次、试产 Run、不良项清单或汇总文件，既没有前三项，也没有可排序的不良原始记录。缺口在于：品类范围外的检索因本轮查找预算用尽未执行，故只能表述为\\\"在已搜索范围内未找到\\\"，不能断定该汇总不存在。\", \"questions\": [], \"unfinished\": [\"试产汇总的原始来源（试产批次记录、试产 Run 报告或品质问题台账）尚未定位，无法给出不良前三项\", \"品类范围之外的检索未执行，需后续在同会话补充检索或由用户提供对应文档/报告\", \"汇总的口径（时间区间、不良计数口径）未确认，需用户或负责人确认后重新排序\"]}",
+  "unfinished": [
+    "试产汇总的原始来源（试产批次记录、试产 Run 报告或品质问题台账）尚未定位，无法给出不良前三项",
+    "品类范围之外的检索未执行，需后续在同会话补充检索或由用户提供对应文档/报告",
+    "汇总的口径（时间区间、不良计数口径）未确认，需用户或负责人确认后重新排序"
+  ],
+  "ledger": [
+    "assistant.materials.read:failed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

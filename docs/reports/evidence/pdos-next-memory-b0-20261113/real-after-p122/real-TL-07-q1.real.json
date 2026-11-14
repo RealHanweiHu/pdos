@@ -1,0 +1,59 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 25.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 65585,
+  "held_tokens": 0,
+  "answer": "已按文字形式输出本周周报，两条内容照用户原话落文：本周完成供应商对比；下周补报价单。当前品类（汽车充气泵）范围内未检索到任何供应商对比或报价单记录（竞品列表与品类知识库均为空，关键词检索 0 命中），故两条仅为用户陈述，无可引用业务依据，已在结果中标记未知项。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"当前品类（汽车充气泵）范围内未检索到供应商对比记录：竞品列表与品类知识库均返回 0 条，关键词检索“供应商对比”0 命中\", \"未检索到报价单/询价相关业务记录\", \"供应商对比的对象、范围与结论，以及报价单需覆盖的供应商范围与完成时点均未记录\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:57:25.497864+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"weekly_report\": {\"items\": [{\"basis\": \"user_statement\", \"content\": \"完成供应商对比。\", \"section\": \"本周完成\", \"verified_record\": false}, {\"basis\": \"user_statement\", \"content\": \"补报价单。\", \"section\": \"下周计划\", \"verified_record\": false}], \"title\": \"本周周报\", \"format\": \"text\", \"period\": \"本周\"}}, \"status\": \"completed\", \"summary\": \"已按文字形式输出本周周报，两条内容照用户原话落文：本周完成供应商对比；下周补报价单。当前品类（汽车充气泵）范围内未检索到任何供应商对比或报价单记录（竞品列表与品类知识库均为空，关键词检索 0 命中），故两条仅为用户陈述，无可引用业务依据，已在结果中标记未知项。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类范围内没有任何在册的供应商对比记录，正文若要可追溯，需要你提供对比对象与结论，或授权我继续检索/深查。\", \"options\": [{\"label\": \"不用补，就保留这两条\", \"value\": \"keep_two_lines\"}, {\"label\": \"我补充对比对象和结论，你再写进周报\", \"value\": \"user_provides_detail\"}, {\"label\": \"请在本会话继续深查相关记录后再写\", \"value\": \"deep_search_then_write\"}], \"question\": \"供应商对比这条，是否要在周报里补一句具体说明（如对比了哪几家、结论是什么）？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_two_lines\", \"reason\": \"你已明确周报只写两条，保持原样最贴合口径；如需佐证可再补。\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商对比的对象、范围与结论尚未核实（当前品类检索 0 条相关记录）\", \"下周报价单覆盖的供应商范围、数量与完成时间未确定\"]}",
+  "unfinished": [
+    "供应商对比的对象、范围与结论尚未核实（当前品类检索 0 条相关记录）",
+    "下周报价单覆盖的供应商范围、数量与完成时间未确定"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false
+}

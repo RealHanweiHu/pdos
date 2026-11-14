@@ -1,0 +1,88 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "VALIDATION_FAILED",
+        "reason": "VALIDATION_FAILED",
+        "message": "读取参数不符合要求，请按工具定义修正。",
+        "frames": [
+          "agent/kernel/tool_arguments.py:29:tool_arguments",
+          "agent/kernel/m3_object_reads.py:289:call",
+          "agent/kernel/host.py:449:read_callback",
+          "agent/kernel/host.py:328:_registered_read"
+        ]
+      },
+      {
+        "code": "MISSING_REQUIRED_EVIDENCE",
+        "reason": "MISSING_REQUIRED_EVIDENCE",
+        "message": "请选择实际基线型号。",
+        "frames": [
+          "domain/categories/preproject/access.py:8:fail",
+          "agent/kernel/domain_reads.py:398:_baseline_call",
+          "agent/kernel/domain_reads.py:294:call",
+          "agent/kernel/host.py:449:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 63.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 225827,
+  "held_tokens": 0,
+  "answer": "在可读范围内（汽车充气泵品类 + 本会话历史 + 证据索引 + 品类知识库 + 平台对象）均未检出任何与\"外壳缩水\"相关的记录，因此无法判定属于哪次工作，也无法还原当时并列的其他问题。个人记忆通道本会话关闭，不限品类的「缩水」检索因查找预算未执行。已核对通道与结果逐条列出，未做任何推断。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T18:00:21.938794+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"提及外壳缩水的工作场次/会话：未在已检索范围内找到\", \"当时与外壳缩水一并列出的其他问题清单：未找到任何记录，未做推断\", \"不限品类的关键词检索「缩水」：因本轮查找预算上限未执行\", \"个人记忆（memory）通道：本会话设置为不读取个人记忆\", \"是否存在其他会话或未纳入当前品类范围的记录：待确认\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"在可读范围内（汽车充气泵品类 + 本会话历史 + 证据索引 + 品类知识库 + 平台对象）均未检出任何与\\\"外壳缩水\\\"相关的记录，因此无法判定属于哪次工作，也无法还原当时并列的其他问题。个人记忆通道本会话关闭，不限品类的「缩水」检索因查找预算未执行。已核对通道与结果逐条列出，未做任何推断。\", \"questions\": [], \"unfinished\": [\"解除本轮查找预算后重跑不限品类的「缩水/外壳缩水」检索，覆盖 issue、field_feedback、capa、change 等源类型\", \"若用户提供大致时间、型号或项目名，按该范围定向复查\", \"与用户确认是否把范围放宽至其个人全部工作记录（当前记忆通道对本会话关闭）\"]}",
+  "unfinished": [
+    "解除本轮查找预算后重跑不限品类的「缩水/外壳缩水」检索，覆盖 issue、field_feedback、capa、change 等源类型",
+    "若用户提供大致时间、型号或项目名，按该范围定向复查",
+    "与用户确认是否把范围放宽至其个人全部工作记录（当前记忆通道对本会话关闭）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:2",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:5",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}

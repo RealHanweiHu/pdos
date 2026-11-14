@@ -1,0 +1,75 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 73.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 106092,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内没有找到那次\"三家气泵供应商比较\"的记录，因此无法给出当时建议选哪家。当前品类（汽车充气泵）范围内检索\"气泵供应商/比较/选型/结论/推荐\"返回 0 条；品类知识库中没有竞品条目，品类内也没有关联的产品/提案对象。与气泵供应商相关的唯一一次历史工作是\"整理气泵供应商的联系人\"（会话 9461505b，as_of 2026-11-13），当时的记录结果仅为\"联系人已整理。\"，没有记录任何比较结论或推荐供应商——不是\"结论是不选哪家\"，而是该结论在我可读的范围内不存在/未被记录。",
+  "answer_blob": "{\"result\": {\"note\": \"本轮查找预算已用尽，未能进一步扩大检索；以上为已核对结果，未做任何写入。\", \"unknowns\": [\"三家气泵供应商比较的载体与结论（如提案、邮件、报价表、纪要）未在当前品类可读范围内找到\", \"三家供应商分别是哪三家、当时按什么口径比较，未知\", \"当时是否给出推荐供应商或未给出推荐，未知\", \"供应商联系人清单的具体内容在历史记录中未展开，需回到该会话或对应业务对象读取\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:56:13.933602+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"records_checked\": [{\"type\": \"search\", \"scope\": \"category:汽车充气泵\", \"result\": \"0 条命中\"}, {\"kind\": \"competitor\", \"type\": \"knowledge_list\", \"result\": \"空\"}, {\"type\": \"platform_read\", \"scope\": \"category\", \"result\": \"空\"}, {\"type\": \"conversation_history\", \"result\": \"仅 1 轮：整理气泵供应商的联系人，completed，无引用来源\", \"session_id\": \"f70bbfbc-6206-40d3-96ee-2491270eddac\"}, {\"type\": \"memory_search\", \"result\": \"仅上述 1 条情景记录\"}]}, \"status\": \"partial\", \"summary\": \"在当前可读范围内没有找到那次\\\"三家气泵供应商比较\\\"的记录，因此无法给出当时建议选哪家。当前品类（汽车充气泵）范围内检索\\\"气泵供应商/比较/选型/结论/推荐\\\"返回 0 条；品类知识库中没有竞品条目，品类内也没有关联的产品/提案对象。与气泵供应商相关的唯一一次历史工作是\\\"整理气泵供应商的联系人\\\"（会话 9461505b，as_of 2026-11-13），当时的记录结果仅为\\\"联系人已整理。\\\"，没有记录任何比较结论或推荐供应商——不是\\\"结论是不选哪家\\\"，而是该结论在我可读的范围内不存在/未被记录。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类范围内检索不到那次的比较记录，需要知道载体才能取到原文。\", \"options\": [{\"label\": \"在提案/项目记录里\", \"value\": \"proposal_or_project\"}, {\"label\": \"在邮件或外部往来记录里\", \"value\": \"email_or_external\"}, {\"label\": \"在报价/供应商对比表里\", \"value\": \"quote_table\"}, {\"label\": \"不记得，需要在更大范围重新找\", \"value\": \"unknown_research\"}], \"question\": \"当时的比较结果放在哪里？（我可以据此定向读取，而不是重新猜）\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown_research\", \"reason\": \"用户问的是\\\"当时\\\"的结论，若载体不明，最可靠的下一步是在同会话扩大范围重查一次供应商比较记录。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"如果旧结论确实无法找回，可以按当前品类重新做一版可核对的比较。\", \"options\": [{\"label\": \"要，重新做一版三方对比\", \"value\": \"redo_comparison\"}, {\"label\": \"先帮我把三家供应商名单和联系人整理出来\", \"value\": \"list_suppliers_first\"}, {\"label\": \"暂不需要\", \"value\": \"not_now\"}], \"question\": \"是否要我继续在本会话做一次三家气泵供应商的横评（口径统一、参数对齐、给出成本与取舍）？\", \"depends_on\": [], \"recommended\": {\"value\": \"list_suppliers_first\", \"reason\": \"先把历史接触过的供应商范围锁定，再谈对比，成本最低且可直接复用上次联系人工作的结果。\"}, \"allow_free_text\": true}], \"unfinished\": [\"三家气泵供应商比较的原始记录/结论未在当前品类范围内找到，需用户指出载体或授权扩大检索\", \"本轮查找预算已用尽，尚未尝试更大范围的供应商检索（如供应/外部等待类来源）\"]}",
+  "unfinished": [
+    "三家气泵供应商比较的原始记录/结论未在当前品类范围内找到，需用户指出载体或授权扩大检索",
+    "本轮查找预算已用尽，尚未尝试更大范围的供应商检索（如供应/外部等待类来源）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": []
+  },
+  "memory_off": false
+}

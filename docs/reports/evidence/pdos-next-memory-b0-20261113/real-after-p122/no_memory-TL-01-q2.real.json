@@ -1,0 +1,67 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 52.0,
+  "clarifications": [
+    "「C 家」具体指哪一家供应商？目前只有这个代号，我无法定位到具体条目。",
+    "当时的比价依据从哪里找？",
+    "「上次」大概是什么时候、对应哪个项目或型号？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 129622,
+  "held_tokens": 0,
+  "answer": "已穷尽可读路径（会话历史、品类资料检索、竞品/知识/参数清单、证据库、平台对象与历史、引用目录、个人记忆），全部返回 0 条，未找到任何\"上次比较供应商\"的记录，因此查不到排除 C 家的原因、依据与决定人；不据此推断当时不存在该排除决定。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-13T17:53:18.338688+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未找到该次供应商比较的任何记录，比较是否发生、结论为何均无法确认\", \"未找到任何以「C」指代或命名的供应商/竞品条目\", \"排除 C 家的原因、依据、决定人与时间均无记录\", \"该品类登记为「隔离合成品类」，模型 1 个、参数 0 个、竞品/知识条目 0 条，比价资料可能从未录入系统\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"owner\": {\"status\": \"unspecified\"}, \"blocker\": {\"text\": \"已核对且全部为 0 条：本会话历史、品类资料检索（含历史）、竞品清单、品类知识库、参数字典、证据库检索、平台/型号对象（含历史，名称含 C 与全量）、本工作链引用目录、个人记忆（本次会话未启用）。\", \"status\": \"not_recorded\"}, \"decision\": {\"status\": \"unspecified\"}, \"next_step\": {\"text\": \"若后续取得当时比价/评审原件或更广范围读取授权，可继续核对；本次按本人指示以「查不到」结束。\", \"status\": \"unspecified\"}, \"conclusion\": {\"text\": \"查不到：可读范围内没有任何供应商比较记录，无法给出排除 C 家的原因；结论限于「未找到」，不推断当时不存在该决定。\", \"status\": \"not_recorded\"}}}], \"format\": \"blockers\"}}, \"status\": \"partial\", \"summary\": \"已穷尽可读路径（会话历史、品类资料检索、竞品/知识/参数清单、证据库、平台对象与历史、引用目录、个人记忆），全部返回 0 条，未找到任何\\\"上次比较供应商\\\"的记录，因此查不到排除 C 家的原因、依据与决定人；不据此推断当时不存在该排除决定。\", \"questions\": [], \"unfinished\": [\"「排除 C 家」的原因、依据与决定人仍未知，当前无法补齐。\", \"未执行跨品类/更大范围检索（助手检索预算已用尽，且本人未提供可定位线索）。\"]}",
+  "unfinished": [
+    "「排除 C 家」的原因、依据与决定人仍未知，当前无法补齐。",
+    "未执行跨品类/更大范围检索（助手检索预算已用尽，且本人未提供可定位线索）。"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": []
+  },
+  "memory_off": true
+}
