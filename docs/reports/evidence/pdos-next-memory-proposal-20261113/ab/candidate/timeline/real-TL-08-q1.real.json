@@ -1,0 +1,64 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 64.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 209227,
+  "held_tokens": 0,
+  "answer": "找到了：提到\"外壳缩水\"的是你之前那次「汇总上周试产的不良项」的工作（run 51fcf2c1-3389-438b-987c-e73a3b6bf124 / session ff84a005-e788-4b68-a6e6-fcbc790b9c85，记录时间 2026-11-14）。当时一起列出的不良项是「不良前三项：气嘴漏气、外壳缩水、按键卡滞」——外壳缩水排在第二。注意：这来自你本人的历史工作记录（情景卡），不是业务事实；我在当前可读业务资料（issue / field_feedback / manufacturing_document / artifact / knowledge）里检索\"外壳缩水\"没有命中，所以当时的批次、数量等细节在记录中未保留。若要把它和现在的试产不良现状对齐，需要再查一轮当前业务记录。",
+  "answer_blob": "{\"result\": {\"answer\": {\"as_of\": \"2026-11-14\", \"run_id\": \"51fcf2c1-3389-438b-987c-e73a3b6bf124\", \"list_note\": \"当时的表述为「不良前三项」，未保留各自数量、批次、发生日期\", \"session_id\": \"ff84a005-e788-4b68-a6e6-fcbc790b9c85\", \"episode_goal\": \"汇总上周试产的不良项\", \"mentioned_item\": \"外壳缩水\", \"listed_together\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"]}, \"caveat\": \"情景记录是本人以往工作的记录，不能作为当前业务事实引用；涉及现状需重新读取业务对象\", \"unknowns\": [\"当前业务资料中未检索到含『外壳缩水』的记录（已查范围：issue、field_feedback、manufacturing_document、artifact、knowledge）\", \"该次试产的批次、数量、责任方与当前处置状态未知\", \"历史记录未保留原始引用，正文无法按当前版本复核\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T12:55:48.377943+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"source_type\": \"personal_work_episode\", \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"找到了：提到\\\"外壳缩水\\\"的是你之前那次「汇总上周试产的不良项」的工作（run 51fcf2c1-3389-438b-987c-e73a3b6bf124 / session ff84a005-e788-4b68-a6e6-fcbc790b9c85，记录时间 2026-11-14）。当时一起列出的不良项是「不良前三项：气嘴漏气、外壳缩水、按键卡滞」——外壳缩水排在第二。注意：这来自你本人的历史工作记录（情景卡），不是业务事实；我在当前可读业务资料（issue / field_feedback / manufacturing_document / artifact / knowledge）里检索\\\"外壳缩水\\\"没有命中，所以当时的批次、数量等细节在记录中未保留。若要把它和现在的试产不良现状对齐，需要再查一轮当前业务记录。\", \"questions\": [], \"unfinished\": [\"如需确认『气嘴漏气/外壳缩水/按键卡滞』三项当前是否仍在发生、是否已立项处理，需要再检索当前试产与不良项业务记录（本轮检索预算已用完）\"]}",
+  "unfinished": [
+    "如需确认『气嘴漏气/外壳缩水/按键卡滞』三项当前是否仍在发生、是否已立项处理，需要再检索当前试产与不良项业务记录（本轮检索预算已用完）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:7",
+    "evidence.search:completed:1",
+    "memory.search:completed:7",
+    "model:completed:10",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 7,
+    "conversation.history": 7
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2",
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

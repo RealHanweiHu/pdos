@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 45.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 70503,
+  "held_tokens": 0,
+  "answer": "没找到你此前交代过的气泵报价对比口径。记忆里只有 2026-11-14 那次\"气泵报价对比\"会话，状态为已完成、但记录里没有研究行、笔记或任何口径说明；你确认过的个人口径条目为空，本品类可读资料中也没搜到报价/价格口径文档或价格点记录。",
+  "answer_blob": "{\"result\": {\"found\": [{\"notes\": 0, \"scope\": \"个人记忆·情景\", \"detail\": \"2026-11-14 会话「气泵报价对比」(run_id 026cdc43-69db-4db0-8dfb-956cf4b1dbb2) 状态 completed，摘要仅为「报价对比已完成。」\", \"research_rows\": 0}, {\"scope\": \"个人记忆·已确认条目(note)\", \"detail\": \"为空，未查到任何口径/背景/叫法条目\"}], \"answer\": \"在你的可读范围内，没有检索到你曾为气泵报价对比指定过比较口径的记录。\", \"unknowns\": [\"当时的实际比较口径无法从记录还原，只能由你口头确认\", \"公司是否有统一的报价口径标准文件，未在当前可读来源中找到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:11:15.646478+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"若你直接说一条口径（例如统一为零售价、含税含运、同一币种与日期、同一配置口径），我可在本会话按它重跑对比，并把它作为你确认过的口径条目保存（需你确认后才生效）\", \"citation_ids\": [], \"not_found_in_scope\": [\"对话明细：该历史会话仅返回一条回合摘要，未保留用户原始口径措辞\", \"公司资料(当前品类 汽车充气泵)：以「报价/价格口径/币种/含税/运费/零售」检索，返回 0 条\", \"品类数据：竞品与价格点列表为空，未见已登记的价格口径字段\"]}, \"status\": \"completed\", \"summary\": \"没找到你此前交代过的气泵报价对比口径。记忆里只有 2026-11-14 那次\\\"气泵报价对比\\\"会话，状态为已完成、但记录里没有研究行、笔记或任何口径说明；你确认过的个人口径条目为空，本品类可读资料中也没搜到报价/价格口径文档或价格点记录。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史记录里没有可还原的口径，重新对比需要先确定比较基准，否则价格带分布和目标价位置不可比。\", \"options\": [{\"label\": \"零售价、不含税、不含运，同一币种与日期、同一配置口径\", \"value\": \"retail_exw\"}, {\"label\": \"零售价、含税含运，同一币种与日期、同一配置口径\", \"value\": \"retail_inc\"}, {\"label\": \"批发/出厂价口径，同一币种与日期、同一配置口径\", \"value\": \"wholesale\"}, {\"label\": \"其他口径（我口述）\", \"value\": \"other\"}], \"question\": \"这次要重做气泵报价对比吗？如果做，采用哪个口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"none\", \"reason\": \"历史记录里没有你确认过的口径，不能替你预选比较基准。\"}, \"allow_free_text\": true}], \"unfinished\": [\"气泵报价对比的具体口径未定，需你确认后按该口径重跑价格带计算\"]}",
+  "unfinished": [
+    "气泵报价对比的具体口径未定，需你确认后按该口径重跑价格带计算"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

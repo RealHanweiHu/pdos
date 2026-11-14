@@ -1,0 +1,46 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "P2",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "a4be223e-ed70-4339-89a2-9eb5368cb596",
+      "goal": "这周的周报整理一下，以后给我表格形式的周报",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 98.1,
+      "used_tokens": 242132,
+      "held_tokens": 0,
+      "answer": "运行预算已用完，保留已完成动作与已核对结果。",
+      "unfinished": [
+        "剩余目标尚未完成"
+      ],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 2,
+        "category.competitors.list": 1,
+        "category.knowledge.list": 1,
+        "category.parameters.list": 1,
+        "category.read": 1,
+        "conversation.history": 2,
+        "evidence.search": 2,
+        "mcp.tools.list": 1,
+        "memory.search": 4,
+        "model": 12,
+        "platform.read": 4,
+        "product.baseline.read": 1
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

@@ -1,0 +1,43 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "N7",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "e2936b14-1b8a-4b68-a5bb-48bc2347cbeb",
+      "goal": "下周三前先别动模具图纸，帮我写一句提醒大家的话",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 23.9,
+      "used_tokens": 35449,
+      "held_tokens": 0,
+      "answer": "交付了一句「11月18日（周三）前冻结模具图纸」的提醒文案（群消息版／正式通知版／超短版三档）。系统当前日期 2026-11-14（周六），据此「下周三」= 2026-11-18。在当前「汽车充气泵」品类范围内未检索到在办的模具/工装变更记录；可用发布连接器为空，因此文案仅交付、未代发，也未登记为任务或承诺。冻结范围、截止时点、发布渠道三项待用户确认。",
+      "unfinished": [
+        "未代为发布：当前没有可用的发布连接器，短信/群/邮件发送均未执行。",
+        "未登记为任务或冻结承诺：需要相应写权限才能把该冻结登记到在办事项。",
+        "未确认 11月18日之后的解冻/处置安排与责任人。"
+      ],
+      "final_questions": [
+        "冻结范围怎么定：只管当前款汽车充气泵的模具图纸，还是也包括在改的派生型号/其它机种？",
+        "冻结截止时点按哪个口径写：11月18日下班前截止，还是11月18日当天起即解冻？",
+        "这句提醒发给谁、走哪个渠道？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "mcp.tools.list": 1,
+        "model": 2
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

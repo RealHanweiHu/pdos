@@ -59,7 +59,8 @@ def stored(setup, run_id):
 def test_frozen_prompt_admits_no_model_candidate(setup):
     run_id, _ = start(setup, goal=GOAL)
     rejected = finish_with(setup, run_id, [explicit()])
-    assert rejected == [{"reason": "memory_candidate_prompt_not_released"}]
+    assert [item["reason"] for item in rejected] == [
+        "memory_candidate_prompt_not_released"]
     assert stored(setup, run_id) == []
 
 
@@ -201,14 +202,15 @@ def test_tenant_switch_and_memory_off_close_proposals(setup, released):
     off, _ = start(setup, goal=GOAL, memory_off=True)
     released(setup, off)
     assert finish_with(setup, off, [explicit()]) == [
-        {"reason": "memory_candidate_channel_excluded"}]
+        {"reason": "memory_candidate_channel_excluded", "kind": "memory_candidate"}]
     response = setup.client.post("/v1/personal/memory-policy", headers=setup.headers, json={
         "expected_revision": 0, "request_key": str(uuid4()), "work_state_idle_days": 30,
         "notes_enabled": False})
     assert response.status_code == 200, response.text
     run_id, _ = start(setup, goal=GOAL)
     released(setup, run_id)
-    assert finish_with(setup, run_id, [explicit()]) == [{"reason": "memory_notes_disabled"}]
+    assert [item["reason"] for item in finish_with(setup, run_id, [explicit()])] == [
+        "memory_notes_disabled"]
 
 
 def test_candidates_are_bound_to_the_runs_own_requester_and_active_run(setup):

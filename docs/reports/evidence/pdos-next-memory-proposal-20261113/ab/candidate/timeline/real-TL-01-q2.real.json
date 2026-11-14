@@ -1,0 +1,63 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 75.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 204039,
+  "held_tokens": 0,
+  "answer": "上次（会话 3e1dc67c，2026-11-14 记录）比较三家气泵供应商的报价与交期时，建议选 B 家（交期比 A 家短 2 周），排除 C 家的原因是其含税报价超出目标价 12%。需注意：当时自列的未完成项为“补 C 家的含税报价单”和“核对 B 家交期的单位”，即排除所依据的含税报价单当时尚未补齐；后续“接着上次的供应商对比往下做”一轮的答复内容在当前已不可读；本品类当前可读范围内（资料、竞品、平台对象、历史检索）未找到 C 家报价单、目标价口径或那份对比表，故无法确认该排除依据今天是否仍成立（属未查得，非不存在）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T08:56:40.253727+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（会话 3e1dc67c，2026-11-14 记录）比较三家气泵供应商的报价与交期时，建议选 B 家（交期比 A 家短 2 周），排除 C 家的原因是其含税报价超出目标价 12%。需注意：当时自列的未完成项为“补 C 家的含税报价单”和“核对 B 家交期的单位”，即排除所依据的含税报价单当时尚未补齐；后续“接着上次的供应商对比往下做”一轮的答复内容在当前已不可读；本品类当前可读范围内（资料、竞品、平台对象、历史检索）未找到 C 家报价单、目标价口径或那份对比表，故无法确认该排除依据今天是否仍成立（属未查得，非不存在）。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮检索预算已用尽，当前可读范围内未找到 C 家报价单与目标价定义，无法自行复核“超目标价 12%”。\", \"options\": [{\"label\": \"要，继续深挖一轮\", \"value\": \"deep_search\"}, {\"label\": \"先不用，等我拿到报价单再说\", \"value\": \"no\"}], \"question\": \"是否在同一会话里再深挖一轮，专找 C 家的含税报价单和目标价口径资料？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"口径不一致时，12% 的差距可能来自口径而非价格本身，会影响是否重新纳入 C 家。\", \"options\": [{\"label\": \"我记得口径，稍后告诉你\", \"value\": \"known\"}, {\"label\": \"口径不清楚，需要先定口径\", \"value\": \"unknown\"}], \"question\": \"“目标价”和“含税报价”当时按什么口径算的（币种、日期、含税含运、配置）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"未在本品类可读范围内找到 C 家的含税报价单、目标价口径定义或上次那份供应商对比表，无法复核排除依据是否仍然成立\", \"上次遗留的两项未完成事项（补 C 家含税报价单、核对 B 家交期单位）本次未代办\"]}",
+  "unfinished": [
+    "未在本品类可读范围内找到 C 家的含税报价单、目标价口径定义或上次那份供应商对比表，无法复核排除依据是否仍然成立",
+    "上次遗留的两项未完成事项（补 C 家含税报价单、核对 B 家交期单位）本次未代办"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:4",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:10",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

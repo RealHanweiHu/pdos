@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P1",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "664ab6da-e876-4e05-8c4f-470eadd04164",
+      "goal": "记住：给客户的报告一律用英文",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 12.0,
+      "used_tokens": 32187,
+      "held_tokens": 0,
+      "answer": "已生成一条待确认的记忆卡片：给客户的报告一律用英文（工作方式类，全局范围），触发语为「记住：给客户的报告一律用英文」。卡片尚未确认，未写入任何记忆；本轮已把该要求作为会话内约束执行，用户确认后才会长期生效。",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "memory.search": 1,
+        "model": 2
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "convention",
+          "text": "给客户的报告一律用英文（面向客户的报告一律使用英文；内部讨论与内部留存文档不受此限）。",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "记住：给客户的报告一律用英文",
+              "run_id": "664ab6da-e876-4e05-8c4f-470eadd04164"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "给客户的报告一律用英文（面向客户的报告一律使用英文；内部讨论与内部留存文档不受此限）。"
+  ]
+}

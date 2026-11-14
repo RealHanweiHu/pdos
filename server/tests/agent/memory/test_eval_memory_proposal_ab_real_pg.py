@@ -60,6 +60,8 @@ OUTPUT = os.environ.get("PDOS_MEMORY_PROPOSAL_AB_OUTPUT_DIR")
 ARMS = tuple(filter(None, os.environ.get(
     "PDOS_MEMORY_PROPOSAL_AB_ARMS", "baseline,candidate").split(",")))
 ONLY = set(filter(None, os.environ.get("PDOS_MEMORY_PROPOSAL_AB_ONLY", "").split(",")))
+# Rerun single timeline questions (a provider failure): "TL-01/q3,TL-06/q1".
+QUESTIONS = set(filter(None, os.environ.get("PDOS_MEMORY_PROPOSAL_AB_QUESTIONS", "").split(",")))
 CANDIDATE = "1.1.0"
 OBSERVATION = "xiaopai-memory-proposal-ab-observation/v0"
 PROBES = json.loads(
@@ -135,7 +137,8 @@ def folder(arm, part):
 
 
 TIMELINES = [item for item in timeline_real.CASES["timelines"] if item.get("questions")
-             and (not ONLY or f"timeline:{item['id']}" in ONLY or "timeline" in ONLY)]
+             and (not ONLY or f"timeline:{item['id']}" in ONLY or "timeline" in ONLY)
+             and (not QUESTIONS or any(key.startswith(item["id"] + "/") for key in QUESTIONS))]
 SELECTED = [item for item in PROBES if not ONLY or item["id"] in ONLY or "probes" in ONLY]
 
 
@@ -146,7 +149,7 @@ def test_existing_timeline_questions_per_arm(setup, tmp_path, monkeypatch, arm, 
     use_arm(monkeypatch, arm)
     target = folder(arm, "timeline")
     monkeypatch.setenv("PDOS_MEMORY_TIMELINE_OUTPUT_DIR", str(target))
-    monkeypatch.setattr(timeline_real, "ONLY", set())
+    monkeypatch.setattr(timeline_real, "ONLY", set(QUESTIONS))
     plain = timeline_real.observed
 
     def observed(setup_value, replay, run_id):

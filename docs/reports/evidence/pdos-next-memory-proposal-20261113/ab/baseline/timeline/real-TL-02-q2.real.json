@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q2",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 15.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 33089,
+  "held_tokens": 0,
+  "answer": "按您对这一客户的一贯口径（对外一律英文），先给一版可直接发出的英文草稿，附中文对照供您内部确认；未在当前品类可读资料中检索到该客户或本次报价的已记录信息，因此草稿只含您给的时间承诺，未加入任何型号、数量、价格或交期细节。\n\n英文草稿（发给客户）：\nThank you for your inquiry about our automotive air pumps. We are currently finalizing the pricing and will send you our quotation within this week. If there is a specific model, variant or quantity you would like included in the quote, please let us know.\n\n中文对照（仅供内部确认）：\n感谢您对我们汽车气泵的询价。我们正在整理价格，预计在本周内给您发送报价单。如您希望报价中包含特定型号、配置或数量，请告知。\n\n说明：草稿刻意未写具体日期、型号和数量；如需点明具体截止日或产品型号，我可在您确认后改写。另可按需调整语气（更正式或更简短）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:09:12.860083+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"按您对这一客户的一贯口径（对外一律英文），先给一版可直接发出的英文草稿，附中文对照供您内部确认；未在当前品类可读资料中检索到该客户或本次报价的已记录信息，因此草稿只含您给的时间承诺，未加入任何型号、数量、价格或交期细节。\\n\\n英文草稿（发给客户）：\\nThank you for your inquiry about our automotive air pumps. We are currently finalizing the pricing and will send you our quotation within this week. If there is a specific model, variant or quantity you would like included in the quote, please let us know.\\n\\n中文对照（仅供内部确认）：\\n感谢您对我们汽车气泵的询价。我们正在整理价格，预计在本周内给您发送报价单。如您希望报价中包含特定型号、配置或数量，请告知。\\n\\n说明：草稿刻意未写具体日期、型号和数量；如需点明具体截止日或产品型号，我可在您确认后改写。另可按需调整语气（更正式或更简短）。\", \"questions\": [{\"id\": \"q_quote_date\", \"why\": \"写明日期更利于客户预期管理，但需要您确认这个日期确实可行；写明型号/数量需要产品信息。\", \"options\": [{\"label\": \"保持现在这样（不写日期和型号）\", \"value\": \"keep\"}, {\"label\": \"写明具体截止日期\", \"value\": \"add_date\"}, {\"label\": \"写明具体型号/数量\", \"value\": \"add_model\"}], \"question\": \"草稿里是否要写明具体截止日期（如“本周五前”）或指定型号/数量？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep\", \"reason\": \"在不新增未经核实信息的前提下，现有版本已能清楚传达本周内出报价的承诺。\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [
+      "other",
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

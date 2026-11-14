@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 69.2,
+  "clarifications": [
+    "那三家供应商分别是哪几家（能给出名称或当时的比选文件名称吗）？",
+    "之前的比选记录可能不在系统内，你希望我怎么处理？",
+    "需要我现在按统一口径重新做一次三方比选并给出建议吗？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 152080,
+  "held_tokens": 0,
+  "answer": "查不到。三家气泵供应商比选的记录在可检索范围内没有命中，因此我无法给出“当时建议选哪家”——不会替你推测。\n\n已查过的范围（均在「汽车充气泵」品类内）：\n- 公司资料检索：关键词覆盖 气泵／供应商／比较／选型／建议／比选／推荐，含历史版本 → 0 条命中\n- 证据库检索（气泵供应商 比较 选型 推荐，以及 供应商）→ 0 条\n- 品类知识库（全部类型、含历史）→ 空；品类竞品列表 → 空\n- 平台产品／变体（名称含“气泵”，含历史）→ 空\n\n我本人历史记录里，本品类只发生过一次会话：2026-11-14 的“整理气泵供应商的联系人”（run a917488f / session 24a28854），当时留存的结果是“联系人已整理。”，该会话历史里也只有这一轮，没有出现三家对比或推荐结论。也就是说：那次比选要么发生在本系统之外（邮件、会议、笔记），要么对应的是另一个未登记的会话——就我能读到的记录，不存在一条“建议选某家”的结论。\n\n另需说明：本轮有一次补充的公司资料检索被查找预算限制拒绝（未执行），但此前已执行的检索均为 0 命中，因此“查不到”的判断不依赖那次调用。",
+  "answer_blob": "{\"result\": {\"answer\": \"查不到。在可检索范围内没有找到“三家气泵供应商比选”的记录，因此没有可依据的推荐结论，也无法指认当时建议选哪家。\", \"unknowns\": [\"当时比选的三家供应商是谁\", \"当时的比选结论存放于何处（可能在系统外的邮件/笔记/会议记录）\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:11:52.805033+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"failed_calls\": [\"后续一次公司资料检索被查找预算限制拒绝（MODEL_BUDGET_EXCEEDED），不影响已得结论：已有检索均为 0 命中\"], \"answer_status\": \"not_found\", \"scope_searched\": [\"品类：汽车充气泵（9ba12a01-fedc-4ecc-93c2-7f3d1120995a）\", \"公司资料检索：关键词 气泵/供应商/比较/选型/建议/比选/推荐，含历史版本 → 0 条\", \"证据库检索（气泵供应商 比较 选型 推荐；及 供应商）→ 0 条\", \"品类知识库（全部类型，含历史）→ 空\", \"品类竞品列表 → 空\", \"平台产品/变体（名称含“气泵”，含历史）→ 空\"], \"constraints_honored\": [\"仅依据可查到的以往记录作答，未做推断性补全\"], \"prior_records_found\": [{\"goal\": \"整理气泵供应商的联系人\", \"as_of\": \"2026-11-14\", \"run_id\": \"a917488f-bf7e-4894-9a6a-0cf2536d9f27\", \"session_id\": \"24a28854-2ac4-4c22-97bf-44c59cf9def5\", \"historical_outcome\": \"联系人已整理。\", \"contains_recommendation\": false, \"contains_three_supplier_comparison\": false}]}, \"status\": \"partial\", \"summary\": \"查不到。三家气泵供应商比选的记录在可检索范围内没有命中，因此我无法给出“当时建议选哪家”——不会替你推测。\\n\\n已查过的范围（均在「汽车充气泵」品类内）：\\n- 公司资料检索：关键词覆盖 气泵／供应商／比较／选型／建议／比选／推荐，含历史版本 → 0 条命中\\n- 证据库检索（气泵供应商 比较 选型 推荐，以及 供应商）→ 0 条\\n- 品类知识库（全部类型、含历史）→ 空；品类竞品列表 → 空\\n- 平台产品／变体（名称含“气泵”，含历史）→ 空\\n\\n我本人历史记录里，本品类只发生过一次会话：2026-11-14 的“整理气泵供应商的联系人”（run a917488f / session 24a28854），当时留存的结果是“联系人已整理。”，该会话历史里也只有这一轮，没有出现三家对比或推荐结论。也就是说：那次比选要么发生在本系统之外（邮件、会议、笔记），要么对应的是另一个未登记的会话——就我能读到的记录，不存在一条“建议选某家”的结论。\\n\\n另需说明：本轮有一次补充的公司资料检索被查找预算限制拒绝（未执行），但此前已执行的检索均为 0 命中，因此“查不到”的判断不依赖那次调用。\", \"questions\": [], \"unfinished\": [\"原始问题（三家气泵供应商当时建议选哪家）在本人可读记录中没有答案，只能由你另行提供外部材料或决定重新做一次比选\"]}",
+  "unfinished": [
+    "原始问题（三家气泵供应商当时建议选哪家）在本人可读记录中没有答案，只能由你另行提供外部材料或决定重新做一次比选"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "memory.search:completed:2",
+    "model:completed:8",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

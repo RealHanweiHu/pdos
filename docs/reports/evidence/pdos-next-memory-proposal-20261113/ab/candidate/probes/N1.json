@@ -1,0 +1,37 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "N1",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "a95b98e9-71c5-4f08-b2f3-1f34f865c615",
+      "goal": "我一般用表格看周报，帮我列一下周报通常包含哪几部分",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 14.4,
+      "used_tokens": 17167,
+      "held_tokens": 0,
+      "answer": "按你习惯的表格形式，列出周报通常包含的 9 个板块（概览、指标数据、里程碑、事项进展、风险问题、待决事项、资源需求、下周计划、附注变更）及各自填写要点。",
+      "unfinished": [
+        "尚未按「汽车充气泵」品类实际对象（项目/批次/认证/客户/指标口径）生成本地可填写模板，等你确认是否需要。"
+      ],
+      "final_questions": [
+        "是否要我按当前「汽车充气泵」品类的实际对象，把它落成一份可直接填写的周报表格模板？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

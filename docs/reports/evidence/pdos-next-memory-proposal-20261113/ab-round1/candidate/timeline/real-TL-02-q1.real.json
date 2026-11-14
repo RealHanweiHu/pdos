@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 24.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 70397,
+  "held_tokens": 0,
+  "answer": "上次的结论是：建议选 B 家。那次是 2026-11-14 在「汽车充气泵」品类下做的「比较三家气泵供应商的报价和交期」，当时的回答明确写成\"甲：建议选 B 家\"。不过那次记录里没有展开选 B 的具体依据（各家报价、交期数字与取舍理由），我这次在当前品类范围检索（供应/报价交期类资料、证据库）都是 0 条，因此现在无法告诉你 B 家具体是哪家厂商，也无法确认这个结论今天是否仍成立。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:09:34.834141+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"历史记录只保存了结论「建议选 B 家」，未保存甲/乙/丙与真实厂商名称的对应关系\", \"历史记录未保存支持该结论的具体报价、交期数值与取舍理由\", \"本次在当前品类（汽车充气泵）范围检索供应/报价交期类资料与证据库均返回 0 条，无法复核 B 家当前是否仍是最佳选择\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次的结论是：建议选 B 家。那次是 2026-11-14 在「汽车充气泵」品类下做的「比较三家气泵供应商的报价和交期」，当时的回答明确写成\\\"甲：建议选 B 家\\\"。不过那次记录里没有展开选 B 的具体依据（各家报价、交期数字与取舍理由），我这次在当前品类范围检索（供应/报价交期类资料、证据库）都是 0 条，因此现在无法告诉你 B 家具体是哪家厂商，也无法确认这个结论今天是否仍成立。\", \"questions\": [{\"id\": \"q1\", \"why\": \"你问的是上次的结论，我已按记录回答；但支撑该结论的报价/交期数据在当前可读范围内没有留存，无法直接验证现状。\", \"options\": [{\"label\": \"现在重新拉取三家报价与交期做一次当前复核\", \"value\": \"refresh_now\"}, {\"label\": \"只要上次的结论，不用复核\", \"value\": \"just_recall\"}, {\"label\": \"只要知道 B 家对应的是哪家厂商名称\", \"value\": \"name_only\"}], \"question\": \"需要我现在重新拉取三家的当前报价与交期，核对「选 B 家」这个结论今天是否仍成立吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"refresh_now\", \"reason\": \"结论本身已明确，但依据数据在当前范围缺失，复核才能给出可用的当前建议\"}, \"allow_free_text\": true}], \"unfinished\": [\"「B 家」的真实厂商名称、以及当时支撑该结论的报价与交期数据在当前可读范围内未找到（检索 0 条），尚未取得\"]}",
+  "unfinished": [
+    "「B 家」的真实厂商名称、以及当时支撑该结论的报价与交期数据在当前可读范围内未找到（检索 0 条），尚未取得"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

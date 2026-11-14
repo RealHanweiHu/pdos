@@ -1,0 +1,33 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "N3",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "b47bcbd5-7811-41ea-b89b-984f408effa2",
+      "goal": "你好",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 4.0,
+      "used_tokens": 15578,
+      "held_tokens": 0,
+      "answer": "你好！有什么可以帮你的？",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

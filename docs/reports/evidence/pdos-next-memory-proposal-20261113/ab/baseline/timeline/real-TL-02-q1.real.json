@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 22.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 50245,
+  "held_tokens": 0,
+  "answer": "上次的结论是选 B 家。那是 2026-11-14 在会话「比较三家气泵供应商的报价和交期」里给出的判断，记录原文为「甲：建议选 B 家。」不过该历史记录只留了结论一句、没有随附引用；而我在当前「汽车充气泵」品类内检索供应/文档/知识/外部等待等来源，没有找到任何一条供应商对比的支撑记录（0 条），所以\"B 家胜出\"的具体依据（报价、交期明细、选它的理由）目前无法从可读资料里复核。需要的话我可以重建当时的对比依据，或按现有资料重做一次。",
+  "answer_blob": "{\"result\": {\"answer\": {\"as_of\": \"2026-11-14\", \"basis\": \"conversation.history 会话 f882cc97-7fc5-47f1-b9bf-6c2fdb9ed7f0 / run c37dcf93-4b6c-4698-b481-9cb86b1e9815，原结论摘要「甲：建议选 B 家。」\", \"recommendation\": \"供应商 B（乙家）\"}, \"question\": \"上次的结论是建议选哪家？\", \"unknowns\": [\"历史记录未随附引用，B 家胜出的具体理由、报价与交期明细在本次可读范围内无法复核\", \"当前品类内检索未命中任何供应商对比的支撑记录（supply/artifact/knowledge/external_wait 均 0 条）\", \"三家供应商甲乙丙的具体主体名称在本次可读范围内未查到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:08:53.436359+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"business_data_written\": false}, \"status\": \"completed\", \"summary\": \"上次的结论是选 B 家。那是 2026-11-14 在会话「比较三家气泵供应商的报价和交期」里给出的判断，记录原文为「甲：建议选 B 家。」不过该历史记录只留了结论一句、没有随附引用；而我在当前「汽车充气泵」品类内检索供应/文档/知识/外部等待等来源，没有找到任何一条供应商对比的支撑记录（0 条），所以\\\"B 家胜出\\\"的具体依据（报价、交期明细、选它的理由）目前无法从可读资料里复核。需要的话我可以重建当时的对比依据，或按现有资料重做一次。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史记录只留了结论句，没有引用；当前品类也没有支撑记录，所以无法直接复述当时的理由。\", \"options\": [{\"label\": \"重建当时的对比依据（你提供报价/交期原件或指出存放位置）\", \"value\": \"rebuild\"}, {\"label\": \"按现有资料重新做一次三家对比，给出新的推荐\", \"value\": \"refresh\"}, {\"label\": \"结论已够用，不需要再补\", \"value\": \"none\"}], \"question\": \"B 家当初胜出的依据，接下来怎么处理？\", \"depends_on\": [], \"recommended\": {\"value\": \"rebuild\", \"reason\": \"用户问的是\\\"结论依据\\\"，重建当时对比最能补上这次缺的证据；refresh 需要当前有可读供应商数据（目前检索为 0 条）。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未核实：B 家胜出的具体理由、报价与交期数据（当前品类内无可读支撑记录）\", \"未核实：甲乙丙三家供应商的主体名称与当时对比的原始终稿\"]}",
+  "unfinished": [
+    "未核实：B 家胜出的具体理由、报价与交期数据（当前品类内无可读支撑记录）",
+    "未核实：甲乙丙三家供应商的主体名称与当时对比的原始终稿"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

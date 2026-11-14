@@ -40,6 +40,18 @@ def released(monkeypatch):
     monkeypatch.setattr(candidates, "MEMORY_CANDIDATE_PROMPT_VERSIONS", Any())
 
 
+def test_only_prompt_versions_that_define_the_output_are_listed():
+    """D298: the gate names prompt versions; each must exist and define the contract."""
+    from pdos_next.agent.kernel.prompts import PromptCatalog
+
+    catalog = PromptCatalog()
+    listed = candidates.MEMORY_CANDIDATE_PROMPT_VERSIONS
+    assert "1.0.0" not in listed  # The frozen prompt defines no such output.
+    for version in listed:
+        assert "context_proposals.memory_candidates" in catalog.version(version).content
+    assert "memory_candidates" not in catalog.version("1.0.0").content
+
+
 def reasons(setup, run_id, proposals, **extra):
     return [item["reason"] for item in finish_with(setup, run_id, proposals, **extra)]
 
@@ -100,10 +112,19 @@ def test_weekly_report_instruction_is_admitted_and_page_material_never_is(setup,
     run_id, _, rejected = ask(setup, WEEKLY, [
         {**explicit(trigger=WEEKLY, text_value="周报用表格形式"), "scope": "global"}])
     assert rejected == [] and [row.text for row in stored(setup, run_id)] == ["周报用表格形式"]
+    assert setup.client.get(
+        f"/v1/categories/{setup.category}/agent-runs/{run_id}/memory-candidates",
+        headers=setup.headers).json()["declined"] is None
     # An ordinary statement is refused even when the model proposes it.
     habit = "我一般用表格看周报"
-    _, _, rejected = ask(setup, habit, [explicit(trigger=habit, text_value="用表格看周报")])
+    refused, _, rejected = ask(setup, habit, [explicit(trigger=habit, text_value="用表格看周报")])
     assert rejected == ["trigger_not_explicit_remember"]
+    # The model wrote its answer before admission, so the Run's view says no card was made.
+    run_view = setup.client.get(
+        f"/v1/categories/{setup.category}/agent-runs/{refused}/memory-candidates",
+        headers=setup.headers).json()
+    assert run_view["items"] == [] and run_view["declined"]["count"] == 1
+    assert "没有生成卡片" in run_view["declined"]["note"]
     _, _, rejected = ask(setup, "不用记住这个格式", [
         explicit(trigger="记住这个格式", text_value="这个格式")])
     assert rejected == ["trigger_not_explicit_remember"]

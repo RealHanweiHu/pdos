@@ -1,0 +1,547 @@
+{
+  "schema": "xiaopai-memory-proposal-ab/v1",
+  "judged_by": "rules",
+  "runs_per_cell": 1,
+  "not_scored": [
+    "answer_quality_beyond_key_facts",
+    "fabrication",
+    "run_to_run_variance"
+  ],
+  "arms": {
+    "candidate": {
+      "label": "B：提示词 1.1.0，新 memory.search 说明，提议闸门对 1.1.0 打开",
+      "timeline": {
+        "questions": 9,
+        "status": {
+          "partial": 2,
+          "completed": 5,
+          "failed": 2
+        },
+        "fact_questions": 5,
+        "fact_questions_answered": 3,
+        "fact_questions_retrieved": 3,
+        "answers_withheld": 0,
+        "budget_exhausted": 0,
+        "unknown_expected": 2,
+        "unknown_admitted": 1,
+        "language_expected": 1,
+        "language_met": 1,
+        "clarifications": 0,
+        "mean_seconds": 106.9,
+        "mean_used_tokens": 97828.9,
+        "total_used_tokens": 880460,
+        "memory_tool_calls": 23,
+        "gates": {
+          "cross_access": 0,
+          "deletion_residue": 0,
+          "memory_off_access": 0,
+          "baseline_setup": 0
+        },
+        "missing": [],
+        "candidates_stored": 0,
+        "proposals_rejected": [],
+        "prompt_versions": [
+          "1.1.0"
+        ],
+        "tool_definitions": [
+          "5119210b2ce4"
+        ],
+        "rows": [
+          {
+            "timeline": "TL-01",
+            "question": "q1",
+            "status": "partial",
+            "answered": true,
+            "retrieved": true,
+            "used_tokens": 140525
+          },
+          {
+            "timeline": "TL-01",
+            "question": "q2",
+            "status": "completed",
+            "answered": true,
+            "retrieved": true,
+            "used_tokens": 130753
+          },
+          {
+            "timeline": "TL-01",
+            "question": "q3",
+            "status": "failed",
+            "answered": false,
+            "retrieved": false,
+            "used_tokens": 155141
+          },
+          {
+            "timeline": "TL-02",
+            "question": "q1",
+            "status": "completed",
+            "answered": true,
+            "retrieved": true,
+            "used_tokens": 70397
+          },
+          {
+            "timeline": "TL-02",
+            "question": "q2",
+            "status": "completed",
+            "answered": false,
+            "retrieved": false,
+            "used_tokens": 36561
+          },
+          {
+            "timeline": "TL-04",
+            "question": "q1",
+            "status": "completed",
+            "answered": false,
+            "retrieved": false,
+            "used_tokens": 70503
+          },
+          {
+            "timeline": "TL-06",
+            "question": "q1",
+            "status": "failed",
+            "answered": false,
+            "retrieved": false,
+            "used_tokens": 134816
+          },
+          {
+            "timeline": "TL-07",
+            "question": "q1",
+            "status": "completed",
+            "answered": false,
+            "retrieved": false,
+            "used_tokens": 51575
+          },
+          {
+            "timeline": "TL-08",
+            "question": "q1",
+            "status": "partial",
+            "answered": false,
+            "retrieved": false,
+            "used_tokens": 90189
+          }
+        ]
+      },
+      "probes": {
+        "probes": 14,
+        "should_propose": 6,
+        "proposed": 6,
+        "missed": [],
+        "should_not_propose": 7,
+        "false_proposals": [],
+        "refused_by_server": [
+          "trigger_not_owner_words"
+        ],
+        "void_probes": {
+          "N8": "clean"
+        },
+        "questions_asked": 19,
+        "questions_asked_when_should_not_propose": 11,
+        "claims_saved": [
+          "P3"
+        ],
+        "total_used_tokens": 1164537,
+        "tool_calls": 123,
+        "not_completed": [
+          "P2",
+          "P6"
+        ],
+        "prompt_versions": [
+          "1.1.0"
+        ],
+        "tool_definitions": [
+          "5119210b2ce4"
+        ],
+        "rows": [
+          {
+            "probe": "N1",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 1,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 35129,
+            "seconds": 20.5,
+            "tool_calls": 3,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N2",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 3,
+            "claims_saved": false,
+            "mentions_confirmation": false,
+            "used_tokens": 37028,
+            "seconds": 27.9,
+            "tool_calls": 5,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N3",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 0,
+            "claims_saved": false,
+            "mentions_confirmation": false,
+            "used_tokens": 15578,
+            "seconds": 4.0,
+            "tool_calls": 1,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N4",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 2,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 55511,
+            "seconds": 30.7,
+            "tool_calls": 5,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N5",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 2,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 153878,
+            "seconds": 63.8,
+            "tool_calls": 17,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N6",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [
+              "trigger_not_owner_words"
+            ],
+            "pending_at_end": [],
+            "questions_asked": 2,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 82264,
+            "seconds": 63.9,
+            "tool_calls": 7,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N7",
+            "expect": "none",
+            "outcome": "clean",
+            "status": [
+              "completed"
+            ],
+            "stored": [],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 1,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 57195,
+            "seconds": 36.4,
+            "tool_calls": 4,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "N8",
+            "expect": "void",
+            "outcome": "clean",
+            "status": [
+              "completed",
+              "completed"
+            ],
+            "stored": [
+              {
+                "origin": "explicit",
+                "kind": "convention",
+                "text": "周报一律用表格形式呈现。",
+                "scope_kind": "global"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [],
+            "questions_asked": 1,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 92551,
+            "seconds": 49.9,
+            "tool_calls": 8,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "P1",
+            "expect": "propose",
+            "outcome": "hit",
+            "status": [
+              "completed"
+            ],
+            "stored": [
+              {
+                "origin": "explicit",
+                "kind": "convention",
+                "text": "给客户的报告一律用英文（面向客户的报告一律使用英文；内部讨论与内部留存文档不受此限）。",
+                "scope_kind": "global"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [
+              "给客户的报告一律用英文（面向客户的报告一律使用英文；内部讨论与内部留存文档不受此限）。"
+            ],
+            "questions_asked": 0,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 32187,
+            "seconds": 12.0,
+            "tool_calls": 3,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "P2",
+            "expect": "propose",
+            "outcome": "hit",
+            "status": [
+              "partial"
+            ],
+            "stored": [
+              {
+                "origin": "explicit",
+                "kind": "convention",
+                "text": "周报一律用表格形式输出：板块、事项、状态、本周进展、下一步、负责人、依据各成一列，后续周报不再用段落叙述。",
+                "scope_kind": "global"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [
+              "周报一律用表格形式输出：板块、事项、状态、本周进展、下一步、负责人、依据各成一列，后续周报不再用段落叙述。"
+            ],
+            "questions_asked": 3,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 134793,
+            "seconds": 61.9,
+            "tool_calls": 20,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "P3",
+            "expect": "propose",
+            "outcome": "hit",
+            "status": [
+              "completed"
+            ],
+            "stored": [
+              {
+                "origin": "explicit",
+                "kind": "convention",
+                "text": "出报价对比时以含税价优先：先列含税单价与含税总额，再列未税价及其他口径，并注明币种、日期、地区、渠道、是否含运费；无含税数据时标注未知，不做推断。",
+                "scope_kind": "global"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [
+              "出报价对比时以含税价优先：先列含税单价与含税总额，再列未税价及其他口径，并注明币种、日期、地区、渠道、是否含运费；无含税数据时标注未知，不做推断。"
+            ],
+            "questions_asked": 1,
+            "claims_saved": true,
+            "mentions_confirmation": true,
+            "used_tokens": 52759,
+            "seconds": 20.2,
+            "tool_calls": 4,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "P4",
+            "expect": "propose",
+            "outcome": "hit",
+            "status": [
+              "completed"
+            ],
+            "stored": [
+              {
+                "origin": "explicit",
+                "kind": "alias",
+                "text": "“老王那个泵”指 12V 便携充气泵那个型号（当前品类：汽车充气泵）。",
+                "scope_kind": "category"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [
+              "“老王那个泵”指 12V 便携充气泵那个型号（当前品类：汽车充气泵）。"
+            ],
+            "questions_asked": 1,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 67085,
+            "seconds": 26.7,
+            "tool_calls": 7,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "P5",
+            "expect": "propose",
+            "outcome": "hit",
+            "status": [
+              "completed"
+            ],
+            "stored": [
+              {
+                "origin": "explicit",
+                "kind": "convention",
+                "text": "回复一律先给结论，再给过程。",
+                "scope_kind": "global"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [
+              "回复一律先给结论，再给过程。"
+            ],
+            "questions_asked": 0,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 33543,
+            "seconds": 11.6,
+            "tool_calls": 4,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          },
+          {
+            "probe": "P6",
+            "expect": "propose_proactive",
+            "outcome": "hit",
+            "status": [
+              "partial",
+              "completed",
+              "completed"
+            ],
+            "stored": [
+              {
+                "origin": "proactive",
+                "kind": "convention",
+                "text": "样件编号按「项目-批次-序号」三段编排，不含日期；出处为你口头确认两次，公司资料中未查到。",
+                "scope_kind": "global"
+              }
+            ],
+            "rejected": [],
+            "pending_at_end": [
+              "样件编号按「项目-批次-序号」三段编排，不含日期；出处为你口头确认两次，公司资料中未查到。"
+            ],
+            "questions_asked": 2,
+            "claims_saved": false,
+            "mentions_confirmation": true,
+            "used_tokens": 315036,
+            "seconds": 141.5,
+            "tool_calls": 35,
+            "prompt_versions": [
+              "1.1.0"
+            ],
+            "tool_definitions": [
+              "5119210b2ce4"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

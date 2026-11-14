@@ -1,0 +1,39 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "N7",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "c767cc29-34f2-4dbf-b342-e1b39b7fe04a",
+      "goal": "下周三前先别动模具图纸，帮我写一句提醒大家的话",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 28.9,
+      "used_tokens": 36697,
+      "held_tokens": 0,
+      "answer": "已按“下周三＝11月18日（按工作状态日期 2026-11-14 推算）”写好提醒语，推荐版：「各位，下周三（11/18）之前请先不要改动汽车充气泵的模具图纸，需要调整的先走变更流程找我确认，别直接动图纸。」另附简短版与正式版各一条。我在当前品类（汽车充气泵）可读范围内未检索到已有的图纸冻结/变更记录，所以句中没有引用具体变更单号、责任人或冻结范围，这些属于未知。",
+      "unfinished": [
+        "提醒语中未填具体变更单号、责任人与冻结生效范围——当前品类范围内未检索到对应记录，待你补充或确认后再加入。"
+      ],
+      "final_questions": [
+        "这句提醒要覆盖哪个范围？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "conversation.history": 1,
+        "model": 2
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

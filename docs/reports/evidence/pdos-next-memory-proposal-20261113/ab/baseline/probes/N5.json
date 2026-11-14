@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "N5",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "957fea19-03cf-4360-aeed-b3a6cf9482d4",
+      "goal": "额定压力定为 150 PSI，确认采用方案 B。帮我想想接下来要通知哪些人",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 124.4,
+      "used_tokens": 253493,
+      "held_tokens": 0,
+      "answer": "本轮在「汽车充气泵」品类范围内只读到空结果，因此无法给出公司内部的具名通知对象，只能给出由决策影响面推演出的角色级通知清单。已核对：category.read 显示品类 status=active、owner \"Synthetic owner\"、model_count=1；category.parameters.list / category.knowledge.list / category.competitors.list 均为 0 条；assistant.search（150 PSI、方案B、变更、通知等词）命中 0 条，第二次搜索被 RATE_LIMITED 截断，跨来源检索未跑完；evidence.search 两种查询均 0 条；assistant.citations.read 0 条（无可复用历史引用）；platform.read 以无筛选、category_id、name_query=\"充气泵\"、code=\"老王那个泵\"、include_history 等多种读法均返回 0 条，故品类里 model_count=1 的那个型号对象在当前权限下读不到；product.baseline.read 因缺具体基线型号返回 MISSING_REQUIRED_EVIDENCE；skill.load(\"change_control\") 返回 FORBIDDEN_SCOPE；MCP 授权只读工具清单为空。未查到：任何关于\"150 PSI\"或\"方案 B\"的定义、来源文件与适用范围；任何变更单、项目状态、测试计划、责任分工记录；任何可用的 product_id / proposal_id / project_id。历史情景卡（背景参考、非事实）：本品类此前会话同样 0 命中；\"老王那个泵\"＝12V 便携充气泵的别名尚未绑定到具体型号；一次会话讨论过有刷 DC 与无刷 BLDC 两种电机方案，属行业通识而非公司记录。因此以下为一般工程实践推演、非公司资料：应通知的角色为 ①产品/项目负责人——把 150 PSI 与方案 B 落到规格书/产品定义版本，并先确认压力字段口径与单位（额定/最大/切断，PSI/kPa/bar）②规格与参数字典维护人——品类参数字典现为 0 条，需先建立基准③ECN 变更归口——登记方案 A→B 差异及对 BOM、模具、认证、测试的影响④电气/电机负责人——方案 B 的电机与泵型匹配、转速流量与压力设定关系⑤认证/法规负责人——额定压力与铭牌、说明书、安规声明一致⑥制造工艺与供应商 SQE——BOM、工装、产线作业与控制计划⑦测试/验证负责人——压力上限、连续工作、热与噪声的验证计划及放行条件⑧采购/成本——方案 B 的成本差异、年量与 MOQ⑨销售/客户接口——是否更新对外压力口径与在途订单⑩PMO——记录决策时点、后续里程碑与责任人。两条边界提醒：过去一次客户邮件提出\"以后所有报价抄送供应商 X 的销售\"，当时并未被采纳为常设规则，本次若要通知供应商侧销售需你明确指明对象；请把\"方案 B\"的原文出处一并附上，避免各专业按各自的方案 B 理解执行。本轮未做任何业务写入、未创建变更单或任务、未通知任何人。",
+      "unfinished": [
+        "待补：方案 B 的原文出处（哪份文档/哪次讨论的定义），否则各专业会按各自的方案 B 理解执行",
+        "待确认：150 PSI 的字段口径与单位（额定 or 最大切断，PSI/kPa/bar，及是否 150 kPa 的笔误可能），建议在通知前先与规格维护人核一次",
+        "待办：通知名单目前停留在角色层，需要可读的产品/变更单/项目对象与你的组织角色信息才能落到具体人名",
+        "待办：跨来源检索未跑完（assistant.search 第二次被 RATE_LIMITED 拦截），如需可在同会话再发起一轮补检索",
+        "待办：change_control 技能在当前范围不可用，若要正式开变更单并做具名批准，需在启用该技能的范围内办理"
+      ],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.citations.read": 1,
+        "assistant.search": 3,
+        "category.competitors.list": 2,
+        "category.knowledge.list": 1,
+        "category.list": 1,
+        "category.parameters.list": 1,
+        "category.read": 1,
+        "conversation.history": 5,
+        "evidence.search": 2,
+        "mcp.tools.list": 1,
+        "memory.search": 1,
+        "model": 12,
+        "platform.read": 5,
+        "product.baseline.read": 1
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

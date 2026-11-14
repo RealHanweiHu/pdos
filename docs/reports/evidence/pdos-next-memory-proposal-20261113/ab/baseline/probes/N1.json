@@ -1,0 +1,37 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "N1",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "7479f034-72f0-4a37-b778-fddcd0659c2e",
+      "goal": "我一般用表格看周报，帮我列一下周报通常包含哪几部分",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 26.8,
+      "used_tokens": 53740,
+      "held_tokens": 0,
+      "answer": "已给出周报常见模块清单（12 个模块，按常用度排序）并附表格化布局建议：顶部汇总区（周次/摘要/关键指标）、中部明细区（任务进展、里程碑、风险、待决）、底部计划区（下周计划与附录）。每模块标注主要内容、典型字段与常见性，并提示统一数字口径、固定状态枚举两个实操要点。本题属通用结构问题，未做公司资料检索；如需按你实际项目字段对齐成可填写模板，可继续处理。",
+      "unfinished": [
+        "未核实公司现有周报模板与固定字段（需用户确认后再检索或对齐）。"
+      ],
+      "final_questions": [
+        "需要我把这张周报清单对齐到你在跟的实际项目/任务字段（项目、批次、负责人、承诺时间等），做成可直接填写的模板列头吗？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 3
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

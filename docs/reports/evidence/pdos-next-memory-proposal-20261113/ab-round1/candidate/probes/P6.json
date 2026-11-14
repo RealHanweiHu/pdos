@@ -1,0 +1,121 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P6",
+  "expect": "propose_proactive",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "258f589c-e2a3-4b01-a5d9-68741876ac96",
+      "goal": "用一句话写出我们样件编号的规则",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 98.8,
+      "used_tokens": 236988,
+      "held_tokens": 0,
+      "answer": "结论：在当前可读范围内，没有查到任何写明「样件编号规则」的资料，因此这一句我不能替公司写出来——写出来只能是我编的。\n\n核对到的（全部有据）：\n• 当前品类「汽车充气泵」本身可读：名称、状态 active、1 个型号（model_count=1）、品类知识各类条目计数全为 0（boundary/segment/competitor/voice/regulation/research_question 均为 0）、参数数 0、品类权限 read/write=true、product_manager=false、owner 字段为「Synthetic owner」。但读取该型号的基线定义时，接口返回「请选择实际基线型号」，即型号基线在当前权限下不可解析。\n• 企业检索已执行（关键词含 样件/编号/规则/试制件/命名/试制；源类型含 knowledge、artifact、manufacturing_document、build；含历史）：返回 0 条，coverage=current。\n• 品类知识库按各 kind 列出（含历史）：0 条。\n• 平台/产品/型号读取（按品类、按名称「泵」、不带条件三种）：0 条。\n• 证据检索（关键词「样件编号 规则」「编号」）：0 条。\n• 本工作链历史引用读取：0 条、has_more=false；本会话历史：0 条；个人记忆关键词检索（episode+note）：0 条。\n• 可用 MCP 只读连接器：0 个，故无可调用的外部标准来源。\n• 尝试加载 build_execution 技能以查其样件/批次登记口径：被服务器拒绝（FORBIDDEN_SCOPE，该技能未在当前租户与范围启用）。\n\n没有查到的：样件编号规则的原文出处（文档或知识条目）、规则的具体构成（前缀、流水号、版本/批次段、样件类别的写法）、该规则的维护责任人、任何一条可引用的原文引文。另：本轮查找预算已用尽（MODEL_BUDGET_EXCEEDED），两次扩大检索被限流，因此上述结论只覆盖已执行的范围，不等于公司不存在此规则。\n\n下一步（未执行）：下一轮以制造/工程文档类来源（manufacturing_document、build、change、verification_handoff）继续深入检索；若你提供写规则的文档或截图，我按原文压缩成一句话并标注出处；若你口述原文，我整理为品类知识条目候选待你确认。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+      "unfinished": [
+        "最终结构或引用尚未核对"
+      ],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.citations.read": 1,
+        "assistant.search": 3,
+        "category.competitors.list": 1,
+        "category.knowledge.list": 2,
+        "category.list": 1,
+        "category.read": 1,
+        "conversation.history": 1,
+        "evidence.search": 2,
+        "mcp.tools.list": 1,
+        "memory.search": 1,
+        "model": 12,
+        "platform.read": 3,
+        "product.baseline.read": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    },
+    {
+      "run_id": "75bb79d2-d181-4044-ac12-5b232494aadb",
+      "goal": "不对，样件编号按项目-批次-序号",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 26.7,
+      "used_tokens": 57131,
+      "held_tokens": 0,
+      "answer": "结论（一句）：我们的样件编号按「项目-批次-序号」三段编排，即先项目、再批次、最后流水序号。\n\n这条规则目前在我可读的全部公司资料里查不到出处——按「样件编号规则／项目-批次-序号／试制件命名」在知识、文档、制造文件、批次与项目状态范围内（含历史）检索，返回 0 条；上一轮对「样件/编号/规则/试制件/命名」的检索同样是 0 条。所以这句话的来源是你本人在本次对话中的说明（human），不是可引用的公司文档。\n\n补充两点以便落记录时不出错：\n• 这条规则目前只存在于本次对话，没有任何系统对象（品类知识条目 / 制造基线文件 / 批次台账）登记了它，后续别人查「样件编号规则」仍会查不到。\n• 具体写法（分隔符、项目代号取哪一段、序号是否固定补零、批次号是否含工位）我这边没有任何材料可依据，不替你定。",
+      "unfinished": [
+        "该编号规则尚未登记到任何公司记录（知识条目/制造基线文件/批次台账），当前仅存在于本次对话"
+      ],
+      "final_questions": [
+        "这个「项目-批次-序号」在文件里的实际写法是怎样的（例如 项目代号-B批次-三位序号）？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "model": 3
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    },
+    {
+      "run_id": "1c6161b4-92ff-4587-b914-39d9811c1bda",
+      "goal": "又错了，编号是项目-批次-序号，不要加日期",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 16.0,
+      "used_tokens": 20917,
+      "held_tokens": 0,
+      "answer": "**结论（一句）：我们的样件编号按「项目-批次-序号」三段编排——先项目代号、再批次号、最后该批次内的流水序号，不含日期（也不含年份/季度/工位等时间字段）。**\n\n**这次改了什么**\n- 去掉了我此前表述里可能带上的日期成分：规则只有三段，顺序是项目 → 批次 → 序号，时间类字段不参与编号。\n- 保留你第一次纠正的结论（三段结构不变），本轮只是明确\"不要加日期\"。\n\n**依据与边界（不替你补）**\n- 这条规则的来源是你本人在本次对话中的两次说明（\"不对，样件编号按项目-批次-序号\"、本轮\"不要加日期\"），属人工口述，不是可引用的公司文档。\n- 上一轮在同一工作链里已按「样件编号规则／项目-批次-序号／试制件命名」在知识、文档、制造文件、批次与项目状态范围（含历史）检索，返回 0 条，因此本轮不重复检索，直接沿用该结论。\n- 仍无据可依、我没有替你定的只剩写法细节：分隔符用不用连字符、序号是否补零及位数、项目代号与批次号各取自哪个字段。\n\n**一个现实限制**\n- 本轮可用工具全部为只读，我无法把这句规则写进品类知识条目、制造基线文件或批次台账。也就是说它目前仍只存在于本次对话里，别人搜\"样件编号规则\"依旧查不到；要真正可被他人检索到，需要由有写权限的人登记（内容就是上面那一句）。\n\n**待你确认（只剩写法细节）**\n- 给出任意一个现有样件编号原文即可，例如 PRJ-B01-001 或 PRJ-B01-1；我照此把规则补成可登记的完整表述。",
+      "unfinished": [
+        "编号写法细节（分隔符、序号位数与补零、项目代号/批次号取值来源）仍未确定",
+        "该编号规则仍未登记到任何公司记录（知识条目/制造基线文件/批次台账）；本轮可用工具均为只读，无法写入"
+      ],
+      "final_questions": [
+        "给一个现有样件编号原文即可（例如 PRJ-B01-001 或 PRJ-B01-1）：分隔符、序号位数与补零方式按它照抄？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "proactive",
+          "kind": "convention",
+          "text": "样件编号按「项目-批次-序号」三段编排，不含日期；出处为你口头确认两次，公司资料中未查到。",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "不对，样件编号按项目-批次-序号",
+              "run_id": "75bb79d2-d181-4044-ac12-5b232494aadb"
+            },
+            {
+              "text": "又错了，编号是项目-批次-序号，不要加日期",
+              "run_id": "1c6161b4-92ff-4587-b914-39d9811c1bda"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "样件编号按「项目-批次-序号」三段编排，不含日期；出处为你口头确认两次，公司资料中未查到。"
+  ]
+}

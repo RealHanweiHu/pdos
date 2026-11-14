@@ -1,0 +1,44 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 46.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 56391,
+  "held_tokens": 0,
+  "answer": "本周周报（品类：汽车充气泵）\n\n本周完成\n1. 供应商对比已完成。\n\n下周计划\n1. 补充报价单。\n\n说明：在当前品类（汽车充气泵）可读资料中未检索到供应商对比或报价单的原始记录，以上内容按你本次口述整理；报价单的具体内容、涉及供应商范围与提交时间尚未确定。",
+  "answer_blob": "{\"result\": {\"result\": [\"本周完成供应商对比。\", \"下周补报价单。\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T09:10:17.392748+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"在当前品类（汽车充气泵）可读资料中未检索到供应商对比或报价单的原始记录，周报内容仅依据本次对话中的口述\", \"供应商对比的结论要点（涉及供应商、对比维度、结果）未在资料中找到记录\", \"报价单的具体内容、涉及供应商范围与提交时间未确定\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"本周周报（品类：汽车充气泵）\\n\\n本周完成\\n1. 供应商对比已完成。\\n\\n下周计划\\n1. 补充报价单。\\n\\n说明：在当前品类（汽车充气泵）可读资料中未检索到供应商对比或报价单的原始记录，以上内容按你本次口述整理；报价单的具体内容、涉及供应商范围与提交时间尚未确定。\", \"questions\": [{\"id\": \"q_detail\", \"why\": \"当前资料里没有找到该对比的原始记录，只有你的口述结论；写细需要你提供内容。\", \"options\": [{\"label\": \"就按现在的两条写\", \"value\": \"keep_two_lines\"}, {\"label\": \"我补充对比结论后再写细\", \"value\": \"add_detail_after_user_supplies\"}], \"question\": \"供应商对比这一条要不要写得再具体一点（例如点名涉及哪些供应商、对比了哪些维度、得出什么结论）？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_two_lines\", \"reason\": \"你已明确周报内容就两条，当前文字版已满足\"}, \"allow_free_text\": true}], \"unfinished\": [\"下周补报价单：内容、涉及供应商范围与提交时间尚未确定\"]}",
+  "unfinished": [
+    "下周补报价单：内容、涉及供应商范围与提交时间尚未确定"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

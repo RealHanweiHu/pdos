@@ -1,0 +1,30 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-03",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "candidates",
+      "not_applicable": true
+    },
+    {
+      "id": "p2",
+      "probe": "candidates",
+      "not_applicable": true
+    },
+    {
+      "id": "p3",
+      "probe": "resident",
+      "not_applicable": true
+    }
+  ],
+  "episodes_written": [
+    "r1",
+    "r2"
+  ],
+  "unexpected_notes": 0
+}

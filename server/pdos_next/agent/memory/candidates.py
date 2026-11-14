@@ -42,8 +42,10 @@ from . import triggers
 from .models import MemoryCandidate, MemoryCandidateDecision, MemoryProposalVoid
 
 # Prompt versions whose output contract defines ``memory_candidates`` and that passed
-# Prompt A/B. A version listed here opens the path only for Runs that use it.
-MEMORY_CANDIDATE_PROMPT_VERSIONS = frozenset()
+# Prompt A/B. A version listed here opens the path only for Runs that use it: 1.1.0
+# passed on 2026-11-14 (docs/reports/evidence/pdos-next-memory-proposal-20261113) and
+# takes effect only once it is activated by a named reviewer; the active 1.0.0 stays closed.
+MEMORY_CANDIDATE_PROMPT_VERSIONS = frozenset({"1.1.0"})
 PER_RUN_LIMIT = 3
 TTL = timedelta(days=7)
 ACTIVE = ("queued", "running", "waiting_input")
@@ -68,8 +70,27 @@ def run_scope(run):
     return "global", None
 
 
+KIND = "memory_candidate"  # Marks this module's entries in the Run's rejected proposals.
+DECLINED_NOTE = (
+    "小Pai 这次提议的记忆卡片没有通过系统核对（例如引用的不是你这条消息里的原话），"
+    "没有生成卡片，也没有记住任何内容。需要的话请再明确说一遍，或在“我的记忆”里直接添加。"
+)
+
+
 def _reject(reason, **extra):
-    return {"reason": reason, **extra}
+    return {"reason": reason, "kind": KIND, **extra}
+
+
+def declined(run):
+    """How many proposals of this Run the server refused, for the owner's eyes.
+
+    The model writes its answer before admission, so it may say a card was proposed
+    when none was stored; the Run's own view says so plainly (no text is kept).
+    """
+    rejected = ((run.versions or {}).get("work_state_proposals") or {}).get("rejected", [])
+    count = sum(1 for item in rejected if isinstance(item, dict) and item.get("kind") == KIND
+                and item.get("reason") != "memory_candidate_prompt_not_released")
+    return {"count": count, "note": DECLINED_NOTE} if count else None
 
 
 def discussion_marked(run, goals):
@@ -373,7 +394,8 @@ def for_run(session, ctx, run):
     voided = _voided(session, rows)
     return {"version": "memory-candidates/v1", "run_id": str(run.id),
             "items": [view(session, row, decided.get(row.id), voided=row.id in voided)
-                      for row in rows]}
+                      for row in rows],
+            "declined": declined(run)}
 
 
 def decide(session, ctx, candidate_id, data):

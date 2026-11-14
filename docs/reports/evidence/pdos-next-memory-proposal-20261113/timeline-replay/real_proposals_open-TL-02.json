@@ -1,0 +1,110 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real_proposals_open",
+  "timeline": "TL-02",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "rp1",
+          "owner": "peer"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p3",
+      "probe": "resident",
+      "notes": [
+        "np1"
+      ],
+      "texts": [
+        "回答先给结论"
+      ],
+      "catalog": [
+        "rp1"
+      ],
+      "catalog_fields": [
+        "as_of",
+        "goal",
+        "run_id",
+        "session_id"
+      ],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    },
+    {
+      "id": "p4",
+      "probe": "resident",
+      "notes": [
+        "n1"
+      ],
+      "texts": [
+        "给这个客户的报告一律用英文"
+      ],
+      "catalog": [
+        "r1"
+      ],
+      "catalog_fields": [
+        "as_of",
+        "goal",
+        "run_id",
+        "session_id"
+      ],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    },
+    {
+      "id": "p5",
+      "probe": "search",
+      "status": "completed",
+      "returned": [],
+      "notes": [
+        "n1"
+      ],
+      "texts": [
+        "给这个客户的报告一律用英文"
+      ],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    }
+  ],
+  "episodes_written": [
+    "r1",
+    "rp1"
+  ],
+  "unexpected_notes": 0
+}

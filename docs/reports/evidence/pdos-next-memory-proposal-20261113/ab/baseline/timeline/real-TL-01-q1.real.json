@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 31.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 69955,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-14，会话 007a401a-cf8e-4050-bda6-ac6182dfcea2，运行 3cf0b38a）的结论是：建议选 B 家——交期比 A 家短 2 周；C 家含税报价高于目标价 12%，已排除。明确挂着两项未完成：①补 C 家的含税报价单；②核对 B 家交期的单位（\"短 2 周\"到底是天还是周）。我刚在当前品类\"汽车充气泵\"范围做了一次核查：artifact/knowledge/supply/issue 检索 0 命中，竞品清单为空，证据库无供应商报价或交期记录。也就是说这两项至今没有公司侧材料可核，B 家交期单位和 C 家含税价仍属未知；上次结论只是当时的情景记录，不能当作当前业务事实直接引用。要往下走，需要你提供 C 家报价单原文和 B 家交期口径，或者我改走公开渠道查这两家。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T04:57:20.619880+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"B 家交期时间单位（天/周等口径）未在任何当前可读资料中登记\", \"C 家含税报价单原件缺失，含税价与目标价高 12% 的测算无法复核\", \"A 家报价口径未在可核资料中确认，无法验证 B 家同时具备价格优势\", \"本轮在品类 汽车充气泵 范围内检索 artifact/knowledge/supply/issue 均无供应商报价或交期命中，竞品清单与证据库为空\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次（2026-11-14，会话 007a401a-cf8e-4050-bda6-ac6182dfcea2，运行 3cf0b38a）的结论是：建议选 B 家——交期比 A 家短 2 周；C 家含税报价高于目标价 12%，已排除。明确挂着两项未完成：①补 C 家的含税报价单；②核对 B 家交期的单位（\\\"短 2 周\\\"到底是天还是周）。我刚在当前品类\\\"汽车充气泵\\\"范围做了一次核查：artifact/knowledge/supply/issue 检索 0 命中，竞品清单为空，证据库无供应商报价或交期记录。也就是说这两项至今没有公司侧材料可核，B 家交期单位和 C 家含税价仍属未知；上次结论只是当时的情景记录，不能当作当前业务事实直接引用。要往下走，需要你提供 C 家报价单原文和 B 家交期口径，或者我改走公开渠道查这两家。\", \"questions\": [{\"id\": \"q1\", \"why\": \"上次把 C 家排除是基于含税价超目标价 12%，但公司范围内没有该报价单原件，这个排除结论目前无法复核。\", \"options\": [{\"label\": \"你把 C 家含税报价单原文/附件给我，我按口径核对\", \"value\": \"user_supplies\"}, {\"label\": \"我走公开渠道检索该供应商公开报价信息，标注为推断/未知\", \"value\": \"public_research\"}, {\"label\": \"先不处理，C 家维持排除\", \"value\": \"hold\"}], \"question\": \"C 家的含税报价单，怎么补？\", \"depends_on\": [], \"recommended\": {\"value\": \"user_supplies\", \"reason\": \"排除结论目前依赖一份无法复核的价格，实际报价单是唯一可核来源\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"这个单位直接决定 B 家相对 A 家的优势幅度，也决定后续交期承诺是否需要向 B 家书面确认。\", \"options\": [{\"label\": \"天\", \"value\": \"days\"}, {\"label\": \"周\", \"value\": \"weeks\"}, {\"label\": \"记不准，需要向 B 家确认（先标为未知）\", \"value\": \"unknown\"}], \"question\": \"B 家的交期单位是多少（\\\"短 2 周\\\"中的 2 指周还是天）？\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown\", \"reason\": \"现有记录里没有出现单位字段，无法从可核资料判定，先按未知登记更稳妥\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"上次的结论是\\\"B 家交期更短 + C 家价高\\\"，但 A 家的价格口径没有出现在任何可核记录里，选 B 的理由目前只靠交期单腿支撑。\", \"options\": [{\"label\": \"要，把 A/B/C 三家的报价口径统一核对一遍\", \"value\": \"yes\"}, {\"label\": \"不用，A 家先按交期劣势处理\", \"value\": \"no\"}], \"question\": \"A 家的报价口径要不要一并核对？\", \"depends_on\": [], \"recommended\": {\"value\": \"yes\", \"reason\": \"同口径比较才有可比性，补齐 A 家报价能让\\\"B 家更优\\\"的结论可复核\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家含税报价单原件（当前范围内未检索到任何供应商报价材料）\", \"核对并确认 B 家交期的计量单位（\\\"短 2 周\\\"单位待确认，暂按未知登记）\", \"未做：A 家报价口径与 B/C 的同口径比较（选 B 结论目前只有交期依据）\"]}",
+  "unfinished": [
+    "补 C 家含税报价单原件（当前范围内未检索到任何供应商报价材料）",
+    "核对并确认 B 家交期的计量单位（\"短 2 周\"单位待确认，暂按未知登记）",
+    "未做：A 家报价口径与 B/C 的同口径比较（选 B 结论目前只有交期依据）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

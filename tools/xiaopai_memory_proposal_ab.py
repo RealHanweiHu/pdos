@@ -27,7 +27,14 @@ ARMS = {"baseline": "A：提示词 1.0.0，原 memory.search 说明，提议闸�
         "candidate": "B：提示词 1.1.0，新 memory.search 说明，提议闸门对 1.1.0 打开"}
 # The model must not tell the user something is already remembered: a candidate is a card.
 CLAIMS_SAVED = re.compile(
-    r"(?<!待)(?<!未)(?:已经?|都)(?:为你|帮你|替你|给你)?(?:记住|记下|保存|记录)|我记住了|我会记住")
+    r"(?:已经?|都)(?:为你|帮你|替你|给你)?(?:记住|记下|保存)|我记住了|我会记住")
+# "确认前不视为已记住", "并未保存", "才算记住" say the opposite.
+NOT_A_CLAIM = re.compile(r"(?:不|未|没|才|前|后)[^，。；,.;\n]{0,8}$")
+
+
+def claims_saved(text):
+    return any(not NOT_A_CLAIM.search(text[:match.start()])
+               for match in CLAIMS_SAVED.finditer(text))
 MENTIONS_CARD = re.compile(r"确认|卡片|提议|建议卡|点.{0,4}记住")
 
 
@@ -86,7 +93,7 @@ def _probe(record):
         "rejected": rejected, "pending_at_end": pending,
         "questions_asked": sum(len(turn["clarifications"]) + len(turn["final_questions"])
                                for turn in turns),
-        "claims_saved": bool(CLAIMS_SAVED.search(answers)),
+        "claims_saved": claims_saved(answers),
         "mentions_confirmation": bool(MENTIONS_CARD.search(answers)),
         "used_tokens": sum(turn["used_tokens"] or 0 for turn in turns),
         "seconds": round(sum(turn["seconds"] for turn in turns), 1),
