@@ -602,3 +602,10 @@ from pdos_next.domain.manufacturing.tool_trials.schemas import (  # noqa: E402
 
 # D47 (P95, D305): tool trial with tooling record and its verification request, T1 one confirmation.
 PAYLOADS.update(TOOL_TRIAL_PAYLOADS)
+from pdos_next.domain.knowledge.scope_notes.schemas import (  # noqa: E402
+    PAYLOADS as SCOPE_NOTE_PAYLOADS,
+)
+
+# M2b (P87; P121 第 3、4、6 项): scope notes. save/retire are T1; observation.record is the
+# T0 lane for an unverified observation or an evidence link, which needs a qualification.
+PAYLOADS.update(SCOPE_NOTE_PAYLOADS)

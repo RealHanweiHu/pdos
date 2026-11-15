@@ -523,6 +523,11 @@ def create_app(
     )
 
     register_tool_trial_routes(app, engine, auth_dependency)
+    from pdos_next.domain.knowledge.scope_notes.api import (
+        register_routes as register_scope_note_routes,
+    )
+
+    register_scope_note_routes(app, engine, auth_dependency)
     from pdos_next.domain.quality.capa_effectiveness.api import (
         register_routes as register_effectiveness_routes,
     )

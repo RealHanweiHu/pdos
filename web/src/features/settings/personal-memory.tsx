@@ -9,6 +9,7 @@ import {
   type NoteKind, type NotesView, type OwnerSettings, type Resolution, type ScopeKind,
 } from "@/lib/personal-memory";
 import { Button } from "../../components/ui/button";
+import { ShareToProject } from "../scope-notes/share-to-project";
 import styles from "./personal-memory.module.css";
 
 type Api = typeof browserApi;
@@ -119,7 +120,7 @@ function AddNote({ api, onSaved, disabled }: { api: Api; onSaved: (text: string)
 }
 
 function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNote; onChanged: (text: string) => void; readOnly: boolean }) {
-  const [mode, setMode] = useState<"view" | "edit" | "delete" | "history">("view");
+  const [mode, setMode] = useState<"view" | "edit" | "delete" | "history" | "share">("view");
   const [draft, setDraft] = useState<NoteDraft>(() => ({ kind: note.kind, text: note.text, scope: { kind: note.scope.kind, id: note.scope.id }, valid_until: note.valid_until?.slice(0, 10) ?? "", alias_term: note.alias?.term ?? "", alias_canonical: note.alias?.means?.kind === "term" ? note.alias.means.text ?? "" : "" }));
   const [history, setHistory] = useState<MemoryNote[] | null>(null);
   const [busy, setBusy] = useState(false);
@@ -146,6 +147,7 @@ function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNot
       </div>
       {mode === "view" && <div className={styles.rowActions}>
         {!past && !readOnly && <Button type="button" size="sm" variant="ghost" onClick={() => setMode("edit")}>修改</Button>}
+        {!past && !readOnly && note.kind !== "alias" && <Button type="button" size="sm" variant="ghost" onClick={() => setMode("share")}>分享到项目</Button>}
         <Button type="button" size="sm" variant="ghost" onClick={() => void showHistory()}>历史</Button>
         <Button type="button" size="sm" variant="ghost" onClick={() => setMode("delete")}>删除</Button>
       </div>}
@@ -158,6 +160,7 @@ function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNot
       <p>删除后，这条记忆的正文和全部历史版本会立即清除，不能恢复；只留下“某时删除了一条”的记录。以往对话的运行检查点里可能仍留有带入时的副本，最迟 30 天内随检查点清除。</p>
       <div className={styles.actions}><Button type="button" size="sm" variant="destructive" disabled={busy} onClick={() => void run(() => api(`${memoryBase}/notes/${note.note_id}/deletion`, { request_key: requestKey(), expected_revision: note.revision }), "已删除，正文和历史版本已清除；以往对话检查点里的副本最迟 30 天内清除。")}>{busy ? "正在删除…" : "确认删除"}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setMode("view")}>取消</Button></div>
     </div>}
+    {mode === "share" && <ShareToProject api={api} title="分享到项目" text={note.text} kind={note.kind === "convention" ? "convention" : "concern"} sharedFrom={note.note_id} preselect={note.scope.kind === "project" ? note.scope.id : null} onDone={() => { setMode("view"); onChanged("已分享到项目：生成了一条新的团队备忘，你的个人条目保持不变。"); }} onCancel={() => setMode("view")}/>}
     {mode === "history" && <div className={styles.history}>
       {history ? <ol>{history.map(item => <li key={item.revision}><span className={styles.meta}>第 {item.revision} 版 · {day(item.confirmed_at)}{item.state === "replaced" ? " · 已替换" : ""}</span><span>{item.text}</span></li>)}</ol> : !error && <p role="status" className={styles.meta}>正在读取历史…</p>}
       <Button type="button" size="sm" variant="ghost" onClick={() => setMode("view")}>收起历史</Button>
@@ -171,12 +174,13 @@ export function CandidateCard({ api, candidate, onDecided, compact = false }: { 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [choosing, setChoosing] = useState(false);
+  const [sharing, setSharing] = useState(false);
   const [conflicts, setConflicts] = useState(candidate.conflicts);
-  async function decide(decision: "adopt" | "ignore", conflict: ConflictChoice | null = null) {
+  async function decide(decision: "adopt" | "ignore", conflict: ConflictChoice | null = null, done?: string) {
     setBusy(true); setError("");
     try {
       await api(`${memoryBase}/candidates/${candidate.candidate_id}/decision`, { request_key: requestKey(), decision, conflict });
-      onDecided(decision === "adopt" ? "已记住这条提议。" : "已忽略这条提议。");
+      onDecided(done ?? (decision === "adopt" ? "已记住这条提议。" : "已忽略这条提议。"));
     } catch (failure) {
       const detail = (failure as { detail?: { reason_key?: string; conflicts?: ConflictNote[] } }).detail;
       if (detail?.reason_key === "memory_conflict_unresolved" && detail.conflicts) { setConflicts(detail.conflicts); setChoosing(true); }
@@ -190,9 +194,11 @@ export function CandidateCard({ api, candidate, onDecided, compact = false }: { 
     {!compact && candidate.trigger.length > 0 && <p className={styles.quote}>你的原话：{candidate.trigger.map(item => `“${item.text}”`).join("、")}</p>}
     <p className={styles.hint}>{candidate.label}</p>
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {choosing && conflicts.length ? <ConflictPicker conflicts={conflicts} newer={candidate.text} busy={busy} action="记住" onChoose={choice => void decide("adopt", choice)} onCancel={() => setChoosing(false)}/>
+    {sharing ? <ShareToProject api={api} title="记为项目备忘" text={candidate.text} kind="convention" preselect={candidate.scope.kind === "project" ? candidate.scope.id : null} onDone={() => { setSharing(false); void decide("ignore", null, "已记为项目备忘；这条提议不再记入你的个人记忆。"); }} onCancel={() => setSharing(false)}/>
+      : choosing && conflicts.length ? <ConflictPicker conflicts={conflicts} newer={candidate.text} busy={busy} action="记住" onChoose={choice => void decide("adopt", choice)} onCancel={() => setChoosing(false)}/>
       : <div className={styles.actions}>
         <Button type="button" size="sm" disabled={busy} onClick={() => conflicts.length ? setChoosing(true) : void decide("adopt")}>{busy ? "正在处理…" : "记住"}</Button>
+        {candidate.kind !== "alias" && <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setSharing(true)}>记为项目备忘</Button>}
         <Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => void decide("ignore")}>忽略</Button>
         {conflicts.length > 0 && <span className={styles.meta}>有 {conflicts.length} 条相似的旧条目，记住前需要选择处理方式</span>}
       </div>}

@@ -104,13 +104,18 @@ def usage(session, ctx, run):
              for row, _state, scope, _receipts in kept]
     sessions = [item for item in value.get("sessions", [])]
     notes = note_usage(session, value.get("notes") or [])
+    from .scope_assemble import usage as scope_usage
+
+    scope_notes = scope_usage(session, value.get("scope_notes") or [])
     return {
         "version": "memory-usage/v1",
         "run_id": str(run.id),
-        "count": len(items) + len(sessions) + len(notes),
+        "count": len(items) + len(sessions) + len(notes) + len(scope_notes),
         "items": items,
         "sessions": [{"session_id": item} for item in sessions],
         "notes": notes,
+        # P87 第 10 项: team notes are listed apart from the owner's own memory.
+        "scope_notes": scope_notes,
         "withheld": len(run_ids) - len(items),
         "retrieval": value.get("retrieval"),
         "note": "这些是你本人以往的工作记录和你确认过的记忆条目，只作背景或口径，不是回答依据。",

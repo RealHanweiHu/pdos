@@ -134,6 +134,10 @@ NON_CONSUMING = frozenset(
         "memory_embedding_calls",
         "memory_episode_vectors",
         "memory_vector_profiles",
+        "scope_notes",
+        "scope_note_versions",
+        "scope_note_evidence",
+        "scope_note_relations",
         # D56 export audit: who exported which scope, counts and file digest only;
         # it never copies or adopts source material.
         "export_audits",

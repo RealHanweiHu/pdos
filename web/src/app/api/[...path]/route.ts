@@ -289,6 +289,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const projectWork = projectWorkPaths.test(pathname);
   const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   // P34-2/3: project topics, object comments, mention candidates; scope stays in the path.
+  // M2b (P87, P121): team scope notes and scope recency are read here; every write is a common command.
+  const scopeNotes = /^v1\/(?:scope-notes\/(?:category|product|proposal|project)\/[a-f0-9-]{36}(?:\/all)?|scope-note-items\/[a-f0-9-]{36}|scope-recent\/(?:category|product|proposal|project)\/[a-f0-9-]{36})$/i.test(pathname);
   const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?|\/agent-requests\/[a-f0-9-]{36}\/(?:reply|share))?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
@@ -296,7 +298,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !supplyCommitments && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !supplyCommitments && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion && !scopeNotes) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -332,6 +334,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   } else if (roleCatalog || projectTeam) {
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
+  } else if (scopeNotes) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "团队备忘在这里只读；保存、停用和撤回请走确认办理。" }, { status: 405, headers: { Allow: "GET" } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "团队备忘只按路径中的范围读取。" }, { status: 422 });
   } else if (discussion) {
     // @小Pai (D37 ⑥): the reply is read with GET, a share is a POST of its requester.
     const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36}|reply)$/i.test(pathname), write = /\/(?:follow|edit|retract|messages|share)$/.test(pathname);
