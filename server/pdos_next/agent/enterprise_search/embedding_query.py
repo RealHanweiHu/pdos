@@ -41,6 +41,14 @@ class QueryPorts:
     backend: object = field(repr=False)
     profile_for: object = field(repr=False)  # Trusted host selector, never a model/HTTP parameter.
     scan_strategy: str = "exact"
+    # True: profile_for(scope, session, run) reads server facts in the Run's own
+    # transaction (memory.search picks the owner's serving space, D300).
+    run_selector: bool = False
+
+    def selected(self, session, scope, run):
+        if self.run_selector:
+            return self.profile_for(scope, session, run)
+        return self.profile_for(scope)
 
 
 @dataclass(frozen=True)
@@ -65,16 +73,19 @@ class QueryResult:
 
 
 class QueryEmbedding:
-    def __init__(self, store, ports, *, source_guard):
+    def __init__(self, store, ports, *, source_guard, snapshot=SNAPSHOT):
         self.store, self.ports, self.source_guard = store, ports, source_guard
+        # Each consumer freezes its own space once per Run (one query, one space).
+        self.snapshot = snapshot
 
     def frozen_profile(self, session, scope, run):
-        if SNAPSHOT in run.versions:
-            value = run.versions[SNAPSHOT]
-            if run.versions.get(SNAPSHOT + "_digest") != digest(value):
+        frozen = self.snapshot
+        if frozen in run.versions:
+            value = run.versions[frozen]
+            if run.versions.get(frozen + "_digest") != digest(value):
                 raise DomainError("VERSION_CONFLICT", "固定 Embedding profile 已变化。")
             return QueryProfile.model_validate(value) if value is not None else None
-        selected = self.ports.profile_for(scope)
+        selected = self.ports.selected(session, scope, run)
         snapshot = None
         if selected is not None:
             try:
@@ -90,7 +101,7 @@ class QueryEmbedding:
                     scan_strategy=self.ports.scan_strategy,
                 )
         value = snapshot.model_dump(mode="json") if snapshot else None
-        run.versions = {**run.versions, SNAPSHOT: value, SNAPSHOT + "_digest": digest(value)}
+        run.versions = {**run.versions, frozen: value, frozen + "_digest": digest(value)}
         return snapshot
 
     def prepare(self, scope, parent_id, arguments):

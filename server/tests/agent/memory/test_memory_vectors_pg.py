@@ -157,3 +157,134 @@ def test_vectors_and_receipts_are_owner_only_and_never_written_by_ai(setup):
                                "profile_version_id": str(vector.profile_version_id),
                                "episode_ids": [str(vector.episode_id)]})), {},
             secrets=provider, pricing_for=ports.pricing_for, client=provider)
+
+
+# --- D300 (design §14.9 嵌入版本): a new model is built beside the old one, then switched to. ---
+
+
+def second_profile(setup, ports, *, budget_revision, model="synthetic-embed-2", profile_id=None,
+                   revision=0, enabled=True):
+    command = command_for(setup, profile_id=profile_id, revision=revision,
+                          budget_revision=budget_revision, enabled=enabled)
+    command["payload"]["metadata"].update(
+        model=model, model_version=model + "@1", data_categories=["internal", "owner_session"])
+    receipt, _ = save_profile(setup, ports, command)
+    return UUID(receipt["subject_id"]), UUID(command["payload"]["profile_id"])
+
+
+def serving_now(setup, run_id):
+    with KernelStore(setup.engine).transaction(scope(setup, run_id), lock=True) as (s, run):
+        return vectors.serving(s, run.requester_id)
+
+
+def recalled(setup, version, query="完全不同的说法"):
+    current, _ = start(setup, goal="上次那几家")
+    with KernelStore(setup.engine).transaction(scope(setup, current), lock=True) as (s, run):
+        return search(s, run, MemorySearchInput(query=query), semantic={
+            "status": "ready", "vector": (1.0, 0.0), "profile_version_id": version})
+
+
+def test_old_vectors_serve_until_the_new_model_has_caught_up_then_the_search_switches(setup):
+    first = finished(setup, "比较三家气泵供应商的报价和交期")
+    second = finished(setup, "整理密封圈的来料检验记录")
+    provider, ports, old = profile(setup, ["internal", "owner_session"])
+    with Session(setup.admin) as session:
+        from pdos_next.agent.enterprise_search.embedding_models import EmbeddingProfile
+
+        old_profile = session.get(EmbeddingProfile, old).profile_id
+    embed(setup, provider, ports, pending(setup))
+    probe, _ = start(setup, goal="探测")
+    state = serving_now(setup, probe)
+    assert state["profile_version_id"] == old and state["coverage"] == "complete"
+    assert state["switching"] is False
+    expected = {str(first), str(second)}
+
+    # A new model is saved as a second profile beside the old one (both active).
+    new, _new_profile = second_profile(setup, ports, budget_revision=1)
+    rows = pending(setup)
+    assert {row["profile_version_id"] for row in rows} == {new}
+    assert {row["episode_id"] for row in rows} == {episode(setup, first).id,
+                                                   episode(setup, second).id}
+    state = serving_now(setup, probe)
+    assert state["profile_version_id"] == old and state["switching"] is True
+    assert state["active_versions"] == [str(new), str(old)]
+    # While the new space is empty the old one keeps serving: no fake empty result.
+    found = recalled(setup, old)
+    assert {item["run_id"] for item in found["items"]} == expected
+    assert found["retrieval"]["channels"] == ["keyword", "vector"]
+
+    # New work meanwhile is written to both spaces.
+    third = finished(setup, "复核外壳缩水的保压参数")
+    rows = pending(setup)
+    assert {(row["episode_id"], row["profile_version_id"]) for row in rows} >= {
+        (episode(setup, third).id, old), (episode(setup, third).id, new)}
+
+    # Half built: still the old space (one space per query, never fused across spaces).
+    partial = [row for row in rows if row["profile_version_id"] == new
+               and row["episode_id"] == episode(setup, first).id]
+    embed(setup, provider, ports, partial)
+    assert serving_now(setup, probe)["profile_version_id"] == old
+
+    # Fully built for everything the owner had when the new version was saved: switch.
+    embed(setup, provider, ports, [row for row in pending(setup)
+                                   if row["profile_version_id"] == new])
+    state = serving_now(setup, probe)
+    assert state["profile_version_id"] == new and state["coverage"] == "complete"
+    found = recalled(setup, new)
+    assert {item["run_id"] for item in found["items"]} == expected | {str(third)}
+
+    # The old profile is disabled: it is neither dispatched nor queried any more.
+    second_profile(setup, ports, budget_revision=2, model="synthetic-embed", enabled=False,
+                   profile_id=old_profile, revision=1)
+    fourth = finished(setup, "复核气泵噪音")
+    assert {row["profile_version_id"] for row in pending(setup)} == {new}
+    assert {row["episode_id"] for row in pending(setup)} == {episode(setup, fourth).id}
+    state = serving_now(setup, probe)
+    assert state["active_versions"] == [str(new)] and state["switching"] is False
+    assert state["profile_version_id"] == new
+    # The fourth episode has no vector yet; keyword retrieval still finds it.
+    lagging = recalled(setup, new, query="气泵噪音")
+    assert str(fourth) in {item["run_id"] for item in lagging["items"]}
+
+
+def test_a_run_keeps_the_space_it_started_with_and_says_when_that_space_went_away(setup):
+    from types import SimpleNamespace
+
+    from pdos_next.agent.enterprise_search.embedding_query import QueryEmbedding, QueryPorts
+    from pdos_next.agent.memory.tool import MEMORY_SNAPSHOT, semantic_query
+
+    finished(setup, "比较三家气泵供应商的报价和交期")
+    provider, ports, old = profile(setup, ["internal", "owner_session"])
+    with Session(setup.admin) as session:
+        from pdos_next.agent.enterprise_search.embedding_models import EmbeddingProfile
+
+        old_profile = session.get(EmbeddingProfile, old).profile_id
+    embed(setup, provider, ports, pending(setup))
+    embedder = QueryEmbedding(KernelStore(setup.engine),
+                              QueryPorts(ports, vectors.select_profile, run_selector=True),
+                              source_guard=lambda _scope: frozenset({"internal"}),
+                              snapshot=MEMORY_SNAPSHOT)
+    calls = []
+    embedder.prepare = lambda *args: calls.append(args) or SimpleNamespace(
+        status="ready", vector=(1.0, 0.0))
+    current, _ = start(setup, goal="气泵供应商")
+    bound = scope(setup, current)
+    # Without an actual started memory.search call nothing is embedded.
+    assert semantic_query(KernelStore(setup.engine), embedder, bound,
+                          {"query": "气泵"}) == {"status": "query_unavailable"}
+    assert calls == []
+    with Session(setup.admin) as session:
+        frozen = session.get(AgentRun, current).versions[MEMORY_SNAPSHOT]
+    assert frozen["profile_version_id"] == str(old)
+    # The old space is disabled mid-run: this Run says so instead of switching spaces.
+    second_profile(setup, ports, budget_revision=1, model="synthetic-embed", enabled=False,
+                   profile_id=old_profile, revision=1)
+    assert semantic_query(KernelStore(setup.engine), embedder, bound, {"query": "气泵"}) is None
+    new, _ = second_profile(setup, ports, budget_revision=2)
+    assert semantic_query(KernelStore(setup.engine), embedder, bound, {"query": "气泵"}) == {
+        "status": "query_profile_mismatch"}
+    degraded = memory_search(KernelStore(setup.engine), query_embedding=embedder)(
+        bound, {"query": "气泵供应商"})
+    assert degraded["retrieval"]["semantic"]["status"] == "unavailable"
+    assert degraded["retrieval"]["semantic"]["reason"] == "query_profile_mismatch"
+    assert len(degraded["items"]) == 1  # Keyword retrieval still answers.
