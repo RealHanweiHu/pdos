@@ -18,7 +18,6 @@ from pdos_next.errors import DomainError
 from .models import ScopeNote, ScopeNoteEvidence, ScopeNoteRelation, ScopeNoteVersion
 
 VERSION = "scope-notes/v1"
-REVIEW_DAYS = 90  # P87 第 4 项 缺省 90 天; the tenant setting is a registered remainder.
 KIND_LABELS = {"convention": "约定", "concern": "关注点", "decision_context": "决策背景",
                "observation": "观察"}
 EPISTEMIC_LABELS = {"stated": "有人这样说", "verified": "已核实", "inferred": "推断",
@@ -395,7 +394,7 @@ def listing(s, ctx, kind, identity, *, include_history=False):
         "audience": audience(s, anchor),
         "customers": anchor_customers(s, ctx.tenant_id, anchor),
         "statement_limit": 300,
-        "review_days": REVIEW_DAYS,
+        "review_days": review_days(s),
         "notes": shown,
         "inactive_count": sum(1 for item in items if item["state"] not in {"active", "expired"}),
         "note": FACT_POLICY,
@@ -422,5 +421,13 @@ def history(s, ctx, note_id):
     return {"version": VERSION, "note": head, "versions": versions}
 
 
-def review_due(now=None):
-    return (now or datetime.now(UTC)) + timedelta(days=REVIEW_DAYS)
+def review_days(s):
+    """复核期限由租户配置，缺省 90 天 (P87 第 4 项; D504): the period in force now."""
+    from pdos_next.agent.memory.policy import review_days as configured
+
+    return configured(s)
+
+
+def review_due(s, now=None):
+    """The review date a version written now gets; earlier versions keep theirs."""
+    return (now or datetime.now(UTC)) + timedelta(days=review_days(s))

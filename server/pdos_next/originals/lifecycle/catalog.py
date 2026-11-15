@@ -5469,8 +5469,9 @@ COVERED_COLUMNS.update({
         "request_sha256", "id", "tenant_id", "created_at",
     ),
     "memory_tenant_policies": (
-        "revision", "work_state_idle_days", "notes_enabled", "proposals_enabled", "set_by",
-        "request_key", "request_sha256", "id", "tenant_id", "created_at",
+        "revision", "work_state_idle_days", "notes_enabled", "proposals_enabled",
+        "scope_note_review_days", "set_by", "request_key", "request_sha256", "id", "tenant_id",
+        "created_at",
     ),
 })
 # Personal memory notes (M2a, P86). Notes are the owner's own words; the owner's
