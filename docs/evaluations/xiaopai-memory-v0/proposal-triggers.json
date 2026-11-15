@@ -1,0 +1,4082 @@
+{
+ "version": "xiaopai-memory-proposal-triggers/v0",
+ "status": "candidate",
+ "synthetic": true,
+ "trusted_root": false,
+ "items": [
+  {
+   "id": "T001",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "记住：给这个客户的报告一律用英文"
+  },
+  {
+   "id": "T002",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后给我表格形式的周报"
+  },
+  {
+   "id": "T003",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "这周的周报整理一下，以后给我表格形式的周报"
+  },
+  {
+   "id": "T004",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后周报都用表格"
+  },
+  {
+   "id": "T005",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "每次出报价都先列含税价"
+  },
+  {
+   "id": "T006",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "从现在起回复我都用中文"
+  },
+  {
+   "id": "T007",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "今后报告请附上数据来源"
+  },
+  {
+   "id": "T008",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "帮我记一下，样件编号按项目-批次-序号"
+  },
+  {
+   "id": "T009",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "记下来：评审纪要要抄送结构组"
+  },
+  {
+   "id": "T010",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后别给我发英文摘要"
+  },
+  {
+   "id": "T011",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后不要在报价里写含运费"
+  },
+  {
+   "id": "T012",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后请先给结论再给过程"
+  },
+  {
+   "id": "T013",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后帮我把交期统一换算成自然日"
+  },
+  {
+   "id": "T014",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "每次给我对比表的时候都标出最低价"
+  },
+  {
+   "id": "T015",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "往后回答先说结论"
+  },
+  {
+   "id": "T016",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "请记住，我看单位只看公制"
+  },
+  {
+   "id": "T017",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "你记住，供应商名字一律用全称"
+  },
+  {
+   "id": "T018",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后默认按欧标来比"
+  },
+  {
+   "id": "T019",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "下次起周报里加一栏风险"
+  },
+  {
+   "id": "T020",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后凡是报价都按含税价给我"
+  },
+  {
+   "id": "T021",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "记一下，我要的噪声数据都是 1 米处的"
+  },
+  {
+   "id": "T022",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "今后一律用项目代号称呼，不要写客户名"
+  },
+  {
+   "id": "T023",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "以后给我的表格先按交期排序"
+  },
+  {
+   "id": "T024",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "从今以后试产报告都带上良率"
+  },
+  {
+   "id": "T025",
+   "split": "tuning",
+   "group": "remember",
+   "label": true,
+   "text": "每次总结先列未完成事项"
+  },
+  {
+   "id": "T026",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我一般用表格看周报"
+  },
+  {
+   "id": "T027",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我习惯先看含税价"
+  },
+  {
+   "id": "T028",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我比较喜欢简短一点的总结"
+  },
+  {
+   "id": "T029",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "别忘了把交期也列上"
+  },
+  {
+   "id": "T030",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "这个以后再说吧"
+  },
+  {
+   "id": "T031",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "以后可能会换供应商"
+  },
+  {
+   "id": "T032",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "不用记住这个"
+  },
+  {
+   "id": "T033",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "这条不用记下来"
+  },
+  {
+   "id": "T034",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "要不要记住这条？"
+  },
+  {
+   "id": "T035",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我已经记住了"
+  },
+  {
+   "id": "T036",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "每次试产的数据在哪"
+  },
+  {
+   "id": "T037",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "帮我比较三家供应商的报价"
+  },
+  {
+   "id": "T038",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我说的不是这个意思"
+  },
+  {
+   "id": "T039",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "这个供应商以后不合作了"
+  },
+  {
+   "id": "T040",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "客户说以后订单会翻倍"
+  },
+  {
+   "id": "T041",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "每次试产气嘴都漏气，查一下原因"
+  },
+  {
+   "id": "T042",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "把这周的周报整理成表格"
+  },
+  {
+   "id": "T043",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "这次用英文写"
+  },
+  {
+   "id": "T044",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "额定压力定为 150 PSI"
+  },
+  {
+   "id": "T045",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "确认采用方案 B"
+  },
+  {
+   "id": "T046",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我记得上次报价是 12 块"
+  },
+  {
+   "id": "T047",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "你还记得上周比过的三家供应商吗"
+  },
+  {
+   "id": "T048",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "以后有空再看看这个方案"
+  },
+  {
+   "id": "T049",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "下周三前先别动模具图纸"
+  },
+  {
+   "id": "T050",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "这个问题似乎是供应商造成的"
+  },
+  {
+   "id": "T051",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "可以考虑 120 PSI"
+  },
+  {
+   "id": "T052",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "老王让我记住明天的评审"
+  },
+  {
+   "id": "T053",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "以后这类问题会不会更多？"
+  },
+  {
+   "id": "T054",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "出一份报价对比"
+  },
+  {
+   "id": "T055",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "周报什么时候交"
+  },
+  {
+   "id": "T056",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "交期以后会延长吗"
+  },
+  {
+   "id": "T057",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "这次先不用表格"
+  },
+  {
+   "id": "T058",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "帮我总结一下这份客户邮件"
+  },
+  {
+   "id": "T059",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "之前说的含税价是多少"
+  },
+  {
+   "id": "T060",
+   "split": "tuning",
+   "group": "remember",
+   "label": false,
+   "text": "我通常上午看报告"
+  },
+  {
+   "id": "T061",
+   "split": "tuning",
+   "group": "alias",
+   "label": true,
+   "text": "我说的老王那个泵就是 F64 项目"
+  },
+  {
+   "id": "T062",
+   "split": "tuning",
+   "group": "alias",
+   "label": true,
+   "text": "我说气嘴指气门嘴"
+  },
+  {
+   "id": "T063",
+   "split": "tuning",
+   "group": "alias",
+   "label": true,
+   "text": "我说的“小黑”是指黑色款 12V 泵"
+  },
+  {
+   "id": "T064",
+   "split": "tuning",
+   "group": "alias",
+   "label": true,
+   "text": "我们说的大单就是客户 A 的年度订单"
+  },
+  {
+   "id": "T065",
+   "split": "tuning",
+   "group": "alias",
+   "label": true,
+   "text": "我讲的二厂指的是东莞那个厂"
+  },
+  {
+   "id": "T066",
+   "split": "tuning",
+   "group": "alias",
+   "label": true,
+   "text": "我叫的“快泵”就是高速款"
+  },
+  {
+   "id": "T067",
+   "split": "tuning",
+   "group": "alias",
+   "label": false,
+   "text": "按我说的做"
+  },
+  {
+   "id": "T068",
+   "split": "tuning",
+   "group": "alias",
+   "label": false,
+   "text": "我说的不是这个意思"
+  },
+  {
+   "id": "T069",
+   "split": "tuning",
+   "group": "alias",
+   "label": false,
+   "text": "我说过要用表格"
+  },
+  {
+   "id": "T070",
+   "split": "tuning",
+   "group": "alias",
+   "label": false,
+   "text": "我们叫供应商明天来"
+  },
+  {
+   "id": "T071",
+   "split": "tuning",
+   "group": "alias",
+   "label": false,
+   "text": "我说这个指标不对"
+  },
+  {
+   "id": "T072",
+   "split": "tuning",
+   "group": "alias",
+   "label": false,
+   "text": "老王说的泵是哪个项目"
+  },
+  {
+   "id": "T073",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "这只是讨论，不算决定"
+  },
+  {
+   "id": "T074",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才说的只是讨论，不作为决定"
+  },
+  {
+   "id": "T075",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "以上仅供讨论"
+  },
+  {
+   "id": "T076",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "我只是随便说说，不是决定"
+  },
+  {
+   "id": "T077",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才那个别当成决定"
+  },
+  {
+   "id": "T078",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "这个还不算决定，先聊聊"
+  },
+  {
+   "id": "T079",
+   "split": "tuning",
+   "group": "discussion",
+   "label": true,
+   "text": "纯属讨论，不要当成决定"
+  },
+  {
+   "id": "T080",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "这不只是讨论，已经定了"
+  },
+  {
+   "id": "T081",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "交期不是决定性因素"
+  },
+  {
+   "id": "T082",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "这是不是决定了？"
+  },
+  {
+   "id": "T083",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "我们讨论一下供应商"
+  },
+  {
+   "id": "T084",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "决定用方案 B"
+  },
+  {
+   "id": "T085",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "这个决定是谁做的"
+  },
+  {
+   "id": "T086",
+   "split": "tuning",
+   "group": "discussion",
+   "label": false,
+   "text": "价格不是决定因素"
+  },
+  {
+   "id": "T087",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "不对，样件编号按项目-批次-序号"
+  },
+  {
+   "id": "T088",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "又错了，编号是项目-批次-序号"
+  },
+  {
+   "id": "T089",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "错了，应该是 150 不是 120"
+  },
+  {
+   "id": "T090",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "你搞错了，是含税价"
+  },
+  {
+   "id": "T091",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "还是不对，按欧标"
+  },
+  {
+   "id": "T092",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "我说的是表格，不是文字"
+  },
+  {
+   "id": "T093",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "说过了要用英文"
+  },
+  {
+   "id": "T094",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "不是这个供应商，是 B 厂"
+  },
+  {
+   "id": "T095",
+   "split": "tuning",
+   "group": "correction",
+   "label": true,
+   "text": "改成表格形式"
+  },
+  {
+   "id": "T096",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "对不对？"
+  },
+  {
+   "id": "T097",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "是不是该换供应商了"
+  },
+  {
+   "id": "T098",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "这个不是很急"
+  },
+  {
+   "id": "T099",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "帮我比较一下"
+  },
+  {
+   "id": "T100",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "这个方案不错"
+  },
+  {
+   "id": "T101",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "好的，继续"
+  },
+  {
+   "id": "T102",
+   "split": "tuning",
+   "group": "correction",
+   "label": false,
+   "text": "周报整理一下"
+  },
+  {
+   "id": "H001",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "记住，周报里的数字都保留一位小数",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H002",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后给我的报价对比都按含税单价排",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H003",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "每次出周报都先列风险再列进展",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H004",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "今后回复我都用要点，别写长段",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H005",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "下次评审纪要帮我把待办放在最前面",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H006",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "从现在起，样件编号一律用项目-批次-序号",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H007",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "请记一下：我们的充气泵额定电压是12V",
+   "why": "明确面向小Pai今后行为或要求记住的说法(边界案例)"
+  },
+  {
+   "id": "H008",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "帮我记着，供应商A的账期是月结60天",
+   "why": "明确面向小Pai今后行为或要求记住的说法(边界案例)"
+  },
+  {
+   "id": "H009",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "往后汇报进度别带表情符号",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H010",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "你要记得，我不看英文摘要，统一中文",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H011",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后凡是涉及模具改动的，先提醒我走变更流程",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H012",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "每周五下午提醒我整理周报",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H013",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "麻烦以后回答先给结论，再说依据",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H014",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "别忘了，以后发给供应商的邮件抬头都写“尊敬的合作伙伴”",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H015",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "今后单位统一用毫米，不要英寸",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H016",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "记下来：评审会默认安排在周三上午",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H017",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "下次生成BOM时帮我自动按物料类别分组",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H018",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "从今往后，涉及成本的数字都要标注币种",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H019",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后别再给我推荐供应商B了",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H020",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "你以后叫我老胡就行",
+   "why": "明确面向小Pai今后行为或要求记住的说法(边界案例)"
+  },
+  {
+   "id": "H021",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "请长期记住我负责的是便携式充气泵线",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H022",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "每次回复都带上数据来源",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H023",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后做对比表，把交期放在第一列",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H024",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "记住了啊，我们不用A级以外的塑料粒子",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H025",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "今后凡我没说明，默认指当前项目",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H026",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后周报的标题格式用“项目名+周次”",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H027",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后碰到压力单位，默认按bar显示",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H028",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "给我记一条：样件阶段不考虑认证费用",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H029",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "下回写评审总结，控制在300字以内",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H030",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "往后每个报价都附上上次报价的差异",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H031",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "你以后少用术语，我给老板看的",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H032",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "请牢记：红色标注表示阻塞项",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H033",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "今后发周报之前先让我过目",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H034",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后看到“待定”的字段都帮我高亮出来",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H035",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "记得以后问我之前，先查一下已有记录",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H036",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "从明天起，晨会摘要每天8点前准备好",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H037",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后所有会议时间都按北京时间",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H038",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "下次提到泵体壳体，默认指2号方案",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H039",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "我再说一次，以后不要自动给我发提醒",
+   "why": "明确面向小Pai今后行为或要求记住的说法(边界案例)"
+  },
+  {
+   "id": "H040",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后试产问题清单按严重度从高到低排",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H041",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "请记住：我不喜欢被追问，信息不全就先给草稿",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H042",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "每回都用表格呈现供应商对比",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H043",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后你回复前先确认一下我说的是哪个项目",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H044",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "往后涉及外发的文件，一律先给我预览",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H045",
+   "split": "dev",
+   "group": "remember",
+   "label": true,
+   "text": "以后遇到不确定的数据，要标出“待核实”",
+   "why": "明确面向小Pai今后行为或要求记住的说法"
+  },
+  {
+   "id": "H046",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我一般周一上午开周会",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H047",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我习惯先看风险再看进展",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H048",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我比较喜欢表格的呈现方式",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H049",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我平时都用手机查看审批",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H050",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我通常会在评审前一天对一遍清单",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H051",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我更喜欢简短一点的回复",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H052",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "帮我把这份报价单整理成表格",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H053",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这次周报先给我一个草稿",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H054",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "把上周的试产记录汇总一下",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H055",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "现在帮我查一下F64的样件进度",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H056",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这一份先用英文版，后面再说",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H057",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "以后的试产计划怎么排比较合理？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H058",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "每次评审都要出纪要吗？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H059",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "你记得上次供应商的报价吗？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H060",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "样件什么时候能到？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H061",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "气泵额定压力是150PSI",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H062",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "供应商C的最终报价是38.5元",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H063",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我们决定选用方案二的电机",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H064",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "样件已经寄出，预计周四到",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H065",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "模具修改完成了，进度80%",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H066",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "本批次良率是96.2%",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H067",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "以后量产时每次换线要停机二十分钟",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H068",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "每次高温测试，外壳都会轻微变形",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H069",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "小李说他会记得带样件过来",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H070",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我记得上周评审结论是延期",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H071",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "供应商以后会改用新的包装方式",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H072",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "每次试产都会遇到气管漏气的问题",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H073",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "老板以后可能会调整预算",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H074",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "他每次都迟到，会议只能延后",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H075",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "以后的版本会增加数显功能",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H076",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "日记本里记着当天的测试数据",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H077",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "记录仪显示压力曲线有波动",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H078",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "工厂每次交货前都会做抽检",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H079",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我记不清是哪个批次的样件了",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H080",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我同事总是记不住供应商联系人",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H081",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这次别忘了附上测试照片",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H082",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "今天的评审记得带上BOM",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H083",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这份周报别漏掉供应商延期那条",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H084",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "提醒一下，这个任务周五截止",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H085",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "不用记这个，只是随口一说",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H086",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "别记我刚才说的那句",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H087",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这条不要记住，只是临时的",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H088",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "你不用记我的习惯",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H089",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "先别记，我再想想",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H090",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "不需要保存这个偏好",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H091",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "千万别把刚才的数据记下来",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H092",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这个要不要记下来？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H093",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "需要我让你记住这个吗？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H094",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "你会记住我刚才说的吗？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H095",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "以后都这样做是不是更好？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H096",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "这条是不是该记进偏好里？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)(边界案例)"
+  },
+  {
+   "id": "H097",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "我以后可能会换到另一个项目组",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H098",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "每次说记住，你是不是都要确认？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H099",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "记住和保存有什么区别？",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H100",
+   "split": "dev",
+   "group": "remember",
+   "label": false,
+   "text": "供应商答应以后每次都提前三天发货",
+   "why": "非面向小Pai今后行为的明确指令(习惯/一次性/提问/事实/否定等)"
+  },
+  {
+   "id": "H101",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我说的“老王那个泵”就是F64项目",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H102",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我说“小黑”指的是二号样机",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H103",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我口中的“新壳子”就是V3外壳方案",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H104",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我说的“那家深圳厂”是指供应商B",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H105",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "“大版本”在我这儿就是指量产前的最后一版",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H106",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我讲的“旧方案”其实是第一轮设计",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H107",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我说的“老款”就是P20型号",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H108",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "“红本子”是我对问题清单的叫法",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H109",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我说“那个电机”都指7号电机",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H110",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "以后我说的“主力泵”就是F64",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H111",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我嘴里的“尾单”是指最后一批试产订单",
+   "why": "用户声明自己对某事物的称呼(边界案例)"
+  },
+  {
+   "id": "H112",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我所说的“二号线”其实是指南厂区的组装线",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H113",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我把评审前的预检叫做“过筛”",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H114",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我们组说“小钢炮”，指的就是便携款",
+   "why": "用户声明自己对某事物的称呼"
+  },
+  {
+   "id": "H115",
+   "split": "dev",
+   "group": "alias",
+   "label": true,
+   "text": "我说的“张工那边”意思是结构组",
+   "why": "用户声明自己对某事物的称呼(边界案例)"
+  },
+  {
+   "id": "H116",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "照我说的做就行",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H117",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我说的不是这个意思",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H118",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我们叫供应商明天来",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H119",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我说过的话你都记下来了吗？",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H120",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "你说的“老款”是哪一款？",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H121",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "他说的那个泵我没见过",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H122",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我说得对不对啊？",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H123",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "这个叫什么名字比较好？",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H124",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "小黑是我们的同事吗？",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H125",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "老王说的泵是F64项目吗？",
+   "why": "形似但不是命名声明(边界案例)"
+  },
+  {
+   "id": "H126",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我说的数据来自上周的测试",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H127",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我说了不算，要评审会决定",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H128",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "把这个叫做样机还是样件？",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H129",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "叫张工把图纸发过来",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H130",
+   "split": "dev",
+   "group": "alias",
+   "label": false,
+   "text": "我说的时间点是下周三",
+   "why": "形似但不是命名声明"
+  },
+  {
+   "id": "H131",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "这只是讨论，不算决定",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H132",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才只是随便聊聊，别当结论",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H133",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "以上仅供讨论，还没有决定",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H134",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚刚说的不作数，只是头脑风暴",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H135",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "我们只是探讨一下，没有拍板",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H136",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才那些都只是想法，不是决议",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H137",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "这段先别当成决定，还在讨论中",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H138",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才的只是假设，不要记成结论",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H139",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "别把刚才的内容当成定论",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H140",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "方案二只是我随口说的，还没定",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H141",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "这个只是讨论阶段，不是最终决定",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H142",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "前面说的算是闲聊，不要记录为决策",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H143",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才讲的都只是备选，没有敲定",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H144",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "这不算决定，只是想听听你的看法",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H145",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "换供应商的事只是聊聊，没有决定",
+   "why": "声明刚才所说只是讨论、不是决定(边界案例)"
+  },
+  {
+   "id": "H146",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "以上只是初步讨论，请勿当作决议",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H147",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚刚我只是在试探，不是拍板",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H148",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "先别录成决议，这只是讨论",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H149",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才那个说法只是讨论用的，不代表定了",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H150",
+   "split": "dev",
+   "group": "discussion",
+   "label": true,
+   "text": "记录里别写成已决定，目前仅是讨论",
+   "why": "声明刚才所说只是讨论、不是决定"
+  },
+  {
+   "id": "H151",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "这不只是讨论，已经定了",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H152",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "交期不是决定性因素",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H153",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "这是不是决定了？",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H154",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "我们讨论一下供应商",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H155",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "讨论结果：选用方案二，已决定",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H156",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "这个决定是上周评审会做出的",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H157",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "刚才的讨论很有帮助",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H158",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "讨论会改到周四下午",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H159",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "决定权在项目总监手里",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H160",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "这次讨论的重点是散热",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H161",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "我们已经决定换电机了",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H162",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "请把讨论纪要发给大家",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H163",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "不用讨论了，直接按方案一",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H164",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "为什么这个决定拖了三周？",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H165",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "这个决定不能撤回",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H166",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "讨论到此为止，结论是延期",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H167",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "帮我整理一下刚才讨论的要点",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H168",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "谁来做最终决定？",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H169",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "价格是决定因素，所以选C",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H170",
+   "split": "dev",
+   "group": "discussion",
+   "label": false,
+   "text": "还有什么需要讨论的吗？",
+   "why": "形似但并未撤回任何决定"
+  },
+  {
+   "id": "H171",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "不对，样件编号按项目-批次-序号",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H172",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "你搞错了，供应商是B不是C",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H173",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "错了，额定电压是12V不是24V",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H174",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "不是这样的，周报应该按周次排序",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H175",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "你理解错了，我要的是试产而不是样件",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H176",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "这里有误，良率应为96.2%",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H177",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "不对，评审日期是周四",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H178",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "纠正一下，刚才的单价应该含税",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H179",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "你说反了，是壳体变形不是电机过热",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H180",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "弄错了，我要的是F64不是F46",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H181",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "刚才那个数字不对，应该是1500台",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H182",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "不是这个模板，用上周那个",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H183",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "这个结论错了，交期是三周不是两周",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H184",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "你漏了一项，还有气管接头没列",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H185",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "搞混了，供应商B的账期是30天",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H186",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "不对，是先试产后评审",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H187",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "你写错了，压力单位是bar",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H188",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "不是我要的格式，要按项目分组",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H189",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "理解偏了，我是说要增加一次跌落测试",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H190",
+   "split": "dev",
+   "group": "correction",
+   "label": true,
+   "text": "这个日期错了，应该是11月20日",
+   "why": "用户纠正小Pai刚才的错误"
+  },
+  {
+   "id": "H191",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "这样对不对啊？",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H192",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "是不是该换供应商了",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H193",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "这个不是很急",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H194",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "这个数字对吗？",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H195",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "我觉得方案二不对劲，要不要再评估？",
+   "why": "并非对小Pai的纠错(边界案例)"
+  },
+  {
+   "id": "H196",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "不对称的壳体会影响装配吗？",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H197",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "他搞错了供应商，把订单下给C了",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H198",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "老张说样件编号写错了",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H199",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "错了就返工，没关系",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H200",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "不是我不想，是预算不够",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H201",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "这个报价没错，按这个来",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H202",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "你说得对，就这么办",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H203",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "没错，就是这个版本",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H204",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "帮我检查一下数据有没有错误",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H205",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "测试发现压力读数不对，需要复测",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H206",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "不是所有项目都要走评审",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H207",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "这个错误是模具导致的吧？",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H208",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "对，按你刚才说的排",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H209",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "纠错机制要怎么设计？",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "H210",
+   "split": "dev",
+   "group": "correction",
+   "label": false,
+   "text": "供应商的发票金额有误，财务在核对",
+   "why": "并非对小Pai的纠错"
+  },
+  {
+   "id": "G001",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "记一下，我看报价单只看含税含运费的总价",
+   "why": "明确要求记住今后用法"
+  },
+  {
+   "id": "G002",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后周报里的缺陷数都按严重等级分开列，别混一起",
+   "why": "以后+对周报的固定要求"
+  },
+  {
+   "id": "G003",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "下次再帮我整理BOM，把替代料单独拉一列出来",
+   "why": "下次起的固定做法"
+  },
+  {
+   "id": "G004",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "小Pai你记住啊，试产评审的会议纪要我要简短版，不超过五条",
+   "why": "记住+格式要求"
+  },
+  {
+   "id": "G005",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "今后凡是涉及模具修改的，先提醒我有没有走变更单",
+   "why": "今后+固定提醒"
+  },
+  {
+   "id": "G006",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后给我的供应商对比表默认按交期排序",
+   "why": "以后给我+默认排序"
+  },
+  {
+   "id": "G007",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "每次出质量问题日报都先写结论再写过程，拜托了",
+   "why": "每次都+结构要求"
+  },
+  {
+   "id": "G008",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后别再给我发英文缩写的表头了，全部中文",
+   "why": "以后别+偏好指令"
+  },
+  {
+   "id": "G009",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "请牢记：我这边只对接华南区的供应商，其他区域的不用推给我",
+   "why": "请牢记+今后过滤"
+  },
+  {
+   "id": "G010",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "往后你回我的时候少讲客套话，直接上数据",
+   "why": "往后+回复风格指令"
+  },
+  {
+   "id": "G011",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后只要我说“拉个会”，你就默认建30分钟的",
+   "why": "以后+触发规则"
+  },
+  {
+   "id": "G012",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "你要记得，每次改完图纸版本号都得同步到BOM里，提醒我",
+   "why": "你要记得+每次提醒"
+  },
+  {
+   "id": "G013",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "从现在起，所有对外的报价回复草稿都用“您好”开头",
+   "why": "从现在起+固定格式"
+  },
+  {
+   "id": "G014",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "下回做评审材料不要再放那页甘特图了，我们不看",
+   "why": "下回不要+指令"
+  },
+  {
+   "id": "G015",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "麻烦你以后出报告的时候，数字保留一位小数就行",
+   "why": "麻烦你以后+格式"
+  },
+  {
+   "id": "G016",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "记住了，周五下班前别给我推新的待办",
+   "why": "记住+今后限制"
+  },
+  {
+   "id": "G017",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "今后涉及到采购单价的地方，一律不含税显示",
+   "why": "今后一律+显示规则"
+  },
+  {
+   "id": "G018",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "先把这版BOM导出来，另外以后导出都带上物料描述这一列",
+   "why": "一次性请求+常驻指令"
+  },
+  {
+   "id": "G019",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后凡是我转给你的邮件，先给个三行摘要再说别的",
+   "why": "以后凡是+处理方式"
+  },
+  {
+   "id": "G020",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "你以后叫我老周就行，别叫周工",
+   "why": "对小Pai称呼方式的今后要求"
+  },
+  {
+   "id": "G021",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后遇到跌落测试的数据，默认用1.2米高度那组",
+   "why": "以后+默认取值"
+  },
+  {
+   "id": "G022",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "请记住：我们项目的试产节点以T1T2T3命名，不要写成一试二试",
+   "why": "请记住+命名约定要求"
+  },
+  {
+   "id": "G023",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "嗯，以后每次提到交期，都把供应商承诺和我们要求的两个日期并排放",
+   "why": "以后每次+展示要求"
+  },
+  {
+   "id": "G024",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "下次开始，缺陷分析里先列top3，其他折叠",
+   "why": "下次开始+格式"
+  },
+  {
+   "id": "G025",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "记着点，凡是涉及充电口规格的回答都要写明是Type-C",
+   "why": "记着点+回答规则"
+  },
+  {
+   "id": "G026",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "你给我记好，客户评审前一天要自动提醒我检查样件",
+   "why": "记好+定时提醒规则"
+  },
+  {
+   "id": "G027",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后我问进度你就按项目看板的状态来回，别自己推测",
+   "why": "以后+取数规则"
+  },
+  {
+   "id": "G028",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "今后审阅结构图都先检查壁厚，这是硬规矩",
+   "why": "今后+固定检查顺序"
+  },
+  {
+   "id": "G029",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后发给采购组的消息，称呼统一用“各位老师”",
+   "why": "以后+称呼规则"
+  },
+  {
+   "id": "G030",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "每次生成周报，把风险项放在最前面",
+   "why": "每次+排版要求"
+  },
+  {
+   "id": "G031",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "别忘了啊，以后新建项目都要默认加上“EMC预测试”这个里程碑",
+   "why": "别忘了+以后默认"
+  },
+  {
+   "id": "G032",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "把这条存下来：气密测试合格线是漏率小于0.5kPa每分钟，之后查数据按这个判",
+   "why": "存下来+后续依据"
+  },
+  {
+   "id": "G033",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后回复我尽量用列表，别写大段文字",
+   "why": "以后+风格"
+  },
+  {
+   "id": "G034",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后别主动给我推荐新供应商，我问了你再说",
+   "why": "以后别+限制"
+  },
+  {
+   "id": "G035",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "记住这个习惯：我每次开评审前都要先看遗留问题清单，你提前备好",
+   "why": "记住+要求小Pai提前备好"
+  },
+  {
+   "id": "G036",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "下次起，质量问题的八D报告模板用我上周发你那个",
+   "why": "下次起+模板指定"
+  },
+  {
+   "id": "G037",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "从今天起，每天早上先把昨晚新增的客诉汇总给我",
+   "why": "从今天起+例行任务"
+  },
+  {
+   "id": "G038",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "这个报价单你先帮我看下，然后记得以后价格变动超过5%要标红",
+   "why": "当前请求+常驻规则"
+  },
+  {
+   "id": "G039",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "你以后写邮件草稿签名都加上“结构组 小王”",
+   "why": "以后+签名规则"
+  },
+  {
+   "id": "G040",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "请一直保持这个格式：问题—原因—措施—责任人—时间",
+   "why": "请一直保持+格式"
+  },
+  {
+   "id": "G041",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "凡是涉及到模具厂的消息，今后都抄送一份给项目经理",
+   "why": "凡是+今后抄送"
+  },
+  {
+   "id": "G042",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "以后查库存，默认只看良品仓",
+   "why": "以后+默认范围"
+  },
+  {
+   "id": "G043",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "记一下：我们公司样件阶段分EVT、DVT、PVT，以后你就按这个说",
+   "why": "记一下+以后沿用"
+  },
+  {
+   "id": "G044",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "你以后能不能少废话，直接给结论？",
+   "why": "委婉请求但指向今后行为(边界案例)"
+  },
+  {
+   "id": "G045",
+   "split": "heldout",
+   "group": "remember",
+   "label": true,
+   "text": "帮我记着，我不看带水印的报价，遇到先问我要无水印版",
+   "why": "帮我记着+今后处理"
+  },
+  {
+   "id": "G046",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我一般先看交期再看价格，价格是第二位的",
+   "why": "一般……的习惯陈述"
+  },
+  {
+   "id": "G047",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我习惯每周一上午汇总上周试产数据",
+   "why": "我习惯，非对小Pai指令"
+  },
+  {
+   "id": "G048",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我平时对BOM都是用Excel，系统那个不太顺手",
+   "why": "平时习惯描述"
+  },
+  {
+   "id": "G049",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我们组周三下午开评审，一直都是这样",
+   "why": "事实陈述"
+  },
+  {
+   "id": "G050",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "结构这边通常会留0.2的装配间隙",
+   "why": "工程惯例事实"
+  },
+  {
+   "id": "G051",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "帮我把这份BOM里电机相关的行筛出来",
+   "why": "一次性请求"
+  },
+  {
+   "id": "G052",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "给我看下上周漏气投诉有多少条",
+   "why": "一次性查询"
+  },
+  {
+   "id": "G053",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "这次周报写简短点，领导赶时间",
+   "why": "仅限本次"
+  },
+  {
+   "id": "G054",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "把供应商A和B的报价拉个对比表，今天就要",
+   "why": "一次性任务"
+  },
+  {
+   "id": "G055",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "你能记住我上次说的那个格式吗？",
+   "why": "关于记忆能力的提问"
+  },
+  {
+   "id": "G056",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "记忆功能怎么开啊",
+   "why": "询问功能"
+  },
+  {
+   "id": "G057",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "小Pai你现在都记得我哪些偏好？",
+   "why": "询问已记内容"
+  },
+  {
+   "id": "G058",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "以后是不是可以让你自动出周报？",
+   "why": "疑问句"
+  },
+  {
+   "id": "G059",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "你记的东西别人能看到吗",
+   "why": "询问隐私"
+  },
+  {
+   "id": "G060",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "模具T1下周三出，供应商说可能延两天",
+   "why": "排期事实"
+  },
+  {
+   "id": "G061",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "这批样件气密测试通过率92%",
+   "why": "状态事实"
+  },
+  {
+   "id": "G062",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "评审结论是电机换成无刷方案",
+   "why": "业务决定陈述"
+  },
+  {
+   "id": "G063",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "项目下个月进入试产阶段",
+   "why": "计划事实"
+  },
+  {
+   "id": "G064",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "以后量产的话这个壳体会改成注塑一体成型",
+   "why": "描述将来方案，非指令"
+  },
+  {
+   "id": "G065",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "模具厂说下次修模前会先给我们确认单",
+   "why": "第三方承诺"
+  },
+  {
+   "id": "G066",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "每次换线都要重新校准压力传感器，这是产线常规",
+   "why": "产线常态描述"
+  },
+  {
+   "id": "G067",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "老李记得上次方案是用铝合金的",
+   "why": "第三人记忆"
+  },
+  {
+   "id": "G068",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "供应商答应以后每批都附带检测报告",
+   "why": "供应商承诺"
+  },
+  {
+   "id": "G069",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我记得这个料号前年就停产了",
+   "why": "用户自己的记忆"
+  },
+  {
+   "id": "G070",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "以后几个月的采购计划我还没排完",
+   "why": "描述时间段"
+  },
+  {
+   "id": "G071",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "每次试产都会冒出几个小问题，正常",
+   "why": "常态描述"
+  },
+  {
+   "id": "G072",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "质检员每次抽检都有记录的",
+   "why": "事实"
+  },
+  {
+   "id": "G073",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "等下提醒我去开会就行",
+   "why": "仅本次提醒"
+  },
+  {
+   "id": "G074",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "记得把刚才那个附件一起带上",
+   "why": "当前任务提醒"
+  },
+  {
+   "id": "G075",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "这次别忘了带上模具图纸那页",
+   "why": "仅本次"
+  },
+  {
+   "id": "G076",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "这个不用记，就这一次",
+   "why": "拒绝记忆"
+  },
+  {
+   "id": "G077",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "别记我刚才说的，随口讲讲",
+   "why": "否定记忆"
+  },
+  {
+   "id": "G078",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "不要保存我这些偏好",
+   "why": "拒绝保存"
+  },
+  {
+   "id": "G079",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "报价的数字你别记，我不想留痕",
+   "why": "拒绝记忆"
+  },
+  {
+   "id": "G080",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "如果以后每次都要走三级审批，周期会拖很长",
+   "why": "假设"
+  },
+  {
+   "id": "G081",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "假如下次试产还漏气，是不是该换密封圈",
+   "why": "假设+疑问"
+  },
+  {
+   "id": "G082",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "要是今后都用这家供应商，价格能压下来吗",
+   "why": "假设疑问"
+  },
+  {
+   "id": "G083",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我每次出差都带着样件，行李超重过好几回",
+   "why": "个人经历"
+  },
+  {
+   "id": "G084",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "你这记性真不错啊，上次的事都记得",
+   "why": "闲聊评价"
+  },
+  {
+   "id": "G085",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "今天能不能把评审材料先做出来",
+   "why": "一次性请求"
+  },
+  {
+   "id": "G086",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "下次评审定在什么时候？",
+   "why": "问日程"
+  },
+  {
+   "id": "G087",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "采购说以后这个料要涨价",
+   "why": "第三方消息"
+  },
+  {
+   "id": "G088",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "之前我给你的那份清单你还记得吗",
+   "why": "询问记忆"
+  },
+  {
+   "id": "G089",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "周五之前把报价核完",
+   "why": "一次性任务"
+  },
+  {
+   "id": "G090",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "公司刚发通知，以后需求变更都走OA流程",
+   "why": "公司通知事实"
+  },
+  {
+   "id": "G091",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "老板交代每次试产必须有质量在场",
+   "why": "转述第三方要求，非对小Pai"
+  },
+  {
+   "id": "G092",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我们质量部要求每批都留样",
+   "why": "部门规定事实"
+  },
+  {
+   "id": "G093",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "为什么每次打样都比计划慢",
+   "why": "疑问"
+  },
+  {
+   "id": "G094",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "你先别记这个，等我确认完再说",
+   "why": "暂不记忆"
+  },
+  {
+   "id": "G095",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我倾向于选方案B，不过还没定",
+   "why": "倾向陈述"
+  },
+  {
+   "id": "G096",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我一般不太喜欢写长邮件",
+   "why": "习惯陈述"
+  },
+  {
+   "id": "G097",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "这次先按含税价算，下一版再说",
+   "why": "仅限本次(边界案例)"
+  },
+  {
+   "id": "G098",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "他每次都忘了回邮件",
+   "why": "第三人抱怨"
+  },
+  {
+   "id": "G099",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "我们仓库的规矩是先进先出，每次发料都按这个来",
+   "why": "仓库规则事实，非对小Pai指令"
+  },
+  {
+   "id": "G100",
+   "split": "heldout",
+   "group": "remember",
+   "label": false,
+   "text": "下次出差前我要把样件寄走",
+   "why": "用户自己的计划"
+  },
+  {
+   "id": "G101",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我说的“老款”就是第一代那个泵",
+   "why": "自定义称呼"
+  },
+  {
+   "id": "G102",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我们这边说的“大板”指主控板",
+   "why": "指称声明"
+  },
+  {
+   "id": "G103",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我讲“小件”的时候，是指螺丝垫片这类标准件",
+   "why": "指称声明"
+  },
+  {
+   "id": "G104",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "对了，我说的“客诉线”就是售后那条工单渠道",
+   "why": "指称声明"
+  },
+  {
+   "id": "G105",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我这里“黑壳”=碳纤维外壳那版",
+   "why": "等号式声明"
+  },
+  {
+   "id": "G106",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "以后我说“打样”，指的是快速手板，不是开模样",
+   "why": "指称声明"
+  },
+  {
+   "id": "G107",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我口中的“那家”指的是东莞那个模具厂",
+   "why": "指称声明"
+  },
+  {
+   "id": "G108",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我们组管气密测试叫“憋气”",
+   "why": "本组叫法声明"
+  },
+  {
+   "id": "G109",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "说“一号线”的时候我指的是新建的试产线",
+   "why": "指称声明"
+  },
+  {
+   "id": "G110",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "“红本”是我们对认证证书的叫法",
+   "why": "叫法声明"
+  },
+  {
+   "id": "G111",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我们所说的“首件”指的是T1的第一个合格样",
+   "why": "指称声明"
+  },
+  {
+   "id": "G112",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我说“老板款”就是带数显的那款",
+   "why": "指称声明"
+  },
+  {
+   "id": "G113",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我这边“漏率”都是指每分钟压降",
+   "why": "定义声明"
+  },
+  {
+   "id": "G114",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "“三件套”在我这儿就是泵体、气嘴、充电线",
+   "why": "定义声明"
+  },
+  {
+   "id": "G115",
+   "split": "heldout",
+   "group": "alias",
+   "label": true,
+   "text": "我讲的“主料”仅指电芯和电机",
+   "why": "定义声明"
+  },
+  {
+   "id": "G116",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "老款泵的壳体强度比新款差一些",
+   "why": "评价，不是命名"
+  },
+  {
+   "id": "G117",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "大板的贴片良率这周掉到了95",
+   "why": "状态"
+  },
+  {
+   "id": "G118",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "你说的“小件”是指哪些？",
+   "why": "提问"
+  },
+  {
+   "id": "G119",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "“打样”一般要多久啊",
+   "why": "提问"
+  },
+  {
+   "id": "G120",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "东莞那家模具厂报价怎么样了",
+   "why": "询问"
+  },
+  {
+   "id": "G121",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "我们组气密测试做得很勤",
+   "why": "陈述"
+  },
+  {
+   "id": "G122",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "一号线今天停线检修",
+   "why": "状态"
+  },
+  {
+   "id": "G123",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "红本证书还在办理中",
+   "why": "状态"
+  },
+  {
+   "id": "G124",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "首件检验报告我发你了",
+   "why": "事务通知"
+  },
+  {
+   "id": "G125",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "数显款的成本比普通款高六块",
+   "why": "事实"
+  },
+  {
+   "id": "G126",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "漏率超标的话要返工",
+   "why": "规则陈述"
+  },
+  {
+   "id": "G127",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "三件套包装已经下单了",
+   "why": "状态"
+  },
+  {
+   "id": "G128",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "主料缺货，交期延后",
+   "why": "状态"
+  },
+  {
+   "id": "G129",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "黑壳那版喷漆有色差",
+   "why": "质量问题"
+  },
+  {
+   "id": "G130",
+   "split": "heldout",
+   "group": "alias",
+   "label": false,
+   "text": "这个术语行业里叫“憋气测试”吗",
+   "why": "提问"
+  },
+  {
+   "id": "G131",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才那个只是讨论，不是决定",
+   "why": "撤回决定"
+  },
+  {
+   "id": "G132",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "上面说的别当结论，我们还在聊",
+   "why": "非结论"
+  },
+  {
+   "id": "G133",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "这只是我随口一说，没拍板",
+   "why": "没拍板"
+  },
+  {
+   "id": "G134",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "刚刚提的换供应商只是探讨，不算定了",
+   "why": "探讨非决定"
+  },
+  {
+   "id": "G135",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "别把这个当成决议，只是大家头脑风暴",
+   "why": "非决议"
+  },
+  {
+   "id": "G136",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "那条仅供讨论，还没定",
+   "why": "仅讨论"
+  },
+  {
+   "id": "G137",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "先别记成结论，会上只是聊了聊",
+   "why": "非结论"
+  },
+  {
+   "id": "G138",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "我刚才说的那些不作数，纯属讨论",
+   "why": "不作数"
+  },
+  {
+   "id": "G139",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才的方案只是个想法，千万别当成已决定",
+   "why": "非决定"
+  },
+  {
+   "id": "G140",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "前面那个只是在讨论可能性，没有做决定",
+   "why": "非决定"
+  },
+  {
+   "id": "G141",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "这个还没定，只是聊一下，别算进决议",
+   "why": "非决议"
+  },
+  {
+   "id": "G142",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "不是定了啊，就是聊聊",
+   "why": "非决定"
+  },
+  {
+   "id": "G143",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "注意，刚才提到的改模方案仅是讨论稿",
+   "why": "讨论稿"
+  },
+  {
+   "id": "G144",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "会议上说的那个涨价，只是探讨，没有结论",
+   "why": "无结论"
+  },
+  {
+   "id": "G145",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "嗯那个不算数，当时就是随便讨论",
+   "why": "不作数"
+  },
+  {
+   "id": "G146",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "别把刚才说的写进纪要决定栏，只是讨论",
+   "why": "不入决定"
+  },
+  {
+   "id": "G147",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "我们没有决定用镁合金，只是聊到了",
+   "why": "未决定"
+  },
+  {
+   "id": "G148",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "刚才说砍掉第二个功能，那只是假设讨论",
+   "why": "假设讨论"
+  },
+  {
+   "id": "G149",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "这不是最终结论，仅作讨论用",
+   "why": "非结论"
+  },
+  {
+   "id": "G150",
+   "split": "heldout",
+   "group": "discussion",
+   "label": true,
+   "text": "上一条别当决定处理哦，只是议一议",
+   "why": "非决定"
+  },
+  {
+   "id": "G151",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "评审会上决定下周三开始试产",
+   "why": "陈述已决定"
+  },
+  {
+   "id": "G152",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "讨论的时间有点长，会议超时了",
+   "why": "提到讨论但无撤回"
+  },
+  {
+   "id": "G153",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "决定性因素是成本，不是工期",
+   "why": "决定性因素"
+  },
+  {
+   "id": "G154",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "上次那个模具方案到底定了没有",
+   "why": "询问是否已定"
+  },
+  {
+   "id": "G155",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "已经决定换电机了，你更新一下计划",
+   "why": "确认已决定"
+  },
+  {
+   "id": "G156",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "这次讨论的重点是密封结构",
+   "why": "讨论重点"
+  },
+  {
+   "id": "G157",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "我们讨论了三个方案，最后选了B",
+   "why": "讨论后已选"
+  },
+  {
+   "id": "G158",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "谁来拍板这个供应商的事？",
+   "why": "询问"
+  },
+  {
+   "id": "G159",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "决策链太长，审批拖了一周",
+   "why": "抱怨流程"
+  },
+  {
+   "id": "G160",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "讨论纪要我已经发到群里了",
+   "why": "事务"
+  },
+  {
+   "id": "G161",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "结论是模具T2延期，已定",
+   "why": "已定"
+  },
+  {
+   "id": "G162",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "决定不再追加预算",
+   "why": "陈述决定"
+  },
+  {
+   "id": "G163",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "会议讨论记录能帮我汇总一下吗",
+   "why": "请求"
+  },
+  {
+   "id": "G164",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "这个事决定权在项目经理手里",
+   "why": "权限陈述"
+  },
+  {
+   "id": "G165",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "刚刚的讨论我觉得很有收获",
+   "why": "感想"
+  },
+  {
+   "id": "G166",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "我们已经拍板用铝合金方案了",
+   "why": "已拍板"
+  },
+  {
+   "id": "G167",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "是否定稿要等客户反馈",
+   "why": "条件陈述"
+  },
+  {
+   "id": "G168",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "决议第三条要重新措辞",
+   "why": "修改文字"
+  },
+  {
+   "id": "G169",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "讨论归讨论，最后还是要看数据",
+   "why": "观点，不撤回(边界案例)"
+  },
+  {
+   "id": "G170",
+   "split": "heldout",
+   "group": "discussion",
+   "label": false,
+   "text": "最终决定由老板定，下周出结果",
+   "why": "流程"
+  },
+  {
+   "id": "G171",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你搞错了，交期是10号不是20号",
+   "why": "更正小Pai"
+  },
+  {
+   "id": "G172",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "不对，那个是第二版BOM，你拿的是第一版",
+   "why": "更正"
+  },
+  {
+   "id": "G173",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你说的良率有问题，应该是96.5%",
+   "why": "更正"
+  },
+  {
+   "id": "G174",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "错了，供应商是B不是A",
+   "why": "更正"
+  },
+  {
+   "id": "G175",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你刚才算的总价漏了运费，重算一下",
+   "why": "指出遗漏"
+  },
+  {
+   "id": "G176",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "不是这个料号，你看岔了",
+   "why": "更正"
+  },
+  {
+   "id": "G177",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你这个日期写反了，T1是下周",
+   "why": "更正"
+  },
+  {
+   "id": "G178",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "小Pai，你把电机功率弄混了，是12W",
+   "why": "更正"
+  },
+  {
+   "id": "G179",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "漏了一项，缺陷里还有一条气嘴松动你没列",
+   "why": "指出遗漏"
+  },
+  {
+   "id": "G180",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "这个数不对啊，你再核对一下",
+   "why": "指出错误"
+  },
+  {
+   "id": "G181",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你引用的那份文档是旧的，不是最新版",
+   "why": "更正"
+  },
+  {
+   "id": "G182",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你理解错了，我问的是模具不是样件",
+   "why": "指出误解"
+  },
+  {
+   "id": "G183",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "刚才你说评审在周三，实际是周四",
+   "why": "更正"
+  },
+  {
+   "id": "G184",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你把两个项目的数据混到一块了",
+   "why": "指出错误"
+  },
+  {
+   "id": "G185",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "单位错了，是kPa不是MPa",
+   "why": "更正"
+  },
+  {
+   "id": "G186",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你写的责任人不对，应该是质量部的老张",
+   "why": "更正"
+  },
+  {
+   "id": "G187",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你给的结论反了，是不合格",
+   "why": "更正"
+  },
+  {
+   "id": "G188",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "答案里的数量不对，是500套不是5000套",
+   "why": "更正"
+  },
+  {
+   "id": "G189",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "不是这样的，你上面把根因说成了设计问题，其实是工艺",
+   "why": "更正"
+  },
+  {
+   "id": "G190",
+   "split": "heldout",
+   "group": "correction",
+   "label": true,
+   "text": "你刚才那个表第三行抄错了",
+   "why": "更正"
+  },
+  {
+   "id": "G191",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "供应商把交期写错了，应该是10号",
+   "why": "他人错误"
+  },
+  {
+   "id": "G192",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "产线上贴错标签了，要返工",
+   "why": "生产错误"
+  },
+  {
+   "id": "G193",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "这个BOM里的料号错了，采购那边发现的",
+   "why": "他人文件错误"
+  },
+  {
+   "id": "G194",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "报价单里总价算错了，是财务那边出的",
+   "why": "他人错误"
+  },
+  {
+   "id": "G195",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "为什么交期是20号？",
+   "why": "提问"
+  },
+  {
+   "id": "G196",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "你确定良率是96.5%吗？",
+   "why": "询问核实(边界案例)"
+  },
+  {
+   "id": "G197",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "不对称设计会影响气密性吗",
+   "why": "提问"
+  },
+  {
+   "id": "G198",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "没有错，数据就是这样的",
+   "why": "肯定"
+  },
+  {
+   "id": "G199",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "不是所有样件都要做跌落测试",
+   "why": "业务否定"
+  },
+  {
+   "id": "G200",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "测试结果不对劲，可能是夹具问题",
+   "why": "业务问题"
+  },
+  {
+   "id": "G201",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "说错话了，别介意",
+   "why": "用户自己的失误"
+  },
+  {
+   "id": "G202",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "工程师把图纸版本搞错了，导致开错模",
+   "why": "他人错误"
+  },
+  {
+   "id": "G203",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "不是我们的问题，是来料不良",
+   "why": "业务归因"
+  },
+  {
+   "id": "G204",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "这个数据对不上，我去问问仓库",
+   "why": "自行核查"
+  },
+  {
+   "id": "G205",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "客户说我们的报告有错，我想看下",
+   "why": "第三方反馈"
+  },
+  {
+   "id": "G206",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "错误率最近降到了1%",
+   "why": "状态"
+  },
+  {
+   "id": "G207",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "电机功率是不是12W？",
+   "why": "提问"
+  },
+  {
+   "id": "G208",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "日期写反这种事上次运营那边也出过",
+   "why": "他人错误"
+  },
+  {
+   "id": "G209",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "漏项了的话评审过不了",
+   "why": "假设性业务"
+  },
+  {
+   "id": "G210",
+   "split": "heldout",
+   "group": "correction",
+   "label": false,
+   "text": "模具厂把尺寸做错了，差0.3mm",
+   "why": "第三方错误"
+  }
+ ]
+}

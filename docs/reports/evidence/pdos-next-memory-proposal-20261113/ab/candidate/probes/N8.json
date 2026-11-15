@@ -1,0 +1,71 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "N8",
+  "expect": "void",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "7bf6a5e1-f55a-4bc6-86fa-759ec7172015",
+      "goal": "记住：周报用表格形式",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 5.8,
+      "used_tokens": 16166,
+      "held_tokens": 0,
+      "answer": "已就“周报用表格形式”提出一条记忆卡片建议（类型：约定，范围：全局），等你确认后才会生效；在你确认前我没有写入任何记忆。",
+      "unfinished": [
+        "记忆卡片尚未经你确认，暂未生效"
+      ],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "convention",
+          "text": "周报用表格形式呈现。",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "记住：周报用表格形式",
+              "run_id": "7bf6a5e1-f55a-4bc6-86fa-759ec7172015"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    },
+    {
+      "run_id": "685376a7-d9e9-4a4b-b12c-2f2f9627bfb0",
+      "goal": "刚才说的只是讨论，不算决定",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 7.0,
+      "used_tokens": 16535,
+      "held_tokens": 0,
+      "answer": "明白。上一轮那条“周报用表格形式”的记忆卡片建议按你的说明撤回，不再等确认，也不作数——那次只算讨论，我没有写入任何记忆，撤回后仍然没有任何记忆生效。如果你之后想重新确定周报格式，直接告诉我，我再另提一张卡片给你确认。",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 1
+    }
+  ],
+  "pending_candidates_at_end": []
+}

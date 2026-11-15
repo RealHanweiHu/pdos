@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 36.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 53300,
+  "held_tokens": 0,
+  "answer": "上次的结论是建议选 B 家（依据本人此前会话 run 4482eda1 的历史答复记录）；当前品类范围内未检索到该次供应商对比的原始记录，无法当场复核报价与交期明细。",
+  "answer_blob": "{\"result\": {\"notes\": \"本回答为对历史回答记录的回忆，非当前业务事实；本轮检索预算已用完，如需以当前数据复核需继续深入查。对客户出具报告时按本人约束使用英文。\", \"answer\": \"建议选 B 家\", \"unknowns\": [\"三家供应商各自名称、报价与交期的原始记录在本轮品类范围内未检索到，无法复核\", \"该结论当时的依据明细未在本轮读取到\", \"B 家当前是否仍为优选未按当前数据验证\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T08:59:40.550365+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"answer_basis\": {\"type\": \"conversation_history_record\", \"as_of\": \"2026-11-14\", \"run_id\": \"4482eda1-a622-4b7a-a5c0-7fb06dfe3445\", \"session_id\": \"75a87df5-7062-4a04-a08f-c32692126d39\", \"original_goal\": \"比较三家气泵供应商的报价和交期\", \"historical_summary\": \"甲：建议选 B 家。\"}, \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"上次的结论是建议选 B 家（依据本人此前会话 run 4482eda1 的历史答复记录）；当前品类范围内未检索到该次供应商对比的原始记录，无法当场复核报价与交期明细。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮品类范围内未检索到该次供应商对比的原始记录，历史结论无法当场验证；如要交付客户则需现行数据。\", \"options\": [{\"label\": \"继续深入查并出英文版报告\", \"value\": \"deepen_and_english_report\"}, {\"label\": \"只做中文内部复核，不出报告\", \"value\": \"deepen_internal_only\"}, {\"label\": \"暂不需要，先按历史结论用\", \"value\": \"stop_here\"}], \"question\": \"要不要继续深入查，按当前数据复核三家气泵供应商的报价与交期，并确认 B 家是否仍为推荐？\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen_and_english_report\", \"reason\": \"结论涉及对客户的推荐，且本轮未验证到原始数据，继续查证可避免沿用过期结论。\"}, \"allow_free_text\": true}], \"unfinished\": [\"品类范围内未检索到该次供应商对比的原始记录（报价/交期明细），当前数据复核未完成（本轮检索预算已用完）\"]}",
+  "unfinished": [
+    "品类范围内未检索到该次供应商对比的原始记录（报价/交期明细），当前数据复核未完成（本轮检索预算已用完）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

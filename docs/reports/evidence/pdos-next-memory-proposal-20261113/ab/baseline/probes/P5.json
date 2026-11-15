@@ -1,0 +1,33 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "P5",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "f1e5e62e-d77d-4796-a556-e97585efa195",
+      "goal": "从现在起回复我都先给结论再给过程",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 10.4,
+      "used_tokens": 15316,
+      "held_tokens": 0,
+      "answer": "已记住：今后我的回复统一先给结论，再给过程/依据。",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

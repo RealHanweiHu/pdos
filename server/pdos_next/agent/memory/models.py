@@ -359,6 +359,52 @@ class MemoryCandidateDecision(KernelRow, Base):
     )
 
 
+class MemorySuppression(KernelRow, Base):
+    """遗忘抑制指纹 (P121 第 8 项): what the owner purged may not be proposed again
+    from old records. Holds a salted digest and source Run references, never text."""
+
+    __tablename__ = "memory_suppressions"
+    owner_id: Mapped[UUID]
+    note_id: Mapped[UUID]
+    salt: Mapped[str] = mapped_column(String(32))
+    fingerprint: Mapped[str] = mapped_column(String(64))
+    source_spans: Mapped[list] = mapped_column(JSONB)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "note_id", "fingerprint"),
+        ForeignKeyConstraint(
+            ["tenant_id", "note_id"], ["memory_notes.tenant_id", "memory_notes.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        CheckConstraint(
+            "salt ~ '^[0-9a-f]{32}$' AND fingerprint ~ '^[0-9a-f]{64}$'",
+            name="memory_suppression_digest",
+        ),
+        CheckConstraint("jsonb_typeof(source_spans)='array'", name="memory_suppression_spans"),
+        Index("ix_memory_suppressions_owner", "tenant_id", "owner_id", "created_at"),
+    )
+
+
+class MemoryProposalVoid(KernelRow, Base):
+    """本人说“这只是讨论，不算决定” (P121 第 8 项): the Session's pending candidates up
+    to this Run are void, and nothing said up to this Run may be proposed again."""
+
+    __tablename__ = "memory_proposal_voids"
+    owner_id: Mapped[UUID]
+    session_id: Mapped[UUID]
+    run_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "run_id"),
+        ForeignKeyConstraint(["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        Index("ix_memory_proposal_voids_session", "tenant_id", "session_id", "created_at"),
+    )
+
+
 class MemoryOwnerSetting(KernelRow, Base):
     """The owner's own switch for 小Pai's proactive proposals (P86 第 3 项)."""
 

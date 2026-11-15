@@ -1,0 +1,63 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 97.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 140525,
+  "held_tokens": 0,
+  "answer": "上次的结论（来源：你上一轮会话记录 run 745a240f…，as_of 2026-11-14，非可复核的落档事实）：建议选 B 家（交期比 A 家短 2 周）；C 家含税报价超出目标价 12%，已排除。上次自记的未完事项：补 C 家含税报价单、核对 B 家交期单位。本轮核对公司侧可读范围后另发现三项缺口：A/B/C 三家的报价与交期没有落档（品类「汽车充气泵」知识计数 competitor=0、参数=0，竞品列表与平台/产品查询均为空，资料检索在品类内及供应/知识/资料范围内无命中）；「超目标价 12%」的目标价口径未找到出处；三家报价同口径所需的含税/含运/币种/观测日期/型号配置口径上次未记录。因缺原始凭据（C 家含税报价单、B 家交期单位），本轮只能交付结论复述与缺口清单，继续推进需你提供材料并走相应落档流程。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:00:47.046615+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家含税报价单原文未取得：本轮资料检索在品类范围及 supply/knowledge/artifact 三类来源中均未命中 C 家报价来源\", \"B 家交期单位（周 / 自然日 / 工作日）未确认，上一轮记录明确标记为待核对\", \"A、B、C 三家供应商的报价与交期原始数据未在当前可读的公司资料中落档（品类知识计数 competitor=0、parameter_count=0，竞品列表与平台/产品查询均为空，资料检索无命中）\", \"「C 家含税报价超出目标价 12%」所依据的目标价口径来源未在当前可读范围内找到\", \"三家报价同口径比较所需的含税/含运、币种、观测日期、对应型号配置口径在上次记录中缺失\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次的结论（来源：你上一轮会话记录 run 745a240f…，as_of 2026-11-14，非可复核的落档事实）：建议选 B 家（交期比 A 家短 2 周）；C 家含税报价超出目标价 12%，已排除。上次自记的未完事项：补 C 家含税报价单、核对 B 家交期单位。本轮核对公司侧可读范围后另发现三项缺口：A/B/C 三家的报价与交期没有落档（品类「汽车充气泵」知识计数 competitor=0、参数=0，竞品列表与平台/产品查询均为空，资料检索在品类内及供应/知识/资料范围内无命中）；「超目标价 12%」的目标价口径未找到出处；三家报价同口径所需的含税/含运/币种/观测日期/型号配置口径上次未记录。因缺原始凭据（C 家含税报价单、B 家交期单位），本轮只能交付结论复述与缺口清单，继续推进需你提供材料并走相应落档流程。\", \"questions\": [{\"id\": \"q_c_quote_source\", \"why\": \"这是复核「C 家超目标价 12%」并把三家放回同一口径比较的前提；公司资料内未检索到 C 家报价来源。\", \"options\": [{\"label\": \"我直接把报价单原文贴给你\", \"value\": \"user_pastes\"}, {\"label\": \"我上传报价单文件给你\", \"value\": \"user_uploads\"}, {\"label\": \"你再查一遍现有资料（已无果，仅作再确认）\", \"value\": \"research_again\"}, {\"label\": \"跳过 C 家，直接推进 B 家\", \"value\": \"skip_c\"}], \"question\": \"C 家的含税报价单从哪里取得？\", \"depends_on\": [], \"recommended\": {\"value\": \"user_pastes\", \"reason\": \"公司侧检索与竞品/平台读取均为空，继续检索的边际收益低；由你直接提供原文最快且可核。\"}, \"allow_free_text\": true}, {\"id\": \"q_b_leadtime_unit\", \"why\": \"「B 家比 A 家短 2 周」是否成立取决于 B 家交期记录的单位口径，上次记录明确把它列为待核对项。\", \"options\": [{\"label\": \"自然日\", \"value\": \"calendar_days\"}, {\"label\": \"工作日\", \"value\": \"working_days\"}, {\"label\": \"周\", \"value\": \"weeks\"}, {\"label\": \"不清楚，需要再问 B 家\", \"value\": \"confirm_with_supplier\"}], \"question\": \"B 家的交期单位是什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"confirm_with_supplier\", \"reason\": \"该口径上次即未确认，由你或供应商书面确认后再用于比较最稳妥。\"}, \"allow_free_text\": true}, {\"id\": \"q_record_first\", \"why\": \"当前系统内没有这三家的报价/交期记录，结论只存在于对话中，不可复核；是否先建记录决定本轮工作的范围。\", \"options\": [{\"label\": \"要，先建记录再对比\", \"value\": \"record_then_compare\"}, {\"label\": \"只补齐结论，暂不落档\", \"value\": \"only_close_out\"}, {\"label\": \"暂不处理\", \"value\": \"not_now\"}], \"question\": \"要不要先把三家数据按统一口径落成可核记录，再做对比？\", \"depends_on\": [], \"recommended\": {\"value\": \"record_then_compare\", \"reason\": \"没有落档则本次结论仍不可复核，后续复用需重复取证；建记录还能顺带固化口径。\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家的含税报价单（原文未取得，公司资料内未检索到 C 家报价来源）\", \"核对 B 家交期的单位（周 / 自然日 / 工作日未确认）\", \"把 A/B/C 三家的报价与交期按统一口径（含税/含运、币种、观测日期、型号配置）落成可核记录——当前品类内无竞品记录、无参数、无平台/产品数据\", \"确认「C 家含税报价超目标价 12%」所依据的目标价口径来源\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单（原文未取得，公司资料内未检索到 C 家报价来源）",
+    "核对 B 家交期的单位（周 / 自然日 / 工作日未确认）",
+    "把 A/B/C 三家的报价与交期按统一口径（含税/含运、币种、观测日期、型号配置）落成可核记录——当前品类内无竞品记录、无参数、无平台/产品数据",
+    "确认「C 家含税报价超目标价 12%」所依据的目标价口径来源"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

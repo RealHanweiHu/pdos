@@ -228,6 +228,11 @@ def _record_finish(session, run, result):
         session, run, proposals.get("memory_candidates") if isinstance(proposals, dict) else None,
         goals, page_material=page_material(goals),
     )
+    from pdos_next.agent.memory.candidates import discussion_marked
+    from pdos_next.agent.memory.constraints import void_pending
+
+    if discussion_marked(run, goals):
+        void_pending(body)  # P121 第 8 项: "这只是讨论" also voids unconfirmed constraints.
     rejected = [*rejected, *paraphrase_rejected, *memory_rejected]
     body["root_goal"] = body["root_goal"] or {
         "run_id": str(rows[0].id),

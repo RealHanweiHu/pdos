@@ -1,0 +1,107 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P6",
+  "expect": "propose_proactive",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "7c260dc3-a58e-4f32-adb4-d8bb5499911c",
+      "goal": "用一句话写出我们样件编号的规则",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 66.2,
+      "used_tokens": 206492,
+      "held_tokens": 0,
+      "answer": "结论：按你的意思我不再追问，直接给出一句话版本 —— 但要先说清出处：这句话是我按通用试制编号做法理解的草稿，当前可读资料里没有任何你们实际编号样例或规则条文，所以它只能当\"待核对稿\"，不能当已确认的公司规范。\n\n一句话规则（草稿）：我们的样件编号采用\"产品型号/项目代号 + 零件件号 + 样件轮次（必要时再加轮内流水号）\"的分段结构，前两段锁定\"哪个产品的哪一件\"，末段区分试制轮次（如 T01 首轮、T02 二轮，同轮多件再加 01、02 流水号），典型形态形如 XXX-1234-T01-01。\n\n需要你或相关人对着真实编号样例确认的三点：①轮次段的字母/数字写法（T01 还是 1 或 P1）；②流水号位数与是否只在同轮次内出现；③是否还带日期或试制批次码。确认后我可以把这句话定稿，并按需标注到具体资料出处。",
+      "unfinished": [
+        "该一句话尚为待核对稿，需用真实样件编号样例确认轮次写法、流水号规则与是否含日期/批次码后再定稿"
+      ],
+      "final_questions": [],
+      "clarifications": [
+        "样件编号规则出自哪份资料，或你直接把条文贴给我？",
+        "这一句话要覆盖哪些对象的编号？"
+      ],
+      "tool_calls": {
+        "assistant.search": 3,
+        "category.knowledge.list": 1,
+        "category.read": 1,
+        "conversation.history": 1,
+        "evidence.search": 3,
+        "mcp.tools.list": 1,
+        "memory.search": 1,
+        "model": 11,
+        "platform.read": 4,
+        "product.baseline.read": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [
+        "not_verbatim_user_fragment"
+      ],
+      "voids": 0
+    },
+    {
+      "run_id": "e6584e42-3d69-4b03-8bed-7cf1163c9701",
+      "goal": "不对，样件编号按项目-批次-序号",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 33.0,
+      "used_tokens": 77110,
+      "held_tokens": 0,
+      "answer": "结论：按你给的结构，样件编号规则一句话是——我们的样件编号采用「项目－批次－序号」三段式：首段标明样件所属项目（或项目代号），中段标明该项目下的试制/制造批次，末段为同一批次内的顺序流水号，三段连写（如 项目码-批次码-01）。\n\n说明：上一轮已按你更正前的旧稿检索过当前可读资料（品类：汽车充气泵），未命中任何样件编号规则条文或真实编号样例，因此这句话的依据是你的口述说明，而非公司文件引用；我已把该结构作为本轮约束提请保留，本次不重复检索。\n\n仍需你确认两点：项目段/批次段是否有固定写法与位数（字母前缀、位数），以及序号段位数与是否仅在同批次内流水；若要落成可引用的公司规范，需要一份规则条文或真实编号样例来做出处。",
+      "unfinished": [
+        "该一句话尚未取得公司文件佐证（品类范围内未检索到规则条文或真实样件编号样例），待你确认各段写法或提供出处后再定稿"
+      ],
+      "final_questions": [
+        "「项目－批次－序号」三段的具体写法是否已固定（例如项目码/批次码是否带固定字母前缀与位数、序号是否固定两位）？",
+        "这句规则要不要标成公司规范（需要指出处）？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "model": 4,
+        "platform.read": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    },
+    {
+      "run_id": "e19572a0-0de5-4c91-8d0c-448479c00c6f",
+      "goal": "又错了，编号是项目-批次-序号，不要加日期",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 30.7,
+      "used_tokens": 40041,
+      "held_tokens": 0,
+      "answer": "已按你的更正定稿（去掉日期段）：我们的样件编号采用「项目－批次－序号」三段式连写 —— 首段项目码、中段批次码、末段同批次内顺序流水号，形如 项目码-批次码-01，编号中不含日期。\n\n说明：本轮我在当前品类（汽车充气泵）范围内重新检索了制造文档/批次记录/资料中的编号规则条文与真实编号样例，仍未命中任何一条（0 条返回）；因此这句话的依据是**你的口述规则**，暂无可标注的公司文件出处，等你有原文或真实样例我再补出处。",
+      "unfinished": [
+        "该规则仍无公司文件佐证（品类范围检索 0 命中），待你提供规则原文或真实编号样例后补出处并细化各段写法"
+      ],
+      "final_questions": [
+        "三段的具体写法（项目码/批次码是否带固定字母前缀与位数、序号位数）是否已固定？我可以据此把这句话写成带格式的定稿并标上出处。"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "model": 2
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [
+        "trigger_not_corrections"
+      ],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

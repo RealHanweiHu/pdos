@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P4",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "7e2f6ce0-136b-49fc-b059-3a72eec63a1a",
+      "goal": "我说的“老王那个泵”就是 12V 便携充气泵那个型号，记一下",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 26.7,
+      "used_tokens": 67085,
+      "held_tokens": 0,
+      "answer": "已理解：你在本品类里说的“老王那个泵”＝12V 便携充气泵那个型号。我准备了一张别名记忆卡（术语“老王那个泵”，对应“12V 便携充气泵型号”，范围限于当前汽车充气泵品类），等待你确认；在你确认前并不会写入记忆。另外，我在当前可读范围内没有查到可绑定的产品记录（品类与产品列表均为空），所以这张卡暂时按文字描述记录，没有挂到具体型号编号上。",
+      "unfinished": [],
+      "final_questions": [
+        "这张别名卡是否要等具体型号编号出现后，再把“老王那个泵”挂到那个型号上？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 4,
+        "platform.read": 3
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "alias",
+          "text": "“老王那个泵”指 12V 便携充气泵那个型号（当前品类：汽车充气泵）。",
+          "scope_kind": "category",
+          "alias_term": "老王那个泵",
+          "trigger": [
+            {
+              "text": "我说的“老王那个泵”就是 12V 便携充气泵那个型号，记一下",
+              "run_id": "7e2f6ce0-136b-49fc-b059-3a72eec63a1a"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "“老王那个泵”指 12V 便携充气泵那个型号（当前品类：汽车充气泵）。"
+  ]
+}

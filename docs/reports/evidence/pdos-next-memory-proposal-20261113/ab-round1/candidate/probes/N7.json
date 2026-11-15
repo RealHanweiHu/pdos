@@ -1,0 +1,39 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "N7",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "770cb9de-b9b4-457b-a74c-3b57e167ade7",
+      "goal": "下周三前先别动模具图纸，帮我写一句提醒大家的话",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 36.4,
+      "used_tokens": 57195,
+      "held_tokens": 0,
+      "answer": "提醒文案已给出（按系统当前日期 2026-11-14 计，\"下周三\"=11月18日）：主推一句「下周三（11/18）前请先不要改动任何模具图纸，有需要变更的先找我确认。」，另附群消息与邮件两个口径版本。已核对项：本次在\"汽车充气泵\"品类可读资料中检索\"模具图纸/图纸冻结\"未命中任何变更单、项目或制造文件记录，故措辞未点名具体件号；本轮未重复检索、未做任何登记或外发动作。",
+      "unfinished": [
+        "本次检索未命中模具图纸相关变更单/项目记录；若需点名具体件号或变更单，可在同一会话继续扩大检索范围",
+        "仅完成文案起草，未做公告登记、未向任何系统或人员发送"
+      ],
+      "final_questions": [
+        "这条提醒发到哪里、给哪些人？确认后我可以按该渠道再收一版措辞。"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "model": 3
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

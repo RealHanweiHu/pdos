@@ -23,10 +23,10 @@ export type NoteDraft = {
 export type Candidate = {
   candidate_id: string; run_id: string; session_id: string; origin: "explicit" | "proactive"; kind: NoteKind; kind_label: string;
   text: string; scope: Scope; alias: { term: string; means: AliasMeaning } | null; trigger: { run_id: string; text: string }[];
-  status: "pending" | "adopted" | "ignored" | "expired"; proposed_at: string; expires_at: string; note_id: string | null;
+  status: "pending" | "adopted" | "ignored" | "expired" | "voided"; proposed_at: string; expires_at: string; note_id: string | null;
   conflicts: ConflictNote[]; choices: Resolution[]; label: string;
 };
-export type CandidatesView = { version: "memory-candidates/v1"; items: Candidate[]; count?: number; run_id?: string };
+export type CandidatesView = { version: "memory-candidates/v1"; items: Candidate[]; count?: number; run_id?: string; declined?: { count: number; note: string } | null };
 export type OwnerSettings = { version: "memory-owner-settings/v1"; revision: number; proactive_off: boolean; notes_enabled: boolean; proposals_enabled: boolean; episode_vectors: boolean; effect: string };
 export type TenantPolicy = { version: "memory-tenant-policy/v1"; revision: number; work_state_idle_days: number; notes_enabled: boolean; proposals_enabled: boolean; default: boolean };
 export type TenantStatistics = { version: "memory-tenant-statistics/v1"; policy: TenantPolicy; active_notes: number; owners_with_notes: number; episode_vectors: { enabled: boolean; profile_version_id: string | null }; note: string };

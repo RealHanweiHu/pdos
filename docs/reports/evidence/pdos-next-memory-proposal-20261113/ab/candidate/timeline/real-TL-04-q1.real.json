@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 168.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 183971,
+  "held_tokens": 0,
+  "answer": "结论不变：在当前可读范围内查不到您交代过报价对比口径的记录。三条依据——(1) 有一次相关工作，2026-11-14 的「气泵报价对比」会话（状态已完成），但会话历史只保留目标与一句「报价对比已完成」，没有保留口径原话、引用或研究明细；(2) 您已确认的个人口径条目为 0 条（按报价、价格、币种、含税、运费、渠道、价格带等说法检索均无匹配）；(3) 公司资料在「汽车充气泵」品类下按报价/口径/币种/含税/运费检索 0 条，没有既定的报价对比口径规范文件。该品类当前也几乎是空的（0 知识、0 参数、0 竞品、无共享平台型号、未选基线型号），系统侧同样反推不出当时口径。所以这不是「您没说过」，而是「没有留下可查的文字或条目」。若要长期沿用同一口径，建议这次一次定死（币种、基准日期、地区、渠道、零售/促销、含税含运、配置版本），我用 calc.price_band 出价格带与目标价位置；定下来后您说一句「以后都按这个口径比」，我会提一张常驻口径卡片给您确认（确认前不会生效）。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"goal\": \"气泵报价对比\", \"as_of\": \"2026-11-14T09:01:12.617798+00:00\", \"scope\": {\"id\": \"b5dd4de3-4a75-4b65-be4b-53f83281aebf\", \"kind\": \"category\", \"title\": \"汽车充气泵\"}, \"pinned\": false, \"run_id\": \"b9cde90c-5b1f-4b98-ac6a-2f2078efbba7\", \"skills\": [], \"status\": \"completed\", \"receipts\": [], \"session_id\": \"a072d0d9-cb03-43d1-9331-0b0fb7c3b5a2\", \"corrections\": [], \"same_session\": false, \"candidate_count\": 0}], \"notes\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 1, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"notes_policy\": \"个人记忆条目是你本人确认的口径、背景和叫法，不是业务事实，不能作为依据引用。\", \"notes_status\": \"completed\", \"execution_ref\": {\"call_id\": \"9578de95-e9da-4245-99f1-1c4566bc6f89\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [{\"goal\": \"气泵报价对比\", \"run_id\": \"b9cde90c-5b1f-4b98-ac6a-2f2078efbba7\", \"status\": \"completed\", \"sources\": [], \"outcome_state\": \"current\", \"original_record\": {\"run_id\": \"b9cde90c-5b1f-4b98-ac6a-2f2078efbba7\", \"session_id\": \"a072d0d9-cb03-43d1-9331-0b0fb7c3b5a2\"}, \"historical_outcome\": {\"notes\": [], \"summary\": \"报价对比已完成。\", \"research\": [], \"truncated\": false, \"unfinished\": []}}], \"status\": \"completed\", \"session_id\": \"a072d0d9-cb03-43d1-9331-0b0fb7c3b5a2\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。其他会话的回答只是当时的记录，其中的引用不能直接沿用。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"99568095-eaa6-499d-843e-7f35070b5d60\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [{\"goal\": \"气泵报价对比\", \"run_id\": \"b9cde90c-5b1f-4b98-ac6a-2f2078efbba7\", \"status\": \"completed\", \"sources\": [], \"outcome_state\": \"current\", \"original_record\": {\"run_id\": \"b9cde90c-5b1f-4b98-ac6a-2f2078efbba7\", \"session_id\": \"a072d0d9-cb03-43d1-9331-0b0fb7c3b5a2\"}, \"historical_outcome\": {\"notes\": [], \"summary\": \"报价对比已完成。\", \"research\": [], \"truncated\": false, \"unfinished\": []}}], \"status\": \"completed\", \"session_id\": \"a072d0d9-cb03-43d1-9331-0b0fb7c3b5a2\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。其他会话的回答只是当时的记录，其中的引用不能直接沿用。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"9bc27674-dcb1-4bb8-a0f8-f079016f00d3\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-14T09:01:26.824117+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"b5dd4de3-4a75-4b65-be4b-53f83281aebf\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"口径\", \"含\", \"售价\", \"对比\", \"币种\", \"报价\", \"气泵\", \"税\", \"运费\", \"零售\", \"零售价\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"4b5f75a1-505d-466a-9f50-a8cb4734e7e6\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-14T09:01:34.109267+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"2d5c8e02-12ee-420e-933d-4a106f8950db\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"b5dd4de3-4a75-4b65-be4b-53f83281aebf\", \"key\": \"category-6580d1a30568426fb62e4b98ca9f1d18\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"27e15d22-9a82-4071-b42f-22df15ae3f85\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"27e15d22-9a82-4071-b42f-22df15ae3f85\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"279fbbea-02e1-4435-9750-32405fb5f3f4\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"3c9015ac-6896-41f9-9ced-2ff4ed0e0948\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"goal\": \"气泵报价对比\", \"as_of\": \"2026-11-14T09:01:12.617798+00:00\", \"scope\": {\"id\": \"b5dd4de3-4a75-4b65-be4b-53f83281aebf\", \"kind\": \"category\", \"title\": \"汽车充气泵\"}, \"pinned\": false, \"run_id\": \"b9cde90c-5b1f-4b98-ac6a-2f2078efbba7\", \"skills\": [], \"status\": \"completed\", \"receipts\": [], \"session_id\": \"a072d0d9-cb03-43d1-9331-0b0fb7c3b5a2\", \"corrections\": [], \"same_session\": false, \"candidate_count\": 0}], \"notes\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 1, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v1;keyword-sat-1.2;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。要看当时怎么答的，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"notes_policy\": \"个人记忆条目是你本人确认的口径、背景和叫法，不是业务事实，不能作为依据引用。\", \"notes_status\": \"completed\", \"execution_ref\": {\"call_id\": \"dd79fd63-75f6-43cc-8b7e-fe41afd92fc5\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"做气泵报价对比时，我以前交代过按什么口径比吗？\", \"session_id\": \"d33fc789-3ecd-4010-b93d-a95b09bcb056\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"7cc07a35-2fa8-4945-8371-b73eb4b0ef96\", \"execution_ref\": {\"call_id\": \"3112ed43-2959-4613-b84d-a388a35e2029\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"结论不变：在当前可读范围内查不到您交代过报价对比口径的记录。三条依据——(1) 有一次相关工作，2026-11-14 的「气泵报价对比」会话（状态已完成），但会话历史只保留目标与一句「报价对比已完成」，没有保留口径原话、引用或研究明细；(2) 您已确认的个人口径条目为 0 条（按报价、价格、币种、含税、运费、渠道、价格带等说法检索均无匹配）；(3) 公司资料在「汽车充气泵」品类下按报价/口径/币种/含税/运费检索 0 条，没有既定的报价对比口径规范文件。该品类当前也几乎是空的（0 知识、0 参数、0 竞品、无共享平台型号、未选基线型号），系统侧同样反推不出当时口径。所以这不是「您没说过」，而是「没有留下可查的文字或条目」。若要长期沿用同一口径，建议这次一次定死（币种、基准日期、地区、渠道、零售/促销、含税含运、配置版本），我用 calc.price_band 出价格带与目标价位置；定下来后您说一句「以后都按这个口径比」，我会提一张常驻口径卡片给您确认（确认前不会生效）。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "memory.search:completed:2",
+    "model:completed:8",
+    "platform.read:completed:1",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

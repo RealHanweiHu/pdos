@@ -9,6 +9,13 @@
       "digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552",
       "status": "active",
       "created_at": "2026-10-31"
+    },
+    {
+      "version": "1.1.0",
+      "file": "versions/1.1.0.md",
+      "digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+      "status": "draft",
+      "created_at": "2026-11-14"
     }
   ],
   "history": []

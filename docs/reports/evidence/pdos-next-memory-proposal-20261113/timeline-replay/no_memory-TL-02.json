@@ -1,0 +1,71 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-02",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "status": "memory_off",
+      "returned": [],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "status": "memory_off",
+      "returned": [],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p3",
+      "probe": "resident",
+      "notes": [],
+      "texts": [],
+      "catalog": [],
+      "catalog_fields": [],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    },
+    {
+      "id": "p4",
+      "probe": "resident",
+      "notes": [],
+      "texts": [],
+      "catalog": [],
+      "catalog_fields": [],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    },
+    {
+      "id": "p5",
+      "probe": "search",
+      "status": "memory_off",
+      "returned": [],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    }
+  ],
+  "episodes_written": [],
+  "unexpected_notes": 0
+}

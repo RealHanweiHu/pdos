@@ -1,0 +1,67 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 96.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 200643,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内未能定位明确写有“外壳缩水”的历史工作：记忆关键词检索对“缩水”“外壳”零命中，三个历史会话的会话历史仅保留一句摘要（无正文问题清单），品类知识/证据/产品与参数列表均为空，公司资料检索本轮预算用尽（仅完成首轮，0 命中）。本人在本品类范围内可查到的此前工作仅三次，均为 2026-11-14：①核对模具保养计划（run 2956afa8-ea5e-42bc-812e-5199caaa09de，摘要“保养计划已核对，两处日期待确认”）②整理认证资料清单（run 89407d7d-f233-47cd-8838-5d14eb640ce1，摘要“清单已整理，缺两份证书扫描件”）③更新项目周会纪要模板（run c8062adb-acc3-4fae-bd6c-ab159796604f，摘要“模板已更新”）。主题上最接近的是①（模具/成型），但其记录未出现“缩水”，故不能确认即用户所指那次，也无法给出当时并列的其他问题。已就记录载体与“其他问题”是同一份清单还是跨工作汇总各提一问。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T08:44:12.263900+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未在当前可读记录中找到明确写有“外壳缩水”的历史工作，无法确认是哪一次工作\", \"无法核实当时与外壳缩水一并列出的其他问题清单\", \"三个历史会话在会话历史中仅保留一句摘要、正文未保留，无法回读原始问题列表\", \"公司资料检索本轮检索预算用尽，仅完成首轮（0 命中），未覆盖全部公司资料\", \"品类知识、证据、产品与参数列表在当前范围均为空，无法从业务对象侧交叉核对\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"search_log\": [{\"result\": \"仅“模具”命中1条（核对模具保养计划），其余0命中\", \"source\": \"记忆检索(个人/本品类范围)\", \"queries\": [\"外壳缩水\", \"缩水\", \"问题\", \"外壳\", \"模具\"]}, {\"result\": \"每会话仅1轮且只有摘要，无正文问题清单\", \"source\": \"会话历史\", \"queries\": [\"当前会话\", \"2ad46148-ea98-45e1-8de6-f9e7754df714\", \"d0aa32af-0d53-4193-b2c6-e529cca705ae\", \"4bba0cbd-c89f-4a31-82bd-642bd9589f5e\"]}, {\"result\": \"0 命中；后续查询被本轮检索预算限流\", \"source\": \"公司资料检索\", \"queries\": [\"外壳缩水 收缩 变形 问题清单\"]}, {\"result\": \"0 命中\", \"source\": \"证据检索\", \"queries\": [\"外壳缩水\", \"外壳 收缩 尺寸 变化 外观\"]}, {\"result\": \"均为空（knowledge_counts 全 0，parameter_count 0，platform.read 无对象）\", \"source\": \"品类知识/产品/参数列表\"}], \"prior_works\": [{\"goal\": \"核对模具保养计划\", \"as_of\": \"2026-11-14\", \"run_id\": \"2956afa8-ea5e-42bc-812e-5199caaa09de\", \"status\": \"to_confirm\", \"session_id\": \"4bba0cbd-c89f-4a31-82bd-642bd9589f5e\", \"recorded_summary\": \"保养计划已核对，两处日期待确认\", \"relation_to_shrinkage\": \"主题最接近（模具/注塑成型），但记录中未出现“缩水”，未确认\"}, {\"goal\": \"整理认证资料清单\", \"as_of\": \"2026-11-14\", \"run_id\": \"89407d7d-f233-47cd-8838-5d14eb640ce1\", \"status\": \"not_recorded\", \"session_id\": \"2ad46148-ea98-45e1-8de6-f9e7754df714\", \"recorded_summary\": \"清单已整理，缺两份证书扫描件\", \"relation_to_shrinkage\": \"记录中无缩水相关内容\"}, {\"goal\": \"更新项目周会纪要模板\", \"as_of\": \"2026-11-14\", \"run_id\": \"c8062adb-acc3-4fae-bd6c-ab159796604f\", \"status\": \"not_recorded\", \"session_id\": \"d0aa32af-0d53-4193-b2c6-e529cca705ae\", \"recorded_summary\": \"模板已更新\", \"relation_to_shrinkage\": \"记录中无缩水相关内容\"}]}, \"status\": \"partial\", \"summary\": \"在当前可读范围内未能定位明确写有“外壳缩水”的历史工作：记忆关键词检索对“缩水”“外壳”零命中，三个历史会话的会话历史仅保留一句摘要（无正文问题清单），品类知识/证据/产品与参数列表均为空，公司资料检索本轮预算用尽（仅完成首轮，0 命中）。本人在本品类范围内可查到的此前工作仅三次，均为 2026-11-14：①核对模具保养计划（run 2956afa8-ea5e-42bc-812e-5199caaa09de，摘要“保养计划已核对，两处日期待确认”）②整理认证资料清单（run 89407d7d-f233-47cd-8838-5d14eb640ce1，摘要“清单已整理，缺两份证书扫描件”）③更新项目周会纪要模板（run c8062adb-acc3-4fae-bd6c-ab159796604f，摘要“模板已更新”）。主题上最接近的是①（模具/成型），但其记录未出现“缩水”，故不能确认即用户所指那次，也无法给出当时并列的其他问题。已就记录载体与“其他问题”是同一份清单还是跨工作汇总各提一问。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读记录只有一句摘要，没有正文；确定载体后可按对应对象深查，而不是泛搜关键词。\", \"options\": [{\"label\": \"模具保养/模具类记录\", \"value\": \"模具保养记录\"}, {\"label\": \"试产与外观缺陷记录\", \"value\": \"试产与外观缺陷记录\"}, {\"label\": \"品质问题单（CAPA 登记）\", \"value\": \"品质问题单\"}, {\"label\": \"项目周会纪要\", \"value\": \"周会纪要\"}, {\"label\": \"认证资料清单\", \"value\": \"认证资料\"}, {\"label\": \"不确定/记不清了\", \"value\": \"不确定\"}], \"question\": \"你记得“外壳缩水”这条更可能写在哪类载体里？（模具保养记录 / 试产与外观缺陷记录 / 品质问题单 / 周会纪要 / 认证资料 / 其他）\", \"depends_on\": [], \"recommended\": {\"value\": \"模具保养记录\", \"reason\": \"缩水属注塑成型尺寸问题，与已知的“核对模具保养计划”同域，最可能。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"同表并列项要回到同一份记录读取；跨工作汇总则需要按品类内各工作记录分别提取后再合并。\", \"options\": [{\"label\": \"同一份清单/同一段记录里的并列问题\", \"value\": \"同一份清单的并列项\"}, {\"label\": \"几次工作里汇总出来的问题\", \"value\": \"跨工作汇总\"}, {\"label\": \"记不清了\", \"value\": \"记不清\"}], \"question\": \"你记得“当时一起列出的其他问题”，是同一份清单上的并列项，还是跨几次工作汇总出来的问题？\", \"depends_on\": [\"q1\"], \"recommended\": {\"value\": \"同一份清单的并列项\", \"reason\": \"“当时一起列出的”措辞更像同一份记录中的并列项。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未能定位写有“外壳缩水”的原始记录；已把“核对模具保养计划”列为未确认的主候选，未据此补写当时的问题清单\", \"公司资料检索因本轮预算限流未完成全量覆盖（首轮 0 命中，后续查询被拒），可在下一轮继续深查\", \"待用户确认记录载体与“其他问题”的口径后，再按对应对象定向回查\"]}",
+  "unfinished": [
+    "未能定位写有“外壳缩水”的原始记录；已把“核对模具保养计划”列为未确认的主候选，未据此补写当时的问题清单",
+    "公司资料检索因本轮预算限流未完成全量覆盖（首轮 0 命中，后续查询被拒），可在下一轮继续深查",
+    "待用户确认记录载体与“其他问题”的口径后，再按对应对象定向回查"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:4",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:5",
+    "model:completed:10",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 5,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

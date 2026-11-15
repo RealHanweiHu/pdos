@@ -447,6 +447,9 @@ def create(session, ctx, data, *, origin="manual", candidate_id=None):
         _note(session, ctx, note_id)
         if current is None or current.revision != revision or current.status != "active":
             raise DomainError("VERSION_CONFLICT", "旧条目已变化，请刷新后再选。")
+    from .suppression import lift
+
+    lift(session, ctx, values)  # The owner confirms it again: forgetting no longer applies.
     if choice and choice.resolution == "merge":
         (note_id, revision), = chosen.items()
         current = _latest(session, note_id)
@@ -526,6 +529,9 @@ def purge(session, ctx, note_id, data):
     versions = session.scalars(select(MemoryNoteVersion).where(
         MemoryNoteVersion.note_id == note_id)).all()
     candidates = {row.candidate_id for row in versions if row.candidate_id is not None}
+    from .suppression import record as suppress
+
+    suppress(session, ctx, note_id, versions)  # P121 第 8 项: a digest, never the text.
     for row in versions:
         session.delete(row)
     session.flush()

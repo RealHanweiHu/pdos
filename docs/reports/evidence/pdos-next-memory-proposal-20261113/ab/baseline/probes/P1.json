@@ -1,0 +1,33 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "P1",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "36d06f05-f855-41ba-b9a2-abaffe721171",
+      "goal": "记住：给客户的报告一律用英文",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 5.6,
+      "used_tokens": 15095,
+      "held_tokens": 0,
+      "answer": "已记下：给客户的报告一律用英文（内部沟通与工作草稿仍用中文）。已把这条作为显式约束提交，后续任何面向客户的报告、交付件或对外说明都会默认用英文输出；如某次要改用中文或其他语言，我会先跟你确认。",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "model": 1
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

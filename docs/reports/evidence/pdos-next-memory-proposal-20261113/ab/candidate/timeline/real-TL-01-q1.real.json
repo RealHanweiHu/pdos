@@ -1,0 +1,64 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 72.0,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 151587,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-14 会话记录）结论：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12% 已排除；A 家状态悬空。未完成两项：补 C 家含税报价单、核对 B 家交期单位。本轮在当前「汽车充气泵」品类范围内检索 artifact/supply/external_wait/project_status/knowledge 均 0 命中，竞品清单、参数、平台产品、证据检索也均为 0 条，故两条遗留事项无进展记录，上次结论亦无当前可引用业务对象支撑。需要用户补充 C 家报价单原件与 B 家交期单位出处，才能按统一口径重算并登记竞品条目。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T08:55:37.769858+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类范围内未检索到任何供应商报价或交期资料（artifact/supply/external_wait/project_status/knowledge 0 命中）\", \"竞品清单、参数字典、平台产品、证据检索均为空，无可比对或可引用的业务对象\", \"A 家在上次对比中的最终状态（推荐/排除/待定）未记录\", \"B 家交期的计量单位与出处未核对\", \"C 家含税报价单原件未到位，12% 超价的证据基础未闭合\", \"目标价口径（币种、含税含运、地区、渠道、零售或出厂）在历史记录中未记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_actions\": {\"blocked_on\": [\"C 家含税报价单原件（报价单/邮件/图片）\", \"B 家交期单位与出处\", \"对比口径：币种、含税含运、地区、渠道、零售或出厂\", \"遗留事项的责任人与承诺时点\"], \"can_do_now\": []}, \"historical_record\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"note\": \"情景记录，为当时工作说法，不是当前业务事实，未附来源引用\", \"as_of\": \"2026-11-14\", \"run_id\": \"0575a24e-4696-4099-80a9-5361ba221634\", \"source\": \"conversation.history\", \"conclusion\": [\"建议选 B 家：交期比 A 家短 2 周\", \"C 家含税报价超出目标价 12%，已排除\"], \"session_id\": \"3e1dc67c-b632-4591-b5c6-d8c6c5650221\", \"unfinished\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"]}}, \"status\": \"partial\", \"summary\": \"上次（2026-11-14 会话记录）结论：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12% 已排除；A 家状态悬空。未完成两项：补 C 家含税报价单、核对 B 家交期单位。本轮在当前「汽车充气泵」品类范围内检索 artifact/supply/external_wait/project_status/knowledge 均 0 命中，竞品清单、参数、平台产品、证据检索也均为 0 条，故两条遗留事项无进展记录，上次结论亦无当前可引用业务对象支撑。需要用户补充 C 家报价单原件与 B 家交期单位出处，才能按统一口径重算并登记竞品条目。\", \"questions\": [{\"id\": \"q_sources\", \"why\": \"没有这两样原件，就无法闭合上次排除 C 家的证据，也无法确认 B 家交期是否同口径，结论无法固化。\", \"options\": [{\"label\": \"有，我直接上传附件/粘贴原文\", \"value\": \"upload_now\"}, {\"label\": \"只有其中一部分（我说明是哪部分）\", \"value\": \"partial\"}, {\"label\": \"暂时没有，先按现有记录往下走\", \"value\": \"none_yet\"}], \"question\": \"C 家含税报价单和 B 家交期依据，你手上现在有吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"upload_now\", \"reason\": \"两件都补齐后可直接重算价格带与交期并固化选型结论。\"}, \"allow_free_text\": true}, {\"id\": \"q_tasks\", \"why\": \"登记任务需要明确的负责人与时点；这两项承接与承诺应由本人或相关负责人作出，我不会代填。\", \"options\": [{\"label\": \"要登记，负责人和时点我稍后指定\", \"value\": \"register_later\"}, {\"label\": \"要登记，负责人和时点我现在就给出\", \"value\": \"register_now\"}, {\"label\": \"先不登记，只做对比\", \"value\": \"no_register\"}], \"question\": \"「补 C 家含税报价单」和「核对 B 家交期单位」要不要登记为带负责人和承诺时点的任务条目？\", \"depends_on\": [], \"recommended\": {\"value\": \"register_later\", \"reason\": \"避免遗留事项随对话推进被遗忘。\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家含税报价单原件\", \"核对 B 家交期的计量单位与出处\", \"统一价格/交期口径（币种、含税含运、地区、渠道、零售或出厂）后重算对比\", \"确认 A 家在上次对比中的最终处置状态\"]}",
+  "unfinished": [
+    "补 C 家含税报价单原件",
+    "核对 B 家交期的计量单位与出处",
+    "统一价格/交期口径（币种、含税含运、地区、渠道、零售或出厂）后重算对比",
+    "确认 A 家在上次对比中的最终处置状态"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:2",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

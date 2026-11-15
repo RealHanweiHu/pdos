@@ -1,0 +1,496 @@
+{
+  "schema": "xiaopai-memory-proposal-replay/v1",
+  "triggers_version": "memory-proposal-triggers/v3",
+  "case_file": {
+    "version": "xiaopai-memory-proposal-triggers/v0",
+    "status": "candidate",
+    "synthetic": true
+  },
+  "provider_calls": 0,
+  "database_operations": 0,
+  "splits": {
+    "dev": {
+      "remember": {
+        "should_open": 45,
+        "should_not_open": 55,
+        "v1": {
+          "false_admit": 13,
+          "missed": 36,
+          "false_admit_rate": 0.236,
+          "miss_rate": 0.8,
+          "false_admit_ids": [
+            "H046",
+            "H047",
+            "H074",
+            "H081",
+            "H087",
+            "H091",
+            "H092",
+            "H093",
+            "H094",
+            "H095",
+            "H098",
+            "H099",
+            "H100"
+          ],
+          "missed_ids": [
+            "H002",
+            "H003",
+            "H004",
+            "H005",
+            "H006",
+            "H009",
+            "H010",
+            "H011",
+            "H012",
+            "H013",
+            "H015",
+            "H017",
+            "H018",
+            "H019",
+            "H020",
+            "H022",
+            "H023",
+            "H025",
+            "H026",
+            "H027",
+            "H028",
+            "H029",
+            "H030",
+            "H031",
+            "H032",
+            "H033",
+            "H034",
+            "H035",
+            "H036",
+            "H037",
+            "H038",
+            "H039",
+            "H040",
+            "H042",
+            "H044",
+            "H045"
+          ]
+        },
+        "v2": {
+          "false_admit": 1,
+          "missed": 1,
+          "false_admit_rate": 0.018,
+          "miss_rate": 0.022,
+          "false_admit_ids": [
+            "H067"
+          ],
+          "missed_ids": [
+            "H012"
+          ]
+        }
+      },
+      "alias": {
+        "should_open": 15,
+        "should_not_open": 15,
+        "v1": {
+          "false_admit": 5,
+          "missed": 8,
+          "false_admit_rate": 0.333,
+          "miss_rate": 0.533,
+          "false_admit_ids": [
+            "H116",
+            "H117",
+            "H119",
+            "H126",
+            "H130"
+          ],
+          "missed_ids": [
+            "H103",
+            "H105",
+            "H106",
+            "H108",
+            "H111",
+            "H112",
+            "H113",
+            "H114"
+          ]
+        },
+        "v2": {
+          "false_admit": 0,
+          "missed": 0,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [],
+          "missed_ids": []
+        }
+      },
+      "correction": {
+        "should_open": 20,
+        "should_not_open": 20,
+        "v1": {
+          "false_admit": 20,
+          "missed": 0,
+          "false_admit_rate": 1.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [
+            "H191",
+            "H192",
+            "H193",
+            "H194",
+            "H195",
+            "H196",
+            "H197",
+            "H198",
+            "H199",
+            "H200",
+            "H201",
+            "H202",
+            "H203",
+            "H204",
+            "H205",
+            "H206",
+            "H207",
+            "H208",
+            "H209",
+            "H210"
+          ],
+          "missed_ids": []
+        },
+        "v2": {
+          "false_admit": 0,
+          "missed": 1,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.05,
+          "false_admit_ids": [],
+          "missed_ids": [
+            "H188"
+          ]
+        }
+      },
+      "discussion": {
+        "should_open": 20,
+        "should_not_open": 20,
+        "v1": null,
+        "v2": {
+          "false_admit": 0,
+          "missed": 1,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.05,
+          "false_admit_ids": [],
+          "missed_ids": [
+            "H143"
+          ]
+        }
+      }
+    },
+    "heldout": {
+      "remember": {
+        "should_open": 45,
+        "should_not_open": 55,
+        "v1": {
+          "false_admit": 7,
+          "missed": 36,
+          "false_admit_rate": 0.127,
+          "miss_rate": 0.8,
+          "false_admit_ids": [
+            "G046",
+            "G047",
+            "G055",
+            "G075",
+            "G080",
+            "G096",
+            "G098"
+          ],
+          "missed_ids": [
+            "G002",
+            "G003",
+            "G005",
+            "G006",
+            "G007",
+            "G008",
+            "G009",
+            "G010",
+            "G012",
+            "G013",
+            "G014",
+            "G015",
+            "G017",
+            "G018",
+            "G019",
+            "G020",
+            "G021",
+            "G023",
+            "G024",
+            "G025",
+            "G026",
+            "G027",
+            "G028",
+            "G029",
+            "G030",
+            "G032",
+            "G033",
+            "G034",
+            "G036",
+            "G037",
+            "G038",
+            "G039",
+            "G040",
+            "G041",
+            "G042",
+            "G044"
+          ]
+        },
+        "v2": {
+          "false_admit": 3,
+          "missed": 9,
+          "false_admit_rate": 0.055,
+          "miss_rate": 0.2,
+          "false_admit_ids": [
+            "G090",
+            "G099",
+            "G100"
+          ],
+          "missed_ids": [
+            "G003",
+            "G010",
+            "G015",
+            "G025",
+            "G026",
+            "G030",
+            "G032",
+            "G040",
+            "G044"
+          ]
+        }
+      },
+      "alias": {
+        "should_open": 15,
+        "should_not_open": 15,
+        "v1": {
+          "false_admit": 0,
+          "missed": 11,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.733,
+          "false_admit_ids": [],
+          "missed_ids": [
+            "G102",
+            "G103",
+            "G105",
+            "G107",
+            "G108",
+            "G109",
+            "G110",
+            "G111",
+            "G113",
+            "G114",
+            "G115"
+          ]
+        },
+        "v2": {
+          "false_admit": 0,
+          "missed": 5,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.333,
+          "false_admit_ids": [],
+          "missed_ids": [
+            "G105",
+            "G108",
+            "G109",
+            "G110",
+            "G113"
+          ]
+        }
+      },
+      "correction": {
+        "should_open": 20,
+        "should_not_open": 20,
+        "v1": {
+          "false_admit": 20,
+          "missed": 0,
+          "false_admit_rate": 1.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [
+            "G191",
+            "G192",
+            "G193",
+            "G194",
+            "G195",
+            "G196",
+            "G197",
+            "G198",
+            "G199",
+            "G200",
+            "G201",
+            "G202",
+            "G203",
+            "G204",
+            "G205",
+            "G206",
+            "G207",
+            "G208",
+            "G209",
+            "G210"
+          ],
+          "missed_ids": []
+        },
+        "v2": {
+          "false_admit": 1,
+          "missed": 8,
+          "false_admit_rate": 0.05,
+          "miss_rate": 0.4,
+          "false_admit_ids": [
+            "G191"
+          ],
+          "missed_ids": [
+            "G175",
+            "G177",
+            "G178",
+            "G180",
+            "G183",
+            "G184",
+            "G187",
+            "G190"
+          ]
+        }
+      },
+      "discussion": {
+        "should_open": 20,
+        "should_not_open": 20,
+        "v1": null,
+        "v2": {
+          "false_admit": 0,
+          "missed": 6,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.3,
+          "false_admit_ids": [],
+          "missed_ids": [
+            "G139",
+            "G141",
+            "G142",
+            "G145",
+            "G147",
+            "G148"
+          ]
+        }
+      }
+    },
+    "tuning": {
+      "remember": {
+        "should_open": 25,
+        "should_not_open": 35,
+        "v1": {
+          "false_admit": 9,
+          "missed": 18,
+          "false_admit_rate": 0.257,
+          "miss_rate": 0.72,
+          "false_admit_ids": [
+            "T026",
+            "T027",
+            "T029",
+            "T032",
+            "T033",
+            "T034",
+            "T035",
+            "T038",
+            "T052"
+          ],
+          "missed_ids": [
+            "T002",
+            "T003",
+            "T004",
+            "T005",
+            "T006",
+            "T007",
+            "T010",
+            "T011",
+            "T013",
+            "T014",
+            "T015",
+            "T018",
+            "T019",
+            "T020",
+            "T022",
+            "T023",
+            "T024",
+            "T025"
+          ]
+        },
+        "v2": {
+          "false_admit": 1,
+          "missed": 0,
+          "false_admit_rate": 0.029,
+          "miss_rate": 0.0,
+          "false_admit_ids": [
+            "T041"
+          ],
+          "missed_ids": []
+        }
+      },
+      "alias": {
+        "should_open": 6,
+        "should_not_open": 6,
+        "v1": {
+          "false_admit": 2,
+          "missed": 4,
+          "false_admit_rate": 0.333,
+          "miss_rate": 0.667,
+          "false_admit_ids": [
+            "T067",
+            "T068"
+          ],
+          "missed_ids": [
+            "T062",
+            "T064",
+            "T065",
+            "T066"
+          ]
+        },
+        "v2": {
+          "false_admit": 0,
+          "missed": 0,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [],
+          "missed_ids": []
+        }
+      },
+      "correction": {
+        "should_open": 9,
+        "should_not_open": 7,
+        "v1": {
+          "false_admit": 7,
+          "missed": 0,
+          "false_admit_rate": 1.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [
+            "T096",
+            "T097",
+            "T098",
+            "T099",
+            "T100",
+            "T101",
+            "T102"
+          ],
+          "missed_ids": []
+        },
+        "v2": {
+          "false_admit": 0,
+          "missed": 0,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [],
+          "missed_ids": []
+        }
+      },
+      "discussion": {
+        "should_open": 7,
+        "should_not_open": 7,
+        "v1": null,
+        "v2": {
+          "false_admit": 0,
+          "missed": 0,
+          "false_admit_rate": 0.0,
+          "miss_rate": 0.0,
+          "false_admit_ids": [],
+          "missed_ids": []
+        }
+      }
+    }
+  }
+}

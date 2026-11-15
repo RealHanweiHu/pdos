@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P3",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "99a6fa7b-0f80-495e-b387-bad4fdb477f7",
+      "goal": "以后每次出报价对比都先列含税价",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 20.2,
+      "used_tokens": 52759,
+      "held_tokens": 0,
+      "answer": "已记下你的口径要求：今后每次做报价对比，先列含税价（含税单价与含税总额），未税价和其他口径随后补充，并注明币种、日期、地区、渠道以及是否含运费；来源里没有含税信息时我会标成\"未标含税/未知\"，不做推算。这条已作为一条待确认的记忆卡和本次运行的约束提交给你确认，确认前并未写入任何记忆。另有两点现状说明：当前品类（汽车充气泵）范围内没有检索到含税价或报价相关资料可供核对；价格带计算技能（price_band）在本租户/范围未启用，将来真要算价格带分布时需要该领域先启用或确认。",
+      "unfinished": [
+        "price_band 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），将来若要做价格带分布/分位计算，需由该领域先启用或确认调用口径。"
+      ],
+      "final_questions": [
+        "你这里的\"含税价\"，希望按哪种口径列出？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "model": 3
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "convention",
+          "text": "出报价对比时以含税价优先：先列含税单价与含税总额，再列未税价及其他口径，并注明币种、日期、地区、渠道、是否含运费；无含税数据时标注未知，不做推断。",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "以后每次出报价对比都先列含税价",
+              "run_id": "99a6fa7b-0f80-495e-b387-bad4fdb477f7"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "出报价对比时以含税价优先：先列含税单价与含税总额，再列未税价及其他口径，并注明币种、日期、地区、渠道、是否含运费；无含税数据时标注未知，不做推断。"
+  ]
+}

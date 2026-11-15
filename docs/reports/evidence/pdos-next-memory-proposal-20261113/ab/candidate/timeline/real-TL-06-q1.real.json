@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 47.5,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 128375,
+  "held_tokens": 0,
+  "answer": "在当前可检索范围内没有找到「三家气泵供应商比较」这件事的记录，因此无法复述当时建议选哪家。已核查：①按品类「汽车充气泵」检索公司资料（含历史，关键词：气泵/供应商/比较/结论/选型/推荐/评估/对比）→ 0 条命中；②品类知识库（含历史）、竞品清单、证据库检索、产品/平台清单 → 均返回空；③本人记忆与该品类的会话记录中，只找到一次相关工作「整理气泵供应商的联系人」，其记录摘要仅为「联系人已整理」，未包含三家比较或推荐结论，该会话历史里也没有更细条目。另一次去掉品类限定、覆盖供应/文档/项目等来源的补充检索被本轮查找预算拦截，未能执行。也就是说：如果那次比较的结论写在这套系统之外的载体（邮件、会议纪要、表格、评估表）里，系统内无从查到；如果它其实在系统内，需要我跨范围或按你给的关键词再深入查一次。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T12:54:57.015877+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"三家气泵供应商比较的发生记录（时间、参与方、评估口径）\", \"该次比较得出的推荐供应商\", \"该比较的证据/纪要/报告原文\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"在当前可检索范围内没有找到「三家气泵供应商比较」这件事的记录，因此无法复述当时建议选哪家。已核查：①按品类「汽车充气泵」检索公司资料（含历史，关键词：气泵/供应商/比较/结论/选型/推荐/评估/对比）→ 0 条命中；②品类知识库（含历史）、竞品清单、证据库检索、产品/平台清单 → 均返回空；③本人记忆与该品类的会话记录中，只找到一次相关工作「整理气泵供应商的联系人」，其记录摘要仅为「联系人已整理」，未包含三家比较或推荐结论，该会话历史里也没有更细条目。另一次去掉品类限定、覆盖供应/文档/项目等来源的补充检索被本轮查找预算拦截，未能执行。也就是说：如果那次比较的结论写在这套系统之外的载体（邮件、会议纪要、表格、评估表）里，系统内无从查到；如果它其实在系统内，需要我跨范围或按你给的关键词再深入查一次。\", \"questions\": [{\"id\": \"q1\", \"why\": \"系统内当前范围查不到；直接给出线索最快，代价最小。\", \"options\": [{\"label\": \"允许我在本会话继续深入检索（去掉品类限定、覆盖历史版本与供应链/文档类来源）\", \"value\": \"allow_deep_search\"}, {\"label\": \"我提供文件名、供应商名称或当时用的关键词，我按线索重查\", \"value\": \"provide_keyword\"}, {\"label\": \"我直接把当时的结论贴给你，你帮我整理成可归档的记录\", \"value\": \"paste_conclusion\"}], \"question\": \"那次比较的记录我可以在哪里找到？\", \"depends_on\": [], \"recommended\": {\"value\": \"allow_deep_search\", \"reason\": \"若记录确在公司系统内，跨范围检索是最可能找回原文且不依赖人工回忆的方式。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"有名称就能在供应链、竞品与项目资料里做定向比对，而不是泛查。\", \"options\": [{\"label\": \"我给出三家名称\", \"value\": \"provide_names\"}, {\"label\": \"只记得大致特征（品牌/价位/产能段），按特征找\", \"value\": \"describe_only\"}, {\"label\": \"暂时给不了\", \"value\": \"skip\"}], \"question\": \"三家供应商的名称或大致范围（品牌/国别/产能段）？\", \"depends_on\": [], \"recommended\": {\"value\": \"describe_only\", \"reason\": \"记不全时按特征反向定位，仍有机会命中当时的候选集。\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"当前范围是 same_category 且不含客户私有资料，跨品类的供应商评估可能落在别处。\", \"options\": [{\"label\": \"仅限本品类（维持现状）\", \"value\": \"same_category\"}, {\"label\": \"扩大到全公司范围（去掉品类限定，仍不含客户私有资料）\", \"value\": \"all_sources\"}, {\"label\": \"连客户相关私有资料一起查\", \"value\": \"include_customer\"}], \"question\": \"检索范围是否仍限定在「汽车充气泵」品类内？\", \"depends_on\": [], \"recommended\": {\"value\": \"all_sources\", \"reason\": \"供应商评估常挂在采购/项目类来源上，扩大范围比在空品类里反复找更有效。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未找到「三家气泵供应商比较」及其推荐结论的任何记录，无法回答建议选哪家\", \"去掉品类限定、覆盖供应链/文档/项目类来源的补充检索被本轮查找预算拦截，尚未执行\", \"用户确认后需按 q1–q3 的口径重新检索并在同会话给出结论与依据引用\"]}",
+  "unfinished": [
+    "未找到「三家气泵供应商比较」及其推荐结论的任何记录，无法回答建议选哪家",
+    "去掉品类限定、覆盖供应链/文档/项目类来源的补充检索被本轮查找预算拦截，尚未执行",
+    "用户确认后需按 q1–q3 的口径重新检索并在同会话给出结论与依据引用"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

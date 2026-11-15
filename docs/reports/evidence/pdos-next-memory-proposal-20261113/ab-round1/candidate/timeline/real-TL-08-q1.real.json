@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 35.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 90189,
+  "held_tokens": 0,
+  "answer": "没有找到确证。在当前可检索范围（品类「汽车充气泵」+ 你最近的几次工作记录）里，按\"外壳缩水\"\"缩水\"直接检索都没有命中；企业资料检索本轮预算已用完，无法再向更宽的方向扩查。唯一被\"外壳/模具/问题\"关键词牵出来的是你 2026-11-14 的那次「核对模具保养计划」，但它的记录结论只写了\"保养计划已核对，两处日期待确认\"，没有任何\"外壳缩水\"或并列问题清单的内容。所以我无法确认是哪次工作提到过外壳缩水，也无法给出当时一起列出的其他问题——这两点在已检索范围内属于未知，不做推测。下面三个问题可以帮我把范围收窄后继续深入查。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:25:43.843187+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未找到任何一条记录含“外壳缩水/缩水”表述\", \"无法确认是哪一次工作提到过外壳缩水\", \"无法确认当时并列列出的其他问题清单内容\", \"企业资料检索本轮预算已用完，宽泛检索（按问题类型/项目/时间）尚未执行\", \"已核对的3次近期工作记录（整理认证资料清单、更新项目周会纪要模板、核对模具保养计划）结论摘要中均无相关表述\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"candidates\": [{\"goal\": \"核对模具保养计划\", \"as_of\": \"2026-11-14\", \"run_id\": \"fd64147f-0713-44f7-8737-d936b5f64387\", \"status\": \"候选（仅由“外壳/模具”关键词牵出，未见缩水表述）\", \"session_id\": \"c7c0da63-1223-4173-a201-9fb8de254ee4\", \"recorded_outcome\": \"保养计划已核对，两处日期待确认\"}], \"search_scope\": {\"category\": \"汽车充气泵 (cf9b8d25-cf45-45a5-8d6a-cabea41ba53b)\", \"search_note\": \"assistant.search 第二轮返回 RATE_LIMITED（MODEL_BUDGET_EXCEEDED）\", \"channels_used\": [\"memory.search(keyword: 外壳缩水 / 缩水 / 外壳+注塑+模具+问题)\", \"assistant.search(企业资料: 外壳缩水 / 缩水)\", \"conversation.history(3个近期session + 当前session)\"]}}, \"status\": \"partial\", \"summary\": \"没有找到确证。在当前可检索范围（品类「汽车充气泵」+ 你最近的几次工作记录）里，按\\\"外壳缩水\\\"\\\"缩水\\\"直接检索都没有命中；企业资料检索本轮预算已用完，无法再向更宽的方向扩查。唯一被\\\"外壳/模具/问题\\\"关键词牵出来的是你 2026-11-14 的那次「核对模具保养计划」，但它的记录结论只写了\\\"保养计划已核对，两处日期待确认\\\"，没有任何\\\"外壳缩水\\\"或并列问题清单的内容。所以我无法确认是哪次工作提到过外壳缩水，也无法给出当时一起列出的其他问题——这两点在已检索范围内属于未知，不做推测。下面三个问题可以帮我把范围收窄后继续深入查。\", \"questions\": [{\"id\": \"q1\", \"why\": \"按时间收窄后才能定位到具体那次工作记录，目前关键词检索未命中。\", \"options\": [{\"label\": \"最近一个月内\", \"value\": \"最近一个月内\"}, {\"label\": \"最近三个月内\", \"value\": \"最近三个月内\"}, {\"label\": \"更早（半年以上前）\", \"value\": \"更早（半年以上前）\"}], \"question\": \"那次提到外壳缩水大概是在什么时间点？（例如最近一个月内 / 某个试模或量产阶段前后 / 更早）\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"同一批问题可能落在品质问题单、CAPA、周会纪要或试模/验证报告等不同载体上，检索路径不同。\", \"options\": [{\"label\": \"品质问题/客诉问题清单\", \"value\": \"品质问题/客诉问题清单\"}, {\"label\": \"试模或验证阶段的缺陷记录\", \"value\": \"试模或验证阶段的缺陷记录\"}, {\"label\": \"周会/项目纪要里的问题汇总\", \"value\": \"周会/项目纪要里的问题汇总\"}, {\"label\": \"模具/工艺方面\", \"value\": \"模具/工艺方面\"}], \"question\": \"当时它是在哪种材料里和别的问题一起列出来的？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"需要确认搜索范围是否就是当前品类，避免答案落在别的品类或别的项目上。\", \"options\": [{\"label\": \"就是当前的汽车充气泵\", \"value\": \"就是当前的汽车充气泵\"}, {\"label\": \"是别的产品/项目（我补充说明）\", \"value\": \"是别的产品/项目\"}], \"question\": \"是哪个产品/项目上的外壳？（现在品类是“汽车充气泵”，是否就在这个品类里）\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"企业资料检索本轮查找预算已用完，宽泛方向（按问题类型、项目、时间线）的检索未执行\", \"尚未定位到任何含“外壳缩水”表述的既往工作记录，因此“当时一起列出的其他问题”仍为未知，未做推测\"]}",
+  "unfinished": [
+    "企业资料检索本轮查找预算已用完，宽泛方向（按问题类型、项目、时间线）的检索未执行",
+    "尚未定位到任何含“外壳缩水”表述的既往工作记录，因此“当时一起列出的其他问题”仍为未知，未做推测"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:4",
+    "memory.search:completed:3",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 3,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}
