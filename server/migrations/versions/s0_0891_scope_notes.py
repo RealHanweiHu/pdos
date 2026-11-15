@@ -1,4 +1,7 @@
-"""Persist scope notes for M2b (P87; P121 第 3、4、6 项).
+"""Assigned s0_0891 on s0_0890 at the 11-15 memory integration (placeholder s0_0900, branch
+claude/memory-m2b-scope-notes; file names, revision and down_revision moved together).
+
+Persist scope notes for M2b (P87; P121 第 3、4、6 项).
 
 占位号: placeholder s0_0900 on head s0_0887, written in a parallel worktree on
 2026-11-13 (the main session holds s0_0888). At integration this revision,
@@ -8,11 +11,11 @@ together to the real head (不可协商项 3).
 
 from alembic import op
 
-from migrations.schema_s0_0900 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0891 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0900"
-down_revision = "s0_0887"
+revision = "s0_0891"
+down_revision = "s0_0890"
 branch_labels = depends_on = None
 
 

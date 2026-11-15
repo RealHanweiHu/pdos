@@ -31,7 +31,7 @@ from .models import MemoryEpisode, MemoryIndexEntry
 PROFILE_NONE = "none"  # Episode vectorization is M2a ("本人会话记录" category).
 SOURCE_VERSION = 1  # Episodes are immutable projections; corrections are separate marks.
 REFERENCE_KEYS = {"tenant_id", "owner_id", "episode_id"}
-# The last kind is the newest; an episode without it is still pending (s0_0960).
+# The last kind is the newest; an episode without it is still pending (s0_0890).
 KINDS = ("episode", "answer", "object")
 ANSWER_CHARS = 8000
 ANSWERED = ("completed", "partial")

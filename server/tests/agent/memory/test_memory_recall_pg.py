@@ -413,7 +413,7 @@ def test_an_answer_of_a_wider_outbound_class_is_not_found_by_its_words(setup):
     assert result["items"] == [] and "缩水" not in str(result["items"])
 
 
-# Episodes indexed before s0_0888 (own words only) and before s0_0960 (no object row).
+# Episodes indexed before s0_0888 (own words only) and before s0_0890 (no object row).
 @pytest.mark.parametrize("older", [("episode",), ("episode", "answer")])
 def test_an_episode_indexed_before_the_answer_row_existed_is_pending_until_it_has_one(
         setup, monkeypatch, older):

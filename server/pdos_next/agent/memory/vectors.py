@@ -297,7 +297,7 @@ def nearest(session, run, vector, profile_version_id, conditions):
 # An administrator moves to a new embedding model by adding a new profile that
 # selects “本人会话记录” beside the old one. While both are active, background
 # work embeds every new episode into both (memory_pending_vector_references
-# lists every active version, s0_0960). memory.search keeps querying the old
+# lists every active version, s0_0890). memory.search keeps querying the old
 # space until the new one holds every eligible episode the owner had when the
 # new version was saved, then switches. One query only ever uses one space; the
 # two spaces' scores are never fused. When the old profile is disabled or

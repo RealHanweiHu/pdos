@@ -1,4 +1,6 @@
-"""Guards on memory proposals (P121 第 8 项): suppression fingerprints, discussion voids.
+"""Assigned s0_0892 on s0_0891 at the 11-15 memory integration (placeholder s0_0920).
+
+Guards on memory proposals (P121 第 8 项): suppression fingerprints, discussion voids.
 
 占位号：s0_0920 是并行工作区的占位号，集成时按真实 head 重排（revision、down_revision
 与本快照文件名一起改）。
@@ -90,7 +92,7 @@ DOWNGRADE_SQL = (
     *(f"ALTER TABLE public.{table} NO FORCE ROW LEVEL SECURITY" for table in TABLES),
     """DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.memory_suppressions)
      OR EXISTS(SELECT 1 FROM public.memory_proposal_voids) THEN
-     RAISE EXCEPTION 'Memory proposal guards require s0_0920'; END IF; END $$""",
+     RAISE EXCEPTION 'Memory proposal guards require s0_0892'; END IF; END $$""",
     "DROP TABLE public.memory_proposal_voids",
     "DROP TABLE public.memory_suppressions",
 )

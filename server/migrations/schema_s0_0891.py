@@ -1,4 +1,6 @@
-"""Scope notes for M2b (P87; P121 第 3、4、6 项): notes, versions, evidence links, relations.
+"""Assigned s0_0891 on s0_0890 at the 11-15 memory integration (placeholder s0_0900).
+
+Scope notes for M2b (P87; P121 第 3、4、6 项): notes, versions, evidence links, relations.
 
 占位号: written as placeholder s0_0900 on head s0_0887 in a parallel worktree
 (2026-11-13); at integration the revision, down_revision, this snapshot's file
@@ -187,7 +189,7 @@ SCHEMA_SQL = (*TABLE_SQL, *SECURITY_SQL)
 DOWNGRADE_SQL = (
     *(f"ALTER TABLE public.{table} NO FORCE ROW LEVEL SECURITY" for table in TABLES),
     """DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.scope_notes) THEN
-     RAISE EXCEPTION 'Scope notes require s0_0900'; END IF; END $$""",
+     RAISE EXCEPTION 'Scope notes require s0_0891'; END IF; END $$""",
     "DROP TABLE public.scope_note_relations",
     "DROP TABLE public.scope_note_evidence",
     "DROP TABLE public.scope_note_versions",

@@ -1,4 +1,6 @@
-"""占位号 s0_0960，集成时按真实 head 重排（接 s0_0888）。
+"""Assigned s0_0890 on s0_0889 at the 11-15 memory integration (placeholder s0_0960).
+
+占位号 s0_0960，集成时按真实 head 重排（接 s0_0888）。
 
 Two memory retrieval gaps (D482 余项 ①, D300):
 

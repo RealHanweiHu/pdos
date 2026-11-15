@@ -1,4 +1,7 @@
-"""Owner-deleted Sessions leave memory; episode usage lists the notes used (P121 第 8 项, D475).
+"""Assigned s0_0889 on s0_0888 at the 11-15 memory integration (placeholder s0_0940, branch
+claude/memory-session-controls; file names, revision and down_revision moved together).
+
+Owner-deleted Sessions leave memory; episode usage lists the notes used (P121 第 8 项, D475).
 
 PLACEHOLDER NUMBER: written in a parallel worktree on head s0_0887 and moved onto
 s0_0888 on 2026-11-14. At integration the revision, down_revision and the snapshot
@@ -7,10 +10,10 @@ file name move together to the real head (不可协商项 3).
 
 from alembic import op
 
-from migrations.schema_s0_0940 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0889 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0940"
+revision = "s0_0889"
 down_revision = "s0_0888"
 branch_labels = depends_on = None
 

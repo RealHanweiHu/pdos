@@ -1,4 +1,6 @@
-"""Owner deletes a Session; episode usage lists the personal notes used (P121 第 8 项, D475).
+"""Assigned s0_0889 on s0_0888 at the 11-15 memory integration (placeholder s0_0940).
+
+Owner deletes a Session; episode usage lists the personal notes used (P121 第 8 项, D475).
 
 PLACEHOLDER NUMBER: written in a parallel worktree on head s0_0887, now on s0_0888.
 At integration the revision, down_revision and this file's name move together to
@@ -219,7 +221,7 @@ SCHEMA_SQL = (*TABLE_SQL, *SECURITY_SQL)
 DOWNGRADE_SQL = (
     f"ALTER TABLE public.{TABLE} NO FORCE ROW LEVEL SECURITY",
     f"""DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.{TABLE}) THEN
-     RAISE EXCEPTION 'Session deletion records require s0_0940'; END IF; END $$""",
+     RAISE EXCEPTION 'Session deletion records require s0_0889'; END IF; END $$""",
     PREVIOUS_PROJECTION,
     "DROP FUNCTION public.memory_delete_session(uuid,uuid,uuid,text)",
     *(statement for table, trigger in GUARDED for statement in (
