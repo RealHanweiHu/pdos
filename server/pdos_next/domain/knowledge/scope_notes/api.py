@@ -39,6 +39,15 @@ def register_routes(app, engine, auth_dependency):
         with session(ctx) as s:
             return reads.history(s, ctx, note_id)
 
+    @app.get("/v1/categories/{category_id}/scope-note-sources/{anchor_kind}/{anchor_id}")
+    def scope_note_sources(anchor_kind: AnchorKind, anchor_id: UUID,
+                           ctx: Context = auth_dependency):
+        # D509: what the page may offer as evidence or formal object; the command re-checks.
+        from .sources import options
+
+        with session(ctx) as s:
+            return options(s, ctx, anchor_kind, anchor_id)
+
     @app.get("/v1/categories/{category_id}/scope-recent/{anchor_kind}/{anchor_id}")
     def scope_recent(anchor_kind: AnchorKind, anchor_id: UUID, ctx: Context = auth_dependency):
         from .recent import view

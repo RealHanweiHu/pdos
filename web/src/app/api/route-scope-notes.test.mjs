@@ -36,7 +36,7 @@ test("scope note paths are read-only, fixed to the path scope, and forwarded unc
   const root = `v1/categories/${category}`;
   const reads = [
     `${root}/scope-notes/category/${category}`, `${root}/scope-notes/project/${object}`, `${root}/scope-notes/proposal/${object}/all`,
-    `${root}/scope-notes/product/${object}`, `${root}/scope-note-items/${object}`, `${root}/scope-recent/project/${object}`,
+    `${root}/scope-notes/product/${object}`, `${root}/scope-note-items/${object}`, `${root}/scope-recent/project/${object}`, `${root}/scope-note-sources/project/${object}`,
   ];
   for (const item of reads) {
     assert.equal((await h.send(item)).status, 200, item);

@@ -17,10 +17,15 @@ const anchor = { kind: "project", id: "22222222-2222-4222-8222-222222222222" };
 test("a draft sends only what the person chose; server-bound facts are never in the payload", () => {
   const draft = { ...lib.emptyDraft(), statement: "  给该客户的报告一律英文  ", pinned: true };
   assert.equal(lib.draftProblem(draft), null);
-  assert.deepEqual(plain(lib.bodyPayload(draft, anchor)), { kind: "convention", statement: "给该客户的报告一律英文", epistemic: "stated", confirmation: "member_confirmed", pinned: true });
-  const full = { ...draft, kind: "decision_context", discussion: true, customer: " 客户A ", valid_from: "2026-09-01", link_formal: true };
-  assert.deepEqual(plain(lib.bodyPayload(full, anchor)), { kind: "decision_context", statement: "给该客户的报告一律英文", epistemic: "stated", confirmation: "discussion", pinned: true, customer: "客户A", valid_from: "2026-09-01T00:00:00Z", formal: anchor });
-  for (const key of ["confirmed_by", "review_due_at", "source_authority", "generated_by", "tenant_id"]) assert.equal(key in lib.bodyPayload(full, anchor), false);
+  assert.deepEqual(plain(lib.bodyPayload(draft)), { kind: "convention", statement: "给该客户的报告一律英文", epistemic: "stated", confirmation: "member_confirmed", pinned: true });
+  const full = { ...draft, kind: "decision_context", discussion: true, customer: " 客户A ", valid_from: "2026-09-01", formal: lib.formalKey(anchor.kind, anchor.id) };
+  assert.deepEqual(plain(lib.bodyPayload(full)), { kind: "decision_context", statement: "给该客户的报告一律英文", epistemic: "stated", confirmation: "discussion", pinned: true, customer: "客户A", valid_from: "2026-09-01T00:00:00Z", formal: anchor });
+  // D509: any formal object the server listed, e.g. the G0 decision; only 决策背景 carries one.
+  const decision = "44444444-4444-4444-8444-444444444444";
+  assert.deepEqual(plain(lib.bodyPayload({ ...full, formal: lib.formalKey("proposal_decision", decision) })).formal, { kind: "proposal_decision", id: decision });
+  assert.equal("formal" in lib.bodyPayload({ ...full, kind: "convention" }), false);
+  assert.equal("formal" in lib.bodyPayload({ ...full, formal: "" }), false);
+  for (const key of ["confirmed_by", "review_due_at", "source_authority", "generated_by", "tenant_id"]) assert.equal(key in lib.bodyPayload(full), false);
   assert.equal(lib.draftProblem({ ...draft, statement: "  " }), "请写下备忘内容。");
   assert.match(lib.draftProblem({ ...draft, statement: "字".repeat(301) }), /300/);
 });
@@ -52,4 +57,24 @@ test("labels say who confirmed, what 小Pai wrote unverified, and when the autho
   assert.equal(split.current.length, 2); assert.equal(split.past.length, 2);
   assert.equal(lib.isScopeNotesView({ version: "scope-notes/v1", notes: [] }), true);
   assert.equal(lib.isScopeNotesView({ version: "memory-notes/v1", notes: [] }), false);
+});
+
+test("evidence links carry only the chosen source, stance, place and quote; unknown choices are dropped", () => {
+  const options = [
+    { source_type: "run", source_kind: null, source_id: "r1", type_label: "小Pai 运行", title: "2026-11-15 整理样件约定", version: null },
+    { source_type: "business_object", source_kind: "proposal_decision", source_id: "d1", type_label: "G0 决定", title: "提案 的 G0 决定", version: 1 },
+  ];
+  const payload = plain(lib.evidencePayload({ note_id: "n", revision: 3 }, [
+    { key: lib.optionKey(options[0]), stance: "supports", where: " 第 2 轮 ", quote: "" },
+    { key: lib.optionKey(options[1]), stance: "context", where: "", quote: " 摘一句 " },
+    { key: "receipt::forged", stance: "supports", where: "", quote: "" },
+  ], options));
+  assert.deepEqual(payload, { mode: "evidence", note: { id: "n", revision: 3 }, evidence: [
+    { source_type: "run", source_id: "r1", stance: "supports", locator: { where: "第 2 轮" } },
+    { source_type: "business_object", source_id: "d1", source_kind: "proposal_decision", stance: "context", quote: "摘一句" },
+  ] });
+  for (const key of ["source_version", "root_source_id", "quote_sha256", "category_id"]) assert.equal(JSON.stringify(payload).includes(key), false);
+  const line = lib.evidenceLine({ type_label: "资料原件", title: null, source_version: 2, stance_label: "支持", locator: { where: "第 3 页" }, has_quote: true, by_xiaopai: false, recorded_at: "2026-11-15T01:00:00+00:00" });
+  assert.equal(line, "资料原件：当前不可读 · 第 2 版 · 支持 · 位置 第 3 页 · 有摘录（原文未保存，按读者权限重新读取） · 2026-11-15");
+  assert.equal(lib.sourcesPath("c", "project", "p"), "v1/categories/c/scope-note-sources/project/p");
 });

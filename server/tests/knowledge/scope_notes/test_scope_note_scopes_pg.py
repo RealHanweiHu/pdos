@@ -5,7 +5,8 @@ model or embedding calls (P87 第 2、5、7、9 项; AT-73).
 """
 
 from datetime import timedelta
-from uuid import uuid4
+import json
+from uuid import UUID, uuid4
 
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -132,3 +133,47 @@ def test_sharing_a_personal_note_is_the_owners_own_explicit_command(setup):
                             headers=headers(setup, setup.peer)).json()["notes"] == []
     assert [n["note_id"] for n in setup.client.get(
         "/v1/personal/memory/notes", headers=headers(setup)).json()["notes"]] == [personal]
+
+
+def test_a_product_scope_reuses_the_product_activity_list_and_others_carry_notes_only(setup):
+    """D506: 范围近况 for a product reuses the product page's 实际活动 receipts."""
+    from datetime import UTC, datetime
+
+    from tests.categories.preproject.test_g0 import post, request
+
+    project = create_g0_project(setup, visibility="category", name="Synthetic pump project")
+    before = datetime.now(UTC)
+    registered = request(setup, "evidence.artifact.register", {
+        "title": "型号资料", "content": "RECENT-BODY-MARKER", "source_label": "合成",
+        "visibility": "category"})
+    registered["product_id"] = project.product_id
+    assert post(setup, registered).status_code == 200
+    save(setup, "型号资料以英文版为准", at=anchor(setup, "product", project.product_id),
+         product=project.product_id)
+    path = f"/v1/categories/{setup.category}/scope-recent/product/{project.product_id}"
+    value = setup.client.get(path, headers=headers(setup)).json()
+    assert value["scope"]["kind"] == "product" and value["activity"]
+    assert value["activity"][0]["what"] == "evidence.artifact.register"
+    assert value["activity"][0]["who"] == "Synthetic owner"
+    assert not any(line["what"].startswith("scope_note.") for line in value["activity"])
+    assert [line["what"] for line in value["note_changes"]] == ["新增约定"]
+    assert "RECENT-BODY-MARKER" not in json.dumps(value, ensure_ascii=False)
+    assert "英文版" not in json.dumps(value, ensure_ascii=False)
+    # The watermark holds: nothing recorded after it is listed.
+    from pdos_next.core.service import Context
+    from pdos_next.core.database import tenant_session
+    from pdos_next.domain.knowledge.scope_notes import reads, recent
+
+    with tenant_session(setup.engine, setup.tenant, actor_id=setup.human,
+                        requester_id=setup.human, category_id=setup.category,
+                        read_snapshot=True) as session:
+        ctx = Context(setup.tenant, setup.human, setup.human, category_id=setup.category)
+        found = reads.resolve(session, setup.tenant, "product", UUID(project.product_id))
+        early = recent.build(session, ctx, found, as_of=before)
+        assert all(line["what"] != "evidence.artifact.register" for line in early["activity"])
+        assert early["note_changes"] == []
+        # Category and proposal scopes have no activity feed to reuse: notes only.
+        category = reads.resolve(session, setup.tenant, "category", setup.category)
+        assert recent.build(session, ctx, category)["activity"] == []
+        proposal = reads.resolve(session, setup.tenant, "proposal", UUID(project.proposal_id))
+        assert recent.build(session, ctx, proposal)["activity"] == []

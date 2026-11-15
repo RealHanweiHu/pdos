@@ -289,8 +289,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const projectWork = projectWorkPaths.test(pathname);
   const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   // P34-2/3: project topics, object comments, mention candidates; scope stays in the path.
-  // M2b (P87, P121): team scope notes and scope recency are read here; every write is a common command.
-  const scopeNotes = /^v1\/(?:scope-notes\/(?:category|product|proposal|project)\/[a-f0-9-]{36}(?:\/all)?|scope-note-items\/[a-f0-9-]{36}|scope-recent\/(?:category|product|proposal|project)\/[a-f0-9-]{36})$/i.test(pathname);
+  // M2b (P87, P121): team scope notes, their linkable sources (D509) and scope recency are read here; every write is a common command.
+  const scopeNotes = /^v1\/(?:scope-notes\/(?:category|product|proposal|project)\/[a-f0-9-]{36}(?:\/all)?|scope-note-items\/[a-f0-9-]{36}|scope-note-sources\/(?:category|product|proposal|project)\/[a-f0-9-]{36}|scope-recent\/(?:category|product|proposal|project)\/[a-f0-9-]{36})$/i.test(pathname);
   const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?|\/agent-requests\/[a-f0-9-]{36}\/(?:reply|share))?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);

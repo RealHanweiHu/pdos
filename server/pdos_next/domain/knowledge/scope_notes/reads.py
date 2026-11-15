@@ -278,12 +278,21 @@ def _reference(s, tenant_id, kind, identity, recorded):
             "updated": bool(current and current["revision"] != recorded)}
 
 
-def evidence_view(row):
+STANCE_LABELS = {"supports": "支持", "opposes": "反对", "context": "背景"}
+
+
+def evidence_view(s, row):
+    """One link as this reader sees it now: the source's current title, or 当前不可读 (D509)."""
+    from .sources import SOURCE_LABELS, title
+
+    kind = "proposal_decision" if row.source_kind == "proposal_decision" else row.source_type
     return {"id": str(row.id), "source_type": row.source_type, "source_kind": row.source_kind,
             "source_id": str(row.source_id), "source_version": row.source_version,
+            "type_label": ANCHOR_LABELS.get(row.source_kind) or SOURCE_LABELS[kind],
+            "title": title(s, row.tenant_id, row.source_type, row.source_kind, row.source_id),
             "locator": row.locator, "has_quote": row.quote_sha256 is not None,
-            "stance": row.stance, "recorded_at": row.created_at.isoformat(),
-            "by_xiaopai": row.run_id is not None}
+            "stance": row.stance, "stance_label": STANCE_LABELS[row.stance],
+            "recorded_at": row.created_at.isoformat(), "by_xiaopai": row.run_id is not None}
 
 
 def view(s, version, *, now=None, author_id=None, detail=False):
@@ -349,7 +358,7 @@ def view(s, version, *, now=None, author_id=None, detail=False):
         ],
     }
     if detail:
-        value["evidence"] = [evidence_view(row) for row in evidence(s, version.note_id)]
+        value["evidence"] = [evidence_view(s, row) for row in evidence(s, version.note_id)]
     return value
 
 
