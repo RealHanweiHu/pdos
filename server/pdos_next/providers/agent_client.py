@@ -280,16 +280,26 @@ def _listed(value):
     Captured from MiniMax-M3 final calls on 2026-11-13: an empty list written as
     ``""``; a list wrapped as ``{"item": [...]}``; a list written as its own JSON text
     ``"[...]"``; and, in the rerun the same day, an empty list written as ``{}``.
-    ``null`` is read as empty too. The items are not touched and nothing is guessed:
-    a value in any other form is returned as it came, so the structure check still
-    rejects it and the model is asked to rewrite it.
+    ``null`` is read as empty too. The rerun after P122 added two more (user
+    2026-11-14): the wrapper nested, ``{"item": {"item": [...]}}``, and the wrapper
+    around one piece of text, ``{"item": "q_scope"}``, read as a list of that one
+    text. The items are not touched and nothing is guessed: a value in any other
+    form, a wrapper around a single object included, is returned as it came, so the
+    structure check still rejects it and the model is asked to rewrite it.
     """
     if value is None or value == "" or value == {}:
         return []
-    if isinstance(value, dict) and len(value) == 1:
-        (name, inner), = value.items()
-        if name in {"item", "items"} and isinstance(inner, list):
+    inner, depth = value, 0
+    while (isinstance(inner, dict) and len(inner) == 1 and depth < 4
+           and next(iter(inner)) in {"item", "items"}):
+        inner, depth = next(iter(inner.values())), depth + 1
+    if depth:
+        if isinstance(inner, list):
             return inner
+        if isinstance(inner, str) and inner.strip():
+            read = _listed(inner)
+            return read if isinstance(read, list) else [inner]
+        return value
     if isinstance(value, str):
         try:
             parsed = json_value(value)

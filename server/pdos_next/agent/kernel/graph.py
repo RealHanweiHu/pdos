@@ -137,7 +137,7 @@ class Budget:
 
 # P122 (D477): told to the model on its last turn of the main graph, at the context tail.
 FINAL_TURN = (
-    "运行预算只剩这最后一轮。不要再调用任何工具，也不要再追问；"
+    "运行预算只剩这最后一轮。不要再调用任何工具（这一轮的工具调用不会执行），也不要再追问；"
     "请只依据已经取得的结果给出最终答复：写明核对到了什么、没有查到什么。"
 )
 # P122 (D477): appended when format repair ran out and the model's own summary is kept.
@@ -306,6 +306,8 @@ class AgentKernel:
                 return partial(state)
             # P122 (D477): the main graph's last turn is for answering. The model is told
             # so at the context tail; the tool definitions and the prefix do not change.
+            # Calls it makes on this turn anyway are not run (user 2026-11-14): no turn
+            # is left to use their results.
             last = main and (tools_out or state["turns"] == budget.model_turns - 1)
             ports.emit(scope, {"type": "model_started", "turn": state["turns"] + 1})
             messages = hooks.hydrate(scope, state["messages"])
@@ -373,8 +375,8 @@ class AgentKernel:
             assistant = {"role": "assistant", "content": turn.text}
             if turn.continuation is not None:
                 assistant["provider_continuation"] = turn.continuation
-            if calls and tools_out:
-                # The tool allowance is spent, so these calls are not run.
+            if calls and last:
+                # The last turn, or the tool allowance is spent: these calls are not run.
                 stopped = partial(state)
                 stopped["turns"] = state["turns"] + 1
                 return stopped

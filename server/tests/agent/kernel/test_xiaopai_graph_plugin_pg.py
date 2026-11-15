@@ -362,17 +362,19 @@ def test_read_results_and_provider_continuation_stay_in_the_ledger(setup, monkey
 def test_partial_result_lists_full_actions_restored_from_the_ledger(setup, monkeypatch):
     from pdos_next.agent.kernel import graph
 
-    stack = prepare(setup, monkeypatch, [None, final()])
+    # Two turns: the read on the first runs; the last turn's call is not run (P122).
+    stack = prepare(setup, monkeypatch, [None, None])
     stack.client.steps[0] = _read_turn(stack)
+    stack.client.steps[1] = _read_turn(stack)
     budget = graph.Budget
-    monkeypatch.setattr(graph, "Budget", lambda: budget(model_turns=1))
+    monkeypatch.setattr(graph, "Budget", lambda: budget(model_turns=2))
 
     async def body(context):
         run_id = await context.start()
         return run_id, await context.result(run_id)
 
     run_id, result = serve(stack, body)
-    assert result["status"] == "partial" and stack.client.calls == 1
+    assert result["status"] == "partial" and stack.client.calls == 2
     action, = harness.row(setup, run_id).result["result"]["actions"]
     assert action["tool"] == "assistant.materials.read"
     assert "ledger_ref" not in action["value"] and "execution_ref" in action["value"]
