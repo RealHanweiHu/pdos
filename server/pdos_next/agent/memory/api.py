@@ -5,10 +5,10 @@ by the same database policies). Personal memory is not a business record, so
 these are not T0/T1/T2 domain commands (memory design §5 第 4 条).
 """
 
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from sqlalchemy import select, text
 
 from pdos_next.core.schema_base import StrictModel
@@ -164,6 +164,28 @@ def router(*, transaction, context_dependency):
             _target(session, ctx, session_id, None, lock=True)
             return mode.change(session, ctx, session_id, data)
 
+    # P121 第 8 项: the owner deletes their own Session. GET is the confirmation
+    # preview (what goes now, what stays); POST deletes.
+    from . import session_deletion
+
+    @result.get("/v1/personal/agent-sessions/{session_id}/deletion")
+    @result.get("/v1/categories/{category_id}/agent-sessions/{session_id}/deletion")
+    def previewing_deletion(session_id: UUID, ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            _target(session, ctx, session_id, None)
+            return session_deletion.preview(session, ctx, session_id)
+
+    @result.post("/v1/personal/agent-sessions/{session_id}/deletion")
+    @result.post("/v1/categories/{category_id}/agent-sessions/{session_id}/deletion")
+    def deleting_session(session_id: UUID, data: session_deletion.DeleteSession,
+                         ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return session_deletion.delete(
+                session, ctx, session_id, data,
+                target=lambda identity: _target(session, ctx, identity, None, lock=True))
+
     @result.post("/v1/personal/memory/episodes/{run_id}/marks")
     @result.post("/v1/categories/{category_id}/memory/episodes/{run_id}/marks")
     def marking(run_id: UUID, data: MarkInput, ctx=context_dependency):
@@ -191,13 +213,21 @@ def router(*, transaction, context_dependency):
 
     # M2a 本人记忆条目 (P86): the human owner only; AI identities are refused here
     # and by the database policies.
-    from . import candidates, notes, settings
+    from . import candidates, notes, scope_options, settings
 
     @result.get("/v1/personal/memory/notes")
     def reading_notes(ctx=context_dependency):
         with transaction(ctx, read_snapshot=True) as session:
             _human(session, ctx, None)
             return notes.listing(session, ctx)
+
+    @result.get("/v1/personal/memory/scope-options")
+    def reading_scope_options(data: Annotated[scope_options.ScopeOptions, Query()],
+                              ctx=context_dependency):
+        # D301: products and proposals the owner can pick as a note's scope.
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return scope_options.options(session, data)
 
     @result.get("/v1/personal/memory/notes/{note_id}/history")
     def reading_history(note_id: UUID, ctx=context_dependency):

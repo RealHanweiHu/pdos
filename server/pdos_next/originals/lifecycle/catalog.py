@@ -5516,6 +5516,14 @@ COVERED_COLUMNS.update({
         "created_at",
     ),
 })
+# Owner-deleted Sessions (P121 第 8 项): when and how many rows went, no content.
+COVERED_COLUMNS.update({
+    "memory_session_deletions": (
+        "owner_id", "session_id", "purged_episodes", "purged_marks", "purged_index_rows",
+        "purged_vectors", "purged_candidates", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+})
 # Human sign-in (D214/D86/D192): identity and session bookkeeping, no source body.
 COVERED_COLUMNS.update(
     {

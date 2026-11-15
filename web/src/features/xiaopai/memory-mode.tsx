@@ -7,12 +7,25 @@ import styles from "./pai-conversation.module.css";
 type Api = <T>(path: string, body?: unknown) => Promise<T>;
 type Mode = { version: "memory-session-mode/v1"; session_id: string; revision: number; memory_off: boolean; effect: string };
 const EFFECT = "不读你以往的记录，也不留下这次对话的情景记录；团队备忘与审计照常。";
+const TURN_EFFECT = "只对你发的下一条消息：不读你以往的记录，不留下这一轮的情景记录和记忆提议；之后恢复。运行回执与审计照常。";
+
+/** “本轮不记” (P121 第 8 项): this message only; the Session's own switch is not changed. */
+function TurnOff({ checked, onChange, covered, disabled }: { checked: boolean; onChange: (value: boolean) => void; covered: boolean; disabled: boolean }) {
+  return <>
+    <label><input type="checkbox" checked={covered || checked} disabled={disabled || covered} onChange={event => onChange(event.target.checked)}/>本轮不记</label>
+    <p className="text-muted-foreground">{covered ? "本会话已设为不进记忆，这一轮同样不记。" : TURN_EFFECT}</p>
+  </>;
+}
+const label = (sessionOff: boolean, turnOff: boolean) => sessionOff ? "不进记忆" : turnOff ? "本轮不记" : "记忆";
+const hint = (sessionOff: boolean, turnOff: boolean) => sessionOff ? "本会话不进记忆" : turnOff ? "下一条消息不进记忆" : "记忆设置";
 
 /** New conversation: the choice is sent once with the first message (P85 第 5 项). */
-export function MemoryOffStart({ checked, onChange, disabled = false }: { checked: boolean; onChange: (value: boolean) => void; disabled?: boolean }) {
+export function MemoryOffStart({ checked, onChange, turnOff = false, onTurnOffChange, disabled = false }: { checked: boolean; onChange: (value: boolean) => void; turnOff?: boolean; onTurnOffChange?: (value: boolean) => void; disabled?: boolean }) {
+  const turn = !!onTurnOffChange && turnOff;
   return <details className={styles.objectPicker}>
-    <summary title={checked ? "本会话不进记忆" : "记忆设置"}><Brain size={13} aria-hidden="true"/>{checked ? "不进记忆" : "记忆"}</summary>
+    <summary title={hint(checked, turn)} data-active={checked || turn ? "true" : undefined}><Brain size={13} aria-hidden="true"/>{label(checked, turn)}</summary>
     <div className={styles.objectOptions}>
+      {onTurnOffChange && <TurnOff checked={turnOff} onChange={onTurnOffChange} covered={checked} disabled={disabled}/>}
       <label><input type="checkbox" checked={checked} disabled={disabled} onChange={event => onChange(event.target.checked)}/>本会话不进记忆</label>
       <p className="text-muted-foreground">{EFFECT}</p>
     </div>
@@ -20,7 +33,7 @@ export function MemoryOffStart({ checked, onChange, disabled = false }: { checke
 }
 
 /** Existing conversation: the owner's switch, a new server version per change. */
-export function MemoryModeToggle({ api, root, sessionId, disabled = false }: { api: Api; root: string; sessionId: string; disabled?: boolean }) {
+export function MemoryModeToggle({ api, root, sessionId, disabled = false, turnOff = false, onTurnOffChange }: { api: Api; root: string; sessionId: string; disabled?: boolean; turnOff?: boolean; onTurnOffChange?: (value: boolean) => void }) {
   const resource = `${root.replace(/agent-runs$/, "agent-sessions")}/${sessionId}/memory-mode`;
   const [state, setState] = useState<{ resource: string; value?: Mode; error?: string }>({ resource });
   const [busy, setBusy] = useState(false);
@@ -53,9 +66,11 @@ export function MemoryModeToggle({ api, root, sessionId, disabled = false }: { a
     } finally { setBusy(false); }
   }
   if (!value) return state.error ? <p role="status" className={styles.lookupNote}>{state.error}</p> : null;
+  const turn = !!onTurnOffChange && turnOff;
   return <details className={styles.objectPicker}>
-    <summary title={value.memory_off ? "本会话不进记忆" : "记忆设置"}><Brain size={13} aria-hidden="true"/>{value.memory_off ? "不进记忆" : "记忆"}</summary>
+    <summary title={hint(value.memory_off, turn)} data-active={value.memory_off || turn ? "true" : undefined}><Brain size={13} aria-hidden="true"/>{label(value.memory_off, turn)}</summary>
     <div className={styles.objectOptions}>
+      {(onTurnOffChange || turnOff) && <TurnOff checked={turnOff} onChange={onTurnOffChange ?? (() => undefined)} covered={value.memory_off} disabled={disabled || busy || !onTurnOffChange}/>}
       <label><input type="checkbox" checked={pendingOff ?? value.memory_off} disabled={disabled || busy} onChange={event => void change(event.target.checked)}/>本会话不进记忆</label>
       <p className="text-muted-foreground">{value.memory_off ? value.effect : EFFECT}</p>
       {state.error && <p role="alert">{state.error}</p>}

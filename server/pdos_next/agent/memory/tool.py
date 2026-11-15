@@ -61,6 +61,8 @@ def memory_search(store, query_embedding=None):
         semantic = (semantic_query(store, embedder, scope, arguments)
                     if "episode" in payload.kinds else None)
         with store.transaction(scope, lock=True) as (session, run):
-            return search(session, run, payload, semantic=semantic)
+            from .mode import turn_notice
+
+            return turn_notice(run, search(session, run, payload, semantic=semantic))
 
     return handler

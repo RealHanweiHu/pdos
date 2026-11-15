@@ -488,3 +488,40 @@ class MemoryVectorProfile(KernelRow, Base):
         ),
         Index("ix_memory_vector_profiles_latest", "tenant_id", "profile_id", "created_at"),
     )
+
+
+class MemorySessionDeletion(KernelRow, Base):
+    """What stays after the owner deleted a Session: when, and how many rows went.
+
+    No content. Written only by the database function ``memory_delete_session``,
+    which checks the caller is the human owner acting for themself (P121 第 8 项).
+    """
+
+    __tablename__ = "memory_session_deletions"
+    owner_id: Mapped[UUID]
+    session_id: Mapped[UUID]
+    purged_episodes: Mapped[int] = mapped_column(Integer)
+    purged_marks: Mapped[int] = mapped_column(Integer)
+    purged_index_rows: Mapped[int] = mapped_column(Integer)
+    purged_vectors: Mapped[int] = mapped_column(Integer)
+    purged_candidates: Mapped[int] = mapped_column(Integer)
+    request_key: Mapped[UUID]
+    request_sha256: Mapped[str] = mapped_column(String(64))
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "session_id"),
+        UniqueConstraint("tenant_id", "owner_id", "request_key"),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        CheckConstraint(
+            "purged_episodes >= 0 AND purged_marks >= 0 AND purged_index_rows >= 0 "
+            "AND purged_vectors >= 0 AND purged_candidates >= 0",
+            name="memory_session_deletion_counts",
+        ),
+        CheckConstraint(
+            "request_sha256 ~ '^[0-9a-f]{64}$'", name="memory_session_deletion_request_sha256"
+        ),
+        Index("ix_memory_session_deletions_owner", "tenant_id", "owner_id", "created_at"),
+    )

@@ -269,7 +269,11 @@ def invoke(s, ctx, project, thread, message, *, private_only, ports, full_projec
                 "VERSION_CONFLICT", "小Pai 还在处理你在本串的上一条请求，请等它完成后再 @小Pai。"
             )
         if last is not None and last.reverted_at is None:
-            parent = last
+            from pdos_next.agent.memory.session_deletion import deleted_ids
+
+            # A Session its owner deleted is not continued; this request starts a new one.
+            if not deleted_ids(s, [last.session_id]):
+                parent = last
     key = f"discussion:{message.id}"
     if parent is not None:
         # The requester's own Session for this thread continues (P52 第 4 项).

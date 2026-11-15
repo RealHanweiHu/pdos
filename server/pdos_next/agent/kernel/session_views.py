@@ -139,6 +139,10 @@ def _sessions(ctx, proposal_id, project_id=None):
             AgentSession.product_id.is_(None), current_proposal.is_(None),
             AgentSession.project_id.is_(None),
         )
+    # P121 第 8 项: a Session its owner deleted is gone from every list and search.
+    from pdos_next.agent.memory.session_deletion import not_deleted
+
+    query = query.where(not_deleted(AgentSession.id, AgentSession.tenant_id))
     if proposal_id is not None:
         query = query.where(current_proposal == proposal_id)
     if project_id is not None:

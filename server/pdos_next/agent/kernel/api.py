@@ -50,6 +50,9 @@ class StartInput(StrictModel):
     # P85 第 5 项: only a brand-new Session takes the switch here; later changes use
     # the Session memory-mode endpoint. Omitted means the Session's current mode.
     memory_off: bool | None = None
+    # P121 第 8 项 “本轮不记”: this Run only reads no personal memory and leaves no
+    # episode or proposal; the Session's own switch is not changed.
+    memory_turn_off: Literal[True] | None = None
 
 
 class AnswerInput(StrictModel):
@@ -181,6 +184,7 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     | ({"context_revision"} if data.context_revision is None else set())
                     | ({"restart_from_run_id"} if data.restart_from_run_id is None else set())
                     | ({"memory_off"} if data.memory_off is None else set())
+                    | ({"memory_turn_off"} if data.memory_turn_off is None else set())
                     | ({"excluded_continued_skills"}
                        if not data.excluded_continued_skills else set())
                 ),
@@ -285,6 +289,14 @@ def router(engine, *, context_dependency, ports: ApiPorts):
                     new_session=data.session_id is None and data.continue_from_run_id is None
                     and data.restart_from_run_id is None,
                 )
+                from pdos_next.agent.memory.mode import configure_turn
+                from pdos_next.agent.memory.session_deletion import require_startable
+
+                configure_turn(row, data.memory_turn_off)
+                if data.session_id is not None or data.continue_from_run_id is not None \
+                        or data.restart_from_run_id is not None:
+                    require_startable(s, ctx, row, origin_run_ids=(
+                        data.continue_from_run_id, data.restart_from_run_id))
                 if restart is not None:
                     from .context_restart import install
 
