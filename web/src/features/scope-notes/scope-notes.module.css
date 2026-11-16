@@ -1,5 +1,5 @@
 /* 团队备忘：沿用平台 token、8px 圆角、13px 正文与紧凑密度；亮暗两套主题都只用变量。 */
-.section { display:flex; flex-direction:column; gap:6px; min-width:0; font-size:13px; }
+.section { display:flex; flex-direction:column; gap:6px; min-width:0; font-size:13px; container-type:inline-size; }
 .head { display:flex; align-items:center; gap:8px; padding:0 0 8px; border-bottom:1px solid var(--border-soft); }
 .head h3 { flex:1; min-width:0; display:flex; align-items:center; gap:6px; font-size:13px; font-weight:550; }
 .head small { color:var(--text-subtle); font-size:11px; font-weight:400; font-family:var(--font-geist-mono),monospace; }
@@ -60,6 +60,11 @@
 .evidenceItem { display:grid; gap:8px; padding:10px; border:1px solid var(--border-soft); border-radius:8px; min-width:0; }
 .past { margin-top:4px; border-top:1px solid var(--border-soft); padding-top:6px; }
 .past summary { cursor:pointer; color:var(--text-subtle); font-size:12px; min-height:30px; display:flex; align-items:center; }
+/* 窄栏（驾驶舱侧栏、手机）里操作按钮换到正文下面，正文不被挤窄。 */
+@container (max-width:560px) {
+  .rowMain { grid-template-columns:auto minmax(0,1fr); }
+  .rowActions { grid-column:1/-1; justify-content:flex-start; margin-left:-8px; }
+}
 @media(max-width:540px) {
   .rowMain { grid-template-columns:auto minmax(0,1fr); }
   .rowActions { grid-column:1/-1; justify-content:flex-start; margin-left:-8px; }

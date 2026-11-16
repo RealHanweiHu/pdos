@@ -51,8 +51,15 @@ def title(s, tenant_id, source_type, source_kind, source_id):
     if source_type == "discussion":
         return row.title or "对象评论"
     if source_type == "receipt":
-        return f"{row.operation} · {_when(row.created_at)}"
+        return receipt_title(row)
     return row.title
+
+
+def receipt_title(row):
+    """What was done and when; the shared activity label when one exists, else the operation."""
+    from pdos_next.domain.projects.activity_catalog import OPERATION_LABELS
+
+    return f"{OPERATION_LABELS.get(row.operation, row.operation)} · {_when(row.created_at)}"
 
 
 def _chain(s, tenant_id, anchor):
@@ -147,8 +154,7 @@ def options(s, ctx, kind, identity):
            "version": None} for row in threads),
         *({"source_type": "receipt", "source_kind": None, "source_id": str(row.id),
            "type_label": SOURCE_LABELS["receipt"],
-           "title": f"{row.operation} · {_when(row.created_at)}",
-           "version": row.subject_revision} for row in receipts),
+           "title": receipt_title(row), "version": None} for row in receipts),
         *({"source_type": "original", "source_kind": None, "source_id": str(row.id),
            "type_label": SOURCE_LABELS["original"], "title": row.title,
            "version": row.revision} for row in originals),

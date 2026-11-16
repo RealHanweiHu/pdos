@@ -571,7 +571,7 @@ def _manifests(session, runs, *, ancestors=None):
         value = result[str(row["id"])]
         value["dependencies"].extend(_references(row["proposal_refs"] or []))
         # D514: team notes this Run carried in its envelope or got back from memory.search.
-        value["dependencies"].extend(scope_note_dependencies(row["scope_notes"]))
+        value["dependencies"].extend(scope_note_dependencies(row.get("scope_notes")))
         value["inherited"].extend(row["citations"] or [])
         state_access = row.get("state_access") or {}
         if state_access and digest(state_access) != row.get("state_access_digest"):
