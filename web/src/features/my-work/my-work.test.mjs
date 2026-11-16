@@ -95,7 +95,7 @@ test("one responsibility list combines real tasks, risks and paused conversation
   decide.node.props.onOpenRun(run.run_id,run.category.id);
   const task=items.find(item=>item.title==="任务今日");list(tree).props.onOpenProject(task.target.categoryId,task.target.projectId);
   assert.deepEqual(opened,[[waitingRun.run_id,waitingRun.category.id],["cat","project"]]);
-  assert.deepEqual(list(tree).props.groups.map(group=>group.label),["要我决定","要我接收","要我验证","等外部回复","我的任务"]);
+  assert.deepEqual(list(tree).props.groups.map(group=>group.label),["要我决定","要我复核 · 记忆","要我接收","要我验证","等外部回复","我的任务"]);
   assert.equal(elements(tree,item=>item.type?.name==="PersonalAttention" || item.type?.name==="PersonalProjectWorkQueue").length,0);
   assert.ok(fixture.calls.every(item=>item.body===undefined));assert.equal(fixture.calls.some(item=>item.url.startsWith("v1/personal/g0-reviews")),false);
 });

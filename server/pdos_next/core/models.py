@@ -1355,3 +1355,4 @@ import pdos_next.domain.manufacturing.alternate_approvals.models  # noqa: E402,F
 import pdos_next.domain.delivery.customer_acceptance.models  # noqa: E402,F401
 import pdos_next.domain.manufacturing.tool_trials.models  # noqa: E402,F401
 import pdos_next.domain.knowledge.scope_notes.models  # noqa: E402,F401
+import pdos_next.agent.memory.m3_models  # noqa: E402,F401

@@ -140,6 +140,13 @@ NON_CONSUMING = frozenset(
         "scope_note_versions",
         "scope_note_evidence",
         "scope_note_relations",
+        # Memory M3: references, versions, counts and the person's own words only.
+        "memory_review_items",
+        "memory_review_decisions",
+        "skill_revision_candidates",
+        "skill_revision_decisions",
+        "memory_system_rule_settings",
+        "memory_maintenance_ledger",
         # D56 export audit: who exported which scope, counts and file digest only;
         # it never copies or adopts source material.
         "export_audits",
