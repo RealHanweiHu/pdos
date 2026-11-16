@@ -6,6 +6,12 @@ AI writer identity. Personal memory is not a business record, so these are not
 T0/T1/T2 domain commands (design §5 第 4 条). Every rule here is deterministic:
 conflicts are found by scope and word overlap, never by a model, and the owner
 decides merge, replace or keep both (P86 第 4 项).
+
+Unified item contract (P121 第 6 项后半, target architecture §5.7, D512): each
+version also carries when the thing happened, when it takes effect, its
+confirmation state (always 本人确认), evidence links and the owner's own 冲突 / 重复
+relations. 替代按生效时间判断: replacing a note takes effect at the new note's start,
+and a draft that starts before the note it would replace only enters history.
 """
 
 import re
@@ -16,11 +22,14 @@ from uuid import UUID, uuid4
 from pydantic import Field, model_validator
 from sqlalchemy import func, select, text
 
+from pdos_next.core.clock import now as clock_now
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.core.service import digest
+from pdos_next.domain.knowledge.scope_notes.schemas import EvidenceInput
 from pdos_next.errors import DomainError
 
 from .models import (
+    NOTE_LINK_LIMIT,
     MemoryCandidate,
     MemoryCandidateDecision,
     MemoryNote,
@@ -33,8 +42,17 @@ NOTE_LIMIT = 50
 TEXT_LIMIT = 200
 ALIAS_TERM_LIMIT = 40
 CANONICAL_LIMIT = 80
-SIMILARITY = "memory-note-similarity/v1;same-alias|jaccard>=0.34|shared>=2;scope=same-or-global"
+SIMILARITY = ("memory-note-similarity/v2;same-alias|jaccard>=0.34|shared>=2;scope=same-or-global;"
+              "valid-time=overlapping")
 KIND_LABELS = {"convention": "口径", "background": "背景", "alias": "叫法"}
+# Same value as the scope notes' 成员确认; for one's own note it reads 本人确认.
+CONFIRMATION = "member_confirmed"
+CONFIRMATION_LABELS = {CONFIRMATION: "本人确认"}
+RELATION_LABELS = {"conflicts": "冲突", "duplicates": "重复", "supersedes": "替代了",
+                   "superseded_by": "被替代"}
+CONTENT = ("kind", "text", "scope_kind", "scope_id", "category_id", "alias_term",
+           "alias_canonical", "target_kind", "target_id", "target_version", "valid_until",
+           "occurred_at", "valid_from", "confirmation", "evidence", "relations")
 Kind = Literal["convention", "background", "alias"]
 ScopeKind = Literal["global", "category", "product", "proposal", "project"]
 ObjectKind = Literal["category", "product", "proposal", "project"]
@@ -56,6 +74,13 @@ class ObjectRef(StrictModel):
     id: UUID
 
 
+class RelationRef(StrictModel):
+    """冲突 / 重复 with another of the owner's own notes (替代 goes through the conflict choice)."""
+
+    type: Literal["conflicts", "duplicates"]
+    note_id: UUID
+
+
 class NoteDraft(StrictModel):
     kind: Kind
     text: str = Field(default="", max_length=400)
@@ -64,6 +89,12 @@ class NoteDraft(StrictModel):
     alias_term: str | None = Field(default=None, max_length=80)
     alias_canonical: str | None = Field(default=None, max_length=160)
     alias_target: ObjectRef | None = None
+    # Unified item contract (§5.7). On a revision a field left out keeps the current value;
+    # ``valid_from`` left out means "from now" for a note in effect, its own start otherwise.
+    occurred_at: datetime | None = None
+    valid_from: datetime | None = None
+    evidence: list[EvidenceInput] | None = Field(default=None, max_length=NOTE_LINK_LIMIT)
+    relations: list[RelationRef] | None = Field(default=None, max_length=NOTE_LINK_LIMIT)
 
     @model_validator(mode="after")
     def shape(self):
@@ -172,19 +203,46 @@ def scope_view(session, version):
             "title": found[1] if found else None, "readable": found is not None}
 
 
-def normalized(session, draft):
-    """Server-side values for one draft; nothing comes from the model or the page."""
+def as_utc(value):
+    return value if value is None or value.tzinfo else value.replace(tzinfo=UTC)
+
+
+def normalized(session, draft, *, owner_id=None, tenant_id=None, prior=None, stamp=None):
+    """Server-side values for one draft; nothing comes from the model or the page.
+
+    ``valid_from`` stays None when the draft leaves it to the default (see ``start``),
+    so a retried request keeps the same fingerprint.
+    """
+    stamp = stamp or clock_now()
+    given = draft.model_fields_set
     scope = resolve_scope(session, draft.scope)
     values = {"kind": draft.kind, "scope_kind": scope["kind"], "scope_id": scope["id"],
               "category_id": scope["category_id"], "alias_term": None, "alias_canonical": None,
               "target_kind": None, "target_id": None, "target_version": None,
-              "valid_until": draft.valid_until}
-    if draft.valid_until is not None:
-        until = draft.valid_until if draft.valid_until.tzinfo else draft.valid_until.replace(
-            tzinfo=UTC)
-        if until <= datetime.now(UTC):
-            raise DomainError("VALIDATION_FAILED", "有效期须晚于现在。", 422)
-        values["valid_until"] = until
+              "valid_until": as_utc(draft.valid_until), "confirmation": CONFIRMATION}
+    keep = prior is not None
+    values["occurred_at"] = (as_utc(draft.occurred_at) if "occurred_at" in given or not keep
+                             else prior.occurred_at)
+    if values["occurred_at"] is not None and values["occurred_at"] > stamp:
+        raise DomainError("VALIDATION_FAILED", "事情发生的时间不能晚于现在。", 422,
+                          detail={"reason_key": "memory_note_occurred"})
+    values["valid_from"] = as_utc(draft.valid_from)
+    begins = values["valid_from"] or (prior.valid_from if keep and prior.valid_from > stamp
+                                      else stamp)
+    if values["valid_until"] is not None and values["valid_until"] <= max(begins, stamp):
+        raise DomainError("VALIDATION_FAILED", "有效期须晚于生效起点和现在。", 422,
+                          detail={"reason_key": "memory_note_validity"})
+    if draft.evidence is not None or not keep:
+        values["evidence"] = resolve_evidence(
+            session, owner_id, tenant_id, draft.evidence or [],
+            known=prior.evidence if keep else ())
+    else:
+        values["evidence"] = list(prior.evidence)
+    if draft.relations is not None or not keep:
+        values["relations"] = resolve_relations(session, owner_id, draft.relations or [],
+                                                own=prior.note_id if keep else None)
+    else:
+        values["relations"] = list(prior.relations)
     if draft.kind == "alias":
         term = _bounded(draft.alias_term, ALIAS_TERM_LIMIT, "叫法")
         values["alias_term"] = term
@@ -205,6 +263,145 @@ def normalized(session, draft):
     return values
 
 
+def start(values, prior, stamp):
+    """生效起点: as given; otherwise now, except that a note not yet in effect keeps its start."""
+    if values["valid_from"] is not None:
+        return values["valid_from"]
+    if prior is not None and prior.valid_from > stamp:
+        return prior.valid_from
+    return stamp
+
+
+# ---------------------------------------------------------------------------
+# Evidence links and relations (§5.7): references only, read now as the owner.
+
+def _deny(code, key, message, status=403):
+    raise DomainError(code, message, status, detail={"reason_key": key})
+
+
+def _link_key(link):
+    return (link["source_type"], str(link["source_id"]), digest(link.get("locator") or {}),
+            link["stance"])
+
+
+def _source(session, owner_id, tenant_id, source_type, source_kind, source_id):
+    """(root, version, title) of a source the owner can read now, or None."""
+    from pdos_next.agent.kernel.models import AgentRun
+    from pdos_next.core.models import Artifact, Receipt
+    from pdos_next.domain.knowledge.scope_notes import reads as scope_reads
+    from pdos_next.domain.projects.discussions.models import DiscussionThread
+
+    if source_type == "business_object":
+        if source_kind == "proposal_decision":
+            found = scope_reads.formal(session, tenant_id, source_kind, source_id)
+            return None if found is None else (found["id"], found["revision"], found["title"])
+        found = readable_object(session, source_kind, source_id)
+        return None if found is None else (source_id, found[2], found[1])
+    model = {"run": AgentRun, "discussion": DiscussionThread, "receipt": Receipt,
+             "original": Artifact}[source_type]
+    row = session.get(model, source_id)
+    if row is None or row.tenant_id != tenant_id:
+        return None
+    if source_type == "run":
+        # Only the owner's own conversations; another person's Run is never a source here.
+        return None if row.requester_id != owner_id else (row.id, None, None)
+    if source_type == "receipt":
+        return row.subject_id, row.subject_revision, None
+    if source_type == "original":
+        return row.original_id or row.id, row.revision, None
+    return row.id, None, getattr(row, "title", None)
+
+
+def resolve_evidence(session, owner_id, tenant_id, items, *, known=()):
+    """Each link is read now as the owner; a quote is reduced to its digest (as scope notes)."""
+    previous = {_link_key(link): link for link in known}
+    links, seen = [], set()
+    for item in items:
+        found = _source(session, owner_id, tenant_id, item.source_type, item.source_kind,
+                        item.source_id)
+        if found is None:
+            _deny("FORBIDDEN_SCOPE", "memory_note_evidence_unreadable", "证据来源当前不可读。")
+        link = {"source_type": item.source_type, "source_kind": item.source_kind,
+                "source_id": str(item.source_id), "source_version": found[1],
+                "locator": dict(item.locator), "root_source_id": str(found[0]),
+                "stance": item.stance}
+        key = _link_key(link)
+        if key in seen:
+            continue
+        seen.add(key)
+        # The page re-sends the links it shows without the quote: keep the digest it had.
+        link["quote_sha256"] = digest(item.quote) if item.quote else (
+            previous.get(key, {}).get("quote_sha256"))
+        links.append(link)
+    return links
+
+
+def resolve_relations(session, owner_id, items, *, own=None):
+    relations, seen = [], set()
+    for item in items:
+        if item.note_id == own:
+            _deny("VALIDATION_FAILED", "memory_note_relation_self", "条目不能和自己建立关系。", 422)
+        if (item.type, item.note_id) in seen:
+            continue
+        seen.add((item.type, item.note_id))
+        note = session.get(MemoryNote, item.note_id)
+        if note is None or note.owner_id != owner_id or session.scalar(select(
+                MemoryNoteDeletion.id).where(MemoryNoteDeletion.note_id == item.note_id)):
+            _deny("NOT_FOUND", "memory_note_relation_unknown",
+                  "关联的条目不存在，或不属于你本人。", 404)
+        relations.append({"type": item.type, "note_id": str(item.note_id)})
+    return relations
+
+
+def evidence_view(session, version):
+    result = []
+    for link in version.evidence or []:
+        found = _source(session, version.owner_id, version.tenant_id, link["source_type"],
+                        link.get("source_kind"), UUID(link["source_id"]))
+        result.append({
+            "source_type": link["source_type"], "source_kind": link.get("source_kind"),
+            "source_id": link["source_id"], "source_version": link.get("source_version"),
+            "locator": link.get("locator") or {}, "stance": link["stance"],
+            "quoted": bool(link.get("quote_sha256")), "readable": found is not None,
+            "title": found[2] if found else None,
+            "updated": bool(found and link.get("source_version") is not None
+                            and found[1] != link["source_version"]),
+        })
+    return result
+
+
+def relation_view(version, peers):
+    """The note's relations with the owner's other notes that still exist (purged ones drop)."""
+    def other(note_id, kind, direction):
+        row = peers.get(note_id)
+        return None if row is None else {
+            "type": kind, "label": RELATION_LABELS[kind], "direction": direction,
+            "note_id": str(note_id), "text": first_sentence(row.text, 40)}
+
+    found = [other(UUID(item["note_id"]), item["type"], "out") for item in version.relations]
+    for row in peers.values():
+        if row.note_id == version.note_id:
+            continue
+        found += [other(row.note_id, item["type"], "in") for item in row.relations
+                  if item["note_id"] == str(version.note_id)]
+        if row.status == "replaced" and row.replaced_by == version.note_id:
+            found.append(other(row.note_id, "supersedes", "out"))
+    if version.status == "replaced" and version.replaced_by is not None:
+        found.append(other(version.replaced_by, "superseded_by", "in"))
+    return [item for item in found if item is not None]
+
+
+def conflicted(rows):
+    """Note ids marked 冲突 with another note in the same set."""
+    present = {str(row.note_id) for row in rows}
+    found = set()
+    for row in rows:
+        for item in row.relations:
+            if item["type"] == "conflicts" and item["note_id"] in present:
+                found.update({str(row.note_id), item["note_id"]})
+    return found
+
+
 # ---------------------------------------------------------------------------
 # Reading the owner's own notes.
 
@@ -222,12 +419,17 @@ def _latest_versions(session, owner_id, *, note_ids=None):
 
 
 def state(session, version, *, now=None):
-    """active / replaced / expired / stale (可能过期) / unavailable (范围不可读)."""
-    now = now or datetime.now(UTC)
-    if version.status == "replaced":
-        return "replaced"
+    """pending (未生效) / active / replaced / expired / stale (可能过期) / unavailable (范围不可读).
+
+    Valid time decides: a version is in effect from ``valid_from`` until ``valid_until``.
+    A ``replaced`` version whose end is still ahead (the replacement starts later) is in
+    effect until then; once it ends it reads as replaced, otherwise as expired.
+    """
+    now = now or clock_now()
+    if version.valid_from > now:
+        return "pending"
     if version.valid_until is not None and version.valid_until <= now:
-        return "expired"
+        return "replaced" if version.status == "replaced" else "expired"
     if version.category_id is not None and readable_object(
         session, version.scope_kind, version.scope_id
     ) is None:
@@ -252,7 +454,17 @@ def means(session, version):
             "updated": bool(found and found[2] != version.target_version)}
 
 
-def view(session, version, *, current=None):
+def _iso(value):
+    return value.isoformat() if value else None
+
+
+def peers_of(session, owner_id):
+    return {row.note_id: row for row in _latest_versions(session, owner_id)}
+
+
+def view(session, version, *, current=None, peers=None):
+    if peers is None:
+        peers = peers_of(session, version.owner_id)
     value = {
         "note_id": str(version.note_id),
         "revision": version.revision,
@@ -261,10 +473,17 @@ def view(session, version, *, current=None):
         "text": version.text,
         "scope": scope_view(session, version),
         "state": current or state(session, version),
-        "valid_until": version.valid_until.isoformat() if version.valid_until else None,
+        "valid_until": _iso(version.valid_until),
         "confirmed_at": version.created_at.isoformat(),
         "origin": version.origin,
         "replaced_by": str(version.replaced_by) if version.replaced_by else None,
+        # Unified item contract (§5.7).
+        "occurred_at": _iso(version.occurred_at),
+        "valid_from": version.valid_from.isoformat(),
+        "confirmation": version.confirmation,
+        "confirmation_label": CONFIRMATION_LABELS[version.confirmation],
+        "evidence": evidence_view(session, version),
+        "relations": relation_view(version, peers),
     }
     if version.kind == "alias":
         value["alias"] = {"term": version.alias_term, "means": means(session, version)}
@@ -279,8 +498,10 @@ def listing(session, ctx):
     from . import policy
 
     rows = _latest_versions(session, ctx.requester_id)
-    notes = [view(session, row) for row in rows]
-    order = {"active": 0, "stale": 1, "unavailable": 2, "expired": 3, "replaced": 4}
+    peers = {row.note_id: row for row in rows}
+    notes = [view(session, row, peers=peers) for row in rows]
+    order = {"active": 0, "stale": 1, "pending": 2, "unavailable": 3, "expired": 4,
+             "replaced": 5}
     notes.sort(key=lambda item: (order[item["state"]], item["kind"], item["confirmed_at"]),
                reverse=False)
     deleted = session.scalar(select(func.count()).select_from(MemoryNoteDeletion).where(
@@ -292,6 +513,7 @@ def listing(session, ctx):
         "limit": NOTE_LIMIT,
         "text_limit": TEXT_LIMIT,
         "active_count": sum(1 for item in notes if item["state"] != "replaced"),
+        "confirmation_label": CONFIRMATION_LABELS[CONFIRMATION],
         "notes": notes,
         "deleted_count": deleted,
         "note": "仅你本人可见。条目不是业务事实，也不授予任何权限；"
@@ -305,8 +527,9 @@ def history(session, ctx, note_id):
         MemoryNoteVersion.note_id == note_id).order_by(MemoryNoteVersion.revision.desc())).all()
     if not rows:
         raise DomainError("NOT_FOUND", "这条记忆已删除。", 404)
+    peers = peers_of(session, ctx.requester_id)
     return {"version": VERSION, "note_id": str(note_id),
-            "versions": [view(session, row, current="history" if index else None)
+            "versions": [view(session, row, current="history" if index else None, peers=peers)
                          for index, row in enumerate(rows)]}
 
 
@@ -324,8 +547,17 @@ def _overlapping_scope(left_kind, left_id, right_kind, right_id):
     return "global" in {left_kind, right_kind} or (left_kind, left_id) == (right_kind, right_id)
 
 
-def similar(session, owner_id, values, *, exclude=()):
+def _overlapping_time(values, row, stamp):
+    """Two notes can only contradict each other while both are in effect (valid time)."""
+    begins = values.get("valid_from") or stamp
+    ends = values.get("valid_until")
+    return (ends is None or row.valid_from < ends) and (
+        row.valid_until is None or begins < row.valid_until)
+
+
+def similar(session, owner_id, values, *, exclude=(), stamp=None):
     """Active notes that look like duplicates or contradictions of a draft."""
+    stamp = stamp or clock_now()
     draft_words = words(values["text"] + " " + (values.get("alias_term") or ""))
     found = []
     for row in _latest_versions(session, owner_id):
@@ -333,6 +565,8 @@ def similar(session, owner_id, values, *, exclude=()):
             continue
         if not _overlapping_scope(values["scope_kind"], values["scope_id"],
                                   row.scope_kind, row.scope_id):
+            continue
+        if not _overlapping_time(values, row, stamp):
             continue
         if values["kind"] == "alias" and row.kind == "alias" and clean(
             row.alias_term
@@ -347,18 +581,22 @@ def similar(session, owner_id, values, *, exclude=()):
     return found
 
 
-def conflict_views(session, rows):
-    return [{**view(session, row), "reason": reason} for row, reason in rows]
+def conflict_views(session, rows, values=None):
+    """Each similar note, and what 替换 would do given the draft's start (P121 第 6 项)."""
+    begins = (values or {}).get("valid_from") or clock_now()
+    return [{**view(session, row), "reason": reason,
+             "replace_effect": "history_only" if row.valid_from > begins else "replaces"}
+            for row, reason in rows]
 
 
 def conflicts(session, ctx, draft):
     from .policy import require_notes
 
     require_notes(session)
-    values = normalized(session, draft)
+    values = normalized(session, draft, owner_id=ctx.requester_id, tenant_id=ctx.tenant_id)
     rows = similar(session, ctx.requester_id, values)
     return {"version": VERSION, "similarity": SIMILARITY,
-            "conflicts": conflict_views(session, rows),
+            "conflicts": conflict_views(session, rows, values),
             "choices": ["merge", "replace", "keep_both"] if rows else []}
 
 
@@ -385,14 +623,13 @@ def _latest(session, note_id):
 
 
 def _append(session, ctx, note_id, revision, values, *, status="active", origin="manual",
-            replaced_by=None, candidate_id=None, request_key, fingerprint):
+            replaced_by=None, candidate_id=None, request_key, fingerprint, stamp):
+    # The record time is the same instant a defaulted 生效起点 takes (s0_0900 downgrade guard).
     row = MemoryNoteVersion(
         id=uuid4(), tenant_id=ctx.tenant_id, owner_id=ctx.requester_id, note_id=note_id,
         revision=revision, status=status, origin=origin, replaced_by=replaced_by,
         candidate_id=candidate_id, request_key=request_key, request_sha256=fingerprint,
-        **{key: values[key] for key in (
-            "kind", "text", "scope_kind", "scope_id", "category_id", "alias_term",
-            "alias_canonical", "target_kind", "target_id", "target_version", "valid_until")},
+        created_at=stamp, **{key: values[key] for key in CONTENT},
     )
     session.add(row)
     session.flush()
@@ -413,57 +650,91 @@ def _replay(session, ctx, key, fingerprint):
 
 
 def _copy(version, **changes):
-    values = {key: getattr(version, key) for key in (
-        "kind", "text", "scope_kind", "scope_id", "category_id", "alias_term",
-        "alias_canonical", "target_kind", "target_id", "target_version", "valid_until")}
+    values = {key: getattr(version, key) for key in CONTENT}
     values.update(changes)
     return values
 
 
+def _merge_links(left, right):
+    merged, seen = [], set()
+    for link in [*left, *right]:
+        key = (link["type"], link["note_id"]) if "type" in link else _link_key(link)
+        if key not in seen:
+            seen.add(key)
+            merged.append(link)
+    if len(merged) > NOTE_LINK_LIMIT:
+        raise DomainError("VALIDATION_FAILED",
+                          f"合并后的证据链接或关系超过 {NOTE_LINK_LIMIT} 条，请先删掉一些。", 422)
+    return merged
+
+
 def create(session, ctx, data, *, origin="manual", candidate_id=None):
-    """Create a note; if similar notes exist the owner must have chosen how."""
+    """Create a note; if similar notes exist the owner must have chosen how.
+
+    替代按生效时间判断 (P121 第 6 项): 替换 ends each old note at the new note's start.
+    When the new note starts before an old note it would replace, it is older
+    information: it goes into history (ending where that old note starts) and the old
+    note stays current.
+    """
     from .policy import require_notes
 
     require_notes(session)
     _lock(session, ctx)
-    values = normalized(session, data.note)
+    stamp = clock_now()
+    values = normalized(session, data.note, owner_id=ctx.requester_id, tenant_id=ctx.tenant_id,
+                        stamp=stamp)
     fingerprint = digest({"op": "create", "values": values, "candidate": candidate_id,
                           "conflict": data.conflict.model_dump(mode="json")
                           if data.conflict else None})
     replay = _replay(session, ctx, data.request_key, fingerprint)
     if replay is not None:
         return created_view(session, replay.note_id)
-    found = similar(session, ctx.requester_id, values)
+    values["valid_from"] = start(values, None, stamp)
+    found = similar(session, ctx.requester_id, values, stamp=stamp)
     choice = data.conflict
     chosen = dict(zip(choice.note_ids, choice.expected_revisions, strict=True)) if choice else {}
     if found and choice is None:
         raise DomainError(
             "VERSION_CONFLICT", "已有相似或矛盾的旧条目，请选择合并、替换或都保留。",
             detail={"reason_key": "memory_conflict_unresolved",
-                    "conflicts": conflict_views(session, found)},
+                    "conflicts": conflict_views(session, found, values)},
         )
+    current = {}
     for note_id, revision in chosen.items():
-        current = _latest(session, note_id)
         _note(session, ctx, note_id)
-        if current is None or current.revision != revision or current.status != "active":
+        row = _latest(session, note_id)
+        if row is None or row.revision != revision or row.status != "active":
             raise DomainError("VERSION_CONFLICT", "旧条目已变化，请刷新后再选。")
+        current[note_id] = row
     from .suppression import lift
 
     lift(session, ctx, values)  # The owner confirms it again: forgetting no longer applies.
     if choice and choice.resolution == "merge":
         (note_id, revision), = chosen.items()
-        current = _latest(session, note_id)
+        target = current[note_id]
         merged = _bounded(choice.merged_text, TEXT_LIMIT, "合并后的内容")
-        if current.kind == "alias" and values["kind"] == "alias":
-            merged_values = {**values, "text": merged}
-        else:
-            merged_values = _copy(current, text=merged, valid_until=values["valid_until"])
+        base = values if target.kind == "alias" and values["kind"] == "alias" else _copy(
+            target, valid_until=values["valid_until"])
+        # 合并 rewrites the old note: its start follows the revision rule (start given, or
+        # now for a note in effect); links of both are kept.
+        merged_values = {
+            **base, "text": merged,
+            "valid_from": start({"valid_from": as_utc(data.note.valid_from)}, target, stamp),
+            "occurred_at": values["occurred_at"] or target.occurred_at,
+            "evidence": _merge_links(target.evidence, values["evidence"]),
+            "relations": [item for item in _merge_links(target.relations, values["relations"])
+                          if item["note_id"] != str(note_id)],
+        }
+        _check_start(merged_values, target, stamp)
         _append(session, ctx, note_id, revision + 1, merged_values, origin="merge",
                 candidate_id=candidate_id, request_key=data.request_key,
-                fingerprint=fingerprint)
+                fingerprint=fingerprint, stamp=stamp)
         return created_view(session, note_id, resolution="merge")
-    if active_count(session, ctx.requester_id) - (
-        len(chosen) if choice and choice.resolution == "replace" else 0
+    replacing = choice is not None and choice.resolution == "replace"
+    later = [row for row in current.values() if row.valid_from > values["valid_from"]]
+    backfill = replacing and bool(later)
+    if not backfill and active_count(session, ctx.requester_id) - (
+        len(chosen) if replacing else 0
     ) >= NOTE_LIMIT:
         raise DomainError("VALIDATION_FAILED",
                           f"记忆条目最多 {NOTE_LIMIT} 条，请先删除或合并旧条目。",
@@ -471,22 +742,46 @@ def create(session, ctx, data, *, origin="manual", candidate_id=None):
     note = MemoryNote(id=uuid4(), tenant_id=ctx.tenant_id, owner_id=ctx.requester_id)
     session.add(note)
     session.flush()
+    if backfill:
+        # 补录: in effect from its own start until the earliest old note it predates.
+        first = min(later, key=lambda row: row.valid_from)
+        ends = min(values["valid_until"] or first.valid_from, first.valid_from)
+        _append(session, ctx, note.id, 1, {**values, "valid_until": ends}, status="replaced",
+                origin=origin, replaced_by=first.note_id, candidate_id=candidate_id,
+                request_key=data.request_key, fingerprint=fingerprint, stamp=stamp)
+        return created_view(session, note.id, resolution="replace", effect="history_only")
     _append(session, ctx, note.id, 1, values, origin=origin, candidate_id=candidate_id,
-            request_key=data.request_key, fingerprint=fingerprint)
-    if choice and choice.resolution == "replace":
-        now = datetime.now(UTC)
+            request_key=data.request_key, fingerprint=fingerprint, stamp=stamp)
+    if replacing:
+        begins = values["valid_from"]
         for note_id, revision in chosen.items():
-            current = _latest(session, note_id)
+            row = current[note_id]
+            # The old note stays in effect until the new one starts (which may be ahead).
             _append(session, ctx, note_id, revision + 1,
-                    _copy(current, valid_until=min(current.valid_until or now, now)),
-                    status="replaced", origin=current.origin, replaced_by=note.id,
-                    request_key=data.request_key, fingerprint=fingerprint)
-    return created_view(session, note.id, resolution=choice.resolution if choice else None)
+                    _copy(row, valid_until=min(row.valid_until or begins, begins)),
+                    status="replaced", origin=row.origin, replaced_by=note.id,
+                    request_key=data.request_key, fingerprint=fingerprint, stamp=stamp)
+    return created_view(session, note.id, resolution=choice.resolution if choice else None,
+                        effect="replaces" if replacing else None)
 
 
-def created_view(session, note_id, *, resolution=None):
-    return {"version": VERSION, "note": view(session, _latest(session, note_id)),
-            "resolution": resolution}
+def created_view(session, note_id, *, resolution=None, effect=None):
+    value = {"version": VERSION, "note": view(session, _latest(session, note_id)),
+             "resolution": resolution}
+    if effect is not None:
+        value["effect"] = effect
+        if effect == "history_only":
+            value["note_text"] = "这条的生效起点早于现有条目，只记入历史，没有替换现有条目。"
+    return value
+
+
+def _check_start(values, prior, stamp):
+    """A note already in effect is not moved to a later start: that is a new note."""
+    if prior.valid_from <= stamp and values["valid_from"] > stamp:
+        raise DomainError(
+            "VALIDATION_FAILED",
+            "这条记忆已经生效；要从将来某天起换一种说法，请新建一条，并选择替换这条。", 422,
+            detail={"reason_key": "memory_note_future_start"})
 
 
 def revise(session, ctx, note_id, data):
@@ -495,19 +790,23 @@ def revise(session, ctx, note_id, data):
     require_notes(session)
     _lock(session, ctx)
     _note(session, ctx, note_id)
-    values = normalized(session, data.note)
+    current = _latest(session, note_id)
+    stamp = clock_now()
+    values = normalized(session, data.note, owner_id=ctx.requester_id, tenant_id=ctx.tenant_id,
+                        prior=current, stamp=stamp)
     fingerprint = digest({"op": "revise", "note_id": note_id, "values": values,
                           "expected": data.expected_revision})
     replay = _replay(session, ctx, data.request_key, fingerprint)
     if replay is not None:
         return created_view(session, replay.note_id)
-    current = _latest(session, note_id)
     if current.revision != data.expected_revision:
         raise DomainError("VERSION_CONFLICT", "这条记忆已变化，请刷新后再改。")
     if current.status != "active":
         raise DomainError("VERSION_CONFLICT", "已替换的条目只能查看或删除。")
+    values["valid_from"] = start(values, current, stamp)
+    _check_start(values, current, stamp)
     _append(session, ctx, note_id, current.revision + 1, values, origin=current.origin,
-            request_key=data.request_key, fingerprint=fingerprint)
+            request_key=data.request_key, fingerprint=fingerprint, stamp=stamp)
     return created_view(session, note_id)
 
 
@@ -573,7 +872,7 @@ def in_range(version, run):
 
 def usable(session, run, *, now=None):
     """(version, state) of the requester's notes usable in this Run's range now."""
-    now = now or datetime.now(UTC)
+    now = now or clock_now()
     result = []
     for row in _latest_versions(session, run.requester_id):
         if not in_range(row, run):

@@ -54705,6 +54705,89 @@
         ],
         "title": "EventTime"
       },
+      "EvidenceInput": {
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "run",
+              "discussion",
+              "receipt",
+              "original",
+              "business_object"
+            ],
+            "title": "Source Type"
+          },
+          "source_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Source Id"
+          },
+          "source_kind": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "category",
+                  "product",
+                  "proposal",
+                  "project",
+                  "proposal_decision"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Kind"
+          },
+          "locator": {
+            "additionalProperties": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "object",
+            "maxProperties": 6,
+            "title": "Locator"
+          },
+          "quote": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000,
+                "minLength": 1
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quote"
+          },
+          "stance": {
+            "type": "string",
+            "enum": [
+              "supports",
+              "opposes",
+              "context"
+            ],
+            "title": "Stance",
+            "default": "supports"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "source_type",
+          "source_id"
+        ],
+        "title": "EvidenceInput"
+      },
       "ExecutionWindow": {
         "properties": {
           "start": {
@@ -56347,6 +56430,60 @@
                 "type": "null"
               }
             ]
+          },
+          "occurred_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Occurred At"
+          },
+          "valid_from": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valid From"
+          },
+          "evidence": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/EvidenceInput"
+                },
+                "type": "array",
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Evidence"
+          },
+          "relations": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/RelationRef"
+                },
+                "type": "array",
+                "maxItems": 10
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Relations"
           }
         },
         "additionalProperties": false,
@@ -57729,6 +57866,31 @@
           "version"
         ],
         "title": "Reference"
+      },
+      "RelationRef": {
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "conflicts",
+              "duplicates"
+            ],
+            "title": "Type"
+          },
+          "note_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Note Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "type",
+          "note_id"
+        ],
+        "title": "RelationRef",
+        "description": "冲突 / 重复 with another of the owner's own notes (替代 goes through the conflict choice)."
       },
       "RequestedSkill": {
         "properties": {
