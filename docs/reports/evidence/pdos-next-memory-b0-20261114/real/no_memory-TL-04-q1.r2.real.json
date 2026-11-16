@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 134.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 142865,
+  "held_tokens": 0,
+  "answer": "未在本次可检索范围内找到你此前交代过气泵报价对比口径的任何记录。已核对的台账：当前品类（汽车充气泵）公司资料检索（含历史）0 条；本会话及可见历史会话无更早轮次；品类内知识（竞品/参数/边界）均为 0 条；平台与产品对象 0 条。盲区：本会话已设为「不进记忆」，个人记忆层关闭，跨会话的个人历史交代无法回溯——所以结论是「已搜索范围内未找到」，不是「你没有交代过」。本轮未重复检索，等你决定是扩大范围还是直接重述口径。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:06:50.197826+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未在任何已检索范围内找到气泵报价对比口径的既往交代（检索 0 条，不等于该交代不存在）\", \"个人记忆层在本会话关闭（memory_off：会话设为不进记忆），跨会话的个人历史交代无法回溯\", \"品类「汽车充气泵」为隔离合成品类：知识 0 条、参数 0 个、竞品 0 条、平台/产品对象 0 条，口径即使曾落在公司资料也无对象可读\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"未在本次可检索范围内找到你此前交代过气泵报价对比口径的任何记录。已核对的台账：当前品类（汽车充气泵）公司资料检索（含历史）0 条；本会话及可见历史会话无更早轮次；品类内知识（竞品/参数/边界）均为 0 条；平台与产品对象 0 条。盲区：本会话已设为「不进记忆」，个人记忆层关闭，跨会话的个人历史交代无法回溯——所以结论是「已搜索范围内未找到」，不是「你没有交代过」。本轮未重复检索，等你决定是扩大范围还是直接重述口径。\", \"questions\": [{\"id\": \"widen_scope\", \"why\": \"口径交代可能落在别的品类或别的会话；在本品类与本会话内确实没有找到。\", \"options\": [], \"question\": \"是否把检索范围扩大到其他品类或其他历史会话（当前偏好限定在本品类、不含客户私有资料）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"restate_basis\", \"why\": \"没有既有口径记录时，竞品与我方价格点必须先统一口径才能同口径分组与分位，否则价格带不可比。\", \"options\": [], \"question\": \"要不要直接由你重述这次的报价对比口径（币种、基准日期、地区、渠道、零售或促销价、是否含税含运、配置口径），我把它固定为本次价格带对比的约束？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"个人记忆层本会话关闭，跨会话的个人历史交代未能核实（如需回溯，需开启记忆或指明具体会话）\", \"报价对比口径尚未确定，竞品价格点与价格带计算待口径统一后进行\"]}",
+  "unfinished": [
+    "个人记忆层本会话关闭，跨会话的个人历史交代未能核实（如需回溯，需开启记忆或指明具体会话）",
+    "报价对比口径尚未确定，竞品价格点与价格带计算待口径统一后进行"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

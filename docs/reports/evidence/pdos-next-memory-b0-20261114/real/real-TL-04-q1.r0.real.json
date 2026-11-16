@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 70.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 120061,
+  "held_tokens": 0,
+  "answer": "在当前可查范围内，没有找到你交代过的气泵报价对比口径。已核对的台账：历史记录里只有一次「气泵报价对比」会话（run 62b2e1e8…、session 0455e2fc…、as_of 2026-11-15，状态已完成），但它只留了一句摘要「报价对比已完成。」，没有口径、来源引用、notes 或研究行；品类内按「价格/口径/币种/含税/运费/渠道/价格带」检索资料为空，品类知识条目与竞品清单同样为空。结论是\"没查到记录\"，不等于\"你没交代过\"——若当时口径是口头或即时给定、或落在别的会话与别的品类范围，就不在这次检索的覆盖内。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:41:38.828085+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"历史会话 62b2e1e8-985a-483d-a550-baac37097b72（2026-11-15『气泵报价对比』）仅保留摘要『报价对比已完成。』，未留存口径细节、来源引用、notes 或研究行\", \"当前品类（汽车充气泵）可读资料中未检索到报价/价格口径相关文档；品类知识条目与竞品清单均为空，当时所用口径无法复原\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"在当前可查范围内，没有找到你交代过的气泵报价对比口径。已核对的台账：历史记录里只有一次「气泵报价对比」会话（run 62b2e1e8…、session 0455e2fc…、as_of 2026-11-15，状态已完成），但它只留了一句摘要「报价对比已完成。」，没有口径、来源引用、notes 或研究行；品类内按「价格/口径/币种/含税/运费/渠道/价格带」检索资料为空，品类知识条目与竞品清单同样为空。结论是\\\"没查到记录\\\"，不等于\\\"你没交代过\\\"——若当时口径是口头或即时给定、或落在别的会话与别的品类范围，就不在这次检索的覆盖内。\", \"questions\": [{\"id\": \"q_scope\", \"why\": \"当前范围内只剩一句摘要，原口径无法复原；扩大范围（其他会话历史、更宽的资料来源）是唯一还可能找回原文的路径。\", \"options\": [{\"label\": \"扩大范围再找一次（查更早的会话历史与更宽来源）\", \"value\": \"widen\"}, {\"label\": \"不再追溯，按统一口径（币种/日期/地区/渠道/零售或促销/含税与运费/配置）重新做这次报价对比\", \"value\": \"redefine\"}, {\"label\": \"先到这儿，暂不处理\", \"value\": \"stop\"}], \"question\": \"要不要我扩大检索范围再找一次口径记录？\", \"depends_on\": [], \"recommended\": {\"value\": \"widen\", \"reason\": \"口径一旦确定就直接决定报价可比性；先花一轮确认你当初的交代，比先按默认口径出对比更省事。\"}, \"allow_free_text\": true}], \"unfinished\": [\"尚未找回 2026-11-15 那次报价对比所用的具体口径；若需继续，需扩大检索范围（其他会话历史、更宽来源）后重新读取当时的回答与引用。\", \"若要重做报价对比，需先确定统一价格口径（币种、日期、地区、渠道、零售或促销、含税与运费、配置），按组标注不可比项，再交由确定性计算工具出价格带分布。\"]}",
+  "unfinished": [
+    "尚未找回 2026-11-15 那次报价对比所用的具体口径；若需继续，需扩大检索范围（其他会话历史、更宽来源）后重新读取当时的回答与引用。",
+    "若要重做报价对比，需先确定统一价格口径（币种、日期、地区、渠道、零售或促销、含税与运费、配置），按组标注不可比项，再交由确定性计算工具出价格带分布。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:6"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

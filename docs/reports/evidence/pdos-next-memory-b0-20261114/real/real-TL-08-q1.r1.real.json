@@ -1,0 +1,62 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 46.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 126813,
+  "held_tokens": 0,
+  "answer": "定位到提到「外壳缩水」的那次工作是「汇总上周试产的不良项」（2026-11-15 的工作记录，run_id 3cee8e55-e531-4cfa-9363-7484b7636967，session_id ceabac94-6756-44fe-b849-847fb1607de5）。当时给出的结论是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞；即与外壳缩水一起列出的另两个问题是气嘴漏气和按键卡滞。该来源为本人历史回答记录，非当前业务事实；本次在当前品类范围内未能检索到对应的现行试产/不良登记，故未能确认这三项的当前有效性。",
+  "answer_blob": "{\"result\": {\"recall\": {\"work\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15\", \"run_id\": \"3cee8e55-e531-4cfa-9363-7484b7636967\", \"session_id\": \"ceabac94-6756-44fe-b849-847fb1607de5\", \"evidence_kind\": \"本人历史会话记录（非当前业务事实）\"}, \"issues_listed\": [{\"rank\": 1, \"issue\": \"气嘴漏气\"}, {\"rank\": 2, \"issue\": \"外壳缩水\"}, {\"rank\": 3, \"issue\": \"按键卡滞\"}], \"original_summary\": \"不良前三项：气嘴漏气、外壳缩水、按键卡滞。\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:58:35.392740+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前「汽车充气泵」品类范围内检索（issue/build/knowledge/artifact 等）与 evidence.search、platform.read 均未返回与「外壳缩水」「试产不良」相关的现行记录，因此无法确认该三项不良是否仍为当前状态。\", \"最后一次补充检索因本轮查找预算用尽（MODEL_BUDGET_EXCEEDED）未完成。\", \"历史记录中该次回答的原始引用来源列表为空，无法回溯到当时的业务对象。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"定位到提到「外壳缩水」的那次工作是「汇总上周试产的不良项」（2026-11-15 的工作记录，run_id 3cee8e55-e531-4cfa-9363-7484b7636967，session_id ceabac94-6756-44fe-b849-847fb1607de5）。当时给出的结论是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞；即与外壳缩水一起列出的另两个问题是气嘴漏气和按键卡滞。该来源为本人历史回答记录，非当前业务事实；本次在当前品类范围内未能检索到对应的现行试产/不良登记，故未能确认这三项的当前有效性。\", \"questions\": [{\"id\": \"q1\", \"why\": \"目前结论仅来自我本人当时的历史回答，品类范围内未取到现行试产/不良记录，无法确认这三项是否仍然有效。\", \"options\": [{\"label\": \"继续查试产与不良登记，核对「外壳缩水」当前状态\", \"value\": \"continue\"}, {\"label\": \"不需要，只要历史结论即可\", \"value\": \"stop\"}], \"question\": \"是否要我在本会话继续查试产批次与不良登记，核对「外壳缩水」当前的登记状态与归属（是否已有围堵或 CAPA 记录）？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue\", \"reason\": \"历史回答只能说明“当时一起列出了什么”，现行状态仍未验证；核对后结论更可靠。\"}, \"allow_free_text\": true}], \"unfinished\": [\"在当前品类范围内核对试产不良现行记录（外壳缩水/气嘴漏气/按键卡滞）及其围堵或 CAPA 归属——本轮查找预算已用尽，尚未完成。\"]}",
+  "unfinished": [
+    "在当前品类范围内核对试产不良现行记录（外壳缩水/气嘴漏气/按键卡滞）及其围堵或 CAPA 归属——本轮查找预算已用尽，尚未完成。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:7",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

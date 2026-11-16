@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "不良前三项：气嘴漏气、外壳缩水、按键卡滞。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 21.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51769,
+  "held_tokens": 0,
+  "answer": "定位到本人 2026-11-15 的那次工作「汇总上周试产的不良项」（汽车充气泵品类）。当时小Pai 回答的不良前三项为：气嘴漏气、外壳缩水、按键卡滞——外壳缩水排在第二位，另两项是气嘴漏气与按键卡滞。该记录来自个人工作历史（as_of 2026-11-15），不是当前可引用的业务事实；当前品类可读业务资料检索「外壳缩水/试产不良」返回 0 条，无法确认是否已有品质问题或 CAPA 登记。",
+  "answer_blob": "{\"result\": {\"caveat\": \"以上为本人以往工作记录（as_of 2026-11-15）的回溯，非当前业务事实，不可作为业务依据引用\", \"unknowns\": [\"当前品类可读业务资料检索『外壳缩水/试产不良』返回 0 条，未能确认外壳缩水是否已有品质问题、CAPA 或围堵措施登记，也未确认该三项不良项的当前发生数量与批次\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:57:55.657043+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"listed_issues\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"], \"recalled_work\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15\", \"scope\": \"汽车充气泵\", \"run_id\": \"74fd2c92-640b-4858-ab97-f12906efd118\", \"session_id\": \"44e5e485-b096-4bb4-b7c3-a0b02506ef0b\", \"answer_excerpt\": \"不良前三项：气嘴漏气、外壳缩水、按键卡滞。\"}, \"evidence_basis\": \"personal_work_history_only\"}, \"status\": \"completed\", \"summary\": \"定位到本人 2026-11-15 的那次工作「汇总上周试产的不良项」（汽车充气泵品类）。当时小Pai 回答的不良前三项为：气嘴漏气、外壳缩水、按键卡滞——外壳缩水排在第二位，另两项是气嘴漏气与按键卡滞。该记录来自个人工作历史（as_of 2026-11-15），不是当前可引用的业务事实；当前品类可读业务资料检索「外壳缩水/试产不良」返回 0 条，无法确认是否已有品质问题或 CAPA 登记。\", \"questions\": [{\"id\": \"q1\", \"why\": \"回溯记录只能确认「当时说了什么」，当前是否已有正式的品质问题/CAPA 登记尚未核实；确认方向后才能继续取证或起草。\", \"options\": [{\"label\": \"在当前品类再深入检索一次，确认外壳缩水是否已有品质问题/CAPA/试产记录\", \"value\": \"深入检索\"}, {\"label\": \"直接按品质问题流程起草一条『外壳缩水』的问题登记与围堵/CAPA 假设草案\", \"value\": \"draft_issue\"}, {\"label\": \"只要这次回溯结果，先不继续\", \"value\": \"none\"}], \"question\": \"下一步希望我做什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"深入检索\", \"reason\": \"先取得可引用的现状依据，避免重复登记；检索无果再起草草案。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未核实当前品类中是否存在外壳缩水相关的品质问题/CAPA/试产记录（本次检索返回 0 条，需更深入检索确认）\"]}",
+  "unfinished": [
+    "未核实当前品类中是否存在外壳缩水相关的品质问题/CAPA/试产记录（本次检索返回 0 条，需更深入检索确认）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:2",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

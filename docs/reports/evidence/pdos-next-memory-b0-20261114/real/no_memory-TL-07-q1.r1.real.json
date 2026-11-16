@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 43.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 118875,
+  "held_tokens": 0,
+  "answer": "已按用户指定的两条口径起草本周周报（2026-11-09~2026-11-15）：一、本周完成——供应商对比：已完成；二、下周计划——下周（2026-11-16~2026-11-22）补齐报价单。两条内容均按用户本人表述登记。已在当前可读范围（汽车充气泵品类 id=8b663757-7e13-40ae-9636-f910c98e2019）检索\"供应商对比/竞品供应商/报价单\"，并读取品类知识、竞品清单、品类参数与平台对象，均未找到可附于周报的对比记录、报价单原件或相关产品/提案对象；因此周报为无附件、无数字支撑的口述口径版本，供应商名单、对比维度、结论、报价单编号/金额/归属人均登记为未知项，需用户补齐后即可排成可发版本。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:53:57.534224+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本周供应商对比的供应商名单、对比维度与结论未在当前可读范围（汽车充气泵品类）检索到记录\", \"待补报价单对应的供应商/项目对象、报价单编号、金额与交付截止日期未知\", \"周报是否需附供应商对比结果与报价单清单未知（当前范围内无可附资料）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"weekly_report\": {\"title\": \"本周周报\", \"period\": {\"next_week\": {\"end\": \"2026-11-22\", \"start\": \"2026-11-16\"}, \"this_week\": {\"end\": \"2026-11-15\", \"start\": \"2026-11-09\"}}, \"sections\": [{\"items\": [{\"seq\": 1, \"source\": \"用户口述\", \"status\": \"completed\", \"content\": \"供应商对比：已完成\"}], \"heading\": \"一、本周完成\"}, {\"items\": [{\"seq\": 2, \"source\": \"用户口述\", \"status\": \"planned\", \"timing\": \"下周（2026-11-16~2026-11-22）\", \"content\": \"补报价单\"}], \"heading\": \"二、下周计划\"}], \"attachments\": [], \"search_performed\": [{\"tool\": \"assistant.search\", \"query\": \"供应商对比 竞品供应商 报价单\", \"scope\": \"category_id=8b663757-7e13-40ae-9636-f910c98e2019\", \"result\": \"0 条命中\"}, {\"tool\": \"category.competitors.list\", \"result\": \"0 条\"}, {\"tool\": \"category.knowledge.list\", \"result\": \"0 条\"}, {\"tool\": \"category.parameters.list / platform.read\", \"result\": \"0 条可读对象\"}], \"attachment_status\": \"在当前可读范围（汽车充气泵品类）未检索到供应商对比记录或报价单原件，无附件\"}}, \"status\": \"completed\", \"summary\": \"已按用户指定的两条口径起草本周周报（2026-11-09~2026-11-15）：一、本周完成——供应商对比：已完成；二、下周计划——下周（2026-11-16~2026-11-22）补齐报价单。两条内容均按用户本人表述登记。已在当前可读范围（汽车充气泵品类 id=8b663757-7e13-40ae-9636-f910c98e2019）检索\\\"供应商对比/竞品供应商/报价单\\\"，并读取品类知识、竞品清单、品类参数与平台对象，均未找到可附于周报的对比记录、报价单原件或相关产品/提案对象；因此周报为无附件、无数字支撑的口述口径版本，供应商名单、对比维度、结论、报价单编号/金额/归属人均登记为未知项，需用户补齐后即可排成可发版本。\", \"questions\": [], \"unfinished\": [\"待补报价单（用户计划于 2026-11-16~2026-11-22 自行推进），本周未产出报价单内容，也未找到可参照的报价单原件\"]}",
+  "unfinished": [
+    "待补报价单（用户计划于 2026-11-16~2026-11-22 自行推进），本周未产出报价单内容，也未找到可参照的报价单原件"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "model:completed:7",
+    "platform.read:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

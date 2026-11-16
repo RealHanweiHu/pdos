@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "推荐无刷电机方案：单价高 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。 向电机厂确认无刷方案的最小起订量",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 69.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 112007,
+  "held_tokens": 0,
+  "answer": "按你本人 2026-11-15 的那次会话记录（run 20629f71 / session 0761c59e，目标“评估两种电机方案的成本和噪声”）：当时最终推荐的是无刷电机方案——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。那次明确未做完的一件事是：向电机厂确认无刷方案的最小起订量（MOQ）。核实边界：在当前“汽车充气泵”品类范围内，资料检索、证据检索、品类知识与平台对象均 0 命中，没有找到与该次评估对应的业务文件或立项提案，因此上述方案与数值目前只有你本人会话记录这一个来源，未能与业务数据交叉核对；MOQ 是否已在外部跟进中登记，本轮一次限定资料类型的复查被本轮查找预算拦下，未核到。本轮工作状态本身没有其他遗留项。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:18:04.742662+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类（汽车充气泵）范围内未检索到与该次电机评估对应的业务对象或文件（资料检索全类型 0 命中、证据检索 0 命中、品类知识与平台对象为空），推荐结论与数值目前仅以你本人会话记录为来源，未与业务数据交叉核对。\", \"有刷噪声超出量、单价比差与寿命倍数（5 dB / 4 元 / 3 倍）无业务数据佐证。\", \"最小起订量跟进是否已发出或已回复，本轮一次限定资料类型的检索被本轮查找预算拦截，未核。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"按你本人 2026-11-15 的那次会话记录（run 20629f71 / session 0761c59e，目标“评估两种电机方案的成本和噪声”）：当时最终推荐的是无刷电机方案——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。那次明确未做完的一件事是：向电机厂确认无刷方案的最小起订量（MOQ）。核实边界：在当前“汽车充气泵”品类范围内，资料检索、证据检索、品类知识与平台对象均 0 命中，没有找到与该次评估对应的业务文件或立项提案，因此上述方案与数值目前只有你本人会话记录这一个来源，未能与业务数据交叉核对；MOQ 是否已在外部跟进中登记，本轮一次限定资料类型的复查被本轮查找预算拦下，未核到。本轮工作状态本身没有其他遗留项。\", \"questions\": [], \"unfinished\": [\"向电机厂确认无刷电机方案的最小起订量（MOQ）——上次会话遗留，本轮未在业务记录中核到状态\", \"该次电机评估在当前品类范围内没有对应的业务文件或立项提案，推荐结论目前只有会话记录一个来源\"]}",
+  "unfinished": [
+    "向电机厂确认无刷电机方案的最小起订量（MOQ）——上次会话遗留，本轮未在业务记录中核到状态",
+    "该次电机评估在当前品类范围内没有对应的业务文件或立项提案，推荐结论目前只有会话记录一个来源"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

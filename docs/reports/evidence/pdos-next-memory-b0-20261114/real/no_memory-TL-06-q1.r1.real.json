@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 37.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 140301,
+  "held_tokens": 0,
+  "answer": "没找到那次对比记录：在当前可读范围内（品类“汽车充气泵”、本次会话历史、品类知识与竞品、参数、平台型号、证据库）都没有“三家气泵供应商比较”的任何条目或历史回答，因此无法给出“当时建议选哪家”的结论——我不会凭印象编一个答案。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:50:22.325717+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"没找到那次对比记录：在当前可读范围内（品类“汽车充气泵”、本次会话历史、品类知识与竞品、参数、平台型号、证据库）都没有“三家气泵供应商比较”的任何条目或历史回答，因此无法给出“当时建议选哪家”的结论——我不会凭印象编一个答案。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮在品类范围内的检索与历史读取全部为空，扩大范围或补充原始输入是恢复结论的两条可行路径。\", \"options\": [{\"label\": \"扩大到全公司范围再查一次\", \"value\": \"expand_search\"}, {\"label\": \"我提供三家供应商名单/原文件\", \"value\": \"provide_names\"}, {\"label\": \"直接按当前资料重新做一版对比\", \"value\": \"redo_comparison\"}], \"question\": \"要我把范围扩大到全公司资料再查一次（这次会消耗更多查找预算），还是你提供当时的三家供应商名单/相关文件，我基于现有品类资料重做一版同口径对比？\", \"depends_on\": [], \"recommended\": {\"value\": \"expand_search\", \"reason\": \"原结论若有留存，全范围检索最可能把它找回来；有名单时可退回到重做对比。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未在全公司范围（非仅品类）检索“气泵供应商比较”，本轮查找预算已用完，待下一轮放开后执行\", \"品类“汽车充气泵”当前竞品/知识/参数/产品记录均为空，若要重做对比需要先有候选供应商与评测口径\"]}",
+  "unfinished": [
+    "未在全公司范围（非仅品类）检索“气泵供应商比较”，本轮查找预算已用完，待下一轮放开后执行",
+    "品类“汽车充气泵”当前竞品/知识/参数/产品记录均为空，若要重做对比需要先有候选供应商与评测口径"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

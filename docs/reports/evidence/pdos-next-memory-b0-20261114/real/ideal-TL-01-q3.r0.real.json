@@ -1,0 +1,65 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r3"
+  ],
+  "injected_text": "不良前三项：气嘴漏气、外壳缩水、按键卡滞。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 76.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 144154,
+  "held_tokens": 0,
+  "answer": "按我本人以往同一问题的工作记录（as_of 2026-11-14，原问题“汇总上周试产的不良项”），当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。但这一条只是我的工作记录，不是当前业务事实——本轮在“汽车充气泵”品类范围内重新检索试产不良登记记录时没有取到可引用的证据：assistant.search 在该品类按“试产 不良 汇总 排名 前三项”“试产不良”检索返回 0 条，evidence.search 无匹配条目，platform.read 在品类与名称查询下均无型号/基线记录，品类知识库（用户声音/竞品等）计数为 0，且本轮检索预算已用尽，无法再换关键词复查。因此三项名称属于“沿用历史记录”，各项的件数、占比、发生批次与统计区间均无法核对。若需可引用的结论，请指明具体试产批次或试产汇总报表所在位置，我按其重新取数核对。",
+  "answer_blob": "{\"result\": {\"goal\": \"上周试产汇总出来的不良前三项是哪三项？\", \"answer\": {\"basis\": \"本人以往工作记录（memory episode / conversation.history，run_id bbffcd5f-e7d2-4e7c-bad7-81436afb293c，as_of 2026-11-14，原问题“汇总上周试产的不良项”，记录中的回答摘录为同一三项）。按事实政策，该记录是情景记录，不是业务事实，不能作为依据引用。\", \"items\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"], \"evidence_status\": \"from_personal_work_record_unverified\"}, \"coverage\": {\"search_hits\": 0, \"tool_failure\": \"assistant.search 后续调用返回 RATE_LIMITED（MODEL_BUDGET_EXCEEDED）；skill.load(quality_issue) 返回 FORBIDDEN_SCOPE（该技能在当前租户/范围未启用）；product.baseline.read 返回 MISSING_REQUIRED_EVIDENCE\", \"evidence_rows\": 0, \"search_executed\": true, \"citations_issued\": 0, \"read_tools_tried\": [\"assistant.search\", \"evidence.search\", \"platform.read\", \"category.read\", \"category.list\", \"category.knowledge.list\", \"conversation.history\", \"assistant.citations.read\", \"mcp.tools.list\", \"product.baseline.read\"]}, \"unknowns\": [\"当前范围内未检索到可引用的试产不良登记记录：assistant.search 在品类 789c35aa-2717-47be-9621-d0e847d12be8 内按“试产 不良 汇总 排名 前三项”“试产不良”检索返回 0 条，evidence.search（“试产”“试产 不良 漏气 缩水 卡滞”）返回 0 条。\", \"无法核对三项各自的件数、占比与发生批次。\", \"无法确认“上周”对应的实际试产批次与统计区间（现有唯一线索是 as_of 2026-11-14 的历史提问记录本身）。\", \"品类 platform.read（含名称查询）无型号/基线记录，product.baseline.read 因缺实际基线型号无法执行；品类知识库各 kind 计数为 0；无可用 MCP 连接器读取 ERP/MES 侧试产数据。\", \"本轮检索预算已用尽，无法再以其它关键词或来源类型复查。\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:22:50.827873+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_steps\": [\"用户指明具体试产批次或试产汇总报表（工件/位置）后，重新取得固定版本引用并按项核对件数与占比\", \"下一轮具备检索预算时，按“不良/缺陷/返修/试产批次”等口径复查 assistant.search 与 issue 类来源\"], \"citation_ids\": []}, \"status\": \"partial\", \"summary\": \"按我本人以往同一问题的工作记录（as_of 2026-11-14，原问题“汇总上周试产的不良项”），当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。但这一条只是我的工作记录，不是当前业务事实——本轮在“汽车充气泵”品类范围内重新检索试产不良登记记录时没有取到可引用的证据：assistant.search 在该品类按“试产 不良 汇总 排名 前三项”“试产不良”检索返回 0 条，evidence.search 无匹配条目，platform.read 在品类与名称查询下均无型号/基线记录，品类知识库（用户声音/竞品等）计数为 0，且本轮检索预算已用尽，无法再换关键词复查。因此三项名称属于“沿用历史记录”，各项的件数、占比、发生批次与统计区间均无法核对。若需可引用的结论，请指明具体试产批次或试产汇总报表所在位置，我按其重新取数核对。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前范围内检索不到试产不良登记记录，这三项只有我以往工作记录支持，缺件数、占比与批次证据。\", \"options\": [{\"label\": \"我提供具体试产批次/试产汇总报表的位置，你据此重新取数核对\", \"value\": \"specify_source\"}, {\"label\": \"下一轮换口径继续检索试产不良（issue/制造/试产记录类来源）\", \"value\": \"continue_search\"}, {\"label\": \"就以历史记录中的三项为准，明确标记为未核对记录\", \"value\": \"accept_as_record\"}], \"question\": \"要我把“气嘴漏气、外壳缩水、按键卡滞”当作待核对的候选继续推进，还是先由你指定可核对来源？\", \"depends_on\": [], \"recommended\": {\"value\": \"specify_source\", \"reason\": \"只有拿到具体批次或报表来源，才能给出可引用、含件数与占比的前三项结论\"}, \"allow_free_text\": true}], \"unfinished\": [\"试产不良前三项的可引用证据（件数/占比/批次/统计区间）尚未取得：品类范围内搜索与证据检索均为 0 条，检索预算已用尽。\", \"待用户提供具体试产批次或试产汇总报表来源，以便按固定版本取数核对。\"]}",
+  "unfinished": [
+    "试产不良前三项的可引用证据（件数/占比/批次/统计区间）尚未取得：品类范围内搜索与证据检索均为 0 条，检索预算已用尽。",
+    "待用户提供具体试产批次或试产汇总报表来源，以便按固定版本取数核对。"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "model:completed:8",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r3"
+    ],
+    "catalog": [
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "甲：包装选方案二（纸托加收缩膜），单件成本 1.8 元。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 32.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 68425,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15 会话）记录的结论是：包装选定方案二（纸托 + 收缩膜），单件成本 1.8 元/件。该结论取自上一轮会话原始记录（当轮无引用来源）；本轮在「汽车充气泵」品类范围内检索包装/成本相关资料与业务对象均无命中，未能交叉验证现行台账。未知项：成本是否含税运、量级档位与包装 BOM 明细。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:21:57.899556+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本轮在品类 9a6211ff-eaef-4e34-ae96-969f2e6852dd 范围内检索包装/成本资料返回 0 条，平台对象查询为空，未找到对应提案、选型决定或成本台账以复核 1.8 元/件\", \"1.8 元的成本口径未知（是否含税、是否含运费、对应量级/起订量）\", \"包装方案的材料 BOM 明细与单价明细未留存\", \"历史记录中未注明包装成本的计算基准（单件包装用量、单价来源）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-15 会话）记录的结论是：包装选定方案二（纸托 + 收缩膜），单件成本 1.8 元/件。该结论取自上一轮会话原始记录（当轮无引用来源）；本轮在「汽车充气泵」品类范围内检索包装/成本相关资料与业务对象均无命中，未能交叉验证现行台账。未知项：成本是否含税运、量级档位与包装 BOM 明细。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史记录中的 1.8 元/件 没有口径与台账支撑，重算可消除该不确定性\", \"options\": [{\"label\": \"要，帮我按明细重算并注明口径\", \"value\": \"recalc\"}, {\"label\": \"要，同时把选型与成本写回提案/成本台账留痕\", \"value\": \"recalc_and_record\"}, {\"label\": \"不用，先按历史结论继续\", \"value\": \"keep\"}], \"question\": \"是否需要我按成本明细重算单件包装成本（材料单价 × 用量），并写明是否含税/含运与量级档位？\", \"depends_on\": [], \"recommended\": {\"value\": \"recalc\", \"reason\": \"数字缺少口径与台账支撑，重算成本最低成本地让结论可用\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,64 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 30.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 69093,
+  "held_tokens": 0,
+  "answer": "上次那轮比价（2026-11-15，会话 run 54271094-f6ea-4261-b39c-a55b78529002，主题\"比较三家气泵供应商的报价和交期\"）当时的结论是：C 家被排除的原因是含税报价超出目标价 12%；同时建议选 B 家，因为交期比 A 家短 2 周。当时还留了两件未收尾的事：补 C 家的含税报价单、核对 B 家交期的单位。\n\n需要说明的是：这条口径来自当时会话的记录，而当前\"汽车充气泵\"品类内没有可读的供应商报价、目标价、竞品或提案数据（品类资料、竞品列表、平台对象、证据检索都返回空），所以\"超出目标价 12%\"这个数字我现在无法用现行台账复核，也不能当作已核实的当前事实。如果你手上有 C 家的报价单或目标价出处，给我指定一下，我可以按同一口径重新算一遍并确认排除理由是否成立。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:55:19.458289+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类内没有可读的供应商报价/目标价/竞品/提案业务对象，C 家被排除的原始依据无法用现行台账复核\", \"'C 家含税报价超出目标价 12%'的具体基数（报价额与目标价金额）未记录\", \"C 家排除是否只基于价格，还是同时涉及交期、认证、模具等其他因素，上次记录中未载明\", \"上次遗留事项：补 C 家的含税报价单、核对 B 家交期的单位，均未确认完成\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次那轮比价（2026-11-15，会话 run 54271094-f6ea-4261-b39c-a55b78529002，主题\\\"比较三家气泵供应商的报价和交期\\\"）当时的结论是：C 家被排除的原因是含税报价超出目标价 12%；同时建议选 B 家，因为交期比 A 家短 2 周。当时还留了两件未收尾的事：补 C 家的含税报价单、核对 B 家交期的单位。\\n\\n需要说明的是：这条口径来自当时会话的记录，而当前\\\"汽车充气泵\\\"品类内没有可读的供应商报价、目标价、竞品或提案数据（品类资料、竞品列表、平台对象、证据检索都返回空），所以\\\"超出目标价 12%\\\"这个数字我现在无法用现行台账复核，也不能当作已核实的当前事实。如果你手上有 C 家的报价单或目标价出处，给我指定一下，我可以按同一口径重新算一遍并确认排除理由是否成立。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类内没有可读的报价与目标价数据，无法复核“超出 12%”这一排除依据。\", \"options\": [{\"label\": \"我来提供报价单/目标价出处，按原口径复核\", \"value\": \"provide_source\"}, {\"label\": \"先按上次的记录结论用，不再复核\", \"value\": \"accept_history\"}, {\"label\": \"三家重新做一轮完整比价（含交期、认证、模具等维度）\", \"value\": \"redo_comparison\"}], \"question\": \"C 家的含税报价单和目标价，能否由你指定来源（报价单文件／目标价出处），我按同一口径重新核算并确认排除理由是否成立？\", \"depends_on\": [], \"recommended\": {\"value\": \"provide_source\", \"reason\": \"排除结论直接依赖报价与目标价两个数字，没有出处就无法确认是否仍然成立。\"}, \"allow_free_text\": true}], \"unfinished\": [\"用现行来源复核 C 家“含税报价超出目标价 12%”的排除依据（当前无业务数据支撑）\", \"上次遗留未完成：补 C 家的含税报价单\", \"上次遗留未完成：核对 B 家交期的单位\"]}",
+  "unfinished": [
+    "用现行来源复核 C 家“含税报价超出目标价 12%”的排除依据（当前无业务数据支撑）",
+    "上次遗留未完成：补 C 家的含税报价单",
+    "上次遗留未完成：核对 B 家交期的单位"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

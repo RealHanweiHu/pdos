@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r3"
+  ],
+  "injected_text": "不良前三项：气嘴漏气、外壳缩水、按键卡滞。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 42.9,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 106541,
+  "held_tokens": 0,
+  "answer": "你上次问过同一问题，当时的汇总结论是：不良前三项为「气嘴漏气、外壳缩水、按键卡滞」（本人历史工作记录，as_of 2026-11-15）。但要注意：这一轮我在当前品类（汽车充气泵）范围内检索试产/不良类业务来源时没有命中任何当前记录——企业检索、证据检索、平台与品类知识读取都返回为空，且本轮查找预算已用尽。因此这三项目前只能作为你本人过往工作记录中的结论给出，不能当作已与当前业务数据核对过的事实。若要我重新核对，请指定型号或试产批次，我可在同会话继续深入查。",
+  "answer_blob": "{\"result\": {\"recall\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15\", \"source\": \"本人历史工作记录（情景卡，非业务事实）\", \"verification\": \"not_reverified_in_this_run\", \"recorded_top3\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"]}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:02:12.980757+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类范围内未检索到与「上周试产不良」对应的现行记录（企业检索/证据检索/平台读取/品类知识均为空），三项名称未与当前业务数据核对\", \"历史记录的 as_of 为 2026-11-15，「上周」的起止日与对应试产批次未在记录中标明\", \"三项不良各自的件数、占比、发生工序与责任人均未取得记录来源\", \"本轮查找预算用尽，无法确认历史结论在最新试产数据中是否仍成立\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"你上次问过同一问题，当时的汇总结论是：不良前三项为「气嘴漏气、外壳缩水、按键卡滞」（本人历史工作记录，as_of 2026-11-15）。但要注意：这一轮我在当前品类（汽车充气泵）范围内检索试产/不良类业务来源时没有命中任何当前记录——企业检索、证据检索、平台与品类知识读取都返回为空，且本轮查找预算已用尽。因此这三项目前只能作为你本人过往工作记录中的结论给出，不能当作已与当前业务数据核对过的事实。若要我重新核对，请指定型号或试产批次，我可在同会话继续深入查。\", \"questions\": [{\"id\": \"q1\", \"why\": \"三项名称目前只有历史记录来源；按型号或批次定向检索更容易命中现行试产记录（企业检索按关键词未命中）。\", \"options\": [{\"label\": \"给出型号或试产批次定向重查\", \"value\": \"提供型号/试产批次，我定向检索并用当前数据重新核对前三项\"}, {\"label\": \"在当前品类内继续深入查\", \"value\": \"在当前品类内按试产/不良/品质问题继续深入检索\"}, {\"label\": \"先按历史记录结论使用\", \"value\": \"先按历史记录使用气嘴漏气、外壳缩水、按键卡滞这三项\"}], \"question\": \"接下来怎么核对这三项？\", \"depends_on\": [], \"recommended\": {\"value\": \"提供型号/试产批次，我定向检索并用当前数据重新核对前三项\", \"reason\": \"唯一能在当前数据上给出可核依据的路径，且本轮检索已证明泛关键词在当前范围不命中\"}, \"allow_free_text\": true}], \"unfinished\": [\"未能在当前品类范围定位「上周试产不良汇总」的现行业务记录（检索/证据/平台/知识读取均为空，查找预算已用尽）\", \"三项不良（气嘴漏气、外壳缩水、按键卡滞）尚未与当前试产数据重新核对，件数与占比未知\"]}",
+  "unfinished": [
+    "未能在当前品类范围定位「上周试产不良汇总」的现行业务记录（检索/证据/平台/知识读取均为空，查找预算已用尽）",
+    "三项不良（气嘴漏气、外壳缩水、按键卡滞）尚未与当前试产数据重新核对，件数与占比未知"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r3"
+    ],
+    "catalog": [
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

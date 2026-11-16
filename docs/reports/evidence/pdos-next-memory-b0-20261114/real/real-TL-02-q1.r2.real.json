@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51890,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15，会话 6caea532…，目标“比较三家气泵供应商的报价和交期”）的结论是：建议选 B 家，即三家里排第二的那家。需要说明的是，这条记录本身是情景记录，不是当前业务事实——该轮记录没有挂任何来源（sources/receipts 均为空），我在当前品类范围（汽车充气泵）重新检索也没找到这次报价/交期对比的业务记录（assistant.search 0 条、platform.read 0 条），所以 B 家的具体名称、报价与交期数字都无法当场核实。如需给客户的正式报告，我会按你一贯口径用英文出稿。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"B 家对应的供应商名称未在历史记录中出现\", \"该次对比的报价与交期数字未在历史记录中留存\", \"当前品类范围（汽车充气泵，category 19486532-83f0-427f-befc-21185b3b5a1b）未检索到该次供应商对比的业务记录：assistant.search 0 条、platform.read 0 条\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:05:02.935963+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"scope_checked\": [\"assistant.search(source_types=supply,artifact,knowledge,issue,project_status)\", \"conversation.history(session_id=6caea532-599c-48ba-bcf3-5abc1f823b43)\", \"memory.search(kinds=episode,note,scope_note)\", \"platform.read(category_id=19486532-83f0-427f-befc-21185b3b5a1b)\"], \"previous_conclusion\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-15\", \"basis\": \"本人上一轮会话的历史记录（情景记录，非当前业务事实）\", \"run_id\": \"e8532a2e-dee8-44de-9008-bfad999fa97e\", \"session_id\": \"6caea532-599c-48ba-bcf3-5abc1f823b43\", \"recommendation\": \"B 家（第二家气泵供应商）\", \"attached_sources\": 0}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-15，会话 6caea532…，目标“比较三家气泵供应商的报价和交期”）的结论是：建议选 B 家，即三家里排第二的那家。需要说明的是，这条记录本身是情景记录，不是当前业务事实——该轮记录没有挂任何来源（sources/receipts 均为空），我在当前品类范围（汽车充气泵）重新检索也没找到这次报价/交期对比的业务记录（assistant.search 0 条、platform.read 0 条），所以 B 家的具体名称、报价与交期数字都无法当场核实。如需给客户的正式报告，我会按你一贯口径用英文出稿。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史记录只留下了“建议选 B 家”，没有来源也没有数字，当前品类范围内也检索不到对应的业务记录。\", \"options\": [{\"label\": \"要，重新做当前对比（含报价、交期、口径说明）\", \"value\": \"redo_now\"}, {\"label\": \"先只找回上次的原始记录/附件，核对 B 家是谁\", \"value\": \"recover_source\"}, {\"label\": \"暂时不用，先按“选 B 家”往下走\", \"value\": \"keep_conclusion\"}], \"question\": \"要不要我在当前范围里重新做一次「三家气泵供应商」的报价/交期对比，把 B 家的实际名称和当前数字核实出来？\", \"depends_on\": [], \"recommended\": {\"value\": \"recover_source\", \"reason\": \"先确认 B 家具体是哪家、当时依据什么，再决定是否需要重做对比，改动最小。\"}, \"allow_free_text\": true}], \"unfinished\": [\"B 家的供应商名称、以及当时的报价与交期数字仍未核实（历史记录无来源，当前范围无业务记录）。\"]}",
+  "unfinished": [
+    "B 家的供应商名称、以及当时的报价与交期数字仍未核实（历史记录无来源，当前范围无业务记录）。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

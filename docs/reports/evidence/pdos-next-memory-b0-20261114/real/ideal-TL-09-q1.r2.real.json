@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "额定压力按 120 PSI 考虑，气缸内径估为 22 mm。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 41.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 85950,
+  "held_tokens": 0,
+  "answer": "额定压力尚未确定。品类参数字典中有「额定压力」条目(rated_pressure, v1, 单位PSI, 方向higher)，无数值登记，登记备注为「额定压力尚未确定，待样机测试后再定」；品类内文档检索与证据检索均无命中，平台目录在该品类下无已登记产品定义。2026-11-15 讨论中按120 PSI假设推算气缸尺寸属历史讨论记录，非已登记公司定义。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:23:36.415169+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"额定压力的具体数值未登记(条目 rated_pressure v1 无 value,备注注明待样机测试后确定)\", \"样机实测数据是否存在及是否已导入,本次检索未找到相关证据行\", \"额定压力的登记责任人/拍板人未在可读范围内确认\", \"本轮查找预算用尽,公司级全文二次检索未执行,可能存在本品类外或未索引的相关文档\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"额定压力尚未确定。品类参数字典中有「额定压力」条目(rated_pressure, v1, 单位PSI, 方向higher)，无数值登记，登记备注为「额定压力尚未确定，待样机测试后再定」；品类内文档检索与证据检索均无命中，平台目录在该品类下无已登记产品定义。2026-11-15 讨论中按120 PSI假设推算气缸尺寸属历史讨论记录，非已登记公司定义。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前条目为正式登记的待定状态，需要新证据才能写入数值；候选值与依据可以先备好，但数值须由负责人本人确认。\", \"options\": [{\"label\": \"是，整理候选值与实测依据清单\", \"value\": \"prepare_candidate\"}, {\"label\": \"先等样机测试结果，再回来定\", \"value\": \"wait_test\"}, {\"label\": \"暂不推进，只要现状结论\", \"value\": \"none\"}], \"question\": \"是否要我把额定压力推进到「待确认候选」状态——整理样机测试所需项、候选值区间及依据清单，供你或工程负责人拍板？\", \"depends_on\": [], \"recommended\": {\"value\": \"prepare_candidate\", \"reason\": \"条目已是待定登记状态，先备好候选与依据能缩短拿到测试结果后的决策时间，且不代替本人登记数值。\"}, \"allow_free_text\": true}], \"unfinished\": [\"公司级全文二次检索因本轮查找预算用尽未完成，尚未覆盖本品类以外或未索引的相关文档\"]}",
+  "unfinished": [
+    "公司级全文二次检索因本轮查找预算用尽未完成，尚未覆盖本品类以外或未索引的相关文档"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

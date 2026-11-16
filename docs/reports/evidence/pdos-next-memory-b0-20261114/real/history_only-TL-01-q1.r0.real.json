@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 92.0,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 143207,
+  "held_tokens": 0,
+  "answer": "上次是 2026-11-15 的一次运行（会话 25cc4608-bb7b-4430-a0f0-621ec92c8455，目标\"比较三家气泵供应商的报价和交期\"，状态 completed）。当时结论：建议选 B 家——交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。当时留下两件未完成事项：①补 C 家的含税报价单；②核对 B 家交期的单位。两点必须说明：其一，该次回答没有留下任何引用来源（sources、research 均为空），上述结论目前只是那次对话里的记录，不是可核的当前业务事实；其二，本轮重新核查了品类与全库可见范围——汽车充气泵品类下竞品0、参数0、知识条目0，全库可见产品/变体/项目0，企业检索与证据检索均无命中，且已授权外部只读连接器为0。因此这两项缺口在当前可读范围内无法自行补齐，需要原始报价单/交期条款文件或开通相应数据源。另外，目标价口径（币种、含税、配置、渠道）没有任何在读基线，而\"C 家超 12%\"的判断完全依赖它。下面三个问题决定我接下来怎么做。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"接着上次的供应商对比往下做：上次的结论是什么，还有哪些事没做完？\", \"session_id\": \"a0379dde-814e-4970-a78f-0663353ac3c5\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"69ed1dfe-f264-4285-8c94-a10ecb3891e7\", \"execution_ref\": {\"call_id\": \"84103f3b-e565-4a33-8536-f6e580b0ba5a\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-15T12:56:24.932631+00:00\", \"scope\": {\"id\": \"0002e5f5-d513-427f-a64b-0370505aa5aa\", \"kind\": \"category\", \"title\": \"汽车充气泵\"}, \"pinned\": false, \"run_id\": \"8783518e-b32a-44f4-9c70-5c609ed3963c\", \"skills\": [], \"status\": \"completed\", \"receipts\": [], \"session_id\": \"25cc4608-bb7b-4430-a0f0-621ec92c8455\", \"corrections\": [], \"same_session\": false, \"candidate_count\": 0}], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 1, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"eval-history-only/v0;own-words+answer-summary\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"ba7df550-bc6d-4888-bb0b-56c149ef6acf\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T12:56:37.770807+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"0002e5f5-d513-427f-a64b-0370505aa5aa\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"供应\", \"供应商\", \"品\", \"对比\", \"竞\", \"结论\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"55fe4aa2-bfff-4970-807e-92b25b61fea7\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [{\"goal\": \"比较三家气泵供应商的报价和交期\", \"run_id\": \"8783518e-b32a-44f4-9c70-5c609ed3963c\", \"status\": \"completed\", \"sources\": [], \"outcome_state\": \"current\", \"original_record\": {\"run_id\": \"8783518e-b32a-44f4-9c70-5c609ed3963c\", \"session_id\": \"25cc4608-bb7b-4430-a0f0-621ec92c8455\"}, \"historical_outcome\": {\"notes\": [], \"summary\": \"建议选 B 家：交期比 A 家短 2 周。C 家含税报价超出目标价 12%，已排除。\", \"research\": [], \"truncated\": false, \"unfinished\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"]}}], \"status\": \"completed\", \"session_id\": \"25cc4608-bb7b-4430-a0f0-621ec92c8455\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。其他会话的回答只是当时的记录，其中的引用不能直接沿用。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"e7584149-82e3-479f-b511-d31a122c5f84\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:56:42.897519+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"9e94fd31-8ca8-4a5a-b1b4-925eb6f56fd0\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:56:43.084006+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"006680dd-a162-434c-ac2a-4e63b24e2d61\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"cf761376-1c5a-40d9-a486-e56dc6825086\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4faeeedf-a0c6-48c0-a220-cb7e4a2823ad\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"0002e5f5-d513-427f-a64b-0370505aa5aa\", \"key\": \"category-7cced48d31bc455a9b9e461962d18c1b\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"53065c4c-1506-4035-82d9-ce1c63fa8dd0\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"53065c4c-1506-4035-82d9-ce1c63fa8dd0\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"97df752e-d9ed-44f9-9eec-28c185566c51\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"596180ec-6bcd-43dc-9142-235f1d653468\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"mcp.tools.list\", \"taint\": \"trusted\", \"value\": {\"taint\": \"admitted_metadata\", \"tools\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"f208318b-a3f6-49cc-93ac-b277742040ae\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"上次是 2026-11-15 的一次运行（会话 25cc4608-bb7b-4430-a0f0-621ec92c8455，目标\\\"比较三家气泵供应商的报价和交期\\\"，状态 completed）。当时结论：建议选 B 家——交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。当时留下两件未完成事项：①补 C 家的含税报价单；②核对 B 家交期的单位。两点必须说明：其一，该次回答没有留下任何引用来源（sources、research 均为空），上述结论目前只是那次对话里的记录，不是可核的当前业务事实；其二，本轮重新核查了品类与全库可见范围——汽车充气泵品类下竞品0、参数0、知识条目0，全库可见产品/变体/项目0，企业检索与证据检索均无命中，且已授权外部只读连接器为0。因此这两项缺口在当前可读范围内无法自行补齐，需要原始报价单/交期条款文件或开通相应数据源。另外，目标价口径（币种、含税、配置、渠道）没有任何在读基线，而\\\"C 家超 12%\\\"的判断完全依赖它。下面三个问题决定我接下来怎么做。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

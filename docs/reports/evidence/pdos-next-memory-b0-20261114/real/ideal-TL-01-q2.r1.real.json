@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "建议选 B 家：交期比 A 家短 2 周。C 家含税报价超出目标价 12%，已排除。 补 C 家的含税报价单 核对 B 家交期的单位",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 35.5,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 49495,
+  "held_tokens": 0,
+  "answer": "上次的排除理由只有一条：C 家含税报价超出目标价 12%，因此被排除；最终建议是选 B 家（交期比 A 家短 2 周）。但要说明的是，这个结论来自我本人 2026-11-15 那次会话的历史回答记录，而不是本次在当前品类范围内检索到的公司原始记录——我刚才在“汽车充气泵”品类里检索供应商比较/报价资料返回 0 条，没有拿到可引用的比较表或 C 家报价单。更要紧的是，当时那条排除理由本身留了个尾巴：C 家的含税报价单当时就还没补齐，所以“超出 12%”缺原始单据支撑。另外 B 家交期的单位当时也还没核对。",
+  "answer_blob": "{\"result\": {\"answer\": {\"evidence_status\": \"历史工作记录（as_of 2026-11-15，run 1d8d049c-0614-454c-a017-a73ef915b96d），非业务事实，本次未复核\", \"carried_over_unfinished\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"], \"reason_excluding_supplier_C\": \"C 家含税报价超出目标价 12%，据此被排除\", \"recommended_supplier_last_time\": \"B 家（理由：交期比 A 家短 2 周）\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:42:14.186405+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本次在公司可读范围（汽车充气泵品类 67950ed7）内检索“供应商比较/报价/排除原因”返回 0 条结果，未能取得可引用的原始比较记录或 C 家含税报价单，因此无法用公司资料复核该结论\", \"C 家含税报价单在上次比较时即列为未完成事项，“超出目标价 12%”所依据的原始单据尚未补齐\", \"B 家交期“短 2 周”所依据的交期单位当时也未核对\", \"若存在未纳入当前品类范围的供应商档案或其他品类/项目下的同类比较记录，本次未检索到（第二轮检索已触发本轮查找预算上限）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次的排除理由只有一条：C 家含税报价超出目标价 12%，因此被排除；最终建议是选 B 家（交期比 A 家短 2 周）。但要说明的是，这个结论来自我本人 2026-11-15 那次会话的历史回答记录，而不是本次在当前品类范围内检索到的公司原始记录——我刚才在“汽车充气泵”品类里检索供应商比较/报价资料返回 0 条，没有拿到可引用的比较表或 C 家报价单。更要紧的是，当时那条排除理由本身留了个尾巴：C 家的含税报价单当时就还没补齐，所以“超出 12%”缺原始单据支撑。另外 B 家交期的单位当时也还没核对。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类范围检索 0 条，仅有历史回答记录可依据；找到原始单据才能把“超出 12%”从我的旧回答升级为可核查结论。\", \"options\": [{\"label\": \"要，扩大范围再查（同一会话内深入查）\", \"value\": \"search_wider\"}, {\"label\": \"先按上次的历史结论用，不复查\", \"value\": \"accept_history\"}], \"question\": \"要不要我把这次供应商比较的原始记录（比较表、C 家报价单）在更宽的范围里再查一遍，做一次可引用的复核？\", \"depends_on\": [], \"recommended\": {\"value\": \"search_wider\", \"reason\": \"12% 的排除依据缺原始报价单支撑，且上次遗留的正是这一项；复查成本低、直接影响供应商选型结论。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"排除理由直接建立在该报价单上；单据缺失时，“已排除”这一决定本身的可信度也未定。\", \"options\": [{\"label\": \"要：登记为待办，并在补齐报价单后重新判定排除是否成立\", \"value\": \"track_and_rejudge\"}, {\"label\": \"只要补齐报价单，暂不重判\", \"value\": \"track_only\"}, {\"label\": \"暂不跟进\", \"value\": \"no_action\"}], \"question\": \"C 家含税报价单至今未补齐，这次要把它作为待办（谁去补、补齐后是否重判“排除”成立）跟进吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"track_and_rejudge\", \"reason\": \"只有单据到位才能确认排除决定是否成立，否则排除理由始终停留在无单据支撑的口头结论上。\"}, \"allow_free_text\": true}], \"unfinished\": [\"在更宽范围检索供应商比较原始记录与 C 家含税报价单（当前品类范围 0 条，需扩展检索范围）\", \"补 C 家含税报价单（上次遗留，未完成）\", \"核对 B 家交期的单位（上次遗留，未完成）\"]}",
+  "unfinished": [
+    "在更宽范围检索供应商比较原始记录与 C 家含税报价单（当前品类范围 0 条，需扩展检索范围）",
+    "补 C 家含税报价单（上次遗留，未完成）",
+    "核对 B 家交期的单位（上次遗留，未完成）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

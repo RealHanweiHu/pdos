@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 25.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51589,
+  "held_tokens": 0,
+  "answer": "已按文字形式出本周周报，仅两条：本周完成供应商对比；下周补报价单。说明：当前品类（汽车充气泵）可读资料中未检索到供应商对比与报价单记录，两条均按你的陈述写入，未附公司引用。",
+  "answer_blob": "{\"result\": {\"result\": [{\"type\": \"done_this_week\", \"topic\": \"供应商对比\", \"statement\": \"本周完成供应商对比。\", \"citation_ids\": [], \"evidence_note\": \"公司资料检索范围内无对应记录，本条依据本人陈述\", \"evidence_source\": \"human\"}, {\"type\": \"planned_next_week\", \"topic\": \"报价单\", \"statement\": \"下周补报价单。\", \"citation_ids\": [], \"evidence_note\": \"公司资料检索范围内无对应记录，本条依据本人陈述\", \"evidence_source\": \"human\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:49:44.465996+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类（汽车充气泵）可读资料中未检索到供应商对比或报价单相关记录，两条内容均依据本人陈述\", \"供应商对比的具体对象、结论要点与完成时间未在检索范围内出现\", \"报价单的供应商范围与出具时间未在检索范围内出现\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"已按文字形式出本周周报，仅两条：本周完成供应商对比；下周补报价单。说明：当前品类（汽车充气泵）可读资料中未检索到供应商对比与报价单记录，两条均按你的陈述写入，未附公司引用。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本次在“汽车充气泵”品类的可读资料中检索不到供应商对比记录，该条目前只能按你的陈述写，无法附公司依据。\", \"options\": [{\"label\": \"就这样，不补充\", \"value\": \"keep_as_is\"}, {\"label\": \"我把对比对象和结论发给你，你帮我写进周报\", \"value\": \"user_supplies\"}, {\"label\": \"你再往其他来源（供应记录、项目状态、历史材料）找一遍\", \"value\": \"search_more\"}], \"question\": \"供应商对比这一条，是否需要在周报里补上对比对象或结论要点？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_as_is\", \"reason\": \"本周报只要求两条文字内容，已按此交付。\"}, \"allow_free_text\": true}], \"unfinished\": [\"“本周完成供应商对比”一条目前仅有本人陈述作依据，公司记录未在检索范围内出现；若需引用依据，需你提供原件或另行扩大检索范围。\"]}",
+  "unfinished": [
+    "“本周完成供应商对比”一条目前仅有本人陈述作依据，公司记录未在检索范围内出现；若需引用依据，需你提供原件或另行扩大检索范围。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

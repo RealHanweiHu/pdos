@@ -1,0 +1,65 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "建议选 B 家：交期比 A 家短 2 周。C 家含税报价超出目标价 12%，已排除。 补 C 家的含税报价单 核对 B 家交期的单位",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 103.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 139020,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:00:29.742090+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家含税报价单原件在可读范围内未找到，无法复核“超出目标价 12%”\", \"目标价（比较基准）的定义与价格口径未在可读资料中找到\", \"A/B/C 三家报价与交期的原始记录在当前品类可读范围内未找到（检索 0 命中）\", \"B 家交期单位（周/天）当时未核对，本次仍无法确认\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q_reverify_c\", \"why\": \"排除理由目前唯一来源是未附引用的历史记录，且原始报价单当时未归档，缺这两样材料无法把它变成可引用的业务依据。\", \"options\": [{\"label\": \"现在复核，我把 C 家含税报价单和目标价定义给你\", \"value\": \"now_with_docs\"}, {\"label\": \"由采购/供应链出报价单后再复核\", \"value\": \"after_supply\"}, {\"label\": \"先只按历史记录说明，不复核\", \"value\": \"record_only\"}], \"question\": \"是否要现在复核 C 家“超出目标价 12%”这个结论？若要，请提供 C 家的含税报价单（含税价、币种、日期、配置、是否含运）与目标价的定义及口径。\", \"depends_on\": [], \"recommended\": {\"value\": \"now_with_docs\", \"reason\": \"补齐报价单与目标价口径后可直接重算并留存可引用记录\"}, \"allow_free_text\": true}], \"unfinished\": [\"复核“C 家含税报价超出目标价 12%”的排除依据（需 C 家含税报价单与目标价定义/口径）\", \"核对 B 家交期单位（周/天），确认“比 A 家短 2 周”是否成立\", \"当前品类（汽车充气泵）可读业务对象为空，需确认是尚未登记还是当前权限不可读\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "复核“C 家含税报价超出目标价 12%”的排除依据（需 C 家含税报价单与目标价定义/口径）",
+    "核对 B 家交期单位（周/天），确认“比 A 家短 2 周”是否成立",
+    "当前品类（汽车充气泵）可读业务对象为空，需确认是尚未登记还是当前权限不可读",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

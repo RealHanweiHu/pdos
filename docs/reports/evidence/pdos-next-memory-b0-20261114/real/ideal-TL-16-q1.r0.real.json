@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 41.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 68791,
+  "held_tokens": 0,
+  "answer": "已按你的口径（供应商邮件带项目编号 PX-305）起草一封简短的气泵样件交期催办邮件，并标注了需你确认的占位字段。在当前品类（汽车充气泵）的可读资料里检索过供应/外部等待/送样类记录，未找到供应商联系人、原定交期或样件状态，因此这些内容以占位符留出，未替你编造；邮件只做草稿，未发送也未登记任何业务对象。",
+  "answer_blob": "{\"result\": {\"tone\": \"简短、请求确认交期,不预设延期理由\", \"email\": {\"body\": \"XXX 您好,\\n\\n关于我方项目编号 PX-305 的气泵样件,想跟您确认一下最新交期。原定送样时间为【原定交期】,目前状态为【已备料/待排产/部分备料】,烦请确认以下三点:\\n\\n1. 可发运日期(精确到日)与预计到货日期;\\n2. 若交期有变,制约因素是什么,能否分批发运;\\n3. 样件规格/版本是否已按我方【规格/版本要求】准备。\\n\\n请于【回复期限】前回复,我方据此同步排产与验证计划。\\n\\n谢谢!\\n【姓名】|【公司】|【电话/邮箱】\", \"subject\": \"PX-305 气泵样件交期确认\", \"language\": \"zh\", \"placeholders\": [\"供应商名称与收件人\", \"原定交期\", \"样件当前状态\", \"样件规格/版本要求\", \"回复期限\", \"我的姓名与联系方式\"]}, \"unknowns\": [\"供应商名称与联系人邮箱未在当前范围检索到\", \"原定交期、当前样件备料/排产状态未检索到\", \"样件规格版本与数量未检索到\", \"你希望给出的回复期限与语气强度未确认\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:29:42.086427+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"你补齐占位内容并确认后,邮件即可直接发出;如需要,我可以在同一会话放宽范围继续检索供应商联系人与送样台账。\", \"actions_taken\": [\"仅生成邮件草稿文本:未发送邮件,未登记送样/外部等待/任务等任何业务对象\"], \"search_coverage\": {\"note\": \"当前品类可读资料中未检索到该气泵供应商的送样/交期记录\", \"scope\": \"当前品类(汽车充气泵),来源类型覆盖 supply/external_wait/verification_handoff/test_run/artifact/issue\", \"evidence_hits\": 0, \"enterprise_search_hits\": 0}, \"constraints_applied\": [\"给供应商的邮件一律带上项目编号 PX-305(来自你确认过的个人口径)\"]}, \"status\": \"completed\", \"summary\": \"已按你的口径（供应商邮件带项目编号 PX-305）起草一封简短的气泵样件交期催办邮件，并标注了需你确认的占位字段。在当前品类（汽车充气泵）的可读资料里检索过供应/外部等待/送样类记录，未找到供应商联系人、原定交期或样件状态，因此这些内容以占位符留出，未替你编造；邮件只做草稿，未发送也未登记任何业务对象。\", \"questions\": [{\"id\": \"q_supplier_recipient\", \"why\": \"收件人/供应商名称与邮箱没有任何可核依据,只能靠你提供或让我再查。\", \"options\": [{\"label\": \"我直接告诉你供应商名称和收件人\", \"value\": \"user_supplies\"}, {\"label\": \"先用占位符,我自己填\", \"value\": \"placeholder\"}, {\"label\": \"帮我在同一会话放宽范围再查一次供应商/送样记录\", \"value\": \"search_more\"}], \"question\": \"这封邮件发给哪一家气泵供应商、收件人是谁?当前范围里没查到可读的供应商联系人记录。\", \"depends_on\": [], \"recommended\": {\"value\": \"user_supplies\", \"reason\": \"供应商联系人属于你掌握的商务信息,公司资料范围内未检索到。\"}, \"allow_free_text\": true}, {\"id\": \"q_due_date_status\", \"why\": \"这两项决定邮件里写\\\"原定送样时间\\\"和催办理由,写错会让催办显得没有依据。\", \"options\": [{\"label\": \"我现在还不知道,先留空,只问交期\", \"value\": \"unknown_leave_blank\"}, {\"label\": \"我告诉你原定交期和当前状态\", \"value\": \"user_supplies\"}, {\"label\": \"帮我再查一次送样/外部等待台账\", \"value\": \"search_more\"}], \"question\": \"原定交期和样件当前状态(已备料/待排产/部分备料)是什么?有没有已知的延期原因?\", \"depends_on\": [], \"recommended\": {\"value\": \"user_supplies\", \"reason\": \"实际交期与备料状态只能来自真实记录,检索未命中。\"}, \"allow_free_text\": true}, {\"id\": \"q_tone_deadline\", \"why\": \"催办力度与回复期限是本邮件唯一的两个主观选择,不同选择会明显改变措辞。\", \"options\": [{\"label\": \"温和提醒,要求本周内回复\", \"value\": \"polite_this_week\"}, {\"label\": \"语气偏硬,要求给出确定日期和分批方案\", \"value\": \"firm_ask_date\"}, {\"label\": \"按你判断写,不必固定\", \"value\": \"agent_judgement\"}], \"question\": \"邮件的语气强度和你希望的回复期限怎么定?\", \"depends_on\": [], \"recommended\": {\"value\": \"polite_this_week\", \"reason\": \"在没有交期事实的前提下,先用请求确认的写法最不容易引发对抗。\"}, \"allow_free_text\": true}], \"unfinished\": [\"邮件中的供应商名称/收件人、原定交期、样件状态、规格版本、回复期限、发件人信息仍为占位符,需你补齐后才能发送\", \"如需要,可在同一会话放宽检索范围,继续找该气泵供应商的送样/外部等待记录与联系人\"]}",
+  "unfinished": [
+    "邮件中的供应商名称/收件人、原定交期、样件状态、规格版本、回复期限、发件人信息仍为占位符,需你补齐后才能发送",
+    "如需要,可在同一会话放宽检索范围,继续找该气泵供应商的送样/外部等待记录与联系人"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "evidence.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

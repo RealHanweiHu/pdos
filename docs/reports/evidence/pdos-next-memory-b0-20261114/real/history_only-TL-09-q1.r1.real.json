@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 69.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 231878,
+  "held_tokens": 0,
+  "answer": "额定压力尚未确定：品类参数字典中已建 rated_pressure（额定压力，PSI，单位已定），但参数行无登记数值，备注为「额定压力尚未确定，待样机测试后再定」。品类范围内文档检索 0 条、platform.read 未返回可读型号记录，故未读到型号基线定义；证据检索无相关行，竞品与知识库条目为空。仅读到一条历史会话情景卡（曾以 120 PSI 作设想讨论气缸尺寸），属当时设想、非已登记事实，不作为定值依据。本轮只读，未写入、未审批。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T10:59:49.472759+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"34718f8e-f6ca-48ed-b657-a408c122c784\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"充气\", \"充气泵\", \"压力\", \"定义\", \"最大\", \"气泵\", \"规格\", \"额定\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"2a3e9dd2-22e2-4e2d-8e9a-53c7381c4d45\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"76ac97d3-362a-4a06-b2c7-11d2363759aa\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"a65b0f79-fe58-4012-abd4-c528524d33cf\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T10:59:53.424259+00:00\", \"items\": [{\"id\": \"d24f6152-d3d2-4bda-9e57-26adf6509a60\", \"key\": \"rated_pressure\", \"name\": \"额定压力\", \"unit\": \"PSI\", \"method\": null, \"origin\": \"human\", \"run_id\": null, \"version\": 1, \"direction\": \"higher\", \"tenant_id\": \"5fee60ad-153f-47ac-a5f5-2118f720feeb\", \"writer_id\": \"ffa5c8ba-5c0f-4461-9130-404c5f464d47\", \"created_at\": \"2026-11-15T10:59:41.824920+00:00\", \"receipt_id\": \"9cf3f0ce-2cf3-44b1-a2e3-4c2ba6f11771\", \"value_type\": \"number\", \"category_id\": \"34718f8e-f6ca-48ed-b657-a408c122c784\", \"change_note\": \"额定压力尚未确定，待样机测试后再定\", \"enum_values\": null, \"confirmed_by\": null, \"parameter_id\": \"953566b4-5b38-4708-af6e-27406802676b\", \"replaces_version\": null, \"standard_condition\": null, \"acceptance_criterion\": null, \"prepared_candidate_id\": null}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"dff0dc23-76aa-4f4e-a5ce-29624e6b1d95\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"4370f0c9-9cd0-4878-861d-a7834b925a69\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"34718f8e-f6ca-48ed-b657-a408c122c784\", \"key\": \"category-49d90834631b4ef7b7cbddd83aff6ae7\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"ffa5c8ba-5c0f-4461-9130-404c5f464d47\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"ffa5c8ba-5c0f-4461-9130-404c5f464d47\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"a15e9ba5-61f9-498a-afa4-9b90c7f5eaa5\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 1, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"96458152-0cc4-41cc-88ad-2be9b3e49002\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"b6283cbe-0f32-4589-b910-b6c5600ce710\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"a2ce3d4e-f896-4e4c-b544-8d1f481042eb\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"a6e52ac5-7e39-4909-a9a0-d25b0b873062\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T11:00:20.511658+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"eba0d787-fd09-48c4-a4b5-d23168f1414b\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"3e363d28-8c68-40f4-b422-690cf1690431\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.citations.read\", \"taint\": \"external\", \"value\": {\"items\": [], \"has_more\": false, \"returned\": 0, \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"b47ef058-619f-4d50-87df-076f55242179\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"c300174f-46e7-4d89-8608-450853a985d7\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"goal\": \"额定压力可以考虑 120 PSI，你先按这个想法估一下气缸尺寸\", \"as_of\": \"2026-11-15T10:59:42.029685+00:00\", \"scope\": {\"id\": \"34718f8e-f6ca-48ed-b657-a408c122c784\", \"kind\": \"category\", \"title\": \"汽车充气泵\"}, \"pinned\": false, \"run_id\": \"8eacb2bd-2acf-45ce-a344-f2095350bd24\", \"skills\": [], \"status\": \"completed\", \"receipts\": [], \"session_id\": \"0bfee373-8608-410e-8033-4c1b7badefba\", \"corrections\": [], \"same_session\": false, \"candidate_count\": 0}], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 1, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"eval-history-only/v0;own-words+answer-summary\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"6aff9d92-6685-4af7-b5e5-c0c16516919d\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我们这款充气泵的额定压力定了吗？定的是多少？\", \"session_id\": \"fb701da5-4826-4f0b-9c84-93aff88bd4e7\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"4e87121c-dfa7-422a-ab2a-d98172b40ae8\", \"execution_ref\": {\"call_id\": \"d0f3e9bb-f8ed-4781-9c1f-fc559e5195e0\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"额定压力尚未确定：品类参数字典中已建 rated_pressure（额定压力，PSI，单位已定），但参数行无登记数值，备注为「额定压力尚未确定，待样机测试后再定」。品类范围内文档检索 0 条、platform.read 未返回可读型号记录，故未读到型号基线定义；证据检索无相关行，竞品与知识库条目为空。仅读到一条历史会话情景卡（曾以 120 PSI 作设想讨论气缸尺寸），属当时设想、非已登记事实，不作为定值依据。本轮只读，未写入、未审批。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:3",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:6",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

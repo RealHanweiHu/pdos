@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 63.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 202620,
+  "held_tokens": 0,
+  "answer": "在「汽车充气泵」品类查到：参数字典中已建立「额定压力」(rated_pressure, PSI, v1)，但变更说明原文为\"额定压力尚未确定，待样机测试后再定\"，未填值；品类显示有 1 个型号，但平台产品/基线记录在当前范围读取为空，型号规格中是否另有压力值无法核实（属未知）。历史会话（as_of 2026-11-15）曾按 120 PSI 作工作假设并估气缸内径 22 mm，但那是当时的情景估算，未落到参数或型号定义，不能作为已定规格。因此：参数项已定，额定压力数值尚未确定。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:22:20.002714+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"型号层规格定义中的额定压力数值：当前范围内 platform.read / 证据检索均返回空，品类显示 1 个型号但读不到其定义与基线，无法确认是否另有登记\", \"样机测试是否已产出可支撑额定压力取值的实测结果（本次未查到测试记录）\", \"120 PSI 这一历史工作假设是否仍作为候选值保留，以及是否已有其他候选值\", \"测试/样件批次与制造侧文件在当前可读范围为空，额定压力的最终定值时点未知\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"在「汽车充气泵」品类查到：参数字典中已建立「额定压力」(rated_pressure, PSI, v1)，但变更说明原文为\\\"额定压力尚未确定，待样机测试后再定\\\"，未填值；品类显示有 1 个型号，但平台产品/基线记录在当前范围读取为空，型号规格中是否另有压力值无法核实（属未知）。历史会话（as_of 2026-11-15）曾按 120 PSI 作工作假设并估气缸内径 22 mm，但那是当时的情景估算，未落到参数或型号定义，不能作为已定规格。因此：参数项已定，额定压力数值尚未确定。\", \"questions\": [{\"id\": \"q_record_120\", \"why\": \"当前参数位空着，样机测试和气缸定型需要一个明确的目标值；登记候选值属于对参数的正式变更，需要你确认后我才动。\", \"options\": [{\"label\": \"登记 120 PSI 为候选值，等样机测试确认\", \"value\": \"登记为候选值\"}, {\"label\": \"保持未定，继续等样机测试结果\", \"value\": \"keep_open\"}, {\"label\": \"用另一个数值（我给具体 PSI）\", \"value\": \"other_value\"}], \"question\": \"是否要把 120 PSI 登记为额定压力的候选值（走参数新版本/变更），先给样机测试一个测试目标？\", \"depends_on\": [], \"recommended\": {\"value\": \"登记为候选值\", \"reason\": \"参数位与变更说明已就位，只差一个目标值；登记候选值能解锁测试与气缸尺寸定稿\"}, \"allow_free_text\": true}, {\"id\": \"q_deep_lookup\", \"why\": \"本轮是快查模式且当前范围读取为空，型号层与测试侧的情况还没核实；深查能补上这块，但会多花一轮。\", \"options\": [{\"label\": \"要，深查一次\", \"value\": \"deep_lookup\"}, {\"label\": \"不用，先按未定处理\", \"value\": \"no\"}], \"question\": \"是否要我再深入查一遍（放宽检索范围、翻历史来源与样机/制造记录），把型号规格里是否已有压力值、以及样机测试是否已有结果查清楚？\", \"depends_on\": [], \"recommended\": {\"value\": \"deep_lookup\", \"reason\": \"型号层与样机测试侧目前是空白，补查能确认是否已有既定值或实测依据\"}, \"allow_free_text\": true}], \"unfinished\": [\"型号层额定压力数值未核实：platform.read 与证据检索在当前范围返回空，品类内 1 个型号的规格/基线未读到\", \"样机测试与制造/批次记录未查到，额定压力的定值时点与依据未知\"]}",
+  "unfinished": [
+    "型号层额定压力数值未核实：platform.read 与证据检索在当前范围返回空，品类内 1 个型号的规格/基线未读到",
+    "样机测试与制造/批次记录未查到，额定压力的定值时点与依据未知"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "model:completed:11",
+    "platform.read:completed:6",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

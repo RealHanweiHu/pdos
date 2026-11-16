@@ -1,0 +1,45 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 21.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 31888,
+  "held_tokens": 0,
+  "answer": "已按\"两三句话\"起草客户回复消息：确认收到气泵询价、说明本周内提交正式报价。品类「汽车充气泵」内未检索到该客户的 RFQ/报价记录，因此型号、数量、报价日期保留为可替换占位符，价格与交期未写死。",
+  "answer_blob": "{\"result\": {\"draft\": {\"en\": \"Hi, thank you for your inquiry on the automotive inflator pump. We have received your requirement for 【model/qty/configuration】 and are working on costing and lead time. We will send you our formal quotation within this week, on 【e.g. Nov 20 (Fri)】, including unit price, MOQ and delivery terms. Let me know if you would like to align on the configuration first.\", \"zh\": \"您好，感谢您对汽车充气泵的询价。您提出的【型号/数量/配置】需求我们已收到，正在核算成本与交期。我们会在本周内【如：11月20日（周五）】向您提交正式报价单，附上单价、起订量与交期说明。如您希望先就配置细节沟通，随时联系我。\"}, \"unknowns\": [\"该客户对应的具体询价单与型号未在当前品类资料中找到\", \"本次报价的发出日期与批准人未确认\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:44:55.477863+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"constraints\": [], \"placeholders\": [\"客户称呼\", \"型号/数量/配置\", \"本周内的具体报价日期\"]}, \"status\": \"completed\", \"summary\": \"已按\\\"两三句话\\\"起草客户回复消息：确认收到气泵询价、说明本周内提交正式报价。品类「汽车充气泵」内未检索到该客户的 RFQ/报价记录，因此型号、数量、报价日期保留为可替换占位符，价格与交期未写死。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

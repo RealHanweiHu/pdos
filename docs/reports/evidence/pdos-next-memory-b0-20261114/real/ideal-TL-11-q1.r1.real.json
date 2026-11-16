@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "已起草最大流量的修订候选：验收标准改为 ≥40 L/min，等你确认后提交。 确认最大流量的修订候选后提交",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 48.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 146974,
+  "held_tokens": 0,
+  "answer": "当前最大流量（max_flow，规格字典定义版本 v1）的验收标准为 ≥ 35 L/min，单位 L/min，方向为\"越高越好\"，来源为人工确认的登记记录（receipt_id c121fd53-1468-45ee-9ad6-edd227b1de59），且无挂接的待提交修订候选。需注意两点：该参数的标准工况（standard_condition）与测试方法（method）均未记录，判定口径存在分歧风险；上一次会话曾起草\"≥ 40 L/min\"的规格修订候选，但停在待确认未提交状态，业务数据中无对应记录，故现行标准仍为 ≥35 L/min。另外，本品类下制品/制造文档/知识库检索无命中，型号基线入口在当前权限下为空，故结论来自品类规格字典本身，型号级验收值未能交叉核对。",
+  "answer_blob": "{\"result\": {\"answer\": \"当前最大流量（max_flow）验收标准为 ≥ 35 L/min。\", \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:12:11.649727+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"标准工况（standard_condition）未记录\", \"测试/判定方法（method）未记录\", \"本品类内型号基线中的最大流量验收值在当前可读范围内未定位到，未能核对是否存在型号级不同标准\", \"制品/制造文档/知识库检索无命中，无第二处可交叉核对的验收标准来源\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"acceptance_criterion\": {\"unit\": \"L/min\", \"origin\": \"human\", \"criterion\": \"≥ 35 L/min\", \"direction\": \"higher\", \"receipt_id\": \"c121fd53-1468-45ee-9ad6-edd227b1de59\", \"parameter_key\": \"max_flow\", \"parameter_name\": \"最大流量\", \"pending_candidate\": null, \"definition_version\": 1}}, \"status\": \"completed\", \"summary\": \"当前最大流量（max_flow，规格字典定义版本 v1）的验收标准为 ≥ 35 L/min，单位 L/min，方向为\\\"越高越好\\\"，来源为人工确认的登记记录（receipt_id c121fd53-1468-45ee-9ad6-edd227b1de59），且无挂接的待提交修订候选。需注意两点：该参数的标准工况（standard_condition）与测试方法（method）均未记录，判定口径存在分歧风险；上一次会话曾起草\\\"≥ 40 L/min\\\"的规格修订候选，但停在待确认未提交状态，业务数据中无对应记录，故现行标准仍为 ≥35 L/min。另外，本品类下制品/制造文档/知识库检索无命中，型号基线入口在当前权限下为空，故结论来自品类规格字典本身，型号级验收值未能交叉核对。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:3",
+    "model:completed:8",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

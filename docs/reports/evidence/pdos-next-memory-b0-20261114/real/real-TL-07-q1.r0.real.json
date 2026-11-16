@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 17.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 49389,
+  "held_tokens": 0,
+  "answer": "已按文字形式出好周报，两条内容：本周完成供应商对比；下周补报价单。检索了当前品类（汽车充气泵）范围的资料，未找到可引用的供应商对比记录或报价单原件，所以周报内容按你本人的陈述落笔，没有替公司记录做佐证。若要在周报里附对比明细或报价单草稿，告诉我对比对象和来源，我可以在同一会话继续查。",
+  "answer_blob": "{\"result\": {\"format\": \"text\", \"period\": {\"label\": \"本周\"}, \"sections\": [{\"items\": [{\"seq\": 1, \"text\": \"完成供应商对比。\", \"basis\": \"user_stated\", \"citation_ids\": []}], \"title\": \"本周完成\"}, {\"items\": [{\"seq\": 1, \"text\": \"补报价单。\", \"basis\": \"user_stated\", \"citation_ids\": []}], \"title\": \"下周计划\"}], \"unknowns\": [\"当前品类（汽车充气泵）范围内未检索到供应商对比记录或报价单原件，周报内容仅依据本人陈述，未获公司记录佐证。\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:49:25.699399+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"report_text\": \"本周周报\\n\\n一、本周完成\\n1. 完成供应商对比。\\n\\n二、下周计划\\n1. 补报价单。\", \"report_type\": \"周报\", \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"已按文字形式出好周报，两条内容：本周完成供应商对比；下周补报价单。检索了当前品类（汽车充气泵）范围的资料，未找到可引用的供应商对比记录或报价单原件，所以周报内容按你本人的陈述落笔，没有替公司记录做佐证。若要在周报里附对比明细或报价单草稿，告诉我对比对象和来源，我可以在同一会话继续查。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

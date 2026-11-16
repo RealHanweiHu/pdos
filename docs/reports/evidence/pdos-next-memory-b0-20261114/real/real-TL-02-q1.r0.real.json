@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 49542,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-14，会话 f33a4fa3，目标“比较三家气泵供应商的报价和交期”）你得到的结论是：建议选 B 家。\n\n两点说明：\n1. 这是我对你那次工作记录的回忆，不是当前业务事实；该会话当时的回答记录里只有“建议选 B 家”这句结论，没有附带三家厂商的报价、交期明细。\n2. 我在当前品类（汽车充气泵）范围内检索“气泵供应商/报价/交期/推荐”，没有找到那次对比对应的供应商资料记录，因此 B 家究竟是哪一家、报价与交期数值是多少，现在无法用资料核实。\n\n如果需要，我可以在这条会话里基于当前可读资料重新拉一次三家供应商的报价与交期对比，并按同一组维度给出带出处的现时建议。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:27:41.352179+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-14，会话 f33a4fa3，目标“比较三家气泵供应商的报价和交期”）你得到的结论是：建议选 B 家。\\n\\n两点说明：\\n1. 这是我对你那次工作记录的回忆，不是当前业务事实；该会话当时的回答记录里只有“建议选 B 家”这句结论，没有附带三家厂商的报价、交期明细。\\n2. 我在当前品类（汽车充气泵）范围内检索“气泵供应商/报价/交期/推荐”，没有找到那次对比对应的供应商资料记录，因此 B 家究竟是哪一家、报价与交期数值是多少，现在无法用资料核实。\\n\\n如果需要，我可以在这条会话里基于当前可读资料重新拉一次三家供应商的报价与交期对比，并按同一组维度给出带出处的现时建议。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类资料里没有那次对比的供应商记录，B 家的具体厂商与报价/交期数值无法核实；只靠旧结论无法支撑今天的选型。\", \"options\": [{\"label\": \"要，重新拉取现时数据并出带出处的建议\", \"value\": \"yes_refresh\"}, {\"label\": \"不用，先就按上次的结论（B 家）\", \"value\": \"no_just_recall\"}, {\"label\": \"需要，但先给我现有可读资料里跟气泵供应商相关的内容清单\", \"value\": \"need_sources\"}], \"question\": \"要不要我在当前范围重新整理三家气泵供应商的报价与交期对比，并给出带出处的现时推荐？\", \"depends_on\": [], \"recommended\": {\"value\": \"yes_refresh\", \"reason\": \"旧结论缺依据支撑；若要让选型可执行，必须用当前资料重做一次带出处的对比。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未在当前品类可读资料中找到上次三家气泵供应商报价与交期的原始对比记录，B 家对应厂商与数值待重新取证\"]}",
+  "unfinished": [
+    "未在当前品类可读资料中找到上次三家气泵供应商报价与交期的原始对比记录，B 家对应厂商与数值待重新取证"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

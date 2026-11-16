@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 61.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 181946,
+  "held_tokens": 0,
+  "answer": "当前可读范围（汽车充气泵品类资料、平台/提案/证据对象、本人在该品类的历史记录与引用目录）内，未检索到既往“三家气泵供应商比较”的记录，因此没有可引用的推荐结论；唯一相关的历史工作是一次“整理气泵供应商的联系人”，其结果未包含三家比较或推荐。未臆造供应商名称。",
+  "answer_blob": "{\"result\": {\"found\": {\"note\": \"未在已搜索范围内找到该比较；不据此推断其不存在\", \"recommendation\": null}, \"unknowns\": [\"既往三家气泵供应商比较是否曾被登记为对象（提案/比价表/纪要）——未在可读范围找到\", \"当时的比较口径（价格、规格、交期、MOQ、认证）与结论——无记录\", \"三家供应商的名称——本品类竞品条目为空，无从确认\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:44:33.311238+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"searched_scope\": {\"category\": {\"id\": \"d975270f-0407-4597-884a-ea6f1601e1ce\", \"name\": \"汽车充气泵\"}, \"evidence_rows\": [], \"assistant_search\": {\"hits\": 0, \"queries\": [\"三家气泵供应商 比较 选型 结论\", \"供应商 打气泵 比价 推荐 立项提案\"]}, \"personal_history\": [{\"goal\": \"整理气泵供应商的联系人\", \"run_id\": \"c51cac07-758f-46e5-8849-a6f82e5c1f50\", \"outcome\": \"联系人已整理（无比较与推荐结论）\"}], \"platform_objects\": [], \"category_knowledge\": {\"model_count\": 1, \"parameter_count\": 0, \"competitor_count\": 0}, \"citation_directory\": []}}, \"status\": \"partial\", \"summary\": \"当前可读范围（汽车充气泵品类资料、平台/提案/证据对象、本人在该品类的历史记录与引用目录）内，未检索到既往“三家气泵供应商比较”的记录，因此没有可引用的推荐结论；唯一相关的历史工作是一次“整理气泵供应商的联系人”，其结果未包含三家比较或推荐。未臆造供应商名称。\", \"questions\": [{\"id\": \"q1_where_record\", \"why\": \"不同载体需要不同的检索路径，定位到载体我才能直接调出当时的结论与依据。\", \"options\": [{\"label\": \"立项提案 / 方案对比文档\", \"value\": \"proposal\"}, {\"label\": \"会议纪要或邮件往来\", \"value\": \"meeting_or_email\"}, {\"label\": \"比价表 / 报价单（Excel、PDF 等附件）\", \"value\": \"price_table\"}, {\"label\": \"记不清了，直接重做一次三家比较\", \"value\": \"unknown_restart\"}], \"question\": \"那次三家气泵供应商的比较，记录大概落在什么地方？\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown_restart\", \"reason\": \"历史记录中查不到载体，定位成本高；重做一次可留下可核对的结论与依据\"}, \"allow_free_text\": true}, {\"id\": \"q2_three_vendors\", \"why\": \"没有三家的具体身份，无法复用或重建当时的对比口径与结论。\", \"options\": [{\"label\": \"是品牌方（自有品牌/贴牌整机）\", \"value\": \"brand\"}, {\"label\": \"是工厂（ODM/OEM 供应商）\", \"value\": \"odm_factory\"}, {\"label\": \"想不起来了，重做时由你提供名单\", \"value\": \"unknown_restart\"}], \"question\": \"那三家供应商分别是哪三家（名称或品牌）？\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown_restart\", \"reason\": \"当前资料中无任何三家名单信息，需由本人补充\"}, \"allow_free_text\": true}], \"unfinished\": [\"未找到既往三家气泵供应商比较的记录或推荐结论\", \"待本人确认载体与三家名单后，可在同会话重做一次同口径三家供应商比较并给出带依据的候选结论\"]}",
+  "unfinished": [
+    "未找到既往三家气泵供应商比较的记录或推荐结论",
+    "待本人确认载体与三家名单后，可在同会话重做一次同口径三家供应商比较并给出带依据的候选结论"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:10",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

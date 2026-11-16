@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "建议选 B 家：交期比 A 家短 2 周。C 家含税报价超出目标价 12%，已排除。 补 C 家的含税报价单 核对 B 家交期的单位",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 28.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 49977,
+  "held_tokens": 0,
+  "answer": "上次的排除理由：C 家含税报价超出目标价 12%。\n\n来源与背景：这是 2026-11-15 那次「比较三家气泵供应商的报价和交期」会话里给出的结论——建议选 B 家（交期比 A 家短 2 周），C 家因含税报价高出目标价 12% 被排除。\n\n两点需要你知道：\n1. 那次会话同时挂了两条未完成项：「补 C 家的含税报价单」「核对 B 家交期的单位」。也就是说支撑 12% 的 C 家含税报价单原件当时还没补齐，这个排除是基于当时掌握的价格信息做的判断；交期单位的待核项影响的是 B 家与 A 家的比较，不是排除 C 家的理由。\n2. 我在当前品类（汽车充气泵）范围检索后未找到这次比较的登记记录：竞品列表为空，相关资料检索无命中。所以 12% 这个数字目前无法用当前业务记录复核，它只存在于当时那次回答里。\n\n如果你要重新拍板，可以让我在当前会话找 C 家报价单与目标价口径，重新算一遍差值再确认是否仍应排除。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:50:08.476784+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次的排除理由：C 家含税报价超出目标价 12%。\\n\\n来源与背景：这是 2026-11-15 那次「比较三家气泵供应商的报价和交期」会话里给出的结论——建议选 B 家（交期比 A 家短 2 周），C 家因含税报价高出目标价 12% 被排除。\\n\\n两点需要你知道：\\n1. 那次会话同时挂了两条未完成项：「补 C 家的含税报价单」「核对 B 家交期的单位」。也就是说支撑 12% 的 C 家含税报价单原件当时还没补齐，这个排除是基于当时掌握的价格信息做的判断；交期单位的待核项影响的是 B 家与 A 家的比较，不是排除 C 家的理由。\\n2. 我在当前品类（汽车充气泵）范围检索后未找到这次比较的登记记录：竞品列表为空，相关资料检索无命中。所以 12% 这个数字目前无法用当前业务记录复核，它只存在于当时那次回答里。\\n\\n如果你要重新拍板，可以让我在当前会话找 C 家报价单与目标价口径，重新算一遍差值再确认是否仍应排除。\", \"questions\": [{\"id\": \"q1\", \"why\": \"原结论所依据的含税报价单当时尚未补齐，且当前品类范围内检索不到这次比较的登记记录，12% 无法用现有业务记录复核。\", \"options\": [{\"label\": \"要，重新检索并复核\", \"value\": \"recheck\"}, {\"label\": \"不用，先按历史结论走\", \"value\": \"keep\"}], \"question\": \"是否要我在当前会话重新找 C 家的报价单和目标价口径，复核这个 12% 的排除结论？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家的含税报价单原件（上次比较时即未完成）\", \"核对 B 家交期的单位（上次比较时即未完成）\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单原件（上次比较时即未完成）",
+    "核对 B 家交期的单位（上次比较时即未完成）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

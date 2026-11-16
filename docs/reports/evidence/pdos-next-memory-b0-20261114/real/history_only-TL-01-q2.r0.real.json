@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 36.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 86865,
+  "held_tokens": 0,
+  "answer": "查到上次的供应商比较记录（会话 b35c1bbe，2026-11-14，目标“比较三家气泵供应商的报价和交期”）：当时结论是建议选 B 家（交期比 A 家短 2 周），C 家被排除的原因是「含税报价超出目标价 12%」。需要提醒：那条记录没有留下任何来源引用，当时 C 家的含税报价单本身还挂在未完成事项里（“补 C 家的含税报价单”），所以 12% 这一数字来自上次的答复摘要；当前品类内也查不到该次比较的可核对资料（竞品清单、品类知识、证据库均为空）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:05:23.890656+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"排除 C 家的原始依据（报价单/目标价口径文件）在当前可读范围内未找到，无法核对“超出目标价 12%”的原始出处\", \"C 家含税报价单在上次比较时仍为未完成补齐事项，其当时使用的报价是否即最终口径未知\", \"当前品类（汽车充气泵）的竞品与知识库为空，供应商 A/B/C 的现时报价与交期未重新读取\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查到上次的供应商比较记录（会话 b35c1bbe，2026-11-14，目标“比较三家气泵供应商的报价和交期”）：当时结论是建议选 B 家（交期比 A 家短 2 周），C 家被排除的原因是「含税报价超出目标价 12%」。需要提醒：那条记录没有留下任何来源引用，当时 C 家的含税报价单本身还挂在未完成事项里（“补 C 家的含税报价单”），所以 12% 这一数字来自上次的答复摘要；当前品类内也查不到该次比较的可核对资料（竞品清单、品类知识、证据库均为空）。\", \"questions\": [{\"id\": \"q1\", \"why\": \"上次的排除理由缺少可核对的原始报价单，且报价单当时未补齐；结论可能因目标价或报价口径变化而失效。\", \"options\": [{\"label\": \"重新核对 C 家含税报价与目标价（推荐）\", \"value\": \"重新核对\"}, {\"label\": \"沿用上次结论，仅作记录说明\", \"value\": \"keep\"}, {\"label\": \"先找出/补录当时的报价单与目标价文件\", \"value\": \"quote_sources\"}], \"question\": \"要不要现在重新核一遍 C 家的含税报价与目标价口径，确认“超出 12%”这个结论是否还成立？\", \"depends_on\": [], \"recommended\": {\"value\": \"重新核对\", \"reason\": \"排除 C 家的唯一依据来自上次的答复摘要，原始报价单当时未补齐，结论缺可核对出处。\"}, \"allow_free_text\": true}], \"unfinished\": [\"上次比较遗留未完成项：补 C 家的含税报价单；核对 B 家交期的单位（来自历史会话 b35c1bbe，未在当前范围内确认其状态）\"]}",
+  "unfinished": [
+    "上次比较遗留未完成项：补 C 家的含税报价单；核对 B 家交期的单位（来自历史会话 b35c1bbe，未在当前范围内确认其状态）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 63.9,
+  "clarifications": [
+    "上次那份包装方案是在哪个提案或文件下整理的？",
+    "那份方案里的成本数字，是来自公司内部核算，还是客户/供应商提供的报价资料？",
+    "需要我开启一次更深的全库检索吗（含历史版本与全部提案目录）？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 205284,
+  "held_tokens": 0,
+  "answer": "查不到。我按当前权限能查到的范围都查过了：①企业检索（当前品类“汽车充气泵”，含历史版本）无命中；②品类知识、竞品、参数、品类平台对象均为空；③证据库检索无命中；④本会话历史为空；⑤个人记忆在本会话处于关闭状态，无法读取你以往会话的记录。因此“上次整理的充气泵包装方案”里到底有哪几个选项、你最终选了哪一个、以及该方案的包装单件成本，我都无法从已核对材料中得出——也不凭印象给你一个方案名或成本数字。另外说明：本轮查找预算已用完，再开一次全库深查需要新的检索轮次；你若希望我继续深挖历史提案目录，说一声我就发起。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:19:24.258131+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次整理的充气泵包装方案的选项清单与最终选定方案（在当前品类“汽车充气泵”的检索、知识、平台对象、证据库及本会话历史中均未检索到；个人记忆本会话关闭，无法读取以往会话记录）\", \"所选包装方案的包装单件成本（同上范围无记录）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查不到。我按当前权限能查到的范围都查过了：①企业检索（当前品类“汽车充气泵”，含历史版本）无命中；②品类知识、竞品、参数、品类平台对象均为空；③证据库检索无命中；④本会话历史为空；⑤个人记忆在本会话处于关闭状态，无法读取你以往会话的记录。因此“上次整理的充气泵包装方案”里到底有哪几个选项、你最终选了哪一个、以及该方案的包装单件成本，我都无法从已核对材料中得出——也不凭印象给你一个方案名或成本数字。另外说明：本轮查找预算已用完，再开一次全库深查需要新的检索轮次；你若希望我继续深挖历史提案目录，说一声我就发起。\", \"questions\": [], \"unfinished\": [\"本轮检索预算已用完，若需继续深查全库历史提案目录，需另开一轮检索\"]}",
+  "unfinished": [
+    "本轮检索预算已用完，若需继续深查全库历史提案目录，需另开一轮检索"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:5",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

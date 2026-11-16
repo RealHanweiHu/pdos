@@ -1,0 +1,44 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 18.1,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 32152,
+  "held_tokens": 0,
+  "answer": "已写出可发给客户的三句话草稿：确认收到询价并正在核算成本交期、承诺本周内给出气泵正式报价、并说明如需先了解价格区间或调整规格数量可随时告知。品类可读资料中未检索到对应客户询价记录，故型号、数量、具体日期留作占位符待用户补全；承诺时间与价格口径由用户本人确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:03:54.895982+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"客户名称与对应询价单/型号数量配置：未在本品类可读资料中检索到，未确认\", \"承诺的具体交付日期：未知，需用户填写\", \"报价币种、贸易条款与价格口径：未知，草稿中未提及任何金额\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"已写出可发给客户的三句话草稿：确认收到询价并正在核算成本交期、承诺本周内给出气泵正式报价、并说明如需先了解价格区间或调整规格数量可随时告知。品类可读资料中未检索到对应客户询价记录，故型号、数量、具体日期留作占位符待用户补全；承诺时间与价格口径由用户本人确认。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

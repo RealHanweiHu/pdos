@@ -1,0 +1,69 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 88.9,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 213298,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:30:06.649810+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围内不存在气嘴漏气的问题记录、CAPA、检测数据或供应商换料通知：品类「汽车充气泵」下检索“气嘴漏气/根因”“漏气 气嘴 密封”均 0 条，evidence 检索为空\", \"没有已登记的根因结论；根因需由质量/工程专业本人确认\", \"品类下无可读的产品/变体记录，无法定位发生批次、配置与样件数量\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q1_model_batch\", \"why\": \"该品类下没有可读的产品与批次记录，锁定型号/批次后才能定位不良样件、配置与检验记录。\", \"options\": [], \"question\": \"这次要查的气嘴漏气，具体涉及哪个型号/变体和哪一批（供应商/样件批号）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2_evidence\", \"why\": \"目前只能停在假设层面；有这些记录才能把“供应商换密封圈材料”从推测变成可核对的根因依据。\", \"options\": [], \"question\": \"是否已有可提供的原始记录：拆件分析结果、密封圈材质报告/供应商换料通知、漏气量测试数据？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q3_rescope\", \"why\": \"本轮检索预算已用完且品类内无命中；扩大范围可确认漏气相关记录是否登记在别的范围下。\", \"options\": [], \"question\": \"是否要我在同一会话扩大检索范围继续查（跨品类/带历史的资料检索）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"在品类范围内补齐气嘴漏气的问题记录与根因结论（当前 0 命中）\", \"取得并核对拆件分析、密封圈材质报告/换料通知、漏气量测试数据\", \"如需，由专业本人确认根因结论与相应围堵/CAPA措施（quality_issue 技能当前范围未启用，暂无法登记）\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "在品类范围内补齐气嘴漏气的问题记录与根因结论（当前 0 命中）",
+    "取得并核对拆件分析、密封圈材质报告/换料通知、漏气量测试数据",
+    "如需，由专业本人确认根因结论与相应围堵/CAPA措施（quality_issue 技能当前范围未启用，暂无法登记）",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2"
+    ],
+    "catalog": [
+      "r1",
+      "r2"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

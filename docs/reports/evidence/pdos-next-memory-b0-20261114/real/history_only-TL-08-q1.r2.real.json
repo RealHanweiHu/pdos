@@ -1,0 +1,49 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 17.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 48697,
+  "held_tokens": 0,
+  "answer": "找到了：是「汇总上周试产的不良项」那次工作（会话 06f3572e-bec5-4aa5-aab5-7fcb01699f18 / run 44e92ab3-f5d3-460d-a1fd-885d6448697e，记录时间 2026-11-15，品类：汽车充气泵）。当时给出的不良前三项是：① 气嘴漏气、② 外壳缩水、③ 按键卡滞——也就是说，除外壳缩水外，同批还列了气嘴漏气和按键卡滞两项。说明：这条是你当时回答的摘录（情景记录），不是当前业务事实；本次记忆检索只走关键词通道（未启用语义检索），在本人记录范围内只命中这一条。",
+  "answer_blob": "{\"result\": {}, \"status\": \"completed\", \"summary\": \"找到了：是「汇总上周试产的不良项」那次工作（会话 06f3572e-bec5-4aa5-aab5-7fcb01699f18 / run 44e92ab3-f5d3-460d-a1fd-885d6448697e，记录时间 2026-11-15，品类：汽车充气泵）。当时给出的不良前三项是：① 气嘴漏气、② 外壳缩水、③ 按键卡滞——也就是说，除外壳缩水外，同批还列了气嘴漏气和按键卡滞两项。说明：这条是你当时回答的摘录（情景记录），不是当前业务事实；本次记忆检索只走关键词通道（未启用语义检索），在本人记录范围内只命中这一条。\", \"questions\": [{\"id\": \"q_current_ledger\", \"why\": \"历史记录只反映 2026-11-15 当时的汇总，现状（是否已围堵、是否有 CAPA、是否关闭）需要读取当前业务对象才能确认。\", \"options\": [{\"label\": \"现在核对当前台账\", \"value\": \"现在核对\"}, {\"label\": \"暂不核对，先到这里\", \"value\": \"暂不核对\"}], \"question\": \"要不要我现在拉取当前品质问题台账，核对这三项（气嘴漏气、外壳缩水、按键卡滞）的现状与处理状态？\", \"depends_on\": [], \"recommended\": {\"value\": \"现在核对\", \"reason\": \"历史摘要可能已过期，核对现状才能用于后续动作\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 38.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 69018,
+  "held_tokens": 0,
+  "answer": "上次的结论是：**建议选 B 家**。这是 2026-11-15 那次\"比较三家气泵供应商的报价和交期\"工作（会话 9eca7f89…，run d3c3ef7f…）留下的记录，原话为\"甲：建议选 B 家。\"\n\n需要说明两点：\n1. 这是你本人过往工作记录（历史情景卡），不是当前业务事实，我不能拿它当报价依据来引用。\n2. 我顺手查了当前品类\"汽车充气泵\"下可读的业务资料——竞品库、品类知识、平台/供应商清单、检索索引都没有命中任何供应商或报价记录（检索返回 0 条，品类下无已登记的竞品/供应商条目）。所以\"B 家\"具体对应哪家厂商、当时的报价与交期数值，现在的可读范围内查不到；如果那些数字在别处（邮件、附件、外部表格），需要你指定资料来源我再核。\n\n另外提一句：你有一条个人口径——给这个客户的报告一律用英文。上面是口头结论回述，我用中文答了；如果你要把它变成发给客户的正式结论稿，我会按英文出。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:45:37.368144+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"B 家对应的具体供应商名称未在可读范围中找到\", \"三家供应商当时的报价与交期数值明细未在可读范围中找到\", \"当前品类下没有已登记的竞品/供应商记录可供复核\", \"上次的原始结论仅有历史情景卡摘录，无可引用的业务引用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次的结论是：**建议选 B 家**。这是 2026-11-15 那次\\\"比较三家气泵供应商的报价和交期\\\"工作（会话 9eca7f89…，run d3c3ef7f…）留下的记录，原话为\\\"甲：建议选 B 家。\\\"\\n\\n需要说明两点：\\n1. 这是你本人过往工作记录（历史情景卡），不是当前业务事实，我不能拿它当报价依据来引用。\\n2. 我顺手查了当前品类\\\"汽车充气泵\\\"下可读的业务资料——竞品库、品类知识、平台/供应商清单、检索索引都没有命中任何供应商或报价记录（检索返回 0 条，品类下无已登记的竞品/供应商条目）。所以\\\"B 家\\\"具体对应哪家厂商、当时的报价与交期数值，现在的可读范围内查不到；如果那些数字在别处（邮件、附件、外部表格），需要你指定资料来源我再核。\\n\\n另外提一句：你有一条个人口径——给这个客户的报告一律用英文。上面是口头结论回述，我用中文答了；如果你要把它变成发给客户的正式结论稿，我会按英文出。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史结论只留有\\\"B 家\\\"这一称呼，缺具体厂商与报价/交期支撑，无法直接作为可交付的选型依据。\", \"options\": [{\"label\": \"先在品类下补建三家供应商的报价/交期记录，再出一份带依据的对比与建议\", \"value\": \"resolve_now\"}, {\"label\": \"直接按英文口径出一份给客户的结论稿（B 家为推荐）\", \"value\": \"report_en\"}, {\"label\": \"我自己提供邮件/附件等原始材料，你据此复核并重新给出建议\", \"value\": \"materials_only\"}], \"question\": \"接下来要怎么处理这次\\\"选 B 家\\\"的结论？\", \"depends_on\": [], \"recommended\": {\"value\": \"resolve_now\", \"reason\": \"建议先把可核对的报价与交期依据落到品类记录里，结论才站得住；英文报告可在之后基于该记录生成。\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

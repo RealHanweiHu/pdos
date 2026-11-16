@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 45.9,
+  "clarifications": [
+    "那次气泵供应商对比是在本平台的另一个会话里做的吗？如果是，能提供该会话ID（或大致时间/会话标题）吗？",
+    "如果需要重做对比，候选供应商名单和已实测参数口径你能否提供？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 143960,
+  "held_tokens": 0,
+  "answer": "查不到。在本会话可见的全部范围内没有找到\"上次的气泵供应商对比\"的任何记录或结论原文：会话历史 0 条、记忆读取关闭、品类「汽车充气泵」竞品/知识/参数字典均为 0 条、平台与证据库无相关对象、公司资料检索 0 命中（覆盖状态 current，第二次复查受本轮查找预算限制未能执行）。因此无法复述你当时的结论，也不给出任何供应商推荐。",
+  "answer_blob": "{\"result\": {\"unknowns\": [{\"item\": \"上次气泵供应商对比的结论（建议选哪家）\", \"status\": \"not_found_in_scope\", \"statement\": \"在本次可读的全部范围内没有找到该次对比的记录或其结论原文；按用户要求直接说明查不到，未做推断、未给出供应商推荐。\", \"searched_scope\": [{\"detail\": \"session f5be8be3-d13c-45d7-982c-66ffc7833f4b，page_size=25，含 research rows，turns=0，next_before=null\", \"source\": \"conversation.history\"}, {\"detail\": \"返回 status=memory_off（会话未开启记忆读取），items=0\", \"source\": \"memory.search\"}, {\"detail\": \"items=0，next_cursor=null\", \"source\": \"category.competitors.list\"}, {\"detail\": \"kind=competitor，include_history=true，items=0\", \"source\": \"category.knowledge.list\"}, {\"detail\": \"品类 2d9ee39b-e9c8-49d5-a9a8-f44a430e47d7「汽车充气泵」：knowledge_counts 全部为 0，parameter_count=0，model_count=1\", \"source\": \"category.read\"}, {\"detail\": \"按 category_id、按 name_query=泵、按无筛选三种方式查询，items 均为 0\", \"source\": \"platform.read\"}, {\"detail\": \"query=气泵 供应商 对比，items=0\", \"source\": \"evidence.search\"}, {\"detail\": \"query=气泵 供应商 对比 选型（category 范围，include_history=true），returned=0，coverage.status=current；再次以 query=供应商 复查时被本轮查找预算限制拒绝\", \"source\": \"assistant.search\"}]}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:43:13.626565+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"查不到。在本会话可见的全部范围内没有找到\\\"上次的气泵供应商对比\\\"的任何记录或结论原文：会话历史 0 条、记忆读取关闭、品类「汽车充气泵」竞品/知识/参数字典均为 0 条、平台与证据库无相关对象、公司资料检索 0 命中（覆盖状态 current，第二次复查受本轮查找预算限制未能执行）。因此无法复述你当时的结论，也不给出任何供应商推荐。\", \"questions\": [], \"unfinished\": [\"上次气泵供应商对比的结论原文未能取回（当前可读范围内不存在）\", \"以 query=供应商 做第二次跨范围复查时触发本轮查找预算上限，本轮未完成该复查\"]}",
+  "unfinished": [
+    "上次气泵供应商对比的结论原文未能取回（当前可读范围内不存在）",
+    "以 query=供应商 做第二次跨范围复查时触发本轮查找预算上限，本轮未完成该复查"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": [
+      "not_verbatim_user_fragment"
+    ]
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

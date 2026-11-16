@@ -1,0 +1,66 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 86.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 163129,
+  "held_tokens": 0,
+  "answer": "上次那次\"汇总试产的不良项\"（2026-11-14）里，小Pai给出的不良前三项是：① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。\n\n但要说清依据强度：这一条来自当时的答复记录（工作记忆），不是本次重新核对过的业务事实。我在当前\"汽车充气泵\"品类范围内检索后，没有取到可核的试产不良汇总原始记录——平台对象、证据检索、引用目录均为空，本轮检索预算也已用尽，无法确认三项的排序口径（件数/占比）、对应批次与数量。\n\n所以：答案可以照用（与你上次拿到的一致），但如果这次要写进质量报告或对外结论，建议在同会话里继续深挖或提供该汇总表原件，我再逐项落到有出处的数据上。",
+  "answer_blob": "{\"result\": {\"answer\": {\"source_kind\": \"previous_session_answer_record\", \"source_as_of\": \"2026-11-14\", \"top_three_defects\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"], \"verification_status\": \"not_reverified_in_this_run\"}, \"unknowns\": [\"试产不良汇总的原始业务记录在当前品类范围内未检索到（平台/证据/引用目录均返回空）\", \"三项的排序口径（按件数、批次还是占比）未取得\", \"各项不良的发生数量、涉及批次与试产日期未取得\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:13:24.718446+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"search_coverage\": {\"platform_read\": \"0 items\", \"citations_read\": \"0 items\", \"evidence_search\": \"0 items\", \"assistant_search_first_call\": \"0 items\", \"assistant_search_further_calls\": \"本轮预算已用尽\"}, \"next_step_options\": [\"在同会话放开检索预算后继续查试产/检验记录\", \"由你提供汇总表原件（PDF/表格/现场记录），我逐项核对并补出处\", \"直接沿用本次三项名称，仅在对外材料中标注来源为上次汇总记录\"]}, \"status\": \"partial\", \"summary\": \"上次那次\\\"汇总试产的不良项\\\"（2026-11-14）里，小Pai给出的不良前三项是：① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。\\n\\n但要说清依据强度：这一条来自当时的答复记录（工作记忆），不是本次重新核对过的业务事实。我在当前\\\"汽车充气泵\\\"品类范围内检索后，没有取到可核的试产不良汇总原始记录——平台对象、证据检索、引用目录均为空，本轮检索预算也已用尽，无法确认三项的排序口径（件数/占比）、对应批次与数量。\\n\\n所以：答案可以照用（与你上次拿到的一致），但如果这次要写进质量报告或对外结论，建议在同会话里继续深挖或提供该汇总表原件，我再逐项落到有出处的数据上。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前这三条只能追溯到上次的答复记录，没有可引用的原始记录支撑。\", \"options\": [{\"label\": \"继续深挖（下一轮放开检索预算，查试产/检验记录）\", \"value\": \"continue_research\"}, {\"label\": \"我提供汇总表原件，你按原件核对\", \"value\": \"i_provide_source\"}, {\"label\": \"就按这三项先用，不再查\", \"value\": \"accept_as_is\"}], \"question\": \"要不要我在同会话继续深挖，把这三项落到有出处、带数量的数据上？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue_research\", \"reason\": \"没有出处的三项不良若进入质量结论或CAPA，后续复核会断链。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"不同载体的排序口径和可提取字段不同，直接决定我能核对到什么粒度。\", \"options\": [{\"label\": \"MES/质量管理系统的批次不良记录\", \"value\": \"mes_quality\"}, {\"label\": \"检验报告或试产汇总表（PDF/Excel）\", \"value\": \"inspection_report\"}, {\"label\": \"现场记录/品质同事的统计表\", \"value\": \"field_record\"}, {\"label\": \"不确定，需要我先查\", \"value\": \"unsure\"}], \"question\": \"这次试产不良汇总的原始载体是哪一个？\", \"depends_on\": [], \"recommended\": {\"value\": \"mes_quality\", \"reason\": \"若不良统计落在系统批次记录里，可直接按数量排序核对前三项。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未取得试产不良汇总的原始业务记录，三项不良暂无法在本次运行内重新核对\", \"三项的件数/占比、对应试产批次与日期未知\"]}",
+  "unfinished": [
+    "未取得试产不良汇总的原始业务记录，三项不良暂无法在本次运行内重新核对",
+    "三项的件数/占比、对应试产批次与日期未知"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "model:completed:9",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

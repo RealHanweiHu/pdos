@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 22.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 66697,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15 会话）整理充气泵包装方案时，选的是方案二：纸托 + 收缩膜，单件成本 1.8 元。依据是本人历史会话记录；当前品类资料范围内未检索到包装/成本的业务登记对象，因此该数字为当时口径、未经当前业务对象复核。",
+  "answer_blob": "{\"result\": {\"answer\": {\"unit_cost\": {\"basis\": \"本人历史会话记录（session 854827fa-99ee-4965-afde-55cf7c3cdff5，as_of 2026-11-15）\", \"amount\": \"1.8\", \"currency\": \"CNY\"}, \"selected_option\": \"方案二（纸托 + 收缩膜）\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:56:02.541013+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类（汽车充气泵）资料范围内未检索到包装方案与单件成本的业务登记，1.8 元为历史会话当时结论，未在当前业务对象中复核\", \"未确认该成本的构成口径（材料/批量/是否含税运/是否含内衬）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-15 会话）整理充气泵包装方案时，选的是方案二：纸托 + 收缩膜，单件成本 1.8 元。依据是本人历史会话记录；当前品类资料范围内未检索到包装/成本的业务登记对象，因此该数字为当时口径、未经当前业务对象复核。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类里没有可复核的包装方案与成本登记，只有一个历史会话结论，需要确定后续动作。\", \"options\": [{\"label\": \"在品类里重新检索/登记包装方案与成本记录，把方案二、1.8 元正式落为记录\", \"value\": \"register\"}, {\"label\": \"按新口径（材料价、批量、含税运等）重算各包装方案的单件成本做对比\", \"value\": \"recalc\"}, {\"label\": \"仅作参考，不用再处理\", \"value\": \"stop\"}], \"question\": \"接下来要我怎么处理这个包装选择与 1.8 元成本？\", \"depends_on\": [], \"recommended\": {\"value\": \"register\", \"reason\": \"先让历史结论在业务对象里有据可查，再谈重算与对比。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未在当前业务对象中复核包装方案与单件成本 1.8 元\", \"未确认成本构成口径（材料价、批量、是否含税运）\"]}",
+  "unfinished": [
+    "未在当前业务对象中复核包装方案与单件成本 1.8 元",
+    "未确认成本构成口径（材料价、批量、是否含税运）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

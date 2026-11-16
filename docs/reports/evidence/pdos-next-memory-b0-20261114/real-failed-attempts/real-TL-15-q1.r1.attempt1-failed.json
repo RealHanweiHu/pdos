@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "failed",
+  "seconds": 332.9,
+  "clarifications": [],
+  "state": "failed",
+  "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+  "used_tokens": 128928,
+  "held_tokens": 0,
+  "answer": "原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。",
+  "answer_blob": "{\"result\": {\"reconciliation\": {\"mode\": \"automatic\", \"event_id\": \"19a9a6cc-9db0-4f5f-a624-f380d0fd4180\", \"closed_at\": \"2026-11-15T11:36:44.663990+00:00\", \"held_tokens\": 0, \"initiated_by\": null, \"failed_call_count\": 1, \"estimated_micro_usd\": 40981, \"recovered_call_count\": 0, \"may_start_new_request\": true, \"original_cancel_epoch\": 0, \"business_receipt_count\": 0, \"external_effect_unknown\": false}}, \"status\": \"failed\", \"summary\": \"原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。\", \"questions\": [], \"unfinished\": [\"原目标尚未全部完成。核对已有结果后，可调整目标以新请求继续；不自动重复原调用。\"]}",
+  "unfinished": [
+    "原目标尚未全部完成。核对已有结果后，可调整目标以新请求继续；不自动重复原调用。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3",
+    "model:failed:1",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

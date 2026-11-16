@@ -1,0 +1,62 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 64.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 194148,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内没有找到\"三家气泵供应商比较\"的记录，因此没有可引用的推荐结论，也不能替你断言\"当时建议选哪家\"。当前品类（汽车充气泵）的企业检索、品类知识（竞品/边界/用户声音均为 0）、竞品清单、平台与产品基线、证据行、提案与附件全部为空；我本人工作记忆中该品类唯一相关工作是\"整理气泵供应商的联系人\"（as_of 2026-11-15 的情景记录，非业务事实），那次只产出联系人，没有留下取舍结论。请补充三家的名称或当时比较的落点（哪个会话、哪份提案/邮件），我可在同一会话继续把当时的结论连同依据取回。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"当前可读范围（汽车充气泵品类的企业检索、品类知识、竞品清单、平台与产品基线、证据行、提案与附件）内，未检索到三家气泵供应商比较记录或推荐结论\", \"未确认该次比较发生在哪个会话与哪个范围\", \"未确认三家供应商名称与比较产出的存放载体\", \"一次跨类型资料检索被本轮查找预算拦截，公开检索工具在当前环境未配置\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:45:38.546846+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"partial\", \"summary\": \"在当前可读范围内没有找到\\\"三家气泵供应商比较\\\"的记录，因此没有可引用的推荐结论，也不能替你断言\\\"当时建议选哪家\\\"。当前品类（汽车充气泵）的企业检索、品类知识（竞品/边界/用户声音均为 0）、竞品清单、平台与产品基线、证据行、提案与附件全部为空；我本人工作记忆中该品类唯一相关工作是\\\"整理气泵供应商的联系人\\\"（as_of 2026-11-15 的情景记录，非业务事实），那次只产出联系人，没有留下取舍结论。请补充三家的名称或当时比较的落点（哪个会话、哪份提案/邮件），我可在同一会话继续把当时的结论连同依据取回。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本会话历史只显示\\\"整理气泵供应商的联系人\\\"；若比较在别的会话或品类，需要切到该范围回溯。\", \"options\": [{\"label\": \"就这个品类，在更早的会话里\", \"value\": \"same_session_other_run\"}, {\"label\": \"在别的品类/项目下\", \"value\": \"other_category\"}, {\"label\": \"不确定，需要你帮我找\", \"value\": \"unsure\"}], \"question\": \"那次比较是在哪个会话或哪个品类下做的？当前这个\\\"汽车充气泵\\\"品类里没有相关记录。\", \"depends_on\": [], \"recommended\": {\"value\": \"unsure\", \"reason\": \"当前范围查不到记录，先确认归属范围最省事\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"用供应商名称可在当前范围直接定位当时的比较记录、报价或评估表。\", \"options\": [{\"label\": \"我现在就把三家名字发给你\", \"value\": \"provide_names\"}, {\"label\": \"从我整理过的联系人清单里反查\", \"value\": \"find_from_contacts\"}, {\"label\": \"一时想不起具体名称\", \"value\": \"no_names\"}], \"question\": \"被比较的三家供应商分别叫什么名字？\", \"depends_on\": [], \"recommended\": {\"value\": \"provide_names\", \"reason\": \"名称是最有效的检索键\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"结论载体决定要读的对象不同；口头结论则需要从参会记录或联系人往来中重建。\", \"options\": [{\"label\": \"立项提案/评审材料\", \"value\": \"proposal\"}, {\"label\": \"邮件或附件（报价/评估表）\", \"value\": \"email_or_file\"}, {\"label\": \"口头结论，没有正式文件\", \"value\": \"verbal\"}], \"question\": \"当时的比较结论落在哪里（立项提案、评审纪要、邮件/附件、还是口头）？\", \"depends_on\": [], \"recommended\": {\"value\": \"email_or_file\", \"reason\": \"供应商比较通常先以邮件/报价附件形式留存\"}, \"allow_free_text\": true}], \"unfinished\": [\"定位'三家气泵供应商比较'的原始记录，并按签发引用回读当时的结论与依据（本轮因查找预算与检索能力未配置未完成）\", \"若该次比较发生在本品类之外，需先确认范围再检索\"]}",
+  "unfinished": [
+    "定位'三家气泵供应商比较'的原始记录，并按签发引用回读当时的结论与依据（本轮因查找预算与检索能力未配置未完成）",
+    "若该次比较发生在本品类之外，需先确认范围再检索"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "memory.search:completed:2",
+    "model:completed:10",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

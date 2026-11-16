@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 50.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 87231,
+  "held_tokens": 0,
+  "answer": "在我可检索的范围里，没有找到那次\"三家气泵供应商比较\"的结论记录，因此我不能替你复述\"建议选哪家\"。已核对的范围：①历史会话目录里，气泵相关只有 2026-11-15 的\"整理气泵供应商的联系人\"一次工作，记录原文只有\"联系人已整理。\"，没有选型结论或三家名单；②当前会话此前无相关轮次；③品类内无竞品/供应商知识条目、证据库无命中、平台对象列表为空；④公司资料检索在第一轮\"三家气泵供应商比较 选型建议 结论\"下 0 命中，第二轮扩大来源类型时被本轮查找预算截断。所以只能说\"已检索范围内没找到\"，不能断言从未做过。若你给出当时比较的三家品牌/型号、或那份结论所在的载体（立项提案、报价比价表、邮件纪要），我可以定向再查，或按规格字典同口径重做一次三家对比并给出建议与代价。",
+  "answer_blob": "{\"result\": {\"question\": \"之前比较三家气泵供应商，当时的结论是建议选哪家？\", \"unknowns\": [\"当时比较的三家供应商是谁\", \"那份对比结论存放在哪种载体（立项提案方案对比、报价比价表、邮件/会议纪要、或仅口头结论）\", \"是否存在未索引的更早会话或他人做的对比记录\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:51:57.093617+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"conclusion\": \"null\", \"next_steps\": [\"由本人提供三家供应商品牌/型号后定向复查\", \"或在同一会话做一次三家同口径对比（实测/宣传/推断分组）并给出建议与代价\"], \"answer_found\": false, \"citation_ids\": [], \"not_searched\": [\"assistant.search 扩大到 artifact/supply/issue/change/external_wait/manufacturing_document/project_status/build 来源类型的一轮，因本轮查找预算截断未执行\"], \"checked_scope\": [{\"result\": \"仅一轮'整理气泵供应商的联系人'，回答摘录'联系人已整理。'，无比较结论、无三家名单、无引用\", \"source\": \"conversation.history(session=21bcfdd3-4676-4ba5-bd9a-6e4c311a8b7d, as_of=2026-11-15)\"}, {\"result\": \"此前无轮次\", \"source\": \"conversation.history(当前会话 e2629a2e-c437-4006-81e3-7c01f7b23c1e)\"}, {\"result\": \"仅上述联系人工作一条，无供应商对比情景卡\", \"source\": \"memory.search(当前品类范围, 全部个人记录)\"}, {\"result\": \"均为空，无竞品条目\", \"source\": \"category.knowledge.list(kind=competitor) / category.competitors.list\"}, {\"result\": \"无命中\", \"source\": \"evidence.search('气泵供应商比较 建议选择 结论')\"}, {\"result\": \"无返回对象\", \"source\": \"platform.read\"}, {\"result\": \"0 命中\", \"source\": \"assistant.search(品类='汽车充气泵', query='三家气泵供应商比较 选型建议 结论', include_history=true)\"}]}, \"status\": \"partial\", \"summary\": \"在我可检索的范围里，没有找到那次\\\"三家气泵供应商比较\\\"的结论记录，因此我不能替你复述\\\"建议选哪家\\\"。已核对的范围：①历史会话目录里，气泵相关只有 2026-11-15 的\\\"整理气泵供应商的联系人\\\"一次工作，记录原文只有\\\"联系人已整理。\\\"，没有选型结论或三家名单；②当前会话此前无相关轮次；③品类内无竞品/供应商知识条目、证据库无命中、平台对象列表为空；④公司资料检索在第一轮\\\"三家气泵供应商比较 选型建议 结论\\\"下 0 命中，第二轮扩大来源类型时被本轮查找预算截断。所以只能说\\\"已检索范围内没找到\\\"，不能断言从未做过。若你给出当时比较的三家品牌/型号、或那份结论所在的载体（立项提案、报价比价表、邮件纪要），我可以定向再查，或按规格字典同口径重做一次三家对比并给出建议与代价。\", \"questions\": [{\"id\": \"q1\", \"why\": \"给我名单后，我能定向复核已有的对比材料；没有名单时，检索只能靠关键词，容易再次落空。\", \"options\": [{\"label\": \"我直接告诉你三家名称/型号\", \"value\": \"user_provides_names\"}, {\"label\": \"从供应商联系人和询价记录里找候选三家\", \"value\": \"search_from_contacts\"}], \"question\": \"当时比较的是哪三家气泵供应商（品牌或型号）？\", \"depends_on\": [], \"recommended\": {\"value\": \"user_provides_names\", \"reason\": \"一次定向核对最快，也最不容易把推测当结论\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"不同载体对应不同的数据源（提案方案项、报价/成本记录、邮件或会议纪要、外部等待记录），能决定我下一步翻哪里。\", \"options\": [{\"label\": \"立项提案里的方案/选项对比\", \"value\": \"proposal_options\"}, {\"label\": \"报价或成本比价表\", \"value\": \"quote_sheet\"}, {\"label\": \"邮件、纪要或评审记录\", \"value\": \"document_meeting\"}, {\"label\": \"只是当时口头结论，没有文件\", \"value\": \"verbal_only\"}], \"question\": \"那次比较的结论大概落在哪种载体上？\", \"depends_on\": [], \"recommended\": {\"value\": \"proposal_options\", \"reason\": \"本平台里方案对比通常落在提案项上，最容易核对\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"两种做法代价不同：重做对比需要统一口径的参数版本和来源登记；只补齐资料则不产生新的选型意见。\", \"options\": [{\"label\": \"重新做一次三家同口径对比，并给出建议与代价\", \"value\": \"rebuild_comparison\"}, {\"label\": \"先只把缺失的参数与待问项列出来\", \"value\": \"gaps_only\"}, {\"label\": \"等我给出三家名称再动手\", \"value\": \"wait_for_name\"}], \"question\": \"如果确实找不到当时记录，接下来要我做什么？\", \"depends_on\": [\"q1\"], \"recommended\": {\"value\": \"wait_for_name\", \"reason\": \"没有名单时重做容易选错对象\"}, \"allow_free_text\": true}], \"unfinished\": [\"公司资料检索本轮预算已用尽，尚未覆盖 artifact/supply/issue/change/external_wait/manufacturing_document/project_status/build 等来源类型，不能据此断言\\\"从未做过这次比较\\\"\", \"若后续给出三家名单或载体线索，需定向重查并核对版本后再复述当时结论\"]}",
+  "unfinished": [
+    "公司资料检索本轮预算已用尽，尚未覆盖 artifact/supply/issue/change/external_wait/manufacturing_document/project_status/build 等来源类型，不能据此断言\"从未做过这次比较\"",
+    "若后续给出三家名单或载体线索，需定向重查并核对版本后再复述当时结论"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [
+      "r2"
+    ],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

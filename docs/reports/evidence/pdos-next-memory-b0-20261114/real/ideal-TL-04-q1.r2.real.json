@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 36.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 67606,
+  "held_tokens": 0,
+  "answer": "在我这次能读到的范围内，没有找到你之前交代过气泵报价对比口径的记录：品类「汽车充气泵」下的公司资料检索（气泵/报价/对比/口径/币种/含税等关键词）返回 0 条，个人记忆检索（\"气泵 报价 对比 口径\"、\"气泵 报价\"）无命中，本次会话历史也没有更早的对话轮次，品类内竞品知识条目为空。需要说明的是，本轮查找预算已用完，未能执行不限品类的宽范围检索，所以严格讲是\"在已检索范围内未找到\"，不等于你从未说过。可以现在直接定一次口径（币种、日期、地区、渠道、零售/促销价、含税含运、同一配置）并记成你的常用口径，后续报价对比按它走——你确认后我就登记。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:10:22.605499+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本轮查找预算已用完，未执行不限品类的宽范围检索，无法排除口径记录存在于品类之外的可读范围\", \"品类内竞品知识条目返回为空，无法确认是否曾在其他对象（如提案条目、报价单、外部记录）中留下过口径\", \"公司资料检索命中 0 条，无法区分'从未交代'与'表述用词不同未被关键词命中'\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"searched_scope\": [{\"result\": \"0 条命中\", \"source\": \"公司资料检索（品类「汽车充气泵」id=635e4bf4-91fc-4534-b54b-627ccb29ce66）\", \"keywords\": \"气泵 报价 对比 口径 币种 含税 运输 配置\"}, {\"result\": \"0 条命中（情景卡片与口径笔记均无）\", \"source\": \"个人记忆检索\", \"keywords\": \"气泵 报价 对比 口径 / 气泵 报价\"}, {\"scope\": \"本会话 session_id=77040612-04ce-4ce1-b32e-5087ade6fc62\", \"result\": \"无更早轮次\", \"source\": \"会话历史\"}, {\"kind\": \"competitor\", \"result\": \"空\", \"source\": \"品类知识条目\"}]}, \"status\": \"partial\", \"summary\": \"在我这次能读到的范围内，没有找到你之前交代过气泵报价对比口径的记录：品类「汽车充气泵」下的公司资料检索（气泵/报价/对比/口径/币种/含税等关键词）返回 0 条，个人记忆检索（\\\"气泵 报价 对比 口径\\\"、\\\"气泵 报价\\\"）无命中，本次会话历史也没有更早的对话轮次，品类内竞品知识条目为空。需要说明的是，本轮查找预算已用完，未能执行不限品类的宽范围检索，所以严格讲是\\\"在已检索范围内未找到\\\"，不等于你从未说过。可以现在直接定一次口径（币种、日期、地区、渠道、零售/促销价、含税含运、同一配置）并记成你的常用口径，后续报价对比按它走——你确认后我就登记。\", \"questions\": [{\"id\": \"q1\", \"why\": \"价型不同会直接改变价格带与目标价位置的结论，是口径里最关键的一项。\", \"options\": [{\"label\": \"竞品零售价（统一标称零售价）\", \"value\": \"retail_list\"}, {\"label\": \"竞品当前促销/最低价\", \"value\": \"promo_current\"}, {\"label\": \"我方目标价 vs 竞品零售价\", \"value\": \"target_vs_retail\"}, {\"label\": \"供应商报价 vs 供应商报价\", \"value\": \"supplier_vs_supplier\"}], \"question\": \"报价按哪种价型比：竞品官方零售价、当前促销/最低价，还是我方目标价与供应商报价互比？\", \"depends_on\": [], \"recommended\": {\"value\": \"target_vs_retail\", \"reason\": \"你问的是\\\"报价对比\\\"，把竞品与自家目标价放在同一口径下比最能支持定价决策；若你另有场景可选其他项。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"币种与含税含运口径不一致会让价格带和目标价位置失真；价格日期决定取哪一档价。\", \"options\": [{\"label\": \"统一人民币、含税含运、以报价当日为准\", \"value\": \"cny_tax_ship_sameday\"}, {\"label\": \"统一人民币、不含税不含运、以报价当日为准\", \"value\": \"cny_ex_tax_ship_sameday\"}, {\"label\": \"按原币种分别分组，不做换汇\", \"value\": \"no_fx_group_by_currency\"}], \"question\": \"币种、价格日期与含税含运怎么统一？\", \"depends_on\": [], \"recommended\": {\"value\": \"cny_tax_ship_sameday\", \"reason\": \"终端消费者看到的是含税到手价，且不换汇可避免汇率假设带来的不确定性。\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"不同配置（如气量、供电方式、功能档、附件）混在一档比较会得出错误结论；同时决定是否把口径沉淀为你的个人口径条目。\", \"options\": [{\"label\": \"只比同配置；口径记为我的常用口径\", \"value\": \"same_config_and_record\"}, {\"label\": \"只比同配置；本次用完即可，不记录\", \"value\": \"same_config_only\"}, {\"label\": \"配置不同也并排比，但分组标注口径差异；并记录为常用口径\", \"value\": \"grouped_and_record\"}], \"question\": \"配置可比性怎么处理，并要把这个口径记成你的常用口径吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"same_config_and_record\", \"reason\": \"同配置才可比是价格对比的基本前提；记为常用口径可避免下次再重复确认。\"}, \"allow_free_text\": true}], \"unfinished\": [\"待你确认后，整理并登记气泵报价对比口径（价型、币种、时点、含税运、配置可比性），并按该口径做价格带计算\"]}",
+  "unfinished": [
+    "待你确认后，整理并登记气泵报价对比口径（价型、币种、时点、含税运、配置可比性），并按该口径做价格带计算"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

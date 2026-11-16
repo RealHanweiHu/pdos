@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 27.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 68106,
+  "held_tokens": 0,
+  "answer": "在已检索范围内未找到用户此前交代的报价对比口径：历史记录中有一次\"气泵报价对比\"（2026-11-15，已完成），但未保留口径、来源、笔记与研究行；当前品类内公司资料检索与证据库检索均 0 命中；系统内 price_band 方法的七个口径维度（币种、日期、地区、渠道、零售或促销、含税运、配置）属方法默认值、不等于本人交代，且该技能在当前租户/范围未启用、无法加载细则。未据此断定用户从未交代，只报\"在已检索范围内未找到\"。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:48:12.230734+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"2026-11-15 的那次\\\"气泵报价对比\\\"当时采用的具体口径未被保留：历史记录仅有目标、状态与\\\"报价对比已完成\\\"摘要，无来源、无笔记、无研究行\", \"当前品类（汽车充气泵）范围内的公司资料检索未命中任何报价/价格对比口径文件\", \"证据库检索\\\"气泵 报价 价格 口径\\\"无命中\", \"price_band 方法所列统一口径维度为方法默认值，不等于用户本人此前交代；该技能在当前租户与范围未启用，未能加载细则\", \"若本人曾在其它会话口头交代，其记录当前不可读取，未能核实\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"在已检索范围内未找到用户此前交代的报价对比口径：历史记录中有一次\\\"气泵报价对比\\\"（2026-11-15，已完成），但未保留口径、来源、笔记与研究行；当前品类内公司资料检索与证据库检索均 0 命中；系统内 price_band 方法的七个口径维度（币种、日期、地区、渠道、零售或促销、含税运、配置）属方法默认值、不等于本人交代，且该技能在当前租户/范围未启用、无法加载细则。未据此断定用户从未交代，只报\\\"在已检索范围内未找到\\\"。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前范围三次检索均无命中，扩大范围或换词可能找到公司统一的价格对比口径文件；若不扩范围，则只能由你口头给一条口径。\", \"options\": [{\"label\": \"扩大范围再查一轮（跨品类+含历史）\", \"value\": \"expand_search\"}, {\"label\": \"不用查，我直接告诉你按什么口径比\", \"value\": \"user_gives_basis\"}, {\"label\": \"不再检索，按 price_band 的七个默认维度（币种/日期/地区/渠道/零售或促销/含税运/配置）执行并标注为默认值\", \"value\": \"use_default\"}], \"question\": \"是否要我扩大检索范围（跨品类 / 含历史版本 / 换关键词如'含税''促销价''竞品价格带'）继续找公司层面的报价对比口径标准？\", \"depends_on\": [], \"recommended\": {\"value\": \"expand_search\", \"reason\": \"先低成本确认是否存在公司统一口径标准，避免用默认值替代本人交代。\"}, \"allow_free_text\": true}], \"unfinished\": [\"跨品类/含历史的扩大检索未执行，等待是否继续的确认\", \"2026-11-15 那次对比的实际口径无法从现有记录还原，需你确认或重述\"]}",
+  "unfinished": [
+    "跨品类/含历史的扩大检索未执行，等待是否继续的确认",
+    "2026-11-15 那次对比的实际口径无法从现有记录还原，需你确认或重述"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

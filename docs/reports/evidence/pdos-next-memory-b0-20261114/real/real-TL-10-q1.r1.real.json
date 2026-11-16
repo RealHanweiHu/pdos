@@ -1,0 +1,68 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 80.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 213177,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:04:02.376916+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类可读范围内没有与气嘴漏气对应的问题/CAPA/不良/测试业务记录（问题类检索命中 0 条，evidence/platform/category 读取为空）\", \"密封圈材料是否更换、更换牌号与生效批次无记录可核\", \"拆件分析是否已执行、结论为何无记录可核\", \"不良样件批次、数量、发生时间与流入渠道无记录可核\", \"根因结论与 CAPA 有效性结论均未见业务记录，负责人未在可读字段中出现\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前范围内没有任何可核实的根因证据；补齐原件是确认「供应商换料导致漏气」这条唯一线索的最低条件。\", \"options\": [{\"label\": \"有，我可以提供这些原件/附件\", \"value\": \"have\"}, {\"label\": \"暂时没有手头原件\", \"value\": \"none\"}, {\"label\": \"不清楚，需要先问供应商/品质\", \"value\": \"unknown\"}], \"question\": \"是否有可提供的原件（拆件分析报告、供应商密封圈换料通知/材料证明、批次气密性检验记录），让我按固定版本读取并复核？\", \"depends_on\": [], \"recommended\": {\"value\": \"have\", \"reason\": \"原件是唯一能在本轮内把假设升级为可核实根因的途径\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"根因确认与 CAPA 属品质/工程专业决定，我只能准备材料、不能代替判定；不同选择会走向完全不同的下一步。\", \"options\": [{\"label\": \"在同会话继续深挖（下一轮恢复检索后读问题/CAPA/测试记录）\", \"value\": \"deepen\"}, {\"label\": \"先按品质问题流程起草根因验证与围堵/CAPA 材料，交你本人判定\", \"value\": \"draft_plan\"}, {\"label\": \"暂不推进，等拆件分析和供应商确认结果\", \"value\": \"wait\"}], \"question\": \"接下来你希望我做什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"draft_plan\", \"reason\": \"当前无可核实根因，先把验证路径与待决项写成可确认的材料，能让你本人更快完成判定\"}, \"allow_free_text\": true}], \"unfinished\": [\"本轮未取得任何可引用的业务记录来确认气嘴漏气根因（检索命中 0 条，查找预算用尽）\", \"此前记录的跟进项「联系供应商确认是否换料」「安排拆件分析」仍未见完成凭证\", \"根因结论与 CAPA 有效性结论待品质/工程专业本人作出\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "本轮未取得任何可引用的业务记录来确认气嘴漏气根因（检索命中 0 条，查找预算用尽）",
+    "此前记录的跟进项「联系供应商确认是否换料」「安排拆件分析」仍未见完成凭证",
+    "根因结论与 CAPA 有效性结论待品质/工程专业本人作出",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2"
+    ],
+    "catalog": [
+      "r1",
+      "r2"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

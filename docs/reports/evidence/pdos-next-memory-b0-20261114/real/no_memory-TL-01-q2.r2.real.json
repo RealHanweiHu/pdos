@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 78.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 233453,
+  "held_tokens": 0,
+  "answer": "结论：在当前可读范围内没有找到上次供应商比较的任何记录，也没有找到排除 C 家的依据，因此无法给出排除原因（不作推断、不用通用常识替代贵司当时的判断）。已核对到的：企业资料检索在当前品类「汽车充气泵」下按 knowledge/supply/artifact/issue/change/project_status 且含历史返回 0 条（更宽的两次检索被本轮查找预算拦截，标记为 RATE_LIMITED / MODEL_BUDGET_EXCEEDED）；品类知识库中竞品、边界、分段、用户声音、法规、研究问题与参数全部为 0 条；按品类及按名称读取产品与型号列表均为空，基线读取提示需先指定实际型号；本会话没有既往问答轮次、可复用引用为空；个人记忆在本会话已设为不进记忆，无法调取其他会话当时的答复；品类本体为隔离合成品类，除 model_count 为 1 外无可读内容。没有查到的：上次供应商比较这一事件本身、排除 C 家的决定记录与理由、C 家对应的实际供应商名称或编号、该比较所属的品类或项目或提案对象。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": \"current_session\"}, \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v2;keyword-sat-1.2;own-words+answer-side;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"c20ed5b1-8033-4b12-a59b-f61236684365\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"上次比较供应商的时候，为什么排除了 C 家？\", \"session_id\": \"72fe2770-7d65-490c-afe0-2e7b29a88320\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"99e864c8-e60b-4467-9016-c33064d0c569\", \"execution_ref\": {\"call_id\": \"000ea25f-31c9-4d44-bfb4-b310be323293\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T11:44:27.458259+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"324786d4-de2a-40c9-84e0-13fe847c22c0\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"c\", \"供应\", \"供应商\", \"家\", \"排除\", \"比较\", \"评估\", \"选型\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"a642eb61-1fc8-4761-9ba9-f84098a2664c\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T11:44:27.013801+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"d36f9acb-07bc-4489-83bf-a59e16e34189\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T11:44:31.463707+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"f725ffe5-a06a-4cc7-b37e-4b040b495fc8\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"56b3a871-aedd-4b3f-8517-46dbc31c306e\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"324786d4-de2a-40c9-84e0-13fe847c22c0\", \"key\": \"category-49fdff6a86754459aee1a6f21817477d\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"aafd8b49-89c0-4d05-803b-c7d4875e3e3a\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"aafd8b49-89c0-4d05-803b-c7d4875e3e3a\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"2aeb12b3-cdf3-489f-8155-130c41c57cfc\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T11:44:39.223041+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"116c0c8b-506f-4cf0-8346-9ba798fc7082\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"0099562f-8376-463f-a6d0-284a247bef5a\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"324786d4-de2a-40c9-84e0-13fe847c22c0\", \"key\": \"category-49fdff6a86754459aee1a6f21817477d\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"aafd8b49-89c0-4d05-803b-c7d4875e3e3a\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"aafd8b49-89c0-4d05-803b-c7d4875e3e3a\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"418cdb87-a7d3-4c8c-99aa-b72992b15efd\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T11:44:42.945283+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"a2cdc1ad-4e8c-41f3-b779-b007d0f6b57c\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"f6627ce6-213a-4916-91d9-6902344872c0\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"mcp.tools.list\", \"taint\": \"trusted\", \"value\": {\"taint\": \"admitted_metadata\", \"tools\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"c982b4d9-7e4b-493b-bd73-0d299ade2c61\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"324786d4-de2a-40c9-84e0-13fe847c22c0\", \"key\": \"category-49fdff6a86754459aee1a6f21817477d\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"aafd8b49-89c0-4d05-803b-c7d4875e3e3a\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"aafd8b49-89c0-4d05-803b-c7d4875e3e3a\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"280388c7-a87d-4734-8b5f-efe41b3a8f71\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"57213063-645d-4680-845c-cf70f026f6f7\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"结论：在当前可读范围内没有找到上次供应商比较的任何记录，也没有找到排除 C 家的依据，因此无法给出排除原因（不作推断、不用通用常识替代贵司当时的判断）。已核对到的：企业资料检索在当前品类「汽车充气泵」下按 knowledge/supply/artifact/issue/change/project_status 且含历史返回 0 条（更宽的两次检索被本轮查找预算拦截，标记为 RATE_LIMITED / MODEL_BUDGET_EXCEEDED）；品类知识库中竞品、边界、分段、用户声音、法规、研究问题与参数全部为 0 条；按品类及按名称读取产品与型号列表均为空，基线读取提示需先指定实际型号；本会话没有既往问答轮次、可复用引用为空；个人记忆在本会话已设为不进记忆，无法调取其他会话当时的答复；品类本体为隔离合成品类，除 model_count 为 1 外无可读内容。没有查到的：上次供应商比较这一事件本身、排除 C 家的决定记录与理由、C 家对应的实际供应商名称或编号、该比较所属的品类或项目或提案对象。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:2",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

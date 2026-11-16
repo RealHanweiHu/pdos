@@ -1,0 +1,72 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 94.9,
+  "clarifications": [
+    "C 家含税报价单和 B 家交期的原始记录（报价单/邮件/交期确认），你现在能提供原文或截图吗？",
+    "上次比较用的「目标价」是哪种口径？（C 家超目标价 12% 就是对这个口径算的）",
+    "这一轮往下做，你想要的产出是什么？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 206596,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"result\": [{\"cells\": {\"decisions\": {\"status\": \"not_recorded\", \"analysis\": \"选 B、排除 C 属上次记录中的建议结论，本轮未找到任何具名批准或责任人签署记录，故不记为已决；取舍与批准仍需相应负责人本人作出。\"}, \"key_changes\": {\"status\": \"not_recorded\", \"analysis\": \"上次会话记录（run 45c96187 / session f49a01fa，as_of 2026-11-15，属情景卡而非业务事实）：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超出目标价 12%，被排除；A 家未排除、留作备选。本轮该品类（汽车充气泵，隔离合成）内检索、竞品库、知识库、平台与产品对象、旧引用目录均 0 命中，无业务记录可引，故记为未记录。\"}, \"unresolved_issues\": {\"status\": \"to_confirm\", \"analysis\": \"上次挂起两项：① 补 C 家的含税报价单；② 核对 B 家交期的单位（天/周、工作日/自然日）。两项在本轮可读范围均查不到原件，尚未关闭；另目标价口径（币种/含税/渠道/零售或采购）亦无记录可查。\"}}}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:50:23.451953+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家含税报价单原件：查不到（当前可读范围检索命中 0）\", \"B 家交期的原始依据与计量单位（天/周、工作日/自然日）：查不到\", \"目标价口径（币种、含税/未税、渠道、零售价或采购价）：查不到\", \"A/B/C 三家供应商主体名称与可比对的数据记录：查不到\", \"本工作链无旧引用可续读，上次会话所引原文条目本轮无法逐字核对\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [], \"unfinished\": [\"补 C 家的含税报价单原件：当前可读范围查不到，C 家「超目标价 12%」的排除理由无法复核\", \"核对 B 家交期的计量单位：查不到原始记录，「比 A 家短 2 周」口径未锁定\", \"目标价口径（币种/含税/渠道/零售或采购）：查不到，三家报价与目标价是否同口径未知\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单原件：当前可读范围查不到，C 家「超目标价 12%」的排除理由无法复核",
+    "核对 B 家交期的计量单位：查不到原始记录，「比 A 家短 2 周」口径未锁定",
+    "目标价口径（币种/含税/渠道/零售或采购）：查不到，三家报价与目标价是否同口径未知",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:10",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

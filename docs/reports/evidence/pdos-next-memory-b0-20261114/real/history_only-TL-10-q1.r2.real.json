@@ -1,0 +1,66 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 134.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 190117,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内未查到\"气嘴漏气\"的品质问题记录、测试数据或已确认根因（品类「汽车充气泵」下的 issue/CAPA/现场反馈/试测/变更检索、证据库、品类知识与参数、平台产品清单均返回 0 条；quality_issue 技能与 MCP 连接器在当前范围不可用）。唯一线索来自我本人此前两次会话的工作记录（历史情景卡，非业务事实）：一次记录为\"从这批不良样件看，似乎是供应商换了密封圈材料导致气嘴漏气\"（当时即属推断），另一次的跟进事项\"联系供应商确认是否换料\"\"安排拆件分析\"均未完成。故根因尚未确认，候选仅为\"密封圈材料/供应商换料\"这一未验证假设，需补供应商换料确认与拆件分析两项证据；结论应由品质/工程专业本人作出。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T13:05:15.776492+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围内不存在可引用的品质问题/CAPA/现场反馈/试测记录，因此没有任何本轮签发的引用可支持根因结论\", \"是否存在与气嘴漏气相关的不良样件批号、问题单号、拆件报告、供应商换料通知或气密性测试数据（本次未读到）\", \"密封圈材料变更的供应商、时点与生效批次\", \"气嘴型号、装配扭矩/压装参数是否同步变更\", \"漏气测试工况、判定标准与不良判定依据\", \"根因结论的签署责任人（品质/工程）与其应依据的判定规则\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"case\": {\"text\": \"汽车充气泵品类的气嘴漏气不良（category 28d5e55a-f920-4e97-b298-f20ad4904af7，品类内仅 1 个型号）。本轮在 issue/CAPA/field_feedback/test_run/change 与证据库中检索均返回 0 条，未读到可引用的不良批号或问题单号，具体批次与型号待确认。\", \"status\": \"to_confirm\"}, \"measures\": {\"text\": \"未读到已登记的围堵措施或 CAPA 措施（检索范围内无围堵记录、无 CAPA、无相关变更单），因此无法列出已生效的措施与其责任人。\", \"status\": \"not_recorded\"}, \"root_cause\": {\"text\": \"未查到已确认的根因结论。唯一线索是我本人此前会话的工作记录（历史情景卡，非业务事实、不可引用）：'从这批不良样件看，似乎是供应商换了密封圈材料导致气嘴漏气'，当时措辞即为推断；配套的'联系供应商确认是否换料'与'安排拆件分析'两项跟进未见完成记录。因此当前只能给出候选假设：密封圈材料/供应商换料导致密封失效，状态为未验证。\", \"status\": \"to_confirm\"}, \"verification\": {\"text\": \"未读到拆件分析结论、密封圈材料或供应商换料确认、气密性测试结果等验证证据；此前会话登记的'联系供应商确认是否换料'与'安排拆件分析'仍为未完成状态，缺少完成回执与数据。\", \"status\": \"not_recorded\"}, \"conditions_and_differences\": {\"text\": \"未能按批次/来料状态做差异比对（检索范围内无来料、批次、版本与不良时间线记录）。已知待核条件：密封圈材料与供应商变更前后差异、装配扭矩/压装参数、气嘴型号与公差、以及漏气测试工况与判定标准；需确认换料生效时点与不良出现时点是否重合，才能把假设升级为可支撑的根因。\", \"status\": \"to_confirm\"}}}], \"format\": \"cases\"}}, \"status\": \"partial\", \"summary\": \"在当前可读范围内未查到\\\"气嘴漏气\\\"的品质问题记录、测试数据或已确认根因（品类「汽车充气泵」下的 issue/CAPA/现场反馈/试测/变更检索、证据库、品类知识与参数、平台产品清单均返回 0 条；quality_issue 技能与 MCP 连接器在当前范围不可用）。唯一线索来自我本人此前两次会话的工作记录（历史情景卡，非业务事实）：一次记录为\\\"从这批不良样件看，似乎是供应商换了密封圈材料导致气嘴漏气\\\"（当时即属推断），另一次的跟进事项\\\"联系供应商确认是否换料\\\"\\\"安排拆件分析\\\"均未完成。故根因尚未确认，候选仅为\\\"密封圈材料/供应商换料\\\"这一未验证假设，需补供应商换料确认与拆件分析两项证据；结论应由品质/工程专业本人作出。\", \"questions\": [{\"id\": \"q1\", \"why\": \"品类内只有 1 个型号，而品质问题与不良记录检索为空；没有批次/时点，我无法定位原始证据，后续差异比对与根因推断也缺少基线。\", \"options\": [{\"label\": \"我给出批号或样件编号/日期区间\", \"value\": \"我提供不良批号/样件编号和日期区间\"}, {\"label\": \"不限批次，看该型号全部漏气不良\", \"value\": \"只针对品类内现有唯一型号的全部漏气不良\"}, {\"label\": \"先看已有的用户声音/退货记录\", \"value\": \"先只看已登记的现场反馈与退货记录\"}], \"question\": \"这次要查的气嘴漏气，具体对应哪批不良样件／哪个型号／什么时间段？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"现有唯一线索是未验证的推断。要把'密封圈换料'从假设变成可支撑的根因，必须有拆件分析结论或供应商换料证据；我也需要据此准备给品质/工程复核的具名决定材料。\", \"options\": [{\"label\": \"有文件，我上传给你\", \"value\": \"我上传拆件报告/换料通知/测试记录等文件\"}, {\"label\": \"资料已在系统内，请继续检索\", \"value\": \"文件在系统里，请继续检索该品类记录\"}, {\"label\": \"暂无原始资料，先出待核清单\", \"value\": \"目前只有口头/经验判断，先出待核清单\"}], \"question\": \"能否提供可核的原始资料（拆件报告、供应商换料通知、来料检验/气密测试记录、不良照片）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"根因结论属于专业本人作出的决定；我可以按 quality_issue 流程准备证据台账与具名决定材料，但该技能当前未在范围启用，需你确认由谁签署、是否走登记流程。\", \"options\": [{\"label\": \"品质工程师签署，我准备证据台账+具名决定材料\", \"value\": \"由品质工程师签署，我准备决定材料与证据台账\"}, {\"label\": \"工程签署\", \"value\": \"由我方工程签署\"}, {\"label\": \"先整理资料，暂不进入签署流程\", \"value\": \"先只做资料整理，暂不进入签署流程\"}], \"question\": \"根因结论由谁签署，我需要准备什么形式的材料？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"联系供应商确认密封圈材料/供应商是否换料（此前会话记录，本轮未读到完成回执）\", \"安排气嘴拆件分析以确认或排除\\\"密封圈换料\\\"假设（此前会话记录，本轮未读到分析结论）\", \"本轮资料检索预算已用尽；如需在同会话继续检索该品类更多记录，请提示继续深入查\"]}",
+  "unfinished": [
+    "联系供应商确认密封圈材料/供应商是否换料（此前会话记录，本轮未读到完成回执）",
+    "安排气嘴拆件分析以确认或排除\"密封圈换料\"假设（此前会话记录，本轮未读到分析结论）",
+    "本轮资料检索预算已用尽；如需在同会话继续检索该品类更多记录，请提示继续深入查"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:3",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:10",
+    "platform.read:completed:2",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1",
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

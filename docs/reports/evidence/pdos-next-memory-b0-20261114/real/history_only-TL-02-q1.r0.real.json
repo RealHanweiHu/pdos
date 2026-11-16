@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 27.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 85369,
+  "held_tokens": 0,
+  "answer": "召回本人上次\"比较三家气泵供应商的报价和交期\"（2026-11-14，已完成）的历史结论：建议选 B 家。历史摘要仅保存结论，三家供应商名称、报价与交期数值未留存；当前品类范围内检索不到可读的供应商报价/交期记录，故结论无法用现有数据复核。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:26:35.216388+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当时三家供应商的名称、报价与交期数值未在历史记录中留存，无法复述\", \"2026-11-14 之后品类范围内检索不到可读的供应商报价/交期记录（search 返回 0 条），无法确认结论是否仍适用\", \"历史答案中的引用不可直接沿用，本次未取得任何本轮签发引用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"召回本人上次\\\"比较三家气泵供应商的报价和交期\\\"（2026-11-14，已完成）的历史结论：建议选 B 家。历史摘要仅保存结论，三家供应商名称、报价与交期数值未留存；当前品类范围内检索不到可读的供应商报价/交期记录，故结论无法用现有数据复核。\", \"questions\": [{\"id\": \"q1\", \"why\": \"供应商报价与交期会变动，半年前的最优解不一定仍成立；重新拉取才能给出可执行的当前建议。\", \"options\": [{\"label\": \"现在重新拉取三家当前报价与交期并复核\", \"value\": \"recheck_now\"}, {\"label\": \"先找回当时那份对比原始材料（如果仍可读）\", \"value\": \"find_original\"}, {\"label\": \"暂不需要，先按上次结论记 B 家\", \"value\": \"keep_as_is\"}], \"question\": \"是否要重新拉取三家气泵供应商当前的报价与交期，按同一组维度复核“B 家”是否仍为建议？\", \"depends_on\": [], \"recommended\": {\"value\": \"recheck_now\", \"reason\": \"当前无可读供应商记录，只能依赖历史结论；重新拉取可给出带当前数据的建议\"}, \"allow_free_text\": true}], \"unfinished\": [\"未办理：按 q1 的选择重新拉取三家气泵供应商当前报价与交期，并复核“B 家”结论是否仍成立——本轮仅作历史结论召回，未执行取数\", \"未找回：上次对比中三家供应商的名称、报价与交期原始数值仍未定位到可读来源\"]}",
+  "unfinished": [
+    "未办理：按 q1 的选择重新拉取三家气泵供应商当前报价与交期，并复核“B 家”结论是否仍成立——本轮仅作历史结论召回，未执行取数",
+    "未找回：上次对比中三家供应商的名称、报价与交期原始数值仍未定位到可读来源"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

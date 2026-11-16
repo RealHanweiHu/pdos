@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 67.5,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 220556,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内（品类\"汽车充气泵\"）没有查到任何与\"气嘴漏气\"相关的品质问题记录、围堵措施、CAPA 或根因结论，因此无法给出公司记录中的根因答案。已核对的读取路径全部为空：品类检索 0 条；品类知识库六类计数均为 0、参数 0 条；竞品列表空；证据检索（空查询/\"漏气\"/\"气嘴\"）空；本会话历史无既往结论；platform.read 在品类与全局均返回 0 条产品记录，无法定位具体型号去读产品基线；quality_issue 技能在当前租户/范围未启用（FORBIDDEN_SCOPE），无法按品质问题流程分诊与起草 CAPA；第二次跨范围检索被本轮查找预算拦截。结论是\"该范围内未找到\"，而不是\"不存在\"。要给出根因，需要：具体型号与气嘴位置、原始问题来源材料（客户反馈/退货/试产或检验报告）、是否放宽检索范围、以及 quality_issue 技能启用权限。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T10:05:55.125692+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"5484881a-550d-401d-bf24-2d6892bdbdc2\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"品质\", \"嘴\", \"根因\", \"气\", \"漏气\", \"问题\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"0f2d1404-3a6b-447e-b831-28b0444f17e5\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"22ca1015-b473-40b0-a316-7d380a705006\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"气嘴漏气这个问题的根因是什么？\", \"session_id\": \"6d676934-0769-494f-943d-b0eaf50ed299\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"cc526ca4-e594-4931-af97-655387967059\", \"execution_ref\": {\"call_id\": \"81526402-90c3-4d4a-9dce-c43b443a1542\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"mcp.tools.list\", \"taint\": \"trusted\", \"value\": {\"taint\": \"admitted_metadata\", \"tools\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"60ccd0bb-e328-4d2f-ad3c-a895735c19d3\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T10:06:08.793659+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"2b0d6ba6-7f9d-4a6d-b800-77843decb927\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"977d00d2-628d-4727-8e6a-bce10b071518\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4a826fcf-a1f5-4afb-8c3e-631cacd37580\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"7c35c3fd-06d1-45ae-9f37-8e7bdfcaeffc\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"5484881a-550d-401d-bf24-2d6892bdbdc2\", \"key\": \"category-012fe0163e474f13886ad7d34a97538d\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"cc403ce2-f08f-4c67-9cd2-7a2dbeaf8f94\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"cc403ce2-f08f-4c67-9cd2-7a2dbeaf8f94\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"95f2ac92-bbc3-478d-a911-35c123c92a87\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"4587ec19-d5dd-45f1-a4c4-f0efc73a21d1\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"87597c8c-792b-4572-9287-b79866542182\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"d051ce29-0977-40da-b192-f5a280cd132c\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"5484881a-550d-401d-bf24-2d6892bdbdc2\", \"key\": \"category-012fe0163e474f13886ad7d34a97538d\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"cc403ce2-f08f-4c67-9cd2-7a2dbeaf8f94\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"cc403ce2-f08f-4c67-9cd2-7a2dbeaf8f94\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"bbbca2e0-48dd-4a9c-a4e8-725196fb30bf\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T10:06:31.262178+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"2fb37d6b-8415-4088-9c77-7e3b495f56d1\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"fd0260c0-9b2f-4456-b87e-fbcc2fa93b85\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"2663743f-d512-4038-9985-e37b9cd798cd\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T10:06:37.322716+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"648f7f2f-77ac-474f-bf5c-5fe8508f3ce1\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"3c99aa84-b471-446b-a813-5e87d4ed2e77\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"af332d00-500a-4d22-b738-72c6340d6d8a\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T10:06:43.837625+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"bbc36773-d923-4818-bc50-c763122651b3\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"在当前可读范围内（品类\\\"汽车充气泵\\\"）没有查到任何与\\\"气嘴漏气\\\"相关的品质问题记录、围堵措施、CAPA 或根因结论，因此无法给出公司记录中的根因答案。已核对的读取路径全部为空：品类检索 0 条；品类知识库六类计数均为 0、参数 0 条；竞品列表空；证据检索（空查询/\\\"漏气\\\"/\\\"气嘴\\\"）空；本会话历史无既往结论；platform.read 在品类与全局均返回 0 条产品记录，无法定位具体型号去读产品基线；quality_issue 技能在当前租户/范围未启用（FORBIDDEN_SCOPE），无法按品质问题流程分诊与起草 CAPA；第二次跨范围检索被本轮查找预算拦截。结论是\\\"该范围内未找到\\\"，而不是\\\"不存在\\\"。要给出根因，需要：具体型号与气嘴位置、原始问题来源材料（客户反馈/退货/试产或检验报告）、是否放宽检索范围、以及 quality_issue 技能启用权限。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:4",
+    "mcp.tools.list:completed:1",
+    "model:completed:12",
+    "platform.read:completed:7",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

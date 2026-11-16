@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 45.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 84061,
+  "held_tokens": 0,
+  "answer": "已按“简短催交期”写好邮件草稿（主题+正文），但先说明：在「汽车充气泵」品类的可读范围内，没有检索到供应商、样件订单或交期记录——供应、外部等待、Build、项目状态、制造文档、验证交接、知识库等来源均返回 0 条，品类下也没有产品/变体/品类知识条目。因此草稿中的供应商名称、样件编号、原承诺交期、期望交期均为占位符，未凭空填入任何日期或数量。另给了一句更强硬的替换句；把 3 个问题（供应商与订单信息、实际延期情况与期望交期、催办语气与是否要书面确认新交期）确认后即可定稿发出。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:38:19.896564+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商名称与联系人/邮箱\", \"样件单号、型号、数量\", \"原承诺交期与当前实际状态（是否已延期、延期多少、卡点是什么）\", \"我方可接受的期望到货日\", \"对方回复截止日\", \"发件人署名与部门\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已按“简短催交期”写好邮件草稿（主题+正文），但先说明：在「汽车充气泵」品类的可读范围内，没有检索到供应商、样件订单或交期记录——供应、外部等待、Build、项目状态、制造文档、验证交接、知识库等来源均返回 0 条，品类下也没有产品/变体/品类知识条目。因此草稿中的供应商名称、样件编号、原承诺交期、期望交期均为占位符，未凭空填入任何日期或数量。另给了一句更强硬的替换句；把 3 个问题（供应商与订单信息、实际延期情况与期望交期、催办语气与是否要书面确认新交期）确认后即可定稿发出。\", \"questions\": [{\"id\": \"q_supplier_order\", \"why\": \"可读范围内没有供应与样件记录，收件抬头和正文标识只能靠你提供，否则只能留占位符。\", \"options\": [{\"label\": \"我直接告诉你具体信息\", \"value\": \"我直接告诉你\"}, {\"label\": \"保留占位符，我自己填\", \"value\": \"keep_placeholders\"}, {\"label\": \"帮我继续在系统里查（需放开检索）\", \"value\": \"search_more\"}], \"question\": \"供应商名称、联系人/邮箱，以及样件单号（订单号）、型号和数量是多少？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_placeholders\", \"reason\": \"草稿已按可直接套用排好，你手上填最快；系统内确实查不到相关记录。\"}, \"allow_free_text\": true}, {\"id\": \"q_delivery_status\", \"why\": \"催交期邮件的说服力取决于“已延期多少”和“我方期望日期”，这两项在资料里没有，邮件中的日期只能占位。\", \"options\": [{\"label\": \"对方口头给了新日期，但没书面确认\", \"value\": \"has_new_date\"}, {\"label\": \"一直没有任何回复\", \"value\": \"no_response\"}, {\"label\": \"已书面确认延期，有书面新交期\", \"value\": \"confirmed_delay\"}], \"question\": \"目前实际状态是什么：对方有没有说过新交期？原承诺交期是哪天、我方希望哪天拿到样件？\", \"depends_on\": [], \"recommended\": {\"value\": \"has_new_date\", \"reason\": \"多数催交期场景是口头日期无书面确认，这样邮件可同时起到固化交期的作用。\"}, \"allow_free_text\": true}, {\"id\": \"q_tone\", \"why\": \"同一件事的语气差异很大，直接影响供应商响应速度和后续合作方式。\", \"options\": [{\"label\": \"礼貌但设回复截止日（当前草稿）\", \"value\": \"polite_with_deadline\"}, {\"label\": \"明确施压，点出影响与备选来源\", \"value\": \"firm_pressure\"}, {\"label\": \"正式升级：抄送采购/项目经理，要求书面交期承诺\", \"value\": \"formal_escalation\"}], \"question\": \"催办语气要什么强度，以及要不要要求对方书面回复新交期？\", \"depends_on\": [], \"recommended\": {\"value\": \"polite_with_deadline\", \"reason\": \"首次催交期通常先走“设截止日+要书面确认”，成本低且不伤关系。\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商名称/联系人、样件单号与数量在可读资料中未找到，邮件对应位置仍是占位符\", \"原承诺交期与当前实际发货状态未知，催办强度与新交期要求待用户确认\", \"本轮检索预算已用尽，如需从系统内继续查单据需用户授权继续深入查\"]}",
+  "unfinished": [
+    "供应商名称/联系人、样件单号与数量在可读资料中未找到，邮件对应位置仍是占位符",
+    "原承诺交期与当前实际发货状态未知，催办强度与新交期要求待用户确认",
+    "本轮检索预算已用尽，如需从系统内继续查单据需用户授权继续深入查"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}
