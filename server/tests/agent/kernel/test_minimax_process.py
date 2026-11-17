@@ -22,6 +22,7 @@ from pdos_next.agent.kernel.models import (
     TenantSkillEnablement,
     ValidationBudget,
 )
+from pdos_next.agent.kernel.skills import SkillCatalog
 from pdos_next.agent.model_configuration.kms import AliyunKms
 from pdos_next.api import create_app
 from pdos_next.core.database import tenant_session
@@ -287,6 +288,7 @@ def test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_propos
             saved = api.post(command_path, headers=setup.headers, json=preview.json()["command"])
             assert saved.status_code == 200, saved.text
             agent_path = f"/v1/categories/{setup.category}/agent-runs"
+            drafting = SkillCatalog().configuration("proposal_drafting")
             accepted = api.post(
                 agent_path,
                 headers=setup.headers,
@@ -296,6 +298,12 @@ def test_default_minimax_wire_restarts_question_and_creates_one_actual_t1_propos
                     "sources": [
                         {"artifact_id": f.arguments["artifact_id"], "expected_revision": 1}
                     ],
+                    # A category run no longer preloads this skill (P76 item 4c); the
+                    # page action that drafts a proposal requests it, as here.
+                    "requested_skills": [{
+                        "key": drafting.key, "version": drafting.version,
+                        "digest": drafting.digest,
+                    }],
                 },
             )
             assert accepted.status_code == 202, accepted.text
