@@ -14,7 +14,6 @@ from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.agent.kernel.types import RunScope
 from pdos_next.core.models import Receipt
 from pdos_next.errors import DomainError
-from pydantic import ValidationError
 
 
 class MemorySession:
@@ -217,8 +216,12 @@ def test_model_cannot_supply_privacy_or_provenance_fields(bound, field, value):
     source, _ = snapshot(bound)
     args = canonical(source.id, kind="snapshot")
     args[field] = value
-    with pytest.raises(ValidationError):
+    # Refused before anything is written, and returned as a tool error the model
+    # can correct rather than a failure of the whole run (D479).
+    with pytest.raises(DomainError) as refused:
         command(bound, args)
+    assert refused.value.code == "VALIDATION_FAILED"
+    assert [item["path"] for item in refused.value.detail["fields"]] == [field]
 
 
 @pytest.mark.parametrize(

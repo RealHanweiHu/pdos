@@ -28,6 +28,7 @@ from .execution import (
     recover_domain_call,
 )
 from .models import AgentRun, AgentToolCall, PublicWebSnapshot
+from .tool_arguments import tool_arguments
 
 
 class ExistingResult(Exception):
@@ -125,7 +126,8 @@ class DomainCommands:
                         403,
                     )
                 payload[key] = actual
-        normalized = PAYLOADS[operation].model_validate(payload)
+        # Arguments the model got wrong go back to it as a tool error (D245, D479).
+        normalized = tool_arguments(PAYLOADS[operation], payload)
         current = require_access(session, self.context(scope), run.product_id)
         reads = self._artifact_reads(run)
         pinned = {read.artifact_id: read.expected_revision for read in reads}

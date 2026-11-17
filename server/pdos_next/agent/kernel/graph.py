@@ -560,13 +560,20 @@ class AgentKernel:
                 ports.emit(scope, {"type": "tool_finished", "tool": spec.name, "call_id": call.id})
                 return result
 
+            def registered(name):
+                # A name the model made up is that call's own error, returned to the model
+                # by ``call_tool`` below; it never fails the rest of the batch (D479).
+                try:
+                    return registry.get(name)
+                except DomainError:
+                    return None
+
             # Authorization always happens in each worker before its fresh query.
             parallel, serial = [], []
             for index, call in enumerate(calls):
-                spec = registry.get(call.name)
-                (parallel if spec.tier == "READ" and spec.parallel_safe else serial).append(
-                    (index, call)
-                )
+                spec = registered(call.name)
+                (parallel if spec and spec.tier == "READ" and spec.parallel_safe
+                 else serial).append((index, call))
             with ThreadPoolExecutor(max_workers=min(4, len(parallel) or 1)) as executor:
                 # Each read runs in a copy of this context, so the attempt's stop signal
                 # reaches the isolated children it starts (D269).
@@ -612,9 +619,11 @@ class AgentKernel:
                     raise DomainError("DUPLICATE_INTENT_CONFLICT", "候选等待引用已变化。")
                 if not same:
                     pending.append(item)
+            specs = {call.id: registered(call.name) for call in calls}
             views = {
-                call.id: ports.tool_message(scope, registry.get(call.name), answers[call.id])
-                if callable(getattr(ports, "tool_message", None)) else answers[call.id]
+                call.id: ports.tool_message(scope, specs[call.id], answers[call.id])
+                if specs[call.id] and callable(getattr(ports, "tool_message", None))
+                else answers[call.id]
                 for call in calls
             }
             messages = [
@@ -651,8 +660,10 @@ class AgentKernel:
                     *[
                         hooks.pack(scope, {
                             "tool": c.name,
-                            "tier": registry.get(c.name).tier,
-                            "taint": registry.get(c.name).taint,
+                            # An unregistered name ran nothing: its entry is only the
+                            # server's own refusal.
+                            "tier": specs[c.id].tier if specs[c.id] else "READ",
+                            "taint": specs[c.id].taint if specs[c.id] else "trusted",
                             "value": answers[c.id],
                             **({"model_view": {key: views[c.id][key] for key in (
                                 "result_handle", "page", "total_pages",
@@ -716,7 +727,13 @@ class AgentKernel:
                             "MISSING_REQUIRED_EVIDENCE", "隔离读取仍有未续读的结果片段。",
                             detail={"result_pages": pending},
                         )
-                result = ports.verify(scope, result, hooks.unpack(scope, state["tool_results"]))
+                actual = hooks.unpack(scope, state["tool_results"])
+                result = ports.verify(scope, result, actual)
+                if scope.isolation == "main":
+                    from .read_failures import attach as attach_read_failures
+
+                    # D479: a read whose source never answered cannot back "completed".
+                    result = attach_read_failures(result, actual)
                 AgentOutput.model_validate(result)
                 return {"output": result}
             except (ValueError, ValidationError, DomainError) as error:
