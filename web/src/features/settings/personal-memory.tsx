@@ -3,10 +3,10 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/browser-api";
 import {
-  aliasMeaning, choicePayload, draftPayload, draftProblem, groupNotes, isCandidatesView, isNotesView, kindNames, memoryBase, mergedDefault, requestKey,
-  resolutionNames, scopeLabel, stateNames, TEXT_LIMIT,
-  type Candidate, type CandidatesView, type ConflictChoice, type ConflictNote, type ConflictView, type HistoryView, type MemoryNote, type NoteDraft,
-  type NoteKind, type NotesView, type OwnerSettings, type Resolution, type ScopeKind,
+  aliasMeaning, choicePayload, draftPayload, draftProblem, evidenceInputs, evidenceLabel, groupNotes, isCandidatesView, isNotesView, kindNames, localDay, memoryBase,
+  mergedDefault, ownRelations, relationNames, requestKey, resolutionNames, scopeLabel, stanceNames, startNote, stateNames, TEXT_LIMIT,
+  type Candidate, type CandidatesView, type ConflictChoice, type ConflictNote, type ConflictView, type EvidenceInput, type HistoryView, type MemoryNote, type NoteDraft,
+  type NoteKind, type NotesView, type OwnerSettings, type RelationRef, type RelationType, type Resolution, type ScopeKind, type Stance,
 } from "@/lib/personal-memory";
 import { Button } from "../../components/ui/button";
 import { ShareToProject } from "../scope-notes/share-to-project";
@@ -15,19 +15,23 @@ import styles from "./personal-memory.module.css";
 type Api = typeof browserApi;
 type Option = { id: string; label: string };
 const scopeKindNames: Record<ScopeKind, string> = { global: "全局", category: "品类", product: "产品", proposal: "提案", project: "项目" };
-const emptyDraft = (): NoteDraft => ({ kind: "convention", text: "", scope: { kind: "global", id: null }, valid_until: "", alias_term: "", alias_canonical: "" });
+const emptyDraft = (): NoteDraft => ({ kind: "convention", text: "", scope: { kind: "global", id: null }, valid_until: "", alias_term: "", alias_canonical: "", occurred_at: "", valid_from: "", evidence: [], relations: [] });
+const objectKinds = ["category", "product", "proposal", "project"] as const;
+type ObjectKind = typeof objectKinds[number];
 const message = (failure: unknown, fallback: string) => failure instanceof Error ? failure.message : fallback;
 const day = (value: string) => value.slice(0, 10);
 
 /** Similar or contradicting old notes: the owner chooses merge, replace or keep both (P86 第 4 项). */
-export function ConflictPicker({ conflicts, newer, busy, onChoose, onCancel, action = "保存" }: { conflicts: ConflictNote[]; newer: string; busy: boolean; onChoose: (choice: ConflictChoice) => void; onCancel: () => void; action?: string }) {
+export function ConflictPicker({ conflicts, newer, busy, onChoose, onCancel, action = "保存" }: { conflicts: ConflictNote[]; newer: string; busy: boolean; onChoose: (choice: ConflictChoice, relation: RelationType | null) => void; onCancel: () => void; action?: string }) {
   const [resolution, setResolution] = useState<Resolution>("keep_both");
+  const [relation, setRelation] = useState<RelationType | "">("");
+  const historyOnly = conflicts.some(item => item.replace_effect === "history_only");
   const [target, setTarget] = useState(conflicts[0]?.note_id ?? "");
   const older = conflicts.find(item => item.note_id === target) ?? conflicts[0];
   const [merged, setMerged] = useState(() => mergedDefault(older?.text ?? "", newer));
   return <div className={styles.conflict} role="group" aria-label="相似的旧条目">
     <p className={styles.conflictTitle}>已有 {conflicts.length} 条相似或矛盾的旧条目，请选择怎么处理：</p>
-    <ul className={styles.conflictList}>{conflicts.map(item => <li key={item.note_id}><span className={styles.chip}>{item.kind_label}</span><span className={styles.noteText}>{item.text}</span><span className={styles.meta}>{scopeLabel(item.scope)} · {day(item.confirmed_at)}</span></li>)}</ul>
+    <ul className={styles.conflictList}>{conflicts.map(item => <li key={item.note_id}><span className={styles.chip}>{item.kind_label}</span><span className={styles.noteText}>{item.text}</span><span className={styles.meta}>{scopeLabel(item.scope)} · {day(item.confirmed_at)}{startNote(item) ? ` · ${startNote(item)}` : ""}</span></li>)}</ul>
     <fieldset className={styles.choices} disabled={busy}>
       <legend className="sr-only">处理方式</legend>
       {(["merge", "replace", "keep_both"] as Resolution[]).map(value => <label key={value}><input type="radio" name="memory-resolution" checked={resolution === value} onChange={() => setResolution(value)}/>{resolutionNames[value]}</label>)}
@@ -37,9 +41,10 @@ export function ConflictPicker({ conflicts, newer, busy, onChoose, onCancel, act
       <label>合并后的内容<textarea value={merged} maxLength={TEXT_LIMIT} rows={3} onChange={event => setMerged(event.target.value)}/></label>
       <span className={styles.counter}>{merged.length}/{TEXT_LIMIT}</span>
     </div>}
-    {resolution === "replace" && <p className={styles.hint}>旧条目标“已替换”并记下失效时间，仍可在历史里查看或彻底删除。</p>}
+    {resolution === "replace" && <p className={styles.hint}>{historyOnly ? "这条的生效起点早于旧条目：它只记入历史，旧条目保持不变（替代按生效时间判断）。" : "旧条目在这条生效时标“已替换”，仍可在历史里查看或彻底删除。"}</p>}
+    {resolution === "keep_both" && <label className={styles.inlineSelect}>同时标为<select value={relation} disabled={busy} onChange={event => setRelation(event.target.value as RelationType | "")}><option value="">不标</option><option value="conflicts">冲突（两条口径都只作背景）</option><option value="duplicates">重复</option></select></label>}
     <div className={styles.actions}>
-      <Button type="button" size="sm" disabled={busy || resolution === "merge" && !merged.trim()} onClick={() => onChoose(choicePayload(resolution, conflicts, target, merged))}>{busy ? "正在保存…" : action}</Button>
+      <Button type="button" size="sm" disabled={busy || resolution === "merge" && !merged.trim()} onClick={() => onChoose(choicePayload(resolution, conflicts, target, merged), resolution === "keep_both" && relation ? relation : null)}>{busy ? "正在保存…" : action}</Button>
       <Button type="button" size="sm" variant="outline" disabled={busy} onClick={onCancel}>取消</Button>
     </div>
   </div>;
@@ -66,7 +71,63 @@ function ScopeField({ api, value, onChange, disabled }: { api: Api; value: NoteD
   </div>;
 }
 
-function NoteFields({ api, draft, setDraft, disabled }: { api: Api; draft: NoteDraft; setDraft: (update: (old: NoteDraft) => NoteDraft) => void; disabled: boolean }) {
+function useObjects(api: Api, kind: ObjectKind | null) {
+  const [options, setOptions] = useState<{ kind: string; items: Option[]; error: string } | null>(null);
+  useEffect(() => {
+    if (!kind) return;
+    let live = true;
+    const source = kind === "product" || kind === "proposal" ? "v1/personal/memory/scope-options" : "v1/personal/preferences/options";
+    api<{ items: { id: string; label: string }[] }>(`${source}?kind=${kind}`).then(result => { if (live) setOptions({ kind, items: result.items.map(item => ({ id: item.id, label: item.label })), error: "" }); })
+      .catch(failure => { if (live) setOptions({ kind, items: [], error: message(failure, "对象读取失败。") }); });
+    return () => { live = false; };
+  }, [api, kind]);
+  return options?.kind === kind ? options : null;
+}
+
+/** 证据链接：本人可读的业务对象；已有的对话、讨论、原件等链接可查看和移除（只存引用，不存片段）。 */
+function EvidenceField({ api, value, shown, onChange, disabled }: { api: Api; value: EvidenceInput[]; shown: MemoryNote["evidence"]; onChange: (links: EvidenceInput[]) => void; disabled: boolean }) {
+  const [kind, setKind] = useState<ObjectKind | "">("");
+  const [target, setTarget] = useState("");
+  const [stance, setStance] = useState<Stance>("supports");
+  const options = useObjects(api, kind || null);
+  const label = (link: EvidenceInput) => {
+    const known = shown?.find(item => item.source_id === link.source_id && item.source_type === link.source_type);
+    if (known) return evidenceLabel(known);
+    const picked = options?.items.find(item => item.id === link.source_id);
+    return evidenceLabel({ source_type: link.source_type, source_kind: link.source_kind ?? null, readable: true, title: picked?.label ?? null, updated: false });
+  };
+  return <div className={styles.links} role="group" aria-label="证据链接">
+    <span className={styles.linksTitle}>证据链接<span className={styles.meta}>（可不填；只保存出处，不保存原文）</span></span>
+    {value.length > 0 && <ul className={styles.linkList}>{value.map((link, index) => <li key={`${link.source_type}:${link.source_id}:${index}`}><span className={styles.linkText}>{label(link)}</span><span className={styles.chip}>{stanceNames[link.stance]}</span><Button type="button" size="sm" variant="ghost" disabled={disabled} onClick={() => onChange(value.filter((_item, other) => other !== index))}>移除</Button></li>)}</ul>}
+    {value.length < 10 && <div className={styles.linkAdd}>
+      <select aria-label="依据种类" value={kind} disabled={disabled} onChange={event => { setKind(event.target.value as ObjectKind | ""); setTarget(""); }}><option value="">添加依据…</option>{objectKinds.map(item => <option key={item} value={item}>{scopeKindNames[item]}</option>)}</select>
+      {kind && <select aria-label={`选择${scopeKindNames[kind]}`} value={target} disabled={disabled || !options} onChange={event => setTarget(event.target.value)}><option value="">{options ? "请选择" : "正在读取…"}</option>{options?.items.map(item => <option key={item.id} value={item.id}>{item.label}</option>)}</select>}
+      {kind && <select aria-label="依据的作用" value={stance} disabled={disabled} onChange={event => setStance(event.target.value as Stance)}>{(Object.keys(stanceNames) as Stance[]).map(item => <option key={item} value={item}>{stanceNames[item]}</option>)}</select>}
+      {kind && <Button type="button" size="sm" variant="outline" disabled={disabled || !target} onClick={() => { onChange([...value, { source_type: "business_object", source_kind: kind, source_id: target, locator: {}, stance }]); setKind(""); setTarget(""); }}>添加</Button>}
+    </div>}
+    {options?.error && <p role="alert" className={styles.error}>{options.error}</p>}
+  </div>;
+}
+
+/** 关系：和你自己的另一条记忆标为冲突或重复；替代通过“替换旧的”办理。 */
+function RelationField({ value, others, onChange, disabled }: { value: RelationRef[]; others: MemoryNote[]; onChange: (relations: RelationRef[]) => void; disabled: boolean }) {
+  const [target, setTarget] = useState("");
+  const [type, setType] = useState<RelationType>("conflicts");
+  const text = (id: string) => others.find(item => item.note_id === id)?.text ?? "另一条记忆";
+  const free = others.filter(item => !value.some(link => link.note_id === item.note_id && link.type === type));
+  if (!others.length && !value.length) return null;
+  return <div className={styles.links} role="group" aria-label="关系">
+    <span className={styles.linksTitle}>关系<span className={styles.meta}>（标为冲突的口径只作背景，不再约束小Pai）</span></span>
+    {value.length > 0 && <ul className={styles.linkList}>{value.map(link => <li key={`${link.type}:${link.note_id}`}><span className={styles.chip}>{relationNames[link.type]}</span><span className={styles.linkText}>{text(link.note_id)}</span><Button type="button" size="sm" variant="ghost" disabled={disabled} onClick={() => onChange(value.filter(item => item !== link))}>移除</Button></li>)}</ul>}
+    {others.length > 0 && value.length < 10 && <div className={styles.linkAdd}>
+      <select aria-label="关系种类" value={type} disabled={disabled} onChange={event => setType(event.target.value as RelationType)}>{(Object.keys(relationNames) as RelationType[]).map(item => <option key={item} value={item}>{relationNames[item]}</option>)}</select>
+      <select aria-label="关联的记忆" value={target} disabled={disabled} onChange={event => setTarget(event.target.value)}><option value="">选择你的另一条记忆…</option>{free.map(item => <option key={item.note_id} value={item.note_id}>{item.text.slice(0, 40)}</option>)}</select>
+      <Button type="button" size="sm" variant="outline" disabled={disabled || !target} onClick={() => { onChange([...value, { type, note_id: target }]); setTarget(""); }}>添加</Button>
+    </div>}
+  </div>;
+}
+
+function NoteFields({ api, draft, setDraft, disabled, others = [], shown }: { api: Api; draft: NoteDraft; setDraft: (update: (old: NoteDraft) => NoteDraft) => void; disabled: boolean; others?: MemoryNote[]; shown?: MemoryNote["evidence"] }) {
   return <fieldset className={styles.fields} disabled={disabled}>
     <legend className="sr-only">记忆内容</legend>
     <div className={styles.kinds} role="radiogroup" aria-label="种类">{(Object.keys(kindNames) as NoteKind[]).map(kind => <label key={kind} className={styles.kind} data-checked={draft.kind === kind}><input type="radio" name="memory-kind" checked={draft.kind === kind} onChange={() => setDraft(old => ({ ...old, kind }))}/><span>{kindNames[kind].label}</span></label>)}</div>
@@ -77,22 +138,31 @@ function NoteFields({ api, draft, setDraft, disabled }: { api: Api; draft: NoteD
     </div>}
     <label className={styles.textLabel}>{draft.kind === "alias" ? "补充说明（可不填）" : "内容"}<textarea value={draft.text} maxLength={TEXT_LIMIT} rows={2} placeholder={draft.kind === "convention" ? "例如：回答先给结论，再列依据" : draft.kind === "background" ? "例如：我负责充气泵品类的成本核算" : "不填时自动写成“我说“气嘴”指气门嘴”"} onChange={event => setDraft(old => ({ ...old, text: event.target.value }))}/><span className={styles.counter}>{draft.text.length}/{TEXT_LIMIT}</span></label>
     <ScopeField api={api} value={draft.scope} disabled={disabled} onChange={scope => setDraft(old => ({ ...old, scope }))}/>
-    <label className={styles.dateLabel}>有效期（可不填，默认不过期）<input type="date" value={draft.valid_until ?? ""} onChange={event => setDraft(old => ({ ...old, valid_until: event.target.value }))}/></label>
+    <div className={styles.dateRow}>
+      <label className={styles.dateLabel}>生效起点（可不填，从保存时起）<input type="date" value={draft.valid_from ?? ""} onChange={event => setDraft(old => ({ ...old, valid_from: event.target.value }))}/></label>
+      <label className={styles.dateLabel}>有效期（可不填，默认不过期）<input type="date" value={draft.valid_until ?? ""} onChange={event => setDraft(old => ({ ...old, valid_until: event.target.value }))}/></label>
+      <label className={styles.dateLabel}>事情发生的时间（可不填）<input type="date" value={draft.occurred_at ?? ""} max={localDay(new Date())} onChange={event => setDraft(old => ({ ...old, occurred_at: event.target.value }))}/></label>
+    </div>
+    <p className={styles.hint}>生效起点早于已有条目的旧信息，选“替换旧的”时只记入历史，不会替换现在的条目。</p>
+    <EvidenceField api={api} value={draft.evidence ?? []} shown={shown} disabled={disabled} onChange={evidence => setDraft(old => ({ ...old, evidence }))}/>
+    <RelationField value={draft.relations ?? []} others={others} disabled={disabled} onChange={relations => setDraft(old => ({ ...old, relations }))}/>
   </fieldset>;
 }
 
-function AddNote({ api, onSaved, disabled }: { api: Api; onSaved: (text: string) => void; disabled: boolean }) {
+function AddNote({ api, onSaved, disabled, others }: { api: Api; onSaved: (text: string) => void; disabled: boolean; others: MemoryNote[] }) {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState<NoteDraft>(emptyDraft);
   const [conflicts, setConflicts] = useState<ConflictNote[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [key, setKey] = useState(requestKey);
-  async function save(choice: ConflictChoice | null) {
+  async function save(choice: ConflictChoice | null, relation: RelationType | null = null) {
     setBusy(true); setError("");
+    const marked = relation && conflicts ? [...(draft.relations ?? []), ...conflicts.map(item => ({ type: relation, note_id: item.note_id }))] : draft.relations;
     try {
-      await api(`${memoryBase}/notes`, { request_key: key, note: draftPayload(draft), conflict: choice });
-      setDraft(emptyDraft()); setConflicts(null); setOpen(false); setKey(requestKey()); onSaved("已记住，之后的对话会按这条办理。");
+      const saved = await api<{ effect?: string; note: MemoryNote }>(`${memoryBase}/notes`, { request_key: key, note: draftPayload({ ...draft, relations: marked }), conflict: choice });
+      setDraft(emptyDraft()); setConflicts(null); setOpen(false); setKey(requestKey());
+      onSaved(saved?.effect === "history_only" ? "这条的生效起点早于现有条目，只记入了历史，现有条目保持不变。" : saved?.note?.state === "pending" ? "已记住，到生效起点那天才会带入对话。" : "已记住，之后的对话会按这条办理。");
     } catch (failure) {
       const detail = (failure as { detail?: { reason_key?: string; conflicts?: ConflictNote[] } }).detail;
       if (detail?.reason_key === "memory_conflict_unresolved" && detail.conflicts) { setConflicts(detail.conflicts); setKey(requestKey()); }
@@ -112,16 +182,31 @@ function AddNote({ api, onSaved, disabled }: { api: Api; onSaved: (text: string)
   }
   if (!open) return <Button type="button" variant="outline" size="sm" disabled={disabled} onClick={() => setOpen(true)}>添加一条记忆</Button>;
   return <form className={styles.form} onSubmit={submit} aria-label="添加记忆">
-    <NoteFields api={api} draft={draft} setDraft={setDraft} disabled={busy || !!conflicts}/>
+    <NoteFields api={api} draft={draft} setDraft={setDraft} disabled={busy || !!conflicts} others={others}/>
     {error && <p role="alert" className={styles.error}>{error}</p>}
-    {conflicts ? <ConflictPicker conflicts={conflicts} newer={draft.text || `我说“${draft.alias_term ?? ""}”指${draft.alias_canonical ?? ""}`} busy={busy} onChoose={choice => void save(choice)} onCancel={() => setConflicts(null)}/>
+    {conflicts ? <ConflictPicker conflicts={conflicts} newer={draft.text || `我说“${draft.alias_term ?? ""}”指${draft.alias_canonical ?? ""}`} busy={busy} onChoose={(choice, relation) => void save(choice, relation)} onCancel={() => setConflicts(null)}/>
       : <div className={styles.actions}><Button type="submit" size="sm" disabled={busy}>{busy ? "正在核对…" : "记住"}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => { setOpen(false); setError(""); }}>取消</Button></div>}
   </form>;
 }
 
-function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNote; onChanged: (text: string) => void; readOnly: boolean }) {
+function noteDraft(note: MemoryNote): NoteDraft {
+  return { kind: note.kind, text: note.text, scope: { kind: note.scope.kind, id: note.scope.id }, valid_until: note.valid_until?.slice(0, 10) ?? "", alias_term: note.alias?.term ?? "", alias_canonical: note.alias?.means?.kind === "term" ? note.alias.means.text ?? "" : "",
+    occurred_at: note.occurred_at ? localDay(new Date(note.occurred_at)) : "", valid_from: note.valid_from ? localDay(new Date(note.valid_from)) : "", evidence: evidenceInputs(note.evidence), relations: ownRelations(note) };
+}
+
+function NoteLinks({ note }: { note: MemoryNote }) {
+  const links = note.evidence ?? [], relations = note.relations ?? [];
+  if (!links.length && !relations.length) return null;
+  return <ul className={styles.linkSummary} aria-label="依据与关系">
+    {links.map((link, index) => <li key={`e${index}`}><span className={styles.linkKind}>依据</span>{evidenceLabel(link)}（{stanceNames[link.stance]}）</li>)}
+    {relations.map(item => <li key={`${item.type}:${item.direction}:${item.note_id}`}><span className={styles.linkKind}>{item.label}</span>{item.text}</li>)}
+  </ul>;
+}
+
+function NoteRow({ api, note, onChanged, readOnly, others = [] }: { api: Api; note: MemoryNote; onChanged: (text: string) => void; readOnly: boolean; others?: MemoryNote[] }) {
   const [mode, setMode] = useState<"view" | "edit" | "delete" | "history" | "share">("view");
-  const [draft, setDraft] = useState<NoteDraft>(() => ({ kind: note.kind, text: note.text, scope: { kind: note.scope.kind, id: note.scope.id }, valid_until: note.valid_until?.slice(0, 10) ?? "", alias_term: note.alias?.term ?? "", alias_canonical: note.alias?.means?.kind === "term" ? note.alias.means.text ?? "" : "" }));
+  const [original] = useState<NoteDraft>(() => noteDraft(note));
+  const [draft, setDraft] = useState<NoteDraft>(original);
   const [history, setHistory] = useState<MemoryNote[] | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -143,7 +228,8 @@ function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNot
       <div className={styles.rowBody}>
         <p className={styles.noteText}>{note.kind === "alias" && note.alias ? <><strong>{note.alias.term}</strong> → {aliasMeaning(note)}</> : note.text}</p>
         {note.kind === "alias" && note.text && <p className={styles.meta}>{note.text}</p>}
-        <p className={styles.meta}>{scopeLabel(note.scope)} · {note.origin === "candidate" ? "经小Pai提议、你确认" : note.origin === "merge" ? "合并" : "你本人填写"} · {day(note.confirmed_at)}{note.valid_until ? ` · 有效至 ${day(note.valid_until)}` : ""}{note.state !== "active" && <span className={styles.state} data-state={note.state}>{stateNames[note.state]}</span>}</p>
+        <p className={styles.meta}>{scopeLabel(note.scope)} · {note.origin === "candidate" ? "经小Pai提议、你确认" : note.origin === "merge" ? "合并" : "你本人填写"} · {note.confirmation_label ?? "本人确认"} {day(note.confirmed_at)}{startNote(note) ? ` · ${startNote(note)}` : ""}{note.valid_until ? ` · ${note.replaced_by && note.state !== "replaced" ? "将被替换于" : "有效至"} ${day(note.valid_until)}` : ""}{note.occurred_at ? ` · 发生于 ${day(note.occurred_at)}` : ""}{note.state !== "active" && <span className={styles.state} data-state={note.state}>{stateNames[note.state]}</span>}</p>
+        <NoteLinks note={note}/>
       </div>
       {mode === "view" && <div className={styles.rowActions}>
         {!past && !readOnly && <Button type="button" size="sm" variant="ghost" onClick={() => setMode("edit")}>修改</Button>}
@@ -152,8 +238,8 @@ function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNot
         <Button type="button" size="sm" variant="ghost" onClick={() => setMode("delete")}>删除</Button>
       </div>}
     </div>
-    {mode === "edit" && <form className={styles.form} onSubmit={event => { event.preventDefault(); const problem = draftProblem(draft); if (problem) { setError(problem); return; } void run(() => api(`${memoryBase}/notes/${note.note_id}/revisions`, { request_key: requestKey(), expected_revision: note.revision, note: draftPayload(draft) }), "已保存修改。"); }} aria-label="修改记忆">
-      <NoteFields api={api} draft={draft} setDraft={setDraft} disabled={busy}/>
+    {mode === "edit" && <form className={styles.form} onSubmit={event => { event.preventDefault(); const problem = draftProblem(draft); if (problem) { setError(problem); return; } void run(() => api(`${memoryBase}/notes/${note.note_id}/revisions`, { request_key: requestKey(), expected_revision: note.revision, note: draftPayload(draft, original) }), "已保存修改。"); }} aria-label="修改记忆">
+      <NoteFields api={api} draft={draft} setDraft={setDraft} disabled={busy} others={others.filter(item => item.note_id !== note.note_id)} shown={note.evidence}/>
       <div className={styles.actions}><Button type="submit" size="sm" disabled={busy}>{busy ? "正在保存…" : "保存修改"}</Button><Button type="button" size="sm" variant="outline" disabled={busy} onClick={() => setMode("view")}>取消</Button></div>
     </form>}
     {mode === "delete" && <div className={styles.confirm} role="alertdialog" aria-label="确认删除">
@@ -162,7 +248,7 @@ function NoteRow({ api, note, onChanged, readOnly }: { api: Api; note: MemoryNot
     </div>}
     {mode === "share" && <ShareToProject api={api} title="分享到项目" text={note.text} kind={note.kind === "convention" ? "convention" : "concern"} sharedFrom={note.note_id} preselect={note.scope.kind === "project" ? note.scope.id : null} onDone={() => { setMode("view"); onChanged("已分享到项目：生成了一条新的团队备忘，你的个人条目保持不变。"); }} onCancel={() => setMode("view")}/>}
     {mode === "history" && <div className={styles.history}>
-      {history ? <ol>{history.map(item => <li key={item.revision}><span className={styles.meta}>第 {item.revision} 版 · {day(item.confirmed_at)}{item.state === "replaced" ? " · 已替换" : ""}</span><span>{item.text}</span></li>)}</ol> : !error && <p role="status" className={styles.meta}>正在读取历史…</p>}
+      {history ? <ol>{history.map(item => <li key={item.revision}><span className={styles.meta}>第 {item.revision} 版 · {day(item.confirmed_at)}{item.valid_from && day(item.valid_from) !== day(item.confirmed_at) ? ` · 自 ${day(item.valid_from)} 起` : ""}{item.state === "replaced" ? " · 已替换" : ""}</span><span>{item.text}</span></li>)}</ol> : !error && <p role="status" className={styles.meta}>正在读取历史…</p>}
       <Button type="button" size="sm" variant="ghost" onClick={() => setMode("view")}>收起历史</Button>
     </div>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
@@ -238,6 +324,7 @@ export function PersonalMemory({ api = browserApi }: { api?: Api }) {
   const refresh = (text: string) => { setNotice(text); setAttempt(n => n + 1); };
   if (!view) return <section className={styles.panel} aria-label="我的记忆"><h2>我的记忆</h2>{error ? <><p role="alert">{error}</p><Button variant="outline" size="sm" onClick={() => setAttempt(n => n + 1)}>重新读取</Button></> : <p role="status">正在读取我的记忆…</p>}</section>;
   const groups = groupNotes(view.notes.notes);
+  const linkable = [...groups.convention, ...groups.alias, ...groups.background];
   const pending = view.candidates.items.filter((item: Candidate) => item.status === "pending");
   const enabled = view.notes.enabled;
   return <section className={styles.panel} aria-label="我的记忆">
@@ -247,10 +334,10 @@ export function PersonalMemory({ api = browserApi }: { api?: Api }) {
     {notice && <p role="status" className={styles.notice}>{notice}</p>}
     {error && <p role="alert" className={styles.error}>{error}</p>}
     {pending.length > 0 && <div className={styles.block}><h3>待你确认的提议（{pending.length}）</h3>{pending.map(item => <CandidateCard key={item.candidate_id} api={api} candidate={item} onDecided={refresh}/>)}</div>}
-    <div className={styles.block}><AddNote api={api} disabled={!enabled || view.notes.active_count >= view.notes.limit} onSaved={refresh}/>{view.notes.active_count >= view.notes.limit && <p className={styles.meta}>已达 {view.notes.limit} 条上限，请先删除或合并旧条目。</p>}</div>
+    <div className={styles.block}><AddNote api={api} disabled={!enabled || view.notes.active_count >= view.notes.limit} onSaved={refresh} others={linkable}/>{view.notes.active_count >= view.notes.limit && <p className={styles.meta}>已达 {view.notes.limit} 条上限，请先删除或合并旧条目。</p>}</div>
     {(["convention", "alias", "background"] as const).map(kind => groups[kind].length > 0 && <div key={kind} className={styles.block}>
       <h3>{kindNames[kind].label}<span className={styles.meta}>{kind === "background" ? "只作背景" : kind === "alias" ? "只影响你的检索" : "约束说法与做法"}</span></h3>
-      <ul className={styles.list}>{groups[kind].map(note => <NoteRow key={`${note.note_id}:${note.revision}`} api={api} note={note} readOnly={!enabled} onChanged={refresh}/>)}</ul>
+      <ul className={styles.list}>{groups[kind].map(note => <NoteRow key={`${note.note_id}:${note.revision}`} api={api} note={note} readOnly={!enabled} onChanged={refresh} others={linkable}/>)}</ul>
     </div>)}
     {!groups.convention.length && !groups.alias.length && !groups.background.length && <p className={styles.empty}>还没有记忆条目。你可以在这里添加，或在对话里说“记住……”。</p>}
     {groups.past.length > 0 && <details className={styles.past}><summary>已替换或已过期（{groups.past.length}）</summary><ul className={styles.list}>{groups.past.map(note => <NoteRow key={`${note.note_id}:${note.revision}`} api={api} note={note} readOnly onChanged={refresh}/>)}</ul></details>}

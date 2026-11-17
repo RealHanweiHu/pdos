@@ -1,0 +1,16 @@
+$ alembic downgrade s0_0892 -> exit 0
+seeded 7 versions at s0_0892
+$ alembic upgrade s0_0900 -> exit 0
+upgrade s0_0900: defaults valid_from=created_at (replaced marker copies the version it closes), occurred_at=NULL, confirmation=member_confirmed, evidence=[], relations=[]
+$ alembic downgrade s0_0892 -> exit 0
+downgrade s0_0892 with defaults only: allowed; old columns unchanged
+$ alembic upgrade s0_0900 -> exit 0
+$ alembic downgrade s0_0892 -> exit 1
+(Background on this error at: https://sqlalche.me/e/21/f405)
+downgrade with an occurred_at present: refused
+$ alembic downgrade s0_0892 -> exit 1
+(Background on this error at: https://sqlalche.me/e/21/f405)
+downgrade with a back-dated valid_from present: refused
+$ alembic downgrade s0_0892 -> exit 0
+$ alembic upgrade head -> exit 0
+round trip passed; synthetic versions removed; database at head

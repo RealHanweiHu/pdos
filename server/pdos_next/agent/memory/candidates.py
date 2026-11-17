@@ -343,7 +343,7 @@ def view(session, row, decision, *, now=None, voided=None):
               "scope_id": row.scope_id, "alias_term": row.alias_term,
               "alias_canonical": row.alias_canonical}
     current = status(row, decision, now, voided=voided)
-    conflicts = (notes.conflict_views(session, notes.similar(session, row.owner_id, values))
+    conflicts = (notes.conflict_views(session, notes.similar(session, row.owner_id, values), values)
                  if current == "pending" else [])
     scope = {"kind": row.scope_kind, "id": str(row.scope_id) if row.scope_id else None,
              "title": "全局", "readable": True}
