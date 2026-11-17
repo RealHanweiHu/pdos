@@ -21,7 +21,7 @@ from pdos_next.agent.kernel.registry import ToolRegistry
 from pdos_next.agent.kernel.types import RunScope
 from pdos_next.core.service import Context, digest
 from pdos_next.errors import DomainError
-from tests.agent.kernel.test_bound_read_host import MemorySession, make_host
+from tests.agent.kernel.test_bound_read_host import EmptyRows, MemorySession, make_host
 
 
 class WorkerLost(BaseException):
@@ -38,6 +38,8 @@ class Claims(MemorySession):
 
     def scalars(self, statement):
         params = statement.compile().params
+        if "id_1" not in params:
+            return super().scalars(statement)
         excluded = params["id_1"]
         rows = [row for (kind, _), row in self.rows.items() if kind is AgentToolCall
                 and row.tool in depth.TOOLS and row.state in {"started", "completed"}
@@ -195,7 +197,7 @@ def test_actual_public_start_freezes_server_profile_before_workflow_dispatch(
     # continuation); this synthetic parent loaded none.
     session = SimpleNamespace(execute=lambda *_args, **_kwargs: None,
                               scalar=lambda *_args: next(scalars), add=events.append,
-                              scalars=lambda *_args: iter(()))
+                              scalars=lambda *_args: EmptyRows())
 
     @contextmanager
     def transaction(*_args, **_kwargs):

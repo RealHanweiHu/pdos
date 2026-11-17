@@ -61,7 +61,8 @@ def environment(monkeypatch):
         "specs": [{"source_refs": [claim_ref]}],
     }
     context = NS(
-        tenant_id=TENANT, category_id=CATEGORY, actor_id=ACTOR, requester_id=ACTOR, run_id=None
+        tenant_id=TENANT, category_id=CATEGORY, actor_id=ACTOR, requester_id=ACTOR, run_id=None,
+        agent_run_id=None, agent_call_id=None,
     )
     product = NS(id=PRODUCT, tenant_id=TENANT, revision=1)
     command = NS(product_id=PRODUCT, expected_revision=1, source_read_set=[])
@@ -73,9 +74,16 @@ def environment(monkeypatch):
         build_id=UUID(int=12),
         expected_project_revision=1,
         resource_demands=(),
+        # A plan written directly (mainline A): no framework basis, based on no plan yet.
+        base_plan_id=None,
+        npi=None,
+        schedule={},
     )
     # Plan validation checks the project revision before its sources.
-    project, link = NS(id=PROJECT, revision=1), NS(definition_id=DEFINITION)
+    project, link = (
+        NS(id=PROJECT, revision=1, framework_id=None, current_plan_id=None),
+        NS(definition_id=DEFINITION),
+    )
     proof = NS(read_rows={})
     engineering = {
         "id": str(ENGINEERING),

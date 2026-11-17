@@ -22,18 +22,36 @@ from pdos_next.core.service import digest
 from pdos_next.errors import DomainError
 
 
+class EmptyRows:
+    """An empty ``Session.scalars`` result, iterated or read with ``all()``."""
+
+    def __iter__(self):
+        return iter(())
+
+    def all(self):
+        return []
+
+
 class MemorySession:
     """The production claim and settle methods still make all state decisions."""
 
     def __init__(self, run, model):
         self.rows = {(AgentRun, run.id): run, (AgentToolCall, model.id): model}
         self.call = None
+        self.info = {}  # Session.info, used as a per-transaction cache
 
     def get(self, kind, identity):
         return self.rows.get((kind, identity))
 
     def scalar(self, statement):
         return self.call
+
+    def scalars(self, statement):
+        # Reads this fake does not model (scope notes, deleted sessions) find nothing.
+        return EmptyRows()
+
+    def get_transaction(self):
+        return self
 
     def add(self, call):
         call.id = uuid4()

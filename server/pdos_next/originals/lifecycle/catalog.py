@@ -5852,3 +5852,14 @@ COVERED_COLUMNS.update({
         "created_at",
     ),
 })
+
+# Mainline A (D34, s0_0889): append-only NPI framework revisions per category and project
+# type hold the framework document and the named admin's reason; a project pins one.
+COVERED_COLUMNS.update({
+    "npi_framework_revisions": (
+        "category_id", "project_type", "revision", "state", "document", "reason", "author_id",
+        "previous_id", "receipt_id", "id", "tenant_id", "created_at",
+    ),
+})
+if "framework_id" not in COVERED_COLUMNS["projects"]:
+    COVERED_COLUMNS["projects"] = (*COVERED_COLUMNS["projects"], "framework_id")

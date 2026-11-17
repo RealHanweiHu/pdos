@@ -87,7 +87,11 @@ test("direct project hydration reads only that project and migrates only its mat
   await mounted({ draft, pending: null }, async (path, body) => {
     calls.push({ path, body }); return { items: [project], has_more: false, unavailable_count: 0 };
   }, async (component, entries) => {
-    assert.deepEqual(calls, [{ path: `v1/products/${product.id}/projects/${project.id}`, body: undefined }]);
+    // The project, then that same project's NPI planning view (D35); nothing else.
+    assert.deepEqual(calls, [
+      { path: `v1/products/${product.id}/projects/${project.id}`, body: undefined },
+      { path: `v1/products/${product.id}/projects/${project.id}/npi`, body: undefined },
+    ]);
     assert.deepEqual(JSON.parse(entries.get(planningStorageKey(principal, product.id, project.id))), { draft, pending: null });
     assert.deepEqual(JSON.parse(entries.get(storageKey)), { draft, pending: null });
     const tree = component.render();

@@ -232,12 +232,14 @@ def padded_registry():
     """The actual zero-skill face plus synthetic reads, back to the pre-P76 ~27k tokens.
 
     At 64k the fixed part must stay just over F/2 (the asserted >50%F warning) while
-    six capacity results still fit and nine trigger the cleanup; 12 x 1,450 does both.
+    six capacity results still fit and nine trigger the cleanup; 12 x 1,420 does both
+    (1,450 left 64 tokens of focus on the fourth call and broke when memory added ~200
+    tokens of tool definitions).
     """
     registry = default_registry()
     for index in range(12):
         registry.add(ToolSpec(
-            f"synthetic.padding.read.{index:02}", "合成只读工具。" + "宽" * 1_450,
+            f"synthetic.padding.read.{index:02}", "合成只读工具。" + "宽" * 1_420,
             {"type": "object"}, {"type": "object"}, "read", "READ",
         ))
     return registry

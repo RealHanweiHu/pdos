@@ -1466,7 +1466,7 @@
       "executor": "scoped_reader",
       "event": null,
       "purpose": "读取品类内的固定框架历史。",
-      "implementation": "implemented_local_slice",
+      "implementation": "implemented_local_endpoint",
       "api_bindings": [
         {
           "method": "GET",
@@ -1480,7 +1480,7 @@
       "executor": "scoped_reader",
       "event": null,
       "purpose": "读取真实项目的框架版本、成果、来源与规划异常。",
-      "implementation": "implemented_local_slice",
+      "implementation": "implemented_local_endpoint",
       "api_bindings": [
         {
           "method": "GET",
@@ -1494,7 +1494,7 @@
       "executor": "named_human",
       "event": null,
       "purpose": "项目负责人重新受理尚无生效计划的初次规划。重放复用同一次运行。",
-      "implementation": "implemented_local_slice",
+      "implementation": "implemented_local_endpoint",
       "api_bindings": [
         {
           "method": "POST",
