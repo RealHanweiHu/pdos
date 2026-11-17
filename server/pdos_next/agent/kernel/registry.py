@@ -219,7 +219,10 @@ class ToolRegistry:
                 if name in skill.operations and enabled(scope, skill)
             ]
             if not skills:
-                raise DomainError("FORBIDDEN_SCOPE", "写工具需要已加载并已启用的技能包。")
+                raise DomainError(
+                    "FORBIDDEN_SCOPE", "写工具需要已加载并已启用的技能包。",
+                    detail={"reason_key": "write_skill_required"},
+                )
         if scope.private_context and name in {
             "category.knowledge.add",
         }:

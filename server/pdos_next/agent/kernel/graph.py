@@ -22,6 +22,7 @@ from .read_execution import ReadSource
 from .registry import ToolRegistry
 from .skills import SkillCatalog, SkillLoadInput
 from .tool_arguments import tool_arguments
+from .tool_failures import annotate as annotate_failure
 from .types import AgentOutput, ModelTurn, RunScope, ToolCall, WireAgentOutput
 
 
@@ -591,6 +592,11 @@ class AgentKernel:
                     if exc.code == "CANCELLED_RUN":
                         raise
                     answers[call.id] = {"error": exc.payload()}
+            # Each failure says what to do next, and stops a repeated one (D246).
+            history = list(state["tool_results"])
+            for call in calls:
+                answers[call.id] = annotate_failure(answers[call.id], call.name, history)
+                history.append({"tool": call.name, "value": answers[call.id]})
             pending = list(state.get("pending_categories", []))
             for call in calls:
                 value = answers[call.id]

@@ -121,3 +121,80 @@ def test_wrong_write_arguments_are_a_tool_error_with_the_failing_fields(monkeypa
     assert refused.value.code == "VALIDATION_FAILED"
     paths = {field["path"] for field in refused.value.detail["fields"]}
     assert "title" in paths and "project_id" in paths
+
+
+# D246: each failure tells the model what to do next, and a repeated one says stop.
+
+def step(host, turn=1, identity="r"):
+    return tool_answers(host, turn)[identity]["error"]["next_step"]
+
+
+@pytest.mark.parametrize(("reason", "code", "action"), [
+    ("MODEL_BUDGET_EXCEEDED", "RATE_LIMITED", "deliver_partial"),
+    ("SOURCE_UNAVAILABLE", "SOURCE_UNAVAILABLE", "retry_once"),
+    ("FORBIDDEN_SCOPE", "FORBIDDEN_SCOPE", "respect_boundary"),
+    ("INVALID_PAYLOAD", "VALIDATION_FAILED", "fix_arguments"),
+    ("SOURCE_STALE", "SOURCE_STALE", "reread"),
+])
+def test_the_public_code_stays_and_the_model_is_told_the_next_step(reason, code, action):
+    host = FailingRead([read_turn(), final()], [reason])
+    result = run(host)
+    error = tool_answers(host)["r"]["error"]
+    assert error["code"] == code and error["detail"]["reason"] == reason
+    assert error["next_step"]["action"] == action and error["next_step"]["hint"]
+    # What the run records is what the model saw.
+    assert result["tool_results"][0]["value"]["error"] == error
+
+
+def test_a_transient_failure_gets_one_retry_then_the_model_is_told_to_stop():
+    host = FailingRead([read_turn("first"), read_turn("second"), final()],
+                       ["SOURCE_UNAVAILABLE", "SOURCE_UNAVAILABLE"])
+    run(host)
+    first = step(host, 1, "first")
+    assert first["action"] == "retry_once" and "failures" not in first
+    second = step(host, 2, "second")
+    assert second["action"] == "stop" and second["failures"] == 2
+    assert "category.read" in second["hint"]
+
+
+def test_a_success_in_between_resets_the_count():
+    host = FailingRead(
+        [read_turn("a"), read_turn("b"), read_turn("c"), final()],
+        ["SOURCE_UNAVAILABLE", None, "SOURCE_UNAVAILABLE"],
+    )
+    run(host)
+    assert step(host, 3, "c") == {"action": "retry_once", "hint": step(host, 1, "a")["hint"]}
+
+
+def test_an_unregistered_name_is_told_to_use_the_disclosed_tools():
+    host = Host([ModelTurn(calls=(ToolCall(id="x", name="nope.one", arguments={}),)), final()])
+    run(host)
+    assert step(host, 1, "x")["action"] == "change_approach"
+
+
+def test_classify_uses_the_reason_where_the_category_misleads():
+    from pdos_next.agent.kernel.tool_failures import CITATION_HINT, classify
+
+    citation = {"code": "FORBIDDEN_SCOPE",
+                "detail": {"reason": "FORBIDDEN_SCOPE", "reason_key": "assistant_unknown_citation"}}
+    assert classify(citation) == ("fix_arguments", CITATION_HINT)
+    skill = {"code": "FORBIDDEN_SCOPE", "detail": {"reason_key": "write_skill_required"}}
+    assert classify(skill)[0] == "fix_arguments"
+    assert classify({"code": "INTERNAL_ERROR", "detail": {}})[0] == "stop"
+    assert classify({"code": "RATE_LIMITED", "detail": {"reason": "RATE_LIMITED"}})[0] \
+        == "retry_once"
+
+
+def test_fixable_arguments_get_two_attempts_and_other_tools_do_not_count():
+    from pdos_next.agent.kernel.tool_failures import annotate
+
+    bad = {"error": {"code": "VALIDATION_FAILED", "detail": {"reason": "INVALID_PAYLOAD"}}}
+    history = []
+    actions = []
+    for tool in ("a.read", "b.read", "a.read", "a.read"):
+        value = annotate(bad, tool, history)
+        history.append({"tool": tool, "value": value})
+        actions.append(value["error"]["next_step"]["action"])
+    assert actions == ["fix_arguments", "fix_arguments", "fix_arguments", "stop"]
+    assert annotate({"ok": True}, "a.read", history) == {"ok": True}
+    assert "next_step" not in bad["error"]  # The input is not modified.
