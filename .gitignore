@@ -62,3 +62,4 @@ web/*.tsbuildinfo
 **/.env
 **/.env.local
 server/openapi.json
+web/.next-mainline-a/
