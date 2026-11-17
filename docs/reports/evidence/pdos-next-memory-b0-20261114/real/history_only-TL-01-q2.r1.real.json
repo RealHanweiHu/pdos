@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 33.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 86794,
+  "held_tokens": 0,
+  "answer": "上次三家气泵供应商报价与交期对比（会话 f0f598da，run 4035a41d，2026-11-15）的结论是：建议选 B 家（交期比 A 家短 2 周），排除 C 家的原因是——C 家含税报价超出目标价 12%。当时还留下两项未完成：补 C 家的含税报价单、核对 B 家交期单位。另外那次\"接着往下做\"的续做会话（run 0446cc61）回答已被隐藏（来源不可读），而本品类当前供应商/竞品记录中未检出可比对象，所以\"12%\"这个数字来自当时的回答，未能用当前资料复核。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:35:25.378652+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家含税报价超出目标价 12% 这一数值来自历史会话回答，本品类当前可读资料（supply/knowledge/竞品列表/平台对象）中未检出对应记录，未能复核\", \"续做会话 run 0446cc61（session aadff505）的完整回答 outcome_state 为 hidden，来源不可读，其是否补充或修正过排除理由不可知\", \"当时遗留的『C 家含税报价单』尚未补齐，因此 12% 的口径（税率、含运、促销等）未确认\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次三家气泵供应商报价与交期对比（会话 f0f598da，run 4035a41d，2026-11-15）的结论是：建议选 B 家（交期比 A 家短 2 周），排除 C 家的原因是——C 家含税报价超出目标价 12%。当时还留下两项未完成：补 C 家的含税报价单、核对 B 家交期单位。另外那次\\\"接着往下做\\\"的续做会话（run 0446cc61）回答已被隐藏（来源不可读），而本品类当前供应商/竞品记录中未检出可比对象，所以\\\"12%\\\"这个数字来自当时的回答，未能用当前资料复核。\", \"questions\": [{\"id\": \"q_reverify_c\", \"why\": \"排除 C 家的唯一依据来自上次的历史回答，其报价单当时就未补齐；本品类当前也未检出可比供应商记录。\", \"options\": [{\"label\": \"重新核对三家报价与交期，重算价格带\", \"value\": \"reverify\"}, {\"label\": \"沿用上次结论，仅补 C 家含税报价单\", \"value\": \"keep_record\"}, {\"label\": \"只要历史结论，不需要再动\", \"value\": \"no_action\"}], \"question\": \"是否要在当前范围重新核对一次 C 家报价并重算价格带，把 12% 这个排除依据换成可复核的当前数据？\", \"depends_on\": [], \"recommended\": {\"value\": \"reverify\", \"reason\": \"唯一排除依据来自历史回答且缺报价单原件，重算一次可让排除结论有当前可核口径。\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家的含税报价单（上次对比遗留，本品类当前资料中未检出）\", \"核对 B 家交期的单位（上次对比遗留）\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单（上次对比遗留，本品类当前资料中未检出）",
+    "核对 B 家交期的单位（上次对比遗留）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

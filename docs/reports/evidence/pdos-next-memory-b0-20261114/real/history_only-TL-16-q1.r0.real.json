@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 70.8,
+  "clarifications": [
+    "收件人（供应商名称与联系人邮箱）怎么处理？",
+    "邮件里要不要引用样件单号和原承诺交期？",
+    "邮件以谁的名义发出、是否抄送？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 171116,
+  "held_tokens": 0,
+  "answer": "已按要求仅依据可查到的记录作答：当前可读范围（汽车充气泵品类）内未检索到任何气泵供应商、样件单号、承诺交期或联系人信息，因此邮件以纯占位符版本交付，未编造任何事实。本轮仅起草文案，未发送邮件、未登记外部等待或任何业务单据。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:28:00.433840+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citations\": [], \"next_step\": \"若需我继续深挖供应商与交期历史，请另开一轮深入查（本轮检索预算已用尽）\", \"not_found\": [\"气泵供应商名称与联系人/邮箱\", \"样件单号或订单号\", \"供应商原承诺交期与已超期天数\", \"我方项目/型号名称与样件用途\", \"发件人署名与联系方式\", \"可复用的以往同类催交邮件（会话历史为空）\"], \"draft_email\": {\"to\": \"[供应商名称] [联系人姓名]（未查到）\", \"body\": \"尊敬的 [供应商名称] [联系人姓名]：\\n\\n您好。我方 [项目/型号名称] 的气泵样件（样件单号/订单号：[____]）目前尚未收到。按贵司原承诺交期 [____]，目前已超出 [约 X 天]。\\n\\n为配合我方验证与试产排期，烦请于 [回复截止日期] 前反馈：\\n1. 该批样件当前生产/备料状态与预计发货日期；\\n2. 能否按原交期出货；若不能，是否可先提供部分样件或给出替代交期方案；\\n3. 是否存在需要我方配合确认的技术或物料事项。\\n\\n如已安排出货，回复中附运单号即可，我会及时安排接收与验证。\\n\\n感谢配合！\\n\\n[发件人姓名]\\n[职务] | [公司] | [电话] | [邮箱]\", \"subject\": \"气泵样件交期确认 — 请回复预计到货日期（单号：[样件单号]）\", \"variant_without_reference\": \"若无单号与原承诺交期，删除正文第二段及“超出 X 天”，保留“烦请于 [回复截止日期] 前告知预计到货日期”\"}, \"actions_taken\": [\"起草占位符版催交邮件正文与主题\"], \"facts_invented\": [], \"searched_scope\": {\"note\": \"未找到不等于不存在；仅表示在上述已检索范围内无可用记录\", \"outcome\": \"全部未返回相关条目；assistant.search 后续调用返回 MODEL_BUDGET_EXCEEDED\", \"category\": \"汽车充气泵 (cefed92e-0559-4ca5-879f-8e3bd58b586f)\", \"sources_tried\": [\"assistant.search: supply/build/verification_handoff/test_run/external_wait/artifact/knowledge/manufacturing_document/project_status\", \"assistant.search: 气泵供应商 样件订单 交期 联系人 采购 (include_history)\", \"evidence.search\", \"platform.read (category/product/name_query/无参数/include_history)\", \"category.read\", \"category.knowledge.list (include_history)\", \"product.baseline.read\", \"conversation.history\"]}, \"actions_not_taken\": [\"未发送任何外部邮件\", \"未登记外部等待/待跟进项\", \"未创建或更新任何业务单据\"]}, \"status\": \"partial\", \"summary\": \"已按要求仅依据可查到的记录作答：当前可读范围（汽车充气泵品类）内未检索到任何气泵供应商、样件单号、承诺交期或联系人信息，因此邮件以纯占位符版本交付，未编造任何事实。本轮仅起草文案，未发送邮件、未登记外部等待或任何业务单据。\", \"questions\": [], \"unfinished\": [\"供应商名称、联系人邮箱、样件单号、原承诺交期、落款信息在当前可读范围内均未查到，邮件仍为占位符版本，需由你补齐后方可发出\", \"本轮检索预算已用尽（MODEL_BUDGET_EXCEEDED），更深的供应商/交期历史检索需另开一轮深入查\", \"未将本次催交登记为外部等待/待跟进并跟踪对方承诺——需相应权限与技能后办理\"]}",
+  "unfinished": [
+    "供应商名称、联系人邮箱、样件单号、原承诺交期、落款信息在当前可读范围内均未查到，邮件仍为占位符版本，需由你补齐后方可发出",
+    "本轮检索预算已用尽（MODEL_BUDGET_EXCEEDED），更深的供应商/交期历史检索需另开一轮深入查",
+    "未将本次催交登记为外部等待/待跟进并跟踪对方承诺——需相应权限与技能后办理"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "model:completed:9",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "已起草最大流量的修订候选：验收标准改为 ≥40 L/min，等你确认后提交。 确认最大流量的修订候选后提交",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 42.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 106993,
+  "held_tokens": 0,
+  "answer": "最大流量（max_flow）当前验收标准为 ≥ 35 L/min（参数字典版本 1，单位 L/min，方向 higher，origin=human，已有 receipt，且无 replaces_version、无更新版本）。该品类下未登记产品基线，故此为品类级参数口径。需注意：方法的 standard_condition 与 method 均为空（未登记），且此前会话起草的 ≥40 L/min 修订候选未确认、未提交，参数库无 v2，因此 40 L/min 当前不生效。本轮直接沿用已核对的台账，未重复检索。",
+  "answer_blob": "{\"result\": {\"result\": {\"unit\": \"L/min\", \"scope\": \"品类级参数字典（该品类下无已登记产品基线）\", \"origin\": \"human\", \"subject\": \"最大流量 (max_flow)\", \"unknowns\": [{\"item\": \"测试方法(method)未登记\", \"status\": \"to_confirm\"}, {\"item\": \"标准工况(standard_condition)未登记\", \"status\": \"to_confirm\"}, {\"item\": \"≥35 L/min 的原始来源文本\", \"status\": \"not_recorded\"}, {\"item\": \"品类下无已登记产品基线，当前为品类级参数口径\", \"status\": \"not_recorded\"}], \"direction\": \"higher\", \"registered\": true, \"category_id\": \"df281b6a-6fcc-4da2-998f-0d138ed25013\", \"parameter_id\": \"76d5a097-c23d-4ac1-b314-31b93accd180\", \"pending_note\": [{\"item\": \"≥40 L/min 修订候选\", \"note\": \"本人此前会话起草的草稿，未确认提交；未登记为参数版本 v2，故当前不生效\", \"status\": \"not_submitted\"}], \"category_name\": \"汽车充气泵\", \"verified_ledger\": [{\"key\": \"max_flow\", \"name\": \"最大流量\", \"unit\": \"L/min\", \"as_of\": \"2026-11-15T10:10:50.799334+00:00\", \"scope\": \"category df281b6a-6fcc-4da2-998f-0d138ed25013\", \"method\": null, \"origin\": \"human\", \"version\": 1, \"source_tool\": \"category.parameters.list\", \"replaces_version\": null, \"standard_condition\": null, \"acceptance_criterion\": \">= 35 L/min\"}], \"parameter_version\": 1, \"acceptance_criterion\": \">= 35 L/min\", \"newer_version_exists\": false}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:10:51.205992+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本次未签发可引用的文档引用；结论来自本轮已核对的参数字典读取台账，未重复检索或重复办理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"最大流量（max_flow）当前验收标准为 ≥ 35 L/min（参数字典版本 1，单位 L/min，方向 higher，origin=human，已有 receipt，且无 replaces_version、无更新版本）。该品类下未登记产品基线，故此为品类级参数口径。需注意：方法的 standard_condition 与 method 均为空（未登记），且此前会话起草的 ≥40 L/min 修订候选未确认、未提交，参数库无 v2，因此 40 L/min 当前不生效。本轮直接沿用已核对的台账，未重复检索。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.parameters.list:completed:2",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

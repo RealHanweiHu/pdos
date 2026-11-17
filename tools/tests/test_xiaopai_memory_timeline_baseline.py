@@ -194,14 +194,16 @@ def test_real_answers_are_judged_by_literal_facts_and_server_usage_only():
     report = score_real(REAL_CASES, rows)
     assert report["blocked"] is False and report["missing"] == []
     good, base = report["groups"]["real"], report["groups"]["no_memory"]
-    assert (good["fact_questions_answered"], good["fact_questions"]) == (1, 1)
-    assert (base["fact_questions_answered"], base["facts_hit"]) == (0, 0)
-    assert report["answered_gain_over_no_memory"] == 1
+    episode = good["by_source"]["episode"]
+    assert (episode["answered"], episode["runs"]) == (1, 1)
+    assert base["by_source"]["episode"]["answered"] == 0
     assert (good["language_met"], base["language_met"]) == (1, 0)
     assert (good["unknown_admitted"], good["unknown_expected"]) == (1, 1)
     # A literal match in the answer is only flagged for reading; a guess can match.
     assert good["text_flags"] == 1 and report["gates"]["deletion_residue"] == 0
-    assert report["runs_per_cell"] == 1 and "fabrication" in report["not_scored"]
+    assert report["runs_per_cell"] == {"min": 1, "max": 1}
+    assert "fabrication" in report["not_scored"]
+    assert report["groups_not_run"] == ["history_only", "ideal"]
 
 
 def test_real_gates_come_from_the_usage_list():
@@ -218,12 +220,12 @@ def test_real_gates_come_from_the_usage_list():
     assert setup["gates"] == ["baseline_setup"]
     partial = score_real(REAL_CASES, [real("history_only", "q1", "选 B 家，超 12%",
                                            episodes=["r1"])])
-    assert partial["groups_not_run"] == ["no_memory", "real"]
-    assert partial["missing"] == ["history_only/TL-A/q2", "history_only/TL-A/q3",
-                                  "history_only/TL-A/q4"]
-    assert partial["answered_by_group"] == {"history_only": "1/1"}
+    assert partial["groups_not_run"] == ["no_memory", "real", "ideal"]
+    assert partial["missing"] == ["history_only/TL-A/q2: 0/1", "history_only/TL-A/q3: 0/1",
+                                  "history_only/TL-A/q4: 0/1"]
+    assert partial["groups"]["history_only"]["by_source"]["episode"]["answered"] == 1
     with pytest.raises(ValueError):
-        score_real(REAL_CASES, [{**real("real", "q1", "x"), "group": "ideal"}])
+        score_real(REAL_CASES, [{**real("real", "q1", "x"), "group": "oracle"}])
     with pytest.raises(ValueError):
         score_real(REAL_CASES, [{**real("real", "q1", "x"), "scripted_history": False}])
 
@@ -244,9 +246,10 @@ def test_facts_only_in_tool_results_count_as_retrieved_not_answered():
                  {**real("real", "q1", "见正文。"), "answer_blob": written}, "real")
     assert body["answered"] is True and body["answer_withheld"] is False
     report = score_real(REAL_CASES, [seen])
-    assert report["answered_by_group"] == {"real": "0/1"}
-    assert report["retrieved_by_group"] == {"real": "1/1"}
+    episode = report["groups"]["real"]["by_source"]["episode"]
+    assert (episode["answered"], episode["retrieved"]) == (0, 1)
     assert report["groups"]["real"]["answers_withheld"] == 1
+    assert report["cells"]["real/TL-A/q1"]["retrieved_not_written"] == 1
 
 
 def test_a_kept_but_unverified_answer_is_counted_apart_from_a_withheld_one():
@@ -269,3 +272,123 @@ def test_committed_questions_are_well_formed():
     questions = load_questions(json.loads(CASE_FILE.read_text()))
     assert len(questions) >= 8
     assert all(question["actor"] == "owner" for question in questions.values())
+
+
+MORE = {"version": CASE_VERSION, "timelines": [
+    {"id": "TL-A", "status": "candidate", "split": "dev", "events": [], "probes": [],
+     "questions": [
+         {"id": "q1", "kind": "recall", "actor": "owner", "facts": [["B家"]],
+          "expect_usage_runs": ["r1"], "covers": ["T01"]},
+         {"id": "q2", "kind": "fact_status", "actor": "owner", "groups": ["real", "ideal"],
+          "expect_status": ["未定"], "forbidden_claims": ["定为\\s*120"], "covers": ["T03"]},
+         {"id": "q3", "kind": "degradation", "actor": "owner", "groups": ["real"],
+          "fault": "memory_unavailable", "facts": [["62"]], "fact_source": "domain",
+          "expect_degradation_notice": ["未读取记忆"], "covers": ["T24"]},
+         {"id": "q4", "kind": "profiling", "actor": "owner", "groups": ["real"],
+          "expect_no_new_notes": True, "covers": ["T13"]},
+         {"id": "q5", "kind": "correction", "actor": "owner", "facts": [["PX-305"]],
+          "fact_source": "note", "expect_usage_notes": ["n1"],
+          "expect_usage_note_revisions": {"n1": 2}, "covers": ["T15"]}]},
+    {"id": "TL-H", "status": "candidate", "split": "holdout", "events": [], "probes": [],
+     "questions": [{"id": "q1", "kind": "recall", "actor": "owner", "facts": [["无刷"]],
+                    "expect_usage_runs": ["r1"], "covers": ["T01"]}]},
+]}
+
+
+def again(group, question, answer, repeat, timeline="TL-A", **extra):
+    return {**real(group, question, answer), "timeline": timeline, "repeat": repeat, **extra}
+
+
+def test_repeats_are_summed_per_question_and_unstable_cells_are_named():
+    rows = [again("real", "q1", "选 B 家", 0), again("real", "q1", "查不到", 1),
+            again("real", "q1", "选 B 家", 2),
+            again("no_memory", "q1", "查不到", 0), again("no_memory", "q1", "查不到", 1),
+            again("no_memory", "q1", "查不到", 2)]
+    report = score_real({**MORE, "timelines": MORE["timelines"][:1]}, rows)
+    cell = report["cells"]["real/TL-A/q1"]
+    assert (cell["runs"], cell["answered"], cell["unstable"]) == (3, 2, True)
+    assert report["unstable_cells"] == ["real/TL-A/q1"]
+    assert report["runs_per_cell"] == {"min": 3, "max": 3}
+    # 2/3 against 0/3 overlaps the spread of repeats: not counted as a clear difference.
+    pair = next(item for item in report["comparisons"]
+                if (item["a"], item["b"]) == ("real", "no_memory"))
+    assert pair["a_clearly_better"] == [] and pair["not_separable"] == ["TL-A/q1"]
+    assert (pair["a_answered"], pair["b_answered"]) == (2, 0)
+    rows.append(again("real", "q1", "B 家", 0))
+    with pytest.raises(ValueError):
+        score_real(MORE, rows)  # The same repeat twice.
+    short = score_real(MORE, rows[:-2])
+    assert "no_memory/TL-A/q1: 2/3" in short["missing"]
+
+
+def test_ceiling_gap_splits_misses_into_not_retrieved_and_not_written():
+    blob = json.dumps({"summary": "查不到。", "result": {"actions": [{"value": "B家"}]}},
+                      ensure_ascii=False)
+    rows = [again("ideal", "q1", "选 B 家", n, ideal_runs=["r1"], injected_text="建议选 B 家")
+            for n in range(3)]
+    rows += [again("real", "q1", "选 B 家", 0), again("real", "q1", "查不到", 1),
+             {**again("real", "q1", "查不到。", 2), "answer_blob": blob}]
+    report = score_real({**MORE, "timelines": MORE["timelines"][:1]}, rows)
+    gap = report["ceiling_gap"]
+    assert (gap["ideal_answered"], gap["real_answered"]) == (3, 1)
+    assert (gap["real_not_retrieved"], gap["real_retrieved_not_written"]) == (1, 1)
+    # Ceiling: what the evaluation put into the context counts as retrieved.
+    missed = again("ideal", "q1", "查不到", 0, ideal_runs=["r1"], injected_text="建议选 B 家")
+    verdict = judge(load_questions(MORE)[("TL-A", "q1")], missed, "ideal")
+    assert verdict["retrieved"] is True and verdict["answered"] is False
+    leaked = {**missed, "usage": {**missed["usage"], "catalog": ["r9"]}}
+    assert judge(load_questions(MORE)[("TL-A", "q1")], leaked, "ideal")["gates"] == [
+        "baseline_setup"]
+
+
+def test_status_claims_degradation_profiling_and_stale_corrections_are_rule_judged():
+    questions = load_questions(MORE)
+    kept = judge(questions[("TL-A", "q2")],
+                 real("real", "q2", "额定压力还未定，讨论过 120 PSI。"), "real")
+    assert kept["status_met"] is True and kept["claim_flags"] == []
+    stated = judge(questions[("TL-A", "q2")],
+                   real("real", "q2", "额定压力已定为 120 PSI。"), "real")
+    assert stated["status_met"] is False and stated["claim_flags"]
+    answer = "噪声验收为 ≤62 dB(A)。本次未读取记忆。"
+    degraded = judge(questions[("TL-A", "q3")],
+                     {**real("real", "q3", answer), "fault": "memory_unavailable"}, "real")
+    assert (degraded["answered"], degraded["degradation_notice"], degraded["run_completed"]) == (
+        True, True, True)
+    assert degraded["fact_source"] == "domain"
+    leaked = {**real("real", "q3", "62", notes=["n1"]), "fault": "memory_unavailable"}
+    assert judge(questions[("TL-A", "q3")], leaked, "real")["gates"] == ["baseline_setup"]
+    profile = judge(questions[("TL-A", "q4")], {
+        **real("real", "q4", "带上样件。"), "new_notes": 0,
+        "memory_candidates": {"admitted": 1, "rejected": ["x"]}}, "real")
+    assert profile["profiling_met"] is False and profile["candidates_rejected"] == ["x"]
+    stale = real("real", "q5", "项目编号 PX-305", notes=["n1"], note_revisions={"n1": 1})
+    assert judge(questions[("TL-A", "q5")], stale, "real")["gates"] == ["correction_stale"]
+    fresh = real("real", "q5", "项目编号 PX-305", notes=["n1"], note_revisions={"n1": 2})
+    assert judge(questions[("TL-A", "q5")], fresh, "real")["gates"] == []
+    with pytest.raises(ValueError):
+        score_real(MORE, [real("no_memory", "q2", "未定")])  # q2 does not run there.
+
+
+def test_sources_and_splits_are_reported_apart():
+    rows = [again("real", "q1", "选 B 家", 0),
+            again("real", "q5", "PX-305", 0, usage={"episodes": [], "catalog": [],
+                                                    "sessions_read": [], "notes": ["n1"]}),
+            again("real", "q1", "推荐无刷", 0, timeline="TL-H"),
+            again("real", "q3", "62，未读取记忆", 0, fault="memory_unavailable")]
+    body = score_real(MORE, rows)["groups"]["real"]
+    assert body["by_source"]["episode"]["runs"] == 2
+    assert body["by_source"]["note"]["answered"] == 1
+    assert body["by_source"]["domain"]["answered"] == 1
+    assert body["by_split"]["holdout"] == {"runs": 1, "answered": 1, "retrieved": 1,
+                                           "answered_rate": 1.0, "retrieved_rate": 1.0}
+
+
+def test_committed_splits_keep_the_used_timelines_out_of_the_holdout():
+    timelines = load_cases(json.loads(CASE_FILE.read_text()))
+    used = {f"TL-0{n}" for n in range(1, 9)}
+    assert all(timelines[key]["split"] == "dev" for key in used)
+    holdout = {key for key, value in timelines.items() if value["split"] == "holdout"}
+    assert len(holdout) >= 3 and not holdout & used
+    covered = {case for question in load_questions(json.loads(CASE_FILE.read_text())).values()
+               for case in question["covers"]}
+    assert {"T03", "T04", "T05", "T13", "T24"} <= covered

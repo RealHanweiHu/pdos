@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "甲：建议选 B 家。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 28.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51735,
+  "held_tokens": 0,
+  "answer": "Your conclusion was: recommend Supplier B. That comes from the prior session record (run 95bfcfc0…, as of 2026-11-15). This turn's lookup inside the 汽车充气泵 category scope returned no supplier quote/lead-time records and an empty competitor list, so the underlying numbers could not be re-verified from company data; I can run a deeper search on supplier quotes and lead times if you want the recommendation confirmed against current records.",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:50:52.298203+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"The underlying quote and lead-time figures for the three suppliers were not found in the searched scope of the 汽车充气泵 category in this run (scoped search returned 0 items; category competitor list empty), so the comparison numbers cannot be re-verified from company records right now.\", \"The prior session record is a historical scenario record, not business fact, so it is not issued as a citable reference.\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"Your conclusion was: recommend Supplier B. That comes from the prior session record (run 95bfcfc0…, as of 2026-11-15). This turn's lookup inside the 汽车充气泵 category scope returned no supplier quote/lead-time records and an empty competitor list, so the underlying numbers could not be re-verified from company data; I can run a deeper search on supplier quotes and lead times if you want the recommendation confirmed against current records.\", \"questions\": [{\"id\": \"q1\", \"why\": \"This turn's scoped lookup returned no supplier quote/lead-time records, so the comparison behind the earlier conclusion could not be re-checked against current company data.\", \"options\": [{\"label\": \"Yes — deepen the search and re-verify the three-supplier comparison\", \"value\": \"deepen_search\"}, {\"label\": \"No — the prior conclusion is enough\", \"value\": \"stop_here\"}], \"question\": \"Do you want me to re-verify the Supplier B recommendation against current supplier quote and lead-time records?\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen_search\", \"reason\": \"A recommendation on quotes and lead times should rest on current, citable records, and this turn found none in the searched scope.\"}, \"allow_free_text\": true}], \"unfinished\": [\"Re-verifying the air-pump supplier quote and lead-time figures from company records (deeper search needed; this turn's lookup budget was exhausted).\"]}",
+  "unfinished": [
+    "Re-verifying the air-pump supplier quote and lead-time figures from company records (deeper search needed; this turn's lookup budget was exhausted)."
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 55.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 157984,
+  "held_tokens": 0,
+  "answer": "按上次试产汇总的记录，不良前三项为：① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。需要说明的是：这三条来自我此前一次会话（2026-11-14 14:06）对“汇总上周试产的不良项”的回答记录，该记录本身没有附带引用；本轮我在当前品类（汽车充气泵）范围内检索试产/不良相关资料（build、issue、test_run）无命中，品类下也没有产品、平台或知识记录，因此无法用现行业务记录对这三条及其排序做复核。“上周”对应的具体试产批次与统计口径也未在可读资料中确认。",
+  "answer_blob": "{\"result\": {\"basis\": {\"note\": \"历史工作记录，非可引用的业务事实，本轮未在业务库中复核\", \"type\": \"prior_session_record\", \"as_of\": \"2026-11-14T14:06:00.092083+00:00\", \"run_id\": \"5904aafd-7de4-420f-9204-4ab654f45292\", \"session_id\": \"d6eff51a-07b5-4c0a-8073-7251427d5307\"}, \"answer\": {\"top3\": [{\"rank\": 1, \"defect\": \"气嘴漏气\"}, {\"rank\": 2, \"defect\": \"外壳缩水\"}, {\"rank\": 3, \"defect\": \"按键卡滞\"}]}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:05:57.035038+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本轮在「汽车充气泵」品类范围检索 build/issue/test_run 等来源无命中，未找到试产不良汇总的原始记录（可能是来源类型或时间窗未覆盖）\", \"三项不良及其排序来自本人此前会话的历史工作记录（run 5904aafd-7de4-420f-9204-4ab654f45292，as_of 2026-11-14T14:06），该记录未附引用，未经本轮证据核对\", \"“上周”对应的具体试产批次/轮次、统计口径（缺陷数或不良率）与统计截止时间未在可读资料中确认\", \"三项不良各自的缺陷数量/占比、判定依据与责任环节未记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"current_verification\": {\"note\": \"本轮检索预算用尽后无法再扩大检索\", \"category\": \"汽车充气泵\", \"hit_count\": 0, \"sources_checked\": [\"enterprise-search(build,issue,field_feedback,project_status,manufacturing_document)\", \"enterprise-search(build,issue,test_run,含历史)\", \"evidence.search\", \"platform.read\", \"category.knowledge.list(含历史)\"]}}, \"status\": \"completed\", \"summary\": \"按上次试产汇总的记录，不良前三项为：① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。需要说明的是：这三条来自我此前一次会话（2026-11-14 14:06）对“汇总上周试产的不良项”的回答记录，该记录本身没有附带引用；本轮我在当前品类（汽车充气泵）范围内检索试产/不良相关资料（build、issue、test_run）无命中，品类下也没有产品、平台或知识记录，因此无法用现行业务记录对这三条及其排序做复核。“上周”对应的具体试产批次与统计口径也未在可读资料中确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前结论来自历史会话记录且本轮未取到原始试产汇总，继续动作不同（复核原始数据 vs 直接使用）会导致结论可靠性不同。\", \"options\": [{\"label\": \"在本会话继续深入检索试产原始汇总，逐项核对并给出引用\", \"value\": \"deepen_search\"}, {\"label\": \"我提供试产汇总文件/质量报表，你据此核对\", \"value\": \"supply_doc\"}, {\"label\": \"就按历史结论使用，不再复核\", \"value\": \"accept_as_is\"}], \"question\": \"这三条不良要按哪种方式继续处理？\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen_search\", \"reason\": \"三项不良与排序目前只有历史记录支撑，先用原始汇总复核可直接消除不确定性。\"}, \"allow_free_text\": true}], \"unfinished\": [\"试产不良前三项的原始汇总记录本轮未检索到，三项内容与排序尚未用业务证据核实\", \"“上周”对应的试产批次/统计口径未确认\"]}",
+  "unfinished": [
+    "试产不良前三项的原始汇总记录本轮未检索到，三项内容与排序尚未用业务证据核实",
+    "“上周”对应的试产批次/统计口径未确认"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:9",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r3"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-12",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "candidates",
+      "not_applicable": true
+    },
+    {
+      "id": "p2",
+      "probe": "resident",
+      "not_applicable": true
+    }
+  ],
+  "episodes_written": [
+    "c01",
+    "c02",
+    "c03",
+    "c04",
+    "c05",
+    "c06",
+    "c07",
+    "c08",
+    "c09",
+    "c10",
+    "c11",
+    "c12",
+    "c13",
+    "c14",
+    "c15",
+    "c16",
+    "c17",
+    "c18",
+    "c19",
+    "c20",
+    "c21",
+    "c22",
+    "c23",
+    "c24",
+    "c25",
+    "c26",
+    "c27",
+    "c28",
+    "c29",
+    "c30"
+  ],
+  "unexpected_notes": 0
+}

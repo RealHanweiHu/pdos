@@ -1,0 +1,68 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1",
+    "r2"
+  ],
+  "injected_text": "从这批不良样件看，似乎是供应商换了密封圈材料导致气嘴漏气。\n跟进事项：联系供应商确认是否换料；安排拆件分析。 联系供应商确认是否换料 安排拆件分析",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 81.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 171370,
+  "held_tokens": 0,
+  "answer": "当前可读范围（品类：汽车充气泵）内没有登记在案的\"气嘴漏气\"根因结论。已核对的检索：公司资料检索（问题、CAPA、知识、资料类来源；关键词 气嘴漏气、根因、分析、密封圈、不良）0 条命中；证据检索（气嘴漏气）0 行；品类与平台读取显示该品类知识六类计数全为 0、参数数为 0、无可读产品或型号记录，因此没有可核对的缺陷台账、8D、CAPA 或拆件分析件。结论：根因目前未确认、公司数据中既无已登记根因也无支撑证据。可参考的只有我本人此前的工作记录（as_of 2026-11-15，属情景记忆、不是业务事实）：当时的判断是似乎与供应商更换密封圈材料有关，并留了联系供应商确认是否换料、安排拆件分析两项跟进，这两项当时即标记为未完成，不能当作已确认根因。要真正定根因，需要扩大检索范围（去掉品类过滤，按漏气、8D、CAPA 在全公司范围查）或由你提供现成的拆件报告与供应商换料证据；本轮公司检索预算已用完，扩大范围需在下一轮执行。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:51:33.309995+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围内未检索到气嘴漏气的品质问题单、8D、CAPA 或拆件分析记录及其所在范围\", \"密封圈材料是否更换的事实与拆件/剖检、气密性复测结果\", \"受影响的产品/项目/批次、样件数量与实测漏气率\", \"是否允许放宽品类过滤做全范围检索\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"case\": {\"text\": \"气嘴漏气（汽车充气泵品类）。当前可读范围内未检索到对应的品质问题单、8D、CAPA、拆件分析或缺陷台账记录，也无可读产品/型号记录。\", \"status\": \"to_confirm\"}, \"measures\": {\"text\": \"公司记录中未见围堵或CAPA措施。个人此前工作记录中留有联系供应商确认是否换料、安排拆件分析两项跟进，当时即标记为未完成；是否恢复执行需由责任专业本人决定。\", \"status\": \"to_confirm\"}, \"root_cause\": {\"text\": \"公司记录中未登记根因结论，也没有可引用的证据行支撑。个人此前工作记录（as_of 2026-11-15，属情景记忆而非业务事实）当时的判断是似乎与供应商更换密封圈材料有关，属未确认假设，不能作为根因引用。\", \"status\": \"not_recorded\"}, \"verification\": {\"text\": \"缺少拆件/剖检记录、密封件材料比对或气密性复测结果，无法验证任何假设。\", \"status\": \"to_confirm\"}, \"conditions_and_differences\": {\"text\": \"受影响批次、样件数量、漏气率与工况条件未知，换料前后无对比数据。\", \"status\": \"to_confirm\"}}}], \"format\": \"cases\"}}, \"status\": \"partial\", \"summary\": \"当前可读范围（品类：汽车充气泵）内没有登记在案的\\\"气嘴漏气\\\"根因结论。已核对的检索：公司资料检索（问题、CAPA、知识、资料类来源；关键词 气嘴漏气、根因、分析、密封圈、不良）0 条命中；证据检索（气嘴漏气）0 行；品类与平台读取显示该品类知识六类计数全为 0、参数数为 0、无可读产品或型号记录，因此没有可核对的缺陷台账、8D、CAPA 或拆件分析件。结论：根因目前未确认、公司数据中既无已登记根因也无支撑证据。可参考的只有我本人此前的工作记录（as_of 2026-11-15，属情景记忆、不是业务事实）：当时的判断是似乎与供应商更换密封圈材料有关，并留了联系供应商确认是否换料、安排拆件分析两项跟进，这两项当时即标记为未完成，不能当作已确认根因。要真正定根因，需要扩大检索范围（去掉品类过滤，按漏气、8D、CAPA 在全公司范围查）或由你提供现成的拆件报告与供应商换料证据；本轮公司检索预算已用完，扩大范围需在下一轮执行。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类内无任何缺陷、CAPA 或分析记录，扩大范围是找到既有根因结论与证据的最小改动。\", \"options\": [{\"label\": \"全公司范围重新检索（去掉品类过滤）\", \"value\": \"widen_all\"}, {\"label\": \"仅扩大到该产品/项目相关范围\", \"value\": \"widen_same_project\"}, {\"label\": \"暂不扩大，等我提供材料\", \"value\": \"stay\"}], \"question\": \"是否允许放宽品类过滤，在全公司范围按漏气、气嘴、密封圈、8D、CAPA 重新检索？（本轮公司检索预算已用完，需要下一轮执行）\", \"depends_on\": [], \"recommended\": {\"value\": \"widen_all\", \"reason\": \"当前品类内为空，根因只能在更广范围内找到\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"根因结论必须有实物或供应商证据支撑，没有原始材料就只能停留在假设。\", \"options\": [{\"label\": \"有，可上传或指定给我\", \"value\": \"have_docs\"}, {\"label\": \"暂时没有，需要先去取\", \"value\": \"no_docs\"}, {\"label\": \"不确定，先按扩大检索走\", \"value\": \"not_sure\"}], \"question\": \"是否已有现成的拆件/剖检报告、密封圈材料比对或供应商换料通知可以提供给我直接核对？\", \"depends_on\": [], \"recommended\": {\"value\": \"have_docs\", \"reason\": \"有原始记录才能把根因从假设变成可核对结论\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"确定对象后才能把问题单、测试记录与批次限定到正确范围，避免查错对象。\", \"options\": [{\"label\": \"我直接告诉你名称\", \"value\": \"will_provide\"}, {\"label\": \"不清楚，需要先找出来\", \"value\": \"unknown\"}, {\"label\": \"先按全范围检索\", \"value\": \"skip\"}], \"question\": \"这次漏气对应的产品/型号、项目或批次名称是什么？（当前品类下我读不到任何产品记录）\", \"depends_on\": [], \"recommended\": {\"value\": \"will_provide\", \"reason\": \"对象明确后检索与取证会精确得多\"}, \"allow_free_text\": true}], \"unfinished\": [\"全公司范围（去掉品类过滤）检索漏气、气嘴、密封圈、8D、CAPA 相关记录——本轮公司检索预算已用完，需下一轮执行\", \"获取拆件或剖检记录与供应商密封圈换料证据，用于验证或推翻\\\"供应商换料\\\"这一假设\", \"由品质与工程专业本人对根因结论与措施作出具名决定（本次仅形成待确认的案例状态）\"]}",
+  "unfinished": [
+    "全公司范围（去掉品类过滤）检索漏气、气嘴、密封圈、8D、CAPA 相关记录——本轮公司检索预算已用完，需下一轮执行",
+    "获取拆件或剖检记录与供应商密封圈换料证据，用于验证或推翻\"供应商换料\"这一假设",
+    "由品质与工程专业本人对根因结论与措施作出具名决定（本次仅形成待确认的案例状态）"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "model:completed:9",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2"
+    ],
+    "catalog": [
+      "r1",
+      "r2"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

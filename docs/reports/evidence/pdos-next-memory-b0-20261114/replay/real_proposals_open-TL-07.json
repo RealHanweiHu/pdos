@@ -1,0 +1,26 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real_proposals_open",
+  "timeline": "TL-07",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "resident",
+      "notes": [
+        "n1"
+      ],
+      "texts": [
+        "周报用文字形式"
+      ],
+      "catalog": [],
+      "catalog_fields": [],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    }
+  ],
+  "episodes_written": [],
+  "unexpected_notes": 0
+}

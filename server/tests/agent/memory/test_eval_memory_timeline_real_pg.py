@@ -1,4 +1,4 @@
-"""Real-model answers to the memory timeline questions (P121 B0; baselines 0 and 2).
+"""Real-model answers to the memory timeline questions (P121 B0; baselines 0-2 and ceiling).
 
 Opt-in only: it sends synthetic questions to the configured provider and costs real
 tokens. It runs only when ``PDOS_MEMORY_TIMELINE_REAL`` names the host's model runtime
@@ -8,7 +8,7 @@ Everything else is the isolated ``pdos_test`` and a local Temporal server.
 For each timeline the history is replayed with scripted finishes, exactly as the
 model-free replay does, so every group starts from the same recorded past. Only
 the timeline's ``questions`` are answered by the real model, each in a new Session,
-through the registered 小Pai workflow. Three groups:
+through the registered 小Pai workflow. Four groups:
 
 * ``no_memory``: every Session has "不进记忆" on (baseline 0).
 * ``history_only``: raw-history retrieval (baseline 1, user 2026-11-13: registered
@@ -18,6 +18,25 @@ through the registered 小Pai workflow. Three groups:
   ``conversation.history`` are unchanged, so the tool surface the model sees is the
   same as in ``real``. Nothing is added to the product's tool registry.
 * ``real``: the current implementation (baseline 2).
+* ``ideal``: the ceiling of target architecture §8.3, "ideal memory" (an evaluation
+  emulation, not a product feature). Inside this test process the frozen
+  recent-episode catalog is replaced by the question's annotated Runs (``ideal_runs``,
+  by default ``expect_usage_runs``), each with the answer summary and unfinished items
+  written into the catalog line, so the facts are in the Run's context from the first
+  model call; and ``memory.search`` returns exactly those Runs for any query, with the
+  stored answer excerpt, through the same per-item recheck and usage list. Personal
+  notes, ``conversation.history``, the prompt and every tool definition stay as in
+  ``real``. A question with no annotated Run gets an empty catalog and no episodes.
+
+A question can also name a ``fault``. ``memory_unavailable`` (T24) makes
+``memory.search`` fail with a domain error and drops the notes and catalog from the
+envelope, in this test process only, as if the memory store could not be read.
+
+``PDOS_MEMORY_TIMELINE_REAL_REPEATS`` runs every question that many times per group
+(``-k rep0`` etc. select one repeat). ``PDOS_MEMORY_TIMELINE_REAL_TOKEN_CAP`` stops
+starting new questions once the observations already in the output folder used that
+many tokens; ``PDOS_MEMORY_TIMELINE_REAL_RUN_ALERT`` writes a ``STOP`` file there, and
+every later question is skipped, as soon as a single question uses more than that.
 
 One JSON observation per question goes to ``PDOS_MEMORY_TIMELINE_OUTPUT_DIR``.
 Nothing is judged here; ``tools/xiaopai_memory_timeline_baseline.py score-real``
@@ -56,6 +75,10 @@ SOURCE = os.environ.get("PDOS_MEMORY_TIMELINE_REAL")
 OBSERVATION = "xiaopai-memory-timeline-real-observation/v0"
 GROUPS = tuple(filter(None, os.environ.get(
     "PDOS_MEMORY_TIMELINE_REAL_GROUPS", "no_memory,real").split(",")))
+REPEATS = int(os.environ.get("PDOS_MEMORY_TIMELINE_REAL_REPEATS") or 1)
+TOKEN_CAP = int(os.environ.get("PDOS_MEMORY_TIMELINE_REAL_TOKEN_CAP") or 0)
+RUN_ALERT = int(os.environ.get("PDOS_MEMORY_TIMELINE_REAL_RUN_ALERT") or 0)
+FAULT_MESSAGE = "个人记忆暂时无法读取。"
 ONLY = set(filter(None, os.environ.get("PDOS_MEMORY_TIMELINE_REAL_ONLY", "").split(",")))
 # Diagnostics only (D477): record why a result failed verification or a node stopped.
 DIAGNOSE = bool(os.environ.get("PDOS_MEMORY_TIMELINE_REAL_DIAGNOSE"))
@@ -68,12 +91,28 @@ pytestmark = pytest.mark.skipif(
 )
 
 
-def selected(timeline):
+def selected(timeline, group=None):
     return [question for question in timeline.get("questions", [])
-            if not ONLY or f"{timeline['id']}/{question['id']}" in ONLY]
+            if (not ONLY or f"{timeline['id']}/{question['id']}" in ONLY)
+            and (group is None or group in question.get("groups", (group,)))]
 
 
 TIMELINES = [timeline for timeline in CASES["timelines"] if selected(timeline)]
+
+
+def ideal_runs(question):
+    return question.get("ideal_runs", question.get("expect_usage_runs", []))
+
+
+def spent(folder):
+    """Tokens already used by the observations in the output folder (all processes)."""
+    total = 0
+    for path in folder.glob("*.real.json"):
+        try:
+            total += json.loads(path.read_text()).get("used_tokens") or 0
+        except ValueError:
+            continue
+    return total
 
 
 def host_config(tmp_path, tenant):
@@ -90,7 +129,7 @@ def host_config(tmp_path, tenant):
     return path, model
 
 
-def configure_model(setup, tmp_path, monkeypatch, group):
+def configure_model(setup, tmp_path, monkeypatch, group, state):
     path, model = host_config(tmp_path, setup.tenant)
     monkeypatch.setenv("PDOS_TENANT_RUNTIME_CONFIG", str(path))
     monkeypatch.setenv("PDOS_ENVIRONMENT", "development")
@@ -119,12 +158,19 @@ def configure_model(setup, tmp_path, monkeypatch, group):
     bootstrap = Bootstrap(setup.engine, ports=ports)
     monkeypatch.setattr(setup.engine, "_pdos_agent_kernel_adapters", None, raising=False)
     adapters = bootstrap.adapters()
-    if group == "history_only":
-        from pdos_next.agent.memory import assemble, recall
+    from pdos_next.agent.memory import assemble, recall
 
-        adapters.read_tools["memory.search"] = history_only_search(bootstrap.store)
-        monkeypatch.setattr(recall, "frozen_catalog", lambda _session, _run: None)
-        monkeypatch.setattr(assemble, "frozen", lambda _session, _run: None)
+    search, catalog, notes = (adapters.read_tools["memory.search"], recall.frozen_catalog,
+                              assemble.frozen)
+    if group == "history_only":
+        search = history_only_search(bootstrap.store)
+        catalog = notes = lambda _session, _run: None
+    if group == "ideal":
+        search, catalog = ideal_search(bootstrap.store, state), ideal_catalog(state)
+    # Evaluation only: the per-question fault (T24) wraps whatever the group uses.
+    adapters.read_tools["memory.search"] = faulty(search, state)
+    monkeypatch.setattr(recall, "frozen_catalog", faulty(catalog, state, envelope=True))
+    monkeypatch.setattr(assemble, "frozen", faulty(notes, state, envelope=True))
     configure_agent_kernel(setup.engine, adapters)
     return ports, bootstrap, model
 
@@ -197,6 +243,122 @@ def history_only_search(store):
     return handler
 
 
+def faulty(callback, state, *, envelope=False):
+    """Evaluation only: the memory store "cannot be read" while a question names that fault."""
+    from pdos_next.errors import DomainError
+
+    def wrapped(*args):
+        if state.get("fault") == "memory_unavailable":
+            if envelope:
+                return None
+            raise DomainError("SOURCE_UNAVAILABLE", FAULT_MESSAGE)
+        return callback(*args)
+
+    return wrapped
+
+
+def _ideal_episodes(session, run, state):
+    from pdos_next.agent.memory import recall
+    from pdos_next.agent.memory.index import summaries
+    from pdos_next.agent.memory.models import MemoryEpisode
+
+    order = [str(value) for value in state.get("ideal", [])]
+    rows = session.scalars(select(MemoryEpisode).where(
+        MemoryEpisode.run_id.in_([UUID(value) for value in order]),
+        MemoryEpisode.owner_id == run.requester_id)).all() if order else []
+    rows = sorted(rows, key=lambda row: order.index(str(row.run_id)))
+    kept, access = recall.recheck(session, run, rows, limit=10)
+    return kept, access, summaries(session, [item[0] for item in kept])
+
+
+def ideal_catalog(state):
+    """Ceiling only: the catalog holds the annotated Runs, answer and unfinished items included."""
+    from pdos_next.agent.memory import recall
+
+    def frozen(session, run):
+        if "memory_context" in run.versions:
+            return run.versions["memory_context"]
+        value = None
+        if recall.unavailable(run, session) is None:
+            kept, access, answers = _ideal_episodes(session, run, state)
+            lines = []
+            for episode, _state, _scope, _receipts in kept[:recall.CATALOG_SIZE]:
+                line = recall.first_sentence(episode.goal, recall.CATALOG_GOAL_CHARS)
+                line += f"｜当时小Pai 的回答：{answers.get(episode.run_id) or '（无）'}"
+                unfinished = state.get("unfinished", {}).get(str(episode.run_id))
+                if unfinished:
+                    line += "｜当时未完成：" + "；".join(unfinished)
+                lines.append({"run_id": str(episode.run_id), "session_id": str(episode.session_id),
+                              "as_of": episode.created_at.date().isoformat(), "goal": line})
+            if lines:
+                value = {
+                    "zone": "background",
+                    "label": ("历史（as_of）：你本人在当前范围与本次相关的以往工作，"
+                              "含当时小Pai 回答的摘录。不是业务事实，不能作为依据引用。"),
+                    "how_to_use": ("需要更多细节时用 memory.search 或 "
+                                   "conversation.history(session_id=…)。"),
+                    "recent_episodes": lines,
+                }
+                ids = [item["run_id"] for item in lines]
+                recall.record_usage(run, episodes=ids, catalog=ids,
+                                    access={key: access[key] for key in access if key in ids})
+        if run.state in recall.ACTIVE:
+            run.versions = {**run.versions, "memory_context": value}
+        return value
+
+    return frozen
+
+
+def ideal_search(store, state):
+    """Ceiling only: ``memory.search`` returns exactly the annotated Runs for any query.
+
+    Notes still come from the real note search; cards have the real shape, carry the
+    stored answer excerpt and pass the same per-item recheck and usage list.
+    """
+    from pdos_next.agent.kernel.tool_arguments import tool_arguments
+    from pdos_next.agent.memory import recall
+    from pdos_next.agent.memory.note_search import search_notes
+
+    def handler(scope, arguments):
+        payload = tool_arguments(recall.MemorySearchInput, arguments)
+        with store.transaction(scope, lock=True) as (session, run):
+            kind, _condition = recall.scope_filter(run)
+            response = {
+                "version": recall.VERSION,
+                "scope": {"kind": kind, "narrowed_to": payload.narrow_to},
+                "items": [], "returned": 0, "next_offset": None,
+                "unavailable_kinds": [item for item in payload.kinds if item == "scope_note"],
+                "retrieval": {"channels": ["keyword"], "semantic": recall.SEMANTIC_OFF,
+                              "ranking_version": "eval-ideal/v0;annotated-runs",
+                              "index_pending": 0},
+                "fact_policy": recall.FACT_POLICY,
+            }
+            blocked = recall.unavailable(run, session)
+            if blocked is not None:
+                response.update(status=blocked[0], message=blocked[1])
+                return response
+            if "note" in payload.kinds:
+                response.update(search_notes(session, run, payload))
+            response["status"] = "completed"
+            if "episode" not in payload.kinds or payload.offset:
+                return response
+            kept, access, answers = _ideal_episodes(session, run, state)
+            kept = kept[:payload.page_size]
+            response["items"] = [recall.card(episode, item_state, where, receipts, {}, run,
+                                             answer=answers.get(episode.run_id),
+                                             matched=("episode", "answer"))
+                                 for episode, item_state, where, receipts in kept]
+            response["returned"] = len(response["items"])
+            ids = [item["run_id"] for item in response["items"]]
+            recall.record_usage(
+                run, episodes=ids, access={key: access[key] for key in access if key in ids},
+                retrieval={"channels": ["keyword"], "semantic": "not_enabled",
+                           "index_pending": 0})
+            return response
+
+    return handler
+
+
 def observed(setup, replay, run_id):
     """Server facts about one finished question: answer, ledger and the usage list."""
     with Session(setup.admin) as session:
@@ -213,6 +375,14 @@ def observed(setup, replay, run_id):
             if str(session.scalar(select(AgentRun.session_id).where(AgentRun.id == value)))
             in sessions)
         result = run.result or {}
+        from pdos_next.agent.memory.models import MemoryCandidate, MemoryNote
+
+        admitted = session.scalar(select(func.count()).select_from(MemoryCandidate).where(
+            MemoryCandidate.run_id == run_id))
+        rejected = [item.get("reason") for item in
+                    ((run.versions or {}).get("work_state_proposals") or {}).get("rejected", [])]
+        notes_now = session.scalar(select(func.count()).select_from(MemoryNote).where(
+            MemoryNote.tenant_id == setup.tenant))
         return {
             "state": run.state, "error_code": run.error_code,
             "used_tokens": run.used_tokens, "held_tokens": run.held_tokens,
@@ -228,21 +398,37 @@ def observed(setup, replay, run_id):
                 "sessions_read": read_sessions,
                 "notes": sorted({replay.note_key(item["note_id"])
                                  for item in usage.get("notes", [])}),
+                "note_revisions": {replay.note_key(item["note_id"]): item.get("revision")
+                                   for item in usage.get("notes", [])},
             },
+            # T13: what this Run left behind on the write side.
+            "memory_candidates": {"admitted": admitted, "rejected": rejected},
+            "new_notes": notes_now - replay.created_notes,
             "memory_off": bool((run.versions or {}).get("memory_mode", {}).get("off")),
         }
 
 
 @pytest.mark.parametrize("setup", [{"test_authorization_hours": 4}], indirect=True)
+@pytest.mark.parametrize("repeat", range(REPEATS), ids=lambda value: f"rep{value}")
 @pytest.mark.parametrize("group", GROUPS)
 @pytest.mark.parametrize("timeline", TIMELINES, ids=lambda item: item["id"])
-def test_real_model_answers_timeline_questions(setup, tmp_path, monkeypatch, group, timeline):
-    assert group in {"no_memory", "history_only", "real"}
+def test_real_model_answers_timeline_questions(setup, tmp_path, monkeypatch, group, timeline,
+                                               repeat):
+    assert group in {"no_memory", "history_only", "real", "ideal"}
+    questions = selected(timeline, group)
+    if not questions:
+        pytest.skip(f"No question of {timeline['id']} runs in {group}")
+    folder = Path(os.environ.get("PDOS_MEMORY_TIMELINE_OUTPUT_DIR") or tmp_path)
+    if (folder / "STOP").exists():
+        pytest.skip("Stopped: " + (folder / "STOP").read_text().strip())
     replay = Replay(setup, group)
     for event in timeline["events"]:
         getattr(replay, event["op"])(event)
-    ports, bootstrap, model = configure_model(setup, tmp_path, monkeypatch, group)
-    folder = Path(os.environ.get("PDOS_MEMORY_TIMELINE_OUTPUT_DIR") or tmp_path)
+    state = {"fault": None, "ideal": [], "unfinished": {
+        str(replay.runs[event["id"]]): event["unfinished"] for event in timeline["events"]
+        if event["op"] == "run" and event.get("unfinished")}}
+    ports, bootstrap, model = configure_model(setup, tmp_path, monkeypatch, group, state)
+    summaries = {event["id"]: event for event in timeline["events"] if event["op"] == "run"}
     path = f"/v1/categories/{setup.category}/agent-runs"
     records, reasons = [], []
     if DIAGNOSE:
@@ -304,6 +490,11 @@ def test_real_model_answers_timeline_questions(setup, tmp_path, monkeypatch, gro
         return value
 
     async def one(environment, http, question):
+        state["fault"] = question.get("fault")
+        state["ideal"] = ([replay.runs[key] for key in ideal_runs(question)]
+                          if group == "ideal" else [])
+        injected = [" ".join([summaries[key].get("summary", ""), *summaries[key].get(
+            "unfinished", [])]) for key in ideal_runs(question)] if group == "ideal" else []
         began = time.monotonic()
         started = await http.post(path, headers=replay.headers(question["actor"]), json={
             "goal": question["goal"], "idempotency_key": str(uuid4()),
@@ -342,7 +533,9 @@ def test_real_model_answers_timeline_questions(setup, tmp_path, monkeypatch, gro
         return {
             **extra,
             "version": OBSERVATION, "group": group, "timeline": timeline["id"],
-            "question": question["id"], "model": model["model"],
+            "question": question["id"], "repeat": repeat, "fault": question.get("fault"),
+            "ideal_runs": ideal_runs(question) if group == "ideal" else [],
+            "injected_text": "\n".join(injected), "model": model["model"],
             "model_version": model["model_version"], "scripted_history": True,
             "status": status, "seconds": round(time.monotonic() - began, 1),
             "clarifications": asked, **observed(setup, replay, run_id),
@@ -373,18 +566,33 @@ def test_real_model_answers_timeline_questions(setup, tmp_path, monkeypatch, gro
                 ), httpx.AsyncClient(
                     transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local",
                 ) as http:
-                    for question in selected(timeline):
+                    for question in questions:
+                        if (folder / "STOP").exists():
+                            stopped.append((folder / "STOP").read_text().strip())
+                            break
+                        if TOKEN_CAP and spent(folder) >= TOKEN_CAP:
+                            stopped.append(f"token cap {TOKEN_CAP} reached")
+                            break
                         record = await one(environment, http, question)
                         records.append(record)
-                        name = f"{group}-{timeline['id']}-{question['id']}.real.json"
+                        if RUN_ALERT and (record["used_tokens"] or 0) > RUN_ALERT:
+                            (folder / "STOP").write_text(
+                                f"{group}/{timeline['id']}/{question['id']}/rep{repeat} used "
+                                f"{record['used_tokens']} tokens (alert {RUN_ALERT})\n")
+                        name = (f"{group}-{timeline['id']}-{question['id']}.r{repeat}"
+                                ".real.json")
                         (folder / name).write_text(
                             json.dumps(record, ensure_ascii=False, indent=2) + "\n")
-                        print("REAL", group, timeline["id"], question["id"], record["status"],
+                        print("REAL", group, timeline["id"], question["id"], f"rep{repeat}",
+                              record["status"],
                               record["seconds"], record["used_tokens"], record["usage"],
                               record["answer"][:200].replace("\n", " "))
         finally:
             await environment.shutdown()
 
+    stopped = []
     asyncio.run(actual())
-    assert len(records) == len(selected(timeline))
     assert all(item["held_tokens"] == 0 for item in records)
+    if stopped:
+        pytest.skip("Stopped before every question ran: " + stopped[0])
+    assert len(records) == len(questions)

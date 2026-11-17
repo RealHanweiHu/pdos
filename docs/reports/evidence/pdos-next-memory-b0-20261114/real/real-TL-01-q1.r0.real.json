@@ -1,0 +1,68 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 45.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 126839,
+  "held_tokens": 0,
+  "answer": "上次的结论（来源：本人 2026-11-15 会话情景记录，run f771bfce-924f-4617-a9e8-980c8c640f60，非当前业务事实）：建议选 B 家，交期比 A 家短 2 周；C 家因含税报价超出目标价 12% 被排除。上次留下的未完成项：①补 C 家的含税报价单；②核对 B 家交期的单位。本轮核对：在当前可读的「汽车充气泵」品类范围内检索供应/报价/交期/竞品/参数/知识条目，均未命中该对比所依据的报价单与交期记录（品类竞品、参数、知识计数均为 0），上次会话也未绑定任何来源，因此 A/B/C 三家的报价与交期数字本轮无法复核，不能作为当前事实引用或继续推导。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:54:11.154898+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"A/B/C 三家供应商的报价单与交期原始记录在当前可读范围内未找到，本轮无法复核上次结论中的价格与交期数字\", \"C 家含税报价单原件缺失，超目标价 12% 的结论无法复算\", \"B 家交期单位（自然周/工作日/日历日）未确认\", \"目标价基准（币种、含税与否、地区、渠道）未确认\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"上次的结论（来源：本人 2026-11-15 会话情景记录，run f771bfce-924f-4617-a9e8-980c8c640f60，非当前业务事实）：建议选 B 家，交期比 A 家短 2 周；C 家因含税报价超出目标价 12% 被排除。上次留下的未完成项：①补 C 家的含税报价单；②核对 B 家交期的单位。本轮核对：在当前可读的「汽车充气泵」品类范围内检索供应/报价/交期/竞品/参数/知识条目，均未命中该对比所依据的报价单与交期记录（品类竞品、参数、知识计数均为 0），上次会话也未绑定任何来源，因此 A/B/C 三家的报价与交期数字本轮无法复核，不能作为当前事实引用或继续推导。\", \"questions\": [{\"id\": \"q_sources\", \"why\": \"当前可读范围内检索不到支撑该对比的报价与交期记录，没有原始资料就无法复核或继续推进。\", \"options\": [{\"label\": \"我（用户）把报价单/交期文件绑定进来\", \"value\": \"bind\"}, {\"label\": \"继续在更深的范围（跨品类、含历史记录）检索\", \"value\": \"deepen\"}, {\"label\": \"先只用现有记录推进，缺失项标为待补\", \"value\": \"none\"}], \"question\": \"三家供应商的报价单与交期原始资料在哪里：需要我在更深的范围（跨品类/含历史）继续检索，还是你把文件/报价单绑定进来？\", \"depends_on\": [], \"recommended\": {\"value\": \"bind\", \"reason\": \"报价单与交期原始记录是复核与继续推进的必要输入，由用户绑定最快且口径可控。\"}, \"allow_free_text\": true}, {\"id\": \"q_leadtime_unit\", \"why\": \"上次结论是“B 家交期比 A 家短 2 周”，若双方口径不同（如工作日 vs 日历日），该结论与选型结论都会改变。\", \"options\": [{\"label\": \"自然周（7 天/周）\", \"value\": \"calendar_weeks\"}, {\"label\": \"工作周（5 天/周）\", \"value\": \"working_weeks\"}, {\"label\": \"日历日\", \"value\": \"calendar_days\"}, {\"label\": \"暂无口径，需向供应商确认\", \"value\": \"unknown\"}], \"question\": \"B 家交期以哪种口径为准：自然周、工作周还是日历日？\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown\", \"reason\": \"口径信息目前不在可读资料中，先标为待确认比预设更稳妥。\"}, \"allow_free_text\": true}, {\"id\": \"q_target_price_basis\", \"why\": \"C 家被排除的唯一依据是“含税报价超目标价 12%”，目标价口径不明则该排除结论不可复算。\", \"options\": [{\"label\": \"人民币、不含税、工厂交货\", \"value\": \"rmb_exw\"}, {\"label\": \"人民币、含税\", \"value\": \"rmb_incl_tax\"}, {\"label\": \"美元口径（需明确含税/渠道）\", \"value\": \"usd\"}, {\"label\": \"口径未定，先标为待确认\", \"value\": \"unknown\"}], \"question\": \"目标价基准是什么口径：币种、是否含税、地区与渠道？\", \"depends_on\": [], \"recommended\": {\"value\": \"unknown\", \"reason\": \"当前可读资料中没有目标价定义，需由用户或相关同事确认后才能复算 12% 的差距。\"}, \"allow_free_text\": true}], \"unfinished\": [\"取得 A/B/C 三家供应商的报价单与交期原始记录（当前可读范围内未找到）\", \"补 C 家的含税报价单原件\", \"核对 B 家交期的单位口径\", \"确认目标价基准（币种/含税/地区/渠道）以复算 C 家超目标价 12% 的结论\"]}",
+  "unfinished": [
+    "取得 A/B/C 三家供应商的报价单与交期原始记录（当前可读范围内未找到）",
+    "补 C 家的含税报价单原件",
+    "核对 B 家交期的单位口径",
+    "确认目标价基准（币种/含税/地区/渠道）以复算 C 家超目标价 12% 的结论"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "model:completed:7",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

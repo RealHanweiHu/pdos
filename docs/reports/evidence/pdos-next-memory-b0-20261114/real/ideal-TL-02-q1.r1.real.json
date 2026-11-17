@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "甲：建议选 B 家。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 23.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 49492,
+  "held_tokens": 0,
+  "answer": "你的结论是：建议选 B 家。这来自你本人上一次的气泵供应商对比（会话 97603f56…，as_of 2026-11-15，目标\"比较三家气泵供应商的报价和交期\"），当时小Pai 给出的结论原文即为\"建议选 B 家\"。需要说明的是，这属于你本人以往工作记录，不是当前业务事实；我在当前品类（汽车充气泵 fa8fc9a4…）内检索供应商/供货来源与平台记录均为空，所以无法用现存资料复核 B 家对应的具体供应商身份及当时的报价、交期明细。如需我继续往下核（比对当时的供应商资料、或按当前资料重新做一次比价），告诉我即可。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:46:21.682133+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"你的结论是：建议选 B 家。这来自你本人上一次的气泵供应商对比（会话 97603f56…，as_of 2026-11-15，目标\\\"比较三家气泵供应商的报价和交期\\\"），当时小Pai 给出的结论原文即为\\\"建议选 B 家\\\"。需要说明的是，这属于你本人以往工作记录，不是当前业务事实；我在当前品类（汽车充气泵 fa8fc9a4…）内检索供应商/供货来源与平台记录均为空，所以无法用现存资料复核 B 家对应的具体供应商身份及当时的报价、交期明细。如需我继续往下核（比对当时的供应商资料、或按当前资料重新做一次比价），告诉我即可。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类内检索不到当时比价的供应商报价/交期记录，B 家的具体身份与支撑数据需要另找来源才能复核。\", \"options\": [{\"label\": \"继续在当前品类/相关项目中检索气泵供应商资料，核出 B 家是谁、当时的报价与交期\", \"value\": \"recheck_supply\"}, {\"label\": \"按当前资料重新做一次气泵供应商比价并给建议\", \"value\": \"new_comparison\"}, {\"label\": \"只要这条结论，不用再查\", \"value\": \"stop\"}], \"question\": \"接下来要我做什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"recheck_supply\", \"reason\": \"结论本身已确认；缺的是 B 家的身份与当时依据，补上后可复核结论是否仍然成立。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未在当前品类检索范围内找到气泵供应商报价/交期记录，B 家的具体身份与当时依据尚未复核（搜索已执行，结果为空）\"]}",
+  "unfinished": [
+    "未在当前品类检索范围内找到气泵供应商报价/交期记录，B 家的具体身份与当时依据尚未复核（搜索已执行，结果为空）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

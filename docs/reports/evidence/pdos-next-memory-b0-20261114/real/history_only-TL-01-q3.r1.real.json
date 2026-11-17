@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 102.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 236121,
+  "held_tokens": 0,
+  "answer": "没有拿到结论：本次检索范围内没有找到任何试产不良汇总记录，因此无法确认“上周试产不良前三项”。\n\n已核对到的：\n- 当前品类范围：汽车充气泵（category_id 475bd378-99d3-4bba-82e2-90f424575b93，隔离合成品类，状态 active，权限可读）。该品类下 model_count=1，但知识条目（boundary/segment/competitor/voice/regulation/research_question）均为 0，parameter_count=0。\n- 品类内企业检索：以“试产/不良/汇总/缺陷/前三项/试产报告”等词检索 manufacturing_document、issue、field_feedback、build、test_run、artifact 并含历史，返回 0 条；随后追加“试产不良 统计 试产报告”“充气泵 试产 不良”等检索因本轮检索预算用尽未执行成功。\n- 其他读取：平台对象读取（按品类、名称、全部）均为空；evidence 检索“试产”“不良”“汽车充气泵 试产 不良 汇总 缺陷”“试产批次 不良项 数量 发生位置”均 0 条；会话历史无既往回答可复用；个人记忆检索无相关情景记录；无可用 MCP 只读工具。\n- 因此本次未签发任何来源引用，结论部分无依据行。\n\n没有查到的（未知项）：\n- “上周”对应的试产批次/试产汇总记录（以系统时间 2026-11-15 计，上周约为 2026-11-02 至 2026-11-08，但该时段的试产数据未能检索到，日期锚点本身也未被任何记录印证）。\n- 不良项清单、各不良项数量/发生数与排序依据。\n- 不良所属产品/型号、试产批次与产线。\n- 汇总口径（发生数、不良率、缺陷数或停线次数）及排名规则。\n- 是否存在只登记为 quality issue / 外部反馈（issue、field_feedback）而没有汇总文档的情形——当前检索未返回任何记录，无法区分“未登记”与“未检索到”。\n\n下一步（可继续，未获批准前不写入任何业务对象）：在同会话继续检索/放宽范围（如去掉品类限定、按 issue 与 manufacturing_document 分源检索、按 2026-11-02~11-08 时间窗过滤）；或由你直接提供上周试产汇总报告/试产批次记录，我据此整理并排序前三项，并保留每项的来源与口径说明。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:35:55.531310+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上周（约2026-11-02至2026-11-08）试产汇总的不良前三项名称与排序\", \"试产批次/试产汇总记录本身\", \"各不良项的发生数、不良率或缺陷数及排序依据\", \"不良所属产品/型号与试产批次、产线信息\", \"试产汇总口径（发生数/不良率/缺陷数/停线次数）与排名规则\", \"未找到记录的归因：未登记 vs 本轮检索范围未覆盖（品类内无知识与参数条目、平台与证据索引均为空）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"没有拿到结论：本次检索范围内没有找到任何试产不良汇总记录，因此无法确认“上周试产不良前三项”。\\n\\n已核对到的：\\n- 当前品类范围：汽车充气泵（category_id 475bd378-99d3-4bba-82e2-90f424575b93，隔离合成品类，状态 active，权限可读）。该品类下 model_count=1，但知识条目（boundary/segment/competitor/voice/regulation/research_question）均为 0，parameter_count=0。\\n- 品类内企业检索：以“试产/不良/汇总/缺陷/前三项/试产报告”等词检索 manufacturing_document、issue、field_feedback、build、test_run、artifact 并含历史，返回 0 条；随后追加“试产不良 统计 试产报告”“充气泵 试产 不良”等检索因本轮检索预算用尽未执行成功。\\n- 其他读取：平台对象读取（按品类、名称、全部）均为空；evidence 检索“试产”“不良”“汽车充气泵 试产 不良 汇总 缺陷”“试产批次 不良项 数量 发生位置”均 0 条；会话历史无既往回答可复用；个人记忆检索无相关情景记录；无可用 MCP 只读工具。\\n- 因此本次未签发任何来源引用，结论部分无依据行。\\n\\n没有查到的（未知项）：\\n- “上周”对应的试产批次/试产汇总记录（以系统时间 2026-11-15 计，上周约为 2026-11-02 至 2026-11-08，但该时段的试产数据未能检索到，日期锚点本身也未被任何记录印证）。\\n- 不良项清单、各不良项数量/发生数与排序依据。\\n- 不良所属产品/型号、试产批次与产线。\\n- 汇总口径（发生数、不良率、缺陷数或停线次数）及排名规则。\\n- 是否存在只登记为 quality issue / 外部反馈（issue、field_feedback）而没有汇总文档的情形——当前检索未返回任何记录，无法区分“未登记”与“未检索到”。\\n\\n下一步（可继续，未获批准前不写入任何业务对象）：在同会话继续检索/放宽范围（如去掉品类限定、按 issue 与 manufacturing_document 分源检索、按 2026-11-02~11-08 时间窗过滤）；或由你直接提供上周试产汇总报告/试产批次记录，我据此整理并排序前三项，并保留每项的来源与口径说明。\", \"questions\": [], \"unfinished\": [\"本轮检索预算已用尽，未能在当前范围内确认试产不良前三项；可在同会话继续检索或按用户提供的试产汇总材料整理排序\"]}",
+  "unfinished": [
+    "本轮检索预算已用尽，未能在当前范围内确认试产不良前三项；可在同会话继续检索或按用户提供的试产汇总材料整理排序"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:4",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

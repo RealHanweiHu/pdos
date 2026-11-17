@@ -1,0 +1,62 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 69.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 226357,
+  "held_tokens": 0,
+  "answer": "没有核对到那次\"有刷电机噪声超标\"评估：可读范围内检索不到相关记录，因此无法给出当时的推荐方案，也无法给出未完成事项清单。已核查：本会话个人记忆检索被跳过（该会话设为不读取个人记忆）；本品类（汽车充气泵，隔离合成品类）的知识条目（边界/细分/竞品/用户声音/法规/研究问题）均为 0、参数 0 条、竞品 0 条、平台与产品型号读取 0 条、证据库检索\"噪声/电机/有刷电机\"0 条、公司资料检索（含历史）0 条；本工作链历史引用与本会话历史回答均为空；品类登记 1 个型号，但现有只读接口取不到其定义/基线（需具体基线型号标识）；一次不限定品类的扩大检索被本轮检索预算拦截，跨范围核查未完成。因此\"推荐了哪种方案\"与\"还有什么事没做完\"目前都无可核对依据，属于未知而非\"不存在\"。建议下一轮提供那次评估的载体（会话、提案编号、文件或型号名）或开启个人记忆读取后再核。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:15:18.268843+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"该次评估是否存在及其所在载体（会话/提案/文件/型号）\", \"该次评估当时最终推荐的方案\", \"与该次评估相关的未完成事项清单\", \"本品类登记的 1 个型号对应哪个产品/基线定义（读取需具体标识）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"没有核对到那次\\\"有刷电机噪声超标\\\"评估：可读范围内检索不到相关记录，因此无法给出当时的推荐方案，也无法给出未完成事项清单。已核查：本会话个人记忆检索被跳过（该会话设为不读取个人记忆）；本品类（汽车充气泵，隔离合成品类）的知识条目（边界/细分/竞品/用户声音/法规/研究问题）均为 0、参数 0 条、竞品 0 条、平台与产品型号读取 0 条、证据库检索\\\"噪声/电机/有刷电机\\\"0 条、公司资料检索（含历史）0 条；本工作链历史引用与本会话历史回答均为空；品类登记 1 个型号，但现有只读接口取不到其定义/基线（需具体基线型号标识）；一次不限定品类的扩大检索被本轮检索预算拦截，跨范围核查未完成。因此\\\"推荐了哪种方案\\\"与\\\"还有什么事没做完\\\"目前都无可核对依据，属于未知而非\\\"不存在\\\"。建议下一轮提供那次评估的载体（会话、提案编号、文件或型号名）或开启个人记忆读取后再核。\", \"questions\": [], \"unfinished\": [\"未完成：不限定品类的扩大检索被本轮检索预算拦截，跨范围/历史来源核查未做完，需下一轮继续。\", \"未完成：本品类型号的基线与定义未读取（product.baseline.read 要求具体基线型号标识，现有接口未暴露该标识）。\", \"未完成：用户所述\\\"那次评估\\\"的原始载体尚未定位，推荐方案与未完成事项均无法给出。\"]}",
+  "unfinished": [
+    "未完成：不限定品类的扩大检索被本轮检索预算拦截，跨范围/历史来源核查未做完，需下一轮继续。",
+    "未完成：本品类型号的基线与定义未读取（product.baseline.read 要求具体基线型号标识，现有接口未暴露该标识）。",
+    "未完成：用户所述\"那次评估\"的原始载体尚未定位，推荐方案与未完成事项均无法给出。"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:3",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

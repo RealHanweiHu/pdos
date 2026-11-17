@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 51.8,
+  "clarifications": [
+    "那次供应商比较的记录在哪里？（文档/纪要名称、项目或提案编号，或另一个会话）",
+    "“C 家”对应的全称或品牌名是什么？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 141562,
+  "held_tokens": 0,
+  "answer": "在所有可读范围内均未找到\"上次比较供应商时排除 C 家\"的记录，故查不到其排除理由。已核对：会话历史无更早回合；个人记忆本会话关闭；公司资料检索命中 0 条；品类竞品清单、品类全部知识记录（计数为 0）、证据检索、平台/产品对象均为空。唯一未完成项：一条更宽的公司检索查询因单轮预算上限未执行完，故覆盖性未被完全证明。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T14:03:58.213801+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次供应商比较的结论、排除理由与依据在全部可读范围内未检出\", \"排除对象 C 家的指代（全称/品牌/内部代号）无记录可对应\", \"未完全证明全库无此记录：一条更宽的公司资料检索查询因单轮检索预算上限未完成\", \"本会话未启用个人记忆，历史工作情景卡无法读取\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"在所有可读范围内均未找到\\\"上次比较供应商时排除 C 家\\\"的记录，故查不到其排除理由。已核对：会话历史无更早回合；个人记忆本会话关闭；公司资料检索命中 0 条；品类竞品清单、品类全部知识记录（计数为 0）、证据检索、平台/产品对象均为空。唯一未完成项：一条更宽的公司检索查询因单轮预算上限未执行完，故覆盖性未被完全证明。\", \"questions\": [], \"unfinished\": [\"一条更宽的公司资料检索（关键词：供应商 比选 名单 落选）因单轮检索预算上限未执行完毕，公司资料层面的检索覆盖性未被完全证明\", \"若后续能给出该次比较的出处（文件名、项目/提案编号或另一会话 ID），可定点读取并交付排除理由及原文出处\"]}",
+  "unfinished": [
+    "一条更宽的公司资料检索（关键词：供应商 比选 名单 落选）因单轮检索预算上限未执行完毕，公司资料层面的检索覆盖性未被完全证明",
+    "若后续能给出该次比较的出处（文件名、项目/提案编号或另一会话 ID），可定点读取并交付排除理由及原文出处"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:8",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

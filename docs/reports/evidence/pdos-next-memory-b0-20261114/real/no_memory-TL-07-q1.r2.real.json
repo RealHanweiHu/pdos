@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 28.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 66423,
+  "held_tokens": 0,
+  "answer": "已按您的要求出本周周报，两条内容如下：\n\n【周报 · 汽车充气泵】\n一、本周完成\n1. 完成供应商对比。\n\n二、下周计划\n1. 补供应商报价单。\n\n说明：我在当前可读范围（该品类的公司资料、竞品/供应商清单、证据库、平台项目与历史对话）内检索过，没有找到任何供应商对比记录或报价相关文档，所以这两条是按您本人的陈述成稿，未能在公司系统内做事实核验；报价单涉及的供应商范围、规格口径和交期也没有登记信息，因此未写入周报。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"公司范围内没有可核验的供应商对比记录（对比对象、结论、参数口径均未知）\", \"报价单需覆盖的供应商范围、规格口径、币种/含税运口径与交期未登记\", \"周报两条内容均只来自本人陈述，未经系统记录核验\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:15:36.296804+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citations\": [], \"weekly_report\": {\"entries\": [{\"text\": \"完成供应商对比\", \"source\": \"本人在本次对话中的陈述\", \"status\": \"not_recorded\", \"section\": \"本周完成\", \"verification_note\": \"在公司可读范围（品类资料、竞品/供应商清单、证据库、平台项目、历史对话）内未检索到供应商对比记录或文档，本条无法做事实核验\"}, {\"text\": \"补供应商报价单\", \"source\": \"本人在本次对话中的陈述\", \"status\": \"unspecified\", \"section\": \"下周计划\", \"verification_note\": \"未检索到报价单对象、供应商范围、规格口径与交期登记信息\"}], \"category\": {\"id\": \"9084896a-1e12-4aaf-b40d-de85677974ec\", \"name\": \"汽车充气泵\"}}}, \"status\": \"completed\", \"summary\": \"已按您的要求出本周周报，两条内容如下：\\n\\n【周报 · 汽车充气泵】\\n一、本周完成\\n1. 完成供应商对比。\\n\\n二、下周计划\\n1. 补供应商报价单。\\n\\n说明：我在当前可读范围（该品类的公司资料、竞品/供应商清单、证据库、平台项目与历史对话）内检索过，没有找到任何供应商对比记录或报价相关文档，所以这两条是按您本人的陈述成稿，未能在公司系统内做事实核验；报价单涉及的供应商范围、规格口径和交期也没有登记信息，因此未写入周报。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读范围内没有任何供应商对比记录，若要写出具体结论（例如谁更优、价差多少），需要您提供要点或先建立可引用的对比记录。\", \"options\": [{\"label\": \"就保持这两条，不加结论摘要\", \"value\": \"keep_two_items\"}, {\"label\": \"我口述对比结论，您补成一段摘要（并标注为我提供、未核验）\", \"value\": \"add_summary_from_user_input\"}, {\"label\": \"等公司范围内的对比记录可读后再补\", \"value\": \"add_summary_from_records\"}], \"question\": \"周报里要不要补一句供应商对比的结论摘要？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_two_items\", \"reason\": \"您明确说内容就两条，且当前没有可引用的对比结论来源。\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商对比与报价单在公司可读范围内均无记录，周报两条未做事实核验\", \"报价单本身未在系统内建立对象（缺少供应商范围与规格口径登记信息）\"]}",
+  "unfinished": [
+    "供应商对比与报价单在公司可读范围内均无记录，周报两条未做事实核验",
+    "报价单本身未在系统内建立对象（缺少供应商范围与规格口径登记信息）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

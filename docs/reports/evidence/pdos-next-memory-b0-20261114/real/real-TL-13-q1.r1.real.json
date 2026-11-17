@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-13",
+  "question": "q1",
+  "repeat": 1,
+  "fault": "memory_unavailable",
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 60.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 191545,
+  "held_tokens": 0,
+  "answer": "在「汽车充气泵」品类下能核到的只有一条规格参数（category.parameters，noise，version 1）：噪声验收标准为 ≤ 62 dB(A)，单位 dB(A)，方向为越低越好；标准条件已写明「1 m，空载」。但该条目 method（测量方法/依据标准）为空、confirmed_by 为空，且品类知识库与竞品表均为空、品类内文档检索 0 条命中，因此无法交叉核对产品级基线。关于「你以前是否交代过测量条件」：本会话没有更早轮次，个人记忆源当前不可读，检索范围内也没有对话原文或文档；唯一带人工来源痕迹的是这条参数本身（origin=human，写入人与该品类 owner 为同一账号，备注「合成规格：噪声」），它记录的是规格值，不能等同于「某次对话里你下达的原始指示」。当前还需你定夺的是：测量方法/依据标准未登记，以及「1 m，空载」是否需要补齐工况细节（测点方位、转速/负载、背景噪声限值）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:14:11.754697+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"噪声测量方法/依据标准未登记（参数 method 字段为空），无法确认按 GB/T 10392、ISO 3744 或其他标准执行\", \"「1 m，空载」之外的工况细节未登记：测点方位、转速/负载条件、背景噪声限值、采样时间均无记录\", \"该噪声参数条目 confirmed_by 为空，即无人确认签核，仅有 receipt_id\", \"无法核实你在既往对话中的原始交代：本会话无更早轮次，个人记忆源当前返回 SOURCE_UNAVAILABLE，品类知识库 0 条、竞品表为空、品类内文档检索 0 条命中\", \"品类 model_count 为 1，但平台对象读取未返回任何产品，故产品级规格/基线未能读取核对\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"在「汽车充气泵」品类下能核到的只有一条规格参数（category.parameters，noise，version 1）：噪声验收标准为 ≤ 62 dB(A)，单位 dB(A)，方向为越低越好；标准条件已写明「1 m，空载」。但该条目 method（测量方法/依据标准）为空、confirmed_by 为空，且品类知识库与竞品表均为空、品类内文档检索 0 条命中，因此无法交叉核对产品级基线。关于「你以前是否交代过测量条件」：本会话没有更早轮次，个人记忆源当前不可读，检索范围内也没有对话原文或文档；唯一带人工来源痕迹的是这条参数本身（origin=human，写入人与该品类 owner 为同一账号，备注「合成规格：噪声」），它记录的是规格值，不能等同于「某次对话里你下达的原始指示」。当前还需你定夺的是：测量方法/依据标准未登记，以及「1 m，空载」是否需要补齐工况细节（测点方位、转速/负载、背景噪声限值）。\", \"questions\": [{\"id\": \"q1\", \"why\": \"参数条目只有数值和「1 m，空载」，没有方法就无法在验收时判定合格与否\", \"options\": [{\"label\": \"按 GB/T 10392 登记\", \"value\": \"GB/T 10392\"}, {\"label\": \"按 ISO 3744 登记\", \"value\": \"ISO 3744\"}, {\"label\": \"其他标准（我另行指定）\", \"value\": \"other\"}, {\"label\": \"暂不登记，先留空\", \"value\": \"leave_blank\"}], \"question\": \"噪声的测量方法/依据标准按哪个口径登记？（当前规格里 method 为空）\", \"depends_on\": [], \"recommended\": {\"value\": \"other\", \"reason\": \"测量方法是专业口径选择，需由你或对应工程师确认后再写入规格\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"现条件不足以复现同一读数，空载在空转/带载两种工况下读数差异会直接影响是否达标的判定\", \"options\": [{\"label\": \"补齐全部：测点方位 + 转速/负载 + 背景噪声限值\", \"value\": \"full\"}, {\"label\": \"只补转速/负载定义\", \"value\": \"min\"}, {\"label\": \"维持现状「1 m，空载」，不加细节\", \"value\": \"keep\"}], \"question\": \"「1 m，空载」之外，是否需要把工况细节补齐（测点方位、转速/负载、背景噪声限值）？\", \"depends_on\": [], \"recommended\": {\"value\": \"full\", \"reason\": \"补齐范围影响成本与可执行性，需要你按实际测试资源决定\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"本轮检索预算已用完，文档与历史只覆盖到当前可读范围；若要确认原始指示出处需要再跑一轮检索\", \"options\": [{\"label\": \"继续深入查历史与文档\", \"value\": \"continue\"}, {\"label\": \"不必再查，以当前规格条目为准\", \"value\": \"stop\"}], \"question\": \"是否要我继续深入检索更早的对话与文档，专门核对你此前关于噪声测量条件的交代？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue\", \"reason\": \"是否值得额外一轮检索取决于你是否需要追溯原始指示出处\"}, \"allow_free_text\": true}], \"unfinished\": [\"噪声的测量方法/依据标准尚未登记（method 为空），需你确定口径后才能作为验收依据\", \"「1 m，空载」是否补齐工况细节（测点方位、转速/负载、背景噪声限值）待你决定\", \"「你此前是否交代过测量条件」在当前可读范围内无法核实：会话无更早轮次、个人记忆源不可用、品类文档检索 0 条命中\", \"产品级规格/基线未读取到（平台未返回产品对象），未与品类参数做交叉核对\"]}",
+  "unfinished": [
+    "噪声的测量方法/依据标准尚未登记（method 为空），需你确定口径后才能作为验收依据",
+    "「1 m，空载」是否补齐工况细节（测点方位、转速/负载、背景噪声限值）待你决定",
+    "「你此前是否交代过测量条件」在当前可读范围内无法核实：会话无更早轮次、个人记忆源不可用、品类文档检索 0 条命中",
+    "产品级规格/基线未读取到（平台未返回产品对象），未与品类参数做交叉核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:failed:2",
+    "model:completed:10",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

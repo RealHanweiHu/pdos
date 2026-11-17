@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 34.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 67950,
+  "held_tokens": 0,
+  "answer": "在当前范围（品类：汽车充气泵）里，我只找到一次相关的历史记录：2026-11-15 的会话「气泵报价对比」，状态已完成，记录摘要只有一句「报价对比已完成。」。该会话可读的历史里只保留了目标句和这句完成摘要，没有保留你逐句的交代，因此查不到你原话里指定的对比口径（币种、价格时点、地区、渠道、零售/促销、含税含运、配置基准等）。品类范围内针对口径类资料（artifact/knowledge）的检索返回 0 条；一次更宽的检索因本轮检索预算用完未能完成。所以结论是：在已检索范围内没有找到你明确交代过的口径记录，而不是你没有交代过。历史记录本身只是当时的记录，不能当业务事实引用；如果要确认当时实际用的口径，需要读当前品类里已存的竞品/价格对象。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:09:56.576464+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"历史会话中未保留用户逐句交代的对比口径原话\", \"品类内口径类资料检索返回 0 条\", \"更宽范围的检索因本轮检索预算用完未完成\", \"当时报价对比实际使用的口径（币种/时点/地区/渠道/含税含运/配置基准）尚未核对\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"在当前范围（品类：汽车充气泵）里，我只找到一次相关的历史记录：2026-11-15 的会话「气泵报价对比」，状态已完成，记录摘要只有一句「报价对比已完成。」。该会话可读的历史里只保留了目标句和这句完成摘要，没有保留你逐句的交代，因此查不到你原话里指定的对比口径（币种、价格时点、地区、渠道、零售/促销、含税含运、配置基准等）。品类范围内针对口径类资料（artifact/knowledge）的检索返回 0 条；一次更宽的检索因本轮检索预算用完未能完成。所以结论是：在已检索范围内没有找到你明确交代过的口径记录，而不是你没有交代过。历史记录本身只是当时的记录，不能当业务事实引用；如果要确认当时实际用的口径，需要读当前品类里已存的竞品/价格对象。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史记录里没有你的口径原话，只有当前品类里实际存下来的竞品/价格对象能反推当时口径。\", \"options\": [{\"label\": \"读当前品类已存的竞品价格点，核对当时实际口径\", \"value\": \"read_current_price_points\"}, {\"label\": \"继续在同会话深查历史会话与相关资料\", \"value\": \"deep_history\"}, {\"label\": \"不用查历史，直接按统一口径（币种/时点/地区/渠道/零售或促销/含税含运/配置）重做对比\", \"value\": \"restandardize\"}], \"question\": \"下一步怎么走？\", \"depends_on\": [], \"recommended\": {\"value\": \"read_current_price_points\", \"reason\": \"历史记录没有保留你的口径原话，读当前已存价格对象是唯一能确证当时口径的途径。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未在该品类内检索到口径类资料（artifact/knowledge 返回 0 条）\", \"更宽范围的检索被本轮检索预算拦截，尚未完成\", \"历史会话中的用户原始交代未在可读记录中保留\"]}",
+  "unfinished": [
+    "未在该品类内检索到口径类资料（artifact/knowledge 返回 0 条）",
+    "更宽范围的检索被本轮检索预算拦截，尚未完成",
+    "历史会话中的用户原始交代未在可读记录中保留"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

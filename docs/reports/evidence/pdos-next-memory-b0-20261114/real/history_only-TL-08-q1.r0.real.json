@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 30.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 84037,
+  "held_tokens": 0,
+  "answer": "找到了：外壳缩水出自 2026-11-15 那次工作《汇总上周试产的不良项》。当时一起列出的是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞——外壳缩水排在第二项。按\"缩水/缩水\"检索本人记录只命中这一次工作，没有其他会话提到过。补一句核对：我在当前\"汽车充气泵\"品类可读的 issue / field_feedback / build / test_run 范围内按这三项检索，未找到对应的不良登记记录，所以明细（数量、占比、工序、责任方）目前没有可引用的现行依据；那次回答本身也只给了前三项名称。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"该次回答只给出前三项名称，未含前三项以外的更完整不良清单\", \"各不良项的样品数/占比/发生工序/责任方等明细在该次记录中未记录\", \"该次工作当时引用的原始试产不良来源未随会话记录保留\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:57:06.238366+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"recall_basis\": \"conversation_history + personal_memory(keyword)\", \"matched_works\": [{\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15\", \"run_id\": \"2216f963-a5a1-45c2-97ec-462e27d3c880\", \"status\": \"completed\", \"session_id\": \"1242ca07-3b18-4e3b-b9f4-d63cb731a294\", \"ranking_as_stated\": \"不良前三项：气嘴漏气、外壳缩水、按键卡滞\", \"issues_listed_together\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"]}], \"current_scope_check\": {\"note\": \"在检索范围内未找到这三个不良项的登记记录，不能据此断定其不存在或已结案\", \"found\": false, \"query\": \"试产不良：外壳缩水、气嘴漏气、按键卡滞\", \"scope\": \"品类「汽车充气泵」可读来源：issue / field_feedback / build / test_run\"}, \"historical_record_note\": \"以上为 2026-11-15 的历史回答记录，非当前业务事实\", \"other_works_mentioning_case_shrinkage\": []}, \"status\": \"completed\", \"summary\": \"找到了：外壳缩水出自 2026-11-15 那次工作《汇总上周试产的不良项》。当时一起列出的是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞——外壳缩水排在第二项。按\\\"缩水/缩水\\\"检索本人记录只命中这一次工作，没有其他会话提到过。补一句核对：我在当前\\\"汽车充气泵\\\"品类可读的 issue / field_feedback / build / test_run 范围内按这三项检索，未找到对应的不良登记记录，所以明细（数量、占比、工序、责任方）目前没有可引用的现行依据；那次回答本身也只给了前三项名称。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读范围内检索不到这三项不良的登记记录，要还原明细或推进处置需要先确认方向。\", \"options\": [{\"label\": \"为气嘴漏气/外壳缩水/按键卡滞立品质问题并准备围堵与 CAPA 草稿\", \"value\": \"按品质问题流程为这三项建案（来源明确的部分先登记围堵与 CAPA 假设）\"}, {\"label\": \"先只查试产/制造侧记录，找这三项不良的原始明细（数量、工序、批次）\", \"value\": \"只找试产不良原始记录\"}, {\"label\": \"先核对这三项现在是否已立项/已关闭\", \"value\": \"只做现状核对\"}, {\"label\": \"到此为止，不用继续\", \"value\": \"stop\"}], \"question\": \"要不要我接着往下做？\", \"depends_on\": [], \"recommended\": {\"value\": \"只找试产不良原始记录\", \"reason\": \"先拿到这三项的原始明细与发生位置，再决定是否立案与走 CAPA，避免在缺数据时先建流程。\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:3",
+    "memory.search:completed:2",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

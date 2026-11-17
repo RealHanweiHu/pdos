@@ -1,0 +1,33 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-11",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "domain",
+      "found": 1,
+      "criterion": "≥ 35 L/min",
+      "origin": "human"
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "emulated": true,
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ]
+    }
+  ],
+  "episodes_written": [
+    "r1"
+  ],
+  "unexpected_notes": 0
+}

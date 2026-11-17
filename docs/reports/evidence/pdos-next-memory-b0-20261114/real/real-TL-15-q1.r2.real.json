@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 21.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 48813,
+  "held_tokens": 0,
+  "answer": "你上次（2026-11-15，「整理充气泵的包装方案」会话）选定的是包装方案二：纸托加收缩膜，单件成本 1.8 元。",
+  "answer_blob": "{\"result\": {\"note\": \"该结论来自你本人上一次会话的记录（as_of 2026-11-15），属于情景记录，不能作为当前业务事实引用；若需作为当前依据，需要重新读取或登记业务对象。\", \"basis\": {\"conversation_history\": {\"goal\": \"整理充气泵的包装方案\", \"run_id\": \"5b9e4d89-9361-4fc2-8c56-622fe6406684\", \"session_id\": \"b6b67f24-a0bc-4742-b60c-4f011a1cf8b6\", \"outcome_summary\": \"甲：包装选方案二（纸托加收缩膜），单件成本 1.8 元。\"}}, \"answer\": {\"as_of\": \"2026-11-15\", \"unit_cost\": {\"basis\": \"单件包装成本\", \"value\": 1.8, \"currency\": \"CNY\"}, \"source_kind\": \"本人历史会话记录（情景记忆，非业务事实）\", \"selected_option\": \"方案二：纸托 + 收缩膜\"}, \"unknowns\": [\"1.8 元单件成本的构成明细（纸张/纸托、收缩膜、人工、模具摊销）未在历史记录中留存\", \"所选方案是否已正式登记为立项提案或制造/包装文件记录：本次在当前品类「汽车充气泵」可读资料中检索「充气泵 包装方案 纸托 收缩膜 单件成本」未命中相关文档\", \"成本所对应的量产批量、币种与是否含税/运费口径，历史记录中未注明\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:44:21.332566+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"你上次（2026-11-15，「整理充气泵的包装方案」会话）选定的是包装方案二：纸托加收缩膜，单件成本 1.8 元。\", \"questions\": [], \"unfinished\": [\"若需把「方案二 / 单件 1.8 元」作为当前有效结论，建议在品类资料中登记或复核一次（本次检索范围内未找到对应包装方案与成本文档）\"]}",
+  "unfinished": [
+    "若需把「方案二 / 单件 1.8 元」作为当前有效结论，建议在品类资料中登记或复核一次（本次检索范围内未找到对应包装方案与成本文档）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 52.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 87484,
+  "held_tokens": 0,
+  "answer": "已在当前品类（汽车充气泵）范围内检索，未找到该气泵样件的任何供应商、外部等待/送样记录、试产批次或验证记录（assistant.search 返回 0 条，platform.read 为空，品类知识/参数条目为 0），因此邮件中涉及供应商、原承诺交期、样件数量与状态等事实一律留作【】占位符，未代为填写。\n\n给出两版中文草稿：版本 A 为超短 5 句催交邮件（可直接发）；版本 B 增加 4 项请供应商回复的清单（当前状态、预计发货/到货日期、规格数量差异、物流单号与发货通知）。两版均要求对方回复截止日期，并留出发货通知与收货地址位。\n\n尚未定稿的缺口：供应商名称与收件人、样件型号/规格/数量、原承诺交期与当前进度、我方项目或订单编号与联系人。已提出 3 个问题（供应商与收件人信息、样件事实、是否登记为外部等待跟踪项）供本人确认；work_management 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），登记外部等待条目暂不可执行。",
+  "answer_blob": "{\"result\": {\"basis\": {\"finding\": \"当前品类可读范围内未找到该样件的供应商、外部等待/送样记录、试产批次或验证记录；品类仅登记 1 个型号，知识条目（boundary/segment/competitor/voice/regulation/research_question）与参数条目均为 0。所有公司与交期事实为占位符，未做推断。\", \"skill_note\": \"work_management 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），未能登记外部等待/交样跟踪条目。\", \"search_scope\": {\"category_id\": \"2e37b4fd-c914-4d3d-bef5-0f7dfc00839f\", \"category_name\": \"汽车充气泵\"}, \"searches_run\": [{\"tool\": \"assistant.search\", \"items\": 0, \"source_types\": [\"external_wait\", \"build\", \"test_run\", \"supply\", \"artifact\"]}, {\"tool\": \"platform.read\", \"items\": 0}, {\"tool\": \"evidence.search\", \"items\": 0}, {\"tool\": \"category.knowledge.list\", \"items\": 0}]}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:37:22.491026+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商名称与收件人（公司/姓名/邮箱）\", \"样件型号、规格与数量\", \"原承诺交期与当前实际进度\", \"我方项目或订单编号、技术要求编号、验证或试产计划开始日期\", \"我方收货地址与回复截止日期\", \"本次催交是否需要登记为外部等待/交样跟踪项\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"email_draft\": {\"subject\": \"【项目编号】关于【型号】样件交期的确认与催办 — 请于【回复截止日期】前反馈\", \"language\": \"zh\", \"placeholders\": [\"供应商称呼\", \"型号/项目名称\", \"数量\", \"原承诺交期/日期\", \"回复截止日期\", \"验证或试产计划开始日期\", \"订单或技术要求编号\", \"我方收货地址\", \"姓名/公司/电话/日期\"], \"version_a_short\": \"【供应商称呼】您好：\\n我方【型号】样件（数量【X】）原计划【日期】到货，目前尚未收到，想确认一下最新进度与交期。\\n为配合我方【验证/试产】在【日期】开始，请于【回复截止日期】前反馈：当前状态、预计发货与到货日期、规格/数量是否有差异。\\n发货后请回传物流单号与发货通知，我方收货地址为【地址】。\\n如有困难请提前告知，我方同步调整排期。谢谢！\\n【姓名/公司/电话/日期】\", \"version_b_with_checklist\": \"【供应商称呼】您好：\\n我方【项目/型号】的样件共【X】套（对应【订单或技术要求编号】），原计划【原承诺交期】到货，至【今日】尚未收到，来信确认进度。\\n为配合我方【验证/试产】于【计划开始日期】启动，请于【回复截止日期】前回复：\\n1）样件当前状态：已完工 / 在制 / 待发货；\\n2）预计发货日期与预计到货日期，如可分批请注明各批次数量；\\n3）与【订单/技术要求编号】相比是否存在规格或数量差异；\\n4）发货后请回传物流单号与发货通知，收货地址【地址】。\\n若确有困难也请提前说明，我方会同步调整排期并评估其他方案。\\n感谢配合。\\n【姓名/公司/电话/日期】\"}}, \"status\": \"partial\", \"summary\": \"已在当前品类（汽车充气泵）范围内检索，未找到该气泵样件的任何供应商、外部等待/送样记录、试产批次或验证记录（assistant.search 返回 0 条，platform.read 为空，品类知识/参数条目为 0），因此邮件中涉及供应商、原承诺交期、样件数量与状态等事实一律留作【】占位符，未代为填写。\\n\\n给出两版中文草稿：版本 A 为超短 5 句催交邮件（可直接发）；版本 B 增加 4 项请供应商回复的清单（当前状态、预计发货/到货日期、规格数量差异、物流单号与发货通知）。两版均要求对方回复截止日期，并留出发货通知与收货地址位。\\n\\n尚未定稿的缺口：供应商名称与收件人、样件型号/规格/数量、原承诺交期与当前进度、我方项目或订单编号与联系人。已提出 3 个问题（供应商与收件人信息、样件事实、是否登记为外部等待跟踪项）供本人确认；work_management 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），登记外部等待条目暂不可执行。\", \"questions\": [{\"id\": \"q1\", \"why\": \"信头与落款必须写真实主体；公司资料中检索不到任何供应商记录，无法代替你填写。\", \"options\": [{\"label\": \"我现在提供供应商与联系人信息\", \"value\": \"provide_now\"}, {\"label\": \"先保留【】占位符，我自己填\", \"value\": \"keep_placeholder\"}], \"question\": \"供应商名称和收件人信息（公司全称、联系人姓名/邮箱）是什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"provide_now\", \"reason\": \"有真实收件人才能直接发出，占位符版本无法作为成稿使用\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"催交期必须落到具体事项与具体日期上，并说明是否有分批或差异，否则对方难以回复。\", \"options\": [{\"label\": \"我现在给出样件事实\", \"value\": \"provide_now\"}, {\"label\": \"没有正式承诺交期，只是口头说过\", \"value\": \"no_prior_commitment\"}], \"question\": \"样件的型号/规格、数量、原承诺交期和当前进度分别是什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"provide_now\", \"reason\": \"原承诺交期决定信件是“确认承诺”还是“首次询期”，语气与措辞不同\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"登记外部等待条目需要相应技能在当前范围启用（work_management 现返回 FORBIDDEN_SCOPE），须你确认后我再尝试启用或改用验证交接流程登记交样。\", \"options\": [{\"label\": \"要，登记并跟踪后续交期\", \"value\": \"register_and_track\"}, {\"label\": \"先只出邮件，不登记\", \"value\": \"email_only\"}], \"question\": \"这封邮件发出后，是否要我在系统里登记为外部等待/交样跟踪项并按到期日跟进？\", \"depends_on\": [], \"recommended\": {\"value\": \"email_only\", \"reason\": \"当前登记通道不可用，且本次尚无任何既有送样记录可挂在链路上\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商、收件人、样件型号数量、原承诺交期等关键事实待本人提供后定稿（已提 3 问）\", \"未在系统内写入任何“已催交/已承诺”记录，本次仅为草稿\", \"如需登记外部等待/交样跟踪项，需先启用相应技能（work_management 在本范围返回 FORBIDDEN_SCOPE）\"]}",
+  "unfinished": [
+    "供应商、收件人、样件型号数量、原承诺交期等关键事实待本人提供后定稿（已提 3 问）",
+    "未在系统内写入任何“已催交/已承诺”记录，本次仅为草稿",
+    "如需登记外部等待/交样跟踪项，需先启用相应技能（work_management 在本范围返回 FORBIDDEN_SCOPE）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:2",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

@@ -1,0 +1,22 @@
+stime=2026-11-14T05:00:24.125 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:63150
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:63152/metrics
+REAL real TL-13 q1 rep0 partial 151.6 267230 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已核对到的（来源：品类「汽车充气泵」规格字典，参数 key=noise，版本 1，品类 id 1652fcd3-4030-4b33-be2f-f75755a6461e）：  一、噪声验收标准 = ≤ 62 dB(A)。单位 dB(A)，方向 lower（越低越好），来源 origin=human，写入人 dc83dbc9-43bd-488a-bac7-1f56802f0427（即本品类负责人账号）
+.time=2026-11-14T05:03:02.627 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:63800
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:63801/metrics
+REAL ideal TL-14 q1 rep0 partial 31.6 68200 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 那次的评估推荐无刷电机方案（单价高约4元、寿命约为有刷3倍；有刷方案噪声超标约5dB故不建议采用），该结论来自我本人2026-11-14的历史工作记录；当前品类可读范围内未检索到原始评估记录，无法复核。未完成事项1项：向电机厂确认无刷方案最小起订量（无责任人、无承诺时间、无后续确认记录）。
+.
+=============================== warnings summary ===============================
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-real-rep0-setup0]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/domain/categories/preproject/category_service.py:560: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+2 passed, 1 skipped, 1 deselected, 1 warning in 199.75s (0:03:19)

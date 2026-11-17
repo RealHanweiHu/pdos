@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 35.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 123142,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15 会话，主题\"比较三家气泵供应商的报价和交期\"）的结论是：建议选 B 家。该结论属历史回答记录，未附可核来源；当前品类范围内未检索到对应供应商报价/交期记录（供给、竞品库均为空），因此本次仅复述历史结论，未能核实其在今天的现状。",
+  "answer_blob": "{\"result\": {\"notes\": [\"本次未对业务对象做任何写入，仅复述并核对历史回答\"], \"unknowns\": [\"三家供应商各自的名称/代号与对应关系未在记录中留下\", \"B 家的报价、交期等支撑数据在本次读取范围内没有可核记录\", \"当前品类范围内无供应商报价/交期对象可供复核，故无法确认历史推荐是否仍然成立\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:44:25.075111+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"prior_conclusion\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-15\", \"run_id\": \"d33b8e87-99e9-44ba-8aa5-f67fafa7aedc\", \"session_id\": \"3a17eb72-ea3f-4779-97ba-a6ff9647a852\", \"source_type\": \"conversation_history\", \"recommendation\": \"建议选 B 家\", \"historical_outcome_state\": \"current\"}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-15 会话，主题\\\"比较三家气泵供应商的报价和交期\\\"）的结论是：建议选 B 家。该结论属历史回答记录，未附可核来源；当前品类范围内未检索到对应供应商报价/交期记录（供给、竞品库均为空），因此本次仅复述历史结论，未能核实其在今天的现状。\", \"questions\": [{\"id\": \"q_recheck\", \"why\": \"历史结论本身不带可核来源，且当前品类范围内没有供应商报价/交期记录，无法直接判定其现状有效性。\", \"options\": [{\"label\": \"重新拉取三家当前报价与交期再比一次\", \"value\": \"recheck\"}, {\"label\": \"沿用上次结论，不再重新核\", \"value\": \"keep\"}, {\"label\": \"只单独核实 B 家当前状态\", \"value\": \"focus_b\"}], \"question\": \"要不要按当前数据重新做一次三家气泵供应商的报价/交期对比，以确认\\\"选 B 家\\\"现在是否仍然成立？\", \"depends_on\": [], \"recommended\": {\"value\": \"recheck\", \"reason\": \"历史结论缺少可核来源，只有重新取数才能得到可用于当前决策的推荐。\"}, \"allow_free_text\": true}], \"unfinished\": [\"按当前数据重新核对三家气泵供应商的报价与交期，以确认\\\"建议选 B 家\\\"现在是否仍成立（待你确认是否进行）\"]}",
+  "unfinished": [
+    "按当前数据重新核对三家气泵供应商的报价与交期，以确认\"建议选 B 家\"现在是否仍成立（待你确认是否进行）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:7"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 85.3,
+  "clarifications": [
+    "那次工作大约是什么时候、属于哪一类工作？（如：RFQ 需求抽取、品质问题与 CAPA、竞品对比、试产与验证、立项提案）",
+    "“外壳缩水”当时出现在什么载体里？",
+    "是否需要我把检索范围放宽到跨品类与个人会话历史（当前只在本品类内、且本会话记忆已关闭）？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 233794,
+  "held_tokens": 0,
+  "answer": "查不到：当前可读范围内没有任何提到“外壳缩水”的记录，无法确认是哪一次工作，也无法给出当时并列的其他问题。已核对：企业检索（“外壳缩水”“缩水”，含历史，覆盖文档/知识/问题/CAPA/变更/试产/验证等来源）0 条；证据检索 0 条；本品类（汽车充气泵）知识/竞品/参数字典清单全空；平台产品与项目清单在本品类范围为空；本会话历史无先前轮次；个人记忆在本会话被关闭（memory_off），无历史情景卡可回溯。没查到：那次工作的标识（时间/类型/载体/型号或项目）与当时并列的其他问题——后者依赖前者，缺则无法还原，未做任何推测性补写。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T13:08:47.117342+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未在当前可读范围内找到任何含“外壳缩水”的记录：企业检索（“外壳缩水”“缩水”，含历史，覆盖文档/知识/问题/CAPA/变更/试产/验证等来源）0 条，证据检索 0 条\", \"本品类（汽车充气泵）的知识、竞品、参数字典清单、平台产品与项目清单均为空，无法从业务对象侧反查\", \"当前会话历史无先前轮次；个人记忆在本会话被关闭（memory_off），无法回溯以往会话原文\", \"因此无法确认提到外壳缩水的是哪一次工作，也无法列出当时一起提到的其他问题\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"查不到：当前可读范围内没有任何提到“外壳缩水”的记录，无法确认是哪一次工作，也无法给出当时并列的其他问题。已核对：企业检索（“外壳缩水”“缩水”，含历史，覆盖文档/知识/问题/CAPA/变更/试产/验证等来源）0 条；证据检索 0 条；本品类（汽车充气泵）知识/竞品/参数字典清单全空；平台产品与项目清单在本品类范围为空；本会话历史无先前轮次；个人记忆在本会话被关闭（memory_off），无历史情景卡可回溯。没查到：那次工作的标识（时间/类型/载体/型号或项目）与当时并列的其他问题——后者依赖前者，缺则无法还原，未做任何推测性补写。\", \"questions\": [], \"unfinished\": [\"如后续轮次恢复查找预算，可在跨品类与个人会话历史范围内重试“外壳缩水”检索；若需回溯以往会话原文，需该会话开启记忆或由用户提供会话标识\"]}",
+  "unfinished": [
+    "如后续轮次恢复查找预算，可在跨品类与个人会话历史范围内重试“外壳缩水”检索；若需回溯以往会话原文，需该会话开启记忆或由用户提供会话标识"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

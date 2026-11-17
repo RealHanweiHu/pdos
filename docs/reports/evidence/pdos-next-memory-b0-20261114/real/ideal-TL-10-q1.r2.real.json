@@ -1,0 +1,64 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1",
+    "r2"
+  ],
+  "injected_text": "从这批不良样件看，似乎是供应商换了密封圈材料导致气嘴漏气。\n跟进事项：联系供应商确认是否换料；安排拆件分析。 联系供应商确认是否换料 安排拆件分析",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 47.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 91031,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"result\": [{\"rows\": [{\"cells\": {\"case\": {\"status\": \"not_recorded\", \"analysis\": \"当前品类可读范围内未检索到'气嘴漏气'的登记记录（issue/capa/change/field_feedback/test_run 检索返回 0 条）。\"}, \"measures\": {\"status\": \"not_recorded\", \"analysis\": \"未检索到围堵措施或 CAPA 措施记录。\"}, \"root_cause\": {\"status\": \"not_recorded\", \"analysis\": \"可读资料中没有已登记的根因结论，无法确认根因；'供应商更换密封圈材料'仅为 2026-11-15 历史会话中的未验证推测，不能作为结论。\"}, \"verification\": {\"status\": \"not_recorded\", \"analysis\": \"未检索到拆件分析、密封性试验或来料验证结果；历史跟进'联系供应商确认是否换料''安排拆件分析'当时仍未完成，本次范围内无完成证据。\"}, \"conditions_and_differences\": {\"status\": \"unspecified\", \"analysis\": \"批次、样本量、发现渠道、时间与工况口径均无法确认，差异分析条件不具备。\"}}}], \"format\": \"cases\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:31:37.975592+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类可读的 issue/capa/change/field_feedback/test_run 范围内无'气嘴漏气'登记记录，检索返回 0 条\", \"无根因结论、封堵措施或 CAPA 记录\", \"无拆件分析、试验或验证结论记录\", \"无受影响批次、样本量、发生渠道、时间窗口与工况口径\", \"无结构化责任人/负责人字段，责任人保持 unspecified\", \"历史会话中的'供应商更换密封圈材料'仅为当时推测，无证据行支撑，未验证\", \"quality_issue 技能在当前租户与范围未启用，无法登记根因或 CAPA\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮为 quick 模式且查找预算已用完，当前范围内检索到 0 条记录；扩大范围是找到已有根因结论的最快路径。\", \"options\": [{\"label\": \"要，继续深入查（放开范围、含历史版本）\", \"value\": \"continue_full_search\"}, {\"label\": \"先只按当前品类再查一次\", \"value\": \"stay_scope\"}, {\"label\": \"暂不查\", \"value\": \"stop\"}], \"question\": \"是否要我在本会话继续深入查：放开品类范围限制、含历史版本，在全来源复查\\\"气嘴漏气\\\"的登记记录？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue_full_search\", \"reason\": \"当前品类内无记录，扩大检索范围最可能直接取回已登记的根因与验证证据。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"没有批次、样本量、渠道与工况，就无法定位是来料密封圈、装配压装还是使用/存储条件导致，也无法匹配已有不良记录。\", \"options\": [{\"label\": \"有批次号与不良数量/总检数\", \"value\": \"batch_sample\"}, {\"label\": \"有发现渠道（来料/装配/客户端/售后）\", \"value\": \"channel\"}, {\"label\": \"有供应商换料或材质变更通知\", \"value\": \"supplier_material\"}, {\"label\": \"有拆件/解剖分析记录或照片\", \"value\": \"teardown\"}, {\"label\": \"目前只有口头/目视描述\", \"value\": \"none\"}], \"question\": \"这批漏气样件的关键事实你手上有哪些？（可多选或补充）\", \"depends_on\": [], \"recommended\": {\"value\": \"batch_sample\", \"reason\": \"批次与数量是检索已有不良记录、定位同批问题的最小必要信息。\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"quality_issue 技能在当前租户与范围未启用，我无法登记根因或 CAPA，但可以对附件做逐条证据抽取，把根因结论的支撑与缺口分栏列清。\", \"options\": [{\"label\": \"有，我这就附上\", \"value\": \"attach\"}, {\"label\": \"暂时拿不到，先做结论级说明\", \"value\": \"not_available\"}], \"question\": \"是否可以把原始材料（8D/CAPA、拆件报告、供应商换料函、测试记录、客户投诉单）附上来给我按固定版本逐条核证据？\", \"depends_on\": [], \"recommended\": {\"value\": \"attach\", \"reason\": \"附件是当前唯一能产生可引用证据行的途径，可直接把根因判定落到具体行。\"}, \"allow_free_text\": true}], \"unfinished\": [\"扩大检索范围（放开品类限制、含历史版本、全来源）复查\\\"气嘴漏气\\\"登记记录\", \"取得批次/样本量/发现渠道与工况口径信息\", \"取得拆件分析或供应商换料证据以确认根因\", \"quality_issue 技能在当前范围未启用，根因与 CAPA 无法在系统内登记（需人工登记或申请启用技能）\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "扩大检索范围（放开品类限制、含历史版本、全来源）复查\"气嘴漏气\"登记记录",
+    "取得批次/样本量/发现渠道与工况口径信息",
+    "取得拆件分析或供应商换料证据以确认根因",
+    "quality_issue 技能在当前范围未启用，根因与 CAPA 无法在系统内登记（需人工登记或申请启用技能）",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "conversation.history:completed:2",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2"
+    ],
+    "catalog": [
+      "r1",
+      "r2"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

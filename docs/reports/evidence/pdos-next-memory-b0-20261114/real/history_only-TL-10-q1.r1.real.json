@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-10",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 63.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 220833,
+  "held_tokens": 0,
+  "answer": "已核对：当前品类“汽车充气泵”范围内不存在“气嘴漏气”的已登记问题记录——按品类检索“气嘴漏气 根因 品质问题”返回 0 条；品类知识库(6类计数全为0)、参数列表、竞品列表、evidence.search 均为空；platform.read 在按品类/按名称/全量/含历史四种方式下均返回空，但品类元数据标明 model_count=1，存在登记却不可读的型号；quality_issue 技能在本租户与范围未启用(FORBIDDEN_SCOPE)，无法建立分诊/围堵/CAPA 台账。未查成：去掉品类过滤、以“漏气”“气嘴”“缺陷 原因 分析”等宽词检索 issue/capa/field_feedback/artifact 的两轮检索被服务器以 MODEL_BUDGET_EXCEEDED 拒绝，属“尚未执行”而非“查证为空”。结论：根因目前为未知，无任何可引用证据行支撑根因判断；根因结论本身亦应由品质专业本人作出。已另附通用工程排查方向（明确标注非本公司结论、非公司实践）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:02:47.170404+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"“气嘴漏气”问题的已登记 issue / CAPA 记录（品类范围检索为 0 条，未查到）\", \"跨品类宽词检索“漏气/气嘴/缺陷 原因 分析”覆盖 issue、capa、field_feedback、artifact 的结果（因查找预算用尽未执行）\", \"受影响的型号、批次与基线定义（platform.read 各查询方式均为空，品类元数据 model_count=1 但不可读）\", \"具体漏气位置与现象描述（密封面/阀芯/弹簧/O型圈/螺纹/管路）\", \"根因结论（须由品质专业本人作出，模型不代拟）\", \"现场反馈、退货原因等用户声音记录（voice 类知识与 field_feedback 源在本范围为空）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已核对：当前品类“汽车充气泵”范围内不存在“气嘴漏气”的已登记问题记录——按品类检索“气嘴漏气 根因 品质问题”返回 0 条；品类知识库(6类计数全为0)、参数列表、竞品列表、evidence.search 均为空；platform.read 在按品类/按名称/全量/含历史四种方式下均返回空，但品类元数据标明 model_count=1，存在登记却不可读的型号；quality_issue 技能在本租户与范围未启用(FORBIDDEN_SCOPE)，无法建立分诊/围堵/CAPA 台账。未查成：去掉品类过滤、以“漏气”“气嘴”“缺陷 原因 分析”等宽词检索 issue/capa/field_feedback/artifact 的两轮检索被服务器以 MODEL_BUDGET_EXCEEDED 拒绝，属“尚未执行”而非“查证为空”。结论：根因目前为未知，无任何可引用证据行支撑根因判断；根因结论本身亦应由品质专业本人作出。已另附通用工程排查方向（明确标注非本公司结论、非公司实践）。\", \"questions\": [], \"unfinished\": [\"下一轮查找预算可用后，执行跨品类的宽词检索（“漏气”“气嘴”“缺陷 原因 分析”，来源类型 issue/capa/field_feedback/artifact/knowledge），命中后用 extract 逐条抽取证据行再回答根因。\\\", \\\"item>取得具体型号或项目标识，以便定位可读的型号定义与基线（platform.read 现返回空）。\\\", \\\"item>若需在系统内正式分诊该漏气问题并登记围堵措施与 CAPA，需先在本租户与范围启用 quality_issue 技能，或由品质专业本人建档。\\\", \\\"item>根因结论与 CAPA 有效性结论须由品质专业本人签署确认，本助手只负责备证与材料准备。\\\"]</unfinished>\"]}",
+  "unfinished": [
+    "下一轮查找预算可用后，执行跨品类的宽词检索（“漏气”“气嘴”“缺陷 原因 分析”，来源类型 issue/capa/field_feedback/artifact/knowledge），命中后用 extract 逐条抽取证据行再回答根因。\", \"item>取得具体型号或项目标识，以便定位可读的型号定义与基线（platform.read 现返回空）。\", \"item>若需在系统内正式分诊该漏气问题并登记围堵措施与 CAPA，需先在本租户与范围启用 quality_issue 技能，或由品质专业本人建档。\", \"item>根因结论与 CAPA 有效性结论须由品质专业本人签署确认，本助手只负责备证与材料准备。\"]</unfinished>"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:4",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

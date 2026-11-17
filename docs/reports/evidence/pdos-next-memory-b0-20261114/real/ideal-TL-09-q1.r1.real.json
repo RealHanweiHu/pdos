@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "额定压力按 120 PSI 考虑，气缸内径估为 22 mm。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 48.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 108132,
+  "held_tokens": 0,
+  "answer": "结论：额定压力还没有定值。品类「汽车充气泵」的参数表里已收录 rated_pressure（额定压力，单位 PSI，数值型，version 1），但该参数当前没有任何取值，其变更备注写明「额定压力尚未确定，待样机测试后再定」，确认人字段为空。当前权限与范围内也读不到已发布的型号基线（平台/产品读回为空，品类内检索未命中含该取值的文件），因此没有可引用的已定值规格。另：2026-11-15 我们曾按「额定压力先按 120 PSI 考虑」估过气缸内径 22 mm，那只是当时讨论中的假设，不是已登记的定值。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:01:55.721430+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"额定压力的目标值/最终值（参数表当前无取值）\", \"样机测试结果与测试计划（参数备注指向的依据未在可读资料中找到）\", \"该参数的定值确认人与确认记录（confirmed_by 为空）\", \"是否存在已发布型号基线含该取值：当前权限下平台/产品读回为空，品类内检索 0 命中，未能核实\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"decisions\": {\"text\": \"没有已登记的定值决定：参数记录 confirmed_by 为空，无人确认、无批准回执；定值责任人与批准路径未在结构化字段中记录。\", \"status\": \"not_recorded\"}, \"key_changes\": {\"text\": \"品类「汽车充气泵」参数表已收录 rated_pressure（name=额定压力，value_type=number，unit=PSI，version=1，origin=human）；参数记录本身的备注为「额定压力尚未确定，待样机测试后再定」，记录中无取值字段。\", \"status\": \"not_recorded\"}, \"unresolved_issues\": {\"text\": \"①额定压力目标值未定，需样机测试后定值；②当前权限与范围内未读到任何型号基线或产品定义（平台/产品读回为空），无法核对是否另有已发布规格含该参数取值；③品类内检索该关键词 0 命中，可读资料中无支撑定值的证据文件。\", \"status\": \"to_confirm\"}}}], \"format\": \"review\"}}, \"status\": \"completed\", \"summary\": \"结论：额定压力还没有定值。品类「汽车充气泵」的参数表里已收录 rated_pressure（额定压力，单位 PSI，数值型，version 1），但该参数当前没有任何取值，其变更备注写明「额定压力尚未确定，待样机测试后再定」，确认人字段为空。当前权限与范围内也读不到已发布的型号基线（平台/产品读回为空，品类内检索未命中含该取值的文件），因此没有可引用的已定值规格。另：2026-11-15 我们曾按「额定压力先按 120 PSI 考虑」估过气缸内径 22 mm，那只是当时讨论中的假设，不是已登记的定值。\", \"questions\": [{\"id\": \"q1\", \"why\": \"目前参数表无取值，气缸/报价等测算缺一个可引用口径；登记目标值能让后续估算有依据，但会造成「已定值」的误读，需你决定口径。\", \"options\": [{\"label\": \"登记 120 PSI 为目标值（注明待样机测试修订）\", \"value\": \"register_120_draft\"}, {\"label\": \"暂不登记，保持空值等样机测试\", \"value\": \"keep_empty\"}, {\"label\": \"登记其他值（我给具体数值）\", \"value\": \"other_value\"}], \"question\": \"是否先把 120 PSI 作为目标值登记到 rated_pressure（标注「待样机测试后修订」）？\", \"depends_on\": [], \"recommended\": {\"value\": \"register_120_draft\", \"reason\": \"与既有讨论口径一致，且明确标注为待修订目标值，能支撑后续测算又不掩盖未定状态。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"参数记录中确认人为空，需要指定责任人才好推进定值与留痕。\", \"options\": [{\"label\": \"我本人确认\", \"value\": \"me\"}, {\"label\": \"品类负责人确认\", \"value\": \"category_owner\"}, {\"label\": \"工程负责人确认\", \"value\": \"engineering_lead\"}], \"question\": \"额定压力的定值确认最终由谁签字？\", \"depends_on\": [], \"recommended\": {\"value\": \"category_owner\", \"reason\": \"该参数由品类口径维护，先由品类负责人确认更贴合现有责任划分。\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"本轮检索预算已用完，未能核实是否有已发布基线或测试数据含该取值；深查需要开启新的检索轮次。\", \"options\": [{\"label\": \"要，下一轮深入查（测试记录 + 已发布基线 + 竞品口径）\", \"value\": \"yes\"}, {\"label\": \"不用，先按现状推进\", \"value\": \"no\"}], \"question\": \"要不要我在下一轮深入查样机测试/试产记录与竞品口径，整理能支撑定值的数据？\", \"depends_on\": [], \"recommended\": {\"value\": \"yes\", \"reason\": \"定值需要证据支撑，深查可一次性补齐口径与可比数据。\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

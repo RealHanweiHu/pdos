@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 42.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 89979,
+  "held_tokens": 0,
+  "answer": "找到了那次评估：你说的是 2026-11-15 在“汽车充气泵”品类下的一次会话，目标为“评估两种电机方案的成本和噪声”（run_id 4a63a140…）。当时的结论是**推荐无刷电机方案**——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，判定不建议采用。当时登记的唯一未完成项是：**向电机厂确认无刷方案的最小起订量**。本轮我按品类检索公司资料没有命中这次评估的原件（当时那次回答本身也没有附引用），所以“+4 元 / 约 3 倍寿命 / 超标 5 dB”这些数字目前只是那次回答的记录值，尚未用当前资料重新核对。我另外查了该品类下另外三次历史会话（整理说明书章节、汇总认证进度、核对包装警示语），它们都没有登记未完成项，但摘要里分别提到“一项认证待送样”和“警示语有一处措辞待改”，这两点属于会话中的遗留描述，不是已闭环的结项，我没有把它们算作完成。",
+  "answer_blob": "{\"result\": {\"recall\": {\"open_item\": {\"item\": \"向电机厂确认无刷方案的最小起订量\", \"confirmed_later\": false, \"status_at_record\": \"unfinished\"}, \"assessment\": {\"goal\": \"评估两种电机方案的成本和噪声\", \"as_of\": \"2026-11-15\", \"scope\": \"汽车充气泵\", \"recommended_option\": \"无刷电机方案\", \"rationale_as_recorded\": [\"单价高约 4 元\", \"寿命约为有刷的 3 倍\", \"有刷方案噪声超标约 5 dB，不建议采用\"]}, \"evidence_basis\": \"conversation.history（本人历史会话记录，情景记录非当前业务事实）\", \"other_sessions_checked\": [{\"goal\": \"整理充气泵说明书的章节\", \"as_of\": \"2026-11-15\", \"registered_unfinished\": []}, {\"goal\": \"汇总认证进度\", \"as_of\": \"2026-11-15\", \"summary_note\": \"两项认证进行中，一项待送样\", \"registered_unfinished\": []}, {\"goal\": \"核对包装上的警示语\", \"as_of\": \"2026-11-15\", \"summary_note\": \"警示语已核对，一处措辞待改\", \"registered_unfinished\": []}]}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:39:10.638965+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本轮公司资料检索（品类范围）未命中该次电机噪声评估的原始记录，且该次历史回答当时未附引用，因此成本(+4元)、寿命(约3倍)、噪声超标(5 dB)三项数值均来自历史回答的记录值，未能在当前业务资料中重新核对\", \"无刷电机方案的最小起订量至今没有确认记录：该项在 2026-11-15 的评估中即登记为未完成，未见后续会话处理\", \"无法确认此后是否已有更新版本的电机方案评估或噪声实测数据（本轮检索预算已用尽且首次检索零命中）\", \"其他历史会话摘要中的“一项认证待送样”“警示语一处措辞待改”未在业务对象中核实其当前状态\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"找到了那次评估：你说的是 2026-11-15 在“汽车充气泵”品类下的一次会话，目标为“评估两种电机方案的成本和噪声”（run_id 4a63a140…）。当时的结论是**推荐无刷电机方案**——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，判定不建议采用。当时登记的唯一未完成项是：**向电机厂确认无刷方案的最小起订量**。本轮我按品类检索公司资料没有命中这次评估的原件（当时那次回答本身也没有附引用），所以“+4 元 / 约 3 倍寿命 / 超标 5 dB”这些数字目前只是那次回答的记录值，尚未用当前资料重新核对。我另外查了该品类下另外三次历史会话（整理说明书章节、汇总认证进度、核对包装警示语），它们都没有登记未完成项，但摘要里分别提到“一项认证待送样”和“警示语有一处措辞待改”，这两点属于会话中的遗留描述，不是已闭环的结项，我没有把它们算作完成。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史结论的三个关键数值（+4元、约3倍寿命、超标5 dB）目前只有当时回答的记录支撑，公司资料侧未命中原件，直接沿用存在过时风险。\", \"options\": [{\"label\": \"现在就在本会话深入查一遍\", \"value\": \"recheck_now\"}, {\"label\": \"先按历史结论用，稍后再查\", \"value\": \"later\"}, {\"label\": \"不用查\", \"value\": \"no\"}], \"question\": \"要不要我在本会话里重新检索一次公司资料，出一版带引用、按当前数据校准的电机方案结论（含最新噪声实测）？\", \"depends_on\": [], \"recommended\": {\"value\": \"recheck_now\", \"reason\": \"能同时消除数值过时风险并补上引用\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"这是那次评估明确挂起的唯一未完成项，且涉及对外跟进，由你决定是否现在启动。\", \"options\": [{\"label\": \"要，起草询证清单并登记外部等待\", \"value\": \"draft_and_register\"}, {\"label\": \"只起草清单，暂不登记外部等待\", \"value\": \"draft_only\"}, {\"label\": \"暂时不用\", \"value\": \"no\"}], \"question\": \"无刷方案最小起订量这项遗留，要不要我现在就起草一份给电机厂的询证清单并登记为外部等待？\", \"depends_on\": [], \"recommended\": {\"value\": \"draft_only\", \"reason\": \"先拿到清单内容再决定是否对外登记，避免替你发起对外动作\"}, \"allow_free_text\": true}], \"unfinished\": [\"向电机厂确认无刷电机方案的最小起订量（2026-11-15 评估中登记的未完成项，本轮仍无确认记录）\", \"该次评估的成本/寿命/噪声数值尚未在公司资料中重新核对（品类检索零命中且本轮预算已用尽）\"]}",
+  "unfinished": [
+    "向电机厂确认无刷电机方案的最小起订量（2026-11-15 评估中登记的未完成项，本轮仍无确认记录）",
+    "该次评估的成本/寿命/噪声数值尚未在公司资料中重新核对（品类检索零命中且本轮预算已用尽）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:5",
+    "memory.search:completed:3",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 3,
+    "conversation.history": 5
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3",
+      "r5"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1",
+      "r2",
+      "r3",
+      "r5"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

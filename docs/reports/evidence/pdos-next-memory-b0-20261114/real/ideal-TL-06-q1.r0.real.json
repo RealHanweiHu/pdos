@@ -1,0 +1,62 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 69.4,
+  "clarifications": [
+    "那三家供应商分别是谁？",
+    "那次比较的结论当时落在哪里（立项提案、报价比价表、会议纪要、邮件，还是只是口头结论）？大概是什么时候？",
+    "是否允许我下一轮把检索范围扩大到同品类之外（含公司级资料与历史记录），以便追查这次比较？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 226592,
+  "held_tokens": 0,
+  "answer": "运行预算已用完，保留已完成动作与已核对结果。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"之前比较三家气泵供应商，当时的结论是建议选哪家？\", \"session_id\": \"9c6056af-2b59-4084-96ea-12b6d8f26f7d\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"e8c242d2-9477-40f2-88ce-b904276c21d2\", \"execution_ref\": {\"call_id\": \"7bc1746e-8a95-4cb2-b0a6-a5132fb1d1e5\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T09:46:47.704714+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"baa6286d-75c6-497f-8f4b-42435ebcb460\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"三家\", \"供应\", \"供应商\", \"比较\", \"气泵\", \"结论\", \"选型\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"a9a283c0-06ce-453d-bc3b-dcd1a8eaee94\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"之前比较三家气泵供应商，当时的结论是建议选哪家？\", \"session_id\": \"9c6056af-2b59-4084-96ea-12b6d8f26f7d\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"e8c242d2-9477-40f2-88ce-b904276c21d2\", \"execution_ref\": {\"call_id\": \"1fcf95f0-999a-4112-bdc2-8df54a350a86\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"eval-ideal/v0;annotated-runs\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"e50e2005-5bd0-4e39-8729-ca10e8bb51d2\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T09:46:56.272298+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"12e60767-5ccb-45b8-8c33-87d8bb5c33f8\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T09:46:56.254679+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"387bb774-c4bc-4ff9-8343-5df25440052a\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"50221a0c-0d4c-4fc4-a0d4-5e55342c336b\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T09:47:01.004127+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"ed674d96-5d73-4568-a632-3c0aec69e6b7\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"notes\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"eval-ideal/v0;annotated-runs\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"notes_policy\": \"个人记忆条目是你本人确认的口径、背景和叫法，不是业务事实，不能作为依据引用。\", \"notes_status\": \"completed\", \"execution_ref\": {\"call_id\": \"f84f9b41-293d-46b2-90ad-8db6eb7a92be\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": [\"scope_note\"]}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"baa6286d-75c6-497f-8f4b-42435ebcb460\", \"key\": \"category-d7747053d430477ca1b93cf9ea41c17f\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"4d5f75c4-9b20-4712-87e5-4d77e0550bb1\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"4d5f75c4-9b20-4712-87e5-4d77e0550bb1\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"7ad7c1f0-cba3-4397-bbe2-5e12ffc12faa\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"b8bf5414-9804-4810-a7c4-6cf144fce152\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"c24c397b-acdf-48a2-b165-17d0e616ac49\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"d53be847-6fe1-47ea-8637-07fe23f0867b\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"VALIDATION_FAILED\", \"detail\": {\"fields\": [{\"path\": \"page_size\", \"type\": \"extra_forbidden\", \"message\": \"Extra inputs are not permitted\"}], \"reason\": \"VALIDATION_FAILED\"}, \"message\": \"读取参数不符合要求，请按工具定义修正。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"763f0a8d-a8c9-4cda-acec-b91786a782b3\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"baa6286d-75c6-497f-8f4b-42435ebcb460\", \"key\": \"category-d7747053d430477ca1b93cf9ea41c17f\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"4d5f75c4-9b20-4712-87e5-4d77e0550bb1\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"4d5f75c4-9b20-4712-87e5-4d77e0550bb1\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"47cc7a07-ffb0-4ade-99d5-d84a63f5d6c5\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"mcp.tools.list\", \"taint\": \"trusted\", \"value\": {\"taint\": \"admitted_metadata\", \"tools\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"c028e7db-33b1-4ee6-b8e4-59041becd0c5\", \"read_kind\": \"ordinary/v1\"}}}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:46:47.704714+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"运行预算已用完，保留已完成动作与已核对结果。\", \"questions\": [], \"unfinished\": [\"剩余目标尚未完成\"]}",
+  "unfinished": [
+    "剩余目标尚未完成"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:2",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 55.9,
+  "clarifications": [
+    "这封邮件发给哪家供应商、收件人邮箱/对接人是谁？",
+    "催的是哪几款样件、各要多少件？",
+    "对方原承诺的交期是哪天、我方最晚需要哪天到货？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 112742,
+  "held_tokens": 0,
+  "answer": "已按要求仅依据可检索记录作答：供应商名称/邮箱、样件型号数量、原承诺交期、当前样件状态在全部检索范围内均无记录，故邮件中以空缺占位符标注，未编造。唯一确定写入的是本人口径中的项目编号 PX-305。草稿为中文短邮件，对方为境外时可再出英文版。",
+  "answer_blob": "{\"result\": {\"status\": \"completed\", \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:46:42.128270+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商名称与收件人邮箱/对接人：无记录（公司资料检索、证据库检索、平台产品列表、本人情景记忆、会话历史均无命中）\", \"样件型号与数量：无记录\", \"原承诺交期：无记录\", \"样件当前状态与延期原因：无记录\", \"内部测试计划对到货时间的具体要求：无记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"已按要求仅依据可检索记录作答：供应商名称/邮箱、样件型号数量、原承诺交期、当前样件状态在全部检索范围内均无记录，故邮件中以空缺占位符标注，未编造。唯一确定写入的是本人口径中的项目编号 PX-305。草稿为中文短邮件，对方为境外时可再出英文版。\", \"questions\": [], \"unfinished\": [\"邮件中 4 处空缺（供应商抬头、原承诺交期、型号×数量、发件人信息）需本人手工补齐后发出\", \"若需英文版，尚未撰写\"]}",
+  "unfinished": [
+    "邮件中 4 处空缺（供应商抬头、原承诺交期、型号×数量、发件人信息）需本人手工补齐后发出",
+    "若需英文版，尚未撰写"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

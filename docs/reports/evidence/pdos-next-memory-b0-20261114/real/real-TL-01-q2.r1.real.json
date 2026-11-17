@@ -1,0 +1,68 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 69.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 171451,
+  "held_tokens": 0,
+  "answer": "上次的结论是：C 家因含税报价超出目标价 12% 被排除，同一场比较建议选 B 家（交期比 A 家短 2 周）。这条来自 2026-11-15 那次“比较三家气泵供应商的报价和交期”的会话记录；当时未附可核引用，当前品类（汽车充气泵）范围内也检索不到 C 家的报价单，所以 12% 这个数值我无法当场复核，且该会话自己就遗留了“补 C 家的含税报价单”。",
+  "answer_blob": "{\"result\": {\"answer\": {\"reason\": \"含税报价超出目标价 12%\", \"basis_type\": \"historical_conversation_record\", \"source_reference\": {\"kind\": \"conversation_history\", \"as_of\": \"2026-11-15T10:37:31Z\", \"run_id\": \"88ef25eb-1275-4e65-a1e3-5c7f124f05f2\", \"session_id\": \"f8c780bd-8d90-42b5-9154-caeea5798fcf\", \"sources_attached_then\": []}, \"excluded_supplier\": \"C 家\", \"same_comparison_context\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"other_conclusion\": \"建议选 B 家：交期比 A 家短 2 周\"}}, \"unknowns\": [\"上次结论没有附带可核引用；在当前品类范围内检索（供应商/报价/竞品/证据库）均未找到 C 家的含税报价单或报价记录，无法当场复核 12% 这个数值\", \"目标价的口径（币种、日期、是否含税/含运、C 家报价对应配置）未在可读资料中找到\", \"上次会话同时遗留“补 C 家的含税报价单”“核对 B 家交期的单位”，说明排除依据与对比口径当时未最终核对\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:39:27.909956+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"partial\", \"summary\": \"上次的结论是：C 家因含税报价超出目标价 12% 被排除，同一场比较建议选 B 家（交期比 A 家短 2 周）。这条来自 2026-11-15 那次“比较三家气泵供应商的报价和交期”的会话记录；当时未附可核引用，当前品类（汽车充气泵）范围内也检索不到 C 家的报价单，所以 12% 这个数值我无法当场复核，且该会话自己就遗留了“补 C 家的含税报价单”。\", \"questions\": [{\"id\": \"q1_which_review\", \"why\": \"会话记录里还有一次“接着上次的供应商对比往下做”的后续会话，指向的可能是另一轮比较；确认对象才能给出准确依据。\", \"options\": [{\"label\": \"是，就那一次（三家气泵供应商报价与交期比较）\", \"value\": \"yes_2026-11-15_quote_delivery_comparison\"}, {\"label\": \"不是，是另一轮比较（我再给你线索）\", \"value\": \"no_other_review\"}], \"question\": \"你说的“上次”是否就是 2026-11-15 那次“比较三家气泵供应商的报价和交期”（结论：选 B 家、排除 C 家）？\", \"depends_on\": [], \"recommended\": {\"value\": \"yes_2026-11-15_quote_delivery_comparison\", \"reason\": \"当前唯一可核到的历史记录就是这一条，结论与“C 家被排除”直接对应\"}, \"allow_free_text\": true}, {\"id\": \"q2_recheck_now\", \"why\": \"当时结论没有可核引用且遗留“补 C 家的含税报价单”，12% 的数值目前无法验证。\", \"options\": [{\"label\": \"现在复核（拉报价单、统一口径后重算）\", \"value\": \"recheck_now\"}, {\"label\": \"先只用历史结论，不复核\", \"value\": \"history_only\"}], \"question\": \"要不要现在就重新把 C 家的含税报价与目标价放在一起复核一次（并补齐价格口径）？\", \"depends_on\": [\"q1_which_review\"], \"recommended\": {\"value\": \"recheck_now\", \"reason\": \"排除理由取决于单一未核实的数值，先复核可避免沿用错误结论\"}, \"allow_free_text\": true}], \"unfinished\": [\"当前可读范围内没有 C 家的含税报价单，12% 的排除依据未当场复核\", \"上次会话遗留事项“补 C 家的含税报价单”“核对 B 家交期的单位”仍未关闭\", \"目标价口径（币种/日期/是否含税含运/对应配置）未确认\"]}",
+  "unfinished": [
+    "当前可读范围内没有 C 家的含税报价单，12% 的排除依据未当场复核",
+    "上次会话遗留事项“补 C 家的含税报价单”“核对 B 家交期的单位”仍未关闭",
+    "目标价口径（币种/日期/是否含税含运/对应配置）未确认"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:4",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:2",
+    "model:completed:9",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

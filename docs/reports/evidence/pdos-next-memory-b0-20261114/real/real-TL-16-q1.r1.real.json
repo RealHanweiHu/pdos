@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 161.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 224155,
+  "held_tokens": 0,
+  "answer": "结果未通过完整核对。",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T11:39:06.081695+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"2e25a06a-bd72-45af-9a1a-213fe39b4379\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"交付\", \"交期\", \"供应\", \"供应商\", \"承诺\", \"样件\", \"气泵\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"f6798844-6408-4f9a-8717-a123e80b392a\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"notes\": [{\"kind\": \"note\", \"text\": \"给供应商的邮件一律带上项目编号 PX-305\", \"zone\": \"constraint\", \"scope\": {\"kind\": \"global\", \"title\": \"全局\"}, \"state\": \"active\", \"note_id\": \"1111e623-6c4f-4a3d-8116-c609a9badc58\", \"revision\": 2, \"note_kind\": \"convention\", \"kind_label\": \"口径\", \"confirmed_at\": \"2026-11-15T11:38:58.966062+00:00\"}], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v2;keyword-sat-1.2;own-words+answer-side;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"notes_policy\": \"个人记忆条目是你本人确认的口径、背景和叫法，不是业务事实，不能作为依据引用。\", \"notes_status\": \"completed\", \"execution_ref\": {\"call_id\": \"1c3b1dfd-7756-4bc5-a251-4ee14751adbb\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"skill.load\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"FORBIDDEN_SCOPE\", \"detail\": {\"reason\": \"FORBIDDEN_SCOPE\"}, \"message\": \"该技能未在当前租户与范围启用。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"91c8c23d-35be-480d-b167-c1889ad96d98\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"9717459c-3a7f-455d-8ff5-d088822a2a61\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"帮我写一封给气泵供应商的简短邮件，催一下样件交期。\", \"session_id\": \"d3a38b6a-f242-4a87-bea3-889853bceee4\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"d2a7f8ab-145a-4d34-a575-95475546e3ed\", \"execution_ref\": {\"call_id\": \"347a13c8-cb17-42fd-8112-98a2e0689ea9\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"notes\": [{\"kind\": \"note\", \"text\": \"给供应商的邮件一律带上项目编号 PX-305\", \"zone\": \"constraint\", \"scope\": {\"kind\": \"global\", \"title\": \"全局\"}, \"state\": \"active\", \"note_id\": \"1111e623-6c4f-4a3d-8116-c609a9badc58\", \"revision\": 2, \"note_kind\": \"convention\", \"kind_label\": \"口径\", \"confirmed_at\": \"2026-11-15T11:38:58.966062+00:00\"}], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"completed\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v2;keyword-sat-1.2;own-words+answer-side;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"notes_policy\": \"个人记忆条目是你本人确认的口径、背景和叫法，不是业务事实，不能作为依据引用。\", \"notes_status\": \"completed\", \"execution_ref\": {\"call_id\": \"158c7107-5c63-466f-abfc-31696455d317\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}]}, \"status\": \"partial\", \"summary\": \"结果未通过完整核对。\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "memory.search:completed:2",
+    "model:completed:9"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

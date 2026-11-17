@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 49.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 67429,
+  "held_tokens": 0,
+  "answer": "查到上次的实际记录：2026-11-15 那次\"比较三家气泵供应商的报价和交期\"里，排除 C 家的原因只有一条——其含税报价超出目标价 12%；同一条结论建议选 B 家，因为交期比 A 家短 2 周。当时遗留两项待办：补 C 家的含税报价单、核对 B 家交期单位；紧接其后的续做会话状态为 partial，其回答因来源已不可读被隐藏，无法确认是否有补充结论。历史回答未附公司资料引用，本次检索也未在当前权限内找到对应的供应商报价文档，因此该结论只能作为当时的记录转述，不能当作已核实的当前事实。",
+  "answer_blob": "{\"result\": {\"answer\": {\"events\": [{\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-15T11:46:50Z\", \"run_id\": \"5029c772-6e12-4a48-afca-9d30aa1494d0\", \"status\": \"completed\", \"session_id\": \"c46bf8dc-4801-4620-bed4-5344e4121234\", \"unfinished_then\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"], \"exclusion_reason\": {\"reason\": \"含税报价超出目标价 12%\", \"supplier\": \"C 家\"}, \"recorded_conclusion\": \"建议选 B 家：交期比 A 家短 2 周。C 家含税报价超出目标价 12%，已排除。\"}, {\"goal\": \"接着上次的供应商对比往下做：上次的结论是什么，还有哪些事没做完\", \"note\": \"该轮回答因来源已不可读被服务器隐藏，未返回具体结论内容\", \"as_of\": \"2026-11-15T11:48:23Z\", \"run_id\": \"7046e99c-4dfd-4cbe-b439-633ac265c48f\", \"status\": \"partial\", \"session_id\": \"08d7e7a4-6e7c-467c-80ef-542904a107bb\", \"outcome_state\": \"hidden\"}], \"source\": \"历史会话记录（记忆记录，非当前业务事实）\", \"caveats\": [\"历史回答是当时的记录，不是当前业务事实\", \"该轮未附引用来源，12% 这一比例无法回溯到具体报价单\", \"C 家含税报价单当时仍是待办项\"], \"question\": \"上次比较供应商时为什么排除 C 家\", \"evidence_status\": \"仅来自本人历史会话记录；未签发任何公司资料引用（citation_ids 为空）\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:48:49.721216+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家被排除的原始依据（目标价与含税报价出处）未在当前可读范围内检索到公司资料，历史回答的 sources 为空\", \"C 家的含税报价单在当时的待办清单中，尚未确认是否已补齐，因此 12% 这一差距的原始报价出处未经核实\", \"后续续做会话（run 7046e99c-4dfd-4cbe-b439-633ac265c48f）状态为 partial，其回答因来源已不可读被隐藏，是否有更新结论未知\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查到上次的实际记录：2026-11-15 那次\\\"比较三家气泵供应商的报价和交期\\\"里，排除 C 家的原因只有一条——其含税报价超出目标价 12%；同一条结论建议选 B 家，因为交期比 A 家短 2 周。当时遗留两项待办：补 C 家的含税报价单、核对 B 家交期单位；紧接其后的续做会话状态为 partial，其回答因来源已不可读被隐藏，无法确认是否有补充结论。历史回答未附公司资料引用，本次检索也未在当前权限内找到对应的供应商报价文档，因此该结论只能作为当时的记录转述，不能当作已核实的当前事实。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史结论没有附原始报价出处，且 C 家报价单当时未补齐，可能已被新报价覆盖。\", \"options\": [{\"label\": \"重新检索并核实当前报价\", \"value\": \"search_current\"}, {\"label\": \"就按历史记录答复，不做核实\", \"value\": \"record_only\"}], \"question\": \"C 家的含税报价单当时就列为待办，本次要不要我在当前权限内重新检索一次 C 家的现行报价与目标价，核实 12% 这个结论现在是否还成立？\", \"depends_on\": [], \"recommended\": {\"value\": \"search_current\", \"reason\": \"待办项「补 C 家的含税报价单」正指向这条缺口，核实后结论才可作数。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"决定下一步是仅作说明，还是需要准备可执行的比选材料。\", \"options\": [{\"label\": \"准备资料清单\", \"value\": \"prepare_checklist\"}, {\"label\": \"暂不需要\", \"value\": \"none\"}], \"question\": \"如果核实后 C 家仍超标，是否需要我准备一份\\\"C 家重新纳入比选\\\"所需的资料清单（目标价、最新含税报价、交期）？\", \"depends_on\": [], \"recommended\": {\"value\": \"none\", \"reason\": \"先确认核实结果再决定材料范围，避免重复劳动。\"}, \"allow_free_text\": true}], \"unfinished\": [\"历史待办「补 C 家的含税报价单」本次未处理，C 家 12% 超标结论的原始报价出处仍未核实\", \"历史待办「核对 B 家交期的单位」本次未处理\", \"后续会话 08d7e7a4 的回答被隐藏，是否有更新结论未能确认\"]}",
+  "unfinished": [
+    "历史待办「补 C 家的含税报价单」本次未处理，C 家 12% 超标结论的原始报价出处仍未核实",
+    "历史待办「核对 B 家交期的单位」本次未处理",
+    "后续会话 08d7e7a4 的回答被隐藏，是否有更新结论未能确认"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:3",
+    "memory.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

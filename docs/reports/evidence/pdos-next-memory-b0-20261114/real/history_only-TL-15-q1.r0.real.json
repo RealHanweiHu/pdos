@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 45.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 161838,
+  "held_tokens": 0,
+  "answer": "查到上次的记录：选的是包装方案二（纸托 + 收缩膜），单件成本 1.8 元。该结论来自 2026-11-15 那次\"整理充气泵的包装方案\"会话；本次在当前品类可读范围内没有找到对应的包装提案或成本明细记录，所以 1.8 元/件尚未用当前业务记录复核。",
+  "answer_blob": "{\"result\": {\"recall\": {\"source\": {\"goal\": \"整理充气泵的包装方案\", \"type\": \"conversation_history\", \"as_of\": \"2026-11-15T10:20:16Z\", \"run_id\": \"bb6f202f-21b3-49ec-a41f-3de77c5a4036\", \"session_id\": \"e0d73dbf-ef3d-4a17-af95-ed88ac2064df\"}, \"question\": \"上次整理充气泵包装方案，我选的是哪个方案？单件成本多少？\", \"unit_cost\": {\"type\": \"历史会话结论，非当前业务记录\", \"unit\": \"每件\", \"value\": \"1.8\", \"currency\": \"CNY\"}, \"selected_by\": \"甲（上次会话中记录的决策人）\", \"selected_option\": \"方案二（纸托 + 收缩膜）\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:20:28.252447+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类可读范围内未检索到充气泵包装提案、方案对比或成本明细（企业检索、平台对象读取、证据检索均为空），无法用当前业务记录复核选项与成本数字\", \"上次会话仅保留结论摘要，未保留各方案的成本构成/单价明细与计算回执，无法复算 1.8 元/件\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查到上次的记录：选的是包装方案二（纸托 + 收缩膜），单件成本 1.8 元。该结论来自 2026-11-15 那次\\\"整理充气泵的包装方案\\\"会话；本次在当前品类可读范围内没有找到对应的包装提案或成本明细记录，所以 1.8 元/件尚未用当前业务记录复核。\", \"questions\": [{\"id\": \"q1\", \"why\": \"上次会话只留下结论，没有留下各方案的成本明细与可引用的提案记录，当前范围内也查不到包装提案，1.8 元/件无法复核。\", \"options\": [{\"label\": \"是，重新整理方案对比并重算单件成本\", \"value\": \"recompute\"}, {\"label\": \"只要把\\\"方案二、1.8 元/件\\\"这条结论登记归档\", \"value\": \"file_only\"}, {\"label\": \"暂时不用，先按结论用\", \"value\": \"no\"}], \"question\": \"要我现在重新整理一版包装方案对比（纸托+收缩膜 / 其他方案），把各方案单件成本按当前参数重算并登记成可追溯的提案吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"recompute\", \"reason\": \"结论有历史依据但无可复核的成本明细，重算并留痕能同时补上\\\"选了哪个方案\\\"和\\\"单件成本\\\"的证据链。\"}, \"allow_free_text\": true}], \"unfinished\": [\"1.8 元/件目前只有上次会话记录佐证，未在当前业务记录中复核；如需可引用的依据，需要重算并登记包装提案。\"]}",
+  "unfinished": [
+    "1.8 元/件目前只有上次会话记录佐证，未在当前业务记录中复核；如需可引用的依据，需要重算并登记包装提案。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:3",
+    "model:completed:9",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 3,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

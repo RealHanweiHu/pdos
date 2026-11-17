@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "推荐无刷电机方案：单价高 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。 向电机厂确认无刷方案的最小起订量",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 77.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 119000,
+  "held_tokens": 0,
+  "answer": "结论（来自 2026-11-15 的历史会话记录 as_of，非当前业务事实）：那次评估最后推荐的是无刷电机方案——单价比有刷高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，明确不建议采用。当时唯一未完成项：向电机厂确认无刷方案的最小起订量，在当前可读范围内未找到关闭记录。当前品类「汽车充气泵」（隔离合成品类）内检索不到对应提案、评审、验证或 issue 记录，因此无法复核噪声超标 5 dB 的来源与口径，也无法确认无刷 MOQ 当前值——这些仍属未知，需在业务侧补登记与补证据。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T12:41:10.735323+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"bcc7909e-099a-4c7e-8ad3-c01620f8b5b3\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"刷\", \"噪声\", \"推荐\", \"方案\", \"无\", \"有\", \"电机\", \"评估\", \"超标\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"8666049e-44ad-4754-bf12-05ebad662a32\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [{\"goal\": \"评估两种电机方案的成本和噪声\", \"run_id\": \"96cca2b6-d88e-432d-97eb-9436665f358d\", \"status\": \"completed\", \"sources\": [], \"outcome_state\": \"current\", \"original_record\": {\"run_id\": \"96cca2b6-d88e-432d-97eb-9436665f358d\", \"session_id\": \"24c4c590-e27e-47e6-ab30-9d2e96f52f9a\"}, \"historical_outcome\": {\"notes\": [], \"summary\": \"推荐无刷电机方案：单价高 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。\", \"research\": [], \"truncated\": false, \"unfinished\": [\"向电机厂确认无刷方案的最小起订量\"]}}], \"status\": \"completed\", \"session_id\": \"24c4c590-e27e-47e6-ab30-9d2e96f52f9a\", \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。其他会话的回答只是当时的记录，其中的引用不能直接沿用。\", \"next_before\": null, \"execution_ref\": {\"call_id\": \"9f7b3914-421c-4021-808a-8bccf310b35a\", \"read_kind\": \"ordinary/v1\"}, \"memory_record\": true}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"fc0b3f5c-2971-40d0-996e-0376fce05199\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:41:16.194264+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"9239a2ae-3d69-4fd6-a745-e44e363c59a2\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"4102af13-e6a7-4e23-b2b1-5da1d76f1613\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"bcc7909e-099a-4c7e-8ad3-c01620f8b5b3\", \"key\": \"category-37a0ad2cbd0545beba78bcc6295151fa\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"8b29eb66-177f-43bb-b784-5a6d3ec84fef\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"8b29eb66-177f-43bb-b784-5a6d3ec84fef\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"bed66561-da40-4880-94df-8efd1b1d30d1\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"739cc367-7cdb-4857-bf6a-cc69c1eba60b\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"结论（来自 2026-11-15 的历史会话记录 as_of，非当前业务事实）：那次评估最后推荐的是无刷电机方案——单价比有刷高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，明确不建议采用。当时唯一未完成项：向电机厂确认无刷方案的最小起订量，在当前可读范围内未找到关闭记录。当前品类「汽车充气泵」（隔离合成品类）内检索不到对应提案、评审、验证或 issue 记录，因此无法复核噪声超标 5 dB 的来源与口径，也无法确认无刷 MOQ 当前值——这些仍属未知，需在业务侧补登记与补证据。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

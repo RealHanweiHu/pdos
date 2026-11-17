@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 27.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 86565,
+  "held_tokens": 0,
+  "answer": "上一段会话（2026-11-15，run b401bc52…）对同一问题给出的结论是：不良前三项 = ① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。\n\n两点必须说明：\n1) 本轮在「汽车充气泵」品类范围内检索试产/不良相关资料（artifact、issue、build、field_feedback、test_run 等）返回 0 条，没有取到可引用的原始试产汇总记录；本轮查找预算也已用完，无法再换词重查。\n2) 因此上面三项来自我本人往次工作的情景记录（当时该记录本身也未附引用来源），本轮未能按当前业务记录复核其数量与排序口径——即“三项名称”可答，“前三”的排序依据与发生次数目前属未复核。\n\n需要的话回复“继续查”，我在同一会话继续检索试产 Build 与不良记录，把三项的发生次数/占比和出处补齐并复核排序。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"三项对应的发生次数/占比/批次未取得\", \"排序口径（发生次数、影响数量或不良率）未确认\", \"本轮在品类 c36de233-b9bd-49c4-8bb4-534e06a0d87d 范围内检索试产与不良相关资料返回 0 条，未找到可引用的原始汇总记录\", \"本轮查找预算已用尽，未能换词或跨来源类型继续检索\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:40:36.353208+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"provenance\": \"prior_session_record\", \"citation_ids\": [], \"defects_top3\": [{\"name\": \"气嘴漏气\", \"rank\": 1}, {\"name\": \"外壳缩水\", \"rank\": 2}, {\"name\": \"按键卡滞\", \"rank\": 3}], \"verification\": \"not_reverified_this_run\", \"prior_session\": {\"as_of\": \"2026-11-15\", \"run_id\": \"b401bc52-0594-4030-8183-ed4614267557\", \"session_id\": \"9a1d1c10-db06-4e85-a0f9-16a33da6e419\"}}, \"status\": \"partial\", \"summary\": \"上一段会话（2026-11-15，run b401bc52…）对同一问题给出的结论是：不良前三项 = ① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。\\n\\n两点必须说明：\\n1) 本轮在「汽车充气泵」品类范围内检索试产/不良相关资料（artifact、issue、build、field_feedback、test_run 等）返回 0 条，没有取到可引用的原始试产汇总记录；本轮查找预算也已用完，无法再换词重查。\\n2) 因此上面三项来自我本人往次工作的情景记录（当时该记录本身也未附引用来源），本轮未能按当前业务记录复核其数量与排序口径——即“三项名称”可答，“前三”的排序依据与发生次数目前属未复核。\\n\\n需要的话回复“继续查”，我在同一会话继续检索试产 Build 与不良记录，把三项的发生次数/占比和出处补齐并复核排序。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮没有取到原始试产汇总记录，三项的排序依据不明；口径不同会得到不同的前三。\", \"options\": [{\"label\": \"按不良发生次数\", \"value\": \"occurrence_count\"}, {\"label\": \"按涉及数量（台/件）\", \"value\": \"affected_quantity\"}, {\"label\": \"按不良率\", \"value\": \"defect_rate\"}], \"question\": \"这前三项要按哪个口径排序核对（决定我去取哪类原始记录）？\", \"depends_on\": [], \"recommended\": {\"value\": \"occurrence_count\", \"reason\": \"试产不良汇总通常按发生次数排名，且最易从试产 Build/不良记录中直接复核。\"}, \"allow_free_text\": true}], \"unfinished\": [\"试产不良前三项尚未按当前业务记录复核：本轮品类范围检索返回 0 条，查找预算用尽，未取到发生次数与出处。\"]}",
+  "unfinished": [
+    "试产不良前三项尚未按当前业务记录复核：本轮品类范围检索返回 0 条，查找预算用尽，未取到发生次数与出处。"
+  ],
+  "ledger": [
+    "assistant.citations.read:failed:2",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "conversation.history:completed:1",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

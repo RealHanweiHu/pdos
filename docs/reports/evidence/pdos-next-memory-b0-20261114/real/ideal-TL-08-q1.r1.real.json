@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "不良前三项：气嘴漏气、外壳缩水、按键卡滞。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 19.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 48978,
+  "held_tokens": 0,
+  "answer": "找到的是你本人一次较早的工作记录（as_of 2026-11-15）：那次的目标是「汇总上周试产的不良项」（run 9724b93b-ace3-48b1-986f-912abd15e64c / 会话 fb19ed53-3f9a-4f58-87b4-5cd195ebb95f）。当时一起列出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。\n\n说明两点：① 这条来自你本人的会话历史记录（情景卡），代表当时的回答摘述，不是当前业务事实；② 本轮我在当前品类（汽车充气泵）范围内检索「外壳缩水/试产不良」及证据库，均未返回可读记录——只说明在我这次搜索到的范围内没有匹配项，不代表该问题不存在。若你想把「外壳缩水」接到当前在办的品质问题/CAPA 上，可以在同一会话里说一声，我按当前权限和固定版本再读一次对应对象。",
+  "answer_blob": "{\"result\": {\"match\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15\", \"run_id\": \"9724b93b-ace3-48b1-986f-912abd15e64c\", \"status\": \"completed\", \"session_id\": \"fb19ed53-3f9a-4f58-87b4-5cd195ebb95f\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:59:25.528443+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"source_nature\": \"personal_work_history_record\", \"current_scope_check\": {\"note\": \"搜索范围内未找到匹配记录，不等于该问题不存在\", \"query\": \"外壳缩水 试产不良\", \"scope\": \"category:汽车充气泵 (4b28bda5-b45f-4704-8e82-58174a5013af)\", \"items_returned\": 0, \"evidence_search_hits\": 0}, \"issues_listed_together\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"], \"issue_ranking_as_stated\": \"不良前三项\"}, \"status\": \"completed\", \"summary\": \"找到的是你本人一次较早的工作记录（as_of 2026-11-15）：那次的目标是「汇总上周试产的不良项」（run 9724b93b-ace3-48b1-986f-912abd15e64c / 会话 fb19ed53-3f9a-4f58-87b4-5cd195ebb95f）。当时一起列出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。\\n\\n说明两点：① 这条来自你本人的会话历史记录（情景卡），代表当时的回答摘述，不是当前业务事实；② 本轮我在当前品类（汽车充气泵）范围内检索「外壳缩水/试产不良」及证据库，均未返回可读记录——只说明在我这次搜索到的范围内没有匹配项，不代表该问题不存在。若你想把「外壳缩水」接到当前在办的品质问题/CAPA 上，可以在同一会话里说一声，我按当前权限和固定版本再读一次对应对象。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

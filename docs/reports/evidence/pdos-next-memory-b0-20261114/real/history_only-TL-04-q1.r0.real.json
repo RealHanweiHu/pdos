@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 30.4,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 67405,
+  "held_tokens": 0,
+  "answer": "在可读记录中未找到你曾指定的气泵报价对比口径。仅确认 2026-11-15 有一次\"气泵报价对比\"运行且已完成，但其存档只有结论性摘要\"报价对比已完成\"，无引用、笔记与候选，未记录任何口径；品类内资料检索与知识条目均为 0 命中；本轮跨品类更广检索因查找预算用尽未完成。",
+  "answer_blob": "{\"result\": {\"question\": \"以前是否交代过气泵报价对比口径\", \"unknowns\": [\"2026-11-15 那次运行中你交代的口径原文未进入可读记录（存档仅存结论性摘要）\", \"跨品类/其他会话中的口径约定尚未检索\", \"品类资料库中不存在登记的价格口径约定\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:58:26.772583+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"conclusion\": \"未在已检索范围内找到你指定的口径\", \"citation_ids\": [], \"document_search\": {\"wider_search\": \"本轮查找预算已用尽，未完成跨品类更广检索\", \"category_scope\": {\"query\": \"气泵 报价对比 价格口径 币种 含税 渠道 零售\", \"returned\": 0, \"category_id\": \"8b4cfa07-7b36-4182-a90d-667660ac1a19\", \"category_name\": \"汽车充气泵\"}, \"category_knowledge_rows\": 0}, \"prior_work_found\": [{\"goal\": \"气泵报价对比\", \"as_of\": \"2026-11-15T12:58:12Z\", \"source\": \"personal episode record (情景记录, 非业务事实)\", \"status\": \"completed\", \"recorded_notes\": 0, \"recorded_sources\": 0, \"recorded_candidates\": 0, \"archived_answer_summary\": \"报价对比已完成。\"}], \"constraints_recorded_in_run\": []}, \"status\": \"partial\", \"summary\": \"在可读记录中未找到你曾指定的气泵报价对比口径。仅确认 2026-11-15 有一次\\\"气泵报价对比\\\"运行且已完成，但其存档只有结论性摘要\\\"报价对比已完成\\\"，无引用、笔记与候选，未记录任何口径；品类内资料检索与知识条目均为 0 命中；本轮跨品类更广检索因查找预算用尽未完成。\", \"questions\": [{\"id\": \"q1\", \"why\": \"口径决定价格点是否可比，必须先定口径再取数计算。\", \"options\": [{\"label\": \"按统一口径：币种/日期/地区/渠道/零售或促销/含税与运费/配置版本对齐\", \"value\": \"unified_default\"}, {\"label\": \"按客户 RFQ 口径（以 RFQ 指定币种、条款与配置为准）\", \"value\": \"customer_rfq\"}, {\"label\": \"按内部成本口径（我方成本与竞品公开价分别列示，不直接比价）\", \"value\": \"internal_cost\"}], \"question\": \"这次气泵报价对比采用哪套价格口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"unified_default\", \"reason\": \"在口径未确认时，可用统一口径先产出可比的价格带，随后再由你校正\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"本轮跨品类检索因查找预算用尽未完成，可能漏掉别的会话或品类中的口径交代。\", \"options\": [{\"label\": \"先深挖历史再报价对比（需再开一轮查找预算）\", \"value\": \"dig_history\"}, {\"label\": \"不再追溯，直接按选定口径出价格带\", \"value\": \"proceed_now\"}], \"question\": \"是否先深挖历史记录里是否存在你以前交代的口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"proceed_now\", \"reason\": \"口径一旦由你现在确认，历史口径的追溯对结果影响有限\"}, \"allow_free_text\": false}], \"unfinished\": [\"跨品类/更广范围的报价口径历史检索（本轮查找预算已用尽，未完成）\", \"口径确认后用 calc.price_band 计算价格带与目标价位置\"]}",
+  "unfinished": [
+    "跨品类/更广范围的报价口径历史检索（本轮查找预算已用尽，未完成）",
+    "口径确认后用 calc.price_band 计算价格带与目标价位置"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

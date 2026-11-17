@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-13",
+  "question": "q1",
+  "repeat": 2,
+  "fault": "memory_unavailable",
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 89.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 250994,
+  "held_tokens": 0,
+  "answer": "噪声验收标准为 ≤ 62 dB(A)（品类参数字典 noise v1，origin=human，撰写人 ID 与该品类 owner 一致），登记的测量条件为“1 m，空载”。因此条件确实已被人工交代进规格，但该条未附来源文档/引用，method 为空，且本会话历史为空、个人记忆库不可读，无法确证是否出自你本人此前的交代。本轮在品类范围检索、证据检索、品类知识库、平台产品/提案侧均无其他噪声相关记录；5 个相关技能在本范围 FORBIDDEN_SCOPE，跨范围补充检索因查找预算用尽未执行。尚缺：测试标准引用与测量方法、传声器位置与平均方式、背景噪声、样机数、“空载”对应转速/档位与稳态/瞬态、1 m 方向与测点。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:36:30.405946+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"噪声参数条目虽为人工登记(origine=human，撰写人ID与品类owner一致)，但未附来源文档或引用，无法确证是否由用户本人此前交代\", \"个人记忆库本轮不可读(SOURCE_UNAVAILABLE)，无法检索用户以往对噪声测试条件的表述\", \"本会话线conversation.history无既往对话记录可核对\", \"参数method字段为空：未登记所引用的测试标准、传声器位置与朝向、平均方式(LAeq/LA10)、背景噪声限值、样机数量\", \"“空载”工况未细化：转速/档位、是否在充气动作中测量、稳态还是启动瞬态\", \"1 m 的测量方向与测点（整机或泵体）未登记\", \"品类资料检索、证据检索、品类知识库(边界/细分/竞品/用户声音/法规/研究问题)、平台产品与提案侧均无其他噪声相关记录，无法与竞品同口径比较\", \"test_verification、competitor_comparison、gap_check、rfq_extraction、proposal_drafting 技能在本范围返回 FORBIDDEN_SCOPE，行级证据抽取与提案条目核对未能执行\", \"本轮查找预算已用尽，跨范围补充检索未执行\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"噪声验收标准为 ≤ 62 dB(A)（品类参数字典 noise v1，origin=human，撰写人 ID 与该品类 owner 一致），登记的测量条件为“1 m，空载”。因此条件确实已被人工交代进规格，但该条未附来源文档/引用，method 为空，且本会话历史为空、个人记忆库不可读，无法确证是否出自你本人此前的交代。本轮在品类范围检索、证据检索、品类知识库、平台产品/提案侧均无其他噪声相关记录；5 个相关技能在本范围 FORBIDDEN_SCOPE，跨范围补充检索因查找预算用尽未执行。尚缺：测试标准引用与测量方法、传声器位置与平均方式、背景噪声、样机数、“空载”对应转速/档位与稳态/瞬态、1 m 方向与测点。\", \"questions\": [], \"unfinished\": [\"未读取个人记忆库以核对用户以往关于噪声测试条件的交代（SOURCE_UNAVAILABLE）\", \"未能执行跨范围/超出本品类的补充检索以确认是否存在其他噪声规定来源\", \"因相关技能未启用，未能对提案条目、RFQ 条款与验证记录做行级噪声证据抽取\", \"噪声规格的测量方法(method)、测试标准引用与工况细化仍为空白，待用户或负责人补齐\"]}",
+  "unfinished": [
+    "未读取个人记忆库以核对用户以往关于噪声测试条件的交代（SOURCE_UNAVAILABLE）",
+    "未能执行跨范围/超出本品类的补充检索以确认是否存在其他噪声规定来源",
+    "因相关技能未启用，未能对提案条目、RFQ 条款与验证记录做行级噪声证据抽取",
+    "噪声规格的测量方法(method)、测试标准引用与工况细化仍为空白，待用户或负责人补齐"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "memory.search:failed:2",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

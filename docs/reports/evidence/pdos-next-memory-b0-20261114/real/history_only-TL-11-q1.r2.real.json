@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 61.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 66665,
+  "held_tokens": 0,
+  "answer": "汽车充气泵品类现行规格字典中，「最大流量」(max_flow, v1) 的验收标准是 **≥ 35 L/min**，单位 L/min，方向为越高越好。该参数由人工录入（receipt 276a49f4-4369-4eb4-beae-d4d6fcb8becd）。需要提醒两点口径缺口：standard_condition（标准工况）与 method（测量方法）均未登记，也就是说「≥35 L/min」目前没有写明在什么压力/转速点、用什么方法测，验收时容易各说各话；同时在本品类的公司资料范围内检索「最大流量 / 验收标准」未返回任何文档或记录，没有找到规格书、图纸或验证记录对 ≥35 L/min 做交叉印证，本轮检索预算也已用尽。因此结论是「参数字典里登记的现行标准」，而非「已有实测或放行文件确认的标准」。",
+  "answer_blob": "{\"result\": {\"finding\": {\"unit\": \"L/min\", \"as_of\": \"2026-11-15T12:32:35Z\", \"method\": null, \"origin\": \"human\", \"version\": 1, \"category\": \"汽车充气泵\", \"direction\": \"higher\", \"writer_id\": \"ae403e20-6407-4065-a639-195c0140065c\", \"receipt_id\": \"276a49f4-4369-4eb4-beae-d4d6fcb8becd\", \"value_type\": \"number\", \"enum_values\": null, \"source_tool\": \"category.parameters.list\", \"confirmed_by\": null, \"parameter_key\": \"max_flow\", \"parameter_name\": \"最大流量\", \"standard_condition\": null, \"acceptance_criterion\": \"≥ 35 L/min\", \"corroborating_documents\": 0}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:32:36.387052+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"最大流量的标准工况（standard_condition）未登记，无法确认 ≥35 L/min 对应的压力/转速测点\", \"最大流量的测量方法（method）未登记，验收操作口径缺失\", \"在'汽车充气泵'品类范围内检索'最大流量 验收标准'返回 0 条资料，未取得规格书/图纸/验证记录的文档级印证；本轮检索预算已用完，未能继续深挖\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"汽车充气泵品类现行规格字典中，「最大流量」(max_flow, v1) 的验收标准是 **≥ 35 L/min**，单位 L/min，方向为越高越好。该参数由人工录入（receipt 276a49f4-4369-4eb4-beae-d4d6fcb8becd）。需要提醒两点口径缺口：standard_condition（标准工况）与 method（测量方法）均未登记，也就是说「≥35 L/min」目前没有写明在什么压力/转速点、用什么方法测，验收时容易各说各话；同时在本品类的公司资料范围内检索「最大流量 / 验收标准」未返回任何文档或记录，没有找到规格书、图纸或验证记录对 ≥35 L/min 做交叉印证，本轮检索预算也已用尽。因此结论是「参数字典里登记的现行标准」，而非「已有实测或放行文件确认的标准」。\", \"questions\": [{\"id\": \"q_method_condition\", \"why\": \"标准工况与测量方法当前为空，验收时无客观判据，容易出现'测法不同结论不同'的争议。\", \"options\": [{\"label\": \"我们有内部既定测法/工况，我提供给你补录\", \"value\": \"have_internal_standard\"}, {\"label\": \"目前确实没有固定测法，先作为待决项挂起\", \"value\": \"no_method_yet\"}, {\"label\": \"以客户/行业规范指定的方法为准，我去核对\", \"value\": \"customer_specified\"}], \"question\": \"「≥ 35 L/min」这个口径是在什么测点测的（例如某个出口压力/转速点）、用什么方法测？如果你们内部已有惯例或客户/规范指定的方法，我可以直接补进参数字典的工况与测量方法。\", \"depends_on\": [], \"recommended\": {\"value\": \"have_internal_standard\", \"reason\": \"口径缺失是这条标准最实际的落地障碍，优先补工况与方法才能真正用于验收。\"}, \"allow_free_text\": true}, {\"id\": \"q_evidence\", \"why\": \"目前只有参数字典一条记录，没有文档或实测印证，无法排除字典值与实际执行标准不一致。\", \"options\": [{\"label\": \"要，继续查规格书/验证记录并核对版本\", \"value\": \"deepen_evidence\"}, {\"label\": \"先不用，参数字典的值够用\", \"value\": \"sufficient\"}], \"question\": \"要不要我在下一轮（放开检索预算）深入规格书、图纸与验证记录，确认 ≥35 L/min 是否与实物规格、实测数据一致，并检查是否存在更新的参数版本？\", \"depends_on\": [\"q_method_condition\"], \"recommended\": {\"value\": \"deepen_evidence\", \"reason\": \"字典值与实物/实测是否一致是能否用于验收的关键，属于影响结论的核对项。\"}, \"allow_free_text\": true}], \"unfinished\": [\"最大流量的标准工况与测量方法仍为空，未补录\", \"未获得 ≥35 L/min 的文档级/实测级印证（检索预算用尽）\"]}",
+  "unfinished": [
+    "最大流量的标准工况与测量方法仍为空，未补录",
+    "未获得 ≥35 L/min 的文档级/实测级印证（检索预算用尽）"
+  ],
+  "ledger": [
+    "assistant.extract:failed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.parameters.list:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

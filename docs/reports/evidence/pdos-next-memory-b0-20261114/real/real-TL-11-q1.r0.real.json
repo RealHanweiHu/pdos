@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 37.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 107184,
+  "held_tokens": 0,
+  "answer": "当前生效的最大流量（参数 max_flow，单位 L/min，版本 1）验收标准为「≥ 35 L/min」，方向 higher。该条参数按 include_history=true 查询也只返回版本 1，没有 replaces_version，即没有更新版本生效；其 standard_condition（工况条件）与 method（测试方法）字段均为空，属未登记。登记信息：origin=human、writer=Synthetic owner、confirmed_by 为空、receipt_id 5ad9c19a-9ac0-4b7a-afce-b7f63c638bc1。\n\n补充说明两点边界：\n1) 你此前会话里让我起草过一条「最大流量验收标准提到 40 L/min」的修订——那只是当时的草稿候选（会话记录本身也只是工作情景记录、不是业务事实），参数库中当前仍是 ≥ 35 L/min，未见 40 L/min 生效。\n2) 型号/产品基线层口径本轮未能核对：platform.read 在当前品类范围未返回可读的产品/型号记录，因此以上数值是品类参数口径；本轮检索预算已用尽，未能再从文档/知识库侧交叉验证。\n\n据此，回答你的问题：现在的验收标准是 ≥ 35 L/min，但工况与测法未写明，落地判定前建议补上。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:10:11.375941+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"当前生效的最大流量（参数 max_flow，单位 L/min，版本 1）验收标准为「≥ 35 L/min」，方向 higher。该条参数按 include_history=true 查询也只返回版本 1，没有 replaces_version，即没有更新版本生效；其 standard_condition（工况条件）与 method（测试方法）字段均为空，属未登记。登记信息：origin=human、writer=Synthetic owner、confirmed_by 为空、receipt_id 5ad9c19a-9ac0-4b7a-afce-b7f63c638bc1。\\n\\n补充说明两点边界：\\n1) 你此前会话里让我起草过一条「最大流量验收标准提到 40 L/min」的修订——那只是当时的草稿候选（会话记录本身也只是工作情景记录、不是业务事实），参数库中当前仍是 ≥ 35 L/min，未见 40 L/min 生效。\\n2) 型号/产品基线层口径本轮未能核对：platform.read 在当前品类范围未返回可读的产品/型号记录，因此以上数值是品类参数口径；本轮检索预算已用尽，未能再从文档/知识库侧交叉验证。\\n\\n据此，回答你的问题：现在的验收标准是 ≥ 35 L/min，但工况与测法未写明，落地判定前建议补上。\", \"questions\": [{\"id\": \"q1\", \"why\": \"现行口径为 ≥ 35 L/min，40 L/min 目前只是草稿；走完流程才会成为正式生效版本。\", \"options\": [{\"label\": \"暂不推进，先按现行 ≥ 35 L/min 使用\", \"value\": \"hold\"}, {\"label\": \"推进：把 40 L/min 修订提交为正式新版本\", \"value\": \"submit_40\"}], \"question\": \"要不要继续推进把验收标准提到 ≥ 40 L/min 的那条修订（拟稿→提交→发布新版本）？\", \"depends_on\": [], \"recommended\": {\"value\": \"hold\", \"reason\": \"本轮只做事实核对，且 40 L/min 尚未有对应产品实测与工况定义支撑\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"本轮检索额度已用尽，只能确认品类参数口径；型号级口径与工况/测法仍未知。\", \"options\": [{\"label\": \"需要，续查型号基线与工况/测法\", \"value\": \"deep_dive\"}, {\"label\": \"暂不需要，先用当前结果\", \"value\": \"stop\"}], \"question\": \"是否需要我另起一轮深入查，把型号/产品基线里的验收口径与工况、测法一起核实？\", \"depends_on\": [], \"recommended\": {\"value\": \"deep_dive\", \"reason\": \"缺工况与测法会让 ≥ 35 L/min 的判定不可复现，落地前值得补齐\"}, \"allow_free_text\": true}], \"unfinished\": [\"型号/产品基线层的验收口径未核对（当前品类权限下 platform.read 无可读记录，检索预算已用尽）\", \"最大流量参数的工况条件与测试方法字段为空，未补齐\", \"≥ 40 L/min 的修订仍停留在草稿候选，未提交为正式版本\"]}",
+  "unfinished": [
+    "型号/产品基线层的验收口径未核对（当前品类权限下 platform.read 无可读记录，检索预算已用尽）",
+    "最大流量参数的工况条件与测试方法字段为空，未补齐",
+    "≥ 40 L/min 的修订仍停留在草稿候选，未提交为正式版本"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:6",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

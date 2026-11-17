@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 32.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 50257,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-14 会话\"比较三家气泵供应商的报价和交期\"）排除 C 家的记录原因是：其含税报价超出目标价 12%；当时建议选 B 家（交期比 A 家短 2 周）。但该会话的未完成项显示\"C 家的含税报价单\"仍待补齐、B 家交期单位未核对，故 12% 为当时口径而非确认值；本次在当前品类（汽车充气泵）可读范围内检索供应/文档类资料未返回结果，无可引用的现行记录。建议在同会话继续深查核实。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:13:01.058748+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家 12% 超目标价的原始依据（当时含税报价单尚未补齐）未在当前可读资料中检索到\", \"B 家交期'短 2 周'的单位未核对\", \"当前品类可读范围内未检索到当时的供应商报价比较记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-14 会话\\\"比较三家气泵供应商的报价和交期\\\"）排除 C 家的记录原因是：其含税报价超出目标价 12%；当时建议选 B 家（交期比 A 家短 2 周）。但该会话的未完成项显示\\\"C 家的含税报价单\\\"仍待补齐、B 家交期单位未核对，故 12% 为当时口径而非确认值；本次在当前品类（汽车充气泵）可读范围内检索供应/文档类资料未返回结果，无可引用的现行记录。建议在同会话继续深查核实。\", \"questions\": [{\"id\": \"q1\", \"why\": \"上次会话的收尾事项（补 C 家含税报价单、核对 B 家交期单位）尚未闭环，且当前可读范围内未检索到当时的比较记录，12% 仍是当时口径。\", \"options\": [{\"label\": \"继续查：找当时的报价/比较记录并核实 12% 与交期单位\", \"value\": \"continue\"}, {\"label\": \"重新做一次三家同口径对比（含税含运、目标价口径）\", \"value\": \"recompare\"}, {\"label\": \"先不用，只要当时的结论说明即可\", \"value\": \"stop\"}], \"question\": \"是否继续在同会话深查，核实 C 家 12% 与三家同口径比较？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue\", \"reason\": \"先补齐上次未闭环的证据（C 家含税报价单），再决定是否需要重新对比\"}, \"allow_free_text\": true}], \"unfinished\": [\"在当前品类可读范围内未找到上次的供应商报价比较记录（检索 supply/artifact/project_status 无返回）\", \"上次会话遗留：补 C 家含税报价单、核对 B 家交期单位\"]}",
+  "unfinished": [
+    "在当前品类可读范围内未找到上次的供应商报价比较记录（检索 supply/artifact/project_status 无返回）",
+    "上次会话遗留：补 C 家含税报价单、核对 B 家交期单位"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

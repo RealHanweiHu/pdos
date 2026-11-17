@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 36.5,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 68960,
+  "held_tokens": 0,
+  "answer": "已按\"内容就两条\"口径出本周周报草稿：①本周完成供应商对比——完成（依据本人陈述）；在当前品类可读资料中未检索到供应商/竞品对比记录（竞品库为空、品类检索无命中），本轮查找预算已用完，无法扩大核实，故结论与口径未落纸。②下周补报价单——计划中，报价口径（币种、是否含税含运、数量档位、有效期）、责任人、目标完成日均未登记。当前范围无可写入的任务/计划登记工具，该条仅为文字，未建单。已就结论是否入正文、责任人/目标日、报价口径三点向本人提问。",
+  "answer_blob": "{\"result\": {\"report\": {\"items\": [{\"seq\": 1, \"line\": \"本周完成供应商对比。\", \"notes\": \"结论摘要与对比口径是否写入正文待本人确认\", \"state\": \"完成（依据本人陈述）\", \"evidence_status\": \"当前品类可读资料中未检索到供应商/竞品对比记录：竞品库返回为空，品类内检索无命中；本轮查找预算已用完，未能扩大范围核实\"}, {\"seq\": 2, \"line\": \"下周补报价单。\", \"note\": \"当前范围无可写入的任务/计划登记工具，本条仅为文字，未在系统建单\", \"owner\": null, \"state\": \"计划中\", \"open_items\": [\"报价口径：币种、是否含税含运、数量档位、有效期\", \"责任人\", \"目标完成日\"], \"target_date\": null, \"evidence_status\": \"未登记\"}], \"title\": \"周报（汽车充气泵）\", \"period\": {\"next\": \"下周\", \"current\": \"本周\"}}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:48:01.836627+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商对比的结论、口径与来源未见可引用记录\", \"供应商/竞品对比是否实际完成及其范围无法核实\", \"报价单的责任人、目标完成日、报价口径未登记\", \"周报或报价模板未检索到\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已按\\\"内容就两条\\\"口径出本周周报草稿：①本周完成供应商对比——完成（依据本人陈述）；在当前品类可读资料中未检索到供应商/竞品对比记录（竞品库为空、品类检索无命中），本轮查找预算已用完，无法扩大核实，故结论与口径未落纸。②下周补报价单——计划中，报价口径（币种、是否含税含运、数量档位、有效期）、责任人、目标完成日均未登记。当前范围无可写入的任务/计划登记工具，该条仅为文字，未建单。已就结论是否入正文、责任人/目标日、报价口径三点向本人提问。\", \"questions\": [{\"id\": \"q1\", \"why\": \"该条目前只有本人陈述，无可引用的登记记录，正文有结论才可对外成立。\", \"options\": [{\"label\": \"只写完成状态，不写结论\", \"value\": \"status_only\"}, {\"label\": \"写结论，我给要点/来源\", \"value\": \"with_conclusion\"}], \"question\": \"供应商对比的结论要点是否写进周报正文？若要，请给要点或指明可读来源。\", \"depends_on\": [], \"recommended\": {\"value\": \"status_only\", \"reason\": \"缺少可核记录时，先以完成状态发出更稳妥\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"周报第二条目前无责任人与时点，无法作为可跟踪的下周计划。\", \"options\": [{\"label\": \"由我本人承接\", \"value\": \"me\"}, {\"label\": \"暂不指定，仅按计划事项列出\", \"value\": \"unassigned\"}], \"question\": \"下周报价单的责任人和目标完成日是哪位/哪天？\", \"depends_on\": [], \"recommended\": {\"value\": \"unassigned\", \"reason\": \"未获授权指派他人，避免周报写入未经本人认领的责任人\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"口径不同会直接改变报价可比性与后续比价结论。\", \"options\": [{\"label\": \"沿用公司既有报价口径（我指明模板或示例）\", \"value\": \"existing_template\"}, {\"label\": \"按 RMB、含税含运、指定数量档位、有效期一周\", \"value\": \"cny_tax_ship\"}], \"question\": \"报价单按什么口径出（币种、含税含运、数量档位、有效期）？\", \"depends_on\": [], \"recommended\": {\"value\": \"cny_tax_ship\", \"reason\": \"未检索到公司模板，缺省口径需显式声明为假设\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商对比与报价单在当前品类可读资料中无检索命中；本轮查找预算已用完，扩大范围的核实未完成\", \"下周报价单未在系统建单（当前范围无可写入的任务/计划登记工具）\", \"报价口径、责任人与目标完成日待本人确认后再定稿\"]}",
+  "unfinished": [
+    "供应商对比与报价单在当前品类可读资料中无检索命中；本轮查找预算已用完，扩大范围的核实未完成",
+    "下周报价单未在系统建单（当前范围无可写入的任务/计划登记工具）",
+    "报价口径、责任人与目标完成日待本人确认后再定稿"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

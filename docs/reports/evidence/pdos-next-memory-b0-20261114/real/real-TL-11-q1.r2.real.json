@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 22.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 81855,
+  "held_tokens": 0,
+  "answer": "当前（品类「汽车充气泵」）规格字典中登记的「最大流量」验收标准为 ≥ 35 L/min（参数 key max_flow，版本 1，单位 L/min，方向 higher，来源 human）。该条目前未记录测试工况（standard_condition 为空）和测试方法（method 为空），验收时按何条件测、怎么测并无书面依据。此前你让小Pai起草过把该标准提到 40 L/min 的修订候选（参数级候选，未提交/未生效），所以生效标准仍是 35 L/min；若要改为 40 L/min 需走规格修订并由你确认提交。",
+  "answer_blob": "{\"result\": {\"notes\": [\"标准工况 standard_condition 未登记，测试方法 method 未登记，验收条件与方法存在缺口\", \"历史工作记录显示曾起草「≥40 L/min」的规格修订候选但尚未确认提交，故未生效，不能作为现行标准引用\"], \"answer\": {\"unit\": \"L/min\", \"scope\": \"品类「汽车充气泵」规格字典（当前版本）\", \"direction\": \"higher\", \"parameter_key\": \"max_flow\", \"parameter_name\": \"最大流量\", \"parameter_version\": 1, \"acceptance_criterion\": \"≥ 35 L/min\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:33:36.548348+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"最大流量验收标准的测试工况与测试方法未在参数字典中登记\", \"无产品/项目级规格或变更记录登记了另一版最大流量验收标准（当前品类范围内未检索到相关文档）\", \"40 L/min 修订候选的当前状态未在业务对象中核实\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"当前（品类「汽车充气泵」）规格字典中登记的「最大流量」验收标准为 ≥ 35 L/min（参数 key max_flow，版本 1，单位 L/min，方向 higher，来源 human）。该条目前未记录测试工况（standard_condition 为空）和测试方法（method 为空），验收时按何条件测、怎么测并无书面依据。此前你让小Pai起草过把该标准提到 40 L/min 的修订候选（参数级候选，未提交/未生效），所以生效标准仍是 35 L/min；若要改为 40 L/min 需走规格修订并由你确认提交。\", \"questions\": [{\"id\": \"q_submit_40\", \"why\": \"此前仅起草为候选、未提交生效；是否推进由你决定。\", \"options\": [{\"label\": \"是，整理成待提交修订并补工况/方法\", \"value\": \"yes_prepare_revision\"}, {\"label\": \"否，维持 ≥35 L/min\", \"value\": \"no_keep_35\"}, {\"label\": \"先只看修订候选与现行标准的差异\", \"value\": \"show_diff_only\"}], \"question\": \"需要我继续把「最大流量 ≥40 L/min」的规格修订候选整理成可提交的修订项（并补齐测试工况与方法）供你确认提交吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"show_diff_only\", \"reason\": \"先看差异再决定是否提交，改动仅一条数值，但需连带确认测试工况与方法的登记。\"}, \"allow_free_text\": true}], \"unfinished\": [\"最大流量验收标准的测试工况与测试方法尚未在参数字典中登记（standard_condition、method 为空），如需可继续补齐\", \"「≥40 L/min」修订候选的提交状态未在业务对象中核实，需要时继续查\"]}",
+  "unfinished": [
+    "最大流量验收标准的测试工况与测试方法尚未在参数字典中登记（standard_condition、method 为空），如需可继续补齐",
+    "「≥40 L/min」修订候选的提交状态未在业务对象中核实，需要时继续查"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

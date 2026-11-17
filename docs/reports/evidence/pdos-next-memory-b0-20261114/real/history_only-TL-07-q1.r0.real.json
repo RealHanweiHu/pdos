@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 38.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 84750,
+  "held_tokens": 0,
+  "answer": "本周周报已按你指定的两条内容出好：\n\n【本周周报 · 汽车充气泵】\n一、本周完成\n1. 完成供应商对比。\n二、下周计划\n1. 补报价单。\n\n两点如实说明：\n1. 「本周完成供应商对比」目前只是按你口述写入的。我在当前可读范围（品类「汽车充气泵」内的资料、竞品/知识条目、平台对象、证据检索、会话与个人记忆）都没有找到对应的供应商对比记录，所以无法独立核实这条完成项；如果你手上有对比表或纪要，贴上来我可以核一遍并补进周报。\n2. 「下周补报价单」我只写进了周报正文，没有登记成系统任务。当前范围未开放工作管理流程，无法给这条派负责人和截止日。\n\n另外周报抬头我没有填署名、部门和周期日期，因为资料里查不到你的姓名与部门，且本周区间我按服务器日期 11/9–11/15 推算（下周 11/16–11/22），如与你们实际口径不同请指出。",
+  "answer_blob": "{\"result\": {\"report\": {\"scope\": {\"category_id\": \"74f6dbcd-171a-4f68-a9c6-189c2b7e1743\", \"category_name\": \"汽车充气泵\"}, \"title\": \"本周周报\", \"sections\": [{\"items\": [{\"text\": \"完成供应商对比\", \"status\": \"as_stated_by_user\", \"verification\": \"not_found_in_searchable_scope\"}], \"heading\": \"一、本周完成\"}, {\"items\": [{\"text\": \"补报价单\", \"status\": \"planned_not_registered\"}], \"heading\": \"二、下周计划\"}], \"period_assumption\": {\"basis\": \"按服务器当前日期 2026-11-15 推算，未见公司周报周期定义\", \"next_week\": \"2026-11-16~2026-11-22\", \"this_week\": \"2026-11-09~2026-11-15\"}}, \"unknowns\": [{\"item\": \"本周供应商对比在可检索范围内未找到任何记录，完成状态未能独立核实\"}, {\"item\": \"工作管理流程未在当前范围启用，下周报价单未登记为任务，无负责人与截止日\"}, {\"item\": \"周报署名、部门与公司周报周期口径未知\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:48:41.114169+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citations\": [], \"not_recorded\": [\"周报抬头署名与部门\", \"供应商对比的对象清单、范围与结论\", \"报价单的客户/供应商对象与交付形式\"]}, \"status\": \"completed\", \"summary\": \"本周周报已按你指定的两条内容出好：\\n\\n【本周周报 · 汽车充气泵】\\n一、本周完成\\n1. 完成供应商对比。\\n二、下周计划\\n1. 补报价单。\\n\\n两点如实说明：\\n1. 「本周完成供应商对比」目前只是按你口述写入的。我在当前可读范围（品类「汽车充气泵」内的资料、竞品/知识条目、平台对象、证据检索、会话与个人记忆）都没有找到对应的供应商对比记录，所以无法独立核实这条完成项；如果你手上有对比表或纪要，贴上来我可以核一遍并补进周报。\\n2. 「下周补报价单」我只写进了周报正文，没有登记成系统任务。当前范围未开放工作管理流程，无法给这条派负责人和截止日。\\n\\n另外周报抬头我没有填署名、部门和周期日期，因为资料里查不到你的姓名与部门，且本周区间我按服务器日期 11/9–11/15 推算（下周 11/16–11/22），如与你们实际口径不同请指出。\", \"questions\": [{\"id\": \"q1\", \"why\": \"资料里查不到你的姓名与部门，周报周期口径也无登记，填错会直接影响发出效果。\", \"options\": [], \"question\": \"周报抬头要不要写你的署名/部门，以及本周周期日期用我推算的 11/9–11/15（下周 11/16–11/22）是否与你们实际口径一致？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"目前这条只写在周报正文，没有承接人和截止日，下周容易漏掉。\", \"options\": [], \"question\": \"下周「补报价单」要不要登记成系统任务？如果要，请给出负责人与截止日期（当前范围未开放工作管理流程，登记需要先放开该流程）。\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"核实「本周完成供应商对比」：当前可读范围内未找到相关记录，需用户提供对比表或纪要后补入周报\", \"「下周补报价单」尚未登记为任务，缺负责人与截止日期，且工作管理流程未在当前范围启用\", \"周报署名、部门抬头与周期口径待用户确认\"]}",
+  "unfinished": [
+    "核实「本周完成供应商对比」：当前可读范围内未找到相关记录，需用户提供对比表或纪要后补入周报",
+    "「下周补报价单」尚未登记为任务，缺负责人与截止日期，且工作管理流程未在当前范围启用",
+    "周报署名、部门抬头与周期口径待用户确认"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

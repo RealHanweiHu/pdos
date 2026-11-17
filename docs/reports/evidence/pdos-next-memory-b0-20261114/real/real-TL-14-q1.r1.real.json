@@ -1,0 +1,68 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 50.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 137186,
+  "held_tokens": 0,
+  "answer": "你记的那次是「评估两种电机方案的成本和噪声」：当时结论推荐无刷电机方案——单价高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。那次评估只留下一件事没做完：向电机厂确认无刷方案的最小起订量（MOQ）。我在当前「汽车充气泵」范围内检索后没有找到任何跟进登记，也没有找到该评估的原始报告、供应商报价或噪声实测原始数据（企业检索、品类知识、证据库、平台/产品列表均无命中），所以以上结论与数字目前只来自你本人此前会话的历史记录，不能当作可引用的现行业务事实。其余近期记录（认证进度、样机测试计划、包装警示语）没有登记未完成项，但认证与测试计划本身仍处于进行中。",
+  "answer_blob": "{\"result\": {\"topic\": \"电机方案评估（历史记录回顾）\", \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:17:28.936081+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"无刷与有刷的单价差、寿命倍数、5 dB 超标值仅见于本人此前会话记录，未在品类业务对象中核对到原始出处\", \"MOQ 追问此后是否已与电机厂确认、结果如何，无法核实\", \"有刷方案噪声超标是否已有实测/第三方报告支撑，无法核实\", \"当前品类是否已有立项提案、变更单或外等登记把该评估结论落到业务对象上，未检索到相关记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"scope_note\": \"本次在 category=汽车充气泵 范围内检索企业资料、品类知识、参数、证据与产品/平台对象均为 0 命中，未检索到该次电机评估的业务对象或跟进记录。\", \"unfinished\": [{\"item\": \"向电机厂确认无刷方案的最小起订量（MOQ）\", \"origin\": \"该次评估当时记录\", \"follow_up_registered_in_platform\": false}, {\"item\": \"若要把该结论用于决策，需重新取得供应商报价与噪声实测原始记录\", \"origin\": \"本次核对发现当前范围无原始资料\"}], \"recommendation\": {\"as_of\": \"2026-11-15\", \"scheme\": \"无刷电机方案\", \"record_type\": \"historical_session_record\", \"source_run_id\": \"f8c60459-2cb4-4c9c-bb23-7338f53721d1\", \"rationale_as_recorded\": \"单价高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用\", \"is_current_business_fact\": false}, \"other_in_progress_as_recorded\": [{\"item\": \"认证：两项进行中、一项待送样\", \"origin\": \"历史会话记录\"}, {\"item\": \"样机测试计划：共八项\", \"origin\": \"历史会话记录\"}, {\"item\": \"包装警示语：一处措辞待改\", \"origin\": \"历史会话记录\"}]}, \"status\": \"partial\", \"summary\": \"你记的那次是「评估两种电机方案的成本和噪声」：当时结论推荐无刷电机方案——单价高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。那次评估只留下一件事没做完：向电机厂确认无刷方案的最小起订量（MOQ）。我在当前「汽车充气泵」范围内检索后没有找到任何跟进登记，也没有找到该评估的原始报告、供应商报价或噪声实测原始数据（企业检索、品类知识、证据库、平台/产品列表均无命中），所以以上结论与数字目前只来自你本人此前会话的历史记录，不能当作可引用的现行业务事实。其余近期记录（认证进度、样机测试计划、包装警示语）没有登记未完成项，但认证与测试计划本身仍处于进行中。\", \"questions\": [{\"id\": \"q1\", \"why\": \"MOQ 追问与原始资料补齐是这次评估仅有的两条尾巴，目前在系统里都没有登记。\", \"options\": [{\"label\": \"把「向电机厂确认无刷方案最小起订量」登记成一条待办并附上问题清单\", \"value\": \"登记 MOQ 追问待办\"}, {\"label\": \"基于当前可核数据重做一版有刷 vs 无刷的成本与噪声同口径对比\", \"value\": \"重做成本噪声对比\"}, {\"label\": \"先只核对原始资料（报价单、噪声实测/合规报告）在公司资料中是否存在\", \"value\": \"只做资料核对\"}, {\"label\": \"暂不处理，仅保留记录\", \"value\": \"暂不处理\"}], \"question\": \"下一步要我处理哪一项？\", \"depends_on\": [], \"recommended\": {\"value\": \"登记 MOQ 追问待办\", \"reason\": \"这是那次评估唯一有记录的未完成项，先把它落到待办上不会替你预设新的方案取舍。\"}, \"allow_free_text\": true}], \"unfinished\": [\"向电机厂确认无刷电机方案最小起订量（MOQ）——当前品类库无对应跟进登记\", \"取得有刷/无刷方案的供应商报价与噪声实测原始记录（当前范围未检索到）\"]}",
+  "unfinished": [
+    "向电机厂确认无刷电机方案最小起订量（MOQ）——当前品类库无对应跟进登记",
+    "取得有刷/无刷方案的供应商报价与噪声实测原始记录（当前范围未检索到）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:4",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r3",
+      "r4",
+      "r5"
+    ],
+    "catalog": [
+      "r3",
+      "r4",
+      "r5"
+    ],
+    "sessions_read": [
+      "r1",
+      "r3",
+      "r4",
+      "r5"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}
