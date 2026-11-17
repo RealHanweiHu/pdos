@@ -5818,3 +5818,37 @@ COVERED_COLUMNS.update({
         "tenant_id", "created_at",
     ),
 })
+
+# Memory M3 (P88; memory design §14.9): review items, revision candidates, rule settings and
+# the maintenance ledger hold references, versions, counts and the person's own words only;
+# they never adopt source material.
+COVERED_COLUMNS.update({
+    "memory_review_items": (
+        "source", "kind", "assignee_id", "raised_by", "run_id", "mark_id", "parent_id",
+        "scope_kind", "category_id", "scope_id", "object_kind", "object_id", "recorded_version",
+        "current_version", "note_kind", "note_id", "note_revision", "target_kind", "target_key",
+        "target_version", "reasons", "text", "proposed_kind", "event_id", "dedupe_key",
+        "request_key", "id", "tenant_id", "created_at",
+    ),
+    "memory_review_decisions": (
+        "item_id", "decided_by", "decision", "result", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+    "skill_revision_candidates": (
+        "target_kind", "target_key", "target_version", "tool", "reason", "window_start",
+        "window_end", "signal_count", "threshold", "sample_run_ids", "signal_sources",
+        "signals_sha256", "id", "tenant_id", "created_at",
+    ),
+    "skill_revision_decisions": (
+        "candidate_id", "decided_by", "decision", "note", "draft", "request_key",
+        "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "memory_system_rule_settings": (
+        "rule_key", "revision", "enabled", "set_by", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+    "memory_maintenance_ledger": (
+        "task", "subject_key", "watermark", "outcome", "detail", "id", "tenant_id",
+        "created_at",
+    ),
+})

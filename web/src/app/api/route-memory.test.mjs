@@ -98,3 +98,30 @@ test("M2a note, candidate and setting paths forward with fixed methods only", as
   assert.equal((await h.send(`v1/categories/${run}/memory/notes`)).status, 404);
   assert.equal(h.calls.length, forwarded);
 });
+
+test("M3 review items, skill revisions and system rules forward with fixed methods only", async () => {
+  const h = harness();
+  const items = "v1/personal/memory/review-items";
+  const decision = `${items}/${run}/decision`, routes = `${items}/${run}/routes`;
+  const revisions = "v1/personal/memory-policy/skill-revisions";
+  const rules = "v1/personal/memory-policy/system-rules";
+  assert.equal((await h.send(items)).status, 200);
+  assert.equal((await h.send(decision, "POST", "", { request_key: session, decision: "dismissed" })).status, 200);
+  assert.equal((await h.send(routes, "POST", "", { request_key: session, route: "personal" })).status, 200);
+  assert.equal((await h.send(revisions)).status, 200);
+  assert.equal((await h.send(`${revisions}/${run}/decision`, "POST", "", { request_key: session, decision: "adopt" })).status, 200);
+  assert.equal((await h.send(rules)).status, 200);
+  assert.equal((await h.send(`${rules}/distill_g0`, "POST", "", { request_key: session, enabled: false })).status, 200);
+  const forwarded = h.calls.length;
+  assert.equal((await h.send(items, "POST", "", {})).status, 405);
+  assert.equal((await h.send(decision)).status, 405);
+  assert.equal((await h.send(routes)).status, 405);
+  assert.equal((await h.send(revisions, "POST", "", {})).status, 405);
+  assert.equal((await h.send(rules, "POST", "", {})).status, 405);
+  assert.equal((await h.send(`${rules}/distill_g0`)).status, 405);
+  assert.equal((await h.send(items, "GET", `assignee_id=${session}`)).status, 422);
+  assert.equal((await h.send(`${items}/${run}/activate`, "POST", "", {})).status, 404);
+  assert.equal((await h.send(`${revisions}/${run}/activate`, "POST", "", {})).status, 404);
+  assert.equal((await h.send(`${rules}/Bad-Rule`, "POST", "", {})).status, 404);
+  assert.equal(h.calls.length, forwarded);
+});

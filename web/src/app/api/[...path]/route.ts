@@ -244,7 +244,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   // P85 personal memory: the owner's own switch, pin/hide, usage and the tenant idle limit.
   // P86 (M2a): the owner's notes, candidates and setting; the administrator's switches and counts.
   // P121 第 8 项: the owner's preview (GET) and deletion (POST) of one own Session.
-  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/(?:memory-mode|deletion)|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|settings|scope-options))$/i.test(forwardPath.join("/"));
+  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/(?:memory-mode|deletion)|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics|\/skill-revisions(?:\/[a-f0-9-]{36}\/decision)?|\/system-rules(?:\/[a-z][a-z0-9_]{2,39})?)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|review-items(?:\/[a-f0-9-]{36}\/(?:decision|routes))?|settings|scope-options))$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
   const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
@@ -318,7 +318,9 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
   } else if (memory) {
     const scopeOptions = pathname.endsWith("/memory/scope-options");
-    const methods = scopeOptions || /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|notes\/[a-f0-9-]{36}\/deletion|decision)$/.test(pathname) ? ["POST"] : ["GET", "POST"];
+    // M3: review items, skill revisions and the system-rule list are read with GET; decisions,
+    // routes and a rule switch are POST only.
+    const methods = scopeOptions || /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates|review-items|skill-revisions|system-rules)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|notes\/[a-f0-9-]{36}\/deletion|decision|routes|system-rules\/[a-z][a-z0-9_]{2,39})$/.test(pathname) ? ["POST"] : ["GET", "POST"];
     if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "记忆入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
     if (scopeOptions) {
       // D301: products or proposals the owner can pick as a note's scope.

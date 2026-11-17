@@ -60,7 +60,7 @@ def mark(session, ctx, run_id, data):
 
 
 def record_correction(session, ctx, run, feedback):
-    """Append the owner's run feedback to the episode (§14.9 纠正分流, destinations only)."""
+    """Append the owner's run feedback to the episode, then route it (§14.9 纠正分流)."""
     episode = session.scalar(select(MemoryEpisode).where(MemoryEpisode.run_id == run.id))
     if episode is None:
         return
@@ -72,14 +72,19 @@ def record_correction(session, ctx, run, feedback):
         MemoryEpisodeMark.owner_id == ctx.requester_id, MemoryEpisodeMark.request_key == key))
     if existing is not None:
         return
-    session.add(MemoryEpisodeMark(
+    mark = MemoryEpisodeMark(
         tenant_id=ctx.tenant_id, owner_id=episode.owner_id, session_id=episode.session_id,
         episode_id=episode.id, kind="correction",
         body={"categories": categories, "comment": feedback.get("comment", "")[:2000],
               "destination": destination, "status": "recorded"},
         request_key=key, request_sha256=digest({"episode_id": episode.id, **feedback}),
-    ))
+    )
+    session.add(mark)
     session.flush()
+    # M3 纠正分流 (§14.9): the fixed-rule routes; the owner may add personal/team ones.
+    from .corrections import route_feedback
+
+    route_feedback(session, ctx, run, mark, feedback)
 
 
 def usage(session, ctx, run):
@@ -301,5 +306,10 @@ def router(*, transaction, context_dependency):
         with transaction(ctx) as session:
             _human(session, ctx, None)
             return policy.change(session, ctx, data)
+
+    # M3 沉淀与改进: review items, correction routes, revision candidates, system rules.
+    from .m3_api import register as register_m3
+
+    register_m3(result, transaction, context_dependency)
 
     return result
