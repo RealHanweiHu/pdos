@@ -1,0 +1,283 @@
+{
+  "run": [
+    {
+      "id": "684b366c-dc9c-417e-9a62-272a42fb990f",
+      "session_id": "07d4bed3-49d5-49ae-bf5b-f79c4eeb9bf8",
+      "category_id": "e6152e7b-c4d7-4795-ba86-151d8569cfa5",
+      "product_id": null,
+      "project_id": null,
+      "proposal_id": null,
+      "requester_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "writer_id": "6d94fc7c-1020-4c64-be23-d10d22e84911",
+      "state": "completed",
+      "error_code": null,
+      "data_categories": [
+        "internal"
+      ],
+      "used_tokens": 70073,
+      "held_tokens": 0,
+      "execution_engine": "temporal-langgraph/v1",
+      "created_at": "2026-11-17 02:44:16.411327+00:00"
+    }
+  ],
+  "tool_and_model_calls": [
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": true,
+      "cost_state": "actual",
+      "provider": "minimax",
+      "cost_charged_micro_usd": 7034,
+      "actual_input_tokens": 21927,
+      "actual_output_tokens": 159,
+      "receipt_id": null,
+      "binding_kind": "model",
+      "returned_category_id": null
+    },
+    {
+      "tool": "category.read",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": false,
+      "cost_state": "unmetered",
+      "provider": null,
+      "cost_charged_micro_usd": 0,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "receipt_id": null,
+      "binding_kind": "read",
+      "returned_category_id": "e6152e7b-c4d7-4795-ba86-151d8569cfa5"
+    },
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": true,
+      "cost_state": "actual",
+      "provider": "minimax",
+      "cost_charged_micro_usd": 2057,
+      "actual_input_tokens": 22395,
+      "actual_output_tokens": 425,
+      "receipt_id": null,
+      "binding_kind": "model",
+      "returned_category_id": null
+    },
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": true,
+      "cost_state": "actual",
+      "provider": "minimax",
+      "cost_charged_micro_usd": 3989,
+      "actual_input_tokens": 23347,
+      "actual_output_tokens": 1820,
+      "receipt_id": null,
+      "binding_kind": "model",
+      "returned_category_id": null
+    }
+  ],
+  "event_types": [
+    {
+      "sequence": 1,
+      "type": "accepted",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 2,
+      "type": "skill_loaded",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 3,
+      "type": "context_projected",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 4,
+      "type": "model_started",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 5,
+      "type": "egress_checked",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 6,
+      "type": "context_observed",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 7,
+      "type": "tool_started",
+      "kind": null,
+      "code": null,
+      "tool": "category.read"
+    },
+    {
+      "sequence": 8,
+      "type": "tool_finished",
+      "kind": null,
+      "code": null,
+      "tool": "category.read"
+    },
+    {
+      "sequence": 9,
+      "type": "model_started",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 10,
+      "type": "egress_checked",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 11,
+      "type": "context_observed",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 12,
+      "type": "tool_started",
+      "kind": null,
+      "code": null,
+      "tool": "proposal.create"
+    },
+    {
+      "sequence": 13,
+      "type": "domain_candidate",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 14,
+      "type": "tool_finished",
+      "kind": null,
+      "code": null,
+      "tool": "proposal.create"
+    },
+    {
+      "sequence": 15,
+      "type": "model_started",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 16,
+      "type": "egress_checked",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 17,
+      "type": "context_observed",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 18,
+      "type": "run_state",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 19,
+      "type": "finished",
+      "kind": null,
+      "code": null,
+      "tool": null
+    }
+  ],
+  "matching_proposals": [
+    {
+      "id": "150cb62f-2acc-4bb7-b401-f8e76273711e",
+      "title": "QA-02 小Pai 车载补气泵 mwk39c6o",
+      "brief": "车主在途中胎压不足时常常找不到就近的补气点，随车常备一台补气泵就能自己应急处理，省下等待救援的时间与费用，这是这个品类最实在的价值点。拟验证连续三次补气与外壳温升两项，确认设备在连续使用下能否稳定工作、外壳是否过热，目前暂无实测数据，需要先做样机验证才有结论。路径上有两种选择：一是做便携原型小批量验证，把连续三次补气与外壳温升摸清楚之后再决定量产与否；二是暂缓，先不投原型，等实测依据或需求信号更明确时再启动。",
+      "status": "draft",
+      "visibility": "private",
+      "revision": 1,
+      "owner_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "created_by_run_id": "684b366c-dc9c-417e-9a62-272a42fb990f"
+    }
+  ],
+  "confirmation_and_receipt": [
+    {
+      "id": "1dca5481-324b-4475-b2ea-711f3fd1da80",
+      "actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "requester_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "operation": "proposal.create",
+      "subject_id": "150cb62f-2acc-4bb7-b401-f8e76273711e",
+      "subject_revision": 1,
+      "agent_run_id": "684b366c-dc9c-417e-9a62-272a42fb990f",
+      "confirmation_id": "a3353da2-1edf-47ff-8c64-2ec50c85e762",
+      "confirmation_actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "consumed": true
+    }
+  ],
+  "rationale": [],
+  "proposal_receipt_count": [
+    {
+      "count": 1
+    }
+  ],
+  "skill_enablement": [
+    {
+      "skill_key": "proposal_drafting",
+      "enabled": true,
+      "has_t0_qualification": false
+    }
+  ],
+  "workflow": {
+    "workflow_id": "pdos-next:xiaopai:751af7f5-2e5a-4882-bd44-b13517692c2d:684b366c-dc9c-417e-9a62-272a42fb990f",
+    "workflow_type": "XiaopaiGraphWork",
+    "status": "COMPLETED",
+    "namespace": "pdos-qa02-acceptance",
+    "activity_names": [
+      "open_xiaopai_graph_run",
+      "xiaopai.prepare_context",
+      "xiaopai.model",
+      "xiaopai.tools",
+      "xiaopai.model",
+      "xiaopai.tools",
+      "xiaopai.model",
+      "xiaopai.verify",
+      "xiaopai.finalize"
+    ]
+  },
+  "configured_setup_receipts": {
+    "ai.budget.configure": "fbdf6c16-a37e-4b90-96a5-e0082b3fbd40",
+    "ai.skill.enable": "940629ed-2bfc-4165-8585-26d1b5eb7f83",
+    "model.configuration.save": "4e71bc19-06c7-4e62-a69f-3c66c0a5d77b",
+    "ai.budget.configure.single-draft-retry": "c39c4c71-e44c-4e66-bd2c-c4b65e902638"
+  },
+  "route": {
+    "provider": "minimax",
+    "model": "MiniMax-M3",
+    "credentials": "locally bound"
+  }
+}

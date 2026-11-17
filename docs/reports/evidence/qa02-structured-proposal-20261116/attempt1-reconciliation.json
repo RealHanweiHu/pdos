@@ -1,0 +1,17 @@
+{
+  "runId": "ca3e27b6-145f-4082-8d07-ea551b9cfdba",
+  "before": {
+    "counts": {
+      "calls": 7,
+      "pending_calls": 1,
+      "business_receipts": 0
+    },
+    "required": true,
+    "canFinalize": true
+  },
+  "after": {
+    "status": "failed",
+    "mode": "administrator",
+    "businessReceiptCount": 0
+  }
+}

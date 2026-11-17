@@ -1,0 +1,15 @@
+{
+  "run_id": "eba5e66b-db25-4a3d-8ede-87756568f5f5",
+  "candidate_event_id": "cf4e0017-54e9-4e16-9b9a-577951daf5a8",
+  "operation": "proposal.create",
+  "preview_status": 409,
+  "code": "SOURCE_UNAVAILABLE",
+  "message": "所选知识固定版本不可读。",
+  "rejected_reference": {
+    "type": "knowledge",
+    "id": "e6152e7b-c4d7-4795-ba86-151d8569cfa5",
+    "version": 1,
+    "supplied_as": ["source_refs", "context_refs"],
+    "actual_object_type": "category"
+  }
+}

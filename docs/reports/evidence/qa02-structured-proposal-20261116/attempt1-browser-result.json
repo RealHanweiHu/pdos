@@ -1,0 +1,24 @@
+{
+  "title": "QA-02 结构化 车载补气泵 mwk4cmx3",
+  "categoryId": "e6152e7b-c4d7-4795-ba86-151d8569cfa5",
+  "startedAt": "2026-11-17T03:14:36.423Z",
+  "requesterId": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+  "start": {
+    "status": 202
+  },
+  "sent": {
+    "categoryPath": "/api/v1/categories/e6152e7b-c4d7-4795-ba86-151d8569cfa5/agent-runs",
+    "requestedSkills": [
+      "proposal_drafting"
+    ]
+  },
+  "runId": "ca3e27b6-145f-4082-8d07-ea551b9cfdba",
+  "sessionId": "a4e7c84a-abca-4de3-993c-51edb490126e",
+  "startStatus": "queued",
+  "run": {
+    "status": "waiting_input",
+    "errorCode": "EXTERNAL_OUTCOME_UNKNOWN"
+  },
+  "beforeConfirmCount": 0,
+  "candidates": []
+}

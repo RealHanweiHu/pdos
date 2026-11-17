@@ -22,6 +22,7 @@ from pdos_next.providers.agent_wire import (
     FINISH_TOOL,
     FUNCTION_CODECS,
     MINIMAX_CODEC,
+    business_arguments,
     business_name,
     finish_tool,
     private_continuation,
@@ -198,11 +199,12 @@ def parse_turn(body, route, request_id=None):
                     ToolCall(id=call["id"], name=FINISH_TOOL, arguments=arguments)
                     native_output = arguments
                     continue
+                name = business_name(call["function"]["name"])
                 calls.append(
                     ToolCall(
                         id=call["id"],
-                        name=business_name(call["function"]["name"]),
-                        arguments=arguments,
+                        name=name,
+                        arguments=business_arguments(route, name, arguments),
                     )
                 )
             if (

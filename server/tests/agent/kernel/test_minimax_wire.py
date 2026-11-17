@@ -5,8 +5,10 @@ from dataclasses import replace
 
 import httpx
 import pytest
+from pydantic import ValidationError
 
 from pdos_next.agent.kernel.qualification_binding import fingerprint, model_identity
+from pdos_next.domain.categories.preproject.schemas import ProposalCreate
 from pdos_next.errors import DomainError
 from pdos_next.providers.agent_client import (
     AgentProviderClient,
@@ -92,6 +94,86 @@ def test_business_call_preserves_native_thinking_and_full_arguments_without_publ
     assert body["messages"][2] == value["choices"][0]["message"]
     assert body["messages"][3] == history[2]
     assert "provider_continuation" not in str(body)
+
+
+def proposal_reply(groups):
+    value = reply("openai-compatible", tools=True)
+    message = value["choices"][0]["message"]
+    message["tool_calls"][0]["function"] = {
+        "name": tool_name("proposal.create"),
+        "arguments": json.dumps({
+            "title": "合成提案", "entry_kind": "new_product", "groups": groups,
+        }, ensure_ascii=False),
+    }
+    return value, message
+
+
+@pytest.mark.parametrize("layout", ["single", "many", "json", "native"])
+def test_minimax_proposal_arrays_reach_domain_validation_and_replay_original_wire(layout):
+    section = {
+        "kind": "section",
+        "content": {"key": "worth_it", "text": "合成应急补气"},
+        "source_refs": "",
+    }
+    option = {"kind": "option", "content": {"name": "暂缓", "kind": "do_nothing"}}
+    if layout == "single":
+        groups = {"items": {"item": section}, "questions": ""}
+    elif layout == "many":
+        groups = {"items": {"item": [section, option]}}
+    elif layout == "json":
+        groups = json.dumps({"items": json.dumps([section]), "questions": "[]"})
+    else:
+        groups = {"items": [{**section, "source_refs": []}]}
+    value, message = proposal_reply(groups)
+    configured = minimax()
+    turn = parse_turn(value, configured)
+    parsed = ProposalCreate.model_validate(turn.calls[0].arguments)
+    assert [item.kind for item in parsed.groups.items] == (
+        ["section", "option"] if layout == "many" else ["section"]
+    )
+    assert parsed.groups.items[0].content == section["content"]
+    assert not parsed.groups.items[0].source_refs
+
+    history = [assistant(turn)]
+    call = history[0]["tool_calls"][0]
+    arguments = call["arguments"]
+    native_arguments = json.loads(message["tool_calls"][0]["function"]["arguments"])
+    for stored_arguments in (arguments, native_arguments):
+        call["arguments"] = stored_arguments
+        body = request_body(configured, "fixed", history, TOOLS, SCHEMA, False)
+        assert body["messages"][1] == message
+    call["arguments"] = {**arguments, "title": "changed"}
+    with pytest.raises(DomainError, match="原模型协议续接"):
+        request_body(configured, "fixed", history, TOOLS, SCHEMA, False)
+
+
+@pytest.mark.parametrize(("groups", "path"), [
+    ("", ("groups",)),
+    (
+        {"items": {"kind": "section", "content": {"key": "worth_it", "text": "合成"}}},
+        ("groups", "items"),
+    ),
+    ({"items": {"item": [], "unknown": 1}}, ("groups", "items")),
+    ({"items": {"item": {"kind": "section", "content": {"key": "unknown", "text": "合成"}}}},
+     ("groups", "items", 0)),
+    ({"items": {"item": {"kind": "question", "content": {"question": "缺负责人和期限"}}}},
+     ("groups", "items", 0, "owner_id")),
+])
+def test_minimax_proposal_still_rejects_invalid_arguments(groups, path):
+    value, _ = proposal_reply(groups)
+    turn = parse_turn(value, minimax())
+    with pytest.raises(ValidationError) as error:
+        ProposalCreate.model_validate(turn.calls[0].arguments)
+    assert path in [item["loc"] for item in error.value.errors()]
+
+
+def test_proposal_array_envelope_is_scoped_to_minimax_m3_and_proposal_create():
+    groups = {"items": {"item": []}}
+    value, message = proposal_reply(groups)
+    for configured in (route("openai-compatible"), replace(minimax(), model="MiniMax-M3.1-Flash")):
+        assert parse_turn(value, configured).calls[0].arguments["groups"] == groups
+    message["tool_calls"][0]["function"]["name"] = tool_name("proposal.item.patch")
+    assert parse_turn(value, minimax()).calls[0].arguments["groups"] == groups
 
 
 @pytest.mark.parametrize("inline", [False, True])

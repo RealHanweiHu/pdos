@@ -1,0 +1,47 @@
+{
+  "title": "QA-02 小Pai 车载补气泵 mwk39c6o",
+  "categoryId": "e6152e7b-c4d7-4795-ba86-151d8569cfa5",
+  "startedAt": "2026-11-17T02:44:02.928Z",
+  "requesterId": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+  "start": {
+    "status": 202
+  },
+  "sent": {
+    "categoryPath": "/api/v1/categories/e6152e7b-c4d7-4795-ba86-151d8569cfa5/agent-runs",
+    "requestedSkills": [
+      "proposal_drafting"
+    ]
+  },
+  "runId": "684b366c-dc9c-417e-9a62-272a42fb990f",
+  "sessionId": "07d4bed3-49d5-49ae-bf5b-f79c4eeb9bf8",
+  "startStatus": "queued",
+  "run": {
+    "status": "completed",
+    "errorCode": null,
+    "summary": "已按四个参数生成私有自主新品提案候选（title/entry_kind/target_kind/brief），未保存、待你确认。\n\n- 品类：轮胎充气泵（合成走查）· e6152e7b-c4d7-4795-ba86-151d8569cfa5，revision 1（合成数据，仅供走查）。\n- 候选标题：QA-02 小Pai 车载补气泵 mwk39c6o；entry_kind=new_product，target_kind=new_product。\n- brief 为三句草稿：①车主应急补气的价值（随车常备、省等待救援的时间与费用）；②拟验证连续三次补气与外壳温升，并注明暂无实测；③两条路径——便携原型小批量验证 vs 暂缓。\n- groups 留空，未写条目、未提问题、未提交 G0、未加载子技能、未查其他资料。\n- 状态：state=candidate，requires_human=true（T1，一次确认后才会真正创建；proposal_id 尚未分配）。\n\n未知/待办：连续三次补气与外壳温升均无实测依据，需你确认候选后再决定是否补条目与验证安排。"
+  },
+  "beforeConfirmCount": 0,
+  "candidates": [
+    {
+      "eventId": "788b6ea1-03b7-41c5-b5ec-a6d5c5f5c831",
+      "title": "QA-02 小Pai 车载补气泵 mwk39c6o"
+    }
+  ],
+  "candidateBrief": "车主在途中胎压不足时常常找不到就近的补气点，随车常备一台补气泵就能自己应急处理，省下等待救援的时间与费用，这是这个品类最实在的价值点。拟验证连续三次补气与外壳温升两项，确认设备在连续使用下能否稳定工作、外壳是否过热，目前暂无实测数据，需要先做样机验证才有结论。路径上有两种选择：一是做便携原型小批量验证，把连续三次补气与外壳温升摸清楚之后再决定量产与否；二是暂缓，先不投原型，等实测依据或需求信号更明确时再启动。",
+  "candidateEventId": "788b6ea1-03b7-41c5-b5ec-a6d5c5f5c831",
+  "previewStatus": 200,
+  "beforeFinalConfirmationCount": 0,
+  "confirmStatus": 200,
+  "receiptId": "1dca5481-324b-4475-b2ea-711f3fd1da80",
+  "proposalId": "150cb62f-2acc-4bb7-b401-f8e76273711e",
+  "afterConfirmCount": 1,
+  "proposalUrl": "http://127.0.0.1:57859/categories/e6152e7b-c4d7-4795-ba86-151d8569cfa5/proposals/150cb62f-2acc-4bb7-b401-f8e76273711e",
+  "afterRefresh": {
+    "status": "draft",
+    "revision": 1,
+    "visibility": "private",
+    "candidateState": "adopted",
+    "receiptId": "1dca5481-324b-4475-b2ea-711f3fd1da80"
+  },
+  "completedAt": "2026-11-17T02:49:02.438Z"
+}

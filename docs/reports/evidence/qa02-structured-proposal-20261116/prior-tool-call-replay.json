@@ -1,0 +1,289 @@
+{
+  "run_id": "df27dbe6-96f6-4734-907a-41f6b69dd9b4",
+  "samples": [
+    {
+      "wire": {
+        "items": {
+          "item": {
+            "content": {
+              "key": "text (8)",
+              "text": "text (46)"
+            },
+            "kind": "text (7)"
+          }
+        },
+        "questions": "empty"
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        },
+        {
+          "path": [
+            "groups",
+            "questions"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": []
+    },
+    {
+      "wire": {
+        "items": {
+          "item": [
+            {
+              "content": {
+                "key": "str",
+                "text": "str"
+              },
+              "kind": "text (7)"
+            },
+            {
+              "content": {
+                "kind": "str",
+                "name": "str",
+                "summary": "str"
+              },
+              "kind": "text (6)"
+            },
+            {
+              "content": {
+                "kind": "str",
+                "name": "str",
+                "summary": "str"
+              },
+              "kind": "text (6)"
+            }
+          ]
+        }
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": []
+    },
+    {
+      "wire": {
+        "items": {
+          "item": [
+            {
+              "content": {
+                "key": "str",
+                "text": "str"
+              },
+              "kind": "text (7)"
+            },
+            {
+              "content": {
+                "kind": "str",
+                "name": "str"
+              },
+              "kind": "text (6)"
+            },
+            {
+              "content": {
+                "kind": "str",
+                "name": "str"
+              },
+              "kind": "text (6)"
+            }
+          ]
+        }
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": []
+    },
+    {
+      "wire": {
+        "items": {
+          "item": {
+            "content": {
+              "key": "text (8)",
+              "text": "text (46)"
+            },
+            "kind": "text (7)"
+          }
+        }
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": []
+    },
+    {
+      "wire": {
+        "items": {
+          "item": {
+            "content": {
+              "key": "text (8)",
+              "text": "text (46)"
+            },
+            "item_id": "empty",
+            "kind": "text (7)"
+          }
+        }
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": [
+        {
+          "path": [
+            "groups",
+            "items",
+            0,
+            "item_id"
+          ],
+          "type": "uuid_parsing"
+        }
+      ]
+    },
+    {
+      "wire": "empty",
+      "raw_validation": [
+        {
+          "path": [
+            "groups"
+          ],
+          "type": "model_type"
+        }
+      ],
+      "decoded_validation": [
+        {
+          "path": [
+            "groups"
+          ],
+          "type": "model_type"
+        }
+      ]
+    },
+    {
+      "wire": {
+        "items": {
+          "item": {
+            "content": {
+              "key": "text (8)",
+              "text": "text (46)"
+            },
+            "kind": "text (7)",
+            "source_refs": "empty"
+          }
+        }
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": []
+    },
+    {
+      "wire": {
+        "items": {
+          "item": [
+            {
+              "content": {
+                "key": "str",
+                "text": "str"
+              },
+              "item_id": "text (4)",
+              "kind": "text (7)",
+              "source_refs": "empty"
+            },
+            {
+              "content": {
+                "kind": "str",
+                "name": "str"
+              },
+              "item_id": "text (4)",
+              "kind": "text (6)",
+              "source_refs": "empty"
+            },
+            {
+              "content": {
+                "kind": "str",
+                "name": "str"
+              },
+              "item_id": "text (4)",
+              "kind": "text (6)",
+              "source_refs": "empty"
+            }
+          ]
+        }
+      },
+      "raw_validation": [
+        {
+          "path": [
+            "groups",
+            "items"
+          ],
+          "type": "list_type"
+        }
+      ],
+      "decoded_validation": [
+        {
+          "path": [
+            "groups",
+            "items",
+            0,
+            "item_id"
+          ],
+          "type": "uuid_parsing"
+        },
+        {
+          "path": [
+            "groups",
+            "items",
+            1,
+            "item_id"
+          ],
+          "type": "uuid_parsing"
+        },
+        {
+          "path": [
+            "groups",
+            "items",
+            2,
+            "item_id"
+          ],
+          "type": "uuid_parsing"
+        }
+      ]
+    }
+  ]
+}

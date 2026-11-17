@@ -44,6 +44,59 @@ def business_name(name):
     return re.sub(r"_([01])", lambda match: "." if match[1] == "0" else "_", name)
 
 
+def business_arguments(route, name, arguments):
+    """Read MiniMax-M3's explicit proposal array envelopes before domain validation."""
+    if (
+        route.agent_response_codec != MINIMAX_CODEC
+        or route.model != "MiniMax-M3"
+        or name != "proposal.create"
+        or not isinstance(arguments, dict)
+    ):
+        return arguments
+
+    groups = _json_container(arguments.get("groups"), dict)
+    if not isinstance(groups, dict):
+        return arguments
+
+    groups = dict(groups)
+    if "items" in groups:
+        items = _proposal_list(groups["items"])
+        if isinstance(items, list):
+            items = [
+                {**item, "source_refs": _proposal_list(item["source_refs"], empty_string=True)}
+                if isinstance(item, dict) and "source_refs" in item else item
+                for item in items
+            ]
+        groups["items"] = items
+    if "questions" in groups:
+        groups["questions"] = _proposal_list(groups["questions"], empty_string=True)
+    return {**arguments, "groups": groups}
+
+
+def _json_container(value, expected):
+    if isinstance(value, str):
+        try:
+            decoded = json_value(value)
+        except (ValueError, RecursionError):
+            return value
+        if isinstance(decoded, expected):
+            return decoded
+    return value
+
+
+def _proposal_list(value, *, empty_string=False):
+    # The envelope names the array element. A bare object is still invalid.
+    if isinstance(value, dict) and value.keys() == {"item"}:
+        item = value["item"]
+        if isinstance(item, dict):
+            return [item]
+        if isinstance(item, list):
+            return item
+    if empty_string and value == "":
+        return []
+    return _json_container(value, list)
+
+
 def finish_tool(schema):
     return {
         "type": "function",
@@ -129,7 +182,15 @@ def restore_assistant(route, message):
                         "arguments": json_value(call["function"]["arguments"]),
                     }
                 )
-        if normal != message.get("tool_calls", []) or (
+        saved_calls = message.get("tool_calls", [])
+        # Old histories recorded the raw arguments. New histories record the
+        # decoded arguments, but still send MiniMax its original native message.
+        if normal != saved_calls and [
+            {**call, "arguments": business_arguments(route, call["name"], call["arguments"])}
+            for call in normal
+        ] != saved_calls:
+            raise ValueError
+        if (
             finish_ids and (normal or len(finish_ids) != 1 or len(native["tool_calls"]) != 1)
         ):
             raise ValueError

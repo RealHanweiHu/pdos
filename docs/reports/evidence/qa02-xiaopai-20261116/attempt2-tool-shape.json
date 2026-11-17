@@ -1,0 +1,165 @@
+{
+  "expected": "groups.items is an array if present",
+  "observed": [
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "str",
+      "groups_items": "NoneType",
+      "items_object_keys": []
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    },
+    {
+      "groups": "dict",
+      "groups_items": "dict",
+      "items_object_keys": [
+        "item"
+      ]
+    }
+  ],
+  "proposal_tool_events": {
+    "tool_started": 9
+  },
+  "outcome": {
+    "runId": "df27dbe6-96f6-4734-907a-41f6b69dd9b4",
+    "status": "cancelled",
+    "errorCode": null,
+    "matchingProposals": 0,
+    "candidates": 0
+  },
+  "dto_validation": [
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups"
+        ],
+        "type": "model_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      },
+      {
+        "field": [
+          "groups",
+          "questions"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ],
+    [
+      {
+        "field": [
+          "groups",
+          "items"
+        ],
+        "type": "list_type"
+      }
+    ]
+  ]
+}

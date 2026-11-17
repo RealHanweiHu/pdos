@@ -1,0 +1,24 @@
+{
+  "title": "QA-02 小Pai 车载补气泵 mwk2vd59",
+  "categoryId": "e6152e7b-c4d7-4795-ba86-151d8569cfa5",
+  "startedAt": "2026-11-17T02:33:10.989Z",
+  "requesterId": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+  "start": {
+    "status": 202
+  },
+  "sent": {
+    "categoryPath": "/api/v1/categories/e6152e7b-c4d7-4795-ba86-151d8569cfa5/agent-runs",
+    "requestedSkills": [
+      "proposal_drafting"
+    ]
+  },
+  "runId": "c226e89f-a7e7-4313-9f1f-c03246ffb44e",
+  "sessionId": "53b0c9fb-0854-4e5d-8c55-34e00b3294ab",
+  "startStatus": "queued",
+  "run": {
+    "status": "waiting_input",
+    "errorCode": "EXTERNAL_OUTCOME_UNKNOWN"
+  },
+  "beforeConfirmCount": 0,
+  "candidates": []
+}

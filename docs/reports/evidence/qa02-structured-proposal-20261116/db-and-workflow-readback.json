@@ -1,0 +1,319 @@
+{
+  "run": [
+    {
+      "id": "dbbe2785-ef25-4323-a0c8-a49767565d99",
+      "session_id": "6e0e350e-d5da-4117-a5c1-5081d3a8f586",
+      "category_id": "e6152e7b-c4d7-4795-ba86-151d8569cfa5",
+      "product_id": null,
+      "project_id": null,
+      "proposal_id": null,
+      "requester_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "writer_id": "6d94fc7c-1020-4c64-be23-d10d22e84911",
+      "state": "completed",
+      "error_code": null,
+      "data_categories": [
+        "internal"
+      ],
+      "used_tokens": 71854,
+      "held_tokens": 0,
+      "execution_engine": "temporal-langgraph/v1",
+      "created_at": "2026-11-17 03:22:10.710766+00:00"
+    }
+  ],
+  "tool_and_model_calls": [
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": true,
+      "cost_state": "actual",
+      "provider": "minimax",
+      "cost_charged_micro_usd": 7265,
+      "actual_input_tokens": 22315,
+      "actual_output_tokens": 235,
+      "receipt_id": null,
+      "binding_kind": "model",
+      "returned_category_id": null
+    },
+    {
+      "tool": "category.read",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": false,
+      "cost_state": "unmetered",
+      "provider": null,
+      "cost_charged_micro_usd": 0,
+      "actual_input_tokens": 0,
+      "actual_output_tokens": 0,
+      "receipt_id": null,
+      "binding_kind": "read",
+      "returned_category_id": "e6152e7b-c4d7-4795-ba86-151d8569cfa5"
+    },
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": true,
+      "cost_state": "actual",
+      "provider": "minimax",
+      "cost_charged_micro_usd": 2831,
+      "actual_input_tokens": 22857,
+      "actual_output_tokens": 995,
+      "receipt_id": null,
+      "binding_kind": "model",
+      "returned_category_id": null
+    },
+    {
+      "tool": "model",
+      "state": "completed",
+      "error_code": null,
+      "provider_request": true,
+      "cost_state": "actual",
+      "provider": "minimax",
+      "cost_charged_micro_usd": 3094,
+      "actual_input_tokens": 24574,
+      "actual_output_tokens": 878,
+      "receipt_id": null,
+      "binding_kind": "model",
+      "returned_category_id": null
+    }
+  ],
+  "event_types": [
+    {
+      "sequence": 1,
+      "type": "accepted",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 2,
+      "type": "skill_loaded",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 3,
+      "type": "context_projected",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 4,
+      "type": "model_started",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 5,
+      "type": "egress_checked",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 6,
+      "type": "context_observed",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 7,
+      "type": "tool_started",
+      "kind": null,
+      "code": null,
+      "tool": "category.read"
+    },
+    {
+      "sequence": 8,
+      "type": "tool_finished",
+      "kind": null,
+      "code": null,
+      "tool": "category.read"
+    },
+    {
+      "sequence": 9,
+      "type": "model_started",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 10,
+      "type": "egress_checked",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 11,
+      "type": "context_observed",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 12,
+      "type": "tool_started",
+      "kind": null,
+      "code": null,
+      "tool": "proposal.create"
+    },
+    {
+      "sequence": 13,
+      "type": "domain_candidate",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 14,
+      "type": "tool_finished",
+      "kind": null,
+      "code": null,
+      "tool": "proposal.create"
+    },
+    {
+      "sequence": 15,
+      "type": "model_started",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 16,
+      "type": "egress_checked",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 17,
+      "type": "context_observed",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 18,
+      "type": "run_state",
+      "kind": null,
+      "code": null,
+      "tool": null
+    },
+    {
+      "sequence": 19,
+      "type": "finished",
+      "kind": null,
+      "code": null,
+      "tool": null
+    }
+  ],
+  "matching_proposals": [
+    {
+      "id": "c1c790f5-795f-486a-bdfd-9d36ae23f6a6",
+      "title": "QA-02 结构化 车载补气泵 mwk4m6yg",
+      "brief": "面向车主的便携车载补气泵自主新品提案草稿：聚焦夜间应急补气场景，本轮只登记「为什么值得做」章节，其余章节待后续补齐。",
+      "status": "draft",
+      "visibility": "private",
+      "revision": 1,
+      "owner_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "created_by_run_id": "dbbe2785-ef25-4323-a0c8-a49767565d99",
+      "source_refs": [],
+      "context_refs": []
+    }
+  ],
+  "confirmation_and_receipt": [
+    {
+      "id": "4050a4dc-4189-4c8b-b87b-b8855ed6c4d4",
+      "actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "requester_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "operation": "proposal.create",
+      "subject_id": "c1c790f5-795f-486a-bdfd-9d36ae23f6a6",
+      "subject_revision": 1,
+      "agent_run_id": "dbbe2785-ef25-4323-a0c8-a49767565d99",
+      "confirmation_id": "16ad38bd-2c64-4ea5-9bc0-ca3e29b6cfa9",
+      "confirmation_actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "consumed": true
+    }
+  ],
+  "structured_items": [
+    {
+      "item_id": "a79eb8a3-0fc8-43b6-9c35-7712e7724f86",
+      "version": 1,
+      "kind": "section",
+      "origin": "ai_draft",
+      "writer_id": "6d94fc7c-1020-4c64-be23-d10d22e84911",
+      "confirmed_by": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "run_id": "dbbe2785-ef25-4323-a0c8-a49767565d99",
+      "receipt_id": "4050a4dc-4189-4c8b-b87b-b8855ed6c4d4",
+      "content": {
+        "key": "worth_it",
+        "text": "在合成案例中，车主夜间在路边或自家车库遇到胎压不足时，手边通常没有可用气源，附近的补气点也已关门或距离较远，最终往往要等救援或换备胎，行程被迫中断。一个能常放在车里的车载补气泵可以就地解决这件事：车主自己用十几分钟把胎压恢复到能安全行驶的水平，不必在深夜滞留、叫拖车或冒险低速行驶，价值体现在少一次滞留、少一次拖车、少一次夜间在路上的不安全等待。本节按本次合成需求用自己的话起草，尚未接入任何实测或市场数据，因此它描述的是待验证的价值假设，不是已确认的性能主张。计划中的验证有两项：一是连续三次补气，即在同一台样机上连续完成三次补气作业，确认第三次仍能补到目标胎压，不因电芯消耗、电机发热或管路余气而失效；二是外壳温升，即在连续补气过程中测量外壳表面温度，确认其处于可接受的手持与车内存放温度范围。这两项当前均暂无实测结果，结论须待样机验证后回填；在此之前，本节只用于说明立项理由的方向，不作为任何对外的性能宣称依据。",
+        "title": "为什么值得做"
+      },
+      "source_refs": []
+    }
+  ],
+  "proposal_receipt_count": [
+    {
+      "count": 1
+    }
+  ],
+  "prior_attempt_writes": [
+    {
+      "proposals": 0,
+      "receipts": 0
+    }
+  ],
+  "skill_enablement": [
+    {
+      "skill_key": "proposal_drafting",
+      "enabled": true,
+      "has_t0_qualification": false
+    }
+  ],
+  "workflow": {
+    "workflow_id": "pdos-next:xiaopai:751af7f5-2e5a-4882-bd44-b13517692c2d:dbbe2785-ef25-4323-a0c8-a49767565d99",
+    "workflow_type": "XiaopaiGraphWork",
+    "status": "COMPLETED",
+    "namespace": "pdos-qa02-acceptance",
+    "activity_names": [
+      "open_xiaopai_graph_run",
+      "xiaopai.prepare_context",
+      "xiaopai.model",
+      "xiaopai.tools",
+      "xiaopai.model",
+      "xiaopai.tools",
+      "xiaopai.model",
+      "xiaopai.verify",
+      "xiaopai.finalize"
+    ]
+  },
+  "native_argument_shapes": [
+    {
+      "model_call_id": "bd25bff9-baf2-483a-80ed-f5432b9fa69c",
+      "groups": "dict",
+      "items": "list",
+      "item_envelope": false,
+      "inner_type": "list",
+      "inner_count": 1
+    }
+  ],
+  "configured_setup_receipts": {
+    "ai.budget.configure": "fbdf6c16-a37e-4b90-96a5-e0082b3fbd40",
+    "ai.skill.enable": "940629ed-2bfc-4165-8585-26d1b5eb7f83",
+    "model.configuration.save": "4e71bc19-06c7-4e62-a69f-3c66c0a5d77b",
+    "ai.budget.configure.single-draft-retry": "c39c4c71-e44c-4e66-bd2c-c4b65e902638",
+    "ai.budget.configure.qa02-structured": "5bec25d8-fe9a-4dac-a7c5-bfd2856995ca"
+  },
+  "route": {
+    "provider": "minimax",
+    "model": "MiniMax-M3",
+    "credentials": "locally bound"
+  }
+}
