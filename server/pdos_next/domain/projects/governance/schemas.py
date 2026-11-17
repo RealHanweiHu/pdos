@@ -1,8 +1,10 @@
+from datetime import date
 from typing import Literal
 from uuid import UUID
 
+from pydantic import Field, model_validator
+
 from pdos_next.core.schema_base import StrictModel
-from pydantic import Field
 
 
 class Ref(StrictModel):
@@ -18,7 +20,7 @@ class Payload(StrictModel):
 
 
 class AdoptPayload(Payload):
-    template: Literal["standard@1", "derivative@1", "small-change@1"]
+    template: Literal["standard@1", "derivative@1", "small-change@1", "framework"]
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 
@@ -39,10 +41,25 @@ class MilestonePayload(Payload):
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
 
 
+class FollowUp(StrictModel):
+    task: Ref
+    owner_id: UUID
+    due_date: date
+
+
 class DecidePayload(Payload):
     review: Ref
     outcome: Literal["approved", "returned"]
+    follow_ups: tuple[FollowUp, ...] = Field(default=(), max_length=30)
     approval_token: str | None = Field(default=None, min_length=20, max_length=128)
+
+    @model_validator(mode="after")
+    def approved_follow_ups(self):
+        if self.follow_ups and self.outcome != "approved":
+            raise ValueError("Follow-up work belongs to an approved stage decision")
+        if len({item.task.id for item in self.follow_ups}) != len(self.follow_ups):
+            raise ValueError("A stage follow-up task may occur only once")
+        return self
 
 
 OPERATIONS = {

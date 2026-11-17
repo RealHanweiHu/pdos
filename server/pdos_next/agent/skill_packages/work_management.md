@@ -1,6 +1,6 @@
 ---
 key: work_management
-version: 0.1.3-draft
+version: 0.1.4-draft
 purpose: 按真实项目和原件起草任务、计划、阶段办理与外部等待，协助本人分派/承接/提交/验收与逐接收者承诺履行，起草具名状态摘要及风险跟进；不代替实际人员承接、承诺、验收或批准。
 input_schema:
   type: object
@@ -150,7 +150,7 @@ allowed_operations:
   note: 对当前任务明确受派人和成果接收人；分派不等于本人承接
 - tool: work.task.accept
   tier: T1
-  note: 仅由真实受派人一次确认承接当前任务；不产生日期承诺
+  note: 真实受派人可在同一次确认中承接并保存独立日期承诺；日期待定只承接
 - tool: work.task.start
   tier: T1
   note: 本人登记真实开始时点与 IANA 时区；不以安排日期补造实际
@@ -174,7 +174,7 @@ allowed_operations:
   note: 根据明确项目版本与实际 schedule 结构准备计划候选；未知估时保留未知
 - tool: work.plan.apply
   tier: T1
-  note: 本人一次确认应用已准备的精确计划候选；不替代批准基线
+  note: 提供完整 draft 供负责人一次确认；旧候选用精确 proposal_id。阶段决定和基线仍具名办理
 - tool: work.stage.adopt
   tier: T1
   note: 按当前项目和阶段模板准备启用候选，保留本人一次确认
@@ -240,6 +240,15 @@ preload_when: []
 9. `work.external_wait.record`（T0）使用 record.action 区分 create/details/initiate/delivery/commitment/reply/close/reopen/transfer_request/transfer_accept/transfer_cancel；create 之外必须给当前 wait 引用。发起、有效送达、对方承诺、部分回复与关闭分开，送达未知不宣称等待已有效开始；内部记录不发送消息或客户资料。
 10. `work.risk.followup.record`（T1）使用 risk={id,decision_id}、current、action=close/reopen 与来源；只保存具名跟进，不改 G0 风险原文或代替专业关闭。
 11. `work.forecast.refresh`（T0，确定性引擎）只带 project_id、当前 plan={id,revision} 与本轮读到的 expected_input_sha256；输入变了先重读。结果是“系统重算”：不改计划、基线或承诺，预测晚于承诺只说明差异；已开始任务缺剩余工期时预测保持未知，不由模型补日期。
+
+## G0 首版规划
+
+- 读取服务器后附的 `project.npi_planning`。沿用固定框架版本和路径，按具体出口成果决定任务数量、负责角色、交付物与依赖。每项出口成果用 task 的 `outcome_keys` 映射；阶段节点单独在 `milestones` 绑定实际任务，不创建零工期节点任务。
+- `work.plan.apply` 的 `draft` 使用服务器给定的当前项目与计划版本。以 `npi.tasks` 固定角色、交付物、成果键与版本化来源，以 `schedule.tasks` 写实际工作。引用来源只从本轮可用的框架、定义、品类、参数、G0 或已核对原件中选择；隐私范围随真实授权。
+- 工期没有版本化依据时，两端保持 null。日历由服务端选取，计划日期和预测日期不写为个人承诺。
+- 检查失败按工具返回的 `issues` 修正一次。连续两次失败、成员缺失或角色对应多人都交负责人核对。只有服务器实际回执可用于报告生效或完成。
+- CEHub 原始检查项材料位于 `assets/cehub/deliverable-guide-manifest.json`，保留 687 条的原始绑定与出处。只用适用的条目提示缺项或起草检查项，法规与红线由框架规则判定。
+- 已承接、已提交及已完成任务保留本人责任和办理历史。基线后先准备变更材料；重设基线和阶段决定须具名批准。
 
 ## 事实与人员边界
 

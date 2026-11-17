@@ -3,7 +3,7 @@
 from copy import deepcopy
 from dataclasses import dataclass
 from hashlib import sha256
-from uuid import uuid4
+from uuid import uuid4, uuid5
 
 from sqlalchemy import select
 
@@ -13,8 +13,8 @@ from pdos_next.core.source_current import direct_source_basis
 from pdos_next.domain.categories.preproject.access import human, member
 from pdos_next.domain.projects.models import PlanRevision, ProjectTask
 
-from . import g0_sources, owner, rules
-from .constants import ASSIGN, COMMIT, CREATE, STATUS, TASK_OPERATIONS
+from . import g0_sources, owner, plan_sources, rules
+from .constants import ACCEPT, ASSIGN, COMMIT, CREATE, STATUS, TASK_OPERATIONS
 from .models import (
     ProjectStatusUpdate,
     WorkCommitmentCurrent,
@@ -22,7 +22,7 @@ from .models import (
     WorkTaskCurrent,
     WorkTaskVersion,
 )
-from .schemas import PAYLOADS, VersionRef
+from .schemas import PAYLOADS, CommitmentAcceptPayload, VersionRef
 
 category_lifecycle_fence = True
 semantic = rules.semantic
@@ -44,6 +44,7 @@ class Validated:
     review: dict
     confirmation_id: object = None
     used: bool = False
+    commitment: CommitmentAcceptPayload | None = None
 
 
 def _cache_key(ctx, command):
@@ -116,6 +117,12 @@ def validate(s, ctx, command, product, payload):
         )
         owner.sources_current(s, ctx, product.id, task_row.source_basis)
     if command.operation == CREATE and payload.npi_template is not None:
+        rules.require(
+            project.framework_id is None,
+            "适用 NPI 框架的项目使用版本化成果与计划来源。旧模板可从原任务追溯。",
+            "VALIDATION_FAILED",
+            422,
+        )
         from .templates import validate as validate_template
 
         validate_template(payload.npi_template)
@@ -125,6 +132,7 @@ def validate(s, ctx, command, product, payload):
             "VALIDATION_FAILED",
             422,
         )
+    plan_basis = None
     if command.operation == CREATE and payload.plan_task is not None:
         fixed = s.scalar(
             select(ProjectTask).where(
@@ -140,6 +148,37 @@ def validate(s, ctx, command, product, payload):
             "计划任务须固定实际计划版本。",
             "VERSION_CONFLICT",
         )
+        if fixed.forecast.get("role"):
+            plan_basis = plan_sources.resolve(
+                s, ctx, product.id, project.id, payload.plan_task.model_dump(mode="json")
+            )
+            rules.require(
+                project.owner_id == ctx.requester_id
+                and plan.id == project.current_plan_id
+                and payload.g0_open_item is None,
+                "执行任务由本项目负责人从当前检查通过的计划任务建立。",
+                "FORBIDDEN_SCOPE",
+                403,
+            )
+            rules.require(
+                set(fixed.forecast["outcome_keys"])
+                <= {item.key for item in payload.outcomes if item.required},
+                "任务须保留计划中的全部必需成果。",
+                "MISSING_REQUIRED_EVIDENCE",
+                422,
+            )
+            existing = s.scalar(
+                select(WorkTaskVersion.id)
+                .where(
+                    WorkTaskVersion.project_id == project.id,
+                    WorkTaskVersion.revision == 1,
+                    WorkTaskVersion.source_basis["npi_plan_task"]["key"].as_string() == fixed.key,
+                )
+                .limit(1)
+            )
+            rules.require(
+                existing is None, "该计划事项已有执行任务，请继续办理原任务。", "VERSION_CONFLICT"
+            )
     if command.operation == ASSIGN:
         rules.require(
             ctx.requester_id == project.owner_id,
@@ -147,6 +186,19 @@ def validate(s, ctx, command, product, payload):
             "FORBIDDEN_SCOPE",
             403,
         )
+        if task_snapshot.plan_task:
+            plan_task = s.get(ProjectTask, task_snapshot.plan_task.id)
+            role = plan_task.forecast.get("role") if plan_task else None
+            if role is not None:
+                from pdos_next.domain.projects.npi.planning import assignments
+
+                candidates = assignments(s, ctx, project).get(role, ())
+                rules.require(
+                    str(payload.assignee_id) in candidates,
+                    "请将任务分派给担任计划负责角色的当前项目成员。",
+                    "FORBIDDEN_SCOPE",
+                    403,
+                )
         for identity in {payload.assignee_id, payload.recipient_id}:
             grant = member(s, ctx, identity)
             rules.require(grant.can_write, "办理人须有当前品类写入权限。", "FORBIDDEN_SCOPE", 403)
@@ -170,9 +222,11 @@ def validate(s, ctx, command, product, payload):
         )
     elif command.operation in TASK_OPERATIONS and task_row is not None:
         native_basis = task_row.source_basis.get("g0_open_item")
+    if task_row is not None:
+        plan_basis = task_row.source_basis.get("npi_plan_task")
     rules.require(
-        bool(refs) or native_basis is not None,
-        "须有实际原件或本次任务的固定 G0 事项来源。",
+        bool(refs) or native_basis is not None or plan_basis is not None,
+        "须有实际原件、固定 G0 事项或检查通过的计划任务来源。",
         "MISSING_REQUIRED_EVIDENCE",
         422,
     )
@@ -188,6 +242,10 @@ def validate(s, ctx, command, product, payload):
         source_basis = _merge_basis(task_row.source_basis, source_basis)
     if native_basis is not None:
         source_basis["g0_open_item"] = deepcopy(native_basis)
+    if plan_basis is not None:
+        source_basis["npi_plan_task"] = deepcopy(plan_basis)
+        if task_row is None:
+            owner.sources_current(s, ctx, product.id, source_basis)
     at = now()
     if command.operation in TASK_OPERATIONS:
         previous = task_row
@@ -219,6 +277,8 @@ def validate(s, ctx, command, product, payload):
         if previous is not None:
             owner.sources_current(s, ctx, product.id, previous.source_basis)
             source_basis = _merge_basis(previous.source_basis, source_basis)
+            if plan_basis is not None:
+                source_basis["npi_plan_task"] = deepcopy(plan_basis)
         plan = rules.commitment_plan(
             payload, task=task_snapshot, actor_id=ctx.requester_id, previous=old, at=at
         )
@@ -241,6 +301,27 @@ def validate(s, ctx, command, product, payload):
             source_basis = _merge_basis(source_basis, row.source_basis)
             snapshots.append(snapshot)
         plan = rules.status_plan(payload, tasks=tuple(snapshots), actor_id=ctx.requester_id, at=at)
+    commitment = None
+    if command.operation == ACCEPT and payload.promise is not None:
+        rules.require(
+            bool(refs) or plan_basis is not None,
+            "同时记录承诺时须固定成果来源。可选择日期待定继续承接。",
+            "MISSING_REQUIRED_EVIDENCE",
+            422,
+        )
+        grant = member(s, ctx, plan.recipient_id)
+        rules.require(grant.can_write, "成果接收者已失去办理权限。", "FORBIDDEN_SCOPE", 403)
+        commitment = CommitmentAcceptPayload(
+            project_id=project.id,
+            task=VersionRef(id=plan.task_id, revision=plan.revision),
+            recipient_id=plan.recipient_id,
+            outcome_keys=tuple(item.key for item in plan.outcomes),
+            reason=payload.reason,
+            sources=tuple(refs),
+            **payload.promise.model_dump(),
+        )
+        rules.commitment_plan(commitment, task=plan, actor_id=ctx.requester_id, at=at)
+
     review = {
         "operation": command.operation,
         "project": {
@@ -255,6 +336,7 @@ def validate(s, ctx, command, product, payload):
         "after": _without_recorded(plan.model_dump(mode="json")),
         "sources": [ref.model_dump(mode="json") for ref in refs],
         "source_basis": source_basis,
+        **({"commitment": semantic(commitment)} if commitment else {}),
         "effect": (
             "责任承接、对接收者的承诺、成果提交和验收分别保存；"
             "周报仅追加引用，不改四时间或业务状态。"
@@ -273,6 +355,7 @@ def validate(s, ctx, command, product, payload):
         [item.model_dump(mode="json") for item in command.source_read_set],
         source_basis,
         review,
+        commitment=commitment,
     )
     s.info[key] = value
     return value
@@ -489,6 +572,25 @@ def finalize_receipt(s, ctx, command, product, payload, subject, receipt):
     owner.sources_current(s, ctx, product.id, value.source_basis)
     del subject._work_phase
     owner.after_fact(s, ctx, command.operation, subject)
+    if value.commitment is not None:
+        from pdos_next.core.contracts import Command
+        from pdos_next.core.service import execute, preview_command
+
+        command_id = uuid5(command.command_id, COMMIT)
+        commitment = Command(
+            command_id=command_id,
+            idempotency_key=str(command_id),
+            operation=COMMIT,
+            category_id=ctx.category_id,
+            product_id=product.id,
+            expected_revision=product.revision,
+            source_read_set=command.source_read_set,
+            payload=value.commitment.model_dump(mode="json"),
+        )
+        # The parent proof already includes this exact recipient, due date and results.
+        # Use the same transaction and the ordinary commitment owner, receipt and ledger.
+        prepared = preview_command(s, ctx, commitment)
+        execute(s, ctx, Command.model_validate(prepared["command"]))
 
 
 def workspace(s, ctx, pid, project_id):

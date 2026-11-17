@@ -8,6 +8,7 @@ STAGES = {
     "design": ("设计", ["engineering"]),
     "evt": ("EVT", ["engineering"]),
     "dvt": ("DVT", ["engineering", "manufacturing"]),
+    "prototype_validation": ("样机验证", ["engineering", "manufacturing"]),
     "pvt": ("PVT", ["engineering", "manufacturing", "delivery"]),
     "mp": ("量产导入", ["engineering", "manufacturing", "delivery"]),
 }
@@ -22,6 +23,7 @@ ENTRY = {
     "design": ["baseline"],
     "evt": ["engineering"],
     "dvt": ["engineering"],
+    "prototype_validation": ["engineering"],
     "pvt": ["manufacturing"],
     "mp": ["manufacturing", "delivery"],
 }

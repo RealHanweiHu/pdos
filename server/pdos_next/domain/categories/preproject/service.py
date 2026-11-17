@@ -953,6 +953,7 @@ def apply_validated(s, ctx, command, scope, payload, validated):
                     "variant_kind": payload.new_identity.variant_kind
                     if payload.new_identity
                     else "configuration",
+                    **({"force_full_npi_path": True} if payload.force_full_npi_path else {}),
                 },
                 receipt_id=receipt_id,
             )

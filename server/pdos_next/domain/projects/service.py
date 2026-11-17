@@ -1,6 +1,7 @@
+from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, text
 
 from pdos_next.core.models import Principal, Product
 from pdos_next.core.request_proof import snapshot_get, snapshot_scalar
@@ -69,31 +70,118 @@ def _proposal(s, ctx, product_id, payload):
     return row
 
 
+def t0_initial_plan(s, project):
+    from .governance.models import GovernanceEvent
+
+    return bool(
+        project
+        and project.framework_id
+        and project.current_plan_id is None
+        and not s.scalar(
+            select(GovernanceEvent.id)
+            .where(
+                GovernanceEvent.tenant_id == project.tenant_id,
+                GovernanceEvent.project_id == project.id,
+                GovernanceEvent.operation == "work.baseline.approve",
+            )
+            .limit(1)
+        )
+    )
+
+
+@dataclass
+class PlanWrite:
+    draft_inputs: tuple | None
+    confirmation_id: UUID | None = None
+
+
 def validate(s, ctx, command, product, payload):
     from pdos_next.core.service import source_for
     from pdos_next.domain.categories.preproject.baseline import validate_sources
 
     actor = s.get(Principal, ctx.actor_id)
-    if ctx.run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human":
-        raise DomainError("NAMED_DECISION_REQUIRED", "计划由本人手工建立。", 403)
+    automated = bool(ctx.agent_run_id and ctx.agent_call_id and actor.kind == "agent")
+    if not automated and (
+        ctx.run_id or ctx.agent_run_id or ctx.actor_id != ctx.requester_id or actor.kind != "human"
+    ):
+        raise DomainError("NAMED_DECISION_REQUIRED", "此计划由项目负责人本人确认。", 403)
     if command.expected_revision != product.revision:
         raise DomainError("VERSION_CONFLICT", "型号范围版本已变化。")
-    project, _, definition = _project(s, ctx, product.id, payload.project_id, write=True)
+    project, link, definition = _project(s, ctx, product.id, payload.project_id, write=True)
     if project.revision != payload.expected_project_revision:
         raise DomainError("VERSION_CONFLICT", "项目版本已变化，请重新核对候选。")
+    if project.framework_id and s.info.get("read_snapshot") is not True:
+        s.execute(
+            text("SELECT pg_advisory_xact_lock(hashtextextended(:key,0))"),
+            {"key": f"project-role-catalog:{ctx.tenant_id}"},
+        )
     validate_sources(s, ctx, definition)
-    if isinstance(payload, PlanApplyPayload):
+    if automated:
+        from pdos_next.agent.kernel.models import AgentRun
+
+        run = s.get(AgentRun, ctx.agent_run_id)
+        if (
+            not isinstance(payload, PlanApplyPayload)
+            or payload.draft is None
+            or not t0_initial_plan(s, project)
+            or run is None
+            or run.project_id != project.id
+            or not run.versions.get("npi_g0")
+        ):
+            raise DomainError("CONFIRMATION_REQUIRED", "此计划须由项目负责人一次确认。")
+    from pdos_next.schemas.planning import ScheduleInput
+
+    from .npi.planning import scheduling_calendar, validate_plan
+    from .npi.rules import PlanBasis
+
+    draft = payload.draft if isinstance(payload, PlanApplyPayload) else payload
+    if draft is None:
         proposal = _proposal(s, ctx, product.id, payload)
         if (
             proposal.project_revision != project.revision
             or proposal.base_plan_id != project.current_plan_id
         ):
             raise DomainError("VERSION_CONFLICT", "候选已过期，请从当前计划准备新候选。")
+        raw = proposal.input_snapshot.get("npi")
+        if raw or project.framework_id:
+            fixed_schedule = ScheduleInput.model_validate(
+                {key: proposal.input_snapshot[key] for key in ("start", "calendar", "tasks")}
+            )
+            metadata = validate_plan(
+                s,
+                ctx,
+                project,
+                link,
+                PlanBasis.model_validate(raw["basis"]) if raw else None,
+                fixed_schedule,
+                command.source_read_set,
+                allow_upgrade=not automated,
+            )
+            _, basis = scheduling_calendar(s, ctx, fixed_schedule)
+            if metadata != raw["checked"] or basis != proposal.input_snapshot["calendar_basis"]:
+                raise DomainError(
+                    "VERSION_CONFLICT", "定义、团队或日历已变化，请重新准备并核对计划。"
+                )
     else:
         from .resources import validate_demands
 
-        calculate(payload)
-        validate_demands(s, ctx, product.id, payload.project_id, payload.resource_demands)
+        if draft.base_plan_id != project.current_plan_id:
+            raise DomainError("VERSION_CONFLICT", "请基于当前计划版本准备候选。")
+        metadata = validate_plan(
+            s,
+            ctx,
+            project,
+            link,
+            draft.npi,
+            draft.schedule,
+            command.source_read_set,
+            allow_upgrade=not automated,
+        )
+        plan_input, basis = (
+            scheduling_calendar(s, ctx, draft.schedule) if metadata else (draft.schedule, None)
+        )
+        forecast = calculate(plan_input)
+        validate_demands(s, ctx, product.id, draft.project_id, draft.resource_demands)
     reads = {str(read.artifact_id): read.expected_revision for read in command.source_read_set}
     for reference in definition["sources"]:
         if reads.get(reference["artifact_id"]) != reference["expected_revision"]:
@@ -101,24 +189,29 @@ def validate(s, ctx, command, product, payload):
         source_for(
             s, ctx, product.id, UUID(reference["artifact_id"]), reference["expected_revision"]
         )
+    return PlanWrite((plan_input, forecast, metadata, basis) if draft else None)
 
 
 def confirmation_subject(s, ctx, command, product, payload):
-    if isinstance(payload, PlanApplyPayload):
+    if isinstance(payload, PlanApplyPayload) and payload.proposal_id:
         return "proposal", _proposal(s, ctx, product.id, payload)
     return "product", product
 
 
-def calculate(payload):
+def calculate(schedule_input):
     try:
-        return schedule(payload.schedule).model_dump(mode="json")
+        return schedule(schedule_input).model_dump(mode="json")
     except ScheduleError as error:
-        raise DomainError(error.code, "日历、估计或依赖无法计算，请核对计划输入。", 422) from None
+        raise DomainError(
+            error.code, "日历、估计或依赖无法计算，请核对计划输入。", 422, detail=error.as_dict()
+        ) from None
 
 
 def semantic(payload):
     value = payload.model_dump(mode="json")
     value.pop("confirmation_token", None)
+    if value.get("npi") is None:
+        value.pop("npi", None)
     if "schedule" in value:
         value["schedule"]["tasks"] = sorted(
             value["schedule"]["tasks"], key=lambda task: task["key"]
@@ -129,9 +222,28 @@ def semantic(payload):
 
 
 def preview_view(s, ctx, command, product, payload):
-    validate(s, ctx, command, product, payload)
+    prepared = validate(s, ctx, command, product, payload)
     project, link, _ = _project(s, ctx, product.id, payload.project_id, write=True)
-    proposal = _proposal(s, ctx, product.id, payload)
+    if payload.draft:
+        plan_input, forecast, metadata, basis = prepared.draft_inputs
+        input_snapshot = plan_input.model_dump(mode="json")
+        input_snapshot.update(
+            npi={"basis": payload.draft.npi.model_dump(mode="json"), "checked": metadata},
+            calendar_basis=basis,
+        )
+        forecast["calendar_basis"] = basis
+        proposal = PlanProposal(
+            base_plan_id=payload.draft.base_plan_id,
+            reason=payload.draft.reason,
+            resource_demands=[
+                item.model_dump(mode="json") for item in payload.draft.resource_demands
+            ],
+            forecast=forecast,
+            input_snapshot=input_snapshot,
+            revision=0,
+        )
+    else:
+        proposal = _proposal(s, ctx, product.id, payload)
     from .resources import analyze, compare
 
     current = s.get(PlanRevision, project.current_plan_id) if project.current_plan_id else None
@@ -146,10 +258,13 @@ def preview_view(s, ctx, command, product, payload):
         "name": project.name,
         "project_revision": project.revision,
         "current_plan_id": str(project.current_plan_id) if project.current_plan_id else None,
-        "proposal_id": str(proposal.id),
+        "proposal_id": str(proposal.id) if proposal.id else None,
         "proposal_revision": proposal.revision,
         "definition_id": str(link.definition_id),
         "input_snapshot": proposal.input_snapshot,
+        "framework_upgrade": (proposal.input_snapshot.get("npi") or {})
+        .get("checked", {})
+        .get("framework_upgrade"),
         "reason": proposal.reason,
         "forecast": proposal.forecast,
         "effect": (
@@ -257,6 +372,10 @@ def create_project(
         if proposal.entry_kind == "customer_request"
         else "proposal"
     )
+    from .npi.catalog import effective
+
+    kind = "derivative" if trigger_type == "parent_product" else "new_product"
+    framework = effective(s, ctx, kind)
     trigger_id = proposal.baseline_product_id or proposal.id
     project = Project(
         id=project_id,
@@ -270,6 +389,7 @@ def create_project(
         g0_decision_id=decision.id,
         trigger_type=trigger_type,
         trigger_id=trigger_id,
+        framework_id=framework.id if framework else None,
     )
     s.add(project)
     s.flush([project])
@@ -288,53 +408,67 @@ def create_project(
     return project
 
 
-def apply(s, ctx, command, product, payload):
+def _save_proposal(s, ctx, product, project, payload, value):
+    schedule_input, forecast, metadata, basis = value
+    fixed_input = schedule_input.model_dump(mode="json")
+    if metadata:
+        fixed_input.update(
+            npi={"basis": payload.npi.model_dump(mode="json"), "checked": metadata},
+            calendar_basis=basis,
+        )
+        forecast["calendar_basis"] = basis
+    calendar = fixed_input["calendar"]
+    calendar["timezone_rules_sha256"] = forecast["calendar_ref"]["timezone_rules_sha256"]
+    calendar["working_weekdays"] = sorted(calendar["working_weekdays"])
+    calendar["holidays"] = sorted(calendar["holidays"])
+    if "makeup_workdays" in calendar:
+        calendar["makeup_workdays"] = sorted(calendar["makeup_workdays"])
+    calendar["intervals"] = sorted(calendar["intervals"], key=lambda item: item["start_minute"])
+    for previous in s.scalars(select(PlanProposal).where(PlanProposal.project_id == project.id)):
+        old = previous.input_snapshot["calendar"]
+        if (old["key"], old["version"]) == (calendar["key"], calendar["version"]):
+            if old != calendar:
+                raise DomainError(
+                    "VERSION_CONFLICT", "这个日历版本已固定；修改工作日或时段须使用新版本。"
+                )
+    revision = (
+        s.scalar(
+            select(func.max(PlanProposal.revision)).where(
+                PlanProposal.project_id == project.id,
+            )
+        )
+        or 0
+    )
+    proposal = PlanProposal(
+        tenant_id=ctx.tenant_id,
+        product_id=product.id,
+        project_id=project.id,
+        project_revision=project.revision,
+        revision=revision + 1,
+        owner_id=ctx.requester_id,
+        visibility=project.visibility,
+        input_snapshot=fixed_input,
+        base_plan_id=payload.base_plan_id,
+        resource_demands=[d.model_dump(mode="json") for d in payload.resource_demands],
+        forecast=forecast,
+        reason=payload.reason,
+    )
+    return proposal
+
+
+def apply_validated(s, ctx, command, product, payload, value):
     project, _, _ = _project(s, ctx, product.id, payload.project_id, write=True)
     if project.revision != payload.expected_project_revision:
         raise DomainError("VERSION_CONFLICT", "项目已变化，请重新查看实际范围。")
     if isinstance(payload, PlanProposePayload):
-        if payload.base_plan_id != project.current_plan_id:
-            raise DomainError("VERSION_CONFLICT", "请基于当前计划版本准备修订，原候选已保留。")
-        forecast = calculate(payload)
-        fixed_input = payload.schedule.model_dump(mode="json")
-        calendar = fixed_input["calendar"]
-        calendar["timezone_rules_sha256"] = forecast["calendar_ref"]["timezone_rules_sha256"]
-        calendar["working_weekdays"] = sorted(calendar["working_weekdays"])
-        calendar["holidays"] = sorted(calendar["holidays"])
-        calendar["intervals"] = sorted(calendar["intervals"], key=lambda item: item["start_minute"])
-        for previous in s.scalars(
-            select(PlanProposal).where(PlanProposal.project_id == project.id)
-        ):
-            old = previous.input_snapshot["calendar"]
-            if (old["key"], old["version"]) == (calendar["key"], calendar["version"]):
-                if old != calendar:
-                    raise DomainError(
-                        "VERSION_CONFLICT", "这个日历版本已固定；修改工作日或时段须使用新版本。"
-                    )
-        revision = (
-            s.scalar(
-                select(func.max(PlanProposal.revision)).where(
-                    PlanProposal.project_id == project.id,
-                )
-            )
-            or 0
-        )
-        proposal = PlanProposal(
-            tenant_id=ctx.tenant_id,
-            product_id=product.id,
-            project_id=project.id,
-            project_revision=project.revision,
-            revision=revision + 1,
-            owner_id=ctx.requester_id,
-            visibility=project.visibility,
-            input_snapshot=fixed_input,
-            base_plan_id=payload.base_plan_id,
-            resource_demands=[d.model_dump(mode="json") for d in payload.resource_demands],
-            forecast=forecast,
-            reason=payload.reason,
-        )
+        proposal = _save_proposal(s, ctx, product, project, payload, value.draft_inputs)
         return proposal, "plan_proposal", project.visibility
-    proposal = _proposal(s, ctx, product.id, payload)
+    if payload.draft:
+        proposal = _save_proposal(s, ctx, product, project, payload.draft, value.draft_inputs)
+        s.add(proposal)
+        s.flush([proposal])
+    else:
+        proposal = _proposal(s, ctx, product.id, payload)
     if (
         proposal.project_revision != project.revision
         or proposal.base_plan_id != project.current_plan_id
@@ -377,6 +511,24 @@ def apply(s, ctx, command, product, payload):
     }
     s.add_all(packages.values())
     s.flush()
+    npi = proposal.input_snapshot.get("npi")
+    task_details = {}
+    if npi:
+        stage_for = {outcome["key"]: outcome["stage"] for outcome in npi["checked"]["outcomes"]}
+        checked_tasks = npi["basis"]["tasks"]
+        roles = npi["checked"]["assignments"]
+        stage_sets = {
+            key: {stage_for[outcome] for outcome in detail["outcome_keys"]}
+            for key, detail in checked_tasks.items()
+        }
+        for item in reversed(proposal.forecast["tasks"]):
+            for parent in item["depends_on"]:
+                stage_sets[parent].update(stage_sets[item["key"]])
+        task_details = {
+            key: detail
+            | {"stage_keys": sorted(stage_sets[key]), "resolved_assignee_id": roles[key]}
+            for key, detail in checked_tasks.items()
+        }
     tasks = {
         item["key"]: ProjectTask(
             id=uuid4(),
@@ -387,7 +539,7 @@ def apply(s, ctx, command, product, payload):
             work_package_id=packages[item["discipline"]].id,
             key=item["key"],
             title=item["title"],
-            forecast=item,
+            forecast=item | task_details.get(item["key"], {}),
         )
         for item in proposal.forecast["tasks"]
     }
@@ -409,9 +561,24 @@ def apply(s, ctx, command, product, payload):
     )
     project.current_plan_id = plan.id
     project.revision += 1
+    plan.confirmation_id = value.confirmation_id
+    upgrade = npi["checked"].get("framework_upgrade") if npi else None
+    if upgrade:
+        if value.confirmation_id is None or ctx.agent_run_id:
+            raise DomainError("CONFIRMATION_REQUIRED", "框架升级须由项目负责人确认。")
+        project.framework_id = UUID(upgrade["to"]["id"])
+    if ctx.agent_run_id:
+        plan.action_result = {"npi_write_tier": "T0"}
     plan.action_result = {
+        **getattr(plan, "action_result", {}),
         "project_id": str(project.id),
         "proposal_id": str(proposal.id),
+        **({"framework_upgrade": upgrade} if upgrade else {}),
+        **(
+            {"calendar_basis": proposal.input_snapshot["calendar_basis"]}
+            if "calendar_basis" in proposal.input_snapshot
+            else {}
+        ),
         "work_package_ids": [str(package.id) for package in packages.values()],
         "task_ids": [str(task.id) for task in tasks.values()],
     }

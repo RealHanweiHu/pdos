@@ -2,8 +2,9 @@ from typing import Literal, Self
 from uuid import UUID
 
 from pdos_next.core.schema_base import StrictModel
+from pdos_next.domain.projects.npi.rules import PlanBasis
 from pdos_next.schemas.planning import ScheduleInput
-from pydantic import Field, model_validator
+from pydantic import Field, model_serializer, model_validator
 
 
 class ResourceDemand(StrictModel):
@@ -21,6 +22,7 @@ class PlanProposePayload(StrictModel):
     base_plan_id: UUID | None = None
     resource_demands: tuple[ResourceDemand, ...] = Field(default=(), max_length=1000)
     schedule: ScheduleInput
+    npi: PlanBasis | None = None
     reason: str = Field(min_length=3, max_length=2000)
 
     @model_validator(mode="after")
@@ -45,6 +47,28 @@ class PlanProposePayload(StrictModel):
 
 class PlanApplyPayload(StrictModel):
     project_id: UUID
-    proposal_id: UUID
+    proposal_id: UUID | None = None
+    draft: PlanProposePayload | None = None
     expected_project_revision: int = Field(ge=1)
     confirmation_token: str | None = Field(default=None, min_length=20, max_length=128)
+
+    @model_serializer(mode="wrap")
+    def serialize(self, handler):
+        result = handler(self)
+        if self.draft is None:
+            result.pop("draft", None)
+        if self.proposal_id is None:
+            result.pop("proposal_id", None)
+        return result
+
+    @model_validator(mode="after")
+    def intent(self):
+        if (self.proposal_id is None) == (self.draft is None):
+            raise ValueError("请选择固定计划候选，或提交一份待确认的框架计划")
+        if self.draft and (
+            self.draft.project_id != self.project_id
+            or self.draft.expected_project_revision != self.expected_project_revision
+            or self.draft.npi is None
+        ):
+            raise ValueError("待确认框架计划须固定同一个项目与版本")
+        return self

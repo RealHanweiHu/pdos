@@ -107,7 +107,7 @@ def qualified(
         and row.qualified_model_digest == model_digest
         and tool_digest is not None
         and row.qualified_tool_digest == tool_digest
-        and prompt_bound
+        and (skill.key == "work_management" or prompt_bound)
         and not row.qualification_revoked
         and row.qualified_skill_version == skill.version
         and row.qualified_model_version == model_version

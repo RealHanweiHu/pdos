@@ -2,7 +2,7 @@ from datetime import UTC, date
 from typing import Annotated, Self
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
-from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, field_validator, model_serializer, model_validator
 
 
 class _DTO(BaseModel):
@@ -34,6 +34,14 @@ class Calendar(_DTO):
     )
     intervals: tuple[WorkInterval, ...] = Field(min_length=1)
     holidays: tuple[date, ...] = Field(default=())
+    makeup_workdays: tuple[date, ...] = Field(default=())
+
+    @model_serializer(mode="wrap")
+    def serialize(self, handler):
+        result = handler(self)
+        if not self.makeup_workdays:
+            result.pop("makeup_workdays", None)
+        return result
     timezone_rules_sha256: str | None = Field(default=None, pattern=r"^[0-9a-f]{64}$")
 
     @field_validator("timezone")
@@ -53,6 +61,10 @@ class Calendar(_DTO):
             raise ValueError("INVALID_CALENDAR: weekdays cannot repeat")
         if len(set(self.holidays)) != len(self.holidays):
             raise ValueError("INVALID_CALENDAR: holidays cannot repeat")
+        if len(set(self.makeup_workdays)) != len(self.makeup_workdays):
+            raise ValueError("INVALID_CALENDAR: makeup workdays cannot repeat")
+        if set(self.makeup_workdays) & set(self.holidays):
+            raise ValueError("INVALID_CALENDAR: closures and makeup workdays cannot overlap")
         ordered = sorted(self.intervals, key=lambda item: item.start_minute)
         if any(
             left.end_minute > right.start_minute

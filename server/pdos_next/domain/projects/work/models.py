@@ -5,7 +5,6 @@
 from datetime import datetime
 from uuid import UUID
 
-from pdos_next.core.models import Base, Row
 from sqlalchemy import (
     CheckConstraint,
     DateTime,
@@ -19,6 +18,8 @@ from sqlalchemy import (
 )
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import Mapped, mapped_column
+
+from pdos_next.core.models import Base, Row
 
 TASK = "work_task_versions"
 TASK_CURRENT = "work_task_currents"
@@ -48,7 +49,7 @@ def _scope():
     )
 
 
-def _fact(*, g0_task=False):
+def source_constraint(*, g0_task=False, npi=False):
     source_requirement = "jsonb_array_length(sources)>0 AND jsonb_array_length(reads)>0"
     if g0_task:
         source_requirement = (
@@ -59,6 +60,19 @@ def _fact(*, g0_task=False):
             "AND source_basis->'g0_open_item'->>'decision_id'=g0_decision_id::text "
             "AND source_basis->'g0_open_item'->>'digest' ~ '^[a-f0-9]{64}$',false)))"
         )
+    if npi:
+        source_requirement = (
+            f"(({source_requirement}) OR (sources='[]'::jsonb "
+            "AND COALESCE(jsonb_typeof(source_basis->'npi_plan_task')='object',false)))"
+        )
+    return (
+        "jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' "
+        "AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' "
+        "AND jsonb_typeof(reads)='array' AND " + source_requirement
+    )
+
+
+def _fact(*, g0_task=False, npi=False):
     return (
         *_scope(),
         UniqueConstraint("tenant_id", "id"),
@@ -84,9 +98,12 @@ def _fact(*, g0_task=False):
         ),
         CheckConstraint("writer_id=actor_id AND revision>0"),
         CheckConstraint(
-            "jsonb_typeof(command)='object' AND jsonb_typeof(body)='object' AND jsonb_typeof(source_basis)='object' AND jsonb_typeof(sources)='array' AND jsonb_typeof(reads)='array' AND "
-            + source_requirement,
-            name="work_task_g0_sources" if g0_task else None,
+            source_constraint(g0_task=g0_task, npi=npi),
+            name="work_task_g0_sources"
+            if g0_task
+            else "work_commitment_versions_check1"
+            if npi
+            else None,
         ),
         CheckConstraint(
             "body_sha256 ~ '^[a-f0-9]{64}$' AND request_digest ~ '^[a-f0-9]{64}$' AND intent_digest ~ '^[a-f0-9]{64}$'"
@@ -135,7 +152,7 @@ class WorkTaskVersion(_Fact, Base):
         return self.state
 
     __table_args__ = (
-        *_fact(g0_task=True),
+        *_fact(g0_task=True, npi=True),
         UniqueConstraint("tenant_id", "product_id", "task_id", "revision"),
         UniqueConstraint(*BINDING, "task_id", "id", "revision"),
         _fk(
@@ -211,7 +228,7 @@ class WorkCommitmentVersion(_Fact, Base):
         return "recorded"
 
     __table_args__ = (
-        *_fact(),
+        *_fact(npi=True),
         UniqueConstraint("tenant_id", "product_id", "series_id", "revision"),
         UniqueConstraint(
             *BINDING, "task_id", "promisor_id", "recipient_id", "series_id", "id", "revision"

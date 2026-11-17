@@ -602,6 +602,20 @@
       "stage": "S1",
       "schema_version": 1,
       "auxiliary": true
+    },
+    {
+      "type": "framework.drafted",
+      "operation": "work.framework.draft",
+      "stage": "S5",
+      "schema_version": 1,
+      "auxiliary": true
+    },
+    {
+      "type": "framework.publication_decided",
+      "operation": "work.framework.publish",
+      "stage": "S5",
+      "schema_version": 1,
+      "auxiliary": true
     }
   ]
 }

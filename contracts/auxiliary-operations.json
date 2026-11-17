@@ -734,7 +734,7 @@
       "write_tier": "T1",
       "executor": "named_human",
       "event": "stage.adopted",
-      "purpose": "项目负责人选择适用阶段路径，已有阶段历史不能被替换。",
+      "purpose": "项目负责人采用适用路径。已有框架计划固定阶段与里程碑；采用后保留阶段历史。",
       "canonical_policy_preserved": [
         "work.baseline.approve:T2",
         "release.engineering.approve:T2",
@@ -1441,6 +1441,66 @@
       "payload_schema": "payloads.schema.json",
       "implementation": "implemented_local_slice",
       "source": "设计确认稿 P41 第 8 项、P42、P109、P110（用户 2026-11-02、11-09）；欠债总表 W6 D37 ⑧、W8 D117"
+    },
+    {
+      "operation": "work.framework.draft",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": "framework.drafted",
+      "purpose": "具名租户管理员确认品类固定框架草稿和版本差异。",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.framework.publish",
+      "write_tier": "T2",
+      "executor": "named_human",
+      "event": "framework.publication_decided",
+      "purpose": "具名租户管理员正式发布或停用框架版本，保留历史项目绑定。",
+      "implementation": "implemented_local_slice",
+      "payload_schema": "payloads.schema.json"
+    },
+    {
+      "operation": "work.framework.history",
+      "write_tier": "READ",
+      "executor": "scoped_reader",
+      "event": null,
+      "purpose": "读取品类内的固定框架历史。",
+      "implementation": "implemented_local_slice",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/npi-frameworks/{project_type}"
+        }
+      ]
+    },
+    {
+      "operation": "work.framework.project.read",
+      "write_tier": "READ",
+      "executor": "scoped_reader",
+      "event": null,
+      "purpose": "读取真实项目的框架版本、成果、来源与规划异常。",
+      "implementation": "implemented_local_slice",
+      "api_bindings": [
+        {
+          "method": "GET",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/npi"
+        }
+      ]
+    },
+    {
+      "operation": "work.plan.initial.retry",
+      "write_tier": "T1",
+      "executor": "named_human",
+      "event": null,
+      "purpose": "项目负责人重新受理尚无生效计划的初次规划。重放复用同一次运行。",
+      "implementation": "implemented_local_slice",
+      "api_bindings": [
+        {
+          "method": "POST",
+          "path": "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/npi/retry"
+        }
+      ]
     }
   ],
   "inbound_endpoints": [

@@ -149,13 +149,19 @@ def publish(s, ctx: Context, data: PublishCatalog):
     ]
     removed = sorted({role["key"] for role in before["roles"]} - {role["key"] for role in roles})
     if removed:
-        held = s.scalar(select(func.project_role_references(ctx.tenant_id, removed)))
+        held = sorted(
+            set(s.scalar(select(func.project_role_references(ctx.tenant_id, removed))))
+            | set(s.scalar(select(func.npi_framework_role_references(ctx.tenant_id, removed))))
+            | set(
+                s.scalar(select(func.npi_unfinished_plan_role_references(ctx.tenant_id, removed)))
+            )
+        )
         if held:
             labels = {role["key"]: role["name"] for role in before["roles"]}
             fail(
                 "VERSION_CONFLICT",
                 "role_referenced",
-                "仍有项目成员担任的角色不能删除，只能停用："
+                "项目成员、启用框架或未完成任务仍在引用这些角色，可以将其停用："
                 + "、".join(labels.get(key, key) for key in held),
                 role_keys=list(held),
             )

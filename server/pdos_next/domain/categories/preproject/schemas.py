@@ -5,7 +5,7 @@ from uuid import UUID
 
 from pdos_next.core.schema_base import StrictModel
 from pdos_next.schemas.spec_values import numeric_value_shape
-from pydantic import Field, model_validator
+from pydantic import Field, model_serializer, model_validator
 
 
 class Reference(StrictModel):
@@ -264,6 +264,14 @@ class G0Decide(StrictModel):
     project: ProjectInput | None = None
     new_identity: IdentityInput | None = None
     approval_token: str | None = None
+    force_full_npi_path: bool = False
+
+    @model_serializer(mode="wrap")
+    def serialize(self, handler):
+        value = handler(self)
+        if not self.force_full_npi_path:
+            value.pop("force_full_npi_path", None)
+        return value
 
 
 PAYLOADS = {

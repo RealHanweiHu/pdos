@@ -293,6 +293,7 @@ async def main(
     sender = TemporalSender(
         client,
         dispatch_engine=dispatch_engine,
+        business_engine=engine,
         automation_sender=automation_sender,
         projection_sender=ProjectionSender(client, embedding=True),
     )

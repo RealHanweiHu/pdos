@@ -1,3 +1,5 @@
+import asyncio
+
 from temporalio.common import WorkflowIDConflictPolicy, WorkflowIDReusePolicy
 from temporalio.exceptions import WorkflowAlreadyStartedError
 
@@ -18,11 +20,13 @@ class TemporalSender:
         task_queue="pdos-next-domain-v1",
         *,
         dispatch_engine=None,
+        business_engine=None,
         automation_sender=None,
         projection_sender=None,
     ):
         self.client, self.task_queue = client, task_queue
         self.dispatch_engine = dispatch_engine
+        self.business_engine = business_engine
         self.automation_sender = automation_sender
         self.projection_sender = projection_sender
 
@@ -34,6 +38,14 @@ class TemporalSender:
             # Persist every eligible rule source before this single shared consumer
             # acknowledges delivery, even when the original event has no workflow.
             await self.automation_sender.event(event)
+        if event.event_type == "project.created" and self.business_engine is not None:
+            from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
+            from pdos_next.domain.projects.npi.continuation import queue
+
+            run_ref = await asyncio.to_thread(queue, self.business_engine, event)
+            if run_ref is not None:
+                await TemporalPort(self.client, task_queue=self.task_queue).start(run_ref)
+                return workflow_id(event.tenant_id, run_ref["subject_id"])
         if event.event_type == "category.created":
             if self.dispatch_engine is None:
                 raise RuntimeError("Category continuation requires the metadata dispatcher")

@@ -9,7 +9,7 @@ import { ResourceInputs, ResourceResults } from "./project-plan-resources";
 import { draftFromPlan } from "@/lib/project-plan-view";
 import { PlanTaskEditor } from "./plan-task-editor";
 import { Button } from "@/components/ui/button";
-import { blankProjectDraft, buildSchedule, disciplineNames, durationText, forecastReasonNames, forecastWarningNames, utcText, weekdayNames, type ApplyPlanPayload, type PlanForecast, type PlanProposal, type PreparedProject, type Project, type ProjectApi, type ProjectCommand, type ProjectDraft, type ProjectList, type ProposePlanPayload, type ScheduleInput, type SourceRead, type WaitingProject } from "@/lib/project-plan-view";
+import { blankProjectDraft, buildSchedule, disciplineNames, durationText, forecastReasonNames, forecastWarningNames, utcText, weekdayNames, type ApplyPlanPayload, type NpiPlanning, type PlanForecast, type PlanProposal, type PreparedProject, type Project, type ProjectApi, type ProjectCommand, type ProjectDraft, type ProjectList, type ProposePlanPayload, type ScheduleInput, type SourceRead, type WaitingProject } from "@/lib/project-plan-view";
 import { planningStorageKey, projectCreationMoved, restorePlanningDraft } from "./project-planning-state";
 
 type Props = { compact?: boolean; product: { id: string; name: string; purpose: string; revision: number }; categoryId?: string; projectId?: string; principalId: string; api: ProjectApi; onSaved: () => void | Promise<void> };
@@ -21,15 +21,15 @@ const successMessages: Record<PlanOperation, string> = {
   "work.plan.apply": "新计划已采用。旧计划、原承诺、执行记录与实际预约均已保留。",
 };
 
-function CalendarSnapshot({ value }: { value: ScheduleInput }) {
+function CalendarSnapshot({ value, basis }: { value: ScheduleInput; basis?: PlanForecast["calendar_basis"] }) {
   const minuteText = (minute: number) => `${String(Math.floor(minute / 60)).padStart(2, "0")}:${String(minute % 60).padStart(2, "0")}`;
-  return <section className="min-w-0 rounded-lg border border-border p-3 text-sm" aria-label="候选实际工作日历"><h4 className="font-medium">此候选固定的工作日历</h4><dl className="mt-2 space-y-2"><div><dt className="subtle">UTC 起点</dt><dd className="break-words">{utcText(value.start)}</dd></div><div><dt className="subtle">本地日历时区与版本</dt><dd className="break-words">{value.calendar.timezone} · {value.calendar.version}</dd></div><div><dt className="subtle">每周工作日</dt><dd className="break-words">{value.calendar.working_weekdays.map(day => `周${weekdayNames[day]}`).join("、")}</dd></div><div><dt className="subtle">每日工作时段（本地时刻）</dt><dd className="break-words">{value.calendar.intervals.map(interval => `${minuteText(interval.start_minute)}–${minuteText(interval.end_minute)}`).join("；")}</dd></div><div><dt className="subtle">额外休息日期（本地日期）</dt><dd className="break-words">{value.calendar.holidays.join("、") || "未声明额外休息日期"}</dd></div></dl><p className="subtle mt-3">这是本次人工声明的日历，尚未核验为工厂日历。同一项目需调整时段或休息日期时，请明确填写新日历版本。</p></section>;
+  return <section className="min-w-0 rounded-lg border border-border p-3 text-sm" aria-label="候选实际工作日历"><h4 className="font-medium">此候选固定的工作日历</h4><dl className="mt-2 space-y-2"><div><dt className="subtle">UTC 起点</dt><dd className="break-words">{utcText(value.start)}</dd></div><div><dt className="subtle">本地日历时区与版本</dt><dd className="break-words">{value.calendar.timezone} · {value.calendar.version}</dd></div><div><dt className="subtle">每周工作日</dt><dd className="break-words">{value.calendar.working_weekdays.map(day => `周${weekdayNames[day]}`).join("、")}</dd></div><div><dt className="subtle">每日工作时段（本地时刻）</dt><dd className="break-words">{value.calendar.intervals.map(interval => `${minuteText(interval.start_minute)}–${minuteText(interval.end_minute)}`).join("；")}</dd></div><div><dt className="subtle">额外休息日期（本地日期）</dt><dd className="break-words">{value.calendar.holidays.join("、") || "未声明额外休息日期"}</dd></div></dl><p className="subtle mt-3">{basis ? [basis.basis_label, basis.shift_basis].filter(Boolean).join(" · ") : "本次使用人工提供的日历。调整工作日或时段时须使用新版本。"}</p></section>;
 }
 
 function Forecast({ value }: { value: PlanForecast }) {
   const names = new Map(value.tasks.map(task => [task.key, task.title]));
   return <div className="min-w-0 space-y-4">
-    <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm"><p className="font-medium">全部任务预测完成区间</p><p className="mt-1 break-words">{utcText(value.earliest_finish)} ～ {utcText(value.latest_finish)}</p><p className="subtle mt-2 break-words">工作日历：{value.calendar_ref.timezone} · {value.calendar_ref.version}。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。</p></div>
+    <div className="rounded-lg border border-border bg-muted/40 p-3 text-sm"><p className="font-medium">全部任务预测完成区间</p><p className="mt-1 break-words">{utcText(value.earliest_finish)} ～ {utcText(value.latest_finish)}</p><p className="subtle mt-2 break-words">{value.calendar_basis?.basis_label ?? "工作日历"} · {value.calendar_ref.timezone} · {value.calendar_ref.version}。区间上界来自最高工时估计，不代表承诺日期；未考虑资源预约。</p></div>
     {value.warnings.length > 0 && <ul className="subtle list-inside list-disc">{value.warnings.map(warning => <li key={warning}>{forecastWarningNames[warning] ?? "预测条件需要重核"}</li>)}</ul>}
     <div className="min-w-0 space-y-3">{value.tasks.map(task => <details key={task.key} className="min-w-0 border-b border-border py-2">
       <summary className="grid cursor-pointer grid-cols-[minmax(120px,1fr)_auto] items-center gap-3 text-xs"><span>{task.title}</span><span className="subtle">{utcText(task.latest_finish)}</span></summary><p className="subtle mt-2">{disciplineNames[task.discipline]} · {durationText(task.duration_min_minutes, task.duration_max_minutes)}</p>
@@ -57,6 +57,8 @@ function ProjectPanel({ compact = false, product, projectId = "", principalId, a
   const storageKey = planningStorageKey(principalId, product.id, projectId);
   const [draft, setDraft] = useState(() => ({ ...blankProjectDraft(product.purpose), projectId }));
   const [projects, setProjects] = useState<Project[]>([]);
+  const [npi, setNpi] = useState<NpiPlanning | null>(null);
+  const [npiError, setNpiError] = useState("");
   const [pending, setPending] = useState<WaitingProject | null>(null);
   const [preview, setPreview] = useState<PreparedProject | null>(null);
   const [busy, setBusy] = useState(false);
@@ -78,11 +80,20 @@ function ProjectPanel({ compact = false, product, projectId = "", principalId, a
 
   const refresh = useCallback(async () => {
     setLoading(true); setProjects([]); setHidden(0); setHasMore(false);
+    setNpi(null); setNpiError("");
     try {
       const planned = await api<ProjectList>(`v1/products/${product.id}/projects${projectId ? `/${projectId}` : ""}`);
       if (projectId && (planned.items.length !== 1 || planned.items[0].id !== projectId)) throw new Error("当前项目资料未完整取得，请核对范围后刷新。");
       if (!alive.current) return;
       setProjects(planned.items); setHidden(planned.unavailable_count); setHasMore(planned.has_more);
+      if (projectId) {
+        try {
+          const value = await api<NpiPlanning>(`v1/products/${product.id}/projects/${projectId}/npi`);
+          if (alive.current && value.project_id === projectId) setNpi(value);
+        } catch (failure) {
+          if (alive.current) setNpiError((failure as Error).message);
+        }
+      }
     } catch (failure) { if (alive.current) setProjects([]); throw failure; }
     finally { if (alive.current) setLoading(false); }
   }, [api, product.id, projectId]);
@@ -156,13 +167,55 @@ function ProjectPanel({ compact = false, product, projectId = "", principalId, a
     if (project.source_status !== "current") { setError("固定型号定义的来源需要重核，请先处理来源。"); return; }
     try {
       if (draft.reason.trim().length < 3 || draft.reason.length > 2000) throw new Error("请填写 3–2000 字的计划候选说明。");
-      const payload: ProposePlanPayload = { project_id: project.id, expected_project_revision: project.revision, base_plan_id: draft.basePlanId ?? null, resource_demands: draft.resources ?? [], schedule: buildSchedule(draft), reason: draft.reason.trim() };
-      void run({ stage: "execute", command: command("work.plan.propose", payload, project.required_source_read_set) });
+      const payload: ProposePlanPayload = { project_id: project.id, expected_project_revision: project.revision, base_plan_id: draft.basePlanId ?? null, resource_demands: draft.resources ?? [], schedule: buildSchedule(draft), reason: draft.reason.trim(), ...(draft.npiBasis ? {npi: JSON.parse(draft.npiBasis) as Record<string, unknown>} : {}) };
+      void run({ stage: "execute", command: command("work.plan.propose", payload, project.plan?.input_snapshot?.npi?.checked.source_read_set ?? project.required_source_read_set) });
     } catch (failure) { setError((failure as Error).message); }
   }
   function applyPlan(target: Project, proposal: PlanProposal, element: HTMLElement) {
     const payload: ApplyPlanPayload = { project_id: target.id, proposal_id: proposal.id, expected_project_revision: target.revision };
-    void run({ stage: "preview", command: command("work.plan.apply", payload, target.required_source_read_set) }, element);
+    void run({ stage: "preview", command: command("work.plan.apply", payload, proposal.input_snapshot.npi?.checked.source_read_set ?? target.required_source_read_set) }, element);
+  }
+  function prepareFrameworkUpgrade() {
+    const target = npi?.new_framework;
+    const old = npi?.framework;
+    if (!project?.plan || !target || !old || !owner) return;
+    const candidate = draftFromPlan(draft, project);
+    if (!candidate.npiBasis) return;
+    type Source = { kind: string; id: string; revision: number };
+    const basis = JSON.parse(candidate.npiBasis) as {
+      framework_id: string; framework_revision: number; tasks: Record<string, { sources: Source[] }>;
+    };
+    basis.framework_id = target.id;
+    basis.framework_revision = target.revision;
+    for (const task of Object.values(basis.tasks)) {
+      for (const source of task.sources) {
+        if (source.kind === "framework_outcome" && source.id === old.id) {
+          source.id = target.id;
+          source.revision = target.revision;
+        }
+      }
+    }
+    edit({ ...candidate, npiBasis: JSON.stringify(basis, null, 2), reason: `框架升级至 v${target.revision}` });
+    setEditorOpen(true);
+    setNotice("已从当前计划准备升级候选。请按框架差异补齐或调整任务及里程碑，再提交检查。");
+  }
+  async function retryNpi() {
+    if (lock.current || !npi?.generation?.retry_available) return;
+    lock.current = true;
+    setBusy(true);
+    setNpiError("");
+    try {
+      await api(`v1/products/${product.id}/projects/${npi.project_id}/npi/retry`, {
+        expected_project_revision: npi.project_revision,
+        previous_run_id: npi.generation.run_id,
+      });
+      await refresh();
+    } catch (failure) {
+      if (alive.current) setNpiError((failure as Error).message);
+    } finally {
+      lock.current = false;
+      if (alive.current) setBusy(false);
+    }
   }
   function addTask() {
     // A new task must never inherit a removed task's commitments or lineage.
@@ -171,7 +224,36 @@ function ProjectPanel({ compact = false, product, projectId = "", principalId, a
 
   const showEditor = !!pending || (editorOpen ?? false);
   return <section className="min-w-0 space-y-5" aria-label="项目与计划">
-    <header className="flex flex-wrap items-start justify-between gap-3"><div><h2 className={compact ? "sr-only" : "text-sm font-semibold"}>工作计划</h2></div><div className="flex flex-wrap gap-2"><Button size={compact ? "xs" : "default"} variant="outline" disabled={busy || !!pending || !!preview} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "编辑计划候选"}</Button><Button size={compact ? "xs" : "default"} variant="ghost" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button>{project?.plan && owner && <Button size={compact ? "xs" : "default"} variant="outline" disabled={!editable} onClick={() => { edit(draftFromPlan(draft, project)); setEditorOpen(true); setNotice("已从当前计划复制新候选，修改后保存即可与旧版本比较。"); }}>从当前计划新建候选</Button>}</div></header>
+    {npiError && <p role="alert" className="text-sm">{npiError}</p>}
+    {npi?.framework && <section className="space-y-2 rounded-lg border border-border p-3 text-sm" aria-label="项目适用框架">
+      <h3 className="font-semibold">{npi.framework.project_type === "derivative" ? "派生" : "新品"}框架 · v{npi.framework.revision} · {npi.path === "light" ? "轻量路径" : "完整路径"}</h3>
+      {!projects[0]?.plan && <p>{npi.generation?.candidate ? "小Pai 已准备可核对的计划"
+        : npi.generation?.state === "failed" ? "首版计划生成失败"
+        : npi.generation ? `首版计划生成进度：${({queued:"排队中",running:"生成中",partial:"待补充",completed:"已结束",cancelled:"已取消"} as Record<string,string>)[npi.generation.state] ?? "待核对"}`
+        : "等待首版计划受理"}</p>}
+      {npi.generation?.retry_available && <Button size="sm" variant="outline" disabled={!editable} onClick={() => void retryNpi()}>重新受理首版计划</Button>}
+      {npi.generation?.reason && <p className="subtle">运行记录：{npi.generation.reason}</p>}
+      {!!npi.generation?.failures.length && <details>
+        <summary>{npi.generation.failures.length >= 2 ? "两次框架检查未通过，待负责人核对" : "上次框架检查结果"}</summary>
+        <ul>{npi.generation.failures.at(-1)?.issues.map((issue, index) => <li key={index}>{issue.key ?? "计划"} · {issue.code}</li>)}</ul>
+      </details>}
+      {npi.generation?.candidate && <>
+        {!!npi.generation.candidate.role_exceptions.length && <details>
+          <summary>{npi.generation.candidate.role_exceptions.length} 项分派待处理</summary>
+          <ul>{npi.generation.candidate.role_exceptions.map(issue => <li key={issue.task_key}>{issue.task_key} · {issue.role} · {issue.reason === "role_missing" ? "未找到成员" : "对应多位成员"}</li>)}</ul>
+        </details>}
+        <Button size="sm" variant="outline" disabled={!editable} onClick={event => {
+          const candidate = npi.generation?.candidate;
+          if (candidate) void run({stage: "preview", command: candidate.command}, event.currentTarget);
+        }}>核对并采用首版计划</Button>
+      </>}
+      {npi.new_framework && <details>
+        <summary>框架有新版本 v{npi.new_framework.revision}</summary>
+        <ul>{npi.differences.map(change => <li key={`${change.section}:${change.key}`}>{!change.before ? "新增" : !change.after ? "移除" : "修改"}{change.after?.redline ? "红线" : ""} · {change.after?.name ?? change.before?.name}</li>)}</ul>
+        {project?.plan && owner && <Button size="sm" variant="outline" disabled={!editable} onClick={prepareFrameworkUpgrade}>准备框架升级候选</Button>}
+      </details>}
+    </section>}
+    <header className="flex flex-wrap items-start justify-between gap-3"><div><h2 className={compact ? "sr-only" : "text-sm font-semibold"}>工作计划</h2></div><div className="flex flex-wrap gap-2"><Button size={compact ? "xs" : "default"} variant="outline" disabled={busy || !!pending || !!preview || Boolean(npi?.framework && !draft.npiBasis)} aria-expanded={showEditor} aria-controls={`project-editor-pane-${product.id}`} onClick={() => setEditorOpen(!showEditor)}><CalendarBlank/>{showEditor ? "收起编排" : "编辑计划候选"}</Button><Button size={compact ? "xs" : "default"} variant="ghost" disabled={busy || !!preview} onClick={() => { setError(""); void refresh().catch(failure => setError(failure.message)); }}><ArrowClockwise/>刷新项目</Button>{project?.plan && owner && <Button size={compact ? "xs" : "default"} variant="outline" disabled={!editable} onClick={() => { edit(draftFromPlan(draft, project)); setEditorOpen(true); setNotice("已从当前计划复制新候选，修改后保存即可与旧版本比较。"); }}>从当前计划新建候选</Button>}</div></header>
 
 
     {error && <p role="alert" className="break-words rounded-lg border border-destructive p-3 text-destructive">{error}</p>}
@@ -190,7 +272,12 @@ function ProjectPanel({ compact = false, product, projectId = "", principalId, a
             <label>计划起点（UTC）<input type="datetime-local" step={60} value={draft.startUtc} onChange={event => edit({ ...draft, startUtc: event.target.value })}/></label>
             <details className="mb-4 border-b border-border py-2"><summary className="cursor-pointer font-medium">工作日历</summary><div className="mt-3"><p className="subtle mb-3">默认工作日及 09–12 / 13–17 时段是可编辑的初始输入，尚未核验为工厂日历。全部时段和休息日期按下方时区解释。同一项目调整日历时，请明确填写新版本。</p><label>工作日历时区<input maxLength={100} value={draft.timezone} onChange={event => edit({ ...draft, timezone: event.target.value })} placeholder="例如 Asia/Shanghai"/></label><label>日历版本<input maxLength={80} value={draft.calendarVersion} onChange={event => edit({ ...draft, calendarVersion: event.target.value })}/></label><fieldset className="mb-3"><legend className="mb-2 text-sm font-medium">每周工作日</legend><div className="flex flex-wrap gap-2">{weekdayNames.map((name, index) => <label key={index} className="!mb-0 flex items-center gap-1.5 rounded-lg border border-border px-2 py-1.5"><input type="checkbox" className="!m-0 !w-auto" checked={draft.weekdays.includes(index)} onChange={event => edit({ ...draft, weekdays: event.target.checked ? [...draft.weekdays, index].sort() : draft.weekdays.filter(day => day !== index) })}/><span>周{name}</span></label>)}</div></fieldset><label>每日工作时段（每行一段，本地时刻）<textarea maxLength={500} value={draft.intervals} onChange={event => edit({ ...draft, intervals: event.target.value })} placeholder={"09:00-12:00\n13:00-17:00"}/></label><label>额外休息日期（YYYY-MM-DD，每行一天）<textarea maxLength={44000} value={draft.holidays} onChange={event => edit({ ...draft, holidays: event.target.value })} placeholder="未确认的节假日不会自动补入"/></label></div></details>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2"><h4 className="font-semibold">工程 / NPI 任务</h4><Button type="button" variant="outline" disabled={draft.tasks.length >= 500} onClick={addTask}><Plus/>新增任务</Button></div><p className="subtle mb-4">工时单位为整数分钟。最低、最高工时可分别留空表示未知；未知会传播到依赖任务，不会自动补造估计。无依赖的任务可并行开始。</p>
-            <PlanTaskEditor draft={draft} onChange={edit}/>{project && <ResourceInputs api={api} productId={product.id} draft={draft} onChange={edit}/>}<label className="mt-5">本次计划候选说明<textarea maxLength={2000} value={draft.reason} onChange={event => edit({ ...draft, reason: event.target.value })} placeholder="说明当前计划的范围、估计依据及未确定事项"/></label><Button type="submit"><CalendarBlank/>保存候选并计算预测</Button>
+            <PlanTaskEditor draft={draft} onChange={edit}/>
+            {draft.npiBasis && <details className="mt-4">
+              <summary>框架成果、负责角色及版本来源</summary>
+              <label>固定框架与任务映射<textarea rows={12} value={draft.npiBasis} onChange={event => edit({...draft, npiBasis: event.target.value})} /></label>
+            </details>}
+            {project && <ResourceInputs api={api} productId={product.id} draft={draft} onChange={edit}/>}<label className="mt-5">本次计划候选说明<textarea maxLength={2000} value={draft.reason} onChange={event => edit({ ...draft, reason: event.target.value })} placeholder="说明当前计划的范围、估计依据及未确定事项"/></label><Button type="submit"><CalendarBlank/>保存候选并计算预测</Button>
           </fieldset>
         </fieldset></form></section>
       </div>
@@ -200,7 +287,7 @@ function ProjectPanel({ compact = false, product, projectId = "", principalId, a
       </article>)}</section>
     </div>
     <dialog ref={dialog} className="!w-[min(720px,calc(100vw-32px))] max-h-[90vh] overflow-auto" aria-labelledby={`project-review-${product.id}`} onCancel={event => { event.preventDefault(); if (!busy && !pending) closePreview(); }}>
-      {preview && <div className="min-w-0 space-y-4"><h2 id={`project-review-${product.id}`} className="text-lg font-semibold">确认应用计划</h2><p className="break-words">{preview.review.effect}</p><p className="break-words font-medium">{preview.review.name}</p>{preview.review.definition && <p className="break-words text-sm">固定定义：{preview.review.definition.title} · v{preview.review.definition.revision} · 尚未正式发布</p>}{preview.review.purpose && <div><p className="subtle">用途</p><p className="whitespace-pre-wrap break-words">{preview.review.purpose}</p></div>}{preview.review.scope && <div><p className="subtle">固定研发范围</p><p className="whitespace-pre-wrap break-words">{preview.review.scope}</p></div>}{preview.review.visibility && <p>可见范围：{preview.review.visibility === "private" ? "仅本人" : preview.review.visibility === "audience" ? "指定评审人" : "品类授权成员"}。负责人为当前本人。</p>}{preview.review.reason && <div><p className="subtle">候选说明</p><p className="whitespace-pre-wrap break-words">{preview.review.reason}</p></div>}{preview.review.input_snapshot && <CalendarSnapshot value={preview.review.input_snapshot}/>}{preview.review.resources && <ResourceResults value={preview.review.resources}/>} {preview.review.forecast && <><Forecast value={preview.review.forecast}/><details className="text-xs text-muted-foreground"><summary>时间口径</summary><TimelineFacts/></details></>}<p className="subtle">请核对此次范围与预测。确认只应用计划，不代替定义发布、批准基线、个人承诺或实绩登记。</p><div className="flex flex-wrap justify-end gap-2"><Button disabled={busy || !!pending} variant="outline" onClick={closePreview}>返回编辑</Button><Button disabled={busy || !!pending} onClick={() => void run({ stage: "execute", command: preview.command })}>确认应用此计划</Button></div></div>}
+      {preview && <div className="min-w-0 space-y-4"><h2 id={`project-review-${product.id}`} className="text-lg font-semibold">确认应用计划</h2><p className="break-words">{preview.review.effect}</p><p className="break-words font-medium">{preview.review.name}</p>{preview.review.definition && <p className="break-words text-sm">固定定义：{preview.review.definition.title} · v{preview.review.definition.revision} · 尚未正式发布</p>}{preview.review.purpose && <div><p className="subtle">用途</p><p className="whitespace-pre-wrap break-words">{preview.review.purpose}</p></div>}{preview.review.scope && <div><p className="subtle">固定研发范围</p><p className="whitespace-pre-wrap break-words">{preview.review.scope}</p></div>}{preview.review.visibility && <p>可见范围：{preview.review.visibility === "private" ? "仅本人" : preview.review.visibility === "audience" ? "指定评审人" : "品类授权成员"}。负责人为当前本人。</p>}{preview.review.reason && <div><p className="subtle">候选说明</p><p className="whitespace-pre-wrap break-words">{preview.review.reason}</p></div>}{preview.review.framework_upgrade && <div className="space-y-1 text-sm"><p className="font-medium">框架升级 v{preview.review.framework_upgrade.from.revision} → v{preview.review.framework_upgrade.to.revision}</p><ul>{preview.review.framework_upgrade.differences.map(change => <li key={`${change.section}:${change.key}`}>{change.before ? change.after ? "修改" : "移除" : "新增"}{change.after?.redline ? "红线" : ""} · {change.after?.name ?? change.before?.name}</li>)}</ul></div>}{preview.review.input_snapshot && <CalendarSnapshot value={preview.review.input_snapshot} basis={preview.review.forecast?.calendar_basis}/>}{preview.review.resources && <ResourceResults value={preview.review.resources}/>} {preview.review.forecast && <><Forecast value={preview.review.forecast}/><details className="text-xs text-muted-foreground"><summary>时间口径</summary><TimelineFacts/></details></>}<p className="subtle">请核对此次范围与预测。确认只应用计划，不代替定义发布、批准基线、个人承诺或实绩登记。</p><div className="flex flex-wrap justify-end gap-2"><Button disabled={busy || !!pending} variant="outline" onClick={closePreview}>返回编辑</Button><Button disabled={busy || !!pending} onClick={() => void run({ stage: "execute", command: preview.command })}>确认应用此计划</Button></div></div>}
     </dialog>
   </section>;
 }

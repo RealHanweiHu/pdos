@@ -84,6 +84,8 @@ def command_digest(command: Command) -> str:
 
 
 EVENTS = {
+    "work.framework.draft": "framework.drafted",
+    "work.framework.publish": "framework.publication_decided",
     "embedding.profile.save": "embedding.profile_saved",
     "embedding.call.reconcile": "embedding.call_reconciled",
     "work.stage.milestone.bind": "stage.milestone_bound",
@@ -1135,7 +1137,13 @@ def execute(s, ctx: Context, command: Command, *, synthetic_mode=False):
                 write_phase, prepared_review = module.prepare_write_review(
                     s, ctx, command, product, payload
                 )
-        if not direct_confirmation and (
+        # This exception is validated under the plan owner's locked project,
+        # after the registered Run/Call and its current qualification checks.
+        qualified_initial_plan = (
+            command.operation == "work.plan.apply" and ctx.agent_run_id is not None
+            and ctx.agent_call_id is not None and getattr(payload, "draft", None) is not None
+        )
+        if not direct_confirmation and not qualified_initial_plan and (
             command.operation in T1_OPERATIONS | T2_OPERATIONS
             or (hasattr(module, "needs_confirmation") and module.needs_confirmation(payload))
         ):

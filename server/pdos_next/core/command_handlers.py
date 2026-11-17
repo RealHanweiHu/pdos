@@ -2,6 +2,8 @@
 
 CATEGORY_OPERATIONS = frozenset(
     {
+        "work.framework.draft",
+        "work.framework.publish",
         "embedding.profile.save",
         "embedding.call.reconcile",
         "field.feedback.create",
@@ -49,6 +51,7 @@ CATEGORY_OPERATIONS = frozenset(
 
 T2_OPERATIONS = frozenset(
     {
+        "work.framework.publish",
         "work.baseline.approve",
         "work.stage.decide",
         "knowledge.rule.publish",
@@ -81,6 +84,7 @@ T2_OPERATIONS = frozenset(
 
 T1_OPERATIONS = frozenset(
     {
+        "work.framework.draft",
         "embedding.profile.save",
         "embedding.call.reconcile",
         "field.feedback.locate",
@@ -255,6 +259,10 @@ LIVE_CONSUMPTION_OPERATIONS = PHASED_MATERIAL_OPERATIONS - {"quality.capa.follow
 
 
 def handler(operation):
+    if operation in {"work.framework.draft", "work.framework.publish"}:
+        from pdos_next.domain.projects.npi import catalog
+
+        return catalog
     if operation in {"embedding.profile.save", "embedding.call.reconcile"}:
         from pdos_next.agent.enterprise_search import embedding_profiles
 

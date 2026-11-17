@@ -2,16 +2,53 @@
 
 from uuid import UUID
 
-from pdos_next.core.database import tenant_session
+from pdos_next.core.database import category_transaction, tenant_session
 from pdos_next.core.service import Context, require_access
 from pdos_next.errors import DomainError
 
 from .models import PlanProposal, PlanRevision
+from .npi.continuation import Retry
+from .npi.rules import ProjectType
 from .resources import analyze, catalog, compare
 from .service import _project
 
 
 def register_routes(app, engine, auth_dependency):
+    @app.get("/v1/categories/{category_id}/npi-frameworks/{project_type}")
+    def npi_framework_history(
+        project_type: ProjectType, before_revision: int | None = None, ctx: Context = auth_dependency,
+    ):
+        from pdos_next.core.category_scope import category_scope
+
+        from .npi import catalog as framework_catalog
+
+        with tenant_session(
+            engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id,
+            category_id=ctx.category_id, read_snapshot=True,
+        ) as s:
+            category_scope(s, ctx)
+            return framework_catalog.history(s, ctx, project_type, before_revision)
+
+    @app.get("/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/npi")
+    def project_npi(product_id: UUID, project_id: UUID, ctx: Context = auth_dependency):
+        from .npi.planning import read
+
+        with tenant_session(
+            engine, ctx.tenant_id, actor_id=ctx.actor_id, requester_id=ctx.requester_id,
+            category_id=ctx.category_id, read_snapshot=True,
+        ) as s:
+            require_access(s, ctx, product_id)
+            project, link, _ = _project(s, ctx, product_id, project_id)
+            return read(s, ctx, project, link)
+
+    @app.post("/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/npi/retry")
+    def retry_project_npi(
+        product_id: UUID, project_id: UUID, data: Retry, ctx: Context = auth_dependency,
+    ):
+        from .npi.continuation import retry
+
+        return category_transaction(engine, ctx, lambda s: retry(s, ctx, product_id, project_id, data))
+
     @app.get(
         "/v1/categories/{category_id}/products/{product_id}/projects/{project_id}/plan-comparison"
     )

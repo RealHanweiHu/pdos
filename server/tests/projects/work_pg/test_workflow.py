@@ -662,3 +662,152 @@ def test_named_work_commitments_return_and_acceptance_are_one_real_loop(work, mo
     denied = send(work, lost_access)
     assert denied.status_code == 403, denied.text
     assert snapshots(work) == before_refusal
+
+
+def test_one_acceptance_records_a_separate_commitment_and_replays(work):
+    created = execute(
+        work,
+        CREATE,
+        payload(
+            work,
+            title="Synthetic pump report",
+            goal="Deliver a traceable pump report",
+            outcomes=[{"key": "report", "text": "Pump test report", "required": True}],
+        ),
+    )[1]
+    work.task_id = UUID(created["result"]["task_id"])
+    execute(
+        work,
+        ASSIGN,
+        payload(
+            work,
+            task=task(work, "proposed"),
+            assignee_id=str(work.setup.peer),
+            recipient_id=str(work.setup.human),
+        ),
+    )
+    current = task(work, "assigned")
+    assert workspace(work)["commitments"] == []
+    command, receipt = execute(
+        work,
+        ACCEPT,
+        payload(
+            work,
+            task=current,
+            promise={
+                "promised_at": (now() + timedelta(days=5)).isoformat(),
+                "original_timezone": TIMEZONE,
+            },
+        ),
+        actor=work.setup.peer,
+    )
+    assert send(work, command, actor=work.setup.peer).json()["id"] == receipt["id"]
+    view = workspace(work)
+    assert view["tasks"][0]["state"] == "accepted"
+    assert len(view["commitments"]) == 1
+    assert view["commitments"][0]["task_revision"] == view["tasks"][0]["revision"]
+    assert view["commitments"][0]["promised_at"]
+    assert view["commitments"][0]["id"] != receipt["subject_id"]
+
+
+def test_stage_approval_carries_named_due_work_into_next_exit(work):
+    from projects.test_project_first_plan import accepted
+    from projects.test_project_governance import command as stage_command
+    from projects.test_project_governance import get as governance
+
+    setup = work.setup
+    _, created = execute(
+        work,
+        CREATE,
+        payload(
+            work,
+            title="Verify pump marking",
+            goal="Inspect the marking on the synthetic pump",
+            outcomes=[{"key": "marking", "text": "Inspection of marking", "required": True}],
+        ),
+    )
+    work.task_id = UUID(created["result"]["task_id"])
+    execute(
+        work,
+        ASSIGN,
+        payload(
+            work,
+            task=task(work, "proposed"),
+            assignee_id=str(setup.peer),
+            recipient_id=str(setup.human),
+        ),
+    )
+
+    def stage(operation, revision, **fields):
+        return stage_command(setup, (None,), str(work.project_id), operation, revision, **fields)
+
+    accepted(setup, stage("work.stage.adopt", 0, template="standard@1"))
+    before = governance(setup, work.project_id)
+    assert before["current_stage"]["key"] == "concept"
+    accepted(setup, stage("work.stage.review.submit", 1, stage_id=before["current_stage"]["id"]))
+    submitted = governance(setup, work.project_id)
+    review = {key: submitted["review"][key] for key in ("id", "revision")}
+    item = {"task": task(work, "assigned"), "owner_id": str(setup.peer), "due_date": "2030-12-01"}
+    incorrect = stage(
+        "work.stage.decide",
+        2,
+        review=review,
+        outcome="approved",
+        follow_ups=[{**item, "owner_id": str(setup.human)}],
+    )
+    assert send(work, incorrect, preview=True).status_code == 409
+    approved, _ = accepted(
+        setup,
+        stage(
+            "work.stage.decide",
+            2,
+            review=review,
+            outcome="approved",
+            follow_ups=[item],
+        ),
+    )
+    current = governance(setup, work.project_id)
+    assert current["current_stage"]["key"] == "planning"
+    assert current["history"][-1]["receipt_id"] == approved["id"]
+    check = next(x for x in current["gate"]["checks"] if x["key"].startswith("follow_up:"))
+    assert check["state"] == "UNKNOWN" and check["ref"]["due_date"] == item["due_date"]
+
+    execute(work, ACCEPT, payload(work, task=task(work, "assigned")), actor=setup.peer)
+    execute(
+        work, START, payload(work, task=task(work, "accepted"), **clock_fields()), actor=setup.peer
+    )
+    execute(
+        work,
+        SUBMIT,
+        payload(
+            work,
+            task=task(work, "in_progress"),
+            **clock_fields(),
+            results=[
+                {
+                    "key": "marking",
+                    "text": "Marking present",
+                    "status": "present",
+                    "sources": [work.source],
+                }
+            ],
+        ),
+        actor=setup.peer,
+    )
+    _, reviewed = execute(
+        work,
+        REVIEW,
+        payload(
+            work,
+            task=task(work, "submitted"),
+            **clock_fields(),
+            decision="accepted",
+            checks=[
+                {"key": "marking", "decision": "accepted", "reason": "Original inspection verified"}
+            ],
+        ),
+    )
+    after = governance(setup, work.project_id)
+    check = next(x for x in after["gate"]["checks"] if x["key"].startswith("follow_up:"))
+    assert check["state"] == "READY" and check["ref"]["completion_receipt_id"] == reviewed["id"]
+    assert after["current_stage"]["id"] == current["current_stage"]["id"]

@@ -2,20 +2,21 @@
 
 from copy import deepcopy
 from dataclasses import dataclass
-from uuid import UUID, uuid4
+from uuid import UUID, uuid4, uuid5
 
 from sqlalchemy import select
 
 from pdos_next.core.models import now
 from pdos_next.core.service import digest, source_for
 from pdos_next.domain.categories.preproject.access import human
-from pdos_next.domain.projects.models import PlanRevision, ProjectTask
+from pdos_next.domain.projects.models import PlanProposal, PlanRevision, ProjectTask
 from pdos_next.domain.projects.service import _project
 from pdos_next.domain.projects.work.rules import require
 from pdos_next.errors import DomainError
 
+from . import follow_ups
 from .models import GovernanceEvent
-from .rules import LABELS, aggregate, health, stable, templates
+from .rules import ENTRY, LABELS, STAGES, aggregate, health, stable, templates
 from .schemas import AdoptPayload, BaselinePayload, DecidePayload, MilestonePayload, ReviewPayload
 
 category_lifecycle_fence = True
@@ -92,8 +93,106 @@ def release_evidence(s, ctx, pid, project_id, reference):
     return stable(view), row.required_source_read_set
 
 
-def gate(s, ctx, pid, project, body, *, stage=None, reference=None):
-    _, _, definition = _project(s, ctx, pid, project.id)
+def _framework_template(s, project):
+    plan = s.get(PlanRevision, project.current_plan_id) if project.current_plan_id else None
+    proposal = s.get(PlanProposal, plan.proposal_id) if plan else None
+    npi = proposal.input_snapshot.get("npi") if proposal else None
+    if not npi:
+        return None
+    checked = npi["checked"]
+    return {
+        "id": "framework",
+        "name": "轻量开发" if checked["path"] == "light" else "完整开发",
+        "framework": checked["framework"],
+        "plan_id": str(plan.id),
+        "base_plan_id": str(proposal.base_plan_id) if proposal.base_plan_id else None,
+        "stages": [
+            {
+                **stage,
+                "rules": STAGES.get(stage["key"], ("", ["engineering"]))[1],
+                "entry_rules": ENTRY.get(stage["key"], ["engineering"]),
+                "outcomes": [v for v in checked["outcomes"] if v["stage"] == stage["key"]],
+                "metrics": [v for v in checked["metrics"] if v["stage"] == stage["key"]],
+                "task_key": npi["basis"]["milestones"][stage["key"]],
+            }
+            for stage in checked["stages"]
+        ],
+    }
+
+
+def _effective_state(s, project, rows):
+    body = state(rows)
+    if not body["stages"] or body["position"] >= len(body["stages"]):
+        return body
+    template = _framework_template(s, project)
+    if not template:
+        return body
+    prior_plan = body["template"].get("plan_id")
+    if prior_plan == template["plan_id"]:
+        return body
+
+    prior = (body.get("framework_review") or {}).get("from") or body["template"].get("framework")
+    if prior is None:
+        adopted = next(
+            (row.review["template"] for row in rows if row.operation == "work.stage.adopt"), {}
+        )
+        prior = adopted.get("framework")
+    if prior and prior != template["framework"]:
+        from pdos_next.domain.projects.npi.catalog import difference
+        from pdos_next.domain.projects.npi.models import FrameworkRevision
+
+        old = s.get(FrameworkRevision, UUID(prior["id"]))
+        new = s.get(FrameworkRevision, project.framework_id)
+        changes = difference(old.document, new.document)
+        body["framework_review"] = {
+            "from": prior,
+            "to": template["framework"],
+            "redlines": [
+                change["after"]
+                for change in changes
+                if change["section"] == "outcomes"
+                and change["after"]
+                and change["after"]["redline"]
+                and not (change["before"] or {}).get("redline")
+            ],
+        }
+    position = body["position"]
+    passed = body["stages"][:position]
+    current = body["stages"][position]
+    old_ids = {stage["key"]: stage["id"] for stage in body["stages"]}
+    passed_keys = {stage["key"] for stage in passed}
+    upcoming = [
+        {
+            **stage,
+            "id": old_ids.get(stage["key"]) or str(uuid5(project.id, stage["key"])),
+        }
+        for stage in template["stages"]
+        if stage["key"] not in passed_keys
+    ]
+    for stage in upcoming:
+        body["bindings"].setdefault(stage["id"], {})["task_key"] = stage["task_key"]
+    adopted_current = next((stage for stage in upcoming if stage["key"] == current["key"]), None)
+    if adopted_current is None:
+        current["evidence_plan_id"] = (
+            current.get("evidence_plan_id") or prior_plan or template["base_plan_id"]
+        )
+    body["stages"] = [
+        *passed,
+        adopted_current or current,
+        *(stage for stage in upcoming if stage["key"] != current["key"]),
+    ]
+    body["template"].update(
+        name=template["name"], framework=template["framework"], plan_id=template["plan_id"]
+    )
+    known_stages = {stage["id"] for stage in body["stages"]}
+    for item in body.get("follow_ups", ()):
+        if item["next_stage_id"] not in known_stages:
+            item["next_stage_id"] = body["stages"][position]["id"]
+    return body
+
+
+def gate(s, ctx, pid, project, body, *, stage=None, reference=None, include_follow_ups=True):
+    _, link, definition = _project(s, ctx, pid, project.id)
     stage = stage or (
         body["stages"][body["position"]] if body["position"] < len(body["stages"]) else None
     )
@@ -183,6 +282,32 @@ def gate(s, ctx, pid, project, body, *, stage=None, reference=None):
         else []
     )
     required_reads = {r["artifact_id"]: r for r in reads}
+    if stage and stage.get("outcomes"):
+        from pdos_next.domain.projects.npi.planning import current_definition
+
+        _, current_definition_view = current_definition(s, ctx, pid, link.variant_id)
+        from .npi_outcomes import evaluate
+
+        checks.extend(evaluate(s, ctx, project, stage, current_definition_view))
+        for ref in current_definition_view["sources"]:
+            required_reads[ref["artifact_id"]] = {
+                "artifact_id": ref["artifact_id"],
+                "expected_revision": ref["expected_revision"],
+            }
+    if stage and include_follow_ups:
+        checks.extend(
+            follow_ups.checks(
+                s,
+                ctx,
+                pid,
+                project,
+                [
+                    item
+                    for item in body.get("follow_ups", ())
+                    if item["next_stage_id"] == stage["id"]
+                ],
+            )
+        )
     for ref in definition["sources"]:
         required_reads[ref["artifact_id"]] = {
             "artifact_id": ref["artifact_id"],
@@ -194,6 +319,12 @@ def gate(s, ctx, pid, project, body, *, stage=None, reference=None):
         "checks": checks,
         "maturity": {k: values[k] for k in ("engineering", "manufacturing", "delivery")},
         "release": evidence,
+        **(
+            {"review_metrics": [{**m, "state": "unknown"} for m in stage.get("metrics", ())]}
+            if stage and stage.get("metrics")
+            else {}
+        ),
+        **({"framework_review": body["framework_review"]} if body.get("framework_review") else {}),
         "required_source_read_set": list(required_reads.values()),
     }
 
@@ -253,9 +384,27 @@ def _customer_acceptances(s, ctx, pid, project_id):
 
 
 def view(s, ctx, pid, project_id):
-    project, _, _ = _project(s, ctx, pid, project_id)
+    project, link, _ = _project(s, ctx, pid, project_id)
+    specification = None
+    if project.framework_id:
+        from pdos_next.domain.projects.npi.planning import current_definition
+
+        _, definition = current_definition(s, ctx, pid, link.variant_id)
+        specification = {
+            "id": definition["id"],
+            "revision": definition["revision"],
+            "state": definition["status"],
+            "title": definition["title"],
+            "receipt_id": definition["publication_receipt_id"],
+            "source_status": definition["source_status"],
+            "open_items": [
+                {"key": item["key"], "name": item["parameter"], "state": item["availability"]}
+                for item in definition["specs"]
+                if item["availability"] in {"unknown", "conflicted"}
+            ],
+        }
     rows = events(s, ctx, project.id)
-    body = state(rows)
+    body = _effective_state(s, project, rows)
     stages, position = body["stages"], body["position"]
     current = stages[position] if position < len(stages) else None
     # After completion, retain the final stage's actual evidence and dates.
@@ -275,6 +424,7 @@ def view(s, ctx, pid, project_id):
             body,
             stage={**next_stage, "rules": next_stage.get("entry_rules", [])},
             reference=body["bindings"].get(next_stage["id"], {}).get("release_package"),
+            include_follow_ups=False,
         )
         if next_stage
         else None
@@ -307,6 +457,7 @@ def view(s, ctx, pid, project_id):
             "reason": r.review.get("reason"),
             "outcome": r.review.get("outcome"),
             "stage_name": r.review.get("stage_name"),
+            **({"follow_ups": r.review["follow_ups"]} if r.review.get("follow_ups") else {}),
         }
         for r in rows
     ]
@@ -364,6 +515,7 @@ def view(s, ctx, pid, project_id):
         "revision": rows[-1].revision if rows else 0,
         "timeline": timeline,
         "plan_tasks": plan_tasks,
+        **({"specification": specification} if specification else {}),
         # P97 第 8 项: customer acceptances are listed as review basis, never a gate check.
         "customer_acceptances": _customer_acceptances(s, ctx, pid, project.id),
         "plan": {"id": str(plan.id), "revision": plan.revision} if plan else None,
@@ -398,7 +550,12 @@ def view(s, ctx, pid, project_id):
         "commitments": promises,
         "history": history,
         "can_manage": project.owner_id == ctx.requester_id,
-        "templates": templates(),
+        "available_follow_ups": follow_ups.available(s, project)
+        if next_stage and project.owner_id == ctx.requester_id
+        else [],
+        "templates": ([entry] if (entry := _framework_template(s, project)) else [])
+        if project.framework_id
+        else templates(),
     }
 
 
@@ -414,7 +571,7 @@ class Validated:
 def validate(s, ctx, command, product, payload):
     human(s, ctx)
     require(command.expected_revision == product.revision, "型号范围已变化。", "VERSION_CONFLICT")
-    project, _, _ = _project(s, ctx, product.id, payload.project_id, write=True)
+    project, link, _ = _project(s, ctx, product.id, payload.project_id, write=True)
     require(
         project.revision == payload.expected_project_revision,
         "项目已变化，请刷新。",
@@ -426,7 +583,7 @@ def validate(s, ctx, command, product, payload):
         "阶段记录已变化，请重新核对。",
         "VERSION_CONFLICT",
     )
-    body = state(rows)
+    body = _effective_state(s, project, rows)
     material = gate(s, ctx, product.id, project, body)
     review = {
         "operation": command.operation,
@@ -443,7 +600,17 @@ def validate(s, ctx, command, product, payload):
             "本项目已经采用阶段模板；不能替换已生效的阶段历史。",
             "VERSION_CONFLICT",
         )
-        review["template"] = next(t for t in templates() if t["id"] == payload.template)
+        if project.framework_id:
+            template = _framework_template(s, project)
+            require(
+                payload.template == "framework" and template,
+                "请采用已检查计划的固定框架路径。",
+                "MISSING_REQUIRED_EVIDENCE",
+            )
+        else:
+            template = next((t for t in templates() if t["id"] == payload.template), None)
+            require(template is not None, "此项目尚无框架计划。", "MISSING_REQUIRED_EVIDENCE")
+        review["template"] = template
     elif isinstance(payload, BaselinePayload):
         plan = s.get(PlanRevision, payload.plan.id)
         require(
@@ -454,6 +621,25 @@ def validate(s, ctx, command, product, payload):
             "请批准当前项目的实际计划版本。",
             "VERSION_CONFLICT",
         )
+        if project.framework_id:
+            from pdos_next.domain.categories.preproject.baseline import published_baseline
+            from pdos_next.domain.projects.npi.planning import current_definition
+
+            current, _ = current_definition(s, ctx, product.id, link.variant_id)
+            require(
+                current.status == "published",
+                "请先完成具名规格冻结，再批准 G1。",
+                "MISSING_REQUIRED_EVIDENCE",
+            )
+            frozen = published_baseline(
+                s,
+                ctx,
+                product.id,
+                current.revision,
+                definition_id=current.id,
+                variant_id=link.variant_id,
+            )
+            review["definition_publication"] = frozen["publication"]
         require(
             plan.forecast["earliest_finish"] and plan.forecast["latest_finish"],
             "计划仍有未知工时，请补齐后批准基线。",
@@ -478,6 +664,21 @@ def validate(s, ctx, command, product, payload):
             )
         )
         require(stage and task, "请选择本项目实际阶段和当前计划任务。", "SOURCE_UNAVAILABLE")
+        if project.framework_id:
+            current_template = _framework_template(s, project)
+            fixed = next(
+                (
+                    entry
+                    for entry in (current_template or {}).get("stages", ())
+                    if entry["key"] == stage["key"]
+                ),
+                None,
+            )
+            require(
+                fixed and fixed["task_key"] == task.key,
+                "里程碑须对应当前计划已通过检查的阶段成果链。",
+                "MISSING_REQUIRED_EVIDENCE",
+            )
         require(
             body["stages"].index(stage) >= body["position"],
             "已通过阶段的里程碑保持原记录。",
@@ -528,12 +729,16 @@ def validate(s, ctx, command, product, payload):
                 "当前出口仍有阻塞或未知，须补齐后再批准。",
                 "MISSING_REQUIRED_EVIDENCE",
             )
+        next_position = body["position"] + 1
+        next_stage = body["stages"][next_position] if next_position < len(body["stages"]) else None
+        items = follow_ups.fixed(s, ctx, product.id, project, payload.follow_ups, next_stage)
         review.update(
             stage_id=stage["id"],
             stage_name=stage["name"],
             outcome=payload.outcome,
             gate=material,
             submitted_review=submitted,
+            **({"follow_ups": items} if items else {}),
         )
     reads = {str(r.artifact_id): r.expected_revision for r in command.source_read_set}
     for r in material["required_source_read_set"]:
@@ -551,7 +756,10 @@ def confirmation_subject(s, ctx, command, product, payload):
 
 
 def semantic(payload):
-    return payload.model_dump(mode="json", exclude={"confirmation_token", "approval_token"})
+    value = payload.model_dump(mode="json", exclude={"confirmation_token", "approval_token"})
+    if isinstance(payload, DecidePayload) and not payload.follow_ups:
+        value.pop("follow_ups")
+    return value
 
 
 def preview_view(s, ctx, command, product, payload):
@@ -566,14 +774,30 @@ def apply_validated(s, ctx, command, product, payload, value):
     identity, receipt_id = uuid4(), uuid4()
     revision = payload.expected_governance_revision + 1
     if isinstance(payload, AdoptPayload):
-        body["template"] = {"id": review["template"]["id"], "name": review["template"]["name"]}
+        body["template"] = {
+            key: review["template"][key]
+            for key in ("id", "name", "framework", "plan_id")
+            if key in review["template"]
+        }
         body["stages"] = [{**stage, "id": str(uuid4())} for stage in review["template"]["stages"]]
+        body["bindings"].update(
+            {
+                stage["id"]: {"task_key": stage["task_key"]}
+                for stage in body["stages"]
+                if "task_key" in stage
+            }
+        )
     elif isinstance(payload, BaselinePayload):
         body["baseline"] = {
             "id": str(identity),
             "revision": revision,
             "plan": review["plan"],
             "forecast": review["forecast"],
+            **(
+                {"definition_publication": review["definition_publication"]}
+                if "definition_publication" in review
+                else {}
+            ),
             "approved_by": str(ctx.requester_id),
             "at": now().isoformat(),
         }
@@ -594,6 +818,9 @@ def apply_validated(s, ctx, command, product, payload, value):
     elif isinstance(payload, DecidePayload):
         if payload.outcome == "approved":
             body["position"] += 1
+            body.pop("framework_review", None)
+            if review.get("follow_ups"):
+                body.setdefault("follow_ups", []).extend(review["follow_ups"])
         body["review"] = None
     row = GovernanceEvent(
         id=identity,

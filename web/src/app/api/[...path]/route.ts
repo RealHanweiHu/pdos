@@ -14,7 +14,7 @@ const categoryKnowledgePaths = /^v1\/(?:knowledge|parameters)$/;
 const platformPaths = /^v1\/(?:platforms(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?|products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/platform-links)$/i;
 const proposalClaimPaths = /^v1\/claims(?:\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})?$/i;
 const resourceInspectPaths = /^v1\/products\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/builds\/[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}\/resources\/inspect$/;
-const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|overview|governance(?:\/review-inputs)?|forecast))?$/i;
+const projectPlanningPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/projects\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}(?:\/(?:plan-comparison|npi(?:\/retry)?|overview|governance(?:\/review-inputs)?|forecast))?$/i;
 // D47 supplier commitments per fixed Build (READ); records use the common command entry.
 const supplyCommitmentPaths = /^v1\/products\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/(?:builds\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\/supply-commitments|supply-commitments\/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12})$/i;
 // D47 (P95–P97, P120) read-only views: interfaces, fixture acceptances, CAPA effectiveness, alternates, customer acceptances.
@@ -404,7 +404,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
     }
     if (scopeKey && !query.has(scopeKey)) return Response.json({ code: "VALIDATION_FAILED", message: "请先选择要导出的范围。" }, { status: 422 });
   } else if (projectPlanning || supplyCommitments) {
-    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "此入口仅用于读取。" }, { status: 405, headers: { Allow: "GET" } });
+    const method = projectPlanning && pathname.endsWith("/npi/retry") ? "POST" : "GET";
+    if (request.method !== method) return Response.json({ code: "VALIDATION_FAILED", message: "请使用此项目入口支持的请求方式。" }, { status: 405, headers: { Allow: method } });
     for (const [key,value] of request.nextUrl.searchParams) {
       const accepted = pathname.endsWith("/plan-comparison") ? key === "proposal_id" : pathname.endsWith("/governance/review-inputs") ? key === "package_id" : false;
       if (!accepted || !uuid.test(value) || query.has(key)) return Response.json({ code: "VALIDATION_FAILED", message: "请使用当前项目的唯一计划候选或发布包。" }, { status: 422 });

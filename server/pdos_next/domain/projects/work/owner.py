@@ -132,6 +132,10 @@ def sources_current(s, ctx, pid, basis):
         from .g0_sources import sources_current as g0_current
 
         g0_current(s, ctx, pid, basis["g0_open_item"])
+    if basis.get("npi_plan_task") is not None:
+        from .plan_sources import sources_current as plan_current
+
+        plan_current(s, ctx, pid, basis["npi_plan_task"])
     for expected in basis.get("artifacts", []):
         actual = s.execute(
             select(

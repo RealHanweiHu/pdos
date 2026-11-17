@@ -1,6 +1,6 @@
 # NPI 框架与小Pai自主建立项目任务（设计草案 v0.2）
 
-日期：2026-11-01。**状态：设计草案；§10 P33 已由用户确认（2026-11-01），原文见设计确认稿，v1.1 已加注；未实施，未改代码或迁移。**
+日期：2026-11-01。**状态：原设计草案 v0.2；有效细则见确认稿 P33、P41–P43、P48–P50、P58–P61、P66、P83、P109–P110、P117。实施进度见唯一活动清单 D34–D36。**
 
 依据：[完整目标架构 v1.1](2026-10-08-pdos-complete-target-architecture-v1.1.md) §03.2、§03.4–§03.6、§03.13、§06.5、§06.12、附录 A；[DC-11 写入分级政策](2026-09-20-ai-direct-write-tier-policy.md) §3、§6、§7、§11；[S5 项目工作合同](2026-10-18-pdos-next-s5-project-work-contract.md)；技能包 `server/pdos_next/agent/skill_packages/work_management.md`。
 

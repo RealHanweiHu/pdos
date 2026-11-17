@@ -1463,6 +1463,11 @@
           ],
           "default": null,
           "title": "Approval Token"
+        },
+        "force_full_npi_path": {
+          "default": false,
+          "title": "Force Full Npi Path",
+          "type": "boolean"
         }
       },
       "required": [
@@ -4655,6 +4660,15 @@
               "title": "Holidays",
               "type": "array"
             },
+            "makeup_workdays": {
+              "default": [],
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "title": "Makeup Workdays",
+              "type": "array"
+            },
             "timezone_rules_sha256": {
               "anyOf": [
                 {
@@ -4676,6 +4690,48 @@
             "intervals"
           ],
           "title": "Calendar",
+          "type": "object"
+        },
+        "PlanBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "framework_id": {
+              "format": "uuid",
+              "title": "Framework Id",
+              "type": "string"
+            },
+            "framework_revision": {
+              "minimum": 1,
+              "title": "Framework Revision",
+              "type": "integer"
+            },
+            "tasks": {
+              "additionalProperties": {
+                "$ref": "#/$defs/TaskBasis"
+              },
+              "maxProperties": 500,
+              "minProperties": 1,
+              "title": "Tasks",
+              "type": "object"
+            },
+            "milestones": {
+              "maxProperties": 16,
+              "patternProperties": {
+                "^[a-z][a-z0-9_]{1,63}$": {
+                  "type": "string"
+                }
+              },
+              "title": "Milestones",
+              "type": "object"
+            }
+          },
+          "required": [
+            "framework_id",
+            "framework_revision",
+            "tasks",
+            "milestones"
+          ],
+          "title": "PlanBasis",
           "type": "object"
         },
         "PlanTask": {
@@ -4851,6 +4907,96 @@
           "title": "ScheduleInput",
           "type": "object"
         },
+        "Source": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "framework_outcome",
+                "definition",
+                "category_knowledge",
+                "parameter",
+                "test_template",
+                "g0_open_item",
+                "artifact"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z][a-z0-9_]{1,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision"
+          ],
+          "title": "Source",
+          "type": "object"
+        },
+        "TaskBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "role": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Role",
+              "type": "string"
+            },
+            "deliverable": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Deliverable",
+              "type": "string"
+            },
+            "outcome_keys": {
+              "default": [],
+              "items": {
+                "pattern": "^[a-z][a-z0-9_]{1,63}$",
+                "type": "string"
+              },
+              "maxItems": 40,
+              "title": "Outcome Keys",
+              "type": "array"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "maxItems": 30,
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "role",
+            "deliverable",
+            "sources"
+          ],
+          "title": "TaskBasis",
+          "type": "object"
+        },
         "WorkInterval": {
           "additionalProperties": false,
           "properties": {
@@ -4912,6 +5058,17 @@
         "schedule": {
           "$ref": "#/$defs/ScheduleInput"
         },
+        "npi": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PlanBasis"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
         "reason": {
           "maxLength": 2000,
           "minLength": 3,
@@ -4929,6 +5086,482 @@
       "type": "object"
     },
     "work.plan.apply": {
+      "$defs": {
+        "Calendar": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "default": "default",
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Key",
+              "type": "string"
+            },
+            "version": {
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Version",
+              "type": "string"
+            },
+            "timezone": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Timezone",
+              "type": "string"
+            },
+            "working_weekdays": {
+              "items": {
+                "maximum": 6,
+                "minimum": 0,
+                "type": "integer"
+              },
+              "minItems": 1,
+              "title": "Working Weekdays",
+              "type": "array"
+            },
+            "intervals": {
+              "items": {
+                "$ref": "#/$defs/WorkInterval"
+              },
+              "minItems": 1,
+              "title": "Intervals",
+              "type": "array"
+            },
+            "holidays": {
+              "default": [],
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "title": "Holidays",
+              "type": "array"
+            },
+            "makeup_workdays": {
+              "default": [],
+              "items": {
+                "format": "date",
+                "type": "string"
+              },
+              "title": "Makeup Workdays",
+              "type": "array"
+            },
+            "timezone_rules_sha256": {
+              "anyOf": [
+                {
+                  "pattern": "^[0-9a-f]{64}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Timezone Rules Sha256"
+            }
+          },
+          "required": [
+            "version",
+            "timezone",
+            "working_weekdays",
+            "intervals"
+          ],
+          "title": "Calendar",
+          "type": "object"
+        },
+        "PlanBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "framework_id": {
+              "format": "uuid",
+              "title": "Framework Id",
+              "type": "string"
+            },
+            "framework_revision": {
+              "minimum": 1,
+              "title": "Framework Revision",
+              "type": "integer"
+            },
+            "tasks": {
+              "additionalProperties": {
+                "$ref": "#/$defs/TaskBasis"
+              },
+              "maxProperties": 500,
+              "minProperties": 1,
+              "title": "Tasks",
+              "type": "object"
+            },
+            "milestones": {
+              "maxProperties": 16,
+              "patternProperties": {
+                "^[a-z][a-z0-9_]{1,63}$": {
+                  "type": "string"
+                }
+              },
+              "title": "Milestones",
+              "type": "object"
+            }
+          },
+          "required": [
+            "framework_id",
+            "framework_revision",
+            "tasks",
+            "milestones"
+          ],
+          "title": "PlanBasis",
+          "type": "object"
+        },
+        "PlanProposePayload": {
+          "additionalProperties": false,
+          "properties": {
+            "project_id": {
+              "format": "uuid",
+              "title": "Project Id",
+              "type": "string"
+            },
+            "expected_project_revision": {
+              "minimum": 1,
+              "title": "Expected Project Revision",
+              "type": "integer"
+            },
+            "base_plan_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Base Plan Id"
+            },
+            "resource_demands": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/ResourceDemand"
+              },
+              "maxItems": 1000,
+              "title": "Resource Demands",
+              "type": "array"
+            },
+            "schedule": {
+              "$ref": "#/$defs/ScheduleInput"
+            },
+            "npi": {
+              "anyOf": [
+                {
+                  "$ref": "#/$defs/PlanBasis"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null
+            },
+            "reason": {
+              "maxLength": 2000,
+              "minLength": 3,
+              "title": "Reason",
+              "type": "string"
+            }
+          },
+          "required": [
+            "project_id",
+            "expected_project_revision",
+            "schedule",
+            "reason"
+          ],
+          "title": "PlanProposePayload",
+          "type": "object"
+        },
+        "PlanTask": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "pattern": "^[a-zA-Z0-9_-]+$",
+              "title": "Key",
+              "type": "string"
+            },
+            "title": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Title",
+              "type": "string"
+            },
+            "discipline": {
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Discipline",
+              "type": "string"
+            },
+            "depends_on": {
+              "default": [],
+              "items": {
+                "type": "string"
+              },
+              "title": "Depends On",
+              "type": "array"
+            },
+            "duration_min_minutes": {
+              "anyOf": [
+                {
+                  "maximum": 525600,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Duration Min Minutes"
+            },
+            "duration_max_minutes": {
+              "anyOf": [
+                {
+                  "maximum": 525600,
+                  "minimum": 0,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Duration Max Minutes"
+            },
+            "estimate_source": {
+              "anyOf": [
+                {
+                  "maxLength": 2000,
+                  "minLength": 1,
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Estimate Source"
+            },
+            "not_before": {
+              "anyOf": [
+                {
+                  "format": "date-time",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Not Before"
+            }
+          },
+          "required": [
+            "key",
+            "title",
+            "discipline"
+          ],
+          "title": "PlanTask",
+          "type": "object"
+        },
+        "ResourceDemand": {
+          "additionalProperties": false,
+          "properties": {
+            "task_key": {
+              "maxLength": 80,
+              "minLength": 1,
+              "title": "Task Key",
+              "type": "string"
+            },
+            "resource_id": {
+              "format": "uuid",
+              "title": "Resource Id",
+              "type": "string"
+            },
+            "kind": {
+              "enum": [
+                "person",
+                "resource"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "coordinator_id": {
+              "format": "uuid",
+              "title": "Coordinator Id",
+              "type": "string"
+            },
+            "purpose": {
+              "maxLength": 500,
+              "minLength": 3,
+              "title": "Purpose",
+              "type": "string"
+            },
+            "units": {
+              "default": 1,
+              "maximum": 10000,
+              "minimum": 1,
+              "title": "Units",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "task_key",
+            "resource_id",
+            "kind",
+            "coordinator_id",
+            "purpose"
+          ],
+          "title": "ResourceDemand",
+          "type": "object"
+        },
+        "ScheduleInput": {
+          "additionalProperties": false,
+          "properties": {
+            "start": {
+              "format": "date-time",
+              "title": "Start",
+              "type": "string"
+            },
+            "calendar": {
+              "$ref": "#/$defs/Calendar"
+            },
+            "tasks": {
+              "items": {
+                "$ref": "#/$defs/PlanTask"
+              },
+              "minItems": 1,
+              "title": "Tasks",
+              "type": "array"
+            }
+          },
+          "required": [
+            "start",
+            "calendar",
+            "tasks"
+          ],
+          "title": "ScheduleInput",
+          "type": "object"
+        },
+        "Source": {
+          "additionalProperties": false,
+          "properties": {
+            "kind": {
+              "enum": [
+                "framework_outcome",
+                "definition",
+                "category_knowledge",
+                "parameter",
+                "test_template",
+                "g0_open_item",
+                "artifact"
+              ],
+              "title": "Kind",
+              "type": "string"
+            },
+            "id": {
+              "format": "uuid",
+              "title": "Id",
+              "type": "string"
+            },
+            "revision": {
+              "minimum": 1,
+              "title": "Revision",
+              "type": "integer"
+            },
+            "key": {
+              "anyOf": [
+                {
+                  "pattern": "^[a-z][a-z0-9_]{1,63}$",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Key"
+            }
+          },
+          "required": [
+            "kind",
+            "id",
+            "revision"
+          ],
+          "title": "Source",
+          "type": "object"
+        },
+        "TaskBasis": {
+          "additionalProperties": false,
+          "properties": {
+            "role": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Role",
+              "type": "string"
+            },
+            "deliverable": {
+              "maxLength": 500,
+              "minLength": 1,
+              "title": "Deliverable",
+              "type": "string"
+            },
+            "outcome_keys": {
+              "default": [],
+              "items": {
+                "pattern": "^[a-z][a-z0-9_]{1,63}$",
+                "type": "string"
+              },
+              "maxItems": 40,
+              "title": "Outcome Keys",
+              "type": "array"
+            },
+            "sources": {
+              "items": {
+                "$ref": "#/$defs/Source"
+              },
+              "maxItems": 30,
+              "minItems": 1,
+              "title": "Sources",
+              "type": "array"
+            }
+          },
+          "required": [
+            "role",
+            "deliverable",
+            "sources"
+          ],
+          "title": "TaskBasis",
+          "type": "object"
+        },
+        "WorkInterval": {
+          "additionalProperties": false,
+          "properties": {
+            "start_minute": {
+              "exclusiveMaximum": 1440,
+              "minimum": 0,
+              "title": "Start Minute",
+              "type": "integer"
+            },
+            "end_minute": {
+              "exclusiveMinimum": 0,
+              "maximum": 1440,
+              "title": "End Minute",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "start_minute",
+            "end_minute"
+          ],
+          "title": "WorkInterval",
+          "type": "object"
+        }
+      },
       "additionalProperties": false,
       "properties": {
         "project_id": {
@@ -4937,9 +5570,28 @@
           "type": "string"
         },
         "proposal_id": {
-          "format": "uuid",
-          "title": "Proposal Id",
-          "type": "string"
+          "anyOf": [
+            {
+              "format": "uuid",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Proposal Id"
+        },
+        "draft": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PlanProposePayload"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         },
         "expected_project_revision": {
           "minimum": 1,
@@ -4963,7 +5615,6 @@
       },
       "required": [
         "project_id",
-        "proposal_id",
         "expected_project_revision"
       ],
       "title": "PlanApplyPayload",
@@ -20541,6 +21192,41 @@
     },
     "work.task.accept": {
       "$defs": {
+        "PromiseOnAccept": {
+          "additionalProperties": false,
+          "properties": {
+            "original_timezone": {
+              "maxLength": 120,
+              "minLength": 1,
+              "title": "Original Timezone",
+              "type": "string"
+            },
+            "calendar_id": {
+              "anyOf": [
+                {
+                  "format": "uuid",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Calendar Id"
+            },
+            "promised_at": {
+              "format": "date-time",
+              "title": "Promised At",
+              "type": "string"
+            }
+          },
+          "required": [
+            "original_timezone",
+            "promised_at"
+          ],
+          "title": "PromiseOnAccept",
+          "type": "object"
+        },
         "SourceRef": {
           "additionalProperties": false,
           "properties": {
@@ -20637,6 +21323,17 @@
         },
         "task": {
           "$ref": "#/$defs/VersionRef"
+        },
+        "promise": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PromiseOnAccept"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
         }
       },
       "required": [
@@ -20740,7 +21437,6 @@
           "items": {
             "$ref": "#/$defs/SourceRef"
           },
-          "minItems": 1,
           "title": "Sources",
           "type": "array"
         },
@@ -24218,7 +24914,8 @@
           "enum": [
             "standard@1",
             "derivative@1",
-            "small-change@1"
+            "small-change@1",
+            "framework"
           ],
           "title": "Template",
           "type": "string"
@@ -24413,6 +25110,31 @@
     },
     "work.stage.decide": {
       "$defs": {
+        "FollowUp": {
+          "additionalProperties": false,
+          "properties": {
+            "task": {
+              "$ref": "#/$defs/Ref"
+            },
+            "owner_id": {
+              "format": "uuid",
+              "title": "Owner Id",
+              "type": "string"
+            },
+            "due_date": {
+              "format": "date",
+              "title": "Due Date",
+              "type": "string"
+            }
+          },
+          "required": [
+            "task",
+            "owner_id",
+            "due_date"
+          ],
+          "title": "FollowUp",
+          "type": "object"
+        },
         "Ref": {
           "additionalProperties": false,
           "properties": {
@@ -24468,6 +25190,15 @@
           ],
           "title": "Outcome",
           "type": "string"
+        },
+        "follow_ups": {
+          "default": [],
+          "items": {
+            "$ref": "#/$defs/FollowUp"
+          },
+          "maxItems": 30,
+          "title": "Follow Ups",
+          "type": "array"
         },
         "approval_token": {
           "anyOf": [
@@ -26752,6 +27483,275 @@
         "reason"
       ],
       "title": "Payload",
+      "type": "object"
+    },
+    "work.framework.draft": {
+      "$defs": {
+        "Framework": {
+          "additionalProperties": false,
+          "properties": {
+            "stages": {
+              "items": {
+                "$ref": "#/$defs/Stage"
+              },
+              "maxItems": 16,
+              "minItems": 1,
+              "title": "Stages",
+              "type": "array"
+            },
+            "outcomes": {
+              "items": {
+                "$ref": "#/$defs/Outcome"
+              },
+              "maxItems": 200,
+              "minItems": 1,
+              "title": "Outcomes",
+              "type": "array"
+            },
+            "metrics": {
+              "default": [],
+              "items": {
+                "$ref": "#/$defs/Metric"
+              },
+              "maxItems": 30,
+              "title": "Metrics",
+              "type": "array"
+            }
+          },
+          "required": [
+            "stages",
+            "outcomes"
+          ],
+          "title": "Framework",
+          "type": "object"
+        },
+        "Metric": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Key",
+              "type": "string"
+            },
+            "stage": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Stage",
+              "type": "string"
+            },
+            "name": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "minimum_percent": {
+              "maximum": 100,
+              "minimum": 0,
+              "title": "Minimum Percent",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "key",
+            "stage",
+            "name",
+            "minimum_percent"
+          ],
+          "title": "Metric",
+          "type": "object"
+        },
+        "Outcome": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Key",
+              "type": "string"
+            },
+            "stage": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Stage",
+              "type": "string"
+            },
+            "name": {
+              "maxLength": 200,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "role": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Role",
+              "type": "string"
+            },
+            "when_any": {
+              "default": [],
+              "items": {
+                "enum": [
+                  "has_battery",
+                  "needs_new_mold",
+                  "needs_new_certification",
+                  "first_use_key_component",
+                  "has_lithium_battery",
+                  "has_pressurized_chamber",
+                  "has_firmware_or_app"
+                ],
+                "type": "string"
+              },
+              "title": "When Any",
+              "type": "array"
+            },
+            "redline": {
+              "default": false,
+              "title": "Redline",
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "key",
+            "stage",
+            "name",
+            "role"
+          ],
+          "title": "Outcome",
+          "type": "object"
+        },
+        "Stage": {
+          "additionalProperties": false,
+          "properties": {
+            "key": {
+              "pattern": "^[a-z][a-z0-9_]{1,63}$",
+              "title": "Key",
+              "type": "string"
+            },
+            "name": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Name",
+              "type": "string"
+            },
+            "node": {
+              "maxLength": 100,
+              "minLength": 1,
+              "title": "Node",
+              "type": "string"
+            }
+          },
+          "required": [
+            "key",
+            "name",
+            "node"
+          ],
+          "title": "Stage",
+          "type": "object"
+        }
+      },
+      "additionalProperties": false,
+      "properties": {
+        "project_type": {
+          "enum": [
+            "new_product",
+            "derivative"
+          ],
+          "title": "Project Type",
+          "type": "string"
+        },
+        "expected_framework_revision": {
+          "minimum": 0,
+          "title": "Expected Framework Revision",
+          "type": "integer"
+        },
+        "framework": {
+          "$ref": "#/$defs/Framework"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "confirmation_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Confirmation Token"
+        }
+      },
+      "required": [
+        "project_type",
+        "expected_framework_revision",
+        "framework",
+        "reason"
+      ],
+      "title": "DraftPayload",
+      "type": "object"
+    },
+    "work.framework.publish": {
+      "additionalProperties": false,
+      "properties": {
+        "project_type": {
+          "enum": [
+            "new_product",
+            "derivative"
+          ],
+          "title": "Project Type",
+          "type": "string"
+        },
+        "expected_framework_revision": {
+          "minimum": 1,
+          "title": "Expected Framework Revision",
+          "type": "integer"
+        },
+        "framework_id": {
+          "format": "uuid",
+          "title": "Framework Id",
+          "type": "string"
+        },
+        "action": {
+          "enum": [
+            "publish",
+            "retire"
+          ],
+          "title": "Action",
+          "type": "string"
+        },
+        "reason": {
+          "maxLength": 2000,
+          "minLength": 3,
+          "title": "Reason",
+          "type": "string"
+        },
+        "approval_token": {
+          "anyOf": [
+            {
+              "maxLength": 128,
+              "minLength": 20,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approval Token"
+        }
+      },
+      "required": [
+        "project_type",
+        "expected_framework_revision",
+        "framework_id",
+        "action",
+        "reason"
+      ],
+      "title": "PublishPayload",
       "type": "object"
     }
   },

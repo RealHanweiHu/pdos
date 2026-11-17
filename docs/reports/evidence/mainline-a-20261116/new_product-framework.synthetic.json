@@ -1,0 +1,223 @@
+{
+  "project_type": "new_product",
+  "expected_framework_revision": 0,
+  "reason": "D66 合成审阅候选，仅用作试验材料",
+  "framework": {
+    "stages": [
+      {
+        "key": "planning",
+        "name": "规划",
+        "node": "G1 计划基线"
+      },
+      {
+        "key": "design",
+        "name": "设计",
+        "node": "设计冻结评审"
+      },
+      {
+        "key": "evt",
+        "name": "EVT",
+        "node": "EVT 评审"
+      },
+      {
+        "key": "dvt",
+        "name": "DVT",
+        "node": "DVT 评审"
+      },
+      {
+        "key": "pvt",
+        "name": "PVT",
+        "node": "PVT 评审"
+      },
+      {
+        "key": "mp",
+        "name": "量产移交",
+        "node": "项目关闭评审"
+      }
+    ],
+    "outcomes": [
+      {
+        "key": "specification_freeze",
+        "stage": "planning",
+        "name": "完整规格冻结",
+        "role": "product_manager",
+        "redline": false
+      },
+      {
+        "key": "initial_bom_supply",
+        "stage": "planning",
+        "name": "初版 BOM 与关键供方",
+        "role": "procurement_supply",
+        "redline": false
+      },
+      {
+        "key": "key_parts",
+        "stage": "design",
+        "name": "关键料规格",
+        "role": "mechanical",
+        "redline": false
+      },
+      {
+        "key": "dfm_dfa",
+        "stage": "design",
+        "name": "DFM / DFA 问题闭环",
+        "role": "process_factory",
+        "redline": false
+      },
+      {
+        "key": "cost_review",
+        "stage": "design",
+        "name": "BOM 成本对目标",
+        "role": "procurement_supply",
+        "redline": false
+      },
+      {
+        "key": "evt_sample",
+        "stage": "evt",
+        "name": "EVT 样机及主要功能、性能报告",
+        "role": "test_engineering",
+        "redline": false
+      },
+      {
+        "key": "dvt_reliability",
+        "stage": "dvt",
+        "name": "DVT 样机及可靠性验证",
+        "role": "test_engineering",
+        "redline": false
+      },
+      {
+        "key": "work_instruction",
+        "stage": "pvt",
+        "name": "试产作业指导书",
+        "role": "process_factory",
+        "redline": false
+      },
+      {
+        "key": "yield_report",
+        "stage": "pvt",
+        "name": "试产良率报告",
+        "role": "quality",
+        "redline": false
+      },
+      {
+        "key": "packaging_logistics",
+        "stage": "pvt",
+        "name": "包装及物流验证",
+        "role": "process_factory",
+        "redline": false
+      },
+      {
+        "key": "eol_test_capability",
+        "stage": "pvt",
+        "name": "EOL 全检能力验收",
+        "role": "quality",
+        "redline": true
+      },
+      {
+        "key": "first_production_release",
+        "stage": "mp",
+        "name": "首批量产放行",
+        "role": "quality",
+        "redline": true
+      },
+      {
+        "key": "customer_and_service",
+        "stage": "mp",
+        "name": "客户放行与售后重大问题闭环",
+        "role": "product_manager",
+        "redline": false
+      },
+      {
+        "key": "industrial_appearance",
+        "stage": "design",
+        "name": "ID 外观与结构三维",
+        "role": "industrial_design",
+        "redline": false
+      },
+      {
+        "key": "electronics_design",
+        "stage": "design",
+        "name": "电子原理图、Layout 与整机 BOM",
+        "role": "electronics",
+        "redline": false
+      },
+      {
+        "key": "supplier_safety_review",
+        "stage": "planning",
+        "name": "电芯厂审核或复用确认",
+        "role": "battery_safety",
+        "when_any": [
+          "has_lithium_battery",
+          "has_pressurized_chamber"
+        ],
+        "redline": true
+      },
+      {
+        "key": "safety_fmea",
+        "stage": "design",
+        "name": "安全 FMEA 与保护方案评审",
+        "role": "battery_safety",
+        "when_any": [
+          "has_lithium_battery",
+          "has_pressurized_chamber"
+        ],
+        "redline": true
+      },
+      {
+        "key": "battery_transport_safety",
+        "stage": "pvt",
+        "name": "适用运输与安全资格报告",
+        "role": "certification",
+        "when_any": [
+          "has_lithium_battery",
+          "has_pressurized_chamber"
+        ],
+        "redline": true
+      },
+      {
+        "key": "market_certification",
+        "stage": "dvt",
+        "name": "目标市场认证报告",
+        "role": "certification",
+        "when_any": [
+          "needs_new_certification"
+        ],
+        "redline": true
+      },
+      {
+        "key": "firmware_validation",
+        "stage": "dvt",
+        "name": "软件完整测试报告",
+        "role": "software",
+        "when_any": [
+          "has_firmware_or_app"
+        ],
+        "redline": false
+      },
+      {
+        "key": "tooling_sample",
+        "stage": "dvt",
+        "name": "模具 T1 样品",
+        "role": "mechanical",
+        "when_any": [
+          "needs_new_mold"
+        ],
+        "redline": false
+      }
+    ],
+    "metrics": [
+      {
+        "key": "functional_pass_rate",
+        "stage": "evt",
+        "name": "主要功能通过率",
+        "minimum_percent": 95
+      },
+      {
+        "key": "first_pass_yield",
+        "stage": "pvt",
+        "name": "整机直通率",
+        "minimum_percent": 95
+      }
+    ]
+  }
+}

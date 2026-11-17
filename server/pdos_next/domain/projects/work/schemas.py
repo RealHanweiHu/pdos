@@ -91,8 +91,10 @@ class TaskCreatePayload(Payload):
 
     @model_validator(mode="after")
     def has_direct_source(self):
-        if not self.sources and self.g0_open_item is None:
-            raise ValueError("A task requires original artifacts or an exact G0 open item")
+        if not self.sources and self.g0_open_item is None and self.plan_task is None:
+            raise ValueError(
+                "A task needs original artifacts, an exact G0 item or a checked plan task"
+            )
         return self
 
     @field_validator("outcomes")
@@ -107,10 +109,6 @@ class TaskAssignPayload(ConfirmedPayload):
     task: VersionRef
     assignee_id: UUID
     recipient_id: UUID
-
-
-class TaskAcceptPayload(ConfirmedPayload):
-    task: VersionRef
 
 
 class ClockFields(DTO):
@@ -134,8 +132,23 @@ class ClockFields(DTO):
         return value
 
 
+class PromiseOnAccept(ClockFields):
+    promised_at: AwareDatetime
+
+
+class TaskAcceptPayload(ConfirmedPayload):
+    task: VersionRef
+    promise: PromiseOnAccept | None = None
+
+    @model_serializer(mode="wrap")
+    def serialize(self, handler):
+        result = handler(self)
+        if self.promise is None:
+            result.pop("promise", None)
+        return result
+
+
 class CommitmentAcceptPayload(ConfirmedPayload, ClockFields):
-    sources: tuple[SourceRef, ...] = Field(min_length=1)
     task: VersionRef
     recipient_id: UUID
     outcome_keys: tuple[Key, ...] = Field(min_length=1)

@@ -48,6 +48,16 @@ def task_view(row, history):
         "assignee_id": str(snapshot.assignee_id) if snapshot.assignee_id else None,
         "recipient_id": str(snapshot.recipient_id) if snapshot.recipient_id else None,
         "plan_task": snapshot.plan_task.model_dump(mode="json") if snapshot.plan_task else None,
+        **(
+            {
+                "checked_plan_source": {
+                    key: row.source_basis["npi_plan_task"][key]
+                    for key in ("key", "framework", "task")
+                }
+            }
+            if row.source_basis.get("npi_plan_task")
+            else {}
+        ),
         "npi_template": snapshot.npi_template.model_dump(mode="json")
         if snapshot.npi_template
         else None,
@@ -89,6 +99,7 @@ def commitment_view(row, current=True):
     return {
         **value.model_dump(mode="json"),
         "id": str(row.id),
+        "receipt_id": str(row.receipt_id),
         "status": "current" if current else "superseded",
         "created_at": row.created_at.isoformat(),
     }
@@ -208,6 +219,7 @@ def workspace(s, ctx, pid, project_id):
             "id": str(project.id),
             "revision": project.revision,
             "name": project.name,
+            "framework_bound": project.framework_id is not None,
             "owner_id": str(project.owner_id),
             "visibility": project.visibility,
         },

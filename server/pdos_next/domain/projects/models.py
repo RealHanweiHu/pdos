@@ -53,7 +53,13 @@ class Project(Row, Base):
     trigger_type: Mapped[str | None] = mapped_column(Text)
     trigger_id: Mapped[UUID | None]
     g0_decision_id: Mapped[UUID | None]
+    framework_id: Mapped[UUID | None]
     __table_args__ = (
+        ForeignKeyConstraint(
+            ["tenant_id", "category_id", "framework_id"],
+            ["npi_framework_revisions.tenant_id", "npi_framework_revisions.category_id", "npi_framework_revisions.id"],
+            name="project_npi_framework_fk",
+        ),
         ForeignKeyConstraint(
             ["tenant_id", "category_id", "g0_decision_id"],
             [

@@ -602,3 +602,7 @@ from pdos_next.domain.manufacturing.tool_trials.schemas import (  # noqa: E402
 
 # D47 (P95, D305): tool trial with tooling record and its verification request, T1 one confirmation.
 PAYLOADS.update(TOOL_TRIAL_PAYLOADS)
+
+from pdos_next.domain.projects.npi.catalog import DraftPayload, PublishPayload  # noqa: E402
+
+PAYLOADS.update({"work.framework.draft": DraftPayload, "work.framework.publish": PublishPayload})

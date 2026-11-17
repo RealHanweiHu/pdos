@@ -65,8 +65,6 @@ DEFAULT_GATING = (WITHDRAWAL,)
 def gating(skill_key):
     return GATING.get(skill_key, DEFAULT_GATING)
 
-# No source records framework check outcomes yet (deterministic checker: W6 ②, D34).
-UNAVAILABLE = {FRAMEWORK.key: "框架检查器尚未接入（W6 ② D34），没有可计算的记录。"}
 
 
 @dataclass(frozen=True)
@@ -76,6 +74,8 @@ class Counts:
     writes_window: int
     writes_changed: int
     writes_withdrawn: int
+    framework_window: int | None = None
+    framework_failed: int = 0
 
 
 def counts(session, tenant, skill_key, skill_version, model_version, since):
@@ -94,22 +94,37 @@ def counts(session, tenant, skill_key, skill_version, model_version, since):
             "writes": MODIFICATION.window,
         },
     ).one_or_none()
-    return Counts(*row) if row else None
+    if row is None:
+        return None
+    if skill_key != "work_management":
+        return Counts(*row)
+    checked = session.execute(
+        text(
+            "SELECT * FROM npi_framework_check_counts("
+            ":tenant,:skill,:skill_version,:model_version,:since,:window)"
+        ),
+        {
+            "tenant": tenant, "skill": skill_key, "skill_version": skill_version,
+            "model_version": model_version, "since": since, "window": FRAMEWORK.window,
+        },
+    ).one_or_none()
+    return Counts(*row, *checked) if checked is not None else Counts(*row)
 
 
 def judge(rule, value: Counts | None):
     """One P41 judgement: N/A while the window is not full, never a guess."""
-    if rule.key in UNAVAILABLE:
-        return {"state": "unavailable", "sample": 0, "count": 0, "rate": None,
-                "reason": UNAVAILABLE[rule.key]}
     if value is None:
         return {"state": "unavailable", "sample": 0, "count": 0, "rate": None,
                 "reason": "指标读取失败，按未通过处理。"}
-    sample, count = (
-        (value.runs_window, value.runs_withdrawn)
-        if rule is WITHDRAWAL
-        else (value.writes_window, value.writes_changed)
-    )
+    if rule is FRAMEWORK:
+        if value.framework_window is None:
+            return {"state": "unavailable", "sample": 0, "count": 0, "rate": None,
+                    "reason": "此技能未使用版本化 NPI 框架检查。"}
+        sample, count = value.framework_window, value.framework_failed
+    elif rule is WITHDRAWAL:
+        sample, count = value.runs_window, value.runs_withdrawn
+    else:
+        sample, count = value.writes_window, value.writes_changed
     rate = count / sample if sample else None
     if sample < rule.window:
         return {"state": "insufficient", "sample": sample, "count": count, "rate": rate,
@@ -252,6 +267,7 @@ def _value(value: Counts | None):
         "writes_withdrawn": value.writes_withdrawn,
         "withdrawal_rate": _rate(value.runs_withdrawn, value.runs_window),
         "modification_rate": _rate(value.writes_changed, value.writes_window),
+        "framework_check_rate": _rate(value.framework_failed, value.framework_window),
         "retention_rate": _rate(kept, value.writes_window),
         "untouched_rate": _rate(kept - value.writes_changed, value.writes_window),
     }

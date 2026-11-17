@@ -57,7 +57,7 @@ git show archive/pre-restructure-2026-11-01:docs/design/<文件名>
 
 | 文档 | 状态 |
 |---|---|
-| [NPI 框架与 Agent 任务规划](2026-11-01-npi-framework-agent-task-planning-design.md) | 设计草案 v0.2；P33 已确认，未实施 |
+| [NPI 框架与 Agent 任务规划](2026-11-01-npi-framework-agent-task-planning-design.md) | 设计草案 v0.2；有效细则见确认稿；实施见 D34–D36 |
 | [项目协作、驾驶舱与提及](2026-11-01-project-team-cockpit-mentions-design.md) | 设计草案 v0.1；P34 已确认，未实施 |
 | [小Pai 记忆层优化](2026-11-05-xiaopai-memory-layer-design.md) | v0.4 已确认（用户 2026-11-07，Q1–Q19，[P84–P90](2026-10-08-pdos-next-design-confirmation.md#p84)）；含业务场景记忆、具体架构、节点衔接与评测方案、语言习惯；其中 9 处由 [P121](2026-10-08-pdos-next-design-confirmation.md#p121) 修订（2026-11-12）；M1、M2a 已实施并合入（11-08、11-09），M2b、M3、M4 未实施，按 §13 分期交清单 W8 D45 |
 | [小Pai 记忆系统评估与目标架构](2026-11-12-xiaopai-memory-system-assessment-and-target-architecture.md) | v0.1；与 v0.4 和 P84–P94 不同的 9 处已由用户 2026-11-12 逐条确认（[P121](2026-10-08-pdos-next-design-confirmation.md#p121)）；含现状证据、目标架构、数据契约、评测方案；未实施，开工时间未定（清单 D473） |

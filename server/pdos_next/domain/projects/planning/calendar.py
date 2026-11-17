@@ -66,6 +66,9 @@ class WorkingCalendar:
             # Each closure comes from this supplied calendar, not a new approval.
             exceptions=tuple(
                 CalendarException(day=day, intervals=(), source=source) for day in calendar.holidays
+            ) + tuple(
+                CalendarException(day=day, intervals=intervals, source=source)
+                for day in calendar.makeup_workdays
             ),
             ambiguous_time="reject",
             timezone_rules_sha256=calendar.timezone_rules_sha256,

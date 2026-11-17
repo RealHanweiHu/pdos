@@ -145,7 +145,8 @@
       "event": "plan.applied",
       "stage": "S1",
       "implementation": "implemented_local_slice",
-      "payload_schema": "payloads.schema.json"
+      "payload_schema": "payloads.schema.json",
+      "note": "框架计划支持完整 draft 的一次确认，或应用固定 proposal_id。P33/P49 的首版 T0 执行路径待资格白名单和按运行撤回闭环后验收。"
     },
     {
       "operation": "work.baseline.approve",

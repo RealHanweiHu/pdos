@@ -250,6 +250,9 @@ def command_tools(payloads=None, tiers=None, handlers=None):
     specs = []
     for operation, schema in sorted(payloads.items()):
         tier = "T1" if operation == "ai.run.revert" else tiers[operation]
+        # The project owner binds the only T0 case at execution time.
+        if operation == "work.plan.apply" and tiers[operation] == "T1":
+            tier = "T0"
         if operation in PREPARE_ONLY and tier != "T1":
             tier = "T2-prepare-only"
         prepare_only = operation in PREPARE_ONLY and tier == "T1"

@@ -147,6 +147,13 @@ class BoundHost:
         with self.store.transaction(scope) as (session, run):
             if run.versions.get("work_followup_action") is not None:
                 return False  # This explicit answer action always prepares for its Human.
+            if operation == "work.plan.apply":
+                from pdos_next.domain.projects.models import Project
+                from pdos_next.domain.projects.service import t0_initial_plan
+
+                project = session.get(Project, run.project_id) if run.project_id else None
+                if skill.key != "work_management" or not run.versions.get("npi_g0") or not t0_initial_plan(session, project):
+                    return False
             if route.version != run.versions.get(
                 "model_version"
             ) or route.digest != run.versions.get("model_route_digest"):

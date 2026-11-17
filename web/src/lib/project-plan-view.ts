@@ -13,13 +13,17 @@ export type PlanTaskInput = {
   not_before?: string | null;
   duration_min_minutes: number | null; duration_max_minutes: number | null; estimate_source: string | null;
 };
-export type ScheduleInput = { start: string; calendar: CalendarInput; tasks: PlanTaskInput[] };
+export type ScheduleInput = {
+  npi?: { basis: Record<string, unknown>; checked: { source_read_set?: SourceRead[] } }; start: string; calendar: CalendarInput; tasks: PlanTaskInput[] };
 export type CalendarRef = { key: string; version: string; timezone: string; timezone_rules_sha256?: string | null };
 export type TaskForecast = PlanTaskInput & {
+  role?: string; deliverable?: string; outcome_keys?: string[];
+  stage_keys?: string[]; resolved_assignee_id?: string | null;
   earliest_start: string | null; earliest_finish: string | null; latest_start: string | null; latest_finish: string | null;
   calendar_ref: CalendarRef; unknown_reasons: string[]; blocked_by: string[];
 };
 export type PlanForecast = {
+  calendar_basis?: { basis_label: string; shift_basis?: string; calendar_name?: string; calendar_revision?: number };
   algorithm_version: string; input_start: string; calendar_ref: CalendarRef; tasks: TaskForecast[];
   earliest_finish: string | null; latest_finish: string | null; warnings: string[];
 };
@@ -41,12 +45,32 @@ export type CreateProjectPayload = {
   name: string; purpose: string; scope: string; definition_id: string; expected_definition_revision: number;
   visibility: "private" | "category" | "audience"; confirmation_token?: string | null;
 };
-export type ProposePlanPayload = { project_id: string; expected_project_revision: number; base_plan_id?: string | null; resource_demands?: ResourceDemand[]; schedule: ScheduleInput; reason: string };
-export type ApplyPlanPayload = { project_id: string; proposal_id: string; expected_project_revision: number; confirmation_token?: string | null };
+export type ProposePlanPayload = { project_id: string; expected_project_revision: number; base_plan_id?: string | null; resource_demands?: ResourceDemand[]; schedule: ScheduleInput; reason: string; npi?: Record<string, unknown> };
+export type ApplyPlanPayload = { project_id: string; proposal_id?: string; draft?: ProposePlanPayload; expected_project_revision: number; confirmation_token?: string | null };
 export type ProjectCommand = {
   command_id: string; idempotency_key: string; operation: "project.create" | "work.plan.propose" | "work.plan.apply";
   product_id: string; expected_revision: number; source_read_set: SourceRead[];
   payload: CreateProjectPayload | ProposePlanPayload | ApplyPlanPayload;
+};
+export type FrameworkDiff = {
+  section: string; key: string;
+  before: { name: string; redline?: boolean } | null;
+  after: { name: string; redline?: boolean } | null;
+};
+export type RoleException = { task_key: string; role: string; reason: "role_missing" | "role_ambiguous" };
+export type NpiPlanning = {
+  project_id: string;
+  project_revision: number;
+  framework: { id: string; revision: number; project_type: "new_product" | "derivative" } | null;
+  new_framework: { id: string; revision: number } | null;
+  path?: "full" | "light";
+  differences: FrameworkDiff[];
+  generation: {
+    run_id: string | null; state: string; reason?: string | null;
+    retry_available?: boolean;
+    candidate: { command: ProjectCommand; role_exceptions: RoleException[] } | null;
+    failures: { issues: { key: string | null; code: string }[] }[];
+  } | null;
 };
 export type ProjectReview = {
   operation: ProjectCommand["operation"]; name: string; effect: string; purpose?: string; scope?: string;
@@ -54,12 +78,13 @@ export type ProjectReview = {
   project_id?: string; project_revision?: number; proposal_id?: string; proposal_revision?: number;
   forecast?: PlanForecast; input_snapshot?: ScheduleInput; reason?: string;
   resources?: import("@/features/projects/project-plan-resources").ResourceAnalysis;
+  framework_upgrade?: { from: { revision: number }; to: { revision: number }; differences: FrameworkDiff[] } | null;
 };
 export type PreparedProject = { command: ProjectCommand; review: ProjectReview; expires_at: string; confirmation_token: string };
 export type TaskDraft = { key: string; title: string; discipline: Discipline; depends_on: string[]; minimum: string; maximum: string; basis: string; notBefore?: string };
 export type ProjectDraft = {
   name: string; purpose: string; scope: string; definitionId: string; visibility: "private" | "category" | "audience";
-  basePlanId?: string | null; resources?: ResourceDemand[];
+  basePlanId?: string | null; resources?: ResourceDemand[]; npiBasis?: string;
   projectId: string; startUtc: string; timezone: string; calendarVersion: string; weekdays: number[];
   intervals: string; holidays: string; tasks: TaskDraft[]; reason: string;
 };
@@ -92,6 +117,7 @@ export function restoreProjectDraft(value: unknown, productId: string): LocalPro
   if (!stringFields(draft, ["name", "purpose", "scope", "definitionId", "projectId", "startUtc", "timezone", "calendarVersion", "intervals", "holidays", "reason"]) || !["private", "category", "audience"].includes(String(draft.visibility))) return null;
   if (!Array.isArray(draft.weekdays) || !draft.weekdays.every(day => Number.isInteger(day) && Number(day) >= 0 && Number(day) <= 6)) return null;
   if (!Array.isArray(draft.tasks) || draft.tasks.length > 500 || !draft.tasks.every(task => isRecord(task) && stringFields(task, ["key", "title", "minimum", "maximum", "basis"]) && ["engineering", "npi"].includes(String(task.discipline)) && Array.isArray(task.depends_on) && task.depends_on.every(key => typeof key === "string"))) return null;
+  if (draft.npiBasis != null && typeof draft.npiBasis !== "string") return null;
   if (draft.basePlanId != null && (typeof draft.basePlanId !== "string" || !/^[a-f0-9-]{36}$/i.test(draft.basePlanId))) return null;
   if (draft.resources != null && (!Array.isArray(draft.resources) || !draft.resources.every(d => isRecord(d) && stringFields(d, ["task_key", "resource_id", "coordinator_id", "purpose"]) && ["person", "resource"].includes(String(d.kind)) && Number.isSafeInteger(d.units) && Number(d.units) >= 1))) return null;
   if (value.pending != null) {
@@ -177,5 +203,5 @@ export function draftFromPlan(draft: ProjectDraft, project: Project): ProjectDra
   const value = project.plan?.input_snapshot;
   if (!value) return { ...draft, basePlanId: project.plan?.id ?? null };
   const clock = (minute: number) => `${String(Math.floor(minute / 60)).padStart(2, "0")}:${String(minute % 60).padStart(2, "0")}`;
-  return { ...draft, projectId: project.id, basePlanId: project.plan!.id, reason: "", startUtc: value.start.slice(0, 16), timezone: value.calendar.timezone, calendarVersion: value.calendar.version, weekdays: value.calendar.working_weekdays, intervals: value.calendar.intervals.map(v => `${clock(v.start_minute)}-${clock(v.end_minute)}`).join("\n"), holidays: value.calendar.holidays.join("\n"), resources: project.plan?.resource_demands ?? [], tasks: value.tasks.map(t => ({ key: t.key, title: t.title, discipline: t.discipline, depends_on: t.depends_on, minimum: t.duration_min_minutes?.toString() ?? "", maximum: t.duration_max_minutes?.toString() ?? "", basis: t.estimate_source ?? "", notBefore: t.not_before?.slice(0, 16) ?? "" })) };
+  return { ...draft, projectId: project.id, basePlanId: project.plan!.id, reason: "", npiBasis: value.npi ? JSON.stringify(value.npi.basis, null, 2) : undefined, startUtc: value.start.slice(0, 16), timezone: value.calendar.timezone, calendarVersion: value.calendar.version, weekdays: value.calendar.working_weekdays, intervals: value.calendar.intervals.map(v => `${clock(v.start_minute)}-${clock(v.end_minute)}`).join("\n"), holidays: value.calendar.holidays.join("\n"), resources: project.plan?.resource_demands ?? [], tasks: value.tasks.map(t => ({ key: t.key, title: t.title, discipline: t.discipline, depends_on: t.depends_on, minimum: t.duration_min_minutes?.toString() ?? "", maximum: t.duration_max_minutes?.toString() ?? "", basis: t.estimate_source ?? "", notBefore: t.not_before?.slice(0, 16) ?? "" })) };
 }

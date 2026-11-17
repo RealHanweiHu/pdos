@@ -50,6 +50,7 @@ class Inputs:
     as_of_day: str
     input_sha256: str
     commitments: list
+    calendar_basis: dict | None = None
 
 
 def _iso(value):
@@ -164,7 +165,14 @@ def gather(s, ctx, product_id, project, *, at):
     )
     proposal = s.get(PlanProposal, plan.proposal_id)
     require(proposal is not None, "当前计划的固定输入不可读。", "INTEGRITY_MISMATCH")
-    schedule = ScheduleInput.model_validate(proposal.input_snapshot)
+    schedule = ScheduleInput.model_validate({
+        key: proposal.input_snapshot[key] for key in ("start", "calendar", "tasks")
+    })
+    calendar_basis = None
+    if "npi" in proposal.input_snapshot:
+        from pdos_next.domain.projects.npi.planning import scheduling_calendar
+
+        schedule, calendar_basis = scheduling_calendar(s, ctx, schedule)
     tasks = s.scalars(
         select(ProjectTask).where(
             ProjectTask.tenant_id == ctx.tenant_id,
@@ -217,6 +225,7 @@ def gather(s, ctx, product_id, project, *, at):
         "facts": facts,
         "commitments": commitments,
         "as_of_day": local_day.isoformat(),
+        **({"calendar_basis": calendar_basis} if calendar_basis else {}),
     }
     return Inputs(
         plan=plan,
@@ -228,6 +237,7 @@ def gather(s, ctx, product_id, project, *, at):
         as_of_day=local_day.isoformat(),
         input_sha256=digest(material),
         commitments=commitments,
+        calendar_basis=calendar_basis,
     )
 
 
@@ -248,6 +258,9 @@ def _calendar(schedule, reference):
         exceptions=tuple(
             CalendarException(day=day, intervals=(), source=reference)
             for day in sorted(calendar.holidays)
+        ) + tuple(
+            CalendarException(day=day, intervals=intervals, source=reference)
+            for day in sorted(calendar.makeup_workdays)
         ),
     )
 
@@ -441,7 +454,11 @@ def compute(inputs):
             "key": schedule.calendar.key,
             "version": schedule.calendar.version,
             "timezone": schedule.calendar.timezone,
-            "label": NO_CALENDAR_LABEL if not schedule.calendar.holidays else None,
+            "label": (
+                inputs.calendar_basis["basis_label"] if inputs.calendar_basis
+                else NO_CALENDAR_LABEL if not schedule.calendar.holidays else None
+            ),
+            **(inputs.calendar_basis or {}),
         },
         "status": status,
         "float_status": float_status,

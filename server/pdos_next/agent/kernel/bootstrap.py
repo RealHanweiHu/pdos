@@ -318,6 +318,20 @@ class Bootstrap:
         if scope.project_id is not None and (fields is None or "project" in fields):
             from .project_current_context import read as current_project_facts
 
+            if run.versions.get("npi_g0"):
+                from pdos_next.domain.projects.npi.planning import read as read_npi
+                from pdos_next.domain.projects.service import _project
+
+                with self.store.transaction(scope) as (session, _run):
+                    ctx = self.commands.context(scope)
+                    project, link, _ = _project(session, ctx, scope.product_id, scope.project_id)
+                    npi = read_npi(session, ctx, project, link)
+                    npi.pop("generation", None)
+                    npi["roles"] = {
+                        role: "unique" if len(people) == 1 else "ambiguous" if people else "missing"
+                        for role, people in npi.get("roles", {}).items()
+                    }
+                    value["project"]["npi_planning"] = npi
             current_facts = current_project_facts(self.store, scope)
             if current_facts is not None:
                 value["project"]["current_facts"] = current_facts
@@ -471,6 +485,10 @@ class Bootstrap:
     def prepare_candidate(self, scope, spec, arguments, intent_key, *, source=None):
         if spec.tier not in {"T0", "T1", "T2-prepare-only"}:
             raise DomainError("FORBIDDEN_SCOPE", "该工具不是领域候选。", 403)
+        if spec.name == "work.plan.apply" and arguments.get("draft") is not None:
+            from pdos_next.domain.projects.npi.candidate import prepare
+
+            return prepare(self, scope, spec, arguments, intent_key)
         if spec.name == "work.task.create":
             from pdos_next.agent.enterprise_search.work_followup_candidates import prepare
 

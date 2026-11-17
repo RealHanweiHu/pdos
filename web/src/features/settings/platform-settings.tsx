@@ -17,6 +17,7 @@ import { PersonalMemory } from "./personal-memory";
 import { MemoryPolicySettings } from "./memory-policy-settings";
 import { AccountManagement } from "./accounts";
 import { WorkCalendarSettings } from "./work-calendar";
+import { RoleCatalogSettings } from "./role-catalog";
 import { Button } from "@/components/ui/button";
 import { readPortfolio } from "@/lib/portfolio-reads";
 import { memberRows, readTeams, responsibilityText, type MemberRow, type Participant, type ProjectRef } from "./lib/member-responsibilities";
@@ -24,7 +25,7 @@ import styles from "./platform-settings.module.css";
 
 const tabs = [["preferences", "个人偏好"], ["members", "成员与范围"], ["pai", "小Pai与模型"], ["integrations", "集成与治理"]] as const;
 // Tenant-wide pages: no category scope selector (D214 accounts, D221 working calendar).
-const tenantTabs = new Set(["preferences", "accounts", "calendar"]);
+const tenantTabs = new Set(["preferences", "accounts", "calendar", "roles"]);
 function Retained({ active, children }: { active: boolean; children: ReactNode }) {
   const [visited, setVisited] = useState(active);
   if (active && !visited) setVisited(true);
@@ -100,10 +101,11 @@ export function PlatformSettings({ categories, initialCategoryId, principalId, p
   const categoryId = categories.find(item => item.id === selected)?.id ?? categories[0]?.id ?? "";
   return <section className={styles.page} aria-label="设置">
     <div className="workspace-page-heading"><div><h1>设置</h1><p>低频配置集中管理，日常工作保持简洁。</p></div></div>
-    <nav className={styles.tabs} aria-label="设置视图">{[tabs[0], ...(administrator ? [["accounts", "账户与邀请"] as const] : []), ["calendar", "工作日历"] as const, ...tabs.slice(1)].map(([id, label]) => <button type="button" key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
+    <nav className={styles.tabs} aria-label="设置视图">{[tabs[0], ...(administrator ? [["accounts", "账户与邀请"] as const] : []), ["calendar", "工作日历"] as const, ["roles", "项目角色"] as const, ...tabs.slice(1)].map(([id, label]) => <button type="button" key={id} aria-pressed={tab === id} onClick={() => setTab(id)}>{label}</button>)}</nav>
     <div hidden={tab !== "preferences"} className={styles.retained}>{preferences}<PersonalPreferences key={principalId}/><PersonalMemory key={`memory:${principalId}`}/><DingTalkSettings key={`dingtalk:${principalId}`} principalId={principalId}/></div>
     {administrator && <Retained active={tab === "accounts"}><AccountManagement key={`accounts:${principalId}`}/></Retained>}
     <Retained active={tab === "calendar"}><WorkCalendarSettings key={`calendar:${principalId}`}/></Retained>
+    <Retained active={tab === "roles"}><RoleCatalogSettings key={`roles:${principalId}`}/></Retained>
     {!tenantTabs.has(tab) && <div className={styles.scope}><label>品类范围<select value={categoryId} onChange={event => setSelected(event.target.value)}>{!categoryId && <option value="">暂无可用范围</option>}{categories.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></label></div>}
     {categoryId ? <ScopedSettings key={`${principalId}:${categoryId}`} principalId={principalId} categoryId={categoryId} tab={tab} onOpenRun={onOpenRun} administrator={administrator}/> : !tenantTabs.has(tab) && <p className={styles.note}>当前没有可用的品类范围。</p>}
   </section>;
