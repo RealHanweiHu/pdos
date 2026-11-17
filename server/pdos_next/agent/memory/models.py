@@ -156,6 +156,8 @@ class MemoryTenantPolicy(KernelRow, Base):
     # M2a (P86 第 9 项): the administrator may close free-text notes and proposals.
     notes_enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
     proposals_enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    # D504 (P87 第 4 项): the scope-note review period, 90 days by default.
+    scope_note_review_days: Mapped[int] = mapped_column(Integer, default=90, server_default="90")
     set_by: Mapped[UUID]
     request_key: Mapped[UUID]
     request_sha256: Mapped[str] = mapped_column(String(64))
@@ -167,6 +169,9 @@ class MemoryTenantPolicy(KernelRow, Base):
         CheckConstraint("revision > 0", name="memory_policy_revision"),
         CheckConstraint(
             "work_state_idle_days BETWEEN 1 AND 365", name="memory_policy_idle_days"
+        ),
+        CheckConstraint(
+            "scope_note_review_days BETWEEN 1 AND 365", name="memory_policy_review_days"
         ),
         CheckConstraint("request_sha256 ~ '^[0-9a-f]{64}$'", name="memory_policy_request_sha256"),
     )

@@ -341,7 +341,7 @@ def _create(s, ctx, command, payload, *, kind, body, writer, run, drafted):
         "formal_id": formal["id"] if formal else None,
         "formal_version": formal["revision"] if formal else None,
         "generated_by": generated, "occurred_at": occurred, "valid_from": valid_from,
-        "valid_to": valid_to, "review_due_at": reads.review_due(now),
+        "valid_to": valid_to, "review_due_at": reads.review_due(s, now),
         "pinned": bool(getattr(body, "pinned", False)), "confirmed_by": confirmed_by,
         "run_id": run_id,
     }
@@ -393,7 +393,7 @@ def _create(s, ctx, command, payload, *, kind, body, writer, run, drafted):
         "formal_status": None if kind != "decision_context" else (
             "linked" if formal else "no_formal_decision"),
         "source_authority": content["source_authority"],
-        "customer": customer, "evidence_count": len(links), "review_days": reads.REVIEW_DAYS,
+        "customer": customer, "evidence_count": len(links), "review_days": reads.review_days(s),
         "supersedes": [str(row.note_id) for row in supersedes if not later],
         "relations": [{"type": item.type, "note_id": str(item.note.id)} for item in relations],
         "written_by": "xiaopai" if by_xiaopai else "person",
@@ -451,7 +451,7 @@ def _revise(s, ctx, command, payload):
         formal_version=formal["revision"] if formal else None,
         generated_by="human" if prior.generated_by == "human" else "xiaopai_drafted",
         occurred_at=reads.as_utc(body.occurred_at), valid_from=valid_from, valid_to=valid_to,
-        review_due_at=reads.review_due(now), pinned=body.pinned, confirmed_by=ctx.actor_id,
+        review_due_at=reads.review_due(s, now), pinned=body.pinned, confirmed_by=ctx.actor_id,
         source_authority=authority([*known, *added], by_xiaopai=False),
     )
     unchanged = all(content[name] == getattr(prior, name) for name in CONTENT if name not in {
@@ -470,7 +470,7 @@ def _revise(s, ctx, command, payload):
         "confirmation_label": reads.CONFIRMATION_LABELS[content["confirmation"]],
         "formal_status": None if prior.kind != "decision_context" else (
             "linked" if formal else "no_formal_decision"),
-        "customer": customer, "evidence_added": len(added), "review_days": reads.REVIEW_DAYS,
+        "customer": customer, "evidence_added": len(added), "review_days": reads.review_days(s),
         "written_by": "person", "note": reads.FACT_POLICY,
     }
     plan = Plan(s, s.get_transaction(), command_digest(command),

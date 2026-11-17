@@ -42,7 +42,7 @@ export type Candidate = {
 };
 export type CandidatesView = { version: "memory-candidates/v1"; items: Candidate[]; count?: number; run_id?: string; declined?: { count: number; note: string } | null };
 export type OwnerSettings = { version: "memory-owner-settings/v1"; revision: number; proactive_off: boolean; notes_enabled: boolean; proposals_enabled: boolean; episode_vectors: boolean; effect: string };
-export type TenantPolicy = { version: "memory-tenant-policy/v1"; revision: number; work_state_idle_days: number; notes_enabled: boolean; proposals_enabled: boolean; default: boolean };
+export type TenantPolicy = { version: "memory-tenant-policy/v1"; revision: number; work_state_idle_days: number; notes_enabled: boolean; proposals_enabled: boolean; scope_note_review_days: number; default: boolean };
 export type TenantStatistics = { version: "memory-tenant-statistics/v1"; policy: TenantPolicy; active_notes: number; owners_with_notes: number; episode_vectors: { enabled: boolean; profile_version_id: string | null }; note: string };
 
 export const memoryBase = "v1/personal/memory";

@@ -35613,6 +35613,155 @@
         }
       }
     },
+    "/v1/categories/{category_id}/scope-note-sources/{anchor_kind}/{anchor_id}": {
+      "get": {
+        "summary": "Scope Note Sources",
+        "operationId": "scope_note_sources_v1_categories__category_id__scope_note_sources__anchor_kind___anchor_id__get",
+        "parameters": [
+          {
+            "name": "anchor_kind",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "enum": [
+                "category",
+                "product",
+                "proposal",
+                "project"
+              ],
+              "type": "string",
+              "title": "Anchor Kind"
+            }
+          },
+          {
+            "name": "anchor_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Anchor Id"
+            }
+          },
+          {
+            "name": "authorization",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Authorization"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "统一错误码与具体原因",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PDOSFailure"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/v1/categories/{category_id}/scope-recent/{anchor_kind}/{anchor_id}": {
       "get": {
         "summary": "Scope Recent",
@@ -56758,6 +56907,19 @@
               }
             ],
             "title": "Proposals Enabled"
+          },
+          "scope_note_review_days": {
+            "anyOf": [
+              {
+                "type": "integer",
+                "maximum": 365.0,
+                "minimum": 1.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Scope Note Review Days"
           }
         },
         "additionalProperties": false,

@@ -68,6 +68,44 @@ REFERENCE_KINDS = {"artifact": "artifact", "original": "artifact", "claim": "cla
                    "definition": "definition", "snapshot": "snapshot"}
 
 
+# Dependencies whose availability is a domain rule, not a metadata row: a team
+# note is readable only through its attached and referenced objects, evaluated
+# for the reader now (P87 第 2 项), so ``scope_notes.reads`` decides.
+COMPUTED = frozenset({"scope_note"})
+
+
+def scope_note_dependencies(items):
+    """Team notes a Run carried or got back (IDs and revisions only; D481, D514)."""
+    return [dependency("scope_note", item["note_id"], item.get("revision"))
+            for item in items or [] if isinstance(item, dict) and item.get("note_id")]
+
+
+def scope_note_states(session, deps):
+    """P32 for team notes: 停用、撤回或对本人不可读 hide; 修订、替代或过期 only annotate."""
+    if not deps:
+        return {}
+    from datetime import UTC, datetime
+
+    from pdos_next.domain.knowledge.scope_notes import reads
+
+    now = datetime.now(UTC)
+    heads = {str(row.note_id): row for row in reads.latest(
+        session, list({UUID(item["id"]) for item in deps})).values()}
+    result = {}
+    for item in deps:
+        head = heads.get(item["id"])
+        if (head is None or head.lifecycle in {"retired", "withdrawn"}
+                or reads.anchor_view(session, head)[1] is None
+                or reads.flags(session, head, now=now) is None):
+            result[digest(item)] = "hidden"
+        elif (head.revision != item.get("version")
+              or reads.state(head, now=now) != "active"):
+            result[digest(item)] = "updated"
+        else:
+            result[digest(item)] = "current"
+    return result
+
+
 def _id(value):
     return str(UUID(str(value)))
 
@@ -270,6 +308,8 @@ def collect_call(name, args, value, run):
         # Recalled cards come from the owner's earlier Runs; each origin stays a root.
         deps.extend(dependency("run", item["run_id"]) for item in value.get("items", [])
                     if isinstance(item, dict) and item.get("run_id"))
+        # D514: a returned team note card is a dependency of this answer (P32).
+        deps.extend(scope_note_dependencies(value.get("scope_notes")))
     elif name in PURE:
         # References in pure arithmetic are model inputs, not issued provenance.
         # Their actual READs are collected independently; do not mint new roots.
@@ -299,6 +339,8 @@ def metadata(session, dependencies):
 
     grouped = defaultdict(set)
     for item in dependencies:
+        if item["kind"] in COMPUTED:
+            continue  # Checked by its own domain reader in _classify.
         grouped[item["kind"]].add(UUID(item["id"]))
     queries = []
     for kind, identities in sorted(grouped.items()):
@@ -518,6 +560,7 @@ def _manifests(session, runs, *, ancestors=None):
         AgentRun.versions["work_state_access_digest"].astext.label("state_access_digest"),
         AgentRun.versions["conversation_access"].label("history_access"),
         AgentRun.versions["project_current_context"].label("project_context"),
+        AgentRun.versions["memory_usage"]["scope_notes"].label("scope_notes"),
         func.jsonb_path_exists(AgentRun.versions["context_snapshots"], cast(literal(
             '$.*.fields[*] ? (@ == "project")'), JSONPATH)).label("project_carried"),
         func.jsonb_path_query_array(AgentRun.versions["conversation_memory"], cast(literal(
@@ -527,6 +570,8 @@ def _manifests(session, runs, *, ancestors=None):
     for row in frozen:
         value = result[str(row["id"])]
         value["dependencies"].extend(_references(row["proposal_refs"] or []))
+        # D514: team notes this Run carried in its envelope or got back from memory.search.
+        value["dependencies"].extend(scope_note_dependencies(row.get("scope_notes")))
         value["inherited"].extend(row["citations"] or [])
         state_access = row.get("state_access") or {}
         if state_access and digest(state_access) != row.get("state_access_digest"):
@@ -855,6 +900,7 @@ def _classify(session, access):
         item for manifest in access.values() for item in manifest["citations"])}
     valid, missing = current(session, citations, with_body=False,
                              allow_updated=frozenset(citations)) if citations else ({}, {})
+    notes = scope_note_states(session, [item for item in deps if item["kind"] == "scope_note"])
     citation_states = {digest(item): ("hidden" if key in missing else
                        "updated" if valid[key].get("updated") else "current")
                        for key, item in citations.items()}
@@ -878,6 +924,14 @@ def _classify(session, access):
             result[identity] = "hidden"
             continue
         for item in manifest["dependencies"]:
+            if item["kind"] == "scope_note":
+                found = notes[digest(item)]
+                if found == "hidden":
+                    state = "hidden"
+                    break
+                if found == "updated":
+                    state = "updated"
+                continue
             candidates = rows.get((item["kind"], item["id"]), [])
             readable = [row for row in candidates if _available(item["kind"], row)]
             if item["kind"] == "original" and UUID(item["id"]) not in safe:

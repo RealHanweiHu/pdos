@@ -18,7 +18,6 @@ from pdos_next.errors import DomainError
 from .models import ScopeNote, ScopeNoteEvidence, ScopeNoteRelation, ScopeNoteVersion
 
 VERSION = "scope-notes/v1"
-REVIEW_DAYS = 90  # P87 第 4 项 缺省 90 天; the tenant setting is a registered remainder.
 KIND_LABELS = {"convention": "约定", "concern": "关注点", "decision_context": "决策背景",
                "observation": "观察"}
 EPISTEMIC_LABELS = {"stated": "有人这样说", "verified": "已核实", "inferred": "推断",
@@ -279,12 +278,21 @@ def _reference(s, tenant_id, kind, identity, recorded):
             "updated": bool(current and current["revision"] != recorded)}
 
 
-def evidence_view(row):
+STANCE_LABELS = {"supports": "支持", "opposes": "反对", "context": "背景"}
+
+
+def evidence_view(s, row):
+    """One link as this reader sees it now: the source's current title, or 当前不可读 (D509)."""
+    from .sources import SOURCE_LABELS, title
+
+    kind = "proposal_decision" if row.source_kind == "proposal_decision" else row.source_type
     return {"id": str(row.id), "source_type": row.source_type, "source_kind": row.source_kind,
             "source_id": str(row.source_id), "source_version": row.source_version,
+            "type_label": ANCHOR_LABELS.get(row.source_kind) or SOURCE_LABELS[kind],
+            "title": title(s, row.tenant_id, row.source_type, row.source_kind, row.source_id),
             "locator": row.locator, "has_quote": row.quote_sha256 is not None,
-            "stance": row.stance, "recorded_at": row.created_at.isoformat(),
-            "by_xiaopai": row.run_id is not None}
+            "stance": row.stance, "stance_label": STANCE_LABELS[row.stance],
+            "recorded_at": row.created_at.isoformat(), "by_xiaopai": row.run_id is not None}
 
 
 def view(s, version, *, now=None, author_id=None, detail=False):
@@ -350,7 +358,7 @@ def view(s, version, *, now=None, author_id=None, detail=False):
         ],
     }
     if detail:
-        value["evidence"] = [evidence_view(row) for row in evidence(s, version.note_id)]
+        value["evidence"] = [evidence_view(s, row) for row in evidence(s, version.note_id)]
     return value
 
 
@@ -395,7 +403,7 @@ def listing(s, ctx, kind, identity, *, include_history=False):
         "audience": audience(s, anchor),
         "customers": anchor_customers(s, ctx.tenant_id, anchor),
         "statement_limit": 300,
-        "review_days": REVIEW_DAYS,
+        "review_days": review_days(s),
         "notes": shown,
         "inactive_count": sum(1 for item in items if item["state"] not in {"active", "expired"}),
         "note": FACT_POLICY,
@@ -422,5 +430,13 @@ def history(s, ctx, note_id):
     return {"version": VERSION, "note": head, "versions": versions}
 
 
-def review_due(now=None):
-    return (now or datetime.now(UTC)) + timedelta(days=REVIEW_DAYS)
+def review_days(s):
+    """复核期限由租户配置，缺省 90 天 (P87 第 4 项; D504): the period in force now."""
+    from pdos_next.agent.memory.policy import review_days as configured
+
+    return configured(s)
+
+
+def review_due(s, now=None):
+    """The review date a version written now gets; earlier versions keep theirs."""
+    return (now or datetime.now(UTC)) + timedelta(days=review_days(s))

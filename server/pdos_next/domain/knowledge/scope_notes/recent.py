@@ -1,11 +1,13 @@
 """范围近况 (P87 第 7 项): a read-only view computed when read, never stored.
 
 For a project it reuses the cockpit activity feed's own query (same sources,
-same row-level security); for every scope it adds the latest changes to the
+same row-level security). For a product it reuses the product page's 实际活动
+list: that product's common receipts, newest first, under the reader's own
+row-level security (D506). For every scope it adds the latest changes to the
 scope's team notes. All of it is deterministic SQL: no model, no embedding, and
-the same reader at the same watermark gets the same lines. Proposal, product
-and category scopes have no activity feed of their own yet, so they carry note
-changes only (registered remainder).
+the same reader at the same watermark gets the same lines. Proposal and
+category scopes have no activity feed of their own, so they carry note changes
+only (D506 remainder: there is no feed to reuse).
 """
 
 from datetime import UTC, datetime
@@ -29,8 +31,33 @@ def _short(value, limit=60):
     return value if len(value) <= limit else value[: limit - 1] + "…"
 
 
+def product_activity(s, ctx, anchor, *, as_of):
+    """The product page's 实际活动 list (``api.py`` product workspace), up to the watermark.
+
+    Same predicate as that list: receipts on this product, read under the reader's
+    row-level security. Team-note receipts are left out (they are in note_changes),
+    and only the operation, who and when are shown, never the receipt result.
+    """
+    from pdos_next.core.models import Receipt
+    from pdos_next.domain.projects.activity_catalog import OPERATION_LABELS
+
+    rows = s.scalars(
+        select(Receipt).where(
+            Receipt.tenant_id == ctx.tenant_id, Receipt.category_id == anchor["category_id"],
+            Receipt.product_id == anchor["id"], Receipt.created_at <= as_of,
+            Receipt.operation.notlike("scope_note.%"),
+        ).order_by(Receipt.created_at.desc(), Receipt.id.desc()).limit(ACTIVITY_LINES)
+    ).all()
+    return [{"at": row.created_at.date().isoformat(),
+             "who": (reads.person(s, ctx.tenant_id, row.actor_id) or {}).get("name"),
+             "what": _short(OPERATION_LABELS.get(row.operation, row.operation)),
+             "subject": None} for row in rows]
+
+
 def activity(s, ctx, anchor, *, as_of):
-    """Latest project activity lines up to the watermark; [] for other scopes."""
+    """Latest project or product activity lines up to the watermark; [] for other scopes."""
+    if anchor["kind"] == "product":
+        return product_activity(s, ctx, anchor, as_of=as_of)
     if anchor["kind"] != "project":
         return []
     from pdos_next.domain.projects.activity import activity_item, activity_records

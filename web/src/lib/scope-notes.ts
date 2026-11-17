@@ -29,11 +29,19 @@ export type ScopeNotesView = {
   statement_limit: number; review_days: number; notes: ScopeNote[]; inactive_count: number; note: string;
 };
 export type ScopeNoteVersion = { revision: number; action: string; lifecycle: string; statement: string; epistemic_label: string; confirmation_label: string; generated_label: string; reason: string | null; recorded_at: string; by: Person | null };
-export type ScopeNoteHistory = { version: "scope-notes/v1"; note: ScopeNote; versions: ScopeNoteVersion[] };
-export type Review = { effect: string; audience?: { kind: string; text: string }; kind_label?: string; statement?: string; zone?: "constraint" | "background"; formal_status?: "linked" | "no_formal_decision" | null; customer?: string | null; review_days?: number; note?: string };
+export type Stance = "supports" | "opposes" | "context";
+export type SourceType = "run" | "discussion" | "receipt" | "original" | "business_object";
+/** 一条证据链接，按读者现在的权限给出来源标题；读不到时 title 为 null（当前不可读）。引文原文不保存。 */
+export type EvidenceLink = { id: string; source_type: SourceType; source_kind: string | null; source_id: string; source_version: number | null; type_label: string; title: string | null; locator: Record<string, string | number>; has_quote: boolean; stance: Stance; stance_label: string; recorded_at: string; by_xiaopai: boolean };
+export type ScopeNoteHistory = { version: "scope-notes/v1"; note: ScopeNote & { evidence?: EvidenceLink[] }; versions: ScopeNoteVersion[] };
+/** 服务器列出的、读者现在能读到的证据来源和正式对象；保存时命令按当前权限逐条再核对，页面不另做判断。 */
+export type SourceOption = { source_type: SourceType; source_kind: string | null; source_id: string; type_label: string; title: string | null; version: number | null };
+export type SourcesView = { version: "scope-note-sources/v1"; anchor: { kind: AnchorKind; id: string; title: string | null }; formal: SourceOption[]; sources: SourceOption[]; note: string };
+export type EvidenceDraft = { key: string; stance: Stance; where: string; quote: string };
+export type Review = { effect: string; audience?: { kind: string; text: string }; kind_label?: string; statement?: string; zone?: "constraint" | "background"; formal_status?: "linked" | "no_formal_decision" | null; customer?: string | null; review_days?: number; evidence_added?: number; note?: string };
 export type Prepared = { command: Record<string, unknown>; review: Review };
 export type SimilarChoice = "supersede" | "conflict" | "keep";
-export type NoteDraft = { kind: NoteKind; statement: string; epistemic: Epistemic; discussion: boolean; pinned: boolean; customer: string; valid_from: string; link_formal: boolean };
+export type NoteDraft = { kind: NoteKind; statement: string; epistemic: Epistemic; discussion: boolean; pinned: boolean; customer: string; valid_from: string; formal: string };
 
 export const STATEMENT_LIMIT = 300;
 export const REASON_LIMIT = 200;
@@ -52,10 +60,14 @@ export const anchorNames: Record<AnchorKind, string> = { category: "品类", pro
 
 export const isScopeNotesView = (value: unknown): value is ScopeNotesView => !!value && typeof value === "object" && (value as ScopeNotesView).version === "scope-notes/v1" && Array.isArray((value as ScopeNotesView).notes);
 export const requestKey = () => crypto.randomUUID();
-export const emptyDraft = (): NoteDraft => ({ kind: "convention", statement: "", epistemic: "stated", discussion: false, pinned: false, customer: "", valid_from: "", link_formal: false });
-export const draftOf = (note: ScopeNote): NoteDraft => ({ kind: note.kind, statement: note.statement, epistemic: note.epistemic, discussion: note.confirmation === "discussion", pinned: note.pinned, customer: note.tags.customer ?? "", valid_from: "", link_formal: !!note.formal });
+export const optionKey = (option: { source_type: string; source_kind: string | null; source_id: string }) => `${option.source_type}:${option.source_kind ?? ""}:${option.source_id}`;
+export const formalKey = (kind: string, id: string) => optionKey({ source_type: "business_object", source_kind: kind, source_id: id });
+export const emptyDraft = (): NoteDraft => ({ kind: "convention", statement: "", epistemic: "stated", discussion: false, pinned: false, customer: "", valid_from: "", formal: "" });
+export const draftOf = (note: ScopeNote): NoteDraft => ({ kind: note.kind, statement: note.statement, epistemic: note.epistemic, discussion: note.confirmation === "discussion", pinned: note.pinned, customer: note.tags.customer ?? "", valid_from: "", formal: note.formal ? formalKey(note.formal.kind, note.formal.id) : "" });
+export const stanceNames: Record<Stance, string> = { supports: "支持这条备忘", opposes: "与这条备忘相反", context: "只作背景" };
 export const listPath = (categoryId: string, kind: AnchorKind, id: string, all = false) => `v1/categories/${categoryId}/scope-notes/${kind}/${id}${all ? "/all" : ""}`;
 export const itemPath = (categoryId: string, noteId: string) => `v1/categories/${categoryId}/scope-note-items/${noteId}`;
+export const sourcesPath = (categoryId: string, kind: AnchorKind, id: string) => `v1/categories/${categoryId}/scope-note-sources/${kind}/${id}`;
 export const commandPath = (categoryId: string, preview = false) => `v1/categories/${categoryId}/commands${preview ? "/preview" : ""}`;
 
 export function draftProblem(draft: NoteDraft): string | null {
@@ -66,15 +78,52 @@ export function draftProblem(draft: NoteDraft): string | null {
   return null;
 }
 
-/** 备忘正文：由本人选择的字段组成；挂靠对象的版本、确认人、复核日期都由服务器绑定。 */
-export function bodyPayload(draft: NoteDraft, anchor: { kind: AnchorKind; id: string }) {
+/** “kind:id” 形式的正式对象选择；空字符串表示不关联。 */
+function formalRef(key: string) {
+  const [type, kind, id] = key.split(":");
+  return type === "business_object" && kind && id ? { kind, id } : null;
+}
+
+/** 备忘正文：由本人选择的字段组成；挂靠对象和正式对象的版本、确认人、复核日期都由服务器绑定。 */
+export function bodyPayload(draft: NoteDraft) {
+  const formal = draft.kind === "decision_context" ? formalRef(draft.formal) : null;
   return {
     kind: draft.kind, statement: draft.statement.trim(), epistemic: draft.epistemic,
     confirmation: draft.discussion ? "discussion" : "member_confirmed", pinned: draft.pinned,
     ...(draft.customer.trim() ? { customer: draft.customer.trim() } : {}),
     ...(draft.valid_from ? { valid_from: `${draft.valid_from}T00:00:00Z` } : {}),
-    ...(draft.link_formal ? { formal: { kind: anchor.kind, id: anchor.id } } : {}),
+    ...(formal ? { formal } : {}),
   };
+}
+
+/** 补充证据：只带本人选的来源、立场、位置和摘录；摘录在服务器只存摘要，来源版本由服务器绑定。 */
+export function evidencePayload(note: { note_id: string; revision: number }, items: EvidenceDraft[], options: SourceOption[]) {
+  const known = new Map(options.map(option => [optionKey(option), option]));
+  const evidence = items.flatMap(item => {
+    const option = known.get(item.key);
+    if (!option) return [];
+    return [{
+      source_type: option.source_type, source_id: option.source_id,
+      ...(option.source_kind && option.source_type === "business_object" ? { source_kind: option.source_kind } : {}),
+      stance: item.stance,
+      ...(item.where.trim() ? { locator: { where: item.where.trim().slice(0, 80) } } : {}),
+      ...(item.quote.trim() ? { quote: item.quote.trim().slice(0, 2000) } : {}),
+    }];
+  });
+  return { mode: "evidence", note: { id: note.note_id, revision: note.revision }, evidence };
+}
+
+export function evidenceLine(link: EvidenceLink) {
+  const where = Object.values(link.locator ?? {}).join("，");
+  return [
+    `${link.type_label}：${link.title ?? "当前不可读"}`,
+    ...(link.source_version ? [`第 ${link.source_version} 版`] : []),
+    link.stance_label,
+    ...(where ? [`位置 ${where}`] : []),
+    ...(link.has_quote ? ["有摘录（原文未保存，按读者权限重新读取）"] : []),
+    ...(link.by_xiaopai ? ["小Pai 添加"] : []),
+    link.recorded_at.slice(0, 10),
+  ].join(" · ");
 }
 
 export function relationPayload(choice: SimilarChoice, similar: { note_id: string; revision: number }[]) {
