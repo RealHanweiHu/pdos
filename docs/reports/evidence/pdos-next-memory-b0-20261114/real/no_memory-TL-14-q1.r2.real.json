@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 58.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 215787,
+  "held_tokens": 0,
+  "answer": "没找到那次\"有刷电机噪声超标\"评估。我把能查的都查了：企业检索（问题单/CAPA/变更/试产/测试/文档/项目状态等13类来源）返回 0 条，第二次换宽关键词重跑被本轮查找预算拒绝；证据检索、品类知识（边界/细分/竞品/用户声音/法规/研究问题计数全为0）、参数字典、竞品列表、品类范围的产品/平台清单（含含历史）全部为空；品类\"汽车充气泵\"下只有1个型号，但平台读取列不出它，基线读取也因缺型号报\"请选择实际基线型号\"。本会话无历史对话，个人记忆本轮为关闭状态（\"本会话已设为不进记忆，未读取个人记忆\"），因此无法从我自己以往的工作记录里定位那次评估。工作状态里也没有任何已登记的未完成项：candidates/completed/unfinished/questions 均为空，因此\"还有什么事没做完\"在系统记录上没有对应条目，我没有可核对的未决清单。结论：那次评估推荐的方案无法确认，不是我不回答，而是在当前权限与检索预算下确实没有找到任何可核对依据。检索预算已用尽，未能换更宽关键词复检，也未定位到型号/提案标识。\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）",
+  "answer_blob": "{\"result\": {\"actions\": [{\"tier\": \"READ\", \"tool\": \"memory.search\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"scope\": {\"kind\": \"category\", \"narrowed_to\": null}, \"status\": \"memory_off\", \"message\": \"本会话已设为不进记忆，未读取个人记忆。\", \"version\": \"memory-search/v1\", \"returned\": 0, \"retrieval\": {\"channels\": [\"keyword\"], \"semantic\": {\"reason\": \"本人会话记录未启用向量化，本次只做了关键词检索。\", \"status\": \"not_enabled\"}, \"index_pending\": 0, \"ranking_version\": \"memory-rrf/v2;keyword-sat-1.2;own-words+answer-side;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5\"}, \"fact_policy\": \"情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。\", \"next_offset\": null, \"execution_ref\": {\"call_id\": \"4eb5c411-270f-4266-b537-31771b7f4934\", \"read_kind\": \"ordinary/v1\"}, \"unavailable_kinds\": []}}, {\"tier\": \"READ\", \"tool\": \"conversation.history\", \"taint\": \"trusted\", \"value\": {\"turns\": [], \"root_goal\": \"我记得有一次评估里说有刷电机噪声超标，那次最后推荐的是哪种方案？还有什么事没做完？\", \"session_id\": \"0f3ece95-92e3-4efc-8144-314036178462\", \"fact_policy\": \"Historical answers are dated records, not current domain facts. outcome_state \\\"updated\\\" means sources changed after that answer; re-read exact objects before relying on its facts. \\\"hidden\\\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.\", \"next_before\": null, \"root_run_id\": \"dae5fb09-e735-4af8-9cc7-61c39f3e766b\", \"execution_ref\": {\"call_id\": \"fe0b60e6-c45c-445c-b193-b8f261fe42c6\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"as_of\": \"2026-11-15T12:38:08.537912+00:00\", \"items\": [], \"scope\": {\"product_id\": null, \"project_id\": null, \"category_id\": \"004f88c9-2cd8-42b4-9206-3ac7a5819a08\", \"proposal_id\": null}, \"version\": \"enterprise-search/v1\", \"coverage\": {\"notice\": null, \"status\": \"current\", \"indexed_as_of\": null}, \"returned\": 0, \"truncated\": false, \"query_trace\": {\"codes\": [], \"terms\": [\"刷\", \"噪声\", \"推荐\", \"方案\", \"有\", \"电机\", \"评估\", \"超标\"], \"removed\": [], \"families\": [], \"code_rule_version\": \"enterprise-codes/v2\", \"tokenizer_version\": \"jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab\", \"query_policy_version\": \"query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf\"}, \"execution_ref\": {\"call_id\": \"f1d681ed-168e-41e3-b2a4-1b7ec1a26158\", \"read_kind\": \"ordinary/v1\"}, \"direct_returned\": 0, \"ranking_version\": \"bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1\", \"related_returned\": 0, \"related_truncated\": false}}, {\"tier\": \"READ\", \"tool\": \"assistant.search\", \"taint\": \"external\", \"value\": {\"error\": {\"code\": \"RATE_LIMITED\", \"detail\": {\"reason\": \"MODEL_BUDGET_EXCEEDED\"}, \"message\": \"本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"1ad22507-e4ca-42f3-b17c-8ae4d2077d0e\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:38:19.564166+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"66dad41f-5908-4032-99ca-33f488122168\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.knowledge.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:38:22.760365+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"e9e0c1f8-4262-4ab7-8d4d-d83c73f2e6d5\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"e0c334f0-38ea-490e-ba15-2c2f6f1c79b1\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"VALIDATION_FAILED\", \"detail\": {\"fields\": [{\"path\": \"page_size\", \"type\": \"extra_forbidden\", \"message\": \"Extra inputs are not permitted\"}], \"reason\": \"VALIDATION_FAILED\"}, \"message\": \"读取参数不符合要求，请按工具定义修正。\"}}}, {\"tier\": \"READ\", \"tool\": \"category.parameters.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:38:26.111590+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"972cbaed-59b7-478f-90de-2521df716bb5\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.list\", \"taint\": \"trusted\", \"value\": {\"items\": [{\"id\": \"004f88c9-2cd8-42b4-9206-3ac7a5819a08\", \"key\": \"category-c038254290f44237b12b8e3f5968fe2b\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"c5b53909-cb94-4ed9-a661-24f96f64583c\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"c5b53909-cb94-4ed9-a661-24f96f64583c\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}}], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"779f5282-33a2-439b-a2a3-1bb548a387da\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.read\", \"taint\": \"trusted\", \"value\": {\"id\": \"004f88c9-2cd8-42b4-9206-3ac7a5819a08\", \"key\": \"category-c038254290f44237b12b8e3f5968fe2b\", \"name\": \"汽车充气泵\", \"owner\": {\"id\": \"c5b53909-cb94-4ed9-a661-24f96f64583c\", \"name\": \"Synthetic owner\"}, \"status\": \"active\", \"purpose\": \"隔离合成品类\", \"owner_id\": \"c5b53909-cb94-4ed9-a661-24f96f64583c\", \"revision\": 1, \"model_count\": 1, \"permissions\": {\"read\": true, \"write\": true, \"product_manager\": false}, \"execution_ref\": {\"call_id\": \"e28a1f8b-42d2-4c1e-87a2-f98fd953fd41\", \"read_kind\": \"ordinary/v1\"}, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"3cd8ea36-e84e-492e-bd14-1d2a1823d012\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"category.competitors.list\", \"taint\": \"trusted\", \"value\": {\"as_of\": \"2026-11-15T12:38:32.949367+00:00\", \"items\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"0d79bf8b-4cf4-463a-8cb9-f213b79760fa\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"3dbdd52c-99d3-4d59-a4dc-714378c43a18\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"evidence.search\", \"taint\": \"external\", \"value\": {\"items\": [], \"execution_ref\": {\"call_id\": \"dda19bf5-8efd-445a-988c-0563710dd251\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"product.baseline.read\", \"taint\": \"trusted\", \"value\": {\"error\": {\"code\": \"MISSING_REQUIRED_EVIDENCE\", \"detail\": {\"reason\": \"baseline_product_required\"}, \"message\": \"请选择实际基线型号。\"}}}, {\"tier\": \"READ\", \"tool\": \"platform.read\", \"taint\": \"trusted\", \"value\": {\"items\": [], \"link_scope\": \"category_shared\", \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"c6a5b4d2-0d93-4f9a-b96a-5a82639ec880\", \"read_kind\": \"ordinary/v1\"}}}, {\"tier\": \"READ\", \"tool\": \"mcp.tools.list\", \"taint\": \"trusted\", \"value\": {\"taint\": \"admitted_metadata\", \"tools\": [], \"next_cursor\": null, \"execution_ref\": {\"call_id\": \"40ecd816-4b88-4d7d-9e8d-c964295c0dc0\", \"read_kind\": \"ordinary/v1\"}}}]}, \"status\": \"partial\", \"summary\": \"没找到那次\\\"有刷电机噪声超标\\\"评估。我把能查的都查了：企业检索（问题单/CAPA/变更/试产/测试/文档/项目状态等13类来源）返回 0 条，第二次换宽关键词重跑被本轮查找预算拒绝；证据检索、品类知识（边界/细分/竞品/用户声音/法规/研究问题计数全为0）、参数字典、竞品列表、品类范围的产品/平台清单（含含历史）全部为空；品类\\\"汽车充气泵\\\"下只有1个型号，但平台读取列不出它，基线读取也因缺型号报\\\"请选择实际基线型号\\\"。本会话无历史对话，个人记忆本轮为关闭状态（\\\"本会话已设为不进记忆，未读取个人记忆\\\"），因此无法从我自己以往的工作记录里定位那次评估。工作状态里也没有任何已登记的未完成项：candidates/completed/unfinished/questions 均为空，因此\\\"还有什么事没做完\\\"在系统记录上没有对应条目，我没有可核对的未决清单。结论：那次评估推荐的方案无法确认，不是我不回答，而是在当前权限与检索预算下确实没有找到任何可核对依据。检索预算已用尽，未能换更宽关键词复检，也未定位到型号/提案标识。\\n\\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）\", \"questions\": [], \"unfinished\": [\"最终结构或引用尚未核对\"]}",
+  "unfinished": [
+    "最终结构或引用尚未核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

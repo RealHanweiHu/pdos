@@ -1,0 +1,32 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real",
+  "timeline": "TL-05",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 1,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    }
+  ],
+  "episodes_written": [
+    "r1"
+  ],
+  "unexpected_notes": 0
+}

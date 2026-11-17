@@ -1,0 +1,19 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-13",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "domain",
+      "found": 1,
+      "criterion": "≤ 62 dB(A)",
+      "origin": "human"
+    }
+  ],
+  "episodes_written": [],
+  "unexpected_notes": 0
+}

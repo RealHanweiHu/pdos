@@ -104,6 +104,15 @@ class BoundHost:
                 notes = frozen_notes(session, run)
                 if notes is not None:
                     raw["personal_memory"] = notes
+                # P87 / P121 第 3 项: team scope notes and scope recency by the loaded
+                # skills' recipe. The Run keeps IDs and revisions only (D481).
+                from pdos_next.agent.memory.scope_assemble import frozen as frozen_scope
+
+                team, recent_scope = frozen_scope(session, run, skills=skills)
+                if team is not None:
+                    raw["team_memory"] = team
+                if recent_scope is not None:
+                    raw["scope_recent"] = recent_scope
                 # P34-4/P52: a shared thread's public content up to the @小Pai,
                 # frozen at the mention; dynamic context, never the fixed prefix.
                 thread = run.versions.get("discussion_thread")

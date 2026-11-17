@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-12",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 144.1,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 114212,
+  "held_tokens": 0,
+  "answer": "明天拜访气泵供应商，按你「下午开会 + 不用 Excel」的偏好，给一份一页式（非表格）清单，带三样：①一页需求核对清单（参数/单位/工况/验收方法逐条可答，留当场答复栏）；②现场样件与实测动作清单＋记录表（把「能不能做到」变成可复现实测）；③商务与变更底稿一页（报价构成要点、交期付款、模具与变更生效约定，不落纸的让步项你现场定）。说明：已检索当前品类（汽车充气泵）资料，产品、规格/参数字典、知识条目、证据与文档检索均返回 0 条，未找到公司既有的供应商拜访清单或 RFQ 记录，因此以上是通用实务清单，不是公司既有做法。",
+  "answer_blob": "{\"result\": {\"result\": [{\"n\": 1, \"why\": \"口头承诺不落到逐条参数，回到公司就会走样\", \"name\": \"一页需求核对清单（逐条可答）\", \"note\": \"无现成规格书时用同一份 1 页打印件加手机备忘，不改成 Excel\", \"contents\": [\"硬指标逐条写死：参数名＋数值＋单位＋工况与边界条件＋验收方法（例：持续充气流量在何电压与温度下测、压力上限、噪音测点、工作时长与间歇比）\", \"每条留「对方答复／差异／是否需实测」三栏，当场记完再走\", \"认证与合规逐项点名要证书版本与有效期（充电器与电池适配、EMC、RoHS/REACH、包装标签等，以我方实际适用为准）\"], \"format_hint\": \"手机备忘或 A4 一页纸\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:11:52.078257+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本人可读范围内未检索到本品类（汽车充气泵）的任何公司资料：platform.read（品类与名称检索）0 条、category.knowledge.list 0 条、evidence.search 0 条、assistant.search 0 条、category.parameters.list 无参数。因此 result 中的三项为通用实务清单，非公司既有标准做法，也非已核对记录。\", \"本次拜访的供应商名称、拜访性质（询价打样 / 量产审核 / 品质异常处理）与已定议程未知。\", \"我方最新规格书或 RFQ、现款样机是否可带出未知；rfq_extraction 与 test_verification 技能在本租户与范围未启用，无法按其行结构生成正式需求与验证台账。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"明天拜访气泵供应商，按你「下午开会 + 不用 Excel」的偏好，给一份一页式（非表格）清单，带三样：①一页需求核对清单（参数/单位/工况/验收方法逐条可答，留当场答复栏）；②现场样件与实测动作清单＋记录表（把「能不能做到」变成可复现实测）；③商务与变更底稿一页（报价构成要点、交期付款、模具与变更生效约定，不落纸的让步项你现场定）。说明：已检索当前品类（汽车充气泵）资料，产品、规格/参数字典、知识条目、证据与文档检索均返回 0 条，未找到公司既有的供应商拜访清单或 RFQ 记录，因此以上是通用实务清单，不是公司既有做法。\", \"questions\": [{\"id\": \"visit_type\", \"why\": \"决定三条的侧重：开发类以参数对齐为主，审核类要加过程与记录核查，异常类以复现与封样为主。\", \"options\": [{\"label\": \"询价或打样开发\", \"value\": \"询价/打样开发\"}, {\"label\": \"量产/现场审核\", \"value\": \"量产审核\"}, {\"label\": \"品质异常处理\", \"value\": \"品质异常处理\"}], \"question\": \"这次拜访的性质是什么：询价/打样开发、量产审核，还是品质异常处理？\", \"depends_on\": [], \"recommended\": {\"value\": \"询价/打样开发\", \"reason\": \"新品类早期多处于规格对齐阶段，不确定时按此准备最稳。\"}, \"allow_free_text\": true}, {\"id\": \"available_materials\", \"why\": \"决定第 1、2 项是带现成材料还是现场临时手写一页，也影响是否还需要我起草核对清单正文。\", \"options\": [{\"label\": \"规格书和样机都有\", \"value\": \"both\"}, {\"label\": \"只有规格书\", \"value\": \"spec_only\"}, {\"label\": \"只有样机\", \"value\": \"sample_only\"}, {\"label\": \"都没有\", \"value\": \"none\"}], \"question\": \"手上是否有我方最新规格书/RFQ 或现款样机可以带？\", \"depends_on\": [], \"recommended\": {\"value\": \"both\", \"reason\": \"带齐材料才能让对方当场对着实物和条款答复。\"}, \"allow_free_text\": true}, {\"id\": \"format\", \"why\": \"你说下午开会、不用 Excel，成品形式应定成你现场最顺手的，而不是默认表格。\", \"options\": [{\"label\": \"A4 一页纸（可打印）\", \"value\": \"a4_print\"}, {\"label\": \"手机备忘版\", \"value\": \"phone_memo\"}], \"question\": \"需要我把这份清单出成可打印的一页纸（A4/PDF）还是手机备忘版？\", \"depends_on\": [], \"recommended\": {\"value\": \"phone_memo\", \"reason\": \"现场边听边记，手机版最不打断对话节奏。\"}, \"allow_free_text\": false}], \"unfinished\": [\"公司既有的供应商拜访清单或模板在当前可读范围内未找到（品类资料为空）；若需对齐公司标准做法，需在具备权限与资料的范围内再检索一次。\", \"如需正式的需求与验证台账（rfq_extraction、test_verification 的行结构），需这两项技能在当前租户范围启用后才能生成。\"]}",
+  "unfinished": [
+    "公司既有的供应商拜访清单或模板在当前可读范围内未找到（品类资料为空）；若需对齐公司标准做法，需在具备权限与资料的范围内再检索一次。",
+    "如需正式的需求与验证台账（rfq_extraction、test_verification 的行结构），需这两项技能在当前租户范围启用后才能生成。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "c28",
+      "c29",
+      "c30"
+    ],
+    "catalog": [
+      "c28",
+      "c29",
+      "c30"
+    ],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

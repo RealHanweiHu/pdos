@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 77.1,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 220022,
+  "held_tokens": 0,
+  "answer": "没能给出“上周试产不良前三项”。我在当前范围（品类：汽车充气泵）做了检索与直读，结果均为空：① assistant.search（query 覆盖“试产/不良/缺陷/试产报告/统计/分类/频次”，source_types 含 issue、capa、build、test_run、manufacturing_document、artifact、project_status、field_feedback、verification_handoff）返回 0 条；第二次改写查询被本轮查找预算拦截（RATE_LIMITED / MODEL_BUDGET_EXCEEDED），未能补检。② platform.read（按品类、按名称、带历史、全量多页）返回 0 条产品/平台对象，虽然 category.read 显示该品类 model_count=1，但没有任何型号可读。③ category.knowledge.list、category.parameters.list、category.competitors.list、evidence.search 均为空；conversation.history 该会话无既往轮次；memory.search 本会话未开记忆。④ 载入 quality_issue 技能被拒（FORBIDDEN_SCOPE），说明该品类/租户未启用品质问题处理流程。这只说明在本次已检索的范围内未读到任何试产不良记录，不等于不存在该汇总。也没有任何已签发引用可供引用，因此三项名称、缺陷类别、发生次数/占比、以及“上周”的具体统计区间（当前时间基准 2026-11-14，上周约为 2026-11-03～11-09）均为未知。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T14:04:46.228409+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上周试产汇总的不良前三项名称、发生次数与占比未取得\", \"试产汇总的原始记录（报告/看板/表格）在本轮检索范围内无可读条目\", \"统计区间“上周”的具体起止日期未由记录确认\", \"试产对应型号/批次的型号标识未取得\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"没能给出“上周试产不良前三项”。我在当前范围（品类：汽车充气泵）做了检索与直读，结果均为空：① assistant.search（query 覆盖“试产/不良/缺陷/试产报告/统计/分类/频次”，source_types 含 issue、capa、build、test_run、manufacturing_document、artifact、project_status、field_feedback、verification_handoff）返回 0 条；第二次改写查询被本轮查找预算拦截（RATE_LIMITED / MODEL_BUDGET_EXCEEDED），未能补检。② platform.read（按品类、按名称、带历史、全量多页）返回 0 条产品/平台对象，虽然 category.read 显示该品类 model_count=1，但没有任何型号可读。③ category.knowledge.list、category.parameters.list、category.competitors.list、evidence.search 均为空；conversation.history 该会话无既往轮次；memory.search 本会话未开记忆。④ 载入 quality_issue 技能被拒（FORBIDDEN_SCOPE），说明该品类/租户未启用品质问题处理流程。这只说明在本次已检索的范围内未读到任何试产不良记录，不等于不存在该汇总。也没有任何已签发引用可供引用，因此三项名称、缺陷类别、发生次数/占比、以及“上周”的具体统计区间（当前时间基准 2026-11-14，上周约为 2026-11-03～11-09）均为未知。\", \"questions\": [], \"unfinished\": [\"未取得“上周试产不良前三项”的任何事实依据（名称/次数/占比全部未知）\", \"第 2 次改写后的检索被本轮查找预算拦截，扩大检索范围需继续深入查（本会话可续）\", \"若需走正式口径，建议启用 quality_issue 或 build_execution 流程并提供试产汇总原件/看板\"]}",
+  "unfinished": [
+    "未取得“上周试产不良前三项”的任何事实依据（名称/次数/占比全部未知）",
+    "第 2 次改写后的检索被本轮查找预算拦截，扩大检索范围需继续深入查（本会话可续）",
+    "若需走正式口径，建议启用 quality_issue 或 build_execution 流程并提供试产汇总原件/看板"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:5",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

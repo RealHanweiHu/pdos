@@ -1,0 +1,46 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51575,
+  "held_tokens": 0,
+  "answer": "已按\"本周完成供应商对比 / 下周补报价单\"两条出好文字版周报（汽车充气泵品类）。当前品类可读资料（企业检索、竞品与知识条目、平台项目、证据库）全部为空，未检索到供应商对比或报价单的登记记录，因此周报只写事项本身，未附供应商、型号、结论与金额，也未产生引用。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"供应商对比的对象范围、参与供应商与对比结论在当前品类可读资料范围内未检索到记录，周报内容依据提问人本人陈述\", \"报价单对应的供应商、型号、数量与金额未记录\", \"周报是否需要登记为任务/阶段完成记录尚未确认\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:19:16.626820+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"weekly_report\": \"本周周报（汽车充气泵）\\n一、本周完成\\n1. 完成供应商对比。\\n二、下周计划\\n1. 补报价单。\"}, \"status\": \"completed\", \"summary\": \"已按\\\"本周完成供应商对比 / 下周补报价单\\\"两条出好文字版周报（汽车充气泵品类）。当前品类可读资料（企业检索、竞品与知识条目、平台项目、证据库）全部为空，未检索到供应商对比或报价单的登记记录，因此周报只写事项本身，未附供应商、型号、结论与金额，也未产生引用。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类可读资料中没有供应商对比或报价单记录，我无法从资料中取得这些内容；若周报需带细节，需要你指明资料位置或直接提供内容。\", \"options\": [{\"label\": \"维持现状：只写两条事项\", \"value\": \"as_is\"}, {\"label\": \"我补充供应商/型号/结论，你再出一版\", \"value\": \"supply_details\"}, {\"label\": \"在同会话检索其它可读资料后再补\", \"value\": \"search_more\"}], \"question\": \"这版周报要不要补上具体供应商/型号/对比结论等细节？\", \"depends_on\": [], \"recommended\": {\"value\": \"as_is\", \"reason\": \"你明确要求周报只写这两条，且当前范围内没有可引用的支撑记录\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

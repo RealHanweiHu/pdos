@@ -1,0 +1,982 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/bin/python
+rootdir: /Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 168 items / 112 deselected / 56 selected
+
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-no_memory-rep0-setup0] time=2026-11-14T06:02:31.917 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53104
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53105/metrics
+REAL no_memory TL-01 q1 rep0 partial 75.8 151274 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。
+REAL no_memory TL-01 q2 rep0 completed 51.8 141562 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 在所有可读范围内均未找到"上次比较供应商时排除 C 家"的记录，故查不到其排除理由。已核对：会话历史无更早回合；个人记忆本会话关闭；公司资料检索命中 0 条；品类竞品清单、品类全部知识记录（计数为 0）、证据检索、平台/产品对象均为空。唯一未完成项：一条更宽的公司检索查询因单轮预算上限未执行完，故覆盖性未被完全证明。
+REAL no_memory TL-01 q3 rep0 partial 77.1 220022 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 没能给出“上周试产不良前三项”。我在当前范围（品类：汽车充气泵）做了检索与直读，结果均为空：① assistant.search（query 覆盖“试产/不良/缺陷/试产报告/统计/分类/频次”，source_types 含 issue、capa、build、test_run、manufacturing_document、artifact、project_status、field_feedback
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-history_only-rep0-setup0] time=2026-11-14T06:06:02.283 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53475
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53476/metrics
+REAL history_only TL-01 q1 rep0 failed 417.6 286473 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+REAL history_only TL-01 q2 rep0 completed 36.4 86865 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 查到上次的供应商比较记录（会话 b35c1bbe，2026-11-14，目标“比较三家气泵供应商的报价和交期”）：当时结论是建议选 B 家（交期比 A 家短 2 周），C 家被排除的原因是「含税报价超出目标价 12%」。需要提醒：那条记录没有留下任何来源引用，当时 C 家的含税报价单本身还挂在未完成事项里（“补 C 家的含税报价单”），所以 12% 这一数字来自上次的答复摘要；当前品类内也查不到该
+REAL history_only TL-01 q3 rep0 completed 55.2 157984 {'episodes': ['r3'], 'catalog': [], 'sessions_read': ['r3'], 'notes': [], 'note_revisions': {}} 按上次试产汇总的记录，不良前三项为：① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。需要说明的是：这三条来自我此前一次会话（2026-11-14 14:06）对“汇总上周试产的不良项”的回答记录，该记录本身没有附带引用；本轮我在当前品类（汽车充气泵）范围内检索试产/不良相关资料（build、issue、test_run）无命中，品类下也没有产品、平台或知识记录，因此无法用现行业务记录对这三条及其排序做复
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-real-rep0-setup0] time=2026-11-14T07:06:50.926 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54885
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54886/metrics
+REAL real TL-01 q1 rep0 failed 354.4 135247 {'episodes': ['r1', 'r2', 'r3'], 'catalog': ['r1', 'r2', 'r3'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+REAL real TL-01 q2 rep0 completed 32.3 50257 {'episodes': ['r1', 'r2', 'r3'], 'catalog': ['r1', 'r2', 'r3'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（2026-11-14 会话"比较三家气泵供应商的报价和交期"）排除 C 家的记录原因是：其含税报价超出目标价 12%；当时建议选 B 家（交期比 A 家短 2 周）。但该会话的未完成项显示"C 家的含税报价单"仍待补齐、B 家交期单位未核对，故 12% 为当时口径而非确认值；本次在当前品类（汽车充气泵）可读范围内检索供应/文档类资料未返回结果，无可引用的现行记录。建议在同会话继续深查核实。
+REAL real TL-01 q3 rep0 partial 86.3 163129 {'episodes': ['other', 'r2', 'r3'], 'catalog': ['other', 'r2', 'r3'], 'sessions_read': ['r3'], 'notes': [], 'note_revisions': {}} 上次那次"汇总试产的不良项"（2026-11-14）里，小Pai给出的不良前三项是：① 气嘴漏气 ② 外壳缩水 ③ 按键卡滞。  但要说清依据强度：这一条来自当时的答复记录（工作记忆），不是本次重新核对过的业务事实。我在当前"汽车充气泵"品类范围内检索后，没有取到可核的试产不良汇总原始记录——平台对象、证据检索、引用目录均为空，本轮检索预算也已用尽，无法确认三项的排序口径（件数/占比）、对应批次与
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-ideal-rep0-setup0] time=2026-11-14T07:14:48.179 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55937
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55938/metrics
+REAL ideal TL-01 q1 rep0 partial 62.2 106949 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（会话 982358e3，as_of 2026-11-14）我的结论是：建议选 B 家——交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。未完成两件事：① 补 C 家的含税报价单；② 核对 B 家交期的单位（这条直接影响“短 2 周”的结论口径）。本轮核对情况：在当前品类“汽车充气泵”（隔离合成品类）范围内检索供应商/报价/交期返回 0 条，品类下没有平台/产品对象可读，也
+REAL ideal TL-01 q2 rep0 failed 411.2 154905 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+REAL ideal TL-01 q3 rep0 partial 76.1 144154 {'episodes': ['r3'], 'catalog': ['r3'], 'sessions_read': ['r3'], 'notes': [], 'note_revisions': {}} 按我本人以往同一问题的工作记录（as_of 2026-11-14，原问题“汇总上周试产的不良项”），当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。但这一条只是我的工作记录，不是当前业务事实——本轮在“汽车充气泵”品类范围内重新检索试产不良登记记录时没有取到可引用的证据：assistant.search 在该品类按“试产 不良 汇总 排名 前三项”“试产不良”检索返回 0 条，evidenc
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-no_memory-rep0-setup0] time=2026-11-14T07:24:01.715 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:56620
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:56621/metrics
+REAL no_memory TL-02 q1 rep0 completed 109.3 181869 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到。按你的要求，只用能查到的以往记录回答：本会话历史只有当前这一轮、没有更早的对话；个人记忆未开启；品类「汽车充气泵」的竞品/知识/参数条目为 0；平台产品与提案、证据库、MCP 外部连接器均无命中（企业检索按品类 0 命中，扩大范围时触发本轮查找预算上限）。因此我无法确认你上次对气泵供应商的建议是哪一家，也不会凭印象给出一个供应商名。若日后把当时的对比表、供应商清单或会话记录附上/选定，我可
+REAL no_memory TL-02 q2 rep0 completed 26.1 33794 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已给出 2–3 句客户沟通话术草稿（中文），核心承诺为本周内给出气泵报价。  草稿： "您好，感谢关注我们的汽车充气泵产品。关于您询的【型号/数量】，规格已确认，我们正在核算成本与产能，本周内（【周X前】）会将正式报价发送给您。报价中会列明单价、起订量与交期供您评估，如需调整配置或数量我们也会同步更新。如本周内还有需要我们提前准备的信息（认证、包装、接口要求等），欢迎随时告知。"  说明与提醒： 
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-history_only-rep0-setup0] time=2026-11-14T07:26:21.263 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:56827
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:56828/metrics
+REAL history_only TL-02 q1 rep0 completed 27.8 85369 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 召回本人上次"比较三家气泵供应商的报价和交期"（2026-11-14，已完成）的历史结论：建议选 B 家。历史摘要仅保存结论，三家供应商名称、报价与交期数值未留存；当前品类范围内检索不到可读的供应商报价/交期记录，故结论无法用现有数据复核。
+REAL history_only TL-02 q2 rep0 completed 33.0 51838 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已给出两三句话的客户告知草稿（承诺本周内提供气泵报价），型号/客户名/截止日暂用占位符；该品类可读范围内未检索到对应询价或报价记录，故无引用可挂，承诺可达成性未经核实。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-real-rep0-setup0] time=2026-11-14T07:27:26.332 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:56932
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:56933/metrics
+REAL real TL-02 q1 rep0 completed 26.9 49542 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 上次（2026-11-14，会话 f33a4fa3，目标“比较三家气泵供应商的报价和交期”）你得到的结论是：建议选 B 家。  两点说明： 1. 这是我对你那次工作记录的回忆，不是当前业务事实；该会话当时的回答记录里只有“建议选 B 家”这句结论，没有附带三家厂商的报价、交期明细。 2. 我在当前品类（汽车充气泵）范围内检索“气泵供应商/报价/交期/推荐”，没有找到那次对比对应的供应商资料记录，因
+REAL real TL-02 q2 rep0 partial 86.6 134788 {'episodes': ['other', 'r1'], 'catalog': ['other', 'r1'], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 草稿已给出（3 句英文，按您“给这个客户的文件一律用英文”的既定口径起草）：  "Thank you for your inquiry about our automotive air pumps. We are completing our cost and specification review on the model, and we will send you our quotation
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-ideal-rep0-setup0] time=2026-11-14T07:29:25.791 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:57114
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:57115/metrics
+REAL ideal TL-02 q1 rep0 failed 342.3 94094 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+time=2026-11-15T01:30:31.517 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-migration-activity-tq timeout=1m9.999764s error="context deadline exceeded"
+time=2026-11-15T01:30:31.517 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999411s error="context deadline exceeded"
+time=2026-11-15T01:30:31.519 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-processor-parent-close-policy timeout=1m9.999302s error="context deadline exceeded"
+time=2026-11-15T01:30:31.519 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999585s error="context deadline exceeded"
+time=2026-11-15T01:30:31.519 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999194s error="context deadline exceeded"
+time=2026-11-15T01:30:31.519 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-migration-activity-tq timeout=1m9.999557s error="context deadline exceeded"
+time=2026-11-15T01:30:31.520 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-history-scanner-taskqueue-0 timeout=1m9.999616s error="context deadline exceeded"
+time=2026-11-15T01:30:31.517 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-history-scanner-taskqueue-0 timeout=1m9.9996s error="context deadline exceeded"
+time=2026-11-15T01:30:31.519 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.594 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=ActivityWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.594 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=default-worker-tq timeout=1m9.998656s error="context deadline exceeded"
+time=2026-11-15T01:30:31.595 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-processor-parent-close-policy WorkerID=temporal-system@127.0.0.1:57119 WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.522 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=default-worker-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.518 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-per-ns-tq timeout=1m9.999635s error="context deadline exceeded"
+time=2026-11-15T01:30:31.523 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-history-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.523 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-delete-namespace-activity-tq timeout=1m9.999555s error="context deadline exceeded"
+time=2026-11-15T01:30:31.523 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-migration-activity-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.524 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-per-ns-tq timeout=1m9.999121s error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.524 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999731s error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.524 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-processor-parent-close-policy timeout=1m9.999518s error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.597 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.597 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999562s error="context deadline exceeded"
+time=2026-11-15T01:30:31.598 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-per-ns-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local@temporal-system WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.599 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-history-scanner-taskqueue-0 timeout=1m9.999363s error="context deadline exceeded"
+time=2026-11-15T01:30:31.599 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-history-scanner-taskqueue-0 timeout=1m9.99964s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999152s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=huhanweideMacBook-Pro.local:0f075a4e-88c1-4ba6-b433-cf54cab8750c timeout=1m9.999673s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=huhanweideMacBook-Pro.local:581dbfcd-4b5b-48a3-8333-31d1b62c2f08 timeout=1m9.999241s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=default-worker-tq timeout=1m9.99965s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=WorkflowWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-history-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=WorkflowWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999667s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.997616s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-delete-namespace-activity-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=default TaskQueue=temporal-sys-per-ns-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local@default WorkerType=ActivityWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=huhanweideMacBook-Pro.local:581dbfcd-4b5b-48a3-8333-31d1b62c2f08 timeout=1m9.999779s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=huhanweideMacBook-Pro.local:581dbfcd-4b5b-48a3-8333-31d1b62c2f08 timeout=1m9.999553s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=huhanweideMacBook-Pro.local:5beae7e0-218f-4b52-8a39-567a0fbb8ae5 timeout=1m9.999066s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-per-ns-tq timeout=1m9.999307s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=ActivityWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.600 level=ERROR msg="Unable to call matching.PollActivityTaskQueue." service=frontend wf-task-queue-name=temporal-sys-per-ns-tq timeout=1m9.999019s error="context deadline exceeded"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-history-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=WorkflowWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=default TaskQueue=temporal-sys-per-ns-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local@default WorkerType=WorkflowWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.600 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-per-ns-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local@temporal-system WorkerType=WorkflowWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.601 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=default-worker-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local WorkerType=WorkflowWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.601 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=WorkflowWorker Error="stream terminated by RST_STREAM with error code: CANCEL"
+time=2026-11-15T01:30:31.601 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-processor-parent-close-policy WorkerID=temporal-system@127.0.0.1:57119 WorkerType=WorkflowWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-per-ns-tq timeout=1m9.999612s error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=huhanweideMacBook-Pro.local:6d621242-305c-4d28-8a6d-c58e543ee1c2 timeout=1m9.999718s error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-processor-parent-close-policy timeout=1m9.999692s error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=temporal-sys-tq-scanner-taskqueue-0 WorkerID=temporal-system@127.0.0.1:57119 WorkerType=WorkflowWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=WARN msg="Failed to poll for task." service=worker Namespace=temporal-system TaskQueue=default-worker-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local WorkerType=WorkflowWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-tq-scanner-taskqueue-0 timeout=1m9.999852s error="context deadline exceeded"
+time=2026-11-15T01:30:31.601 level=WARN msg="Failed to poll for task." service=worker Namespace=default TaskQueue=temporal-sys-per-ns-tq WorkerID=temporal-system@huhanweideMacBook-Pro.local@default WorkerType=WorkflowWorker Error="context deadline exceeded"
+time=2026-11-15T01:30:31.602 level=ERROR msg="Unable to call matching.PollWorkflowTaskQueue." service=frontend wf-task-queue-name=temporal-sys-history-scanner-taskqueue-0 timeout=1m9.999794s error="context deadline exceeded"
+FAILED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-no_memory-rep0-setup0] time=2026-11-15T01:30:38.103 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:57775
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:57791/metrics
+REAL no_memory TL-04 q1 rep0 failed 302.0 72980 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-history_only-rep0-setup0] time=2026-11-15T01:35:44.076 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:59374
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:59375/metrics
+REAL history_only TL-04 q1 rep0 failed 341.1 133092 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-real-rep0-setup0] time=2026-11-15T01:41:29.534 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:59847
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:59848/metrics
+REAL real TL-04 q1 rep0 completed 70.2 120061 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 在当前可查范围内，没有找到你交代过的气泵报价对比口径。已核对的台账：历史记录里只有一次「气泵报价对比」会话（run 62b2e1e8…、session 0455e2fc…、as_of 2026-11-15，状态已完成），但它只留了一句摘要「报价对比已完成。」，没有口径、来源引用、notes 或研究行；品类内按「价格/口径/币种/含税/运费/渠道/价格带」检索资料为空，品类知识条目与竞品清单同样为空
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-ideal-rep0-setup0] time=2026-11-15T01:42:43.950 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:59941
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:59942/metrics
+REAL ideal TL-04 q1 rep0 partial 21.3 49901 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 没有找到你以前交代过气泵报价对比口径的记录。在本轮可读范围内检索了四处：你的个人会话记录（两轮关键词：气泵/报价对比/口径、价格口径/对标/充气泵）、公司可读资料（气泵报价对比口径、统一价格口径/币种/渠道/含税运费）、本会话历史、品类「汽车充气泵」竞品知识库，均无命中。第二轮更宽口径的公司资料检索被本轮查找预算拦下，未完成。因此结论是「在已检索范围内未找到」，不等于你没有交代过——也可能记在预算
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-no_memory-rep0-setup0] time=2026-11-15T01:43:09.441 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:59984
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:59985/metrics
+REAL no_memory TL-06 q1 rep0 completed 74.2 208776 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到。我没有找到那次"三家气泵供应商比较"的任何以往记录，因此无法给出当时的推荐对象，也不会凭印象报一个供应商名字。已核查范围：本会话历史（0 条更早回答）、当前品类「汽车充气泵」下的竞品/知识/参数记录（均为 0，含历史）、平台对象与基线（无可读条目）、公司资料检索（供应商比较相关命中 0，本轮检索额度用尽后无法再补查）、本工作链历史引用（无）、本会话个人记忆（未启用，未读取）、MCP 外部数
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-history_only-rep0-setup0] time=2026-11-15T01:44:27.509 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60084
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60085/metrics
+REAL history_only TL-06 q1 rep0 partial 61.3 181946 {'episodes': ['r2'], 'catalog': [], 'sessions_read': ['r2'], 'notes': [], 'note_revisions': {}} 当前可读范围（汽车充气泵品类资料、平台/提案/证据对象、本人在该品类的历史记录与引用目录）内，未检索到既往“三家气泵供应商比较”的记录，因此没有可引用的推荐结论；唯一相关的历史工作是一次“整理气泵供应商的联系人”，其结果未包含三家比较或推荐。未臆造供应商名称。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-real-rep0-setup0] time=2026-11-15T01:45:32.861 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60164
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60165/metrics
+REAL real TL-06 q1 rep0 partial 64.3 194148 {'episodes': ['r2'], 'catalog': ['r2'], 'sessions_read': ['r2'], 'notes': [], 'note_revisions': {}} 在当前可读范围内没有找到"三家气泵供应商比较"的记录，因此没有可引用的推荐结论，也不能替你断言"当时建议选哪家"。当前品类（汽车充气泵）的企业检索、品类知识（竞品/边界/用户声音均为 0）、竞品清单、平台与产品基线、证据行、提案与附件全部为空；我本人工作记忆中该品类唯一相关工作是"整理气泵供应商的联系人"（as_of 2026-11-15 的情景记录，非业务事实），那次只产出联系人，没有留下取舍结
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-ideal-rep0-setup0] time=2026-11-15T01:46:41.556 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60271
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60272/metrics
+REAL ideal TL-06 q1 rep0 partial 69.4 226592 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 运行预算已用完，保留已完成动作与已核对结果。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-no_memory-rep0-setup0] time=2026-11-15T01:47:54.569 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60363
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60364/metrics
+REAL no_memory TL-07 q1 rep0 partial 36.5 68960 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已按"内容就两条"口径出本周周报草稿：①本周完成供应商对比——完成（依据本人陈述）；在当前品类可读资料中未检索到供应商/竞品对比记录（竞品库为空、品类检索无命中），本轮查找预算已用完，无法扩大核实，故结论与口径未落纸。②下周补报价单——计划中，报价口径（币种、是否含税含运、数量档位、有效期）、责任人、目标完成日均未登记。当前范围无可写入的任务/计划登记工具，该条仅为文字，未建单。已就结论是否入正文
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-history_only-rep0-setup0] time=2026-11-15T01:48:34.960 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60414
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60415/metrics
+REAL history_only TL-07 q1 rep0 completed 38.7 84750 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 本周周报已按你指定的两条内容出好：  【本周周报 · 汽车充气泵】 一、本周完成 1. 完成供应商对比。 二、下周计划 1. 补报价单。  两点如实说明： 1. 「本周完成供应商对比」目前只是按你口述写入的。我在当前可读范围（品类「汽车充气泵」内的资料、竞品/知识条目、平台对象、证据检索、会话与个人记忆）都没有找到对应的供应商对比记录，所以无法独立核实这条完成项；如果你手上有对比表或纪要，贴上来我
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-real-rep0-setup0] time=2026-11-15T01:49:17.645 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60458
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60459/metrics
+REAL real TL-07 q1 rep0 completed 17.8 49389 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按文字形式出好周报，两条内容：本周完成供应商对比；下周补报价单。检索了当前品类（汽车充气泵）范围的资料，未找到可引用的供应商对比记录或报价单原件，所以周报内容按你本人的陈述落笔，没有替公司记录做佐证。若要在周报里附对比明细或报价单草稿，告诉我对比对象和来源，我可以在同一会话继续查。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-ideal-rep0-setup0] time=2026-11-15T01:49:38.990 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60492
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60493/metrics
+REAL ideal TL-07 q1 rep0 completed 25.3 51589 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按文字形式出本周周报，仅两条：本周完成供应商对比；下周补报价单。说明：当前品类（汽车充气泵）可读资料中未检索到供应商对比与报价单记录，两条均按你的陈述写入，未附公司引用。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-no_memory-rep0-setup0] time=2026-11-15T01:50:09.050 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60530
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60531/metrics
+REAL no_memory TL-08 q1 rep0 failed 392.4 319460 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-history_only-rep0-setup0] time=2026-11-15T01:56:46.498 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60810
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60811/metrics
+REAL history_only TL-08 q1 rep0 completed 30.3 84037 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 找到了：外壳缩水出自 2026-11-15 那次工作《汇总上周试产的不良项》。当时一起列出的是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞——外壳缩水排在第二项。按"缩水/缩水"检索本人记录只命中这一次工作，没有其他会话提到过。补一句核对：我在当前"汽车充气泵"品类可读的 issue / field_feedback / build / test_run 范围内按这三项检索，未找到对应的不良登记记
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-real-rep0-setup0] time=2026-11-15T01:57:21.786 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60853
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60854/metrics
+REAL real TL-08 q1 rep0 completed 22.1 67004 {'episodes': ['r1', 'r4', 'r5', 'r6'], 'catalog': ['r4', 'r5', 'r6'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 记起来了：那是你上一次「汇总上周试产的不良项」的工作（run a4f06535，session f6bfc9f8，2026-11-15 上午）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——所以和外壳缩水一起列出的另外两项是气嘴漏气和按键卡滞。这份记录只是当时的工作留痕，不能当现在的业务事实；我在当前品类（汽车充气泵）范围内按 issue/capa/build/test_run 检索了外
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-ideal-rep0-setup0] time=2026-11-15T01:57:48.430 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60895
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60896/metrics
+REAL ideal TL-08 q1 rep0 completed 21.5 51769 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 定位到本人 2026-11-15 的那次工作「汇总上周试产的不良项」（汽车充气泵品类）。当时小Pai 回答的不良前三项为：气嘴漏气、外壳缩水、按键卡滞——外壳缩水排在第二位，另两项是气嘴漏气与按键卡滞。该记录来自个人工作历史（as_of 2026-11-15），不是当前可引用的业务事实；当前品类可读业务资料检索「外壳缩水/试产不良」返回 0 条，无法确认是否已有品质问题或 CAPA 登记。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-no_memory-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-history_only-rep0-setup0] time=2026-11-15T01:58:14.952 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:60933
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:60934/metrics
+REAL history_only TL-09 q1 rep0 failed 337.6 145795 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-real-rep0-setup0] time=2026-11-15T02:03:56.750 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61193
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61194/metrics
+REAL real TL-09 q1 rep0 completed 36.2 104810 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 还没定。品类「汽车充气泵」的规格字典里确实建了「额定压力」这个参数位（key=rated_pressure，单位 PSI，第 1 版），但它是空的：没有数值，也没有标准工况、测试方法或验收准则。该参数记录上写明的变更说明是「额定压力尚未确定，待样机测试后再定」，且确认人字段为空，说明它是人写的待定参数位，而不是已批准定值。  我另外在当前可读范围内逐项查过：品类文档检索（assistant.sea
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-ideal-rep0-setup0] time=2026-11-15T02:04:37.318 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61253
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61254/metrics
+REAL ideal TL-09 q1 rep0 partial 67.6 231600 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 运行预算已用完，保留已完成动作与已核对结果。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-no_memory-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-history_only-rep0-setup0] time=2026-11-15T02:05:49.261 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61348
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61349/metrics
+REAL history_only TL-10 q1 rep0 partial 67.5 220556 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 在当前可读范围内（品类"汽车充气泵"）没有查到任何与"气嘴漏气"相关的品质问题记录、围堵措施、CAPA 或根因结论，因此无法给出公司记录中的根因答案。已核对的读取路径全部为空：品类检索 0 条；品类知识库六类计数均为 0、参数 0 条；竞品列表空；证据检索（空查询/"漏气"/"气嘴"）空；本会话历史无既往结论；platform.read 在品类与全局均返回 0 条产品记录，无法定位具体型号去读产品
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-real-rep0-setup0] time=2026-11-15T02:07:01.088 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61443
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61444/metrics
+REAL real TL-10 q1 rep0 partial 86.1 250744 {'episodes': ['r1', 'r2'], 'catalog': ['r1', 'r2'], 'sessions_read': ['r1', 'r2'], 'notes': [], 'note_revisions': {}} 运行预算已用完，保留已完成动作与已核对结果。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-ideal-rep0-setup0] time=2026-11-15T02:08:31.077 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61541
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61542/metrics
+REAL ideal TL-10 q1 rep0 partial 47.8 106278 {'episodes': ['r1', 'r2'], 'catalog': ['r1', 'r2'], 'sessions_read': ['r1', 'r2'], 'notes': [], 'note_revisions': {}} **结论：目前没有已登记的根因，"气嘴漏气"的根因在现有资料中尚未确认。**  我在本轮可读范围（汽车充气泵品类；issue / CAPA / 现场反馈 / 来料与不良记录 / 知识条目 / 制造与验证记录）检索"气嘴漏气 根因 密封圈 换料 拆件分析"，返回 0 条记录；证据检索、品类知识、研究问题与平台产品列表同样为空。因此公司资料里目前**没有**一条可引用的品质问题单、根因结论或 CAPA
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-no_memory-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-history_only-rep0-setup0] time=2026-11-15T02:09:24.097 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61604
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61605/metrics
+REAL history_only TL-11 q1 rep0 completed 36.3 105463 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 汽车充气泵品类规格字典中，「最大流量」(max_flow) 当前生效版本 v1 的验收标准为 ≥ 35 L/min：单位 L/min，数值型，判定方向 higher（越高越好），登记来源 human，变更说明为"合成规格：最大流量"。该条目目前 standard_condition（标准工况）与 method（测试方法）均为空，因此 35 L/min 这个数字是在什么工况、按什么方法测尚未在字典中
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-real-rep0-setup0] time=2026-11-15T02:10:04.906 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61662
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61663/metrics
+REAL real TL-11 q1 rep0 completed 37.3 107184 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 当前生效的最大流量（参数 max_flow，单位 L/min，版本 1）验收标准为「≥ 35 L/min」，方向 higher。该条参数按 include_history=true 查询也只返回版本 1，没有 replaces_version，即没有更新版本生效；其 standard_condition（工况条件）与 method（测试方法）字段均为空，属未登记。登记信息：origin=human
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-ideal-rep0-setup0] time=2026-11-15T02:10:46.045 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61714
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61715/metrics
+REAL ideal TL-11 q1 rep0 completed 42.2 106993 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 最大流量（max_flow）当前验收标准为 ≥ 35 L/min（参数字典版本 1，单位 L/min，方向 higher，origin=human，已有 receipt，且无 replaces_version、无更新版本）。该品类下未登记产品基线，故此为品类级参数口径。需注意：方法的 standard_condition 与 method 均为空（未登记），且此前会话起草的 ≥40 L/min 修
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-no_memory-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-history_only-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-real-rep0-setup0] time=2026-11-15T02:11:40.154 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:61783
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:61784/metrics
+REAL real TL-12 q1 rep0 completed 144.1 114212 {'episodes': ['c28', 'c29', 'c30'], 'catalog': ['c28', 'c29', 'c30'], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 明天拜访气泵供应商，按你「下午开会 + 不用 Excel」的偏好，给一份一页式（非表格）清单，带三样：①一页需求核对清单（参数/单位/工况/验收方法逐条可答，留当场答复栏）；②现场样件与实测动作清单＋记录表（把「能不能做到」变成可复现实测）；③商务与变更底稿一页（报价构成要点、交期付款、模具与变更生效约定，不落纸的让步项你现场定）。说明：已检索当前品类（汽车充气泵）资料，产品、规格/参数字典、知识
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-ideal-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-no_memory-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-history_only-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-real-rep0-setup0] time=2026-11-15T02:14:11.214 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62129
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62130/metrics
+REAL real TL-13 q1 rep0 partial 55.0 144430 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 一、验收标准（已在品类「汽车充气泵」规格字典中核实）：参数 key=noise（噪声），版本 1，单位 dB(A)，验收判据「≤ 62 dB(A)」，方向为越低越好；标准测试条件已登记为「1 m，空载」。该条目 origin=human，由品类 owner（Synthetic owner，4de836fa…）写入，变更说明为“合成规格：噪声”，创建于 2026-11-15；include_hist
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-ideal-rep0-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-no_memory-rep0-setup0] time=2026-11-15T02:15:11.256 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62202
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62203/metrics
+REAL no_memory TL-14 q1 rep0 partial 69.6 226357 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 没有核对到那次"有刷电机噪声超标"评估：可读范围内检索不到相关记录，因此无法给出当时的推荐方案，也无法给出未完成事项清单。已核查：本会话个人记忆检索被跳过（该会话设为不读取个人记忆）；本品类（汽车充气泵，隔离合成品类）的知识条目（边界/细分/竞品/用户声音/法规/研究问题）均为 0、参数 0 条、竞品 0 条、平台与产品型号读取 0 条、证据库检索"噪声/电机/有刷电机"0 条、公司资料检索（含历
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-history_only-rep0-setup0] time=2026-11-15T02:16:25.907 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62323
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62324/metrics
+REAL history_only TL-14 q1 rep0 completed 37.0 103851 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 那次评估是你本人 2026-11-15 在「汽车充气泵」品类下的一次会话（目标「评估两种电机方案的成本和噪声」，会话 cc960f6f…／run 37e881a6…），结论是推荐**无刷电机方案**：单价约贵 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，因此不建议采用。  **当时标为未完成、且历史记录里没有完成回执的只有一项**：向电机厂确认无刷方案的最小起订量（MOQ）。  
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-real-rep0-setup0] time=2026-11-15T02:17:07.931 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62378
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62379/metrics
+REAL real TL-14 q1 rep0 completed 44.8 143921 {'episodes': ['r1', 'r3', 'r4', 'r5'], 'catalog': ['r3', 'r4', 'r5'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 找到了那次评估：你指的是 2026-11-15 会话 b21116ea…（目标"评估两种电机方案的成本和噪声"），当时最终推荐的是**无刷电机方案**——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，明确不建议采用。那次留下的未完事项只有一条：**向电机厂确认无刷方案的最小起订量（MOQ）**。需要说明的是：这是你本人过往工作记录（历史回答摘录），本轮在"汽车充气泵"品类
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-ideal-rep0-setup0] time=2026-11-15T02:17:57.732 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62441
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62442/metrics
+REAL ideal TL-14 q1 rep0 partial 69.4 112007 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 按你本人 2026-11-15 的那次会话记录（run 20629f71 / session 0761c59e，目标“评估两种电机方案的成本和噪声”）：当时最终推荐的是无刷电机方案——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。那次明确未做完的一件事是：向电机厂确认无刷方案的最小起订量（MOQ）。核实边界：在当前“汽车充气泵”品类范围内，资料检索、证据检索
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-no_memory-rep0-setup0] time=2026-11-15T02:19:10.926 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62514
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62515/metrics
+REAL no_memory TL-15 q1 rep0 completed 63.9 205284 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到。我按当前权限能查到的范围都查过了：①企业检索（当前品类“汽车充气泵”，含历史版本）无命中；②品类知识、竞品、参数、品类平台对象均为空；③证据库检索无命中；④本会话历史为空；⑤个人记忆在本会话处于关闭状态，无法读取你以往会话的记录。因此“上次整理的充气泵包装方案”里到底有哪几个选项、你最终选了哪一个、以及该方案的包装单件成本，我都无法从已核对材料中得出——也不凭印象给你一个方案名或成本数字。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-history_only-rep0-setup0] time=2026-11-15T02:20:18.783 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62608
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62609/metrics
+REAL history_only TL-15 q1 rep0 completed 45.9 161838 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 查到上次的记录：选的是包装方案二（纸托 + 收缩膜），单件成本 1.8 元。该结论来自 2026-11-15 那次"整理充气泵的包装方案"会话；本次在当前品类可读范围内没有找到对应的包装提案或成本明细记录，所以 1.8 元/件尚未用当前业务记录复核。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-real-rep0-setup0] time=2026-11-15T02:21:09.052 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62685
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62686/metrics
+REAL real TL-15 q1 rep0 completed 37.7 123199 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 按你上次的会话记录（2026-11-15，主题「整理充气泵的包装方案」）：你选的是方案二——纸托加收缩膜，单件成本 1.8 元。需要说明的是，这条依据来自你本人上次的工作记录，而当前品类资料里检索不到可引用的包装方案或成本记录（品类检索、跨类型检索、证据检索、品类知识与基线读取都为空），所以 1.8 元没有在业务对象层面复核过；另外当时的记录里没有写明 1.8 元的口径（是否含税、含运、是否含内衬
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-ideal-rep0-setup0] time=2026-11-15T02:21:50.547 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62746
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62747/metrics
+REAL ideal TL-15 q1 rep0 completed 32.7 68425 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（2026-11-15 会话）记录的结论是：包装选定方案二（纸托 + 收缩膜），单件成本 1.8 元/件。该结论取自上一轮会话原始记录（当轮无引用来源）；本轮在「汽车充气泵」品类范围内检索包装/成本相关资料与业务对象均无命中，未能交叉验证现行台账。未知项：成本是否含税运、量级档位与包装 BOM 明细。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-no_memory-rep0-setup0] time=2026-11-15T02:22:27.155 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62786
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62787/metrics
+REAL no_memory TL-16 q1 rep0 failed 321.5 90998 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-history_only-rep0-setup0] time=2026-11-15T02:27:52.806 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:62965
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:62966/metrics
+REAL history_only TL-16 q1 rep0 partial 70.8 171116 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已按要求仅依据可查到的记录作答：当前可读范围（汽车充气泵品类）内未检索到任何气泵供应商、样件单号、承诺交期或联系人信息，因此邮件以纯占位符版本交付，未编造任何事实。本轮仅起草文案，未发送邮件、未登记外部等待或任何业务单据。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-real-rep0-setup0] time=2026-11-15T02:29:06.909 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:63058
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:63059/metrics
+REAL real TL-16 q1 rep0 completed 26.0 68143 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按你的口径带上项目编号 PX-305，写好一封简短催交期邮件（主题+正文可直接复制），其中供应商名称、样件数量/版本、原承诺交期、回复截止日期、署名信息为占位符。说明：公司资料中检索到的供应商、样件与承诺交期记录为空，未找到可引用的实际交期与数量，因此这些字段用【】标注待你确认，未代填。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-ideal-rep0-setup0] time=2026-11-15T02:29:36.765 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+time=2026-11-15T02:29:36.789 level=ERROR msg="Queue reader unable to retrieve tasks" shard-id=1 address=127.0.0.1:63107 component=timer-queue-processor queue-reader-id=0 error="shard status unknown"
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:63104
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:63105/metrics
+REAL ideal TL-16 q1 rep0 completed 41.9 68791 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按你的口径（供应商邮件带项目编号 PX-305）起草一封简短的气泵样件交期催办邮件，并标注了需你确认的占位字段。在当前品类（汽车充气泵）的可读资料里检索过供应/外部等待/送样类记录，未找到供应商联系人、原定交期或样件状态，因此这些内容以占位符留出，未替你编造；邮件只做草稿，未发送也未登记任何业务对象。
+PASSED
+
+=================================== FAILURES ===================================
+_____ test_real_model_answers_timeline_questions[TL-02-ideal-rep0-setup0] ______
+
+self = <temporalio.service._BridgeServiceClient object at 0x16de21880>
+rpc = 'get_workflow_execution_history'
+req = namespace: "default"
+execution {
+  workflow_id: "pdos-next:xiaopai:4012ff6f-2bfe-4a76-83b7-a425c61dd774:63236ff2-d478-...Z\002\020\n"
+wait_new_event: true
+history_event_filter_type: HISTORY_EVENT_FILTER_TYPE_CLOSE_EVENT
+skip_archival: true
+
+resp_type = <class 'temporalio.api.workflowservice.v1.request_response_pb2.GetWorkflowExecutionHistoryResponse'>
+service = 'workflow', retry = True, metadata = {}, timeout = None
+
+    async def _rpc_call(
+        self,
+        rpc: str,
+        req: google.protobuf.message.Message,
+        resp_type: type[ServiceResponse],
+        *,
+        service: str,
+        retry: bool,
+        metadata: Mapping[str, str | bytes],
+        timeout: timedelta | None,
+    ) -> ServiceResponse:
+        global LOG_PROTOS
+        if LOG_PROTOS:
+            logger.debug("Service %s request to %s: %s", service, rpc, req)
+        try:
+            client = await self._connected_client()
+>           resp = await client.call(
+                service=service,
+                rpc=rpc,
+                req=req,
+                resp_type=resp_type,
+                retry=retry,
+                metadata=metadata,
+                timeout=timeout,
+            )
+
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/service.py:475: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <temporalio.bridge.client.Client object at 0x16de21d90>
+service = 'workflow', rpc = 'get_workflow_execution_history'
+req = namespace: "default"
+execution {
+  workflow_id: "pdos-next:xiaopai:4012ff6f-2bfe-4a76-83b7-a425c61dd774:63236ff2-d478-...Z\002\020\n"
+wait_new_event: true
+history_event_filter_type: HISTORY_EVENT_FILTER_TYPE_CLOSE_EVENT
+skip_archival: true
+
+resp_type = <class 'temporalio.api.workflowservice.v1.request_response_pb2.GetWorkflowExecutionHistoryResponse'>
+retry = True, metadata = {}, timeout = None
+
+    async def call(
+        self,
+        *,
+        service: str,
+        rpc: str,
+        req: google.protobuf.message.Message,
+        resp_type: type[ProtoMessage],
+        retry: bool,
+        metadata: Mapping[str, str | bytes],
+        timeout: timedelta | None,
+    ) -> ProtoMessage:
+        """Make RPC call using SDK Core."""
+        # Prepare call
+        timeout_millis = round(timeout.total_seconds() * 1000) if timeout else None
+        call = RpcCall(rpc, req.SerializeToString(), retry, metadata, timeout_millis)
+    
+        # Do call (this throws an RPCError on failure)
+        if service == "workflow":
+            resp_fut = self._ref.call_workflow_service(call)
+        elif service == "operator":
+            resp_fut = self._ref.call_operator_service(call)
+        elif service == "cloud":
+            resp_fut = self._ref.call_cloud_service(call)
+        elif service == "test":
+            resp_fut = self._ref.call_test_service(call)
+        elif service == "health":
+            resp_fut = self._ref.call_health_service(call)
+        else:
+            raise ValueError(f"Unrecognized service {service}")
+    
+        # Convert response
+        resp = resp_type()
+>       resp.ParseFromString(await resp_fut)
+                             ^^^^^^^^^^^^^^
+E       temporal_sdk_bridge.RPCError: (4, 'context deadline exceeded', b'')
+
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/bridge/client.py:168: RPCError
+
+During handling of the above exception, another exception occurred:
+
+setup = <isolated synthetic test scope>
+tmp_path = PosixPath('/private/var/folders/sv/npxlc_k53696tn8hryg5dx5w0000gn/T/pytest-of-huhanwei/pytest-546/test_real_model_answers_timeli7')
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x14f4566f0>
+group = 'ideal'
+timeline = {'id': 'TL-02', 'title': '两个人，同一个品类', 'status': 'candidate', 'split': 'dev', ...}
+repeat = 0
+
+    @pytest.mark.parametrize("setup", [{"test_authorization_hours": 4}], indirect=True)
+    @pytest.mark.parametrize("repeat", range(REPEATS), ids=lambda value: f"rep{value}")
+    @pytest.mark.parametrize("group", GROUPS)
+    @pytest.mark.parametrize("timeline", TIMELINES, ids=lambda item: item["id"])
+    def test_real_model_answers_timeline_questions(setup, tmp_path, monkeypatch, group, timeline,
+                                                   repeat):
+        assert group in {"no_memory", "history_only", "real", "ideal"}
+        questions = selected(timeline, group)
+        if not questions:
+            pytest.skip(f"No question of {timeline['id']} runs in {group}")
+        folder = Path(os.environ.get("PDOS_MEMORY_TIMELINE_OUTPUT_DIR") or tmp_path)
+        if (folder / "STOP").exists():
+            pytest.skip("Stopped: " + (folder / "STOP").read_text().strip())
+        replay = Replay(setup, group)
+        for event in timeline["events"]:
+            getattr(replay, event["op"])(event)
+        state = {"fault": None, "ideal": [], "unfinished": {
+            str(replay.runs[event["id"]]): event["unfinished"] for event in timeline["events"]
+            if event["op"] == "run" and event.get("unfinished")}}
+        ports, bootstrap, model = configure_model(setup, tmp_path, monkeypatch, group, state)
+        summaries = {event["id"]: event for event in timeline["events"] if event["op"] == "run"}
+        path = f"/v1/categories/{setup.category}/agent-runs"
+        records, reasons = [], []
+        if DIAGNOSE:
+            import sys
+    
+            from pdos_next.errors import DomainError
+    
+            original = DomainError.__init__
+    
+            def explain(self, code, message, *args, **kwargs):
+                original(self, code, message, *args, **kwargs)
+                frames, frame = [], sys._getframe(1)
+                while frame is not None and len(frames) < 4:
+                    name = frame.f_code.co_filename
+                    if "/pdos_next/" in name:
+                        frames.append(f"{name.split('/pdos_next/')[-1]}:{frame.f_lineno}:"
+                                      f"{frame.f_code.co_name}")
+                    frame = frame.f_back
+                reasons.append({"code": self.code, "reason": self.reason,
+                                "message": str(self.message)[:300], "frames": frames})
+    
+            monkeypatch.setattr(DomainError, "__init__", explain)
+            # What exactly the model wrote when its final output failed the structure check.
+            from pydantic import ValidationError
+    
+            from pdos_next.agent.kernel.types import AgentOutput
+    
+            checked = AgentOutput.model_validate.__func__
+    
+            def recorded(cls, value, *args, **kwargs):
+                try:
+                    return checked(cls, value, *args, **kwargs)
+                except ValidationError:
+                    shape = value if isinstance(value, dict) else {"_": repr(value)[:200]}
+                    reasons.append({"code": "OUTPUT_STRUCTURE", "reason": "raw", "frames": [],
+                                    "message": json.dumps({
+                                        "result_type": type(shape.get("result")).__name__,
+                                        "questions": shape.get("questions"),
+                                    }, ensure_ascii=False, default=repr)[:1500]})
+                    raise
+    
+            monkeypatch.setattr(AgentOutput, "model_validate", classmethod(recorded))
+    
+        async def diagnostics(environment, handle):
+            """Verification feedback sent back to the model, read from the workflow history."""
+            import re
+    
+            from tests.agent.kernel.xiaopai_graph_plugin_harness import payloads
+    
+            feedback, turns = [], 0
+            async for execution in environment.client.list_workflows(f'WorkflowId="{handle.id}"'):
+                history = await environment.client.get_workflow_handle(
+                    execution.id, run_id=execution.run_id).fetch_history()
+                text = payloads(history)
+                feedback.extend(re.findall(r"字段核对错误：(\[.*?\])。list_type", text))
+                turns += text.count("model_started")
+            value = {"verification_feedback": sorted(set(feedback)), "domain_errors": list(reasons)}
+            reasons.clear()
+            return value
+    
+        async def one(environment, http, question):
+            state["fault"] = question.get("fault")
+            state["ideal"] = ([replay.runs[key] for key in ideal_runs(question)]
+                              if group == "ideal" else [])
+            injected = [" ".join([summaries[key].get("summary", ""), *summaries[key].get(
+                "unfinished", [])]) for key in ideal_runs(question)] if group == "ideal" else []
+            began = time.monotonic()
+            started = await http.post(path, headers=replay.headers(question["actor"]), json={
+                "goal": question["goal"], "idempotency_key": str(uuid4()),
+                **({"memory_off": True} if replay.off(question) else {}),
+            })
+            assert started.status_code == 202, started.text
+            run_id = UUID(started.json()["run_id"])
+            handle = environment.client.get_workflow_handle(workflow_id(setup.tenant, run_id))
+            task = asyncio.ensure_future(handle.result())
+            asked, replied, timed_out = [], 0, False
+            while not task.done():
+                await asyncio.wait([task], timeout=1)
+                if task.done():
+                    break
+                if time.monotonic() - began > RUN_SECONDS:
+                    timed_out = True
+                    task.cancel()
+                    await handle.terminate(reason="memory timeline evaluation time limit")
+                    break
+                pending = await handle.query(XiaopaiGraphWork.pending_input)
+                if pending and "questions" in pending[0] and replied < 2:
+                    asked.extend(item.get("text") or item.get("question") or ""
+                                 for item in pending[0]["questions"])
+                    answers = {item["id"]: REPLY for item in pending[0]["questions"]}
+                    submitted = await http.post(
+                        f"{path}/{run_id}/answers", headers=replay.headers(question["actor"]),
+                        json={"answers": answers, "idempotency_key": "answer:" + str(uuid4())})
+                    assert submitted.status_code == 202, submitted.text
+                    replied += 1
+                    while await handle.query(XiaopaiGraphWork.pending_input):
+                        await asyncio.sleep(0.2)
+            status = "timeout"
+            if not timed_out:
+                status = (await asyncio.wait_for(task, 60)).get("status")
+            extra = {"diagnostics": await diagnostics(environment, handle)} if DIAGNOSE else {}
+            return {
+                **extra,
+                "version": OBSERVATION, "group": group, "timeline": timeline["id"],
+                "question": question["id"], "repeat": repeat, "fault": question.get("fault"),
+                "ideal_runs": ideal_runs(question) if group == "ideal" else [],
+                "injected_text": "\n".join(injected), "model": model["model"],
+                "model_version": model["model_version"], "scripted_history": True,
+                "status": status, "seconds": round(time.monotonic() - began, 1),
+                "clarifications": asked, **observed(setup, replay, run_id),
+            }
+    
+        async def actual():
+            environment = await WorkflowEnvironment.start_local(dev_server_existing_path=str(BINARY))
+            try:
+                port = TemporalPort(environment.client, task_queue="memory-eval-" + str(uuid4()))
+    
+                def binding(*args):
+                    value = bootstrap.binding_for(*args)
+                    value.token_limit = 2_000_000  # Same per-run allowance as the real evaluations.
+                    return value
+    
+                app = create_app(
+                    setup.engine, setup.auth, agent_runtime_ports=ports,
+                    agent_api_ports=replace(bootstrap.api_ports(port), binding_for=binding),
+                )
+                plugin, run_activities = graph_plugin(setup.engine, technical_engine=setup.dispatch)
+                legacy = KernelActivities(setup.engine, technical_engine=setup.dispatch)
+                with ThreadPoolExecutor(max_workers=4) as executor:
+                    async with Worker(
+                        environment.client, task_queue=port.task_queue,
+                        workflows=[XiaopaiGraphWork],
+                        activities=[*run_activities, legacy.reconcile],
+                        plugins=[plugin], activity_executor=executor,
+                    ), httpx.AsyncClient(
+                        transport=httpx.ASGITransport(app=app), base_url="http://synthetic.local",
+                    ) as http:
+                        for question in questions:
+                            if (folder / "STOP").exists():
+                                stopped.append((folder / "STOP").read_text().strip())
+                                break
+                            if TOKEN_CAP and spent(folder) >= TOKEN_CAP:
+                                stopped.append(f"token cap {TOKEN_CAP} reached")
+                                break
+                            record = await one(environment, http, question)
+                            records.append(record)
+                            if RUN_ALERT and (record["used_tokens"] or 0) > RUN_ALERT:
+                                (folder / "STOP").write_text(
+                                    f"{group}/{timeline['id']}/{question['id']}/rep{repeat} used "
+                                    f"{record['used_tokens']} tokens (alert {RUN_ALERT})\n")
+                            name = (f"{group}-{timeline['id']}-{question['id']}.r{repeat}"
+                                    ".real.json")
+                            (folder / name).write_text(
+                                json.dumps(record, ensure_ascii=False, indent=2) + "\n")
+                            print("REAL", group, timeline["id"], question["id"], f"rep{repeat}",
+                                  record["status"],
+                                  record["seconds"], record["used_tokens"], record["usage"],
+                                  record["answer"][:200].replace("\n", " "))
+            finally:
+                await environment.shutdown()
+    
+        stopped = []
+>       asyncio.run(actual())
+
+tests/agent/memory/test_eval_memory_timeline_real_pg.py:594: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:195: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/base_events.py:691: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+tests/agent/memory/test_eval_memory_timeline_real_pg.py:576: in actual
+    record = await one(environment, http, question)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/agent/memory/test_eval_memory_timeline_real_pg.py:531: in one
+    status = (await asyncio.wait_for(task, 60)).get("status")
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py:520: in wait_for
+    return await fut
+           ^^^^^^^^^
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:228: in result
+    async for event in self._fetch_history_events_for_run(
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:1833: in __anext__
+    await self.fetch_next_page()
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/client/_workflow.py:1790: in fetch_next_page
+    resp = await self._client.workflow_service.get_workflow_execution_history(
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/bridge/services_generated.py:740: in get_workflow_execution_history
+    return await self._client._rpc_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <temporalio.service._BridgeServiceClient object at 0x16de21880>
+rpc = 'get_workflow_execution_history'
+req = namespace: "default"
+execution {
+  workflow_id: "pdos-next:xiaopai:4012ff6f-2bfe-4a76-83b7-a425c61dd774:63236ff2-d478-...Z\002\020\n"
+wait_new_event: true
+history_event_filter_type: HISTORY_EVENT_FILTER_TYPE_CLOSE_EVENT
+skip_archival: true
+
+resp_type = <class 'temporalio.api.workflowservice.v1.request_response_pb2.GetWorkflowExecutionHistoryResponse'>
+service = 'workflow', retry = True, metadata = {}, timeout = None
+
+    async def _rpc_call(
+        self,
+        rpc: str,
+        req: google.protobuf.message.Message,
+        resp_type: type[ServiceResponse],
+        *,
+        service: str,
+        retry: bool,
+        metadata: Mapping[str, str | bytes],
+        timeout: timedelta | None,
+    ) -> ServiceResponse:
+        global LOG_PROTOS
+        if LOG_PROTOS:
+            logger.debug("Service %s request to %s: %s", service, rpc, req)
+        try:
+            client = await self._connected_client()
+            resp = await client.call(
+                service=service,
+                rpc=rpc,
+                req=req,
+                resp_type=resp_type,
+                retry=retry,
+                metadata=metadata,
+                timeout=timeout,
+            )
+            if LOG_PROTOS:
+                logger.debug("Service %s response from %s: %s", service, rpc, resp)
+            return resp
+        except BridgeRPCError as err:
+            # Intentionally swallowing the cause instead of using "from"
+            status, message, details = err.args
+>           raise RPCError(message, RPCStatusCode(status), details)
+E           temporalio.service.RPCError: context deadline exceeded
+
+../../../../server/.venv/lib/python3.12/site-packages/temporalio/service.py:490: RPCError
+------------------------------ Captured log call -------------------------------
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '5', 'activity_type': 'xiaopai.model', 'attempt': 1, 'namespace': 'default', 'task_queue': 'memory-eval-8b87dcfb-600f-4298-9f65-228f1488b24d', 'workflow_id': 'pdos-next:xiaopai:4012ff6f-2bfe-4a76-83b7-a425c61dd774:f1e140a0-a9bc-4edd-bcfb-c4d0a0803e8b', 'workflow_run_id': '01a1daad-83dc-7271-97fa-b11ac19daa3b', 'workflow_type': 'XiaopaiGraphWork'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 889, in execute_activity
+    return await input.fn(*input.args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/langgraph/_activity.py", line 99, in wrapper
+    return await run(stream_writer=None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/langgraph/_activity.py", line 89, in run
+    result = await func(*input.args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/workflows/graph_nodes.py", line 96, in node
+    return await asyncio.shield(work)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/workflows/graph_nodes.py", line 93, in <lambda>
+    None, lambda: context.run(_guarded, body, state, dict(runtime.context or {}), stop)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/workflows/graph_nodes.py", line 54, in _guarded
+    raise ApplicationError(error.message, type=error.code, non_retryable=True) from None
+temporalio.exceptions.ApplicationError: EXTERNAL_OUTCOME_UNKNOWN: 模型调用未形成可用结果，请查看原调用回执。
+WARNING  temporalio.activity:_activity.py:452 Completing activity as failed ({'activity_id': '4', 'activity_type': 'xiaopai.tools', 'attempt': 1, 'namespace': 'default', 'task_queue': 'memory-eval-8b87dcfb-600f-4298-9f65-228f1488b24d', 'workflow_id': 'pdos-next:xiaopai:4012ff6f-2bfe-4a76-83b7-a425c61dd774:63236ff2-d478-4a46-8de9-948363a52323', 'workflow_run_id': '01a1dab2-bcb0-7b81-bd32-5f23323bbae9', 'workflow_type': 'XiaopaiGraphWork'})
+Traceback (most recent call last):
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 351, in _handle_start_activity_task
+    result = await self._execute_activity(
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 681, in _execute_activity
+    return await impl.execute_activity(input)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/worker/_activity.py", line 889, in execute_activity
+    return await input.fn(*input.args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/langgraph/_activity.py", line 99, in wrapper
+    return await run(stream_writer=None)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/temporalio/langgraph/_activity.py", line 89, in run
+    result = await func(*input.args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/workflows/graph_nodes.py", line 96, in node
+    return await asyncio.shield(work)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+asyncio.exceptions.CancelledError: Activity cancelled
+=============================== warnings summary ===============================
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-no_memory-rep0-setup0]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/_pytest/unraisableexception.py:67: PytestUnraisableExceptionWarning: Exception ignored in: <async_generator object Pregel.astream at 0x14ba29f50>
+  
+  Traceback (most recent call last):
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 3440, in astream
+      async for _ in runner.atick(
+  GeneratorExit
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 3353, in astream
+      async with AsyncPregelLoop(
+                 ^^^^^^^^^^^^^^^^
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/_loop.py", line 1979, in __aexit__
+      exit_task = asyncio.create_task(
+                  ^^^^^^^^^^^^^^^^^^^^
+    File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py", line 417, in create_task
+      loop = events.get_running_loop()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  RuntimeError: no running event loop
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/main.py", line 3501, in astream
+      await asyncio.shield(run_manager.on_chain_error(e))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py", line 898, in shield
+      inner = ensure_future(arg)
+              ^^^^^^^^^^^^^^^^^^
+    File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py", line 693, in ensure_future
+      loop = events.get_event_loop()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+    File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/events.py", line 702, in get_event_loop
+      raise RuntimeError('There is no current event loop in thread %r.'
+  RuntimeError: There is no current event loop in thread 'MainThread'.
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-no_memory-rep0-setup0]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/_pytest/unraisableexception.py:55: RuntimeWarning: coroutine 'AsyncCallbackManagerForChainRun.on_chain_error' was never awaited
+    meta = pop_unraisable()
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-no_memory-rep0-setup0]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/_pytest/unraisableexception.py:67: PytestUnraisableExceptionWarning: Exception ignored in: <async_generator object PregelRunner.atick at 0x12e597640>
+  
+  Traceback (most recent call last):
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py", line 756, in ainvoke
+      input = await asyncio.create_task(
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  GeneratorExit
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py", line 396, in atick
+      await arun_with_retry(
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/_retry.py", line 744, in arun_with_retry
+      return await task.proc.ainvoke(task.input, config)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/_internal/_runnable.py", line 765, in ainvoke
+      await run_manager.on_chain_error(e)
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langchain_core/callbacks/manager.py", line 244, in wrapped
+      task = asyncio.create_task(coro, context=ctx)  # type: ignore[call-arg, unused-ignore]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    File "/opt/homebrew/Caskroom/miniforge/base/lib/python3.12/asyncio/tasks.py", line 417, in create_task
+      loop = events.get_running_loop()
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  RuntimeError: no running event loop
+  During task with name 'tools' and id '724462cc-41c5-6cca-4850-5916d1f40317'
+  
+  During handling of the above exception, another exception occurred:
+  
+  Traceback (most recent call last):
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py", line 415, in atick
+      self.commit(t, exc)
+    File "/Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/lib/python3.12/site-packages/langgraph/pregel/_runner.py", line 603, in commit
+      self.put_writes()(task.id, task.writes)  # type: ignore[misc]
+      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  TypeError: 'NoneType' object is not callable
+  
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+    warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-history_only-rep0-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-real-rep0-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-ideal-rep0-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-history_only-rep0-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-real-rep0-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-ideal-rep0-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-real-rep0-setup0]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/domain/categories/preproject/category_service.py:560: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-ideal-rep0-setup0] - temporalio.service.RPCError: context deadline exceeded
+= 1 failed, 46 passed, 9 skipped, 112 deselected, 10 warnings in 6094.81s (1:41:34) =
+exit 1

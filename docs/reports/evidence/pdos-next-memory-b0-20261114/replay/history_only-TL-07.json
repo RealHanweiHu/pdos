@@ -1,0 +1,17 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-07",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "resident",
+      "not_applicable": true
+    }
+  ],
+  "episodes_written": [],
+  "unexpected_notes": 0
+}

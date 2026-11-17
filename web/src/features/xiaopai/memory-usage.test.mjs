@@ -63,3 +63,14 @@ test("used notes are listed by zone and a purged note shows no text", async () =
   assert.match(value, /叫法 · 我说“气嘴”指气门嘴（之后已修改）/);
   assert.match(value, /已删除，正文已清除/);
 });
+
+test("team notes a run used are listed apart from the owner's own memory", async () => {
+  const team = { ...usage, count: 4, scope_notes: [
+    { note_id: "t1", revision: 1, zone: "constraint", kind_label: "约定", statement: "给该客户的报告一律英文", anchor: { kind_label: "项目", title: "便携气泵" }, state: "active", changed_since: false },
+    { note_id: "t2", revision: 1, zone: "background", kind_label: "关注点", statement: "评审必问跌落测试", anchor: { kind_label: "品类", title: null }, state: "withdrawn", changed_since: true },
+  ] };
+  const value = text(await view(async () => team).settle());
+  assert.match(value, /用到了 4 条记忆/);
+  assert.match(value, /团队备忘 · 约定 · 给该客户的报告一律英文（项目 便携气泵）/);
+  assert.match(value, /团队备忘 · 关注点 · 评审必问跌落测试（之后已停用或撤回）/);
+});

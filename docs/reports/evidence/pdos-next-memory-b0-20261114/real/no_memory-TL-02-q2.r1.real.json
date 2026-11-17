@@ -1,0 +1,45 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 13.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 16399,
+  "held_tokens": 0,
+  "answer": "可直接发送的客户告知话术（三句）：\n\n\"您好，感谢您对我们气泵产品的关注。我们已完成配置与成本的初步核对，将在【本周内 / 具体到某日】向您提交正式报价，报价中会列明单价、起订量与交期。如需先看价格区间或对配置做调整，也请随时告诉我。\"\n\n说明：报价内容、单价、交期以内部实际核算与审批结果为准，消息中未写入任何未经确认的价格或数量。",
+  "answer_blob": "{\"result\": {\"draft\": \"您好，感谢您对我们气泵产品的关注。我们已完成配置与成本的初步核对，将于本周内向您提交正式报价，报价中会列明单价、起订量与交期。如需先看价格区间或对配置做调整，也请随时告诉我。\", \"notes\": \"未写入任何未经确认的价格、数量或交期；具体提交日期待确认后替换。\", \"channel\": \"customer_message\", \"language\": \"zh-CN\", \"assistant\": {\"kind\": \"general\", \"lookup\": \"not_run\", \"version\": 1}, \"commitment\": \"本周内提交气泵报价\"}, \"status\": \"completed\", \"summary\": \"可直接发送的客户告知话术（三句）：\\n\\n\\\"您好，感谢您对我们气泵产品的关注。我们已完成配置与成本的初步核对，将在【本周内 / 具体到某日】向您提交正式报价，报价中会列明单价、起订量与交期。如需先看价格区间或对配置做调整，也请随时告诉我。\\\"\\n\\n说明：报价内容、单价、交期以内部实际核算与审批结果为准，消息中未写入任何未经确认的价格或数量。\", \"questions\": [{\"id\": \"q1\", \"why\": \"写具体日期对客户更确定，但需要先确认内部确实能在该日期前出报价。\", \"options\": [{\"label\": \"保留“本周内”\", \"value\": \"keep_week\"}, {\"label\": \"写明具体日期（我告知是几号）\", \"value\": \"add_date\"}], \"question\": \"消息里要不要写明确的提交日期（例如“本周五前”），还是保留“本周内”这种表述？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_week\", \"reason\": \"按你的原话保留“本周内”，避免与内部实际报价时点冲突；如确认后再替换为具体日期。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"需要知道是具体客户对接人（可加称呼与项目背景）还是通用渠道说明。\", \"options\": [{\"label\": \"邮件发给具名对接人（我提供姓名）\", \"value\": \"email_named\"}, {\"label\": \"微信/即时通讯，先用通用称呼\", \"value\": \"im_generic\"}, {\"label\": \"电话/面谈口播稿\", \"value\": \"verbal\"}], \"question\": \"这封告知发给谁、以什么形式发？\", \"depends_on\": [], \"recommended\": {\"value\": \"im_generic\", \"reason\": \"先按通用称呼给出可直接使用的版本，可按渠道微调。\"}, \"allow_free_text\": true}], \"unfinished\": [\"待你确认：是否写明具体提交日期、客户称呼与发送渠道。\"]}",
+  "unfinished": [
+    "待你确认：是否写明具体提交日期、客户称呼与发送渠道。"
+  ],
+  "ledger": [
+    "model:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

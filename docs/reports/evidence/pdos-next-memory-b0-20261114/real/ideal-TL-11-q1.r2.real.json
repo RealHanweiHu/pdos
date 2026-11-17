@@ -1,0 +1,64 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "已起草最大流量的修订候选：验收标准改为 ≥40 L/min，等你确认后提交。 确认最大流量的修订候选后提交",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 57.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 142586,
+  "held_tokens": 0,
+  "answer": "当前生效的最大流量验收标准是 ≥ 35 L/min（参数 max_flow，版本 1，人工登记，有回执 c4dfdf01-3023-449c-86d5-e63fb5a590e7）。注意两点：①字典中 standard_condition（工况）与 method（测量方法）均为空，即\"35 L/min 在什么工况、用什么方法测\"尚未登记口径；②你本人此前（2026-11-15 记录）曾起草把标准提到 ≥40 L/min 的修订候选，状态是\"等你确认后提交\"，未确认也未提交——本轮查找预算已用尽，未能核实该候选是否已提交生效，若你确认要，我可以继续深入查。另外本轮未读到型号级基线定义（品类有 1 个型号，但平台/基线读取为空），故上述数值是品类规格字典口径，型号基线是否另有更严标准未核实。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:34:04.788435+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"最大流量的测量工况（standard_condition）与测量方法（method）在参数字典中未登记（均为空），35 L/min 的验收口径不完整\", \"本轮未能读取型号级产品基线定义（category 模型数=1，但平台读取与基线读取均返回空），无法确认具体型号基线是否另有更严或不同的最大流量验收值\", \"本轮查找预算已用尽，未能核实 2026-11-15 起草的 ≥40 L/min 修订候选是否已提交并生效\", \"该品类为隔离合成品类，未检索到相关制品/制造文档/测试记录，故无实测或工艺口径佐证\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"acceptance_criterion\": {\"unit\": \"L/min\", \"method\": null, \"origin\": \"human\", \"version\": 1, \"read_via\": \"category.parameters.list(category_id=4185b44f-5ea4-472c-8069-b330995340df)\", \"criterion\": \"≥ 35 L/min\", \"direction\": \"higher\", \"receipt_id\": \"c4dfdf01-3023-449c-86d5-e63fb5a590e7\", \"value_type\": \"number\", \"recorded_at\": \"2026-11-15T12:33:56.470078+00:00\", \"confirmed_by\": null, \"parameter_id\": \"4d4a3f8d-a4ba-4282-9c99-755a438b4d82\", \"parameter_key\": \"max_flow\", \"parameter_name\": \"最大流量\", \"standard_condition\": null}, \"historical_context_not_business_fact\": {\"source\": \"conversation.history(session_id=b19b5116-f478-4bb4-ae57-eaf6d16ab2be, as_of=2026-11-15)\", \"summary\": \"此前起草过一条把最大流量验收标准提到 ≥40 L/min 的规格修订候选，状态为“等你确认后提交”，未确认、未提交；属情景记录，不作为当前事实依据\"}}, \"status\": \"completed\", \"summary\": \"当前生效的最大流量验收标准是 ≥ 35 L/min（参数 max_flow，版本 1，人工登记，有回执 c4dfdf01-3023-449c-86d5-e63fb5a590e7）。注意两点：①字典中 standard_condition（工况）与 method（测量方法）均为空，即\\\"35 L/min 在什么工况、用什么方法测\\\"尚未登记口径；②你本人此前（2026-11-15 记录）曾起草把标准提到 ≥40 L/min 的修订候选，状态是\\\"等你确认后提交\\\"，未确认也未提交——本轮查找预算已用尽，未能核实该候选是否已提交生效，若你确认要，我可以继续深入查。另外本轮未读到型号级基线定义（品类有 1 个型号，但平台/基线读取为空），故上述数值是品类规格字典口径，型号基线是否另有更严标准未核实。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮查找预算已用尽，无法确认该修订是否已落库；若已生效，当前标准应按 40 L/min 而非 35 L/min 执行。\", \"options\": [{\"label\": \"继续查，确认修订是否已生效\", \"value\": \"continue_check\"}, {\"label\": \"暂不查，先按 35 L/min 口径讨论\", \"value\": \"stay_35\"}], \"question\": \"是否要我继续核对那条“≥40 L/min”的修订候选是否已提交生效？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue_check\", \"reason\": \"当前生效值与历史待提交修订并存，不先确认会导致验收口径按错版本执行。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"参数字典里 standard_condition 与 method 均为空，没有口径就无法判定实测是否合格。\", \"options\": [{\"label\": \"需要补齐工况与方法的登记\", \"value\": \"need_customer_rule\"}, {\"label\": \"公司另有测试规范文件可指给我\", \"value\": \"existing_doc\"}, {\"label\": \"暂不涉及\", \"value\": \"not_now\"}], \"question\": \"35 L/min 的测量工况和测试方法是按什么口径执行验收的？\", \"depends_on\": [], \"recommended\": {\"value\": \"need_customer_rule\", \"reason\": \"口径缺失会让 35 L/min 无法被一致地判定，需要先补登记。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未核实 2026-11-15 起草的 ≥40 L/min 修订候选是否已提交生效（本轮查找预算用尽）\", \"最大流量的测量工况与测量方法在字典中未登记\", \"未读取到型号级产品基线，无法核对型号是否另有更严验收值\"]}",
+  "unfinished": [
+    "未核实 2026-11-15 起草的 ≥40 L/min 修订候选是否已提交生效（本轮查找预算用尽）",
+    "最大流量的测量工况与测量方法在字典中未登记",
+    "未读取到型号级产品基线，无法核对型号是否另有更严验收值"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

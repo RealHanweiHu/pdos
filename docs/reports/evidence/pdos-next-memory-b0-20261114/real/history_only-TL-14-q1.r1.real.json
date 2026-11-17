@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 37.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 105296,
+  "held_tokens": 0,
+  "answer": "找到了那次评估：2026-11-15 的\"评估两种电机方案的成本和噪声\"（会话 b7479ebb，run 89dd1c41）结论是**推荐无刷电机方案**——单价高 4 元、寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。那次会话留了 1 项未完成：向电机厂确认无刷方案的最小起订量。我另外在当前品类（汽车充气泵）范围内查了平台/产品、立项、证据与知识条目，均无可读记录，本会话工作状态也没有其他未结项，所以目前唯一挂着的待办就是这条 MOQ 确认。注意：那次的成本/噪声数值属于当时的评估记录（结论未变、来源未更新），不是带引用的当前业务事实；若要拿来决策，建议我按当前数据重算或读一次对应对象。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:16:45.750896+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"历史评估中的成本差（+4 元）、寿命倍数（约3倍）、噪声超标 5 dB 均来自当时会话记录，无可核引用，需按当前数据复核\", \"当前品类范围内未读到产品/平台/立项/证据/知识对象，无法确认是否存在登记在案的未结项\", \"最小起订量（MOQ）的实际数值与供应商答复状态未知\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"unfinished\": [{\"item\": \"向电机厂确认无刷方案的最小起订量\", \"source\": \"该次会话未完成项记录\", \"status\": \"to_confirm\"}], \"historical_record\": {\"goal\": \"评估两种电机方案的成本和噪声\", \"as_of\": \"2026-11-15T11:16:36.262343+00:00\", \"run_id\": \"89dd1c41-7935-4e72-aa38-2e4f0b42b32a\", \"session_id\": \"b7479ebb-2d56-4939-b119-f6805912f9a9\", \"outcome_state\": \"current\", \"recommended_option\": \"无刷电机方案\", \"rationale_as_recorded\": \"单价高 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用\"}, \"current_scope_check\": {\"note\": \"以上范围未返回任何未结项；不代表系统内不存在未记录在其他范围的事项\", \"checked\": [\"platform.read\", \"evidence.search\", \"category.knowledge.list\", \"category.read\", \"本会话工作状态\"], \"category\": \"汽车充气泵\", \"found_open_items\": 0}}, \"status\": \"completed\", \"summary\": \"找到了那次评估：2026-11-15 的\\\"评估两种电机方案的成本和噪声\\\"（会话 b7479ebb，run 89dd1c41）结论是**推荐无刷电机方案**——单价高 4 元、寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。那次会话留了 1 项未完成：向电机厂确认无刷方案的最小起订量。我另外在当前品类（汽车充气泵）范围内查了平台/产品、立项、证据与知识条目，均无可读记录，本会话工作状态也没有其他未结项，所以目前唯一挂着的待办就是这条 MOQ 确认。注意：那次的成本/噪声数值属于当时的评估记录（结论未变、来源未更新），不是带引用的当前业务事实；若要拿来决策，建议我按当前数据重算或读一次对应对象。\", \"questions\": [{\"id\": \"q1\", \"why\": \"那次评估只有结论和一句待办，没有对应立项记录；品类里也读不到任何产品/立项对象。\", \"options\": [{\"label\": \"起草立项提案（含成本、噪声差异与待决问题）\", \"value\": \"是，起草立项提案\"}, {\"label\": \"先起草给电机厂的询价+MOQ确认邮件\", \"value\": \"是，起草询价与MOQ确认邮件\"}, {\"label\": \"暂不，先只做记录\", \"value\": \"暂不\"}], \"question\": \"要我现在把\\\"无刷电机方案 + 最小起订量待确认\\\"整理成一份立项或变更草案吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"是，起草询价与MOQ确认邮件\", \"reason\": \"唯一明确未结项是 MOQ 确认，先发询价能解开阻塞点，其余材料随之可写。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"记忆中的 +4 元、约3倍寿命、超标5 dB 来自当时记录、无引用；价格和噪声基准可能已变。\", \"options\": [{\"label\": \"重算成本与噪声对比（含价格带/竞品同口径）\", \"value\": \"重新核算\"}, {\"label\": \"先沿用当时结论，后续再核\", \"value\": \"先用历史结论\"}], \"question\": \"那次评估的成本与噪声数值要不要我按当前数据重新核一遍？\", \"depends_on\": [], \"recommended\": {\"value\": \"重新核算\", \"reason\": \"结论虽是当时记录且状态未更新，但无引用支撑决策，重新核一次成本更稳妥。\"}, \"allow_free_text\": true}], \"unfinished\": [\"向电机厂确认无刷方案的最小起订量（承自 2026-11-15 评估会话，本次未闭环）\", \"历史评估中的成本/噪声数值尚未用当前数据复核，无可核引用\"]}",
+  "unfinished": [
+    "向电机厂确认无刷方案的最小起订量（承自 2026-11-15 评估会话，本次未闭环）",
+    "历史评估中的成本/噪声数值尚未用当前数据复核，无可核引用"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

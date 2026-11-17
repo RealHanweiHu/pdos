@@ -60,6 +60,19 @@ class Activities:
                 non_retryable=error.code == "FORBIDDEN_SCOPE",
             ) from None
 
+    @activity.defn(name="memory_fanout_handle")
+    def memory_fanout_handle(self, reference: dict):
+        # 记忆 M3 业务事件扇出 (§14.9): one handler, idempotent on (event, handler); no model.
+        from pdos_next.agent.memory.fanout import handle_event
+
+        return handle_event(self.engine, reference)
+
+    @activity.defn(name="memory_daily_task")
+    def memory_daily_task(self, reference: dict):
+        from pdos_next.agent.memory.fanout import daily_task
+
+        return daily_task(self.engine, reference)
+
     @activity.defn(name="plan_enterprise_rebuild")
     def enterprise_rebuild_plan(self, reference: dict):
         from pdos_next.agent.enterprise_search.recovery import _context, plan_rebuild
@@ -206,6 +219,7 @@ def registered_workflows():
     )
     from pdos_next.agent.enterprise_search.events import EnterpriseProjection
     from pdos_next.agent.enterprise_search.recovery_workflow import EnterpriseRebuild
+    from pdos_next.agent.memory.fanout_workflow import MemoryDailyMaintenance, MemoryEventFanout
     from pdos_next.agent.memory.index_workflow import MemoryEpisodeIndex
     from pdos_next.agent.memory.vector_workflow import MemoryEpisodeVectors
     from pdos_next.domain.projects.discussions.agent_delivery import DiscussionAgentReply
@@ -234,6 +248,8 @@ def registered_workflows():
         MemoryEpisodeVectors,
         TenantMaintenance,
         DiscussionAgentReply,
+        MemoryEventFanout,
+        MemoryDailyMaintenance,
     ]
 
 
@@ -296,6 +312,7 @@ async def main(
         business_engine=engine,
         automation_sender=automation_sender,
         projection_sender=ProjectionSender(client, embedding=True),
+        memory_fanout=True,
     )
     from pdos_next.agent.kernel.temporal_port import TemporalPort, dispatch_pending_runs
     from pdos_next.workflows.checkpoint_retention import CheckpointRetention
@@ -392,6 +409,13 @@ async def main(
                 except Exception as error:
                     unavailable("Memory vector", error)
                 try:
+                    # 记忆 M3: author hand-overs and the procedural summary, once a day.
+                    from pdos_next.agent.memory.fanout import start_daily
+
+                    await start_daily(client, sender.task_queue, tenant)
+                except Exception as error:
+                    unavailable("Memory daily", error)
+                try:
                     # D37 ⑥: deliver 小Pai's thread replies once their Run has ended.
                     await dispatch_discussion_replies(
                         dispatch_engine,
@@ -439,6 +463,8 @@ async def main(
             activities.enterprise_rebuild_plan,
             activities.enterprise_rebuild_batch,
             activities.memory_episode_index,
+            activities.memory_fanout_handle,
+            activities.memory_daily_task,
             retention.purge,
             rescans.rescan,
             *graph_run_activities,

@@ -5469,8 +5469,9 @@ COVERED_COLUMNS.update({
         "request_sha256", "id", "tenant_id", "created_at",
     ),
     "memory_tenant_policies": (
-        "revision", "work_state_idle_days", "notes_enabled", "proposals_enabled", "set_by",
-        "request_key", "request_sha256", "id", "tenant_id", "created_at",
+        "revision", "work_state_idle_days", "notes_enabled", "proposals_enabled",
+        "scope_note_review_days", "set_by", "request_key", "request_sha256", "id", "tenant_id",
+        "created_at",
     ),
 })
 # Personal memory notes (M2a, P86). Notes are the owner's own words; the owner's
@@ -5483,6 +5484,8 @@ COVERED_COLUMNS.update({
         "category_id", "alias_term", "alias_canonical", "target_kind", "target_id",
         "target_version", "status", "valid_until", "replaced_by", "origin", "candidate_id",
         "request_key", "request_sha256", "id", "tenant_id", "created_at",
+        # Unified item contract (s0_0897, D512): still the owner's own words and links.
+        "occurred_at", "valid_from", "confirmation", "evidence", "relations",
     ),
     "memory_note_deletions": (
         "owner_id", "note_id", "purged_versions", "request_key", "request_sha256", "id",
@@ -5501,6 +5504,15 @@ COVERED_COLUMNS.update({
         "owner_id", "revision", "proactive_off", "request_key", "request_sha256", "id",
         "tenant_id", "created_at",
     ),
+    # P121 第 8 项: content-free guards on proposals (a salted digest and Run
+    # references; a marker that a Run was only discussion).
+    "memory_suppressions": (
+        "owner_id", "note_id", "salt", "fingerprint", "source_spans", "id", "tenant_id",
+        "created_at",
+    ),
+    "memory_proposal_voids": (
+        "owner_id", "session_id", "run_id", "id", "tenant_id", "created_at",
+    ),
     "memory_embedding_calls": (
         "owner_id", "profile_version_id", "state", "revision", "episode_ids",
         "character_count", "input_digest", "data_categories", "egress", "pricing",
@@ -5514,6 +5526,14 @@ COVERED_COLUMNS.update({
     "memory_vector_profiles": (
         "profile_id", "profile_version_id", "enabled", "categories", "id", "tenant_id",
         "created_at",
+    ),
+})
+# Owner-deleted Sessions (P121 第 8 项): when and how many rows went, no content.
+COVERED_COLUMNS.update({
+    "memory_session_deletions": (
+        "owner_id", "session_id", "purged_episodes", "purged_marks", "purged_index_rows",
+        "purged_vectors", "purged_candidates", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
     ),
 })
 # Human sign-in (D214/D86/D192): identity and session bookkeeping, no source body.
@@ -5769,3 +5789,66 @@ _D47_SCOPE["tool_trial"] = (
 )
 GUARDED = (*GUARDED, *_d47_chain("tool_trial"))
 GUARDED = (*GUARDED, *_d47_chain("engineering_interface"))
+
+# Scope notes (M2b; P87, P121 第 3、4、6 项). Team notes attached to a business scope: they
+# hold object references and evidence links only (type, ID, version, quote digest) and
+# never adopt source material; readers follow the attached object's own audience.
+COVERED_COLUMNS.update({
+    "scope_notes": (
+        "claim_key", "author_id", "category_id", "product_id", "proposal_id", "project_id",
+        "anchor_kind", "kind", "id", "tenant_id", "created_at",
+    ),
+    "scope_note_versions": (
+        "note_id", "revision", "action", "lifecycle", "statement", "subject_kind", "subject_id",
+        "subject_version", "customer_identity", "stage", "topic", "sensitivity",
+        "source_authority", "epistemic", "confirmation", "formal_kind", "formal_id",
+        "formal_version", "generated_by", "occurred_at", "valid_from", "valid_to",
+        "review_due_at", "pinned", "writer_id", "requester_id", "confirmed_by", "run_id",
+        "reason", "origin", "operation", "command_id", "receipt_id", "request_digest",
+        "category_id", "product_id", "proposal_id", "project_id", "anchor_kind", "kind", "id",
+        "tenant_id", "created_at",
+    ),
+    "scope_note_evidence": (
+        "category_id", "note_id", "revision", "source_type", "source_kind", "source_id",
+        "source_version", "locator", "quote_sha256", "root_source_id", "stance", "writer_id",
+        "run_id", "retracts_id", "receipt_id", "id", "tenant_id", "created_at",
+    ),
+    "scope_note_relations": (
+        "category_id", "from_note_id", "to_note_id", "type", "created_by", "receipt_id", "id",
+        "tenant_id", "created_at",
+    ),
+})
+
+# Memory M3 (P88; memory design §14.9): review items, revision candidates, rule settings and
+# the maintenance ledger hold references, versions, counts and the person's own words only;
+# they never adopt source material.
+COVERED_COLUMNS.update({
+    "memory_review_items": (
+        "source", "kind", "assignee_id", "raised_by", "run_id", "mark_id", "parent_id",
+        "scope_kind", "category_id", "scope_id", "object_kind", "object_id", "recorded_version",
+        "current_version", "note_kind", "note_id", "note_revision", "target_kind", "target_key",
+        "target_version", "reasons", "text", "proposed_kind", "event_id", "dedupe_key",
+        "request_key", "id", "tenant_id", "created_at",
+    ),
+    "memory_review_decisions": (
+        "item_id", "decided_by", "decision", "result", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+    "skill_revision_candidates": (
+        "target_kind", "target_key", "target_version", "tool", "reason", "window_start",
+        "window_end", "signal_count", "threshold", "sample_run_ids", "signal_sources",
+        "signals_sha256", "id", "tenant_id", "created_at",
+    ),
+    "skill_revision_decisions": (
+        "candidate_id", "decided_by", "decision", "note", "draft", "request_key",
+        "request_sha256", "id", "tenant_id", "created_at",
+    ),
+    "memory_system_rule_settings": (
+        "rule_key", "revision", "enabled", "set_by", "request_key", "request_sha256", "id",
+        "tenant_id", "created_at",
+    ),
+    "memory_maintenance_ledger": (
+        "task", "subject_key", "watermark", "outcome", "detail", "id", "tenant_id",
+        "created_at",
+    ),
+})

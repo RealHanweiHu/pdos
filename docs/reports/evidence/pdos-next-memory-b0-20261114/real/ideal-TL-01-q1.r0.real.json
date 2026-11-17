@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "建议选 B 家：交期比 A 家短 2 周。C 家含税报价超出目标价 12%，已排除。 补 C 家的含税报价单 核对 B 家交期的单位",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 62.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 106949,
+  "held_tokens": 0,
+  "answer": "上次（会话 982358e3，as_of 2026-11-14）我的结论是：建议选 B 家——交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。未完成两件事：① 补 C 家的含税报价单；② 核对 B 家交期的单位（这条直接影响“短 2 周”的结论口径）。本轮核对情况：在当前品类“汽车充气泵”（隔离合成品类）范围内检索供应商/报价/交期返回 0 条，品类下没有平台/产品对象可读，也没有授权的外部连接器，本轮没有签发任何可引用的当前依据。因此上述数字目前只能作为我上次会话的记录，不是已核实的公司事实，需要重新取数才能落地。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:15:00.353133+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家含税报价单原件/系统记录未取得\", \"B 家交期单位（天/周）及承诺口径未确认\", \"本轮在品类范围内未检到任何供应商报价或交期记录，无法形成当前可引用的对比依据\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_actions\": [\"补齐 C 家含税报价单（原件或系统数据）后重算与目标价的差额\", \"确认 B 家交期单位与承诺口径（天数/自然周、工作日/日历日、是否含模具与打样周期）\", \"在取得三家同口径数据后出一张正式对比表：含税/未税、是否含运、币种与汇率日期、渠道、目标价位置\", \"如资料在本轮检索范围之外，可由你直接附上报价单/交期函，或告知应挂接的项目/产品，我再按该范围重查\"], \"previous_session\": {\"as_of\": \"2026-11-14\", \"run_id\": \"d5106787-6082-4263-8269-049b7f443e11\", \"conclusion\": \"建议选 B 家：交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。\", \"session_id\": \"982358e3-3fdf-40ed-bb87-8d537073d073\", \"unfinished\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"], \"evidence_status\": \"session_record_only_not_current_business_fact\"}, \"current_verification\": {\"scope\": {\"category_id\": \"789c35aa-2717-47be-9621-d0e847d12be8\", \"category_name\": \"汽车充气泵\"}, \"search\": {\"note\": \"以品类+多来源类型检索供应商/报价/交期返回 0 条；随后本轮查找预算用尽\", \"returned\": 0}, \"mcp_connectors\": {\"available\": 0}, \"citations_issued\": 0, \"platform_objects\": {\"returned\": 0}}}, \"status\": \"partial\", \"summary\": \"上次（会话 982358e3，as_of 2026-11-14）我的结论是：建议选 B 家——交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除。未完成两件事：① 补 C 家的含税报价单；② 核对 B 家交期的单位（这条直接影响“短 2 周”的结论口径）。本轮核对情况：在当前品类“汽车充气泵”（隔离合成品类）范围内检索供应商/报价/交期返回 0 条，品类下没有平台/产品对象可读，也没有授权的外部连接器，本轮没有签发任何可引用的当前依据。因此上述数字目前只能作为我上次会话的记录，不是已核实的公司事实，需要重新取数才能落地。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮在该品类范围内检索供应商/报价/交期返回 0 条，无法核实上次结论里的数字。\", \"options\": [{\"label\": \"我指定项目/产品，你按它重查\", \"value\": \"挂在某个具体项目/产品下，我按该项目范围重查\"}, {\"label\": \"就在本品类，换关键词/来源类型再找\", \"value\": \"就在本品类下，只是关键词或来源类型没命中\"}, {\"label\": \"我直接提供文件（报价单/邮件）\", \"value\": \"我手上就有报价单，直接附给你\"}], \"question\": \"三家供应商的报价单与交期资料，在公司资料里的正确挂接位置是哪里（当前“汽车充气泵”隔离品类下我查不到任何供应商记录）？\", \"depends_on\": [], \"recommended\": {\"value\": \"我直接提供文件（报价单/邮件）\", \"reason\": \"最快能拿到可核对的原文证据，同时也能确认 B 家交期单位\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"上次这两项只是会话里的未完事项，没有落到任何项目/任务记录，后续容易漏。\", \"options\": [{\"label\": \"登记待办并指定责任人与时限\", \"value\": \"是，按我指定的项目/责任人登记待办\"}, {\"label\": \"暂不登记，先完成核实\", \"value\": \"先不登记，本轮先把对比结论核实清楚\"}], \"question\": \"本轮要不要把“补 C 家含税报价单、核对 B 家交期单位”登记为正式待办并挂到对应项目上？\", \"depends_on\": [], \"recommended\": {\"value\": \"先不登记，本轮先把对比结论核实清楚\", \"reason\": \"核实结论所需的原始资料尚未到位，先立待办容易留下无出处的条目\"}, \"allow_free_text\": true}], \"unfinished\": [\"补齐 C 家含税报价单原件/系统记录，未取得\", \"确认 B 家交期单位（天/周）及承诺口径，未确认——该口径直接决定“比 A 家短 2 周”的结论是否成立\", \"本轮在品类范围内未检到任何供应商报价或交期记录，尚未形成可引用的当前对比依据\"]}",
+  "unfinished": [
+    "补齐 C 家含税报价单原件/系统记录，未取得",
+    "确认 B 家交期单位（天/周）及承诺口径，未确认——该口径直接决定“比 A 家短 2 周”的结论是否成立",
+    "本轮在品类范围内未检到任何供应商报价或交期记录，尚未形成可引用的当前对比依据"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "conversation.history:completed:1",
+    "mcp.tools.list:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

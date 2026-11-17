@@ -1,0 +1,45 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "N6",
+  "expect": "none",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "855428bb-d74a-40f0-a541-2f526cca7090",
+      "goal": "要不要把周报格式记下来？你觉得呢",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 116.1,
+      "used_tokens": 114375,
+      "held_tokens": 0,
+      "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+      "unfinished": [
+        "周报模板 v1 与品类知识条目仍为草稿，未落库：当前范围无写入通道（三个相关技能未启用），需你方按现有流程登记或提供公司模板后由我出终版",
+        "公司既有周报模板与固定字段未核实（当前品类范围检索无命中）",
+        "企业资料的引用或覆盖尚未完整核对。"
+      ],
+      "final_questions": [],
+      "clarifications": [
+        "要记的是哪一种内容？",
+        "记到哪里？",
+        "你们公司里是否已有固定周报模板或表格文件？"
+      ],
+      "tool_calls": {
+        "assistant.search": 1,
+        "category.knowledge.list": 1,
+        "conversation.history": 1,
+        "memory.search": 1,
+        "model": 6
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

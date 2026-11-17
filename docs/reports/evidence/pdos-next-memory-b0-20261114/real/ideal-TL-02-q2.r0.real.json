@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 17.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 32652,
+  "held_tokens": 0,
+  "answer": "按你已确认的口径（给这个客户一律用英文），给出一版两三句的英文客户告知稿，说明本周内提供气泵（汽车充气泵）报价；收件人姓名保留占位待你替换。品类范围内未检索到相关客户/报价资料，故未引用业务事实。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:49:38.327003+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"按你已确认的口径（给这个客户一律用英文），给出一版两三句的英文客户告知稿，说明本周内提供气泵（汽车充气泵）报价；收件人姓名保留占位待你替换。品类范围内未检索到相关客户/报价资料，故未引用业务事实。\", \"questions\": [{\"id\": \"q_recipient\", \"why\": \"草稿里收件人称谓只能留占位，填入实际姓名/公司后即可直接发送。\", \"options\": [{\"label\": \"保留 [Customer Name] 占位，我自己填\", \"value\": \"keep_placeholder\"}, {\"label\": \"改成不写具体称谓的通用写法\", \"value\": \"generic_no_name\"}], \"question\": \"这封告知要发给哪位联系人？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_placeholder\", \"reason\": \"当前范围内检索不到该客户的联系人信息，直接用占位最稳妥，不会凭空写入未核实的称呼。\"}, \"allow_free_text\": true}], \"unfinished\": [\"收件人姓名/公司未提供，正文保留占位待替换\", \"若你希望同时给中文版或包含报价有效期、配置口径等条款，需要再确认口径\"]}",
+  "unfinished": [
+    "收件人姓名/公司未提供，正文保留占位待替换",
+    "若你希望同时给中文版或包含报价有效期、配置口径等条款，需要再确认口径"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

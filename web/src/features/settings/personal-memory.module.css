@@ -74,3 +74,24 @@
   .fields :is(input:not([type=radio]):not([type=checkbox]),select,textarea),.mergeBox :is(select,textarea) { min-height:44px; }
   .kind,.choices label,.past summary { min-height:44px; }
 }
+/* 统一条目契约（P121 第 6 项）：生效起点、发生时间、证据链接与关系，沿用同一组 token。 */
+.dateRow { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; min-width:0; }
+.dateRow .dateLabel input { max-width:none; }
+.links { display:grid; gap:6px; min-width:0; }
+.linksTitle { font-size:12px; }
+.linkList { display:grid; gap:4px; }
+.linkList li { display:grid; grid-template-columns:minmax(0,1fr) auto auto; align-items:center; gap:8px; min-height:30px; padding:0 0 0 10px; border:1px solid var(--border-soft); border-radius:8px; }
+.linkList li .chip:first-child { justify-self:start; }
+.linkList li:has(> .chip:first-child) { grid-template-columns:auto minmax(0,1fr) auto; }
+.linkText { overflow-wrap:anywhere; font-size:12px; line-height:1.5; }
+.linkAdd { display:flex; flex-wrap:wrap; gap:6px; align-items:center; min-width:0; }
+.fields .linkAdd select { width:auto; min-width:120px; max-width:100%; flex:1 1 140px; }
+.inlineSelect { display:inline-flex; align-items:center; gap:8px; font-size:12px; }
+.inlineSelect select { min-height:30px; border:1px solid var(--border); border-radius:8px; padding:4px 8px; background:var(--background); color:var(--foreground); font:inherit; }
+.inlineSelect select:focus-visible { outline:2px solid var(--ring); outline-offset:2px; }
+.linkSummary { display:grid; gap:2px; margin-top:4px; color:var(--text-subtle); font-size:11px; line-height:1.6; }
+.linkSummary li { overflow-wrap:anywhere; }
+.linkKind { display:inline-block; margin-right:6px; padding:0 6px; border:1px solid var(--border); border-radius:999px; font-size:10px; }
+.state[data-state=pending] { border-color:var(--primary-border); color:var(--primary); }
+@media(max-width:540px) { .dateRow { grid-template-columns:1fr; } .linkAdd select { flex-basis:100%; } }
+@media(pointer:coarse) { .linkList li,.inlineSelect select { min-height:44px; } }

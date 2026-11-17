@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 82.5,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 232197,
+  "held_tokens": 0,
+  "answer": "已核对：在\"汽车充气泵\"品类内的企业检索（知识/问题/项目状态/文档，含历史）0 命中；品类知识、竞品、参数列表为空；platform.read 按品类/名称/无条件读取均返回空 items；product.baseline.read 因缺可寻址基线型号无法调用；本会话无历史轮次；个人记忆未开启；本工作链无历史引用；无授权 MCP 连接器；research.search 未配置。未查到：那次\"有刷电机噪声超标\"评估的原始记录、其最终推荐方案、以及该次评估遗留的未完成事项——因此无法给出方案名称或遗留清单。另：跨品类全库检索因本轮查找预算用尽未完成；option_comparison、gap_check 技能在本范围未启用。",
+  "answer_blob": "{\"result\": {\"blocked\": [\"assistant.search 全库/跨范围检索：本轮查找预算已用尽(MODEL_BUDGET_EXCEEDED)\", \"skill.load(option_comparison/gap_check)：FORBIDDEN_SCOPE，本租户与范围未启用\", \"research.search：SOURCE_UNAVAILABLE，该读取能力未配置\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:15:18.134446+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step_hint\": \"由用户附加该评估原件或授权下一轮扩大检索范围与查找预算后，按型号/渠道/时间定位条目并复原推荐结论\"}, \"status\": \"partial\", \"summary\": \"已核对：在\\\"汽车充气泵\\\"品类内的企业检索（知识/问题/项目状态/文档，含历史）0 命中；品类知识、竞品、参数列表为空；platform.read 按品类/名称/无条件读取均返回空 items；product.baseline.read 因缺可寻址基线型号无法调用；本会话无历史轮次；个人记忆未开启；本工作链无历史引用；无授权 MCP 连接器；research.search 未配置。未查到：那次\\\"有刷电机噪声超标\\\"评估的原始记录、其最终推荐方案、以及该次评估遗留的未完成事项——因此无法给出方案名称或遗留清单。另：跨品类全库检索因本轮查找预算用尽未完成；option_comparison、gap_check 技能在本范围未启用。\", \"questions\": [], \"unfinished\": [\"定位那次\\\"有刷电机噪声超标\\\"评估的原始记录（需用户附加原件，或下一轮放宽检索范围与查找预算做全库检索）\", \"复核该评估当时的方案选项与推荐结论，并列出其遗留未决事项\"]}",
+  "unfinished": [
+    "定位那次\"有刷电机噪声超标\"评估的原始记录（需用户附加原件，或下一轮放宽检索范围与查找预算做全库检索）",
+    "复核该评估当时的方案选项与推荐结论，并列出其遗留未决事项"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

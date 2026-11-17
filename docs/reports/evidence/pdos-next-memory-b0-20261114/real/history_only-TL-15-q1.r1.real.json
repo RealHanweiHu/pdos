@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 97.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 121498,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15，你的会话「整理充气泵的包装方案」）的结论是：包装选方案二 —— 纸托 + 收缩膜，单件成本 1.8 元。需要说明的是：本次在当前品类（汽车充气泵）范围内没有找到可重新核对的方案/成本对象（platform.read、evidence.search 返回空，检索随后触顶），因此这个答案来自你上一轮自己的会话答复记录，而非本次读到的业务事实。若要拿到 1.8 元的构成明细与来源文件，可在同会话里继续深入查。",
+  "answer_blob": "{\"result\": {\"answer\": {\"unit_cost\": {\"basis\": \"单件包装成本\", \"amount\": 1.8, \"currency\": \"CNY\"}, \"recalled_from\": {\"goal\": \"整理充气泵的包装方案\", \"as_of\": \"2026-11-15T11:29:27Z\", \"run_id\": \"dd392dfc-2d5b-4af4-8027-75d82ad534dc\", \"session_id\": \"f955ae78-96d1-447b-a231-d415ead5e3d0\", \"record_summary\": \"甲：包装选方案二（纸托加收缩膜），单件成本 1.8 元。\", \"historical_outcome_state\": \"current\"}, \"selected_option\": \"方案二（纸托 + 收缩膜）\"}, \"unknowns\": [\"1.8 元/件的成本口径未载明：是否含税、是否含运费、单价基准批量、币种与汇率时点均未确认\", \"方案二（纸托 + 收缩膜）的方案明细清单、纸托规格与膜材参数未在本次可读范围内找到\", \"是否存在后续修订或新版本包装方案未能核对（检索预算用尽）\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:29:53.795761+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": [], \"verification\": {\"attempts\": [{\"tool\": \"platform.read\", \"result\": \"items 为空\"}, {\"tool\": \"evidence.search\", \"result\": \"items 为空\"}, {\"tool\": \"assistant.search\", \"result\": \"0 命中\"}, {\"tool\": \"assistant.search（第二次，含 artifact/knowledge 与历史）\", \"result\": \"RATE_LIMITED：本轮查找预算已用完\"}], \"scope_attempted\": {\"category_id\": \"0ab20620-be84-40f6-bb8f-e278a49ec0ff\", \"category_name\": \"汽车充气泵\"}, \"re_read_current_business_objects\": false}, \"evidence_status\": \"本次未取得可引用的业务对象证据；数值来自本人上次会话的答复记录（as_of 2026-11-15），属历史记录，不作为当前业务事实引用\"}, \"status\": \"completed\", \"summary\": \"上次（2026-11-15，你的会话「整理充气泵的包装方案」）的结论是：包装选方案二 —— 纸托 + 收缩膜，单件成本 1.8 元。需要说明的是：本次在当前品类（汽车充气泵）范围内没有找到可重新核对的方案/成本对象（platform.read、evidence.search 返回空，检索随后触顶），因此这个答案来自你上一轮自己的会话答复记录，而非本次读到的业务事实。若要拿到 1.8 元的构成明细与来源文件，可在同会话里继续深入查。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮检索预算已用完，当前品类范围内未读到方案与成本对象，1.8 元/件目前只有上次会话的答复记录作证。\", \"options\": [{\"label\": \"要，继续核（下一轮预算恢复后检索方案与成本来源）\", \"value\": \"continue_verify\"}, {\"label\": \"不用，先按上次结论用\", \"value\": \"stop_here\"}], \"question\": \"要不要我在同一会话里继续深入查，把方案二的包装明细与 1.8 元/件的成本构成（含税/运费口径、批量基准）连同来源文件一起核出来？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue_verify\", \"reason\": \"该数值与方案明细尚未在业务对象层面核对过，直接引用存在口径风险。\"}, \"allow_free_text\": true}], \"unfinished\": [\"核对方案二（纸托 + 收缩膜）的包装明细与 1.8 元/件成本构成及来源文件——本轮查找预算已用完，需下一轮继续检索。\"]}",
+  "unfinished": [
+    "核对方案二（纸托 + 收缩膜）的包装明细与 1.8 元/件成本构成及来源文件——本轮查找预算已用完，需下一轮继续检索。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:7",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

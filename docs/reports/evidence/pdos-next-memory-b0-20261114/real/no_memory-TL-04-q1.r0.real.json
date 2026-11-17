@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 54.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 84834,
+  "held_tokens": 0,
+  "answer": "在已检索范围内没有找到你此前交代过报价对比口径的记录。当前品类「汽车充气泵」是空的隔离合成品类（无提案、无竞品、无知识条目、无价格点），公司资料检索 0 命中；本会话历史为空（当前即首轮）；个人记忆通道本会话被设为不记录/不读取，所以其他会话里你说过的口径我这次无法回溯核对——不能据此断定你没说过。若要现在推进，系统里可用的既定口径是 price_band 的统一价格口径（币种、观察日期、地区、渠道、零售/促销价型、含税与含运、配置），或由你临时指定。",
+  "answer_blob": "{\"result\": {\"answer\": \"在已检索范围内未找到你此前交代的报价对比口径记录\", \"unknowns\": [\"其他会话中的口头约定无法核对：个人记忆通道本会话关闭\", \"若口径以提案内 assumption/commercial_target 等形式存放，本品类无提案对象可查\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T13:07:42.787907+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_steps\": [\"你复述一句口径或直接选默认口径\", \"提供气泵报价单/竞品价格点(含币种、日期、渠道、含税运、配置)\", \"如需回溯旧会话：开启会话记忆或在原会话继续\"], \"citation_ids\": [], \"found_records\": [], \"category_state\": {\"name\": \"汽车充气泵\", \"model_count\": 1, \"parameter_count\": 0, \"knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0, \"regulation\": 0, \"research_question\": 0}}, \"searched_scope\": [\"当前品类(汽车充气泵)企业资料检索(artifact/knowledge, 含历史)\", \"当前会话历史(本会话为首轮，无历史回合)\", \"个人记忆检索(状态 memory_off：本会话未读取个人记忆)\", \"当前品类知识/竞品/参数/平台对象读取(均为空)\"], \"available_default_basis\": {\"basis\": [\"币种\", \"观察日期\", \"地区\", \"渠道\", \"零售/促销价型\", \"含税\", \"含运费\", \"配置口径\"], \"source\": \"skill:price_band\"}}, \"status\": \"partial\", \"summary\": \"在已检索范围内没有找到你此前交代过报价对比口径的记录。当前品类「汽车充气泵」是空的隔离合成品类（无提案、无竞品、无知识条目、无价格点），公司资料检索 0 命中；本会话历史为空（当前即首轮）；个人记忆通道本会话被设为不记录/不读取，所以其他会话里你说过的口径我这次无法回溯核对——不能据此断定你没说过。若要现在推进，系统里可用的既定口径是 price_band 的统一价格口径（币种、观察日期、地区、渠道、零售/促销价型、含税与含运、配置），或由你临时指定。\", \"questions\": [{\"id\": \"q_basis\", \"why\": \"未找到你以前的交代，需要现在定一次口径，否则价格点无法同口径比较。\", \"options\": [{\"label\": \"用系统既定口径：币种、观察日期、地区、渠道、零售/促销价型、含税与含运费、配置对齐\", \"value\": \"default_price_band_basis\"}, {\"label\": \"我重新给你一套口径（币种/日期/地区/渠道/含税运/配置/是否含样件与打样费）\", \"value\": \"user_supplied_basis\"}, {\"label\": \"先只做对齐不比较：先把各渠道报价按币种、日期、含税运归一，暂不做位置判断\", \"value\": \"normalize_only\"}], \"question\": \"这次报价对比按哪套口径走？\", \"depends_on\": [], \"recommended\": {\"value\": \"default_price_band_basis\", \"reason\": \"系统已登记该统一口径，可直接落成可比结构；若你有别的约定，改成第二项即可。\"}, \"allow_free_text\": true}, {\"id\": \"q_memory\", \"why\": \"个人记忆通道本会话关闭，跨会话的旧约定现在查不到。\", \"options\": [{\"label\": \"开启本会话记忆后我再检索一次旧约定\", \"value\": \"enable_memory\"}, {\"label\": \"不必，我直接复述口径\", \"value\": \"no_memory\"}, {\"label\": \"不必，按默认口径开始比\", \"value\": \"skip\"}], \"question\": \"要不要我设法回溯你在别的会话里可能说过的口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"enable_memory\", \"reason\": \"若确有你早前的口头约定，开启记忆后能避免口径与你的原意不一致。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未能确认你在其他会话是否交代过报价对比口径：个人记忆通道本会话关闭，需你复述或开启记忆\", \"当前品类内无任何报价单、竞品价格点或已立项提案，尚未取到可比价格数据\", \"未选定本次对比口径（默认口径 vs 你的指定口径）\"]}",
+  "unfinished": [
+    "未能确认你在其他会话是否交代过报价对比口径：个人记忆通道本会话关闭，需你复述或开启记忆",
+    "当前品类内无任何报价单、竞品价格点或已立项提案，尚未取到可比价格数据",
+    "未选定本次对比口径（默认口径 vs 你的指定口径）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

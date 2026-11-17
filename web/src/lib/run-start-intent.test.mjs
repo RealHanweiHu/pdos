@@ -92,3 +92,15 @@ test("explicit deep and correction continuation restore their original closed re
   const selected={...value,body:{...value.body,requested_skills:[{key:"public_research",version:"fixed-v1",digest:"a".repeat(64)}],excluded_continued_skills:["gap_check"]}};
   assert.equal(restoreRunStart(selected,undefined,proposal),selected);
 });
+
+test("“本轮不记” is restored only as an explicit true, on a first turn and on a continuation", () => {
+  const first = { path: "v1/agent-runs", body: { ...original.body, memory_turn_off: true } };
+  assert.equal(restoreRunStart(first, proposal), first);
+  assert.equal(restoreRunStart({ path: "v1/agent-runs", body: { ...original.body, memory_turn_off: false } }, proposal), null);
+  assert.equal(restoreRunStart({ path: "v1/agent-runs", body: { ...original.body, memory_turn_off: "yes" } }, proposal), null);
+  const run = "44444444-4444-4444-8444-444444444444", key = "55555555-5555-4555-8555-555555555555";
+  const { restoreContinuation } = continuation.exports;
+  const pending = { root: "v1/agent-runs", owner_id: "owner", request: { goal: "继续", idempotency_key: key, continue_from_run_id: run, memory_turn_off: true } };
+  assert.equal(restoreContinuation(pending, "v1/agent-runs", "owner", run), pending);
+  assert.equal(restoreContinuation({ ...pending, request: { ...pending.request, memory_turn_off: false } }, "v1/agent-runs", "owner", run), null);
+});

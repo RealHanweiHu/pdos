@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 33.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 100774,
+  "held_tokens": 0,
+  "answer": "上次（记录时间 2026-11-15，会话 8b460bea…／运行 46797876…）整理充气泵包装方案的结论是：选的是方案二——纸托加收缩膜，单件成本 1.8 元/件。需要说明的是，那次记录没有关联任何来源引用；我在当前「汽车充气泵」品类下按关键词检索、平台对象读取和品类知识列表都没有找到包装方案或成本的业务记录（均返回空），因此这只能作为当时的工作记录，不能当作已核验的现行基线。",
+  "answer_blob": "{\"result\": {\"record\": {\"goal\": \"整理充气泵的包装方案\", \"note\": \"来自本人此前会话的历史记录，无附随引用，不作为当前业务事实\", \"as_of\": \"2026-11-15T12:43:26Z\", \"run_id\": \"46797876-a3e8-425f-885a-89f97584b8ff\", \"unit_cost\": {\"unit\": \"件\", \"value\": \"1.8\", \"currency\": \"CNY\"}, \"session_id\": \"8b460bea-6488-45b5-92c1-0d572b59ac7d\", \"source_count\": 0, \"chosen_option\": \"方案二（纸托加收缩膜）\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:43:42.795706+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围（汽车充气泵品类）内未找到包装方案选项与单件成本的项目/提案/知识/平台记录，无法用现有业务对象核对『方案二＝纸托+收缩膜、1.8 元/件』\", \"历史记录未附来源与成本口径（币种、批量、含不含税运与包装料口径）未知\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（记录时间 2026-11-15，会话 8b460bea…／运行 46797876…）整理充气泵包装方案的结论是：选的是方案二——纸托加收缩膜，单件成本 1.8 元/件。需要说明的是，那次记录没有关联任何来源引用；我在当前「汽车充气泵」品类下按关键词检索、平台对象读取和品类知识列表都没有找到包装方案或成本的业务记录（均返回空），因此这只能作为当时的工作记录，不能当作已核验的现行基线。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类下没有可读的包装方案与成本记录，无法自动核对；若要作为现行基线，需要重新做方案对比并确认成本口径。\", \"options\": [{\"label\": \"先当现行基线登记，后续再补证据\", \"value\": \"register_as_baseline\"}, {\"label\": \"在本会话重新整理包装方案对比并重算单件成本\", \"value\": \"recompute_now\"}, {\"label\": \"仅作历史记录，不做后续动作\", \"value\": \"history_only\"}], \"question\": \"这条『方案二（纸托+收缩膜）、1.8 元/件』要按现行基线往下用吗？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"未在当前业务对象中找到包装方案与单件成本的记录，历史结论（方案二／1.8 元/件）仍待与现行成本口径核对\"]}",
+  "unfinished": [
+    "未在当前业务对象中找到包装方案与单件成本的记录，历史结论（方案二／1.8 元/件）仍待与现行成本口径核对"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

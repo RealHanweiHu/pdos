@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-13",
+  "question": "q1",
+  "repeat": 0,
+  "fault": "memory_unavailable",
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 55.0,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 144430,
+  "held_tokens": 0,
+  "answer": "一、验收标准（已在品类「汽车充气泵」规格字典中核实）：参数 key=noise（噪声），版本 1，单位 dB(A)，验收判据「≤ 62 dB(A)」，方向为越低越好；标准测试条件已登记为「1 m，空载」。该条目 origin=human，由品类 owner（Synthetic owner，4de836fa…）写入，变更说明为“合成规格：噪声”，创建于 2026-11-15；include_history 查下来字典里只有这一版，没有更早版本或替代版本记录。尚缺：测量方法（method）为空、确认人（confirmed_by）为空。\n二、关于「你以前有没有交代过测试条件」：在可读到的记录里，噪声的测试条件（1 m、空载）确实是以人工录入方式登记在规格字典中的，这一条可视为已被登记在案的条件；但我无法核到你原话的具体出处——本会话对话历史为空，个人记忆源本轮返回 SOURCE_UNAVAILABLE 不可读，且本轮查找预算已用完，故只能确认「字典里有这条条件」，不能确认「你何时、在什么材料里、以什么措辞交代过」，也不能确认是否还有别的附加条件（负载/档位/转速/背景噪声/测点高度）未被登记。\n需要的话我可以在同会话深入查（放宽到全部资料类型、翻历史与外部资料），专门核对是否还有你交代过的其他噪声测试条件或方法。",
+  "answer_blob": "{\"result\": {\"answer\": {\"acceptance_standard\": {\"unit\": \"dB(A)\", \"method\": null, \"registry\": \"品类「汽车充气泵」规格字典（category.parameters.list）\", \"direction\": \"lower\", \"confirmed_by\": null, \"parameter_key\": \"noise\", \"parameter_name\": \"噪声\", \"parameter_version\": 1, \"acceptance_criterion\": \"≤ 62 dB(A)\", \"standard_condition_recorded\": \"1 m，空载\"}, \"previously_specified_test_condition\": {\"answer\": \"已登记，但原话出处未能核实\", \"detail\": \"噪声测试条件「1 m，空载」以 origin=human 写入规格字典，写入人为该品类 owner（4de836fa-5e25-46dc-820a-427bd9a5f4c9 / Synthetic owner），字典中仅此一版（include_history 无更早版本）；本会话对话历史为空、个人记忆源本轮不可读（SOURCE_UNAVAILABLE）、本轮查找预算已用完，因此无法核对提问人过去的原话表述，也无法确认是否另有未登记的附加条件\"}}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:14:16.993322+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"测量方法未登记（method=null）：测距/测点数量、背景噪声修正、引用标准（如 ISO 3744/3746）等无记录\", \"该验收标准未经确认人确认（confirmed_by=null）\", \"提问人历史交代的原话、载体与时点无法核实：会话历史无更早轮次，个人记忆源本轮不可读\", \"是否还存在负载/档位/转速/环境等附加测试条件未知\", \"未与竞品或法规限值做同口径对比（品类知识库为空）\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"一、验收标准（已在品类「汽车充气泵」规格字典中核实）：参数 key=noise（噪声），版本 1，单位 dB(A)，验收判据「≤ 62 dB(A)」，方向为越低越好；标准测试条件已登记为「1 m，空载」。该条目 origin=human，由品类 owner（Synthetic owner，4de836fa…）写入，变更说明为“合成规格：噪声”，创建于 2026-11-15；include_history 查下来字典里只有这一版，没有更早版本或替代版本记录。尚缺：测量方法（method）为空、确认人（confirmed_by）为空。\\n二、关于「你以前有没有交代过测试条件」：在可读到的记录里，噪声的测试条件（1 m、空载）确实是以人工录入方式登记在规格字典中的，这一条可视为已被登记在案的条件；但我无法核到你原话的具体出处——本会话对话历史为空，个人记忆源本轮返回 SOURCE_UNAVAILABLE 不可读，且本轮查找预算已用完，故只能确认「字典里有这条条件」，不能确认「你何时、在什么材料里、以什么措辞交代过」，也不能确认是否还有别的附加条件（负载/档位/转速/背景噪声/测点高度）未被登记。\\n需要的话我可以在同会话深入查（放宽到全部资料类型、翻历史与外部资料），专门核对是否还有你交代过的其他噪声测试条件或方法。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读范围内只能确认规格字典里登记了「1 m，空载」，无法核到你过去的原话出处与是否另有附加条件\", \"options\": [{\"label\": \"要，展开深入查（放宽资料类型并翻历史/外部来源）\", \"value\": \"deep_search\"}, {\"label\": \"不用，先以现有记录为准\", \"value\": \"stop\"}], \"question\": \"是否需要我继续深入检索历史资料与外部记录，专门核对是否还有你交代过的其他噪声测试条件（如负载、档位、转速、背景噪声、测点高度）或测量方法？\", \"depends_on\": [], \"recommended\": {\"value\": \"deep_search\", \"reason\": \"“以前有没有交代过”只能靠更广的来源核对才能给出确定结论\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"「1 m，空载」未定义工况细节，不同人测法可能差异很大，会直接影响 ≤ 62 dB(A) 的判定一致性\", \"options\": [{\"label\": \"需要，先留待工程/测试专业确认后再补进字典\", \"value\": \"clarify_later\"}, {\"label\": \"不需要，按字典现状执行\", \"value\": \"as_recorded\"}], \"question\": \"字典中的「空载」是否需要进一步明确到具体工况（如是否接气嘴、连续运转还是峰值、哪一档）？\", \"depends_on\": [], \"recommended\": {\"value\": \"clarify_later\", \"reason\": \"口径不明确会让同一指标出现不同判定结果\"}, \"allow_free_text\": true}], \"unfinished\": [\"核实提问人过去交代噪声测试条件的原话出处（个人记忆源本轮不可读、会话历史无更早轮次）\", \"噪声测量方法（method）与确认人尚未登记\"]}",
+  "unfinished": [
+    "核实提问人过去交代噪声测试条件的原话出处（个人记忆源本轮不可读、会话历史无更早轮次）",
+    "噪声测量方法（method）与确认人尚未登记"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "memory.search:failed:1",
+    "model:completed:8",
+    "platform.read:completed:2",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

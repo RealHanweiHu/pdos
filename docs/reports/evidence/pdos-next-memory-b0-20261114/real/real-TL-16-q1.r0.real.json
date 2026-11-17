@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 68143,
+  "held_tokens": 0,
+  "answer": "已按你的口径带上项目编号 PX-305，写好一封简短催交期邮件（主题+正文可直接复制），其中供应商名称、样件数量/版本、原承诺交期、回复截止日期、署名信息为占位符。说明：公司资料中检索到的供应商、样件与承诺交期记录为空，未找到可引用的实际交期与数量，因此这些字段用【】标注待你确认，未代填。",
+  "answer_blob": "{\"result\": {\"email\": {\"body\": \"您好，\\n\\n想跟进一下项目 PX-305 的气泵样件，麻烦帮忙确认几点：\\n1）本次需交付的样件数量与当前配置/版本；\\n2）预计可寄出的日期（我们记录的承诺交期为【原承诺交期】）；\\n3）目前是否还有未解决的物料、工艺或检验问题。\\n\\n若交期有变动，请说明原因并给出新的可承诺日期，我们据此安排后续验证与收样安排；若能按原计划发出，也请回复确认。\\n\\n烦请于【回复截止日期】前回复，谢谢。\\n\\n【你的称呼】\\n【公司 / 部门】\\n【联系电话】\", \"style\": \"简短催办：3个待确认项 + 变更需说明原因 + 明确回复截止时间\", \"subject\": \"【PX-305】气泵样件交期确认（请于【回复截止日期】前回复）\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:29:12.602012+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商名称与收件人邮箱未知\", \"样件数量与当前配置/版本未知\", \"供应商原承诺交期未知\", \"期望回复截止日期未知\", \"发件人署名/联系方式未知\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"constraints_applied\": [\"给供应商的邮件一律带上项目编号 PX-305（个人口径，来自本人已确认记忆）\"]}, \"status\": \"completed\", \"summary\": \"已按你的口径带上项目编号 PX-305，写好一封简短催交期邮件（主题+正文可直接复制），其中供应商名称、样件数量/版本、原承诺交期、回复截止日期、署名信息为占位符。说明：公司资料中检索到的供应商、样件与承诺交期记录为空，未找到可引用的实际交期与数量，因此这些字段用【】标注待你确认，未代填。\", \"questions\": [{\"id\": \"q1\", \"why\": \"邮件抬头与落款目前是占位符，无法直接发出。\", \"options\": [{\"label\": \"供应商公司名（留收件人泛称）\", \"value\": \"仅填公司名，收件人写「贵司XX工程师」\"}, {\"label\": \"公司名 + 具体收件人\", \"value\": \"我提供公司名和收件人姓名\"}], \"question\": \"收件方怎么称呼和落款？（供应商公司名、收件人姓名/职位、邮箱）\", \"depends_on\": [], \"recommended\": {\"value\": \"仅填公司名，收件人写「贵司XX工程师」\", \"reason\": \"你手上多半有联系人信息，先定抬头结构，你替换姓名最快\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"催交期的力度取决于“原承诺交期”，数量和配置决定收样与后续验证安排。\", \"options\": [{\"label\": \"我直接给：数量+版本+原承诺交期\", \"value\": \"我在下一条消息里写明\"}, {\"label\": \"先不写具体数，只催确认\", \"value\": \"先发催确认版本，等对方回复\"}], \"question\": \"本次样件的数量/配置，以及供应商原先承诺的交期分别是多少？\", \"depends_on\": [], \"recommended\": {\"value\": \"我直接给：数量+版本+原承诺交期\", \"reason\": \"有原承诺交期作对比，催办语气和“是否延期”的判断才成立\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"回复时限决定邮件的紧迫程度与措辞强度。\", \"options\": [{\"label\": \"收到后 2 个工作日内\", \"value\": \"2个工作日\"}, {\"label\": \"本周内（3–5 个工作日）\", \"value\": \"5个工作日\"}, {\"label\": \"我指定具体日期\", \"value\": \"我给具体日期\"}], \"question\": \"希望对方多久内回你？\", \"depends_on\": [], \"recommended\": {\"value\": \"2个工作日\", \"reason\": \"催交期场景通常需要较短闭环时间\"}, \"allow_free_text\": true}], \"unfinished\": [\"补齐供应商名称/收件人、样件数量与版本、原承诺交期、回复截止日期后即可直接发出\", \"若需要我先核实公司内部是否有该供应商的送样记录，需再开一轮检索（本轮查找预算已用尽）\"]}",
+  "unfinished": [
+    "补齐供应商名称/收件人、样件数量与版本、原承诺交期、回复截止日期后即可直接发出",
+    "若需要我先核实公司内部是否有该供应商的送样记录，需再开一轮检索（本轮查找预算已用尽）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

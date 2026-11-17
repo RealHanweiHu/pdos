@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 33.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51838,
+  "held_tokens": 0,
+  "answer": "已给出两三句话的客户告知草稿（承诺本周内提供气泵报价），型号/客户名/截止日暂用占位符；该品类可读范围内未检索到对应询价或报价记录，故无引用可挂，承诺可达成性未经核实。",
+  "answer_blob": "{\"result\": {\"draft\": {\"language\": \"zh-CN\", \"sentences\": [\"您好，感谢您对【客户名称】的询价。\", \"关于【气泵型号/规格】的报价，我们正在核对规格与成本，预计于本周内（【X月X日】前）向您提供完整报价单。\", \"报价发出后，如需调整配置或数量，我们会按您的要求随时更新。\"], \"placeholders\": [\"【客户名称】\", \"【气泵型号/规格】\", \"【X月X日】\"]}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T15:26:58.647258+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类（汽车充气泵）可读范围内未检索到对应客户的询价、报价单或项目记录，型号与客户信息无法从资料确认\", \"“本周内”对应的具体截止日期未记录\", \"报价前提条件（数量、含税、交期、运费口径）未记录\", \"本周内出具报价的可达成性未经核实\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"已给出两三句话的客户告知草稿（承诺本周内提供气泵报价），型号/客户名/截止日暂用占位符；该品类可读范围内未检索到对应询价或报价记录，故无引用可挂，承诺可达成性未经核实。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类可读范围内未检索到对应的客户询价或报价记录，无法从资料确认收件方与型号，草稿中只能保留占位符。\", \"options\": [{\"label\": \"保留占位符，由我自行填写客户名称与型号\", \"value\": \"keep_placeholder\"}, {\"label\": \"不写具体型号，只写“贵司询价的气泵”\", \"value\": \"category_only\"}], \"question\": \"这封告知发给哪家客户、对应哪个气泵型号/规格？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_placeholder\", \"reason\": \"没有可核实的客户与型号记录，保留占位符最稳妥，避免误报对象\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"对客户的承诺时点需要唯一明确日期；本厂是否能在该时点出价尚未核实，写法影响承诺强度。\", \"options\": [{\"label\": \"本周五前给出报价\", \"value\": \"friday\"}, {\"label\": \"本周末前给出报价\", \"value\": \"week_end\"}, {\"label\": \"不写具体日期，只说“本周内”\", \"value\": \"soft\"}], \"question\": \"“本周内”对外承诺的具体截止日期按哪个口径写？\", \"depends_on\": [], \"recommended\": {\"value\": \"friday\", \"reason\": \"工作日内给出比周末更可预期，便于客户安排接单\"}, \"allow_free_text\": true}], \"unfinished\": [\"客户名称、气泵型号与具体截止日期待确认后替换占位符\", \"本周内出价是否可行尚未由商务/成本侧核实\"]}",
+  "unfinished": [
+    "客户名称、气泵型号与具体截止日期待确认后替换占位符",
+    "本周内出价是否可行尚未由商务/成本侧核实"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,26 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real_proposals_open",
+  "timeline": "TL-16",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "resident",
+      "notes": [
+        "n1"
+      ],
+      "texts": [
+        "给供应商的邮件一律带上项目编号 PX-305"
+      ],
+      "catalog": [],
+      "catalog_fields": [],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    }
+  ],
+  "episodes_written": [],
+  "unexpected_notes": 0
+}

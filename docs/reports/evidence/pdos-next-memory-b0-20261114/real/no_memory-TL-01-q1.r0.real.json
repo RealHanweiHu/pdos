@@ -1,0 +1,64 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 75.8,
+  "clarifications": [
+    "上次的供应商对比是在哪里做的？",
+    "这次对比纳入哪些供应商/竞品？名单从哪来？",
+    "对比口径按哪一档来？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 151274,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T14:02:51.743217+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次供应商对比是否存在、结论为何——本次可读入口全部0命中，无法复原\", \"历史对比遗留事项清单——无任何可引用来源，不予推断\", \"是否存在可比对的竞品名单、规格参数口径与价格/成本数据——本品类内均为0\", \"后续若要重建基线，对比的供应商范围、参数口径与价格时点尚未定义\", \"对比结论是否进入立项、由谁拍板（当前账户非product_manager）\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [], \"unfinished\": [\"上次的供应商对比结论与遗留事项：检索范围内无记录，未能复原（已按\\\"查不到即说明查不到\\\"回答）\", \"若需继续：本工作区之外的记录定位（另一品类/工作区、外部文件或另一账号）——待你指明范围\", \"若改为重做：竞品候选清单、规格参数口径、价格/成本时点三项尚未定义，且需指定品类拍板人（当前账户非 product_manager）\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "上次的供应商对比结论与遗留事项：检索范围内无记录，未能复原（已按\"查不到即说明查不到\"回答）",
+    "若需继续：本工作区之外的记录定位（另一品类/工作区、外部文件或另一账号）——待你指明范围",
+    "若改为重做：竞品候选清单、规格参数口径、价格/成本时点三项尚未定义，且需指定品类拍板人（当前账户非 product_manager）",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:3",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": [
+      "not_verbatim_user_fragment"
+    ]
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

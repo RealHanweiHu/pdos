@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 102.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 143226,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:32:53.639933+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上周试产的不良汇总记录在当前可读范围内未找到（未命中不等于不存在）\", \"具体试产批次/生产日期范围未知\", \"不良记录应统计的来源类型口径（制造轮次 Build / 品质 issue / 测试 Run / 合并去重）未知\", \"是否另有未纳入当前品类的试产项目或外部系统（ERP/MES）来源未知\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"试产与不良记录通常按批次和日期检索，周次错位会直接查不到记录。\", \"options\": [{\"label\": \"上一个完整工作周（2026-11-02 至 11-08）\", \"value\": \"2026-11-02~2026-11-08\"}, {\"label\": \"最近7天（含本周，2026-11-09 至 11-15）\", \"value\": \"2026-11-09~2026-11-15\"}, {\"label\": \"我按具体试产批次/日期给你\", \"value\": \"custom\"}], \"question\": \"「上周」具体指哪一段时间？\", \"depends_on\": [], \"recommended\": {\"value\": \"2026-11-02~2026-11-08\", \"reason\": \"提问时点为2026-11-15，按\\\"上一个完整工作周\\\"对齐最贴近\\\"上周试产汇总\\\"的通常含义。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"当前可读范围内没有任何试产/不良记录，直接给原件或系统指向是最快拿到带引用的前三项的路径。\", \"options\": [{\"label\": \"我上传或选定试产汇总文件（Excel/PDF/报告）\", \"value\": \"upload\"}, {\"label\": \"从 ERP/MES 试产批次记录取数\", \"value\": \"erp\"}, {\"label\": \"我不清楚文件在哪，请在下一轮换更宽口径继续检索\", \"value\": \"search_wider\"}], \"question\": \"试产不良汇总原件能否直接提供给我？\", \"depends_on\": [], \"recommended\": {\"value\": \"upload\", \"reason\": \"现有范围内零命中，提供原件可直接做不良项计数与排名，避免继续盲搜消耗预算。\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"同一周的不良可能分别登记在制造轮次、品质问题与测试记录中，口径不同会得出不同前三名。\", \"options\": [{\"label\": \"合并所有来源后去重排名\", \"value\": \"merged\"}, {\"label\": \"仅试产批次内的检验/巡检记录（制造轮次 Build）\", \"value\": \"build\"}, {\"label\": \"仅品质问题 issue / CAPA 登记\", \"value\": \"issue\"}, {\"label\": \"仅测试与验收记录（test_run / 验证）\", \"value\": \"test_run\"}], \"question\": \"「不良前三项」按哪类来源口径统计？\", \"depends_on\": [], \"recommended\": {\"value\": \"merged\", \"reason\": \"\\\"试产汇总\\\"通常指试产期间的合并汇总口径；但需你确认以免遗漏。\"}, \"allow_free_text\": true}], \"unfinished\": [\"检索「上周试产不良汇总」记录：当前可读范围内未命中，待确认周次(q1)与来源口径(q3)或收到汇总原件(q2)后继续，并输出带引用的前三项\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "检索「上周试产不良汇总」记录：当前可读范围内未命中，待确认周次(q1)与来源口径(q3)或收到汇总原件(q2)后继续，并输出带引用的前三项",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 33.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 99515,
+  "held_tokens": 0,
+  "answer": "**结论：额定压力还没定值。**\n\n在\"汽车充气泵\"这个品类范围里，我查到的唯一相关记录是规格参数字典中的一条：\n\n- 参数名：额定压力（key: `rated_pressure`），类型 number，单位 PSI，版本 v1\n- 该条目上登记的说明写明：**\"额定压力尚未确定，待样机测试后再定\"**（origin: human，登记人 1433f9fd…，回执 69ee1a6a…，创建/登记时间 2026-11-15）\n\n也就是说：参数位置和量纲（PSI）已经建好、数值口径留空，**目前没有任何已批准的额定压力数值**。\n\n同时说明几个我实际查过但为空的范围，避免你误以为我漏查：\n\n- 本品类下的型号/基线（platform、product.baseline）：没有可读记录，所以拿不到我方现款的已发布定义\n- 提案（proposal）、证据库（evidence）、品类知识库（category.knowledge）、竞品库（category.competitors）：在当前权限与品类范围内均为空\n- 文档检索（company search）以\"充气泵 额定压力 最大压力 规格定义\"检索返回 0 条\n\n所以\"定的是多少\"这个问题目前**没有可引用的数值答案**，不是我没找到，而是资料里明确记着尚未确定。\n\n想推进的话，路径是：等试模/样机实测压力出来后，用测试记录回填该参数值并留痕。需要我在同会话继续深入查试模与测试记录里已有的实测压力区间，作为定值参考吗？",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:21:42.547623+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"额定压力的具体数值：参数字典条目 change_note 明确记载'额定压力尚未确定，待样机测试后再定'，当前无已批准数值\", \"我方现款/在研型号的已发布基线定义：品类范围内 platform 与 product.baseline 均无可读记录，无法核对型号级压力值\", \"提案与样机实测压力数据：proposal、evidence、test_run 范围在本次可读范围内为空，无法判断定值进度\", \"单位口径：参数条目单位为 PSI，未见是否另设 bar/kPa 换算口径的登记记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"**结论：额定压力还没定值。**\\n\\n在\\\"汽车充气泵\\\"这个品类范围里，我查到的唯一相关记录是规格参数字典中的一条：\\n\\n- 参数名：额定压力（key: `rated_pressure`），类型 number，单位 PSI，版本 v1\\n- 该条目上登记的说明写明：**\\\"额定压力尚未确定，待样机测试后再定\\\"**（origin: human，登记人 1433f9fd…，回执 69ee1a6a…，创建/登记时间 2026-11-15）\\n\\n也就是说：参数位置和量纲（PSI）已经建好、数值口径留空，**目前没有任何已批准的额定压力数值**。\\n\\n同时说明几个我实际查过但为空的范围，避免你误以为我漏查：\\n\\n- 本品类下的型号/基线（platform、product.baseline）：没有可读记录，所以拿不到我方现款的已发布定义\\n- 提案（proposal）、证据库（evidence）、品类知识库（category.knowledge）、竞品库（category.competitors）：在当前权限与品类范围内均为空\\n- 文档检索（company search）以\\\"充气泵 额定压力 最大压力 规格定义\\\"检索返回 0 条\\n\\n所以\\\"定的是多少\\\"这个问题目前**没有可引用的数值答案**，不是我没找到，而是资料里明确记着尚未确定。\\n\\n想推进的话，路径是：等试模/样机实测压力出来后，用测试记录回填该参数值并留痕。需要我在同会话继续深入查试模与测试记录里已有的实测压力区间，作为定值参考吗？\", \"questions\": [{\"id\": \"q1\", \"why\": \"额定压力本身未确定；要给出可用的定值参考，需要找到样机实测压力区间，而当前可读范围内未检索到相关记录，需要确认是否值得继续深入检索。\", \"options\": [{\"label\": \"是，继续查试模与测试记录中的实测压力\", \"value\": \"yes_search_test_runs\"}, {\"label\": \"否，先按'未确定'处理，我另有安排\", \"value\": \"no\"}], \"question\": \"是否要我在本会话继续深入查试模/测试记录里已有的实测压力数据，作为额定压力定值的参考输入？\", \"depends_on\": [], \"recommended\": {\"value\": \"yes_search_test_runs\", \"reason\": \"定值需要实测输入，继续查能直接支撑后续回填；代价仅是更多检索。\"}, \"allow_free_text\": true}], \"unfinished\": [\"额定压力具体数值尚未确定（待样机测试后定），本轮无法给出数值\", \"用户是否要继续深入查试模/测试记录中的实测压力，待回复\"]}",
+  "unfinished": [
+    "额定压力具体数值尚未确定（待样机测试后定），本轮无法给出数值",
+    "用户是否要继续深入查试模/测试记录中的实测压力，待回复"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

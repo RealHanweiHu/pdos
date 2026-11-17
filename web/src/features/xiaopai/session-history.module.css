@@ -44,3 +44,5 @@
 .sessionMenu { opacity:0; }
 .sessionRecord:hover .sessionMenu,.sessionRecord:focus-within .sessionMenu,.sessionMenu[open] { opacity:1; }
 @media(pointer:coarse) { .sessionMenu { opacity:1; } }
+.sessionMenu .actions button.danger { color:var(--destructive); }
+.sessionRecord:has(section) { padding-bottom:4px; }

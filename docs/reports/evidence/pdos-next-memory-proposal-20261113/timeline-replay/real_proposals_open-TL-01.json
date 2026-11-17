@@ -1,0 +1,79 @@
+{
+  "version": "xiaopai-memory-timeline-observation/v0",
+  "group": "real_proposals_open",
+  "timeline": "TL-01",
+  "scripted": true,
+  "real_model_calls": 0,
+  "model_quality_score": null,
+  "probes": [
+    {
+      "id": "p1",
+      "probe": "search",
+      "status": "completed",
+      "returned": [
+        {
+          "run": "r1",
+          "owner": "owner"
+        }
+      ],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p2",
+      "probe": "search",
+      "status": "completed",
+      "returned": [],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p3",
+      "probe": "search",
+      "status": "completed",
+      "returned": [],
+      "notes": [],
+      "texts": [],
+      "index_pending": 0,
+      "semantic": "not_enabled",
+      "channels": [
+        "keyword"
+      ]
+    },
+    {
+      "id": "p4",
+      "probe": "resident",
+      "notes": [],
+      "texts": [],
+      "catalog": [
+        "r3",
+        "r2",
+        "r1"
+      ],
+      "catalog_fields": [
+        "as_of",
+        "goal",
+        "run_id",
+        "session_id"
+      ],
+      "catalog_has_unfinished": false,
+      "target_in_catalog": true
+    }
+  ],
+  "episodes_written": [
+    "r1",
+    "r2",
+    "r3"
+  ],
+  "unexpected_notes": 0
+}

@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 35.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 107312,
+  "held_tokens": 0,
+  "answer": "没找到你以前明确交代过口径的记录。在可检索范围内：只找到一次既往会话（标题「气泵报价对比」，as_of 2026-11-15，状态已完成），但历史存档只留下了标题和一句「报价对比已完成。」，你的原始交代内容、当时用的价格口径、对比对象都没有被保存；「汽车充气泵」品类内知识库（边界/细分/竞品/用户声音/法规/研究问题）、参数、竞品与平台对象均为 0 条，公司资料在该品类范围内检索「报价/口径/价格」0 命中；个人/团队口径备忘功能未启用，无法核对。所以不能断言你当时没说过，只能说在现在查得到的范围内没有留下可复用的口径。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:48:44.719586+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"2026-11-15 那次「气泵报价对比」会话的原始指令文本与所用价格口径未被历史存档保留（仅存标题与「报价对比已完成」摘要，无 research/notes/来源）\", \"个人/团队口径备忘（scope_note）功能未启用，无法核对是否曾被确认为固定口径\", \"品类「汽车充气泵」内知识库（boundary/segment/competitor/voice/regulation/research_question 各 0）、参数 0、竞品 0、平台对象 0，当前无可复用的口径设定或价格数据\", \"当前权限范围内未检索到任何气泵报价对比相关公司文档或历史资料\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"没找到你以前明确交代过口径的记录。在可检索范围内：只找到一次既往会话（标题「气泵报价对比」，as_of 2026-11-15，状态已完成），但历史存档只留下了标题和一句「报价对比已完成。」，你的原始交代内容、当时用的价格口径、对比对象都没有被保存；「汽车充气泵」品类内知识库（边界/细分/竞品/用户声音/法规/研究问题）、参数、竞品与平台对象均为 0 条，公司资料在该品类范围内检索「报价/口径/价格」0 命中；个人/团队口径备忘功能未启用，无法核对。所以不能断言你当时没说过，只能说在现在查得到的范围内没有留下可复用的口径。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史口径未留存，后续每次比价都需要重新确认，容易前后不一致。\", \"options\": [{\"label\": \"现在就定口径，并登记为品类知识供以后复用\", \"value\": \"now_and_register\"}, {\"label\": \"只这次先用一套口径比，不做登记\", \"value\": \"now_only\"}, {\"label\": \"暂不需要，先只把历史情况说清楚就行\", \"value\": \"not_now\"}], \"question\": \"要不要我现在把气泵报价对比的口径重新定一份并固定下来？\", \"depends_on\": [], \"recommended\": {\"value\": \"now_and_register\", \"reason\": \"历史口径已不可查，固定成可复用的口径记录最省事，避免重复确认。\"}, \"allow_free_text\": true}], \"unfinished\": [\"若要立即开展气泵报价对比，仍缺你确认的对比对象（我方现款／在谈型号／竞品／目标价）与价格口径（币种、含税与否、含运费、渠道、零售或批量价）——你尚未指定。\"]}",
+  "unfinished": [
+    "若要立即开展气泵报价对比，仍缺你确认的对比对象（我方现款／在谈型号／竞品／目标价）与价格口径（币种、含税与否、含运费、渠道、零售或批量价）——你尚未指定。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

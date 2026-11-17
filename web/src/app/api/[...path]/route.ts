@@ -243,7 +243,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const enterpriseSearch = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/enterprise-search$/i.test(forwardPath.join("/"));
   // P85 personal memory: the owner's own switch, pin/hide, usage and the tenant idle limit.
   // P86 (M2a): the owner's notes, candidates and setting; the administrator's switches and counts.
-  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/memory-mode|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|settings))$/i.test(forwardPath.join("/"));
+  // P121 第 8 项: the owner's preview (GET) and deletion (POST) of one own Session.
+  const memory = /^v1\/(?:(?:personal|categories\/[a-f0-9-]{36})\/(?:agent-sessions\/[a-f0-9-]{36}\/(?:memory-mode|deletion)|agent-runs\/[a-f0-9-]{36}\/(?:memory-usage|memory-candidates)|memory\/episodes\/[a-f0-9-]{36}\/marks)|personal\/memory-policy(?:\/statistics|\/skill-revisions(?:\/[a-f0-9-]{36}\/decision)?|\/system-rules(?:\/[a-z][a-z0-9_]{2,39})?)?|personal\/memory\/(?:notes(?:\/conflicts|\/[a-f0-9-]{36}\/(?:revisions|deletion|history))?|candidates(?:\/[a-f0-9-]{36}\/decision)?|review-items(?:\/[a-f0-9-]{36}\/(?:decision|routes))?|settings|scope-options))$/i.test(forwardPath.join("/"));
   const assistantSource = /^v1\/(?:personal|categories\/[a-f0-9-]{36})\/agent-runs\/[a-f0-9-]{36}\/assistant-sources\/[a-f0-9-]{36}$/i.test(forwardPath.join("/"));
   const projectSets = /^v1\/project-sets(?:\/move)?$/.test(forwardPath.join("/"));
   const roleCatalog = forwardPath.join("/") === "v1/role-catalog";
@@ -288,6 +289,8 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const projectWork = projectWorkPaths.test(pathname);
   const projectTeam = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/team$/i.test(pathname);
   // P34-2/3: project topics, object comments, mention candidates; scope stays in the path.
+  // M2b (P87, P121): team scope notes, their linkable sources (D509) and scope recency are read here; every write is a common command.
+  const scopeNotes = /^v1\/(?:scope-notes\/(?:category|product|proposal|project)\/[a-f0-9-]{36}(?:\/all)?|scope-note-items\/[a-f0-9-]{36}|scope-note-sources\/(?:category|product|proposal|project)\/[a-f0-9-]{36}|scope-recent\/(?:category|product|proposal|project)\/[a-f0-9-]{36})$/i.test(pathname);
   const discussion = /^v1\/products\/[a-f0-9-]{36}\/projects\/[a-f0-9-]{36}\/(?:discussions(?:\/[a-f0-9-]{36}(?:\/follow|\/messages(?:\/[a-f0-9-]{36}\/(?:edit|retract))?|\/agent-requests\/[a-f0-9-]{36}\/(?:reply|share))?)?|comments\/(?:work_task|artifact)\/[a-f0-9-]{36}|mentionable)$/i.test(pathname);
   const fieldFeedback = fieldFeedbackPaths.test(pathname);
   const answerKnowledge = /^v1\/experience\/(?:answer-draft|review-draft|verified-answers|gaps(?:\/preview|\/weekly|\/attributions|\/recover)?)$/.test(pathname);
@@ -295,7 +298,7 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
   const automation = automationPaths.test(pathname);
   const factPath = capaFactPaths.test(pathname);
   const qualityFollowup = qualityFollowupPaths.test(pathname) || capaCandidatePaths.test(pathname) || factPath;
-  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !supplyCommitments && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
+  if (!categoryRoot && !categoryPreview && !categorySeed && !categoryMembers && !paths.test(pathname) && !qualityChange && !qualityFollowup && !manufacturingPreparation && !manufacturingPublication && !nativePilot && !release && !externalHandoff && !releaseException && !projectWork && !knowledgeExperience && !answerKnowledge && !knowledgeReminders && !fieldFeedback && !automation && !resourceInspect && !projectPlanning && !supplyCommitments && !exportView && !preproject && !proposalView && !proposalClaim && !agent && !modelConfiguration && !modelConnections && !providerAgreement && !mcpManagement && !agentSkill && !skillQualification && !agentBudget && !categoryKnowledge && !categoryMetadata && !categoryParticipants && !standardMatch && !platform && !personalView && !knowledgeReminders && !personalWorkProducts && !workState && !memory && !enterpriseSearch && !assistantSource && !inbox && !notifications && !projectSets && !roleCatalog && !projectTeam && !discussion && !scopeNotes) return Response.json({ code: "NOT_FOUND", message: "此入口不可用。" }, { status: 404 });
   const query = new URLSearchParams();
   if (assistantSource) {
     if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "资料片段只支持读取。" }, { status: 405, headers: { Allow: "GET" } });
@@ -314,15 +317,28 @@ async function forward(request: NextRequest, context: { params: Promise<{ path: 
       query.set(key, value);
     }
   } else if (memory) {
-    const methods = /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|deletion|decision)$/.test(pathname) ? ["POST"] : ["GET", "POST"];
+    const scopeOptions = pathname.endsWith("/memory/scope-options");
+    // M3: review items, skill revisions and the system-rule list are read with GET; decisions,
+    // routes and a rule switch are POST only.
+    const methods = scopeOptions || /\/(?:memory-usage|memory-candidates|history|statistics|memory\/candidates|review-items|skill-revisions|system-rules)$/.test(pathname) ? ["GET"] : /\/(?:marks|conflicts|revisions|notes\/[a-f0-9-]{36}\/deletion|decision|routes|system-rules\/[a-z][a-z0-9_]{2,39})$/.test(pathname) ? ["POST"] : ["GET", "POST"];
     if (!methods.includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "记忆入口不支持此操作。" }, { status: 405, headers: { Allow: methods.join(", ") } });
-    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "记忆只按本人与当前会话读取。" }, { status: 422 });
+    if (scopeOptions) {
+      // D301: products or proposals the owner can pick as a note's scope.
+      for (const [key, value] of request.nextUrl.searchParams) {
+        if (query.has(key) || !(key === "kind" && ["product", "proposal"].includes(value) || key === "query" && [...value].length <= 80)) return Response.json({ code: "VALIDATION_FAILED", message: "作用范围选项的查询条件无效。" }, { status: 422 });
+        query.set(key, value);
+      }
+      if (!query.has("kind")) return Response.json({ code: "VALIDATION_FAILED", message: "作用范围选项须指明产品或提案。" }, { status: 422 });
+    } else if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "记忆只按本人与当前会话读取。" }, { status: 422 });
   } else if (projectSets) {
     if (!(pathname.endsWith("/move") ? ["POST"] : ["GET", "POST"]).includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: "项目集入口不支持此操作。" }, { status: 405 });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "项目集只按当前组织读取。" }, { status: 422 });
   } else if (roleCatalog || projectTeam) {
     if (!["GET", "POST"].includes(request.method)) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只支持读取与发布。" : "项目团队只支持读取与负责人保存。" }, { status: 405, headers: { Allow: "GET, POST" } });
     if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: roleCatalog ? "角色目录只按当前组织读取。" : "项目团队只按路径中的项目读取。" }, { status: 422 });
+  } else if (scopeNotes) {
+    if (request.method !== "GET") return Response.json({ code: "VALIDATION_FAILED", message: "团队备忘在这里只读；保存、停用和撤回请走确认办理。" }, { status: 405, headers: { Allow: "GET" } });
+    if (request.nextUrl.searchParams.size) return Response.json({ code: "VALIDATION_FAILED", message: "团队备忘只按路径中的范围读取。" }, { status: 422 });
   } else if (discussion) {
     // @小Pai (D37 ⑥): the reply is read with GET, a share is a POST of its requester.
     const read = /\/(?:mentionable|discussions\/[a-f0-9-]{36}|reply)$/i.test(pathname), write = /\/(?:follow|edit|retract|messages|share)$/.test(pathname);

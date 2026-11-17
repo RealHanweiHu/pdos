@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 85.6,
+  "clarifications": [
+    "那次工作大概在什么时候、涉及哪个项目或型号？",
+    "那份问题清单当时是以什么形式出现的？",
+    "是否允许我在本会话打开个人记忆检索，直接翻查我们以前的对话？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 195175,
+  "held_tokens": 0,
+  "answer": "查不到。本次可查到的记录里没有任何提到\"外壳缩水\"的内容，所以既无法确认是哪一次工作，也无法列出当时并列的其他问题。已核查范围：会话资料检索关键词\"外壳缩水\"0 条；证据检索\"外壳 缩水\"\"缩水\"\"充气泵 外壳 外观 问题 反馈\"均 0 条；本会话无既往对话轮次；个人记忆检索在本会话未开启；品类知识列表为空。另需说明：本轮扩大关键词再检索时命中查找预算上限（MODEL_BUDGET_EXCEEDED），所以更宽泛的关键词（如\"缩水\"\"外壳\"单词）尚未覆盖，结论限于以上已核查范围；未找到不等于该工作不存在。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:56:45.059085+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"未定位到提到\\\"外壳缩水\\\"的那次工作：本会话与本品类可读资料中检索结果为空\", \"未取得当时一并列出的其他问题清单（无对应原文可引）\", \"个人记忆检索在本会话处于关闭状态，无法翻查以往会话记录\", \"更宽泛关键词的检索因本轮查找预算用尽未完成，覆盖范围有限\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查不到。本次可查到的记录里没有任何提到\\\"外壳缩水\\\"的内容，所以既无法确认是哪一次工作，也无法列出当时并列的其他问题。已核查范围：会话资料检索关键词\\\"外壳缩水\\\"0 条；证据检索\\\"外壳 缩水\\\"\\\"缩水\\\"\\\"充气泵 外壳 外观 问题 反馈\\\"均 0 条；本会话无既往对话轮次；个人记忆检索在本会话未开启；品类知识列表为空。另需说明：本轮扩大关键词再检索时命中查找预算上限（MODEL_BUDGET_EXCEEDED），所以更宽泛的关键词（如\\\"缩水\\\"\\\"外壳\\\"单词）尚未覆盖，结论限于以上已核查范围；未找到不等于该工作不存在。\", \"questions\": [], \"unfinished\": [\"如需继续定位：待下一轮可用查找预算时，用单词关键词\\\"缩水\\\"\\\"外壳\\\"及历史范围（含历史版本）再检索一次本品类资料\"]}",
+  "unfinished": [
+    "如需继续定位：待下一轮可用查找预算时，用单词关键词\"缩水\"\"外壳\"及历史范围（含历史版本）再检索一次本品类资料"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:4",
+    "category.knowledge.list:completed:2",
+    "conversation.history:completed:2",
+    "evidence.search:completed:3",
+    "memory.search:completed:1",
+    "model:completed:10",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 39.0,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 71011,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:56:00.458959+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"「汽车充气泵」品类可读范围内（供应、资料、项目状态、竞品、品类知识、平台、证据检索）均未检索到供应商对比或报价单相关记录，本周完成项与下周计划项仅来自本人本次陈述，无记录级佐证\", \"供应商名单、对比维度与比价结论未知\", \"报价单的供应商范围、币种、含税运、数量、交期与提交日期未知\", \"任务结果结构未通过核对，请按已登记结构重新整理。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"weekly_report\": {\"note\": \"两条内容依据本人陈述写入；品类资料中未检索到对应登记记录，故未附名单、口径与结论。\", \"items\": [{\"content\": \"供应商对比\", \"section\": \"本周完成\"}, {\"content\": \"补报价单\", \"section\": \"下周计划\"}], \"title\": \"本周周报\", \"format\": \"text\", \"period\": \"本周 / 下周\", \"category\": \"汽车充气泵\"}}, \"status\": \"partial\", \"summary\": \"部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"周报若要体现“完成了什么”，通常需要一句结论；而系统内无可引用的记录，只能由你提供或暂时不写。\", \"options\": [{\"label\": \"就保留这两条，不加结论\", \"value\": \"keep_two_only\"}, {\"label\": \"我口述供应商名单与结论，你补成一段\", \"value\": \"add_conclusion\"}, {\"label\": \"加一句概括性说明（如“已完成供应商对比，形成初步选择方向”）\", \"value\": \"add_generic\"}], \"question\": \"供应商对比的名单与比价结论要一并写进周报吗？（当前品类资料里查不到这份对比的记录）\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_two_only\", \"reason\": \"与你“内容就两条”的要求一致，且在无可引用记录时不会写出无依据的结论。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"影响周报里“下周计划”的可执行程度：报几家、报什么口径、什么时候要。\", \"options\": [{\"label\": \"覆盖本次对比过的全部供应商，下周初交\", \"value\": \"same_set_early_week\"}, {\"label\": \"覆盖本次对比过的全部供应商，下周末前交\", \"value\": \"same_set_end_week\"}, {\"label\": \"供应商范围和口径待定，周报先不写细节\", \"value\": \"scope_pending\"}], \"question\": \"下周报价单按什么范围和节点写？\", \"depends_on\": [], \"recommended\": {\"value\": \"scope_pending\", \"reason\": \"报价口径与供应商范围目前均无资料可依据，先不写细节避免与实际不符。\"}, \"allow_free_text\": true}], \"unfinished\": [\"「供应商对比」与「报价单」在当前品类可读范围内无对应登记记录，本次仅按本人陈述成文，尚未做记录级核对；如后续补入资料，可回填并附引用。\", \"企业资料的引用或覆盖尚未完整核对。\"]}",
+  "unfinished": [
+    "「供应商对比」与「报价单」在当前品类可读范围内无对应登记记录，本次仅按本人陈述成文，尚未做记录级核对；如后续补入资料，可回填并附引用。",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "evidence.search:completed:1",
+    "mcp.tools.list:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

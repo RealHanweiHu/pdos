@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 37.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 123199,
+  "held_tokens": 0,
+  "answer": "按你上次的会话记录（2026-11-15，主题「整理充气泵的包装方案」）：你选的是方案二——纸托加收缩膜，单件成本 1.8 元。需要说明的是，这条依据来自你本人上次的工作记录，而当前品类资料里检索不到可引用的包装方案或成本记录（品类检索、跨类型检索、证据检索、品类知识与基线读取都为空），所以 1.8 元没有在业务对象层面复核过；另外当时的记录里没有写明 1.8 元的口径（是否含税、含运、是否含内衬/附件）。如果你要把它落到提案或定价上，我可以在同会话重新拉齐现在可读的成本口径再核一遍。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:21:14.465242+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读资料中未检索到包装方案与单件成本的可引用记录：品类检索（汽车充气泵）、跨来源类型检索、evidence.search、品类知识列表与品类基线读取均返回空，platform.read 在该品类范围下未返回条目。\", \"1.8 元/件仅见于本人上次会话记录（run_id 58512a35-e93b-408e-ad7d-abedcc7b9749，as_of 2026-11-15），未经业务对象复核。\", \"1.8 元的成本口径（币种、是否含税、是否含运费、是否含内衬/附件、是否含模具摊销）未在记录中说明。\", \"记录中该决策前置标注为「甲」，未在历史记录里说明其含义（甲方决策/方案编号归属/责任方）。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"按你上次的会话记录（2026-11-15，主题「整理充气泵的包装方案」）：你选的是方案二——纸托加收缩膜，单件成本 1.8 元。需要说明的是，这条依据来自你本人上次的工作记录，而当前品类资料里检索不到可引用的包装方案或成本记录（品类检索、跨类型检索、证据检索、品类知识与基线读取都为空），所以 1.8 元没有在业务对象层面复核过；另外当时的记录里没有写明 1.8 元的口径（是否含税、含运、是否含内衬/附件）。如果你要把它落到提案或定价上，我可以在同会话重新拉齐现在可读的成本口径再核一遍。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前资料中找不到包装方案与成本的业务记录，1.8 元只来自上次的会话记录，直接引用到提案或定价有口径风险。\", \"options\": [{\"label\": \"现在就重拉成本口径并复核方案二\", \"value\": \"recheck_now\"}, {\"label\": \"先按上次记录用，不再复核\", \"value\": \"record_only\"}], \"question\": \"是否要我在本会话内按当前可读的成本口径，重新做一版包装方案对比（含方案二纸托加收缩膜的单件成本构成）用于核对 1.8 元？\", \"depends_on\": [], \"recommended\": {\"value\": \"recheck_now\", \"reason\": \"让 1.8 元有可核对的构成依据，便于后续落到提案/定价。\"}, \"allow_free_text\": true}], \"unfinished\": [\"在当前可读资料范围内未找到包装方案与单件成本的业务记录，1.8 元尚未在业务对象层面复核。\"]}",
+  "unfinished": [
+    "在当前可读资料范围内未找到包装方案与单件成本的业务记录，1.8 元尚未在业务对象层面复核。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

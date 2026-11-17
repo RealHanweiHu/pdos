@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "甲：包装选方案二（纸托加收缩膜），单件成本 1.8 元。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 25.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51216,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15 的会话「整理充气泵的包装方案」，run 51416976-7cd0-4a75-b7e3-5040f9a41052）你选的是**方案二：纸托 + 收缩膜**，单件成本 **1.8 元**。这两点来自当时的会话记录（情景记录，非可引用的业务事实）；我在「汽车充气泵」品类内检索 artifact/knowledge/project_status 以及平台项目、提案对象，均未检索到对应的包装方案或成本记录，因此无法用当前业务对象复核该单价与方案的现行状态。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:44:45.452846+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"上次（2026-11-15 的会话「整理充气泵的包装方案」，run 51416976-7cd0-4a75-b7e3-5040f9a41052）你选的是**方案二：纸托 + 收缩膜**，单件成本 **1.8 元**。这两点来自当时的会话记录（情景记录，非可引用的业务事实）；我在「汽车充气泵」品类内检索 artifact/knowledge/project_status 以及平台项目、提案对象，均未检索到对应的包装方案或成本记录，因此无法用当前业务对象复核该单价与方案的现行状态。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

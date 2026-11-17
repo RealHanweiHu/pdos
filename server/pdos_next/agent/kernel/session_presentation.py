@@ -227,6 +227,9 @@ def _target(session, ctx, session_id, proposal_id, *, lock=False):
     row = session.scalar(query.with_for_update(read=True) if lock else query)
     if row is None:
         raise DomainError("NOT_FOUND", "会话不存在或不在当前本人范围。", 404)
+    from pdos_next.agent.memory.session_deletion import require_present
+
+    require_present(session, row.id)
     if ctx.category_id is None:
         if any((row.product_id, row.proposal_id, row.project_id)):
             raise DomainError("FORBIDDEN_SCOPE", "个人入口不能管理业务范围会话。", 403)

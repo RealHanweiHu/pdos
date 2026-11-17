@@ -1,0 +1,66 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 64.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 120256,
+  "held_tokens": 0,
+  "answer": "那次评估最终推荐的是「无刷电机方案」：单价高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。结论来源是我此前同品类的一次会话记录（主题「评估两种电机方案的成本和噪声」，as_of 2026-11-15），不是本次复核的当前业务事实。未完成的事只有一项：向电机厂确认无刷方案的最小起订量（MOQ）。另外三次近期工作（汇总认证进度、起草样机测试计划、核对包装警示语）记录中都没有遗留待办。需提醒：我在本品类当前可读范围内没有检索到这次评估的原始文档、提案或成本/噪声数据（资料检索、平台对象、品类知识、证据检索均返回空），因此上述数字未能在当前记录中复核，不宜直接当现状使用。",
+  "answer_blob": "{\"result\": {\"result\": [], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:40:00.576274+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"在本品类当前可读范围内未检索到该次电机方案评估的原始文档、提案或成本/噪声数据；相关检索（资料/议题/变更/测试/项目状态/制造文档/验证交接、平台对象、品类知识、证据检索）均返回空，只能说明在当前可读范围中未找到，而非其不存在\", \"单价高 4 元、寿命约为 3 倍、噪声超标 5 dB 三个数值来自历史会话记录（as_of 2026-11-15），未能对当前成本/BOM 与实测数据复核\", \"无刷电机方案的最小起订量至今未见确认记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"那次评估最终推荐的是「无刷电机方案」：单价高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。结论来源是我此前同品类的一次会话记录（主题「评估两种电机方案的成本和噪声」，as_of 2026-11-15），不是本次复核的当前业务事实。未完成的事只有一项：向电机厂确认无刷方案的最小起订量（MOQ）。另外三次近期工作（汇总认证进度、起草样机测试计划、核对包装警示语）记录中都没有遗留待办。需提醒：我在本品类当前可读范围内没有检索到这次评估的原始文档、提案或成本/噪声数据（资料检索、平台对象、品类知识、证据检索均返回空），因此上述数字未能在当前记录中复核，不宜直接当现状使用。\", \"questions\": [{\"id\": \"q_moq_action\", \"why\": \"这是那次评估唯一未完成的动作，目前系统里没有对应的待办或外部等待记录。\", \"options\": [{\"label\": \"起草询价要点并登记为待办/外部等待（推荐）\", \"value\": \"draft_and_register\"}, {\"label\": \"只起草询价要点，先不登记\", \"value\": \"draft_only\"}, {\"label\": \"先不动，等我自己去问\", \"value\": \"not_now\"}], \"question\": \"要不要我现在就起草给电机厂的 MOQ 询价要点，并把这项登记成待办/外部等待？\", \"depends_on\": [], \"recommended\": {\"value\": \"draft_and_register\", \"reason\": \"该 MOQ 确认是评估里明确留的尾巴，登记后不易漏掉。\"}, \"allow_free_text\": true}, {\"id\": \"q_deeper_lookup\", \"why\": \"当前检索没找到原始评估资料，回答所依据的数值目前只有历史会话记录一个来源。\", \"options\": [{\"label\": \"扩大检索，找原始评估文档核对（推荐）\", \"value\": \"deepen\"}, {\"label\": \"不用继续，先按现有结论用\", \"value\": \"stop_here\"}], \"question\": \"要不要我在本会话做一次更宽的检索（换关键词、含历史版本、扩大到全品类），把这次评估的原始文档找出来核对单价/寿命/噪声数值和当时的完整方案清单？\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen\", \"reason\": \"结论涉及成本与噪声合规，不复核原文就用于决策风险较高。\"}, \"allow_free_text\": true}], \"unfinished\": [\"确认无刷电机方案的最小起订量（历史评估遗留，本次未处理）\", \"在更宽范围内定位该次电机方案评估的原始文档，以复核单价/寿命/噪声数值与完整方案清单\"]}",
+  "unfinished": [
+    "确认无刷电机方案的最小起订量（历史评估遗留，本次未处理）",
+    "在更宽范围内定位该次电机方案评估的原始文档，以复核单价/寿命/噪声数值与完整方案清单"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:5",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 5
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r3",
+      "r4",
+      "r5"
+    ],
+    "catalog": [
+      "r3",
+      "r4",
+      "r5"
+    ],
+    "sessions_read": [
+      "r1",
+      "r3",
+      "r4",
+      "r5"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

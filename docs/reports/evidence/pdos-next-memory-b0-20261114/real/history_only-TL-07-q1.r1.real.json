@@ -1,0 +1,49 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 43.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 89484,
+  "held_tokens": 0,
+  "answer": "已按你要的两条起草本周周报（可直接复制）：\n\n【汽车充气泵 品类周报】\n一、本周完成\n1. 完成供应商对比。\n\n二、下周计划\n1. 补齐供应商报价单，把报价口径并入供应商对比，形成可直接用于选型/立项的对比结论。\n\n核对说明（事实边界）：本轮在当前品类（汽车充气泵）可读范围内检索并读取了供应商/竞品与知识库记录——检索命中 0 条，竞品列表为空，品类知识库为空；work_management（任务/待办登记）在本范围未启用。因此周报内容完全按你口述撰写，未附供应商名称、对比维度、结论与报价口径，也没有可引用的证据（citation_ids 为空）。若周报要对外发出，建议补上这两点。“下周补报价单”目前只写为周报文字，未在系统内生成待办条目。\n\n未完成：供应商对比的结论与口径、下周报价单对应的供应商/产品对象，需你补一句或授权继续查证后补齐。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:54:46.042357+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类可读范围内检索命中 0 条，竞品列表与品类知识库均为空，无可引用的供应商对比或报价单证据\", \"供应商对比的对象、维度与结论未记录\", \"下周报价单对应的供应商/产品与报价口径未记录\", \"work_management 技能在本范围未启用，未生成系统内待办条目\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"weekly_report\": {\"title\": \"汽车充气泵 品类周报\", \"next_week\": [\"补齐供应商报价单，把报价口径并入供应商对比，形成可用于选型/立项的对比结论。\"], \"this_week\": [\"完成供应商对比。\"], \"evidence_status\": \"not_verified_in_system\"}}, \"status\": \"completed\", \"summary\": \"已按你要的两条起草本周周报（可直接复制）：\\n\\n【汽车充气泵 品类周报】\\n一、本周完成\\n1. 完成供应商对比。\\n\\n二、下周计划\\n1. 补齐供应商报价单，把报价口径并入供应商对比，形成可直接用于选型/立项的对比结论。\\n\\n核对说明（事实边界）：本轮在当前品类（汽车充气泵）可读范围内检索并读取了供应商/竞品与知识库记录——检索命中 0 条，竞品列表为空，品类知识库为空；work_management（任务/待办登记）在本范围未启用。因此周报内容完全按你口述撰写，未附供应商名称、对比维度、结论与报价口径，也没有可引用的证据（citation_ids 为空）。若周报要对外发出，建议补上这两点。“下周补报价单”目前只写为周报文字，未在系统内生成待办条目。\\n\\n未完成：供应商对比的结论与口径、下周报价单对应的供应商/产品对象，需你补一句或授权继续查证后补齐。\", \"questions\": [{\"id\": \"q1\", \"why\": \"决定周报是“两条事项”还是“两条事项 + 结论”，直接影响可读性和是否需要你补内容。\", \"options\": [{\"label\": \"保持两条，不写结论（按你原话）\", \"value\": \"keep_two_lines\"}, {\"label\": \"本周那条补一句结论（我留占位符，你填）\", \"value\": \"add_one_liner\"}, {\"label\": \"补对比维度 + 结论（你提供信息，我整理）\", \"value\": \"add_dimensions\"}], \"question\": \"供应商对比那一条要不要带一句结论（或对比维度 + 结论），还是保持现在这一行标题式表述？\", \"depends_on\": [], \"recommended\": {\"value\": \"add_one_liner\", \"reason\": \"一行结论让周报可被快速判断，且只多一个占位符，不改变“两条”结构\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"“补报价单”没有对象时下周容易落空；对象明确我才能把周报写成可执行的一条。\", \"options\": [{\"label\": \"供应商名单已定，只是报价单还没到\", \"value\": \"supplier_set_known\"}, {\"label\": \"供应商名单/型号口径还没定，下周先定口径再要报价\", \"value\": \"supplier_set_open\"}, {\"label\": \"本周只是方向性计划，不涉及具体对象\", \"value\": \"direction_only\"}], \"question\": \"下周要补的报价单，对应的供应商/产品对象现在明确了吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"supplier_set_open\", \"reason\": \"通常要向谁要报价由本周对比结论决定，口径先定再要报价最省事\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"本轮查找预算已用完，当前范围确实没有命中记录；继续查需新一轮，并确认是否存在其他来源（项目、供应链、变更、附件）。\", \"options\": [{\"label\": \"要，下一轮深查（项目/供应链/变更/附件等来源）\", \"value\": \"deep_research\"}, {\"label\": \"不用查，你直接告诉我材料在哪（附件/邮件/群消息）\", \"value\": \"point_me\"}, {\"label\": \"不用查，先按现在的周报发出\", \"value\": \"no_more\"}], \"question\": \"需要我在下一轮继续查证系统内的供应商对比与报价记录，把周报换成有据可查的版本吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"point_me\", \"reason\": \"最省时间且证据最可靠，你直接给来源即可对齐\"}, \"allow_free_text\": true}], \"unfinished\": [\"周报内容目前无系统证据支撑：供应商对比记录、结论、报价口径均为待补项，未落到任何可引用来源\"]}",
+  "unfinished": [
+    "周报内容目前无系统证据支撑：供应商对比记录、结论、报价口径均为待补项，未落到任何可引用来源"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

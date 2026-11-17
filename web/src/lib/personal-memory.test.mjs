@@ -50,3 +50,40 @@ test("labels never reveal an unreadable scope or object", () => {
   assert.equal(memory.isNotesView({ version: "memory-notes/v1", notes: [] }), true);
   assert.equal(memory.isNotesView({ version: "memory-notes/v2", notes: [] }), false);
 });
+
+test("contract fields: a new note sends only what the owner filled; a revision only what changed", () => {
+  const draft = { kind: "convention", text: "报价按含税价", scope: { kind: "global", id: null }, occurred_at: "", valid_from: "", evidence: [], relations: [] };
+  assert.deepEqual(memory.draftPayload(draft), { kind: "convention", text: "报价按含税价", scope: { kind: "global", id: null } });
+  const filled = memory.draftPayload({ ...draft, valid_from: "2026-11-01", occurred_at: "2026-10-30", relations: [{ type: "conflicts", note_id: id }] });
+  assert.equal(new Date(filled.valid_from).getDate(), 1);
+  assert.equal(new Date(filled.occurred_at).getDate(), 30);
+  assert.deepEqual(filled.relations, [{ type: "conflicts", note_id: id }]);
+  assert.equal("evidence" in filled, false);
+  const original = { ...draft, valid_from: "2026-11-01", occurred_at: "2026-10-30", evidence: [{ source_type: "run", source_id: id, source_kind: null, locator: {}, stance: "supports" }], relations: [] };
+  const unchanged = memory.draftPayload({ ...original, text: "报价一律按含税价" }, original);
+  assert.deepEqual(Object.keys(unchanged).sort(), ["kind", "scope", "text"]);
+  const cleared = memory.draftPayload({ ...original, occurred_at: "", evidence: [] }, original);
+  assert.equal(cleared.occurred_at, null);
+  assert.deepEqual(cleared.evidence, []);
+});
+
+test("links are shown by kind and readability, and re-sent without the quote", () => {
+  assert.equal(memory.evidenceLabel({ source_type: "business_object", source_kind: "category", readable: true, title: "汽车充气泵", updated: true }), "品类 · 汽车充气泵（已有新版本）");
+  assert.equal(memory.evidenceLabel({ source_type: "run", source_kind: null, readable: false, title: null, updated: false }), "对话（当前不可读）");
+  const links = [{ source_type: "run", source_id: id, source_kind: null, source_version: null, locator: { turn: 2 }, stance: "supports", quoted: true, readable: true, title: null, updated: false }];
+  assert.deepEqual(memory.evidenceInputs(links), [{ source_type: "run", source_id: id, source_kind: null, locator: { turn: 2 }, stance: "supports" }]);
+  assert.deepEqual(memory.ownRelations({ relations: [
+    { type: "conflicts", label: "冲突", direction: "out", note_id: id, text: "x" },
+    { type: "conflicts", label: "冲突", direction: "in", note_id: "b", text: "y" },
+    { type: "superseded_by", label: "被替代", direction: "in", note_id: "c", text: "z" }] }), [{ type: "conflicts", note_id: id }]);
+});
+
+test("a start ahead is pending and grouped with current notes; dates are checked first", () => {
+  const ahead = new Date(Date.now() + 5 * 864e5).toISOString();
+  assert.match(memory.startNote({ state: "pending", valid_from: ahead, confirmed_at: new Date().toISOString() }), /^自 .* 起生效$/);
+  assert.equal(memory.startNote({ state: "active", valid_from: "2026-11-15T03:00:00Z", confirmed_at: "2026-11-15T03:00:00Z" }), "");
+  const pending = { note_id: id, revision: 1, kind: "convention", state: "pending" };
+  assert.deepEqual(memory.groupNotes([pending]).convention, [pending]);
+  assert.equal(memory.draftProblem({ kind: "convention", text: "x", scope: { kind: "global", id: null }, occurred_at: "2999-01-01" }), "事情发生的时间不能晚于今天。");
+  assert.equal(memory.draftProblem({ kind: "convention", text: "x", scope: { kind: "global", id: null }, valid_from: "2026-12-10", valid_until: "2026-12-01" }), "有效期须晚于生效起点。");
+});

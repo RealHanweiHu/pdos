@@ -150,3 +150,4 @@
 .categoryColumns, .categoryRow { grid-template-columns:minmax(130px,1.15fr) minmax(180px,2fr) minmax(100px,1fr) 65px 75px; min-width:680px; gap:16px; padding-inline:10px; }
 
 .listToolbar > span:first-child + .search { margin-left:auto; }
+.overviewMemo { margin-top:16px; padding-top:14px; border-top:1px solid var(--border-soft); min-width:0; }

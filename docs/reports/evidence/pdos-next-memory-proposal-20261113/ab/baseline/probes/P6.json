@@ -1,0 +1,111 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "baseline",
+  "probe": "P6",
+  "expect": "propose_proactive",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "8a27e817-22fa-48c2-af41-5b0616d117c2",
+      "goal": "用一句话写出我们样件编号的规则",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 82.9,
+      "used_tokens": 233806,
+      "held_tokens": 0,
+      "answer": "核对结论：在当前可读范围内没有找到任何写有“样件编号规则”的公司资料，所以这句话我不能给你有依据的定稿——按规矩不把推测当公司做法。\n\n核对到了什么（2026-11-14，品类“汽车充气泵”范围）：\n- assistant.search（knowledge/artifact/manufacturing_document/project_status）：0 条命中；后续两次检索被本轮查找预算拦截（RATE_LIMITED / MODEL_BUDGET_EXCEEDED），跨来源检索未跑完。\n- category.knowledge.list（boundary/segment/competitor/voice/regulation/research_question 全部）：0 条。\n- category.parameters.list：0 条。\n- platform.read（category_id、code、name_query、无条件、含历史五种读法）：0 条；品类 model_count=1，但那个型号对象在当前权限下读不到（与上一轮会话同一障碍），因此无法用既有样件编号实例反推规则。\n- evidence.search：0 条；已授权 MCP 只读工具：无。\n- 个人记忆与会话历史：只有别名记录“老王那个泵＝12V 便携充气泵”，无编号规则内容。\n\n没有查到什么：\n- 编号的字段构成与格式（型号/样件类别/流水号/版本/日期/批次/送样人各段是否入编号）；\n- 规则的权威出处（工艺或制造作业文件、编号规范文档、PLM/ERP 编码规则，还是仅口头约定未入库）；\n- 适用到哪一段（只覆盖打样工程样件，还是含试产样件与量产批次号）；\n- 任何可供核对的样件编号实例。\n\n待填骨架（未经核实，不是公司规则）：样件编号 = <型号>-<样件类别>-<流水号>-<版本或日期>。\n\n已在上轮就规则出处、适用范围、必含字段段提过三个问题；本轮按要求未再追问。把这三点的答案给我（或指定一份文档/系统去读），下一轮就能直接给出一句话定稿。",
+      "unfinished": [
+        "样件编号规则未在可读资料中找到，尚未给出有依据的一句话定稿",
+        "本轮 assistant.search 仅完成 1 次有效检索，跨来源检索被查找预算拦截未跑完",
+        "品类内唯一型号对象在当前权限下不可读，无法用既有样件编号实例反推规则",
+        "需外部补充：规则存放位置、适用范围、编号必含字段段"
+      ],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 3,
+        "category.knowledge.list": 2,
+        "category.list": 1,
+        "category.parameters.list": 1,
+        "category.read": 1,
+        "conversation.history": 2,
+        "evidence.search": 1,
+        "mcp.tools.list": 1,
+        "memory.search": 1,
+        "model": 12,
+        "platform.read": 5,
+        "product.baseline.read": 1
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    },
+    {
+      "run_id": "8b6557a1-fa2f-464b-a0d3-ac8fd1dad1e0",
+      "goal": "不对，样件编号按项目-批次-序号",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 29.3,
+      "used_tokens": 36004,
+      "held_tokens": 0,
+      "answer": "按用户更正，定稿样件编号规则为一句话：样件编号按「项目-批次-序号」三段顺序编写（先项目、再批次、最后批次内流水序号）。本轮在当前品类可读资料中未检索到成文编号规则文件，该结论来自用户口述；每段取值格式与适用样件类型仍为未知项。",
+      "unfinished": [
+        "样件编号规则尚未在可读资料中找到成文出处，规则目前仅有用户口述依据",
+        "项目代号、批次号位数、序号补零方式等段内格式待确认",
+        "规则适用的样件类型范围待确认"
+      ],
+      "final_questions": [
+        "这条「项目-批次-序号」规则适用于哪些样件类型？",
+        "三段之间的分隔符与段内位数（尤其序号是否补零）按哪种写法？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "category.knowledge.list": 1,
+        "model": 2
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    },
+    {
+      "run_id": "0ee2a160-0599-41de-883c-fc78d7794241",
+      "goal": "又错了，编号是项目-批次-序号，不要加日期",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 22.4,
+      "used_tokens": 36318,
+      "held_tokens": 0,
+      "answer": "已去掉日期，样件编号规则的一句话定稿为：样件编号按「项目-批次-序号」三段顺序编写，即项目代号-批次号-批次内流水序号，不含日期或时间信息。本轮在当前品类（汽车充气泵）可读资料中检索未找到成文的编号规则文件，该表述依据你的口述更正；各段具体取值格式（项目代号写法、批次号位数、序号是否补零）与适用样件范围仍待你确认。",
+      "unfinished": [
+        "样件编号规则在当前品类可读资料中未找到成文出处，规则目前仅有用户口述依据",
+        "项目代号、批次号位数、序号补零方式等段内格式待确认",
+        "规则适用的样件类型范围待确认"
+      ],
+      "final_questions": [
+        "这条「项目-批次-序号」规则适用于哪些样件类型？",
+        "三段之间的分隔符与段内位数（尤其序号是否补零）按哪种写法？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 1,
+        "conversation.history": 1,
+        "model": 2
+      },
+      "prompt_version": "1.0.0",
+      "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+      "candidates": [],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": []
+}

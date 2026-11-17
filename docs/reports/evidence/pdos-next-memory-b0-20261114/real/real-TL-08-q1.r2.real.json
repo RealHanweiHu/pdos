@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 27.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 67360,
+  "held_tokens": 0,
+  "answer": "找到了：提到\"外壳缩水\"的是你 2026-11-15 那次「汇总上周试产的不良项」的工作（会话 614f4c03…，运行 4c4af313…）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——也就是说\"外壳缩水\"排在第二，与\"气嘴漏气\"和\"按键卡滞\"一起列出。\n\n两点说明：\n1. 这份来源是你本人此前的会话记录（历史快照），只能说明\"当时怎么写的\"，不能当作现在的品质事实引用。\n2. 我在当前品类（汽车充气泵）范围内检索\"外壳缩水/试产不良/质量\"，没有命中任何品质问题、试产或制造文档记录，所以当时这三项的明细数量、批次和当前处理状态，我在可读资料里查不到。\n\n需要的话，我可以换一种口径再查一次（比如只看品质问题类记录、或看质量issue台账），看看这三项现在是否已分别立案。",
+  "answer_blob": "{\"result\": {\"basis\": \"个人会话历史记录（as_of 2026-11-15），属历史快照，非当前业务事实\", \"found\": true, \"unknowns\": [\"当前品类资料检索'外壳缩水/试产不良/质量'返回 0 条，未命中品质问题、试产或制造文档记录\", \"当时三项不良的数量、批次、样件与当前处置状态在可读资料中未找到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:20:32.210193+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"matched_run\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15\", \"run_id\": \"4c4af313-9d0a-402e-bfad-5924a1d9def1\", \"status\": \"completed\", \"session_id\": \"614f4c03-4871-4366-b83f-5323c9e6c8db\"}, \"citation_ids\": [], \"items_listed_together\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"], \"position_of_shell_shrinkage\": \"前三项中的第2项\"}, \"status\": \"completed\", \"summary\": \"找到了：提到\\\"外壳缩水\\\"的是你 2026-11-15 那次「汇总上周试产的不良项」的工作（会话 614f4c03…，运行 4c4af313…）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——也就是说\\\"外壳缩水\\\"排在第二，与\\\"气嘴漏气\\\"和\\\"按键卡滞\\\"一起列出。\\n\\n两点说明：\\n1. 这份来源是你本人此前的会话记录（历史快照），只能说明\\\"当时怎么写的\\\"，不能当作现在的品质事实引用。\\n2. 我在当前品类（汽车充气泵）范围内检索\\\"外壳缩水/试产不良/质量\\\"，没有命中任何品质问题、试产或制造文档记录，所以当时这三项的明细数量、批次和当前处理状态，我在可读资料里查不到。\\n\\n需要的话，我可以换一种口径再查一次（比如只看品质问题类记录、或看质量issue台账），看看这三项现在是否已分别立案。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

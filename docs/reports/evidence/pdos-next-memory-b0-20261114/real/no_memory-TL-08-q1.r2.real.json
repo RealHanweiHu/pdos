@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 54.6,
+  "clarifications": [
+    "能给一条定位线索吗（任选其一即可）？",
+    "下一轮检索的范围可以吗放宽？",
+    "要不要我把本会话的\"不进记忆\"设置改掉？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 109380,
+  "held_tokens": 0,
+  "answer": "在全部可读取入口（当前会话历史、个人记忆入口、公司资料检索、evidence 检索、品类产品/项目与知识条目）中均未找到提到\"外壳缩水\"的记录，0 命中；因此无法确定是哪次工作、当时并列的其他问题，保持为未知。未使用未核对依据作答。",
+  "answer_blob": "{\"result\": {\"answer\": \"在本次可读取范围内未找到任何提到『外壳缩水』的记录；无法确定是哪次工作，也无法给出当时并列的其他问题\", \"blocked\": [\"计划中的第二轮检索（关键词『缩水』+限定 issue/capa/manufacturing_document/build/field_feedback/change/project_status/artifact 来源类型）因本轮查找预算用尽未执行\"], \"checked\": [{\"scope\": \"conversation.history 当前会话（含 include_research_rows）\", \"result\": \"空，本会话为该会话第一条，无往轮次\"}, {\"scope\": \"memory.search 个人记忆\", \"result\": \"未读取，memory_off（本会话设为不进记忆）\"}, {\"scope\": \"assistant.search 品类=汽车充气泵 关键词『外壳缩水 收缩 注塑 变形 问题清单』\", \"result\": \"0 条命中\"}, {\"scope\": \"evidence.search 『外壳缩水』\", \"result\": \"0 条\"}, {\"scope\": \"evidence.search 『收缩率 缩水率 注塑外壳 尺寸』\", \"result\": \"0 条\"}, {\"scope\": \"platform.read 该品类下产品/项目\", \"result\": \"本次返回为空\"}, {\"scope\": \"category.knowledge.list 该品类知识条目\", \"result\": \"本次返回为空\"}], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:18:58.896606+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"哪次工作提到过『外壳缩水』\", \"当时一起列出的还有哪些问题\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"如需继续：下一轮放宽关键词与来源类型重查；或启用会话记忆后检索个人往期记录。二者均需本人授权\"}, \"status\": \"completed\", \"summary\": \"在全部可读取入口（当前会话历史、个人记忆入口、公司资料检索、evidence 检索、品类产品/项目与知识条目）中均未找到提到\\\"外壳缩水\\\"的记录，0 命中；因此无法确定是哪次工作、当时并列的其他问题，保持为未知。未使用未核对依据作答。\", \"questions\": [], \"unfinished\": [\"以『缩水』+限定来源类型的扩大检索未执行（本轮查找预算用尽），故本结论仅覆盖已核对范围\"]}",
+  "unfinished": [
+    "以『缩水』+限定来源类型的扩大检索未执行（本轮查找预算用尽），故本结论仅覆盖已核对范围"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "memory.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

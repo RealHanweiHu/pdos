@@ -40,6 +40,9 @@ class RuntimePorts:
     development_budget_for: object | None = None
     read_tools: dict = field(default_factory=dict)
     embedding_query: object | None = None
+    # Episode vectors' query port (D300). None derives it from the trusted secrets
+    # host; a test may pass its own EmbeddingPorts here.
+    memory_embedding: object | None = None
     preload: object | None = None
     research_service: object | None = None
     research_artifacts: object | None = None
@@ -67,6 +70,28 @@ class Bootstrap:
         self.engine._pdos_category_candidate_owner = self
         if self.ports.research_artifacts is not None:
             self.engine._pdos_research_artifacts = self.ports.research_artifacts
+
+    def memory_query_embedding(self, assistant_adapter):
+        """memory.search's own query port (P85 第 3 项, D300).
+
+        Wired whenever the trusted host can bind an independent embedding
+        connection, so selecting “本人会话记录” is enough to use episode vectors.
+        Unlike assistant.search (whose production default stays keyword-only),
+        nothing goes out unless an active profile selects that category, the
+        owner has vectors in it, and P26 permits the Run's carried categories.
+        """
+        from pdos_next.agent.enterprise_search.embedding_composition import configured_ports
+        from pdos_next.agent.enterprise_search.embedding_query import QueryEmbedding, QueryPorts
+        from pdos_next.agent.memory.tool import MEMORY_SNAPSHOT
+        from pdos_next.agent.memory.vectors import select_profile
+
+        backend = self.ports.memory_embedding or configured_ports(self.ports, provider_io=True)
+        if backend.secrets is None or backend.client is None:
+            return None
+        return QueryEmbedding(
+            self.store, QueryPorts(backend, select_profile, run_selector=True),
+            source_guard=assistant_adapter.guard, snapshot=MEMORY_SNAPSHOT,
+        )
 
     def route(self, session, scope):
         # Lock the actual head without giving an Agent identity configuration write access.
@@ -388,6 +413,12 @@ class Bootstrap:
 
                 recheck_frozen(session, run)
                 recheck_notes(session, run)
+                from pdos_next.agent.memory.session_deletion import recheck as recheck_deleted
+
+                recheck_deleted(session, run)
+                from pdos_next.agent.memory.scope_assemble import recheck as recheck_scope
+
+                recheck_scope(session, run)
                 frozen = run.versions.get("conversation_memory")
                 if run.continued_from_id is None or frozen is None:
                     return
@@ -460,9 +491,10 @@ class Bootstrap:
         from .conversation import HistoryInput, memory
         payload = tool_arguments(HistoryInput, arguments)
         if payload.session_id is not None and payload.session_id != scope.session_id:
-            from pdos_next.agent.memory.history import other_session
+            from pdos_next.agent.memory.session_deletion import read_other_session
 
-            return other_session(self.store, scope, payload, getattr(self, "_history_readers", {}))
+            return read_other_session(
+                self.store, scope, payload, getattr(self, "_history_readers", {}))
         with self.store.transaction(scope, lock=True) as (session, run):
             access = {}
             value = memory(session, run, readers=getattr(self, "_history_readers", {}),
@@ -773,7 +805,7 @@ class Bootstrap:
         from pdos_next.agent.memory.tool import memory_search
 
         adapters.read_tools["memory.search"] = memory_search(
-            self.store, query_embedding=lambda: assistant_adapter.query_embedding,
+            self.store, query_embedding=self.memory_query_embedding(assistant_adapter),
         )
         from .extract_adapter import ExtractReadAdapter
         from .extract_graph import ExtractGraph

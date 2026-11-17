@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 43.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 88946,
+  "held_tokens": 0,
+  "answer": "在可读范围内没有找到那次\"三家气泵供应商比较\"的记录，因此无法告诉你当时建议选哪家。\n\n已核对范围与结果：\n- 当前品类（汽车充气泵）内公司资料检索（含历史）：查询\"气泵供应商/三家/比较/选型/结论/建议\"→0 命中；\n- 品类竞品条目 0 条、品类知识库条目 0 条（boundary/segment/competitor/voice/regulation/research_question 全为 0）、品类下平台产品对象 0 条；\n- 我的会话历史（当前会话无记录）与个人记忆：唯一相关的一条是 2026-11-15 的\"整理气泵供应商的联系人\"，其当时回答只有\"联系人已整理。\"，没有三家对比或推荐结论。\n\n覆盖限制：本轮查找预算已用尽，另一条更宽的检索未执行，且其他人的会话与未索引的外部资料不在已核对范围——所以这是\"在检索范围内没找到\"，不能断定那次比较从未发生过。\n\n下一步：给我那三家的名称，或把当时的询价单/规格书/评分表传上来，我可以在本会话按同口径重做对比并给出建议；若只是要找回原结论，我也可以换关键词再检索一轮。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:51:08.226826+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"'三家气泵供应商比较'的历史结论与推荐对象：本次检索范围内未找到，未登记\", \"参与比较的三家供应商名称：未登记\", \"当时的比较口径与依据材料（报价/规格/样品/评分表）：未登记\", \"是否存在他人会话或未索引的外部资料中的该结论：未核对\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"owner\": {\"status\": \"unspecified\"}, \"blocker\": {\"text\": \"需确认该比较发生在谁的会话、哪份文档或哪次外部沟通中；本次品类内检索、竞品/知识库、平台对象及本人记忆均无命中\", \"status\": \"to_confirm\"}, \"decision\": {\"status\": \"unspecified\"}, \"next_step\": {\"text\": \"由用户提供三家供应商名称或原比较文档（询价单/规格书/评分表）后，在本会话按同口径重新检索或重做对比并给出建议\", \"status\": \"to_confirm\"}, \"conclusion\": {\"text\": \"可读范围内没有任何资料记录'三家气泵供应商比较'及其推荐对象，无法给出当时的建议供应商\", \"status\": \"not_recorded\"}}}], \"format\": \"blockers\"}}, \"status\": \"partial\", \"summary\": \"在可读范围内没有找到那次\\\"三家气泵供应商比较\\\"的记录，因此无法告诉你当时建议选哪家。\\n\\n已核对范围与结果：\\n- 当前品类（汽车充气泵）内公司资料检索（含历史）：查询\\\"气泵供应商/三家/比较/选型/结论/建议\\\"→0 命中；\\n- 品类竞品条目 0 条、品类知识库条目 0 条（boundary/segment/competitor/voice/regulation/research_question 全为 0）、品类下平台产品对象 0 条；\\n- 我的会话历史（当前会话无记录）与个人记忆：唯一相关的一条是 2026-11-15 的\\\"整理气泵供应商的联系人\\\"，其当时回答只有\\\"联系人已整理。\\\"，没有三家对比或推荐结论。\\n\\n覆盖限制：本轮查找预算已用尽，另一条更宽的检索未执行，且其他人的会话与未索引的外部资料不在已核对范围——所以这是\\\"在检索范围内没找到\\\"，不能断定那次比较从未发生过。\\n\\n下一步：给我那三家的名称，或把当时的询价单/规格书/评分表传上来，我可以在本会话按同口径重做对比并给出建议；若只是要找回原结论，我也可以换关键词再检索一轮。\", \"questions\": [{\"id\": \"q1\", \"why\": \"有名称才能定位对应资料，并按同口径复核或重做对比。\", \"options\": [{\"label\": \"我提供三家的名称\", \"value\": \"我来提供三家名称\"}, {\"label\": \"我提供当时的比较文档/附件\", \"value\": \"我提供原比较文档\"}, {\"label\": \"我只记得其中一家（或记不清）\", \"value\": \"只记得其中一家\"}], \"question\": \"那次比较的三家供应商分别叫什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"我来提供三家名称\", \"reason\": \"名称可直接用于检索与同口径复核，最快收敛。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"结论通常依赖报价、性能实测与成本口径；这些材料决定了能不能复现或重做那次对比。\", \"options\": [{\"label\": \"有材料，我上传给你\", \"value\": \"有，我上传\"}, {\"label\": \"没有材料，先按现有可读资料再检索一轮\", \"value\": \"先按现有可读资料重新搜\"}, {\"label\": \"不需要重做，只要找回当时的结论\", \"value\": \"只要找回原结论\"}], \"question\": \"当时的比较依据材料（询价单、规格书、样品/测试记录、评分表）现在在哪里？\", \"depends_on\": [], \"recommended\": {\"value\": \"有，我上传\", \"reason\": \"有原始材料才能复现当时口径；否则重做可能得出与上次不同的结论。\"}, \"allow_free_text\": true}], \"unfinished\": [\"三家供应商名称与比较依据材料尚未确认，无法给出当时的推荐对象\", \"本轮查找预算已用尽，覆盖范围有限（其他人的会话、未索引的外部资料、当前品类之外均未核对）\"]}",
+  "unfinished": [
+    "三家供应商名称与比较依据材料尚未确认，无法给出当时的推荐对象",
+    "本轮查找预算已用尽，覆盖范围有限（其他人的会话、未索引的外部资料、当前品类之外均未核对）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r2"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r2"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

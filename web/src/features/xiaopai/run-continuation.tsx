@@ -85,6 +85,8 @@ export function RunContinuation({
   const [reading, setReading] = useState<ContinuationReading | null>(null);
   const [requestedSkills, setRequestedSkills] = useState<RequestedSkill[]>([]);
   const [excludedSkills, setExcludedSkills] = useState<string[]>([]);
+  // “本轮不记” (P121 第 8 项): only the next message; cleared once it is accepted.
+  const [turnOff, setTurnOff] = useState(false);
   const [goal, setGoal] = useSessionDraft(principalId, root, run.session_id);
   const [pending, setPending] = useState<PendingContinuation | null>(null),
     [busy, setBusy] = useState(false);
@@ -186,6 +188,7 @@ export function RunContinuation({
         setGoal(request.request.goal);
         setRequestedSkills(request.request.requested_skills ?? []);
         setExcludedSkills(request.request.excluded_continued_skills ?? []);
+        setTurnOff(request.request.memory_turn_off === true);
         if (matchesContinuation(request.request, value)) {
           remember(null);
           setGoal("");
@@ -221,6 +224,7 @@ export function RunContinuation({
         }),
         ...(requestedSkills.length ? { requested_skills: requestedSkills } : {}),
         ...(excludedSkills.length ? { excluded_continued_skills: excludedSkills } : {}),
+        ...(turnOff ? { memory_turn_off: true as const } : {}),
         },
       };
       if (!restoreContinuation(request, root, reading.owner_id, run.run_id)) throw new Error("原续接请求无法核对。");
@@ -248,6 +252,7 @@ export function RunContinuation({
         throw new Error("后续受理结果待核对，请保留原请求。");
       remember(null);
       setGoal("");
+      setTurnOff(false);
       setReading({
         ...latest,
         can_continue: false,
@@ -303,7 +308,7 @@ export function RunContinuation({
           onStop={canStop ? () => onStop?.() : undefined}
           placeholder={run.reverted ? "此对话已撤回，请新建对话" : !terminal ? run.status === "waiting_input" ? "请先回答上方的问题…" : "小Pai正在处理…" : busy ? "正在读取对话…" : reading && !canSend ? "当前对话暂不能继续，请刷新状态或新建对话" : "发消息给小Pai…"}
           hint={canStop ? "小Pai正在处理，你可以先去忙别的" : "Enter 发送 · Shift Enter 换行"}
-          tools={<>{sourceTools}<MemoryModeToggle api={api} root={root} sessionId={run.session_id} disabled={disabled || busy}/><details className={styles.carry}><summary title={contextLabel || "沿用会话上下文"} aria-label="查看会话上下文"><Folder size={15} aria-hidden="true"/></summary><div><p>{contextLabel || "沿用会话上下文"}</p><p>继续本次对话，沿用原范围与来源。</p>{contextText && <p>同时带入当前资料与未保存编辑；保存仍需确认。</p>}{run.conversation?.previous_run_id && <Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => void onOpen(run.conversation!.previous_run_id!).catch(failure => setError(failure.message))}>查看前一次工作</Button>}</div></details>
+          tools={<>{sourceTools}<MemoryModeToggle api={api} root={root} sessionId={run.session_id} disabled={disabled || busy} turnOff={turnOff} onTurnOffChange={pending ? undefined : setTurnOff}/><details className={styles.carry}><summary title={contextLabel || "沿用会话上下文"} aria-label="查看会话上下文"><Folder size={15} aria-hidden="true"/></summary><div><p>{contextLabel || "沿用会话上下文"}</p><p>继续本次对话，沿用原范围与来源。</p>{contextText && <p>同时带入当前资料与未保存编辑；保存仍需确认。</p>}{run.conversation?.previous_run_id && <Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => void onOpen(run.conversation!.previous_run_id!).catch(failure => setError(failure.message))}>查看前一次工作</Button>}</div></details>
             <ContinuedSkillPicker api={api} resource={root.includes("personal") ? "v1/personal/agent-skills" : "v1/agent-skills"} continued={reading?.continued_skills ?? []} excluded={excludedSkills} onExcludedChange={setExcludedSkills} requested={requestedSkills} onRequestedChange={setRequestedSkills} disabled={disabled || busy || !!pending}/>
             <Button type="button" variant="ghost" size="sm" className={styles.toolbarButton} aria-label="读取后续记录" title="刷新对话状态" disabled={busy || disabled || !terminal || run.reverted} onClick={() => void load()}><ArrowClockwise size={14} aria-hidden="true"/></Button></>} />}
     </div>;

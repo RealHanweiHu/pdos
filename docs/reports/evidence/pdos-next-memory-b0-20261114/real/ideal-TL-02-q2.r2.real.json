@@ -1,0 +1,47 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 12.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 16549,
+  "held_tokens": 0,
+  "answer": "已按您对该客户的既定口径（对外一律英文）写出两版三句话的客户通知：英文正式版为主，中文版备用；报价时间点保留“[具体日期]”占位供您填。",
+  "answer_blob": "{\"result\": {\"notes\": [\"依据本人记忆中的既定口径「给这个客户的报告一律用英文」，对外正文以英文版为主，中文版仅备用。\", \"本稿只承诺「本周内给出气泵报价」这一条，不含价格、交期、有效期等其他承诺。\", \"未写入任何业务系统，无对外发送动作。\"], \"drafts\": [{\"role\": \"primary\", \"text\": \"Thank you for your interest in our automotive inflator pump. We are finalizing the quotation and will send it to you within this week, by [specific date, e.g. Friday]. If you would like the offer broken down by variant or with any additional specifications, please let me know and I will include it.\", \"language\": \"en\"}, {\"role\": \"backup\", \"text\": \"感谢您对我们汽车充气泵的关注。报价正在整理中，我们会在本周内（[具体日期]）将气泵报价单发送给您。如需按型号拆分明细或增加规格说明，请告知，我会一并附上。\", \"language\": \"zh\"}], \"assistant\": {\"kind\": \"general\", \"lookup\": \"not_run\", \"version\": 1}, \"placeholders\": [\"[具体日期]\"]}, \"status\": \"completed\", \"summary\": \"已按您对该客户的既定口径（对外一律英文）写出两版三句话的客户通知：英文正式版为主，中文版备用；报价时间点保留“[具体日期]”占位供您填。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "model:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

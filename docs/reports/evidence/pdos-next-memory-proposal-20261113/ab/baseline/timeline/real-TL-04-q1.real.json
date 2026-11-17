@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-04",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 37.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 69582,
+  "held_tokens": 0,
+  "answer": "已核对的范围内，找不到你之前交代的报价对比口径明细：历史会话（as_of 2026-11-14，目标「气泵报价对比」）记录只保留「报价对比已完成」，来源/研究行/候选均为空；品类「汽车充气泵」内检索报价口径、含税、运费、批量等 0 命中，platform.read 在该品类也无产品、变体或提案条目。本轮检索预算已用尽，无法再穷举其他来源。已提出下一步：按统一价格口径维度（币种、报价日期、地区、渠道、零售/促销价、是否含税与运费、配置与批量）先出口径表供你确认，再取数比对。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:10:22.255115+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"历史会话中是否曾口头或以邮件/聊天形式交代过具体比价口径（记录未留存明细，无法从可读来源还原）\", \"品类范围内不存在报价对比口径相关文档、产品、变体或提案条目（检索 0 命中）\", \"本轮检索预算已用尽，未能穷举其他可读来源以进一步确认\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已核对的范围内，找不到你之前交代的报价对比口径明细：历史会话（as_of 2026-11-14，目标「气泵报价对比」）记录只保留「报价对比已完成」，来源/研究行/候选均为空；品类「汽车充气泵」内检索报价口径、含税、运费、批量等 0 命中，platform.read 在该品类也无产品、变体或提案条目。本轮检索预算已用尽，无法再穷举其他来源。已提出下一步：按统一价格口径维度（币种、报价日期、地区、渠道、零售/促销价、是否含税与运费、配置与批量）先出口径表供你确认，再取数比对。\", \"questions\": [{\"id\": \"q1\", \"why\": \"记录中未留有你当时的口径，需要一个当前口径才能开始取数比对；口径由你确认，我不替你选定。\", \"options\": [{\"label\": \"先出口径表草案，我逐项确认后再取数\", \"value\": \"list_draft\"}, {\"label\": \"先别列，我直接把当时交代的口径说给你\", \"value\": \"ask_me_only\"}, {\"label\": \"先继续在其他来源里深挖（需再授权检索）\", \"value\": \"search_more\"}], \"question\": \"是否要我先按统一价格口径维度（币种、报价日期、地区、渠道、零售/促销价、是否含税与运费、配置与批量档位）列一版气泵比价口径表给你确认？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"你当时交代的报价对比口径明细仍未定位到（历史记录不可回溯口径条目，品类检索 0 命中）\", \"若要继续实际比价：需先确定口径，再按口径取数并用 calc.price_band 归档结果\"]}",
+  "unfinished": [
+    "你当时交代的报价对比口径明细仍未定位到（历史记录不可回溯口径条目，品类检索 0 命中）",
+    "若要继续实际比价：需先确定口径，再按口径取数并用 calc.price_band 归档结果"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

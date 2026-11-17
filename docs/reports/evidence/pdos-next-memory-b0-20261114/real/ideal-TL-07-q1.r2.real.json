@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 29.9,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 66343,
+  "held_tokens": 0,
+  "answer": "已按你给的两条内容出成文字版周报（品类：汽车充气泵），本周完成供应商对比、下周补报价单。同时核查了本品类可读范围：品类知识、竞品清单、平台/产品与资料检索均为空，没有可核对的供应商对比或报价单记录，所以\"对比已完成\"目前只有你的陈述作依据，具体名单与结论尚未入库。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:18:24.412054+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"品类『汽车充气泵』（a815e51e-d392-4c37-81b2-e870e2718873）内未检索到任何供应商对比、报价单或相关产物记录：品类知识与竞品清单为空，品类范围资料检索 0 条，平台/产品与基线无可读对象；因此『供应商对比已完成』目前仅有本人陈述为依据。\", \"供应商对比的具体名单、对比维度与结论未在任何记录中登记。\", \"待补报价单的供应商范围、目标报价口径（币种、含税/含运、配置、数量、有效期）与提交时间均未记录。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"weekly_report\": {\"text\": \"汽车充气泵 · 本周周报\\n\\n一、本周完成\\n1. 完成供应商对比：已完成现有候选供应商的对比梳理并形成对比结论，作为下周询价与谈判的基础。\\n\\n二、下周计划\\n1. 补报价单：向候选供应商补齐报价单，统一口径（币种、是否含税含运、配置与数量、有效期），收回后回填对比表。\", \"format\": \"text\", \"period\": {\"next_week\": \"下周\", \"this_week\": \"本周\"}, \"category\": \"汽车充气泵\", \"sections\": [{\"items\": [\"完成供应商对比：已完成现有候选供应商的对比梳理并形成对比结论，作为下周询价与谈判的基础。\"], \"heading\": \"本周完成\"}, {\"items\": [\"补报价单：向候选供应商补齐报价单，统一口径（币种、是否含税含运、配置与数量、有效期），收回后回填对比表。\"], \"heading\": \"下周计划\"}]}}, \"status\": \"completed\", \"summary\": \"已按你给的两条内容出成文字版周报（品类：汽车充气泵），本周完成供应商对比、下周补报价单。同时核查了本品类可读范围：品类知识、竞品清单、平台/产品与资料检索均为空，没有可核对的供应商对比或报价单记录，所以\\\"对比已完成\\\"目前只有你的陈述作依据，具体名单与结论尚未入库。\", \"questions\": [{\"id\": \"q1\", \"why\": \"品类内没有供应商对比记录，周报正文目前只能写成\\\"完成对比\\\"这一句结果，缺少对比了几家、倾向哪家的信息。\", \"options\": [{\"label\": \"就按现在这样，只写\\\"完成供应商对比\\\"\", \"value\": \"keep_as_is\"}, {\"label\": \"要写进去，我补充对比了哪几家和初步倾向（可自由填写）\", \"value\": \"add_conclusion\"}], \"question\": \"供应商对比的结论要不要写进周报正文？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_as_is\", \"reason\": \"你已说明内容就这两条，先给可直接用的版本；结论细节可在同一会话补写。\"}, \"allow_free_text\": true}], \"unfinished\": [\"供应商对比与报价单均未在品类业务对象中留痕，本周完成项仅依据本人陈述，未与平台记录交叉核对。\"]}",
+  "unfinished": [
+    "供应商对比与报价单均未在品类业务对象中留痕，本周完成项仅依据本人陈述，未与平台记录交叉核对。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

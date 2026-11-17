@@ -1,0 +1,63 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q3",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 101.9,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 244503,
+  "held_tokens": 0,
+  "answer": "核对结果：在\"汽车充气泵\"品类的本轮可读范围内，没有检索到上周试产的不良汇总记录——按 issue/build/manufacturing_document/test_run/project_status 检索返回 0 条，品类知识库、参数目录、证据检索均为空，平台/型号对象读取也为空，因此连可读取的试产基线都没有。也就是说，\"不良前三项\"在当前业务数据中无法核实，不能给出一个可引用的答案。\n\n可提供但不作为依据：你此前在同一品类做过一次\"汇总上周试产的不良项\"，当时写下的结论是 气嘴漏气、外壳缩水、按键卡滞——但那次回答没有任何引用来源，只能视为个人历史记录，不等于已核实的业务事实，我不会把它当作答案直接给你。\n\n未查到的具体项：上周的试产批次/轮次记录、不良台账或汇总表、各不良项的发生数与占比口径。\n\n若你把该试产记录的来源给我（文件、记录编号或链接），我可以直接按该记录逐项核对前三项及其发生数与排序依据。",
+  "answer_blob": "{\"result\": {\"result\": {\"checked\": [\"品类检索(source_types=issue/build/manufacturing_document/test_run/project_status)返回 0 条\", \"品类知识库、参数目录、竞品列表均为空\", \"证据检索(多组关键词与空查询)返回 0 条\", \"平台对象读取(category/name_query/全量)返回 0 条\", \"基线读取因无可选基线型号被拒\"], \"not_found\": [\"上周试产的批次/轮次记录\", \"试产不良台账或不良汇总表\", \"各不良项的发生数与占比口径\", \"可读取的型号/平台与基线对象\"], \"answer_state\": \"unverified\", \"verified_rows\": [], \"historical_note\": {\"as_of\": \"2026-11-14\", \"run_id\": \"f632d450-0b35-4814-8cac-ca27a7c1ec2e\", \"status\": \"历史会话记录，无引用来源，不能作为当前业务事实\", \"stated_items\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"]}, \"top_three_defects\": [], \"verified_citations\": []}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T08:57:53.085822+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本轮可读范围内没有任何试产不良记录可核对，'不良前三项'未在当前业务数据中证实\", \"缺少'上周'对应的试产批次与机型范围\", \"缺少各不良项的发生数/占比与统计口径\", \"上次会话给出的前三项无来源支持，是否仍然有效无法判断\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"核对结果：在\\\"汽车充气泵\\\"品类的本轮可读范围内，没有检索到上周试产的不良汇总记录——按 issue/build/manufacturing_document/test_run/project_status 检索返回 0 条，品类知识库、参数目录、证据检索均为空，平台/型号对象读取也为空，因此连可读取的试产基线都没有。也就是说，\\\"不良前三项\\\"在当前业务数据中无法核实，不能给出一个可引用的答案。\\n\\n可提供但不作为依据：你此前在同一品类做过一次\\\"汇总上周试产的不良项\\\"，当时写下的结论是 气嘴漏气、外壳缩水、按键卡滞——但那次回答没有任何引用来源，只能视为个人历史记录，不等于已核实的业务事实，我不会把它当作答案直接给你。\\n\\n未查到的具体项：上周的试产批次/轮次记录、不良台账或汇总表、各不良项的发生数与占比口径。\\n\\n若你把该试产记录的来源给我（文件、记录编号或链接），我可以直接按该记录逐项核对前三项及其发生数与排序依据。\", \"questions\": [], \"unfinished\": [\"本轮无任何已核对的业务台账行可引用，'不良前三项'仍未在当前数据中核实\", \"品类内未命中试产批次/不良台账对象，需要具体记录来源才能逐项核对发生数与排序\", \"本轮检索预算已用尽，未能扩大到其他来源类型\"]}",
+  "unfinished": [
+    "本轮无任何已核对的业务台账行可引用，'不良前三项'仍未在当前数据中核实",
+    "品类内未命中试产批次/不良台账对象，需要具体记录来源才能逐项核对发生数与排序",
+    "本轮检索预算已用尽，未能扩大到其他来源类型"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:3",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": []
+  },
+  "memory_off": false,
+  "arm": "candidate",
+  "prompt_version": "1.1.0",
+  "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

@@ -23,12 +23,14 @@ class TemporalSender:
         business_engine=None,
         automation_sender=None,
         projection_sender=None,
+        memory_fanout=False,
     ):
         self.client, self.task_queue = client, task_queue
         self.dispatch_engine = dispatch_engine
         self.business_engine = business_engine
         self.automation_sender = automation_sender
         self.projection_sender = projection_sender
+        self.memory_fanout = memory_fanout
 
     async def __call__(self, event: Envelope):
         projection_id = None
@@ -38,6 +40,11 @@ class TemporalSender:
             # Persist every eligible rule source before this single shared consumer
             # acknowledges delivery, even when the original event has no workflow.
             await self.automation_sender.event(event)
+        if self.memory_fanout:
+            # 记忆 M3 业务事件扇出 (§14.9): started before this consumer acknowledges.
+            from pdos_next.agent.memory.fanout import start as start_memory_fanout
+
+            await start_memory_fanout(self.client, self.task_queue, event)
         if event.event_type == "project.created" and self.business_engine is not None:
             from pdos_next.agent.kernel.temporal_port import TemporalPort, workflow_id
             from pdos_next.domain.projects.npi.continuation import queue

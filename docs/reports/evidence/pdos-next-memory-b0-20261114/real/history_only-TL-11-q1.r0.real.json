@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 36.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 105463,
+  "held_tokens": 0,
+  "answer": "汽车充气泵品类规格字典中，「最大流量」(max_flow) 当前生效版本 v1 的验收标准为 ≥ 35 L/min：单位 L/min，数值型，判定方向 higher（越高越好），登记来源 human，变更说明为\"合成规格：最大流量\"。该条目目前 standard_condition（标准工况）与 method（测试方法）均为空，因此 35 L/min 这个数字是在什么工况、按什么方法测尚未在字典中定义。另外，本次在本品类范围检索未命中任何相关规格书/测试文档，平台型号列表在当前读取范围内返回空（品类计数显示有 1 个型号但未能列出），因此没有核对到具体型号基线或客户规格书上的对应条款；若该值另有出处，需再深入检索确认。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:09:29.969472+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"最大流量的标准工况（standard_condition）未登记\", \"最大流量的测试方法（method）未登记\", \"本品类范围内检索未命中相关规格书/测试文档（assistant.search 命中 0 条）\", \"未能读取到具体型号基线（平台型号列表在当前范围返回空），无法核对型号基线与字典值是否一致\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"汽车充气泵品类规格字典中，「最大流量」(max_flow) 当前生效版本 v1 的验收标准为 ≥ 35 L/min：单位 L/min，数值型，判定方向 higher（越高越好），登记来源 human，变更说明为\\\"合成规格：最大流量\\\"。该条目目前 standard_condition（标准工况）与 method（测试方法）均为空，因此 35 L/min 这个数字是在什么工况、按什么方法测尚未在字典中定义。另外，本次在本品类范围检索未命中任何相关规格书/测试文档，平台型号列表在当前读取范围内返回空（品类计数显示有 1 个型号但未能列出），因此没有核对到具体型号基线或客户规格书上的对应条款；若该值另有出处，需再深入检索确认。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前只查到规格字典一条登记，型号基线与规格书未能读取，可能存在另一处口径。\", \"options\": [{\"label\": \"继续深入检索并核对型号基线与规格书\", \"value\": \"deepen\"}, {\"label\": \"就以规格字典当前版本为准，不再扩展\", \"value\": \"stop\"}], \"question\": \"是否要在同一会话继续深入检索该品类的型号基线、规格书与测试记录，确认 ≥ 35 L/min 是否与型号基线/客户 RFQ 口径一致？\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen\", \"reason\": \"字典值可用，但缺工况与方法，且未与型号基线核对，容易出现口径不一致。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"字典中工况与测试方法为空，实际验收/测试执行需要明确测量口径，否则判定不可复现。\", \"options\": [{\"label\": \"由测试/工程专业补齐工况与测试方法后再确认\", \"value\": \"engineering\"}, {\"label\": \"由客户 RFQ/规格书提供，现有字典值直接照用\", \"value\": \"customer\"}, {\"label\": \"暂不指定，先作为已知缺口记录\", \"value\": \"defer\"}], \"question\": \"判定 35 L/min 达标所依据的工况与测试方法由谁提供？\", \"depends_on\": [], \"recommended\": {\"value\": \"engineering\", \"reason\": \"标准工况与测试方法属于工程/测试口径，字典未登记时通常由本方专业补齐更可控。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未核对到具体型号基线与规格书中的最大流量条款（平台型号列表与品类检索在本范围无命中）\", \"标准工况与测试方法待补齐，确认前不宜直接用于测试判定\"]}",
+  "unfinished": [
+    "未核对到具体型号基线与规格书中的最大流量条款（平台型号列表与品类检索在本范围无命中）",
+    "标准工况与测试方法待补齐，确认前不宜直接用于测试判定"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

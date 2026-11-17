@@ -1,0 +1,419 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.10, pytest-9.1.1, pluggy-1.6.0 -- /Users/huhanwei/Developer/ai-native-R&D-platform/server/.venv/bin/python
+rootdir: /Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server
+configfile: pyproject.toml
+plugins: langsmith-0.14.3, anyio-4.15.1
+collecting ... collected 168 items / 112 deselected / 56 selected
+
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-no_memory-rep2-setup0] time=2026-11-15T03:42:30.968 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:51248
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:51249/metrics
+REAL no_memory TL-01 q1 rep2 partial 105.8 241594 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 运行预算已用完，保留已完成动作与已核对结果。
+REAL no_memory TL-01 q2 rep2 partial 78.6 233453 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 结论：在当前可读范围内没有找到上次供应商比较的任何记录，也没有找到排除 C 家的依据，因此无法给出排除原因（不作推断、不用通用常识替代贵司当时的判断）。已核对到的：企业资料检索在当前品类「汽车充气泵」下按 knowledge/supply/artifact/issue/change/project_status 且含历史返回 0 条（更宽的两次检索被本轮查找预算拦截，标记为 RATE_LIMITE
+REAL no_memory TL-01 q3 rep2 partial 71.9 218826 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已核对到的：「汽车充气泵」这个隔离品类本身可读（category.read 返回 1 个模型、负责人 Synthetic owner、读写权限正常），以及以下各读取入口在本会话均返回空结果：品类检索（query「试产 汇总 不良项 缺陷 排行」，含历史，限该品类，0 条）、evidence.search（「试产 不良 汇总 前三」「试产」「充气泵」均 0 条）、品类知识清单（含历史，0 条）、品类
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-history_only-rep2-setup0] time=2026-11-15T03:46:52.719 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:51523
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:51524/metrics
+REAL history_only TL-01 q1 rep2 partial 89.7 146236 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（2026-11-15，历史会话 c46bf8dc…，目标“比较三家气泵供应商的报价和交期”）的结论是：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12%，已排除。未完成两件：补 C 家的含税报价单、核对 B 家交期的单位（历史记录本身没写是“天”还是“周”）。本轮我按“接着往下做”尝试推进：在“汽车充气泵”品类范围内检索供应商报价/交期资料（企业检索：artifact/
+REAL history_only TL-01 q2 rep2 completed 49.4 67429 {'episodes': ['other', 'r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 查到上次的实际记录：2026-11-15 那次"比较三家气泵供应商的报价和交期"里，排除 C 家的原因只有一条——其含税报价超出目标价 12%；同一条结论建议选 B 家，因为交期比 A 家短 2 周。当时遗留两项待办：补 C 家的含税报价单、核对 B 家交期单位；紧接其后的续做会话状态为 partial，其回答因来源已不可读被隐藏，无法确认是否有补充结论。历史回答未附公司资料引用，本次检索也未在当
+REAL history_only TL-01 q3 rep2 partial 57.7 221546 {'episodes': ['r3'], 'catalog': [], 'sessions_read': ['r3'], 'notes': [], 'note_revisions': {}} 运行预算已用完，保留已完成动作与已核对结果。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-real-rep2-setup0] time=2026-11-15T03:50:14.157 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:51704
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:51705/metrics
+REAL real TL-01 q1 rep2 partial 94.9 206596 {'episodes': ['r1', 'r2', 'r3'], 'catalog': ['r1', 'r2', 'r3'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。
+REAL real TL-01 q2 rep2 failed 341.3 158044 {'episodes': ['other', 'r1', 'r2', 'r3'], 'catalog': ['other', 'r2', 'r3'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+REAL real TL-01 q3 rep2 partial 63.8 217077 {'episodes': ['other', 'r2', 'r3'], 'catalog': ['other', 'r2', 'r3'], 'sessions_read': ['r3'], 'notes': [], 'note_revisions': {}} 按我在上一次会话（as_of 2026-11-15）给出的汇总结论，上周试产的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。需要说明的是，本轮我没能把这份结论重新落到可引用的原始记录上：检索预算用尽后，在当前「汽车充气泵」品类范围内检索 build/test_run/issue 类资料与证据库均无命中，也读不到该品类下的型号基线，所以这三项目前是"我上次会话的记录"，而不是本轮已核对的事实。三项的排
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-01-ideal-rep2-setup0] time=2026-11-15T03:58:38.686 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52049
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52050/metrics
+REAL ideal TL-01 q1 rep2 completed 103.8 156085 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 按你的要求，只依据我能查到的以往记录作答，查不到的地方直接标注为查不到。  一、上次的结论（来自 2026-11-15 你本人上一轮工作记录，会话 f45989dc / run debf69a3）： - 建议选 B 家：交期比 A 家短 2 周。 - C 家：含税报价超出目标价 12%，已排除。 需要注意：该轮记录的来源清单（sources/receipts）为空，我又在当前“汽车充气泵”品类范围
+REAL ideal TL-01 q2 rep2 partial 103.6 139020 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。
+REAL ideal TL-01 q3 rep2 partial 42.9 106541 {'episodes': ['r3'], 'catalog': ['r3'], 'sessions_read': ['r3'], 'notes': [], 'note_revisions': {}} 你上次问过同一问题，当时的汇总结论是：不良前三项为「气嘴漏气、外壳缩水、按键卡滞」（本人历史工作记录，as_of 2026-11-15）。但要注意：这一轮我在当前品类（汽车充气泵）范围内检索试产/不良类业务来源时没有命中任何当前记录——企业检索、证据检索、平台与品类知识读取都返回为空，且本轮查找预算已用尽。因此这三项目前只能作为你本人过往工作记录中的结论给出，不能当作已与当前业务数据核对过的事实。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-no_memory-rep2-setup0] time=2026-11-15T04:02:53.239 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52287
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52288/metrics
+REAL no_memory TL-02 q1 rep2 completed 54.6 181302 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 结论：查不到。我无法给出上次的推荐供应商——在你的可读范围内没有任何那次气泵供应商对比的记录。  已核查且均无相关记录的范围： 1) 本会话的对话历史：无既往轮次（turns 为空，且无更早分页）； 2) 个人记忆：本会话未开启记忆检索（memory 返回 status=memory_off，不可用）； 3) 按品类"汽车充气泵"的公司资料检索：无命中； 4) 品类竞品清单：空；品类知识（边界/细
+REAL no_memory TL-02 q2 rep2 completed 18.1 32152 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已写出可发给客户的三句话草稿：确认收到询价并正在核算成本交期、承诺本周内给出气泵正式报价、并说明如需先了解价格区间或调整规格数量可随时告知。品类可读资料中未检索到对应客户询价记录，故型号、数量、具体日期留作占位符待用户补全；承诺时间与价格口径由用户本人确认。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-history_only-rep2-setup0] time=2026-11-15T04:04:10.150 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52380
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52381/metrics
+REAL history_only TL-02 q1 rep2 completed 26.1 67600 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 查到上次在同一品类「汽车充气泵」范围内的会话记录（另一会话，as_of 2026-11-15，目标为「比较三家气泵供应商的报价和交期」），当时的结论摘要为：「甲：建议选 B 家。」——即你上次的建议是选 B 家。需要说明两点限制：①该历史回答没有绑定任何引用或回执（来源清单为空），我只读到结论摘要，拿不到当时三家供应商的名称、报价数字与交期明细；②本轮在当前品类范围内检索供应商/供应/资料类来源，
+REAL history_only TL-02 q2 rep2 completed 15.6 32325 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已给出可直接发送的三句话客户告知稿（未发送）。要点：表达"本周内提交气泵报价"，并预告报价内容（规格配置/单价/交期）、邀请客户补充数量与目标价。  草稿： "您好，感谢您对我们气泵产品的关注与询价。我们正在完成配置与成本确认，预计在本周内（最迟[日期]）向您提交正式报价，报价中会一并说明规格配置、单价与交期。若您对数量、目标价或期望交期已有明确要求，也请提前告知，我们会一并纳入本次报价方案。" 
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-real-rep2-setup0] time=2026-11-15T04:04:56.062 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52437
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52438/metrics
+REAL real TL-02 q1 rep2 completed 26.6 51890 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 上次（2026-11-15，会话 6caea532…，目标“比较三家气泵供应商的报价和交期”）的结论是：建议选 B 家，即三家里排第二的那家。需要说明的是，这条记录本身是情景记录，不是当前业务事实——该轮记录没有挂任何来源（sources/receipts 均为空），我在当前品类范围（汽车充气泵）重新检索也没找到这次报价/交期对比的业务记录（assistant.search 0 条、platfor
+REAL real TL-02 q2 rep2 completed 27.6 34796 {'episodes': ['other', 'r1'], 'catalog': ['other', 'r1'], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 已按您此前设定的口径（给该客户的报告一律用英文）写出两三句话的客户说明：确认已收到气泵询价、正在确认配置与价格，并承诺本周内（截至 11 月 20 日周五）发出报价，同时邀请客户在此前提补充规格/数量/目标价。当前可读范围（汽车充气泵品类）内未检索到该客户的 RFQ 或报价记录，因此草稿刻意不含型号、数量、单价等未经核实的具体信息，也未写客户称呼与公司名，需您补入。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-02-ideal-rep2-setup0] time=2026-11-15T04:05:54.424 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52500
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52501/metrics
+REAL ideal TL-02 q1 rep2 completed 32.0 52103 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 你上次的结论是：建议选 B 家。  依据：2026-11-15 你我那次会话（目标"比较三家气泵供应商的报价和交期"，session 8c96bf88-4c6f-497a-bd64-d120a3b1dfa2）的历史记录写的是"甲：建议选 B 家"，本次已用 conversation.history 复核了原始对话条目，结论一致。  两点需要说明： 1) 这条属于你本人的历史工作记录，不是公司业务事
+REAL ideal TL-02 q2 rep2 completed 12.4 16549 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 已按您对该客户的既定口径（对外一律英文）写出两版三句话的客户通知：英文正式版为主，中文版备用；报价时间点保留“[具体日期]”占位供您填。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-no_memory-rep2-setup0] time=2026-11-15T04:06:42.765 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52549
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52550/metrics
+REAL no_memory TL-04 q1 rep2 partial 134.1 142865 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 未在本次可检索范围内找到你此前交代过气泵报价对比口径的任何记录。已核对的台账：当前品类（汽车充气泵）公司资料检索（含历史）0 条；本会话及可见历史会话无更早轮次；品类内知识（竞品/参数/边界）均为 0 条；平台与产品对象 0 条。盲区：本会话已设为「不进记忆」，个人记忆层关闭，跨会话的个人历史交代无法回溯——所以结论是「已搜索范围内未找到」，不是「你没有交代过」。本轮未重复检索，等你决定是扩大范围
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-history_only-rep2-setup0] time=2026-11-15T04:09:01.133 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52655
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52656/metrics
+REAL history_only TL-04 q1 rep2 completed 32.7 84861 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 有先例，但"当时的口径"没被记录下来：我只找到本品类（汽车充气泵）上一次会话记录，目标就是"气泵报价对比"（记录时间 2026-11-15，状态已完成），但它的可读内容只有一句"报价对比已完成"，没有来源引用、笔记或研究行，因此无法据此确认你当时交代的比价口径。另外两点说明：记忆检索本次只走关键词通道（本会话未启用语义检索），如果你当时用了别的措辞，可能没被召回；我也在公司资料（知识/文档）中按"
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-real-rep2-setup0] time=2026-11-15T04:09:37.507 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52700
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52701/metrics
+REAL real TL-04 q1 rep2 partial 34.4 67950 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 在当前范围（品类：汽车充气泵）里，我只找到一次相关的历史记录：2026-11-15 的会话「气泵报价对比」，状态已完成，记录摘要只有一句「报价对比已完成。」。该会话可读的历史里只保留了目标句和这句完成摘要，没有保留你逐句的交代，因此查不到你原话里指定的对比口径（币种、价格时点、地区、渠道、零售/促销、含税含运、配置基准等）。品类范围内针对口径类资料（artifact/knowledge）的检索返回
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-04-ideal-rep2-setup0] time=2026-11-15T04:10:15.816 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52745
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52746/metrics
+REAL ideal TL-04 q1 rep2 partial 36.8 67606 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 在我这次能读到的范围内，没有找到你之前交代过气泵报价对比口径的记录：品类「汽车充气泵」下的公司资料检索（气泵/报价/对比/口径/币种/含税等关键词）返回 0 条，个人记忆检索（"气泵 报价 对比 口径"、"气泵 报价"）无命中，本次会话历史也没有更早的对话轮次，品类内竞品知识条目为空。需要说明的是，本轮查找预算已用完，未能执行不限品类的宽范围检索，所以严格讲是"在已检索范围内未找到"，不等于你从未
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-no_memory-rep2-setup0] time=2026-11-15T04:10:56.333 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52805
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52806/metrics
+REAL no_memory TL-06 q1 rep2 completed 60.9 164834 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到。按你的要求，我只依据可读到的以往记录回答：在当前可读范围内没有找到“比较三家气泵供应商”这次分析的记录或结论，因此我无法说出当时建议选哪家。已逐项核对：①公司资料检索（品类“汽车充气泵”，含历史）两次检索均为 0 命中，后续再检索被本轮查找预算拦下；②本会话历史只有你这一条提问，没有更早轮次；③个人记忆在本会话处于关闭状态（status: memory_off），未读取；④品类竞品表、品类
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-history_only-rep2-setup0] time=2026-11-15T04:12:01.225 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52904
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52905/metrics
+REAL history_only TL-06 q1 rep2 completed 47.0 170712 {'episodes': ['r2'], 'catalog': [], 'sessions_read': ['r2'], 'notes': [], 'note_revisions': {}} 查不到——在我能读到的全部记录里，没有那次「三家气泵供应商比较」的内容，因此无法给出当时的推荐对象。  已核查范围（只读）： 1. 品类「汽车充气泵」企业检索（含历史）：0 条命中。 2. 品类知识库：竞品 0、边界 0、细分 0、用户声音 0、法规 0、研究问题 0；规格参数 0 个。 3. 平台产品/项目/变体对象：空。 4. 本人在该品类的历史会话记录：仅一条 2026-11-15「整理气泵
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-real-rep2-setup0] time=2026-11-15T04:12:52.245 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52979
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52980/metrics
+REAL real TL-06 q1 rep2 partial 82.2 245869 {'episodes': ['r2'], 'catalog': ['r2'], 'sessions_read': ['r2'], 'notes': [], 'note_revisions': {}} 最终答复：本次未能在当前可读范围找到"三家气泵供应商比较"那份材料，因此无法复述当时建议选哪家——我不会凭印象代答一个厂商名。  已核对到的（有据可查，均为空或无关）： 1. 品类「汽车充气泵」范围检索"三家气泵供应商比较／选型结论／建议供应商" → 0 条命中。 2. 品类知识库 competitor 类条目 → 0 条；品类竞品清单 → 0 条；品类参数 0 条、平台对象列表 0 条。 3. 
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-06-ideal-rep2-setup0] time=2026-11-15T04:14:19.025 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53385
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53386/metrics
+REAL ideal TL-06 q1 rep2 partial 65.7 235413 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 运行预算已用完，保留已完成动作与已核对结果。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-no_memory-rep2-setup0] time=2026-11-15T04:15:28.903 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53500
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53501/metrics
+REAL no_memory TL-07 q1 rep2 completed 28.0 66423 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已按您的要求出本周周报，两条内容如下：  【周报 · 汽车充气泵】 一、本周完成 1. 完成供应商对比。  二、下周计划 1. 补供应商报价单。  说明：我在当前可读范围（该品类的公司资料、竞品/供应商清单、证据库、平台项目与历史对话）内检索过，没有找到任何供应商对比记录或报价相关文档，所以这两条是按您本人的陈述成稿，未能在公司系统内做事实核验；报价单涉及的供应商范围、规格口径和交期也没有登记信息
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-history_only-rep2-setup0] time=2026-11-15T04:16:01.085 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53556
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53557/metrics
+REAL history_only TL-07 q1 rep2 partial 101.2 248323 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已按需求直接给出周报草稿（两条：本周完成供应商对比；下周补报价单）。核对情况：当前可读范围（品类「汽车充气泵」）内未检索到任何支撑记录——全文检索、证据检索、平台对象、品类知识/竞品/参数清单、既有对话历史与个人记忆均返回空，本范围亦未启用周报/任务管理类技能。因此两条内容按"需求方陈述"记录，未核实、未登记任何任务或承诺。未知项：供应商对比的名单/维度/结论、报价单口径（币种、含税运、配置、批量
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-real-rep2-setup0] time=2026-11-15T04:17:46.423 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53697
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53698/metrics
+REAL real TL-07 q1 rep2 completed 27.7 51256 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按"周报用文字形式"出具本周（2026-11-15，汽车充气泵）文字周报，两条内容：本周完成供应商对比；下周补报价单。品类范围内检索未发现可支撑"供应商对比已完成"的项目/供应/报价记录，故未附加供应商名单、对比结论或金额等未经登记的信息。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-07-ideal-rep2-setup0] time=2026-11-15T04:18:18.114 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53734
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53735/metrics
+REAL ideal TL-07 q1 rep2 completed 29.9 66343 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按你给的两条内容出成文字版周报（品类：汽车充气泵），本周完成供应商对比、下周补报价单。同时核查了本品类可读范围：品类知识、竞品清单、平台/产品与资料检索均为空，没有可核对的供应商对比或报价单记录，所以"对比已完成"目前只有你的陈述作依据，具体名单与结论尚未入库。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-no_memory-rep2-setup0] time=2026-11-15T04:18:52.698 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53776
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53777/metrics
+REAL no_memory TL-08 q1 rep2 completed 54.6 109380 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 在全部可读取入口（当前会话历史、个人记忆入口、公司资料检索、evidence 检索、品类产品/项目与知识条目）中均未找到提到"外壳缩水"的记录，0 命中；因此无法确定是哪次工作、当时并列的其他问题，保持为未知。未使用未核对依据作答。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-history_only-rep2-setup0] time=2026-11-15T04:19:52.275 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53841
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53842/metrics
+REAL history_only TL-08 q1 rep2 completed 17.3 48697 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 找到了：是「汇总上周试产的不良项」那次工作（会话 06f3572e-bec5-4aa5-aab5-7fcb01699f18 / run 44e92ab3-f5d3-460d-a1fd-885d6448697e，记录时间 2026-11-15，品类：汽车充气泵）。当时给出的不良前三项是：① 气嘴漏气、② 外壳缩水、③ 按键卡滞——也就是说，除外壳缩水外，同批还列了气嘴漏气和按键卡滞两项。说明：这条是
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-real-rep2-setup0] time=2026-11-15T04:20:14.753 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53880
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53881/metrics
+REAL real TL-08 q1 rep2 completed 27.5 67360 {'episodes': ['r1', 'r4', 'r5', 'r6'], 'catalog': ['r4', 'r5', 'r6'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 找到了：提到"外壳缩水"的是你 2026-11-15 那次「汇总上周试产的不良项」的工作（会话 614f4c03…，运行 4c4af313…）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——也就是说"外壳缩水"排在第二，与"气嘴漏气"和"按键卡滞"一起列出。  两点说明： 1. 这份来源是你本人此前的会话记录（历史快照），只能说明"当时怎么写的"，不能当作现在的品质事实引用。 2. 我在
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-08-ideal-rep2-setup0] time=2026-11-15T04:20:47.672 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53930
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53931/metrics
+REAL ideal TL-08 q1 rep2 completed 43.5 73741 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 你记得的"外壳缩水"出自那次「汇总上周试产的不良项」的工作：会话 32080d4d‑db7c‑484b‑68c‑801b209fa48d、run 50ff1671‑5535‑4e51‑b917‑0d7f7c027dc6（历史记录 as_of 2026‑11‑15）。当时一起并列列出的不良项共三项，依次为：①气嘴漏气、②外壳缩水、③按键卡滞，即当时汇总的"不良前三项"。说明：该结论来自你本人以往工作
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-no_memory-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-history_only-rep2-setup0] time=2026-11-15T04:21:36.382 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:53995
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:53996/metrics
+REAL history_only TL-09 q1 rep2 completed 33.7 99515 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} **结论：额定压力还没定值。**  在"汽车充气泵"这个品类范围里，我查到的唯一相关记录是规格参数字典中的一条：  - 参数名：额定压力（key: `rated_pressure`），类型 number，单位 PSI，版本 v1 - 该条目上登记的说明写明：**"额定压力尚未确定，待样机测试后再定"**（origin: human，登记人 1433f9fd…，回执 69ee1a6a…，创建/登记时
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-real-rep2-setup0] time=2026-11-15T04:22:14.673 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54058
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54059/metrics
+REAL real TL-09 q1 rep2 partial 63.8 202620 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 在「汽车充气泵」品类查到：参数字典中已建立「额定压力」(rated_pressure, PSI, v1)，但变更说明原文为"额定压力尚未确定，待样机测试后再定"，未填值；品类显示有 1 个型号，但平台产品/基线记录在当前范围读取为空，型号规格中是否另有压力值无法核实（属未知）。历史会话（as_of 2026-11-15）曾按 120 PSI 作工作假设并估气缸内径 22 mm，但那是当时的情景估算
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-ideal-rep2-setup0] time=2026-11-15T04:23:22.481 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54161
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54162/metrics
+REAL ideal TL-09 q1 rep2 completed 41.9 85950 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 额定压力尚未确定。品类参数字典中有「额定压力」条目(rated_pressure, v1, 单位PSI, 方向higher)，无数值登记，登记备注为「额定压力尚未确定，待样机测试后再定」；品类内文档检索与证据检索均无命中，平台目录在该品类下无已登记产品定义。2026-11-15 讨论中按120 PSI假设推算气缸尺寸属历史讨论记录，非已登记公司定义。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-no_memory-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-history_only-rep2-setup0] time=2026-11-15T04:24:10.233 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54236
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54237/metrics
+REAL history_only TL-10 q1 rep2 failed 344.8 108653 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-real-rep2-setup0] time=2026-11-15T04:29:59.197 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54522
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54523/metrics
+REAL real TL-10 q1 rep2 partial 88.9 213298 {'episodes': ['r1', 'r2'], 'catalog': ['r1', 'r2'], 'sessions_read': ['r1', 'r2'], 'notes': [], 'note_revisions': {}} 部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-10-ideal-rep2-setup0] time=2026-11-15T04:31:32.725 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54641
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54642/metrics
+REAL ideal TL-10 q1 rep2 partial 47.8 91031 {'episodes': ['r1', 'r2'], 'catalog': ['r1', 'r2'], 'sessions_read': ['r1', 'r2'], 'notes': [], 'note_revisions': {}} 部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-no_memory-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-history_only-rep2-setup0] time=2026-11-15T04:32:25.822 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54700
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54701/metrics
+REAL history_only TL-11 q1 rep2 completed 61.6 66665 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 汽车充气泵品类现行规格字典中，「最大流量」(max_flow, v1) 的验收标准是 **≥ 35 L/min**，单位 L/min，方向为越高越好。该参数由人工录入（receipt 276a49f4-4369-4eb4-beae-d4d6fcb8becd）。需要提醒两点口径缺口：standard_condition（标准工况）与 method（测量方法）均未登记，也就是说「≥35 L/min」目
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-real-rep2-setup0] time=2026-11-15T04:33:32.109 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54765
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54766/metrics
+REAL real TL-11 q1 rep2 completed 22.2 81855 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 当前（品类「汽车充气泵」）规格字典中登记的「最大流量」验收标准为 ≥ 35 L/min（参数 key max_flow，版本 1，单位 L/min，方向 higher，来源 human）。该条目前未记录测试工况（standard_condition 为空）和测试方法（method 为空），验收时按何条件测、怎么测并无书面依据。此前你让小Pai起草过把该标准提到 40 L/min 的修订候选（参数级
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-ideal-rep2-setup0] time=2026-11-15T04:33:58.623 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54806
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54808/metrics
+REAL ideal TL-11 q1 rep2 completed 57.6 142586 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 当前生效的最大流量验收标准是 ≥ 35 L/min（参数 max_flow，版本 1，人工登记，有回执 c4dfdf01-3023-449c-86d5-e63fb5a590e7）。注意两点：①字典中 standard_condition（工况）与 method（测量方法）均为空，即"35 L/min 在什么工况、用什么方法测"尚未登记口径；②你本人此前（2026-11-15 记录）曾起草把标准提到
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-no_memory-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-history_only-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-real-rep2-setup0] time=2026-11-15T04:35:07.267 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54879
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54880/metrics
+REAL real TL-12 q1 rep2 partial 70.3 135584 {'episodes': ['c28', 'c29', 'c30'], 'catalog': ['c28', 'c29', 'c30'], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 先说核对情况：我在当前品类（汽车充气泵）范围内查过可读资料——参数字典、型号定义/产品基线、RFQ 记录、竞品与知识条目都返回为空，本轮检索预算也已用完。所以下面这三样东西按供应商拜访通用做法给你组织，具体参数值和公司既有模板我没能核对到，标「待确认」的地方需要你或工程补。  时间：你下午有会 → 明天约上午 9:30–11:30，把要你本人拍板的两点（价格底线、模具/打样费给不给）留到上午谈完就
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-12-ideal-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-no_memory-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-history_only-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-real-rep2-setup0] time=2026-11-15T04:36:24.732 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:54957
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:54958/metrics
+REAL real TL-13 q1 rep2 partial 89.8 250994 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 噪声验收标准为 ≤ 62 dB(A)（品类参数字典 noise v1，origin=human，撰写人 ID 与该品类 owner 一致），登记的测量条件为“1 m，空载”。因此条件确实已被人工交代进规格，但该条未附来源文档/引用，method 为空，且本会话历史为空、个人记忆库不可读，无法确证是否出自你本人此前的交代。本轮在品类范围检索、证据检索、品类知识库、平台产品/提案侧均无其他噪声相关记录
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-ideal-rep2-setup0] SKIPPED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-no_memory-rep2-setup0] time=2026-11-15T04:38:00.105 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55069
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55070/metrics
+REAL no_memory TL-14 q1 rep2 partial 58.7 215787 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 没找到那次"有刷电机噪声超标"评估。我把能查的都查了：企业检索（问题单/CAPA/变更/试产/测试/文档/项目状态等13类来源）返回 0 条，第二次换宽关键词重跑被本轮查找预算拒绝；证据检索、品类知识（边界/细分/竞品/用户声音/法规/研究问题计数全为0）、参数字典、竞品列表、品类范围的产品/平台清单（含含历史）全部为空；品类"汽车充气泵"下只有1个型号，但平台读取列不出它，基线读取也因缺型号报"
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-history_only-rep2-setup0] time=2026-11-15T04:39:03.905 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55156
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55157/metrics
+REAL history_only TL-14 q1 rep2 partial 42.7 89979 {'episodes': ['r1', 'r2', 'r3', 'r5'], 'catalog': [], 'sessions_read': ['r1', 'r2', 'r3', 'r5'], 'notes': [], 'note_revisions': {}} 找到了那次评估：你说的是 2026-11-15 在“汽车充气泵”品类下的一次会话，目标为“评估两种电机方案的成本和噪声”（run_id 4a63a140…）。当时的结论是**推荐无刷电机方案**——单价高约 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，判定不建议采用。当时登记的唯一未完成项是：**向电机厂确认无刷方案的最小起订量**。本轮我按品类检索公司资料没有命中这次评估的原
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-real-rep2-setup0] time=2026-11-15T04:39:52.735 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55236
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55237/metrics
+REAL real TL-14 q1 rep2 completed 64.7 120256 {'episodes': ['r1', 'r3', 'r4', 'r5'], 'catalog': ['r3', 'r4', 'r5'], 'sessions_read': ['r1', 'r3', 'r4', 'r5'], 'notes': [], 'note_revisions': {}} 那次评估最终推荐的是「无刷电机方案」：单价高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标约 5 dB，不建议采用。结论来源是我此前同品类的一次会话记录（主题「评估两种电机方案的成本和噪声」，as_of 2026-11-15），不是本次复核的当前业务事实。未完成的事只有一项：向电机厂确认无刷方案的最小起订量（MOQ）。另外三次近期工作（汇总认证进度、起草样机测试计划、核对包装警示语）记录中都
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-14-ideal-rep2-setup0] time=2026-11-15T04:41:03.199 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55440
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55441/metrics
+REAL ideal TL-14 q1 rep2 partial 77.7 119000 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 结论（来自 2026-11-15 的历史会话记录 as_of，非当前业务事实）：那次评估最后推荐的是无刷电机方案——单价比有刷高约 4 元，寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，明确不建议采用。当时唯一未完成项：向电机厂确认无刷方案的最小起订量，在当前可读范围内未找到关闭记录。当前品类「汽车充气泵」（隔离合成品类）内检索不到对应提案、评审、验证或 issue 记录，因此无法复核噪声超
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-no_memory-rep2-setup0] time=2026-11-15T04:42:25.408 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55562
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55563/metrics
+REAL no_memory TL-15 q1 rep2 completed 58.8 200802 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到。以下是我实际查过的范围和结果：本会话历史（session a48cd18b…）没有更早的轮次；个人记忆入口在本会话被设为「不进记忆」，检索直接返回 memory_off，取不到以往的情景卡；当前品类（汽车充气泵）的公司资料检索用「充气泵 包装方案 备选 选中 成本」「包装」两式均 0 命中，且本轮检索预算已用尽、无法再换词复检；品类内证据库、参数／竞品／知识清单、平台型号列表全部为空；本工
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-history_only-rep2-setup0] time=2026-11-15T04:43:28.694 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55676
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55677/metrics
+REAL history_only TL-15 q1 rep2 completed 33.6 100774 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（记录时间 2026-11-15，会话 8b460bea…／运行 46797876…）整理充气泵包装方案的结论是：选的是方案二——纸托加收缩膜，单件成本 1.8 元/件。需要说明的是，那次记录没有关联任何来源引用；我在当前「汽车充气泵」品类下按关键词检索、平台对象读取和品类知识列表都没有找到包装方案或成本的业务记录（均返回空），因此这只能作为当时的工作记录，不能当作已核验的现行基线。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-real-rep2-setup0] time=2026-11-15T04:44:07.396 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55746
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55747/metrics
+REAL real TL-15 q1 rep2 completed 21.3 48813 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 你上次（2026-11-15，「整理充气泵的包装方案」会话）选定的是包装方案二：纸托加收缩膜，单件成本 1.8 元。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-15-ideal-rep2-setup0] time=2026-11-15T04:44:33.254 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55812
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55813/metrics
+REAL ideal TL-15 q1 rep2 completed 25.3 51216 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（2026-11-15 的会话「整理充气泵的包装方案」，run 51416976-7cd0-4a75-b7e3-5040f9a41052）你选的是**方案二：纸托 + 收缩膜**，单件成本 **1.8 元**。这两点来自当时的会话记录（情景记录，非可引用的业务事实）；我在「汽车充气泵」品类内检索 artifact/knowledge/project_status 以及平台项目、提案对象，均未检
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-no_memory-rep2-setup0] time=2026-11-15T04:45:03.471 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55855
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55856/metrics
+REAL no_memory TL-16 q1 rep2 partial 47.2 72230 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已按“简短催交”起草好邮件（含超短备选），可直接发。需先说明三点事实状况：一是本轮在“汽车充气泵”品类范围内检索供应/送样/外部等待/试产类记录返回 0 条，随后一次全库检索被系统以“本轮查找预算已用完”拒绝，因此供应商名称、样件型号、原承诺交期我没有可核对的公司记录，邮件里用【】占位，需你确认后替换；二是正文写成“请确认状态与预计发货日期”，没有断言“已逾期/已违约”，因为逾期事实我这边没有核实
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-history_only-rep2-setup0] time=2026-11-15T04:45:55.214 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55934
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55935/metrics
+REAL history_only TL-16 q1 rep2 partial 35.6 48315 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 已按用户要求起草一封简短的气泵供应商样件催交期邮件（主题+正文+落款），但因本轮公司资料检索在可读范围内未返回任何气泵供应商的采购/样件/外部等待记录，供应商名称、收件人、订单号与原承诺交期均无法取到，已在邮件中留空位并在正文向用户提出三处待补信息。用户同意后可在同会话继续深入检索供应记录。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-real-rep2-setup0] time=2026-11-15T04:46:35.520 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:55990
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:55991/metrics
+REAL real TL-16 q1 rep2 completed 55.9 112742 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按要求仅依据可检索记录作答：供应商名称/邮箱、样件型号数量、原承诺交期、当前样件状态在全部检索范围内均无记录，故邮件中以空缺占位符标注，未编造。唯一确定写入的是本人口径中的项目编号 PX-305。草稿为中文短邮件，对方为境外时可再出英文版。
+PASSED
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-16-ideal-rep2-setup0] time=2026-11-15T04:47:36.205 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:56083
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:56084/metrics
+REAL ideal TL-16 q1 rep2 completed 24.4 66520 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 2}} 已按您的口径（含项目编号 PX-305）写好一封简短催交期邮件，主题+正文可直接使用。当前品类范围内未检索到气泵供应商、样件批次或交期记录，因此供应商名称、样件批次/型号、原交期、期望回复日期以【】占位，需您填写或我再深入查一次。
+PASSED
+
+=============================== warnings summary ===============================
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-history_only-rep2-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-real-rep2-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-09-ideal-rep2-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-history_only-rep2-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-real-rep2-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-11-ideal-rep2-setup0]
+tests/agent/memory/test_eval_memory_timeline_real_pg.py::test_real_model_answers_timeline_questions[TL-13-real-rep2-setup0]
+  /Users/huhanwei/Developer/ai-native-R&D-platform/.claude/worktrees/memory-b0-eval-8dee3b/server/pdos_next/domain/categories/preproject/category_service.py:560: SADeprecationWarning: The `objects` parameter of `Session.flush` is deprecated
+    s.flush([row])
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+==== 47 passed, 9 skipped, 112 deselected, 7 warnings in 3936.34s (1:05:36) ====
+exit 0

@@ -1,0 +1,49 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 20.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 49258,
+  "held_tokens": 0,
+  "answer": "已按文字形式出本周周报，两条内容：本周完成供应商对比；下周补报价单。已在当前品类范围（汽车充气泵）检索供应/竞品与资料记录，未找到供应商对比明细与报价单相关的可引用记录，因此周报按你原话表述，未添加任何未经核实的供应商名称、参数或金额。如需把对比对象、口径或报价单范围写进去，请把来源指给我（文件、项目或记录编号）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:55:34.863168+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"供应商对比的具体对象与对比口径未在当前可检索范围（品类：汽车充气泵，来源类型：supply/artifact）内找到记录\", \"下周报价单涉及的供应商范围、含税运与渠道口径未在当前可检索范围内找到记录\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"已按文字形式出本周周报，两条内容：本周完成供应商对比；下周补报价单。已在当前品类范围（汽车充气泵）检索供应/竞品与资料记录，未找到供应商对比明细与报价单相关的可引用记录，因此周报按你原话表述，未添加任何未经核实的供应商名称、参数或金额。如需把对比对象、口径或报价单范围写进去，请把来源指给我（文件、项目或记录编号）。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-14",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "推荐无刷电机方案：单价高 4 元，但寿命约为有刷的 3 倍；有刷方案噪声超标 5 dB，不建议采用。 向电机厂确认无刷方案的最小起订量",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 31.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 68200,
+  "held_tokens": 0,
+  "answer": "那次的评估推荐无刷电机方案（单价高约4元、寿命约为有刷3倍；有刷方案噪声超标约5dB故不建议采用），该结论来自我本人2026-11-14的历史工作记录；当前品类可读范围内未检索到原始评估记录，无法复核。未完成事项1项：向电机厂确认无刷方案最小起订量（无责任人、无承诺时间、无后续确认记录）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T13:03:08.289452+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围内未检索到那次电机方案成本与噪声评估的原始业务记录（品类内资料、知识、竞品、证据库检索均为0条），推荐结论及4元/3倍/5dB等数字目前仅由本人2026-11-14的历史工作记录佐证，未能对照业务资料复核。\", \"无刷电机方案的最小起订量至今无确认结果，历史记录中也未登记责任人与承诺完成时间。\", \"本轮查找预算已用完，跨品类或历史版本范围内是否还有该评估原件尚未核实。\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"deviation\": {\"text\": \"无偏离记录\", \"status\": \"not_recorded\"}, \"follow_up\": {\"text\": \"取得最小起订量后再核对成本口径与量产可行性\", \"status\": \"to_confirm\"}, \"related_objects\": {\"text\": \"品类：汽车充气泵；对象：无刷电机方案\", \"status\": \"not_recorded\"}, \"current_commitment\": {\"text\": \"向电机厂确认无刷电机方案的最小起订量（源自2026-11-14本人工作记录，当前状态未在业务对象中核对）\", \"status\": \"to_confirm\"}}}], \"format\": \"commitments\"}}, \"status\": \"partial\", \"summary\": \"那次的评估推荐无刷电机方案（单价高约4元、寿命约为有刷3倍；有刷方案噪声超标约5dB故不建议采用），该结论来自我本人2026-11-14的历史工作记录；当前品类可读范围内未检索到原始评估记录，无法复核。未完成事项1项：向电机厂确认无刷方案最小起订量（无责任人、无承诺时间、无后续确认记录）。\", \"questions\": [{\"id\": \"q1\", \"why\": \"只有定位到原始记录，才能用业务资料确认方案结论与噪声超标数值，而不是只靠历史工作记录。\", \"options\": [], \"question\": \"那次评估的载体是什么（提案编号、项目名或型号）？当前品类可读范围内检索不到原始记录，给出编号我可以在更宽范围内定位并复核。\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"该事项目前没有责任人和承诺完成时间，起草后可交本人确认并指定对接人。\", \"options\": [], \"question\": \"最小起订量这项未完成事项要不要我起草一份对外跟进任务（收件方、需确认参数、回复时限）给你确认？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"核验那次电机方案评估的原始业务记录（当前品类可读范围内未检索到）\", \"向电机厂确认无刷电机方案最小起订量（无责任人、无承诺时间、无后续确认记录）\"]}",
+  "unfinished": [
+    "核验那次电机方案评估的原始业务记录（当前品类可读范围内未检索到）",
+    "向电机厂确认无刷电机方案最小起订量（无责任人、无承诺时间、无后续确认记录）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

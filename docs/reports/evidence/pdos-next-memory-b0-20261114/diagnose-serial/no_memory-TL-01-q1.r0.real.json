@@ -1,0 +1,88 @@
+{
+  "diagnostics": {
+    "verification_feedback": [],
+    "domain_errors": [
+      {
+        "code": "RATE_LIMITED",
+        "reason": "MODEL_BUDGET_EXCEEDED",
+        "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+        "frames": [
+          "agent/enterprise_search/assistant_depth.py:66:_exhausted",
+          "agent/enterprise_search/assistant_depth.py:78:admit_read",
+          "agent/enterprise_search/assistant_depth.py:138:admit_call",
+          "agent/kernel/host.py:445:read_callback"
+        ]
+      },
+      {
+        "code": "FORBIDDEN_SCOPE",
+        "reason": "FORBIDDEN_SCOPE",
+        "message": "该技能未在当前租户与范围启用。",
+        "frames": [
+          "agent/kernel/skills.py:151:load",
+          "agent/kernel/graph.py:475:call_tool",
+          "agent/kernel/graph.py:580:tools",
+          "agent/kernel/plugin_graph.py:244:body"
+        ]
+      }
+    ]
+  },
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 60.7,
+  "clarifications": [
+    "上次那份供应商对比的原始载体在哪里？",
+    "这次要对比的供应商名单和他们的信息来源（规格书/报价单/官网/实测）是什么？",
+    "对比口径怎么定：对哪些参数、比哪个基准，价格/成本是否同口径？"
+  ],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 165518,
+  "held_tokens": 0,
+  "answer": "查不到。以下是我在当前可读范围内做的全部核对，结果都是空的：\n\n1) 本会话历史：conversation.history 返回 0 条记录——没有\"上次\"这一轮的对话。\n2) 个人记忆：memory.search 返回 status=memory_off，提示\"本会话已设为不进记忆，未读取个人记忆\"，因此取不到你以往的做法与结论。\n3) 当前品类「汽车充气泵」（隔离合成品类，revision 1）：知识条目 0 条（含历史、含已撤回状态均为 0）、竞品清单 0 条、参数字典 0 项。\n4) 业务对象：platform.read（分类/品类/产品/提案，无过滤）返回空。\n5) 证据：evidence.search 空查询与\"供应商\"查询均为 0 条。\n6) 企业检索：assistant.search 以\"供应商/竞品/对比/结论/充气泵/比价/采购\"等词检索，命中 0 条（本轮检索预算已用完，未做更多检索）。\n7) 工具与技能：可用 MCP 只读工具 0 个；competitor_comparison 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），本轮无法按该流程自动跑同口径比对。\n\n所以：上次的结论我没有找到任何可读记录，不会凭印象复述或编造。\n\n关于\"还有哪些事没做完\"——按当前范围客观列出的空缺是：供应商对比的输入端全部为 0（竞品条目 0 条、参数字典 0 项、规格/报价等可核证据 0 条、产品与提案 0 个），对比本身还没有在本范围留下任何产物或研究记录。因此可继续的下一步是先把对比输入落进来：候选供应商名单与各自的可核来源（规格书/报价单/官网/实测）、统一对比口径（参数清单 + 币种/日期/地区/渠道/含税运 + 实测与宣传分栏）、以及对比基准（我方现款或目标型号）。这些一旦有来源，我可以按同一组口径把参数对比、价格带与结论接上。\n\n另外说明：我读不到本会话之外的会话记录，也没有列举其他会话的能力；如果上次那轮其实在别处发生，它对我只能通过你提供的原件或转述进入。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T14:01:08.574146+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"上次供应商对比所在会话/载体：当前范围不可定位（本会话 history 0 条，memory 为 memory_off，无跨会话列举能力）\", \"上次对比的结论内容：当前范围无任何可读记录、产物或摘录\", \"候选供应商名单与各家的可核来源（规格书/报价单/官网/实测）：竞品清单 0 条、证据检索 0 条\", \"对比口径：参数字典 0 项，币种/日期/地区/渠道/含税运及实测-宣传-推断标注均无登记\", \"对比基准（我方现款或目标型号）：platform.read 未返回任何产品或提案对象\", \"本轮 assistant.search 检索预算已用完，深度检索需在后续回合继续\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查不到。以下是我在当前可读范围内做的全部核对，结果都是空的：\\n\\n1) 本会话历史：conversation.history 返回 0 条记录——没有\\\"上次\\\"这一轮的对话。\\n2) 个人记忆：memory.search 返回 status=memory_off，提示\\\"本会话已设为不进记忆，未读取个人记忆\\\"，因此取不到你以往的做法与结论。\\n3) 当前品类「汽车充气泵」（隔离合成品类，revision 1）：知识条目 0 条（含历史、含已撤回状态均为 0）、竞品清单 0 条、参数字典 0 项。\\n4) 业务对象：platform.read（分类/品类/产品/提案，无过滤）返回空。\\n5) 证据：evidence.search 空查询与\\\"供应商\\\"查询均为 0 条。\\n6) 企业检索：assistant.search 以\\\"供应商/竞品/对比/结论/充气泵/比价/采购\\\"等词检索，命中 0 条（本轮检索预算已用完，未做更多检索）。\\n7) 工具与技能：可用 MCP 只读工具 0 个；competitor_comparison 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），本轮无法按该流程自动跑同口径比对。\\n\\n所以：上次的结论我没有找到任何可读记录，不会凭印象复述或编造。\\n\\n关于\\\"还有哪些事没做完\\\"——按当前范围客观列出的空缺是：供应商对比的输入端全部为 0（竞品条目 0 条、参数字典 0 项、规格/报价等可核证据 0 条、产品与提案 0 个），对比本身还没有在本范围留下任何产物或研究记录。因此可继续的下一步是先把对比输入落进来：候选供应商名单与各自的可核来源（规格书/报价单/官网/实测）、统一对比口径（参数清单 + 币种/日期/地区/渠道/含税运 + 实测与宣传分栏）、以及对比基准（我方现款或目标型号）。这些一旦有来源，我可以按同一组口径把参数对比、价格带与结论接上。\\n\\n另外说明：我读不到本会话之外的会话记录，也没有列举其他会话的能力；如果上次那轮其实在别处发生，它对我只能通过你提供的原件或转述进入。\", \"questions\": [], \"unfinished\": [\"上次的供应商对比原件仍未定位：需由你提供（上传材料或转述结论），本会话内无可读历史可取\", \"供应商对比的输入端在本范围内全为空：竞品条目 0 条、参数字典 0 项、可核证据 0 条、产品/提案 0 个\", \"对比执行（同口径参数对比、价格带/成本带计算）尚未进行，且 competitor_comparison 技能在当前范围未启用\"]}",
+  "unfinished": [
+    "上次的供应商对比原件仍未定位：需由你提供（上传材料或转述结论），本会话内无可读历史可取",
+    "供应商对比的输入端在本范围内全为空：竞品条目 0 条、参数字典 0 项、可核证据 0 条、产品/提案 0 个",
+    "对比执行（同口径参数对比、价格带/成本带计算）尚未进行，且 competitor_comparison 技能在当前范围未启用"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:9",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

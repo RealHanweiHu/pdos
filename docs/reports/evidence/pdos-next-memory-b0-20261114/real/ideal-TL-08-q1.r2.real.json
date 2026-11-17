@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "不良前三项：气嘴漏气、外壳缩水、按键卡滞。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 43.5,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 73741,
+  "held_tokens": 0,
+  "answer": "你记得的\"外壳缩水\"出自那次「汇总上周试产的不良项」的工作：会话 32080d4d‑db7c‑484b‑68c‑801b209fa48d、run 50ff1671‑5535‑4e51‑b917‑0d7f7c027dc6（历史记录 as_of 2026‑11‑15）。当时一起并列列出的不良项共三项，依次为：①气嘴漏气、②外壳缩水、③按键卡滞，即当时汇总的\"不良前三项\"。说明：该结论来自你本人以往工作的情景记录摘辞，不是当前业务事实；我在当前品类（汽车充气泵）范围内按 issue/知识/文件类来源检索，未找到含\"外壳缩水\"的问题单或品质记录，故当时三项的件数、批次与根因目前无法从公司资料核对，本轮也未取得任何可引用来源。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:20:54.756765+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当时并列的三项不良各自件数、批次与发生位置未在公司资料中检索到\", \"这三项是否已立正式问题单或 CAPA 未确认\", \"该次试产的时间、型号与变体范围未确认\", \"历史回答仅有情景记录摘辞，本轮无可核原文引用\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"你记得的\\\"外壳缩水\\\"出自那次「汇总上周试产的不良项」的工作：会话 32080d4d‑db7c‑484b‑68c‑801b209fa48d、run 50ff1671‑5535‑4e51‑b917‑0d7f7c027dc6（历史记录 as_of 2026‑11‑15）。当时一起并列列出的不良项共三项，依次为：①气嘴漏气、②外壳缩水、③按键卡滞，即当时汇总的\\\"不良前三项\\\"。说明：该结论来自你本人以往工作的情景记录摘辞，不是当前业务事实；我在当前品类（汽车充气泵）范围内按 issue/知识/文件类来源检索，未找到含\\\"外壳缩水\\\"的问题单或品质记录，故当时三项的件数、批次与根因目前无法从公司资料核对，本轮也未取得任何可引用来源。\", \"questions\": [{\"id\": \"q_scope\", \"why\": \"当前品类范围内检索为空，只能依赖历史回答摘辞\", \"options\": [{\"label\": \"是，放宽范围再查一遍\", \"value\": \"wide_search\"}, {\"label\": \"不用，先按历史记录结论用\", \"value\": \"history_only\"}], \"question\": \"要不要我把检索范围放宽（按项目/型号及试产、供应记录，而非仅当前品类）再查一遍\\\"外壳缩水\\\"，把当时的原始明细和是否已有问题单核出来？\", \"depends_on\": [], \"recommended\": {\"value\": \"wide_search\", \"reason\": \"历史记录只有摘辞，缺少可核的件数与问题单状态\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

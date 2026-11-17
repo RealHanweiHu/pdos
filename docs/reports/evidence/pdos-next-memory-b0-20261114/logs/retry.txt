@@ -1,0 +1,47 @@
+== retry ideal:TL-02:q2:rep0
+REAL ideal TL-02 q2 rep0 completed 17.2 32652 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': ['n1'], 'note_revisions': {'n1': 1}} 按你已确认的口径（给这个客户一律用英文），给出一版
+1 passed in 26.31s
+== retry ideal:TL-01:q2:rep0
+REAL ideal TL-01 q2 rep0 completed 28.6 49977 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次的排除理由：C 家含税报价超出目标价 12%。  来源与
+1 passed in 37.43s
+== retry ideal:TL-02:q1:rep0
+REAL ideal TL-02 q1 rep0 completed 28.6 51735 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': ['n1'], 'note_revisions': {'n1': 1}} Your conclusion was: recommend Supplier B. That comes from the 
+1 passed in 37.48s
+== retry ideal:TL-10:q1:rep1
+REAL ideal TL-10 q1 rep1 partial 81.4 171370 {'episodes': ['r1', 'r2'], 'catalog': ['r1', 'r2'], 'sessions_read': ['r1', 'r2'], 'notes': [], 'note_revisions': {}} 当前可读范围（品类：汽车充气泵）内没有
+1 passed in 90.35s (0:01:30)
+== retry ideal:TL-14:q1:rep1
+REAL ideal TL-14 q1 rep1 partial 44.0 88065 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 那次评估（2026-11-15 历史记录）最后推荐的是**无刷电机方
+1 passed in 53.53s
+== retry real:TL-01:q1:rep0
+REAL real TL-01 q1 rep0 partial 45.6 126839 {'episodes': ['r1', 'r2', 'r3'], 'catalog': ['r1', 'r2', 'r3'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次的结论（来源：本人 2026-11-15 会话�
+1 passed in 54.74s
+== retry real:TL-01:q2:rep2
+REAL real TL-01 q2 rep2 partial 30.7 69093 {'episodes': ['r1', 'r2', 'r3'], 'catalog': ['r1', 'r2', 'r3'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次那轮比价（2026-11-15，会话 run 54271094
+1 passed in 39.55s
+== retry real:TL-15:q1:rep1
+REAL real TL-15 q1 rep1 completed 22.9 66697 {'episodes': ['r1'], 'catalog': ['r1'], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次（2026-11-15 会话）整理充气泵包装方案时，选的是方�
+1 passed in 31.71s
+== retry history_only:TL-01:q1:rep0
+REAL history_only TL-01 q1 rep0 partial 92.0 143207 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 上次是 2026-11-15 的一次运行（会话 25cc4608-bb7b-4430-a0f0-62
+1 passed in 100.88s (0:01:40)
+== retry history_only:TL-04:q1:rep0
+REAL history_only TL-04 q1 rep0 partial 30.4 67405 {'episodes': ['r1'], 'catalog': [], 'sessions_read': ['r1'], 'notes': [], 'note_revisions': {}} 在可读记录中未找到你曾指定的气泵报价对比口径。仅�
+1 passed in 39.33s
+== retry history_only:TL-09:q1:rep0
+REAL history_only TL-09 q1 rep0 failed 344.2 211921 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束
+1 passed, 1 warning in 353.16s (0:05:53)
+== retry history_only:TL-10:q1:rep2
+REAL history_only TL-10 q1 rep2 partial 134.1 190117 {'episodes': ['r1', 'r2'], 'catalog': [], 'sessions_read': ['r1', 'r2'], 'notes': [], 'note_revisions': {}} 在当前可读范围内未查到"气嘴漏气"的品质问
+1 passed in 142.38s (0:02:22)
+== retry no_memory:TL-04:q1:rep0
+REAL no_memory TL-04 q1 rep0 partial 54.7 84834 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 在已检索范围内没有找到你此前交代过报价对比口径的记录。当
+1 passed in 63.03s (0:01:03)
+== retry no_memory:TL-08:q1:rep0
+REAL no_memory TL-08 q1 rep0 partial 85.3 233794 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到：当前可读范围内没有任何提到“外壳缩水”的记录，�
+1 passed in 93.71s (0:01:33)
+== retry no_memory:TL-15:q1:rep1
+1 skipped in 7.60s
+== retry no_memory:TL-16:q1:rep0
+1 skipped in 7.59s
+retry done

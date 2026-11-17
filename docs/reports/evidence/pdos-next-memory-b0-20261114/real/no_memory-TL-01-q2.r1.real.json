@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 25.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 66788,
+  "held_tokens": 0,
+  "answer": "我在当前可读范围内做了检索，但没有找到任何\"供应商比较\"记录，因此无法给出排除 C 家的理由。已核查范围（品类：汽车充气泵 / category_id 4edd7a12…）：① 公司资料检索（含历史）0 条命中；② 品类知识条目与竞品列表（含历史）均为空，品类本身 competitor 计数为 0；③ 产品/平台清单为空；④ 本会话此前没有相关对话轮次；⑤ 本会话未开启个人记忆，无法回溯您以往与小Pai的会话。请告诉我那次比较的载体（提案/知识条目/外部表格/某次对话）或直接贴出内容，我再定向核对并给出带依据的排除理由。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:32:22.068440+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前可读范围内未检索到任何供应商比较记录或C家相关的排除说明，故排除理由未知\", \"无法确认'C家'在本公司的对应主体（公司名/代号），当前品类竞品条目数为0\", \"无法确认那次比较发生的时间、载体（提案/知识条目/外部材料/历史会话）\", \"本会话记忆未开启，未能回溯以往会话中的相关讨论\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"我在当前可读范围内做了检索，但没有找到任何\\\"供应商比较\\\"记录，因此无法给出排除 C 家的理由。已核查范围（品类：汽车充气泵 / category_id 4edd7a12…）：① 公司资料检索（含历史）0 条命中；② 品类知识条目与竞品列表（含历史）均为空，品类本身 competitor 计数为 0；③ 产品/平台清单为空；④ 本会话此前没有相关对话轮次；⑤ 本会话未开启个人记忆，无法回溯您以往与小Pai的会话。请告诉我那次比较的载体（提案/知识条目/外部表格/某次对话）或直接贴出内容，我再定向核对并给出带依据的排除理由。\", \"questions\": [{\"id\": \"q_carrier\", \"why\": \"当前可读范围内没有任何供应商比较条目，只有知道载体我才能定向读取并核对出排除理由。\", \"options\": [{\"label\": \"某个立项提案\", \"value\": \"proposal\"}, {\"label\": \"品类知识/竞品条目\", \"value\": \"knowledge\"}, {\"label\": \"外部材料（表格/邮件/纪要）\", \"value\": \"external_material\"}, {\"label\": \"以前和小Pai的某次对话\", \"value\": \"past_conversation\"}], \"question\": \"那次供应商比较记录在什么地方？（例如：某个立项提案、品类知识条目、一份外部表格/邮件，或此前某次与小Pai的对话）\", \"depends_on\": [], \"recommended\": {\"value\": \"external_material\", \"reason\": \"这类排除理由通常先落在比价表或会议纪要里，由它反查再回公司资料核对最可靠。\"}, \"allow_free_text\": true}, {\"id\": \"q_c_name\", \"why\": \"当前品类竞品条目数为 0，我无法把\\\"C家\\\"映射到任何已登记主体，映射后才有条件核对是否被排除及原因。\", \"options\": [{\"label\": \"我也不确定，需要回去查\", \"value\": \"unknown\"}], \"question\": \"\\\"C 家\\\"在贵司对应的是哪家供应商（或哪个竞品代号）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}], \"unfinished\": [\"定位记录C家被排除的原始材料（提案/知识条目/外部表格/历史会话），并据此核对排除理由的可核依据\"]}",
+  "unfinished": [
+    "定位记录C家被排除的原始材料（提案/知识条目/外部表格/历史会话），并据此核对排除理由的可核依据"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

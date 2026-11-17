@@ -1,0 +1,63 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 46.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 142606,
+  "held_tokens": 0,
+  "answer": "结论：额定压力还没定，本品类范围内没有任何已确认的额定压力数值。\n\n1) 参数字典里确实有这一项，但状态是\"未定\"：\n- 条目：rated_pressure「额定压力」，单位 PSI，value_type=number，version 1，origin=human，写入人=品类负责人（75dafdfd-3185-49d7-a616-ebddc7d7ee60），confirmed_by 为空（无人确认），receipt_id=57cba222-8052-4dd4-85bb-39cc8ca563e3\n- change_note 原文：\"额定压力尚未确定，待样机测试后再定\"\n- 也就是说：参数位已建、单位和口径（PSI）已定，但数值本身待样机测试后再定。\n\n2) 我在同一范围（品类 汽车充气泵）内没有找到任何已批准的额定压力数值：竞品库按该参数过滤为空、品类知识（边界/细分/竞品/用户声音/法规）为空、证据检索无命中；product.baseline.read 需要指定基线型号，本次范围内枚举不到型号，因此型号级基线未能核对（见 unfinished）。\n\n3) 关于\"120 PSI\"：那是你本人上一轮（2026-11-15，会话 76bee426…）提出\"额定压力可以考虑 120 PSI\"后，我按这个假设估的气缸内径 22 mm。这是个人历史工作记录里的假设，不是已生效的规格，不能当额定压力引用。\n\n建议路径：样机实测 → 由品类负责人确认数值 → 写入参数新版本（同时补单位 PSI、工况/测量方法、确认人与生效记录）。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:01:02.435823+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"结论：额定压力还没定，本品类范围内没有任何已确认的额定压力数值。\\n\\n1) 参数字典里确实有这一项，但状态是\\\"未定\\\"：\\n- 条目：rated_pressure「额定压力」，单位 PSI，value_type=number，version 1，origin=human，写入人=品类负责人（75dafdfd-3185-49d7-a616-ebddc7d7ee60），confirmed_by 为空（无人确认），receipt_id=57cba222-8052-4dd4-85bb-39cc8ca563e3\\n- change_note 原文：\\\"额定压力尚未确定，待样机测试后再定\\\"\\n- 也就是说：参数位已建、单位和口径（PSI）已定，但数值本身待样机测试后再定。\\n\\n2) 我在同一范围（品类 汽车充气泵）内没有找到任何已批准的额定压力数值：竞品库按该参数过滤为空、品类知识（边界/细分/竞品/用户声音/法规）为空、证据检索无命中；product.baseline.read 需要指定基线型号，本次范围内枚举不到型号，因此型号级基线未能核对（见 unfinished）。\\n\\n3) 关于\\\"120 PSI\\\"：那是你本人上一轮（2026-11-15，会话 76bee426…）提出\\\"额定压力可以考虑 120 PSI\\\"后，我按这个假设估的气缸内径 22 mm。这是个人历史工作记录里的假设，不是已生效的规格，不能当额定压力引用。\\n\\n建议路径：样机实测 → 由品类负责人确认数值 → 写入参数新版本（同时补单位 PSI、工况/测量方法、确认人与生效记录）。\", \"questions\": [{\"id\": \"next_step_rated_pressure\", \"why\": \"数值须由样机实测与负责人确认后才能落为参数版本，我可以先把材料准备好，但确认与批准只能由本人完成。\", \"options\": [{\"label\": \"起草样机测试验证请求（额定压力实测口径与记录表）\", \"value\": \"draft_verification_request\"}, {\"label\": \"起草一条待决问题/待确认项，把\\\"额定压力待样机测试后确认\\\"挂到提案或参数上\", \"value\": \"draft_open_question\"}, {\"label\": \"先只做现状说明，暂不起草任何材料\", \"value\": \"no_action\"}], \"question\": \"额定压力这条，下一步你想我先做哪一件？\", \"depends_on\": [], \"recommended\": {\"value\": \"draft_verification_request\", \"reason\": \"参数条目已明确\\\"待样机测试后再定\\\"，先落地实测口径与记录要求，能最快把数值转成可确认的输入。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未能读取产品/型号级基线：product.baseline.read 要求指定基线型号，本次范围内平台列表与检索为空，无法枚举到具体型号——如需核对型号级额定压力，请提供型号名称或允许我在同会话继续查找\", \"额定压力数值本身待样机测试后由品类负责人确认，我未写入任何数值或参数版本\"]}",
+  "unfinished": [
+    "未能读取产品/型号级基线：product.baseline.read 要求指定基线型号，本次范围内平台列表与检索为空，无法枚举到具体型号——如需核对型号级额定压力，请提供型号名称或允许我在同会话继续查找",
+    "额定压力数值本身待样机测试后由品类负责人确认，我未写入任何数值或参数版本"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "model:completed:8",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

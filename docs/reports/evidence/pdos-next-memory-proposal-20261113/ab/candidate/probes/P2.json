@@ -1,0 +1,69 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P2",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "8082baf9-1327-45cc-8037-54552b1d3d66",
+      "goal": "这周的周报整理一下，以后给我表格形式的周报",
+      "status": "partial",
+      "state": "partial",
+      "error_code": null,
+      "seconds": 89.0,
+      "used_tokens": 211892,
+      "held_tokens": 0,
+      "answer": "已按你的要求把本周周报改成表格版。先说清楚一个事实：本次可检索范围内没有检索到本周的业务工作记录（企业检索全文+历史 0 命中，品类知识/参数/竞品均为 0，平台产品读取为空，证据检索为空），所以进展、风险、待决这类数据行我没有编造，暂留空；下面只写能核实的条目。\n\n本周周报（2026-11-09 ~ 2026-11-15，截至 2026-11-14，品类：汽车充气泵 / 隔离合成品类）：\n\n| 事项 | 类型 | 状态 | 依据 / 来源 | 备注 |\n|---|---|---|---|---|\n| 周报输出形式改为表格 | 约定 | 已提出，等你确认记忆卡片 | 本次对话你的原话（2026-11-14） | 确认后才长期生效 |\n| 客户报告语言口径：给客户的报告一律用英文 | 约定 | 已确立（本人历史记录） | 你此前一次会话记录，as_of 2026-11-14 | 属个人口径记录、非业务事实；是否适用于本周报取决于受众 |\n| 品类资料现状 | 品类 | 已核对 | 品类「汽车充气泵」revision 1，owner Synthetic owner | 显示 1 个模型；知识条目 0、规格参数 0、竞品 0 |\n| 本周业务工作记录检索 | 检索 | 未检索到 | 企业检索（全文+历史，品类范围）0 命中；平台产品读取为空；证据检索为空 | 进展/风险/待决数据行因此留空 |\n| 周报数据来源 | 待办 | 待补 | 需你指定来源 | 指定后可在同一会话把表格补齐 |\n\n未在本范围内找到：本周项目进展、品质问题/CAPA、工程变更、试产与测试、外部等待事项。\n\n关于「以后给我表格形式的周报」：我已提交一张记忆卡片（表格式周报为默认输出方式），你确认后才会生效，在此之前我不会说已记住；同时已把你的这条原话作为本轮约束保留下来。\n\n另外两点说明：本轮查找预算已用完，我无法再扩大检索范围，若要在同一会话继续深挖请直接说一声；品类显示有 1 个模型但平台读取为空、未取得型号标识，所以它没能进入周报数据行。",
+      "unfinished": [
+        "本周进展/风险/待决的数据行因检索范围内无业务记录而留空，待你指定数据来源后补齐",
+        "本轮查找预算已用完，未能在本会话内扩大检索范围",
+        "表格式周报的长期记忆卡片已提交，待你确认后才生效"
+      ],
+      "final_questions": [
+        "本周周报的数据从哪里取？",
+        "这份周报给谁看？",
+        "表格版周报固定包含哪些栏目？"
+      ],
+      "clarifications": [],
+      "tool_calls": {
+        "assistant.search": 5,
+        "category.competitors.list": 1,
+        "category.knowledge.list": 1,
+        "category.list": 2,
+        "category.parameters.list": 1,
+        "category.read": 1,
+        "conversation.history": 1,
+        "evidence.search": 1,
+        "mcp.tools.list": 1,
+        "memory.search": 1,
+        "model": 10,
+        "platform.read": 3,
+        "product.baseline.read": 1
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "convention",
+          "text": "周报一律用表格形式输出，不用段落式叙述",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "以后给我表格形式的周报",
+              "run_id": "8082baf9-1327-45cc-8037-54552b1d3d66"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "周报一律用表格形式输出，不用段落式叙述"
+  ]
+}

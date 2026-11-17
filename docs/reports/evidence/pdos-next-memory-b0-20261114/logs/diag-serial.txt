@@ -1,0 +1,9 @@
+time=2026-11-14T06:00:54.565 level=WARN msg="Cluster Id in Cluster Metadata config is not a valid uuid. Generating a new Cluster Id" component=metadata-initializer
+Temporal CLI 1.9.1 (Server 1.32.0, UI 2.54.1)
+
+Temporal Server:      localhost:52936
+Temporal Persistence: in-memory
+Temporal Metrics:     http://localhost:52937/metrics
+REAL no_memory TL-01 q1 rep0 completed 60.7 165518 {'episodes': [], 'catalog': [], 'sessions_read': [], 'notes': [], 'note_revisions': {}} 查不到。以下是我在当前可读范围内做的全部核对，结果都是空的：  1) 本会话历史：conversation.history 返回 0 条记录——没有"上次"这一轮的对话。 2) 个人记忆：memory.search 返回 status=memory_off，提示"本会话已设为不进记忆，未读取个人记忆"，因此取不到你以往的做法与结论。 3) 当前品类「汽车充气泵」（隔离合成品类，revision 1
+.
+1 passed in 68.15s (0:01:08)

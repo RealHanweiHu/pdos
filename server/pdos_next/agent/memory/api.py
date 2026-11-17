@@ -5,10 +5,10 @@ by the same database policies). Personal memory is not a business record, so
 these are not T0/T1/T2 domain commands (memory design §5 第 4 条).
 """
 
-from typing import Literal
+from typing import Annotated, Literal
 from uuid import UUID
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Query
 from sqlalchemy import select, text
 
 from pdos_next.core.schema_base import StrictModel
@@ -60,7 +60,7 @@ def mark(session, ctx, run_id, data):
 
 
 def record_correction(session, ctx, run, feedback):
-    """Append the owner's run feedback to the episode (§14.9 纠正分流, destinations only)."""
+    """Append the owner's run feedback to the episode, then route it (§14.9 纠正分流)."""
     episode = session.scalar(select(MemoryEpisode).where(MemoryEpisode.run_id == run.id))
     if episode is None:
         return
@@ -72,14 +72,19 @@ def record_correction(session, ctx, run, feedback):
         MemoryEpisodeMark.owner_id == ctx.requester_id, MemoryEpisodeMark.request_key == key))
     if existing is not None:
         return
-    session.add(MemoryEpisodeMark(
+    mark = MemoryEpisodeMark(
         tenant_id=ctx.tenant_id, owner_id=episode.owner_id, session_id=episode.session_id,
         episode_id=episode.id, kind="correction",
         body={"categories": categories, "comment": feedback.get("comment", "")[:2000],
               "destination": destination, "status": "recorded"},
         request_key=key, request_sha256=digest({"episode_id": episode.id, **feedback}),
-    ))
+    )
+    session.add(mark)
     session.flush()
+    # M3 纠正分流 (§14.9): the fixed-rule routes; the owner may add personal/team ones.
+    from .corrections import route_feedback
+
+    route_feedback(session, ctx, run, mark, feedback)
 
 
 def usage(session, ctx, run):
@@ -104,13 +109,18 @@ def usage(session, ctx, run):
              for row, _state, scope, _receipts in kept]
     sessions = [item for item in value.get("sessions", [])]
     notes = note_usage(session, value.get("notes") or [])
+    from .scope_assemble import usage as scope_usage
+
+    scope_notes = scope_usage(session, value.get("scope_notes") or [])
     return {
         "version": "memory-usage/v1",
         "run_id": str(run.id),
-        "count": len(items) + len(sessions) + len(notes),
+        "count": len(items) + len(sessions) + len(notes) + len(scope_notes),
         "items": items,
         "sessions": [{"session_id": item} for item in sessions],
         "notes": notes,
+        # P87 第 10 项: team notes are listed apart from the owner's own memory.
+        "scope_notes": scope_notes,
         "withheld": len(run_ids) - len(items),
         "retrieval": value.get("retrieval"),
         "note": "这些是你本人以往的工作记录和你确认过的记忆条目，只作背景或口径，不是回答依据。",
@@ -164,6 +174,28 @@ def router(*, transaction, context_dependency):
             _target(session, ctx, session_id, None, lock=True)
             return mode.change(session, ctx, session_id, data)
 
+    # P121 第 8 项: the owner deletes their own Session. GET is the confirmation
+    # preview (what goes now, what stays); POST deletes.
+    from . import session_deletion
+
+    @result.get("/v1/personal/agent-sessions/{session_id}/deletion")
+    @result.get("/v1/categories/{category_id}/agent-sessions/{session_id}/deletion")
+    def previewing_deletion(session_id: UUID, ctx=context_dependency):
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            _target(session, ctx, session_id, None)
+            return session_deletion.preview(session, ctx, session_id)
+
+    @result.post("/v1/personal/agent-sessions/{session_id}/deletion")
+    @result.post("/v1/categories/{category_id}/agent-sessions/{session_id}/deletion")
+    def deleting_session(session_id: UUID, data: session_deletion.DeleteSession,
+                         ctx=context_dependency):
+        with transaction(ctx) as session:
+            _human(session, ctx, None)
+            return session_deletion.delete(
+                session, ctx, session_id, data,
+                target=lambda identity: _target(session, ctx, identity, None, lock=True))
+
     @result.post("/v1/personal/memory/episodes/{run_id}/marks")
     @result.post("/v1/categories/{category_id}/memory/episodes/{run_id}/marks")
     def marking(run_id: UUID, data: MarkInput, ctx=context_dependency):
@@ -191,13 +223,21 @@ def router(*, transaction, context_dependency):
 
     # M2a 本人记忆条目 (P86): the human owner only; AI identities are refused here
     # and by the database policies.
-    from . import candidates, notes, settings
+    from . import candidates, notes, scope_options, settings
 
     @result.get("/v1/personal/memory/notes")
     def reading_notes(ctx=context_dependency):
         with transaction(ctx, read_snapshot=True) as session:
             _human(session, ctx, None)
             return notes.listing(session, ctx)
+
+    @result.get("/v1/personal/memory/scope-options")
+    def reading_scope_options(data: Annotated[scope_options.ScopeOptions, Query()],
+                              ctx=context_dependency):
+        # D301: products and proposals the owner can pick as a note's scope.
+        with transaction(ctx, read_snapshot=True) as session:
+            _human(session, ctx, None)
+            return scope_options.options(session, data)
 
     @result.get("/v1/personal/memory/notes/{note_id}/history")
     def reading_history(note_id: UUID, ctx=context_dependency):
@@ -266,5 +306,10 @@ def router(*, transaction, context_dependency):
         with transaction(ctx) as session:
             _human(session, ctx, None)
             return policy.change(session, ctx, data)
+
+    # M3 沉淀与改进: review items, correction routes, revision candidates, system rules.
+    from .m3_api import register as register_m3
+
+    register_m3(result, transaction, context_dependency)
 
     return result

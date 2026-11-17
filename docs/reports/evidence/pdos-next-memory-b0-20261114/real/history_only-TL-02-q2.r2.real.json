@@ -1,0 +1,47 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 15.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 32325,
+  "held_tokens": 0,
+  "answer": "已给出可直接发送的三句话客户告知稿（未发送）。要点：表达\"本周内提交气泵报价\"，并预告报价内容（规格配置/单价/交期）、邀请客户补充数量与目标价。\n\n草稿：\n\"您好，感谢您对我们气泵产品的关注与询价。我们正在完成配置与成本确认，预计在本周内（最迟[日期]）向您提交正式报价，报价中会一并说明规格配置、单价与交期。若您对数量、目标价或期望交期已有明确要求，也请提前告知，我们会一并纳入本次报价方案。\"\n\n说明：我在当前品类（汽车充气泵）可读资料范围内检索了\"气泵报价/客户/交期\"，未检索到相关的报价请求或客户记录，因此客户名称、产品型号等具体信息未做核实，草稿中以 [日期] 等占位符标出，确认后替换即可。如需正式报价版本（型号、规格、BOM、成本口径），可再在该品类下深入查并附上出处。",
+  "answer_blob": "{\"result\": {\"sent\": false, \"draft\": \"您好，感谢您对我们气泵产品的关注与询价。我们正在完成配置与成本确认，预计在本周内（最迟[日期]）向您提交正式报价，报价中会一并说明规格配置、单价与交期。若您对数量、目标价或期望交期已有明确要求，也请提前告知，我们会一并纳入本次报价方案。\", \"verified\": {\"scope\": \"category:汽车充气泵\", \"quote_request_record_found\": false}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:04:42.466467+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"placeholders\": [\"[日期]\"]}, \"status\": \"completed\", \"summary\": \"已给出可直接发送的三句话客户告知稿（未发送）。要点：表达\\\"本周内提交气泵报价\\\"，并预告报价内容（规格配置/单价/交期）、邀请客户补充数量与目标价。\\n\\n草稿：\\n\\\"您好，感谢您对我们气泵产品的关注与询价。我们正在完成配置与成本确认，预计在本周内（最迟[日期]）向您提交正式报价，报价中会一并说明规格配置、单价与交期。若您对数量、目标价或期望交期已有明确要求，也请提前告知，我们会一并纳入本次报价方案。\\\"\\n\\n说明：我在当前品类（汽车充气泵）可读资料范围内检索了\\\"气泵报价/客户/交期\\\"，未检索到相关的报价请求或客户记录，因此客户名称、产品型号等具体信息未做核实，草稿中以 [日期] 等占位符标出，确认后替换即可。如需正式报价版本（型号、规格、BOM、成本口径），可再在该品类下深入查并附上出处。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前品类可读资料中未检索到对应的报价请求记录，客户名称与型号无法核实，影响是否需要在草稿中点名产品与配置。\", \"options\": [{\"label\": \"通用版本，不点名客户与型号\", \"value\": \"generic\"}, {\"label\": \"我补充客户名称和型号后再改\", \"value\": \"provide_details\"}], \"question\": \"这封告知发给哪个客户、涉及哪个气泵型号或配置版本？\", \"depends_on\": [], \"recommended\": {\"value\": \"generic\", \"reason\": \"该选择直接决定草稿是否需要占位符替换\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"对客户承诺时点需要唯一化，避免\\\"本周内\\\"产生歧义，也便于后续跟踪报价交付。\", \"options\": [{\"label\": \"填本周五\", \"value\": \"friday\"}, {\"label\": \"填本周日\", \"value\": \"sunday\"}, {\"label\": \"不写具体日期，只说本周内\", \"value\": \"no_date\"}], \"question\": \"草稿中\\\"最迟[日期]\\\"要填哪个具体日期？\", \"depends_on\": [], \"recommended\": {\"value\": \"friday\", \"reason\": \"该选择影响给客户的时点表述与后续交付跟踪\"}, \"allow_free_text\": true}], \"unfinished\": [\"客户名称、产品型号/配置版本与承诺日期尚未由用户确认，草稿中以占位符标注\", \"正式报价内容（规格配置、单价、成本口径）未整理，本轮仅撰写告知性文字\"]}",
+  "unfinished": [
+    "客户名称、产品型号/配置版本与承诺日期尚未由用户确认，草稿中以占位符标注",
+    "正式报价内容（规格配置、单价、成本口径）未整理，本轮仅撰写告知性文字"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

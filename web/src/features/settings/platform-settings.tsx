@@ -15,6 +15,7 @@ import { DingTalkSettings } from "./dingtalk-settings";
 import { PersonalPreferences } from "./personal-preferences";
 import { PersonalMemory } from "./personal-memory";
 import { MemoryPolicySettings } from "./memory-policy-settings";
+import { SkillRevisions } from "./skill-revisions";
 import { AccountManagement } from "./accounts";
 import { WorkCalendarSettings } from "./work-calendar";
 import { RoleCatalogSettings } from "./role-catalog";
@@ -83,7 +84,7 @@ function ScopedSettings({ categoryId, principalId, tab, onOpenRun, administrator
       <Retained active={tab === "pai" && modelView === "skills"}><ConnectedAgentSkills api={api} principalId={principalId} categoryId={categoryId}/></Retained>
       <Retained active={tab === "pai" && modelView === "budgets"}><ConnectedAgentBudgets api={api} principalId={principalId} categoryId={categoryId}/></Retained>
       <Retained active={tab === "pai" && modelView === "rules"}><ConnectedAutomationRules api={browserApi} principalId={principalId} categoryId={categoryId} onOpenRun={onOpenRun}/></Retained>
-      {administrator && <Retained active={tab === "pai" && modelView === "memory"}><MemoryPolicySettings key={`memory-policy:${principalId}`}/></Retained>}
+      {administrator && <Retained active={tab === "pai" && modelView === "memory"}><div className="space-y-4"><MemoryPolicySettings key={`memory-policy:${principalId}`}/><SkillRevisions key={`skill-revisions:${principalId}`}/></div></Retained>}
     </Retained>
     <Retained active={tab === "integrations"}>
       <nav className={styles.subnav} aria-label="集成与治理设置">{integrationTabs.map(([id, label]) => <button type="button" key={id} aria-pressed={integration === id} onClick={() => setIntegration(id)}>{label}</button>)}</nav>

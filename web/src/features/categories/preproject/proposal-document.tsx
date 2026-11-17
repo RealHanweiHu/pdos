@@ -12,6 +12,7 @@ import { ProposalPai } from "@/features/categories/preproject/proposal-pai";
 import { ProposalHandoff } from "@/features/categories/preproject/proposal-handoff";
 import { ProposalSourceInspector } from "@/features/categories/preproject/proposal-source-inspector";
 import { ProposalVoices } from "@/features/categories/preproject/proposal-voices";
+import { ScopeNotesSection } from "@/features/scope-notes/scope-notes-section";
 import { ProposalItemTable, type NewQuestion } from "./proposal-item-table";
 import { ProposalSpecEditor } from "./proposal-spec-editor";
 import { proposalDraftPatches } from "@/lib/proposal-spec-editor";
@@ -401,6 +402,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
     </div>
     {!embedded && proposal && me && <aside className={styles.assistant} hidden={!paiOpen}><ProposalPai key={`${me}:${categoryId}:${proposalId}`} categoryId={categoryId} proposalId={proposalId} principalId={me} proposalTitle={proposal.display_document.title} onClose={() => { setPaiOpen(false); setMobileView("document"); }} materialContext={{ kind: "proposal", id: proposalId, title: proposal.display_document.title, version: proposal.revision, draft: { unsaved_items: drafts, document: proposal.display_document } }}/></aside>}
     {!embedded && !paiOpen && <button type="button" className={styles.paiFloating} aria-label="打开当前提案的小Pai" onClick={() => { setPaiOpen(true); setMobileView("pai"); }}><Sparkle size={22}/></button>}
+    {proposal && documentReady && <details className={styles.reviewPanel}><summary>团队备忘</summary><ScopeNotesSection categoryId={categoryId} anchor={{ kind: "proposal", id: proposalId }}/></details>}
     {owner && <details className={styles.reviewPanel}><summary>共享与撤回</summary><ProposalShare categoryId={categoryId} proposalId={proposalId} principalId={me}
       onChanged={receipt => { setShareReceipt(receipt); return reload(); }} /></details>}
     {shareReceipt && !owner && <p role="status" className="panel text-sm">{shareReceipt.operation === "proposal.share" ? "共享成功" : "事实已撤回，引用条目值保留"} · 回执：{shareReceipt.id}</p>}

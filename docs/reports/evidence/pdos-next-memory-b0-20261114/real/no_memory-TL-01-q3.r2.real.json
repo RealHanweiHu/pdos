@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 71.9,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 218826,
+  "held_tokens": 0,
+  "answer": "已核对到的：「汽车充气泵」这个隔离品类本身可读（category.read 返回 1 个模型、负责人 Synthetic owner、读写权限正常），以及以下各读取入口在本会话均返回空结果：品类检索（query「试产 汇总 不良项 缺陷 排行」，含历史，限该品类，0 条）、evidence.search（「试产 不良 汇总 前三」「试产」「充气泵」均 0 条）、品类知识清单（含历史，0 条）、品类参数清单（含历史，0 条）、平台产品/变体清单（按品类、按名称「充气泵」、无筛选，0 条）、可授权 MCP 工具清单（0 个）、会话历史（本会话 0 条）。没有查到的：任何试产/制造轮次记录、品质问题或 CAPA 记录、现场反馈、制造文件，以及任何含「不良」计数的汇总原始行；因此「上周试产的不良前三项」的名称、数量与排序均无可核对依据，本轮不作推测性作答。附带事实：product.baseline.read 因缺基线型号未能执行（要求指定型号），按来源检索 build/issue/field_feedback/manufacturing_document 的第二次调用因本轮检索预算用尽未执行。个人记忆在本会话已关闭，未纳入。结果中的 citation_ids 为空，未知项已列在 unknowns 中。按要求不再追问。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:45:42.347360+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"可读范围内未找到上周试产的不良汇总记录：品类检索（query「试产 汇总 不良项 缺陷 排行」，含历史，限品类 324786d4-de2a-40c9-84e0-13fe847c22c0）返回 0 条\", \"evidence.search 对「试产 不良 汇总 前三」「试产」「充气泵」三次查询均返回 0 条\", \"build/issue/field_feedback/manufacturing_document 来源的定向检索本轮未执行（检索预算用尽）\", \"无任何含「不良」计数与排序的原始行，故前三项名称、数量、占比均未确认\", \"品类知识清单、参数清单、平台产品/变体清单均为空，未定位到型号\", \"product.baseline.read 未执行，缺基线型号\", \"无 ERP/MES 等外部连接器（可用 MCP 工具为 0），无附件材料\", \"会话历史无相关记录；个人记忆本会话已关闭\", \"『上周』时间口径与不良排序口径未确认，本轮按要求不再追问\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已核对到的：「汽车充气泵」这个隔离品类本身可读（category.read 返回 1 个模型、负责人 Synthetic owner、读写权限正常），以及以下各读取入口在本会话均返回空结果：品类检索（query「试产 汇总 不良项 缺陷 排行」，含历史，限该品类，0 条）、evidence.search（「试产 不良 汇总 前三」「试产」「充气泵」均 0 条）、品类知识清单（含历史，0 条）、品类参数清单（含历史，0 条）、平台产品/变体清单（按品类、按名称「充气泵」、无筛选，0 条）、可授权 MCP 工具清单（0 个）、会话历史（本会话 0 条）。没有查到的：任何试产/制造轮次记录、品质问题或 CAPA 记录、现场反馈、制造文件，以及任何含「不良」计数的汇总原始行；因此「上周试产的不良前三项」的名称、数量与排序均无可核对依据，本轮不作推测性作答。附带事实：product.baseline.read 因缺基线型号未能执行（要求指定型号），按来源检索 build/issue/field_feedback/manufacturing_document 的第二次调用因本轮检索预算用尽未执行。个人记忆在本会话已关闭，未纳入。结果中的 citation_ids 为空，未知项已列在 unknowns 中。按要求不再追问。\", \"questions\": [], \"unfinished\": [\"未取得试产汇总原始记录，不良前三项的名称、数量与排序未确认\", \"build/issue/field_feedback/manufacturing_document 来源的定向检索待后续轮次补做\", \"基线型号未定位，product.baseline.read 待型号确定后执行\"]}",
+  "unfinished": [
+    "未取得试产汇总原始记录，不良前三项的名称、数量与排序未确认",
+    "build/issue/field_feedback/manufacturing_document 来源的定向检索待后续轮次补做",
+    "基线型号未定位，product.baseline.read 待型号确定后执行"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:3",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:12",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

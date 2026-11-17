@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 19.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 33402,
+  "held_tokens": 0,
+  "answer": "按您给的口径起草了 3 句英文客户通知（依据您既有的\"给这个客户一律用英文\"要求）：致谢询价 → 本周内提供汽车充气泵报价 → 期间如有其他型号/配置可补充。品类资料中未检索到该客户的 RFQ 或已登记的报价承诺记录，所以文中不写具体型号、数量和价格，只写时间承诺；如需点名型号或价格口径，可在发出前补一句。",
+  "answer_blob": "{\"result\": {\"draft\": {\"text\": \"Thank you for your inquiry about our automotive air pump. We are preparing the quotation and will send it to you within this week. In the meantime, please let us know if you would like the quotation to cover any additional models or configurations.\", \"channel\": \"customer_message\", \"audience\": \"customer\", \"language\": \"en\", \"sentences\": 3}, \"notes\": [\"按本人常设要求，给该客户的对外文字用英文。\", \"承诺时间沿用你给的口径“本周内”，未自行加入具体日期、型号、数量或价格。\"], \"unknowns\": [\"品类资料范围内未检索到该客户的 RFQ 原文或已登记的报价/交期承诺记录，无法核实型号与价格口径。\", \"未确认具体发送日期（本周内哪一天）。\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:46:48.126733+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citations\": []}, \"status\": \"completed\", \"summary\": \"按您给的口径起草了 3 句英文客户通知（依据您既有的\\\"给这个客户一律用英文\\\"要求）：致谢询价 → 本周内提供汽车充气泵报价 → 期间如有其他型号/配置可补充。品类资料中未检索到该客户的 RFQ 或已登记的报价承诺记录，所以文中不写具体型号、数量和价格，只写时间承诺；如需点名型号或价格口径，可在发出前补一句。\", \"questions\": [{\"id\": \"q1\", \"why\": \"“本周内”对客户可能仍不明确，写明日期可以减少来回确认，但日期需你确认后我才写入。\", \"options\": [{\"label\": \"保持“within this week”，不写具体日期\", \"value\": \"keep_this_week\"}, {\"label\": \"写明具体日期（请在回复中给出）\", \"value\": \"specific_date\"}], \"question\": \"这封通知是否要写明具体日期（例如本周五前发出报价）？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_this_week\", \"reason\": \"按你原话“本周内”保持一致最稳妥，不自行替你把承诺收窄成某一天。\"}, \"allow_free_text\": true}], \"unfinished\": [\"未取得该客户 RFQ 原件，无法在通知中补充型号、规格或价格口径；如需具体配置说明，请提供 RFQ 或规格书。\"]}",
+  "unfinished": [
+    "未取得该客户 RFQ 原件，无法在通知中补充型号、规格或价格口径；如需具体配置说明，请提供 RFQ 或规格书。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

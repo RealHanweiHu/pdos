@@ -112,7 +112,8 @@ class MemoryIndexEntry(KernelRow, Base):
             ["tenant_id", "episode_id"], ["memory_episodes.tenant_id", "memory_episodes.id"]
         ),
         ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
-        CheckConstraint("source_kind IN ('episode','answer')", name="memory_index_source_kind"),
+        CheckConstraint("source_kind IN ('episode','answer','object')",
+                        name="memory_index_source_kind"),
         CheckConstraint("source_version > 0 AND token_count >= 0", name="memory_index_counts"),
         CheckConstraint("idempotency_key ~ '^[0-9a-f]{64}$'", name="memory_index_key"),
         Index("ix_memory_index_owner", "tenant_id", "owner_id", "tokenizer_version"),
@@ -155,6 +156,8 @@ class MemoryTenantPolicy(KernelRow, Base):
     # M2a (P86 第 9 项): the administrator may close free-text notes and proposals.
     notes_enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
     proposals_enabled: Mapped[bool] = mapped_column(Boolean, default=True, server_default="true")
+    # D504 (P87 第 4 项): the scope-note review period, 90 days by default.
+    scope_note_review_days: Mapped[int] = mapped_column(Integer, default=90, server_default="90")
     set_by: Mapped[UUID]
     request_key: Mapped[UUID]
     request_sha256: Mapped[str] = mapped_column(String(64))
@@ -167,6 +170,9 @@ class MemoryTenantPolicy(KernelRow, Base):
         CheckConstraint(
             "work_state_idle_days BETWEEN 1 AND 365", name="memory_policy_idle_days"
         ),
+        CheckConstraint(
+            "scope_note_review_days BETWEEN 1 AND 365", name="memory_policy_review_days"
+        ),
         CheckConstraint("request_sha256 ~ '^[0-9a-f]{64}$'", name="memory_policy_request_sha256"),
     )
 
@@ -177,6 +183,49 @@ class MemoryTenantPolicy(KernelRow, Base):
 # leaves only a tombstone "某时删除了一条" (design §5 第 5 条).
 
 NOTE_KINDS = ("convention", "background", "alias")
+# The same values as the scope notes' contract (domain/knowledge/scope_notes/models.py).
+# A personal note is always confirmed by its owner: 本人确认 is the contract's
+# member_confirmed. 讨论 / 提议 never become a note (they stay candidates), and a personal
+# note is not a business record, so it is never 已关联正式记录 (P86 第 1、10 项).
+NOTE_CONFIRMATIONS = ("member_confirmed",)
+NOTE_EVIDENCE_SOURCES = ("run", "discussion", "receipt", "original", "business_object")
+NOTE_EVIDENCE_KINDS = ("category", "product", "proposal", "project", "proposal_decision")
+NOTE_EVIDENCE_STANCES = ("supports", "opposes", "context")
+# 替代 is recorded by ``replaced_by`` on the replaced side; these two are kept by the owner.
+NOTE_RELATIONS = ("conflicts", "duplicates")
+NOTE_LINK_LIMIT = 10
+
+
+NOTE_CONTRACT_CHECKS = (
+    CheckConstraint(
+        "confirmation IN ('member_confirmed') AND (valid_until IS NULL OR valid_until >= valid_from) "  # noqa: E501
+        "AND (occurred_at IS NULL OR occurred_at <= created_at)",
+        name="memory_note_contract_time",
+    ),
+    CheckConstraint(
+        f"jsonb_typeof(evidence)='array' AND jsonb_array_length(evidence) <= {NOTE_LINK_LIMIT} AND "
+        "NOT jsonb_path_exists(evidence, '$[*] ? (@.type() != \"object\" || "
+        "!exists(@.source_type) || !exists(@.source_id) || !exists(@.root_source_id) || "
+        "!exists(@.stance) || !exists(@.locator))') AND "
+        "NOT jsonb_path_exists(evidence, '$[*] ? (!(" + " || ".join(
+            f'@.source_type == "{value}"' for value in NOTE_EVIDENCE_SOURCES) + "))') AND "
+        "NOT jsonb_path_exists(evidence, '$[*] ? (!(" + " || ".join(
+            f'@.stance == "{value}"' for value in NOTE_EVIDENCE_STANCES) + "))') AND "
+        # Only a business object names its kind (same rule as scope_note_evidence_shape).
+        "NOT jsonb_path_exists(evidence, '$[*] ? ((@.source_type == \"business_object\" && "
+        "!(" + " || ".join(f'@.source_kind == \"{value}\"' for value in NOTE_EVIDENCE_KINDS) + ")) || "  # noqa: E501
+        "(@.source_type != \"business_object\" && exists(@.source_kind) && @.source_kind != null))') AND "  # noqa: E501
+        "NOT jsonb_path_exists(evidence, '$[*] ? (exists(@.quote_sha256) && @.quote_sha256 != null "
+        "&& !(@.quote_sha256 like_regex \"^[0-9a-f]{64}$\"))')",
+        name="memory_note_evidence",
+    ),
+    CheckConstraint(
+        f"jsonb_typeof(relations)='array' AND jsonb_array_length(relations) <= {NOTE_LINK_LIMIT} AND "  # noqa: E501
+        "NOT jsonb_path_exists(relations, '$[*] ? (@.type() != \"object\" || !exists(@.note_id) || "
+        "!(" + " || ".join(f'@."type" == "{value}"' for value in NOTE_RELATIONS) + "))')",
+        name="memory_note_relations",
+    ),
+)
 SCOPE_KINDS = ("global", "category", "product", "proposal", "project")
 OBJECT_KINDS = ("category", "product", "proposal", "project")
 
@@ -217,6 +266,13 @@ class MemoryNoteVersion(KernelRow, Base):
     candidate_id: Mapped[UUID | None]
     request_key: Mapped[UUID]
     request_sha256: Mapped[str] = mapped_column(String(64))
+    # Unified item contract (target architecture §5.7, P121 第 6 项; s0_0897). ``valid_until``
+    # is the contract's ``valid_to``; ``created_at`` is its ``recorded_at``.
+    occurred_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    confirmation: Mapped[str] = mapped_column(String(24))
+    evidence: Mapped[list] = mapped_column(JSONB)
+    relations: Mapped[list] = mapped_column(JSONB)
     __table_args__ = (
         UniqueConstraint("tenant_id", "id"),
         UniqueConstraint("tenant_id", "note_id", "revision"),
@@ -248,6 +304,7 @@ class MemoryNoteVersion(KernelRow, Base):
         CheckConstraint("status IN ('active','replaced')", name="memory_note_status"),
         CheckConstraint("origin IN ('manual','candidate','merge')", name="memory_note_origin"),
         CheckConstraint("request_sha256 ~ '^[0-9a-f]{64}$'", name="memory_note_request_sha256"),
+        *NOTE_CONTRACT_CHECKS,
         Index("ix_memory_note_versions_owner", "tenant_id", "owner_id", "note_id", "revision"),
     )
 
@@ -355,6 +412,52 @@ class MemoryCandidateDecision(KernelRow, Base):
         CheckConstraint(
             "request_sha256 ~ '^[0-9a-f]{64}$'", name="memory_candidate_decision_sha256"
         ),
+    )
+
+
+class MemorySuppression(KernelRow, Base):
+    """遗忘抑制指纹 (P121 第 8 项): what the owner purged may not be proposed again
+    from old records. Holds a salted digest and source Run references, never text."""
+
+    __tablename__ = "memory_suppressions"
+    owner_id: Mapped[UUID]
+    note_id: Mapped[UUID]
+    salt: Mapped[str] = mapped_column(String(32))
+    fingerprint: Mapped[str] = mapped_column(String(64))
+    source_spans: Mapped[list] = mapped_column(JSONB)
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "note_id", "fingerprint"),
+        ForeignKeyConstraint(
+            ["tenant_id", "note_id"], ["memory_notes.tenant_id", "memory_notes.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        CheckConstraint(
+            "salt ~ '^[0-9a-f]{32}$' AND fingerprint ~ '^[0-9a-f]{64}$'",
+            name="memory_suppression_digest",
+        ),
+        CheckConstraint("jsonb_typeof(source_spans)='array'", name="memory_suppression_spans"),
+        Index("ix_memory_suppressions_owner", "tenant_id", "owner_id", "created_at"),
+    )
+
+
+class MemoryProposalVoid(KernelRow, Base):
+    """本人说“这只是讨论，不算决定” (P121 第 8 项): the Session's pending candidates up
+    to this Run are void, and nothing said up to this Run may be proposed again."""
+
+    __tablename__ = "memory_proposal_voids"
+    owner_id: Mapped[UUID]
+    session_id: Mapped[UUID]
+    run_id: Mapped[UUID]
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "run_id"),
+        ForeignKeyConstraint(["tenant_id", "run_id"], ["agent_runs.tenant_id", "agent_runs.id"]),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        Index("ix_memory_proposal_voids_session", "tenant_id", "session_id", "created_at"),
     )
 
 
@@ -487,4 +590,41 @@ class MemoryVectorProfile(KernelRow, Base):
             "jsonb_typeof(categories)='array'", name="memory_vector_profile_categories"
         ),
         Index("ix_memory_vector_profiles_latest", "tenant_id", "profile_id", "created_at"),
+    )
+
+
+class MemorySessionDeletion(KernelRow, Base):
+    """What stays after the owner deleted a Session: when, and how many rows went.
+
+    No content. Written only by the database function ``memory_delete_session``,
+    which checks the caller is the human owner acting for themself (P121 第 8 项).
+    """
+
+    __tablename__ = "memory_session_deletions"
+    owner_id: Mapped[UUID]
+    session_id: Mapped[UUID]
+    purged_episodes: Mapped[int] = mapped_column(Integer)
+    purged_marks: Mapped[int] = mapped_column(Integer)
+    purged_index_rows: Mapped[int] = mapped_column(Integer)
+    purged_vectors: Mapped[int] = mapped_column(Integer)
+    purged_candidates: Mapped[int] = mapped_column(Integer)
+    request_key: Mapped[UUID]
+    request_sha256: Mapped[str] = mapped_column(String(64))
+    __table_args__ = (
+        UniqueConstraint("tenant_id", "id"),
+        UniqueConstraint("tenant_id", "session_id"),
+        UniqueConstraint("tenant_id", "owner_id", "request_key"),
+        ForeignKeyConstraint(
+            ["tenant_id", "session_id"], ["agent_sessions.tenant_id", "agent_sessions.id"]
+        ),
+        ForeignKeyConstraint(["tenant_id", "owner_id"], ["principals.tenant_id", "principals.id"]),
+        CheckConstraint(
+            "purged_episodes >= 0 AND purged_marks >= 0 AND purged_index_rows >= 0 "
+            "AND purged_vectors >= 0 AND purged_candidates >= 0",
+            name="memory_session_deletion_counts",
+        ),
+        CheckConstraint(
+            "request_sha256 ~ '^[0-9a-f]{64}$'", name="memory_session_deletion_request_sha256"
+        ),
+        Index("ix_memory_session_deletions_owner", "tenant_id", "owner_id", "created_at"),
     )

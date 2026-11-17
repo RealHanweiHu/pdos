@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 45.2,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 88532,
+  "held_tokens": 0,
+  "answer": "已找回上次工作：2026-11-15 会话（run 4035a41d，目标\"比较三家气泵供应商的报价和交期\"）的结论是建议选 B 家（交期比 A 家短 2 周），C 家因含税报价超出目标价 12% 被排除；当时留了两项未完成：补 C 家含税报价单、核对 B 家交期的单位。同时核对当前可读范围：该品类下企业检索、证据检索、品类知识/竞品列表、平台对象全部 0 命中，那次回答也未附任何引用，因此 A/B/C 的报价、目标价、交期无法就地复核，只能按历史记录呈现。继续推进的前提是拿到三家报价单原件，我已就 B 家交期单位、C 家报价单是否补、目标价口径三处提问。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:34:38.297779+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"三家气泵供应商的名称与报价金额（当前品类可读范围内无任何来源）\", \"目标价的口径与数值（12% 超价结论的计算基数未记录）\", \"B 家交期的单位与起算口径\", \"C 家含税报价单原件是否可得\", \"统一价格口径所需的币种、日期、含税/未税、地区与渠道\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"用户附上或绑定三家报价单原件后：统一价格口径（币种/日期/含税/渠道/地区/配置），用确定性工具计算价格带与目标价位置，核对 B 家交期单位，复核 C 家 12% 超价的计算基数，再落一份对比结论\", \"open_items\": [{\"item\": \"补 C 家的含税报价单\", \"origin\": \"上次遗留\", \"status\": \"未完成\"}, {\"item\": \"核对 B 家交期的单位\", \"origin\": \"上次遗留\", \"status\": \"未完成\"}, {\"item\": \"为 A/B/C 报价、目标价、交期建立可核来源（当前范围无文档）\", \"origin\": \"本轮复核发现\", \"status\": \"未完成\"}, {\"item\": \"统一价格口径后计算价格带/目标价位置并形成可复核对比表\", \"origin\": \"本轮复核发现\", \"status\": \"未开始\"}], \"prior_work\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-15T10:34:26Z\", \"run_id\": \"4035a41d-26bb-402b-980f-8ca5dc40f2c5\", \"conclusion\": \"建议选 B 家：交期比 A 家短 2 周；C 家含税报价超出目标价 12%，已排除\", \"session_id\": \"f0f598da-482a-451a-8c49-ca38da880d7a\", \"evidence_status\": \"该历史回答未附任何引用；本轮在品类 汽车充气泵（475bd378-99d3-4bba-82e2-90f424575b93）范围内复核：企业检索、证据检索、品类知识列表、竞品列表、平台对象均为 0 命中，上述结论无法在当前范围内验证\"}}, \"status\": \"partial\", \"summary\": \"已找回上次工作：2026-11-15 会话（run 4035a41d，目标\\\"比较三家气泵供应商的报价和交期\\\"）的结论是建议选 B 家（交期比 A 家短 2 周），C 家因含税报价超出目标价 12% 被排除；当时留了两项未完成：补 C 家含税报价单、核对 B 家交期的单位。同时核对当前可读范围：该品类下企业检索、证据检索、品类知识/竞品列表、平台对象全部 0 命中，那次回答也未附任何引用，因此 A/B/C 的报价、目标价、交期无法就地复核，只能按历史记录呈现。继续推进的前提是拿到三家报价单原件，我已就 B 家交期单位、C 家报价单是否补、目标价口径三处提问。\", \"questions\": [{\"id\": \"q1_leadtime_unit\", \"why\": \"交期单位直接决定 B 与 A 的比较是否成立，也是上次明确留下的未完成项；口径不定就没法继续做交期对比。\", \"options\": [{\"label\": \"自然日（天）\", \"value\": \"days_calendar\"}, {\"label\": \"工作日（天）\", \"value\": \"days_work\"}, {\"label\": \"周\", \"value\": \"weeks\"}, {\"label\": \"以我随后提供的报价单原文为准\", \"value\": \"by_document\"}], \"question\": \"B 家的交期以什么单位为准？上次记录只写了\\\"比 A 家短 2 周\\\"，没有写单位口径，而\\\"2 周\\\"与\\\"14 天\\\"在选供应商时含义差别很大。\", \"depends_on\": [], \"recommended\": {\"value\": \"by_document\", \"reason\": \"报价单原件是唯一可核来源；若原件不可得，我只能按你口述口径计算并标注为未经核对。\"}, \"allow_free_text\": true}, {\"id\": \"q2_c_quote\", \"why\": \"决定是否继续投入取数，也决定 C 家排除结论是留档还是需重新评估。\", \"options\": [{\"label\": \"仍要补，用于复核 12% 超价结论并留档\", \"value\": \"still_needed\"}, {\"label\": \"不用补，C 家维持排除，只做留档说明\", \"value\": \"not_needed\"}, {\"label\": \"暂缓，先推进 A/B 两家\", \"value\": \"deferred\"}], \"question\": \"C 家的含税报价单还要不要补？上次 C 家已按\\\"超目标价 12%\\\"被排除，补单子可能只是留档复核，也可能影响排除结论是否要推翻。\", \"depends_on\": [], \"recommended\": {\"value\": \"still_needed\", \"reason\": \"没有原件时\\\"超目标价 12%\\\"在当前范围内无法复核，若要据此排除供应商，保留该单据是唯一可核路径。\"}, \"allow_free_text\": true}, {\"id\": \"q3_target_price_basis\", \"why\": \"12% 超价结论没有记录计算基数，目标价口径不明确就无法复核价格对比，也无法算价格带与目标价位置。\", \"options\": [{\"label\": \"含税零售目标价\", \"value\": \"retail_tax_incl\"}, {\"label\": \"采购目标成本价\", \"value\": \"purchase_cost\"}, {\"label\": \"我随后给出具体目标价数值与口径\", \"value\": \"will_provide\"}], \"question\": \"上次\\\"超出目标价 12%\\\"是相对哪个目标价算的？不同基数会让排除结论完全反转。\", \"depends_on\": [], \"recommended\": {\"value\": \"will_provide\", \"reason\": \"目标价数值与口径属于公司内部输入，系统内无来源可取，只能由你给出。\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家的含税报价单（上次遗留，本轮无原件）\", \"核对 B 家交期的单位（上次遗留，待你或报价单确认）\", \"为 A/B/C 报价、目标价、交期建立可核来源：当前品类范围内检索不到任何文档、竞品或证据条目\", \"统一价格口径并用计算工具算价格带/目标价位置、形成可复核对比表（尚未开始）\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单（上次遗留，本轮无原件）",
+    "核对 B 家交期的单位（上次遗留，待你或报价单确认）",
+    "为 A/B/C 报价、目标价、交期建立可核来源：当前品类范围内检索不到任何文档、竞品或证据条目",
+    "统一价格口径并用计算工具算价格带/目标价位置、形成可复核对比表（尚未开始）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:1",
+    "model:completed:5",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

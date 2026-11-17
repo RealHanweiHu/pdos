@@ -1,0 +1,49 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-11",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 82895,
+  "held_tokens": 0,
+  "answer": "在「汽车充气泵」品类里，最大流量（max_flow）的现行验收标准是：≥ 35 L/min（规格字典参数版本 1，方向 higher，单位 L/min）。需要说明的是，这一档位只登记在品类规格字典层面：本品类目前没有关联任何产品/变体基线，也没检索到对应的检验规范或制造文件，所以工件级、口径级（如出厂检验/型式试验/客户 RFQ 口径）的覆盖值目前无据可查；参数的验收工况（standard_condition）和检验方法（method）也均为空。若要确认是否有产品级或客户口径的覆盖值，可以在同一会话里继续深查。",
+  "answer_blob": "{\"result\": {\"answer\": {\"unit\": \"L/min\", \"direction\": \"higher\", \"value_type\": \"number\", \"parameter_key\": \"max_flow\", \"parameter_name\": \"最大流量\", \"acceptance_criterion\": \"≥ 35 L/min\"}, \"source\": {\"tool\": \"category.parameters.list\", \"as_of\": \"2026-11-15T11:11:09Z\", \"origin\": \"human\", \"record_id\": \"d76cfd10-4b86-42f3-8c4d-a61415306e86\", \"category_id\": \"3f321782-9a48-4512-bcdc-0215c8f61224\", \"parameter_id\": \"dcbc2c0b-6922-48c7-bb99-9b17157d7b93\", \"category_name\": \"汽车充气泵\", \"parameter_version\": 1}, \"coverage\": {\"scope\": \"same_category\", \"search_executed\": true, \"search_returned\": 0, \"search_budget_exhausted\": true}, \"unknowns\": [\"验收工况 standard_condition 未登记\", \"检验方法 method 未登记\", \"该品类 platform 读取无关联产品/变体基线，无产品级覆盖值可交叉核对\", \"品类内 artifact/检验规范类资料未检索到（0 条），故无法确认是否另有成文判定口径\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:11:10.374696+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"在「汽车充气泵」品类里，最大流量（max_flow）的现行验收标准是：≥ 35 L/min（规格字典参数版本 1，方向 higher，单位 L/min）。需要说明的是，这一档位只登记在品类规格字典层面：本品类目前没有关联任何产品/变体基线，也没检索到对应的检验规范或制造文件，所以工件级、口径级（如出厂检验/型式试验/客户 RFQ 口径）的覆盖值目前无据可查；参数的验收工况（standard_condition）和检验方法（method）也均为空。若要确认是否有产品级或客户口径的覆盖值，可以在同一会话里继续深查。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "model:completed:5",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

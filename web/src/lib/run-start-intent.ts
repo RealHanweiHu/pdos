@@ -3,7 +3,7 @@ import { restoreContinuation } from "./run-continuation";
 import { validVerificationAction, type VerificationAction } from "./verification-action";
 import { validSearchPreferences, type SearchPreferences } from "./search-preferences";
 export type RequestedSkill = { key: string; version: string; digest: string };
-type Start = { goal: string; idempotency_key: string; product_id?: string | null; continue_from_run_id?: string; verification_action?: VerificationAction; work_followup_action?: WorkFollowupAction; proposal_id?: string; project_id?: string; sources?: { artifact_id: string; expected_revision: number }[]; lookup_depth?: "deep"; context_revision?: number; requested_skills?: RequestedSkill[]; search_preferences?: SearchPreferences; memory_off?: true };
+type Start = { goal: string; idempotency_key: string; product_id?: string | null; continue_from_run_id?: string; verification_action?: VerificationAction; work_followup_action?: WorkFollowupAction; proposal_id?: string; project_id?: string; sources?: { artifact_id: string; expected_revision: number }[]; lookup_depth?: "deep"; context_revision?: number; requested_skills?: RequestedSkill[]; search_preferences?: SearchPreferences; memory_off?: true; memory_turn_off?: true };
 export type RunStartIntent = { path: "v1/agent-runs"; body: Start };
 const record = (value: unknown): value is Record<string, unknown> => !!value && typeof value === "object" && !Array.isArray(value);
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;
@@ -42,8 +42,9 @@ export function restoreRunStart(value: unknown, proposalId?: string, projectId?:
       || !restoreContinuation({ root: "v1/agent-runs", owner_id: "local-start", request: body }, "v1/agent-runs", "local-start", body.continue_from_run_id)) return null;
     return value as RunStartIntent;
   }
-  if (Object.keys(body).some(key => !["goal", "idempotency_key", "product_id", "proposal_id", "project_id", "sources", "requested_skills", "search_preferences", "memory_off"].includes(key))
+  if (Object.keys(body).some(key => !["goal", "idempotency_key", "product_id", "proposal_id", "project_id", "sources", "requested_skills", "search_preferences", "memory_off", "memory_turn_off"].includes(key))
     || body.memory_off !== undefined && body.memory_off !== true
+    || body.memory_turn_off !== undefined && body.memory_turn_off !== true
     || body.search_preferences !== undefined && !validSearchPreferences(body.search_preferences)
     || typeof body.goal !== "string" || body.goal.trim().length < 1 || body.goal.length > 8000
     || typeof body.idempotency_key !== "string" || body.idempotency_key.length < 8 || body.idempotency_key.length > 160

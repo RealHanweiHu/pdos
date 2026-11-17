@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 27.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 51256,
+  "held_tokens": 0,
+  "answer": "已按\"周报用文字形式\"出具本周（2026-11-15，汽车充气泵）文字周报，两条内容：本周完成供应商对比；下周补报价单。品类范围内检索未发现可支撑\"供应商对比已完成\"的项目/供应/报价记录，故未附加供应商名单、对比结论或金额等未经登记的信息。",
+  "answer_blob": "{\"result\": {\"report\": {\"as_of\": \"2026-11-15\", \"title\": \"周报\", \"format\": \"text\", \"category\": {\"id\": \"930c42d5-e273-42fd-9ff4-e41d7424da77\", \"name\": \"汽车充气泵\"}, \"sections\": [{\"items\": [\"完成供应商对比\"], \"label\": \"本周完成\"}, {\"items\": [\"补报价单\"], \"label\": \"下周计划\"}], \"body_text\": \"本周完成供应商对比；下周补报价单。\"}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:17:54.984498+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"当前品类（汽车充气泵）范围内未检索到可支撑‘供应商对比已完成’的项目/供应/报价记录，条目内容仅依据本人本次陈述\", \"报价单涉及的供应商范围、报价口径（币种/含税运/渠道等）与截止时间未在资料中登记\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"scope_notes\": {\"search_performed\": [{\"query\": \"供应商对比 报价单 供应商询价\", \"scope\": \"category:930c42d5-e273-42fd-9ff4-e41d7424da77\", \"result\": \"0 条\"}], \"skill_work_management\": \"当前租户与范围未启用，未按该技能流程办理\", \"category_knowledge_counts\": {\"voice\": 0, \"segment\": 0, \"boundary\": 0, \"competitor\": 0}, \"platform_objects_in_category\": 0}}, \"status\": \"completed\", \"summary\": \"已按\\\"周报用文字形式\\\"出具本周（2026-11-15，汽车充气泵）文字周报，两条内容：本周完成供应商对比；下周补报价单。品类范围内检索未发现可支撑\\\"供应商对比已完成\\\"的项目/供应/报价记录，故未附加供应商名单、对比结论或金额等未经登记的信息。\", \"questions\": [{\"id\": \"q1\", \"why\": \"两条条目目前没有可核的支撑记录，补上已确认的细节能让周报对接收人更可执行；但也可能超出你要的简版范围。\", \"options\": [{\"label\": \"保持现状，两条即可\", \"value\": \"keep_simple\"}, {\"label\": \"补供应商名单与对比维度\", \"value\": \"add_suppliers\"}, {\"label\": \"补报价单截止时间与责任人\", \"value\": \"add_quote_deadline\"}], \"question\": \"周报要不要在两条之外补具体信息？\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_simple\", \"reason\": \"你明确要求内容就两条，且对应细节在系统资料中无记录，补充需另行确认。\"}, \"allow_free_text\": true}], \"unfinished\": [\"周报中“供应商对比已完成”暂无系统内可核记录支撑，如需留痕可在项目/供应资料中登记后再引用\", \"下周报价单的供应商范围、报价口径与截止时间尚未确定\"]}",
+  "unfinished": [
+    "周报中“供应商对比已完成”暂无系统内可核记录支撑，如需留痕可在项目/供应资料中登记后再引用",
+    "下周报价单的供应商范围、报价口径与截止时间尚未确定"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.read:completed:1",
+    "model:completed:3",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

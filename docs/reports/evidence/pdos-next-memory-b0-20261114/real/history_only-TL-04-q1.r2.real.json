@@ -1,0 +1,52 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 32.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 84861,
+  "held_tokens": 0,
+  "answer": "有先例，但\"当时的口径\"没被记录下来：我只找到本品类（汽车充气泵）上一次会话记录，目标就是\"气泵报价对比\"（记录时间 2026-11-15，状态已完成），但它的可读内容只有一句\"报价对比已完成\"，没有来源引用、笔记或研究行，因此无法据此确认你当时交代的比价口径。另外两点说明：记忆检索本次只走关键词通道（本会话未启用语义检索），如果你当时用了别的措辞，可能没被召回；我也在公司资料（知识/文档）中按\"气泵/报价/口径/含税/运费/零售价\"检索过，结果为空，未发现既有的报价口径规定。所以准确说法是：你确实交代过一次气泵报价对比，但具体口径在现存记录中查不到，只能由你复述或重新指定。若这次要重做，建议先锁定：币种、观察日期、地区与渠道、零售价还是促销价、是否含税与运费、配置是否同款。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:09:20.123970+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"历史会话中用户交代的具体价格口径未在可读记录（会话摘要、研究行、来源）中被保留，无法从历史确认\", \"记忆检索本次仅关键词通道，语义检索未启用，可能存在措辞不同而未召回的既往交代\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"有先例，但\\\"当时的口径\\\"没被记录下来：我只找到本品类（汽车充气泵）上一次会话记录，目标就是\\\"气泵报价对比\\\"（记录时间 2026-11-15，状态已完成），但它的可读内容只有一句\\\"报价对比已完成\\\"，没有来源引用、笔记或研究行，因此无法据此确认你当时交代的比价口径。另外两点说明：记忆检索本次只走关键词通道（本会话未启用语义检索），如果你当时用了别的措辞，可能没被召回；我也在公司资料（知识/文档）中按\\\"气泵/报价/口径/含税/运费/零售价\\\"检索过，结果为空，未发现既有的报价口径规定。所以准确说法是：你确实交代过一次气泵报价对比，但具体口径在现存记录中查不到，只能由你复述或重新指定。若这次要重做，建议先锁定：币种、观察日期、地区与渠道、零售价还是促销价、是否含税与运费、配置是否同款。\", \"questions\": [{\"id\": \"q1\", \"why\": \"历史口径已无法从记录中确认，重新对比前必须先固定口径，否则不同来源的价格不可比。\", \"options\": [{\"label\": \"按统一口径重做：同款配置、零售价、含税含运、同一币种与同一观察日期\", \"value\": \"standard\"}, {\"label\": \"我直接复述上次用的口径，你按那个来\", \"value\": \"user_口径\"}, {\"label\": \"先只做口径记录，不跑对比\", \"value\": \"暂不重做\"}], \"question\": \"这次要按什么口径做气泵报价对比？\", \"depends_on\": [], \"recommended\": {\"value\": \"standard\", \"reason\": \"口径不明时，先固定一份可复用的口径再对比，可避免同类口径争议重复出现。\"}, \"allow_free_text\": true}], \"unfinished\": [\"历史会话中的具体价格口径未保留，若需沿用，需由本人复述或重新指定\"]}",
+  "unfinished": [
+    "历史会话中的具体价格口径未保留，若需沿用，需由本人复述或重新指定"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:3",
+    "memory.search:completed:2",
+    "model:completed:5"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 3
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

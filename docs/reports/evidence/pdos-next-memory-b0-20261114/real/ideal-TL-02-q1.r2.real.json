@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "甲：建议选 B 家。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 32.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 52103,
+  "held_tokens": 0,
+  "answer": "你上次的结论是：建议选 B 家。\n\n依据：2026-11-15 你我那次会话（目标\"比较三家气泵供应商的报价和交期\"，session 8c96bf88-4c6f-497a-bd64-d120a3b1dfa2）的历史记录写的是\"甲：建议选 B 家\"，本次已用 conversation.history 复核了原始对话条目，结论一致。\n\n两点需要说明：\n1) 这条属于你本人的历史工作记录，不是公司业务事实。我在当前品类（汽车充气泵）里按\"气泵供应商对比/报价/交期\"检索了公司资料，并另外查了品类竞品清单和证据库，均没有正式登记的供应商对比表，所以这次没有可引用的业务依据文件。\n2) A/B/C 分别对应哪家供应商、当时的报价与交期明细、选定 B 的具体理由，在现有可读范围里都查不到，保留下来的只有结论本身。\n\n如需把当时的对比还原出来，我可以再深入查一轮（把三家报价/交期明细、B 家的具体名称和理由补齐）；若这份结论要发给客户，我按你的习惯直接出英文版。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:06:04.591710+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"三家供应商的具体名称及 A/B/C 对应关系未在当前品类业务资料中找到\", \"当时的报价与交期明细未在当前品类业务资料中找到（公司资料检索、品类竞品清单、证据库检索均无结果）\", \"选定 B 家的具体理由与当时的比较口径仅见于本人历史对话摘录，非业务事实依据\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"你上次的结论是：建议选 B 家。\\n\\n依据：2026-11-15 你我那次会话（目标\\\"比较三家气泵供应商的报价和交期\\\"，session 8c96bf88-4c6f-497a-bd64-d120a3b1dfa2）的历史记录写的是\\\"甲：建议选 B 家\\\"，本次已用 conversation.history 复核了原始对话条目，结论一致。\\n\\n两点需要说明：\\n1) 这条属于你本人的历史工作记录，不是公司业务事实。我在当前品类（汽车充气泵）里按\\\"气泵供应商对比/报价/交期\\\"检索了公司资料，并另外查了品类竞品清单和证据库，均没有正式登记的供应商对比表，所以这次没有可引用的业务依据文件。\\n2) A/B/C 分别对应哪家供应商、当时的报价与交期明细、选定 B 的具体理由，在现有可读范围里都查不到，保留下来的只有结论本身。\\n\\n如需把当时的对比还原出来，我可以再深入查一轮（把三家报价/交期明细、B 家的具体名称和理由补齐）；若这份结论要发给客户，我按你的习惯直接出英文版。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读范围内只有\\\"建议选 B 家\\\"这一条结论本身，缺少可核对的对比明细与供应商名称\", \"options\": [{\"label\": \"要，深入查一次并还原明细\", \"value\": \"deepen\"}, {\"label\": \"不用，只要结论即可\", \"value\": \"conclusion_only\"}, {\"label\": \"先按此结论出客户英文版\", \"value\": \"english_output\"}], \"question\": \"是否需要我深入再查一轮，把三家供应商的名称、报价与交期明细、以及选定 B 家的理由一起还原出来？\", \"depends_on\": [], \"recommended\": {\"value\": \"deepen\", \"reason\": \"结论已明确，但缺少支撑细节，后续若要据此行动或对客汇报需要可核对依据\"}, \"allow_free_text\": true}], \"unfinished\": [\"三家供应商名称、报价与交期明细尚未从业务资料中还原（当前品类检索、品类竞品清单、证据库均无结果）\"]}",
+  "unfinished": [
+    "三家供应商名称、报价与交期明细尚未从业务资料中还原（当前品类检索、品类竞品清单、证据库均无结果）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

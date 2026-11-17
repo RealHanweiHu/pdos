@@ -1,0 +1,59 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 27.6,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 34796,
+  "held_tokens": 0,
+  "answer": "已按您此前设定的口径（给该客户的报告一律用英文）写出两三句话的客户说明：确认已收到气泵询价、正在确认配置与价格，并承诺本周内（截至 11 月 20 日周五）发出报价，同时邀请客户在此前提补充规格/数量/目标价。当前可读范围（汽车充气泵品类）内未检索到该客户的 RFQ 或报价记录，因此草稿刻意不含型号、数量、单价等未经核实的具体信息，也未写客户称呼与公司名，需您补入。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:05:34.081535+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"已按您此前设定的口径（给该客户的报告一律用英文）写出两三句话的客户说明：确认已收到气泵询价、正在确认配置与价格，并承诺本周内（截至 11 月 20 日周五）发出报价，同时邀请客户在此前提补充规格/数量/目标价。当前可读范围（汽车充气泵品类）内未检索到该客户的 RFQ 或报价记录，因此草稿刻意不含型号、数量、单价等未经核实的具体信息，也未写客户称呼与公司名，需您补入。\", \"questions\": [{\"id\": \"q1\", \"why\": \"品类内未检索到该客户的 RFQ 或报价记录，这些数值我无法核实，只能依据您提供的数据写入。\", \"options\": [], \"question\": \"是否需要我在草稿中补上具体信息（型号、数量、币种、是否含运费、目标价）？\", \"depends_on\": [], \"recommended\": null, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"给客户的承诺写成具体日期更易执行，但需确认其与您内部口径的本周截止日一致。\", \"options\": [{\"label\": \"保留：by the end of this week, on Friday 20 November\", \"value\": \"保留具体日期\"}, {\"label\": \"只写：by the end of this week\", \"value\": \"只写本周内\"}], \"question\": \"交付日期保留\\\"截至 11 月 20 日周五\\\"这一具体日期，还是只写\\\"本周内\\\"？\", \"depends_on\": [], \"recommended\": {\"value\": \"保留具体日期\", \"reason\": \"对客户承诺更明确、可跟踪，便于后续履约提醒。\"}, \"allow_free_text\": true}], \"unfinished\": [\"客户称呼与公司名未填（草稿中留空，待您补充）\", \"型号/数量/币种/交期等报价要素未写入，因当前范围无可核实的 RFQ 记录\", \"本周内交付报价这一对外承诺尚未在业务系统中登记为外部承诺记录\"]}",
+  "unfinished": [
+    "客户称呼与公司名未填（草稿中留空，待您补充）",
+    "型号/数量/币种/交期等报价要素未写入，因当前范围无可核实的 RFQ 记录",
+    "本周内交付报价这一对外承诺尚未在业务系统中登记为外部承诺记录"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.read:completed:1",
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [
+      "other",
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

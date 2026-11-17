@@ -37,7 +37,7 @@ def test_finish_projects_one_deterministic_episode_in_the_same_transaction(setup
     assert row.goal == "比较三家气泵供应商的报价和交期"
     assert row.status == "completed" and row.entry == "web"
     assert row.category_id == setup.category and row.project_id is None
-    assert row.projection_version == "memory-episode/v1"
+    assert row.projection_version == "memory-episode/v2"  # s0_0893: usage.notes (D475)
     assert row.body["model_notes"] == {"unfinished": ["核对交期单位"], "questions": []}
     assert row.body["retrieval"]["enterprise"] == "none"
     assert {"focus_objects", "receipts", "candidates", "skills", "citations", "usage"} <= set(

@@ -1,0 +1,67 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q3",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 63.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 217077,
+  "held_tokens": 0,
+  "answer": "按我在上一次会话（as_of 2026-11-15）给出的汇总结论，上周试产的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。需要说明的是，本轮我没能把这份结论重新落到可引用的原始记录上：检索预算用尽后，在当前「汽车充气泵」品类范围内检索 build/test_run/issue 类资料与证据库均无命中，也读不到该品类下的型号基线，所以这三项目前是\"我上次会话的记录\"，而不是本轮已核对的事实。三项的排序口径（按数量/按发生率/按批次）和它们对应的具体批次、试产 Run 也还没核到。若你回复我可以再开一轮检索，我会重新读取上周的试产批次与试验记录，逐项核对数量并确认排序口径后再定稿。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:57:37.764464+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"本轮检索预算已用尽，当前品类范围内检索 build/test_run/issue 与证据库均无命中，未能重新读取上周试产的批次与试验记录核对这三项\", \"三项不良的排序口径（按数量/发生率/批次）未在可读来源中确认\", \"『上周』对应的具体日期区间与对应试产批次/试验 Run 未确认\", \"各项不良的发生数量、涉及工位与样件去向未确认\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"top_defects\": {\"note\": \"该记录是本人以往的工作记录，不作为业务事实引用；本轮未能重新读取试产原始记录\", \"basis\": \"上次会话（run_id 02b03cfe-54c3-4b9f-a81f-25fc3c4fc127，session_id a789c49e-c5a0-4b6a-8c70-90a235eca876，as_of 2026-11-15，goal『汇总上周试产的不良项』）我给出的结论，outcome_state=current\", \"items\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"], \"verification\": \"not_reverified_in_this_run\"}}, \"status\": \"partial\", \"summary\": \"按我在上一次会话（as_of 2026-11-15）给出的汇总结论，上周试产的不良前三项是：气嘴漏气、外壳缩水、按键卡滞。需要说明的是，本轮我没能把这份结论重新落到可引用的原始记录上：检索预算用尽后，在当前「汽车充气泵」品类范围内检索 build/test_run/issue 类资料与证据库均无命中，也读不到该品类下的型号基线，所以这三项目前是\\\"我上次会话的记录\\\"，而不是本轮已核对的事实。三项的排序口径（按数量/按发生率/按批次）和它们对应的具体批次、试产 Run 也还没核到。若你回复我可以再开一轮检索，我会重新读取上周的试产批次与试验记录，逐项核对数量并确认排序口径后再定稿。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮检索预算用尽，三项结论目前只有我上次会话的记录，没有可引用的原始记录支撑。\", \"options\": [{\"label\": \"要，重新读上周试产记录核对后再给我定稿\", \"value\": \"recheck\"}, {\"label\": \"不用，先按上次结论用，后续再核\", \"value\": \"accept\"}], \"question\": \"是否要我再开一轮检索，重新读取上周的试产批次与试验记录，核对这三项不良并给出数量与排序口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"recheck\", \"reason\": \"三项不良与排序口径直接影响后续围堵/CAPA 判断，有原始记录核对过更稳妥。\"}, \"allow_free_text\": true}], \"unfinished\": [\"重新读取上周试产批次与试验 Run，核对气嘴漏气、外壳缩水、按键卡滞三项并确认排序口径与发生数量（本轮检索预算已用尽）\"]}",
+  "unfinished": [
+    "重新读取上周试产批次与试验 Run，核对气嘴漏气、外壳缩水、按键卡滞三项并确认排序口径与发生数量（本轮检索预算已用尽）"
+  ],
+  "ledger": [
+    "assistant.citations.read:completed:1",
+    "assistant.search:completed:1",
+    "assistant.search:failed:3",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:1",
+    "model:completed:11",
+    "platform.read:completed:4",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "other",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

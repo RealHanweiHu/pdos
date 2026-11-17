@@ -1,0 +1,47 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-07",
+  "question": "q1",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 34.3,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 68624,
+  "held_tokens": 0,
+  "answer": "已按“周报用文字形式”的个人口径，用两条文字起草本周周报（汽车充气泵品类，2026-11-14）：本周完成供应商对比；下周补报价单。两条内容来自你的陈述；在本品类可检索范围内未检索到供应商对比记录，也未检索到报价单或报价相关外部等待记录，因此正文未添加任何未经核实的细节或数据。",
+  "answer_blob": "{\"result\": {\"report\": {\"date\": \"2026-11-14\", \"items\": [{\"seq\": 1, \"text\": \"完成供应商对比\", \"basis\": \"本人本周陈述\", \"section\": \"本周完成\", \"record_found\": false}, {\"seq\": 2, \"text\": \"补报价单\", \"basis\": \"本人本周陈述\", \"section\": \"下周计划\", \"record_found\": false}], \"format\": \"text\", \"category\": \"汽车充气泵\", \"category_id\": \"180c3b62-0014-48ca-a02b-cf6eb555ae9b\"}, \"unknowns\": [\"供应商对比的具体内容（供应商名单、对比维度、结论）在检索范围内未找到\", \"报价单的供应商范围与报价口径未在检索范围内找到\", \"下周补报价单的负责人与完成时点未在检索范围内找到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-14T05:18:38.696884+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"decisions\": {\"text\": \"本周报未包含需具名批准的决定\", \"status\": \"not_recorded\"}, \"key_changes\": {\"text\": \"本周完成供应商对比（来源：本人本周陈述；公司资料检索范围内未找到对应供应商对比记录，无法引用系统证据）\", \"status\": \"to_confirm\"}, \"unresolved_issues\": {\"text\": \"报价单尚未产出，计划下周补齐；供应商范围、报价口径（含税运、交期）在检索范围内无登记\", \"status\": \"to_confirm\"}}}], \"format\": \"review\"}, \"citation_ids\": [], \"searched_scope\": [\"enterprise-search(artifact/supply/project_status/external_wait/knowledge, 含历史)\", \"category.competitors.list\", \"category.knowledge.list\", \"platform.read(品类范围)\"]}, \"status\": \"completed\", \"summary\": \"已按“周报用文字形式”的个人口径，用两条文字起草本周周报（汽车充气泵品类，2026-11-14）：本周完成供应商对比；下周补报价单。两条内容来自你的陈述；在本品类可检索范围内未检索到供应商对比记录，也未检索到报价单或报价相关外部等待记录，因此正文未添加任何未经核实的细节或数据。\", \"questions\": [{\"id\": \"q1\", \"why\": \"决定周报两条能否补上具体对象，以及下周报价单要覆盖的范围。\", \"options\": [{\"label\": \"维持现有两条，不加细节\", \"value\": \"keep_two_lines\"}, {\"label\": \"我提供供应商名单，再细化两条\", \"value\": \"provide_supplier_list\"}], \"question\": \"供应商对比和报价单覆盖哪几家供应商？检索范围内没有可引用的对比记录，你给我名单和对比口径后，我可以把这两条写得更具体。\", \"depends_on\": [], \"recommended\": {\"value\": \"keep_two_lines\", \"reason\": \"你已明确“内容就两条”，当前资料也无法支持更细的写法。\"}, \"allow_free_text\": true}], \"unfinished\": [\"下周补报价单：待供应商范围与报价口径确认后补产出\"]}",
+  "unfinished": [
+    "下周补报价单：待供应商范围与报价口径确认后补产出"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ]
+  },
+  "memory_off": false,
+  "arm": "baseline",
+  "prompt_version": "1.0.0",
+  "tool_definitions_digest": "83b619b4ee121ee001d431d542b3c075eb8aa8cb4874f758d1f56df5a22b7087",
+  "candidates": [],
+  "proposals_rejected": [],
+  "voids": 0
+}

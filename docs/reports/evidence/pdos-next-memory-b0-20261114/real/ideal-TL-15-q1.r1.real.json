@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-15",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [
+    "r1"
+  ],
+  "injected_text": "甲：包装选方案二（纸托加收缩膜），单件成本 1.8 元。",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 24.0,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 66203,
+  "held_tokens": 0,
+  "answer": "你问的\"上次\"我查到了：2026-11-15 那次会话（run eb07fceb…，目标\"整理充气泵的包装方案\"）记录的结果是——包装选方案二（纸托 + 收缩膜），单件成本 1.8 元。这条结论出自你本人那次会话的记录，不是当前业务库里的现行事实。说明一下核对范围：我在当前\"汽车充气泵\"品类（88f12e8b…）下检索了包装/成本相关资料、平台对象和证据库，均未命中现行包装方案或成本记录，所以 1.8 元/件目前只以历史会话记录为准，没有现行文档可复核；如果这期间包材报价或方案有变，需要重新核价。需要的话我可以在同一会话里按当前物料价格把三个包装方案重算一遍。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"当前'汽车充气泵'品类范围内未检索到现行的包装方案文件与单件成本记录，1.8 元/件 仅来自 2026-11-15 的历史会话记录（run eb07fceb-a2ec-460d-b232-d0b2e692b88e，标注为'甲'），未经现行文档复核\", \"历史记录中未出现该次会话对其他对象的包装选型结论（仅记录'甲'一条）\", \"方案二（纸托 + 收缩膜）的成本构成明细（包材单价、模具/制版摊销、装配工时）未在记录中展开，无法还原单价口径（是否含税、是否含运费）\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:36:54.464278+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"completed\", \"summary\": \"你问的\\\"上次\\\"我查到了：2026-11-15 那次会话（run eb07fceb…，目标\\\"整理充气泵的包装方案\\\"）记录的结果是——包装选方案二（纸托 + 收缩膜），单件成本 1.8 元。这条结论出自你本人那次会话的记录，不是当前业务库里的现行事实。说明一下核对范围：我在当前\\\"汽车充气泵\\\"品类（88f12e8b…）下检索了包装/成本相关资料、平台对象和证据库，均未命中现行包装方案或成本记录，所以 1.8 元/件目前只以历史会话记录为准，没有现行文档可复核；如果这期间包材报价或方案有变，需要重新核价。需要的话我可以在同一会话里按当前物料价格把三个包装方案重算一遍。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

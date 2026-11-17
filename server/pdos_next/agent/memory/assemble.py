@@ -2,9 +2,12 @@
 
 At the Run's first context assembly the server takes the requester's usable
 notes for this range (global notes plus notes on the Run's own category,
-product, proposal or project), splits them into the constraint zone (口径 and
-叫法) and the background zone (背景, and anything marked 可能过期), and fixes the
-selection for the Run. Nothing goes into the fixed prefix (不可协商项 4); no
+product, proposal or project) that are in effect now, splits them into the
+constraint zone (口径 and 叫法) and the background zone (背景, anything marked 可能过期,
+and a 口径 the owner marked 冲突 with another note brought in), and fixes the
+selection for the Run. Valid time decides what is in effect (P121 第 6 项): a note
+whose start is still ahead, or that was replaced or back-filled into history, is
+not brought in. Nothing goes into the fixed prefix (不可协商项 4); no
 model or embedding call is made; at most 1,000 tokens. Neither zone can be cited.
 
 The Run row keeps which notes and revisions were chosen and where they go, never
@@ -56,22 +59,28 @@ def build(session, run):
              "label": LABEL, "constraints": [], "aliases": [], "background": [],
              "omitted": 0, "how_to_use": HOW_TO_USE}
     aliases = {item["note_id"]: item for item in notes.alias_entries(session, rows)}
+    disputed = notes.conflicted([row for row, _current in rows])
     used = []
     for row, current in rows:
         entry = {"note_id": str(row.note_id), "revision": row.revision, "text": row.text,
                  "scope": _scope(session, row)}
+        if row.occurred_at is not None:
+            entry["occurred_on"] = row.occurred_at.date().isoformat()
         if row.kind == "alias":
             alias = aliases.get(str(row.note_id))
             if alias is None:
                 continue
             entry.update(term=row.alias_term, means=alias["means"]["text"])
             zone = "aliases"
-        elif row.kind == "convention" and current == "active":
+        elif row.kind == "convention" and current == "active" and str(
+                row.note_id) not in disputed:
             zone = "constraints"
         else:
             zone = "background"
         if current == "stale":
             entry["note"] = "引用的对象已有新版本，这条可能过期，只作背景"
+        elif str(row.note_id) in disputed and row.kind != "alias":
+            entry["note"] = CONFLICT_NOTE
         value[zone].append(entry)
         if estimate_tokens(json.dumps(value, ensure_ascii=False)) > NOTES_TOKENS:
             value[zone].pop()
@@ -87,7 +96,9 @@ def build(session, run):
     return value, entries
 
 
-BODY_KEYS = ("text", "term", "means")
+# Words and dates of a note are read from its version each time, never kept on the Run (D481).
+BODY_KEYS = ("text", "term", "means", "occurred_on")
+CONFLICT_NOTE = "你把这条和另一条记忆标为冲突，只作背景；需要时请本人确认"
 
 
 def _versions(session, entries):
@@ -119,6 +130,8 @@ def _with_words(session, stored):
                 continue
             item = {key: entry[key] for key in entry if key not in BODY_KEYS}
             item["text"] = row.text
+            if row.occurred_at is not None:
+                item["occurred_on"] = row.occurred_at.date().isoformat()
             if zone == "aliases":
                 meaning = means(session, row)
                 if not meaning or not meaning.get("text") or meaning.get("readable") is False:
@@ -224,6 +237,7 @@ _ENTRY = {
                                  "title": {"type": ["string", "null"]}}},
         "term": {"type": "string"},
         "means": {"type": "string"},
+        "occurred_on": {"type": "string"},
         "note": {"type": "string"},
     },
 }

@@ -1,7 +1,8 @@
-"""Tenant memory policy (P85 第 6 项, P86 第 9 项).
+"""Tenant memory policy (P85 第 6 项, P86 第 9 项, P87 第 4 项).
 
-The work-state idle limit (30 days by default), and the administrator's switches
-for free-text notes and 小Pai's memory proposals. Episode vectorization is
+The work-state idle limit (30 days by default), the administrator's switches
+for free-text notes and 小Pai's memory proposals, and the scope-note review
+period (90 days by default; D504). Episode vectorization is
 switched by the tenant embedding profile's "本人会话记录" category (P85 第 3 项).
 An administrator sees switch states and counts only, never a note's content.
 """
@@ -19,6 +20,7 @@ from pdos_next.errors import DomainError
 from .models import MemoryTenantPolicy
 
 DEFAULT_IDLE_DAYS = 30
+DEFAULT_REVIEW_DAYS = 90  # P87 第 4 项 复核期限由租户配置，缺省 90 天
 OWNER_SESSION = "owner_session"  # 数据类别“本人会话记录” (P85 第 3 项)
 
 
@@ -28,6 +30,7 @@ class PolicyInput(StrictModel):
     work_state_idle_days: int = Field(ge=1, le=365, strict=True)
     notes_enabled: bool | None = None
     proposals_enabled: bool | None = None
+    scope_note_review_days: int | None = Field(default=None, ge=1, le=365, strict=True)
 
 
 def current(session):
@@ -39,6 +42,12 @@ def current(session):
 def idle_days(session):
     row = current(session)
     return row.work_state_idle_days if row else DEFAULT_IDLE_DAYS
+
+
+def review_days(session):
+    """The scope-note review period in force now (D504)."""
+    row = current(session)
+    return row.scope_note_review_days if row else DEFAULT_REVIEW_DAYS
 
 
 def notes_enabled(row):
@@ -72,6 +81,7 @@ def view(row):
         "work_state_idle_days": row.work_state_idle_days if row else DEFAULT_IDLE_DAYS,
         "notes_enabled": notes_enabled(row),
         "proposals_enabled": proposals_enabled(row),
+        "scope_note_review_days": row.scope_note_review_days if row else DEFAULT_REVIEW_DAYS,
         "default": row is None,
     }
 
@@ -126,10 +136,15 @@ def change(session, ctx, data):
     notes = notes_enabled(latest) if data.notes_enabled is None else data.notes_enabled
     proposals = (proposals_enabled(latest) if data.proposals_enabled is None
                  else data.proposals_enabled)
-    # An M1-shaped request (idle days only) keeps its original fingerprint.
+    review = (latest.scope_note_review_days if latest else DEFAULT_REVIEW_DAYS) if (
+        data.scope_note_review_days is None) else data.scope_note_review_days
+    # An M1-shaped request (idle days only) keeps its original fingerprint, and an
+    # M2a-shaped one (with the two switches) keeps its own.
     shape = {"work_state_idle_days": data.work_state_idle_days}
     if data.notes_enabled is not None or data.proposals_enabled is not None:
         shape.update(notes_enabled=data.notes_enabled, proposals_enabled=data.proposals_enabled)
+    if data.scope_note_review_days is not None:
+        shape.update(scope_note_review_days=data.scope_note_review_days)
     fingerprint = digest(shape)
     replay = session.scalar(
         select(MemoryTenantPolicy).where(MemoryTenantPolicy.request_key == data.request_key)
@@ -143,7 +158,7 @@ def change(session, ctx, data):
     row = MemoryTenantPolicy(
         tenant_id=ctx.tenant_id, revision=data.expected_revision + 1,
         work_state_idle_days=data.work_state_idle_days, notes_enabled=notes,
-        proposals_enabled=proposals, set_by=ctx.actor_id,
+        proposals_enabled=proposals, scope_note_review_days=review, set_by=ctx.actor_id,
         request_key=data.request_key, request_sha256=fingerprint,
     )
     session.add(row)

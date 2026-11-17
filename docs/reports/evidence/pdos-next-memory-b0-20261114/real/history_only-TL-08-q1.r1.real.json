@@ -1,0 +1,51 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 17.8,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 65408,
+  "held_tokens": 0,
+  "answer": "「外壳缩水」出自本人此前一次工作「汇总上周试产的不良项」（运行 ID 12a4eb2e-28c9-4a8d-956d-e9f2855abe9a，会话 341fff12-86d6-47ca-b612-a095568e5f65，记录时间 2026-11-15）。当时列出的是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞——即与外壳缩水一起列出的还有「气嘴漏气」和「按键卡滞」。这是历史会话答复留痕，不是当前业务事实；如需这些不良的现况需重新读取品质台账。本次为关键词检索（该品类会话记录未启用语义检索），不排除另有未命中的记录。",
+  "answer_blob": "{\"result\": {}, \"status\": \"completed\", \"summary\": \"「外壳缩水」出自本人此前一次工作「汇总上周试产的不良项」（运行 ID 12a4eb2e-28c9-4a8d-956d-e9f2855abe9a，会话 341fff12-86d6-47ca-b612-a095568e5f65，记录时间 2026-11-15）。当时列出的是试产不良前三项：气嘴漏气、外壳缩水、按键卡滞——即与外壳缩水一起列出的还有「气嘴漏气」和「按键卡滞」。这是历史会话答复留痕，不是当前业务事实；如需这些不良的现况需重新读取品质台账。本次为关键词检索（该品类会话记录未启用语义检索），不排除另有未命中的记录。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r6"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1",
+      "r6"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

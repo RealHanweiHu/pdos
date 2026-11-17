@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-09",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 36.2,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 104810,
+  "held_tokens": 0,
+  "answer": "还没定。品类「汽车充气泵」的规格字典里确实建了「额定压力」这个参数位（key=rated_pressure，单位 PSI，第 1 版），但它是空的：没有数值，也没有标准工况、测试方法或验收准则。该参数记录上写明的变更说明是「额定压力尚未确定，待样机测试后再定」，且确认人字段为空，说明它是人写的待定参数位，而不是已批准定值。\n\n我另外在当前可读范围内逐项查过：品类文档检索（assistant.search）无命中，证据库（evidence.search）无命中，平台上的型号/提案清单（platform.read，含历史）也是空的——所以没有任何型号定义、提案或资料里记过具体压力值。\n\n补充一点上下文（属情景记录，不是业务事实）：上一次你让我估气缸尺寸时说过「额定压力可以考虑 120 PSI」，那次 120 PSI 只是估算用的临时假设，从未登记为额定压力，本轮我也没有把它当成答案。\n\n结论口径：当前无已定额定压力；定值路径是先按样机测试判定，再把实测结论回写为正式规格值。如果你现在就需要一个工程用目标值，我可以起草一条「额定压力候选值 + 测试方法 + 验收准则」的规格条目草案（只作候选，不写成已定值），等你确认后再登记。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:04:02.596614+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"额定压力的具体数值：当前范围内无任何已登记取值\", \"额定压力将采用的测试方法、判定口径与验收准则：字典参数记录中均为空\", \"样机测试的计划、责任人及时间点：当前范围内未查到相关记录\", \"当前品类范围仅可读到规格字典的额定压力参数条目；平台型号/提案清单、文档检索与证据库均无命中，无法排除存在本人无权读取的来源\", \"上次对话中的 120 PSI 属个人工作情景记录，非业务事实，不能作为额定压力依据\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"还没定。品类「汽车充气泵」的规格字典里确实建了「额定压力」这个参数位（key=rated_pressure，单位 PSI，第 1 版），但它是空的：没有数值，也没有标准工况、测试方法或验收准则。该参数记录上写明的变更说明是「额定压力尚未确定，待样机测试后再定」，且确认人字段为空，说明它是人写的待定参数位，而不是已批准定值。\\n\\n我另外在当前可读范围内逐项查过：品类文档检索（assistant.search）无命中，证据库（evidence.search）无命中，平台上的型号/提案清单（platform.read，含历史）也是空的——所以没有任何型号定义、提案或资料里记过具体压力值。\\n\\n补充一点上下文（属情景记录，不是业务事实）：上一次你让我估气缸尺寸时说过「额定压力可以考虑 120 PSI」，那次 120 PSI 只是估算用的临时假设，从未登记为额定压力，本轮我也没有把它当成答案。\\n\\n结论口径：当前无已定额定压力；定值路径是先按样机测试判定，再把实测结论回写为正式规格值。如果你现在就需要一个工程用目标值，我可以起草一条「额定压力候选值 + 测试方法 + 验收准则」的规格条目草案（只作候选，不写成已定值），等你确认后再登记。\", \"questions\": [{\"id\": \"q1\", \"why\": \"参数位已建但无值、无方法与准则；先形成候选草案可让样机测试有明确的判定依据，同时不把未批准值当成已定规格。\", \"options\": [{\"label\": \"起草候选条目（以 120 PSI 为候选值，含测试方法与验收准则占位）\", \"value\": \"draft_candidate\"}, {\"label\": \"先不起草，等样机测试结果出来再定\", \"value\": \"wait_for_test\"}, {\"label\": \"只要结论，先不进入起草\", \"value\": \"only_scope\"}], \"question\": \"要不要我现在起草一条「额定压力候选值 + 测试方法 + 验收准则」的规格条目草案（仅候选，未确认，不写入正式规格）？\", \"depends_on\": [], \"recommended\": {\"value\": \"draft_candidate\", \"reason\": \"在不改写已批准事实的前提下，能最快补上样机测试所需的判定口径\"}, \"allow_free_text\": true}], \"unfinished\": [\"未起草任何额定压力候选条目（等本人确认 q1 后再动笔）\"]}",
+  "unfinished": [
+    "未起草任何额定压力候选条目（等本人确认 q1 后再动笔）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.parameters.list:completed:2",
+    "category.read:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:6",
+    "platform.read:completed:3",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [
+      "r1"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

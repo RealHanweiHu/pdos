@@ -25,6 +25,8 @@ import {
   sortWorkRows,
 } from "@/features/my-work/lib/my-work-items";
 import { decideTarget, runTitle, useRunDecisions } from "@/features/my-work/lib/run-decisions";
+import { useMemoryReview } from "@/features/my-work/lib/memory-review";
+import { MemoryReview } from "@/features/my-work/memory-review";
 import { RunDecisions } from "./run-decisions";
 import { MyWorkContinue } from "./my-work-continue";
 import styles from "./my-work.module.css";
@@ -118,6 +120,8 @@ export function MyWork({
     "received",
   );
   const runDecisions = useRunDecisions(api, session.principal_id, reload);
+  // 记忆 M3 (P88; D508): review items assigned to me and routes of my own corrections.
+  const memoryReview = useMemoryReview(api, session.principal_id, reload);
   const decide = usePersonalAttention(
     api,
     session.principal_id,
@@ -303,6 +307,24 @@ export function MyWork({
                         onChanged={() => setReload((value) => value + 1)}
                       />
                     ),
+                  }
+                : null;
+            },
+          },
+          {
+            key: "memory_review",
+            label: "要我复核 · 记忆",
+            kinds: [],
+            extra: (query) => {
+              const page = memoryReview.page;
+              const match = (text: string) => text.toLocaleLowerCase().includes(query);
+              const items = (page?.items ?? []).filter((item) => match(`${item.label} ${item.text ?? ""} ${item.object?.title ?? ""}`));
+              const raised = (page?.raised ?? []).filter((item) => !item.parent_id && match(`${item.label} ${item.text ?? ""}`));
+              const count = items.length + raised.filter((item) => item.status === "open" && item.kind === "fact").length;
+              return items.length || raised.length
+                ? {
+                    count,
+                    node: <MemoryReview api={api} items={items} raised={raised} onChanged={() => setReload((value) => value + 1)}/>,
                   }
                 : null;
             },

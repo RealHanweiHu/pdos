@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "no_memory",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 56.8,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 121783,
+  "held_tokens": 0,
+  "answer": "在当前可读范围内没有找到你以前交代过气泵报价对比口径的记录：品类「汽车充气泵」下知识、产品/提案、竞品库、证据库、公司资料检索均为 0 条，本会话无更早对话轮次；且本会话记忆读取被关闭，因此既不能确认\"你说过\"，也不能断定\"你没说\"。要真正回答这个问题，需要开启记忆读取后再查一次。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"本会话个人记忆读取被关闭（memory_off），以往工作记录与当时结论未能核对\", \"品类「汽车充气泵」(30ccb499-b725-4dae-bbfa-0b431c7bd6be) 下当前可读资料为空；若存在归属其他品类、归档状态或超出当前权限的口径记录，本次未覆盖\", \"本轮检索预算用尽，跨品类/全局范围检索未能执行\", \"以往是否存在口头交代但未落库的情形，无法从记录判断\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:47:14.338946+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"citation_ids\": []}, \"status\": \"partial\", \"summary\": \"在当前可读范围内没有找到你以前交代过气泵报价对比口径的记录：品类「汽车充气泵」下知识、产品/提案、竞品库、证据库、公司资料检索均为 0 条，本会话无更早对话轮次；且本会话记忆读取被关闭，因此既不能确认\\\"你说过\\\"，也不能断定\\\"你没说\\\"。要真正回答这个问题，需要开启记忆读取后再查一次。\", \"questions\": [{\"id\": \"q1\", \"why\": \"你问的是\\\"我以前是否交代过\\\"，而这类交代最可能留在个人记忆里；当前记忆读取被关闭，记忆侧尚未核对过。\", \"options\": [{\"label\": \"开启记忆读取，重新核对\", \"value\": \"enable_memory_and_recheck\"}, {\"label\": \"先不查，直接重新定口径\", \"value\": \"skip_recheck\"}], \"question\": \"要开启本会话的记忆读取后重新核对一次吗？\", \"depends_on\": [], \"recommended\": {\"value\": \"enable_memory_and_recheck\", \"reason\": \"只有读记忆才可能直接回答\\\"以前有没有交代过\\\"，其他方式查不到你的口头指示。\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"价格带工具要求币种、日期、地区、渠道、零售/促销、含税含运、配置在同一口径下比较，否则不可直接比。\", \"options\": [{\"label\": \"按工具要求的统一口径（币种/日期/地区/渠道/零售或促销/含税含运/配置）先建一版，并记入品类\", \"value\": \"default_unified_caliber\"}, {\"label\": \"我直接给你口径原文，按我说的为准\", \"value\": \"user_provides_caliber\"}, {\"label\": \"先不定，等找到竞品报价样本后再说\", \"value\": \"defer\"}], \"question\": \"若最终没有找到你的历史交代，报价对比口径先按哪套走？\", \"depends_on\": [], \"recommended\": {\"value\": \"user_provides_caliber\", \"reason\": \"口径属你的业务判断，你给原文最准；工具默认口径只是计算前提，不等同你的历史交代。\"}, \"allow_free_text\": true}], \"unfinished\": [\"开启记忆读取后重新检索个人历史记录，核对是否有报价对比口径的交代\", \"在检索预算恢复后补一次跨品类/全局检索（本次最后一次 assistant.search 触发 RATE_LIMITED）\", \"若确认无历史口径，需你指定或确认统一报价对比口径后，才能建立可比价格带\"]}",
+  "unfinished": [
+    "开启记忆读取后重新检索个人历史记录，核对是否有报价对比口径的交代",
+    "在检索预算恢复后补一次跨品类/全局检索（本次最后一次 assistant.search 触发 RATE_LIMITED）",
+    "若确认无历史口径，需你指定或确认统一报价对比口径后，才能建立可比价格带"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "conversation.history:completed:1",
+    "evidence.search:completed:2",
+    "memory.search:completed:1",
+    "model:completed:7",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": true
+}

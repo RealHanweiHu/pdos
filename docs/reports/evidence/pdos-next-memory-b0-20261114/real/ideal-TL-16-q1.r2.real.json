@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 24.4,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 66520,
+  "held_tokens": 0,
+  "answer": "已按您的口径（含项目编号 PX-305）写好一封简短催交期邮件，主题+正文可直接使用。当前品类范围内未检索到气泵供应商、样件批次或交期记录，因此供应商名称、样件批次/型号、原交期、期望回复日期以【】占位，需您填写或我再深入查一次。",
+  "answer_blob": "{\"result\": {\"email\": {\"body\": \"您好，\\n\\n关于项目 PX-305 气泵样件（型号/批次：【样件型号或批次号】），原定交期【原交期】，目前我们尚未收到发货信息。为避免影响后续验证与试产安排，烦请尽快确认以下三点：\\n\\n1. 样件当前状态：是否已完工、在检或待发运；\\n2. 预计发货日期与预计到货日期；\\n3. 如存在缺料、模具、测试等导致延误的原因，请一并说明，便于我们同步调整内部计划。\\n\\n如能在【期望回复日期】前给出明确发货时间，我们将据此安排到货接收与验证。请回复确认，谢谢。\\n\\n顺颂商祺\\n【我的姓名 / 职务】\\n【公司 / 部门】\\n【电话 / 邮箱】\", \"subject\": \"PX-305 气泵样件交期跟进：请确认发货与到货时间\"}, \"notes\": \"未向任何业务系统写入记录，本轮仅产出邮件草稿；如需登记外呼/催交或外部等待，请确认后另行办理\", \"lookup\": {\"note\": \"以上为在本次可读范围内的检索结果，不代表该信息不存在\", \"scope\": \"当前品类 汽车充气泵（category_id 14bd98ba-9bf9-4fca-9614-16cc4e8777eb）\", \"result\": \"未检索到气泵供应商、样件批次、交期或外部等待记录\", \"searched\": [\"企业检索（supply/build/external_wait/project_status）\", \"平台对象 code=PX-305、名称含“气泵”\", \"证据检索\"], \"evidence_citation_ids\": []}, \"unknowns\": [\"供应商名称与收件人邮箱\", \"样件型号/批次号及数量\", \"原定交期与当前状态\", \"期望回复日期/新交期\", \"是否已有相关外部等待记录或采购订单可引用\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:47:42.278218+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"placeholders\": [\"样件型号或批次号\", \"原交期\", \"期望回复日期\", \"我的姓名/职务\", \"公司/部门\", \"电话/邮箱\"], \"constraints_applied\": [{\"source\": \"本人记忆（全局约束）\", \"applied_as\": \"主题与正文首段均写明 PX-305\", \"constraint\": \"给供应商的邮件一律带上项目编号 PX-305\"}]}, \"status\": \"completed\", \"summary\": \"已按您的口径（含项目编号 PX-305）写好一封简短催交期邮件，主题+正文可直接使用。当前品类范围内未检索到气泵供应商、样件批次或交期记录，因此供应商名称、样件批次/型号、原交期、期望回复日期以【】占位，需您填写或我再深入查一次。\", \"questions\": [{\"id\": \"q1\", \"why\": \"当前可读范围内没有检索到气泵供应商记录，我无法确认收件方名称与邮箱。\", \"options\": [{\"label\": \"我现在填写供应商名称与邮箱\", \"value\": \"我直接告诉你供应商名称和邮箱\"}, {\"label\": \"先留【供应商名称/邮箱】占位，我自己填\", \"value\": \"先留占位符\"}], \"question\": \"这封邮件发给哪家供应商、哪位联系人？\", \"depends_on\": [], \"recommended\": {\"value\": \"我直接告诉你供应商名称和邮箱\", \"reason\": \"有明确收件方后邮件可直接发出，避免手改\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"催交期邮件需要指向具体样件与原承诺时间，否则供应商无法定位。\", \"options\": [{\"label\": \"我提供型号/批次号与原交期\", \"value\": \"我提供型号批次和原交期\"}, {\"label\": \"留占位符\", \"value\": \"先留占位符\"}], \"question\": \"样件的型号/批次号和原定交期是什么？\", \"depends_on\": [], \"recommended\": {\"value\": \"我提供型号批次和原交期\", \"reason\": \"具体批次与原交期是催交的核心锚点\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"邮件需要一个明确的回复截止日，否则无法形成催办压力与后续跟进节点。\", \"options\": [{\"label\": \"本周内（本周五前）\", \"value\": \"本周内回复\"}, {\"label\": \"3 个工作日内\", \"value\": \"三天内回复\"}, {\"label\": \"留【期望回复日期】占位\", \"value\": \"留占位符\"}], \"question\": \"希望对方在什么日期前回复？\", \"depends_on\": [], \"recommended\": {\"value\": \"留占位符\", \"reason\": \"回复期限需与您内部验证/试产计划一致，避免我替您定承诺时点\"}, \"allow_free_text\": true}], \"unfinished\": [\"未在当前可读范围找到气泵供应商、样件批次、交期或外部等待记录；若您允许，我可在本会话继续按更宽范围深查一次并回填邮件。\", \"邮件未发出、也未登记任何外部等待/催交记录，等您确认收件方与时点后再办理。\"]}",
+  "unfinished": [
+    "未在当前可读范围找到气泵供应商、样件批次、交期或外部等待记录；若您允许，我可在本会话继续按更宽范围深查一次并回填邮件。",
+    "邮件未发出、也未登记任何外部等待/催交记录，等您确认收件方与时点后再办理。"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "evidence.search:completed:1",
+    "model:completed:4",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 2
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

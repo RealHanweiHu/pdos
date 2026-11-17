@@ -1,0 +1,51 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-04",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 21.3,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 49901,
+  "held_tokens": 0,
+  "answer": "没有找到你以前交代过气泵报价对比口径的记录。在本轮可读范围内检索了四处：你的个人会话记录（两轮关键词：气泵/报价对比/口径、价格口径/对标/充气泵）、公司可读资料（气泵报价对比口径、统一价格口径/币种/渠道/含税运费）、本会话历史、品类「汽车充气泵」竞品知识库，均无命中。第二轮更宽口径的公司资料检索被本轮查找预算拦下，未完成。因此结论是「在已检索范围内未找到」，不等于你没有交代过——也可能记在预算之外的其他会话、其他品类或客户私域材料里。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:42:50.107715+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"在本人会话记录、公司可读资料、本会话历史、品类竞品知识库四个范围内，均未检索到曾指定气泵报价对比口径的记录\", \"是否曾在其他会话、其他品类或客户私域材料中交代过口径：本轮不可读，未知\", \"口径的各要素（币种、基准日期、地区、渠道、零售/促销、含税与运费、配置版本）是否已有既成约定：未登记，未知\", \"更宽关键词的公司资料检索因本轮查找预算用尽未完成，覆盖不完整\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"next_step\": \"如需确认，可在下一轮继续深入检索（放宽关键词、覆盖制造/工程类文档与品类参数口径），或由你直接确认一套默认统一口径后再据此做报价对比\", \"scope_note\": \"结果为「已检索范围内未找到」，不等于该口径不存在\", \"checked_scope\": [{\"scope\": \"memory.search（本人会话记录，关键词两轮）\", \"result\": \"0 命中\"}, {\"scope\": \"assistant.search（公司可读资料，第一轮）\", \"result\": \"0 命中\"}, {\"scope\": \"assistant.search（公司可读资料，第二轮放宽关键词）\", \"result\": \"未执行：本轮查找预算已用尽\"}, {\"scope\": \"conversation.history（本会话）\", \"result\": \"无既往轮次\"}, {\"scope\": \"category.knowledge.list（品类竞品，kind=competitor）\", \"result\": \"0 条\"}]}, \"status\": \"partial\", \"summary\": \"没有找到你以前交代过气泵报价对比口径的记录。在本轮可读范围内检索了四处：你的个人会话记录（两轮关键词：气泵/报价对比/口径、价格口径/对标/充气泵）、公司可读资料（气泵报价对比口径、统一价格口径/币种/渠道/含税运费）、本会话历史、品类「汽车充气泵」竞品知识库，均无命中。第二轮更宽口径的公司资料检索被本轮查找预算拦下，未完成。因此结论是「在已检索范围内未找到」，不等于你没有交代过——也可能记在预算之外的其他会话、其他品类或客户私域材料里。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本轮查找预算已用尽，较宽口径的一轮未跑完，覆盖尚不完整\", \"options\": [{\"label\": \"继续深入检索（放宽关键词，覆盖制造/工程与品类参数口径）\", \"value\": \"continue_deep_search\"}, {\"label\": \"不用了，就按当前结论\", \"value\": \"stop\"}], \"question\": \"要不要我在下一轮继续深入检索，确认你以前是否交代过口径？\", \"depends_on\": [], \"recommended\": {\"value\": \"continue_deep_search\", \"reason\": \"覆盖不完整，继续检索能显著降低「记在别处」被漏掉的风险\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"没有既有口径时，需要先有统一口径才能做可比的报价对比；草案供你确认后即可继续\", \"options\": [{\"label\": \"要，先起草口径表给我确认\", \"value\": \"draft_caliber\"}, {\"label\": \"先不定，等我确认检索结果\", \"value\": \"wait\"}], \"question\": \"如果确实没有既定口径，是否要我先按一套统一口径（币种、基准日期、地区、渠道、零售/促销、含税与运费、配置版本）把报价对比的取数表起草出来给你确认？\", \"depends_on\": [\"q1\"], \"recommended\": {\"value\": \"draft_caliber\", \"reason\": \"可在检索未完成时并行推进，且不产生业务写入\"}, \"allow_free_text\": true}], \"unfinished\": [\"更宽关键词的公司资料检索（价格口径/竞品对比/币种/渠道/含税运费/配置）因本轮查找预算用尽未完成\", \"未覆盖客户私域材料与本人其他会话/其他品类的口径交代\"]}",
+  "unfinished": [
+    "更宽关键词的公司资料检索（价格口径/竞品对比/币种/渠道/含税运费/配置）因本轮查找预算用尽未完成",
+    "未覆盖客户私域材料与本人其他会话/其他品类的口径交代"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.knowledge.list:completed:1",
+    "conversation.history:completed:1",
+    "memory.search:completed:2",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 1
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

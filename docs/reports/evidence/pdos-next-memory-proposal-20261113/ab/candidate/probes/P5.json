@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P5",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "eaf3cff6-6f58-4edb-bc47-50e6a868e88e",
+      "goal": "从现在起回复我都先给结论再给过程",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 16.3,
+      "used_tokens": 50496,
+      "held_tokens": 0,
+      "answer": "结论：已按\"先结论、后过程\"回复，并已把该约定作为待确认的偏好卡片与本次运行约束提出；卡片需你确认后才生效。过程：先用 memory.search（kind=note）在当前范围（汽车充气泵品类）查是否已有同类条目，结果为 0 条，仅关键词通道可用（本人会话记录未启用向量化），因此不存在重复条目；随后按\"从现在起…\"类指令提交 convention 记忆候选（scope=global，trigger 取你原话连续片段），并在 context_proposals.constraints 中以原文与实际 run_id eaf3cff6-6f58-4edb-bc47-50e6a868e88e 保留约束。未检索公司资料：本次不涉及业务事实。不存在已记住/已保存的记录，需你确认卡片。",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "memory.search": 1,
+        "model": 3
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "convention",
+          "text": "回复一律先给结论，再给过程",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "从现在起回复我都先给结论再给过程",
+              "run_id": "eaf3cff6-6f58-4edb-bc47-50e6a868e88e"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "回复一律先给结论，再给过程"
+  ]
+}

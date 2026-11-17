@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-02",
+  "question": "q2",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 18.7,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 35002,
+  "held_tokens": 0,
+  "answer": "已起草一段可直接发给客户的气泵报价告知话术（英文，2–3 句），依据你此前确认的约束\"给该客户的材料一律用英文\"。\n\n英文正文：\n\"Thank you for your inquiry about our automotive inflator pumps. We are preparing the quotation for the models you asked about, and we will send it to you within this week. Please let me know if you would like any additional models, specifications or delivery options included in the quote.\"\n\n说明：未写入任何未确认信息（型号清单、价格区间、交期、付款条件均留空），只承诺\"本周内给出报价\"这一件事，未指定具体截止日期。若你希望给客户一个明确时点（如本周五前）或把交期/付款条件写进正文，告诉我即可改。",
+  "answer_blob": "{\"result\": {\"draft\": {\"text\": \"Thank you for your inquiry about our automotive inflator pumps. We are preparing the quotation for the models you asked about, and we will send it to you within this week. Please let me know if you would like any additional models, specifications or delivery options included in the quote.\", \"audience\": \"customer\", \"language\": \"en\"}, \"assistant\": {\"kind\": \"general\", \"lookup\": \"not_run\", \"version\": 1}}, \"status\": \"completed\", \"summary\": \"已起草一段可直接发给客户的气泵报价告知话术（英文，2–3 句），依据你此前确认的约束\\\"给该客户的材料一律用英文\\\"。\\n\\n英文正文：\\n\\\"Thank you for your inquiry about our automotive inflator pumps. We are preparing the quotation for the models you asked about, and we will send it to you within this week. Please let me know if you would like any additional models, specifications or delivery options included in the quote.\\\"\\n\\n说明：未写入任何未确认信息（型号清单、价格区间、交期、付款条件均留空），只承诺\\\"本周内给出报价\\\"这一件事，未指定具体截止日期。若你希望给客户一个明确时点（如本周五前）或把交期/付款条件写进正文，告诉我即可改。\", \"questions\": [], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "model:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [
+      "other",
+      "r1"
+    ],
+    "catalog": [
+      "other",
+      "r1"
+    ],
+    "sessions_read": [],
+    "notes": [
+      "n1"
+    ],
+    "note_revisions": {
+      "n1": 1
+    }
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

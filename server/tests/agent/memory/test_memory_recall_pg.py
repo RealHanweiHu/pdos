@@ -349,7 +349,7 @@ def test_an_old_conclusion_is_found_by_the_words_of_its_answer(setup, index_firs
     other, _ = answered(setup, "整理样件编号规则", "编号规则已整理成表。", unfinished=())
     if index_first:
         assert index_episode(setup.engine, reference(setup, earlier))["rows"] == [
-            "episode", "answer"]
+            "episode", "answer", "object"]
         index_episode(setup.engine, reference(setup, other))
     current, _ = start(setup, goal="上次外壳缩水是什么原因？")
     result = search(setup, current, query="外壳缩水 保压")
@@ -413,16 +413,18 @@ def test_an_answer_of_a_wider_outbound_class_is_not_found_by_its_words(setup):
     assert result["items"] == [] and "缩水" not in str(result["items"])
 
 
+# Episodes indexed before s0_0888 (own words only) and before s0_0894 (no object row).
+@pytest.mark.parametrize("older", [("episode",), ("episode", "answer")])
 def test_an_episode_indexed_before_the_answer_row_existed_is_pending_until_it_has_one(
-        setup, monkeypatch):
+        setup, monkeypatch, older):
     from sqlalchemy import text
 
     from pdos_next.agent.enterprise_search.tokenizer import version
     from pdos_next.agent.memory import index
 
     earlier, _ = answered(setup, "分析注塑件不良的原因")
-    monkeypatch.setattr(index, "KINDS", ("episode",))
-    assert index_episode(setup.engine, reference(setup, earlier))["rows"] == ["episode"]
+    monkeypatch.setattr(index, "KINDS", older)
+    assert index_episode(setup.engine, reference(setup, earlier))["rows"] == list(older)
     monkeypatch.undo()
 
     def pending():
@@ -439,6 +441,101 @@ def test_an_episode_indexed_before_the_answer_row_existed_is_pending_until_it_ha
     lagging = search(setup, current, query="外壳缩水")  # Found by the lag scan meanwhile.
     assert [item["run_id"] for item in lagging["items"]] == [str(earlier)]
     assert lagging["retrieval"]["index_pending"] == 1
-    assert index_episode(setup.engine, reference(setup, earlier))["rows"] == ["answer"]
+    assert index_episode(setup.engine, reference(setup, earlier))["rows"] == [
+        kind for kind in index.KINDS if kind not in older]
     assert pending() == []
     assert search(setup, current, query="外壳缩水")["retrieval"]["index_pending"] == 0
+
+
+# --- D482 余项 ① (P121 第 1 项): titles of the specific objects a Run focused on. ---
+
+TITLE = "注塑模具冷却水路图纸（第三版）"
+
+
+def material(setup, title=TITLE):
+    """A synthetic category material a peer registered; the owner can read it."""
+    from tests.categories.preproject.test_g0 import post, request
+
+    registered = post(setup, request(setup, "evidence.artifact.register", {
+        "title": title, "content": "合成正文，仅用于对象标题索引验证。",
+        "source_label": "合成资料", "visibility": "category",
+    }), actor=setup.peer)
+    assert registered.status_code == 200, registered.text
+    return UUID(registered.json()["subject_id"])
+
+
+def withdraw(setup, artifact):
+    from sqlalchemy import text
+
+    from pdos_next.core.models import Artifact
+
+    with Session(setup.admin) as session, session.begin():
+        # Synthetic fixture only: the material is withdrawn, as a withdrawal leaves it.
+        session.execute(text("SET LOCAL session_replication_role = replica"))
+        session.get(Artifact, artifact).status = "withdrawn"
+
+
+def object_row(setup, run_id):
+    from sqlalchemy import select
+
+    from pdos_next.agent.memory.models import MemoryIndexEntry
+
+    with Session(setup.admin) as session:
+        return session.scalar(select(MemoryIndexEntry).where(
+            MemoryIndexEntry.episode_id == episode(setup, run_id).id,
+            MemoryIndexEntry.source_kind == "object"))
+
+
+def read_material(setup, goal, artifact):
+    return answered(setup, goal, "已核对，没有发现问题。", unfinished=(),
+                    sources=[{"artifact_id": str(artifact), "expected_revision": 1}])
+
+
+@pytest.mark.parametrize("index_first", [True, False])
+def test_a_run_is_found_by_the_title_of_the_material_it_read(setup, index_first):
+    artifact = material(setup)
+    earlier, first = read_material(setup, "帮我看一下这份资料有没有问题", artifact)
+    other, _ = answered(setup, "整理样件编号规则", "编号规则已整理成表。", unfinished=())
+    assert [item["kind"] for item in episode(setup, earlier).body["focus_objects"]].count(
+        "artifact") == 1
+    if index_first:
+        for run_id in (earlier, other):
+            assert index_episode(setup.engine, reference(setup, run_id))["rows"] == [
+                "episode", "answer", "object"]
+        assert object_row(setup, earlier).token_count > 0
+        assert object_row(setup, other).token_count == 0  # Scope titles are not indexed.
+    current, _ = start(setup, goal="上次看冷却水路图纸的那次")
+    result = search(setup, current, query="冷却水路图纸")
+    assert [item["run_id"] for item in result["items"]] == [str(earlier)]
+    assert result["items"][0]["matched_in"] == ["object_title"]
+    assert result["retrieval"]["index_pending"] == (0 if index_first else 2)
+    assert TITLE not in str(result)  # The card says what matched, not the title itself.
+    # The owner's Session list search still matches own words only.
+    path = f"/v1/categories/{setup.category}/agent-conversations"
+    listed = setup.client.get(path, headers=setup.headers, params={"q": "冷却 水路 图纸"})
+    assert listed.status_code == 200, listed.text
+    assert first["session_id"] not in [item["session_id"] for item in listed.json()["items"]]
+
+
+def test_an_unreadable_object_title_is_not_indexed_and_a_revoked_one_hides_the_episode(setup):
+    hidden = material(setup, "密封圈供应商对比表")
+    unread, _ = read_material(setup, "看看这份对比表", hidden)
+    withdraw(setup, hidden)
+    # Gone before indexing: the owner cannot read it, so its title is not taken in.
+    index_episode(setup.engine, reference(setup, unread))
+    assert object_row(setup, unread).token_count == 0
+    artifact = material(setup)
+    earlier, _ = read_material(setup, "帮我看一下这份资料有没有问题", artifact)
+    index_episode(setup.engine, reference(setup, earlier))
+    assert object_row(setup, earlier).token_count > 0
+    current, _ = start(setup, goal="冷却水路图纸")
+    assert [item["run_id"] for item in search(setup, current, query="冷却水路图纸")["items"]] == [
+        str(earlier)]
+    # Gone after indexing: the title is still in the row, but memory.search's
+    # per-item recheck against the dependency manifest drops the episode, unannounced.
+    withdraw(setup, artifact)
+    later, _ = start(setup, goal="冷却水路图纸")
+    again = search(setup, later, query="冷却水路图纸")
+    assert again["items"] == [] and again["returned"] == 0
+    assert "冷却水路" not in str(again) and str(earlier) not in str(again)
+    assert search(setup, later, query="密封圈供应商对比表")["items"] == []

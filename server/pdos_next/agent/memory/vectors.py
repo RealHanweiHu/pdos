@@ -289,3 +289,92 @@ def nearest(session, run, vector, profile_version_id, conditions):
         .limit(VECTOR_POOL)
     ).all()
     return [row.episode_id for row in rows if math.isfinite(row.distance)]
+
+
+# ---------------------------------------------------------------------------
+# Which vector space memory.search uses (design §14.9 嵌入版本; D300).
+#
+# An administrator moves to a new embedding model by adding a new profile that
+# selects “本人会话记录” beside the old one. While both are active, background
+# work embeds every new episode into both (memory_pending_vector_references
+# lists every active version, s0_0894). memory.search keeps querying the old
+# space until the new one holds every eligible episode the owner had when the
+# new version was saved, then switches. One query only ever uses one space; the
+# two spaces' scores are never fused. When the old profile is disabled or
+# superseded it is neither dispatched nor queried any more; its rows stay
+# append-only until a purge rule exists (D551).
+
+
+def active_versions(session):
+    """Current, enabled profile versions that select “本人会话记录”, newest first."""
+    from sqlalchemy import and_
+
+    from pdos_next.agent.enterprise_search.embedding_models import (
+        EmbeddingProfile,
+        EmbeddingProfileHead,
+    )
+
+    rows = session.scalars(
+        select(EmbeddingProfile).join(EmbeddingProfileHead, and_(
+            EmbeddingProfileHead.tenant_id == EmbeddingProfile.tenant_id,
+            EmbeddingProfileHead.profile_id == EmbeddingProfile.profile_id,
+            EmbeddingProfileHead.revision == EmbeddingProfile.revision,
+            EmbeddingProfileHead.enabled, EmbeddingProfile.enabled,
+        )).order_by(EmbeddingProfile.created_at.desc(), EmbeddingProfile.id.desc())
+    ).all()
+    return [row for row in rows
+            if OWNER_SESSION in (row.metadata_json or {}).get("data_categories", [])]
+
+
+def _eligible(selected):
+    """Same eligibility as memory_pending_vector_references, for the owner's own Runs."""
+    from pdos_next.agent.kernel.models import AgentRun
+
+    conditions = [AgentRun.id == MemoryEpisode.run_id, ~AgentRun.private_context]
+    if "customer" not in selected:
+        conditions += [~AgentRun.data_categories.contains(["customer"]),
+                       func.jsonb_array_length(func.coalesce(
+                           AgentRun.customer_identities, text("'[]'::jsonb"))) == 0]
+    if "customer_original" not in selected:
+        conditions.append(~AgentRun.data_categories.contains(["customer_original"]))
+    return select(AgentRun.id).where(*conditions).exists()
+
+
+def coverage(session, owner_id, version):
+    """How far one version's space covers the owner: vectors held, backlog left."""
+    held = session.scalar(select(func.count()).select_from(MemoryEpisodeVector).where(
+        MemoryEpisodeVector.owner_id == owner_id,
+        MemoryEpisodeVector.profile_version_id == version.id))
+    has = select(MemoryEpisodeVector.id).where(
+        MemoryEpisodeVector.episode_id == MemoryEpisode.id,
+        MemoryEpisodeVector.profile_version_id == version.id).exists()
+    backlog = session.scalar(select(func.count()).select_from(MemoryEpisode).where(
+        MemoryEpisode.owner_id == owner_id, MemoryEpisode.created_at <= version.created_at,
+        _eligible(set((version.metadata_json or {}).get("data_categories", []))), ~has))
+    return {"profile_version_id": version.id, "vectors": held, "backlog": backlog,
+            "coverage": "complete" if held and not backlog else "partial"}
+
+
+def serving(session, owner_id):
+    """The version memory.search queries for this owner, or None when none is selected.
+
+    The newest version whose space is complete wins. Before any is complete (a
+    first enablement, or the old profile disabled before the new one caught up),
+    the version holding the most of the owner's vectors serves, marked partial;
+    keyword retrieval runs beside it either way, so nothing looks empty.
+    """
+    versions = active_versions(session)
+    if not versions:
+        return None
+    stats = [coverage(session, owner_id, version) for version in versions]
+    complete = [item for item in stats if item["coverage"] == "complete"]
+    # ``stats`` is newest first, so max() keeps the newest among equal counts.
+    chosen = complete[0] if complete else max(stats, key=lambda item: item["vectors"])
+    return {**chosen, "active_versions": [str(item["profile_version_id"]) for item in stats],
+            "switching": len(stats) > 1}
+
+
+def select_profile(scope, session, run):
+    """Trusted host selector for the memory query embedding (QueryPorts.run_selector)."""
+    chosen = serving(session, run.requester_id)
+    return chosen["profile_version_id"] if chosen else None

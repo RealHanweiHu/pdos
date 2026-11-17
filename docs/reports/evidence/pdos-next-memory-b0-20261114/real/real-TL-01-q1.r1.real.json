@@ -1,0 +1,77 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 106.0,
+  "clarifications": [
+    "B 家报价单上写的交期单位是什么（天/周/月，具体数值）？",
+    "C 家的含税报价单在哪里？请提供含税单价、币种、税点、是否含运与模具费、MOQ 与有效期。",
+    "目标价用的是哪个口径：币种、是否含税含运、配置（型号/规格/配件）、MOQ 档位？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 275279,
+  "held_tokens": 0,
+  "answer": "核对完成：历史记录里能查到的只有一条情景卡（2026-11-15，run 88ef25eb）——结论是建议选 B 家（交期比 A 家短 2 周）、C 家含税报价超目标价 12% 已被排除；当时自挂两项未完成：补 C 家含税报价单、核对 B 家交期单位。该记录本身没有挂任何来源（sources/research 均为空）。三个问题在所有可查范围内都查不到答案：C 家含税报价单数值或原件、B 家交期的单位、目标价口径与数值——三项均为查不到，无任何留存记录。当前品类（汽车充气泵）范围内也无可核数据：检索供应商报价/交期 0 命中，品类知识各项 0、规格参数 0 条（含历史），产品与变体为空，证据行为空，MCP 只读连接器为空，公开研究通道未配置。因此“12%”“短 2 周”两个数字目前无法复算、无来源可引，本次不产生任何引用编号；两项未完成事项仍开放，等有单据即可闭环。",
+  "answer_blob": "{\"result\": {\"research\": {\"jobs\": [{\"ledger\": [], \"status\": \"unavailable\", \"coverage\": [], \"failures\": [{\"reason\": \"SOURCE_UNAVAILABLE\", \"message\": \"此读取能力尚未配置。\"}], \"snapshots\": []}], \"version\": 1, \"row_count\": 0, \"source_count\": 0}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:37:46.082688+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"C 家含税报价单（含税单价、币种、税点、是否含运/模具费、MOQ、有效期）：历史记录与全部可查范围内均查不到\", \"B 家交期单位（天/周/月及具体数值）：查不到，“比 A 家短 2 周”仅为情景卡措辞，原始单据无留存\", \"目标价口径与数值（币种、含税含运、配置、MOQ）：查不到，12% 无可复算基准\", \"A/B/C 三家报价与交期在当前品类范围（汽车充气泵 c36de233）内 0 条登记数据\", \"品类规格参数 0 条，无法进行同口径规格对比\", \"公开研究通道 research.fanout 未配置、MCP 只读连接器为空，无外部基准可取\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"task_result\": {\"rows\": [{\"cells\": {\"owner\": {\"status\": \"unspecified\"}, \"blocker\": {\"text\": \"历史记录中查不到 C 家含税报价单的任何数值或原件。\", \"status\": \"not_recorded\"}, \"decision\": {\"status\": \"unspecified\"}, \"next_step\": {\"text\": \"补齐 C 家含税报价单字段后，按统一口径（币种/日期/含税运/配置/MOQ）用 calc.price_band 复算价格带与目标价位置。\", \"status\": \"to_confirm\"}, \"conclusion\": {\"text\": \"情景卡（2026-11-15，run 88ef25eb）载：建议选 B 家（交期比 A 家短 2 周）；C 家含税报价超目标价 12%，已排除。该卡 sources/research 均为空，结论无来源支撑，无法复算。\", \"status\": \"to_confirm\"}}}, {\"cells\": {\"owner\": {\"status\": \"unspecified\"}, \"blocker\": {\"text\": \"B 家交期单位（天/周/月）及数值无任何留存记录。\", \"status\": \"not_recorded\"}, \"decision\": {\"status\": \"unspecified\"}, \"next_step\": {\"text\": \"确认 B 家交期单位后与 A 家按同一单位折算重比，再决定是否维持 B 家优选。\", \"status\": \"to_confirm\"}, \"conclusion\": {\"text\": \"情景卡载 B 家交期领先 A 家 2 周；B 家交期单位在全部可查记录中查不到，领先幅度无法验证。\", \"status\": \"to_confirm\"}}}, {\"cells\": {\"owner\": {\"status\": \"unspecified\"}, \"blocker\": {\"text\": \"目标价的币种、含税含运、配置与 MOQ 档位均无记录。\", \"status\": \"not_recorded\"}, \"decision\": {\"status\": \"unspecified\"}, \"next_step\": {\"text\": \"确认目标价口径后，把三家价格点登记为可核证据并重算同口径对比。\", \"status\": \"to_confirm\"}, \"conclusion\": {\"text\": \"目标价口径与数值查不到，12% 的超价结论无基准可比。\", \"status\": \"not_recorded\"}}}, {\"cells\": {\"owner\": {\"status\": \"unspecified\"}, \"blocker\": {\"text\": \"三家供应商数据未落库，缺可核来源，阻断价格带与规格对比计算。\", \"status\": \"to_confirm\"}, \"decision\": {\"status\": \"unspecified\"}, \"next_step\": {\"text\": \"拿到单据后补登竞品与价格点证据、建立规格参数，再跑 calc.price_band 与 calc.spec_compare，避免再次出现结论无来源。\", \"status\": \"to_confirm\"}, \"conclusion\": {\"text\": \"本轮覆盖核查：品类内检索“供应商/报价/含税/交期”0 命中；品类知识各类计数 0、参数 0 条（含历史）；产品与变体读取为空（含历史）；证据行为空；MCP 只读工具列表为空；公开研究通道未配置；本轮检索预算随后耗尽。\", \"status\": \"not_recorded\"}}}], \"format\": \"blockers\"}}, \"status\": \"partial\", \"summary\": \"核对完成：历史记录里能查到的只有一条情景卡（2026-11-15，run 88ef25eb）——结论是建议选 B 家（交期比 A 家短 2 周）、C 家含税报价超目标价 12% 已被排除；当时自挂两项未完成：补 C 家含税报价单、核对 B 家交期单位。该记录本身没有挂任何来源（sources/research 均为空）。三个问题在所有可查范围内都查不到答案：C 家含税报价单数值或原件、B 家交期的单位、目标价口径与数值——三项均为查不到，无任何留存记录。当前品类（汽车充气泵）范围内也无可核数据：检索供应商报价/交期 0 命中，品类知识各项 0、规格参数 0 条（含历史），产品与变体为空，证据行为空，MCP 只读连接器为空，公开研究通道未配置。因此“12%”“短 2 周”两个数字目前无法复算、无来源可引，本次不产生任何引用编号；两项未完成事项仍开放，等有单据即可闭环。\", \"questions\": [], \"unfinished\": [\"补 C 家含税报价单（全部可查范围内查不到）\", \"核对 B 家交期单位（查不到）\", \"确认目标价口径与数值（查不到）\", \"把 A/B/C 三家报价与交期落库为可核数据（当前品类范围 0 条）\", \"补登品类规格参数以支持同口径规格对比（当前 0 条）\"]}",
+  "unfinished": [
+    "补 C 家含税报价单（全部可查范围内查不到）",
+    "核对 B 家交期单位（查不到）",
+    "确认目标价口径与数值（查不到）",
+    "把 A/B/C 三家报价与交期落库为可核数据（当前品类范围 0 条）",
+    "补登品类规格参数以支持同口径规格对比（当前 0 条）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:2",
+    "category.list:completed:1",
+    "category.parameters.list:completed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:4",
+    "evidence.search:completed:2",
+    "mcp.tools.list:completed:1",
+    "memory.search:completed:4",
+    "model:completed:12",
+    "platform.read:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 4,
+    "conversation.history": 4
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "catalog": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "sessions_read": [
+      "r1",
+      "r2",
+      "r3"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

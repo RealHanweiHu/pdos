@@ -1,0 +1,61 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "ideal",
+  "timeline": "TL-06",
+  "question": "q1",
+  "repeat": 1,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 68.7,
+  "clarifications": [
+    "那次三家供应商比较的记录，最可能保存在哪里？",
+    "是否允许我把检索范围扩大到当前品类之外（跨品类/全公司可读来源）再找一轮？",
+    "找到后你希望我输出什么？"
+  ],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 167470,
+  "held_tokens": 0,
+  "answer": "查不到。在我能查到的范围里，没有任何\"三家气泵供应商比较\"的记录，因此也就没有当时建议选哪家的结论。\n\n已核查并确认为空的范围：\n1) 公司资料检索（当前品类\"汽车充气泵\"，含历史）→ 0 条；\n2) 品类对象库：竞品知识 0 条、参数 0 条、品类边界/细分/用户声音/法规 0 条、平台产品/型号列表为空（仅 1 个合成模型）；\n3) 本会话历史无更早轮次；\n4) 我方个人工作记忆（关键词检索 episode/note）→ 0 条。\n\n未能覆盖的部分：全公司范围的跨品类检索两次被本轮查找预算限流拒绝（RATE_LIMITED / MODEL_BUDGET_EXCEEDED），所以不能断言\"公司内不存在这份比较\"，只能说\"在已检索到的范围内未找到\"。\n\n要拿到当时的推荐对象，需要你提供那份比较的载体（客户RFQ/邮件、提案条目、竞品表、评审记录或文档附件），或允许在查找预算恢复后于同会话再跑一轮全公司检索；一旦有固定版本引用，我按原口径复述当时结论并标注依据是否仍成立。",
+  "answer_blob": "{\"result\": {\"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T10:52:47.003714+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"在当前可检索范围（当前品类公司资料检索0条、品类竞品/参数/知识条目全为空、平台产品列表为空、本会话无更早轮次、个人工作记忆关键词检索0条）内未找到三家气泵供应商比较的任何记录\", \"当时的三家候选供应商名称、对比维度、评价依据均未知\", \"当时是否给出推荐、推荐哪家及其理由未知\", \"全公司跨品类检索因本轮查找预算限流未能执行，故无法判断该比较记录是否存在于当前品类之外\", \"无法确认该比较记录是否曾以提案/评审/竞品条目或外部沟通形式存在\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"查不到。在我能查到的范围里，没有任何\\\"三家气泵供应商比较\\\"的记录，因此也就没有当时建议选哪家的结论。\\n\\n已核查并确认为空的范围：\\n1) 公司资料检索（当前品类\\\"汽车充气泵\\\"，含历史）→ 0 条；\\n2) 品类对象库：竞品知识 0 条、参数 0 条、品类边界/细分/用户声音/法规 0 条、平台产品/型号列表为空（仅 1 个合成模型）；\\n3) 本会话历史无更早轮次；\\n4) 我方个人工作记忆（关键词检索 episode/note）→ 0 条。\\n\\n未能覆盖的部分：全公司范围的跨品类检索两次被本轮查找预算限流拒绝（RATE_LIMITED / MODEL_BUDGET_EXCEEDED），所以不能断言\\\"公司内不存在这份比较\\\"，只能说\\\"在已检索到的范围内未找到\\\"。\\n\\n要拿到当时的推荐对象，需要你提供那份比较的载体（客户RFQ/邮件、提案条目、竞品表、评审记录或文档附件），或允许在查找预算恢复后于同会话再跑一轮全公司检索；一旦有固定版本引用，我按原口径复述当时结论并标注依据是否仍成立。\", \"questions\": [], \"unfinished\": [\"全公司跨品类检索被查找预算限流拒绝，未能完成一次覆盖全部可读来源的复查（结论仅限已检索范围）\", \"待用户提供比较记录载体或查找预算恢复后，在同会话补跑全公司检索并按固定版本复述当时结论\"]}",
+  "unfinished": [
+    "全公司跨品类检索被查找预算限流拒绝，未能完成一次覆盖全部可读来源的复查（结论仅限已检索范围）",
+    "待用户提供比较记录载体或查找预算恢复后，在同会话补跑全公司检索并按固定版本复述当时结论"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:2",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "category.list:failed:1",
+    "category.read:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:1",
+    "memory.search:completed:2",
+    "model:completed:9",
+    "platform.read:completed:2"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

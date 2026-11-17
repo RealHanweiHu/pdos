@@ -1,0 +1,63 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-01",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 89.7,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 146236,
+  "held_tokens": 0,
+  "answer": "上次（2026-11-15，历史会话 c46bf8dc…，目标“比较三家气泵供应商的报价和交期”）的结论是：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12%，已排除。未完成两件：补 C 家的含税报价单、核对 B 家交期的单位（历史记录本身没写是“天”还是“周”）。本轮我按“接着往下做”尝试推进：在“汽车充气泵”品类范围内检索供应商报价/交期资料（企业检索：artifact/supply/knowledge/project_status/external_wait，0 命中）、证据检索（0 命中）、品类知识与竞品列表（空）、平台产品/变体列表（空），本轮企业检索预算随后用尽，因此上述两项未完工作在当前可读范围内没有可核原始记录支撑，无法自行补齐或核对单位。注意：上述结论与数字来自上一轮的历史回答记录（情景卡 + 历史会话），不是本轮重新核实的业务事实，A/B/C 三家的具体名称与报价明细在当前范围无法还原。等你把 C 家含税报价单和 B 家交期原文（确认单位）给我，我就能按统一口径（含税/含运/目标价、同一时间单位）用计算工具复算并给出最终选型结论。",
+  "answer_blob": "{\"result\": {\"unknowns\": [\"A/B/C 三家供应商的名称、型号与对应关系\", \"B 家交期的绝对数值与单位（天或周）\", \"C 家含税报价的绝对金额\", \"A 家报价与目标价口径下的水平（历史记录未含）\", \"“目标价 12%”所依据的目标价定义与币种/日期口径\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T11:47:14.766975+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"prior_work\": {\"goal\": \"比较三家气泵供应商的报价和交期\", \"as_of\": \"2026-11-15T11:46:50Z\", \"found\": true, \"run_id\": \"5029c772-6e12-4a48-afca-9d30aa1494d0\", \"conclusion\": [\"建议选 B 家：交期比 A 家短 2 周\", \"C 家含税报价超出目标价 12%，已排除\"], \"session_id\": \"c46bf8dc-4801-4620-bed4-5344e4121234\", \"source_type\": \"historical_conversation_record\", \"evidence_status\": \"仅为当时会话记录（情景卡 + 历史回答摘录），非当前可核业务事实；本轮未检索到对应供应商原始记录，数字未重新核实\", \"unfinished_at_that_time\": [\"补 C 家的含税报价单\", \"核对 B 家交期的单位\"]}, \"citation_ids\": [], \"continuation\": {\"next_actions\": [\"收到 C 家含税报价单与 B/A 交期原文后，用 calc.price_band / calc.cost_subtotal 按统一口径（含税、含运、币种、日期、同一时间单位）复算\", \"复算后与历史结论（选 B、C 超目标价 12%）对照，若与当时口径不同则以复算为准并说明差异\", \"可按需把 B 选型结论回写到品类/立项条目，形成正式选型记录\"], \"blocked_items\": [{\"item\": \"补 C 家的含税报价单\", \"needs\": \"C 家含税报价单原文/附件\", \"reason\": \"当前可读范围无该报价单记录或附件\"}, {\"item\": \"核对 B 家交期的单位\", \"needs\": \"B 家交期原文（天/周）+ A 家对应交期\", \"reason\": \"历史记录只写“比 A 家短 2 周”，无单位、无绝对天数记录\"}], \"attempted_this_run\": [\"assistant.search(品类=汽车充气泵, 来源=artifact/supply/knowledge/project_status/external_wait) → 0 命中\", \"assistant.search(宽查询) → 本轮查找预算用尽(RATE_LIMITED)\", \"evidence.search(供应商/报价/交期/含税/气泵) → 0 命中\", \"category.competitors.list → 空\", \"category.knowledge.list → 空\", \"platform.read(品类/无过滤) → 空\", \"category.list → 仅当前品类一条\"], \"supplier_records_found\": 0}}, \"status\": \"partial\", \"summary\": \"上次（2026-11-15，历史会话 c46bf8dc…，目标“比较三家气泵供应商的报价和交期”）的结论是：建议选 B 家，交期比 A 家短 2 周；C 家含税报价超目标价 12%，已排除。未完成两件：补 C 家的含税报价单、核对 B 家交期的单位（历史记录本身没写是“天”还是“周”）。本轮我按“接着往下做”尝试推进：在“汽车充气泵”品类范围内检索供应商报价/交期资料（企业检索：artifact/supply/knowledge/project_status/external_wait，0 命中）、证据检索（0 命中）、品类知识与竞品列表（空）、平台产品/变体列表（空），本轮企业检索预算随后用尽，因此上述两项未完工作在当前可读范围内没有可核原始记录支撑，无法自行补齐或核对单位。注意：上述结论与数字来自上一轮的历史回答记录（情景卡 + 历史会话），不是本轮重新核实的业务事实，A/B/C 三家的具体名称与报价明细在当前范围无法还原。等你把 C 家含税报价单和 B 家交期原文（确认单位）给我，我就能按统一口径（含税/含运/目标价、同一时间单位）用计算工具复算并给出最终选型结论。\", \"questions\": [{\"id\": \"q_c_quote\", \"why\": \"上次未完的第一件事就是补这张单子；没有它，C 家的“超目标价 12%”只有比例、没有金额，也无法与 A/B 同口径复算。\", \"options\": [{\"label\": \"我现在附上 C 家含税报价单\", \"value\": \"attach_c_quote\"}, {\"label\": \"我把报价单关键数字直接贴给你（金额、含税与否、币种、日期）\", \"value\": \"paste_c_quote\"}, {\"label\": \"暂不补 C 家，只在 A、B 之间推进\", \"value\": \"drop_c\"}, {\"label\": \"我先去内部系统/邮件里找，稍后再给你\", \"value\": \"locate_later\"}], \"question\": \"C 家的含税报价单你手上有吗？直接附上（PDF/Excel/邮件原文）即可。\", \"depends_on\": [], \"recommended\": {\"value\": \"paste_c_quote\", \"reason\": \"最快把结论补全：金额+币种+日期+含税口径四个字段就能进入同口径复算\"}, \"allow_free_text\": true}, {\"id\": \"q_b_leadtime_unit\", \"why\": \"历史结论“B 家比 A 家短 2 周”没有记录单位与绝对天数，单位不明会让“短 2 周”与报价一起进入同一张表时出错，也会直接影响是否选 B。\", \"options\": [{\"label\": \"天\", \"value\": \"days\"}, {\"label\": \"周\", \"value\": \"weeks\"}, {\"label\": \"我贴 B 家交期原文，你自己判读\", \"value\": \"have_source\"}, {\"label\": \"我也不确定，需要向供应商确认\", \"value\": \"unknown\"}], \"question\": \"B 家交期的单位按哪个为准？\", \"depends_on\": [], \"recommended\": {\"value\": \"have_source\", \"reason\": \"以原文为准可避免再次靠推断写入单位口径\"}, \"allow_free_text\": true}, {\"id\": \"q_a_scope\", \"why\": \"上次结论只说明了 B 的交期优势，C 被排除；A 家的报价与目标价关系在记录里缺失，不确认范围就可能把选型结论建立在不完整的对比上。\", \"options\": [{\"label\": \"要，A/B 同口径一起复比\", \"value\": \"compare_all\"}, {\"label\": \"A 家已因其他原因出局，只需 B 对目标价\", \"value\": \"a_out\"}, {\"label\": \"不用复比，沿用上次结论（B 家）\", \"value\": \"no_recompare\"}], \"question\": \"A 家这轮要不要一起复比？\", \"depends_on\": [], \"recommended\": {\"value\": \"compare_all\", \"reason\": \"上次未完成项之一正是口径核对，复比一次即可让选型结论自洽\"}, \"allow_free_text\": true}], \"unfinished\": [\"补 C 家的含税报价单：当前可读范围无该单据，需你提供原文或附件\", \"核对 B 家交期单位（天/周）及绝对天数，并确认 A 家交期以便同口径复算\", \"确认 A 家报价是否需要与 B 家同口径复比（历史记录未含 A 家报价水平）\", \"三家供应商名称与型号对应关系在当前范围无法还原，需要时由你补充对应关系\", \"拿到材料后用 calc.price_band / calc.cost_subtotal 做同口径复算，并回写选型结论（尚未执行）\"]}",
+  "unfinished": [
+    "补 C 家的含税报价单：当前可读范围无该单据，需你提供原文或附件",
+    "核对 B 家交期单位（天/周）及绝对天数，并确认 A 家交期以便同口径复算",
+    "确认 A 家报价是否需要与 B 家同口径复比（历史记录未含 A 家报价水平）",
+    "三家供应商名称与型号对应关系在当前范围无法还原，需要时由你补充对应关系",
+    "拿到材料后用 calc.price_band / calc.cost_subtotal 做同口径复算，并回写选型结论（尚未执行）"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "category.competitors.list:completed:1",
+    "category.knowledge.list:completed:1",
+    "category.list:completed:1",
+    "conversation.history:completed:2",
+    "evidence.search:completed:4",
+    "memory.search:completed:1",
+    "model:completed:8",
+    "platform.read:completed:2",
+    "product.baseline.read:failed:1"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

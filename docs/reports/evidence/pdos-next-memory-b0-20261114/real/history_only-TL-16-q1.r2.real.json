@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-16",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "partial",
+  "seconds": 35.6,
+  "clarifications": [],
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 48315,
+  "held_tokens": 0,
+  "answer": "已按用户要求起草一封简短的气泵供应商样件催交期邮件（主题+正文+落款），但因本轮公司资料检索在可读范围内未返回任何气泵供应商的采购/样件/外部等待记录，供应商名称、收件人、订单号与原承诺交期均无法取到，已在邮件中留空位并在正文向用户提出三处待补信息。用户同意后可在同会话继续深入检索供应记录。",
+  "answer_blob": "{\"result\": {\"email\": {\"body\": \"X 总，您好：\\n\\n关于贵司承接的气泵样件（型号/订单号：____），我方至今未收到发货通知。为不影响后续验证与试产排程，烦请确认并回复：\\n\\n1. 当前样件状态：是否已完工？是否待料或待检验？\\n2. 预计发货日期、承运方式与预计到货日期；\\n3. 若存在任何延误（材料、模具、验货、出口等），请说明原因及可实现的最早日期。\\n\\n请于 ____ 月 ____ 日前回复。如日期有变，也请提前告知，我们将据此调整后续计划。感谢配合！\\n\\n[你的姓名]｜[公司 / 部门]｜[电话]\", \"tone\": \"简短、催办但保持礼貌；含状态/发货日/到货日/延误原因/回复时限五项诉求\", \"subject\": \"【加急】气泵样件交期确认 — 请回复预计发货/到货日期\", \"placeholders\": [\"供应商名称\", \"收件人姓名与邮箱\", \"样件型号或订单号\", \"回复截止日期\", \"发件人姓名/部门/电话\", \"是否点名下游排期影响\"]}, \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:46:02.563318+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [\"气泵供应商名称与收件人邮箱（本轮检索无记录，未在公司可读范围找到）\", \"样件型号与订单号\", \"原承诺交期日期\", \"是否需要写明下游验证/试产排期影响\", \"本轮企业检索在品类 c62c369c-7124-4407-b978-5a6f20e434f2 范围内返回 0 条相关采购/样件/外部等待记录，查找预算已用尽\"], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"partial\", \"summary\": \"已按用户要求起草一封简短的气泵供应商样件催交期邮件（主题+正文+落款），但因本轮公司资料检索在可读范围内未返回任何气泵供应商的采购/样件/外部等待记录，供应商名称、收件人、订单号与原承诺交期均无法取到，已在邮件中留空位并在正文向用户提出三处待补信息。用户同意后可在同会话继续深入检索供应记录。\", \"questions\": [{\"id\": \"q1\", \"why\": \"我检索公司可读范围未找到该供应商的采购或外部等待记录，邮件抬头与联系方式只能留空。\", \"options\": [{\"label\": \"我直接告诉你\", \"value\": \"user_provides\"}, {\"label\": \"继续在本次会话里深挖供应/外部等待记录\", \"value\": \"search_deeper\"}, {\"label\": \"先留空，我自己填\", \"value\": \"keep_placeholder\"}], \"question\": \"气泵供应商名称和收件人（姓名 + 邮箱）是谁？\", \"depends_on\": [], \"recommended\": {\"value\": \"user_provides\", \"reason\": \"最快能直接定稿发送；系统内确实查不到相关记录\"}, \"allow_free_text\": true}, {\"id\": \"q2\", \"why\": \"有这两项才能在邮件里具体说明迟延事实，催办力度才站得住。\", \"options\": [{\"label\": \"我直接告诉你\", \"value\": \"user_provides\"}, {\"label\": \"先留空\", \"value\": \"keep_placeholder\"}], \"question\": \"样件的型号/订单号，以及对方原承诺交期是哪天？\", \"depends_on\": [], \"recommended\": {\"value\": \"user_provides\", \"reason\": \"决定邮件是具体催办还是泛化询问\"}, \"allow_free_text\": true}, {\"id\": \"q3\", \"why\": \"影响催办强度与是否给出明确回复期限。\", \"options\": [{\"label\": \"点名影响 + 3个工作日内回复\", \"value\": \"firm\"}, {\"label\": \"点名影响 + 5个工作日内回复\", \"value\": \"firm_week\"}, {\"label\": \"不点名影响 + 本周内回复\", \"value\": \"soft\"}], \"question\": \"邮件要不要点名下游影响（验证/试产排期），以及希望对方几天内回复？\", \"depends_on\": [], \"recommended\": {\"value\": \"firm\", \"reason\": \"交期不明会影响下游排程，明确回复期限最省来回沟通\"}, \"allow_free_text\": true}], \"unfinished\": [\"补齐供应商名称、收件人邮箱、样件型号/订单号、原承诺交期后定稿邮件\", \"如用户同意，继续在本次会话深入检索供应与外部等待记录，尝试定位原订单与交期承诺\"]}",
+  "unfinished": [
+    "补齐供应商名称、收件人邮箱、样件型号/订单号、原承诺交期后定稿邮件",
+    "如用户同意，继续在本次会话深入检索供应与外部等待记录，尝试定位原订单与交期承诺"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "model:completed:3"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 0,
+    "conversation.history": 0
+  },
+  "usage": {
+    "episodes": [],
+    "catalog": [],
+    "sessions_read": [],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

@@ -1,0 +1,54 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "history_only",
+  "timeline": "TL-02",
+  "question": "q1",
+  "repeat": 2,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 26.1,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 67600,
+  "held_tokens": 0,
+  "answer": "查到上次在同一品类「汽车充气泵」范围内的会话记录（另一会话，as_of 2026-11-15，目标为「比较三家气泵供应商的报价和交期」），当时的结论摘要为：「甲：建议选 B 家。」——即你上次的建议是选 B 家。需要说明两点限制：①该历史回答没有绑定任何引用或回执（来源清单为空），我只读到结论摘要，拿不到当时三家供应商的名称、报价数字与交期明细；②本轮在当前品类范围内检索供应商/供应/资料类来源，命中 0 条，因此现在无法用公司资料复核当时的对比依据。若要重建比选，需要你提供原始报价或交期材料，我可以在本会话重做并出成本与交期分布。",
+  "answer_blob": "{\"result\": {\"answer\": {\"as_of\": \"2026-11-15T12:04:07Z\", \"source_refs\": [], \"citation_ids\": [], \"verification\": {\"state\": \"not_verified\", \"reason\": \"历史回答无引用与回执；当前品类范围内检索供应商比选资料命中 0 条，无法复核报价与交期明细\"}, \"evidence_type\": \"historical_session_record\", \"historical_goal\": \"比较三家气泵供应商的报价和交期\", \"historical_run_id\": \"6f9d16bb-3c09-4f57-a7e1-b05b30772a39\", \"historical_status\": \"completed\", \"recommended_supplier\": \"B\", \"historical_session_id\": \"9ea50889-3102-4d32-b4cf-471c4d0944d8\", \"historical_answer_summary\": \"甲：建议选 B 家。\"}, \"unknowns\": [\"三家供应商的具体名称与 A/B/C 对应关系\", \"各家报价数值与交期天数\", \"当时结论所依据的原始比选材料位置\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T12:04:19.003069+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}}, \"status\": \"completed\", \"summary\": \"查到上次在同一品类「汽车充气泵」范围内的会话记录（另一会话，as_of 2026-11-15，目标为「比较三家气泵供应商的报价和交期」），当时的结论摘要为：「甲：建议选 B 家。」——即你上次的建议是选 B 家。需要说明两点限制：①该历史回答没有绑定任何引用或回执（来源清单为空），我只读到结论摘要，拿不到当时三家供应商的名称、报价数字与交期明细；②本轮在当前品类范围内检索供应商/供应/资料类来源，命中 0 条，因此现在无法用公司资料复核当时的对比依据。若要重建比选，需要你提供原始报价或交期材料，我可以在本会话重做并出成本与交期分布。\", \"questions\": [{\"id\": \"rebuild\", \"why\": \"历史结论只保留了「选 B 家」这一句，明细与证据已不可取回；没有原始材料无法复核或更新该建议。\", \"options\": [{\"label\": \"需要，我提供材料，重建三家比选并复核「选 B 家」是否仍成立\", \"value\": \"rebuild_with_new_materials\"}, {\"label\": \"不用，只是确认结论；我把「B 家」作为当前沿用建议记下\", \"value\": \"record_only\"}, {\"label\": \"先不重建，帮我查公司现有资料里有没有这家供应商的报价/交期记录\", \"value\": \"search_company_only\"}], \"question\": \"要我在本会话重建一次三家气泵供应商比选吗？如果要，请指给我报价单/交期表等原始材料（或说明存放位置）。\", \"depends_on\": [], \"recommended\": {\"value\": \"record_only\", \"reason\": \"用户只问结论，先交付结论并说明证据缺口，是否重建由用户决定。\"}, \"allow_free_text\": true}], \"unfinished\": [\"三家供应商的名称、报价与交期明细在当前权限与品类范围内未检索到，无法复核上次「建议选 B 家」的依据\", \"本轮检索预算已用完，若需在当前品类继续查供应商比选资料，需在后续轮次继续深入查\"]}",
+  "unfinished": [
+    "三家供应商的名称、报价与交期明细在当前权限与品类范围内未检索到，无法复核上次「建议选 B 家」的依据",
+    "本轮检索预算已用完，若需在当前品类继续查供应商比选资料，需在后续轮次继续深入查"
+  ],
+  "ledger": [
+    "assistant.search:completed:1",
+    "assistant.search:failed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:2",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 2,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1"
+    ],
+    "catalog": [],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

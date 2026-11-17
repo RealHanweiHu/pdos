@@ -82,7 +82,10 @@ def test_draft_activation_and_rollback_preserve_content_and_history(tmp_path):
     data = json.loads((directory / "registry.json").read_text())
     assert [item["kind"] for item in data["history"]] == ["activate", "rollback"]
     assert data["history"][0]["quality_status"] == "not_scored"
-    assert {item["status"] for item in data["versions"]} == {"active", "published"}
+    # Only the two versions this test moved; the package may hold other registered drafts.
+    assert {item["version"]: item["status"] for item in data["versions"]
+            if item["version"] in {original.version, candidate.version}} == {
+        original.version: "active", candidate.version: "published"}
 
 
 @pytest.mark.parametrize("version", ["../../escaped", "not semver", "/tmp/escaped"])

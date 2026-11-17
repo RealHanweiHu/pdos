@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-memory-timeline-real-observation/v0",
+  "group": "real",
+  "timeline": "TL-08",
+  "question": "q1",
+  "repeat": 0,
+  "fault": null,
+  "ideal_runs": [],
+  "injected_text": "",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "scripted_history": true,
+  "status": "completed",
+  "seconds": 22.1,
+  "clarifications": [],
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 67004,
+  "held_tokens": 0,
+  "answer": "记起来了：那是你上一次「汇总上周试产的不良项」的工作（run a4f06535，session f6bfc9f8，2026-11-15 上午）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——所以和外壳缩水一起列出的另外两项是气嘴漏气和按键卡滞。这份记录只是当时的工作留痕，不能当现在的业务事实；我在当前品类（汽车充气泵）范围内按 issue/capa/build/test_run 检索了外壳缩水相关记录，没有检索到可引用条目。",
+  "answer_blob": "{\"result\": {\"work\": {\"goal\": \"汇总上周试产的不良项\", \"as_of\": \"2026-11-15T09:57:18Z\", \"run_id\": \"a4f06535-b551-466f-9386-421ffc6d1e47\", \"status\": \"completed\", \"session_id\": \"f6bfc9f8-40c6-4d4a-87da-f7b1e467d22c\", \"outcome_state\": \"current\"}, \"unknowns\": [\"当前是否已有外壳缩水的正式不良/围堵/CAPA 记录，未在本次检索范围内找到\"], \"assistant\": {\"kind\": \"general\", \"as_of\": \"2026-11-15T09:57:36.834776+00:00\", \"lookup\": \"no_match\", \"notice\": \"在当前品类的可读资料中没有找到相关记录\", \"sources\": [], \"version\": 1, \"coverage\": {\"returned\": 0, \"unavailable\": []}, \"unknowns\": [], \"scope_label\": \"当前品类的可读资料\", \"citation_ids\": [], \"matched_count\": 0}, \"answer_basis\": \"conversation.history + memory.search（本人历史工作记录，as_of 2026-11-15）\", \"citation_ids\": [], \"mentioned_item\": \"外壳缩水\", \"current_fact_check\": {\"note\": \"未在此范围找到外壳缩水的当前不良/围堵/CAPA 记录，不等于不存在\", \"scope\": \"category=汽车充气泵，source_types=issue/capa/build/test_run，query=外壳缩水 不良项 试产\", \"result\": \"未检索到可引用条目（returned=0）\"}, \"other_items_listed_with_it\": [\"气嘴漏气\", \"按键卡滞\"], \"top3_defects_as_listed_then\": [\"气嘴漏气\", \"外壳缩水\", \"按键卡滞\"]}, \"status\": \"completed\", \"summary\": \"记起来了：那是你上一次「汇总上周试产的不良项」的工作（run a4f06535，session f6bfc9f8，2026-11-15 上午）。当时给出的不良前三项是：气嘴漏气、外壳缩水、按键卡滞——所以和外壳缩水一起列出的另外两项是气嘴漏气和按键卡滞。这份记录只是当时的工作留痕，不能当现在的业务事实；我在当前品类（汽车充气泵）范围内按 issue/capa/build/test_run 检索了外壳缩水相关记录，没有检索到可引用条目。\", \"questions\": [{\"id\": \"q1\", \"why\": \"本次只在品类级 issue/capa/build/test_run 里检索，没有命中；换范围或换关键词（如“缩水/变形/尺寸超差”）可能找到在办记录。\", \"options\": [{\"label\": \"按项目和全部来源再查一次\", \"value\": \"按项目+全部来源再查一次\"}, {\"label\": \"换个关键词重试\", \"value\": \"用其他关键词重试（缩水/变形/尺寸超差）\"}, {\"label\": \"就到这里\", \"value\": \"就到这里，不用再查\"}], \"question\": \"要不要我换个范围再找一次外壳缩水的当前记录（例如按项目、制品/型号、或全部资料来源检索）？\", \"depends_on\": [], \"recommended\": {\"value\": \"按项目+全部来源再查一次\", \"reason\": \"当前品类级检索未命中，扩大范围最可能拿到在办的不良或围堵记录\"}, \"allow_free_text\": true}], \"unfinished\": []}",
+  "unfinished": [],
+  "ledger": [
+    "assistant.search:completed:1",
+    "conversation.history:completed:2",
+    "memory.search:completed:1",
+    "model:completed:4"
+  ],
+  "memory_tool_calls": {
+    "memory.search": 1,
+    "conversation.history": 2
+  },
+  "usage": {
+    "episodes": [
+      "r1",
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "catalog": [
+      "r4",
+      "r5",
+      "r6"
+    ],
+    "sessions_read": [
+      "r1"
+    ],
+    "notes": [],
+    "note_revisions": {}
+  },
+  "memory_candidates": {
+    "admitted": 0,
+    "rejected": []
+  },
+  "new_notes": 0,
+  "memory_off": false
+}

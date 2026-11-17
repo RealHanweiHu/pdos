@@ -1,0 +1,50 @@
+{
+  "version": "xiaopai-memory-proposal-ab-observation/v0",
+  "arm": "candidate",
+  "probe": "P5",
+  "expect": "propose",
+  "model": "MiniMax-M3",
+  "model_version": "MiniMax-M3",
+  "turns": [
+    {
+      "run_id": "b3ff7be8-cb3f-4f57-9b04-11ed3770a4ef",
+      "goal": "从现在起回复我都先给结论再给过程",
+      "status": "completed",
+      "state": "completed",
+      "error_code": null,
+      "seconds": 11.6,
+      "used_tokens": 33543,
+      "held_tokens": 0,
+      "answer": "结论：已按你的要求切换为「先给结论、再给过程」的回复方式，从本条开始生效（后续所有回复均遵循）。\n\n过程：\n1. 识别指令类型——这是关于「怎么做工作」的表达格式约定，不是一次性请求，也不是业务事实，因此按个人习惯条目（convention）处理，并给出全局适用范围。\n2. 查了记忆库：在当前品类范围内检索了既有的\"回复顺序/表达格式\"条目，未发现相同或冲突的记录，所以不会产生重复条目。\n3. 同时把这条要求作为本轮对话约束提交，保证在本次会话内持续生效。\n4. 需要你确认的：下面已生成一张「结论先行」的偏好卡片，等你点确认后才会正式保存；在此之前不能算已记住，本条回复本身已经按新方式写。\n5. 本轮没有做公司资料检索——这是回复格式偏好，不涉及业务数据，因此没有引用任何来源，也没有对外写入或变更任何业务对象。",
+      "unfinished": [],
+      "final_questions": [],
+      "clarifications": [],
+      "tool_calls": {
+        "memory.search": 2,
+        "model": 2
+      },
+      "prompt_version": "1.1.0",
+      "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+      "candidates": [
+        {
+          "origin": "explicit",
+          "kind": "convention",
+          "text": "回复一律先给结论，再给过程。",
+          "scope_kind": "global",
+          "alias_term": null,
+          "trigger": [
+            {
+              "text": "从现在起回复我都先给结论再给过程",
+              "run_id": "b3ff7be8-cb3f-4f57-9b04-11ed3770a4ef"
+            }
+          ]
+        }
+      ],
+      "proposals_rejected": [],
+      "voids": 0
+    }
+  ],
+  "pending_candidates_at_end": [
+    "回复一律先给结论，再给过程。"
+  ]
+}
