@@ -47,7 +47,8 @@ def test_written_notes_never_claim_an_unregistered_effect():
                                 "v1.1 §05.12 四时间", "DC-11 档位政策", "工具规格原有描述",
                                 "企业 RAG 设计 v0.4 §8.1", "企业 RAG 设计 v0.4 §10.1",
                                 "企业 RAG 设计 v0.4 §7.9、§11.10", "企业 RAG 设计 v0.4 §7.9、§8.3",
-                                "企业 RAG 设计 v0.4 §7.9", "企业 RAG 设计 v0.4 §7.5–7.8 / P30"}
+                                "企业 RAG 设计 v0.4 §7.9", "企业 RAG 设计 v0.4 §7.5–7.8 / P30",
+                                "确认稿 P33、P60、P83"}
         assert usage.tier in {"T0", "T1", "T2", "T2-prepare-only", "READ"}
 
 

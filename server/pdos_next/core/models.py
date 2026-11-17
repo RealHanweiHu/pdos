@@ -1305,6 +1305,9 @@ import pdos_next.domain.automations.service_models  # noqa: E402,F401
 
 import pdos_next.domain.projects.fulfillment.models  # noqa: E402,F401
 
+# projects.framework_id references this table (D34, s0_0889).
+import pdos_next.domain.projects.npi.models  # noqa: E402,F401
+
 import pdos_next.domain.projects.external_wait.models  # noqa: E402,F401
 import pdos_next.domain.projects.risk.models  # noqa: E402,F401
 

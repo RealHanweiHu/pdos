@@ -173,8 +173,8 @@ allowed_operations:
   tier: T0
   note: 根据明确项目版本与实际 schedule 结构准备计划候选；未知估时保留未知
 - tool: work.plan.apply
-  tier: T1
-  note: 提供完整 draft 供负责人一次确认；旧候选用精确 proposal_id。阶段决定和基线仍具名办理
+  tier: T0
+  note: 仅 G0 后按框架生成的首版计划在已取得资格时直接生效；其余情形（含旧候选的精确 proposal_id）由负责人一次确认。阶段决定和基线仍具名办理
 - tool: work.stage.adopt
   tier: T1
   note: 按当前项目和阶段模板准备启用候选，保留本人一次确认
@@ -199,6 +199,12 @@ allowed_operations:
 - tool: work.forecast.refresh
   tier: T0
   note: 确定性引擎按当前计划与任务实际重算预测；只写新预测，不改计划、基线与承诺；输入摘要须来自本轮读取
+- tool: work.framework.draft
+  tier: T1
+  note: 按当前品类和框架版本准备成果、节点及角色差异的草稿，由具名管理员一次确认；草稿不生效
+- tool: work.framework.publish
+  tier: T2-prepare-only
+  note: 仅准备框架版本发布或停用的材料，由具名管理员决定；AI 不执行发布
 evidence_policy: 任务必须消费已登记原件或精确 G0 待决项；成果 present 必须有该项原件来源。模型不提供权限、人员职责、当前状态或业务回执事实。本人承接/承诺与接收者验收沿受控 T1，一次确认后由真实人员保存；T0
   仍须当前启用、资格和授权。
 failure_policy: 当前版本/本人身份/成果来源不明，只澄清缺项并继续已授权只读工作。失败或响应未知保留原 command/idempotency key，经实际回执核对后恢复，不新建第二任务/承诺。未实现的任务/承诺领域读取不可由
@@ -236,7 +242,7 @@ preload_when: []
 5. `work.commitment.accept`（T1）按本人 × 任务 × 接收者保存 outcome_keys 与 promised_at；不知道日期传 null，original_timezone 用真实 IANA 时区，calendar_id 不知道传 null。续版 replaces 精确替代本人同接收者当前版本，不能改写旧承诺。
 6. `work.commitment.review`（T1）仅原接收者本人办理：绑定当前 commitment/task、真实 submission 及 expected_review_revision；checks 覆盖全部已承诺成果（含可选成果）。任务完成不自动履行承诺，承诺履行也不要求整个任务先完成。
 7. `work.status_update.create`（T1）提供 fact_summary、next_steps 和明确 task_refs；不改任务、预测、实际、承诺或批准，不自动建新任务。
-8. `work.plan.propose`（T0）使用注册 schema 的 schedule 与 expected_project_revision；`work.plan.apply`（T1）消费精确 proposal_id。不捏造计划估时、批准基线或 Forecast；需制造/测试动作时加载 build_execution/test_verification。
+8. `work.plan.propose`（T0）使用注册 schema 的 schedule 与 expected_project_revision；`work.plan.apply` 消费精确 proposal_id 时由负责人一次确认（T0 只用于下文的 G0 首版规划）。不捏造计划估时、批准基线或 Forecast；需制造/测试动作时加载 build_execution/test_verification。
 9. `work.external_wait.record`（T0）使用 record.action 区分 create/details/initiate/delivery/commitment/reply/close/reopen/transfer_request/transfer_accept/transfer_cancel；create 之外必须给当前 wait 引用。发起、有效送达、对方承诺、部分回复与关闭分开，送达未知不宣称等待已有效开始；内部记录不发送消息或客户资料。
 10. `work.risk.followup.record`（T1）使用 risk={id,decision_id}、current、action=close/reopen 与来源；只保存具名跟进，不改 G0 风险原文或代替专业关闭。
 11. `work.forecast.refresh`（T0，确定性引擎）只带 project_id、当前 plan={id,revision} 与本轮读到的 expected_input_sha256；输入变了先重读。结果是“系统重算”：不改计划、基线或承诺，预测晚于承诺只说明差异；已开始任务缺剩余工期时预测保持未知，不由模型补日期。

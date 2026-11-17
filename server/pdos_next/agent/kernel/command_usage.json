@@ -1295,14 +1295,14 @@
       "produces": "framework.drafted",
       "limit": "由具名管理员一次确认；不使草稿生效。",
       "tier": "T1",
-      "source": "P33/P60/P83"
+      "source": "确认稿 P33、P60、P83"
     },
     "work.framework.publish": {
       "when": "核对当前框架草稿的版本与适用项目类型",
       "produces": "framework.publication_decided",
       "limit": "只由具名管理员批准发布或停用。",
       "tier": "T2",
-      "source": "P33/P60/P83"
+      "source": "确认稿 P33、P60、P83"
     }
   }
 }

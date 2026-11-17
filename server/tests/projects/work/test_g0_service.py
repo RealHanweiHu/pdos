@@ -42,18 +42,11 @@ def test_native_g0_is_an_exact_typed_source_not_a_fabricated_artifact():
 def test_native_basis_does_not_loosen_result_or_non_task_evidence():
     from pdos_next.domain.projects.work.schemas import Result
 
+    # A commitment's source may now be the task's checked plan task (D35), so its
+    # payload no longer requires artifacts; the service still refuses one with no
+    # source at all (see the parametrized service test below).
     for op, extra in [
         (STATUS, dict(fact_summary="A fact", next_steps="Read the original")),
-        (
-            COMMIT,
-            dict(
-                task=dict(id=uuid4(), revision=1),
-                recipient_id=uuid4(),
-                outcome_keys=["result"],
-                promised_at=None,
-                original_timezone="UTC",
-            ),
-        ),
     ]:
         with pytest.raises(ValidationError):
             PAYLOADS[op](
@@ -89,7 +82,8 @@ def test_legacy_task_snapshot_continues_with_an_explicit_nullable_native_origin(
     assert result.g0_open_item is None and result.state == "accepted"
 
 
-def test_empty_task_sources_require_the_actual_existing_native_basis(monkeypatch):
+@pytest.mark.parametrize("operation", [ACCEPT, COMMIT])
+def test_empty_task_sources_require_the_actual_existing_native_basis(monkeypatch, operation):
     actor, tenant, category, pid, project_id, tid = (uuid4() for _ in range(6))
     ctx = Context(tenant, actor, actor, category_id=category)
     task = TaskSnapshot(
@@ -115,16 +109,22 @@ def test_empty_task_sources_require_the_actual_existing_native_basis(monkeypatch
     monkeypatch.setattr(service.owner, "handover_lane", lambda *a, **kw: None)
     monkeypatch.setattr(service.owner, "after_fact", lambda *a, **kw: None)
     monkeypatch.setattr(service, "human", lambda *a, **kw: None)
-    p = PAYLOADS[ACCEPT](
+    extra = (
+        dict(recipient_id=actor, outcome_keys=["result"], promised_at=None,
+             original_timezone="UTC")
+        if operation == COMMIT else {}
+    )
+    p = PAYLOADS[operation](
         project_id=project_id,
         sources=[],
         reason="Actual native basis required",
         task=dict(id=tid, revision=2),
+        **extra,
     )
     command = Command(
         command_id=uuid4(),
         idempotency_key=str(uuid4()),
-        operation=ACCEPT,
+        operation=operation,
         category_id=category,
         product_id=pid,
         expected_revision=1,

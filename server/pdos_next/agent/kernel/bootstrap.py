@@ -315,10 +315,12 @@ class Bootstrap:
                     "visibility": actual_project.visibility,
                 }
             has_history = run.continued_from_id is not None
+            # Read while the run is still bound to this transaction (D34).
+            npi_g0 = bool(run.versions.get("npi_g0"))
         if scope.project_id is not None and (fields is None or "project" in fields):
             from .project_current_context import read as current_project_facts
 
-            if run.versions.get("npi_g0"):
+            if npi_g0:
                 from pdos_next.domain.projects.npi.planning import read as read_npi
                 from pdos_next.domain.projects.service import _project
 
