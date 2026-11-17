@@ -121,12 +121,12 @@ def remembered_session(setup):
 def test_owner_deletes_a_session_and_its_memory_rows_are_gone(setup):
     run_id, session_id, row = remembered_session(setup)
     assert counts(setup, session_id) == {
-        "memory_episodes": 1, "memory_episode_marks": 1, "memory_index": 2,
+        "memory_episodes": 1, "memory_episode_marks": 1, "memory_index": 3,
         "memory_episode_vectors": 1, "memory_candidates": 1}
     with Session(setup.admin) as session:
-        # s0_0888: one row for the owner's words, one for the answer summary.
+        # s0_0888: own words and answer summary; s0_0890: focus-object titles.
         assert sorted(session.scalars(select(MemoryIndexEntry.source_kind).where(
-            MemoryIndexEntry.episode_id == row.id))) == ["answer", "episode"]
+            MemoryIndexEntry.episode_id == row.id))) == ["answer", "episode", "object"]
         assert session.scalar(select(MemoryIndexEntry.token_count).where(
             MemoryIndexEntry.episode_id == row.id,
             MemoryIndexEntry.source_kind == "answer")) > 0
@@ -134,7 +134,7 @@ def test_owner_deletes_a_session_and_its_memory_rows_are_gone(setup):
     assert preview.status_code == 200, preview.text
     assert preview.json()["deleted"] is False and preview.json()["blocked"] is None
     assert preview.json()["will_remove"] == {
-        "episodes": 1, "marks": 1, "index_rows": 2, "vectors": 1, "candidates": 1}
+        "episodes": 1, "marks": 1, "index_rows": 3, "vectors": 1, "candidates": 1}
     assert preview.json()["kept"] == {"runs": 1, "receipts": 0, "adopted_notes": 0}
     key = str(uuid4())
     done = delete(setup, session_id, key=key)
