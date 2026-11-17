@@ -1,0 +1,230 @@
+{
+  "preview_web_port": 57859,
+  "read_only": true,
+  "research_port_configured": false,
+  "mcp_port_configured": false,
+  "runs": [
+    {
+      "id": "e4ebd971-6d4a-477c-8f32-434eba779a4d",
+      "created_at": "2026-11-17 03:36:02.221962+00:00",
+      "state": "completed",
+      "error_code": null,
+      "executor": "temporal-langgraph/v1",
+      "model": "MiniMax-M3",
+      "scope": "category",
+      "continued_from_id": null,
+      "used_tokens": 15407,
+      "token_limit": 1300000,
+      "duration_seconds": 51.95065,
+      "receipt_count": 0,
+      "category_create_disclosed": false,
+      "disclosed_business_read_sample": [
+        "assistant.search",
+        "category.competitors.list",
+        "category.knowledge.list",
+        "category.list",
+        "category.parameters.list",
+        "category.read",
+        "evidence.search",
+        "platform.read",
+        "research.fanout",
+        "research.search"
+      ],
+      "completed_model_calls": 1,
+      "actual_model_input_tokens": 15197,
+      "actual_model_output_tokens": 210,
+      "model_attempted_tools_by_turn": [
+        []
+      ],
+      "failed_ledger_tools": [],
+      "loaded_skills": [],
+      "candidate_events": 0,
+      "model_started_events": 1
+    },
+    {
+      "id": "cc2fea5c-f2e8-4531-b25c-761aa826321b",
+      "created_at": "2026-11-17 03:39:50.408043+00:00",
+      "state": "partial",
+      "error_code": null,
+      "executor": "temporal-langgraph/v1",
+      "model": "MiniMax-M3",
+      "scope": "personal",
+      "continued_from_id": null,
+      "used_tokens": 297478,
+      "token_limit": 1300000,
+      "duration_seconds": 150.728454,
+      "receipt_count": 0,
+      "category_create_disclosed": false,
+      "disclosed_business_read_sample": [
+        "assistant.search",
+        "category.competitors.list",
+        "category.knowledge.list",
+        "category.list",
+        "category.parameters.list",
+        "category.read",
+        "evidence.search",
+        "platform.read",
+        "research.fanout",
+        "research.search"
+      ],
+      "completed_model_calls": 12,
+      "actual_model_input_tokens": 285013,
+      "actual_model_output_tokens": 12465,
+      "model_attempted_tools_by_turn": [
+        [
+          "skill.load:category_framing",
+          "category.list"
+        ],
+        [
+          "skill.load:public_research",
+          "skill.load:competitor_comparison",
+          "category.list"
+        ],
+        [
+          "skill.load:work_management",
+          "skill.load:proposal_drafting",
+          "platform.read"
+        ],
+        [
+          "category.read",
+          "category.knowledge.list",
+          "category.parameters.list"
+        ],
+        [
+          "assistant.search"
+        ],
+        [
+          "category.read",
+          "category.knowledge.list",
+          "category.parameters.list",
+          "category.competitors.list"
+        ],
+        [
+          "platform.read",
+          "platform.read"
+        ],
+        [
+          "category.list",
+          "category.list",
+          "mcp.tools.list"
+        ],
+        [
+          "skill.load:jtbd",
+          "skill.load:review_pain_clustering",
+          "skill.load:price_band",
+          "skill.load:gap_check"
+        ],
+        [
+          "research.fanout",
+          "evidence.search"
+        ],
+        [
+          "research.search",
+          "assistant.search"
+        ],
+        []
+      ],
+      "failed_ledger_tools": [
+        {
+          "tool": "assistant.search",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 1
+        },
+        {
+          "tool": "category.competitors.list",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 1
+        },
+        {
+          "tool": "category.knowledge.list",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 2
+        },
+        {
+          "tool": "category.parameters.list",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 2
+        },
+        {
+          "tool": "category.read",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 2
+        },
+        {
+          "tool": "evidence.search",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 1
+        },
+        {
+          "tool": "platform.read",
+          "code": "SOURCE_UNAVAILABLE",
+          "count": 1
+        }
+      ],
+      "loaded_skills": [
+        "proposal_drafting"
+      ],
+      "candidate_events": 0,
+      "model_started_events": 12
+    },
+    {
+      "id": "6107f8c7-260e-46d5-a5e2-d7c8e020e8cb",
+      "created_at": "2026-11-17 03:43:05.072353+00:00",
+      "state": "partial",
+      "error_code": null,
+      "executor": "temporal-langgraph/v1",
+      "model": "MiniMax-M3",
+      "scope": "personal",
+      "continued_from_id": "cc2fea5c-f2e8-4531-b25c-761aa826321b",
+      "used_tokens": 45248,
+      "token_limit": 1300000,
+      "duration_seconds": 20.039417,
+      "receipt_count": 0,
+      "category_create_disclosed": false,
+      "disclosed_business_read_sample": [
+        "assistant.search",
+        "category.competitors.list",
+        "category.knowledge.list",
+        "category.list",
+        "category.parameters.list",
+        "category.read",
+        "evidence.search",
+        "platform.read",
+        "research.fanout",
+        "research.search"
+      ],
+      "completed_model_calls": 2,
+      "actual_model_input_tokens": 44687,
+      "actual_model_output_tokens": 561,
+      "model_attempted_tools_by_turn": [
+        [
+          "category.list",
+          "assistant.search"
+        ],
+        [
+          "mcp.tools.list",
+          "skill.load:category_framing"
+        ]
+      ],
+      "failed_ledger_tools": [],
+      "loaded_skills": [
+        "proposal_drafting"
+      ],
+      "candidate_events": 0,
+      "model_started_events": 3
+    }
+  ],
+  "schema": "s0_0888",
+  "enabled_skills": [
+    "proposal_drafting"
+  ],
+  "budget_snapshot": {
+    "calls": 15,
+    "call_limit": 15,
+    "active": true,
+    "used_input_tokens": 344897,
+    "input_token_limit": 1000000,
+    "used_output_tokens": 13236,
+    "output_token_limit": 300000
+  }
+}
