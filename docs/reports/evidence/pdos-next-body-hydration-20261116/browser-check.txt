@@ -1,0 +1,26 @@
+2026-11-16 (America/Los_Angeles)
+Scope: root layout of /login, Next.js 16.3.3. Playwright Chromium in a fresh browser context.
+The browser init script added data-new-gr-c-s-check-loaded="14.1347.0" and
+data-gr-ext-installed="" before React hydration. The form injection is a control for
+warnings on descendants. The probe entered synthetic values and checked that the login
+button enabled without submitting the form.
+
+Before: local Webpack acceptance baseline on localhost:57859.
+The baseline layout matched the workspace layout before the fix (SHA-256
+e44db55ef5fb39503e107f7ef0c8317409b44452d4a792e45166435bccf7821c).
+### Result
+[{"injected":null,"theme":"dark","injectedAttributeTarget":null,"fontClassCount":2,"loginFormInteractive":true,"hydrationWarnings":0,"extensionAttributesInWarning":false,"otherConsoleErrors":[]},{"injected":"body","theme":"light","injectedAttributeTarget":"body","fontClassCount":2,"loginFormInteractive":true,"hydrationWarnings":1,"extensionAttributesInWarning":true,"otherConsoleErrors":[]},{"injected":"form","theme":"light","injectedAttributeTarget":"form","fontClassCount":2,"loginFormInteractive":true,"hydrationWarnings":1,"extensionAttributesInWarning":true,"otherConsoleErrors":[]}]
+
+After: current workspace dev server on localhost:3038.
+### Result
+[{"injected":null,"theme":"dark","injectedAttributeTarget":null,"fontClassCount":2,"loginFormInteractive":true,"hydrationWarnings":0,"extensionAttributesInWarning":false,"otherConsoleErrors":[],"failedResources":[]},{"injected":"body","theme":"light","injectedAttributeTarget":"body","fontClassCount":2,"loginFormInteractive":true,"hydrationWarnings":0,"extensionAttributesInWarning":false,"otherConsoleErrors":[],"failedResources":[]},{"injected":"form","theme":"light","injectedAttributeTarget":"form","fontClassCount":2,"loginFormInteractive":true,"hydrationWarnings":1,"extensionAttributesInWarning":true,"otherConsoleErrors":[],"failedResources":[]}]
+
+Passed: eslint src/app/layout.tsx and tsc --noEmit --incremental false.
+
+Follow-up: synced the fixed layout to the checkout served by Webpack on port 57859.
+The existing server (PID 22911) hot-reloaded the change.
+Playwright disabled cache and refreshed twice per case. The anonymous root
+redirected to /login. The probe checked the Next.js error dialog, hydration
+messages, injected attributes, and login form interactivity.
+### Result
+[{"host":"localhost","entry":"/login","path":"/login","load":"navigation","extensionAttributes":false,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/login","path":"/login","load":"refresh 1","extensionAttributes":false,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/login","path":"/login","load":"refresh 2","extensionAttributes":false,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/login","path":"/login","load":"navigation","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/login","path":"/login","load":"refresh 1","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/login","path":"/login","load":"refresh 2","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/","path":"/login","load":"navigation","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/","path":"/login","load":"refresh 1","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"localhost","entry":"/","path":"/login","load":"refresh 2","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"127.0.0.1","entry":"/login","path":"/login","load":"navigation","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"127.0.0.1","entry":"/login","path":"/login","load":"refresh 1","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true},{"host":"127.0.0.1","entry":"/login","path":"/login","load":"refresh 2","extensionAttributes":true,"overlayVisible":false,"hydrationWarnings":0,"loginFormInteractive":true}]
