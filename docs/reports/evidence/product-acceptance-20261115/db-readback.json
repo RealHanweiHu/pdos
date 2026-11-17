@@ -1,0 +1,166 @@
+{
+  "proposals": [
+    {
+      "id": "125d5ec4-c291-456f-9b1b-ef4c7256ea9c",
+      "title": "QA-1115 便携轮胎充气泵 Alpha",
+      "brief": "合成验收：面向应急补气，首版核对温升与保压。",
+      "status": "approved",
+      "revision": 9,
+      "visibility": "private"
+    },
+    {
+      "id": "e727a507-4580-4bad-b5ea-9e112ce0c1a9",
+      "title": "QA-1115 保存响应中断演练",
+      "brief": "",
+      "status": "draft",
+      "revision": 1,
+      "visibility": "private"
+    }
+  ],
+  "proposal_create_per_record": [
+    {
+      "subject_id": "125d5ec4-c291-456f-9b1b-ef4c7256ea9c",
+      "receipt_count": 1
+    },
+    {
+      "subject_id": "e727a507-4580-4bad-b5ea-9e112ce0c1a9",
+      "receipt_count": 1
+    }
+  ],
+  "g0_decisions": [
+    {
+      "outcome": "returned",
+      "submission_id": "c19fb3d8-e871-4fcd-9345-1f2bc3583c86",
+      "id": "fd5a103c-e844-4ac2-81d2-8a2d23ecd17b",
+      "decided_by": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "created_product_id": null,
+      "created_definition_id": null,
+      "created_project_id": null,
+      "receipt_id": "ea74ddd3-8c78-47f2-b0d9-152cc0e57d0b"
+    },
+    {
+      "outcome": "approved",
+      "submission_id": "2684c999-cdc8-43f3-8986-4989068e80bb",
+      "id": "42351109-87d5-469a-8647-a6f480712b65",
+      "decided_by": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "created_product_id": "d214b246-ec4a-42d5-ad50-ccab5ffd086c",
+      "created_definition_id": "23fd144a-ca11-4c8e-af12-8de8cf70cc35",
+      "created_project_id": "8cc552d4-9234-4fb6-a088-250e733a10fe",
+      "receipt_id": "80f16e8a-d137-4465-8340-c1ba0260c1c3"
+    }
+  ],
+  "definition": [
+    {
+      "id": "23fd144a-ca11-4c8e-af12-8de8cf70cc35",
+      "title": "QA-1115 Alpha 型号",
+      "product_id": "d214b246-ec4a-42d5-ad50-ccab5ffd086c",
+      "revision": 1,
+      "status": "draft",
+      "sealed": true,
+      "source_proposal_id": "125d5ec4-c291-456f-9b1b-ef4c7256ea9c",
+      "source_submission_id": "2684c999-cdc8-43f3-8986-4989068e80bb",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    }
+  ],
+  "unauthorized_test_account": [
+    {
+      "count": 0
+    }
+  ],
+  "project": [
+    {
+      "id": "8cc552d4-9234-4fb6-a088-250e733a10fe",
+      "name": "QA-1115 Alpha 立项项目",
+      "product_id": "d214b246-ec4a-42d5-ad50-ccab5ffd086c",
+      "status": "active",
+      "owner_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    }
+  ],
+  "carried_question": [
+    {
+      "id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "kind": "task",
+      "title": "QA-1115 样机连续充气的温升上限如何验证？",
+      "project_id": "8cc552d4-9234-4fb6-a088-250e733a10fe",
+      "owner_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "due_date": "2026-11-30",
+      "source_question_id": "b38423e8-27d3-4b10-835a-1602b7edb017",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    }
+  ],
+  "task_history": [
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 1,
+      "action": "create",
+      "state": "proposed",
+      "actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "receipt_id": "36ed90c9-e316-4004-b3fc-a461d9079913",
+      "g0_open_item_id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    },
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 2,
+      "action": "assign",
+      "state": "assigned",
+      "actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "receipt_id": "2015a931-d053-4711-91e5-e1086f8f9ebf",
+      "g0_open_item_id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    },
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 3,
+      "action": "accept",
+      "state": "accepted",
+      "actor_id": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "receipt_id": "6ae2185a-3a04-4fa0-80d0-f1a1b67db92d",
+      "g0_open_item_id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    },
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 4,
+      "action": "start",
+      "state": "in_progress",
+      "actor_id": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "receipt_id": "270c82a9-b54e-48cf-a805-938cee2a345c",
+      "g0_open_item_id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    },
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 5,
+      "action": "submit",
+      "state": "submitted",
+      "actor_id": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "receipt_id": "ff04788b-b8dc-446d-a22f-7150544c13fa",
+      "g0_open_item_id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    },
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 6,
+      "action": "review",
+      "state": "in_progress",
+      "actor_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "receipt_id": "752b84ba-f8ae-4693-8bfb-6ac76af257da",
+      "g0_open_item_id": "2500fa56-b0ee-404b-92bf-ef41836efd63",
+      "g0_decision_id": "42351109-87d5-469a-8647-a6f480712b65"
+    }
+  ],
+  "task_current": [
+    {
+      "task_id": "481e9721-4a13-4009-b222-0ecd602460c0",
+      "revision": 6,
+      "state": "in_progress"
+    }
+  ],
+  "browser_tenant_agent_runs": [
+    {
+      "count": 0
+    }
+  ]
+}

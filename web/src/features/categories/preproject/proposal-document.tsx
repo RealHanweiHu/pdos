@@ -48,9 +48,10 @@ const documentTabs = [
   { id: "evidence", label: "证据与决定" }, { id: "decisions", label: "决策记录" },
 ] as const;
 type DocumentTab = typeof documentTabs[number]["id"];
-const sectionNames: Record<string, string> = { worth_it: "要解决的问题", target_customer_market_channel: "目标用户、市场与渠道", features_in_out: "做成什么样", certification_regions: "认证地区", launch_window: "上市窗口" };
+const sectionNames: Record<string, string> = { worth_it: "为什么值得做", target_customer_market_channel: "目标用户、市场与渠道", features_in_out: "做成什么样", certification_regions: "认证地区", launch_window: "上市窗口" };
 const itemNames: Record<string, string> = { option: "方案对比", question: "待决问题", risk: "风险", assumption: "待验证假设", difference: "派生差异", commercial_target: "商业目标", decision_note: "取舍记录" };
 const readableSources = (item: Item) => item.source_refs.filter((source): source is Record<string, unknown> => source !== null && typeof source === "object" && !Array.isArray(source));
+const isWorthIt = (item: Pick<Item, "kind" | "content">) => item.kind === "section" && item.content.key === "worth_it";
 
 
 async function api<T>(path: string, body?: unknown, signal?: AbortSignal): Promise<T> {
@@ -70,7 +71,7 @@ function ItemEditor({ item: currentItem, save, busy, drafts = {}, onDraft }: Pro
   const text = entry?.values.text ?? String(item.content[field] ?? "");
   const stale = item.version !== currentItem.version;
   return <form onSubmit={async event => { event.preventDefault(); if (await save(item, { ...item.content, [field]: text })) onDraft?.(item.item_id, null); }} className="space-y-2">
-    <label className="block text-sm">{item.kind === "section" ? "叙述" : "方案名称"}<textarea disabled={busy} required value={text} onChange={event => onDraft?.(item.item_id, { item, values: { text: event.target.value } })} /></label>
+    <label className="block text-sm">{isWorthIt(item) ? sectionNames.worth_it : item.kind === "section" ? "叙述" : "方案名称"}<textarea disabled={busy} required value={text} onChange={event => onDraft?.(item.item_id, { item, values: { text: event.target.value } })} /></label>
     {stale && <p>版本已更新，草稿已保留；取消后重新编辑。</p>}
     <Button size="sm" variant="outline" disabled={busy || stale}>保存此条</Button>{entry && <Button type="button" size="sm" variant="ghost" disabled={busy} onClick={() => onDraft?.(item.item_id, null)}>取消编辑</Button>}
   </form>;
@@ -111,6 +112,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
   const patchLock = useRef(false);
   const [saveNotice, setSaveNotice] = useState("");
   const [drafts, setDrafts] = useState<Record<string, ProposalRowDraft>>({});
+  const [worthItDraft, setWorthItDraft] = useState("");
   const [newQuestions, setNewQuestions] = useState<NewQuestion[]>([]);
   const creatingQuestion = useRef("");
   const draftPrincipal = useRef("");
@@ -123,6 +125,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
   const [selectedOption, setSelectedOption] = useState("");
   const [projectName, setProjectName] = useState("");
   const [projectOwner, setProjectOwner] = useState("");
+  const [forceFullPath, setForceFullPath] = useState(false);
   const [identityName, setIdentityName] = useState("");
   const [variantKind, setVariantKind] = useState("configuration");
   const [dispositions, setDispositions] = useState<Record<string, Assignment>>({});
@@ -152,7 +155,9 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
           && (!value.submission.frozen_document || identity.document_mode !== "frozen"))) {
         throw new Error("当前接口未提供可读的提案文档身份，请重新读取。");
       }
-      if (draftPrincipal.current && draftPrincipal.current !== session.principal_id) { setDrafts({}); setPatchRequest(null); }
+      if (draftPrincipal.current && draftPrincipal.current !== session.principal_id) {
+        setDrafts({}); setWorthItDraft(""); setPatchRequest(null);
+      }
       draftPrincipal.current = session.principal_id;
       setProposal(value); setPeople(participants.items); setMe(session.principal_id);
       // Saved drafts leave in the same render as the document that now contains them.
@@ -169,6 +174,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
         controller.abort();
         settle?.(); setRefreshing(false);
         setProposal(null); setPeople([]); setDocumentError((failure as Error).message);
+        if ([401, 403, 404].includes((failure as { status?: number }).status ?? 0)) setWorthItDraft("");
         if ([401, 403].includes((failure as { status?: number }).status ?? 0)) { setDrafts({}); setPatchRequest(null); }
         setViewResult(null); setViewLoading(false);
       }
@@ -264,9 +270,13 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
       if (!receipt.id || receipt.operation !== "proposal.item.patch") throw new Error("保存回执未完整取得，请核对原请求。");
       if (!live.current) return false;
       try { localStorage.removeItem(patchKey); } catch { /* A retained successful command is safe to reconcile with its original idempotency key. */ }
-      const savedIds = new Set((request.command.payload.ops as ProposalPatch[]).map(op => op.item_id));
+      const savedOps = request.command.payload.ops as ProposalPatch[];
+      const savedIds = new Set(savedOps.map(op => op.item_id));
       setPatchRequest(null); setSaveNotice("已保存，可继续与小Pai完善。");
-      await reload(() => setDrafts(old => Object.fromEntries(Object.entries(old).filter(([id]) => !savedIds.has(id)))));
+      await reload(() => {
+        setDrafts(old => Object.fromEntries(Object.entries(old).filter(([id]) => !savedIds.has(id))));
+        if (savedOps.some(op => !op.item_id && isWorthIt(op))) setWorthItDraft("");
+      });
       return true;
     } catch (failure) {
       if (live.current) {
@@ -274,7 +284,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
         if (status && status >= 400 && status < 500 && ![408, 429].includes(status)) {
           setPatchRequest(null); try { localStorage.removeItem(patchKey); } catch { /* Same original request remains server-guarded. */ }
         }
-        if (status === 401 || status === 403) { setProposal(null); setPeople([]); setDrafts({}); setSaveNotice(""); setDocumentReady(false); }
+        if (status === 401 || status === 403) { setProposal(null); setPeople([]); setDrafts({}); setWorthItDraft(""); setSaveNotice(""); setDocumentReady(false); }
         setError((failure as Error).message);
       }
       return false;
@@ -295,6 +305,7 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
   const deciding = proposal?.status === "in_review" && proposal.submission?.reviewer_id === me;
   const frozenAvailable = !!proposal?.submission?.frozen_document;
   const docItems = proposal?.display_document.items ?? [];
+  const worthItSavingBlocked = busy || refreshing || !!prepared;
   const options = docItems.filter(item => item.kind === "option");
   const variantTarget = proposal?.display_document.target_kind === "new_variant";
   const tabItems = docItems.filter(item => documentTab === "options" ? item.kind === "option" : documentTab === "questions" ? item.kind === "question" : documentTab === "risks" ? item.kind === "risk" : documentTab === "decisions" ? item.kind === "decision_note" : !["spec", "option", "question", "risk", "decision_note"].includes(item.kind));
@@ -316,6 +327,19 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
     {!proposal || !documentReady ? <p role="status">{documentError ? "请核对当前会话与提案受众后重新读取。" : "正在读取提案…"}</p> : <div className={styles.document}>
       <div className={styles.documentContent}>
         {documentTab === "narrative" && <p className={styles.brief}>{proposal.display_document.brief}</p>}
+        {documentTab === "narrative" && editable && !docItems.some(isWorthIt) && (
+          <form className="space-y-2" onSubmit={event => {
+            event.preventDefault();
+            const text = worthItDraft.trim();
+            if (text) void mutate([{ op: "upsert", kind: "section", content: { key: "worth_it", text }, source_refs: [] }]);
+          }}>
+            <label className="block space-y-2">
+              <span className="block text-sm font-medium">{sectionNames.worth_it}</span>
+              <textarea className="w-full" rows={3} required disabled={worthItSavingBlocked} value={worthItDraft} onChange={event => setWorthItDraft(event.target.value)} />
+            </label>
+            <Button size="sm" variant="outline" disabled={worthItSavingBlocked || !worthItDraft.trim()}>保存立项理由</Button>
+          </form>
+        )}
         {deciding && <p className="panel text-sm">{frozenAvailable ? "当前评审的是提交时的固定副本。未知规格可带入立项，须逐条明确后续处置。" : "提交副本的来源不在当前可读范围，请核对权限后刷新。"}</p>}
         {!["comparison", "features", "maturity", "voice", "evidence", "options", "questions"].includes(documentTab) && tabItems.map(item => <section key={`${item.item_id}:${item.version}`} className={item.kind === "section" ? styles.narrative : styles.itemCard}>
           <div className={styles.itemHeading}><h2>{item.kind === "section" ? sectionNames[String(item.content.key)] ?? "提案内容" : itemNames[item.kind] ?? "提案内容"}</h2><span>{item.origin === "ai_draft" ? "AI 草稿" : "人工记录"}</span></div>
@@ -343,11 +367,16 @@ function ScopedProposalDocument({ categoryId, proposalId, embedded = false, onCo
           preview("proposal.g0.decide", { proposal_id: proposalId, submission_id: proposal.submission!.id,
             expected_revision: proposal.revision, outcome, rationale, selected_option_item_id: selectedOption || null,
             ...(outcome === "approved" ? { project: { name: projectName, owner_id: projectOwner }, new_identity: { name: identityName, ...(variantTarget ? { variant_kind: variantKind } : {}) } } : {}),
+            ...(outcome === "approved" && forceFullPath ? { force_full_npi_path: true } : {}),
             dispositions: outcome === "approved" ? proposal.maturity.required_dispositions.map(item => ({
               subject_type: item.subject_type, subject_id: item.subject_id, note: item.title, ...dispositions[item.subject_id],
             })) : [] });
         }}>
           <h2 className="font-semibold">具名 G0 决定</h2><label className="block text-sm">决定<select value={outcome} onChange={event => setOutcome(event.target.value)}><option value="approved">批准立项</option><option value="returned">退回完善</option><option value="rejected">不立项</option></select></label>
+          {outcome === "approved" && <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={forceFullPath} onChange={event => setForceFullPath(event.target.checked)} />
+            如符合轻量路径条件，仍采用完整路径
+          </label>}
           <label className="block text-sm">理由<textarea required value={rationale} onChange={event => setRationale(event.target.value)} /></label>
           {outcome === "approved" && <>
             <label className="block text-sm">{variantTarget ? "新变体名称" : "新型号名称"}<input required value={identityName} onChange={event => setIdentityName(event.target.value)} /></label>

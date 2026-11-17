@@ -1,0 +1,90 @@
+{
+  "proposal": [
+    {
+      "id": "af2e67be-9a08-435e-8a80-612c45e2fc4a",
+      "title": "QA-01 手工便携充气泵 mwk2ks3z",
+      "owner_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "status": "approved",
+      "revision": 8,
+      "current_submission_id": "84cebd92-836e-4820-846d-627dc8caf5a0",
+      "created_by_run_id": null
+    }
+  ],
+  "rationale_versions": [
+    {
+      "item_id": "b9b3cb4f-7569-459c-995a-d66e7a68a330",
+      "version": 1,
+      "text": "合成验收：应急补气用户需要可随车携带的设备，现阶段优先验证连续补气与外壳温升。",
+      "origin": "human",
+      "writer_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "receipt_id": "69acde3b-1d77-44c1-a64d-180bf5eb074b",
+      "current_version": 2,
+      "removed": false
+    },
+    {
+      "item_id": "b9b3cb4f-7569-459c-995a-d66e7a68a330",
+      "version": 2,
+      "text": "合成验收修订：应急补气用户需要可随车携带的设备。首轮用三次连续补气验证外壳温升，再决定是否扩展高温工况。",
+      "origin": "human",
+      "writer_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "receipt_id": "800c9c1d-5925-48b1-8ee0-8ee467f0bbad",
+      "current_version": 2,
+      "removed": false
+    }
+  ],
+  "submissions": [
+    {
+      "id": "66d49426-1cb4-4f88-b26a-0ce9a8708877",
+      "revision": 3,
+      "reviewer_id": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "receipt_id": "44b510c0-4e6e-482e-9373-631e9c79f4c1",
+      "rationale_version": "1",
+      "rationale_text": "合成验收：应急补气用户需要可随车携带的设备，现阶段优先验证连续补气与外壳温升。"
+    },
+    {
+      "id": "84cebd92-836e-4820-846d-627dc8caf5a0",
+      "revision": 6,
+      "reviewer_id": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "receipt_id": "4541d5a0-df77-4a74-9f87-ee070668a089",
+      "rationale_version": "2",
+      "rationale_text": "合成验收修订：应急补气用户需要可随车携带的设备。首轮用三次连续补气验证外壳温升，再决定是否扩展高温工况。"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "f815ce2f-6f20-4dc8-b3cd-e2bd7d9e4517",
+      "outcome": "returned",
+      "decided_by": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "submission_id": "66d49426-1cb4-4f88-b26a-0ce9a8708877",
+      "created_product_id": null,
+      "created_definition_id": null,
+      "created_project_id": null,
+      "receipt_id": "a22d65c8-5ebc-4a4b-b4eb-7b3d0e0716c5"
+    },
+    {
+      "id": "37058860-fbea-454a-8e54-e60a07fa3d07",
+      "outcome": "approved",
+      "decided_by": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+      "submission_id": "84cebd92-836e-4820-846d-627dc8caf5a0",
+      "created_product_id": "8d86f48b-4055-465e-9ee2-ea9657935d2c",
+      "created_definition_id": "c2c61ebe-6752-49f0-90b4-5918e4bd033d",
+      "created_project_id": "4d2c1b82-7493-439c-9d4f-63fc525fa207",
+      "receipt_id": "f8496ccc-9905-496a-8274-f6752be1d4fd"
+    }
+  ],
+  "project_definition_and_model": [
+    {
+      "project_id": "4d2c1b82-7493-439c-9d4f-63fc525fa207",
+      "project_name": "QA-01 便携充气泵验证项目 mwk2ks3z",
+      "status": "active",
+      "owner_id": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+      "g0_decision_id": "37058860-fbea-454a-8e54-e60a07fa3d07",
+      "product_id": "8d86f48b-4055-465e-9ee2-ea9657935d2c",
+      "model_name": "QA-01 便携充气泵型号 mwk2ks3z",
+      "definition_id": "c2c61ebe-6752-49f0-90b4-5918e4bd033d",
+      "definition_revision": 1,
+      "sealed": true,
+      "source_submission_id": "84cebd92-836e-4820-846d-627dc8caf5a0"
+    }
+  ]
+}

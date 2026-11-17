@@ -1,0 +1,108 @@
+{
+  "proposalId": "af2e67be-9a08-435e-8a80-612c45e2fc4a",
+  "proposalUrl": "http://127.0.0.1:57859/categories/e6152e7b-c4d7-4795-ba86-151d8569cfa5/proposals/af2e67be-9a08-435e-8a80-612c45e2fc4a",
+  "projectId": "4d2c1b82-7493-439c-9d4f-63fc525fa207",
+  "projectUrl": "http://127.0.0.1:57859/?area=cockpit&category=e6152e7b-c4d7-4795-ba86-151d8569cfa5&project=4d2c1b82-7493-439c-9d4f-63fc525fa207",
+  "projectName": "QA-01 便携充气泵验证项目 mwk2ks3z",
+  "modelName": "QA-01 便携充气泵型号 mwk2ks3z",
+  "authorId": "cc6a52e9-0f28-4085-8c56-b9cde18990bc",
+  "reviewerId": "a8cd82dc-c7f3-41dd-b68b-73e528672b62",
+  "rationale": {
+    "itemId": "b9b3cb4f-7569-459c-995a-d66e7a68a330",
+    "initialVersion": 1,
+    "finalVersion": 2
+  },
+  "submissions": [
+    "66d49426-1cb4-4f88-b26a-0ce9a8708877",
+    "84cebd92-836e-4820-846d-627dc8caf5a0"
+  ],
+  "decisions": {
+    "returned": "a22d65c8-5ebc-4a4b-b4eb-7b3d0e0716c5",
+    "approved": "f8496ccc-9905-496a-8274-f6752be1d4fd"
+  },
+  "commands": [
+    {
+      "operation": "proposal.create",
+      "kind": "write",
+      "status": 200,
+      "receipt": "51b4047a-afb3-4202-90af-a42b12b772ec",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "kind": "preview",
+      "status": 409,
+      "reason": "narrative_missing",
+      "message": "请先写明为什么值得做。"
+    },
+    {
+      "operation": "proposal.item.patch",
+      "kind": "write",
+      "status": 200,
+      "receipt": "69acde3b-1d77-44c1-a64d-180bf5eb074b",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.item.patch",
+      "kind": "write",
+      "status": 200,
+      "receipt": "6674cc98-fa2f-49d0-a5fd-232affb435b8",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "kind": "preview",
+      "status": 200
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "kind": "write",
+      "status": 200,
+      "receipt": "44b510c0-4e6e-482e-9373-631e9c79f4c1",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.g0.decide",
+      "kind": "preview",
+      "status": 200
+    },
+    {
+      "operation": "proposal.g0.decide",
+      "kind": "write",
+      "status": 200,
+      "receipt": "a22d65c8-5ebc-4a4b-b4eb-7b3d0e0716c5",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.item.patch",
+      "kind": "write",
+      "status": 200,
+      "receipt": "800c9c1d-5925-48b1-8ee0-8ee467f0bbad",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "kind": "preview",
+      "status": 200
+    },
+    {
+      "operation": "proposal.g0.submit",
+      "kind": "write",
+      "status": 200,
+      "receipt": "4541d5a0-df77-4a74-9f87-ee070668a089",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    },
+    {
+      "operation": "proposal.g0.decide",
+      "kind": "preview",
+      "status": 200
+    },
+    {
+      "operation": "proposal.g0.decide",
+      "kind": "write",
+      "status": 200,
+      "receipt": "f8496ccc-9905-496a-8274-f6752be1d4fd",
+      "subject": "af2e67be-9a08-435e-8a80-612c45e2fc4a"
+    }
+  ]
+}

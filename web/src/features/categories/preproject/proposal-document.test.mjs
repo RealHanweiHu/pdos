@@ -159,6 +159,36 @@ test("reads only scoped GETs and displays the server document identity", async t
   assert.ok(env.html().includes("VISIBLE_SOURCE"));
 });
 
+test("a manual draft saves the missing G0 rationale as a versioned proposal section", async t => {
+  const env = environment(t), doc = proposal();
+  doc.items = doc.display_document.items = [];
+  await ready(env, doc);
+  const isSaveRationale = node => node.props?.children === "保存立项理由";
+  const form = () => elements(env.tree(), node =>
+    node.type === "form" && elements(node.props.children, isSaveRationale).length > 0
+  )[0];
+  const input = () => elements(form(), node => node.type === "textarea")[0];
+  assert.ok(elements(form(), isSaveRationale)[0].props.disabled);
+  input().props.onChange({ target: { value: "  " } }); await env.flush();
+  assert.ok(elements(form(), isSaveRationale)[0].props.disabled);
+  input().props.onChange({ target: { value: "  Synthetic rationale  " } }); await env.flush();
+  form().props.onSubmit({ preventDefault() {} }); await env.flush();
+  const request = env.pending(call => call.options.method === "POST");
+  const command = JSON.parse(request.options.body);
+  assert.equal(command.operation, "proposal.item.patch");
+  assert.deepEqual(command.payload, {
+    proposal_id: doc.id,
+    ops: [{ op: "upsert", kind: "section", content: { key: "worth_it", text: "Synthetic rationale" }, source_refs: [] }],
+  });
+  env.respond(request, { id: "receipt", operation: "proposal.item.patch" }); await env.flush();
+  doc.items = doc.display_document.items = [{ item_id: "rationale", version: 1, kind: "section",
+    content: command.payload.ops[0].content, source_refs: [], origin: "human" }];
+  await loadDocument(env, doc);
+  assert.equal(form(), undefined);
+  assert.match(env.html(), /为什么值得做/);
+  assert.match(env.html(), /Synthetic rationale/);
+});
+
 test("scope remount aborts old reads and ignores responses arriving after abort", async t => {
   const env = environment(t);
   const old = env.calls.slice();
