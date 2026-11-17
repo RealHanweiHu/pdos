@@ -1,8 +1,10 @@
-"""Personal notes move to the unified item contract (P121 第 6 项后半, D512; 目标架构 §5.7).
+"""Assigned s0_0893 on s0_0892 at the 11-16 memory integration (placeholder s0_0900).
+
+Personal notes move to the unified item contract (P121 第 6 项后半, D512; 目标架构 §5.7).
 
 占位号：s0_0900 是并行工作区（claude/memory-note-contract）的占位号，写在真实 head s0_0892
 之后。集成时按真实 head 重排：revision、down_revision、本快照文件名（及版本文件里的
-import）和下面降级守卫里的文字 ``require s0_0900`` 一起改（不可协商项 3）。
+import）和下面降级守卫里的文字 ``require s0_0893`` 一起改（不可协商项 3）。
 
 ``memory_note_versions`` gains the contract fields a personal note uses:
 
@@ -82,7 +84,7 @@ DOWNGRADE_SQL = (
        OR (v.status<>'replaced' AND v.valid_from<>v.created_at)
        OR (v.status='replaced' AND v.valid_from IS DISTINCT FROM (SELECT p.valid_from FROM {TABLE} p
          WHERE p.tenant_id=v.tenant_id AND p.note_id=v.note_id AND p.revision=v.revision-1))) THEN
-     RAISE EXCEPTION 'Personal note contract fields require s0_0900'; END IF; END $$""",
+     RAISE EXCEPTION 'Personal note contract fields require s0_0893'; END IF; END $$""",
     *(f"ALTER TABLE {TABLE} DROP CONSTRAINT {name}" for name in (
         "memory_note_relations", "memory_note_evidence", "memory_note_contract_time")),
     *(f"ALTER TABLE {TABLE} DROP COLUMN {name}" for name, _kind in reversed(COLUMNS)),

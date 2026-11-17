@@ -1,4 +1,6 @@
-"""占位号 s0_0910，集成时按真实 head 重排（写成时接 s0_0892；revision、down_revision、
+"""Assigned s0_0894 on s0_0893 at the 11-16 memory integration (placeholder s0_0910).
+
+占位号 s0_0910，集成时按真实 head 重排（写成时接 s0_0892；revision、down_revision、
 本快照文件名和降级守卫文字一起改，不可协商项 3）。
 
 D504 (P87 第 4 项): the scope-note review period is a tenant setting, 90 days by
@@ -19,7 +21,7 @@ DOWNGRADE_SQL = (
     "ALTER TABLE public.memory_tenant_policies NO FORCE ROW LEVEL SECURITY",
     """DO $$ BEGIN IF EXISTS(SELECT 1 FROM public.memory_tenant_policies
        WHERE scope_note_review_days<>90) THEN
-     RAISE EXCEPTION 'A tenant scope-note review period requires s0_0910'; END IF; END $$""",
+     RAISE EXCEPTION 'A tenant scope-note review period requires s0_0894'; END IF; END $$""",
     "ALTER TABLE public.memory_tenant_policies FORCE ROW LEVEL SECURITY",
     "ALTER TABLE public.memory_tenant_policies DROP CONSTRAINT memory_policy_review_days",
     "ALTER TABLE public.memory_tenant_policies DROP COLUMN scope_note_review_days",

@@ -4,8 +4,8 @@ Real proposals and a real G0-created project through the public commands; no
 model or embedding calls (P87 第 2、5、7、9 项; AT-73).
 """
 
-from datetime import timedelta
 import json
+from datetime import timedelta
 from uuid import UUID, uuid4
 
 from sqlalchemy import select
@@ -160,8 +160,8 @@ def test_a_product_scope_reuses_the_product_activity_list_and_others_carry_notes
     assert "RECENT-BODY-MARKER" not in json.dumps(value, ensure_ascii=False)
     assert "英文版" not in json.dumps(value, ensure_ascii=False)
     # The watermark holds: nothing recorded after it is listed.
-    from pdos_next.core.service import Context
     from pdos_next.core.database import tenant_session
+    from pdos_next.core.service import Context
     from pdos_next.domain.knowledge.scope_notes import reads, recent
 
     with tenant_session(setup.engine, setup.tenant, actor_id=setup.human,

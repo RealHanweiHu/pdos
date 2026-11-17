@@ -1,5 +1,7 @@
-"""占位号 s0_0920（接真实 head s0_0892），集成时按真实 head 重排：revision、down_revision、
-本快照文件名与降级守卫文字 'Memory M3 requires s0_0920' 一起改（不可协商项 3）。
+"""Assigned s0_0895 on s0_0894 at the 11-16 memory integration (placeholder s0_0920).
+
+占位号 s0_0920（接真实 head s0_0892），集成时按真实 head 重排：revision、down_revision、
+（已于 11-16 集成时改为 s0_0895）本快照文件名与降级守卫文字 'Memory M3 requires s0_0895' 一起改（不可协商项 3）。
 
 记忆 M3 沉淀与改进 (memory design §6.4, §7.5, §14.6–§14.9; P88; target architecture §6.9).
 
@@ -437,7 +439,7 @@ DOWNGRADE_SQL = (
      OR EXISTS(SELECT 1 FROM public.skill_revision_candidates)
      OR EXISTS(SELECT 1 FROM public.memory_system_rule_settings)
      OR EXISTS(SELECT 1 FROM public.memory_maintenance_ledger) THEN
-     RAISE EXCEPTION 'Memory M3 requires s0_0920'; END IF; END $$""",
+     RAISE EXCEPTION 'Memory M3 requires s0_0895'; END IF; END $$""",
     *(f"DROP TABLE public.{table}" for table in reversed(TABLES)),
     *(f"DROP FUNCTION public.{signature}" for signature, _body, _granted in reversed(FUNCTIONS)),
 )

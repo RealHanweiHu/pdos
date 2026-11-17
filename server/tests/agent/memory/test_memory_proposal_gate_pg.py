@@ -339,7 +339,7 @@ def search(setup, run_id, query, *, requester=None, **arguments):
 
 
 def backdate(setup, table, column, identity, days):
-    # A note version defaulted its 生效起点 to its record time (s0_0900): move both.
+    # A note version defaulted its 生效起点 to its record time (s0_0893): move both.
     starts = (", valid_from = valid_from - make_interval(days => :days)"
               if table == "memory_note_versions" else "")
     with Session(setup.admin) as session, session.begin():

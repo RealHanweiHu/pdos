@@ -1,4 +1,7 @@
-"""占位号 s0_0920（接真实 head s0_0892，分支 claude/memory-m3）：集成时按真实 head 重排，
+"""Assigned s0_0895 on s0_0894 at the 11-16 memory integration (placeholder s0_0920, branch
+claude/memory-m3; file names, revision and down_revision moved together).
+
+占位号 s0_0920（接真实 head s0_0892，分支 claude/memory-m3）：集成时按真实 head 重排，
 revision、down_revision、快照文件 schema_s0_0920.py 的文件名与降级守卫文字一起改（不可协商项 3）。
 
 记忆 M3 沉淀与改进：纠正四路分流、改版标待复核与复核转交、程序性修订候选与审核、
@@ -7,11 +10,11 @@ revision、down_revision、快照文件 schema_s0_0920.py 的文件名与降级�
 
 from alembic import op
 
-from migrations.schema_s0_0920 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0895 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0920"
-down_revision = "s0_0892"
+revision = "s0_0895"
+down_revision = "s0_0894"
 branch_labels = depends_on = None
 
 

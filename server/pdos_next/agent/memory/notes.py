@@ -624,7 +624,7 @@ def _latest(session, note_id):
 
 def _append(session, ctx, note_id, revision, values, *, status="active", origin="manual",
             replaced_by=None, candidate_id=None, request_key, fingerprint, stamp):
-    # The record time is the same instant a defaulted 生效起点 takes (s0_0900 downgrade guard).
+    # The record time is the same instant a defaulted 生效起点 takes (s0_0893 downgrade guard).
     row = MemoryNoteVersion(
         id=uuid4(), tenant_id=ctx.tenant_id, owner_id=ctx.requester_id, note_id=note_id,
         revision=revision, status=status, origin=origin, replaced_by=replaced_by,

@@ -41,7 +41,7 @@ def effective(rows, at):
     ``rows`` are that note's versions. The latest revision whose start had come wins;
     a version revised before its own start never took effect. A ``replaced`` marker only
     records when the version before it ended: while that end is still ahead of ``at``,
-    the version it closes is the one in effect (as it was before s0_0900).
+    the version it closes is the one in effect (as it was before s0_0893).
     """
     chosen, previous = None, None
     ordered = sorted(rows, key=lambda row: row.revision)

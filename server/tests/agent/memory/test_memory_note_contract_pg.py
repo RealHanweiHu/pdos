@@ -292,7 +292,7 @@ def test_merge_keeps_both_notes_links(setup):
 
 
 def test_migrated_rows_behave_as_before(setup):
-    """Rows exactly as s0_0900 fills them (valid_from = record time; a replaced marker copies
+    """Rows exactly as s0_0893 fills them (valid_from = record time; a replaced marker copies
     the start of the version it closes) answer listing, use and as_of as s0_0892 did."""
     base = datetime.now(UTC) - timedelta(days=20)
     a, b = uuid4(), uuid4()

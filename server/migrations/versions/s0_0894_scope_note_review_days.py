@@ -1,4 +1,7 @@
-"""Tenant scope-note review period (D504; P87 第 4 项).
+"""Assigned s0_0894 on s0_0893 at the 11-16 memory integration (placeholder s0_0910, branch
+claude/memory-m2b-followups; file names, revision and down_revision moved together).
+
+Tenant scope-note review period (D504; P87 第 4 项).
 
 占位号: placeholder s0_0910 on head s0_0892, written in a parallel worktree on
 2026-11-15. At integration this revision, down_revision, the snapshot file name
@@ -7,11 +10,11 @@ and its downgrade guard text are renumbered together to the real head (不可协
 
 from alembic import op
 
-from migrations.schema_s0_0910 import DOWNGRADE_SQL, SCHEMA_SQL
+from migrations.schema_s0_0894 import DOWNGRADE_SQL, SCHEMA_SQL
 from migrations.versions.s0_0778_native_pilot import ordinary_owner
 
-revision = "s0_0910"
-down_revision = "s0_0892"
+revision = "s0_0894"
+down_revision = "s0_0893"
 branch_labels = depends_on = None
 
 

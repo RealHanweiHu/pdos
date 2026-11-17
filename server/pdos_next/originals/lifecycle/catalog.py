@@ -5484,7 +5484,7 @@ COVERED_COLUMNS.update({
         "category_id", "alias_term", "alias_canonical", "target_kind", "target_id",
         "target_version", "status", "valid_until", "replaced_by", "origin", "candidate_id",
         "request_key", "request_sha256", "id", "tenant_id", "created_at",
-        # Unified item contract (s0_0900, D512): still the owner's own words and links.
+        # Unified item contract (s0_0893, D512): still the owner's own words and links.
         "occurred_at", "valid_from", "confirmation", "evidence", "relations",
     ),
     "memory_note_deletions": (

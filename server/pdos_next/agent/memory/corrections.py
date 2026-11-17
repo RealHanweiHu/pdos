@@ -18,7 +18,7 @@ The first two routes follow the feedback categories by a fixed rule. The last
 two exist only when the person who corrected asks for them, in their own words:
 nothing here infers a preference or a team convention from a correction, and no
 model is called. Every row is written by that person acting for themself; the
-database refuses the AI writer identity (s0_0920).
+database refuses the AI writer identity (s0_0895).
 """
 
 from typing import Literal

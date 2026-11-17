@@ -8,7 +8,7 @@
   anything here; a model-drafted diff stays a remainder (it would be a
   candidate too).
 * **审核**: a current tenant administrator, named, adopts or rejects. The
-  database lets nobody else read or decide (s0_0920).
+  database lets nobody else read or decide (s0_0895).
 * **采纳**: names the draft version to prepare (the next patch version, marked
   ``-draft``) and how to prepare it. Preparing the draft is an offline step
   (``tools/memory_revision_draft.py``): a prompt draft goes into the prompt

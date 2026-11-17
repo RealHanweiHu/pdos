@@ -266,7 +266,7 @@ class MemoryNoteVersion(KernelRow, Base):
     candidate_id: Mapped[UUID | None]
     request_key: Mapped[UUID]
     request_sha256: Mapped[str] = mapped_column(String(64))
-    # Unified item contract (target architecture §5.7, P121 第 6 项; s0_0900). ``valid_until``
+    # Unified item contract (target architecture §5.7, P121 第 6 项; s0_0893). ``valid_until``
     # is the contract's ``valid_to``; ``created_at`` is its ``recorded_at``.
     occurred_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     valid_from: Mapped[datetime] = mapped_column(DateTime(timezone=True))

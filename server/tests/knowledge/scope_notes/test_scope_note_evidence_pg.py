@@ -17,7 +17,6 @@ from tests.agent.memory.support import start
 from tests.g0_fixture import create_g0_project
 from tests.knowledge.scope_notes.support import (
     OBSERVE,
-    SAVE,
     anchor,
     commit,
     headers,
