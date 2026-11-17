@@ -336,9 +336,11 @@ def test_graph_resume_answer_cannot_replace_actual_category_run_or_identity():
 
 
 def test_budget_forced_partial_keeps_actual_tool_results():
-    host = Host([ModelTurn(calls=(ToolCall(id="r", name="category.read", arguments={}),))])
+    # The call on the last turn is not run (P122, user 2026-11-14); the earlier one is kept.
+    host = Host([ModelTurn(calls=(ToolCall(id="r", name="category.read", arguments={}),)),
+                 ModelTurn(calls=(ToolCall(id="late", name="category.read", arguments={}),))])
     result = pure_graph.execute(
-        AgentKernel(host, default_registry(), budget=Budget(model_turns=1)),
+        AgentKernel(host, default_registry(), budget=Budget(model_turns=2)),
         scope(),
         goal="Synthetic budget",
     )

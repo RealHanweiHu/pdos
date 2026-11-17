@@ -47,12 +47,16 @@ def test_only_the_last_turn_is_told_to_answer_and_the_prefix_does_not_change():
     assert host.prefixes[0] == host.prefixes[1]  # Same system prompt and tool definitions.
 
 
-def test_a_tool_called_on_the_last_turn_still_runs_and_the_run_ends_as_before():
-    host = Host([read()])
-    result = run(host, Budget(model_turns=1))
+def test_a_tool_called_on_the_last_turn_is_not_run():
+    host = Host([read(), read("ignored")])
+    result = run(host, Budget(model_turns=2))
     assert result["output"]["status"] == "partial"
     assert result["output"]["summary"].startswith("运行预算已用完")
-    assert len(result["output"]["result"]["actions"]) == 1 and len(host.prefixes) == 1
+    # The first call ran; the one made on the last turn, against the note, did not.
+    assert len(result["output"]["result"]["actions"]) == 1 and len(host.prefixes) == 2
+    alone = Host([read()])
+    result = run(alone, Budget(model_turns=1))
+    assert result["output"]["result"]["actions"] == [] and len(alone.prefixes) == 1
 
 
 def test_spent_tool_allowance_now_gets_one_turn_to_answer():

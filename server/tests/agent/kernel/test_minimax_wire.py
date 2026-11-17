@@ -423,11 +423,27 @@ def test_empty_question_lists_are_empty_and_dependencies_keep_their_items():
     assert question.options == [] and question.depends_on == []
 
 
+def test_the_two_encodings_captured_in_the_rerun_after_p122_are_read():
+    """D477 余项 ②, user 2026-11-14: a nested wrapper, and a wrapper around one text."""
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    turn = parse_turn(finish_with(asking({"item": {"item": OPTIONS}}, {"item": "q_other"})),
+                      minimax())
+    question = AgentOutput.model_validate(turn.structured).questions[0]
+    assert [item.model_dump() for item in question.options] == OPTIONS
+    assert question.depends_on == ["q_other"]
+    as_text = parse_turn(finish_with(asking(OPTIONS, {"items": '["q_other"]'})), minimax())
+    assert as_text.structured["questions"][0]["depends_on"] == ["q_other"]
+
+
 @pytest.mark.parametrize("options", [
     "品质问题单、客户规格书",  # Prose is not a list.
     {"choices": OPTIONS},  # Not one of the captured wrappers.
     {"item": OPTIONS, "more": 1},
     {"item": OPTIONS[0]},  # A single object is not read as a list.
+    {"item": {"item": OPTIONS[0]}},
+    {"item": {}},
+    {"item": ""},
     '{"value": "a", "label": "b"}',
     {"q_other": True},  # Only the empty object is read as an empty list.
     "{}",
