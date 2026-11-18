@@ -217,3 +217,16 @@ def test_reasoning_effort_is_sent_only_when_configured(effort):
         assert body["reasoning_effort"] == effort
     assert body["tools"][-1]["function"]["name"] == FINISH_TOOL
     assert "reasoning_split" not in body
+
+
+def test_replayed_tool_arguments_keep_chinese_text_unescaped():
+    """D596: the same JSON, without one six-character escape per Chinese character."""
+    arguments = {"query": "充气泵跌落测试标准"}
+    messages = [
+        {"role": "assistant", "content": "", "tool_calls": [
+            {"id": "call_1", "name": "category.read", "arguments": arguments}]},
+        {"role": "tool", "tool_call_id": "call_1", "content": "{}"},
+    ]
+    body = request_body(route("openai-compatible"), "fixed", messages, TOOLS, SCHEMA, True)
+    sent = body["messages"][1]["tool_calls"][0]["function"]["arguments"]
+    assert "充气泵跌落测试标准" in sent and json.loads(sent) == arguments

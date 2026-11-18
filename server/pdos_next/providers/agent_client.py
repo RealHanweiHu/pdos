@@ -84,7 +84,9 @@ def request_body(route, system, messages, tools, output_schema, streaming,
                         "type": "function",
                         "function": {
                             "name": tool_name(c["name"]),
-                            "arguments": json.dumps(c["arguments"]),
+                            # D596: written as the text it is; escaping every Chinese
+                            # character to \uXXXX only made the request longer.
+                            "arguments": json.dumps(c["arguments"], ensure_ascii=False),
                         },
                     }
                     for c in value["tool_calls"]
