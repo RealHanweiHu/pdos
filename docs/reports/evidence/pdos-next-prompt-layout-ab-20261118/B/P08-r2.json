@@ -1,0 +1,102 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 2,
+  "probe": "P08",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 98.1,
+  "clarifications": [],
+  "run_id": "71a1e04e-0dfd-4be7-8454-5e8fb6185568",
+  "tenant_id": "3cbfca28-3f7c-4bd3-8934-c3ec85a11881",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 135166,
+  "held_tokens": 0,
+  "answer": "在当前可读范围（汽车充气泵品类及本人当前权限下的来源）未检索到“A12 项目试产不良率”的任何记录，因此无法给出数值；试产批次数、不良数与不良率口径均未知。已核查：本轮检索（build/test_run/项目状态/制造文件/问题等来源，含历史）返回 0 条；平台目录按“A12”与按品类读取均为空；品类知识库与证据索引为空；build_execution 技能在当前租户与范围未启用，无法通过制造轮次工具读取试产批次数据。“上个月”按检索时点 2026-11-18 暂按 2026-10-01～2026-10-31 理解。可在本会话继续深入查（需放宽检索范围），或在有工程/制造权限的页面办理，或由有权限的人提供 A12 试产批次与不良数记录后再计算。",
+  "result": {
+    "answer": "当前可读范围内未找到 A12 项目试产的不良率记录，无法给出数值。",
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:51:21.886455+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "A12 项目试产的不良率数值",
+        "A12 试产批次数、投入数与不良数",
+        "A12 对应的产品/项目/平台记录（平台目录中未命中）",
+        "不良率的统计口径与统计周期",
+        "上个月是否确指 2026 年 10 月"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    },
+    "defect_rate": null,
+    "access_notes": [
+      "build_execution 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），无法通过制造轮次工具读取 Build 试产记录",
+      "本轮检索预算已用尽，跨范围二次检索未完成"
+    ],
+    "searched_scope": [
+      "企业资料检索（artifact/build/test_run/project_status/manufacturing_document/issue/supply/capa/change/external_wait/field_feedback/knowledge，含历史）",
+      "平台目录（按名称 A12、按品类）",
+      "品类知识条目",
+      "证据索引"
+    ],
+    "period_assumption": {
+      "basis": "检索时点 as_of 2026-11-18",
+      "label": "上个月",
+      "range": "2026-10-01..2026-10-31"
+    }
+  },
+  "questions": [
+    "“A12”指的是哪一种对象标识（产品型号、项目编号，还是平台/平台代码）？",
+    "你要的“不良率”按哪个口径统计？",
+    "接下来走哪条路径拿数据？"
+  ],
+  "unfinished": [
+    "本轮检索预算已用尽，未完成跨范围（不限当前品类）二次检索，首轮检索返回 0 条",
+    "build_execution 技能在当前租户/范围未启用，无法通过制造轮次工具读取 A12 试产 Build 的批次与不良数",
+    "尚未取得任何引用证据（citation_ids 为空），不良率数值仍为未知"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 7
+    },
+    "platform.read": {
+      "completed": 2
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

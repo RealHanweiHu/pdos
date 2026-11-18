@@ -1,0 +1,70 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 26.3,
+  "clarifications": [],
+  "run_id": "c62d529c-8dfb-4365-871a-52566ee75a61",
+  "tenant_id": "2f314161-1139-4eb9-9849-f14d90761ae4",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 16759,
+  "held_tokens": 0,
+  "answer": "已写出50字以内的群通知主推稿（26字）并给出带日期/地点的备选稿；具体日期与会议地点未在消息中给出，保留为占位待补。",
+  "result": {
+    "notes": "本次为纯写作任务，未检索公司资料，故无引用；未产生任何业务写入或通知发送动作。",
+    "notice": {
+      "text": "【评审通知】周三下午3点评审充气泵样品，请准时参加。",
+      "limit": 50,
+      "char_count": 26,
+      "within_limit": true
+    },
+    "unknowns": [
+      "本次评审对应的具体日期（消息中仅写“周三”）",
+      "会议地点",
+      "参会人员范围/是否需要点名部门"
+    ],
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "alternatives": [
+      {
+        "note": "X月X日与地点为占位符，需本人补实",
+        "text": "【评审通知】周三（X月X日）下午3点评审充气泵样品，地点：XXX，请准时参加。",
+        "char_count": 38
+      },
+      {
+        "note": "无前缀的口语版",
+        "text": "各位，周三下午3点评审充气泵样品，请准时参加。",
+        "char_count": 24
+      }
+    ],
+    "citation_ids": []
+  },
+  "questions": [
+    "这版通知是否需要写明具体日期和会议地点？"
+  ],
+  "unfinished": [
+    "如需带日期/地点的终稿，待本人提供具体日期与会议地点后定稿。"
+  ],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

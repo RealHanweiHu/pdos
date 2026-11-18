@@ -1,0 +1,78 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P06",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 108.1,
+  "clarifications": [],
+  "run_id": "8d9b4b3c-bedf-4784-96fc-cc1239d8e0ef",
+  "tenant_id": "8f80458a-fb27-449a-b366-fdc0b7f85c41",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 132693,
+  "held_tokens": 0,
+  "answer": "部分引用已变化、不可用或尚未核对，请重新查询后继续。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:46:11.041790+00:00",
+      "lookup": "uncited",
+      "notice": "找到 1 条相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "部分引用未通过当前复核，请重新查询。"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 1
+    }
+  },
+  "questions": [
+    "是否继续深入检索并读取《充气泵出厂气密性测试规范 QS-AT-2026-014》正文，以确认压力和保压时间的具体数值？"
+  ],
+  "unfinished": [
+    "深入读取 QS-AT-2026-014 正文，提取并核对试验压力、保压时间及判定口径（本轮检索预算已用尽，需下一轮继续）",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "lookup": "uncited",
+  "sources": [],
+  "tools": {
+    "assistant.citations.read": {
+      "failed": 1
+    },
+    "assistant.extract": {
+      "completed": 2
+    },
+    "assistant.materials.read": {
+      "failed": 1
+    },
+    "assistant.passage.read": {
+      "completed": 2
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 10
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

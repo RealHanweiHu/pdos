@@ -1,0 +1,120 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P07",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 93.5,
+  "clarifications": [],
+  "run_id": "7b1d0f49-8e42-4b35-810f-790f797f01bc",
+  "tenant_id": "ef2b4829-bd46-4d40-8b0e-168b42961896",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 239050,
+  "held_tokens": 0,
+  "answer": "结论：在本次可检索范围内没有找到公司充气泵的跌落测试标准，这不代表公司没有该标准，只表示当前范围内查不到。\n\n已核对（均返回空/无命中）：\n1. 公司资料检索（关键词：充气泵 跌落测试 标准 高度 次数 判定；跌落试验/drop test）→ 0 条命中；检索预算随后耗尽，无法再换词重试。\n2. 品类知识库（边界/细分/竞品/用户声音/法规/研究问题）→ 全部 0 条。\n3. 规格参数字典 → 0 条；竞品库 → 0 条；证据检索 → 0 条。\n4. 型号与基线：品类「汽车充气泵」登记 model_count=1，但平台/产品读取在该范围返回空；以 product_id 读取基线被拒（FORBIDDEN_SCOPE），因此无法定位到具体型号及其规格书版本。\n5. 公开来源研究能力（research.search / research.fanout / public_research 技能）在本会话未配置，因此也无法给出带原文依据的公开标准。\n\n未查到：跌落高度、跌落次数、跌落姿态（面/角/边）、包装与裸机区分、判定准则、引用的标准编号，均无法从公司资料确认。\n\n补充说明（一般行业做法，非公司标准、不可作为依据）：跌落条件通常按 ISTA 2A/3A、IEC 60068-2-31、GB/T 2423.5 这类方法执行，但具体高度与次数一般由各厂自定，需以本公司规格书/质量标准为准。\n\n可行路径：请指定具体型号，或在页面上附加/选择该型号的规格书、质量标准或测试规范文件，我再据此逐条抽取跌落条款（含高度、次数、姿态、判定与引用标准）；也可由产品经理或工程在对应型号页面打开现行版本。",
+  "result": {
+    "research": {
+      "jobs": [
+        {
+          "ledger": [],
+          "status": "unavailable",
+          "coverage": [],
+          "failures": [
+            {
+              "reason": "SOURCE_UNAVAILABLE",
+              "message": "此读取能力尚未配置。"
+            }
+          ],
+          "snapshots": []
+        }
+      ],
+      "version": 1,
+      "row_count": 0,
+      "source_count": 0
+    },
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:26:31.197839+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "公司充气泵跌落测试标准（跌落高度）",
+        "公司充气泵跌落测试标准（跌落次数）",
+        "公司充气泵跌落测试标准（跌落姿态与包装/裸机口径）",
+        "公司充气泵跌落测试标准（合格判定准则与引用标准编号）",
+        "该标准所属的具体型号与规格书版本"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "未能在公司资料中检索到跌落测试条款：assistant.search 命中 0 条且本轮检索预算耗尽，无法再换词复检",
+    "未定位到具体型号/基线：品类 model_count=1，但平台读取为空、product_id 读取基线被拒（FORBIDDEN_SCOPE），需用户提供型号或由产品经理打开对应页面",
+    "公开标准未核实：research.search / research.fanout / public_research 技能在本会话均不可用，无法出具带原文依据的公开跌落标准引用",
+    "待用户提供规格书/质量标准/测试规范文件（可附加或选择版本）后，再抽取跌落条款与引用标准"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "platform.read": {
+      "completed": 6,
+      "failed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "category.competitors.list": {
+      "completed": 1
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "product.baseline.read": {
+      "failed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 3
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.parameters.list": {
+      "completed": 2
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 2
+    },
+    "model": {
+      "completed": 12
+    },
+    "memory.search": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

@@ -1,0 +1,101 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P08",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 83.4,
+  "clarifications": [
+    "A12 具体指什么对象（型号代码、项目名、工单/批次号）？它是否属于「汽车充气泵」之外的其他品类？",
+    "“不良率”按哪个口径统计？",
+    "试产原始记录在哪里（哪份文件/系统/导出件）？"
+  ],
+  "run_id": "a64de4fb-d44c-4ec6-aaa7-4b7a0eb2bdae",
+  "tenant_id": "0b61d987-df00-4006-8718-f6bca1635d53",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 239385,
+  "held_tokens": 0,
+  "answer": "已在当前可读范围完成查找：A12 项目上个月（按检索时点 2026-11-18 推算为 2026 年 10 月）的试产不良率未查到，0 命中，无法给出数值。已核对：品类「汽车充气泵」（active，model_count=1，知识库各类计数为 0，参数表为空）；已查但无结果：品类全文检索（Build/制造文档/项目状态/试验Run/问题/资料/历史版本）、平台对象（名称 A12、code=A12、品类全量、含历史版本）、证据索引、知识库与规格参数、本人历史工作记录、已授权 MCP 连接器（无）。未取得投入数、不良数、批次号与日期等任何不良率分子分母，故不做任何估算。缺 A12 对象标识或所属品类、试产台账载体（ERP/MES 导出、试产批次报告、质量记录）及口径与月份归属；检索接口本轮预算耗尽并关闭，需线索到位后在同会话继续定位并交回带出处的数值。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:26:17.041169+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "A12 项目/型号在当前可读资料中无任何记录（品类检索、平台对象、证据索引、知识库、参数表、本人历史记录、MCP 连接器均 0 命中）",
+        "A12 试产的投入数量、不良数量、批次号与发生日期未登记，不良率无法计算",
+        "“上个月”的基准月份按检索时点 2026-11-18 理解为 2026 年 10 月，尚未由记录核对",
+        "不良率口径按默认理解为“不合格台数 ÷ 投入生产总数”，未与实际台账字段核对",
+        "试产记录载体（ERP/MES 导出、试产批次报告、质量记录）未提供或未授权",
+        "A12 所属品类/对象编号未确认，当前检索范围可能不覆盖"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "本轮检索预算耗尽且 assistant.search 已关闭，未能取得 A12 试产不良率的任何证据（0 命中）",
+    "未确认 A12 的对象标识与所属品类，检索范围可能不覆盖该记录",
+    "未获得试产批次与检验台账载体及口径确认，分子分母与统计月份均缺失，数值无法给出"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "product.baseline.read": {
+      "failed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 3
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.parameters.list": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 2
+    },
+    "model": {
+      "completed": 12
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "platform.read": {
+      "completed": 6
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

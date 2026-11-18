@@ -1,0 +1,82 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P08",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 51.8,
+  "clarifications": [],
+  "run_id": "cbf6e3a2-207b-4efa-9124-46eca7b3eb3f",
+  "tenant_id": "858f5451-73a2-4485-a107-7190caa64d9d",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 124377,
+  "held_tokens": 0,
+  "answer": "目前拿不到 A12 试产不良率：本轮在你可见的范围内检索后，没有找到任何 A12 相关的试产/制造轮次记录，也没有任何可引用的数值证据。已检索范围为：当前品类“汽车充气泵”（含历史）、来源类型 build / issue / capa / manufacturing_document / project_status；另读了品类下的平台与产品清单（platform.read，按名称与代码 A12 查询）、品类知识与竞品清单，以及已授权的 MCP 只读工具清单，均返回空。品类列表显示该品类为“隔离合成品类”，目前可见条目极少。这不等于“A12 不存在”，只是在我能读到的范围内没有命中；本轮检索预算也已用尽，无法再换关键词复检。为给你确切数字，需要你确认三件事（见提问）。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:17:26.781092+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "“A12”具体指什么对象？当前品类下按名称/代码都没匹配到。",
+    "试产与不良数据你希望我从哪里取？",
+    "“上个月”指哪个区间？"
+  ],
+  "unfinished": [
+    "定位 A12 对应的产品/项目/试产批次对象：platform.read（名称与 code=A12）、category.knowledge.list、category.competitors.list、已授权 MCP 工具清单均为空，未能解析",
+    "获取 A12 上个月试产的投入数与不良数，并按统一口径算不良率：本轮 build/issue/capa/manufacturing_document/project_status 检索返回 0 条，无可引用证据",
+    "本轮检索预算已用尽，尚未做全库/历史版本深挖与同义词复检（建议下一轮继续）"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "category.competitors.list": {
+      "completed": 1
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 7
+    },
+    "platform.read": {
+      "completed": 3
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P07",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 87.3,
+  "clarifications": [],
+  "run_id": "a0bfe096-5d78-417c-910b-fc968f7d2397",
+  "tenant_id": "e4fd7593-c882-4066-960e-2b85d9c74862",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 231977,
+  "held_tokens": 0,
+  "answer": "在\"汽车充气泵\"品类及全库可读范围内检索公司资料，未找到任何载有充气泵跌落测试标准的原文，因此本轮无法给出公司的跌落测试标准数值。已核对：品类检索\"跌落/跌落高度/包装跌落\"0 条；品类知识库（边界/细分/竞品/用户声音/法规/研究问题）0 条；规格参数 0 条；证据库检索\"跌落\"\"跌落测试 标准\"\"充气泵\"0 条；无已签发引用、无个人记忆条目命中、无可用只读 MCP 连接器；skill.load 在当前范围未启用。未查到：跌落条款原文（高度/次数/包装状态/判定）、其所在文件与对应型号 product_id（平台/产品列表读取为空，无法按型号读取基线）。下一步需指到具体型号或检验/包装/基线文件编号，或由有权限同事在对应页面办理后提供原文。",
+  "result": {
+    "status": "not_found_in_scope",
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:41:28.161739+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "公司充气泵跌落测试标准的原文条款与数值（跌落高度、次数、包装状态、判定标准）未在当前可读范围内找到",
+        "该跌落条款具体写在哪个文件（检验规范/包装规范/制造基线/控制计划）未确认",
+        "对应型号的 product_id 未取得（平台与产品列表读取为空），无法按型号读取基线"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "跌落标准是按型号定制的吗？请指给我具体型号（产品编号/名称），或直接给出文件标题/编号（如检验规范、包装规范、制造基线、控制计划）。",
+    "这个跌落标准指的是哪一种？（整机跌落、包装件跌落、或含气瓶/电源适配器的跌落）"
+  ],
+  "unfinished": [
+    "未取得公司跌落测试标准的原文条款与数值（检索 0 条命中，本轮无已签发引用）",
+    "未按型号读取产品基线与制造文档：平台/产品列表读取为空，缺 product_id",
+    "未读取检验规范/包装规范/控制计划/验证记录原文",
+    "assistant.search 本轮检索预算已用尽，未能在无品类限定范围内再检索一次",
+    "未核实公开通用试验标准（如 ISTA、ASTM D5276、GB/T 4857 系列）是否被公司引用为依据"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.citations.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 2
+    },
+    "category.competitors.list": {
+      "completed": 1
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 3
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 12
+    },
+    "platform.read": {
+      "completed": 3
+    },
+    "product.baseline.read": {
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

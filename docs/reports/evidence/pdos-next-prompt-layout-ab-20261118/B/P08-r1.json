@@ -1,0 +1,75 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 1,
+  "probe": "P08",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 88.1,
+  "clarifications": [
+    "“A12” 具体指哪一类对象？我需要它来定位试产记录：项目编号、产品/型号编码，还是 Build/试产批次编号？",
+    "试产与不良数据主要记录在哪里？"
+  ],
+  "run_id": "cc434f61-7f89-4e8d-8fbb-14551bdf0a74",
+  "tenant_id": "603fa6f3-ada3-4452-868e-9f91576a1afb",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 131313,
+  "held_tokens": 0,
+  "answer": "按“ A12 为当前品类内的项目/产品代号、试产与不良数据来自公司平台内部记录、上个月=2026 年 10 月”继续查，仍未找到任何可核的 A12 试产记录：品类内试产/项目状态/制造文档检索 0 条，按名称与代号读取平台对象（含历史）0 条，不可用外部连接器读取 ERP/MES。因此目前无法给出不良率数值，也不能断定该记录不存在；本轮检索预算已用完，更深的扩大检索未能完成。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:45:56.467633+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "A12 项目试产的不良率数值（当前可读范围内无可核记录）",
+        "对应试产批次的投产总数与不良品数（无可核记录）",
+        "A12 在平台中的唯一标识（按名称/代号匹配均无结果）",
+        "上个月的具体月份区间（按当前日期推定为 2026 年 10 月，未见试产记录佐证）",
+        "试产与不良实绩是否登记在公司平台之外的系统（ERP/MES 等，当前无已授权只读连接器）"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "未能完成扩大范围的检索：本轮查找预算已用完，对全类型来源（A12 关键词：artifact/knowledge/issue/capa/change/supply/build/test_run/field_feedback/project_status/manufacturing_document/verification_handoff）的补充检索被系统拦截，需在后续轮次或新会话继续。",
+    "未找到 A12 对应的项目、Build 或试产批次对象，无法据此拉取投产数/不良数并计算不良率；也未验证“上个月=2026 年 10 月”存在试产批次。",
+    "若试产实绩实际登记在 ERP/MES，需要先取得相应只读连接器授权，才能核对该项目的投产数与不良数。"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 7
+    },
+    "platform.read": {
+      "completed": 3
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

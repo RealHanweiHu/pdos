@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P02",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 7.4,
+  "clarifications": [],
+  "run_id": "1d5562b5-fd7b-46e6-8f39-806af2678dfa",
+  "tenant_id": "0b712f99-ea4e-4465-b772-cfe73a1000fb",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15790,
+  "held_tokens": 0,
+  "answer": "DFMEA（Design Failure Mode and Effects Analysis，设计失效模式与影响分析）是在产品设计阶段使用的一种系统化风险分析方法：从零件或功能出发列出所有可能的失效模式，逐项分析其发生原因、可能后果，再按严重度、发生度、可探测度打分（如 RPN），从而在投产前就识别并优先消除设计缺陷。它与量产后的质量分析（PFMEA）的主要区别是关注点不同——DFMEA 看的是\"设计上会怎样坏、怎么防\"，PFMEA 看的是\"生产过程会怎么出偏差\"。这套思路在汽车充气泵这类结构与电控结合的产品上同样适用，可用于梳理气路堵塞、密封失效、过热保护等设计风险。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

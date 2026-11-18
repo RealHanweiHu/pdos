@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P05",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 8.2,
+  "clarifications": [],
+  "run_id": "f63544b5-ebe2-445e-adfb-b43c536c2156",
+  "tenant_id": "433a04da-96ed-486b-9ae6-be7bd1ab70df",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15726,
+  "held_tokens": 0,
+  "answer": "PPAP (Production Part Approval Process) is the AIAG-defined automotive-industry process in which a supplier demonstrates to its customer that a part can be produced consistently at the required quality level, typically by submitting a Part Submission Warrant together with dimensional results, material and performance test data, and process capability studies. It is run at one of five submission levels (1–5, depending on the customer's required evidence) and any change to the part, its tooling, or its production process normally requires re-submission and re-approval.",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

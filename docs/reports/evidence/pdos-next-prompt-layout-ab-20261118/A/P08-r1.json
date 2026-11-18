@@ -1,0 +1,439 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P08",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 136.3,
+  "clarifications": [],
+  "run_id": "535df686-4516-4616-8b15-39910f0a177d",
+  "tenant_id": "89334cc5-d019-4517-8bae-ab65697b21c2",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 264724,
+  "held_tokens": 0,
+  "answer": "运行预算已用完，保留已完成动作与已核对结果。",
+  "result": {
+    "actions": [
+      {
+        "tier": "READ",
+        "tool": "assistant.search",
+        "taint": "external",
+        "value": {
+          "as_of": "2026-11-18T08:46:34.618612+00:00",
+          "items": [],
+          "scope": {
+            "product_id": null,
+            "project_id": null,
+            "category_id": "0d970095-1a27-48dc-9bf5-911d5f250b89",
+            "proposal_id": null
+          },
+          "version": "enterprise-search/v1",
+          "coverage": {
+            "notice": null,
+            "status": "current",
+            "indexed_as_of": null
+          },
+          "returned": 0,
+          "truncated": false,
+          "query_trace": {
+            "codes": [
+              "A12"
+            ],
+            "terms": [
+              "a12",
+              "不良",
+              "不良率",
+              "试产",
+              "项目"
+            ],
+            "removed": [],
+            "families": [],
+            "code_rule_version": "enterprise-codes/v2",
+            "tokenizer_version": "jieba-0.42.1-HMM-off/search/413d6a22bc0c428b289f3ea16b936e1439bc5ced81a0f4534b0e9c671a8638ab",
+            "query_policy_version": "query-function-words/v1/fe393fbf44f5869929a51e7ce280dcbcf97611b2aa4aa3531f7d0d74c39aaeaf"
+          },
+          "execution_ref": {
+            "call_id": "a8b06b5f-f589-41e4-b642-1a33b3a4e09e",
+            "read_kind": "ordinary/v1"
+          },
+          "direct_returned": 0,
+          "ranking_version": "bm25-title-2.5-k1-1.2-b0.75-freshness180-native-id-onehop20/v3+review/v1+query-function-words/v1",
+          "related_returned": 0,
+          "related_truncated": false
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "assistant.search",
+        "taint": "external",
+        "value": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "detail": {
+              "reason": "MODEL_BUDGET_EXCEEDED"
+            },
+            "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+            "next_step": {
+              "hint": "本轮预算已用完：不要再调用同类工具，交付已核对的部分，把没做完的写进 unfinished。",
+              "action": "deliver_partial"
+            }
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "platform.read",
+        "taint": "trusted",
+        "value": {
+          "items": [],
+          "link_scope": "category_shared",
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "f6a66db4-a223-4a41-867a-4252b33b1946",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "platform.read",
+        "taint": "trusted",
+        "value": {
+          "items": [],
+          "link_scope": "category_shared",
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "9668ba65-92dd-443c-9bad-07867ace2675",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "memory.search",
+        "taint": "trusted",
+        "value": {
+          "items": [],
+          "notes": [],
+          "scope": {
+            "kind": "category",
+            "narrowed_to": null
+          },
+          "status": "completed",
+          "version": "memory-search/v1",
+          "returned": 0,
+          "retrieval": {
+            "channels": [
+              "keyword"
+            ],
+            "semantic": {
+              "reason": "本人会话记录未启用向量化，本次只做了关键词检索。",
+              "status": "not_enabled"
+            },
+            "index_pending": 0,
+            "ranking_version": "memory-rrf/v3;keyword-sat-1.2;own-words+answer-side+object-titles;k=60;half-life-30d;receipt+0.25;pin+0.25;corrected*0.5"
+          },
+          "fact_policy": "情景记录是你本人以往的工作记录（as_of 为当时时间），不是业务事实，不能作为回答依据引用。卡片里的 answer 是小Pai 当时回答的摘录，同样只是记录；要看完整回答，用 conversation.history 并传 session_id；涉及当前事实须重新读取业务对象。",
+          "next_offset": null,
+          "notes_policy": "个人记忆条目是你本人确认的口径、背景和叫法，不是业务事实，不能作为依据引用。",
+          "notes_status": "completed",
+          "execution_ref": {
+            "call_id": "7af43e51-e0dd-430b-bce2-44a9e5bcf4e5",
+            "read_kind": "ordinary/v1"
+          },
+          "unavailable_kinds": []
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "evidence.search",
+        "taint": "external",
+        "value": {
+          "items": [],
+          "execution_ref": {
+            "call_id": "b614d2fa-9b34-4d0d-a2ee-ce914c78f43a",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "platform.read",
+        "taint": "trusted",
+        "value": {
+          "items": [],
+          "link_scope": "category_shared",
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "18c8620c-55fa-4ed2-a5ce-8f36e8f51398",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "evidence.search",
+        "taint": "external",
+        "value": {
+          "items": [],
+          "execution_ref": {
+            "call_id": "93131ba2-b640-4cd4-9865-719f022b4602",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "assistant.search",
+        "taint": "external",
+        "value": {
+          "error": {
+            "code": "RATE_LIMITED",
+            "detail": {
+              "reason": "MODEL_BUDGET_EXCEEDED"
+            },
+            "message": "本轮查找预算已用完，请先交付已核对结果；需要时继续深入查。",
+            "next_step": {
+              "hint": "「assistant.search」已连续 2 次因同类原因失败，不要再调用它：改用其他已下发的工具，或交付已核对的部分，并在 unfinished 写明缺口。",
+              "action": "stop",
+              "failures": 2
+            }
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "skill.load",
+        "taint": "trusted",
+        "value": {
+          "error": {
+            "code": "FORBIDDEN_SCOPE",
+            "detail": {
+              "reason": "FORBIDDEN_SCOPE"
+            },
+            "message": "该技能未在当前租户与范围启用。",
+            "next_step": {
+              "hint": "当前权限或运行范围不允许：不要换参数或换工具绕过。说明这一步做不了，以及可行的办理路径（在对应页面办理，或由有权限的人办理）。",
+              "action": "respect_boundary"
+            }
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "category.list",
+        "taint": "trusted",
+        "value": {
+          "items": [
+            {
+              "id": "0d970095-1a27-48dc-9bf5-911d5f250b89",
+              "key": "category-3ddb725d68304b8191e1607d443be69d",
+              "name": "汽车充气泵",
+              "owner": {
+                "id": "37642171-7a89-43fc-afb8-1f7430319777",
+                "name": "Synthetic owner"
+              },
+              "status": "active",
+              "purpose": "隔离合成品类",
+              "owner_id": "37642171-7a89-43fc-afb8-1f7430319777",
+              "revision": 1,
+              "model_count": 1,
+              "permissions": {
+                "read": true,
+                "write": true,
+                "product_manager": false
+              }
+            }
+          ],
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "42b4c385-3d02-4299-9640-424e262ff42e",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "platform.read",
+        "taint": "trusted",
+        "value": {
+          "items": [],
+          "link_scope": "category_shared",
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "0f89360a-d919-43cf-8bf0-93ae9c800dab",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "product.baseline.read",
+        "taint": "trusted",
+        "value": {
+          "error": {
+            "code": "MISSING_REQUIRED_EVIDENCE",
+            "detail": {
+              "reason": "baseline_product_required"
+            },
+            "message": "请选择实际基线型号。",
+            "next_step": {
+              "hint": "按工具定义和本条说明修正参数后再调用；缺对象或版本时先用读取工具查到实际编号，查不到就请用户选择，不要猜。",
+              "action": "fix_arguments"
+            }
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "category.read",
+        "taint": "trusted",
+        "value": {
+          "id": "0d970095-1a27-48dc-9bf5-911d5f250b89",
+          "key": "category-3ddb725d68304b8191e1607d443be69d",
+          "name": "汽车充气泵",
+          "owner": {
+            "id": "37642171-7a89-43fc-afb8-1f7430319777",
+            "name": "Synthetic owner"
+          },
+          "status": "active",
+          "purpose": "隔离合成品类",
+          "owner_id": "37642171-7a89-43fc-afb8-1f7430319777",
+          "revision": 1,
+          "model_count": 1,
+          "permissions": {
+            "read": true,
+            "write": true,
+            "product_manager": false
+          },
+          "execution_ref": {
+            "call_id": "1d3ddf42-6f9e-40d2-9e1c-65c852818466",
+            "read_kind": "ordinary/v1"
+          },
+          "parameter_count": 0,
+          "knowledge_counts": {
+            "voice": 0,
+            "segment": 0,
+            "boundary": 0,
+            "competitor": 0,
+            "regulation": 0,
+            "research_question": 0
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "category.knowledge.list",
+        "taint": "trusted",
+        "value": {
+          "as_of": "2026-11-18T08:47:16.934587+00:00",
+          "items": [],
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "054d9aa2-a2ff-4e77-bb8e-8391b49a7d9f",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "mcp.tools.list",
+        "taint": "trusted",
+        "value": {
+          "taint": "admitted_metadata",
+          "tools": [],
+          "next_cursor": null,
+          "execution_ref": {
+            "call_id": "9a3cb314-4a49-4ce4-8016-4a20fe184018",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      },
+      {
+        "tier": "READ",
+        "tool": "conversation.history",
+        "taint": "trusted",
+        "value": {
+          "turns": [],
+          "root_goal": "上个月 A12 项目试产的不良率是多少？",
+          "session_id": "73ce6c40-1eb7-499e-9e0f-e1dcd5d1026e",
+          "fact_policy": "Historical answers are dated records, not current domain facts. outcome_state \"updated\" means sources changed after that answer; re-read exact objects before relying on its facts. \"hidden\" means the answer was withheld because its sources are no longer readable. Use conversation.history for full earlier answers; never infer missing constraints.",
+          "next_before": null,
+          "root_run_id": "535df686-4516-4616-8b15-39910f0a177d",
+          "execution_ref": {
+            "call_id": "8c017bbb-fdc6-4e15-9707-16de5d58bc7e",
+            "read_kind": "ordinary/v1"
+          }
+        }
+      }
+    ],
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:46:34.618612+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "剩余目标尚未完成"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 2
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 2
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 12
+    },
+    "platform.read": {
+      "completed": 4
+    },
+    "product.baseline.read": {
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

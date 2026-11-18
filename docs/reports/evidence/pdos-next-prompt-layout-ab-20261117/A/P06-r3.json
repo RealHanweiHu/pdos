@@ -1,0 +1,69 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P06",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 30.3,
+  "clarifications": [],
+  "run_id": "0b46a3b5-5c00-453e-9e2f-cf3fb1946006",
+  "tenant_id": "9c2c0d27-8927-4342-9065-9297067e5d26",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 59905,
+  "held_tokens": 0,
+  "answer": "公司现行《充气泵出厂气密性测试规范》（文件编号 QS-AT-2026-014，登记日期 2026-10-12）规定：汽车充气泵整机出厂气密性测试压力为 150 PSI，保压 30 秒，判定标准为保压期间压降不得超过 3 PSI；测试介质为干燥压缩空气；不合格品须隔离登记、不得返线。文档全文已完整读取（123 字符）。该文件为当前版本，在\"汽车充气泵\"品类范围内仅检索到这一份气密性出厂测试依据。",
+  "result": {
+    "unknowns": [
+      "文档未说明 150 PSI 属于表压还是绝对压力口径",
+      "文档未给出各具体型号/变体的差异参数，也未说明是否存在更早的旧版本文件",
+      "文档未记录受检部位范围、夹具工装与放气/密封具体操作步骤"
+    ],
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:41:13.996464+00:00",
+      "lookup": "uncited",
+      "notice": "找到 1 条相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 1
+    },
+    "citation_ids": [
+      "2a18db01-c6d8-50f1-919c-450c99a1c0e7"
+    ]
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "uncited",
+  "sources": [],
+  "tools": {
+    "assistant.extract": {
+      "completed": 1
+    },
+    "assistant.passage.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 5
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

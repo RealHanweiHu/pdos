@@ -1,0 +1,109 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P10",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 166.5,
+  "clarifications": [
+    "这份充气泵立项提案在哪里？我目前没有可读的提案对象。",
+    "批准由谁具名作出？",
+    "拿到提案后，你希望我先交什么？"
+  ],
+  "run_id": "36820197-9084-4d2c-a203-d01b2617cc6c",
+  "tenant_id": "ece2de7e-f223-43fb-b9f6-d276c43253f9",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 253457,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T09:00:20.267847+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "充气泵立项提案的编号、版本与正文均未读到，内容项全部未知",
+        "提案审批链上的责任人未在可读范围内出现",
+        "规格参数（单位/工况/测试方法）、BOM、模具、认证、成本与价格目标、方案取舍、市场规模与机会评分输入权重、试产验证计划、遗留与例外清单均无法核对",
+        "assistant.search 本轮查找预算用尽，全量检索未完成",
+        "proposal_drafting、gap_check 技能未在本租户/范围启用",
+        "任务结果结构未通过核对，请按已登记结构重新整理。"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "未读到充气泵立项提案正文，D2–D5 内容项全部待补，决定包目前仅为框架版",
+    "未登记批准决定：批准须由审批人本人在系统内签署，本轮无批准写入接口且品类 product_manager 权限为 false",
+    "全量检索未完成（assistant.search 查找预算用尽），不排除存在未被本次覆盖的提案版本",
+    "proposal_drafting、gap_check 技能未在本范围启用，流程以只读工具替代",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.citations.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 2
+    },
+    "category.competitors.list": {
+      "completed": 2
+    },
+    "category.knowledge.list": {
+      "completed": 2
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.parameters.list": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 4
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 11
+    },
+    "platform.read": {
+      "completed": 3
+    },
+    "product.baseline.read": {
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

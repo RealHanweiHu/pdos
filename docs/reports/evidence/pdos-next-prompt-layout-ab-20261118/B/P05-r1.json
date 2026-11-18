@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 1,
+  "probe": "P05",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 6.5,
+  "clarifications": [],
+  "run_id": "3810528a-33e4-4126-85b0-de7c2ce39980",
+  "tenant_id": "1ba623b2-f255-4ba7-baba-8610c312ad87",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 17002,
+  "held_tokens": 0,
+  "answer": "PPAP（Production Part Approval Process，生产件批准程序）是汽车行业供应商质量保证流程，要求供应商提交生产零件满足客户工程与质量要求的完整证据包（如零件尺寸检验报告、材料与过程能力、试验结果及 PSW 批准表）。供应商需依客户规定的提交等级完成该套文件与样品审查，获客户签署批准后，量产件才可正式供应。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

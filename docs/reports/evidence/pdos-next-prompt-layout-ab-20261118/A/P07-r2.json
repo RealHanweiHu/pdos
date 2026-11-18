@@ -1,0 +1,90 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P07",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 114.8,
+  "clarifications": [],
+  "run_id": "eb7def2e-f584-4509-bef8-b29f7814b55e",
+  "tenant_id": "e36ec56a-02a5-4977-a4d5-9c55c9f49711",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 148352,
+  "held_tokens": 0,
+  "answer": "在本次授权的检索范围内（品类「汽车充气泵」隔离合成品类），没有找到公司对充气泵跌落测试标准的任何记录——跌落高度、姿态、判定条件都没有查到可引用的依据。我不能凭通用经验给出数字，因为行业通用的跌落包装试验标准不等于公司的标准。\n\n本轮已尝试并全部为空的渠道：\n- 公司资料检索（关键词含\"充气泵/跌落测试标准/跌落高度/判定依据\"）：0 条\n- 品类下的产品/平台、变体：0 条\n- 品类参数字典、品类知识条目（含历史）：0 条\n- 证据检索（跌落/充气泵）：0 条\n- 我本人以往记录与本会话历史：0 条；无授权的外部 MCP 连接器\n\n本轮检索预算已用完，后续一次同类检索已因额度限制被拒。若你能补一个口径，我可以在同一会话继续深入查：给我具体的型号/产品（产品或变体编号/名称），或直接附上跌落测试规范、检验规范、试产/验证报告这类原件，我会按固定版本读取并逐条摘出跌落高度、跌落姿态/方向、冲击次数与合格判定条件，区分实测值与规范值并给出引用。\n\n注意：像 ISTA/ASTM 一类的通用跌落包装试验属行业通识，不能当作我们公司的标准回答。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:51:48.226852+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "公司充气泵跌落测试标准（跌落高度、跌落姿态/方向、冲击次数、合格判定条件）在本次检索范围内未找到记录",
+        "检索渠道为空：公司资料检索0条、品类产品/平台0条、品类参数0条、品类知识0条、证据检索0条、个人记忆与历史会话0条",
+        "因无可引用来源，无法确认公司标准是通用品类标准还是按型号/平台分别规定"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "要按哪个口径继续核对充气泵跌落测试标准？"
+  ],
+  "unfinished": [
+    "未能取得充气泵跌落测试标准的公司依据：本次授权范围内的公司资料、品类产品/平台、品类参数与知识、证据检索、个人记忆与会话历史均为空。",
+    "本轮检索预算耗尽，一次追加的企业检索已被额度限制拒绝；若用户给出型号或附件，需在后续轮次继续深入检索并按固定版本读取原文。",
+    "尚未区分\"公司自有标准\"与\"引用外部通用标准（如 ISTA/ASTM 跌落包装试验）\"——需在取得原文后核对标准出处与版本。"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 2
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "category.parameters.list": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 8
+    },
+    "platform.read": {
+      "completed": 2
+    },
+    "product.baseline.read": {
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

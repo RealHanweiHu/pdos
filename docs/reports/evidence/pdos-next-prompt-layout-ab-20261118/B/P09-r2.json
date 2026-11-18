@@ -1,0 +1,66 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 2,
+  "probe": "P09",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 37.9,
+  "clarifications": [],
+  "run_id": "884a5eb5-b1f1-48b9-a90c-fdcd0b19c654",
+  "tenant_id": "41540fc2-53e8-4def-95a9-b1a81a47e188",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 54821,
+  "held_tokens": 0,
+  "answer": "在本轮可检索范围内未找到「PP-2026-031」这份试产问题记录，因此无法确认它记载的具体问题，也无法确认根因是否已结案。我按当前品类「汽车充气泵」并含历史版本检索了 issue、CAPA、manufacturing_document、build、verification_handoff、project_status 等来源，返回 0 条命中；随后尝试扩大来源范围的第二次检索已超出本轮查找预算，未能完成。因此这两点目前都属于未知，而不是「没有问题」或「根因未确认」的结论。若该记录属于其他品类/项目，或尚未作为可检索资料挂接，请提供其所属项目、型号，或直接附上原件，我可在同一会话继续深入核对。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:55:55.034708+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "PP-2026-031 所记载的试产问题内容：在已检索范围内未找到该记录，问题现象未知",
+        "该记录对应的围堵措施、CAPA 状态与根因结论：未找到原始记录，无法确认根因是否已由专业本人确认",
+        "该记录所属品类/项目/型号是否与当前品类「汽车充气泵」一致：未知",
+        "扩大来源类型（artifact、knowledge、change、supply、test_run、field_feedback、external_wait 等）的检索因本轮查找预算用尽而未完成"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "PP-2026-031 是否属于当前品类「汽车充气泵」下的记录？如果属于其他品类或项目，请告知所属品类/项目/型号。"
+  ],
+  "unfinished": [
+    "未完成：以全部来源类型（含 artifact、knowledge、change、supply、test_run、field_feedback、external_wait）重新检索 PP-2026-031；本轮查找预算已用尽。",
+    "未完成：取得记录后，仍需提取并核对「发现的问题」原文及「根因是否确认」的具名结论与状态，未做提取调用。"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "model": {
+      "completed": 3
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P03",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 7.7,
+  "clarifications": [],
+  "run_id": "44e4780b-7eb4-442b-b087-37fcdccb77b1",
+  "tenant_id": "9cec4e45-2487-4303-8820-a74cf268bea5",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15756,
+  "held_tokens": 0,
+  "answer": "英文翻译：The samples have been shipped out and are expected to arrive on Friday.（单数样品：The sample has been shipped and is expected to arrive on Friday.）",
+  "result": {
+    "notes": "“样品”中文单复数同形，按实际件数选择变体；“预计周五到”默认译为 on Friday，若意为“不晚于周五”用 by Friday。",
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "source_text": "样品已寄出，预计周五到。",
+    "translations": [
+      {
+        "text": "The samples have been shipped out and are expected to arrive on Friday.",
+        "variant": "plural"
+      },
+      {
+        "text": "The sample has been shipped and is expected to arrive on Friday.",
+        "variant": "singular"
+      },
+      {
+        "text": "The samples have been shipped out and should arrive by Friday.",
+        "variant": "plural_by"
+      }
+    ]
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

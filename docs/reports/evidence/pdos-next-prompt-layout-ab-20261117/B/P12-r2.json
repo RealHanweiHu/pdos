@@ -1,0 +1,66 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 2,
+  "probe": "P12",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "failed",
+  "seconds": 432.6,
+  "clarifications": [],
+  "run_id": "0c1450b9-d39e-478f-b4db-9a4df3384680",
+  "tenant_id": "bca6fc11-aadd-42a4-965e-6d65bf462523",
+  "state": "failed",
+  "error_code": "EXTERNAL_OUTCOME_UNKNOWN",
+  "used_tokens": 241648,
+  "held_tokens": 0,
+  "answer": "原运行已核对：保留 0 条已提交动作，1 次不确定调用已结束等待。",
+  "result": {
+    "reconciliation": {
+      "mode": "automatic",
+      "event_id": "078f5e89-314f-4b75-b606-4cc7970c75b8",
+      "closed_at": "2026-11-18T05:40:40.135077+00:00",
+      "held_tokens": 0,
+      "initiated_by": null,
+      "failed_call_count": 1,
+      "estimated_micro_usd": 43701,
+      "recovered_call_count": 0,
+      "may_start_new_request": true,
+      "original_cancel_epoch": 0,
+      "business_receipt_count": 0,
+      "external_effect_unknown": false
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "原目标尚未全部完成。核对已有结果后，可调整目标以新请求继续；不自动重复原调用。"
+  ],
+  "lookup": null,
+  "sources": [],
+  "tools": {
+    "assistant.extract": {
+      "completed": 3
+    },
+    "assistant.materials.read": {
+      "failed": 1
+    },
+    "assistant.passage.read": {
+      "completed": 3
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "model": {
+      "completed": 14,
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

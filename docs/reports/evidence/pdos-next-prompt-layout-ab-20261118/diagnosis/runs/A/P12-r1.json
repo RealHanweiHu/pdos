@@ -1,0 +1,108 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P12",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 40.0,
+  "clarifications": [],
+  "run_id": "7f0091b7-1430-46bb-8512-ed8093d02068",
+  "tenant_id": "3bcbb530-3b18-4892-9914-054db7a0503e",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 77039,
+  "held_tokens": 0,
+  "answer": "在「汽车充气泵」品类可读资料里找到了这份规范本身：《充气泵出厂气密性测试规范 QS-AT-2026-014》。但该文件全文（已完整读取）只记载了「资料编号：QS-AT-2026-014；登记日期：2026-10-12」，没有记载批准人、批准日期或生效日期。因此「谁批准、从哪天生效」这两点在本次检索范围内都未找到证据，不能推断。本轮检索预算已用完，可否继续在同一会话深入查批准/生效记录。",
+  "result": {
+    "assistant": {
+      "kind": "enterprise",
+      "as_of": "2026-11-18T08:16:02.541530+00:00",
+      "lookup": "cited",
+      "notice": null,
+      "sources": [
+        {
+          "url": "/api/v1/categories/d60064ae-daab-4754-b2a5-a5a519c43638/agent-runs/7f0091b7-1430-46bb-8512-ed8093d02068/assistant-sources/6d0520ab-47c7-50c7-bfb5-30ec21de8313",
+          "quote": "资料编号：QS-AT-2026-014；登记日期：2026-10-12。",
+          "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:1"
+            ],
+            "char_end": 36,
+            "line_end": 1,
+            "char_start": 0,
+            "line_start": 1
+          },
+          "object_id": "b4bca360-fdb0-4b5b-8ea1-413b4e32b389",
+          "source_id": "b4bca360-fdb0-4b5b-8ea1-413b4e32b389",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "d60064ae-daab-4754-b2a5-a5a519c43638",
+          "citation_id": "6d0520ab-47c7-50c7-bfb5-30ec21de8313",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "eaa287b219799c6da552b4cdb61d3d25a30b63b7a418c544fcedaa0cdd07df3c",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        }
+      ],
+      "version": 1,
+      "coverage": {
+        "returned": 1,
+        "unavailable": []
+      },
+      "unknowns": [
+        "QS-AT-2026-014 的批准人",
+        "QS-AT-2026-014 的批准日期",
+        "QS-AT-2026-014 的生效日期"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [
+        "6d0520ab-47c7-50c7-bfb5-30ec21de8313"
+      ],
+      "matched_count": 1
+    }
+  },
+  "questions": [
+    "要我继续在本会话内深入查 QS-AT-2026-014 的批准与生效记录吗（例如变更单、制造文档、放行包等来源）？"
+  ],
+  "unfinished": [
+    "未找到 QS-AT-2026-014 的批准人、批准日期与生效日期的证据（本轮检索预算用尽，尚未检索变更单/制造文档/放行包等来源）",
+    "需确认 2026-10-12 的「登记日期」是否等同于生效日期——文件中未说明，二者不能互换"
+  ],
+  "lookup": "cited",
+  "sources": [
+    {
+      "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+      "source_type": "artifact",
+      "citation_id": "6d0520ab-47c7-50c7-bfb5-30ec21de8313"
+    }
+  ],
+  "tools": {
+    "assistant.extract": {
+      "completed": 1
+    },
+    "assistant.passage.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "model": {
+      "completed": 6
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

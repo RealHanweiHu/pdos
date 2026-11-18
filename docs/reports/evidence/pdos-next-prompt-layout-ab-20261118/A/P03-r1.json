@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P03",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 30.4,
+  "clarifications": [],
+  "run_id": "a7733d90-14af-4bb4-96a8-d6f88c78f5bb",
+  "tenant_id": "eb523eb8-c912-43ed-889f-7667dd17dda6",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 33791,
+  "held_tokens": 0,
+  "answer": "翻译结果：**The samples have been shipped and are expected to arrive on Friday.**\n\n按场合可微调：\n- 客户邮件（较正式）：*The samples have been shipped and are expected to arrive on Friday.* 或 *Samples were dispatched yesterday and are expected to land on Friday.*（若有真实发货日再补具体日期）\n- 内部进度同步（简洁）：*Samples shipped — ETA Friday.*\n- 需要更商务一点：*The sample shipment is on the way and should reach you by Friday.*\n\n提示：原句未说明是哪个周五，对外使用时建议补上具体日期（如 Friday, 5 July），避免歧义。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 2
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

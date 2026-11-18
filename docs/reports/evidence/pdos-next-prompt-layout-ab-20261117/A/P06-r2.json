@@ -1,0 +1,237 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P06",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 40.3,
+  "clarifications": [],
+  "run_id": "79943dba-8453-46ae-8387-734a2be0a3d2",
+  "tenant_id": "e568a0d8-c27f-4dbd-8016-d9f9cc13a6bf",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 60650,
+  "held_tokens": 0,
+  "answer": "在公司可读资料中检索到一份现行规范《充气泵出厂气密性测试规范》（资料编号 QS-AT-2026-014，登记日期 2026-10-12），其规定的出厂气密性测试参数为：试验压力 150 PSI，保压时间 30 秒，压降不得超过 3 PSI；测试介质为干燥压缩空气；不合格品须隔离并登记，不得返线。该规范适用范围为汽车充气泵整机出厂气密性测试。\n\n需要说明的检索局限：所引内容中未出现修订版本号及生效/失效状态，未列出具体适用机型清单，压力仅以 PSI 记录、未给出 kPa/Pa/bar 换算口径，也未说明表压或绝压，也未给出除压降限值以外的其他合格判据（如泄漏量指标）。若需按型号或确认现行版本，可在本会话继续深入查。",
+  "result": {
+    "assistant": {
+      "kind": "enterprise",
+      "as_of": "2026-11-18T05:26:03.884717+00:00",
+      "lookup": "cited",
+      "notice": null,
+      "sources": [
+        {
+          "url": "/api/v1/categories/dd853827-8816-4f60-9d60-1844d38dd1d5/agent-runs/79943dba-8453-46ae-8387-734a2be0a3d2/assistant-sources/f847f432-1592-5d21-8630-48e4b3d5651e",
+          "quote": "资料编号：QS-AT-2026-014；登记日期：2026-10-12。",
+          "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:1"
+            ],
+            "char_end": 36,
+            "line_end": 1,
+            "char_start": 0,
+            "line_start": 1
+          },
+          "object_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "source_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "dd853827-8816-4f60-9d60-1844d38dd1d5",
+          "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "eaa287b219799c6da552b4cdb61d3d25a30b63b7a418c544fcedaa0cdd07df3c",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/dd853827-8816-4f60-9d60-1844d38dd1d5/agent-runs/79943dba-8453-46ae-8387-734a2be0a3d2/assistant-sources/f847f432-1592-5d21-8630-48e4b3d5651e",
+          "quote": "适用范围：汽车充气泵整机出厂气密性测试。",
+          "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:2"
+            ],
+            "char_end": 57,
+            "line_end": 2,
+            "char_start": 37,
+            "line_start": 2
+          },
+          "object_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "source_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "dd853827-8816-4f60-9d60-1844d38dd1d5",
+          "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "eaa287b219799c6da552b4cdb61d3d25a30b63b7a418c544fcedaa0cdd07df3c",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/dd853827-8816-4f60-9d60-1844d38dd1d5/agent-runs/79943dba-8453-46ae-8387-734a2be0a3d2/assistant-sources/f847f432-1592-5d21-8630-48e4b3d5651e",
+          "quote": "测试压力为 150 PSI，保压 30 秒，压降不得超过 3 PSI。",
+          "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:3"
+            ],
+            "char_end": 93,
+            "line_end": 3,
+            "char_start": 58,
+            "line_start": 3
+          },
+          "object_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "source_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "dd853827-8816-4f60-9d60-1844d38dd1d5",
+          "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "eaa287b219799c6da552b4cdb61d3d25a30b63b7a418c544fcedaa0cdd07df3c",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/dd853827-8816-4f60-9d60-1844d38dd1d5/agent-runs/79943dba-8453-46ae-8387-734a2be0a3d2/assistant-sources/f847f432-1592-5d21-8630-48e4b3d5651e",
+          "quote": "测试介质为干燥压缩空气。",
+          "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:4"
+            ],
+            "char_end": 106,
+            "line_end": 4,
+            "char_start": 94,
+            "line_start": 4
+          },
+          "object_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "source_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "dd853827-8816-4f60-9d60-1844d38dd1d5",
+          "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "eaa287b219799c6da552b4cdb61d3d25a30b63b7a418c544fcedaa0cdd07df3c",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/dd853827-8816-4f60-9d60-1844d38dd1d5/agent-runs/79943dba-8453-46ae-8387-734a2be0a3d2/assistant-sources/f847f432-1592-5d21-8630-48e4b3d5651e",
+          "quote": "不合格品须隔离并登记，不得返线。",
+          "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:5"
+            ],
+            "char_end": 123,
+            "line_end": 5,
+            "char_start": 107,
+            "line_start": 5
+          },
+          "object_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "source_id": "e66bbd14-ea5e-4fbd-b2e5-b46a3f374065",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "dd853827-8816-4f60-9d60-1844d38dd1d5",
+          "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "eaa287b219799c6da552b4cdb61d3d25a30b63b7a418c544fcedaa0cdd07df3c",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        }
+      ],
+      "version": 1,
+      "coverage": {
+        "returned": 5,
+        "unavailable": []
+      },
+      "unknowns": [
+        "所引内容中未出现该规范的修订版本号及生效/失效状态信息",
+        "未列出具体适用机型/型号清单",
+        "压力仅以 PSI 记录，未给出 kPa/Pa/bar 换算口径，也未说明表压或绝压",
+        "未给出除压降限值以外的其他合格判据或泄漏量指标"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [
+        "f847f432-1592-5d21-8630-48e4b3d5651e"
+      ],
+      "matched_count": 1
+    }
+  },
+  "questions": [
+    "是否需要我按具体充气泵型号/机型继续核查是否存在各自的出厂气密性测试参数？"
+  ],
+  "unfinished": [],
+  "lookup": "cited",
+  "sources": [
+    {
+      "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+      "source_type": "artifact",
+      "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e"
+    },
+    {
+      "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+      "source_type": "artifact",
+      "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e"
+    },
+    {
+      "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+      "source_type": "artifact",
+      "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e"
+    },
+    {
+      "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+      "source_type": "artifact",
+      "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e"
+    },
+    {
+      "title": "充气泵出厂气密性测试规范 QS-AT-2026-014",
+      "source_type": "artifact",
+      "citation_id": "f847f432-1592-5d21-8630-48e4b3d5651e"
+    }
+  ],
+  "tools": {
+    "assistant.extract": {
+      "completed": 1
+    },
+    "assistant.passage.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 5
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

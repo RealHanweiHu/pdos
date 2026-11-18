@@ -1,0 +1,46 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 2,
+  "probe": "P03",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 6.7,
+  "clarifications": [],
+  "run_id": "19de6777-5cdf-46bf-8a1c-21f4531ee6a3",
+  "tenant_id": "8518e8b2-a256-4944-8b39-690a66070c97",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15794,
+  "held_tokens": 0,
+  "answer": "已翻译成英文：“The sample has been shipped out and is expected to arrive on Friday.”",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "translation": "The sample has been shipped out and is expected to arrive on Friday.",
+    "alternatives": [
+      "The samples have been shipped out and are expected to arrive on Friday.",
+      "The sample was shipped out and is expected to arrive by Friday."
+    ]
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

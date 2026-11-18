@@ -1,0 +1,175 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P09",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 72.5,
+  "clarifications": [],
+  "run_id": "038a5847-3cce-4c63-b02a-fba372e74df3",
+  "tenant_id": "c0b76051-413a-4818-8e9c-b0f5253d2775",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 200230,
+  "held_tokens": 0,
+  "answer": "我在当前可读范围内没有找到 PP-2026-031 这条试产问题记录，因此无法回答它记录了什么问题、根因是否确认——不会凭空替你回答。第一轮按编码检索（issue/CAPA/现场反馈）返回 0 条；evidence 检索、本人以往工作记忆检索也均无命中；当前品类「汽车充气泵」的知识与参数条目为空，可读产品列表也为空。本轮检索预算已用尽，无法再用其他来源类型或跨品类 include_history 复查一遍。缺什么、怎么补，请你确认。",
+  "result": {
+    "found": false,
+    "blockers": [
+      {
+        "detail": "assistant.search 本轮已连续 2 次因同类原因失败，服务器指示停止调用并交付已核对部分；未能用 artifact / manufacturing_document 等其余来源类型以及 include_history 跨品类再查一遍。",
+        "reason": "MODEL_BUDGET_EXCEEDED"
+      },
+      {
+        "detail": "quality_issue 技能未在当前租户与范围启用，无法按该领域流程登记或调取问题单。",
+        "reason": "FORBIDDEN_SCOPE"
+      },
+      {
+        "detail": "product.baseline.read 要求指定基线型号，但 platform.read 未返回任何可见型号，无法定位产品对象。",
+        "reason": "MISSING_REQUIRED_EVIDENCE"
+      }
+    ],
+    "question": "PP-2026-031 记录的问题内容与根因确认状态",
+    "unknowns": [
+      "PP-2026-031 的问题描述正文",
+      "该记录登记的产品/型号与试产批次",
+      "根因是否已确认、确认人与确认时间",
+      "是否存在围堵措施或 CAPA 关联"
+    ],
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:48:02.434735+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    },
+    "citation_ids": [],
+    "issue_summary": null,
+    "scope_checked": {
+      "checks": [
+        {
+          "tool": "assistant.search",
+          "query": "PP-2026-031 试产问题",
+          "result": "0 条（query_trace 已识别编码族 PP / code_rule enterprise-codes/v2）",
+          "source_types": [
+            "issue",
+            "capa",
+            "field_feedback"
+          ]
+        },
+        {
+          "tool": "evidence.search",
+          "query": "PP-2026-031",
+          "result": "0 条"
+        },
+        {
+          "tool": "memory.search",
+          "kinds": [
+            "episode",
+            "note"
+          ],
+          "query": "PP-2026-031 试产问题 根因",
+          "result": "0 条（仅关键词通道，未启用向量化）"
+        },
+        {
+          "tool": "platform.read",
+          "result": "按品类/无过滤/按名称均返回 0 条产品"
+        },
+        {
+          "tool": "category.read / category.knowledge.list",
+          "result": "该品类 knowledge_counts 全为 0，parameter_count 0，model_count 1"
+        },
+        {
+          "tool": "conversation.history",
+          "result": "本会话无更早轮次记录"
+        },
+        {
+          "tool": "assistant.citations.read",
+          "result": "无既有引用可续读"
+        }
+      ],
+      "category_id": "383c667d-6330-4584-b86f-55fa60ceb434",
+      "category_name": "汽车充气泵",
+      "search_preferences": {
+        "scope": "same_category",
+        "include_customer_private": false
+      }
+    },
+    "root_cause_status": null,
+    "next_actions_offered": [
+      "下一轮换来源类型（artifact / manufacturing_document）与 include_history 复查 PP-2026-031",
+      "由你提供该记录原件或它所属的产品/项目标识，我按固定版本读取",
+      "如该记录在本人无权限的范围（如含客户私有资料或其他品类/项目），由有权限的人检索后转交"
+    ],
+    "not_found_in_searched_scope_note": "以上仅代表在已检索范围（当前品类 + issue/CAPA/现场反馈/artifact 类检索入口）内未命中，不等于该记录不存在。"
+  },
+  "questions": [
+    "PP-2026-031 这条记录是在哪里登记的？当前「汽车充气泵」品类范围内检索不到它。",
+    "这条记录对应的产品/型号或项目，你能给出标识吗？"
+  ],
+  "unfinished": [
+    "本轮检索预算耗尽，未能用其余来源类型（artifact、manufacturing_document）及 include_history 跨品类复查 PP-2026-031",
+    "未取得该记录原件：会话无附件、无既有引用可续读（assistant.citations.read 返回 0 条）",
+    "无法定位产品/型号对象（platform.read 在当前范围返回 0 条），因此未能读取试产轮次、问题描述与根因结论",
+    "quality_issue 技能在当前范围未启用，问题单的正式读取/登记路径未打通"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.citations.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 2
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 10
+    },
+    "platform.read": {
+      "completed": 3
+    },
+    "product.baseline.read": {
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P09",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 89.2,
+  "clarifications": [],
+  "run_id": "fd657d78-d30d-426d-bc2e-be2d5426efd3",
+  "tenant_id": "eb5018a4-7e27-4d87-bed7-d2d095b9d219",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 142053,
+  "held_tokens": 0,
+  "answer": "结论：PP-2026-031 的记录正文我没有查到，因此“发现了什么问题”“根因是否确认”两项都无法核对——不是“记录不存在”，而是“不在我已检索到的范围内”。\n\n已核对的检索台账（均为空结果）：(1) 在当前品类“汽车充气泵”内，按编号检索 issue / capa / build / test_run / verification_handoff 五类来源，返回 0 条；(2) 证据检索 PP-2026-031，返回 0 条；(3) 按编号精确读取平台对象 PP-2026-031，返回 0 条。第二次品类外检索被本轮查找预算拦截（MODEL_BUDGET_EXCEEDED）；客户私有资料按当前偏好未纳入。另外，本轮尝试载入品质问题技能被范围策略拒绝（FORBIDDEN_SCOPE），故无法按其台账格式登记。\n\n因此该编号所记录的问题现象、根因是否已确认（以及确认人、确认日期、围堵与 CAPA 状态）在已核对范围内均为未知，不能推断。需要你给一个定位锚点——它属于哪个产品/项目/批次，或属于哪本台账（试产 Build 轮次问题 / 品质问题与 CAPA / 工程变更）；也请确认它是否可能只在客户私有资料或外部系统里。拿到锚点后我下一轮可扩大来源类型并含历史版本再读正文。",
+  "result": {
+    "result": [],
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:52:47.214573+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "PP-2026-031 的记录正文未在已检索范围内命中",
+        "该记录所描述的问题现象（未知）",
+        "根因是否已确认、由谁确认、确认日期（未知）",
+        "关联的产品/项目/批次/试产轮次（未知）",
+        "是否存在对应围堵措施、CAPA 或复发观察（未知）",
+        "该记录是否位于客户私有资料或外部系统（未检索）"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "PP-2026-031 属于哪一类记录、你手上有哪个定位信息？",
+    "下一轮检索是否扩大到全部来源类型并包含历史版本？"
+  ],
+  "unfinished": [
+    "PP-2026-031 在已检索范围内未命中（品类内 issue/capa/build/test_run/verification_handoff 检索、证据检索、按编号精确读取均为空），未取得记录正文，问题现象与根因确认状态无法核对。",
+    "本轮 assistant.search 查找预算用尽（MODEL_BUDGET_EXCEEDED），品类外检索未能执行；下一轮需重跑并扩大到全部来源类型 + 含历史版本。",
+    "quality_issue 技能在当前租户与范围未启用（FORBIDDEN_SCOPE），无法按其台账/登记格式办理；如需按该流程登记，需在启用该技能的页面或由有权限的人办理。"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 7
+    },
+    "platform.read": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 19.2,
+  "clarifications": [],
+  "run_id": "acf2a1e0-2f23-46fd-995a-b65251c5de21",
+  "tenant_id": "3395e4db-e34d-45d7-bef7-8103d28ed294",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 33838,
+  "held_tokens": 0,
+  "answer": "已给出 50 字以内的群通知（两版），并说明未在公司资料中找到已登记的评审安排。",
+  "result": {
+    "notes": [
+      "本会话 work_management 技能未在当前范围启用，未登记日程/任务记录；如需登记，请在对应页面由有权限者办理"
+    ],
+    "notice": "【评审通知】周三（X月X日）15:00 评审充气泵样品，请准时参加。",
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:17:08.559647+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    },
+    "char_count": 34,
+    "unverified": [
+      "公司资料中未检索到已登记的充气泵样品评审安排（build/test_run/project_status/manufacturing_document 检索为空），日期与时间以你所述为准",
+      "未确认“周三”对应的具体日历日期"
+    ],
+    "alternatives": [
+      "【通知】本周三下午3:00评审充气泵样品，请准时参加。"
+    ]
+  },
+  "questions": [
+    "通知里的日期要写具体月日（如 11月XX日）还是保留“周三”？"
+  ],
+  "unfinished": [
+    "未登记任何日程或任务记录（work_management 技能在当前范围未启用）"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 2
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

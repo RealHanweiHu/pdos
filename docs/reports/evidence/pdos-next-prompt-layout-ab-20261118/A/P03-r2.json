@@ -1,0 +1,56 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P03",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 13.4,
+  "clarifications": [],
+  "run_id": "c624be6d-aa81-450b-95ae-c5754fd2aaa5",
+  "tenant_id": "ce5eeb2e-0bc6-421d-a59d-60b36f982550",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 17101,
+  "held_tokens": 0,
+  "answer": "已把「样品已寄出，预计周五到」译成英文，并给出正式、含快递、待确认三个场景的备选说法。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "translation": "The samples have been shipped out and are expected to arrive on Friday.",
+    "alternatives": [
+      {
+        "text": "The samples have been dispatched and are expected to arrive by Friday.",
+        "usage": "对客户邮件（正式）"
+      },
+      {
+        "text": "The samples have been sent via courier and are expected to arrive on Friday.",
+        "usage": "已用快递寄出"
+      },
+      {
+        "text": "The samples have been shipped; delivery is expected on Friday.",
+        "usage": "时间待确认"
+      }
+    ]
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

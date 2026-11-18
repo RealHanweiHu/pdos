@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P02",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 12.5,
+  "clarifications": [],
+  "run_id": "041b207a-25d2-4b68-b81d-d7bc27298a40",
+  "tenant_id": "ed894802-4717-48b6-8163-33ea59b949c4",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 16845,
+  "held_tokens": 0,
+  "answer": "DFMEA（Design Failure Mode and Effects Analysis，设计失效模式与影响分析）是一种在产品设计阶段使用的结构化风险分析方法：逐个分析零部件或功能，识别可能的失效模式及其原因，再评估其后果的严重度、发生概率和可探测性。它通常借助 RPN（风险优先级数）或 Action Priority 对风险排序，把设计资源优先投入高风险项，并通过设计改进、补充验证或过程控制来降低风险。其价值在于在样机试制与量产之前就提前发现并消除潜在失效，从而降低质量风险和售后成本。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

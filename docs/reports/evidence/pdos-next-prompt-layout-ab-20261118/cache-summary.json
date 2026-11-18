@@ -1,0 +1,26 @@
+{
+  "A": {
+    "runs": 39,
+    "main_calls_completed": 198,
+    "first_call_cache_read_median": 184,
+    "first_call_input_median": 16432,
+    "first_calls_mostly_cached": "9/39",
+    "cache_read_tokens": 3200763,
+    "input_tokens_where_reported": 3796843,
+    "cache_read_share": 0.843,
+    "first_call_ttft_median_ms": 1932,
+    "used_tokens": 4052310
+  },
+  "B": {
+    "runs": 39,
+    "main_calls_completed": 127,
+    "first_call_cache_read_median": 16128,
+    "first_call_input_median": 16738,
+    "first_calls_mostly_cached": "39/39",
+    "cache_read_tokens": 2296832,
+    "input_tokens_where_reported": 2402029,
+    "cache_read_share": 0.956,
+    "first_call_ttft_median_ms": 2870,
+    "used_tokens": 2674906
+  }
+}

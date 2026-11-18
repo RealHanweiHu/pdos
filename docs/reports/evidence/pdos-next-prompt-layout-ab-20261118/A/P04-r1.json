@@ -1,0 +1,53 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 17.9,
+  "clarifications": [],
+  "run_id": "c6922786-68ec-41f9-b730-b53f281d19d2",
+  "tenant_id": "94369425-6d42-45f4-8751-6c196d4e6511",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 17257,
+  "held_tokens": 0,
+  "answer": "已给出 26 字的群通知草稿（“各位同事：本周三下午3点评审充气泵样品，请准时参加。”），符合 50 字以内要求；另附一条带时间地点占位的备选，可直接替换使用。",
+  "result": {
+    "limit": 50,
+    "notes": "文案为按用户给定信息起草，未引用任何公司资料；如需填入具体日期、会议室或评审人，可告知后替换。",
+    "unknowns": [
+      "评审具体日期（本周三对应日历日期）未在需求中给出",
+      "评审地点、评审人与样件数量未给出"
+    ],
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "char_count": 26,
+    "alternatives": [
+      "【评审通知】本周三下午3点评审充气泵样品，请相关人员准时参加。"
+    ],
+    "citation_ids": [],
+    "notification": "各位同事：本周三下午3点评审充气泵样品，请准时参加。"
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

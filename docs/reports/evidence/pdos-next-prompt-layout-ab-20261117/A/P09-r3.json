@@ -1,0 +1,201 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P09",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 43.3,
+  "clarifications": [],
+  "run_id": "3e9b5262-4987-4830-ac3a-84ceaaa542df",
+  "tenant_id": "13eb2628-c677-40e6-9075-bdf5017e8d86",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 61727,
+  "held_tokens": 0,
+  "answer": "PP-2026-031（登记日期 2026-10-22）记录的问题：10 月 21 日小批试产 200 台，发现 6 台气嘴漏气。根因尚未确认——目前只有初判为「O 形圈压缩量不足」，记录明确写明根因尚未确认。后续由工艺复测，但复测日期和负责人均未登记。如需，我可以继续在同品类内查找是否已有复测记录或关联 CAPA。",
+  "result": {
+    "assistant": {
+      "kind": "enterprise",
+      "as_of": "2026-11-18T05:41:48.755198+00:00",
+      "lookup": "cited",
+      "notice": null,
+      "sources": [
+        {
+          "url": "/api/v1/categories/e5d24114-9797-4e82-9042-6276b231b1e2/agent-runs/3e9b5262-4987-4830-ac3a-84ceaaa542df/assistant-sources/6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "quote": "资料编号：PP-2026-031；登记日期：2026-10-22。",
+          "title": "试产问题记录 PP-2026-031",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:1"
+            ],
+            "char_end": 33,
+            "line_end": 1,
+            "char_start": 0,
+            "line_start": 1
+          },
+          "object_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "source_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "e5d24114-9797-4e82-9042-6276b231b1e2",
+          "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "d6d3344621d0ce769cf75834139344545997215cb052d30621ad7b87ae9a77c1",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/e5d24114-9797-4e82-9042-6276b231b1e2/agent-runs/3e9b5262-4987-4830-ac3a-84ceaaa542df/assistant-sources/6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "quote": "10 月 21 日小批试产 200 台，发现 6 台气嘴漏气。",
+          "title": "试产问题记录 PP-2026-031",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:2"
+            ],
+            "char_end": 65,
+            "line_end": 2,
+            "char_start": 34,
+            "line_start": 2
+          },
+          "object_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "source_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "e5d24114-9797-4e82-9042-6276b231b1e2",
+          "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "d6d3344621d0ce769cf75834139344545997215cb052d30621ad7b87ae9a77c1",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/e5d24114-9797-4e82-9042-6276b231b1e2/agent-runs/3e9b5262-4987-4830-ac3a-84ceaaa542df/assistant-sources/6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "quote": "初判为 O 形圈压缩量不足，根因尚未确认。",
+          "title": "试产问题记录 PP-2026-031",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:3"
+            ],
+            "char_end": 87,
+            "line_end": 3,
+            "char_start": 66,
+            "line_start": 3
+          },
+          "object_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "source_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "e5d24114-9797-4e82-9042-6276b231b1e2",
+          "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "d6d3344621d0ce769cf75834139344545997215cb052d30621ad7b87ae9a77c1",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        },
+        {
+          "url": "/api/v1/categories/e5d24114-9797-4e82-9042-6276b231b1e2/agent-runs/3e9b5262-4987-4830-ac3a-84ceaaa542df/assistant-sources/6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "quote": "后续由工艺复测，复测日期和负责人尚未登记。",
+          "title": "试产问题记录 PP-2026-031",
+          "nature": "untrusted",
+          "locator": {
+            "native": [
+              "line:5"
+            ],
+            "char_end": 153,
+            "line_end": 5,
+            "char_start": 132,
+            "line_start": 5
+          },
+          "object_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "source_id": "9c9c9748-e57e-42d7-a0e5-61ea31898563",
+          "product_id": null,
+          "project_id": null,
+          "category_id": "e5d24114-9797-4e82-9042-6276b231b1e2",
+          "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa",
+          "currentness": "current",
+          "proposal_id": null,
+          "source_type": "artifact",
+          "content_hash": "d6d3344621d0ce769cf75834139344545997215cb052d30621ad7b87ae9a77c1",
+          "source_revision": 1,
+          "read_basis_status": "current",
+          "fixed_body_available": true
+        }
+      ],
+      "version": 1,
+      "coverage": {
+        "returned": 4,
+        "unavailable": []
+      },
+      "unknowns": [
+        "根因未确认：仅有初判「O 形圈压缩量不足」，记录明确写明根因尚未确认",
+        "复测日期未登记",
+        "复测负责人未登记"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [
+        "6566a568-309e-56ac-9165-19ae7dbbfaaa"
+      ],
+      "matched_count": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "cited",
+  "sources": [
+    {
+      "title": "试产问题记录 PP-2026-031",
+      "source_type": "artifact",
+      "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa"
+    },
+    {
+      "title": "试产问题记录 PP-2026-031",
+      "source_type": "artifact",
+      "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa"
+    },
+    {
+      "title": "试产问题记录 PP-2026-031",
+      "source_type": "artifact",
+      "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa"
+    },
+    {
+      "title": "试产问题记录 PP-2026-031",
+      "source_type": "artifact",
+      "citation_id": "6566a568-309e-56ac-9165-19ae7dbbfaaa"
+    }
+  ],
+  "tools": {
+    "assistant.extract": {
+      "completed": 1
+    },
+    "assistant.passage.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 5
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

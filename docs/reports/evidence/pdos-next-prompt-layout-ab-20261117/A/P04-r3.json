@@ -1,0 +1,51 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 15.3,
+  "clarifications": [],
+  "run_id": "1e760b5c-d9dd-4762-82d1-9d3f1d79c372",
+  "tenant_id": "368a7c38-a41a-4934-9f8d-6634b85c023c",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 16667,
+  "held_tokens": 0,
+  "answer": "已给出两条 50 字以内的群通知文案，主推一条 36 字；评审具体日期与地点未提供，需你确认后补全。",
+  "result": {
+    "notice": "【充气泵样品评审】通知：本周三下午3:00评审充气泵样品，请准时参加。",
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "alternates": [
+      "【充气泵样品评审】周三下午3:00，请准时参加。",
+      "【充气泵样品评审】周三下午3:00评审充气泵样品，请准时参加，地点：____。"
+    ],
+    "char_count": 36
+  },
+  "questions": [
+    "通知是否要写明具体日期和地点？"
+  ],
+  "unfinished": [
+    "未确认评审具体日期与地点，文案中为占位表述"
+  ],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

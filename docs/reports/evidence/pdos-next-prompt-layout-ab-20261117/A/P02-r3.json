@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P02",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 6.4,
+  "clarifications": [],
+  "run_id": "6c7cf5e3-4b85-4f23-ab39-4c000908a1e4",
+  "tenant_id": "46bb803f-d46b-419e-a4c7-4e4625d0c044",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15519,
+  "held_tokens": 0,
+  "answer": "已直接解释 DFMEA（设计失效模式与影响分析）：它是一种在产品设计阶段主动做风险分析的方法，通过逐项拆解功能、识别可能的失效模式、分析其后果与成因，并按严重度、发生度、探测度评估风险等级，从而在图纸冻结和量产之前推动设计改进。回答未涉及公司内部资料或案例，属于通用知识说明。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

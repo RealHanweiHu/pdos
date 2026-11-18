@@ -1,0 +1,49 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 3,
+  "probe": "P03",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 6.4,
+  "clarifications": [],
+  "run_id": "60890190-def8-4bc9-bfb6-aa419d5c05f4",
+  "tenant_id": "a41a8e7a-ed1c-4b2f-8ec2-949402bfa262",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15780,
+  "held_tokens": 0,
+  "answer": "已将该句翻译为英文：“The sample has been shipped out and is expected to arrive on Friday.”（备选：“Samples have been shipped and are expected to arrive on Friday.”）",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "translation": {
+      "source": "样品已寄出，预计周五到。",
+      "target": "The sample has been shipped out and is expected to arrive on Friday.",
+      "alternatives": [
+        "The sample has been sent out and is expected to arrive on Friday.",
+        "Samples have been shipped and are expected to arrive by Friday."
+      ]
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

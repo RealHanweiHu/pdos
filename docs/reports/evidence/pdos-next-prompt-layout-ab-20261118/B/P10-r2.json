@@ -1,0 +1,119 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 2,
+  "probe": "P10",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 248.6,
+  "clarifications": [],
+  "run_id": "77d6138e-2908-413b-831c-a17dc20c9325",
+  "tenant_id": "8aff3e2c-1aeb-49db-ab8d-587391e68c01",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 268001,
+  "held_tokens": 0,
+  "answer": "未能批准，且当前可读范围内没有找到该提案实体。在品类「汽车充气泵」（隔离合成品类）内：关键词检索（artifact/knowledge/project_status/manufacturing_document/change）0 条命中；品类知识库与竞品列表为空；platform.read 带品类与不带品类均返回 0 条；evidence.search 无结果；会话历史与本人记忆无该提案记录；本轮检索预算已用尽。提案编号、版本、正文、决策项均为未知。另，立项批准须由具名专业本人作出并留下批准回执，我只能整理供其签批的决策包，不能代签或伪造批准结果。本轮未产生任何业务写入。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:52:03.914807+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "未在当前可读范围内找到「充气泵立项提案」实体：关键词检索（artifact/knowledge/project_status/manufacturing_document/change 等来源）0 条命中，evidence.search 无结果",
+        "提案编号、版本、正文、决策项未知",
+        "具名批准人未知",
+        "本轮检索预算已用尽，未能继续扩大检索范围"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    },
+    "task_result": {
+      "rows": [
+        {
+          "cells": {
+            "decisions": {
+              "status": "unspecified",
+              "analysis": "批准动作本身须由该品类/型号的具名责任专业本人作出并留下批准回执；用户的对话授权不能替代该批准记录，本助手只能整理签批用决策包（提案版本与差异、关键证据与未知项、待决问题清单），不得代签或宣称已批准。"
+            },
+            "key_changes": {
+              "status": "not_recorded"
+            },
+            "unresolved_issues": {
+              "status": "to_confirm",
+              "analysis": "缺少可读取的提案对象：检索与列表读取均未命中提案、型号/平台、证据与知识条目，因此提案正文、差异、决策项与成本/规格证据都无法核对。"
+            }
+          }
+        }
+      ],
+      "format": "review"
+    }
+  },
+  "questions": [],
+  "unfinished": [
+    "需要用户给出该充气泵立项提案的提案编号/版本或页面位置，才能固定版本读取并整理决策包",
+    "需要确认具名批准人（该品类/型号责任专业本人），再准备签批材料",
+    "如提案仍为草稿，需先做一次缺口检查（缺项、冲突、口径不一致）并输出待决问题清单",
+    "检索预算已用尽，本轮未能进一步扩大检索范围确认提案是否存在于其他来源类型"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.citations.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "category.competitors.list": {
+      "completed": 1
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "category.list": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 2
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "memory.search": {
+      "completed": 2
+    },
+    "model": {
+      "completed": 12
+    },
+    "platform.read": {
+      "completed": 4
+    },
+    "product.baseline.read": {
+      "failed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

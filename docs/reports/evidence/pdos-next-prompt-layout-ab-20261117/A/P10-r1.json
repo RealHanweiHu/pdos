@@ -1,0 +1,102 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P10",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 84.4,
+  "clarifications": [],
+  "run_id": "cab4d2a4-bcb9-4e81-baa1-97b6bc1a2dfb",
+  "tenant_id": "0881b8ff-b79c-4e36-a537-d7018dfda0eb",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 175163,
+  "held_tokens": 0,
+  "answer": "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T05:18:38.385239+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "所指提案的对象编号（proposal_id 或 artifact 版本）本轮未取得",
+        "提案正文与条目（规格/选项/风险/差异/商业目标/假设/决定说明）未读到",
+        "该提案的具名批准人未在当前可读范围登记",
+        "当前品类下产品/型号、参数、知识、竞品、证据与检索结果在可读范围内均为空",
+        "任务结果结构未通过核对，请按已登记结构重新整理。"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "这份充气泵立项提案的对象，你打算怎么给我？",
+    "批准由谁作出？",
+    "在提案对象明确之前，我先交付什么？"
+  ],
+  "unfinished": [
+    "未定位到所指充气泵立项提案的对象（proposal_id / 附件版本），未读取提案条目与既有决定说明",
+    "未生成针对该提案的逐项“待批准决定材料”草稿（依赖提案对象可读）",
+    "未产生也未登记任何批准决定；未写入任何业务对象",
+    "本轮检索预算用尽，若需追溯提案/审批历史需在同会话做一次深入检索",
+    "企业资料的引用或覆盖尚未完整核对。"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "platform.read": {
+      "completed": 3
+    },
+    "category.parameters.list": {
+      "completed": 1
+    },
+    "category.competitors.list": {
+      "completed": 1
+    },
+    "category.knowledge.list": {
+      "completed": 1
+    },
+    "conversation.history": {
+      "completed": 1
+    },
+    "evidence.search": {
+      "completed": 1
+    },
+    "category.read": {
+      "completed": 1
+    },
+    "assistant.search": {
+      "failed": 1,
+      "completed": 1
+    },
+    "mcp.tools.list": {
+      "completed": 1
+    },
+    "product.baseline.read": {
+      "failed": 1
+    },
+    "model": {
+      "completed": 9
+    },
+    "memory.search": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

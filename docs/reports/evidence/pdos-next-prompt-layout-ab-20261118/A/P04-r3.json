@@ -1,0 +1,60 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 25.8,
+  "clarifications": [],
+  "run_id": "fa4c8ca5-decb-4061-ae3b-c9e7e54af047",
+  "tenant_id": "f269a4f9-7c2a-490c-933a-69d5bfe4fe10",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 18391,
+  "held_tokens": 0,
+  "answer": "已起草一条26字群通知：【评审通知】周三下午3点评审充气泵样品，请准时参加，另给两条备选写法（29字/23字）。地点与具体日期尚未确认，等你补充后再加。",
+  "result": {
+    "notice": "【评审通知】周三下午3点评审充气泵样品，请准时参加。",
+    "unknowns": [
+      "评审地点/会议方式未提及",
+      "周三对应的具体日历日期未确认"
+    ],
+    "variants": [
+      {
+        "text": "请注意：本周三下午3点充气泵样品评审，请相关同事准时参加。",
+        "char_count": 29
+      },
+      {
+        "text": "【样品评审】周三下午3点评审充气泵样品，请准时参加。",
+        "char_count": 23
+      }
+    ],
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "char_count": 26
+  },
+  "questions": [
+    "通知里的“周三”指哪一天？",
+    "是否需要在通知里加上评审地点或会议方式？"
+  ],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

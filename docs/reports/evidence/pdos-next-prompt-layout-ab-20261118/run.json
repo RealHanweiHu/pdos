@@ -1,0 +1,7 @@
+{
+  "started_at": "2026-11-18T08:45:16.370997+00:00",
+  "commit": "3a26394e38313f6b533af5911331c0de40d7940a",
+  "dirty": true,
+  "database": "127.0.0.1:56376/pdos_test",
+  "only": []
+}

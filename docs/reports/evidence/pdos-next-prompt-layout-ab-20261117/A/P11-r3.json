@@ -1,0 +1,41 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 3,
+  "probe": "P11",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 6.7,
+  "clarifications": [],
+  "run_id": "45cd0018-5238-4b1e-8869-ad22dd0f25f7",
+  "tenant_id": "8fa1603f-8150-459c-bc58-0e7c3d25c92d",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 15848,
+  "held_tokens": 0,
+  "answer": "已压缩为一句话：本周完成充气泵第二轮样机温升测试，三台样机最高壳温 84.6℃、低于 85℃ 上限，但 45℃ 高温工况尚未测试。另给一版更短的写法备选。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

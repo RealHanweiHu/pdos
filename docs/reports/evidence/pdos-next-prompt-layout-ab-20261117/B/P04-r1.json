@@ -1,0 +1,48 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 1,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 19.4,
+  "clarifications": [],
+  "run_id": "85d2f591-157f-4751-abcb-7ffef5e650e7",
+  "tenant_id": "94681c55-013e-415f-91a2-77b5893adac4",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 16419,
+  "held_tokens": 0,
+  "answer": "已拟好一条 26 字（含标点）的群通知，符合 50 字以内要求：\n\n【评审通知】周三下午3点评审充气泵样品，请准时参加。\n\n如需补充地点或线上链接，可改为（仍低于 50 字）：\n【评审通知】周三15:00评审充气泵样品，地点：____，请准时参加。\n\n说明：评审地点/会议链接、评审材料清单在现有资料中未查到，故未替你填写；如提供具体地点或链接，可直接补入。",
+  "result": {
+    "unknowns": [
+      "评审地点或会议链接",
+      "评审材料清单"
+    ],
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    },
+    "char_count": 26,
+    "notification": "【评审通知】周三下午3点评审充气泵样品，请准时参加。",
+    "optional_variant": "【评审通知】周三15:00评审充气泵样品，地点：____，请准时参加。"
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

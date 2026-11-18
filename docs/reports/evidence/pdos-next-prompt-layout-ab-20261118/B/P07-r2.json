@@ -1,0 +1,66 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "B",
+  "repeat": 2,
+  "probe": "P07",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "partial",
+  "seconds": 31.0,
+  "clarifications": [],
+  "run_id": "22a7f088-4200-410c-8f6e-483451611a01",
+  "tenant_id": "c748979e-5e22-4ce1-8a3b-db119349826c",
+  "state": "partial",
+  "error_code": null,
+  "used_tokens": 53575,
+  "held_tokens": 0,
+  "answer": "在当前可检索范围内，未找到公司充气泵跌落测试标准的现成记录。已检索范围：当前品类“汽车充气泵”下的制造文档、附件资料、知识条目、测试记录及验证交接（含历史），关键词覆盖“充气泵/跌落/测试标准/跌落高度/试验方法/运输包装”，返回 0 条可核对来源；本轮检索预算已用尽，尚未能扩大到其他品类或产品线继续查找。因此不能给出跌落高度、跌落方向、判定准则等具体数值，也不能据此认定公司不存在该标准——只是在已检索范围内未发现。",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:51:20.530517+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [
+        "公司充气泵跌落测试的跌落高度、跌落方向/姿态、跌落次数、判定与放行准则均未在已检索范围中找到记录",
+        "未能确认是否存在仅以口头/线下方式执行的跌落标准",
+        "本轮检索预算用尽，其他品类、产品线及未直接命中的资料尚未核查"
+      ],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [
+    "下一步希望我按哪个方向继续查跌落测试标准？"
+  ],
+  "unfinished": [
+    "扩大检索范围核查公司充气泵跌落测试标准（其他品类/产品线、测试与项目记录、历史资料）",
+    "确认跌落标准的具体参数：跌落高度、方向/姿态、次数、判定与放行准则",
+    "若内部无可核对记录，改由公开标准补充参考并与我方标准分栏标注"
+  ],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1,
+      "failed": 1
+    },
+    "model": {
+      "completed": 3
+    }
+  },
+  "identity": {
+    "prompt_version": "1.2.0-layout-draft",
+    "prompt_digest": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+    "system_digest": "0d3b743ce7b0b2bbf898e68b139ad09c25cd6d3c1f47f2696f8a314fa6b6429e",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

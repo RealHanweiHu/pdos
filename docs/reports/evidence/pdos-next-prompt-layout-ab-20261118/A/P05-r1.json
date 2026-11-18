@@ -1,0 +1,55 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 1,
+  "probe": "P05",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 34.9,
+  "clarifications": [],
+  "run_id": "442bd3d9-62d0-4b59-9be6-c14cfcb87aa2",
+  "tenant_id": "e6ce7ce8-4705-4c1c-b7a8-50effb053850",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 35042,
+  "held_tokens": 0,
+  "answer": "PPAP (Production Part Approval Process) is the automotive-industry framework in which a supplier proves to a customer that a part, as actually produced with production tooling and at production rate, meets every drawing/specification/quality requirement before mass shipment — by submitting a defined document package (PSW form, dimensional results, material and performance test reports, process capability studies, etc.) at the customer's chosen submission level (1–5). In practice it is the launch gate: the customer reviews and signs (or rejects/interim-rejects) the PSW, and only after approval can the part go into series production, so any open issue at that point triggers corrective action and resubmission. One note: I searched our readable company materials for a PPAP-specific internal standard and found nothing in that scope, so the above is general industry practice rather than a documented house rule.",
+  "result": {
+    "assistant": {
+      "kind": "general",
+      "as_of": "2026-11-18T08:46:07.873316+00:00",
+      "lookup": "no_match",
+      "notice": "在当前品类的可读资料中没有找到相关记录",
+      "sources": [],
+      "version": 1,
+      "coverage": {
+        "returned": 0,
+        "unavailable": []
+      },
+      "unknowns": [],
+      "scope_label": "当前品类的可读资料",
+      "citation_ids": [],
+      "matched_count": 0
+    }
+  },
+  "questions": [],
+  "unfinished": [],
+  "lookup": "no_match",
+  "sources": [],
+  "tools": {
+    "assistant.search": {
+      "completed": 1
+    },
+    "model": {
+      "completed": 2
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}

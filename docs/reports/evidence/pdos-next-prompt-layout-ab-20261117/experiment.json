@@ -1,0 +1,17 @@
+{
+  "schema": "xiaopai-prompt-ab-experiment/v1",
+  "id": "layout-20261117",
+  "question": "消息摆放改为“技能正文 → 固定助手回复 → 信封”，服务器消息带类型标记（D590、D577、D595、D356）",
+  "baseline": "A",
+  "repeats": 3,
+  "arms": {
+    "A": {
+      "label": "1.1.0 现有摆放",
+      "prompt_version": "1.1.0"
+    },
+    "B": {
+      "label": "1.2.0-layout-draft 新摆放",
+      "prompt_version": "1.2.0-layout-draft"
+    }
+  }
+}

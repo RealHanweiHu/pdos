@@ -1,0 +1,58 @@
+{
+  "version": "xiaopai-prompt-ab-observation/v1",
+  "arm": "A",
+  "repeat": 2,
+  "probe": "P04",
+  "inputs_sha256": "b6ecf695799571dd3773a7adb6a3d16f851135d3351a6c385af1a5edcfbafeb6",
+  "status": "completed",
+  "seconds": 42.7,
+  "clarifications": [],
+  "run_id": "cfd8cd54-528e-46e3-bfd2-6a5b3e6532a3",
+  "tenant_id": "b0874bf1-c498-433d-b563-15703a15f58b",
+  "state": "completed",
+  "error_code": null,
+  "used_tokens": 17892,
+  "held_tokens": 0,
+  "answer": "已给出 50 字以内的群通知草稿（27 字）：\"【评审通知】本周三下午3点评审充气泵样品，请准时参加。\"；另提供含日期与地点占位的备选版本（仍 50 字内）。日期与地点因用户未提供而保留占位，未填入任何未经确认的事实；如需写明具体日期/地点，可直接替换。",
+  "result": {
+    "notice": {
+      "limit": "50字以内",
+      "primary": "【评审通知】本周三下午3点评审充气泵样品，请准时参加。",
+      "assumptions": [
+        "“周三”按本周三理解，未填具体日期",
+        "地点、会议方式未提供，保留占位，未作确认"
+      ],
+      "primary_char_count": 27,
+      "variant_with_placeholders": "【评审通知】X月X日（周三）下午3点评审充气泵样品，请准时参加，地点：XXX。",
+      "optional_additions_offered": [
+        "是否需提前准备BOM/规格参数对照表"
+      ]
+    },
+    "assistant": {
+      "kind": "general",
+      "lookup": "not_run",
+      "version": 1
+    }
+  },
+  "questions": [
+    "通知里是否要写明评审的具体日期、地点或会议方式？"
+  ],
+  "unfinished": [
+    "具体日期与地点若要写入，需用户提供后替换占位"
+  ],
+  "lookup": "not_run",
+  "sources": [],
+  "tools": {
+    "model": {
+      "completed": 1
+    }
+  },
+  "identity": {
+    "prompt_version": "1.1.0",
+    "prompt_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "tool_definitions_digest": "5119210b2ce486ce4a3683712b22fe715da52e4729141b72cc664c8d9f45d38b",
+    "model": "MiniMax-M3",
+    "model_version": "MiniMax-M3"
+  }
+}
