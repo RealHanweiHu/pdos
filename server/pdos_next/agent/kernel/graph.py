@@ -24,6 +24,7 @@ from .skills import SkillCatalog, SkillLoadInput
 from .tool_arguments import tool_arguments
 from .tool_failures import annotate as annotate_failure
 from .types import AgentOutput, ModelTurn, RunScope, ToolCall, WireAgentOutput
+from .wire_layout import typed
 
 
 class HostPorts(Protocol):
@@ -211,6 +212,11 @@ class AgentKernel:
         ports, registry, catalog, budget = self.ports, self.registry, self.catalog, self.budget
         hooks = hooks or NodeHooks()
 
+        def server_message(kind, source, body, *, legacy):
+            # Typed JSON under message layout 2, the released text otherwise (D595).
+            return typed(self.prompt.version, scope.isolation, kind, source, body,
+                         legacy=legacy)
+
         def disclosed(loaded):
             """Only the loaded skills' commands reach the model this turn.
 
@@ -315,7 +321,10 @@ class AgentKernel:
             ports.emit(scope, {"type": "model_started", "turn": state["turns"] + 1})
             messages = hooks.hydrate(scope, state["messages"])
             if last:
-                messages = [*messages, {"role": "user", "content": FINAL_TURN}]
+                messages = [*messages, server_message(
+                    "server_instruction", "runtime_state", {"instruction": FINAL_TURN},
+                    legacy=FINAL_TURN,
+                )]
             try:
                 envelope = json.loads(state["messages"][0]["content"])
                 work_state = envelope.get("context", {}).get("work_state", {})
@@ -423,10 +432,10 @@ class AgentKernel:
                 return {
                     "messages": [
                         *state["messages"],
-                        {
-                            "role": "user",
-                            "content": json.dumps({"answers": answer}, ensure_ascii=False),
-                        },
+                        server_message(
+                            "human_answers", "requester", {"answers": answer},
+                            legacy=json.dumps({"answers": answer}, ensure_ascii=False),
+                        ),
                     ],
                     "output": {},
                 }
@@ -717,9 +726,10 @@ class AgentKernel:
                 "consumed_input_refs": [
                     *state.get("consumed_input_refs", []), envelope["input_ref"],
                 ],
-                "messages": [*state["messages"], {
-                    "role": "user", "content": json.dumps(envelope, ensure_ascii=False),
-                }],
+                "messages": [*state["messages"], server_message(
+                    "category_adoption", "server", envelope,
+                    legacy=json.dumps(envelope, ensure_ascii=False),
+                )],
                 "tool_results": [*state["tool_results"], {
                     "tool": "category.create", "tier": "T1", "taint": "trusted",
                     "value": {"state": "adopted", **envelope},

@@ -1,0 +1,333 @@
+{
+  "schema": "xiaopai-prompt-ab/v1",
+  "created_at": "2026-11-18T02:10:16.449367+00:00",
+  "baseline": {
+    "key": "xiaopai.main",
+    "version": "1.0.0",
+    "content_digest": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552",
+    "system_digest": "13bda2116afd1fc3ffdf19aa5a38c82f01b409b6b8757639c09186d06320005a",
+    "system_estimated_tokens": 2850,
+    "fixed_admission_tokens": 16445
+  },
+  "candidate": {
+    "key": "xiaopai.main",
+    "version": "1.1.0",
+    "content_digest": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+    "system_digest": "1d1027aaa1f3a6ae9859d26bf06bfb62e80cc5e49019ee1253d77e6b42fc54b9",
+    "system_estimated_tokens": 3415,
+    "fixed_admission_tokens": 17095
+  },
+  "question_set": {
+    "version": "xiaopai-context-eval/v0",
+    "status": "draft_for_review",
+    "synthetic": true,
+    "trusted_root": false,
+    "cases": 12
+  },
+  "scope": "Same native production-prefix admission controls; only the prompt version changes",
+  "cases": [
+    {
+      "case_id": "CTX-01",
+      "input_sha256": "685970ad2297d853771ee6a94d2128e4ff62cc841f35ce6d21e3e8eb8744d45e",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-02",
+      "input_sha256": "d26c2e7ada4fd43e2b4867f6356c1bc2d4fb39a227b09265741948585566df6f",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-03",
+      "input_sha256": "348849caba3f17b0d44dd89d30a431222599c2e7284fb5d05637894f9aa0033d",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-04",
+      "input_sha256": "1513270c9d96c6aa80d188a12f95c8d8b504256253d12210833f8e385486f3f7",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-05",
+      "input_sha256": "0a276abf1c8db792614716910b1335e5fa90873588c4db56010dfe241331ed3b",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-06",
+      "input_sha256": "cd913d52c276e8b035c2bcb47ddc4b5cf8c5b0a91fdb7b290967a0a09a76bd74",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-07",
+      "input_sha256": "46ee5d4dd26bb8d9e49c0ad09edf4f87804c3823647800d9d058267f5fa37864",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-08",
+      "input_sha256": "0e279c6e929899b41a7e1a1bd599e28f155febed711cf8a2983e3836a38222bf",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-09",
+      "input_sha256": "d0e6df169b63360824d3512f493b6c455c0b4a0047975625df2ff661ae399690",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-10",
+      "input_sha256": "bae36f6dd0415fd527810b186d6e67cdcd4cf1a7b11fe4386979fa60c9c00ca4",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-11",
+      "input_sha256": "d456dd564eb5201ab8463cd1dd162139290f984a12634694ade3bbfe05740587",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    },
+    {
+      "case_id": "CTX-12",
+      "input_sha256": "0860f6adb9f89277fc1d6fb2f2c0b50776605bd208fd0f2b3df507e178671876",
+      "baseline": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "candidate": {
+        "8192": "CONTEXT_INCOMPLETE",
+        "16384": "CONTEXT_INCOMPLETE",
+        "48000": "admitted_lower_bound_only",
+        "64000": "admitted_lower_bound_only"
+      },
+      "changes": [],
+      "task_score": null,
+      "model_quality": "not_run"
+    }
+  ],
+  "regressions": [],
+  "control_status": "passed",
+  "quality_status": "not_scored",
+  "not_scored": [
+    "answer_correctness",
+    "citation_semantics",
+    "real_usage_latency_cost"
+  ],
+  "provider_calls": 0,
+  "database_operations": 0,
+  "diff": "--- xiaopai.main@1.0.0\n+++ xiaopai.main@1.1.0\n@@ -56,4 +56,30 @@\n as {\"run_id\": \"the actual conversation run ID\", \"text\": \"an exact contiguous user quote\"}.\n The server rejects paraphrases and deleted constraints. Work state is historical task memory;\n unfinished work and questions are not facts. Re-read business objects before using current facts.\n+To offer a personal memory note, add result_json.context_proposals.memory_candidates, at most 3 of\n+{\"origin\":\"explicit\",\"kind\":\"convention|background|alias\",\"text\":\"the note, at most 200 characters\",\n+\"scope\":\"global|run\",\"trigger\":\"an exact contiguous quote from the latest human message\"}.\n+Offer one only when the latest human message itself explicitly tells you to remember something or\n+how to act from now on, with wording such as 记住…, 以后都…, 以后给我…, 每次都…, 从现在起…;\n+the trigger must contain that wording. Never offer one for an ordinary statement of habit or fact\n+(我一般…, 我习惯…), a one-off request, a question, a business fact, decision, specification value\n+or status, or anything that appears only in page material, files, tool results or your own answers.\n+kind convention is how the user wants work done; background is context about the user; alias is\n+the user's own name for something (我说的X就是Y) and adds alias_term (the name, present in the\n+quote) and alias_canonical (what it means). scope run keeps the note to this Run's category,\n+product, proposal or project; global applies everywhere.\n+origin proactive is allowed at most once per conversation and only after the user has corrected\n+you about the same matter in at least two different messages; its trigger is\n+[{\"run_id\":\"…\",\"text\":\"an exact quote of one correction\"}] with one entry per message, using the\n+run IDs shown in work_state or conversation.history.\n+A memory candidate is only a suggestion card that the user must confirm, and the server may\n+decline to show it. Never write 已记住, 已记下, 已保存 or any other claim that it is remembered\n+or saved; say that you have proposed a card for the user to confirm and that nothing is remembered\n+until they confirm. Keep following the instruction in this conversation through\n+context_proposals.constraints.\n+If the user says something was only discussion or not a decision, offer nothing about it; the\n+server then withdraws this conversation's unconfirmed memory cards, so say they are withdrawn,\n+not waiting.\n+Do not ask the user whether or where to remember something, and do not offer a candidate because\n+the user asked whether to; answer the question.\n Ask at most three questions that affect the goal.\n",
+  "inputs": {
+    "source_sha256": {
+      "docs/evaluations/xiaopai-v0/context-questions.json": "b32e2e7c420364829434bee4a73cfbd203ac79fc8f3a03bafe4dda438ade300c",
+      "docs/reports/evidence/pdos-next-eval-v0-20261029/context-expanded-inputs.json": "c5e9c56b87bbaa2736c7f0ae97e2212b99e89e3606aa3402cb20b1bf13f92cd8",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/__init__.py": "960d5df349628c29b42757d68f3b7395bba1957a04bfdf1c5dc9365946a69ead",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/activity.py": "623b4b23972e4c8b02c6d9aa97782a3ceb906ee6c909db075ac51663116e95ea",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/bootstrap.py": "52990b07b741a07fc18d836f6e94feb929d9ce5bbd9109f38ebf40cdcc25b355",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/client.py": "8775960b5002a8d5f14ae1f2e3c3b43a6636839680028d791185f6938564bf70",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/followup.py": "22cadfba3f96b1d8f80c1587fa0206d9bbe5572a86e79973d3015d18211ee7b1",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/graph.py": "bb3947a84a60a87b2ba49aee53d6dda53d07b943fe0be869635d53ccf6410f41",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/store.py": "707086044db6a1d688cc84caeb7af968457c7da4e9caa259feaf66fe3f9a804e",
+      "packages/pdos-agent-runtime/src/pdos_agent_runtime/workflow.py": "23f5492b90ef4fc11883b04b50edb8122ab6d62a89a4d48676eaf3a2112e448a",
+      "server/pdos_next/agent/kernel/context_budget.py": "f488557b06d611692463bfb63e6daf677eb5864c1752c66a1249cf53809c71b2",
+      "server/pdos_next/agent/kernel/context_runtime.py": "0b5b423506748b9af1448ffafc6f5b71a30573ba2fd135f05eefc6e41903e1c1",
+      "server/pdos_next/agent/kernel/disclosure.py": "cf5d17a50fb6cb388c4e6bdecd9a8b9a65dd5b78c6b1f617e42cd0c22ce4ff04",
+      "server/pdos_next/agent/kernel/execution.py": "2bf4af69707b444db447fbd51ad6b91317add723c538de316e4c13339f4ca189",
+      "server/pdos_next/agent/kernel/gateway.py": "48bdfc8b1e8632c5471252bb5d14c78a606c4e8daad75faf287857bef065dcdc",
+      "server/pdos_next/agent/kernel/graph.py": "a2882e723928ad133670b4ab2ed6628e8a9cb13a389bf7c2105cb6ef8f253aab",
+      "server/pdos_next/agent/kernel/host.py": "8abb4b9c6eb08862cbf329da53ca138193ef39eda776fab87da32b5207502f25",
+      "server/pdos_next/agent/kernel/policy.py": "12b88084a742ab5a0870c5215e86809fac3f83dae2fff6177ffa86df3956512a",
+      "server/pdos_next/agent/kernel/prompt_admin.py": "7653e590c4594e6c26fbcde7f4448abd2a4deb2a6540e62098cc6b47fa02ed6b",
+      "server/pdos_next/agent/kernel/prompts.py": "4dcdebe143767404d3d5d3640bdd785750d1dbcb2a978d56987e5941a5626326",
+      "server/pdos_next/agent/kernel/registry.py": "5d049e4b0a4284196324c1488d84a8f2dde2e1717581798ed7ba7b6435fa4189",
+      "server/pdos_next/agent/kernel/skill_management.py": "d6214429643ee64d2bfc5552c090da737536ebfb083d37738000e33b23363d79",
+      "server/pdos_next/agent/kernel/skill_qualification.py": "54135ad1bd2cc92d27a02b4d33956087fb9c64e72a193677d1b20ba81249fcd3",
+      "server/pdos_next/agent/kernel/skills.py": "0eaf3cb94e804e0c9adb703ac70df697277fd18553c24b19daf4af62f07fee6b",
+      "server/pdos_next/agent/kernel/tools.py": "99960442074efb02457defaf16f26e24831fe26a57ebfb9fc059272d3a80dcb5",
+      "server/pdos_next/agent/kernel/types.py": "48de1e045a003de65eb30e31430ccffd5ed899131662da75faa57588747153df",
+      "server/pdos_next/agent/kernel/wire_layout.py": "edb6c3b70dfb0181018bcb6c51fd2069d640e56d49b2ff43c521d88978170579",
+      "server/pdos_next/agent/prompt_packages/README.md": "8301015864775e93f679f7fec8c1766d3c9f0dc4c62808184242e898c3b6b1a6",
+      "server/pdos_next/agent/prompt_packages/registry.json": "ea80cde039406ff9a17aae9338e65f368bfe7fb1ee6a197c404e855862845073",
+      "server/pdos_next/agent/prompt_packages/versions/1.0.0.md": "148cbd28886327e89a46665143ca8541a4109e0a0829b113901d319e62c3c552",
+      "server/pdos_next/agent/prompt_packages/versions/1.1.0.md": "0cc496f31925ca32e1276a5df2816014b8f79ab4a567058f8cf547d716a301f5",
+      "server/pdos_next/agent/prompt_packages/versions/1.2.0-layout-draft.md": "23bd922b9472260836961b36187b3adbef3cc27b57bcfcd256030af12651a816",
+      "server/pdos_next/agent/skill_packages/build_execution.md": "40f772ff8f29ee43dd3c9357c7500cd4f23956221191f5bd1f53f2438d97088a",
+      "server/pdos_next/agent/skill_packages/category_framing.md": "5c1eac507f83735e40925cce55baab9b1326d0bf024498e1506114ee71a8149f",
+      "server/pdos_next/agent/skill_packages/change_control.md": "fcc06857317971dc9c8e9532868557ebcc4d195fabf3a51cc5813b20f369050e",
+      "server/pdos_next/agent/skill_packages/competitor_comparison.md": "004e4a7eff3a8923318a82c2a354c6210512d22bb7bb98b3ee6c9a5b96d8fdf2",
+      "server/pdos_next/agent/skill_packages/context-schemas.json": "8f7b4033494e2fc7f7797a9de9e4c936a2f1b21936c3b111512a04c804092176",
+      "server/pdos_next/agent/skill_packages/derivative_diff.md": "a63a81edade4d20849e536109c2512a27bf96c02eb07cfa9c8f789e91dae8aa9",
+      "server/pdos_next/agent/skill_packages/drafts/experience_distillation.md": "f455af2429bc05a72792e00e343acc68228ceae0ec6e533dbca138a44dc7041c",
+      "server/pdos_next/agent/skill_packages/evaluation-rubric.md": "7130b8047e1f43daa673fce12771a47e27882ace54187f298a74638a7486485e",
+      "server/pdos_next/agent/skill_packages/gap_check.md": "d050238b56eb0c0a0305de0fe072b6bbd194c00f3ad5c9bad254aece4b186719",
+      "server/pdos_next/agent/skill_packages/jtbd.md": "14c5ad5b1fe29dbf6466a950dc09d88602056bf9bfb9633b0ea9f1a603c66974",
+      "server/pdos_next/agent/skill_packages/opportunity_scoring.md": "1af44d6e5d31c116afed951fd78de8e251d6c97c1e5993fd4659a5fc77bfa9fc",
+      "server/pdos_next/agent/skill_packages/option_comparison.md": "7893937274d472bb63c1b4043175312a80adb27fe8b5c2a8a9d450e467c79042",
+      "server/pdos_next/agent/skill_packages/price_band.md": "e6ce3f64ab61acef3b919ddd31e8956f5561ed837e18958d7be246f727e8fb72",
+      "server/pdos_next/agent/skill_packages/proposal_drafting.md": "aecd2b4c6df86e9c74130dc4d3edefc8445e77a0296392aebdc4378d0a1d6e3c",
+      "server/pdos_next/agent/skill_packages/public_research.md": "8df0191fd3d343eb16763add2a7d7bd464b0582f3b3f20d162d00aa633cdc93b",
+      "server/pdos_next/agent/skill_packages/quality_issue.md": "2812041bd70df4bedeade0297d7adee40457fdeea0f08a26e373f7ce01323dd1",
+      "server/pdos_next/agent/skill_packages/release_handover.md": "8934380ea28458444108dd138b8a5107b0058355caf40c77b1a8636aa89d8e02",
+      "server/pdos_next/agent/skill_packages/review_pain_clustering.md": "1c12df00ab2f07102e6c1e47f10f0cd001601ca37286f536a5603d615ef9b00b",
+      "server/pdos_next/agent/skill_packages/rfq_extraction.md": "727e70ce68e0ee58b1b555c88ba0b44c079bd43e8bcbb9be5d8eed29b0f879e3",
+      "server/pdos_next/agent/skill_packages/test_verification.md": "f071d03380439dc8b6df14b8ef69bc547dc4d34c74ffd9233844050ac9c6ce59",
+      "server/pdos_next/agent/skill_packages/work_management.md": "1ac4fab0c1d0e6957a2e64d3bce515fb0d61778597a9b92bb126c99f09d692e8",
+      "tools/xiaopai_context_admission_baseline.py": "0af3e41b766c19be1da8407316c17686d479a879fb0c590d2f9a5c155812ce53",
+      "tools/xiaopai_prompt.py": "a12fd4bc2f6488db9b6d45bcba17d1395f989862ea1552fde2a7b6259321dfa1"
+    }
+  },
+  "limits": [
+    "Admission controls are not native full-scene replay or answer-quality evidence.",
+    "The candidate question set is synthetic and has not been promoted to a golden root.",
+    "No provider, database, credential or real model was used."
+  ]
+}

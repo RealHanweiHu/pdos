@@ -45,7 +45,9 @@ from .models import MemoryCandidate, MemoryCandidateDecision, MemoryProposalVoid
 # Prompt A/B. A version listed here opens the path only for Runs that use it: 1.1.0
 # passed on 2026-11-14 (docs/reports/evidence/pdos-next-memory-proposal-20261113) and
 # takes effect only once it is activated by a named reviewer; the active 1.0.0 stays closed.
-MEMORY_CANDIDATE_PROMPT_VERSIONS = frozenset({"1.1.0"})
+# 1.2.0-layout-draft is 1.1.0 plus message layout 2 (kernel/wire_layout.py); it keeps the
+# same memory_candidates contract and is still a draft awaiting its own Prompt A/B.
+MEMORY_CANDIDATE_PROMPT_VERSIONS = frozenset({"1.1.0", "1.2.0-layout-draft"})
 PER_RUN_LIMIT = 3
 TTL = timedelta(days=7)
 ACTIVE = ("queued", "running", "waiting_input")

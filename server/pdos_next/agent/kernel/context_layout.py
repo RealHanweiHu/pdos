@@ -41,14 +41,23 @@ def _tokens(message):
     )
 
 
-def outline(*, prompt_digest, tools_digest, segments, messages, loaded_skills=0):
-    """One request as ``[label, digest, estimated tokens]`` rows in request order."""
+def outline(*, prompt_digest, tools_digest, segments, messages, loaded_skills=0,
+            opening=None):
+    """One request as ``[label, digest, estimated tokens]`` rows in request order.
+
+    ``messages`` are the messages as sent. ``opening`` is the index of the fixed
+    assistant message under message layout 2 (see ``wire_layout``), where the skill
+    bodies precede it and the run envelope follows; None for layout 1.
+    """
     first_assistant = next(
         (index for index, message in enumerate(messages)
          if message.get("role") == "assistant"), len(messages),
     )
 
     def label(index, message):
+        if opening is not None:
+            return ("skill" if index < opening else "opening" if index == opening
+                    else "envelope" if index == opening + 1 else "loop")
         if index == 0:
             return "envelope"
         return "skill" if index < first_assistant and message.get("role") == "user" else "loop"
@@ -71,8 +80,8 @@ def _reason(previous, current, shared, *, cleanup_applied, reductions):
     if label == "tools":
         return ("tools_widened_by_skill_load"
                 if current["loaded_skills"] > previous["loaded_skills"] else "tools_changed")
-    if label == "skill" and shared < len(previous["rows"]) and (
-            previous["rows"][shared][0] == "skill"):
+    if label in {"skill", "opening"} and shared < len(previous["rows"]) and (
+            previous["rows"][shared][0] in {"skill", "opening"}):
         return "skills_changed"
     if label == "envelope":
         # Cleaning old tool results also rewrites the first message, which lists the

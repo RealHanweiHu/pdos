@@ -124,15 +124,22 @@ def _latency(timing):
     }}
 
 
-def _prefix(runtime, scope, row, binding, budget, usage, messages, *, cache_known):
+def _prefix(run, runtime, scope, row, binding, budget, usage, messages, *, cache_known):
     """The reusable-prefix outline of this call and the one to compare the next with."""
     from .context_layout import compare, outline
+    from .wire_layout import arranged
 
     layouts = runtime.get("layouts", {})
+    # The outline follows the order in which the messages were sent.
+    sent, opening = arranged(
+        messages, isolation=scope.isolation, skills=binding.loaded_skills,
+        version=run.versions.get("prompt_identities", {}).get(scope.isolation, {}).get(
+            "version"),
+    )
     current = outline(
         prompt_digest=binding.prompt_digest, tools_digest=binding.tool_definitions_digest,
-        segments=budget.get("segments", {}), messages=messages,
-        loaded_skills=len(binding.loaded_skills),
+        segments=budget.get("segments", {}), messages=sent,
+        loaded_skills=len(binding.loaded_skills), opening=opening,
     )
     # Several child graphs of one isolation can run side by side in a Run, so only
     # the main graph's calls form a sequence that can be compared.
@@ -180,7 +187,7 @@ def _record_metric(session, run, scope, row, binding, budget, usage, messages, *
     metrics["usage_status"] = "recorded" if usage_known else "unavailable"
     metrics["latency"] = _latency(timing)
     metrics["prefix"], layouts = _prefix(
-        runtime, scope, row, binding, budget, usage, messages,
+        run, runtime, scope, row, binding, budget, usage, messages,
         cache_known=cache_known and usage_known,
     )
     limits = {key: getattr(run, column, None) for key, column in (

@@ -146,9 +146,17 @@ class AgentGateway:
             if error.reason == "CONTEXT_INCOMPLETE":
                 self.store.emit(scope, {"type": "context_incomplete", **error.detail})
             raise
+        # Message layout 2 changes only what is sent; graph state, admission and the
+        # snapshots keep the admitted messages (see .wire_layout).
+        from .wire_layout import arrange
+
+        wire_messages = arrange(
+            messages, version=(prompt_identity or {}).get("version"),
+            isolation=scope.isolation, skills=loaded_skills,
+        )
         request = {
             "system": system,
-            "messages": messages,
+            "messages": wire_messages,
             "tools": tools,
             "output_schema": output_schema,
             "route": route.digest,
@@ -246,7 +254,7 @@ class AgentGateway:
         call_key = "model:" + digest(request)
         import json
 
-        wire = request_body(route, system, messages, tools, output_schema, bool(emit),
+        wire = request_body(route, system, wire_messages, tools, output_schema, bool(emit),
                             prompt_cache_allowed=cache_allowed)
         wire_bytes = len(json.dumps(wire, ensure_ascii=False).encode())
         input_upper = wire_bytes + 4096  # Explicitly unmetered synthetic transport fixtures only.
@@ -334,7 +342,7 @@ class AgentGateway:
                 result = self.client.turn(
                     route,
                     system=system,
-                    messages=messages,
+                    messages=wire_messages,
                     tools=tools,
                     output_schema=output_schema,
                     emit=emit,

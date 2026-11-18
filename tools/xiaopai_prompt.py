@@ -51,6 +51,7 @@ def source_hashes(package, questions, expanded):
         SERVER / "pdos_next/agent/kernel/registry.py",
         SERVER / "pdos_next/agent/kernel/types.py",
         SERVER / "pdos_next/agent/kernel/skills.py",
+        SERVER / "pdos_next/agent/kernel/wire_layout.py",
         ROOT / "tools/xiaopai_context_admission_baseline.py",
     ]
     paths.extend((SERVER / "pdos_next/agent/skill_packages").rglob("*"))
