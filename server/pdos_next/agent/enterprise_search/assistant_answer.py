@@ -13,6 +13,9 @@ from pdos_next.errors import DomainError
 from . import assistant_ledger as ledger
 from .assistant_sources import current
 
+# D541: appended when the answer's table failed only the structure check and was dropped.
+TABLE_UNVERIFIED = "\n\n（系统说明：随附的表格没有通过结构核对，已去掉；这段文字未经系统核对。）"
+
 
 def readable_runs(session, runs):
     """Validate actual provenance, then batch the authority check across output origins."""
@@ -282,7 +285,15 @@ def attach(adapter, scope, output, tool_results):
     if task_result is not None:
         assistant["task_result"] = task_result
     if task_unknowns:
-        result["summary"] = "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。"
+        kept = result.get("summary") if task_result is None else None
+        # D541: a table that only failed the structure check is dropped, but the model's
+        # own summary stays, marked as unverified (P122 does the same for the main graph).
+        # A table whose cells failed the reference check still replaces the summary.
+        result["summary"] = (
+            kept.rstrip() + TABLE_UNVERIFIED
+            if isinstance(kept, str) and kept.strip()
+            else "部分任务结果未通过引用或登记字段核对，未核对的内容已标为待确认。"
+        )
     if missing or invalid:
         # Unconstrained prose could contain a revoked quote even if the model did
         # not cite it. Keep verified source rows, discard the dependent prose.

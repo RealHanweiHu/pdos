@@ -97,6 +97,35 @@ def test_forged_cell_reference_is_partial_and_cannot_be_saved_as_a_fact(setup):
     assert "当前工况与复验结果" not in str(output)
 
 
+class MisplacedClient(TaskClient):
+    """The table shape captured in the memory evaluation (D541): text in an unknown cell."""
+
+    def turn(self, route, **kwargs):
+        turn = super().turn(route, **kwargs)
+        table = ((turn.structured or {}).get("result") or {}).get("assistant", {}).get(
+            "task_result")
+        if table is None:
+            return turn
+        payload = turn.structured
+        payload["summary"] = "合成摘要：以往记录里提到过更换密封圈。"
+        table["rows"][0]["cells"][self.field] = {
+            "status": "not_recorded", "analysis": "以往记录里提到过更换密封圈。"}
+        return replace(turn, structured=payload)
+
+
+def test_a_table_that_fails_only_the_structure_check_keeps_the_marked_summary(setup):
+    from pdos_next.agent.enterprise_search.assistant_answer import TABLE_UNVERIFIED
+
+    index(setup, register(setup, "漏气措施记录", "措施：更换密封圈。RAW_ONLY_CHILD_MARKER"))
+    owner, scope, host, _adapter = fixture(setup, MisplacedClient("cases", "measures"))
+    output = execute(owner, scope, host)
+    assert output["status"] == "partial", output
+    assert output["summary"] == "合成摘要：以往记录里提到过更换密封圈。" + TABLE_UNVERIFIED
+    answer = output["result"]["assistant"]
+    assert "task_result" not in answer
+    assert "任务结果结构未通过核对，请按已登记结构重新整理。" in answer["unknowns"]
+
+
 def test_withdrawn_table_sources_remove_the_table_and_dependent_analysis(setup):
     identity = register(setup, "漏气措施记录", "措施：更换密封圈。RAW_ONLY_CHILD_MARKER")
     index(setup, identity)
