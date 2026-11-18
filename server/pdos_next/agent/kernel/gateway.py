@@ -423,6 +423,8 @@ class AgentGateway:
         }
         if result.continuation is not None:
             saved["continuation"] = result.continuation
+        if result.timing is not None:
+            saved["timing"] = result.timing  # D578: read back only by the observation.
         usage = result.usage.input_tokens + result.usage.output_tokens
         cost_usage = None
         if pricing:

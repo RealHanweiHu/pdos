@@ -79,6 +79,9 @@ class ModelTurn:
     structured: dict | None = None
     ledger_call_id: UUID | None = None  # Set only by the server gateway, never the provider.
     continuation: dict | None = field(default=None, repr=False)  # Private provider protocol only.
+    # D578: the client's own clock around the provider call (milliseconds). Observation
+    # only: it is not part of the reply, so two turns that differ only here are equal.
+    timing: dict | None = field(default=None, repr=False, compare=False)
 
 
 class WireRecommendation(StrictModel):

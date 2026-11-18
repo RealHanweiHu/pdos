@@ -107,11 +107,25 @@ def record_call(store, scope, turn, messages):
         if not result.get("context_budget") or not result.get("usage"):
             return None  # Historical calls may predate context metering.
         return _record_metric(session, run, scope, row, binding, result["context_budget"],
-                              result["usage"], messages)
+                              result["usage"], messages, timing=result.get("timing"))
+
+
+def _latency(timing):
+    """The gateway's own clock around the provider call, in milliseconds (D578).
+
+    ``first_output_ms`` is the first streamed text, reasoning or tool-call fragment;
+    it is None for a call that was not streamed.
+    """
+    if not isinstance(timing, dict):
+        return None
+    return {"streamed": timing.get("streamed") is True, **{
+        key: timing[key] if type(timing.get(key)) is int and timing[key] >= 0 else None
+        for key in ("headers_ms", "first_output_ms", "total_ms")
+    }}
 
 
 def _record_metric(session, run, scope, row, binding, budget, usage, messages, *,
-                   usage_known=True, cache_known=True):
+                   usage_known=True, cache_known=True, timing=None):
     runtime = run.versions.get(RUNTIME_KEY, {})
     calls = runtime.get("calls", {})
     key = str(row.id)
@@ -137,6 +151,7 @@ def _record_metric(session, run, scope, row, binding, budget, usage, messages, *
                             "status": "not_recorded_for_failed_call"}
     metrics["call_state"] = row.state
     metrics["usage_status"] = "recorded" if usage_known else "unavailable"
+    metrics["latency"] = _latency(timing)
     limits = {key: getattr(run, column, None) for key, column in (
         ("limit", "token_limit"), ("used", "used_tokens"), ("held", "held_tokens"),
     )}

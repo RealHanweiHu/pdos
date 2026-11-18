@@ -13,6 +13,8 @@ The host authorizes every attempt; this transport never retries a possibly sent 
 import json
 from contextlib import contextmanager
 from contextvars import ContextVar
+from dataclasses import replace
+from time import monotonic
 
 import httpx
 
@@ -332,6 +334,7 @@ class StreamAccumulator:
         )
         self.calls = {}
         self.stopped = False
+        self.first_output_at = None  # D578: clock reading at the first model output.
 
     def accept(self, data):
         if self.protocol == "openai-compatible":
@@ -367,6 +370,10 @@ class StreamAccumulator:
                 raise ValueError("One streamed choice required")
             delta = choices[0].get("delta", {})
             message = self.body["choices"][0]["message"]
+            if self.first_output_at is None and (
+                delta.get("reasoning_content") or delta.get("content") or delta.get("tool_calls")
+            ):
+                self.first_output_at = monotonic()
             if delta.get("reasoning_content") is not None:
                 if not isinstance(delta["reasoning_content"], str):
                     raise ValueError("Reasoning stream must be text")
@@ -404,6 +411,8 @@ class StreamAccumulator:
         elif kind == "content_block_start":
             self.calls[chunk["index"]] = chunk["content_block"]
         elif kind == "content_block_delta":
+            if self.first_output_at is None:
+                self.first_output_at = monotonic()
             block = self.calls[chunk["index"]]
             delta = chunk["delta"]
             if delta["type"] == "text_delta":
@@ -509,10 +518,16 @@ class AgentProviderClient:
         if cancelled():
             raise ProviderError("MODEL_CANCELLED")
         request_id = None
+        started = monotonic()
+
+        def elapsed(moment):
+            return None if moment is None else round((moment - started) * 1000)
+
         try:
             with self.client.stream(
                 "POST", route.target_url, json=body, headers=headers, timeout=route.timeout_seconds
             ) as response:
+                headers_at = monotonic()
                 request_id = _identifier(
                     response.headers.get("request-id") or response.headers.get("x-request-id")
                 )
@@ -573,7 +588,12 @@ class AgentProviderClient:
                     # MiniMax can inline thinking tags even on a split request. Only
                     # publish text after the complete native response is parsed.
                     emit({"type": "text_delta", "text": result.text})
-                return result
+                # D578: time to the first output is only known for a streamed call.
+                return replace(result, timing={
+                    "streamed": streaming, "headers_ms": elapsed(headers_at),
+                    "first_output_ms": elapsed(accumulator.first_output_at) if streaming else None,
+                    "total_ms": elapsed(monotonic()),
+                })
         except ProviderError as error:
             error.request_id = error.request_id or request_id
             raise
