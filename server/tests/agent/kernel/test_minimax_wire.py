@@ -20,6 +20,7 @@ from pdos_next.providers.agent_wire import (
     FINISH_TOOL,
     MINIMAX_CODEC,
     inline_refs,
+    restore_assistant,
     wire_schemas,
 )
 from pdos_next.providers.types import ProviderError
@@ -452,6 +453,46 @@ def test_malformed_result_json_is_a_known_turn_sent_to_format_repair(broken):
     assert turn.structured["result"] is None and "result_json" not in turn.structured
     with pytest.raises(ValidationError):
         AgentOutput.model_validate(turn.structured)
+
+
+# The shape captured on 2026-11-18 (D610): the arguments stop inside the first option.
+CUT_OFF = ('{"status":"needs_input","summary":"合成：范围内没有找到。","result_json":"{}",'
+           '"questions":[{"id":"q_scope","question":"是否扩大范围？","why":"当前范围没有结果。",'
+           '"options":{"item":{"value":"expand_all","label":')
+
+
+@pytest.mark.parametrize("broken", [CUT_OFF, "", '{"status":"completed",}', "not json"])
+def test_final_arguments_that_are_not_json_are_a_known_turn_sent_to_format_repair(broken):
+    """D611: a complete reply with its usage is never an unknown outcome."""
+    from pdos_next.agent.kernel.types import AgentOutput
+
+    turn = parse_turn(finish_with(broken), minimax())
+    assert turn.usage.output_tokens == 5 and turn.request_id
+    assert turn.structured == {} and turn.calls == ()
+    with pytest.raises(ValidationError):
+        AgentOutput.model_validate(turn.structured)
+    # The broken text is not replayed to the provider: the stored call carries {}.
+    sent = restore_assistant(minimax(), assistant(turn))
+    assert sent[0]["tool_calls"][0]["function"] == {"name": FINISH_TOOL, "arguments": "{}"}
+    assert sent[0]["reasoning_content"] == PRIVATE
+    assert sent[1]["role"] == "tool" and sent[1]["tool_call_id"] == sent[0]["tool_calls"][0]["id"]
+
+
+def test_business_arguments_that_are_not_json_are_still_an_unknown_outcome():
+    value = reply("openai-compatible", tools=True)
+    value["choices"][0]["message"]["tool_calls"][0]["function"]["arguments"] = '{"category_id":'
+    with pytest.raises(ProviderError) as failure:
+        parse_turn(value, minimax())
+    assert failure.value.code == "PROVIDER_INVALID_RESPONSE" and failure.value.unknown
+
+
+def test_a_broken_final_call_beside_another_call_is_still_an_unknown_outcome():
+    value = finish_with(CUT_OFF)
+    calls = value["choices"][0]["message"]["tool_calls"]
+    calls.append({**calls[0], "id": "call_other"})
+    with pytest.raises(ProviderError) as failure:
+        parse_turn(value, minimax())
+    assert failure.value.unknown
 
 
 def test_empty_result_object_stays_valid():

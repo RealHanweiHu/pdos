@@ -195,11 +195,34 @@ def parse_turn(body, route, request_id=None):
             for call in message.get("tool_calls") or []:
                 if call["type"] != "function":
                     raise ValueError("Native function required")
-                arguments = json_value(call["function"]["arguments"])
-                if (
+                finishing = (
                     route.agent_response_codec in FUNCTION_CODECS
                     and call["function"]["name"] == FINISH_TOOL
-                ):
+                )
+                try:
+                    arguments = json_value(call["function"]["arguments"])
+                except ValueError:
+                    # D611: the reply is complete and its usage known, and the output
+                    # function runs nothing, so arguments that are not JSON (MiniMax-M3
+                    # has cut them off mid-object, D610) are a known, billable turn. An
+                    # empty result sends it to the graph's bounded format repair, as a
+                    # badly written result_json does (D244). A business call written
+                    # this way is still an unknown outcome.
+                    if (
+                        not finishing
+                        or len(message["tool_calls"]) != 1
+                        or not isinstance(call["function"]["arguments"], str)
+                    ):
+                        raise
+                    ToolCall(id=call["id"], name=FINISH_TOOL, arguments={})
+                    native_output = {}
+                    # The broken text is not sent back: the stored native message
+                    # carries an empty object in its place.
+                    message = {**message, "tool_calls": [
+                        {**call, "function": {**call["function"], "arguments": "{}"}},
+                    ]}
+                    continue
+                if finishing:
                     if len(message["tool_calls"]) != 1 or not isinstance(arguments, dict):
                         raise ValueError("Output function cannot mix with business calls")
                     # Validate the protocol identity without exposing an executable tool.
