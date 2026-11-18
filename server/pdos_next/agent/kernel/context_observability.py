@@ -124,6 +124,33 @@ def _latency(timing):
     }}
 
 
+def _prefix(runtime, scope, row, binding, budget, usage, messages, *, cache_known):
+    """The reusable-prefix outline of this call and the one to compare the next with."""
+    from .context_layout import compare, outline
+
+    layouts = runtime.get("layouts", {})
+    current = outline(
+        prompt_digest=binding.prompt_digest, tools_digest=binding.tool_definitions_digest,
+        segments=budget.get("segments", {}), messages=messages,
+        loaded_skills=len(binding.loaded_skills),
+    )
+    # Several child graphs of one isolation can run side by side in a Run, so only
+    # the main graph's calls form a sequence that can be compared.
+    main = scope.isolation == "main"
+    value = compare(
+        layouts.get("main") if main else None, current,
+        cleanup_applied=bool(budget.get("cleanup", {}).get("applied")),
+        reductions=budget.get("reductions", []),
+        cache_read=usage.get("cache_read_tokens") if cache_known else None,
+    )
+    if not main:
+        value.update(basis="not_compared", reason="child_graph")
+    # A failed or unknown call may never have reached the provider's cache.
+    if main and row.state == "completed":
+        layouts = {**layouts, "main": current}
+    return value, layouts
+
+
 def _record_metric(session, run, scope, row, binding, budget, usage, messages, *,
                    usage_known=True, cache_known=True, timing=None):
     runtime = run.versions.get(RUNTIME_KEY, {})
@@ -152,6 +179,10 @@ def _record_metric(session, run, scope, row, binding, budget, usage, messages, *
     metrics["call_state"] = row.state
     metrics["usage_status"] = "recorded" if usage_known else "unavailable"
     metrics["latency"] = _latency(timing)
+    metrics["prefix"], layouts = _prefix(
+        runtime, scope, row, binding, budget, usage, messages,
+        cache_known=cache_known and usage_known,
+    )
     limits = {key: getattr(run, column, None) for key, column in (
         ("limit", "token_limit"), ("used", "used_tokens"), ("held", "held_tokens"),
     )}
@@ -164,6 +195,7 @@ def _record_metric(session, run, scope, row, binding, budget, usage, messages, *
     _append(session, run, body)
     run.versions = {**run.versions, RUNTIME_KEY: {
         **runtime, "cleanup_count": counter, "calls": {**calls, key: metrics},
+        "layouts": layouts,
         "routes": {**runtime.get("routes", {}), route_key: {
             "error_streak": metrics["estimation_error_streak"],
         }},
