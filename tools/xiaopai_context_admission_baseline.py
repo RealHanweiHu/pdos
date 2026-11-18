@@ -162,7 +162,7 @@ def evaluate(questions, expanded, *, prompt=None):
 def report(value):
     fixed = value["production_fixed_prefix"]
     # Which profiles the fixed prefix overflows is measured, not assumed (P76 item 4b
-    # shrank the zero-skill face, so F=16384 now admits it).
+    # shrank the zero-skill face under F=16384; the memory tools took it back over, D599).
     over = [focus for focus in FOCUS_PROFILES
             if any(case["profiles"][str(focus)]["status"] == "CONTEXT_INCOMPLETE"
                    for case in value["cases"])]

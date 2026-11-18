@@ -56,7 +56,7 @@ def test_explicit_list_selects_only_list_and_does_not_rewrite_retained_file(
 def test_bad_explicit_list_never_falls_back_to_old_profile(tmp_path, invalid):
     (tmp_path / "operational-synthetic-profile.json").write_text('{"old":"retained"}')
     (tmp_path / "operational-synthetic-profiles.json").write_text(json.dumps(invalid))
-    with pytest.raises(RuntimeError, match="Invalid finite OPERATIONAL"):
+    with pytest.raises(RuntimeError, match="Invalid nonempty OPERATIONAL"):
         loader()(tmp_path, STATE)
 
 

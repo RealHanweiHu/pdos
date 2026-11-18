@@ -92,8 +92,9 @@ def test_worker_registration_list_is_what_the_check_replays():
     assert names == [cls.__temporal_workflow_definition.name for cls in registered_workflows()]
     # 16 on the W11 branch; M2a's MemoryEpisodeVectors makes 17 after the 11-09 merge;
     # D37 ⑥'s DiscussionAgentReply makes 18; P101 replaced XiaopaiWork with
-    # XiaopaiGraphWork on the plugin path, which keeps the count.
-    assert len(names) == len(set(names)) == 18
+    # XiaopaiGraphWork on the plugin path, which keeps the count; the memory fan-out
+    # and daily maintenance workflows of M3 make 20 after the 11-16 merge.
+    assert len(names) == len(set(names)) == 20
 
 
 def test_rolling_back_after_the_patched_code_ran_fails_replay(tmp_path):
