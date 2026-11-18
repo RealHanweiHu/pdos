@@ -308,27 +308,40 @@ def recheck(session, run):
 
     Already-sent text cannot be recalled from the model, so a Run that carried a
     note which was since retired, withdrawn or made unreadable for this person
-    is stopped and started again without it. A newer revision of a still-active
-    note does not stop the Run (the selection is frozen per Run; see D481).
+    is stopped and started again without it. So is a Run whose note now reads
+    differently (D507: the same rule as personal notes, D481). A newer version that
+    left what the model was shown unchanged, such as added evidence, does not stop it.
     """
     from pdos_next.domain.knowledge.scope_notes import reads
+    from pdos_next.domain.knowledge.scope_notes.models import ScopeNoteVersion
 
     used = ((run.versions or {}).get("memory_usage") or {}).get(USAGE) or []
     if not used:
         return
     heads = reads.latest(session, [item["note_id"] for item in used])
-    gone = []
+    shown = {(str(row.note_id), row.revision): row for row in session.scalars(
+        select(ScopeNoteVersion).where(
+            ScopeNoteVersion.note_id.in_([item["note_id"] for item in used])))}
+    gone, changed = [], []
     for item in used:
         head = next((row for row in heads.values() if str(row.note_id) == item["note_id"]), None)
         if (head is None or head.lifecycle in {"retired", "withdrawn"}
                 or reads.anchor_view(session, head)[1] is None
                 or reads.flags(session, head, now=datetime.now(UTC)) is None):
             gone.append(item["note_id"])
-    if gone:
+        elif head.revision != item["revision"]:
+            before = shown.get((item["note_id"], item["revision"]))
+            if before is None or (before.kind, before.statement, before.epistemic) != (
+                    head.kind, head.statement, head.epistemic):
+                changed.append(item["note_id"])
+    if gone or changed:
+        said = "、".join(text for text, ids in (
+            ("已修改", changed), ("已停用、撤回或已不可读", gone)) if ids)
         raise DomainError(
             "CONVERSATION_HISTORY_REVOKED",
-            "本次带入的团队备忘已停用、撤回或已不可读，请重新发起。",
-            detail={"scope_note_ids": sorted(set(gone))},
+            f"本次带入的团队备忘{said}，请重新发起。",
+            detail={"scope_note_ids": sorted({*gone, *changed}),
+                    "changed_note_ids": sorted(set(changed))},
         )
 
 

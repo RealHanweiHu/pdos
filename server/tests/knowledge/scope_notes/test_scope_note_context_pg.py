@@ -19,7 +19,15 @@ from pdos_next.core.models import Product
 from pdos_next.errors import DomainError
 from tests.agent.memory.support import scope, start
 from tests.g0_fixture import create_g0_project
-from tests.knowledge.scope_notes.support import RETIRE, anchor, commit, headers, save
+from tests.knowledge.scope_notes.support import (
+    RETIRE,
+    SAVE,
+    anchor,
+    body,
+    commit,
+    headers,
+    save,
+)
 
 
 def assemble(setup, run_id, *, requester=None, skills=()):
@@ -102,6 +110,32 @@ def test_a_retired_note_is_not_sent_again_and_leaves_no_copy(setup):
         kept["subject_id"]]
     recheck(setup, fresh)
     assert search(setup, fresh, "评审 材料")["scope_notes"] == []
+
+
+def test_a_note_that_now_reads_differently_stops_the_run(setup):
+    """D507: the model saw the old words, so the Run stops, as for personal notes (D481)."""
+    reworded = save(setup, "评审材料提前两天发")
+    repinned = save(setup, "样件统一贴项目标签")
+    run_id, _ = start(setup, goal="安排评审")
+    assert len(assemble(setup, run_id)[0]["conventions"]) == 2
+    # A newer version that leaves what the model was shown unchanged goes on.
+    commit(setup, SAVE, {"anchor": anchor(setup),
+                         "note": {"id": repinned["subject_id"], "revision": 1},
+                         "body": body("样件统一贴项目标签", pinned=True)})
+    recheck(setup, run_id)
+    commit(setup, SAVE, {"anchor": anchor(setup),
+                         "note": {"id": reworded["subject_id"], "revision": 1},
+                         "body": body("评审材料提前三个工作日发")})
+    with pytest.raises(DomainError) as stop:
+        recheck(setup, run_id)
+    assert stop.value.reason == "CONVERSATION_HISTORY_REVOKED"
+    assert stop.value.detail["changed_note_ids"] == [reworded["subject_id"]]
+    assert stop.value.message == "本次带入的团队备忘已修改，请重新发起。"
+    # A new Run takes the new words and is not stopped.
+    fresh, _ = start(setup, goal="再安排一次评审")
+    assert "评审材料提前三个工作日发" in json.dumps(
+        assemble(setup, fresh)[0], ensure_ascii=False)
+    recheck(setup, fresh)
 
 
 def test_after_access_is_narrowed_the_note_is_neither_returned_nor_loaded(setup):
