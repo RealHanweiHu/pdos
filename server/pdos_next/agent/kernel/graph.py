@@ -141,6 +141,8 @@ FINAL_TURN = (
     "运行预算只剩这最后一轮。不要再调用任何工具（这一轮的工具调用不会执行），也不要再追问；"
     "请只依据已经取得的结果给出最终答复：写明核对到了什么、没有查到什么。"
 )
+# D597: the result of every call in a batch that exceeds the run's tool allowance.
+TOOLS_SPENT = "本次运行的工具调用额度已用完，这一批调用都没有执行。"
 # P122 (D477): appended when format repair ran out and the model's own summary is kept.
 UNVERIFIED = "\n\n（系统说明：这份回答的格式没有通过核对，其中的内容和引用未经系统核对。）"
 
@@ -437,7 +439,18 @@ class AgentKernel:
             model_skills = {b["key"]: b for b in state["model_skills"]}
             calls = [ToolCall.model_validate(c) for c in state["calls"]]
             if len(calls) + state["tools_used"] > budget.tool_calls:
-                return {"calls": [], "tools_used": budget.tool_calls}
+                # D597: none of this batch runs, and each call is told so. A tool call
+                # left without a result keeps the model guessing which calls ran, and
+                # some OpenAI-compatible providers refuse such a request.
+                refused = json.dumps(annotate_failure({"error": DomainError(
+                    "MODEL_BUDGET_EXCEEDED", TOOLS_SPENT,
+                    detail={"reason_key": "tool_allowance_spent"},
+                ).payload()}, None, []), ensure_ascii=False)
+                return {"calls": [], "tools_used": budget.tool_calls, "messages": [
+                    *state["messages"],
+                    *({"role": "tool", "tool_call_id": call.id, "content": refused}
+                      for call in calls),
+                ]}
             answers = {}
 
             def call_tool(index, call):

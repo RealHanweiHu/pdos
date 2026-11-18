@@ -2,10 +2,18 @@
 the structure check keeps the model's own summary. Scripted host; no provider, no database.
 """
 
+import json
+
 import pytest
 from langgraph.checkpoint.memory import InMemorySaver
 
-from pdos_next.agent.kernel.graph import FINAL_TURN, UNVERIFIED, AgentKernel, Budget
+from pdos_next.agent.kernel.graph import (
+    FINAL_TURN,
+    TOOLS_SPENT,
+    UNVERIFIED,
+    AgentKernel,
+    Budget,
+)
 from pdos_next.agent.kernel.tools import default_registry
 from pdos_next.agent.kernel.types import ModelTurn, ToolCall
 from pdos_next.errors import DomainError
@@ -74,6 +82,28 @@ def test_calls_after_the_tool_allowance_is_spent_are_not_run():
     assert result["output"]["summary"].startswith("运行预算已用完")
     actions = result["output"]["result"]["actions"]
     assert len(actions) == 1 and len(host.prefixes) == 2  # The second call never ran.
+
+
+def test_a_batch_over_the_tool_allowance_tells_the_model_each_call_did_not_run():
+    # D597: the whole batch is refused, and every call in it still gets a result.
+    both = ModelTurn(calls=tuple(
+        ToolCall(id=identity, name="category.read", arguments={}) for identity in ("a", "b")))
+    host = Host([both, final()])
+    result = run(host, Budget(model_turns=5, tool_calls=1))
+    assert result["output"]["status"] == "completed"
+    assert result["output"]["result"]["tool_count"] == 0  # Neither call ran.
+    sent = host.captured_model_messages[1]
+    asked = [call["id"] for message in sent for call in message.get("tool_calls", [])]
+    answers = {message["tool_call_id"]: json.loads(message["content"])
+               for message in sent if message["role"] == "tool"}
+    assert asked == ["a", "b"] and list(answers) == asked
+    for value in answers.values():
+        error = value["error"]
+        assert error["code"] == "RATE_LIMITED" and error["message"] == TOOLS_SPENT
+        assert error["detail"] == {"reason_key": "tool_allowance_spent",
+                                   "reason": "MODEL_BUDGET_EXCEEDED"}
+        assert error["next_step"]["action"] == "deliver_partial"
+    assert sent[-1] == {"role": "user", "content": FINAL_TURN}
 
 
 def test_a_question_on_the_last_turn_becomes_an_unfinished_item_not_a_wait():
