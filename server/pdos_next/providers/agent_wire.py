@@ -36,6 +36,57 @@ def response_codec(protocol, base_url, mode="auto"):
     )
 
 
+def inline_refs(schema):
+    """The same JSON Schema with its local ``#/$defs/...`` references written out.
+
+    MiniMax-M3 does not resolve ``$ref`` in function parameters. An array under a
+    referenced object comes back as ``{"item": ...}`` and the arguments stop there,
+    mid-object, in an otherwise complete reply (2026-11-18: 8 of 8 replayed final
+    outputs with question options were cut; 0 of 6 once the references were written
+    out; evidence: pdos-next-prompt-layout-ab-20261117/diagnosis.md). A schema that
+    refers to itself, or to anything but its own ``$defs``, is returned unchanged.
+    """
+    if not isinstance(schema, dict):
+        return schema
+    definitions = schema.get("$defs") or {}
+
+    def expand(node, open_names):
+        if isinstance(node, list):
+            return [expand(item, open_names) for item in node]
+        if not isinstance(node, dict):
+            return node
+        if "$ref" in node:
+            prefix, _, name = str(node["$ref"]).rpartition("/")
+            if prefix != "#/$defs" or name not in definitions or name in open_names:
+                raise LookupError(node["$ref"])
+            return {
+                **expand(definitions[name], open_names | {name}),
+                **{key: expand(value, open_names) for key, value in node.items()
+                   if key != "$ref"},
+            }
+        return {key: expand(value, open_names) for key, value in node.items()
+                if key != "$defs"}
+
+    try:
+        return expand(schema, frozenset())
+    except LookupError:
+        return schema
+
+
+def wire_schemas(route, tools, output_schema):
+    """Tool definitions and the output schema as this route sends them.
+
+    Admission measures what this returns, so the estimate follows the request.
+    """
+    if getattr(route, "agent_response_codec", None) != MINIMAX_CODEC:
+        return tools, output_schema
+    return [
+        {**tool, "parameters": inline_refs(tool["parameters"])}
+        if isinstance(tool, dict) and "parameters" in tool else tool
+        for tool in tools or []
+    ], inline_refs(output_schema)
+
+
 def tool_name(name):
     return name.replace("_", "_1").replace(".", "_0")
 

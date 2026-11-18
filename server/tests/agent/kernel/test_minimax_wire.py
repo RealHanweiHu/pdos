@@ -16,7 +16,12 @@ from pdos_next.providers.agent_client import (
     request_body,
     tool_name,
 )
-from pdos_next.providers.agent_wire import FINISH_TOOL, MINIMAX_CODEC
+from pdos_next.providers.agent_wire import (
+    FINISH_TOOL,
+    MINIMAX_CODEC,
+    inline_refs,
+    wire_schemas,
+)
 from pdos_next.providers.types import ProviderError
 from tests.agent.kernel.test_native_protocols import SCHEMA, TOOLS, reply, route
 
@@ -606,3 +611,62 @@ def test_a_different_id_inside_one_call_is_still_a_broken_stream():
         assert failure.value.unknown
     finally:
         client.close()
+
+
+# MiniMax-M3 returns arguments cut short under an unresolved ``$ref``; see inline_refs.
+OPTION = {"type": "object", "properties": {"value": {"type": "string"}}, "required": ["value"]}
+REFERENCED = {
+    "$defs": {
+        "Option": OPTION,
+        "Question": {
+            "type": "object",
+            "properties": {"options": {"type": "array", "items": {"$ref": "#/$defs/Option"}}},
+        },
+    },
+    "type": "object",
+    "properties": {"questions": {"type": "array", "items": {"$ref": "#/$defs/Question"}}},
+}
+REFERENCED_TOOLS = [{"name": "calc.cost", "description": "Synthetic", "parameters": REFERENCED}]
+
+
+def test_minimax_request_writes_schema_references_out():
+    original = json.dumps(REFERENCED_TOOLS)
+    body = request_body(minimax(), "fixed", [], REFERENCED_TOOLS, REFERENCED, False)
+    assert [tool["function"]["name"] for tool in body["tools"]] == [
+        tool_name("calc.cost"), FINISH_TOOL]
+    for tool in body["tools"]:
+        parameters = tool["function"]["parameters"]
+        assert "$ref" not in json.dumps(parameters) and "$defs" not in parameters
+        assert parameters["properties"]["questions"]["items"]["properties"]["options"][
+            "items"] == OPTION
+    assert json.dumps(REFERENCED_TOOLS) == original  # the registered definitions are untouched
+
+
+@pytest.mark.parametrize("protocol", ["openai-compatible", "anthropic-native"])
+def test_routes_that_resolve_references_keep_the_registered_schema(protocol):
+    body = request_body(route(protocol), "fixed", [], REFERENCED_TOOLS, REFERENCED, False)
+    sent = body["tools"][0]
+    assert (sent["function"]["parameters"] if protocol == "openai-compatible"
+            else sent["input_schema"]) == REFERENCED
+
+
+def test_inline_refs_keeps_sibling_keys_and_leaves_unresolvable_schemas_alone():
+    described = {"$defs": {"Name": {"type": "string"}}, "type": "object", "properties": {
+        "name": {"$ref": "#/$defs/Name", "description": "Synthetic"}}}
+    assert inline_refs(described) == {"type": "object", "properties": {
+        "name": {"type": "string", "description": "Synthetic"}}}
+    recursive = {"$defs": {"Node": {"type": "object", "properties": {
+        "next": {"$ref": "#/$defs/Node"}}}}, "$ref": "#/$defs/Node"}
+    assert inline_refs(recursive) is recursive
+    foreign = {"type": "object", "properties": {"x": {"$ref": "https://synthetic.test/x.json"}}}
+    assert inline_refs(foreign) is foreign
+
+
+def test_admission_measures_the_definitions_as_minimax_sends_them():
+    from pdos_next.agent.kernel.context_budget import measure, segments
+
+    sent, schema = wire_schemas(minimax(), REFERENCED_TOOLS, REFERENCED)
+    assert measure(minimax(), "fixed", REFERENCED_TOOLS, [], REFERENCED)["segments"] == segments(
+        "fixed", sent, [], schema)["segments"]
+    assert measure(route("openai-compatible"), "fixed", REFERENCED_TOOLS, [], REFERENCED)[
+        "segments"] == segments("fixed", REFERENCED_TOOLS, [], REFERENCED)["segments"]

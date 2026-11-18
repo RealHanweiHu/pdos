@@ -89,6 +89,10 @@ def segments(system, tools, messages, output_schema=None):
 
 def measure(route, system, tools, messages, output_schema=None, *, calibration=None,
             floor=LEGACY_FLOOR):
+    from pdos_next.providers.agent_wire import wire_schemas
+
+    # Measure the definitions as the route sends them (MiniMax: references written out).
+    tools, output_schema = wire_schemas(route, tools, output_schema)
     value = {**budget_for(route), **segments(system, tools, messages, output_schema)}
     # Actual input on this same route calibrates the character estimate. The floor
     # is the measured one for this route and isolation (context_calibration.json,

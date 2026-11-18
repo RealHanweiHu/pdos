@@ -31,6 +31,7 @@ from pdos_next.providers.agent_wire import (
     public_text,
     restore_assistant,
     tool_name,
+    wire_schemas,
 )
 from pdos_next.providers.client import _identifier, _usage, json_value
 from pdos_next.providers.types import ProviderError, ProviderRoute, ProviderTokenCount
@@ -64,6 +65,8 @@ def request_body(route, system, messages, tools, output_schema, streaming,
     if prompt_cache_allowed is None:
         prompt_cache_allowed = _PROMPT_CACHE_ALLOWED.get()
     streaming = streaming and route.streaming
+    # MiniMax-M3 cuts arguments short under an unresolved $ref (see inline_refs).
+    tools, output_schema = wire_schemas(route, tools, output_schema)
     definitions = [{**t, "name": tool_name(t["name"])} for t in tools]
     if route.protocol == "openai-compatible":
         history = [{"role": "system", "content": system}]
