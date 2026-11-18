@@ -2558,6 +2558,26 @@
               "title": "Streaming",
               "type": "boolean"
             },
+            "openai_reasoning_effort": {
+              "anyOf": [
+                {
+                  "enum": [
+                    "none",
+                    "minimal",
+                    "low",
+                    "medium",
+                    "high",
+                    "xhigh"
+                  ],
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "default": null,
+              "title": "Openai Reasoning Effort"
+            },
             "connection_id": {
               "anyOf": [
                 {

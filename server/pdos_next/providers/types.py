@@ -12,6 +12,10 @@ from pydantic import SecretStr
 
 ProtocolKind = Literal["openai-compatible", "anthropic-native"]
 OpenAIResponseMode = Literal["auto", "tools", "json_schema", "json_object", "text"]
+# Sent as `reasoning_effort` only when configured. OpenAI reasoning models (e.g. gpt-6-luna)
+# reject function tools on Chat Completions unless this is "none".
+OpenAIReasoningEffort = Literal["none", "minimal", "low", "medium", "high", "xhigh"]
+REASONING_EFFORTS = {"none", "minimal", "low", "medium", "high", "xhigh"}
 
 
 def output_limit_upper_bound(base_url, model):
@@ -39,6 +43,7 @@ class ProviderRoute:
     budget_policy: Literal["enforced", "development_unlimited"] = "enforced"
     openai_response_mode: OpenAIResponseMode = "auto"
     streaming: bool = True
+    openai_reasoning_effort: OpenAIReasoningEffort | None = None
     connection_id: UUID | None = None
     context_window_tokens: int | None = None
 
@@ -75,6 +80,11 @@ class ProviderRoute:
             raise ValueError("OpenAI response mode requires the OpenAI compatible protocol")
         if type(self.streaming) is not bool:
             raise ValueError("An explicit streaming flag is required")
+        if self.openai_reasoning_effort is not None and (
+            self.protocol != "openai-compatible"
+            or self.openai_reasoning_effort not in REASONING_EFFORTS
+        ):
+            raise ValueError("Unsupported OpenAI reasoning effort")
         if self.connection_id is not None and not isinstance(self.connection_id, UUID):
             raise ValueError("Invalid server connection selection")
         if type(self.timeout_seconds) not in {int, float} or not 1 <= self.timeout_seconds <= 90:
@@ -126,6 +136,8 @@ class ProviderRoute:
             body["openai_response_mode"] = self.openai_response_mode
         if not self.streaming:
             body["streaming"] = False
+        if self.openai_reasoning_effort is not None:
+            body["openai_reasoning_effort"] = self.openai_reasoning_effort
         if self.connection_id is not None:
             body["connection_id"] = str(self.connection_id)
         if self.budget_policy != "enforced":

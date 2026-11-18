@@ -137,6 +137,43 @@ class ManagedConnection(ClosedDTO):
         return False
 
 
+class EgressProxy(ClosedDTO):
+    """Server-owned outbound path for one exact provider hostname (D614).
+
+    Model calls never trust environment proxies (trust_env=False). A provider that
+    is only reachable through a proxy or gateway is listed here by exact hostname;
+    tenant settings and model output cannot choose a proxy. Credentials are not
+    accepted in the URL: the file holds no secrets.
+    """
+
+    host: str = Field(min_length=1, max_length=253)
+    proxy: str = Field(min_length=1, max_length=500)
+
+    @model_validator(mode="after")
+    def exact_boundary(self):
+        from urllib.parse import urlsplit
+
+        if not re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,62}\.)*[a-z0-9-]{1,63}", self.host):
+            raise ValueError("Egress host must be an exact lowercase hostname")
+        try:
+            parsed = urlsplit(self.proxy)
+            _ = parsed.port
+        except ValueError:
+            raise ValueError("Invalid egress proxy") from None
+        if (
+            parsed.scheme not in {"http", "https"}
+            or not parsed.hostname
+            or parsed.username is not None
+            or parsed.password is not None
+            or parsed.path not in {"", "/"}
+            or parsed.query
+            or parsed.fragment
+            or any(ord(c) <= 32 for c in self.proxy)
+        ):
+            raise ValueError("Egress proxy must be a plain http(s) proxy URL without credentials")
+        return self
+
+
 class HostConfiguration(ClosedDTO):
     format_version: Literal[1]
     kms: KmsLocation
@@ -145,6 +182,7 @@ class HostConfiguration(ClosedDTO):
     connections: list[ManagedConnection] = Field(default_factory=list)
     research: ResearchConfiguration | None = None
     mcp: McpConfiguration | None = None
+    egress: list[EgressProxy] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def unique_bindings(self):
@@ -155,6 +193,8 @@ class HostConfiguration(ClosedDTO):
             raise ValueError("Managed connections must be unique")
         if len(set(slots)) != len(slots) or len(set(models)) != len(models):
             raise ValueError("Tenant runtime bindings must be unique")
+        if len({row.host for row in self.egress}) != len(self.egress):
+            raise ValueError("Egress hosts must be unique")
         if any(slot.secret_arn.split(":")[2] != self.kms.region for slot in self.secrets):
             raise ValueError("KMS secret and endpoint regions must match")
         if any(row.secret.secret_arn.split(":")[2] != self.kms.region for row in self.connections):
@@ -275,6 +315,13 @@ class TenantRuntime:
     def provider_for(self, scope, route):
         return self.model(scope, route).provider
 
+    def egress_for(self, target_url):
+        """Proxy for this exact provider host, read per call like routes and prices."""
+        from urllib.parse import urlsplit
+
+        host = urlsplit(target_url).hostname
+        return next((row.proxy for row in self.configuration().egress if row.host == host), None)
+
     def output_limit_for(self, scope, route):
         if getattr(route, "connection_id", None) is not None:
             self.connection(scope.tenant_id, route)
@@ -337,6 +384,7 @@ def runtime_ports(engine=None):
         rate_card_for=host.rate_card_for,
         output_limit_for=host.output_limit_for,
         development_budget_for=host.development_budget_for,
+        egress_for=host.egress_for,
         **research,
         **mcp,
     )

@@ -29,18 +29,33 @@ class AgentGateway:
         context_guard=None,
         data_categories_for=None,
         context_admitter=None,
+        egress_for=None,
     ):
         # route_for captures tenant configuration/secrets/capability qualification at the host.
         self.store, self.route_for = store, route_for
         self.provider_for = provider_for or (lambda scope, route: route.version)
         self.rate_card_for, self.cost_required = rate_card_for, cost_required
-        self.client = client or AgentProviderClient()
+        self.egress_for = egress_for
+        self.client = client or AgentProviderClient(egress_for=egress_for)
         self.context_guard = context_guard
         self.data_categories_for = data_categories_for
         self.context_admitter = context_admitter
 
     def close(self):
         self.client.close()
+
+    def _egress_via(self, target):
+        """D614: name the proxy host a call leaves through; no field on a direct call."""
+        if self.egress_for is None:
+            return {}
+        from urllib.parse import urlsplit
+
+        proxy = self.egress_for(target)
+        if proxy is None:
+            return {}
+        parsed = urlsplit(proxy)
+        port = parsed.port or (443 if parsed.scheme == "https" else 80)
+        return {"egress_via": f"{parsed.hostname}:{port}"}
 
     def context_baseline(self, scope, route, request_key):
         return self.context_admission(scope, route, request_key)[0]
@@ -312,6 +327,7 @@ class AgentGateway:
                         k: v.isoformat() if hasattr(v, "isoformat") else v
                         for k, v in asdict(decision).items()
                     },
+                    **self._egress_via(route.target_url),
                 },
             )
             self._recheck_dispatch(scope, route, provider_key, decision, pricing)
@@ -509,7 +525,8 @@ class AgentGateway:
             self._recheck_dispatch(scope, route, decision.provider, decision, pricing)
             self.store.emit(scope, {"type": "egress_checked", "operation": "model.count_tokens",
                                    **{key: val.isoformat() if hasattr(val, "isoformat") else val
-                                      for key, val in asdict(decision).items()}})
+                                      for key, val in asdict(decision).items()},
+                                   **self._egress_via(route.token_count_url)})
             with prompt_cache_policy(cache_allowed):
                 count = self.client.count_tokens(
                     route, system=request["system"], messages=request["messages"],

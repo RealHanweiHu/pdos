@@ -87,7 +87,8 @@ test("invalid numeric input is rejected before requesting a preview", () => {
 test("input labels have unique accessible ids with both explicit protocol choices", () => {
   const html = render({ reading, canEdit: true, readiness: null, onPreview: async () => {} });
   const ids = [...html.matchAll(/id="([^"]+)"/g)].map(match => match[1]);
-  assert.equal(ids.length, 12);
+  assert.equal(ids.length, 13);
+  assert.ok(html.includes("OpenAI 推理强度")); assert.ok(html.includes('value="none"'));
   assert.equal(new Set(ids).size, ids.length);
   for (const id of ids) assert.ok(html.includes(`for="${id}"`));
   assert.ok(html.includes("OpenAI 兼容")); assert.ok(html.includes("Anthropic 原生"));

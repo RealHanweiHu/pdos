@@ -58050,6 +58050,25 @@
               }
             ],
             "title": "Valid From"
+          "openai_reasoning_effort": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "none",
+                  "minimal",
+                  "low",
+                  "medium",
+                  "high",
+                  "xhigh"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Openai Reasoning Effort"
+          },
           },
           "evidence": {
             "anyOf": [

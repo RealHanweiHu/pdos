@@ -36,6 +36,7 @@ class RuntimePorts:
     rate_card_for: object | None = None
     provider_for: object | None = None
     provider_client: object | None = None
+    egress_for: object | None = None
     output_limit_for: object | None = None
     development_budget_for: object | None = None
     read_tools: dict = field(default_factory=dict)
@@ -766,6 +767,7 @@ class Bootstrap:
             preload=self.ports.preload or self.default_preload,
             rate_card_for=self.ports.rate_card_for,
             cost_required=True,
+            egress_for=self.ports.egress_for,
             context_guard=self.check_conversation,
             skill_catalog=self.catalog,
             tool_registry=self.registry,

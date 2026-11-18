@@ -31,6 +31,7 @@ function SettingsEditor({ reading, canEdit, onPreview, pending }: ModelConfigura
   const [metadata, setMetadata] = useState<ModelMetadata>(() => reading ? {
     ...reading.metadata, openai_response_mode: reading.metadata.openai_response_mode ?? "auto",
     streaming: reading.metadata.streaming ?? true,
+    openai_reasoning_effort: reading.metadata.openai_reasoning_effort ?? null,
   } : emptyMetadata);
   const [enabled, setEnabled] = useState(reading?.enabled ?? false);
   const [busy, setBusy] = useState(false);
@@ -58,7 +59,7 @@ function SettingsEditor({ reading, canEdit, onPreview, pending }: ModelConfigura
     {!onPreview && <p className="text-sm text-muted-foreground">模型配置办理接口待接入，当前不能提交。</p>}
     <fieldset disabled={unavailable} className="grid min-w-0 gap-3 sm:grid-cols-2">
       <label htmlFor={`${prefix}-protocol`} className="grid gap-1 text-sm">协议
-        <select id={`${prefix}-protocol`} disabled={!!metadata.connection_id} value={metadata.protocol} onChange={e => { change("protocol", e.target.value as ModelMetadata["protocol"]); change("openai_response_mode", "auto"); }} className={inputClass}>
+        <select id={`${prefix}-protocol`} disabled={!!metadata.connection_id} value={metadata.protocol} onChange={e => { change("protocol", e.target.value as ModelMetadata["protocol"]); change("openai_response_mode", "auto"); change("openai_reasoning_effort", null); }} className={inputClass}>
           <option value="openai-compatible">OpenAI 兼容</option><option value="anthropic-native">Anthropic 原生</option>
         </select>
       </label>
@@ -86,6 +87,11 @@ function SettingsEditor({ reading, canEdit, onPreview, pending }: ModelConfigura
       <label htmlFor={`${prefix}-format`} className="grid gap-1 text-sm">OpenAI 响应格式
         <select id={`${prefix}-format`} disabled={metadata.protocol !== "openai-compatible"} value={metadata.openai_response_mode} onChange={e => change("openai_response_mode", e.target.value as ModelMetadata["openai_response_mode"])} className={inputClass}>
           <option value="auto">原有适配（兼容已保存配置）</option><option value="tools">工具调用（无需 JSON Schema 扩展）</option><option value="json_schema">JSON Schema</option><option value="json_object">JSON 对象</option><option value="text">JSON 文本（无需格式扩展）</option>
+        </select>
+      </label>
+      <label htmlFor={`${prefix}-effort`} className="grid gap-1 text-sm">OpenAI 推理强度
+        <select id={`${prefix}-effort`} disabled={metadata.protocol !== "openai-compatible"} value={metadata.openai_reasoning_effort ?? ""} onChange={e => change("openai_reasoning_effort", (e.target.value || null) as ModelMetadata["openai_reasoning_effort"])} className={inputClass}>
+          <option value="">不发送（服务商默认）</option><option value="none">none（关闭推理；OpenAI 推理模型用工具时须选）</option><option value="minimal">minimal</option><option value="low">low</option><option value="medium">medium</option><option value="high">high</option><option value="xhigh">xhigh</option>
         </select>
       </label>
       <label htmlFor={`${prefix}-streaming`} className="flex items-center gap-2 text-sm">

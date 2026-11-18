@@ -97,6 +97,8 @@ def request_body(route, system, messages, tools, output_schema, streaming,
             "stream": streaming,
             **({"stream_options": {"include_usage": True}} if streaming else {}),
         }
+        if route.openai_reasoning_effort is not None:
+            body["reasoning_effort"] = route.openai_reasoning_effort
         if definitions:
             body["tools"] = [{"type": "function", "function": t} for t in definitions]
         if route.agent_response_codec in FUNCTION_CODECS:
@@ -441,16 +443,38 @@ class StreamAccumulator:
             raise ValueError("Unsupported stream event")
 
 
+def _proxy_transport(proxy):
+    return httpx.HTTPTransport(retries=0, proxy=proxy)
+
+
 class AgentProviderClient:
-    def __init__(self, transport=None):
+    def __init__(self, transport=None, *, egress_for=None, proxy_transport=_proxy_transport):
         self.client = httpx.Client(
             transport=transport or httpx.HTTPTransport(retries=0),
             trust_env=False,
             follow_redirects=False,
         )
+        # D614: a server-configured proxy per exact provider host; environment proxies
+        # stay ignored. None keeps every call on the direct client.
+        self.egress_for, self.proxy_transport, self._proxied = egress_for, proxy_transport, {}
+
+    def _client_for(self, target):
+        proxy = self.egress_for(target) if self.egress_for is not None else None
+        if proxy is None:
+            return self.client
+        client = self._proxied.get(proxy)
+        if client is None:
+            client = httpx.Client(
+                transport=self.proxy_transport(proxy), trust_env=False, follow_redirects=False,
+            )
+            self._proxied[proxy] = client
+        return client
 
     def close(self):
         self.client.close()
+        for client in self._proxied.values():
+            client.close()
+        self._proxied.clear()
 
     def count_tokens(self, route, *, system, messages, tools, output_schema,
                      cancelled=lambda: False):
@@ -467,8 +491,9 @@ class AgentProviderClient:
         if cancelled():
             raise ProviderError("MODEL_CANCELLED")
         request_id = None
+        client = self._client_for(target)
         try:
-            with self.client.stream("POST", target, json=body, headers={
+            with client.stream("POST", target, json=body, headers={
                 "Accept-Encoding": "identity", "x-api-key": route.api_key.get_secret_value(),
                 "anthropic-version": "2023-06-01",
             }, timeout=route.timeout_seconds) as response:
@@ -520,6 +545,7 @@ class AgentProviderClient:
             )
         if cancelled():
             raise ProviderError("MODEL_CANCELLED")
+        client = self._client_for(route.target_url)
         request_id = None
         started = monotonic()
 
@@ -527,7 +553,7 @@ class AgentProviderClient:
             return None if moment is None else round((moment - started) * 1000)
 
         try:
-            with self.client.stream(
+            with client.stream(
                 "POST", route.target_url, json=body, headers=headers, timeout=route.timeout_seconds
             ) as response:
                 headers_at = monotonic()

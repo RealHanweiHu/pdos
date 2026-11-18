@@ -30,6 +30,7 @@ class KernelAdapters:
     read_tools: dict = field(default_factory=dict)
     provider_client: object | None = None
     provider_for: object | None = None
+    egress_for: object | None = None
     preload: object | None = None
     rate_card_for: object | None = None
     cost_required: bool = True
@@ -60,6 +61,7 @@ class BoundHost:
             rate_card_for=adapters.rate_card_for,
             cost_required=adapters.cost_required,
             client=adapters.provider_client,
+            egress_for=adapters.egress_for,
             context_guard=self.context_guard,
             data_categories_for=adapters.citation_guard,
             context_admitter=self.admit_context,

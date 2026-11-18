@@ -9,6 +9,8 @@ export interface ModelMetadata {
   openai_output_parameter: "max_tokens" | "max_completion_tokens";
   openai_response_mode?: "auto" | "tools" | "json_schema" | "json_object" | "text";
   streaming?: boolean;
+  /** Sent as `reasoning_effort` only when set; OpenAI reasoning models need "none" to use tools on Chat Completions. */
+  openai_reasoning_effort?: "none" | "minimal" | "low" | "medium" | "high" | "xhigh" | null;
   connection_id?: string | null;
   timeout_seconds: number;
   response_bytes: number;

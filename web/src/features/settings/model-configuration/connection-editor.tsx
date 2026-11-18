@@ -17,6 +17,7 @@ export function ConnectionEditor({ api, onSaved, onCancel }: { api: WorkspaceTra
   const [mode, setMode] = useState<ModelMetadata["openai_response_mode"]>("tools");
   const [parameter, setParameter] = useState<ModelMetadata["openai_output_parameter"]>("max_tokens");
   const [streaming, setStreaming] = useState(true), [tokens, setTokens] = useState(2048);
+  const [effort, setEffort] = useState<NonNullable<ModelMetadata["openai_reasoning_effort"]> | "">("");
   const [contextWindow, setContextWindow] = useState("");
   const [priced, setPriced] = useState(false), [source, setSource] = useState("");
   const [rates, setRates] = useState<Record<RateKey, string>>({ input_per_million: "0", output_per_million: "0", cache_read_per_million: "0", cache_creation_per_million: "0", request_fee: "0", text_tokens_per_utf8_byte: "1", text_framing_tokens: "4096" });
@@ -49,7 +50,7 @@ export function ConnectionEditor({ api, onSaved, onCancel }: { api: WorkspaceTra
     const checked = new Date();
     const pricing = priced ? { ...rates, text_framing_tokens: Number(rates.text_framing_tokens), source: source.trim(), text_billing_source: source.trim(), verified_at: checked.toISOString(), valid_until: new Date(checked.getTime() + 30 * 86400000).toISOString(), currency: "USD", output_cap_covers_all_billing: true, covers_all_fees: true } : null;
     void send({ request_id: crypto.randomUUID(), name: name.trim() || model.trim(), api_key: key.trim(), pricing,
-      metadata: { protocol, base_url: base.trim().replace(/\/$/, ""), model: model.trim(), model_version: version.trim() || model.trim(), max_output_tokens: tokens, context_window_tokens: contextWindow === "" ? null : Number(contextWindow), openai_output_parameter: parameter, openai_response_mode: protocol === "openai-compatible" ? mode : "auto", streaming, timeout_seconds: 30, response_bytes: 1048576 } });
+      metadata: { protocol, base_url: base.trim().replace(/\/$/, ""), model: model.trim(), model_version: version.trim() || model.trim(), max_output_tokens: tokens, context_window_tokens: contextWindow === "" ? null : Number(contextWindow), openai_output_parameter: parameter, openai_response_mode: protocol === "openai-compatible" ? mode : "auto", streaming, openai_reasoning_effort: protocol === "openai-compatible" && effort ? effort : null, timeout_seconds: 30, response_bytes: 1048576 } });
   }
   return <form onSubmit={submit} className="space-y-4 rounded-lg border border-border bg-card p-4" aria-label="添加模型服务商">
     <div><h2 className="text-base font-semibold">添加服务商</h2><p className="mt-1 text-sm text-muted-foreground">保存连接后，可在列表中确认切换。</p></div>
@@ -63,6 +64,7 @@ export function ConnectionEditor({ api, onSaved, onCancel }: { api: WorkspaceTra
         <label className="grid gap-1 text-sm">模型版本<input className={inputClass} value={version} onChange={e => setVersion(e.target.value)} maxLength={200} placeholder="留空沿用模型名称"/></label>
         <label className="grid gap-1 text-sm">输出参数<select className={inputClass} disabled={protocol !== "openai-compatible"} value={parameter} onChange={e => setParameter(e.target.value as typeof parameter)}><option value="max_tokens">max_tokens</option><option value="max_completion_tokens">max_completion_tokens</option></select></label>
         <label className="grid gap-1 text-sm">响应格式<select className={inputClass} disabled={protocol !== "openai-compatible"} value={mode} onChange={e => setMode(e.target.value as typeof mode)}><option value="tools">工具调用</option><option value="json_schema">JSON Schema</option><option value="json_object">JSON 对象</option><option value="text">JSON 文本</option></select></label>
+        <label className="grid gap-1 text-sm">推理强度<select className={inputClass} disabled={protocol !== "openai-compatible"} value={effort} onChange={e => setEffort(e.target.value as typeof effort)}><option value="">不发送（服务商默认）</option><option value="none">none（关闭推理；OpenAI 推理模型用工具时须选）</option><option value="minimal">minimal</option><option value="low">low</option><option value="medium">medium</option><option value="high">high</option><option value="xhigh">xhigh</option></select></label>
         <label className="grid gap-1 text-sm">最大输出 tokens<input required className={inputClass} type="number" min={1} max={32768} step={1} value={tokens} onChange={e => setTokens(Number(e.target.value))}/></label>
         <label className="grid gap-1 text-sm">上下文窗口（tokens）<input className={inputClass} type="number" min={1024} max={10000000} step={1} value={contextWindow} onChange={e => setContextWindow(e.target.value)}/><span className="text-xs text-muted-foreground">不填时按 32,000 估算</span></label>
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={streaming} onChange={e => setStreaming(e.target.checked)}/>接口支持流式响应</label>

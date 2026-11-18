@@ -15,6 +15,7 @@
 | `openai_response_mode: text` | 接口不支持 `response_format` 时使用；要求模型按上下文末尾的 schema 返回 JSON 文本，仍由运行图检查结构。 |
 | `openai_response_mode: auto` | 已有配置的默认值，保持原 MiniMax 专属适配或普通 JSON Schema 路径及原绑定。 |
 | `streaming: false` | 接口不支持流式响应或流式用量时使用；请求不发送 `stream_options`，从完整响应核对实际用量。默认 `true`。 |
+| `openai_reasoning_effort` | 默认不设置，请求不发送 `reasoning_effort`。设置后原样发送（`none` / `minimal` / `low` / `medium` / `high` / `xhigh`）。OpenAI 推理模型（如 `gpt-6-luna`、`gpt-5.6-luna`）在 Chat Completions 上带函数工具时只接受 `none`，否则返回 400，见 2026-11-18 [对比证据](../reports/evidence/model-compare-openai-20261118/README.md)。改值进入路由摘要和模型资格身份，不继承原资格。 |
 
 业务工具仍通过原生 `tool_calls` 执行；仅有文本生成能力的模型不能据此宣称具备工具办理能力。各模式继续检查实际 token 用量、最终结果 schema 与权限；缺用量按结果未知保守记账，不自动改模式重发。响应方式、端点或版本变更进入路由/资格绑定，新旧调用不能串用续接记录。
 
@@ -47,6 +48,20 @@ API Key 只在专用密码字段中提交，页面不读取原值，也不写入
 每条 `models` 记录可设置 `max_output_tokens`，省略时保持 2048；普通路由接受 1–32768 的整数，官方 MiniMax M3 路由支持至 524288（[服务商参数](https://platform.minimax.cn/docs/api-reference/text-chat-openai)）。该值由服务器按完整租户/模型键选择，进入路由摘要及调用前的预算预留，不能由模型参数覆盖。更改后旧路由摘要失效，已计费用保持原记录。API 与 Worker 应使用同一文件的同一配置。
 
 按用户批准的[本地开发 MiniMax 策略](../design/2026-10-23-local-development-minimax-policy.md)，指定模型记录可显式设置 `development_unlimited_budget: true`。仅已核对的独立本地 `pdos_test` 接受；新旧预算的额度数字和历史保留，实际费用、尝试次数及 token 继续记账，当前 MiniMax 开发调用不应用这些额度，停用活动记录仍停止后续调用。此配置默认关闭，不适用于其他模型或生产，也不授予资格。升级至 `s0_0814` 后才能记录超出旧额度的开发用量；已有开发使用记录时迁移拒绝回退。
+
+### 出站代理（D614）
+
+模型网关不读取 `HTTPS_PROXY` 等环境变量（`trust_env=False`），环境里的代理不会悄悄改变模型流量的去向。某个服务商只能经代理或网关到达时（如本机访问 `api.openai.com`），在同一份宿主配置里按**精确主机名**登记：
+
+```json
+"egress": [{"host": "api.openai.com", "proxy": "http://127.0.0.1:7897"}]
+```
+
+- 只匹配完全相同的主机名，不支持通配；其他服务商照常直连。每次调用重新读取，改文件即生效，无须重启。
+- 代理地址只接受不带账号密码、路径和参数的 `http`/`https` URL；文件里不放凭据。
+- 租户设置页和模型都不能指定代理。每次经代理的调用在运行事件 `egress_checked` 里记 `egress_via`（代理主机与端口）。
+- 当前只作用于模型网关（生成与计量预检）；嵌入、公开研究和 MCP 仍直连，需要时另接。
+- 生产经代理出站前，需要你确认该代理的运营方与数据路径；这属于真实外发边界。
 
 ## 本人模型预算
 

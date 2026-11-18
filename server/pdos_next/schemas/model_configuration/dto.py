@@ -6,7 +6,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, field_validator, model_validator
 
-from pdos_next.providers.types import OpenAIResponseMode, ProviderRoute
+from pdos_next.providers.types import OpenAIReasoningEffort, OpenAIResponseMode, ProviderRoute
 
 
 class ClosedDTO(BaseModel):
@@ -25,6 +25,7 @@ class ModelMetadata(ClosedDTO):
     )
     openai_response_mode: OpenAIResponseMode = "auto"
     streaming: bool = True
+    openai_reasoning_effort: OpenAIReasoningEffort | None = None
     connection_id: UUID | None = Field(default=None, strict=False)
     timeout_seconds: float = Field(default=30.0, ge=1, le=90, allow_inf_nan=False)
     response_bytes: int = Field(default=1_048_576, ge=1024, le=2_097_152)
@@ -57,6 +58,7 @@ class ModelMetadata(ClosedDTO):
             openai_output_parameter=self.openai_output_parameter,
             openai_response_mode=self.openai_response_mode,
             streaming=self.streaming,
+            openai_reasoning_effort=self.openai_reasoning_effort,
             connection_id=self.connection_id,
             timeout_seconds=self.timeout_seconds,
             response_bytes=self.response_bytes,
@@ -71,6 +73,8 @@ class ModelMetadata(ClosedDTO):
             value.pop("openai_response_mode")
         if self.streaming:
             value.pop("streaming")
+        if self.openai_reasoning_effort is None:
+            value.pop("openai_reasoning_effort")
         if self.connection_id is None:
             value.pop("connection_id")
         return value

@@ -167,7 +167,8 @@ def test_old_saved_metadata_and_route_digests_stay_valid_without_new_fields():
     metadata = ModelMetadata(protocol=selected.protocol, base_url=selected.base_url,
         model=selected.model, model_version=selected.version)
     old_metadata = metadata.model_dump(mode="json",
-        exclude={"openai_response_mode", "streaming", "connection_id", "context_window_tokens"})
+        exclude={"openai_response_mode", "streaming", "connection_id", "context_window_tokens",
+                 "openai_reasoning_effort"})
     row = SimpleNamespace(tenant_id=uuid4(), id=uuid4(), revision=1, public_metadata=old_metadata,
         enabled=True, created_by=uuid4(), created_at=now(), secret_reference=None)
     row.binding_digest = digest({"tenant": str(row.tenant_id), "id": str(row.id),
@@ -175,21 +176,44 @@ def test_old_saved_metadata_and_route_digests_stay_valid_without_new_fields():
     decoded = decode(row)
     assert decoded.binding_digest == row.binding_digest
     assert decoded.metadata.openai_response_mode == "auto" and decoded.metadata.streaming
-    for options in ({"openai_response_mode": "tools"}, {"streaming": False}):
+    assert decoded.metadata.openai_reasoning_effort is None
+    for options in ({"openai_response_mode": "tools"}, {"streaming": False},
+                    {"openai_reasoning_effort": "none"}):
         changed = metadata.model_copy(update=options)
         assert replace(decoded, metadata=changed).binding_digest != decoded.binding_digest
         assert changed.route(SecretStr("synthetic-key"), selected.version).digest != selected.digest
     for mode in ("text", "tools"):
         changed_identity = model_identity(replace(selected, openai_response_mode=mode))
         assert changed_identity != model_identity(selected)
+    # A different reasoning setting is different model behaviour: no inherited qualification.
+    no_reasoning = model_identity(replace(selected, openai_reasoning_effort="none"))
+    assert no_reasoning != model_identity(selected)
+    assert no_reasoning != model_identity(replace(selected, openai_reasoning_effort="low"))
 
 
 @pytest.mark.parametrize("options", [
     {"openai_response_mode": "unknown"}, {"streaming": "true"},
     {"protocol": "anthropic-native", "openai_response_mode": "tools"},
+    {"openai_reasoning_effort": "maximum"},
+    {"protocol": "anthropic-native", "openai_reasoning_effort": "none"},
 ])
 def test_invalid_compatibility_options_fail_before_network(options):
     with pytest.raises(ValidationError):
         ModelMetadata.model_validate({
             "protocol": "openai-compatible", "base_url": "https://custom.invalid/v1",
             "model": "custom-model", "model_version": "v1", **options})
+
+
+@pytest.mark.parametrize("effort", [None, "none", "medium"])
+def test_reasoning_effort_is_sent_only_when_configured(effort):
+    # gpt-6-luna rejects function tools on Chat Completions unless reasoning_effort is "none".
+    selected = replace(route("openai-compatible"), base_url="https://api.openai.com/v1",
+        model="gpt-6-luna", openai_response_mode="tools", openai_reasoning_effort=effort)
+    body = request_body(selected, "frozen", [{"role": "user", "content": "task"}],
+        TOOLS, SCHEMA, True)
+    if effort is None:
+        assert "reasoning_effort" not in body
+    else:
+        assert body["reasoning_effort"] == effort
+    assert body["tools"][-1]["function"]["name"] == FINISH_TOOL
+    assert "reasoning_split" not in body

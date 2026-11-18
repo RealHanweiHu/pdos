@@ -27,6 +27,9 @@ def model_identity(route):
     codec = response_codec(route.protocol, route.base_url, mode)
     if mode != "auto":
         value["openai_response_mode"] = mode
+    effort = getattr(route, "openai_reasoning_effort", None)
+    if effort is not None:
+        value["openai_reasoning_effort"] = effort
     if codec != "native-schema/v1":
         value["agent_response_codec"] = codec
     return fingerprint(value)
